@@ -79,7 +79,7 @@ class MultiInstanceHelperTest : ShellTestCase() {
     fun supportsMultiInstanceSplit_inStaticAllowList() {
         val allowList = arrayOf(TEST_PACKAGE)
         val helper = MultiInstanceHelper(mContext, context.packageManager, allowList,
-            mock(), mock(), true)
+            mock(), mock())
         val component = ComponentName(TEST_PACKAGE, TEST_ACTIVITY)
         assertEquals(true, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
@@ -88,7 +88,7 @@ class MultiInstanceHelperTest : ShellTestCase() {
     fun supportsMultiInstanceSplit_notInStaticAllowList() {
         val allowList = arrayOf(TEST_PACKAGE)
         val helper = MultiInstanceHelper(mContext, context.packageManager, allowList,
-            mock(), mock(), true)
+            mock(), mock())
         val component = ComponentName(TEST_NOT_ALLOWED_PACKAGE, TEST_ACTIVITY)
         assertEquals(false, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
@@ -107,7 +107,7 @@ class MultiInstanceHelperTest : ShellTestCase() {
             eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
                 .thenReturn(appProp)
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), true)
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock())
         // Expect activity property to override application property
         assertEquals(true, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
@@ -126,7 +126,7 @@ class MultiInstanceHelperTest : ShellTestCase() {
             eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
                 .thenReturn(appProp)
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), true)
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock())
         // Expect activity property to override application property
         assertEquals(false, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
@@ -144,7 +144,7 @@ class MultiInstanceHelperTest : ShellTestCase() {
             eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
                 .thenReturn(appProp)
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), true)
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock())
         // Expect fall through to app property
         assertEquals(true, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
@@ -161,28 +161,8 @@ class MultiInstanceHelperTest : ShellTestCase() {
             eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
                 .thenThrow(PackageManager.NameNotFoundException())
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), true)
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock())
         assertEquals(false, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
-    }
-
-    @Test
-    @Throws(PackageManager.NameNotFoundException::class)
-    fun checkNoMultiInstancePropertyFlag_ignoreProperty() {
-        val component = ComponentName(TEST_PACKAGE, TEST_ACTIVITY)
-        val pm = mock<PackageManager>()
-        val activityProp = PackageManager.Property("", true, "", "")
-        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component.packageName), eq(component.className), eq(TEST_OTHER_USER_ID)))
-            .thenReturn(activityProp)
-        val appProp = PackageManager.Property("", true, "", "")
-        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
-            .thenReturn(appProp)
-
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), false)
-        // Expect we only check the static list and not the property
-        assertEquals(false, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
-        verify(pm, never()).getProperty(any(), any<ComponentName>())
     }
 
     companion object {

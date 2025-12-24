@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"ದೃಶ್ಯಾನುಪಾತವನ್ನು ಬದಲಾಯಿಸಿ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ಗಾಗಿ ಆ್ಯಪ್ ಮಾಹಿತಿ"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s ಗೆ ಸಂಬಂಧಿಸಿದ ಬಳಕೆಯ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"%1$s ಮುಚ್ಚಿರಿ"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"ಹೊಸ ವಿಂಡೋ"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"ವಿಂಡೋಗಳನ್ನು ನಿರ್ವಹಿಸಿ"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"ಮುಚ್ಚಿರಿ"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ಆ್ಯಪ್ ಪೇರ್ ಸೇವ್ ಮಾಡಿ"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ಈ ಆ್ಯಪ್ ಜೋಡಿಯು ಈ ಸಾಧನದಲ್ಲಿ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ಆ್ಯಪ್ ಅನ್ನು ಸೂಚಿಸಬೇಡಿ"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ಮುನ್ನೋಟ ಪಿನ್ ಮಾಡಿ"</string>
     <string name="bubble" msgid="3072951361014076670">"ಬಬಲ್"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"ಟಾಸ್ಕ್‌ಬಾರ್‌ಗೆ ಪಿನ್ ಮಾಡಿ"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"ಟಾಸ್ಕ್‌ಬಾರ್‌ನಿಂದ ಅನ್‌ಪಿನ್"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಸ್ಥಾಪಿಸಿ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ಬಳಕೆದಾರರ ಹಸ್ತಕ್ಷೇಪವಿಲ್ಲದೆ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿಸುತ್ತದೆ."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"ಹೋಮ್ ಸ್ಕ್ರೀನ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಓದಿ"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"ಬಲಕ್ಕೆ ಪುಟ ವಿಂಗಡಿಸಿ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} ಆ್ಯಪ್ # ಅಧಿಸೂಚನೆಯನ್ನು ಹೊಂದಿದೆ}one{{app_name} ಆ್ಯಪ್ # ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ}other{{app_name} ಆ್ಯಪ್ # ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"ನಿರೀಕ್ಷಿತ ಆ್ಯಪ್: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d ರಲ್ಲಿ %1$d ಪುಟ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d ರಲ್ಲಿ %1$d ಮುಖಪುಟದ ಸ್ಕ್ರೀನ್"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ಹೊಸ ಮುಖಪುಟ ಸ್ಕ್ರೀನ್"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"ಫೋಲ್ಡರ್ ಮುಚ್ಚಿದೆ"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ಫೋಲ್ಡರ್‌ ಅನ್ನು <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಮರುಹೆಸರಿಸಲಾಗಿದೆ"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ಐಟಂಗಳು"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ಐಟಂಗಳು, ನೋಟಿಫಿಕೇಶನ್‌ಗಳನ್ನು ಹೊಂದಿವೆ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ಅಥವಾ ಹೆಚ್ಚಿನ ಐಟಂಗಳು"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ಅಥವಾ ಹೆಚ್ಚಿನ ಐಟಂಗಳು, ನೋಟಿಫಿಕೇಶನ್‌ಗಳನ್ನು ಹೊಂದಿವೆ"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"ಹೆಸರಿಲ್ಲದ ಫೋಲ್ಡರ್"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"ಆ್ಯಪ್ ಜೋಡಿ: <xliff:g id="APP1">%1$s</xliff:g> ಮತ್ತು <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ವಾಲ್‌ಪೇಪರ್ ಮತ್ತು ಶೈಲಿ"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳ ಟ್ಯಾಬ್"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ಕೆಲಸದ ಪ್ರೊಫೈಲ್"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ಬ್ಯಾಡ್ಜ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳು ನಿಮ್ಮ IT ನಿರ್ವಾಹಕರಿಗೆ ಗೋಚರಿಸುತ್ತವೆ"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ಸರಿ"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ವಿರಾಮಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"ನಿಮ್ಮ ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳಿಂದ ನೀವು ಅಧಿಸೂಚನೆಗಳನ್ನು ಸ್ವೀಕರಿಸುವುದಿಲ್ಲ"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ನಿಮ್ಮ ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳಿಗೆ ನಿಮಗೆ ಅಧಿಸೂಚನೆಗಳನ್ನು ಕಳುಹಿಸಲು, ನಿಮ್ಮ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಲು ಅಥವಾ ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗದು"</string>

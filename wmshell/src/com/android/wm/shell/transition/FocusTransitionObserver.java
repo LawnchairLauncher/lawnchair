@@ -28,6 +28,7 @@ import static android.window.TransitionInfo.FLAG_MOVED_TO_TOP;
 import static com.android.wm.shell.transition.Transitions.TransitionObserver;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.os.RemoteException;
 import android.util.ArraySet;
@@ -40,6 +41,8 @@ import android.window.TransitionInfo;
 import com.android.wm.shell.shared.FocusTransitionListener;
 import com.android.wm.shell.shared.IFocusTransitionListener;
 import com.android.wm.shell.shared.TransitionUtil.LeafTaskFilter;
+import com.android.wm.shell.sysui.ShellCommandHandler;
+import com.android.wm.shell.sysui.ShellInit;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -56,6 +59,8 @@ import java.util.concurrent.Executor;
 public class FocusTransitionObserver {
     private static final String TAG = FocusTransitionObserver.class.getSimpleName();
 
+    private final ShellCommandHandler mShellCommandHandler;
+
     private IFocusTransitionListener mRemoteListener;
     private final Map<FocusTransitionListener, Executor> mLocalListeners =
             new HashMap<>();
@@ -65,7 +70,16 @@ public class FocusTransitionObserver {
 
     private final ArraySet<RunningTaskInfo> mTmpTasksToBeNotified = new ArraySet<>();
 
-    public FocusTransitionObserver() {}
+    public FocusTransitionObserver(
+            @NonNull ShellInit shellInit,
+            @NonNull ShellCommandHandler shellCommandHandler) {
+        mShellCommandHandler = shellCommandHandler;
+        shellInit.addInitCallback(this::onInit, this);
+    }
+
+    private void onInit() {
+        mShellCommandHandler.addDumpCallback(this::dump, this);
+    }
 
     /**
      * Update display/window focus state from the given transition info and notifies changes if any.
@@ -265,6 +279,22 @@ public class FocusTransitionObserver {
             return task.isFocused;
         }
         return task.displayId == mFocusedDisplayId && isFocusedOnDisplay(task);
+    }
+
+    /**
+     * Gets the focused task ID on a specific display.
+     *
+     * @param displayId The ID of the display.
+     * @return The task ID of the focused task on the given display,
+     *         or {@code INVALID_TASK_ID} if no task is focused or display not recorded in the
+     *         observer.
+     */
+    public int getFocusedTaskIdOnDisplay(int displayId) {
+        final RunningTaskInfo taskInfo = mFocusedTaskOnDisplay.get(displayId);
+        // Some properties of `taskInfo` can be stale as this observer only updates the cache when
+        // the focus changes. So we here returns only taskId to ask callers to fetch the TaskInfo
+        // if needed.
+        return taskInfo != null ? taskInfo.taskId : INVALID_TASK_ID;
     }
 
     /** Dumps focused display and tasks. */

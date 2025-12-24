@@ -60,16 +60,8 @@
     <!-- The duration of the caret animation -->
     <integer name="config_caretAnimationDuration">200</integer>
 
-    <!-- Various classes overriden by projects/build flavors. -->
-    <string name="main_process_initializer_class" translatable="false"></string>
-    <string name="test_information_handler_class" translatable="false"></string>
-    <string name="secondary_display_quickstep_delegate_class" translatable="false"></string>
-    <string name="taskbar_search_session_controller_class" translatable="false"></string>
-    <string name="taskbar_edu_tooltip_controller_class" translatable="false"></string>
-
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
-    <string name="local_colors_extraction_class" translatable="false"></string>
 
     <!-- Scalable Grid configuration -->
     <!-- This is a float because it is converted to dp later in DeviceProfile -->
@@ -213,4 +205,6 @@
     <bool name="desktop_form_factor">false</bool>
 
     <string-array name="grid_control_known_signers" translatable="false" />
+
+    <string-array name="supported_overlay_apps" translatable="false"/>
 </resources>

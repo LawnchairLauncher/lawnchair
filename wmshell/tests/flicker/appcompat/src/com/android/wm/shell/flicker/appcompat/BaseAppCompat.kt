@@ -17,9 +17,9 @@
 package com.android.wm.shell.flicker.appcompat
 
 import android.content.Context
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.FlickerTestData
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTestData
+import android.tools.flicker.FlickerTest
 import android.tools.traces.component.ComponentNameMatcher
 import com.android.server.wm.flicker.helpers.LetterboxAppHelper
 import com.android.server.wm.flicker.helpers.setRotation
@@ -32,7 +32,7 @@ import org.junit.Assume
 import org.junit.Before
 import org.junit.Rule
 
-abstract class BaseAppCompat(flicker: LegacyFlickerTest) : BaseTest(flicker) {
+abstract class BaseAppCompat(flicker: FlickerTest) : BaseTest(flicker) {
     protected val context: Context = instrumentation.context
     protected val letterboxApp = LetterboxAppHelper(instrumentation)
 

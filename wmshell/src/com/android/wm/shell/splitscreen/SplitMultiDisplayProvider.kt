@@ -17,6 +17,7 @@
 package com.android.wm.shell.splitscreen
 
 import android.window.WindowContainerToken
+import android.window.WindowContainerTransaction
 
 interface SplitMultiDisplayProvider {
     /**
@@ -26,4 +27,15 @@ interface SplitMultiDisplayProvider {
      * @return The {@link WindowContainerToken} associated with the display's root task.
      */
     fun getDisplayRootForDisplayId(displayId: Int): WindowContainerToken?
+
+    /**
+     * Prepares to reparent the split-screen root to another display if the target task
+     * resides on a different display. This is used to move the entire split-screen container
+     * to the display where the user interaction is occurring. It only adds the reparent
+     * operation to the given {@code wct} without executing it.
+     *
+     * @param wct The transaction to add the reparent operation to.
+     * @param displayId The ID of the target display.
+     */
+    fun prepareMovingSplitScreenRoot(wct: WindowContainerTransaction?, displayId: Int)
 }

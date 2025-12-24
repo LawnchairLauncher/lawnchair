@@ -26,6 +26,7 @@ import com.android.internal.jank.Cuj
 import com.android.launcher3.Flags.enableRefactorDigitalWellbeingToast
 import com.android.launcher3.Flags.enableRefactorTaskContentView
 import com.android.launcher3.Flags.enableRefactorTaskThumbnail
+import com.android.launcher3.Flags.showCloseButtonOnTaskviewHover
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.OverviewReleaseFlags.enableOverviewIconMenu
@@ -34,6 +35,9 @@ import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTO
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
 import com.android.quickstep.TaskOverlayFactory
+import com.android.quickstep.recents.di.RecentsDependencies
+import com.android.quickstep.recents.di.get
+import com.android.quickstep.recents.ui.viewmodel.GroupedTaskViewModel
 import com.android.quickstep.util.RecentsOrientedState
 import com.android.quickstep.util.SplitSelectStateController
 import com.android.quickstep.util.SplitTask
@@ -71,6 +75,9 @@ class GroupedTaskView @JvmOverloads constructor(context: Context, attrs: Attribu
     val snapPosition: Int
         /** Returns the [PersistentSnapPosition] of this pair of tasks. */
         get() = splitBoundsConfig?.snapPosition ?: STAGE_POSITION_UNDEFINED
+
+    private val viewModel =
+        GroupedTaskViewModel(isPointerConnectedUseCase = RecentsDependencies.get(context))
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -184,17 +191,32 @@ class GroupedTaskView @JvmOverloads constructor(context: Context, attrs: Attribu
                         R.dimen.task_thumbnail_icon_menu_background_margin_top_start
                     )
                 val iconMargins = (iconViewMarginStart + iconViewBackgroundMarginStart) * 2
+                val spaceForTaskDismissButton = calculateSpaceForTaskDismissButton()
                 // setMaxWidth() needs to be called before mIconView.setIconOrientation which is
                 // called in the super below.
                 (leftTopTaskContainer.iconView as IconAppChipView).maxWidth =
-                    groupedTaskViewSizes.first.x - iconMargins
+                    groupedTaskViewSizes.first.x - iconMargins - spaceForTaskDismissButton
                 (rightBottomTaskContainer.iconView as IconAppChipView).maxWidth =
-                    groupedTaskViewSizes.second.x - iconMargins
+                    groupedTaskViewSizes.second.x - iconMargins - spaceForTaskDismissButton
             }
+            super.setOrientationState(orientationState)
         }
-        super.setOrientationState(orientationState)
         updateIconPlacement()
     }
+
+    private fun calculateSpaceForTaskDismissButton() =
+        if (showCloseButtonOnTaskviewHover() && viewModel.showTaskDismissButton()) {
+            val taskDismissBtnWidth =
+                resources.getDimensionPixelSize(R.dimen.task_dismiss_button_width)
+            val taskDismissBtnMargin =
+                resources.getDimensionPixelSize(R.dimen.task_dismiss_button_margin)
+            val taskDismissBtnPadding =
+                resources.getDimensionPixelSize(R.dimen.task_dismiss_button_padding)
+
+            taskDismissBtnWidth + taskDismissBtnMargin + taskDismissBtnPadding
+        } else {
+            0
+        }
 
     private fun updateIconPlacement() {
         val splitBoundsConfig = splitBoundsConfig ?: return

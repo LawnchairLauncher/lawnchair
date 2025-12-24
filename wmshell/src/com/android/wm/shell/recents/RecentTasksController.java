@@ -60,8 +60,8 @@ import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.common.SingleInstanceRemoteListener;
 import com.android.wm.shell.common.TaskStackListenerCallback;
 import com.android.wm.shell.common.TaskStackListenerImpl;
-import com.android.wm.shell.desktopmode.DesktopRepository;
 import com.android.wm.shell.desktopmode.DesktopUserRepositories;
+import com.android.wm.shell.desktopmode.data.DesktopRepository;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 import com.android.wm.shell.shared.GroupedTaskInfo;
 import com.android.wm.shell.shared.annotations.ExternalThread;
@@ -645,20 +645,20 @@ public class RecentTasksController implements TaskStackListenerCallback,
     @VisibleForTesting
     <T extends TaskInfo> ArrayList<GroupedTaskInfo> generateList(@NonNull List<T> tasks,
             String reason) {
-        if (tasks.isEmpty()) {
+        final boolean multipleDesktopsEnabled = mDesktopState.enableMultipleDesktops();
+        // When the multiple desktops feature is enabled, we include all desks even if they're
+        // empty.
+        final boolean shouldIncludeEmptyDesktops = multipleDesktopsEnabled;
+
+        initializeDesksMap(multipleDesktopsEnabled);
+
+        if (tasks.isEmpty() && (!shouldIncludeEmptyDesktops || mTmpDesks.isEmpty())) {
             return new ArrayList<>();
         }
 
         if (enableShellTopTaskTracking()) {
             ProtoLog.v(WM_SHELL_TASK_OBSERVER, "RecentTasksController.generateList(%s)", reason);
         }
-
-        final boolean multipleDesktopsEnabled = mDesktopState.enableMultipleDesktops();
-        initializeDesksMap(multipleDesktopsEnabled);
-
-        // When the multiple desktops feature is enabled, we include all desks even if they're
-        // empty.
-        final boolean shouldIncludeEmptyDesktops = multipleDesktopsEnabled;
 
         // Make a mapping of task id -> task info for the remaining tasks to be processed, this
         // mapping is used to keep track of split tasks that may exist later in the task list that
@@ -689,32 +689,44 @@ public class RecentTasksController implements TaskStackListenerCallback,
 
             // Desktop tasks
             if (mDesktopState.canEnterDesktopMode()
-                    && mDesktopUserRepositories.isPresent()
-                    && mDesktopUserRepositories.get().getCurrent().isActiveTask(taskId)) {
-                // If task has their app bounds set to null which happens after reboot, set the
-                // app bounds to persisted lastFullscreenBounds. Also set the position in parent
-                // to the top left of the bounds.
-                if (DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_PERSISTENCE.isTrue()
-                        && taskInfo.configuration.windowConfiguration.getAppBounds() == null
-                        && taskInfo.lastNonFullscreenBounds != null) {
-                    taskInfo.configuration.windowConfiguration.setAppBounds(
-                            taskInfo.lastNonFullscreenBounds);
-                    taskInfo.positionInParent = new Point(taskInfo.lastNonFullscreenBounds.left,
-                            taskInfo.lastNonFullscreenBounds.top);
-                }
-                // Lump all freeform tasks together as if they were all in a single desk whose ID is
-                // `INVALID_DESK_ID` when the multiple desktops feature is disabled.
-                final int deskId = multipleDesktopsEnabled
-                        ? mDesktopUserRepositories.get().getCurrent().getDeskIdForTask(taskId)
-                        : INVALID_DESK_ID;
-                final Desk desk = getOrCreateDesk(deskId);
-                desk.addTask(taskInfo,
-                        mDesktopUserRepositories.get().getCurrent().isMinimizedTask(taskId),
-                        mVisibleTasksMap.containsKey(taskId));
-                mTmpRemaining.remove(taskId);
-                continue;
-            }
+                    && mDesktopUserRepositories.isPresent()) {
 
+                Integer deskId;
+                if (taskInfo.isTopActivityTransparent && mDesktopUserRepositories.get().getProfile(
+                                taskInfo.userId).getActiveDeskId(taskInfo.displayId) != null) {
+                    deskId = mDesktopUserRepositories.get().getCurrent().getActiveDeskId(
+                            taskInfo.displayId);
+                } else if (mDesktopUserRepositories.get().getCurrent().isActiveTask(taskId)) {
+                    deskId = multipleDesktopsEnabled
+                            ? mDesktopUserRepositories.get().getCurrent().getDeskIdForTask(taskId)
+                            : INVALID_DESK_ID;
+                } else {
+                    deskId = null;
+                }
+
+                if (deskId != null) {
+                    // If task has their app bounds set to null which happens after reboot, set the
+                    // app bounds to persisted lastFullscreenBounds. Also set the position in parent
+                    // to the top left of the bounds.
+                    if (DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_PERSISTENCE.isTrue()
+                            && taskInfo.configuration.windowConfiguration.getAppBounds() == null
+                            && taskInfo.lastNonFullscreenBounds != null) {
+                        taskInfo.configuration.windowConfiguration.setAppBounds(
+                                taskInfo.lastNonFullscreenBounds);
+                        taskInfo.positionInParent = new Point(taskInfo.lastNonFullscreenBounds.left,
+                                taskInfo.lastNonFullscreenBounds.top);
+                    }
+                    // Lump all freeform tasks together as if they were all in a single desk
+                    // whose ID is
+                    // `INVALID_DESK_ID` when the multiple desktops feature is disabled.
+                    final Desk desk = getOrCreateDesk(deskId);
+                    desk.addTask(taskInfo,
+                            mDesktopUserRepositories.get().getCurrent().isMinimizedTask(taskId),
+                            mVisibleTasksMap.containsKey(taskId));
+                    mTmpRemaining.remove(taskId);
+                    continue;
+                }
+            }
             if (enableShellTopTaskTracking()) {
                 // Visible tasks
                 if (mVisibleTasksMap.containsKey(taskId)) {

@@ -6,5 +6,10 @@
     {
       "name": "CtsWindowManagerDeviceBackNavigation_com_android_wm_shell_back"
     }
+  ],
+  "desktop-presubmit": [
+    {
+      "name": "CtsWindowManagerDeviceBackNavigation_com_android_wm_shell_back"
+    }
   ]
 }

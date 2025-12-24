@@ -23,6 +23,8 @@ import android.graphics.GraphicBuffer;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.gui.BorderSettings;
+import android.gui.BoxShadowSettings;
 import android.hardware.HardwareBuffer;
 import android.os.IBinder;
 import android.os.Parcel;
@@ -308,6 +310,18 @@ public class StubTransaction extends SurfaceControl.Transaction {
     @Override
     public SurfaceControl.Transaction addWindowInfosReportedListener(@NonNull Runnable listener) {
         mWindowInfosReportedListeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public SurfaceControl.Transaction setBorderSettings(SurfaceControl sc,
+            @NonNull BorderSettings settings) {
+        return this;
+    }
+
+    @Override
+    public SurfaceControl.Transaction setBoxShadowSettings(SurfaceControl sc,
+            @NonNull BoxShadowSettings settings) {
         return this;
     }
 }

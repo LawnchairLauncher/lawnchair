@@ -27,6 +27,7 @@ import android.window.TransitionRequestInfo
 import android.window.WindowContainerTransaction
 import androidx.core.animation.addListener
 import com.android.app.animation.Interpolators
+import com.android.internal.policy.DesktopModeCompatPolicy
 import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.common.ShellExecutor
 import com.android.wm.shell.desktopmode.DesktopUserRepositories
@@ -36,7 +37,6 @@ import com.android.wm.shell.shared.TransitionUtil.isClosingMode
 import com.android.wm.shell.shared.TransitionUtil.isClosingType
 import com.android.wm.shell.shared.TransitionUtil.isOpeningMode
 import com.android.wm.shell.shared.TransitionUtil.isOpeningType
-import com.android.wm.shell.shared.desktopmode.DesktopModeCompatPolicy
 import com.android.wm.shell.sysui.ShellInit
 import com.android.wm.shell.transition.Transitions
 import com.android.wm.shell.transition.Transitions.TransitionHandler

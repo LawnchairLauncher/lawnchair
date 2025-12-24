@@ -6,11 +6,13 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_ACTIVITY_TRANSITION_USE_LARGEST_WINDOW = "com.android.systemui.activity_transition_use_largest_window";
     /** @hide */
-    public static final String FLAG_ALWAYS_COMPOSE_QS_UI_FRAGMENT = "com.android.systemui.always_compose_qs_ui_fragment";
+    public static final String FLAG_ALLOW_DOZE_TOUCHES_FOR_LOCK_ICON = "com.android.systemui.allow_doze_touches_for_lock_icon";
+    /** @hide */
+    public static final String FLAG_AMBIENT_CUE_PLUGIN = "com.android.systemui.ambient_cue_plugin";
     /** @hide */
     public static final String FLAG_AMBIENT_TOUCH_MONITOR_LISTEN_TO_DISPLAY_CHANGES = "com.android.systemui.ambient_touch_monitor_listen_to_display_changes";
     /** @hide */
-    public static final String FLAG_ANIMATION_LIBRARY_DELAY_LEASH_CLEANUP = "com.android.systemui.animation_library_delay_leash_cleanup";
+    public static final String FLAG_ANIMATION_LIBRARY_SHELL_MIGRATION = "com.android.systemui.animation_library_shell_migration";
     /** @hide */
     public static final String FLAG_APP_CLIPS_BACKLINKS = "com.android.systemui.app_clips_backlinks";
     /** @hide */
@@ -18,7 +20,11 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_BACK_BUTTON_ON_BOUNCER = "com.android.systemui.back_button_on_bouncer";
     /** @hide */
-    public static final String FLAG_BOUNCER_LIFECYCLE_FIX = "com.android.systemui.bouncer_lifecycle_fix";
+    public static final String FLAG_BLOCK_MOUSE_EDGE_BACK_GESTURE = "com.android.systemui.block_mouse_edge_back_gesture";
+    /** @hide */
+    public static final String FLAG_BLUR_ON_MORE_SURFACES = "com.android.systemui.blur_on_more_surfaces";
+    /** @hide */
+    public static final String FLAG_BLUR_SETTINGS_TOGGLE = "com.android.systemui.blur_settings_toggle";
     /** @hide */
     public static final String FLAG_BOUNCER_UI_REVAMP = "com.android.systemui.bouncer_ui_revamp";
     /** @hide */
@@ -28,9 +34,15 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_BRIGHTNESS_SLIDER_FOCUS_STATE = "com.android.systemui.brightness_slider_focus_state";
     /** @hide */
+    public static final String FLAG_CAPTIONS_TOGGLE_IN_VOLUME_DIALOG_V1 = "com.android.systemui.captions_toggle_in_volume_dialog_v1";
+    /** @hide */
+    public static final String FLAG_CHECK_DESKTOP_MODE_FOR_SPACIAL_MODEL_APP_PUSHBACK = "com.android.systemui.check_desktop_mode_for_spacial_model_app_pushback";
+    /** @hide */
     public static final String FLAG_CLASSIC_FLAGS_MULTI_USER = "com.android.systemui.classic_flags_multi_user";
     /** @hide */
-    public static final String FLAG_CLIPBOARD_ANNOUNCE_LIVE_REGION = "com.android.systemui.clipboard_announce_live_region";
+    public static final String FLAG_CLEANUP_INSTANCES_WHEN_DISPLAY_REMOVED = "com.android.systemui.cleanup_instances_when_display_removed";
+    /** @hide */
+    public static final String FLAG_CLEAR_SHORTCUT_ICON_TINT = "com.android.systemui.clear_shortcut_icon_tint";
     /** @hide */
     public static final String FLAG_CLIPBOARD_OVERLAY_MULTIUSER = "com.android.systemui.clipboard_overlay_multiuser";
     /** @hide */
@@ -47,6 +59,8 @@ public final class Flags {
     public static final String FLAG_COMMUNAL_HUB = "com.android.systemui.communal_hub";
     /** @hide */
     public static final String FLAG_COMMUNAL_HUB_USE_THREAD_POOL_FOR_WIDGETS = "com.android.systemui.communal_hub_use_thread_pool_for_widgets";
+    /** @hide */
+    public static final String FLAG_COMMUNAL_POWER_TRANSITION_FIX = "com.android.systemui.communal_power_transition_fix";
     /** @hide */
     public static final String FLAG_COMMUNAL_RESPONSIVE_GRID = "com.android.systemui.communal_responsive_grid";
     /** @hide */
@@ -66,15 +80,19 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_CONT_AUTH_PLUGIN = "com.android.systemui.cont_auth_plugin";
     /** @hide */
-    public static final String FLAG_CONTEXTUAL_TIPS_ASSISTANT_DISMISS_FIX = "com.android.systemui.contextual_tips_assistant_dismiss_fix";
-    /** @hide */
     public static final String FLAG_COROUTINE_TRACING = "com.android.systemui.coroutine_tracing";
     /** @hide */
     public static final String FLAG_DECOUPLE_VIEW_CONTROLLER_IN_ANIMLIB = "com.android.systemui.decouple_view_controller_in_animlib";
     /** @hide */
+    public static final String FLAG_DEFER_DOZE_TRANSITION_ON_SHADE_DRAG = "com.android.systemui.defer_doze_transition_on_shade_drag";
+    /** @hide */
+    public static final String FLAG_DESKTOP_AV_CONTROLS_POPUP = "com.android.systemui.desktop_av_controls_popup";
+    /** @hide */
     public static final String FLAG_DESKTOP_EFFECTS_QS_TILE = "com.android.systemui.desktop_effects_qs_tile";
     /** @hide */
-    public static final String FLAG_DESKTOP_SCREEN_CAPTURE = "com.android.systemui.desktop_screen_capture";
+    public static final String FLAG_DESKTOP_SIZING = "com.android.systemui.desktop_sizing";
+    /** @hide */
+    public static final String FLAG_DIALOG_ANIM_END_STATE_UPDATE = "com.android.systemui.dialog_anim_end_state_update";
     /** @hide */
     public static final String FLAG_DISABLE_CONTEXTUAL_TIPS_FREQUENCY_CHECK = "com.android.systemui.disable_contextual_tips_frequency_check";
     /** @hide */
@@ -82,11 +100,17 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_DISABLE_DOUBLE_CLICK_SWAP_ON_BOUNCER = "com.android.systemui.disable_double_click_swap_on_bouncer";
     /** @hide */
+    public static final String FLAG_DISABLE_USER_SWITCHER_DROPDOWN_ON_BOUNCER = "com.android.systemui.disable_user_switcher_dropdown_on_bouncer";
+    /** @hide */
     public static final String FLAG_DO_NOT_USE_IMMEDIATE_COROUTINE_DISPATCHER = "com.android.systemui.do_not_use_immediate_coroutine_dispatcher";
+    /** @hide */
+    public static final String FLAG_DO_NOT_USE_RUN_BLOCKING = "com.android.systemui.do_not_use_run_blocking";
     /** @hide */
     public static final String FLAG_DOUBLE_TAP_TO_SLEEP = "com.android.systemui.double_tap_to_sleep";
     /** @hide */
     public static final String FLAG_DREAM_BIOMETRIC_PROMPT_FIXES = "com.android.systemui.dream_biometric_prompt_fixes";
+    /** @hide */
+    public static final String FLAG_DREAM_BOUNCER_TRANSITION_FIX = "com.android.systemui.dream_bouncer_transition_fix";
     /** @hide */
     public static final String FLAG_DREAM_INPUT_SESSION_PILFER_ONCE = "com.android.systemui.dream_input_session_pilfer_once";
     /** @hide */
@@ -94,9 +118,7 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_DREAM_OVERLAY_UPDATED_UI = "com.android.systemui.dream_overlay_updated_ui";
     /** @hide */
-    public static final String FLAG_DREAM_PREVIEW_TAP_DISMISS = "com.android.systemui.dream_preview_tap_dismiss";
-    /** @hide */
-    public static final String FLAG_DREAM_TRANSITION_FIXES = "com.android.systemui.dream_transition_fixes";
+    public static final String FLAG_DREAM_SUPPRESSION = "com.android.systemui.dream_suppression";
     /** @hide */
     public static final String FLAG_EDGE_BACK_GESTURE_HANDLER_THREAD = "com.android.systemui.edge_back_gesture_handler_thread";
     /** @hide */
@@ -108,11 +130,7 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_ENABLE_CONTEXTUAL_TIP_FOR_MUTE_VOLUME = "com.android.systemui.enable_contextual_tip_for_mute_volume";
     /** @hide */
-    public static final String FLAG_ENABLE_CONTEXTUAL_TIP_FOR_POWER_OFF = "com.android.systemui.enable_contextual_tip_for_power_off";
-    /** @hide */
-    public static final String FLAG_ENABLE_CONTEXTUAL_TIP_FOR_TAKE_SCREENSHOT = "com.android.systemui.enable_contextual_tip_for_take_screenshot";
-    /** @hide */
-    public static final String FLAG_ENABLE_CONTEXTUAL_TIPS = "com.android.systemui.enable_contextual_tips";
+    public static final String FLAG_ENABLE_CUE_BAR_ANIMATED_ICON = "com.android.systemui.enable_cue_bar_animated_icon";
     /** @hide */
     public static final String FLAG_ENABLE_DESKTOP_GROWTH = "com.android.systemui.enable_desktop_growth";
     /** @hide */
@@ -122,21 +140,21 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_ENABLE_MINMODE = "com.android.systemui.enable_minmode";
     /** @hide */
-    public static final String FLAG_ENABLE_SUGGESTED_DEVICE_UI = "com.android.systemui.enable_suggested_device_ui";
+    public static final String FLAG_ENABLE_OUTPUT_SWITCHER_AUDIO_SHARING_BUTTON = "com.android.systemui.enable_output_switcher_audio_sharing_button";
     /** @hide */
-    public static final String FLAG_ENABLE_TOP_UI_CONTROLLER = "com.android.systemui.enable_top_ui_controller";
+    public static final String FLAG_ENABLE_SUGGESTED_DEVICE_UI = "com.android.systemui.enable_suggested_device_ui";
     /** @hide */
     public static final String FLAG_ENABLE_UNDERLAY = "com.android.systemui.enable_underlay";
     /** @hide */
     public static final String FLAG_ENABLE_VIEW_CAPTURE_TRACING = "com.android.systemui.enable_view_capture_tracing";
-    /** @hide */
-    public static final String FLAG_ENFORCE_BRIGHTNESS_BASE_USER_RESTRICTION = "com.android.systemui.enforce_brightness_base_user_restriction";
     /** @hide */
     public static final String FLAG_EXAMPLE_FLAG = "com.android.systemui.example_flag";
     /** @hide */
     public static final String FLAG_EXPAND_COLLAPSE_PRIVACY_DIALOG = "com.android.systemui.expand_collapse_privacy_dialog";
     /** @hide */
     public static final String FLAG_EXPAND_HEADS_UP_ON_INLINE_REPLY = "com.android.systemui.expand_heads_up_on_inline_reply";
+    /** @hide */
+    public static final String FLAG_EXPANDABLE_USE_MODIFIER_IMPLEMENTATION = "com.android.systemui.expandable_use_modifier_implementation";
     /** @hide */
     public static final String FLAG_EXPANDED_PRIVACY_INDICATORS_ON_LARGE_SCREEN = "com.android.systemui.expanded_privacy_indicators_on_large_screen";
     /** @hide */
@@ -146,27 +164,17 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_FETCH_BOOKMARKS_XML_KEYBOARD_SHORTCUTS = "com.android.systemui.fetch_bookmarks_xml_keyboard_shortcuts";
     /** @hide */
-    public static final String FLAG_FIX_DIALOG_LAUNCH_ANIMATION_JANK_LOGGING = "com.android.systemui.fix_dialog_launch_animation_jank_logging";
-    /** @hide */
-    public static final String FLAG_FIX_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS = "com.android.systemui.fix_screenshot_action_dismiss_system_windows";
+    public static final String FLAG_FIX_SHADE_HEADER_WRONG_ICON_SIZE = "com.android.systemui.fix_shade_header_wrong_icon_size";
     /** @hide */
     public static final String FLAG_FLASHLIGHT_STRENGTH = "com.android.systemui.flashlight_strength";
-    /** @hide */
-    public static final String FLAG_FLOATING_MENU_ANIMATED_TUCK = "com.android.systemui.floating_menu_animated_tuck";
     /** @hide */
     public static final String FLAG_FLOATING_MENU_DRAG_TO_HIDE = "com.android.systemui.floating_menu_drag_to_hide";
     /** @hide */
     public static final String FLAG_FLOATING_MENU_HEARING_DEVICE_STATUS_ICON = "com.android.systemui.floating_menu_hearing_device_status_icon";
     /** @hide */
-    public static final String FLAG_FLOATING_MENU_IME_DISPLACEMENT_ANIMATION = "com.android.systemui.floating_menu_ime_displacement_animation";
-    /** @hide */
-    public static final String FLAG_FLOATING_MENU_NOTIFY_TARGETS_CHANGED_ON_STRICT_DIFF = "com.android.systemui.floating_menu_notify_targets_changed_on_strict_diff";
-    /** @hide */
-    public static final String FLAG_FLOATING_MENU_OVERLAPS_NAV_BARS_FLAG = "com.android.systemui.floating_menu_overlaps_nav_bars_flag";
-    /** @hide */
     public static final String FLAG_FLOATING_MENU_RADII_ANIMATION = "com.android.systemui.floating_menu_radii_animation";
     /** @hide */
-    public static final String FLAG_FLOATING_MENU_REMOVE_FULLSCREEN_TAPS = "com.android.systemui.floating_menu_remove_fullscreen_taps";
+    public static final String FLAG_GESTURE_BETWEEN_HUB_AND_LOCKSCREEN_MOTION = "com.android.systemui.gesture_between_hub_and_lockscreen_motion";
     /** @hide */
     public static final String FLAG_GET_CONNECTED_DEVICE_NAME_UNSYNCHRONIZED = "com.android.systemui.get_connected_device_name_unsynchronized";
     /** @hide */
@@ -176,9 +184,13 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_GLANCEABLE_HUB_DIRECT_EDIT_MODE = "com.android.systemui.glanceable_hub_direct_edit_mode";
     /** @hide */
+    public static final String FLAG_GLANCEABLE_HUB_ENABLED_BY_DEFAULT = "com.android.systemui.glanceable_hub_enabled_by_default";
+    /** @hide */
     public static final String FLAG_GLANCEABLE_HUB_V2 = "com.android.systemui.glanceable_hub_v2";
     /** @hide */
     public static final String FLAG_GLANCEABLE_HUB_V2_RESOURCES = "com.android.systemui.glanceable_hub_v2_resources";
+    /** @hide */
+    public static final String FLAG_GLOBAL_ACTIONS_EMPHASIZED_FONT = "com.android.systemui.global_actions_emphasized_font";
     /** @hide */
     public static final String FLAG_HARDWARE_COLOR_STYLES = "com.android.systemui.hardware_color_styles";
     /** @hide */
@@ -190,7 +202,7 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_HOME_CONTROLS_DREAM_HSUM = "com.android.systemui.home_controls_dream_hsum";
     /** @hide */
-    public static final String FLAG_HSU_BEHAVIOR_CHANGES = "com.android.systemui.hsu_behavior_changes";
+    public static final String FLAG_HSU_QS_CHANGES = "com.android.systemui.hsu_qs_changes";
     /** @hide */
     public static final String FLAG_HUB_BLURRED_BY_SHADE_FIX = "com.android.systemui.hub_blurred_by_shade_fix";
     /** @hide */
@@ -202,13 +214,9 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_INDICATION_TEXT_A11Y_FIX = "com.android.systemui.indication_text_a11y_fix";
     /** @hide */
-    public static final String FLAG_INSTANT_HIDE_SHADE = "com.android.systemui.instant_hide_shade";
-    /** @hide */
     public static final String FLAG_KEYBOARD_DOCKING_INDICATOR = "com.android.systemui.keyboard_docking_indicator";
     /** @hide */
     public static final String FLAG_KEYBOARD_SHORTCUT_HELPER_REWRITE = "com.android.systemui.keyboard_shortcut_helper_rewrite";
-    /** @hide */
-    public static final String FLAG_KEYBOARD_SHORTCUT_HELPER_SHORTCUT_CUSTOMIZER = "com.android.systemui.keyboard_shortcut_helper_shortcut_customizer";
     /** @hide */
     public static final String FLAG_KEYBOARD_TOUCHPAD_CONTEXTUAL_EDUCATION = "com.android.systemui.keyboard_touchpad_contextual_education";
     /** @hide */
@@ -216,7 +224,15 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_KEYGUARD_WM_STATE_REFACTOR = "com.android.systemui.keyguard_wm_state_refactor";
     /** @hide */
-    public static final String FLAG_LOCKSCREEN_FONT = "com.android.systemui.lockscreen_font";
+    public static final String FLAG_LARGE_SCREEN_RECORDING = "com.android.systemui.large_screen_recording";
+    /** @hide */
+    public static final String FLAG_LARGE_SCREEN_SCREENCAPTURE = "com.android.systemui.large_screen_screencapture";
+    /** @hide */
+    public static final String FLAG_LARGE_SCREEN_SCREENSHOT_APP_WINDOW = "com.android.systemui.large_screen_screenshot_app_window";
+    /** @hide */
+    public static final String FLAG_LARGE_SCREEN_SHARING = "com.android.systemui.large_screen_sharing";
+    /** @hide */
+    public static final String FLAG_LOCKSCREEN_SHADE_TO_DREAM_TRANSITION_FIX = "com.android.systemui.lockscreen_shade_to_dream_transition_fix";
     /** @hide */
     public static final String FLAG_LOW_LIGHT_CLOCK_DREAM = "com.android.systemui.low_light_clock_dream";
     /** @hide */
@@ -226,19 +242,21 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_MAGNETIC_NOTIFICATION_SWIPES = "com.android.systemui.magnetic_notification_swipes";
     /** @hide */
+    public static final String FLAG_MEDIA_CAROUSEL_ARROWS = "com.android.systemui.media_carousel_arrows";
+    /** @hide */
     public static final String FLAG_MEDIA_CONTROLS_BUTTON_MEDIA3 = "com.android.systemui.media_controls_button_media3";
     /** @hide */
     public static final String FLAG_MEDIA_CONTROLS_BUTTON_MEDIA3_PLACEMENT = "com.android.systemui.media_controls_button_media3_placement";
     /** @hide */
     public static final String FLAG_MEDIA_CONTROLS_IN_COMPOSE = "com.android.systemui.media_controls_in_compose";
     /** @hide */
-    public static final String FLAG_MEDIA_CONTROLS_UI_UPDATE = "com.android.systemui.media_controls_ui_update";
+    public static final String FLAG_MEDIA_CONTROLS_TRANSLATION_FIX = "com.android.systemui.media_controls_translation_fix";
+    /** @hide */
+    public static final String FLAG_MEDIA_FRAME_DIMENSIONS_FIX = "com.android.systemui.media_frame_dimensions_fix";
     /** @hide */
     public static final String FLAG_MEDIA_PROJECTION_DIALOG_BEHIND_LOCKSCREEN = "com.android.systemui.media_projection_dialog_behind_lockscreen";
     /** @hide */
     public static final String FLAG_MEDIA_PROJECTION_GREY_ERROR_TEXT = "com.android.systemui.media_projection_grey_error_text";
-    /** @hide */
-    public static final String FLAG_MEDIA_PROJECTION_REQUEST_ATTRIBUTION_FIX = "com.android.systemui.media_projection_request_attribution_fix";
     /** @hide */
     public static final String FLAG_MODES_UI_DIALOG_PAGING = "com.android.systemui.modes_ui_dialog_paging";
     /** @hide */
@@ -246,13 +264,21 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_MSDL_FEEDBACK = "com.android.systemui.msdl_feedback";
     /** @hide */
+    public static final String FLAG_MULTIUSER_OPEN_USER_SWITCHER_DIALOG = "com.android.systemui.multiuser_open_user_switcher_dialog";
+    /** @hide */
     public static final String FLAG_MULTIUSER_WIFI_PICKER_TRACKER_SUPPORT = "com.android.systemui.multiuser_wifi_picker_tracker_support";
     /** @hide */
     public static final String FLAG_NEW_AOD_TRANSITION = "com.android.systemui.new_aod_transition";
     /** @hide */
     public static final String FLAG_NEW_DOZING_KEYGUARD_STATES = "com.android.systemui.new_dozing_keyguard_states";
     /** @hide */
+    public static final String FLAG_NEW_SCREEN_RECORD_TOOLBAR = "com.android.systemui.new_screen_record_toolbar";
+    /** @hide */
     public static final String FLAG_NEW_VOLUME_PANEL = "com.android.systemui.new_volume_panel";
+    /** @hide */
+    public static final String FLAG_NO_EXPANSION_ON_OVERSCROLL = "com.android.systemui.no_expansion_on_overscroll";
+    /** @hide */
+    public static final String FLAG_NO_SHADE_BLUR_ON_DREAM_START = "com.android.systemui.no_shade_blur_on_dream_start";
     /** @hide */
     public static final String FLAG_NON_TOUCHSCREEN_DEVICES_BYPASS_FALSING = "com.android.systemui.non_touchscreen_devices_bypass_falsing";
     /** @hide */
@@ -268,8 +294,6 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_NOTIFICATION_ASYNC_GROUP_HEADER_INFLATION = "com.android.systemui.notification_async_group_header_inflation";
     /** @hide */
-    public static final String FLAG_NOTIFICATION_ASYNC_HYBRID_VIEW_INFLATION = "com.android.systemui.notification_async_hybrid_view_inflation";
-    /** @hide */
     public static final String FLAG_NOTIFICATION_AVALANCHE_SUPPRESSION = "com.android.systemui.notification_avalanche_suppression";
     /** @hide */
     public static final String FLAG_NOTIFICATION_AVALANCHE_THROTTLE_HUN = "com.android.systemui.notification_avalanche_throttle_hun";
@@ -278,21 +302,19 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_NOTIFICATION_BUNDLE_UI = "com.android.systemui.notification_bundle_ui";
     /** @hide */
+    public static final String FLAG_NOTIFICATION_CHILDREN_CONTAINER_MIN_HEIGHT = "com.android.systemui.notification_children_container_min_height";
+    /** @hide */
     public static final String FLAG_NOTIFICATION_COLOR_UPDATE_LOGGER = "com.android.systemui.notification_color_update_logger";
     /** @hide */
-    public static final String FLAG_NOTIFICATION_CONTENT_ALPHA_OPTIMIZATION = "com.android.systemui.notification_content_alpha_optimization";
+    public static final String FLAG_NOTIFICATION_FIX_HUN_SHADOWS = "com.android.systemui.notification_fix_hun_shadows";
     /** @hide */
     public static final String FLAG_NOTIFICATION_FOOTER_BACKGROUND_TINT_OPTIMIZATION = "com.android.systemui.notification_footer_background_tint_optimization";
     /** @hide */
-    public static final String FLAG_NOTIFICATION_ROW_ACCESSIBILITY_EXPANDED = "com.android.systemui.notification_row_accessibility_expanded";
-    /** @hide */
-    public static final String FLAG_NOTIFICATION_ROW_CONTENT_BINDER_REFACTOR = "com.android.systemui.notification_row_content_binder_refactor";
+    public static final String FLAG_NOTIFICATION_ROW_IS_REMOVED_FIX = "com.android.systemui.notification_row_is_removed_fix";
     /** @hide */
     public static final String FLAG_NOTIFICATION_ROW_TRANSPARENCY = "com.android.systemui.notification_row_transparency";
     /** @hide */
     public static final String FLAG_NOTIFICATION_SHADE_BLUR = "com.android.systemui.notification_shade_blur";
-    /** @hide */
-    public static final String FLAG_NOTIFICATION_SHADE_CLOSE_WAITS_FOR_CHILD_ANIMATIONS = "com.android.systemui.notification_shade_close_waits_for_child_animations";
     /** @hide */
     public static final String FLAG_NOTIFICATION_SHADE_UI_THREAD = "com.android.systemui.notification_shade_ui_thread";
     /** @hide */
@@ -300,29 +322,11 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_NOTIFICATION_TRANSPARENT_HEADER_FIX = "com.android.systemui.notification_transparent_header_fix";
     /** @hide */
-    public static final String FLAG_NOTIFICATIONS_BACKGROUND_ICONS = "com.android.systemui.notifications_background_icons";
-    /** @hide */
-    public static final String FLAG_NOTIFICATIONS_FOOTER_VISIBILITY_FIX = "com.android.systemui.notifications_footer_visibility_fix";
-    /** @hide */
     public static final String FLAG_NOTIFICATIONS_HIDE_ON_DISPLAY_SWITCH = "com.android.systemui.notifications_hide_on_display_switch";
-    /** @hide */
-    public static final String FLAG_NOTIFICATIONS_HUN_ACCESSIBILITY_REFACTOR = "com.android.systemui.notifications_hun_accessibility_refactor";
-    /** @hide */
-    public static final String FLAG_NOTIFICATIONS_HUN_SHARED_ANIMATION_VALUES = "com.android.systemui.notifications_hun_shared_animation_values";
     /** @hide */
     public static final String FLAG_NOTIFICATIONS_ICON_CONTAINER_REFACTOR = "com.android.systemui.notifications_icon_container_refactor";
     /** @hide */
-    public static final String FLAG_NOTIFICATIONS_LAUNCH_RADIUS = "com.android.systemui.notifications_launch_radius";
-    /** @hide */
-    public static final String FLAG_NOTIFICATIONS_LIVE_DATA_STORE_REFACTOR = "com.android.systemui.notifications_live_data_store_refactor";
-    /** @hide */
-    public static final String FLAG_NOTIFICATIONS_PINNED_HUN_IN_SHADE = "com.android.systemui.notifications_pinned_hun_in_shade";
-    /** @hide */
     public static final String FLAG_NOTIFICATIONS_REDESIGN_FOOTER_VIEW = "com.android.systemui.notifications_redesign_footer_view";
-    /** @hide */
-    public static final String FLAG_NOTIFY_PASSWORD_TEXT_VIEW_USER_ACTIVITY_IN_BACKGROUND = "com.android.systemui.notify_password_text_view_user_activity_in_background";
-    /** @hide */
-    public static final String FLAG_NOTIFY_POWER_MANAGER_USER_ACTIVITY_BACKGROUND = "com.android.systemui.notify_power_manager_user_activity_background";
     /** @hide */
     public static final String FLAG_ONGOING_ACTIVITY_CHIPS_ON_DREAM = "com.android.systemui.ongoing_activity_chips_on_dream";
     /** @hide */
@@ -338,8 +342,6 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_PREDICTIVE_BACK_ANIMATE_SHADE = "com.android.systemui.predictive_back_animate_shade";
     /** @hide */
-    public static final String FLAG_PREDICTIVE_BACK_DELAY_WM_TRANSITION = "com.android.systemui.predictive_back_delay_wm_transition";
-    /** @hide */
     public static final String FLAG_PRIVACY_DOT_LIVE_REGION = "com.android.systemui.privacy_dot_live_region";
     /** @hide */
     public static final String FLAG_PROMOTE_NOTIFICATIONS_AUTOMATICALLY = "com.android.systemui.promote_notifications_automatically";
@@ -348,21 +350,23 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_QS_COMPOSE_FRAGMENT_EARLY_EXPANSION = "com.android.systemui.qs_compose_fragment_early_expansion";
     /** @hide */
-    public static final String FLAG_QS_EDIT_MODE_TABS = "com.android.systemui.qs_edit_mode_tabs";
-    /** @hide */
     public static final String FLAG_QS_EDIT_MODE_TOOLTIP = "com.android.systemui.qs_edit_mode_tooltip";
+    /** @hide */
+    public static final String FLAG_QS_EDIT_MODE_V2 = "com.android.systemui.qs_edit_mode_v2";
+    /** @hide */
+    public static final String FLAG_QS_MATERIAL_EXPRESSIVE_TILES = "com.android.systemui.qs_material_expressive_tiles";
     /** @hide */
     public static final String FLAG_QS_NEW_TILES = "com.android.systemui.qs_new_tiles";
     /** @hide */
     public static final String FLAG_QS_NEW_TILES_FUTURE = "com.android.systemui.qs_new_tiles_future";
+    /** @hide */
+    public static final String FLAG_QS_SPLIT_INTERNET_TILE = "com.android.systemui.qs_split_internet_tile";
     /** @hide */
     public static final String FLAG_QS_TILE_DETAILED_VIEW = "com.android.systemui.qs_tile_detailed_view";
     /** @hide */
     public static final String FLAG_QS_TILE_FOCUS_STATE = "com.android.systemui.qs_tile_focus_state";
     /** @hide */
     public static final String FLAG_QS_TILE_TRANSITION_INTERACTION_REFINEMENT = "com.android.systemui.qs_tile_transition_interaction_refinement";
-    /** @hide */
-    public static final String FLAG_QS_UI_REFACTOR = "com.android.systemui.qs_ui_refactor";
     /** @hide */
     public static final String FLAG_QS_UI_REFACTOR_COMPOSE_FRAGMENT = "com.android.systemui.qs_ui_refactor_compose_fragment";
     /** @hide */
@@ -372,17 +376,7 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_REDESIGN_MAGNIFICATION_WINDOW_SIZE = "com.android.systemui.redesign_magnification_window_size";
     /** @hide */
-    public static final String FLAG_REGISTER_BATTERY_CONTROLLER_RECEIVERS_IN_CORESTARTABLE = "com.android.systemui.register_battery_controller_receivers_in_corestartable";
-    /** @hide */
-    public static final String FLAG_REGISTER_CONTENT_OBSERVERS_ASYNC = "com.android.systemui.register_content_observers_async";
-    /** @hide */
-    public static final String FLAG_REGISTER_NEW_WALLET_CARD_IN_BACKGROUND = "com.android.systemui.register_new_wallet_card_in_background";
-    /** @hide */
     public static final String FLAG_REGISTER_WALLPAPER_NOTIFIER_BACKGROUND = "com.android.systemui.register_wallpaper_notifier_background";
-    /** @hide */
-    public static final String FLAG_REMEMBER_VIEW_MODEL_OFF_MAIN_THREAD = "com.android.systemui.remember_view_model_off_main_thread";
-    /** @hide */
-    public static final String FLAG_REMOVE_AOD_CAR_MODE = "com.android.systemui.remove_aod_car_mode";
     /** @hide */
     public static final String FLAG_REMOVE_DREAM_OVERLAY_HIDE_ON_TOUCH = "com.android.systemui.remove_dream_overlay_hide_on_touch";
     /** @hide */
@@ -390,27 +384,35 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_REMOVE_UPDATE_LISTENER_IN_QS_ICON_VIEW_IMPL = "com.android.systemui.remove_update_listener_in_qs_icon_view_impl";
     /** @hide */
+    public static final String FLAG_RESET_TILES_REMOVES_CUSTOM_TILES = "com.android.systemui.reset_tiles_removes_custom_tiles";
+    /** @hide */
     public static final String FLAG_REST_TO_UNLOCK = "com.android.systemui.rest_to_unlock";
     /** @hide */
     public static final String FLAG_RESTART_DREAM_ON_UNOCCLUDE = "com.android.systemui.restart_dream_on_unocclude";
     /** @hide */
+    public static final String FLAG_RESTORE_SHOW_TAPS_SETTING = "com.android.systemui.restore_show_taps_setting";
+    /** @hide */
     public static final String FLAG_RESTRICT_COMMUNAL_APP_WIDGET_HOST_LISTENING = "com.android.systemui.restrict_communal_app_widget_host_listening";
+    /** @hide */
+    public static final String FLAG_RESTRICT_COMMUNAL_SHADE_TO_WHEN_IDLE = "com.android.systemui.restrict_communal_shade_to_when_idle";
     /** @hide */
     public static final String FLAG_REVAMPED_BOUNCER_MESSAGES = "com.android.systemui.revamped_bouncer_messages";
     /** @hide */
     public static final String FLAG_RUN_FINGERPRINT_DETECT_ON_DISMISSIBLE_KEYGUARD = "com.android.systemui.run_fingerprint_detect_on_dismissible_keyguard";
     /** @hide */
-    public static final String FLAG_SAVE_AND_RESTORE_MAGNIFICATION_SETTINGS_BUTTONS = "com.android.systemui.save_and_restore_magnification_settings_buttons";
-    /** @hide */
     public static final String FLAG_SCENE_CONTAINER = "com.android.systemui.scene_container";
+    /** @hide */
+    public static final String FLAG_SCREEN_OFF_ANIMATION_GUARD_ENABLED = "com.android.systemui.screen_off_animation_guard_enabled";
     /** @hide */
     public static final String FLAG_SCREEN_REACTIONS = "com.android.systemui.screen_reactions";
     /** @hide */
     public static final String FLAG_SCREENSHARE_NOTIFICATION_HIDING_BUG_FIX = "com.android.systemui.screenshare_notification_hiding_bug_fix";
     /** @hide */
-    public static final String FLAG_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS = "com.android.systemui.screenshot_action_dismiss_system_windows";
-    /** @hide */
     public static final String FLAG_SCREENSHOT_ANNOUNCE_LIVE_REGION = "com.android.systemui.screenshot_announce_live_region";
+    /** @hide */
+    public static final String FLAG_SCREENSHOT_DISMISSAL_SPRING = "com.android.systemui.screenshot_dismissal_spring";
+    /** @hide */
+    public static final String FLAG_SCREENSHOT_FORCE_SHUTTER_SOUND = "com.android.systemui.screenshot_force_shutter_sound";
     /** @hide */
     public static final String FLAG_SCREENSHOT_MULTIDISPLAY_FOCUS_CHANGE = "com.android.systemui.screenshot_multidisplay_focus_change";
     /** @hide */
@@ -418,9 +420,13 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_SCREENSHOT_SCROLL_CROP_VIEW_CRASH_FIX = "com.android.systemui.screenshot_scroll_crop_view_crash_fix";
     /** @hide */
+    public static final String FLAG_SCRIM_FIX = "com.android.systemui.scrim_fix";
+    /** @hide */
     public static final String FLAG_SECONDARY_USER_WIDGET_HOST = "com.android.systemui.secondary_user_widget_host";
     /** @hide */
     public static final String FLAG_SETTINGS_EXT_REGISTER_CONTENT_OBSERVER_ON_BG_THREAD = "com.android.systemui.settings_ext_register_content_observer_on_bg_thread";
+    /** @hide */
+    public static final String FLAG_SHADE_APP_LAUNCH_ANIMATION_SKIP_IN_DESKTOP = "com.android.systemui.shade_app_launch_animation_skip_in_desktop";
     /** @hide */
     public static final String FLAG_SHADE_EXPANDS_ON_STATUS_BAR_LONG_PRESS = "com.android.systemui.shade_expands_on_status_bar_long_press";
     /** @hide */
@@ -436,15 +442,19 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_SHORTCUT_HELPER_KEY_GLYPH = "com.android.systemui.shortcut_helper_key_glyph";
     /** @hide */
+    public static final String FLAG_SHORTCUT_HELPER_MULTI_DISPLAY_SUPPORT = "com.android.systemui.shortcut_helper_multi_display_support";
+    /** @hide */
     public static final String FLAG_SHOW_AUDIO_SHARING_SLIDER_IN_VOLUME_PANEL = "com.android.systemui.show_audio_sharing_slider_in_volume_panel";
     /** @hide */
     public static final String FLAG_SHOW_CLIPBOARD_INDICATION = "com.android.systemui.show_clipboard_indication";
     /** @hide */
+    public static final String FLAG_SHOW_ICON_IN_EMPTY_SHADE = "com.android.systemui.show_icon_in_empty_shade";
+    /** @hide */
     public static final String FLAG_SHOW_LOCKED_BY_YOUR_WATCH_KEYGUARD_INDICATOR = "com.android.systemui.show_locked_by_your_watch_keyguard_indicator";
     /** @hide */
-    public static final String FLAG_SIM_PIN_BOUNCER_RESET = "com.android.systemui.sim_pin_bouncer_reset";
+    public static final String FLAG_SIGN_OUT_BUTTON_ON_KEYGUARD_STATUS_BAR = "com.android.systemui.sign_out_button_on_keyguard_status_bar";
     /** @hide */
-    public static final String FLAG_SKIP_HIDE_SENSITIVE_NOTIF_ANIMATION = "com.android.systemui.skip_hide_sensitive_notif_animation";
+    public static final String FLAG_SIM_PIN_BOUNCER_RESET = "com.android.systemui.sim_pin_bouncer_reset";
     /** @hide */
     public static final String FLAG_SLICE_MANAGER_BINDER_CALL_BACKGROUND = "com.android.systemui.slice_manager_binder_call_background";
     /** @hide */
@@ -466,7 +476,15 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_STATUS_BAR_ALWAYS_CHECK_UNDERLYING_NETWORKS = "com.android.systemui.status_bar_always_check_underlying_networks";
     /** @hide */
+    public static final String FLAG_STATUS_BAR_ALWAYS_SCHEDULE_AUTO_HIDE = "com.android.systemui.status_bar_always_schedule_auto_hide";
+    /** @hide */
+    public static final String FLAG_STATUS_BAR_ALWAYS_USE_REGION_SAMPLING = "com.android.systemui.status_bar_always_use_region_sampling";
+    /** @hide */
     public static final String FLAG_STATUS_BAR_APP_HANDLE_TRACKING = "com.android.systemui.status_bar_app_handle_tracking";
+    /** @hide */
+    public static final String FLAG_STATUS_BAR_BATTERY_NO_CONFLATION = "com.android.systemui.status_bar_battery_no_conflation";
+    /** @hide */
+    public static final String FLAG_STATUS_BAR_CALL_CHIP_USE_IS_HIDDEN = "com.android.systemui.status_bar_call_chip_use_is_hidden";
     /** @hide */
     public static final String FLAG_STATUS_BAR_CHIP_TO_HUN_ANIMATION = "com.android.systemui.status_bar_chip_to_hun_animation";
     /** @hide */
@@ -474,7 +492,13 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_STATUS_BAR_CHIPS_RETURN_ANIMATIONS = "com.android.systemui.status_bar_chips_return_animations";
     /** @hide */
+    public static final String FLAG_STATUS_BAR_DARK_ICON_INTERACTOR_MIXED_FIX = "com.android.systemui.status_bar_dark_icon_interactor_mixed_fix";
+    /** @hide */
+    public static final String FLAG_STATUS_BAR_DATE = "com.android.systemui.status_bar_date";
+    /** @hide */
     public static final String FLAG_STATUS_BAR_FONT_UPDATES = "com.android.systemui.status_bar_font_updates";
+    /** @hide */
+    public static final String FLAG_STATUS_BAR_FOR_DESKTOP = "com.android.systemui.status_bar_for_desktop";
     /** @hide */
     public static final String FLAG_STATUS_BAR_MOBILE_ICON_KAIROS = "com.android.systemui.status_bar_mobile_icon_kairos";
     /** @hide */
@@ -484,17 +508,17 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_STATUS_BAR_PRIVACY_CHIP_ANIMATION_EXEMPTION = "com.android.systemui.status_bar_privacy_chip_animation_exemption";
     /** @hide */
+    public static final String FLAG_STATUS_BAR_REGION_SAMPLING = "com.android.systemui.status_bar_region_sampling";
+    /** @hide */
     public static final String FLAG_STATUS_BAR_ROOT_MODERNIZATION = "com.android.systemui.status_bar_root_modernization";
     /** @hide */
     public static final String FLAG_STATUS_BAR_RUDIMENTARY_BATTERY = "com.android.systemui.status_bar_rudimentary_battery";
     /** @hide */
-    public static final String FLAG_STATUS_BAR_SIGNAL_POLICY_REFACTOR = "com.android.systemui.status_bar_signal_policy_refactor";
+    public static final String FLAG_STATUS_BAR_SHARE_DIALOG_WITH_APP_NAME = "com.android.systemui.status_bar_share_dialog_with_app_name";
     /** @hide */
-    public static final String FLAG_STATUS_BAR_SIGNAL_POLICY_REFACTOR_ETHERNET = "com.android.systemui.status_bar_signal_policy_refactor_ethernet";
+    public static final String FLAG_STATUS_BAR_SHOW_ICONS_IN_SECURE_CAMERA = "com.android.systemui.status_bar_show_icons_in_secure_camera";
     /** @hide */
     public static final String FLAG_STATUS_BAR_STATIC_INOUT_INDICATORS = "com.android.systemui.status_bar_static_inout_indicators";
-    /** @hide */
-    public static final String FLAG_STATUS_BAR_SWIPE_OVER_CHIP = "com.android.systemui.status_bar_swipe_over_chip";
     /** @hide */
     public static final String FLAG_STATUS_BAR_SWITCH_TO_SPN_FROM_DATA_SPN = "com.android.systemui.status_bar_switch_to_spn_from_data_spn";
     /** @hide */
@@ -502,11 +526,13 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_STATUS_BAR_UI_THREAD = "com.android.systemui.status_bar_ui_thread";
     /** @hide */
-    public static final String FLAG_STATUS_BAR_WINDOW_NO_CUSTOM_TOUCH = "com.android.systemui.status_bar_window_no_custom_touch";
+    public static final String FLAG_STATUS_BAR_UNIVERSAL_BATTERY_DATA_SOURCE = "com.android.systemui.status_bar_universal_battery_data_source";
     /** @hide */
     public static final String FLAG_STUCK_HEARING_DEVICES_QS_TILE_FIX = "com.android.systemui.stuck_hearing_devices_qs_tile_fix";
     /** @hide */
     public static final String FLAG_SWITCH_USER_ON_BG = "com.android.systemui.switch_user_on_bg";
+    /** @hide */
+    public static final String FLAG_SYSUI_INTRINSIC_LOCK_DISPATCHER = "com.android.systemui.sysui_intrinsic_lock_dispatcher";
     /** @hide */
     public static final String FLAG_SYSUI_TEAMFOOD = "com.android.systemui.sysui_teamfood";
     /** @hide */
@@ -514,25 +540,15 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_THIN_SCREEN_RECORDING_SERVICE = "com.android.systemui.thin_screen_recording_service";
     /** @hide */
-    public static final String FLAG_TRANSITION_RACE_CONDITION_PART2 = "com.android.systemui.transition_race_condition_part2";
-    /** @hide */
-    public static final String FLAG_TV_GLOBAL_ACTIONS_FOCUS = "com.android.systemui.tv_global_actions_focus";
-    /** @hide */
-    public static final String FLAG_UDFPS_SCREEN_OFF_UNLOCK_FLICKER = "com.android.systemui.udfps_screen_off_unlock_flicker";
-    /** @hide */
-    public static final String FLAG_UI_RICH_ONGOING_AOD_SKELETON_BG_INFLATION = "com.android.systemui.ui_rich_ongoing_aod_skeleton_bg_inflation";
-    /** @hide */
     public static final String FLAG_UNFOLD_ANIMATION_BACKGROUND_PROGRESS = "com.android.systemui.unfold_animation_background_progress";
     /** @hide */
-    public static final String FLAG_UPDATE_CORNER_RADIUS_ON_DISPLAY_CHANGED = "com.android.systemui.update_corner_radius_on_display_changed";
+    public static final String FLAG_UPDATE_KEYGUARD_ON_WAKE_AND_UNLOCK_EARLIER = "com.android.systemui.update_keyguard_on_wake_and_unlock_earlier";
     /** @hide */
     public static final String FLAG_UPDATE_USER_SWITCHER_BACKGROUND = "com.android.systemui.update_user_switcher_background";
     /** @hide */
-    public static final String FLAG_UPDATE_WINDOW_MAGNIFIER_BOTTOM_BOUNDARY = "com.android.systemui.update_window_magnifier_bottom_boundary";
+    public static final String FLAG_UPDATE_WINDOW_MAGNIFIER_BOTTOM_BOUNDARY_WITH_MOUSE = "com.android.systemui.update_window_magnifier_bottom_boundary_with_mouse";
     /** @hide */
     public static final String FLAG_USE_AAD_PROX_SENSOR_IF_PRESENT = "com.android.systemui.use_aad_prox_sensor_if_present";
-    /** @hide */
-    public static final String FLAG_USER_AWARE_SETTINGS_REPOSITORIES = "com.android.systemui.user_aware_settings_repositories";
     /** @hide */
     public static final String FLAG_USER_ENCRYPTED_SOURCE = "com.android.systemui.user_encrypted_source";
     /** @hide */
@@ -541,31 +557,45 @@ public final class Flags {
     public static final String FLAG_VISUAL_INTERRUPTIONS_REFACTOR = "com.android.systemui.visual_interruptions_refactor";
     /** @hide */
     public static final String FLAG_VOLUME_REDESIGN = "com.android.systemui.volume_redesign";
+    /** @hide */
+    public static final String FLAG_WINDOW_MAGNIFICATION_MOVE_WITH_MOUSE_ON_EDGE = "com.android.systemui.window_magnification_move_with_mouse_on_edge";
+
 
     public static boolean activityTransitionUseLargestWindow() {
         
         return FEATURE_FLAGS.activityTransitionUseLargestWindow();
     }
 
-    public static boolean alwaysComposeQsUiFragment() {
+
+    public static boolean allowDozeTouchesForLockIcon() {
         
-        return FEATURE_FLAGS.alwaysComposeQsUiFragment();
+        return FEATURE_FLAGS.allowDozeTouchesForLockIcon();
     }
+
+
+    public static boolean ambientCuePlugin() {
+        
+        return FEATURE_FLAGS.ambientCuePlugin();
+    }
+
 
     public static boolean ambientTouchMonitorListenToDisplayChanges() {
         
         return FEATURE_FLAGS.ambientTouchMonitorListenToDisplayChanges();
     }
 
-    public static boolean animationLibraryDelayLeashCleanup() {
+
+    public static boolean animationLibraryShellMigration() {
         
-        return FEATURE_FLAGS.animationLibraryDelayLeashCleanup();
+        return FEATURE_FLAGS.animationLibraryShellMigration();
     }
+
 
     public static boolean appClipsBacklinks() {
         
         return FEATURE_FLAGS.appClipsBacklinks();
     }
+
 
     public static boolean avalancheReplaceHunWhenCritical() {
         
@@ -579,20 +609,35 @@ public final class Flags {
     }
 
 
-    public static boolean bouncerLifecycleFix() {
+    public static boolean blockMouseEdgeBackGesture() {
         
-        return FEATURE_FLAGS.bouncerLifecycleFix();
+        return FEATURE_FLAGS.blockMouseEdgeBackGesture();
     }
+
+
+    public static boolean blurOnMoreSurfaces() {
+        
+        return FEATURE_FLAGS.blurOnMoreSurfaces();
+    }
+
+
+    public static boolean blurSettingsToggle() {
+        
+        return FEATURE_FLAGS.blurSettingsToggle();
+    }
+
 
     public static boolean bouncerUiRevamp() {
         
         return FEATURE_FLAGS.bouncerUiRevamp();
     }
 
+
     public static boolean bouncerUiRevamp2() {
         
         return FEATURE_FLAGS.bouncerUiRevamp2();
     }
+
 
     public static boolean bpColors() {
         
@@ -605,14 +650,34 @@ public final class Flags {
         return FEATURE_FLAGS.brightnessSliderFocusState();
     }
 
+
+    public static boolean captionsToggleInVolumeDialogV1() {
+        
+        return FEATURE_FLAGS.captionsToggleInVolumeDialogV1();
+    }
+
+
+    public static boolean checkDesktopModeForSpacialModelAppPushback() {
+        
+        return FEATURE_FLAGS.checkDesktopModeForSpacialModelAppPushback();
+    }
+
+
     public static boolean classicFlagsMultiUser() {
         
         return FEATURE_FLAGS.classicFlagsMultiUser();
     }
 
-    public static boolean clipboardAnnounceLiveRegion() {
+
+    public static boolean cleanupInstancesWhenDisplayRemoved() {
         
-        return FEATURE_FLAGS.clipboardAnnounceLiveRegion();
+        return FEATURE_FLAGS.cleanupInstancesWhenDisplayRemoved();
+    }
+
+
+    public static boolean clearShortcutIconTint() {
+        
+        return FEATURE_FLAGS.clearShortcutIconTint();
     }
 
 
@@ -620,6 +685,7 @@ public final class Flags {
         
         return FEATURE_FLAGS.clipboardOverlayMultiuser();
     }
+
 
     public static boolean clipboardUseDescriptionMimetype() {
         
@@ -638,20 +704,24 @@ public final class Flags {
         return FEATURE_FLAGS.clockModernization();
     }
 
+
     public static boolean communalBouncerDoNotModifyPluginOpen() {
         
         return FEATURE_FLAGS.communalBouncerDoNotModifyPluginOpen();
     }
+
 
     public static boolean communalEditWidgetsActivityFinishFix() {
         
         return FEATURE_FLAGS.communalEditWidgetsActivityFinishFix();
     }
 
+
     public static boolean communalHub() {
         
         return FEATURE_FLAGS.communalHub();
     }
+
 
     public static boolean communalHubUseThreadPoolForWidgets() {
         
@@ -659,10 +729,17 @@ public final class Flags {
     }
 
 
+    public static boolean communalPowerTransitionFix() {
+        
+        return FEATURE_FLAGS.communalPowerTransitionFix();
+    }
+
+
     public static boolean communalResponsiveGrid() {
         
         return FEATURE_FLAGS.communalResponsiveGrid();
     }
+
 
     public static boolean communalShadeTouchHandlingFixes() {
         
@@ -675,15 +752,18 @@ public final class Flags {
         return FEATURE_FLAGS.communalStandaloneSupport();
     }
 
+
     public static boolean communalTimerFlickerFix() {
         
         return FEATURE_FLAGS.communalTimerFlickerFix();
     }
 
+
     public static boolean communalWidgetResizing() {
         
         return FEATURE_FLAGS.communalWidgetResizing();
     }
+
 
     public static boolean communalWidgetTrampolineFix() {
         
@@ -702,14 +782,10 @@ public final class Flags {
         return FEATURE_FLAGS.confineNotificationTouchToViewWidth();
     }
 
+
     public static boolean contAuthPlugin() {
         
         return FEATURE_FLAGS.contAuthPlugin();
-    }
-
-    public static boolean contextualTipsAssistantDismissFix() {
-        
-        return FEATURE_FLAGS.contextualTipsAssistantDismissFix();
     }
 
 
@@ -725,15 +801,33 @@ public final class Flags {
     }
 
 
+    public static boolean deferDozeTransitionOnShadeDrag() {
+        
+        return FEATURE_FLAGS.deferDozeTransitionOnShadeDrag();
+    }
+
+
+    public static boolean desktopAvControlsPopup() {
+        
+        return FEATURE_FLAGS.desktopAvControlsPopup();
+    }
+
+
     public static boolean desktopEffectsQsTile() {
         
         return FEATURE_FLAGS.desktopEffectsQsTile();
     }
 
 
-    public static boolean desktopScreenCapture() {
+    public static boolean desktopSizing() {
         
-        return FEATURE_FLAGS.desktopScreenCapture();
+        return FEATURE_FLAGS.desktopSizing();
+    }
+
+
+    public static boolean dialogAnimEndStateUpdate() {
+        
+        return FEATURE_FLAGS.dialogAnimEndStateUpdate();
     }
 
 
@@ -755,9 +849,21 @@ public final class Flags {
     }
 
 
+    public static boolean disableUserSwitcherDropdownOnBouncer() {
+        
+        return FEATURE_FLAGS.disableUserSwitcherDropdownOnBouncer();
+    }
+
+
     public static boolean doNotUseImmediateCoroutineDispatcher() {
         
         return FEATURE_FLAGS.doNotUseImmediateCoroutineDispatcher();
+    }
+
+
+    public static boolean doNotUseRunBlocking() {
+        
+        return FEATURE_FLAGS.doNotUseRunBlocking();
     }
 
 
@@ -766,35 +872,40 @@ public final class Flags {
         return FEATURE_FLAGS.doubleTapToSleep();
     }
 
+
     public static boolean dreamBiometricPromptFixes() {
         
         return FEATURE_FLAGS.dreamBiometricPromptFixes();
     }
+
+
+    public static boolean dreamBouncerTransitionFix() {
+        
+        return FEATURE_FLAGS.dreamBouncerTransitionFix();
+    }
+
 
     public static boolean dreamInputSessionPilferOnce() {
         
         return FEATURE_FLAGS.dreamInputSessionPilferOnce();
     }
 
+
     public static boolean dreamOverlayBouncerSwipeDirectionFiltering() {
         
         return FEATURE_FLAGS.dreamOverlayBouncerSwipeDirectionFiltering();
     }
+
 
     public static boolean dreamOverlayUpdatedUi() {
         
         return FEATURE_FLAGS.dreamOverlayUpdatedUi();
     }
 
-    public static boolean dreamPreviewTapDismiss() {
-        
-        return FEATURE_FLAGS.dreamPreviewTapDismiss();
-    }
 
-
-    public static boolean dreamTransitionFixes() {
+    public static boolean dreamSuppression() {
         
-        return FEATURE_FLAGS.dreamTransitionFixes();
+        return FEATURE_FLAGS.dreamSuppression();
     }
 
 
@@ -803,10 +914,12 @@ public final class Flags {
         return FEATURE_FLAGS.edgeBackGestureHandlerThread();
     }
 
+
     public static boolean edgebackGestureHandlerGetRunningTasksBackground() {
         
         return FEATURE_FLAGS.edgebackGestureHandlerGetRunningTasksBackground();
     }
+
 
     public static boolean enableBackgroundKeyguardOndrawnCallback() {
         
@@ -819,24 +932,16 @@ public final class Flags {
         return FEATURE_FLAGS.enableConstraintLayoutLockscreenOnExternalDisplay();
     }
 
+
     public static boolean enableContextualTipForMuteVolume() {
         
         return FEATURE_FLAGS.enableContextualTipForMuteVolume();
     }
 
-    public static boolean enableContextualTipForPowerOff() {
-        
-        return FEATURE_FLAGS.enableContextualTipForPowerOff();
-    }
 
-    public static boolean enableContextualTipForTakeScreenshot() {
+    public static boolean enableCueBarAnimatedIcon() {
         
-        return FEATURE_FLAGS.enableContextualTipForTakeScreenshot();
-    }
-
-    public static boolean enableContextualTips() {
-        
-        return FEATURE_FLAGS.enableContextualTips();
+        return FEATURE_FLAGS.enableCueBarAnimatedIcon();
     }
 
 
@@ -844,6 +949,7 @@ public final class Flags {
         
         return FEATURE_FLAGS.enableDesktopGrowth();
     }
+
 
     public static boolean enableEfficientDisplayRepository() {
         
@@ -863,14 +969,15 @@ public final class Flags {
     }
 
 
+    public static boolean enableOutputSwitcherAudioSharingButton() {
+        
+        return FEATURE_FLAGS.enableOutputSwitcherAudioSharingButton();
+    }
+
+
     public static boolean enableSuggestedDeviceUi() {
         
         return FEATURE_FLAGS.enableSuggestedDeviceUi();
-    }
-
-    public static boolean enableTopUiController() {
-        
-        return FEATURE_FLAGS.enableTopUiController();
     }
 
 
@@ -885,25 +992,28 @@ public final class Flags {
         return FEATURE_FLAGS.enableViewCaptureTracing();
     }
 
-    public static boolean enforceBrightnessBaseUserRestriction() {
-        
-        return FEATURE_FLAGS.enforceBrightnessBaseUserRestriction();
-    }
-
 
     public static boolean exampleFlag() {
         
         return FEATURE_FLAGS.exampleFlag();
     }
 
+
     public static boolean expandCollapsePrivacyDialog() {
         
         return FEATURE_FLAGS.expandCollapsePrivacyDialog();
     }
 
+
     public static boolean expandHeadsUpOnInlineReply() {
         
         return FEATURE_FLAGS.expandHeadsUpOnInlineReply();
+    }
+
+
+    public static boolean expandableUseModifierImplementation() {
+        
+        return FEATURE_FLAGS.expandableUseModifierImplementation();
     }
 
 
@@ -918,36 +1028,28 @@ public final class Flags {
         return FEATURE_FLAGS.extendedAppsShortcutCategory();
     }
 
+
     public static boolean faceScanningAnimationNpeFix() {
         
         return FEATURE_FLAGS.faceScanningAnimationNpeFix();
     }
+
 
     public static boolean fetchBookmarksXmlKeyboardShortcuts() {
         
         return FEATURE_FLAGS.fetchBookmarksXmlKeyboardShortcuts();
     }
 
-    public static boolean fixDialogLaunchAnimationJankLogging() {
-        
-        return FEATURE_FLAGS.fixDialogLaunchAnimationJankLogging();
-    }
 
-    public static boolean fixScreenshotActionDismissSystemWindows() {
+    public static boolean fixShadeHeaderWrongIconSize() {
         
-        return FEATURE_FLAGS.fixScreenshotActionDismissSystemWindows();
+        return FEATURE_FLAGS.fixShadeHeaderWrongIconSize();
     }
 
 
     public static boolean flashlightStrength() {
         
         return FEATURE_FLAGS.flashlightStrength();
-    }
-
-
-    public static boolean floatingMenuAnimatedTuck() {
-        
-        return FEATURE_FLAGS.floatingMenuAnimatedTuck();
     }
 
 
@@ -963,33 +1065,17 @@ public final class Flags {
     }
 
 
-    public static boolean floatingMenuImeDisplacementAnimation() {
-        
-        return FEATURE_FLAGS.floatingMenuImeDisplacementAnimation();
-    }
-
-    public static boolean floatingMenuNotifyTargetsChangedOnStrictDiff() {
-        
-        return FEATURE_FLAGS.floatingMenuNotifyTargetsChangedOnStrictDiff();
-    }
-
-
-    public static boolean floatingMenuOverlapsNavBarsFlag() {
-        
-        return FEATURE_FLAGS.floatingMenuOverlapsNavBarsFlag();
-    }
-
-
     public static boolean floatingMenuRadiiAnimation() {
         
         return FEATURE_FLAGS.floatingMenuRadiiAnimation();
     }
 
 
-    public static boolean floatingMenuRemoveFullscreenTaps() {
+    public static boolean gestureBetweenHubAndLockscreenMotion() {
         
-        return FEATURE_FLAGS.floatingMenuRemoveFullscreenTaps();
+        return FEATURE_FLAGS.gestureBetweenHubAndLockscreenMotion();
     }
+
 
     public static boolean getConnectedDeviceNameUnsynchronized() {
         
@@ -1015,6 +1101,12 @@ public final class Flags {
     }
 
 
+    public static boolean glanceableHubEnabledByDefault() {
+        
+        return FEATURE_FLAGS.glanceableHubEnabledByDefault();
+    }
+
+
     public static boolean glanceableHubV2() {
         
         return FEATURE_FLAGS.glanceableHubV2();
@@ -1026,15 +1118,24 @@ public final class Flags {
         return FEATURE_FLAGS.glanceableHubV2Resources();
     }
 
+
+    public static boolean globalActionsEmphasizedFont() {
+        
+        return FEATURE_FLAGS.globalActionsEmphasizedFont();
+    }
+
+
     public static boolean hardwareColorStyles() {
         
         return FEATURE_FLAGS.hardwareColorStyles();
     }
 
+
     public static boolean hearingAidsQsTileDialog() {
         
         return FEATURE_FLAGS.hearingAidsQsTileDialog();
     }
+
 
     public static boolean hearingDevicesDialogRelatedTools() {
         
@@ -1047,16 +1148,18 @@ public final class Flags {
         return FEATURE_FLAGS.hideRingerButtonInSingleVolumeMode();
     }
 
+
     public static boolean homeControlsDreamHsum() {
         
         return FEATURE_FLAGS.homeControlsDreamHsum();
     }
 
 
-    public static boolean hsuBehaviorChanges() {
+    public static boolean hsuQsChanges() {
         
-        return FEATURE_FLAGS.hsuBehaviorChanges();
+        return FEATURE_FLAGS.hsuQsChanges();
     }
+
 
     public static boolean hubBlurredByShadeFix() {
         
@@ -1075,19 +1178,16 @@ public final class Flags {
         return FEATURE_FLAGS.hubEditModeTransition();
     }
 
+
     public static boolean iconRefresh2025() {
         
         return FEATURE_FLAGS.iconRefresh2025();
     }
 
+
     public static boolean indicationTextA11yFix() {
         
         return FEATURE_FLAGS.indicationTextA11yFix();
-    }
-
-    public static boolean instantHideShade() {
-        
-        return FEATURE_FLAGS.instantHideShade();
     }
 
 
@@ -1096,15 +1196,12 @@ public final class Flags {
         return FEATURE_FLAGS.keyboardDockingIndicator();
     }
 
+
     public static boolean keyboardShortcutHelperRewrite() {
         
         return FEATURE_FLAGS.keyboardShortcutHelperRewrite();
     }
 
-    public static boolean keyboardShortcutHelperShortcutCustomizer() {
-        
-        return FEATURE_FLAGS.keyboardShortcutHelperShortcutCustomizer();
-    }
 
     public static boolean keyboardTouchpadContextualEducation() {
         
@@ -1123,9 +1220,34 @@ public final class Flags {
         return FEATURE_FLAGS.keyguardWmStateRefactor();
     }
 
-    public static boolean lockscreenFont() {
+
+    public static boolean largeScreenRecording() {
         
-        return FEATURE_FLAGS.lockscreenFont();
+        return FEATURE_FLAGS.largeScreenRecording();
+    }
+
+
+    public static boolean largeScreenScreencapture() {
+        
+        return FEATURE_FLAGS.largeScreenScreencapture();
+    }
+
+
+    public static boolean largeScreenScreenshotAppWindow() {
+        
+        return FEATURE_FLAGS.largeScreenScreenshotAppWindow();
+    }
+
+
+    public static boolean largeScreenSharing() {
+        
+        return FEATURE_FLAGS.largeScreenSharing();
+    }
+
+
+    public static boolean lockscreenShadeToDreamTransitionFix() {
+        
+        return FEATURE_FLAGS.lockscreenShadeToDreamTransitionFix();
     }
 
 
@@ -1134,19 +1256,28 @@ public final class Flags {
         return FEATURE_FLAGS.lowLightClockDream();
     }
 
+
     public static boolean lowlightClockSetBrightness() {
         
         return FEATURE_FLAGS.lowlightClockSetBrightness();
     }
+
 
     public static boolean lowlightClockUsesKeyguardChargingStatus() {
         
         return FEATURE_FLAGS.lowlightClockUsesKeyguardChargingStatus();
     }
 
+
     public static boolean magneticNotificationSwipes() {
         
         return FEATURE_FLAGS.magneticNotificationSwipes();
+    }
+
+
+    public static boolean mediaCarouselArrows() {
+        
+        return FEATURE_FLAGS.mediaCarouselArrows();
     }
 
 
@@ -1167,25 +1298,28 @@ public final class Flags {
         return FEATURE_FLAGS.mediaControlsInCompose();
     }
 
-    public static boolean mediaControlsUiUpdate() {
+
+    public static boolean mediaControlsTranslationFix() {
         
-        return FEATURE_FLAGS.mediaControlsUiUpdate();
+        return FEATURE_FLAGS.mediaControlsTranslationFix();
     }
+
+
+    public static boolean mediaFrameDimensionsFix() {
+        
+        return FEATURE_FLAGS.mediaFrameDimensionsFix();
+    }
+
 
     public static boolean mediaProjectionDialogBehindLockscreen() {
         
         return FEATURE_FLAGS.mediaProjectionDialogBehindLockscreen();
     }
 
+
     public static boolean mediaProjectionGreyErrorText() {
         
         return FEATURE_FLAGS.mediaProjectionGreyErrorText();
-    }
-
-
-    public static boolean mediaProjectionRequestAttributionFix() {
-        
-        return FEATURE_FLAGS.mediaProjectionRequestAttributionFix();
     }
 
 
@@ -1194,10 +1328,12 @@ public final class Flags {
         return FEATURE_FLAGS.modesUiDialogPaging();
     }
 
+
     public static boolean moveTransitionAnimationLayer() {
         
         return FEATURE_FLAGS.moveTransitionAnimationLayer();
     }
+
 
     public static boolean msdlFeedback() {
         
@@ -1205,10 +1341,17 @@ public final class Flags {
     }
 
 
+    public static boolean multiuserOpenUserSwitcherDialog() {
+        
+        return FEATURE_FLAGS.multiuserOpenUserSwitcherDialog();
+    }
+
+
     public static boolean multiuserWifiPickerTrackerSupport() {
         
         return FEATURE_FLAGS.multiuserWifiPickerTrackerSupport();
     }
+
 
     public static boolean newAodTransition() {
         
@@ -1221,9 +1364,28 @@ public final class Flags {
         return FEATURE_FLAGS.newDozingKeyguardStates();
     }
 
+
+    public static boolean newScreenRecordToolbar() {
+        
+        return FEATURE_FLAGS.newScreenRecordToolbar();
+    }
+
+
     public static boolean newVolumePanel() {
         
         return FEATURE_FLAGS.newVolumePanel();
+    }
+
+
+    public static boolean noExpansionOnOverscroll() {
+        
+        return FEATURE_FLAGS.noExpansionOnOverscroll();
+    }
+
+
+    public static boolean noShadeBlurOnDreamStart() {
+        
+        return FEATURE_FLAGS.noShadeBlurOnDreamStart();
     }
 
 
@@ -1250,30 +1412,30 @@ public final class Flags {
         return FEATURE_FLAGS.notificationAmbientSuppressionAfterInflation();
     }
 
+
     public static boolean notificationAnimatedActionsTreatment() {
         
         return FEATURE_FLAGS.notificationAnimatedActionsTreatment();
     }
+
 
     public static boolean notificationAppearNonlinear() {
         
         return FEATURE_FLAGS.notificationAppearNonlinear();
     }
 
+
     public static boolean notificationAsyncGroupHeaderInflation() {
         
         return FEATURE_FLAGS.notificationAsyncGroupHeaderInflation();
     }
 
-    public static boolean notificationAsyncHybridViewInflation() {
-        
-        return FEATURE_FLAGS.notificationAsyncHybridViewInflation();
-    }
 
     public static boolean notificationAvalancheSuppression() {
         
         return FEATURE_FLAGS.notificationAvalancheSuppression();
     }
+
 
     public static boolean notificationAvalancheThrottleHun() {
         
@@ -1293,14 +1455,21 @@ public final class Flags {
     }
 
 
+    public static boolean notificationChildrenContainerMinHeight() {
+        
+        return FEATURE_FLAGS.notificationChildrenContainerMinHeight();
+    }
+
+
     public static boolean notificationColorUpdateLogger() {
         
         return FEATURE_FLAGS.notificationColorUpdateLogger();
     }
 
-    public static boolean notificationContentAlphaOptimization() {
+
+    public static boolean notificationFixHunShadows() {
         
-        return FEATURE_FLAGS.notificationContentAlphaOptimization();
+        return FEATURE_FLAGS.notificationFixHunShadows();
     }
 
 
@@ -1309,29 +1478,22 @@ public final class Flags {
         return FEATURE_FLAGS.notificationFooterBackgroundTintOptimization();
     }
 
-    public static boolean notificationRowAccessibilityExpanded() {
+
+    public static boolean notificationRowIsRemovedFix() {
         
-        return FEATURE_FLAGS.notificationRowAccessibilityExpanded();
+        return FEATURE_FLAGS.notificationRowIsRemovedFix();
     }
 
-    public static boolean notificationRowContentBinderRefactor() {
-        
-        return FEATURE_FLAGS.notificationRowContentBinderRefactor();
-    }
 
     public static boolean notificationRowTransparency() {
         
         return FEATURE_FLAGS.notificationRowTransparency();
     }
 
+
     public static boolean notificationShadeBlur() {
         
         return FEATURE_FLAGS.notificationShadeBlur();
-    }
-
-    public static boolean notificationShadeCloseWaitsForChildAnimations() {
-        
-        return FEATURE_FLAGS.notificationShadeCloseWaitsForChildAnimations();
     }
 
 
@@ -1346,19 +1508,10 @@ public final class Flags {
         return FEATURE_FLAGS.notificationSkipSilentUpdates();
     }
 
+
     public static boolean notificationTransparentHeaderFix() {
         
         return FEATURE_FLAGS.notificationTransparentHeaderFix();
-    }
-
-    public static boolean notificationsBackgroundIcons() {
-        
-        return FEATURE_FLAGS.notificationsBackgroundIcons();
-    }
-
-    public static boolean notificationsFooterVisibilityFix() {
-        
-        return FEATURE_FLAGS.notificationsFooterVisibilityFix();
     }
 
 
@@ -1368,49 +1521,15 @@ public final class Flags {
     }
 
 
-    public static boolean notificationsHunAccessibilityRefactor() {
-        
-        return FEATURE_FLAGS.notificationsHunAccessibilityRefactor();
-    }
-
-    public static boolean notificationsHunSharedAnimationValues() {
-        
-        return FEATURE_FLAGS.notificationsHunSharedAnimationValues();
-    }
-
     public static boolean notificationsIconContainerRefactor() {
         
         return FEATURE_FLAGS.notificationsIconContainerRefactor();
     }
 
-    public static boolean notificationsLaunchRadius() {
-        
-        return FEATURE_FLAGS.notificationsLaunchRadius();
-    }
-
-    public static boolean notificationsLiveDataStoreRefactor() {
-        
-        return FEATURE_FLAGS.notificationsLiveDataStoreRefactor();
-    }
-
-    public static boolean notificationsPinnedHunInShade() {
-        
-        return FEATURE_FLAGS.notificationsPinnedHunInShade();
-    }
 
     public static boolean notificationsRedesignFooterView() {
         
         return FEATURE_FLAGS.notificationsRedesignFooterView();
-    }
-
-    public static boolean notifyPasswordTextViewUserActivityInBackground() {
-        
-        return FEATURE_FLAGS.notifyPasswordTextViewUserActivityInBackground();
-    }
-
-    public static boolean notifyPowerManagerUserActivityBackground() {
-        
-        return FEATURE_FLAGS.notifyPowerManagerUserActivityBackground();
     }
 
 
@@ -1431,15 +1550,18 @@ public final class Flags {
         return FEATURE_FLAGS.permissionHelperInlineUiRichOngoing();
     }
 
+
     public static boolean permissionHelperUiRichOngoing() {
         
         return FEATURE_FLAGS.permissionHelperUiRichOngoing();
     }
 
+
     public static boolean physicalNotificationMovement() {
         
         return FEATURE_FLAGS.physicalNotificationMovement();
     }
+
 
     public static boolean pinInputFieldStyledFocusState() {
         
@@ -1450,12 +1572,6 @@ public final class Flags {
     public static boolean predictiveBackAnimateShade() {
         
         return FEATURE_FLAGS.predictiveBackAnimateShade();
-    }
-
-
-    public static boolean predictiveBackDelayWmTransition() {
-        
-        return FEATURE_FLAGS.predictiveBackDelayWmTransition();
     }
 
 
@@ -1483,14 +1599,21 @@ public final class Flags {
     }
 
 
-    public static boolean qsEditModeTabs() {
-        
-        return FEATURE_FLAGS.qsEditModeTabs();
-    }
-
     public static boolean qsEditModeTooltip() {
         
         return FEATURE_FLAGS.qsEditModeTooltip();
+    }
+
+
+    public static boolean qsEditModeV2() {
+        
+        return FEATURE_FLAGS.qsEditModeV2();
+    }
+
+
+    public static boolean qsMaterialExpressiveTiles() {
+        
+        return FEATURE_FLAGS.qsMaterialExpressiveTiles();
     }
 
 
@@ -1506,10 +1629,17 @@ public final class Flags {
     }
 
 
+    public static boolean qsSplitInternetTile() {
+        
+        return FEATURE_FLAGS.qsSplitInternetTile();
+    }
+
+
     public static boolean qsTileDetailedView() {
         
         return FEATURE_FLAGS.qsTileDetailedView();
     }
+
 
     public static boolean qsTileFocusState() {
         
@@ -1523,11 +1653,6 @@ public final class Flags {
     }
 
 
-    public static boolean qsUiRefactor() {
-        
-        return FEATURE_FLAGS.qsUiRefactor();
-    }
-
     public static boolean qsUiRefactorComposeFragment() {
         
         return FEATURE_FLAGS.qsUiRefactorComposeFragment();
@@ -1538,6 +1663,7 @@ public final class Flags {
         
         return FEATURE_FLAGS.qsWifiConfig();
     }
+
 
     public static boolean recordIssueQsTile() {
         
@@ -1551,37 +1677,11 @@ public final class Flags {
     }
 
 
-    public static boolean registerBatteryControllerReceiversInCorestartable() {
-        
-        return FEATURE_FLAGS.registerBatteryControllerReceiversInCorestartable();
-    }
-
-    public static boolean registerContentObserversAsync() {
-        
-        return FEATURE_FLAGS.registerContentObserversAsync();
-    }
-
-    public static boolean registerNewWalletCardInBackground() {
-        
-        return FEATURE_FLAGS.registerNewWalletCardInBackground();
-    }
-
     public static boolean registerWallpaperNotifierBackground() {
         
         return FEATURE_FLAGS.registerWallpaperNotifierBackground();
     }
 
-
-    public static boolean rememberViewModelOffMainThread() {
-        
-        return FEATURE_FLAGS.rememberViewModelOffMainThread();
-    }
-
-
-    public static boolean removeAodCarMode() {
-        
-        return FEATURE_FLAGS.removeAodCarMode();
-    }
 
     public static boolean removeDreamOverlayHideOnTouch() {
         
@@ -1594,9 +1694,16 @@ public final class Flags {
         return FEATURE_FLAGS.removeNearbyShareTileAnimation();
     }
 
+
     public static boolean removeUpdateListenerInQsIconViewImpl() {
         
         return FEATURE_FLAGS.removeUpdateListenerInQsIconViewImpl();
+    }
+
+
+    public static boolean resetTilesRemovesCustomTiles() {
+        
+        return FEATURE_FLAGS.resetTilesRemovesCustomTiles();
     }
 
 
@@ -1611,10 +1718,24 @@ public final class Flags {
         return FEATURE_FLAGS.restartDreamOnUnocclude();
     }
 
+
+    public static boolean restoreShowTapsSetting() {
+        
+        return FEATURE_FLAGS.restoreShowTapsSetting();
+    }
+
+
     public static boolean restrictCommunalAppWidgetHostListening() {
         
         return FEATURE_FLAGS.restrictCommunalAppWidgetHostListening();
     }
+
+
+    public static boolean restrictCommunalShadeToWhenIdle() {
+        
+        return FEATURE_FLAGS.restrictCommunalShadeToWhenIdle();
+    }
+
 
     public static boolean revampedBouncerMessages() {
         
@@ -1627,15 +1748,16 @@ public final class Flags {
         return FEATURE_FLAGS.runFingerprintDetectOnDismissibleKeyguard();
     }
 
-    public static boolean saveAndRestoreMagnificationSettingsButtons() {
-        
-        return FEATURE_FLAGS.saveAndRestoreMagnificationSettingsButtons();
-    }
-
 
     public static boolean sceneContainer() {
         
         return FEATURE_FLAGS.sceneContainer();
+    }
+
+
+    public static boolean screenOffAnimationGuardEnabled() {
+        
+        return FEATURE_FLAGS.screenOffAnimationGuardEnabled();
     }
 
 
@@ -1644,20 +1766,28 @@ public final class Flags {
         return FEATURE_FLAGS.screenReactions();
     }
 
+
     public static boolean screenshareNotificationHidingBugFix() {
         
         return FEATURE_FLAGS.screenshareNotificationHidingBugFix();
     }
 
 
-    public static boolean screenshotActionDismissSystemWindows() {
-        
-        return FEATURE_FLAGS.screenshotActionDismissSystemWindows();
-    }
-
     public static boolean screenshotAnnounceLiveRegion() {
         
         return FEATURE_FLAGS.screenshotAnnounceLiveRegion();
+    }
+
+
+    public static boolean screenshotDismissalSpring() {
+        
+        return FEATURE_FLAGS.screenshotDismissalSpring();
+    }
+
+
+    public static boolean screenshotForceShutterSound() {
+        
+        return FEATURE_FLAGS.screenshotForceShutterSound();
     }
 
 
@@ -1666,14 +1796,22 @@ public final class Flags {
         return FEATURE_FLAGS.screenshotMultidisplayFocusChange();
     }
 
+
     public static boolean screenshotPolicySplitAndDesktopMode() {
         
         return FEATURE_FLAGS.screenshotPolicySplitAndDesktopMode();
     }
 
+
     public static boolean screenshotScrollCropViewCrashFix() {
         
         return FEATURE_FLAGS.screenshotScrollCropViewCrashFix();
+    }
+
+
+    public static boolean scrimFix() {
+        
+        return FEATURE_FLAGS.scrimFix();
     }
 
 
@@ -1682,20 +1820,30 @@ public final class Flags {
         return FEATURE_FLAGS.secondaryUserWidgetHost();
     }
 
+
     public static boolean settingsExtRegisterContentObserverOnBgThread() {
         
         return FEATURE_FLAGS.settingsExtRegisterContentObserverOnBgThread();
     }
+
+
+    public static boolean shadeAppLaunchAnimationSkipInDesktop() {
+        
+        return FEATURE_FLAGS.shadeAppLaunchAnimationSkipInDesktop();
+    }
+
 
     public static boolean shadeExpandsOnStatusBarLongPress() {
         
         return FEATURE_FLAGS.shadeExpandsOnStatusBarLongPress();
     }
 
+
     public static boolean shadeHeaderBlurFontColor() {
         
         return FEATURE_FLAGS.shadeHeaderBlurFontColor();
     }
+
 
     public static boolean shadeHeaderFontUpdate() {
         
@@ -1714,15 +1862,24 @@ public final class Flags {
         return FEATURE_FLAGS.shadeWindowGoesAround();
     }
 
+
     public static boolean shaderlibLoadingEffectRefactor() {
         
         return FEATURE_FLAGS.shaderlibLoadingEffectRefactor();
     }
 
+
     public static boolean shortcutHelperKeyGlyph() {
         
         return FEATURE_FLAGS.shortcutHelperKeyGlyph();
     }
+
+
+    public static boolean shortcutHelperMultiDisplaySupport() {
+        
+        return FEATURE_FLAGS.shortcutHelperMultiDisplaySupport();
+    }
+
 
     public static boolean showAudioSharingSliderInVolumePanel() {
         
@@ -1736,20 +1893,29 @@ public final class Flags {
     }
 
 
+    public static boolean showIconInEmptyShade() {
+        
+        return FEATURE_FLAGS.showIconInEmptyShade();
+    }
+
+
     public static boolean showLockedByYourWatchKeyguardIndicator() {
         
         return FEATURE_FLAGS.showLockedByYourWatchKeyguardIndicator();
     }
+
+
+    public static boolean signOutButtonOnKeyguardStatusBar() {
+        
+        return FEATURE_FLAGS.signOutButtonOnKeyguardStatusBar();
+    }
+
 
     public static boolean simPinBouncerReset() {
         
         return FEATURE_FLAGS.simPinBouncerReset();
     }
 
-    public static boolean skipHideSensitiveNotifAnimation() {
-        
-        return FEATURE_FLAGS.skipHideSensitiveNotifAnimation();
-    }
 
     public static boolean sliceManagerBinderCallBackground() {
         
@@ -1762,20 +1928,24 @@ public final class Flags {
         return FEATURE_FLAGS.smartspaceRelocateToBottom();
     }
 
+
     public static boolean smartspaceSwipeEventLoggingFix() {
         
         return FEATURE_FLAGS.smartspaceSwipeEventLoggingFix();
     }
+
 
     public static boolean smartspaceViewpager2() {
         
         return FEATURE_FLAGS.smartspaceViewpager2();
     }
 
+
     public static boolean sounddoseCustomization() {
         
         return FEATURE_FLAGS.sounddoseCustomization();
     }
+
 
     public static boolean spatialModelAppPushback() {
         
@@ -1788,19 +1958,34 @@ public final class Flags {
         return FEATURE_FLAGS.spatialModelBouncerPushback();
     }
 
+
     public static boolean spatialModelPushbackInShader() {
         
         return FEATURE_FLAGS.spatialModelPushbackInShader();
     }
+
 
     public static boolean stabilizeHeadsUpGroupV2() {
         
         return FEATURE_FLAGS.stabilizeHeadsUpGroupV2();
     }
 
+
     public static boolean statusBarAlwaysCheckUnderlyingNetworks() {
         
         return FEATURE_FLAGS.statusBarAlwaysCheckUnderlyingNetworks();
+    }
+
+
+    public static boolean statusBarAlwaysScheduleAutoHide() {
+        
+        return FEATURE_FLAGS.statusBarAlwaysScheduleAutoHide();
+    }
+
+
+    public static boolean statusBarAlwaysUseRegionSampling() {
+        
+        return FEATURE_FLAGS.statusBarAlwaysUseRegionSampling();
     }
 
 
@@ -1810,10 +1995,23 @@ public final class Flags {
     }
 
 
+    public static boolean statusBarBatteryNoConflation() {
+        
+        return FEATURE_FLAGS.statusBarBatteryNoConflation();
+    }
+
+
+    public static boolean statusBarCallChipUseIsHidden() {
+        
+        return FEATURE_FLAGS.statusBarCallChipUseIsHidden();
+    }
+
+
     public static boolean statusBarChipToHunAnimation() {
         
         return FEATURE_FLAGS.statusBarChipToHunAnimation();
     }
+
 
     public static boolean statusBarChipsModernization() {
         
@@ -1826,9 +2024,28 @@ public final class Flags {
         return FEATURE_FLAGS.statusBarChipsReturnAnimations();
     }
 
+
+    public static boolean statusBarDarkIconInteractorMixedFix() {
+        
+        return FEATURE_FLAGS.statusBarDarkIconInteractorMixedFix();
+    }
+
+
+    public static boolean statusBarDate() {
+        
+        return FEATURE_FLAGS.statusBarDate();
+    }
+
+
     public static boolean statusBarFontUpdates() {
         
         return FEATURE_FLAGS.statusBarFontUpdates();
+    }
+
+
+    public static boolean statusBarForDesktop() {
+        
+        return FEATURE_FLAGS.statusBarForDesktop();
     }
 
 
@@ -1836,6 +2053,7 @@ public final class Flags {
         
         return FEATURE_FLAGS.statusBarMobileIconKairos();
     }
+
 
     public static boolean statusBarNoHunBehavior() {
         
@@ -1848,10 +2066,18 @@ public final class Flags {
         return FEATURE_FLAGS.statusBarPopupChips();
     }
 
+
     public static boolean statusBarPrivacyChipAnimationExemption() {
         
         return FEATURE_FLAGS.statusBarPrivacyChipAnimationExemption();
     }
+
+
+    public static boolean statusBarRegionSampling() {
+        
+        return FEATURE_FLAGS.statusBarRegionSampling();
+    }
+
 
     public static boolean statusBarRootModernization() {
         
@@ -1864,14 +2090,16 @@ public final class Flags {
         return FEATURE_FLAGS.statusBarRudimentaryBattery();
     }
 
-    public static boolean statusBarSignalPolicyRefactor() {
+
+    public static boolean statusBarShareDialogWithAppName() {
         
-        return FEATURE_FLAGS.statusBarSignalPolicyRefactor();
+        return FEATURE_FLAGS.statusBarShareDialogWithAppName();
     }
 
-    public static boolean statusBarSignalPolicyRefactorEthernet() {
+
+    public static boolean statusBarShowIconsInSecureCamera() {
         
-        return FEATURE_FLAGS.statusBarSignalPolicyRefactorEthernet();
+        return FEATURE_FLAGS.statusBarShowIconsInSecureCamera();
     }
 
 
@@ -1880,10 +2108,6 @@ public final class Flags {
         return FEATURE_FLAGS.statusBarStaticInoutIndicators();
     }
 
-    public static boolean statusBarSwipeOverChip() {
-        
-        return FEATURE_FLAGS.statusBarSwipeOverChip();
-    }
 
     public static boolean statusBarSwitchToSpnFromDataSpn() {
         
@@ -1902,19 +2126,28 @@ public final class Flags {
         return FEATURE_FLAGS.statusBarUiThread();
     }
 
-    public static boolean statusBarWindowNoCustomTouch() {
+
+    public static boolean statusBarUniversalBatteryDataSource() {
         
-        return FEATURE_FLAGS.statusBarWindowNoCustomTouch();
+        return FEATURE_FLAGS.statusBarUniversalBatteryDataSource();
     }
+
 
     public static boolean stuckHearingDevicesQsTileFix() {
         
         return FEATURE_FLAGS.stuckHearingDevicesQsTileFix();
     }
 
+
     public static boolean switchUserOnBg() {
         
         return FEATURE_FLAGS.switchUserOnBg();
+    }
+
+
+    public static boolean sysuiIntrinsicLockDispatcher() {
+        
+        return FEATURE_FLAGS.sysuiIntrinsicLockDispatcher();
     }
 
 
@@ -1935,44 +2168,28 @@ public final class Flags {
         return FEATURE_FLAGS.thinScreenRecordingService();
     }
 
-    public static boolean transitionRaceConditionPart2() {
-        
-        return FEATURE_FLAGS.transitionRaceConditionPart2();
-    }
-
-    public static boolean tvGlobalActionsFocus() {
-        
-        return FEATURE_FLAGS.tvGlobalActionsFocus();
-    }
-
-    public static boolean udfpsScreenOffUnlockFlicker() {
-        
-        return FEATURE_FLAGS.udfpsScreenOffUnlockFlicker();
-    }
-
-    public static boolean uiRichOngoingAodSkeletonBgInflation() {
-        
-        return FEATURE_FLAGS.uiRichOngoingAodSkeletonBgInflation();
-    }
 
     public static boolean unfoldAnimationBackgroundProgress() {
         
         return FEATURE_FLAGS.unfoldAnimationBackgroundProgress();
     }
 
-    public static boolean updateCornerRadiusOnDisplayChanged() {
+
+    public static boolean updateKeyguardOnWakeAndUnlockEarlier() {
         
-        return FEATURE_FLAGS.updateCornerRadiusOnDisplayChanged();
+        return FEATURE_FLAGS.updateKeyguardOnWakeAndUnlockEarlier();
     }
+
 
     public static boolean updateUserSwitcherBackground() {
         
         return FEATURE_FLAGS.updateUserSwitcherBackground();
     }
 
-    public static boolean updateWindowMagnifierBottomBoundary() {
+
+    public static boolean updateWindowMagnifierBottomBoundaryWithMouse() {
         
-        return FEATURE_FLAGS.updateWindowMagnifierBottomBoundary();
+        return FEATURE_FLAGS.updateWindowMagnifierBottomBoundaryWithMouse();
     }
 
 
@@ -1981,10 +2198,6 @@ public final class Flags {
         return FEATURE_FLAGS.useAadProxSensorIfPresent();
     }
 
-    public static boolean userAwareSettingsRepositories() {
-        
-        return FEATURE_FLAGS.userAwareSettingsRepositories();
-    }
 
     public static boolean userEncryptedSource() {
         
@@ -1997,14 +2210,22 @@ public final class Flags {
         return FEATURE_FLAGS.userSwitcherAddSignOutOption();
     }
 
+
     public static boolean visualInterruptionsRefactor() {
         
         return FEATURE_FLAGS.visualInterruptionsRefactor();
     }
 
+
     public static boolean volumeRedesign() {
         
         return FEATURE_FLAGS.volumeRedesign();
+    }
+
+
+    public static boolean windowMagnificationMoveWithMouseOnEdge() {
+        
+        return FEATURE_FLAGS.windowMagnificationMoveWithMouseOnEdge();
     }
 
     private static FeatureFlags FEATURE_FLAGS = new FeatureFlagsImpl();

@@ -44,6 +44,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.Preconditions;
@@ -58,6 +59,7 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActiveGestureProtoLogProxy;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -102,6 +104,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final FinishImmediatelyHandler mCleanupHandler = new FinishImmediatelyHandler();
 
     private final boolean mIsDeferredDownTarget;
+    private final boolean mIsDeferredDownDevice;
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -157,6 +160,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
+        // TODO: 432133436 - Remove mIsDeferredDownDevice when a proper fix is merged.
+        final DesktopVisibilityController desktopVisibilityController =
+                DesktopVisibilityController.INSTANCE.get(base);
+        mIsDeferredDownDevice = desktopVisibilityController.isInDesktopMode(
+                mDeviceState.getDisplayId());
 
         mTouchSlop = mDeviceState.getTouchSlop();
         mSquaredTouchSlop = mDeviceState.getSquaredTouchSlop();
@@ -250,7 +258,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 if (DEBUG) {
                     Log.d(TAG, "ACTION_DOWN: mIsDeferredDownTarget=" + mIsDeferredDownTarget);
                 }
-                if (!mIsDeferredDownTarget) {
+                if (!needDeferDown()) {
                     startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
@@ -291,7 +299,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 float displacementY = mLastPos.y - mDownPos.y;
 
                 if (!mPassedWindowMoveSlop) {
-                    if (!mIsDeferredDownTarget) {
+                    if (!needDeferDown()) {
                         // Normal gesture, ensure we pass the drag slop before we start tracking
                         // the gesture
                         if (mGestureState.isTrackpadGesture() || Math.abs(displacement)
@@ -327,17 +335,27 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         !mPassedSlopOnThisGesture && mPassedPilferInputSlop;
                 double degrees = Math.toDegrees(Math.atan(upDist / horizontalDist));
 
-                // Regarding degrees >= -OVERVIEW_MIN_DEGREES - Trackpad gestures can start anywhere
-                // on the screen, allowing downward swipes. We want to impose the same angle in that
-                // scenario.
-                boolean swipeWithinQuickSwitchRange = degrees <= OVERVIEW_MIN_DEGREES
-                        && (!mGestureState.isTrackpadGesture() || degrees >= -OVERVIEW_MIN_DEGREES);
+                boolean swipeWithinQuickSwitchRange = degrees <= OVERVIEW_MIN_DEGREES;
                 boolean isLikelyToStartNewTask =
                         haveNotPassedSlopOnContinuedGesture || swipeWithinQuickSwitchRange;
 
                 if (DEBUG) {
                     Log.d(TAG, "ACTION_MOVE: mPassedPilferInputSlop=" + mPassedPilferInputSlop);
                 }
+
+                // Downwards three finger swipe gesture on trackpad will have degrees == -90.
+                boolean isDownwardsThreeFingerTrackpadGesture =
+                        mGestureState.isThreeFingerTrackpadGesture()
+                                && degrees < -OVERVIEW_MIN_DEGREES;
+                if (isDownwardsThreeFingerTrackpadGesture) {
+                    if (DEBUG) {
+                        Log.d(TAG,
+                                "early break to prevent blocking downwards three finger trackpad "
+                                        + "gesture");
+                    }
+                    break;
+                }
+
                 if (!mPassedPilferInputSlop) {
                     if (passedSlop) {
                         // Horizontal gesture is not allowed in this region
@@ -359,7 +377,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                         mPassedPilferInputSlop = true;
 
-                        if (mIsDeferredDownTarget) {
+                        if (needDeferDown()) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
                             startTouchTrackingForWindowAnimation(ev.getEventTime());
@@ -508,8 +526,14 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     // The animation started, but with no movement, in this case, there will be no
                     // animateToProgress so we have to manually finish here. In the case of
                     // ACTION_CANCEL, someone else may be doing something so finish synchronously.
-                    mTaskAnimationManager.finishRunningRecentsAnimation(false /* toHome */,
-                            isCanceled /* forceFinish */, mForceFinishRecentsTransitionCallback);
+                    mTaskAnimationManager.finishRunningRecentsAnimation(
+                            /* toHome= */ false,
+                            /* forceFinish= */ isCanceled,
+                            mForceFinishRecentsTransitionCallback,
+                            /* reason= */ new ActiveGestureLog.CompoundString(
+                                    "OtherActivityInputConsumer.finishTouchTracking: "
+                                            + "recents animation started, but window move touch "
+                                            + "slop not passed"));
                 } else {
                     // The animation hasn't started yet, so insert a replacement handler into the
                     // callbacks which immediately finishes the animation after it starts.
@@ -579,6 +603,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         return !mPassedPilferInputSlop;
     }
 
+    private boolean needDeferDown() {
+        return mIsDeferredDownTarget || mIsDeferredDownDevice;
+    }
+
     /**
      * Sets a callback to be called when the recents transition is force-canceled by another input
      * consumer being made active.
@@ -604,7 +632,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 if (DEBUG) {
                     Log.d(TAG, "FinishImmediatelyHandler: running callback");
                 }
-                controller.finish(false /* toRecents */, null);
+                controller.finish(
+                        /* toHome= */ false,
+                        /* onFinishComplete= */ null,
+                        /* reason= */ new ActiveGestureLog.CompoundString(
+                                "OtherActivityInputConsumer.FinishImmediatelyHandler"));
             });
         }
     }

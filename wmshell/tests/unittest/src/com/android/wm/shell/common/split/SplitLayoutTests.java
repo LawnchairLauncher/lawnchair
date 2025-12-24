@@ -18,6 +18,7 @@ package com.android.wm.shell.common.split;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_50_50;
 
@@ -105,23 +106,23 @@ public class SplitLayoutTests extends ShellTestCase {
         final Configuration config = getConfiguration();
 
         // Verify it returns true if new config won't affect split layout.
-        assertThat(mSplitLayout.updateConfiguration(config)).isFalse();
+        assertThat(mSplitLayout.updateConfiguration(config, DEFAULT_DISPLAY)).isFalse();
 
         // Verify updateConfiguration returns true if it rotated.
         config.windowConfiguration.setRotation(1);
-        assertThat(mSplitLayout.updateConfiguration(config)).isTrue();
+        assertThat(mSplitLayout.updateConfiguration(config, DEFAULT_DISPLAY)).isTrue();
 
         // Verify updateConfiguration returns true if the root bounds changed.
         config.windowConfiguration.setBounds(new Rect(0, 0, 2160, 1080));
-        assertThat(mSplitLayout.updateConfiguration(config)).isTrue();
+        assertThat(mSplitLayout.updateConfiguration(config, DEFAULT_DISPLAY)).isTrue();
 
         // Verify updateConfiguration returns true if the orientation changed.
         config.orientation = ORIENTATION_LANDSCAPE;
-        assertThat(mSplitLayout.updateConfiguration(config)).isTrue();
+        assertThat(mSplitLayout.updateConfiguration(config, DEFAULT_DISPLAY)).isTrue();
 
         // Verify updateConfiguration returns true if the density changed.
         config.densityDpi = 123;
-        assertThat(mSplitLayout.updateConfiguration(config)).isTrue();
+        assertThat(mSplitLayout.updateConfiguration(config, DEFAULT_DISPLAY)).isTrue();
 
         // Verify updateConfiguration checks the current DisplayLayout
         verify(mDisplayController, times(5)) // init * 1 + updateConfiguration * 4

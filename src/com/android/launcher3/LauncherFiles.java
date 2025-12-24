@@ -27,6 +27,12 @@ public class LauncherFiles {
     public static final String LAUNCHER_2_BY_2_DB = "launcher_2_by_2.db";
     public static final String LAUNCHER_7_BY_3_DB = "launcher_7_by_3.db";
     public static final String LAUNCHER_8_BY_3_DB = "launcher_8_by_3.db";
+    public static final String LAUNCHER_10_BY_5_DB = "launcher_10_by_5.db";
+    public static final String LAUNCHER_11_BY_5_DB = "launcher_11_by_5.db";
+    public static final String LAUNCHER_13_BY_6_DB = "launcher_13_by_6.db";
+    public static final String LAUNCHER_16_BY_8_DB = "launcher_16_by_8.db";
+    public static final String LAUNCHER_22_BY_11_DB = "launcher_22_by_11.db";
+
     public static final String BACKUP_DB = "backup.db";
     public static final String SHARED_PREFERENCES_KEY = "com.android.launcher3.prefs";
     public static final String MANAGED_USER_PREFERENCES_KEY =
@@ -49,7 +55,12 @@ public class LauncherFiles {
             LAUNCHER_3_BY_3_DB,
             LAUNCHER_2_BY_2_DB,
             LAUNCHER_7_BY_3_DB,
-            LAUNCHER_8_BY_3_DB));
+            LAUNCHER_8_BY_3_DB,
+            LAUNCHER_10_BY_5_DB,
+            LAUNCHER_11_BY_5_DB,
+            LAUNCHER_13_BY_6_DB,
+            LAUNCHER_16_BY_8_DB,
+            LAUNCHER_22_BY_11_DB));
 
     public static final List<String> OTHER_FILES = Collections.unmodifiableList(Arrays.asList(
             BACKUP_DB,

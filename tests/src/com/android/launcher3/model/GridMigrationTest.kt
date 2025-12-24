@@ -26,7 +26,9 @@ import com.android.launcher3.GridType.Companion.GRID_TYPE_ANY
 import com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE
 import com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME
 import com.android.launcher3.celllayout.board.CellLayoutBoard
-import com.android.launcher3.pm.UserCache
+import com.android.launcher3.dagger.LauncherComponentProvider.appComponent
+import com.android.launcher3.util.Executors
+import com.android.launcher3.util.TestUtil
 import com.android.launcher3.util.rule.TestToPhoneFileCopier
 import com.android.launcher3.util.rule.setFlags
 import org.junit.Before
@@ -58,13 +60,7 @@ data class EntryData(
  */
 class GridMigrationData(dbFileName: String?, val gridState: DeviceGridState) {
 
-    val dbHelper: DatabaseHelper =
-        DatabaseHelper(
-            phoneContext,
-            dbFileName,
-            { UserCache.INSTANCE.get(phoneContext).getSerialNumberForUser(it) },
-            {},
-        )
+    val dbHelper: DatabaseHelper = DatabaseHelper(phoneContext, dbFileName) {}
 
     fun readEntries(): List<DbEntry> =
         GridSizeMigrationDBController.readAllEntries(
@@ -96,28 +92,15 @@ class GridMigrationTest {
     }
 
     private fun migrate(src: GridMigrationData, dst: GridMigrationData) {
-        if (Flags.gridMigrationRefactor()) {
-            val gridSizeMigrationLogic = GridSizeMigrationLogic()
-            gridSizeMigrationLogic.migrateGrid(
-                phoneContext,
-                src.gridState,
-                dst.gridState,
-                dst.dbHelper,
-                src.dbHelper.readableDatabase,
-                true,
-                modelDelegate,
-            )
-        } else {
-            GridSizeMigrationDBController.migrateGridIfNeeded(
-                phoneContext,
-                src.gridState,
-                dst.gridState,
-                dst.dbHelper,
-                src.dbHelper.readableDatabase,
-                true,
-                modelDelegate,
-            )
-        }
+        val gridSizeMigrationLogic = phoneContext.appComponent.createNewGridSizeMigrationLogic()
+        gridSizeMigrationLogic.migrateGrid(
+            src.gridState,
+            dst.gridState,
+            dst.dbHelper,
+            src.dbHelper.readableDatabase,
+            true,
+            modelDelegate,
+        )
     }
 
     /**
@@ -127,7 +110,7 @@ class GridMigrationTest {
     private fun validateDb(data: GridMigrationData) {
         // The array size is just a big enough number to fit all the number of workspaces
         val boards = Array(100) { CellLayoutBoard(data.gridState.columns, data.gridState.rows) }
-        data.readEntries().forEach {
+        data.readEntries()?.forEach {
             val cellLayoutBoard = boards[it.screenId]
             assert(cellLayoutBoard.isEmpty(it.cellX, it.cellY, it.spanX, it.spanY)) {
                 "Db has overlapping items"
@@ -141,9 +124,9 @@ class GridMigrationTest {
         val mapF = { it: DbEntry ->
             EntryData(it.cellX, it.cellY, it.screenId, it.spanX, it.spanY, it.rank)
         }
-        val entriesDst = dst.readEntries().sortedWith(sort).map(mapF)
-        val entriesTarget = target.readEntries().sortedWith(sort).map(mapF)
-        val entriesSrc = src.readEntries().sortedWith(sort).map(mapF)
+        val entriesDst = dst.readEntries()?.sortedWith(sort)?.map(mapF)
+        val entriesTarget = target.readEntries()?.sortedWith(sort)?.map(mapF)
+        val entriesSrc = src.readEntries()?.sortedWith(sort)?.map(mapF)
         Log.i(
             TAG,
             "entriesSrc: $entriesSrc\n entriesDst: $entriesDst\n entriesTarget: $entriesTarget",
@@ -162,13 +145,15 @@ class GridMigrationTest {
      * 4. migration notifies the complete callback.
      */
     private fun runTest(src: GridMigrationData, dst: GridMigrationData, target: GridMigrationData) {
-        migrate(src, dst)
-        assert(src.readEntries().size == dst.readEntries().size) {
-            "Source db and destination db do not contain the same number of elements"
+        TestUtil.runOnExecutorSync(Executors.MODEL_EXECUTOR) {
+            migrate(src, dst)
+            assert(src.readEntries()?.size == dst.readEntries()?.size) {
+                "Source db and destination db do not contain the same number of elements"
+            }
+            validateDb(dst)
+            compare(dst, target, src)
+            verify(modelDelegate).gridMigrationComplete(src.gridState, dst.gridState)
         }
-        validateDb(dst)
-        compare(dst, target, src)
-        verify(modelDelegate).gridMigrationComplete(src.gridState, dst.gridState)
     }
 
     // Copying the src db for all tests.

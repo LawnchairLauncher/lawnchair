@@ -57,7 +57,10 @@ public class SimpleOrientationTouchTransformer implements
         tracker.addCloseable(
                 () -> displayController.removeChangeListenerForDisplay(this, mDisplayId));
 
-        onDisplayInfoChanged(context, displayController.getInfoForDisplay(mDisplayId), CHANGE_ALL);
+        DisplayController.Info displayInfo = displayController.getInfoForDisplay(mDisplayId);
+        if (displayInfo != null) {
+            onDisplayInfoChanged(context, displayInfo, CHANGE_ALL);
+        }
     }
 
     @Override

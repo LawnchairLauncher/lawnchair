@@ -30,6 +30,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.kotlin.any
 import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.eq
@@ -73,7 +74,8 @@ class MultiDisplayDragMoveIndicatorSurfaceTest : ShellTestCase() {
 
         whenever(mockTransaction.remove(any())).thenReturn(mockTransaction)
         whenever(mockTransaction.setCrop(any(), any())).thenReturn(mockTransaction)
-        whenever(mockTransaction.setCornerRadius(any(), any())).thenReturn(mockTransaction)
+        whenever(mockTransaction.setCornerRadius(any(), anyFloat()))
+                                                                  .thenReturn(mockTransaction)
         whenever(mockTransaction.show(any())).thenReturn(mockTransaction)
         whenever(mockTransaction.hide(any())).thenReturn(mockTransaction)
         whenever(mockTransaction.setColor(any(), any())).thenReturn(mockTransaction)

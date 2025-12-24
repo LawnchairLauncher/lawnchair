@@ -64,8 +64,7 @@ public class BubbleBarHandleView extends View {
     private float mCurrentHandleWidth;
     @Nullable
     private ObjectAnimator mColorChangeAnim;
-    private @ColorInt int mRegionSamplerColor;
-    private boolean mHasSampledColor;
+    private @ColorInt int mHandleColor;
 
     public BubbleBarHandleView(Context context) {
         this(context, null /* attrs */);
@@ -88,7 +87,7 @@ public class BubbleBarHandleView extends View {
         mHandleHeight = getResources().getDimensionPixelSize(
                 R.dimen.bubble_bar_expanded_view_handle_height);
         mHandleWidth = getResources().getDimensionPixelSize(
-                R.dimen.bubble_bar_expanded_view_caption_width);
+                R.dimen.bubble_bar_expanded_view_handle_width);
         mHandleLightColor = ContextCompat.getColor(getContext(),
                 R.color.bubble_bar_expanded_view_handle_light);
         mHandleDarkColor = ContextCompat.getColor(getContext(),
@@ -133,16 +132,6 @@ public class BubbleBarHandleView extends View {
     }
 
     /**
-     * Set initial color for the handle. Takes effect if the
-     * {@link #updateHandleColor(boolean, boolean)} has not been called.
-     */
-    public void setHandleInitialColor(@ColorInt int color) {
-        if (!mHasSampledColor) {
-            setHandleColor(color);
-        }
-    }
-
-    /**
      * Updates the handle color.
      *
      * @param isRegionDark Whether the background behind the handle is dark, and thus the handle
@@ -151,11 +140,10 @@ public class BubbleBarHandleView extends View {
      */
     public void updateHandleColor(boolean isRegionDark, boolean animated) {
         int newColor = isRegionDark ? mHandleLightColor : mHandleDarkColor;
-        if (newColor == mRegionSamplerColor) {
+        if (newColor == mHandleColor) {
             return;
         }
-        mHasSampledColor = true;
-        mRegionSamplerColor = newColor;
+        mHandleColor = newColor;
         if (mColorChangeAnim != null) {
             mColorChangeAnim.cancel();
         }
@@ -185,14 +173,14 @@ public class BubbleBarHandleView extends View {
             int menuColor) {
         float currentWidth = mHandleWidth + widthDelta * progress;
         float currentHeight = mHandleHeight + heightDelta * progress;
-        int color = (int) mArgbEvaluator.evaluate(progress, mRegionSamplerColor, menuColor);
+        int color = (int) mArgbEvaluator.evaluate(progress, mHandleColor, menuColor);
         setHandleProperties(currentWidth, currentHeight, color);
         setTranslationY(heightDelta * progress / 2);
     }
 
     /** Restores all the properties that were animated to the default values. */
     public void restoreAnimationDefaults() {
-        setHandleProperties(mHandleWidth, mHandleHeight, mRegionSamplerColor);
+        setHandleProperties(mHandleWidth, mHandleHeight, mHandleColor);
         setTranslationY(0);
     }
 

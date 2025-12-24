@@ -18,8 +18,6 @@ package com.android.launcher3.util;
 
 import static android.provider.Settings.System.ACCELEROMETER_ROTATION;
 
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -34,14 +32,19 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.dagger.LauncherAppSingleton;
 import com.android.launcher3.dagger.LauncherBaseAppComponent;
+import com.android.launcher3.concurrent.annotations.LightweightBackground;
+import static com.android.launcher3.concurrent.annotations.LightweightBackgroundPriority.UI;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * ContentObserver over Settings keys that also has a caching layer.
@@ -49,8 +52,7 @@ import javax.inject.Inject;
  * {@link #unregister(Uri, OnChangeListener)} methods.
  *
  * This can be used as a normal cache without any listeners as well via the
- * {@link #getValue(Uri, int)} and {@link #onChange)} to update (and subsequently call
- * get)
+ * {@link #getValue} and {@link #onChange(boolean, Uri)} to update (and subsequently call get)
  *
  * The cache will be invalidated/updated through the normal
  * {@link ContentObserver#onChange(boolean)} calls
@@ -91,7 +93,9 @@ public class SettingsCache extends ContentObserver {
     private final Map<Uri, Boolean> mKeyCache = new ConcurrentHashMap<>();
     private final Map<Uri, CopyOnWriteArrayList<OnChangeListener>> mListenerMap =
             new ConcurrentHashMap<>();
+    private final Set<Uri> mUrisEnabledByDefault;
     protected final ContentResolver mResolver;
+    private final Executor mLightweightBackgroundExecutor;
 
     /**
      * Singleton instance
@@ -100,18 +104,24 @@ public class SettingsCache extends ContentObserver {
             new DaggerSingletonObject<>(LauncherBaseAppComponent::getSettingsCache);
 
     @Inject
-    SettingsCache(@ApplicationContext Context context, DaggerSingletonTracker tracker) {
+    SettingsCache(@ApplicationContext Context context,
+            @Named("SETTINGS_ENABLED_BY_DEFAULT") Set<Uri> urisEnabledByDefault,
+            DaggerSingletonTracker tracker,
+            @LightweightBackground(priority = UI) Executor lightweightBackgroundExecutor) {
         super(new Handler(Looper.getMainLooper()));
         mResolver = context.getContentResolver();
+        mUrisEnabledByDefault = urisEnabledByDefault;
+        mLightweightBackgroundExecutor = lightweightBackgroundExecutor;
         tracker.addCloseable(() ->
-                UI_HELPER_EXECUTOR.execute(() -> mResolver.unregisterContentObserver(this)));
+                mLightweightBackgroundExecutor.execute(
+                        () -> mResolver.unregisterContentObserver(this)));
     }
 
     @Override
     public void onChange(boolean selfChange, Uri uri) {
         // We use default of 1, but if we're getting an onChange call, can assume a non-default
         // value will exist
-        boolean newVal = updateValue(uri, 1 /* Effectively Unused */);
+        boolean newVal = updateValue(uri);
         List<OnChangeListener> listeners = mListenerMap.get(uri);
         if (listeners == null) {
             return;
@@ -124,22 +134,14 @@ public class SettingsCache extends ContentObserver {
 
     /**
      * Returns the value for this classes key from the cache. If not in cache, will call
-     * {@link #updateValue(Uri, int)} to fetch.
+     * {@link #updateValue(Uri)} to fetch.
      */
     public boolean getValue(Uri keySetting) {
-        return getValue(keySetting, 1);
-    }
-
-    /**
-     * Returns the value for this classes key from the cache. If not in cache, will call
-     * {@link #updateValue(Uri, int)} to fetch.
-     */
-    public boolean getValue(Uri keySetting, int defaultValue) {
         if (mKeyCache.containsKey(keySetting)) {
             return mKeyCache.get(keySetting);
         } else {
             try {
-                return updateValue(keySetting, defaultValue);
+                return updateValue(keySetting);
             } catch (SecurityException e) {
                 Log.d("LC_SettingsCache", "Key not readable, assume false for " + keySetting.toString());
                 return false;
@@ -148,7 +150,8 @@ public class SettingsCache extends ContentObserver {
     }
 
     private void registerUriAsync(Uri uri) {
-        UI_HELPER_EXECUTOR.execute(() -> mResolver.registerContentObserver(uri, false, this));
+        mLightweightBackgroundExecutor.execute(
+                () -> mResolver.registerContentObserver(uri, false, this));
     }
 
     /**
@@ -160,9 +163,10 @@ public class SettingsCache extends ContentObserver {
         mListenerMap.computeIfAbsent(uri, mListenerMapper).add(changeListener);
     }
 
-    private boolean updateValue(Uri keyUri, int defaultValue) {
+    private boolean updateValue(Uri keyUri) {
         String key = keyUri.getLastPathSegment();
         boolean newVal;
+        int defaultValue = mUrisEnabledByDefault.contains(keyUri) ? 1 : 0;
         if (keyUri.toString().startsWith(SYSTEM_URI_PREFIX)) {
             newVal = Settings.System.getInt(mResolver, key, defaultValue) == 1;
         } else if (keyUri.toString().startsWith(GLOBAL_URI_PREFIX)) {

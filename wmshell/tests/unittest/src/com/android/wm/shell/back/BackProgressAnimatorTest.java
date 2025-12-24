@@ -19,7 +19,6 @@ package com.android.wm.shell.back;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -34,6 +33,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.wm.shell.ShellTestCase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 @TestableLooper.RunWithLooper
 @RunWith(AndroidTestingRunner.class)
 public class BackProgressAnimatorTest extends ShellTestCase {
+    private static final float PROGRESS_EPSILON = 0.00001f;
     private BackProgressAnimator mProgressAnimator;
     private BackEvent mReceivedBackEvent;
     private float mTargetProgress = 0.5f;
@@ -58,8 +59,7 @@ public class BackProgressAnimatorTest extends ShellTestCase {
                 /* frameTime = */ 0,
                 /* progress = */ progress,
                 /* triggerBack = */ false,
-                /* swipeEdge = */ BackEvent.EDGE_LEFT,
-                /* departingAnimationTarget = */ null);
+                /* swipeEdge = */ BackEvent.EDGE_LEFT);
     }
 
     @Before
@@ -75,13 +75,19 @@ public class BackProgressAnimatorTest extends ShellTestCase {
                 });
     }
 
+    @After
+    public void tearDown() throws Exception {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(
+                () -> mProgressAnimator.reset());
+    }
+
     @Test
     public void testBackProgressed() throws InterruptedException {
         final BackMotionEvent backEvent = backMotionEventFrom(100, mTargetProgress);
         mMainThreadHandler.post(
                 () -> mProgressAnimator.onBackProgressed(backEvent));
 
-        mTargetProgressCalled.await(1, TimeUnit.SECONDS);
+        mTargetProgressCalled.await(2, TimeUnit.SECONDS);
 
         assertNotNull(mReceivedBackEvent);
         assertEquals(mReceivedBackEvent.getProgress(), mTargetProgress, 0 /* delta */);
@@ -93,7 +99,7 @@ public class BackProgressAnimatorTest extends ShellTestCase {
         final BackMotionEvent backEvent = backMotionEventFrom(100, mTargetProgress);
         mMainThreadHandler.post(
                 () -> mProgressAnimator.onBackProgressed(backEvent));
-        mTargetProgressCalled.await(1, TimeUnit.SECONDS);
+        mTargetProgressCalled.await(2, TimeUnit.SECONDS);
         assertNotNull(mReceivedBackEvent);
 
         // Trigger animation cancel, the target progress should be 0.
@@ -109,29 +115,12 @@ public class BackProgressAnimatorTest extends ShellTestCase {
     }
 
     @Test
-    public void testBackInvoked() throws InterruptedException {
-        // Give the animator some progress.
-        final BackMotionEvent backEvent = backMotionEventFrom(100, mTargetProgress);
-        mMainThreadHandler.post(
-                () -> mProgressAnimator.onBackProgressed(backEvent));
-        mTargetProgressCalled.await(1, TimeUnit.SECONDS);
-        assertNotNull(mReceivedBackEvent);
-
-        // Trigger back invoked animation
-        CountDownLatch finishCallbackCalled = new CountDownLatch(1);
-        mMainThreadHandler.post(
-                () -> mProgressAnimator.onBackInvoked(finishCallbackCalled::countDown));
-        assertTrue("onBackInvoked finishCallback never called",
-                finishCallbackCalled.await(1, TimeUnit.SECONDS));
-    }
-
-    @Test
     public void testResetCallsCancelCallbackImmediately() throws InterruptedException {
         // Give the animator some progress.
         final BackMotionEvent backEvent = backMotionEventFrom(100, mTargetProgress);
         mMainThreadHandler.post(
                 () -> mProgressAnimator.onBackProgressed(backEvent));
-        mTargetProgressCalled.await(1, TimeUnit.SECONDS);
+        mTargetProgressCalled.await(2, TimeUnit.SECONDS);
         assertNotNull(mReceivedBackEvent);
 
         mTargetProgress = 0;
@@ -161,7 +150,7 @@ public class BackProgressAnimatorTest extends ShellTestCase {
         final BackMotionEvent backEvent = backMotionEventFrom(100, mTargetProgress);
         mMainThreadHandler.post(
                 () -> mProgressAnimator.onBackProgressed(backEvent));
-        mTargetProgressCalled.await(1, TimeUnit.SECONDS);
+        mTargetProgressCalled.await(2, TimeUnit.SECONDS);
         assertNotNull(mReceivedBackEvent);
 
         // call onBackCancelled (which animates progress to 0 before invoking the finishCallback)
@@ -180,33 +169,8 @@ public class BackProgressAnimatorTest extends ShellTestCase {
         assertEquals(1, finishCallbackCalled.getCount());
     }
 
-    @Test
-    public void testOnBackInvokedFinishCallbackNotInvokedWhenRemoved() throws InterruptedException {
-        // Give the animator some progress.
-        final BackMotionEvent backEvent = backMotionEventFrom(100, mTargetProgress);
-        mMainThreadHandler.post(
-                () -> mProgressAnimator.onBackProgressed(backEvent));
-        mTargetProgressCalled.await(1, TimeUnit.SECONDS);
-        assertNotNull(mReceivedBackEvent);
-
-        CountDownLatch finishCallbackCalled = new CountDownLatch(1);
-        // Trigger back invoked animation and remove onBackInvoked finishCallback (while progress
-        // is still animating to 1)
-        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
-                    mProgressAnimator.onBackInvoked(finishCallbackCalled::countDown);
-                    mProgressAnimator.removeOnBackInvokedFinishCallback();
-                }
-        );
-
-        // call reset (which triggers the finishCallback invocation, if one is present)
-        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> mProgressAnimator.reset());
-
-        // verify that finishCallback is not invoked
-        assertEquals(1, finishCallbackCalled.getCount());
-    }
-
     private void onGestureProgress(BackEvent backEvent) {
-        if (mTargetProgress == backEvent.getProgress()) {
+        if (Math.abs(mTargetProgress - backEvent.getProgress()) < PROGRESS_EPSILON) {
             mReceivedBackEvent = backEvent;
             mTargetProgressCalled.countDown();
         }

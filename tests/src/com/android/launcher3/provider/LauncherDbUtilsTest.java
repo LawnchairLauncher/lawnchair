@@ -20,10 +20,16 @@ import static android.content.pm.LauncherApps.EXTRA_PIN_ITEM_REQUEST;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ICON;
 import static com.android.launcher3.LauncherSettings.Favorites.INTENT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
+import static com.android.launcher3.LauncherSettings.Favorites.TITLE;
+import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
+import static com.android.launcher3.icons.GraphicsUtils.flattenBitmap;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -38,6 +44,8 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Process;
 
@@ -45,16 +53,17 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.model.DatabaseHelper;
 import com.android.launcher3.model.DbDowngradeHelper;
-import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.settings.SettingsActivity;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IOUtils;
+import com.android.launcher3.util.TestUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * Test for {@link LauncherDbUtils}.
@@ -142,6 +151,108 @@ public class LauncherDbUtilsTest {
         }
     }
 
+    @Test
+    public void updateBackupIcons_updatesAppWithNoIcon() {
+        // Given
+        Intent intent = new Intent(mContext, SettingsActivity.class);
+        SQLiteDatabase db = new MyDatabaseHelper().getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(ITEM_TYPE, 0);
+        cv.put(TITLE, "test_app_no_icon");
+        cv.put(INTENT, intent.toUri(0));
+        db.insert(Favorites.TABLE_NAME, null, cv);
+        // When
+        assertEquals("Error creating test db, unexpected row count.",
+                1, getFavoriteDataCount(db));
+        TestUtil.runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            LauncherDbUtils.updateBackupIcons(mContext, db, /* useDefaultShape **/ false);
+        });
+        assertEquals("Unexpected row count after updateBackupIcons().",
+                1, getFavoriteDataCount(db));
+        // Then
+        try (Cursor cursor = queryFavoritesTable(db)) {
+            assertIconNotNull(cursor);
+        }
+    }
+
+    @Test
+    public void updateBackupIcons_updatesShortcutWithNoIcon() {
+        // Given
+        Intent intent = new Intent(mContext, SettingsActivity.class);
+        SQLiteDatabase db = new MyDatabaseHelper().getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(ITEM_TYPE, 6);
+        cv.put(TITLE, "test_shortcut_no_icon");
+        cv.put(INTENT, intent.toUri(0));
+        db.insert(Favorites.TABLE_NAME, null, cv);
+        // When
+        assertEquals("Error creating test db, unexpected row count.",
+                1, getFavoriteDataCount(db));
+        TestUtil.runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            LauncherDbUtils.updateBackupIcons(mContext, db, /* useDefaultShape **/ false);
+        });
+        assertEquals("Unexpected row count after updateBackupIcons().",
+                1, getFavoriteDataCount(db));
+        // Then
+        try (Cursor cursor = queryFavoritesTable(db)) {
+            assertIconNotNull(cursor);
+        }
+    }
+
+    @Test
+    public void updateBackupIcons_updatesAppWithOldIcon() {
+        // Given
+        Intent intent = new Intent(mContext, SettingsActivity.class);
+        SQLiteDatabase db = new MyDatabaseHelper().getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        byte[] unexpectedBlob = getIconBlob(Color.BLUE);
+        cv.put(ITEM_TYPE, 0);
+        cv.put(TITLE, "test_app_with_icon");
+        cv.put(INTENT, intent.toUri(0));
+        cv.put(ICON, unexpectedBlob);
+        db.insert(Favorites.TABLE_NAME, null, cv);
+        // When
+        assertEquals("Error creating test db, unexpected row count.",
+                1, getFavoriteDataCount(db));
+        TestUtil.runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            LauncherDbUtils.updateBackupIcons(mContext, db, /* useDefaultShape **/ false);
+        });
+        assertEquals("Unexpected row count after updateBackupIcons().",
+                1, getFavoriteDataCount(db));
+        // Then
+        try (Cursor cursor = queryFavoritesTable(db)) {
+            assertIconNotNull(cursor);
+            assertIconChanged(cursor, unexpectedBlob);
+        }
+    }
+
+    @Test
+    public void updateBackupIcons_updatesShortcutWithOldIcon() {
+        // Given
+        Intent intent = new Intent(mContext, SettingsActivity.class);
+        SQLiteDatabase db = new MyDatabaseHelper().getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        byte[] unexpectedBlob = getIconBlob(Color.GREEN);
+        cv.put(ITEM_TYPE, 6);
+        cv.put(TITLE, "test_shortcut_with_icon");
+        cv.put(INTENT, intent.toUri(0));
+        cv.put(ICON, unexpectedBlob);
+        db.insert(Favorites.TABLE_NAME, null, cv);
+        // When
+        assertEquals("Error creating test db, unexpected row count.",
+                1, getFavoriteDataCount(db));
+        TestUtil.runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            LauncherDbUtils.updateBackupIcons(mContext, db, /* useDefaultShape **/ false);
+        });
+        assertEquals("Unexpected row count after updateBackupIcons().",
+                1, getFavoriteDataCount(db));
+        // Then
+        try (Cursor cursor = queryFavoritesTable(db)) {
+            assertIconNotNull(cursor);
+            assertIconChanged(cursor, unexpectedBlob);
+        }
+    }
+
     private SQLiteDatabase setupLegacyShortcut(Intent intent) throws Exception {
         SQLiteDatabase db = new MyDatabaseHelper().getWritableDatabase();
         try (InputStream in = mContext.getResources().openRawResource(R.raw.downgrade_schema)) {
@@ -149,9 +260,9 @@ public class LauncherDbUtilsTest {
         }
 
         ContentValues cv = new ContentValues();
-        cv.put("itemType", 1);
-        cv.put("title", "Hello");
-        cv.put("intent", intent == null ? null : intent.toUri(0));
+        cv.put(ITEM_TYPE, 1);
+        cv.put(TITLE, "Hello");
+        cv.put(INTENT, intent == null ? null : intent.toUri(0));
         db.insert(Favorites.TABLE_NAME, null, cv);
         return db;
     }
@@ -162,11 +273,37 @@ public class LauncherDbUtilsTest {
         }
     }
 
+    private Cursor queryFavoritesTable(SQLiteDatabase db) {
+        Cursor c = db.query(Favorites.TABLE_NAME, null, null, null, null, null, null);
+        c.moveToNext();
+        return c;
+    }
+
+    private static void assertIconNotNull(Cursor cursor) {
+        assertNotNull("Icon blob should be non-null.",
+                cursor.getBlob(cursor.getColumnIndexOrThrow(Favorites.ICON)));
+    }
+
+    private static void assertIconChanged(Cursor cursor, byte[] unexpectedIcon) {
+        assertFalse(
+                "Icon blob should have changed.",
+                Arrays.equals(
+                        unexpectedIcon,
+                        cursor.getBlob(cursor.getColumnIndexOrThrow(Favorites.ICON))
+                )
+        );
+    }
+
+    private byte[] getIconBlob(int color) {
+        Bitmap bitmap = LOW_RES_ICON.copy(Bitmap.Config.ARGB_8888, true);
+        bitmap.eraseColor(color);
+        return flattenBitmap(bitmap);
+    }
+
     private class MyDatabaseHelper extends DatabaseHelper {
 
         MyDatabaseHelper() {
-            super(mContext, null, UserCache.INSTANCE.get(mContext)::getSerialNumberForUser,
-                    () -> { });
+            super(mContext, null, () -> { });
         }
 
         @Override

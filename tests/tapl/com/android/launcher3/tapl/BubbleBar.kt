@@ -140,6 +140,14 @@ class BubbleBar(private val mLauncher: LauncherInstrumentation) {
         }
     }
 
+    /** Cleans up the bubble bar if test failed to remove it. */
+    fun cleanup() {
+        mLauncher.collapseBubbleBar()
+        mLauncher.addContextLayer("Verify bubble bar is removed").use {
+            mLauncher.waitUntilLauncherObjectGone(bubbleBarViewSelector)
+        }
+    }
+
     companion object {
         const val RES_ID_NAME_BUBBLE_BAR = "taskbar_bubbles"
         const val RES_ID_NAME_DISMISS_VIEW = "dismiss_view"

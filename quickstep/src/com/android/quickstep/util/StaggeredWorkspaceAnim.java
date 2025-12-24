@@ -24,6 +24,7 @@ import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -47,7 +48,9 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.taskbar.customization.TaskbarFeatureEvaluator;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DynamicResource;
@@ -81,10 +84,13 @@ public class StaggeredWorkspaceAnim {
 
     public StaggeredWorkspaceAnim(QuickstepLauncher launcher, float velocity,
             boolean animateOverviewScrim, @Nullable View ignoredView, boolean staggerWorkspace) {
-        boolean isPinnedTaskbarAndNotInDesktopMode = DisplayController.isPinnedTaskbar(launcher)
-                && !DisplayController.isInDesktopMode(launcher);
+        boolean isPersistentTaskbarAndNotInDesktopMode =
+                (!TaskbarFeatureEvaluator.INSTANCE.get(launcher).isTransient()
+                        || DisplayController.getNavigationMode(launcher) == THREE_BUTTONS)
+                        && !DesktopVisibilityController.INSTANCE.get(launcher)
+                        .isInDesktopMode(launcher.getDisplayId());
         mTaskbarDurationInMs = QuickstepTransitionManager.getTaskbarToHomeDuration(
-                isPinnedTaskbarAndNotInDesktopMode);
+                isPersistentTaskbarAndNotInDesktopMode);
         prepareToAnimate(launcher, animateOverviewScrim);
 
         mIgnoredView = ignoredView;

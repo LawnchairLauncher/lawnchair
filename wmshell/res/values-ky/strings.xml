@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Колдонмо көбүкчөнү колдоого албайт"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Экранды бөлгүч"</string>
     <string name="divider_title" msgid="1963391955593749442">"Экранды бөлгүч"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Сол жактагы экранды толук экран режимине өткөрүү"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Сол жактагы экранды 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Сол жактагы экранды 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Сол жактагы экранды 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Оң жактагы экранды толук экран режимине өткөрүү"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Өйдө жактагы колдонмону ылдый жактагы менен алмаштыруу"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Сол жактагы колдонмону оң жактагы менен алмаштыруу"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Үстүнкү экранды толук экран режимине өткөрүү"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Үстүнкү экранды 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Үстүнкү экранды 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Үстүнкү экранды 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Ылдыйкы экранды толук экран режимине өткөрүү"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Сол жактагы колдонмону толук экранда ачуу"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10% солго, 90% оңго"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30% солго, 70% оңго"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50% солго, 50% оңго"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70% солго, 30% оңго"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90% солго, 10% оңго"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Оң жактагы колдонмону толук экранда ачуу"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Өйдө жактагы колдонмо менен ылдый жактагы колдонмону алмаштыруу. Учурдагыдай бөлүнсүн"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Сол жактагы колдонмо менен оң жактагы колдонмону алмаштыруу. Учурдагыдай бөлүнсүн"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Өйдө жактагы колдонмону толук экранда ачуу"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10% өйдө, 90% ылдый"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30% өйдө, 70% ылдый"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50% өйдө, 50% ылдый"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70% өйдө, 30% ылдый"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90% өйдө, 10% ылдый"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Ылдый жактагы колдонмону толук экранда ачуу"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Солго бөлүү"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Оңго бөлүү"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Өйдө бөлүү"</string>

@@ -18,6 +18,7 @@ package com.android.launcher3.tapl;
 
 
 import android.graphics.Point;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,6 +61,20 @@ public abstract class AppIcon extends Launchable {
 
     static BySelector getMenuItemSelector(String text, LauncherInstrumentation launcher) {
         return By.clazz(TextView.class).text(text).pkg(launcher.getLauncherPackageName());
+    }
+
+    /**
+     * Creates a {@link BySelector} to find a menu shortcut with specified
+     * {@link UiObject2#getContentDescription()}.
+     * <p>
+     * This is used for menu items that are represented by an icon without text.
+     *
+     * @param desc the {@link UiObject2#getContentDescription()}
+     * @param launcher the {@link LauncherInstrumentation}
+     * @return the {@link BySelector} to find the shortcut
+     */
+    static BySelector getMenuShortcutSelector(String desc, LauncherInstrumentation launcher) {
+        return By.clazz(ImageView.class).desc(desc).pkg(launcher.getLauncherPackageName());
     }
 
     static BySelector getAnyAppIconSelector() {
@@ -121,7 +136,7 @@ public abstract class AppIcon extends Launchable {
      * get the name of an app where the text of it is multiline.
      */
     @NonNull
-    String getAppName() {
+    public String getAppName() {
         return getObject().getContentDescription();
     }
 

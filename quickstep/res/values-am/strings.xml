@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"የመተግበሪያ አስተያየት ጥቆማዎች ወደ ባዶ ቦታ ታክለዋል"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"የመተግበሪያ አስተያየት ጥቆማዎች ነቅቷል"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"የመተግበሪያ አስተያየቶች ቦዝነዋል"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"የተገመተው መተግበሪያ፦ <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"የእጅ ምልክት ዳሰሳ አጋዥ ሥልጠና"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"መሣሪያዎን ያሽከርክሩ"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"የእጅ ምልክት ዳሰሳ አጋዥ ሥልጠናን ለማጠናቀቅ እባክዎ መሣሪያዎን ያሽከርክሩ"</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"የስርዓት አሰሳ ቅንብሮች"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"የእርስዎ <xliff:g id="DEVICE">%1$s</xliff:g> \nዝግጁ ነው!"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"የእርስዎ መሣሪያ \nዝግጁ ነው!"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"ለመሄድ ዝግጁ ነዎት!"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"በእርስዎ አዲስ <xliff:g id="DEVICE">%1$s</xliff:g> ይደሰቱ!"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"በእርስዎ <xliff:g id="DEVICE">%1$s</xliff:g> ለመጀመር ወደ ላይ ያንሸራትቱ"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"በእርስዎ <xliff:g id="DEVICE">%1$s</xliff:g> ለመጀመር መታ ያድርጉ"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"እንዴት እንደሚያስሱ ይምረጡ"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"ወደ ላይ ያንሸራትቱ"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"የመነሻ አዝራር ላይ መታ ያድርጉ"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"ማሳወቂያዎች"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ፈጣን ቅንብሮች"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"የተግባር አሞሌ"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"የተግባር አሞሌ ይታያል"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"የተግባር አሞሌ እና አረፋዎች በግራ በኩል ይታያሉ"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"የተግባር አሞሌ እና አረፋዎች በቀኝ በኩል ይታያሉ"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"የአሰሳ አሞሌ"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"ሁልጊዜ የተግባር አሞሌ ያሳዩ"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"የአሰሳ ሁነታን ይለውጡ"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"የተግባር አሞሌ አካፋይ"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"ሌሎች የቅርብ ጊዜ መተግበሪያዎች"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"ትር ወደ የተግባር አሞሌ ታክሏል"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"መተግበሪያ ከተግባር አሞሌ ተወግዷል"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ወደ ላይ/ግራ ይውሰዱ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ወደ ታች/ቀኝ ይውሰዱ"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"መተግበሪያን እንደ ዓረፋ ይክፈቱ"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"የመተግበሪያ አዶ"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"የመተግበሪያ ርዕስ"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"የዝጋ አዝራር"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"ተግባር አሞሌ ላይ ፒን አድርግ"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"ከተግባር አሞሌ ንቀል"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"ገፋ አድርግ"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"ዝጋ"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"ምስልን ገፋ ማድረግ"</string>

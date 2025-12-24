@@ -18,6 +18,7 @@ package com.android.launcher3.tapl;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import androidx.test.uiautomator.By;
@@ -130,11 +131,19 @@ public class SearchResultFromQsb implements SearchInputSource {
     public void verifyTileIsPresent(String title, String subtitle) {
         mLauncher.waitForObjectInContainer(mSearchContainer,
                 getSearchResultSelector(title));
-        mLauncher.waitForObjectInContainer(mSearchContainer,
-                getSearchResultSelector(subtitle));
+        if (!TextUtils.isEmpty(subtitle)) {
+            mLauncher.waitForObjectInContainer(mSearchContainer,
+                    getSearchResultSelector(subtitle));
+        }
     }
 
     private BySelector getSearchResultSelector(String text) {
         return By.clazz(TextView.class).text(text);
+    }
+
+    /** Verify the compose view exists for QS tile in search container. */
+    public void verifyTileComposeViewIsPresent() {
+        mLauncher.waitForObjectInContainer(mSearchContainer,
+                "compose_tile_layout");
     }
 }

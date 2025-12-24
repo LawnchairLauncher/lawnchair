@@ -30,7 +30,6 @@ import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
@@ -43,7 +42,6 @@ import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
-import com.android.quickstep.fallback.window.RecentsWindowManager;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.SingleTask;
 import com.android.quickstep.util.SplitSelectStateController;
@@ -52,6 +50,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskContainer;
 import com.android.quickstep.views.TaskView;
+import com.android.quickstep.window.RecentsWindowManager;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.wm.shell.shared.GroupedTaskInfo;
 
@@ -87,12 +86,6 @@ public class FallbackRecentsView<CONTAINER_TYPE extends Context & RecentsViewCon
         }
         setOverviewStateEnabled(true);
         setOverlayEnabled(true);
-    }
-
-    @Override
-    protected void handleStartHome(boolean animated) {
-        mContainer.startHome();
-        AbstractFloatingView.closeAllOpenViews(mContainer, mContainer.isStarted());
     }
 
     @Override
@@ -247,7 +240,7 @@ public class FallbackRecentsView<CONTAINER_TYPE extends Context & RecentsViewCon
 
     @Override
     public void onStateTransitionStart(RecentsState toState) {
-        setOverviewStateEnabled(true);
+        setOverviewStateEnabled(toState.isRecentsViewVisible());
         if (enableGridOnlyOverview()) {
             if (toState.displayOverviewTasksAsGrid(mContainer.getDeviceProfile())) {
                 setOverviewGridEnabled(true);
@@ -265,8 +258,9 @@ public class FallbackRecentsView<CONTAINER_TYPE extends Context & RecentsViewCon
 
         resetShareUIState();
 
-        // Set border after select mode changes to avoid showing border during state transition
-        if (!toState.isRecentsViewVisible() || toState == MODAL_TASK) {
+        // Set border state changes to avoid showing border during state transitions
+        if (!toState.isRecentsViewVisible() || toState == MODAL_TASK
+                || toState == OVERVIEW_SPLIT_SELECT) {
             setTaskBorderEnabled(false);
         }
 
@@ -275,7 +269,8 @@ public class FallbackRecentsView<CONTAINER_TYPE extends Context & RecentsViewCon
 
     @Override
     public void onStateTransitionComplete(RecentsState finalState) {
-        DesktopVisibilityController.INSTANCE.get(mContainer).onLauncherStateChanged(finalState);
+        DesktopVisibilityController.INSTANCE.get(mContainer).onLauncherStateChanged(
+                mContainer.getDisplayId(), finalState);
         if (enableGridOnlyOverview()) {
             if (!finalState.displayOverviewTasksAsGrid(mContainer.getDeviceProfile())) {
                 setOverviewGridEnabled(false);
@@ -301,7 +296,7 @@ public class FallbackRecentsView<CONTAINER_TYPE extends Context & RecentsViewCon
         }
 
         // disabling this so app icons aren't drawn on top of recent tasks.
-        if (isOverlayEnabled && !(mContainer instanceof RecentsWindowManager)) {
+        if (isOverlayEnabled) {
             mBlurUtils.setDrawLiveTileBelowRecents(true);
         }
     }
@@ -312,7 +307,6 @@ public class FallbackRecentsView<CONTAINER_TYPE extends Context & RecentsViewCon
         if (enabled) {
             RecentsState state = mContainer.getStateManager().getState();
             setDisallowScrollToClearAll(!state.hasClearAllButton());
-            setDisallowScrollToAddDesk(!state.hasAddDeskButton());
         }
     }
 
@@ -331,6 +325,11 @@ public class FallbackRecentsView<CONTAINER_TYPE extends Context & RecentsViewCon
 
     @Override
     public boolean canLaunchFullscreenTask() {
+        // On external displays, the container is RecentsWindowManager and its state can be stale.
+        // Query `isSplitSelectionActive` directly for the current split selection status.
+        if (mContainer instanceof RecentsWindowManager) {
+            return !isSplitSelectionActive();
+        }
         return !mContainer.isInState(OVERVIEW_SPLIT_SELECT);
     }
 }

@@ -29,7 +29,7 @@ import com.android.systemui.shared.system.InputChannelCompat.InputEventListener;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 
 /**
- * @see android.view.InputMonitor
+ * @see InputMonitor
  */
 public class InputMonitorCompat {
     static final String TAG = "InputMonitorCompat";

@@ -34,8 +34,7 @@ import org.mockito.kotlin.times
 /**
  * Tests for [LetterboxSurfaceBuilder].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:LetterboxSurfaceBuilderTest
+ * Build/Install/Run: atest WMShellUnitTests:LetterboxSurfaceBuilderTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
@@ -57,9 +56,7 @@ class LetterboxSurfaceBuilderTest : ShellTestCase() {
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<LetterboxSurfaceBuilderRobotTest>) {
         val robot = LetterboxSurfaceBuilderRobotTest(mContext)
         consumer.accept(robot)
@@ -74,11 +71,9 @@ class LetterboxSurfaceBuilderTest : ShellTestCase() {
         private val surfaceBuilder: SurfaceControl.Builder
 
         companion object {
-            @JvmStatic
-            val TEST_SURFACE_NAME = "SurfaceForTest"
+            @JvmStatic val TEST_SURFACE_NAME = "SurfaceForTest"
 
-            @JvmStatic
-            val TEST_SURFACE_CALL_SITE = "CallSiteForTest"
+            @JvmStatic val TEST_SURFACE_CALL_SITE = "CallSiteForTest"
         }
 
         init {
@@ -96,23 +91,20 @@ class LetterboxSurfaceBuilderTest : ShellTestCase() {
                 parentLeash,
                 TEST_SURFACE_NAME,
                 TEST_SURFACE_CALL_SITE,
-                surfaceBuilder
+                surfaceBuilder,
             )
         }
 
         fun checkNameIsSet(expected: Boolean) {
-            verify(surfaceBuilder, expected.asMode())
-                .setName(TEST_SURFACE_NAME)
+            verify(surfaceBuilder, expected.asMode()).setName(TEST_SURFACE_NAME)
         }
 
         fun checkCallSiteIsSet(expected: Boolean) {
-            verify(surfaceBuilder, expected.asMode())
-                .setCallsite(TEST_SURFACE_CALL_SITE)
+            verify(surfaceBuilder, expected.asMode()).setCallsite(TEST_SURFACE_CALL_SITE)
         }
 
         fun checkSurfaceIsHidden(invoked: Boolean, isHidden: Boolean) {
-            verify(surfaceBuilder, invoked.asMode())
-                .setHidden(isHidden)
+            verify(surfaceBuilder, invoked.asMode()).setHidden(isHidden)
         }
 
         fun checkColorLayerIsSet(expected: Boolean) {

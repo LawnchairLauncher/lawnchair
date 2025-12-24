@@ -36,7 +36,13 @@ public class FailureWatcher extends TestWatcher {
 
     @Override
     protected void starting(Description description) {
-        mLauncher.setOnFailure(() -> onError(mLauncher, description));
+        // Set a handler to save artifacts immediately when TAPL detects a failure. This
+        // results in the freshesh screenshot etc.
+        // But skipping saving a bugreport because this may happen in the time-limited part of the
+        // test and if slow, can result in TestTimedOutException.
+        // Bug report then will be taken from failed().
+        mLauncher.setOnFailure(() -> onErrorImpl(mLauncher, description,
+                /* skipBugreport */ true));
         super.starting(description);
     }
 
@@ -87,6 +93,12 @@ public class FailureWatcher extends TestWatcher {
 
     /** Action executed when an error condition is expected. Saves artifacts. */
     public static void onError(LauncherInstrumentation launcher, Description description) {
+        onErrorImpl(launcher, description, false);
+    }
+
+    /** Action executed when an error condition is expected. Saves artifacts. */
+    private static void onErrorImpl(LauncherInstrumentation launcher, Description description,
+            boolean skipBugreport) {
         if (description.equals(sDescriptionForLastSavedArtifacts)) {
             // This test has already saved its artifacts.
             return;
@@ -125,7 +137,7 @@ public class FailureWatcher extends TestWatcher {
         }
 
         // Dump bugreport
-        if (!sSavedBugreport) {
+        if (!sSavedBugreport && !skipBugreport) {
             dumpCommand("bugreportz -s", diagFile(description, "Bugreport", "zip"));
             // Not saving bugreport for each failure for time and space economy.
             sSavedBugreport = true;

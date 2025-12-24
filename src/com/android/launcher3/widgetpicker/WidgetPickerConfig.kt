@@ -20,18 +20,23 @@ import android.os.UserHandle
 
 /**
  * Possible parameters sent over by the widget host when launching the widget picker activity.
+ *
  * @param uiSurface surface string representing the host. "widgets" for home screen
- * @param title an optional title that some surfaces like lockscreen may provide to change the
- * title appearing in widget picker.
+ * @param title an optional title that some surfaces like lockscreen may provide to change the title
+ *   appearing in widget picker.
  * @param description an optional description that some surfaces like lockscreen may provide to
- * display it below the title in widget picker; by default no description is
- * shown.
- * @param categoryInclusionFilter mask applied to identify if a widget's category matches the
- * host's category requirements and if widget can be included.
+ *   display it below the title in widget picker; by default no description is shown.
+ * @param categoryInclusionFilter mask applied to identify if a widget's category matches the host's
+ *   category requirements and if widget can be included.
  * @param categoryExclusionFilter mask applied to identify if per host requirements the widget
- * should be excluded from the picker.
- * @param filteredUsers users for which widgets list should be shown empty (potentially due to
- * admin / enterprise restrictions); no widgets message is shown instead.
+ *   should be excluded from the picker.
+ * @param filteredUsers users for which widgets list should be shown empty (potentially due to admin
+ *   / enterprise restrictions); no widgets message is shown instead.
+ * @param enableSwipeUpToDismiss indicates whether to handle swipe up gesture from bottom of sheet;
+ *   set this to true if the picker is shown in an activity that disables gesture nav. When set,
+ *   swipe up from bottom will scale down the picker sheet and animate close if it detects user is
+ *   trying to close the sheet.
+ * @param isDesktopFormFactor indicates the whether the picker is presented for desktop.
  */
 data class WidgetPickerConfig(
     val uiSurface: String = HOMESCREEN_WIDGETS_UI_SURFACE,
@@ -39,11 +44,13 @@ data class WidgetPickerConfig(
     val description: String? = null,
     val categoryInclusionFilter: Int = 0,
     val categoryExclusionFilter: Int = 0,
-    val filteredUsers: List<UserHandle> = listOf()
+    val filteredUsers: List<UserHandle> = listOf(),
+    val enableSwipeUpToDismiss: Boolean = false,
+    val isDesktopFormFactor: Boolean = false,
 ) {
     /**
-     * Indicates if the intent request is for picking home screen widgets.
-     * If false, implies its for another surface external to launcher.
+     * Indicates if the intent request is for picking home screen widgets. If false, implies its for
+     * another surface external to launcher.
      */
     val isForHomeScreen: Boolean
         get() = uiSurface == HOMESCREEN_WIDGETS_UI_SURFACE

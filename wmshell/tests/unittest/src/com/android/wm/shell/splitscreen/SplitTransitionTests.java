@@ -27,6 +27,7 @@ import static android.view.WindowManager.TRANSIT_TO_FRONT;
 import static android.window.WindowContainerTransaction.HierarchyOp.HIERARCHY_OP_TYPE_CHILDREN_TASKS_REPARENT;
 import static android.window.WindowContainerTransaction.HierarchyOp.HIERARCHY_OP_TYPE_REORDER;
 
+import static com.android.wm.shell.common.split.SplitScreenUtils.getNewParentTokenForStage;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_10_90;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_50_50;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_90_10;
@@ -81,6 +82,7 @@ import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.TestRunningTaskInfoBuilder;
 import com.android.wm.shell.TestShellExecutor;
+import com.android.wm.shell.bubbles.BubbleController;
 import com.android.wm.shell.common.DisplayController;
 import com.android.wm.shell.common.DisplayImeController;
 import com.android.wm.shell.common.DisplayInsetsController;
@@ -137,6 +139,7 @@ public class SplitTransitionTests extends ShellTestCase {
     private FakeDesktopState mDesktopState;
     @Mock private IActivityTaskManager mActivityTaskManager;
     @Mock private MSDLPlayer mMSDLPlayer;
+    @Mock private BubbleController mBubbleController;
     private final TestShellExecutor mTestShellExecutor = new TestShellExecutor();
     private SplitLayout mSplitLayout;
     private StageTaskListener mMainStage;
@@ -163,11 +166,13 @@ public class SplitTransitionTests extends ShellTestCase {
         mSplitLayout = SplitTestUtils.createMockSplitLayout();
         mMainStage = spy(new StageTaskListener(mContext, mTaskOrganizer, DEFAULT_DISPLAY, mock(
                 StageTaskListener.StageListenerCallbacks.class), mSyncQueue,
-                mIconProvider, Optional.of(mWindowDecorViewModel), STAGE_TYPE_MAIN));
+                mIconProvider, Optional.of(mWindowDecorViewModel), STAGE_TYPE_MAIN,
+                Optional.of(mBubbleController)));
         mMainStage.onTaskAppeared(new TestRunningTaskInfoBuilder().build(), createMockSurface());
         mSideStage = spy(new StageTaskListener(mContext, mTaskOrganizer, DEFAULT_DISPLAY, mock(
                 StageTaskListener.StageListenerCallbacks.class), mSyncQueue,
-                mIconProvider, Optional.of(mWindowDecorViewModel), STAGE_TYPE_SIDE));
+                mIconProvider, Optional.of(mWindowDecorViewModel), STAGE_TYPE_SIDE,
+                Optional.of(mBubbleController)));
         mSideStage.onTaskAppeared(new TestRunningTaskInfoBuilder().build(), createMockSurface());
         mStageCoordinator = new SplitTestUtils.TestStageCoordinator(mContext, DEFAULT_DISPLAY,
                 mSyncQueue, mTaskOrganizer, mMainStage, mSideStage, mDisplayController,
@@ -385,14 +390,8 @@ public class SplitTransitionTests extends ShellTestCase {
 
         // Make sure it cleans-up if recents doesn't restore
         WindowContainerTransaction commitWCT = new WindowContainerTransaction();
-        if (Flags.enableRecentsBookendTransition()) {
-            mStageCoordinator.onRecentsInSplitAnimationFinishing(false /* returnToApp */, commitWCT,
-                    mock(SurfaceControl.Transaction.class));
-        } else {
-            mStageCoordinator.onRecentsInSplitAnimationFinishing(
-                    mStageCoordinator.wctIsReorderingSplitToTop(commitWCT), commitWCT,
-                    mock(SurfaceControl.Transaction.class));
-        }
+        mStageCoordinator.onRecentsInSplitAnimationFinishing(false /* returnToApp */, commitWCT,
+                mock(SurfaceControl.Transaction.class));
         assertFalse(mStageCoordinator.isSplitScreenVisible());
     }
 
@@ -456,14 +455,8 @@ public class SplitTransitionTests extends ShellTestCase {
         // simulate the restoreWCT being applied:
         mMainStage.onTaskAppeared(mMainChild, mock(SurfaceControl.class));
         mSideStage.onTaskAppeared(mSideChild, mock(SurfaceControl.class));
-        if (Flags.enableRecentsBookendTransition()) {
-            mStageCoordinator.onRecentsInSplitAnimationFinishing(true /* returnToApp */, restoreWCT,
-                    mock(SurfaceControl.Transaction.class));
-        } else {
-            mStageCoordinator.onRecentsInSplitAnimationFinishing(
-                    mStageCoordinator.wctIsReorderingSplitToTop(restoreWCT), restoreWCT,
-                    mock(SurfaceControl.Transaction.class));
-        }
+        mStageCoordinator.onRecentsInSplitAnimationFinishing(true /* returnToApp */, restoreWCT,
+                mock(SurfaceControl.Transaction.class));
         assertTrue(mStageCoordinator.isSplitScreenVisible());
     }
 
@@ -609,7 +602,7 @@ public class SplitTransitionTests extends ShellTestCase {
         for (int i = 0; i < wct.getHierarchyOps().size(); ++i) {
             WindowContainerTransaction.HierarchyOp op = wct.getHierarchyOps().get(i);
             if (op.getType() == HIERARCHY_OP_TYPE_REORDER
-                    && op.getContainer() == mStageCoordinator.mSplitMultiDisplayHelper
+                    && op.getContainer() == mStageCoordinator.getSplitMultiDisplayHelper()
                     .getDisplayRootTaskInfo(DEFAULT_DISPLAY).token.asBinder()) {
                 return true;
             }
@@ -624,11 +617,15 @@ public class SplitTransitionTests extends ShellTestCase {
         for (int i = 0; i < wct.getHierarchyOps().size(); ++i) {
             WindowContainerTransaction.HierarchyOp op = wct.getHierarchyOps().get(i);
             if (op.getType() == HIERARCHY_OP_TYPE_CHILDREN_TASKS_REPARENT) {
+                IBinder expectedNewParentBinder = Optional.ofNullable(
+                        getNewParentTokenForStage(mMainStage, mRootTDAOrganizer))
+                                .map(WindowContainerToken::asBinder)
+                                .orElse(null);
                 if (op.getContainer() == mMainStage.mRootTaskInfo.token.asBinder()
-                        && op.getNewParent() == null) {
+                        && op.getNewParent() == expectedNewParentBinder) {
                     reparentedMain = true;
                 } else if (op.getContainer() == mSideStage.mRootTaskInfo.token.asBinder()
-                        && op.getNewParent() == null) {
+                        && op.getNewParent() == expectedNewParentBinder) {
                     reparentedSide = true;
                 }
             }

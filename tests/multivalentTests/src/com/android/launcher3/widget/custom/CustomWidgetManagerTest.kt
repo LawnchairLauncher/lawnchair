@@ -41,7 +41,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
@@ -54,8 +54,9 @@ import org.mockito.kotlin.whenever
 class CustomWidgetManagerTest {
 
     @get:Rule val setFlagsRule = SetFlagsRule()
-
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
     @get:Rule val context = SandboxApplication()
+
     private lateinit var underTest: CustomWidgetManager
 
     @Mock private lateinit var pluginManager: PluginManagerWrapper
@@ -66,7 +67,6 @@ class CustomWidgetManagerTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         underTest = CustomWidgetManager(context, pluginManager, mockAppWidgetManager, tracker)
     }
 

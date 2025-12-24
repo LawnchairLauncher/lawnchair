@@ -18,10 +18,15 @@ package com.android.quickstep.recents.domain.usecase
 
 import android.graphics.Bitmap
 import android.view.Surface
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
 import com.android.quickstep.recents.data.RecentsRotationStateRepository
 import com.android.systemui.shared.recents.model.ThumbnailData
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper
 import com.android.systemui.shared.recents.utilities.Utilities
+import com.android.wm.shell.shared.split.SplitBounds
+import com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_10_90
+import com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_90_10
 
 /**
  * Use case responsible for validating the aspect ratio and rotation of a thumbnail against the
@@ -34,9 +39,11 @@ import com.android.systemui.shared.recents.utilities.Utilities
  * @property rotationStateRepository Repository providing the current rotation state of the device.
  */
 class IsThumbnailValidUseCase(private val rotationStateRepository: RecentsRotationStateRepository) {
-    operator fun invoke(thumbnailData: ThumbnailData?, viewWidth: Int, viewHeight: Int): Boolean {
+    operator fun invoke(thumbnailData: ThumbnailData?, viewWidth: Int, viewHeight: Int,
+                        splitBounds: SplitBounds?, stagePosition: Int): Boolean {
         val thumbnail = thumbnailData?.thumbnail ?: return false
-        return !isInaccurateThumbnail(thumbnail, viewWidth, viewHeight, thumbnailData.rotation)
+        return !isInaccurateThumbnail(thumbnail, viewWidth, viewHeight, thumbnailData.rotation,
+            splitBounds, stagePosition)
     }
 
     private fun isInaccurateThumbnail(
@@ -44,18 +51,37 @@ class IsThumbnailValidUseCase(private val rotationStateRepository: RecentsRotati
         viewWidth: Int,
         viewHeight: Int,
         rotation: Int,
-    ): Boolean =
-        isAspectRatioDifferentFromViewAspectRatio(
+        splitBounds: SplitBounds?,
+        stagePosition: Int,
+    ) = isAspectRatioDifferentFromViewAspectRatio(
             thumbnail = thumbnail,
             width = viewWidth.toFloat(),
             height = viewHeight.toFloat(),
+            splitBounds = splitBounds,
+            stagePosition = stagePosition
         ) || isRotationDifferentFromTask(rotation)
 
     private fun isAspectRatioDifferentFromViewAspectRatio(
         thumbnail: Bitmap,
         width: Float,
         height: Float,
+        splitBounds: SplitBounds?,
+        stagePosition: Int,
     ): Boolean {
+        // TODO(b/428983119): Pass in a rect for visible bounds and compare that instead of the
+        //  thumbnail width/height aspect ratio to avoid special casing flex split checks
+        if (splitBounds != null) {
+            val isTopLeft10PercentApp =
+                (splitBounds.snapPosition == SNAP_TO_2_10_90 &&
+                        stagePosition == STAGE_POSITION_TOP_OR_LEFT)
+            val isBottomRight10PercentApp =
+                        (splitBounds.snapPosition == SNAP_TO_2_90_10 &&
+                                stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT)
+            if (isTopLeft10PercentApp || isBottomRight10PercentApp) {
+                return false
+            }
+        }
+
         return Utilities.isRelativePercentDifferenceGreaterThan(
             /* first = */ width / height,
             /* second = */ thumbnail.width / thumbnail.height.toFloat(),

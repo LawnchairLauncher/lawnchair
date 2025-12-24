@@ -32,6 +32,7 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.ActivityManager;
 import android.app.ActivityThread;
+import android.app.UiModeManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -76,6 +77,7 @@ import com.android.internal.graphics.palette.Quantizer;
 import com.android.internal.graphics.palette.VariationalKMeansQuantizer;
 import com.android.internal.policy.PhoneWindow;
 import com.android.internal.protolog.ProtoLog;
+import com.android.internal.util.ContrastColorUtil;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.IconProvider;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
@@ -131,6 +133,12 @@ public class SplashscreenContentDrawer {
     private final boolean mCanUseAppIconForSplashScreen;
     @VisibleForTesting
     final ColorCache mColorCache;
+    @Nullable
+    private UiModeManager.ForceInvertStateChangeListener mForceInvertStateChangeListener = null;
+    @UiModeManager.ForceInvertType
+    private int mForceInvertState;
+
+    private UiModeManager mUiModeManager = null;
 
     SplashscreenContentDrawer(Context context, IconProvider iconProvider, TransactionPool pool) {
         mContext = context;
@@ -147,6 +155,20 @@ public class SplashscreenContentDrawer {
         mColorCache = new ColorCache(mContext, mSplashscreenWorkerHandler);
         mCanUseAppIconForSplashScreen = context.getResources().getBoolean(
                 com.android.wm.shell.R.bool.config_canUseAppIconForSplashScreen);
+        if (android.view.accessibility.Flags.forceInvertColor()) {
+            if (mForceInvertStateChangeListener == null) {
+                mForceInvertStateChangeListener =
+                        forceInvertState -> mForceInvertState = forceInvertState;
+                mUiModeManager =
+                        context.getSystemService(UiModeManager.class);
+                if (mUiModeManager != null) {
+                    mForceInvertState = mUiModeManager.getForceInvertState();
+                    mUiModeManager.addForceInvertStateChangeListener(
+                            mSplashscreenWorkerHandler::post,
+                            mForceInvertStateChangeListener);
+                }
+            }
+        }
     }
 
     /**
@@ -350,7 +372,7 @@ public class SplashscreenContentDrawer {
     }
 
     /** Extract the window background color from {@code attrs}. */
-    private static int peekWindowBGColor(Context context, SplashScreenWindowAttrs attrs) {
+    private int peekWindowBGColor(Context context, SplashScreenWindowAttrs attrs) {
         Trace.traceBegin(TRACE_TAG_WINDOW_MANAGER, "peekWindowBGColor");
         Drawable themeBGDrawable = null;
         if (attrs.mWindowBgColor != 0) {
@@ -371,16 +393,27 @@ public class SplashscreenContentDrawer {
         return estimatedWindowBGColor;
     }
 
-    private static int estimateWindowBGColor(Drawable themeBGDrawable) {
+    private int estimateWindowBGColor(Drawable themeBGDrawable) {
         final DrawableColorTester themeBGTester = new DrawableColorTester(
                 themeBGDrawable, DrawableColorTester.TRANSLUCENT_FILTER /* filterType */);
+        int backgroundColor;
         if (themeBGTester.passFilterRatio() < 0.5f) {
             // more than half pixels of the window background is translucent, unable to draw
             Slog.w(TAG, "Window background is translucent, fill background with black color");
-            return getSystemBGColor();
+            backgroundColor = getSystemBGColor();
         } else {
-            return themeBGTester.getDominateColor();
+            backgroundColor = themeBGTester.getDominateColor();
         }
+
+        if (android.view.accessibility.Flags.forceInvertColor()) {
+            if (mUiModeManager != null && mUiModeManager.getForceInvertState()
+                    == UiModeManager.FORCE_INVERT_TYPE_DARK) {
+                if (!ContrastColorUtil.isColorDarkLab(backgroundColor)) {
+                    backgroundColor = ContrastColorUtil.invertColorLightness(backgroundColor);
+                }
+            }
+        }
+        return backgroundColor;
     }
 
     private static Drawable peekLegacySplashscreenContent(Context context,
@@ -453,7 +486,8 @@ public class SplashscreenContentDrawer {
 
     private int getBGColorFromCache(ActivityInfo ai, IntSupplier windowBgColorSupplier) {
         return mColorCache.getWindowColor(ai.packageName, mLastPackageContextConfigHash,
-                mTmpAttrs.mWindowBgColor, mTmpAttrs.mWindowBgResId, windowBgColorSupplier).mBgColor;
+                mTmpAttrs.mWindowBgColor, mTmpAttrs.mWindowBgResId, mForceInvertState,
+                windowBgColorSupplier).mBgColor;
     }
 
     private static <T> T safeReturnAttrDefault(UnaryOperator<T> getMethod, T def) {
@@ -1133,10 +1167,11 @@ public class SplashscreenContentDrawer {
         }
 
         @NonNull WindowColor getWindowColor(String packageName, int configHash, int windowBgColor,
-                int windowBgResId, IntSupplier windowBgColorSupplier) {
+                int windowBgResId, int forceInvertState, IntSupplier windowBgColorSupplier) {
             Colors colors = mColorMap.get(packageName);
             int hash = 31 * configHash + windowBgColor;
             hash = 31 * hash + windowBgResId;
+            hash = 31 * hash + forceInvertState;
             final int[] leastUsedIndex = { 0 };
             if (colors != null) {
                 final WindowColor windowColor = getCache(colors.mWindowColors, hash,

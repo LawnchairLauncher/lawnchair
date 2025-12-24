@@ -17,9 +17,6 @@
 package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
-import android.tools.NavBar
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
-import android.tools.flicker.rules.ChangeDisplayOrientationRule
 import android.tools.Rotation
 import android.tools.device.apphelpers.CalculatorAppHelper
 import android.tools.traces.parsers.WindowManagerStateHelper
@@ -28,17 +25,15 @@ import androidx.test.uiautomator.UiDevice
 import com.android.launcher3.tapl.LauncherInstrumentation
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 @Ignore("Test Base Class")
-abstract class OpenAppFromAllApps(val rotation: Rotation = Rotation.ROTATION_0) : TestScenarioBase() {
+abstract class OpenAppFromAllApps(val rotation: Rotation = Rotation.ROTATION_0) : TestScenarioBase(
+    rotation
+) {
 
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
     private val tapl = LauncherInstrumentation()
@@ -47,19 +42,8 @@ abstract class OpenAppFromAllApps(val rotation: Rotation = Rotation.ROTATION_0) 
     private val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
     val calculatorApp = CalculatorAppHelper(instrumentation)
 
-    @Rule
-    @JvmField val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, rotation)
-
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
-        tapl.setEnableRotation(true)
-        tapl.setExpectedRotation(rotation.value)
-        tapl.enableTransientTaskbar(false)
-        ChangeDisplayOrientationRule.setRotation(rotation)
         testApp.enterDesktopMode(wmHelper, device)
         tapl.showTaskbarIfHidden()
     }

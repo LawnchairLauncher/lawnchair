@@ -16,13 +16,14 @@
 
 package com.android.wm.shell.flicker.resizing
 
-import android.platform.test.annotations.RequiresDevice
+import android.platform.test.annotations.Postsubmit
+import android.platform.test.annotations.RequiresDesktopDevice
 import android.tools.NavBar
-import android.tools.flicker.assertions.FlickerTest
+import android.tools.flicker.assertions.FlickerChecker
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import com.android.wm.shell.Utils
 import com.android.wm.shell.flicker.DesktopModeBaseTest
 import org.junit.Rule
@@ -37,10 +38,11 @@ import com.android.wm.shell.scenarios.ResizeAppWithCornerResize
  *
  * Assert that the resize veil keeps increasing in size.
  */
-@RequiresDevice
+@RequiresDesktopDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
-class ResizeAppWithCornerResizeFlickerTest(flicker: LegacyFlickerTest) : DesktopModeBaseTest(
+@Postsubmit
+class ResizeAppWithCornerResizeFlickerTest(flicker: FlickerTest) : DesktopModeBaseTest(
     flicker
 ) {
 
@@ -73,8 +75,8 @@ class ResizeAppWithCornerResizeFlickerTest(flicker: LegacyFlickerTest) : Desktop
     companion object {
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun getParams(): Collection<FlickerTest> {
-            return LegacyFlickerTestFactory.nonRotationTests(
+        fun getParams(): Collection<FlickerChecker> {
+            return FlickerTestFactory.nonRotationTests(
                 supportedNavigationModes = listOf(NavBar.MODE_GESTURAL)
             )
         }

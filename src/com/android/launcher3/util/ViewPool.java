@@ -16,8 +16,6 @@
 package com.android.launcher3.util;
 
 import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,17 +23,16 @@ import android.view.ViewGroup;
 import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.util.ViewPool.Reusable;
+
+import kotlin.Unit;
 
 /**
  * Utility class to maintain a pool of reusable views.
  * During initialization, views are inflated on the background thread.
  */
 public class ViewPool<T extends View & Reusable> {
-    private static final String TAG = ViewPool.class.getSimpleName();
-
     private final Object[] mPool;
 
     private final LayoutInflater mInflater;
@@ -44,21 +41,13 @@ public class ViewPool<T extends View & Reusable> {
 
     private int mCurrentSize = 0;
 
-    @Nullable
-    private Thread mViewPoolInitThread;
+    private SafeCloseable mInitTask;
 
     public ViewPool(Context context, @Nullable ViewGroup parent,
             int layoutId, int maxSize, int initialSize) {
-        this(LayoutInflater.from(context).cloneInContext(context),
-                parent, layoutId, maxSize, initialSize);
-    }
-
-    @VisibleForTesting
-    ViewPool(LayoutInflater inflater, @Nullable ViewGroup parent,
-            int layoutId, int maxSize, int initialSize) {
         mLayoutId = layoutId;
         mParent = parent;
-        mInflater = inflater;
+        mInflater = LayoutInflater.from(context);
         mPool = new Object[maxSize];
 
         if (initialSize > 0) {
@@ -69,23 +58,16 @@ public class ViewPool<T extends View & Reusable> {
     @UiThread
     private void initPool(int initialSize) {
         Preconditions.assertUIThread();
-        Handler handler = new Handler();
 
         // LayoutInflater is not thread safe as it maintains a global variable 'mConstructorArgs'.
         // Create a different copy to use on the background thread.
         LayoutInflater inflater = mInflater.cloneInContext(mInflater.getContext());
 
-        // Inflate views on a non looper thread. This allows us to catch errors like calling
-        // "new Handler()" in constructor easily.
-        mViewPoolInitThread = new Thread(() -> {
-            for (int i = 0; i < initialSize; i++) {
-                T view = inflateNewView(inflater);
-                handler.post(() -> addToPool(view));
-            }
-            Log.d(TAG, "initPool complete");
-            mViewPoolInitThread = null;
-        }, "ViewPool-init");
-        mViewPoolInitThread.start();
+        mInitTask = AsyncObjectAllocator.allocate(
+                initialSize,
+                () -> inflateNewView(inflater),
+                Executors.MAIN_EXECUTOR,
+                this::addToPool);
     }
 
     @UiThread
@@ -96,15 +78,15 @@ public class ViewPool<T extends View & Reusable> {
     }
 
     @UiThread
-    private void addToPool(T view) {
+    private Unit addToPool(T view) {
         Preconditions.assertUIThread();
-        if (mCurrentSize >= mPool.length) {
-            // pool is full
-            return;
+        if (mCurrentSize < mPool.length) {
+            // pool is not full
+            mPool[mCurrentSize] = view;
+            mCurrentSize++;
         }
 
-        mPool[mCurrentSize] = view;
-        mCurrentSize++;
+        return null;
     }
 
     @UiThread
@@ -122,10 +104,9 @@ public class ViewPool<T extends View & Reusable> {
         return (T) inflater.inflate(mLayoutId, mParent, false);
     }
 
-    public void killOngoingInitializations() throws InterruptedException {
-        if (mViewPoolInitThread != null) {
-            mViewPoolInitThread.join();
-        }
+    /** Cancels any ongoing view inflation */
+    public void cancelOngoingInitializations() {
+        if (mInitTask != null) mInitTask.close();
     }
 
     /**

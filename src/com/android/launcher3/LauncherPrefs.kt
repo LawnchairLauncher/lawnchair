@@ -60,6 +60,14 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
             else encryptedContext.getSharedPreferences(sharedPrefFile, MODE_PRIVATE)
         }
 
+    @Deprecated("Don't use shared preferences directly. Use other LauncherPref methods.")
+    val backedUpPrefs: SharedPreferences
+        get() = getSharedPrefs(GRID_NAME)
+
+    @Deprecated("Don't use shared preferences directly. Use other LauncherPref methods.")
+    val devicePrefs: SharedPreferences
+        get() = getSharedPrefs(IS_FIRST_LOAD_AFTER_RESTORE)
+
     /** Returns the value with type [T] for [item]. */
     fun <T> get(item: ContextualItem<T>): T =
         getInner(item, item.defaultValueFromContext(encryptedContext))
@@ -240,7 +248,8 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
 
         @JvmField
         val ENABLE_TWOLINE_ALLAPPS_TOGGLE = backedUpItem("pref_enable_two_line_toggle", false)
-        @JvmField val PROMISE_ICON_IDS = nonRestorableItem(InstallSessionHelper.PROMISE_ICON_IDS, "")
+        @JvmField
+        val PROMISE_ICON_IDS = nonRestorableItem(InstallSessionHelper.PROMISE_ICON_IDS, "")
         @JvmField val WORK_EDU_STEP = backedUpItem("showed_work_profile_edu", 0)
         @JvmField
         val WORKSPACE_SIZE =
@@ -349,23 +358,7 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
 
         @Deprecated("Don't use shared preferences directly. Use other LauncherPref methods.")
         @JvmStatic
-        fun getPrefs(context: Context): SharedPreferences {
-            // Use application context for shared preferences, so we use single cached instance
-            return context.applicationContext.getSharedPreferences(
-                SHARED_PREFERENCES_KEY,
-                MODE_PRIVATE,
-            )
-        }
-
-        @Deprecated("Don't use shared preferences directly. Use other LauncherPref methods.")
-        @JvmStatic
-        fun getDevicePrefs(context: Context): SharedPreferences {
-            // Use application context for shared preferences, so we use a single cached instance
-            return context.applicationContext.getSharedPreferences(
-                DEVICE_PREFERENCES_KEY,
-                MODE_PRIVATE,
-            )
-        }
+        fun getPrefs(context: Context) = INSTANCE[context].backedUpPrefs
     }
 }
 

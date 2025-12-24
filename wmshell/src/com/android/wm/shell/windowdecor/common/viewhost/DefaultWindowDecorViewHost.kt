@@ -22,7 +22,7 @@ import android.view.Display
 import android.view.SurfaceControl
 import android.view.View
 import android.view.WindowManager
-import androidx.tracing.Trace
+//import androidx.tracing.Trace
 import com.android.internal.annotations.VisibleForTesting
 import com.android.wm.shell.shared.annotations.ShellMainThread
 import kotlinx.coroutines.CoroutineScope
@@ -32,20 +32,24 @@ import kotlinx.coroutines.launch
 /**
  * A default implementation of [WindowDecorViewHost] backed by a [SurfaceControlViewHostAdapter].
  *
- * It supports asynchronously updating the view hierarchy using [updateViewAsync], in which
- * case the update work will be posted on the [ShellMainThread] with no delay.
+ * It supports asynchronously updating the view hierarchy using [updateViewAsync], in which case the
+ * update work will be posted on the [ShellMainThread] with no delay.
  */
 class DefaultWindowDecorViewHost(
     context: Context,
     @ShellMainThread private val mainScope: CoroutineScope,
-    display: Display,
-    @VisibleForTesting val viewHostAdapter: SurfaceControlViewHostAdapter =
+    private val display: Display,
+    @VisibleForTesting
+    val viewHostAdapter: SurfaceControlViewHostAdapter =
         SurfaceControlViewHostAdapter(context, display),
 ) : WindowDecorViewHost {
     private var currentUpdateJob: Job? = null
 
     override val surfaceControl: SurfaceControl
         get() = viewHostAdapter.rootSurface
+
+    override val displayId: Int
+        get() = display.displayId
 
     override fun updateView(
         view: View,
@@ -54,10 +58,10 @@ class DefaultWindowDecorViewHost(
         touchableRegion: Region?,
         onDrawTransaction: SurfaceControl.Transaction?,
     ) {
-        Trace.beginSection("DefaultWindowDecorViewHost#updateView")
+//        Trace.beginSection("DefaultWindowDecorViewHost#updateView")
         clearCurrentUpdateJob()
         updateViewHost(view, attrs, configuration, touchableRegion, onDrawTransaction)
-        Trace.endSection()
+//        Trace.endSection()
     }
 
     override fun updateViewAsync(
@@ -66,7 +70,7 @@ class DefaultWindowDecorViewHost(
         configuration: Configuration,
         touchableRegion: Region?,
     ) {
-        Trace.beginSection("DefaultWindowDecorViewHost#updateViewAsync")
+//        Trace.beginSection("DefaultWindowDecorViewHost#updateViewAsync")
         clearCurrentUpdateJob()
         currentUpdateJob =
             mainScope.launch {
@@ -75,10 +79,14 @@ class DefaultWindowDecorViewHost(
                     attrs,
                     configuration,
                     touchableRegion,
-                    onDrawTransaction = null
+                    onDrawTransaction = null,
                 )
             }
-        Trace.endSection()
+//        Trace.endSection()
+    }
+
+    override fun reset() {
+        // No-op.
     }
 
     override fun release(t: SurfaceControl.Transaction) {
@@ -93,13 +101,12 @@ class DefaultWindowDecorViewHost(
         touchableRegion: Region?,
         onDrawTransaction: SurfaceControl.Transaction?,
     ) {
-        Trace.beginSection("DefaultWindowDecorViewHost#updateViewHost")
+//        Trace.beginSection("DefaultWindowDecorViewHost#updateViewHost")
+        view.layoutDirection = configuration.layoutDirection
         viewHostAdapter.prepareViewHost(configuration, touchableRegion)
-        onDrawTransaction?.let {
-            viewHostAdapter.applyTransactionOnDraw(it)
-        }
+        onDrawTransaction?.let { viewHostAdapter.applyTransactionOnDraw(it) }
         viewHostAdapter.updateView(view, attrs)
-        Trace.endSection()
+//        Trace.endSection()
     }
 
     private fun clearCurrentUpdateJob() {

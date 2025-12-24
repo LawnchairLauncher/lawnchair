@@ -19,16 +19,12 @@ package com.android.wm.shell.desktopmode;
 import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 
 import static com.android.internal.jank.Cuj.CUJ_DESKTOP_MODE_ENTER_MODE_APP_HANDLE_MENU;
+import static com.android.internal.jank.Cuj.CUJ_DESKTOP_MODE_MOVE_FROM_SPLIT_SCREEN;
 import static com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.getEnterTransitionType;
 import static com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.isEnterDesktopModeTransition;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.RectEvaluator;
-import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.IBinder;
 import android.util.Slog;
 import android.view.SurfaceControl;
@@ -43,10 +39,13 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.internal.util.LatencyTracker;
+import com.android.wm.shell.desktopmode.animation.EnterDesktopTaskAnimator;
 import com.android.wm.shell.shared.R;
 import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource;
 import com.android.wm.shell.transition.Transitions;
 import com.android.wm.shell.windowdecor.OnTaskResizeAnimationListener;
+
+import kotlin.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +162,7 @@ public class EnterDesktopTaskTransitionHandler implements Transitions.Transition
         final ActivityManager.RunningTaskInfo taskInfo = change.getTaskInfo();
         if (isEnterDesktopModeTransition(type)
                 && taskInfo.getWindowingMode() == WINDOWING_MODE_FREEFORM) {
-            return animateMoveToDesktop(change, startT, finishCallback);
+            return animateMoveToDesktop(change, startT, finishT, finishCallback);
         }
 
         return false;
@@ -172,40 +171,25 @@ public class EnterDesktopTaskTransitionHandler implements Transitions.Transition
     private boolean animateMoveToDesktop(
             @NonNull TransitionInfo.Change change,
             @NonNull SurfaceControl.Transaction startT,
+            @NonNull SurfaceControl.Transaction finishT,
             @NonNull Transitions.TransitionFinishCallback finishCallback) {
-        final SurfaceControl leash = change.getLeash();
-        final Rect startBounds = change.getStartAbsBounds();
-        final ActivityManager.RunningTaskInfo taskInfo = change.getTaskInfo();
         if (mOnTaskResizeAnimationListener == null) {
             Slog.e(TAG, "onTaskResizeAnimationListener is not available for this transition");
             return false;
         }
-
-        startT.setPosition(leash, startBounds.left, startBounds.top)
-                .setWindowCrop(leash, startBounds.width(), startBounds.height())
-                .show(leash);
-        mOnTaskResizeAnimationListener.onAnimationStart(taskInfo.taskId, startT, startBounds);
-        final ValueAnimator animator = ValueAnimator.ofObject(new RectEvaluator(),
-                change.getStartAbsBounds(), change.getEndAbsBounds());
-        animator.setDuration(mToDesktopAnimationDurationMs);
-        SurfaceControl.Transaction t = mTransactionSupplier.get();
-        animator.addUpdateListener(animation -> {
-            final Rect animationValue = (Rect) animator.getAnimatedValue();
-            t.setPosition(leash, animationValue.left, animationValue.top)
-                    .setWindowCrop(leash, animationValue.width(), animationValue.height())
-                    .show(leash);
-            mOnTaskResizeAnimationListener.onBoundsChange(taskInfo.taskId, t, animationValue);
-        });
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mOnTaskResizeAnimationListener.onAnimationEnd(taskInfo.taskId);
-                mTransitions.getMainExecutor().execute(
-                        () -> finishCallback.onTransitionFinished(null));
-                mInteractionJankMonitor.end(CUJ_DESKTOP_MODE_ENTER_MODE_APP_HANDLE_MENU);
-            }
-        });
-        animator.start();
+        new EnterDesktopTaskAnimator(mContext, mTransactionSupplier::get,
+                mOnTaskResizeAnimationListener)
+                .animate(
+                        /* change= */change,
+                        /* startTransaction = */ startT,
+                        /* finishTransaction = */ finishT,
+                        /* finishCallback = */ finishCallback,
+                        /* onAnimationEnd = */ () -> {
+                            mInteractionJankMonitor.end(
+                                    CUJ_DESKTOP_MODE_ENTER_MODE_APP_HANDLE_MENU);
+                            mInteractionJankMonitor.end(CUJ_DESKTOP_MODE_MOVE_FROM_SPLIT_SCREEN);
+                            return Unit.INSTANCE;
+                        });
         return true;
     }
 

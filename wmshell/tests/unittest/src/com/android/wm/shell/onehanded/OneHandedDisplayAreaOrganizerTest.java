@@ -191,6 +191,16 @@ public class OneHandedDisplayAreaOrganizerTest extends OneHandedTestCase {
     }
 
     @Test
+    public void testScheduleOffsetWithoutDisplayArea() {
+        mDisplayAreaAppearedInfoList.forEach(
+                (info) -> mSpiedDisplayAreaOrganizer.onDisplayAreaVanished(
+                        info.getDisplayAreaInfo()));
+
+        // Schedule offset and ensure this doesn't throw
+        mSpiedDisplayAreaOrganizer.scheduleOffset(0, 0);
+    }
+
+    @Test
     public void testRotation_portrait_0_to_landscape_90() {
         when(mMockLeash.isValid()).thenReturn(false);
         // Rotate 0 -> 90

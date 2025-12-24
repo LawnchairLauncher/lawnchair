@@ -16,7 +16,9 @@
 
 package com.android.quickstep;
 
+import android.annotation.Nullable;
 import android.content.Context;
+import android.graphics.Rect;
 
 import com.android.launcher3.R;
 
@@ -50,5 +52,11 @@ public interface NavHandle {
     /** @return the width of this nav handle, in pixels */
     default int getNavHandleWidth(Context context) {
         return context.getResources().getDimensionPixelSize(R.dimen.navigation_home_handle_width);
+    }
+
+    /** @return the bounding box of this nav handle in screen coordinates, in pixels */
+    @Nullable
+    default Rect getBoundsOnScreen() {
+        return null;
     }
 }

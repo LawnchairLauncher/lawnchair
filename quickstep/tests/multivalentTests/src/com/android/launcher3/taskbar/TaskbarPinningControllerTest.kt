@@ -56,7 +56,7 @@ class TaskbarPinningControllerTest {
         runOnMainSync { taskbarView = taskbarContext.dragLayer.findViewById(R.id.taskbar_view) }
 
         runOnMainSync {
-            taskbarView.updateItems(createHotseatItems(1), emptyList())
+            taskbarView.updateItems(createHotseatItems(1), emptyList(), emptyList())
             dividerIcon = requireNotNull(taskbarView.taskbarDividerViewContainer)
         }
     }

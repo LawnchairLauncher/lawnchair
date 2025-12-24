@@ -16,32 +16,24 @@
 
 package com.android.launcher3.taskbar.rules
 
+import android.hardware.display.DisplayManager
 import com.android.launcher3.util.LauncherMultivalentJUnit
 import com.android.launcher3.util.LauncherMultivalentJUnit.EmulatedDevices
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.Description
 import org.junit.runner.RunWith
-import org.junit.runners.model.Statement
 
 @RunWith(LauncherMultivalentJUnit::class)
 @EmulatedDevices(["pixelFoldable2023"])
 class TaskbarWindowSandboxContextTest {
 
+    @get:Rule val context = TaskbarWindowSandboxContext.create()
+
     @Test
-    fun testVirtualDisplay_releasedOnTeardown() {
-        val context = TaskbarWindowSandboxContext.create()
-        assertThat(context.virtualDisplay.token).isNotNull()
-
-        context
-            .apply(
-                object : Statement() {
-                    override fun evaluate() = Unit
-                },
-                Description.createSuiteDescription(TaskbarWindowSandboxContextTest::class.java),
-            )
-            .evaluate()
-
-        assertThat(context.virtualDisplay.token).isNull()
+    fun testDefaultDisplay_isVirtualDisplay() {
+        val displayManager = checkNotNull(context.getSystemService(DisplayManager::class.java))
+        assertThat(displayManager.displays.size).isEqualTo(1)
+        assertThat(displayManager.displays[0].displayId).isEqualTo(context.displayId)
     }
 }

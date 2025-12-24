@@ -19,7 +19,7 @@ package com.android.wm.shell.compatui.letterbox
 import android.content.Context
 import android.graphics.Color
 import com.android.internal.protolog.ProtoLog
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.dagger.WMSingleton
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_APP_COMPAT
 import com.android.wm.shell.sysui.ShellCommandHandler
@@ -34,29 +34,26 @@ import javax.inject.Inject
  * <p> Use with [adb shell wm shell letterbox &lt;command&gt;].
  */
 @WMSingleton
-class LetterboxCommandHandler @Inject constructor(
+class LetterboxCommandHandler
+@Inject
+constructor(
     private val context: Context,
     shellInit: ShellInit,
     shellCommandHandler: ShellCommandHandler,
-    private val letterboxConfiguration: LetterboxConfiguration
+    private val letterboxConfiguration: LetterboxConfiguration,
 ) : ShellCommandActionHandler {
 
     companion object {
-        @JvmStatic
-        private val TAG = "LetterboxCommandHandler"
+        @JvmStatic private val TAG = "LetterboxCommandHandler"
     }
 
     init {
         if (Flags.appCompatRefactoring()) {
-            ProtoLog.v(
-                WM_SHELL_APP_COMPAT,
-                "%s: %s",
-                TAG,
-                "Initializing LetterboxCommandHandler"
+            ProtoLog.v(WM_SHELL_APP_COMPAT, "%s: %s", TAG, "Initializing LetterboxCommandHandler")
+            shellInit.addInitCallback(
+                { shellCommandHandler.addCommandCallback("letterbox", this, this) },
+                this,
             )
-            shellInit.addInitCallback({
-                shellCommandHandler.addCommandCallback("letterbox", this, this)
-            }, this)
         }
     }
 
@@ -94,7 +91,8 @@ class LetterboxCommandHandler @Inject constructor(
                     $prefix      activity won't be rounded."
                     $prefix cornerRadiusReset"
                     $prefix      Resets the rounded corners radius to the default value."
-                """.trimIndent()
+                """
+                .trimIndent()
         )
     }
 
@@ -105,37 +103,33 @@ class LetterboxCommandHandler @Inject constructor(
                     pw,
                     value,
                     ::strToColor,
-                    { color ->
-                        letterboxConfiguration.setLetterboxBackgroundColor(color)
-                    },
-                    { c -> "$c is not a valid color." }
+                    { color -> letterboxConfiguration.setLetterboxBackgroundColor(color) },
+                    { c -> "$c is not a valid color." },
                 )
             }
 
-            "backgroundColorResource" -> return invokeWhenValid(
-                pw,
-                value,
-                ::nameToColorId,
-                { color ->
-                    letterboxConfiguration.setLetterboxBackgroundColorResourceId(color)
-                },
-                { c ->
-                    "$c is not a valid resource. Color in '@android:color/resource_name'" +
+            "backgroundColorResource" ->
+                return invokeWhenValid(
+                    pw,
+                    value,
+                    ::nameToColorId,
+                    { color ->
+                        letterboxConfiguration.setLetterboxBackgroundColorResourceId(color)
+                    },
+                    { c ->
+                        "$c is not a valid resource. Color in '@android:color/resource_name'" +
                             " format should be provided as an argument."
-                }
-            )
+                    },
+                )
 
-            "cornerRadius" -> return invokeWhenValid(
-                pw,
-                value,
-                ::strToInt{ it >= 0 },
-                { radius ->
-                    letterboxConfiguration.setLetterboxActivityCornersRadius(radius)
-                },
-                { r ->
-                    "$r is not a valid radius. It must be an integer >= 0."
-                }
-            )
+            "cornerRadius" ->
+                return invokeWhenValid(
+                    pw,
+                    value,
+                    ::strToInt { it >= 0 },
+                    { radius -> letterboxConfiguration.setLetterboxActivityCornersRadius(radius) },
+                    { r -> "$r is not a valid radius. It must be an integer >= 0." },
+                )
 
             else -> {
                 pw.println("Invalid command: $value")
@@ -148,10 +142,10 @@ class LetterboxCommandHandler @Inject constructor(
         when (command) {
             "backgroundColor" -> {
                 pw.println(
-                    "    Background color: " + Integer.toHexString(
-                        letterboxConfiguration.getLetterboxBackgroundColor()
-                            .toArgb()
-                    )
+                    "    Background color: " +
+                        Integer.toHexString(
+                            letterboxConfiguration.getLetterboxBackgroundColor().toArgb()
+                        )
                 )
                 return true
             }
@@ -186,7 +180,7 @@ class LetterboxCommandHandler @Inject constructor(
         input: String,
         converter: (String) -> T?,
         consumer: (T) -> Unit,
-        errorMessage: (String) -> String = { value -> " Wrong input value: $value." }
+        errorMessage: (String) -> String = { value -> " Wrong input value: $value." },
     ): Boolean {
         converter(input)?.let {
             consumer(it)

@@ -187,6 +187,7 @@
     <declare-styleable name="AllAppsSize">
         <attr name="minDeviceWidthDp" format="float" />
         <attr name="alignWithWorkspaceRow" format="integer" />
+        <attr name="allAppsColumns" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="GridSize">

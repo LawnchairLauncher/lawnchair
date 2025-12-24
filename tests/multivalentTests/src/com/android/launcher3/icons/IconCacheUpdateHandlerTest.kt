@@ -24,21 +24,22 @@ import android.os.Process.myUserHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.icons.cache.BaseIconCache
-import com.android.launcher3.icons.cache.BaseIconCache.IconDB
 import com.android.launcher3.icons.cache.CachedObject
 import com.android.launcher3.icons.cache.CachedObjectCachingLogic
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler
 import com.android.launcher3.util.RoboApiWrapper
+import com.android.launcher3.util.SQLiteCacheHelper
 import com.google.common.truth.Truth.assertThat
 import java.util.concurrent.FutureTask
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doAnswer
@@ -53,9 +54,10 @@ import org.mockito.kotlin.whenever
 @RunWith(AndroidJUnit4::class)
 class IconCacheUpdateHandlerTest {
 
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
     @Mock private lateinit var iconProvider: IconProvider
     @Mock private lateinit var baseIconCache: BaseIconCache
-    @Mock private lateinit var cacheDb: IconDB
+    @Mock private lateinit var cacheDb: SQLiteCacheHelper
     @Mock private lateinit var workerHandler: Handler
 
     @Captor private lateinit var deleteCaptor: ArgumentCaptor<String>
@@ -73,7 +75,6 @@ class IconCacheUpdateHandlerTest {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         doReturn(iconProvider).whenever(baseIconCache).iconProvider
         doReturn(cursor).whenever(cacheDb).query(any(), any(), any())
 

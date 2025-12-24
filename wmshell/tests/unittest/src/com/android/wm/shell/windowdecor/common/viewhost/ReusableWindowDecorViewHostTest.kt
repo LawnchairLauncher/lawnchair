@@ -191,6 +191,58 @@ class ReusableWindowDecorViewHostTest : ShellTestCase() {
         assertThat(reusableVH.view()).isEqualTo(rootView)
     }
 
+    @Test
+    fun reset_removesChildViews() = runTest {
+        val view = View(context)
+        val lp = WindowManager.LayoutParams()
+        val rootView = FrameLayout(context)
+        val reusableVH = createReusableViewHost(rootView)
+        reusableVH.updateView(view, lp, context.resources.configuration)
+
+        reusableVH.reset()
+
+        assertThat(rootView.childCount).isEqualTo(0)
+    }
+
+    @Test
+    fun reset_restoresDefaultLayoutParams() = runTest {
+        val view = View(context)
+        val lp =
+            WindowManager.LayoutParams().apply {
+                width = 10
+                height = 10
+            }
+        val rootView = FrameLayout(context)
+        val reusableVH = createReusableViewHost(rootView)
+        reusableVH.updateView(view, lp, context.resources.configuration)
+
+        reusableVH.reset()
+
+        verify(reusableVH.viewHostAdapter).updateView(rootView, reusableVH.defaultLayoutParams)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun reset_clearsPendingAsyncJob() = runTest {
+        val rootView = FrameLayout(context)
+        val reusableVH = createReusableViewHost(rootView)
+
+        val view = View(context)
+        val params = WindowManager.LayoutParams(100, 100)
+        reusableVH.updateViewAsync(
+            view = view,
+            attrs = params,
+            configuration = context.resources.configuration,
+        )
+        reusableVH.reset()
+
+        advanceUntilIdle()
+
+        assertThat(reusableVH.viewHostAdapter.isInitialized()).isTrue()
+        assertThat(rootView.childCount).isEqualTo(0)
+        verify(reusableVH.viewHostAdapter, never()).updateView(rootView, params)
+    }
+
     private fun CoroutineScope.createReusableViewHost(
         rootView: FrameLayout = FrameLayout(context)
     ) =
@@ -200,7 +252,7 @@ class ReusableWindowDecorViewHostTest : ShellTestCase() {
             display = context.display,
             id = 1,
             viewHostAdapter = spy(SurfaceControlViewHostAdapter(context, context.display)),
-            rootView
+            rootView,
         )
 
     private fun ReusableWindowDecorViewHost.view(): View? = viewHostAdapter.viewHost?.view

@@ -16,9 +16,7 @@
 
 package com.android.launcher3.util.coroutines
 
-import com.android.launcher3.Flags.enableCoroutineThreadingImprovements
 import com.android.launcher3.util.coroutines.CoroutinesHelper.bgDispatcher
-import kotlin.math.max
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -64,21 +62,12 @@ interface DispatcherProvider {
 }
 
 object ProductionDispatchers : DispatcherProvider {
-    private val availableProcessors = Runtime.getRuntime().availableProcessors()
-    private val singleBgThreadPool by lazy { bgDispatcher(availableProcessors, "LauncherBg") }
-
     override val default = Dispatchers.Default
     override val main = Dispatchers.Main.immediate
 
-    override val ioBackground =
-        if (enableCoroutineThreadingImprovements())
-            bgDispatcher(nThreads = 1, threadName = "LauncherBgIO")
-        else singleBgThreadPool
+    override val ioBackground = bgDispatcher(nThreads = 1, threadName = "LauncherBgIO")
 
-    override val lightweightBackground =
-        if (enableCoroutineThreadingImprovements())
-            bgDispatcher(nThreads = 1, threadName = "LauncherBgLight")
-        else singleBgThreadPool
+    override val lightweightBackground = bgDispatcher(nThreads = 1, threadName = "LauncherBgLight")
 
     override val unconfined = Dispatchers.Unconfined
 }

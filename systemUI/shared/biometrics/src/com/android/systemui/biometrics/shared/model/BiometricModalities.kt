@@ -16,38 +16,45 @@
 
 package com.android.systemui.biometrics.shared.model
 
-import android.hardware.biometrics.SensorProperties
-import android.hardware.face.FaceSensorPropertiesInternal
-import android.hardware.fingerprint.FingerprintSensorPropertiesInternal
-
 /** The available modalities for an operation. */
 data class BiometricModalities(
-    val fingerprintProperties: FingerprintSensorPropertiesInternal? = null,
-    val faceProperties: FaceSensorPropertiesInternal? = null,
+    val fingerprintSensorInfo: FingerprintSensorInfo? = null,
+    val faceSensorInfo: FaceSensorInfo? = null,
 ) {
     /** If there are no available modalities. */
     val isEmpty: Boolean
-        get() = !hasFingerprint && !hasFace
+        get() = !hasFingerprint && faceSensorInfo == null
 
-    /** If fingerprint authentication is available (and [fingerprintProperties] is non-null). */
+    /** If fingerprint authentication is available (and [fingerprintSensorInfo] is non-null). */
     val hasFingerprint: Boolean
-        get() = fingerprintProperties != null
+        get() = fingerprintSensorInfo != null
 
     /** If SFPS authentication is available. */
     val hasSfps: Boolean
-        get() = hasFingerprint && fingerprintProperties!!.isAnySidefpsType
+        get() = hasFingerprint && fingerprintSensorInfo!!.type == FingerprintSensorType.POWER_BUTTON
+
+    /** If [hasSfps] and it is configured as a STRONG class 3 biometric. */
+    val isSfpsStrong: Boolean
+        get() = hasSfps && fingerprintSensorInfo?.strength == SensorStrength.STRONG
 
     /** If UDFPS authentication is available. */
     val hasUdfps: Boolean
-        get() = hasFingerprint && fingerprintProperties!!.isAnyUdfpsType
+        get() =
+            hasFingerprint &&
+                (fingerprintSensorInfo!!.type == FingerprintSensorType.UDFPS_OPTICAL ||
+                    fingerprintSensorInfo.type == FingerprintSensorType.UDFPS_ULTRASONIC)
 
-    /** If fingerprint authentication is available (and [faceProperties] is non-null). */
+    /** If [hasUdfps] and it is configured as a STRONG class 3 biometric. */
+    val isUdfpsStrong: Boolean
+        get() = hasUdfps && fingerprintSensorInfo?.strength == SensorStrength.STRONG
+
+    /** If fingerprint authentication is available (and [faceSensorInfo] is non-null). */
     val hasFace: Boolean
-        get() = faceProperties != null
+        get() = faceSensorInfo != null
 
     /** If only face authentication is enabled. */
     val hasFaceOnly: Boolean
-        get() = hasFace && !hasFingerprint
+        get() = faceSensorInfo !== null && fingerprintSensorInfo == null
 
     /** If only fingerprint authentication is enabled. */
     val hasFingerprintOnly: Boolean
@@ -59,5 +66,5 @@ data class BiometricModalities(
 
     /** If [hasFace] and it is configured as a STRONG class 3 biometric. */
     val isFaceStrong: Boolean
-        get() = faceProperties?.sensorStrength == SensorProperties.STRENGTH_STRONG
+        get() = faceSensorInfo?.strength == SensorStrength.STRONG
 }

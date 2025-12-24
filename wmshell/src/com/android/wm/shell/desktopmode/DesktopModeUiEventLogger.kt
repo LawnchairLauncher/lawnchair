@@ -195,7 +195,13 @@ class DesktopModeUiEventLogger(
         @UiEvent(doc = "A11y service triggered a11y action to resize app window left")
         A11Y_ACTION_RESIZE_LEFT(2168),
         @UiEvent(doc = "A11y service triggered a11y action to resize app window right")
-        A11Y_ACTION_RESIZE_RIGHT(2169);
+        A11Y_ACTION_RESIZE_RIGHT(2169),
+        @UiEvent(doc = "Switch to browser by clicking open in browser button in the handle menu")
+        DESKTOP_WINDOWING_APP_TO_WEB_OPEN_IN_BROWSER(2487),
+        @UiEvent(doc = "Switch to app by clicking open in app button in the handle menu")
+        DESKTOP_WINDOWING_APP_TO_WEB_OPEN_IN_APP(2488),
+        @UiEvent(doc = "Change link handling settings using the open by default dialog")
+        DESKTOP_WINDOWING_APP_TO_WEB_CHANGE_OPEN_BY_DEFAULT_SETTINGS(2489);
 
         override fun getId(): Int = mId
     }

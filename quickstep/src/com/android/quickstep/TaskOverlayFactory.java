@@ -39,7 +39,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.Snackbar;
 import com.android.quickstep.recents.domain.usecase.ThumbnailPosition;
@@ -57,29 +56,42 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Factory class to create and add an overlays on the TaskView
  */
-public class TaskOverlayFactory implements ResourceBasedOverride {
+public class TaskOverlayFactory {
 
+    @Inject
+    public TaskOverlayFactory() {
+    }
+
+    /**
+     * Returns menu options associated with TaskContainer.
+     */
     public static List<SystemShortcut> getEnabledShortcuts(TaskView taskView,
-            TaskContainer taskContainer) {
-        final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
+            @Nullable TaskContainer taskContainer) {
         final RecentsViewContainer container = containerFromContext(taskView.getContext());
-        for (TaskShortcutFactory menuOption : MENU_OPTIONS) {
-            if (taskView instanceof GroupedTaskView && !menuOption.showForGroupedTask()) {
-                continue;
-            }
-            if (taskView instanceof DesktopTaskView && !menuOption.showForDesktopTask()) {
-                continue;
-            }
+        final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
+        if (taskContainer != null) {
+            for (TaskShortcutFactory menuOption : PER_TASK_MENU_OPTIONS) {
+                if (taskView instanceof GroupedTaskView && !menuOption.showForGroupedTask()) {
+                    continue;
+                }
+                if (taskView instanceof DesktopTaskView && !menuOption.showForDesktopTask()) {
+                    continue;
+                }
 
-            List<SystemShortcut> menuShortcuts = menuOption.getShortcuts(container, taskContainer);
-            if (menuShortcuts == null) {
-                continue;
+                List<SystemShortcut> menuShortcuts = menuOption.getShortcuts(container,
+                        taskContainer);
+                if (menuShortcuts == null) {
+                    continue;
+                }
+                shortcuts.addAll(menuShortcuts);
             }
-            shortcuts.addAll(menuShortcuts);
         }
+        shortcuts.addAll(TaskViewShortFactory.Companion.getEnabledShortcuts(taskView));
         return shortcuts;
     }
 
@@ -109,7 +121,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     public void clearAllActiveState() { }
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
-    private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
+    private static final TaskShortcutFactory[] PER_TASK_MENU_OPTIONS = new TaskShortcutFactory[]{
             TaskShortcutFactory.APP_INFO,
             TaskShortcutFactory.SPLIT_SELECT,
             TaskShortcutFactory.PIN,
@@ -122,7 +134,6 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             TaskShortcutFactory.SAVE_APP_PAIR,
             TaskShortcutFactory.SCREENSHOT,
             TaskShortcutFactory.MODAL,
-            TaskShortcutFactory.REMOVE_TASK,
     };
 
     /**
@@ -229,7 +240,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             // Task has already been dismissed
             if (recentsView == null) return;
             recentsView.switchToScreenshot(
-                    () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                    () -> recentsView.finishRecentsAnimation(true /* toHome */,
                             false /* shouldPip */, callback));
         }
 
@@ -380,8 +391,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         /** Called when the snapshot has updated its full screen drawing parameters. */
         public void setFullscreenParams(FullscreenDrawParams fullscreenParams) {}
 
-        /** Sets visibility for the overlay associated elements. */
-        public void setVisibility(int visibility) {}
+        /** Returns the suggest view if it exists. */
+        public @Nullable View getSuggestView() {
+            return null;
+        }
 
         /** See {@link View#addChildrenForAccessibility(ArrayList)} */
         public void addChildForAccessibility(ArrayList<View> outChildren) {}

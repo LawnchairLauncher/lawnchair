@@ -89,8 +89,8 @@ class RecentsMixedTransition extends DefaultMixedHandler.MixedTransition {
             @NonNull SurfaceControl.Transaction startTransaction,
             @NonNull SurfaceControl.Transaction finishTransaction,
             @NonNull Transitions.TransitionFinishCallback finishCallback) {
-        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS, "Transition for Recents during"
-                + " Desktop #%d", info.getDebugId());
+        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS,
+                "Transition for Recents during Desktop #%d", info.getDebugId());
 
         if (mInfo == null) {
             mInfo = info;
@@ -124,12 +124,13 @@ class RecentsMixedTransition extends DefaultMixedHandler.MixedTransition {
             @NonNull SurfaceControl.Transaction startTransaction,
             @NonNull SurfaceControl.Transaction finishTransaction,
             @NonNull Transitions.TransitionFinishCallback finishCallback) {
-        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS, "Mixed transition for Recents during"
-                + " Keyguard #%d", info.getDebugId());
+        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS,
+                "Mixed transition for Recents during Keyguard #%d", info.getDebugId());
 
         if (!mKeyguardHandler.isKeyguardShowing() || mKeyguardHandler.isKeyguardAnimating()) {
-            ProtoLog.w(ShellProtoLogGroup.WM_SHELL_TRANSITIONS, "Cancel mixed transition because "
-                    + "keyguard state was changed #%d", info.getDebugId());
+            ProtoLog.w(ShellProtoLogGroup.WM_SHELL_TRANSITIONS,
+                    "Cancel mixed transition because keyguard state was changed #%d",
+                    info.getDebugId());
             return false;
         }
         if (mInfo == null) {
@@ -145,8 +146,8 @@ class RecentsMixedTransition extends DefaultMixedHandler.MixedTransition {
             @NonNull SurfaceControl.Transaction startTransaction,
             @NonNull SurfaceControl.Transaction finishTransaction,
             @NonNull Transitions.TransitionFinishCallback finishCallback) {
-        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS, "Mixed transition for Recents during"
-                + " split screen #%d", info.getDebugId());
+        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS,
+                "Mixed transition for Recents during split screen #%d", info.getDebugId());
 
         for (int i = info.getChanges().size() - 1; i >= 0; --i) {
             final TransitionInfo.Change change = info.getChanges().get(i);

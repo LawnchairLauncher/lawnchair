@@ -93,4 +93,6 @@ public interface TaskStackListenerCallback {
     default void onActivityRequestedOrientationChanged(int taskId, int requestedOrientation) { }
 
     default void onActivityRotation(int displayId) { }
+
+    default void onLockTaskModeChanged(int mode) { }
 }

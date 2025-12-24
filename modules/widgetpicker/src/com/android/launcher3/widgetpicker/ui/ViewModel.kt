@@ -16,15 +16,11 @@
 
 package com.android.launcher3.widgetpicker.ui
 
-import android.animation.ValueAnimator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import kotlinx.coroutines.delay
 
-/**
- * An interface defining general structure of a view model in widget picker.
- */
+/** An interface defining general structure of a view model in widget picker. */
 // TODO(b/419844646): Once stable, introduce a reusable library.
 interface ViewModel {
     /**
@@ -33,11 +29,11 @@ interface ViewModel {
      *
      * Then when the UI calls [rememberViewModel], this callback function will be invoked.
      *
-     * e.g. coroutineScope {
-     *     launch { myInteractor.myData().collectLatest {..} }
-     *     launch { myChildViewModel.onInit() }
+     * e.g. coroutineScope { launch { myInteractor.myData().collectLatest {..} } launch {
+     * myChildViewModel.onInit() }
      *
      *     awaitCancellation()
+     *
      * }
      */
     suspend fun onInit() {}
@@ -47,25 +43,15 @@ interface ViewModel {
  * Returns a remembered instance of the [ViewModel] of type [T].
  *
  * Also, initialize the view model.
+ *
  * @param key a unique key to remember the view model
- * @param animationDelay delay for animations to finish (if animations are enabled) before binding
- * data in view model for a smoother transition.
  */
 @Composable
-fun <T : ViewModel> rememberViewModel(
-    key: Any = Unit,
-    animationDelay: Long = 0L,
-    factory: () -> T,
-): T {
+fun <T : ViewModel> rememberViewModel(key: Any = Unit, factory: () -> T): T {
     val instance = remember(key) { factory() }
     // Here we initialize our view model using the launched effect so that it is tied to lifecycle
     // of the UI.
-    LaunchedEffect(instance) {
-        if (ValueAnimator.areAnimatorsEnabled() && animationDelay > 0) {
-            delay(animationDelay)
-        }
-        instance.onInit()
-    }
+    LaunchedEffect(instance) { instance.onInit() }
 
     return instance
 }

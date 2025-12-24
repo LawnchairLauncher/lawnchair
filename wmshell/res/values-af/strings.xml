@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"App steun nie borrel nie"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Skermverdeler"</string>
     <string name="divider_title" msgid="1963391955593749442">"Skermverdeler"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Volskerm links"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Links 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Links 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Links 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Volskerm regs"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Ruil boonste app met onderste een"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Ruil linkerapp met regterapp"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Volskerm bo"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Bo 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Bo 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Bo 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Volskerm onder"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Maak linkerkantse app volskerm"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10% links, 90% regs"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30% links, 70% regs"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50% links, 50% regs"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70% links, 30% regs"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90% links, 10% regs"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Maak regterkantse app volskerrm"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Ruil boonste app met onderste app; hou huidige verdeling"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Ruil linkerkantse app met regterkantse app; hou huidige verdeling"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Maak boonste app volskerm"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10% bo, 90% onder"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30% bo, 70% onder"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50% bo, 50% onder"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70% bo, 30% onder"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90% bo, 10% onder"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Maak onderste app volskerm"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Verdeel links"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Verdeel regs"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Verdeel bo"</string>
@@ -165,7 +169,7 @@
     <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"Minimeer appvenster"</string>
     <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"Maak appvenster toe"</string>
     <string name="open_by_default_settings_text" msgid="2526548548598185500">"Maak By Verstek Oop-instellings"</string>
-    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Kies hoe om webskakels vir hierdie app oop te maak"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Kies vir hierdie app hoe om webskakels oop te maak"</string>
     <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"In die app"</string>
     <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"In jou blaaier"</string>
     <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"OK"</string>

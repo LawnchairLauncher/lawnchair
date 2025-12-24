@@ -17,6 +17,10 @@
 package com.android.launcher3.taskbar.customization
 
 import com.android.launcher3.taskbar.TaskbarActivityContext
+import com.android.launcher3.taskbar.TaskbarPopupController
+
+/** The maximum number of icons that can be pinned with the taskbar overflow. */
+const val TASKBAR_OVERFLOW_PIN_LIMIT = 16
 
 /** Evaluates the taskbar specs based on the taskbar grid size and the taskbar icon size. */
 class TaskbarSpecsEvaluator(
@@ -28,6 +32,14 @@ class TaskbarSpecsEvaluator(
     var taskbarIconSize: TaskbarIconSize = getIconSizeByGrid(numColumns, numRows)
     val numShownHotseatIcons
         get() = taskbarActivityContext.deviceProfile.numShownHotseatIcons
+
+    val maxPinnableCount
+        get() =
+            if (TaskbarPopupController.canPinAppsOverflow()) {
+                TASKBAR_OVERFLOW_PIN_LIMIT
+            } else {
+                numShownHotseatIcons
+            }
 
     // TODO(b/341146605) : initialize it to taskbar container in later cl.
     private var taskbarContainer: List<TaskbarContainer> = emptyList()
@@ -52,7 +64,11 @@ class TaskbarSpecsEvaluator(
     fun getIconSizeByGrid(columns: Int, rows: Int): TaskbarIconSize {
         return if (taskbarFeatureEvaluator.isTransient) {
             TaskbarIconSpecs.transientTaskbarIconSizeByGridSize.getOrDefault(
-                TransientTaskbarIconSizeKey(columns, rows, taskbarFeatureEvaluator.isLandscape),
+                TransientTaskbarIconSizeKey(
+                    columns,
+                    rows,
+                    taskbarActivityContext.deviceProfile.deviceProperties.isLandscape,
+                ),
                 TaskbarIconSpecs.defaultTransientIconSize,
             )
         } else {

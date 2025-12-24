@@ -67,7 +67,7 @@ class IconPackProvider @Inject constructor(
                         } else {
                             drawable
                         }
-                    }
+                    }!!
                 return if (shouldTintBackgrounds && context.shouldTransparentBGIcons()) {
                     clockDrawable.foreground
                 } else {

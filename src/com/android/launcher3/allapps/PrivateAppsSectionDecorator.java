@@ -29,9 +29,9 @@ import java.util.HashMap;
 public class PrivateAppsSectionDecorator extends RecyclerView.ItemDecoration {
 
     private static final String PRIVATE_APP_SECTION = "private_apps";
-    private final AlphabeticalAppsList<?> mAppsList;
+    private final AlphabeticalAppsList mAppsList;
 
-    public PrivateAppsSectionDecorator(AlphabeticalAppsList<?> appsList) {
+    public PrivateAppsSectionDecorator(AlphabeticalAppsList appsList) {
         mAppsList = appsList;
     }
 

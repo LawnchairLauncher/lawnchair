@@ -18,9 +18,10 @@ package com.android.wm.shell.desktopmode
 
 import android.app.ActivityTaskManager.INVALID_TASK_ID
 import android.window.DesktopExperienceFlags
+import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.EnterReason
+import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.ExitReason
 import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.UnminimizeReason
 import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource.ADB_COMMAND
-import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource.UNKNOWN
 import com.android.wm.shell.sysui.ShellCommandHandler
 import com.android.wm.shell.transition.FocusTransitionObserver
 import java.io.PrintWriter
@@ -73,7 +74,10 @@ class DesktopModeShellCommandHandler(
         }
 
         if (!DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue) {
-            return controller.moveTaskToDefaultDeskAndActivate(taskId, transitionSource = UNKNOWN)
+            return controller.moveTaskToDefaultDeskAndActivate(
+                taskId,
+                transitionSource = ADB_COMMAND,
+            )
         }
         if (args.size < 3) {
             pw.println("Error: desk id should be provided as arguments")
@@ -106,7 +110,7 @@ class DesktopModeShellCommandHandler(
             pw.println("Error: no appropriate task found")
             return false
         }
-        controller.moveToNextDisplay(taskId)
+        controller.moveToNextDisplay(taskId, enterReason = EnterReason.ADB_COMMAND)
         return true
     }
 
@@ -148,7 +152,7 @@ class DesktopModeShellCommandHandler(
                 pw.println("Error: desk id should be an integer")
                 return false
             }
-        controller.activateDesk(deskId)
+        controller.activateDesk(deskId = deskId, enterReason = EnterReason.ADB_COMMAND)
         return true
     }
 
@@ -169,7 +173,7 @@ class DesktopModeShellCommandHandler(
                 pw.println("Error: desk id should be an integer")
                 return false
             }
-        controller.removeDesk(deskId)
+        controller.removeDesk(deskId, exitReason = ExitReason.ADB_COMMAND_EXIT)
         return true
     }
 
@@ -178,7 +182,7 @@ class DesktopModeShellCommandHandler(
             pw.println("Not supported.")
             return false
         }
-        pw.println("Not implemented.")
+        controller.removeAllDesks(exitReason = ExitReason.ADB_COMMAND_EXIT)
         return false
     }
 
@@ -200,9 +204,9 @@ class DesktopModeShellCommandHandler(
                 return false
             }
         controller.moveTaskToFront(
-            /* taskId= */ taskId,
-            /* remoteTransition= */ null,
-            /* unminimizeReason= */ UnminimizeReason.UNKNOWN,
+            taskId = taskId,
+            remoteTransition = null,
+            unminimizeReason = UnminimizeReason.UNKNOWN,
         )
         return true
     }
@@ -224,7 +228,7 @@ class DesktopModeShellCommandHandler(
                 pw.println("Error: task id should be an integer")
                 return false
             }
-        controller.moveToFullscreen(taskId, transitionSource = UNKNOWN)
+        controller.moveToFullscreen(taskId, transitionSource = ADB_COMMAND)
         return true
     }
 

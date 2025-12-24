@@ -17,12 +17,16 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.Flags.enableMouseInteractionChanges;
+import static com.android.launcher3.Flags.injectableModelItems;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PRIVATESPACE;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.graphics.ShapeDelegate.DEFAULT_PATH_SIZE;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
+import static com.android.window.flags.Flags.enableNonDefaultDisplaySplit;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -41,6 +45,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -50,7 +55,9 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.os.Build.VERSION_CODES_FULL;
 import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
@@ -60,6 +67,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TtsSpan;
+import android.text.style.TtsSpan.TextBuilder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -77,12 +85,17 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.core.graphics.ColorUtils;
 
+import app.lawnchair.preferences2.PreferenceManager2;
+import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.deviceprofile.DeviceProperties;
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.ThemeManager;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.CacheableShortcutCachingLogic;
 import com.android.launcher3.icons.CacheableShortcutInfo;
+import com.android.launcher3.icons.IconShape;
 import com.android.launcher3.icons.IconThemeController;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
@@ -100,12 +113,15 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import app.lawnchair.icons.ExtendedBitmapDrawable;
 import app.lawnchair.preferences.PreferenceManager;
@@ -123,43 +139,42 @@ public final class Utilities {
     private static final Matrix sInverseMatrix = new Matrix();
 
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
-    public static final Person[] EMPTY_PERSON_ARRAY = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ? new Person[0]
+    public static final Person[] EMPTY_PERSON_ARRAY = (VERSION.SDK_INT >= VERSION_CODES.Q) ? new Person[0]
             : null;
 
-    public static final boolean ATLEAST_O = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    public static final boolean ATLEAST_O = VERSION.SDK_INT >= VERSION_CODES.O;
 
-    public static final boolean ATLEAST_O_MR1 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
+    public static final boolean ATLEAST_O_MR1 = VERSION.SDK_INT >= VERSION_CODES.O_MR1;
 
-    public static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= VERSION_CODES.P;
+    public static final boolean ATLEAST_P = VERSION.SDK_INT >= VERSION_CODES.P;
 
-    public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= VERSION_CODES.Q;
+    public static final boolean ATLEAST_Q = VERSION.SDK_INT >= VERSION_CODES.Q;
 
     @ChecksSdkIntAtLeast(api = VERSION_CODES.R)
-    public static final boolean ATLEAST_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+    public static final boolean ATLEAST_R = VERSION.SDK_INT >= VERSION_CODES.R;
 
     @ChecksSdkIntAtLeast(api = VERSION_CODES.S)
-    public static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+    public static final boolean ATLEAST_S = VERSION.SDK_INT >= VERSION_CODES.S;
 
     @ChecksSdkIntAtLeast(api = VERSION_CODES.S_V2)
-    public static final boolean ATLEAST_S_V2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2;
+    public static final boolean ATLEAST_S_V2 = VERSION.SDK_INT >= VERSION_CODES.S_V2;
 
     @ChecksSdkIntAtLeast(api = VERSION_CODES.TIRAMISU, codename = "T")
-    public static final boolean ATLEAST_T = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
+    public static final boolean ATLEAST_T = VERSION.SDK_INT >= VERSION_CODES.TIRAMISU;
 
     @ChecksSdkIntAtLeast(api = VERSION_CODES.UPSIDE_DOWN_CAKE, codename = "U")
-    public static final boolean ATLEAST_U = Build.VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE;
+    public static final boolean ATLEAST_U = VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE;
 
     @ChecksSdkIntAtLeast(api = VERSION_CODES.VANILLA_ICE_CREAM, codename = "V")
-    public static final boolean ATLEAST_V = Build.VERSION.SDK_INT
+    public static final boolean ATLEAST_V = VERSION.SDK_INT
             >= VERSION_CODES.VANILLA_ICE_CREAM;
 
     @ChecksSdkIntAtLeast(api = VERSION_CODES.BAKLAVA)
-    public static final boolean ATLEAST_BAKLAVA = Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA;
+    public static final boolean ATLEAST_BAKLAVA = VERSION.SDK_INT >= VERSION_CODES.BAKLAVA;
 
     @ChecksSdkIntAtLeast(api = 36, codename = "BAKLAVA_1")
-    public static final boolean ATLEAST_BAKLAVA_1 = 
-            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) 
-                && (Build.VERSION.SDK_INT_FULL >= 3600001); // pE-TODO(): Why Build.VERSION_CODES_FULL.BAKLAVA_1 failed?
+    public static final boolean ATLEAST_BAKLAVA_1 = (VERSION.SDK_INT >= VERSION_CODES.BAKLAVA)
+          && (VERSION.SDK_INT_FULL >= VERSION_CODES_FULL.BAKLAVA_1);
 
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
@@ -173,6 +188,14 @@ public final class Utilities {
      */
     @Deprecated
     public static final boolean IS_DEBUG_DEVICE = BuildConfigs.IS_DEBUG_DEVICE;
+
+    public static boolean qsbOnFirstScreen() {
+        Context context = LauncherAppState.getInstance(null).getContext();
+        PreferenceManager2 prefs2 = PreferenceManager2.INSTANCE.get(context);
+        boolean smartspaceEnabled = PreferenceExtensionsKt.firstBlocking(prefs2.getEnableSmartspace());;
+
+        return !injectableModelItems() && smartspaceEnabled;
+    }
 
     public static final int TRANSLATE_UP = 0;
     public static final int TRANSLATE_DOWN = 1;
@@ -209,7 +232,7 @@ public final class Utilities {
             outObj[0] = activityInfo;
             return activityInfo.getFullResIcon(appState.getIconCache());
         }
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+        if (info.itemType == Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = context.getSystemService(LauncherApps.class)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
@@ -217,7 +240,7 @@ public final class Utilities {
                     : LauncherAppState.getInstance(context)
                     .getIconProvider().getIcon(
                             activityInfo.getActivityInfo(), activity.getDeviceProfile().inv.fillResIconDpi);
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+        } else if (info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             List<ShortcutInfo> si = ShortcutKey.fromItemInfo(info)
                     .buildRequest(context)
                     .query(ShortcutRequest.ALL);
@@ -229,7 +252,7 @@ public final class Utilities {
                     context, appState.getIconCache(), new CacheableShortcutInfo(si.get(0), context));
                 return bi.newIcon(context);
             }
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+        } else if (info.itemType == Favorites.ITEM_TYPE_FOLDER) {
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     activity, info.id, new Point(width, height));
             if (icon == null) {
@@ -237,7 +260,7 @@ public final class Utilities {
             }
             outObj[0] = icon;
             return icon;
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
+        } else if (info.itemType == Favorites.ITEM_TYPE_SEARCH_ACTION
                 && info instanceof ItemInfoWithIcon) {
             return ((ItemInfoWithIcon) info).bitmap.newIcon(context);
         } else {
@@ -338,7 +361,7 @@ public final class Utilities {
     /**
      * Returns bounds for a child view of DragLayer, in drag layer coordinates.
      *
-     * see {@link com.android.launcher3.dragndrop.DragLayer}.
+     * see {@link DragLayer}.
      *
      * @param viewBounds Bounds of the view wanted in drag layer coordinates, relative to the view
      *                   itself. eg. (0, 0, view.getWidth, view.getHeight)
@@ -591,7 +614,7 @@ public final class Utilities {
     public static int calculateTextHeight(float textSizePx) {
         Paint p = new Paint();
         p.setTextSize(textSizePx);
-        Paint.FontMetrics fm = p.getFontMetrics();
+        FontMetrics fm = p.getFontMetrics();
         return (int) Math.ceil(fm.bottom - fm.top);
     }
 
@@ -600,8 +623,8 @@ public final class Utilities {
     }
 
     /** Converts a pixel value (px) to scale pixel value (SP) for the current device. */
-    public static float pxToSp(float size) {
-        return size / Resources.getSystem().getDisplayMetrics().scaledDensity;
+    public static float pxToSp(float size, Context context) {
+        return size / context.getResources().getDisplayMetrics().scaledDensity;
     }
 
     public static float dpiFromPx(float size, int densityDpi) {
@@ -627,6 +650,10 @@ public final class Utilities {
 
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return pxFromSp(size, metrics, 1f);
+    }
+
+    public static int getIconSizeWithOverlap(int iconSize) {
+        return (int) Math.ceil(iconSize * ICON_OVERLAP_FACTOR);
     }
 
     public static int pxFromSp(float size, DisplayMetrics metrics, float scale) {
@@ -687,7 +714,7 @@ public final class Utilities {
      */
     public static CharSequence wrapForTts(CharSequence msg, String ttsMsg) {
         SpannableString spanned = new SpannableString(msg);
-        spanned.setSpan(new TtsSpan.TextBuilder(ttsMsg).build(),
+        spanned.setSpan(new TextBuilder(ttsMsg).build(),
                 0, spanned.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spanned;
     }
@@ -763,21 +790,25 @@ public final class Utilities {
 
         Drawable badge = null;
         if ((info instanceof ItemInfoWithIcon iiwi) && !iiwi.getMatchingLookupFlag().useLowRes()) {
-            badge = iiwi.bitmap.getBadgeDrawable(context, useTheme, getIconShapeOrNull(context));
+            badge = iiwi.bitmap.getBadgeDrawable(context, useTheme);
         }
 
         if (info instanceof PendingAddShortcutInfo) {
             ShortcutConfigActivityInfo activityInfo =
                     ((PendingAddShortcutInfo) info).getActivityInfo(context);
             mainIcon = activityInfo.getFullResIcon(appState.getIconCache());
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+        } else if (info.itemType == Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = context.getSystemService(LauncherApps.class)
                     .resolveActivity(info.getIntent(), info.user);
             if (activityInfo == null) {
                 return null;
             }
-            mainIcon = appState.getIconCache().getFullResIcon(activityInfo.getActivityInfo());
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            if (info instanceof ItemInfoWithIcon && info.container == CONTAINER_PRIVATESPACE) {
+                mainIcon = ((ItemInfoWithIcon) info).bitmap.getBadgeDrawable(context, useTheme);
+            } else {
+                mainIcon = appState.getIconCache().getFullResIcon(activityInfo.getActivityInfo());
+            }
+        } else if (info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             List<ShortcutInfo> siList = ShortcutKey.fromItemInfo(info)
                     .buildRequest(context)
                     .query(ShortcutRequest.ALL);
@@ -789,15 +820,16 @@ public final class Utilities {
                         appState.getInvariantDeviceProfile().fillResIconDpi);
                 // Only fetch badge if the icon is on workspace
                 if (info.id != ItemInfo.NO_ID && badge == null) {
-                    badge = appState.getIconCache().getShortcutInfoBadge(si).newIcon(
-                            context,
-                            ThemeManager.INSTANCE.get(context).isIconThemeEnabled()
-                                    ? FLAG_THEMED : 0,
-                            getIconShapeOrNull(context)
-                    );
+                    ThemeManager themeManager = ThemeManager.INSTANCE.get(context);
+                    BitmapInfo badgeInfo = appState.getIconCache().getShortcutInfoBadge(si);
+                    IconShape shape = themeManager.getIconShapeData().getValue();
+
+                    int flags = ThemeManager.INSTANCE.get(context).isIconThemeEnabled()
+                            ? FLAG_THEMED : 0;
+                    badge = badgeInfo.newIcon(context, flags, shape);
                 }
             }
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+        } else if (info.itemType == Favorites.ITEM_TYPE_FOLDER) {
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     context, info.id, new Point(width, height));
             if (icon == null) {
@@ -813,7 +845,7 @@ public final class Utilities {
         AdaptiveIconDrawable result;
 
         // Lawnchair-TODO-Merge: From LC, maybe heavily affected by L3, Allow 3p icon
-        if (ExtendedBitmapDrawable.isFromIconPack(mainIcon) || (!PreferenceManager.INSTANCE.get(context).getWrapAdaptiveIcons().get() && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER))
+        if (ExtendedBitmapDrawable.isFromIconPack(mainIcon) || (!PreferenceManager.INSTANCE.get(context).getWrapAdaptiveIcons().get() && info.itemType != Favorites.ITEM_TYPE_FOLDER))
             return null;
         if (mainIcon instanceof AdaptiveIconDrawable aid) {
             result = aid;
@@ -822,9 +854,6 @@ public final class Utilities {
             try (LauncherIcons li = LauncherIcons.obtain(context)) {
                 result = li.wrapToAdaptiveIcon(mainIcon);
             }
-        }
-        if (result == null) {
-            return null;
         }
 
         // Inject theme icon drawable
@@ -848,7 +877,7 @@ public final class Utilities {
                             .getUserInfo(info.user)
                             .applyBitmapInfoFlags(FlagOp.NO_OP)
                     )
-                    .getBadgeDrawable(context, useTheme, getIconShapeOrNull(context));
+                    .getBadgeDrawable(context, useTheme);
             if (badge == null) {
                 badge = new ColorDrawable(Color.TRANSPARENT);
             }
@@ -1114,5 +1143,40 @@ public final class Utilities {
     public static boolean shouldEnableMouseInteractionChanges(Context context) {
         return enableMouseInteractionChanges() && context.getResources().getBoolean(
                 R.bool.desktop_form_factor);
+    }
+
+    /**
+     * Returns a partial, loggable stack trace.
+     */
+    public static String getTrimmedStackTrace(String callingMethodName) {
+        String stackTrace = Log.getStackTraceString(new Exception());
+        return Arrays.stream(stackTrace.split("\\n"))
+                .skip(2) // Removes the line "java.lang.Exception" and "getTrimmedStackTrace".
+                .filter(traceLine -> !traceLine.contains(callingMethodName))
+                .limit(3)
+                .collect(Collectors.joining("\n"));
+    }
+
+    /**
+     * Determines whether the split should be left/right split layout and returns a boolean.
+     * The split orientation depends on the device's properties (tablet vs. phone, landscape vs.
+     * portrait), if current display is external display, and flags.
+     *
+     * @return {@code true} if the split should be a left/right split, {@code false} if it should
+     *     be a top/bottom split.
+     */
+    public static boolean calculateIsLeftRightSplit(boolean allowLeftRightSplitInPortrait,
+            DeviceProperties deviceProperties, boolean isExternalDisplay) {
+        if (allowLeftRightSplitInPortrait && deviceProperties.isTablet()) {
+            if (!isExternalDisplay || !enableNonDefaultDisplaySplit()) {
+                return !deviceProperties.isLandscape();
+            } else {
+                // If split is started in external display and the non_default_display_split
+                // is enabled, set isLeftRightSplit to true in landscape mode.
+                return deviceProperties.isLandscape();
+            }
+        } else {
+            return deviceProperties.isLandscape();
+        }
     }
 }

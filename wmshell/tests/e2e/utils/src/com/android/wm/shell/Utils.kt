@@ -49,7 +49,15 @@ object Utils {
 
     private val externalDisplaySettings = getSettingsString(EXTERNAL_DISPLAY_SETTING)
 
-    fun testSetupRule(navigationMode: NavBar, rotation: Rotation): RuleChain {
+    /**
+     * A helper method to initialize a [RuleChain] to set up [navigationMode] and screen [rotation].
+     *
+     * @param navigationMode the navigation mode to set up, either one of [NavBar.MODE_GESTURAL]
+     * or [NavBar.MODE_3BUTTON].
+     * @param rotation the screen rotation to apply, which defaults to [Rotation.ROTATION_0]
+     * @return the [RuleChain] to set up the [navigationMode] and [rotation].
+     */
+    fun testSetupRule(navigationMode: NavBar, rotation: Rotation = Rotation.ROTATION_0): RuleChain {
         return RuleChain.outerRule(ArtifactSaverRule())
             .around(UnlockScreenRule())
             .around(NavigationModeRule(navigationMode.value, false))
@@ -100,7 +108,7 @@ object Utils {
         val switch = checkNotNull(device.wait(findObject(res(MIRROR_BUILT_IN_DISPLAY_SWITCH_ID)),
             SETTINGS_UPDATE_TIME_OUT))
         switch.click()
-        device.waitForWindowUpdate(SETTINGS_PACKAGE_NAME,SETTINGS_UPDATE_TIME_OUT)
+        device.waitForWindowUpdate(SETTINGS_PACKAGE_NAME, SETTINGS_UPDATE_TIME_OUT)
         device.waitForIdle()
     }
 

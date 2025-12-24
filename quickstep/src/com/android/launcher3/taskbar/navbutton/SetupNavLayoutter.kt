@@ -97,12 +97,14 @@ class SetupNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
+        val contextualButtonWidth =
+            resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_width)
         val contextualMargin =
             resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_padding)
         repositionContextualContainer(endContextualContainer, WRAP_CONTENT, 0, 0, Gravity.END)
         repositionContextualContainer(
             startContextualContainer,
-            WRAP_CONTENT,
+            contextualButtonWidth,
             contextualMargin,
             contextualMargin,
             Gravity.START,
@@ -116,5 +118,9 @@ class SetupNavLayoutter(
             endContextualContainer.addView(a11yButton)
             a11yButton.layoutParams = getParamsToCenterView()
         }
+    }
+
+    override fun addThreeButtons() {
+        // No-op
     }
 }

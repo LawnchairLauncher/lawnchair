@@ -22,22 +22,26 @@ import com.android.wm.shell.desktopmode.CaptionState.AppHandle
 import com.android.wm.shell.desktopmode.CaptionState.AppHeader
 import com.android.wm.shell.desktopmode.CaptionState.NoCaption
 import com.android.wm.shell.windowdecor.viewholder.AppHandleIdentifier
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 /** Repository to observe caption state. */
 class WindowDecorCaptionRepository {
-    private val _captionStateFlow = MutableStateFlow<CaptionState>(NoCaption())
-    /** Observer for app handle state changes. */
-    val captionStateFlow: StateFlow<CaptionState> = _captionStateFlow
+    private val _captionStateFlow =
+        MutableSharedFlow<CaptionState>(
+            replay = 2,
+            extraBufferCapacity = 5,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
+    /** Observer for caption state changes. */
+    val captionStateFlow = _captionStateFlow
     private val _appToWebUsageFlow = MutableSharedFlow<Unit>()
     /** Observer for App-to-Web usage. */
     val appToWebUsageFlow = _appToWebUsageFlow
 
     /** Notifies [captionStateFlow] if there is a change to caption state. */
     fun notifyCaptionChanged(captionState: CaptionState) {
-        _captionStateFlow.value = captionState
+        _captionStateFlow.tryEmit(captionState)
     }
 
     /** Notifies [appToWebUsageFlow] if App-to-Web feature is used. */
@@ -61,7 +65,6 @@ sealed class CaptionState {
         val runningTaskInfo: RunningTaskInfo,
         val isHandleMenuExpanded: Boolean,
         val globalAppHandleBounds: Rect,
-        val isCapturedLinkAvailable: Boolean,
         val appHandleIdentifier: AppHandleIdentifier,
         override val isFocused: Boolean,
     ) : CaptionState()
@@ -70,13 +73,20 @@ sealed class CaptionState {
         val runningTaskInfo: RunningTaskInfo,
         val isHeaderMenuExpanded: Boolean,
         val globalAppChipBounds: Rect,
-        val isCapturedLinkAvailable: Boolean,
         override val isFocused: Boolean,
     ) : CaptionState()
 
     data class NoCaption(val taskId: Int = INVALID_TASK_ID) : CaptionState() {
         override val isFocused = false
     }
+
+    /** Returns the [RunningTaskInfo] of the [CaptionState] or null if unavailable. */
+    fun getTaskInfo(): RunningTaskInfo? =
+        when (this) {
+            is AppHandle -> runningTaskInfo
+            is AppHeader -> runningTaskInfo
+            is NoCaption -> null
+        }
 
     private companion object {
         private const val INVALID_TASK_ID = -1

@@ -16,18 +16,19 @@
 
 package com.android.wm.shell.flicker.tiling
 
-import android.platform.test.annotations.RequiresDevice
+import android.platform.test.annotations.Postsubmit
+import android.platform.test.annotations.RequiresDesktopDevice
 import android.tools.NavBar
-import android.tools.flicker.assertions.FlickerTest
+import android.tools.flicker.assertions.FlickerChecker
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import com.android.wm.shell.Utils
 import com.android.wm.shell.flicker.DesktopModeBaseTest
 import com.android.wm.shell.flicker.utils.tilingDividerIsInvisibleAtEnd
 import com.android.wm.shell.flicker.utils.tilingDividerIsVisibleAtStart
-import com.android.wm.shell.scenarios.TileResizingWithDrag
+import com.android.wm.shell.scenarios.TilingTestBase
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,15 +37,18 @@ import org.junit.runners.Parameterized
 /**
  * Ensures tiling is broken when a tiled task enters PiP.
  */
-@RequiresDevice
+@RequiresDesktopDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
-class TilingPairBrokenWhenEnteringPipFlickerTest(flicker: LegacyFlickerTest) :
+@Postsubmit
+class TilingPairBrokenWhenEnteringPipFlickerTest(flicker: FlickerTest) :
     DesktopModeBaseTest(flicker) {
+    inner class TileResizingWithDragScenario : TilingTestBase(flicker.scenario.startRotation)
+
     @Rule
     @JvmField
     val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, flicker.scenario.startRotation)
-    val scenario = TileResizingWithDrag()
+    val scenario = TileResizingWithDragScenario()
 
     override val transition: FlickerBuilder.() -> Unit
         get() = {
@@ -69,8 +73,8 @@ class TilingPairBrokenWhenEnteringPipFlickerTest(flicker: LegacyFlickerTest) :
     companion object {
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun getParams(): Collection<FlickerTest> {
-            return LegacyFlickerTestFactory.nonRotationTests(
+        fun getParams(): Collection<FlickerChecker> {
+            return FlickerTestFactory.nonRotationTests(
                 supportedNavigationModes = listOf(NavBar.MODE_GESTURAL)
             )
         }

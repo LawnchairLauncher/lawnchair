@@ -119,12 +119,10 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     private void updateVisibility() {
         setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
-        if (mActivityContext.getAppsView() != null) {
-            if (mPredictionsEnabled) {
-                mActivityContext.getAppsView().getAppsStore().registerIconContainer(this);
-            } else {
-                mActivityContext.getAppsView().getAppsStore().unregisterIconContainer(this);
-            }
+        if (mPredictionsEnabled) {
+            mActivityContext.getActivityComponent().getAppsStore().registerIconContainer(this);
+        } else {
+            mActivityContext.getActivityComponent().getAppsStore().unregisterIconContainer(this);
         }
     }
 

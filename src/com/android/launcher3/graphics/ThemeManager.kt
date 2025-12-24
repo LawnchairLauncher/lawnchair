@@ -18,8 +18,6 @@ package com.android.launcher3.graphics
 
 import android.content.Context
 import android.content.res.Resources
-import com.android.launcher3.EncryptionType
-import com.android.launcher3.Item
 import com.android.launcher3.LauncherPrefChangeListener
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.backedUpItem
@@ -27,18 +25,28 @@ import com.android.launcher3.concurrent.annotations.Ui
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
+import com.android.launcher3.graphics.ShapeDelegate.Companion.DEFAULT_PATH_SIZE_INT
 import com.android.launcher3.graphics.ShapeDelegate.Companion.pickBestShape
+import com.android.launcher3.graphics.theme.IconThemeFactory
+import com.android.launcher3.graphics.theme.ThemePreference
+import com.android.launcher3.graphics.theme.ThemePreference.Companion.MONO_THEME_VALUE
+import com.android.launcher3.icons.DotRenderer.IconShapeInfo
+import com.android.launcher3.icons.GraphicsUtils.generateIconShape
+import com.android.launcher3.icons.IconShape
 import com.android.launcher3.icons.IconThemeController
-import com.android.launcher3.icons.mono.MonoIconThemeController
 import com.android.launcher3.shapes.IconShapeModel.Companion.DEFAULT_ICON_RADIUS
 import com.android.launcher3.shapes.ShapesProvider
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.DaggerSingletonTracker
+import com.android.launcher3.util.ListenableRef
 import com.android.launcher3.util.LooperExecutor
+import com.android.launcher3.util.MutableListenableRef
+import com.android.launcher3.util.SafeCloseable
 import com.android.launcher3.util.SimpleBroadcastReceiver
+import com.android.launcher3.util.SimpleBroadcastReceiver.Companion.packageFilter
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.Executor
 import javax.inject.Inject
+import javax.inject.Named
 
 /** Centralized class for managing Launcher icon theming */
 @LauncherAppSingleton
@@ -48,17 +56,25 @@ constructor(
     @ApplicationContext private val context: Context,
     @Ui private val uiExecutor: LooperExecutor,
     private val prefs: LauncherPrefs,
-    private val iconControllerFactory: IconControllerFactory,
+    private val themePreference: ThemePreference,
+    @Named(ICON_FACTORY_DAGGER_KEY)
+    private val iconThemeFactories: Map<String, @JvmSuppressWildcards IconThemeFactory>,
+    @Ui mainExecutor: LooperExecutor,
     lifecycle: DaggerSingletonTracker,
 ) {
 
+    private val _iconShapeData = MutableListenableRef(IconShape.EMPTY)
+
+    /** listenable value holder for current IconShape */
+    val iconShapeData: ListenableRef<IconShape> = _iconShapeData.asListenable()
     /** Representation of the current icon state */
     var iconState = parseIconState(null)
         private set
 
+    @Deprecated("Use [ThemePreference] instead")
     var isMonoThemeEnabled
-        set(value) = prefs.put(THEMED_ICONS, value)
-        get() = prefs.get(THEMED_ICONS)
+        set(value) = themePreference.setValue(if (value) MONO_THEME_VALUE else null)
+        get() = MONO_THEME_VALUE == themePreference.value
 
     val themeController
         get() = iconState.themeController
@@ -75,35 +91,45 @@ constructor(
     private val listeners = CopyOnWriteArrayList<ThemeChangeListener>()
 
     init {
-        val receiver = SimpleBroadcastReceiver(
-            context, uiExecutor) { verifyIconState() }
-        receiver.registerPkgActions("android", ACTION_OVERLAY_CHANGED)
+        val receiver = SimpleBroadcastReceiver(context, uiExecutor) { verifyIconState() }
+        receiver.register(packageFilter("android", ACTION_OVERLAY_CHANGED))
+        lifecycle.addCloseable(receiver)
 
-        val keys = (iconControllerFactory.prefKeys + PREF_ICON_SHAPE)
-
-        val keysArray = keys.toTypedArray()
-        val prefKeySet = keys.map { it.sharedPrefKey }
-        val prefListener = LauncherPrefChangeListener { key ->
-            if (prefKeySet.contains(key)) verifyIconState()
+        val prefListener = LauncherPrefChangeListener {
+            if (it == PREF_ICON_SHAPE.sharedPrefKey) verifyIconState()
         }
-        prefs.addListener(prefListener, *keysArray)
+        prefs.addListener(prefListener, PREF_ICON_SHAPE)
+        lifecycle.addCloseable(themePreference.forEach(mainExecutor) { verifyIconState() })
         lifecycle.addCloseable {
-            receiver.unregisterReceiverSafely()
-            prefs.removeListener(prefListener, *keysArray)
+            prefs.removeListener(prefListener, PREF_ICON_SHAPE)
+            iconState.closeController()
         }
     }
 
     private fun verifyIconState() {
         val newState = parseIconState(iconState)
         if (newState == iconState) return
+        val hasThemedChanged = newState.toUniqueId() != iconState.toUniqueId()
         iconState = newState
-
-        listeners.forEach { it.onThemeChanged() }
+        if (hasThemedChanged) {
+            // trigger listeners only for theme change, not shape change
+            listeners.forEach { it.onThemeChanged() }
+        }
+        _iconShapeData.dispatchValue(iconShape.createIconShape(iconShapeData.value.pathSize))
     }
 
     fun addChangeListener(listener: ThemeChangeListener) = listeners.add(listener)
 
     fun removeChangeListener(listener: ThemeChangeListener) = listeners.remove(listener)
+
+    /**
+     * Generates new IconShape based given [iconSize] and current [iconShape] Allocates new Bitmap
+     * via [createIconShape]
+     */
+    fun generateIconShape(iconSize: Int) {
+        if (iconShapeData.value.pathSize == iconSize) return
+        _iconShapeData.dispatchValue(iconShape.createIconShape(iconSize))
+    }
 
     private fun parseIconState(oldState: IconState?): IconState {
         val shapeModel =
@@ -118,8 +144,11 @@ constructor(
             }
 
         val iconShape =
-            if (oldState != null && oldState.iconMask == iconMask) oldState.iconShape
-            else pickBestShape(iconMask)
+            if (oldState != null && oldState.iconMask == iconMask) {
+                oldState.iconShape
+            } else {
+                pickBestShape(iconMask)
+            }
 
         val folderRadius = shapeModel?.folderRadiusRatio ?: 1f
         val folderShape =
@@ -131,13 +160,25 @@ constructor(
                 ShapeDelegate.RoundedSquare(folderRadius)
             }
 
+        val themeKey = themePreference.value
+        val themeCode = themeKey?.toString() ?: "no-theme"
+
+        val iconControllerFactory =
+            if (oldState?.themeCode == themeCode) {
+                oldState.themeController
+            } else {
+                oldState?.closeController()
+                themeKey?.run { iconThemeFactories[factoryId]?.createController(themeId) }
+            }
+
         return IconState(
             iconMask = iconMask,
             folderRadius = folderRadius,
-            themeController = iconControllerFactory.createThemeController(),
+            themeController = iconControllerFactory,
             iconShape = iconShape,
             folderShape = folderShape,
             shapeRadius = shapeModel?.shapeRadius ?: DEFAULT_ICON_RADIUS,
+            themeCode = themeCode,
         )
     }
 
@@ -145,12 +186,23 @@ constructor(
         val iconMask: String,
         val folderRadius: Float,
         val themeController: IconThemeController?,
-        val themeCode: String = themeController?.themeID ?: "no-theme",
+        val themeCode: String,
         val iconShape: ShapeDelegate,
+        /* Icon content may change when using Circle shape due to android:roundIcon property */
+        val isCircle: Boolean = iconShape is ShapeDelegate.Circle,
         val folderShape: ShapeDelegate,
         val shapeRadius: Float,
     ) {
-        fun toUniqueId() = "${iconMask.hashCode()},$themeCode"
+        fun toUniqueId() = "$themeCode,$isCircle"
+
+        val iconShapeInfo = IconShapeInfo.fromPath(iconShape.getPath(), DEFAULT_PATH_SIZE_INT)
+        val folderShapeInfo = IconShapeInfo.fromPath(folderShape.getPath(), DEFAULT_PATH_SIZE_INT)
+    }
+
+    private fun IconState.closeController() {
+        if (themeController is SafeCloseable) {
+            themeController.close()
+        }
     }
 
     /** Interface for receiving theme change events */
@@ -158,29 +210,20 @@ constructor(
         fun onThemeChanged()
     }
 
-    open class IconControllerFactory @Inject constructor(protected val prefs: LauncherPrefs) {
-
-        open val prefKeys: List<Item> = listOf(THEMED_ICONS)
-
-        open fun createThemeController(): IconThemeController? {
-            return if (prefs.get(THEMED_ICONS)) MONO_THEME_CONTROLLER else null
-        }
-    }
-
     companion object {
 
         @JvmField val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getThemeManager)
-        const val KEY_ICON_SHAPE = "icon_shape_model"
+        @JvmField val PREF_ICON_SHAPE = backedUpItem("icon_shape_model", "")
 
-        const val KEY_THEMED_ICONS = "themed_icons"
-        @JvmField val THEMED_ICONS = backedUpItem(KEY_THEMED_ICONS, false, EncryptionType.ENCRYPTED)
-        @JvmField val PREF_ICON_SHAPE = backedUpItem(KEY_ICON_SHAPE, "", EncryptionType.ENCRYPTED)
+        @JvmField val DEFAULT_SHAPE_DELEGATE = pickBestShape(shapeStr = "")
 
         private const val ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED"
         val CONFIG_ICON_MASK_RES_ID: Int =
             Resources.getSystem().getIdentifier("config_icon_mask", "string", "android")
 
-        // Use a constant to allow equality check in verifyIconState
-        private val MONO_THEME_CONTROLLER = MonoIconThemeController(shouldForceThemeIcon = true)
+        private fun ShapeDelegate.createIconShape(size: Int) =
+            generateIconShape(size, getPath(size.toFloat()))
+
+        const val ICON_FACTORY_DAGGER_KEY = "ICON_FACTORIES"
     }
 }

@@ -31,9 +31,9 @@ import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.common.LaunchAdjacentController;
 import com.android.wm.shell.desktopmode.DesktopModeLoggerTransitionObserver;
-import com.android.wm.shell.desktopmode.DesktopRepository;
 import com.android.wm.shell.desktopmode.DesktopTasksController;
 import com.android.wm.shell.desktopmode.DesktopUserRepositories;
+import com.android.wm.shell.desktopmode.data.DesktopRepository;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 import com.android.wm.shell.shared.desktopmode.DesktopState;
 import com.android.wm.shell.sysui.ShellInit;
@@ -156,7 +156,9 @@ public class FreeformTaskListener implements ShellTaskOrganizer.TaskListener,
 
         ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TASK_ORG, "Freeform Task Info Changed: #%d",
                 taskInfo.taskId);
-        mDesktopTasksController.ifPresent(c -> c.onTaskInfoChanged(taskInfo));
+        if (!DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue()) {
+            mDesktopTasksController.ifPresent(c -> c.onTaskInfoChanged(taskInfo));
+        }
         mWindowDecorationViewModel.onTaskInfoChanged(taskInfo);
         state.mTaskInfo = taskInfo;
         if (mDesktopState.canEnterDesktopMode()) {

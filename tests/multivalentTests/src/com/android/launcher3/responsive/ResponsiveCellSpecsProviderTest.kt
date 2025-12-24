@@ -26,6 +26,7 @@ import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -305,31 +306,39 @@ class ResponsiveCellSpecsProviderTest : AbstractDeviceProfileTest() {
         assertThat(calculatedCellSpec.iconTextMaxLineCountMatchesWorkspace).isFalse()
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_IsNotFixedSizeOrMatchWorkspace_throwsError() {
-        ResponsiveCellSpecsProvider.create(
-            TestResourceHelper(context, "invalid_cell_specs_1".xmlToId())
-        )
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveCellSpecsProvider.create(
+                TestResourceHelper(context, "invalid_cell_specs_1".xmlToId())
+            )
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_dimensionTypeIsNotHeight_throwsError() {
-        ResponsiveCellSpecsProvider.create(
-            TestResourceHelper(context, "invalid_cell_specs_2".xmlToId())
-        )
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveCellSpecsProvider.create(
+                TestResourceHelper(context, "invalid_cell_specs_2".xmlToId())
+            )
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_invalidFixedSize_throwsError() {
-        ResponsiveCellSpecsProvider.create(
-            TestResourceHelper(context, "invalid_cell_specs_3".xmlToId())
-        )
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveCellSpecsProvider.create(
+                TestResourceHelper(context, "invalid_cell_specs_3".xmlToId())
+            )
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_invalidFixedSizeWithMultiline_throwsError() {
-        ResponsiveCellSpecsProvider.create(
-            TestResourceHelper(context, "invalid_cell_specs_4".xmlToId())
-        )
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveCellSpecsProvider.create(
+                TestResourceHelper(context, "invalid_cell_specs_4".xmlToId())
+            )
+        }
     }
 }

@@ -9,7 +9,7 @@
     <string name="dialog_cancel" msgid="6464336969134856366">"CANCEL·LA"</string>
     <string name="dialog_settings" msgid="6564397136021186148">"CONFIGURACIÓ"</string>
     <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Tradueix o escolta el text en pantalla"</string>
-    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"És possible que determinada informació es comparteixi amb Google, com ara el text en pantalla, les adreces web i les captures de pantalla.\n\nPer canviar quina informació comparteixes, ves a "<b>"Configuració &gt; Aplicacions &gt; Aplicacions predeterminades &gt; Aplicació de l\'assistent digital"</b>"."</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"És possible que determinada informació es comparteixi amb Google, com ara el text en pantalla, les adreces web i les captures de pantalla.\n\nPer canviar quina informació comparteixes, ves a "<b>"Configuració &gt; Aplicacions &gt; Aplicacions predeterminades &gt; Aplicació d\'assistent digital"</b>"."</string>
     <string name="assistant_not_selected_title" msgid="5017072974603345228">"Tria un assistent per utilitzar aquesta funció"</string>
     <string name="assistant_not_selected_text" msgid="3244613673884359276">"Per escoltar o traduir text en pantalla, tria una aplicació d\'assistent digital a Configuració"</string>
     <string name="assistant_not_supported_title" msgid="1675788067597484142">"Canvia l\'assistent per utilitzar aquesta funció"</string>

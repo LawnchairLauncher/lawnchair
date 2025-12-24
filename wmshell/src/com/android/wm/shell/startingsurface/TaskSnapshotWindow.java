@@ -37,6 +37,7 @@ import android.view.InsetsSourceControl;
 import android.view.InsetsState;
 import android.view.SurfaceControl;
 import android.view.View;
+import android.view.ViewRootImpl;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.view.WindowRelayoutResult;
@@ -71,6 +72,8 @@ public class TaskSnapshotWindow {
 
     private final boolean mHasImeSurface;
 
+    private int mSeqId = -1;
+
     static TaskSnapshotWindow create(StartingWindowInfo info, IBinder appToken,
             TaskSnapshot snapshot, ShellExecutor splashScreenExecutor,
             @NonNull Runnable clearWindowHandler) {
@@ -86,9 +89,12 @@ public class TaskSnapshotWindow {
         ProtoLog.v(ShellProtoLogGroup.WM_SHELL_STARTING_WINDOW,
                 "create taskSnapshot surface for task: %d", taskId);
 
+        final int format = com.android.window.flags2.Flags.reduceTaskSnapshotMemoryUsage()
+                ? snapshot.getHardwareBufferFormat()
+                : snapshot.getHardwareBuffer().getFormat();
         final WindowManager.LayoutParams layoutParams = SnapshotDrawerUtils.createLayoutParameters(
                 info, TITLE_FORMAT + taskId, TYPE_APPLICATION_STARTING,
-                snapshot.getHardwareBuffer().getFormat(), appToken);
+                format, appToken);
         if (layoutParams == null) {
             Slog.e(TAG, "TaskSnapshotWindow no layoutParams");
             return null;
@@ -196,7 +202,8 @@ public class TaskSnapshotWindow {
 
     private void reportDrawn() {
         try {
-            mSession.finishDrawing(mWindow, null /* postDrawTransaction */, Integer.MAX_VALUE);
+            mSession.finishDrawing(mWindow, null /* postDrawTransaction */,
+                    ViewRootImpl.NoPreloadHolder.sAlwaysSeqId ? mSeqId : Integer.MAX_VALUE);
         } catch (RemoteException e) {
             clearWindowSynced();
         }
@@ -226,8 +233,17 @@ public class TaskSnapshotWindow {
                     // ASAP as we are going to wait on the new window in any case to unfreeze
                     // the screen, and the starting window is not needed anymore.
                     snapshot.clearWindowSynced();
-                } else if (reportDraw) {
+                } else if (!ViewRootImpl.NoPreloadHolder.sAlwaysSeqId && reportDraw) {
                     if (snapshot.mHasDrawn) {
+                        snapshot.reportDrawn();
+                    }
+                }
+                if (ViewRootImpl.NoPreloadHolder.sAlwaysSeqId
+                        && layout.syncSeqId > snapshot.mSeqId) {
+                    snapshot.mSeqId = layout.syncSeqId;
+                    if (snapshot.mHasDrawn
+                            // Consider "cleared" as drawn (since it has "drawn emptiness")
+                            || clearSnapshot) {
                         snapshot.reportDrawn();
                     }
                 }

@@ -19,10 +19,13 @@ package com.android.launcher3.taskbar.rules
 import android.app.Instrumentation
 import android.app.PendingIntent
 import android.content.IIntentSender
+import android.os.UserHandle
+import android.os.UserManager
 import android.provider.Settings.Secure.NAV_BAR_KIDS_MODE
 import android.provider.Settings.Secure.USER_SETUP_COMPLETE
 import android.provider.Settings.Secure.getUriFor
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.app.displaylib.DisplaysWithDecorationsRepositoryCompat
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.taskbar.TaskbarControllers
@@ -30,14 +33,12 @@ import com.android.launcher3.taskbar.TaskbarManagerImpl
 import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarNavButtonCallbacks
 import com.android.launcher3.taskbar.TaskbarUIController
 import com.android.launcher3.taskbar.bubbles.BubbleControllers
-import com.android.launcher3.taskbar.rules.TaskbarUnitTestRule.InjectController
 import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
 import com.android.launcher3.util.TestUtil
 import com.android.launcher3.util.coroutines.ProductionDispatchers
 import com.android.quickstep.AllAppsActionManager
-import com.android.quickstep.LauncherDisplaysWithDecorationsRepositoryCompat
-import com.android.quickstep.fallback.window.RecentsWindowManager
 import com.android.quickstep.input.QuickstepKeyGestureEventsManager
+import com.android.quickstep.window.RecentsWindowManager
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 import java.util.Locale
@@ -47,8 +48,11 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doNothing
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
+import org.mockito.kotlin.stub
 import org.mockito.kotlin.whenever
 
 /**
@@ -85,7 +89,7 @@ class TaskbarUnitTestRule(
 
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
 
-    private lateinit var taskbarManager: TaskbarManagerImpl
+    lateinit var taskbarManager: TaskbarManagerImpl
 
     val activityContext: TaskbarActivityContext
         get() {
@@ -100,7 +104,8 @@ class TaskbarUnitTestRule(
                 // Only run test when Taskbar is enabled.
                 instrumentation.runOnMainSync {
                     assumeTrue(
-                        LauncherAppState.getIDP(context).getDeviceProfile(context).isTaskbarPresent
+                        "Ignoring test because taskbar is not present",
+                        LauncherAppState.getIDP(context).getDeviceProfile(context).isTaskbarPresent,
                     )
                 }
 
@@ -111,7 +116,12 @@ class TaskbarUnitTestRule(
                     if (description.getAnnotation(NavBarKidsMode::class.java) != null) 1 else 0
 
                 val quickstepKeyGestureEventsManagerSpy =
-                    spy(QuickstepKeyGestureEventsManager(context))
+                    spy(
+                        QuickstepKeyGestureEventsManager(
+                            context,
+                            context.settingsCacheSandbox.cache,
+                        )
+                    )
                 doNothing()
                     .whenever(quickstepKeyGestureEventsManagerSpy)
                     .registerAllAppsKeyGestureEvent(any())
@@ -124,6 +134,18 @@ class TaskbarUnitTestRule(
                 doNothing()
                     .whenever(quickstepKeyGestureEventsManagerSpy)
                     .unregisterOverviewKeyGestureEvent()
+
+                val isUserUnlocked = description.getAnnotation(UserLocked::class.java) == null
+                context.base.spyService(UserManager::class.java).stub {
+                    doAnswer { isUserUnlocked }.whenever(mock).isUserUnlocked(any<Int>())
+                    doAnswer { isUserUnlocked }.whenever(mock).isUserUnlockingOrUnlocked(any<Int>())
+                    // Needed because the Robolectric version does not overload to the ID method.
+                    doAnswer { isUserUnlocked }.whenever(mock).isUserUnlocked(any<UserHandle>())
+                    doAnswer { isUserUnlocked }
+                        .whenever(mock)
+                        .isUserUnlockingOrUnlocked(any<UserHandle>())
+                }
+
                 taskbarManager =
                     TestUtil.getOnUiThread {
                         object :
@@ -138,34 +160,22 @@ class TaskbarUnitTestRule(
                                 },
                                 object : TaskbarNavButtonCallbacks {},
                                 RecentsWindowManager.REPOSITORY_INSTANCE.get(context),
-                                LauncherDisplaysWithDecorationsRepositoryCompat.INSTANCE.get(
-                                    context
-                                ),
+                                // VirtualDisplaysRule dispatches system decoration changes.
+                                mock<DisplaysWithDecorationsRepositoryCompat>(),
                                 ProductionDispatchers.main,
                             ) {
                             override fun recreateTaskbars() {
                                 super.recreateTaskbars()
-                                if (currentActivityContext != null) {
-                                    injectControllers()
-                                    // TODO(b/346394875): we should test a non-default uiController.
-                                    activityContext.setUIController(TaskbarUIController.DEFAULT)
-                                    controllerInjectionCallback.invoke()
-                                }
+                                injectControllers()
                             }
 
                             override fun recreateTaskbarForDisplay(displayId: Int, duration: Int) {
                                 super.recreateTaskbarForDisplay(displayId, duration)
-                                if (
-                                    displayId == context.displayId && currentActivityContext != null
-                                ) {
-                                    injectControllers()
-                                    // TODO(b/346394875): we should test a non-default uiController.
-                                    activityContext.setUIController(TaskbarUIController.DEFAULT)
-                                    controllerInjectionCallback.invoke()
-                                }
+                                if (displayId == context.displayId) injectControllers()
                             }
                         }
                     }
+                context.virtualDisplayRule.registerDisplayDecorationListener(taskbarManager)
 
                 if (description.getAnnotation(ForceRtl::class.java) != null) {
                     // Needs to be set on window context instead of sandbox context, because it does
@@ -178,9 +188,7 @@ class TaskbarUnitTestRule(
                 }
 
                 try {
-                    // Required to complete initialization.
-                    instrumentation.runOnMainSync { taskbarManager.onUserUnlocked() }
-
+                    if (isUserUnlocked) unlockUser()
                     base.evaluate()
                 } finally {
                     instrumentation.runOnMainSync { taskbarManager.destroy() }
@@ -193,7 +201,13 @@ class TaskbarUnitTestRule(
     /** Simulates Taskbar recreation lifecycle. */
     fun recreateTaskbar() = instrumentation.runOnMainSync { taskbarManager.recreateTaskbars() }
 
-    private fun injectControllers() {
+    /** Simulates unlocking the user for the first time. */
+    fun unlockUser() = instrumentation.runOnMainSync { taskbarManager.onUserUnlocked() }
+
+    // Don't use TaskbarManager property, because the function can be called before initialization.
+    private fun TaskbarManagerImpl.injectControllers() {
+        val activityContext = currentActivityContext ?: return
+
         val bubbleControllerTypes =
             BubbleControllers::class.java.fields.map { f ->
                 if (f.type == Optional::class.java) {
@@ -215,6 +229,10 @@ class TaskbarUnitTestRule(
                     }
                 injectController(it, testInstance, controllers)
             }
+
+        // TODO(b/346394875): we should test a non-default uiController.
+        activityContext.setUIController(TaskbarUIController.DEFAULT)
+        controllerInjectionCallback.invoke()
     }
 
     private fun injectController(field: Field, testInstance: Any, controllers: Any) {
@@ -252,6 +270,11 @@ class TaskbarUnitTestRule(
     @Retention(AnnotationRetention.RUNTIME)
     @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
     annotation class ForceRtl
+
+    /** Simulate direct boot for tests, where the user is still locked. */
+    @Retention(AnnotationRetention.RUNTIME)
+    @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+    annotation class UserLocked
 }
 
 private val RTL_LOCALE = Locale.of("ar", "XB")

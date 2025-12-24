@@ -298,7 +298,7 @@ class MagnetizedObjectTest : ShellTestCase() {
     }
 
     @Test
-    fun testFlingTowardsTarget_towardsButTooSlow() {
+    fun testFlingTowardsTarget_downTowardsButTooSlow() {
         // Very, very slowly fling the object towards the target (but never touch the magnetic
         // field). This value is only used to create MotionEvent timestamps, it will not block the
         // test for 10 seconds.
@@ -315,6 +315,26 @@ class MagnetizedObjectTest : ShellTestCase() {
                         x = targetCenterX,
                         y = targetCenterY - magneticFieldRadius * 2,
                         action = MotionEvent.ACTION_UP))
+
+        // No sticking should have occurred.
+        verifyNoMoreInteractions(magnetListener)
+    }
+
+    @Test
+    fun testFlingTowardsTarget_upTowardsButTooSlow() {
+        timeStep = 10000
+        dispatchMotionEvents(
+            getMotionEvent(
+                x = targetCenterX,
+                y = targetCenterY * 2,
+                action = MotionEvent.ACTION_DOWN),
+            getMotionEvent(
+                x = targetCenterX,
+                y = (targetCenterY * 1.5).toInt()),
+            getMotionEvent(
+                x = targetCenterX,
+                y = targetCenterY + magneticFieldRadius * 2,
+                action = MotionEvent.ACTION_UP))
 
         // No sticking should have occurred.
         verifyNoMoreInteractions(magnetListener)

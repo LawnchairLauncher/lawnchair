@@ -54,6 +54,7 @@ class PersistentBubbleStashControllerTest {
         const val HOTSEAT_VERTICAL_CENTER = 95
         const val HOTSEAT_TRANSLATION_Y = -45f
         const val TASK_BAR_TRANSLATION_Y = -5f
+        const val TASK_BAR_STASHED_TRANSLATION_Y = 105f
     }
 
     @get:Rule val animatorTestRule: AnimatorTestRule = AnimatorTestRule(this)
@@ -349,10 +350,12 @@ class PersistentBubbleStashControllerTest {
         whenever(bubbleBarViewController.isHiddenForNoBubbles).thenReturn(false)
         whenever(bubbleBarViewController.isExpanded).thenReturn(false)
 
-        persistentTaskBarStashController.showBubbleBar(
-            expandBubbles = true,
-            bubbleBarGesture = true,
-        )
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.showBubbleBar(
+                expandBubbles = true,
+                bubbleBarGesture = true,
+            )
+        }
 
         verify(bubbleBarViewController).animateExpanded(true, true)
     }
@@ -362,10 +365,12 @@ class PersistentBubbleStashControllerTest {
         whenever(bubbleBarViewController.isHiddenForNoBubbles).thenReturn(false)
         whenever(bubbleBarViewController.isExpanded).thenReturn(false)
 
-        persistentTaskBarStashController.showBubbleBar(
-            expandBubbles = true,
-            bubbleBarGesture = false,
-        )
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.showBubbleBar(
+                expandBubbles = true,
+                bubbleBarGesture = false,
+            )
+        }
 
         verify(bubbleBarViewController).animateExpanded(true, false)
     }
@@ -375,12 +380,131 @@ class PersistentBubbleStashControllerTest {
         whenever(bubbleBarViewController.isHiddenForNoBubbles).thenReturn(false)
         whenever(bubbleBarViewController.isExpanded).thenReturn(false)
 
-        persistentTaskBarStashController.showBubbleBar(
-            expandBubbles = false,
-            bubbleBarGesture = true,
-        )
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.showBubbleBar(
+                expandBubbles = false,
+                bubbleBarGesture = true,
+            )
+        }
 
         verify(bubbleBarViewController, never()).animateExpanded(any(), any())
+    }
+
+    @Test
+    fun launcherStateChanged_toHome_doesNotCallAnimateExpandedForStateChange() {
+        clearInvocations(bubbleBarViewController)
+
+        // When switch to home screen
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.launcherState = BubbleLauncherState.HOME
+        }
+
+        // Crucially, animateExpanded is NOT called
+        verify(bubbleBarViewController, never()).animateExpanded(any(), any())
+    }
+
+    @Test
+    fun switchToOverview_inAppDisplayOverrideProgressIsReset() {
+        // Given we are on home and the in-app display override is not 0
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.launcherState = BubbleLauncherState.HOME
+            persistentTaskBarStashController.inAppDisplayOverrideProgress = 0.5f
+        }
+
+        // When we switch to overview
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.launcherState = BubbleLauncherState.OVERVIEW
+        }
+
+        // Then the in-app display override is 0
+        assertThat(persistentTaskBarStashController.inAppDisplayOverrideProgress).isEqualTo(0f)
+    }
+
+    @Test
+    fun switchFromInAppToHome_inAppDisplayOverrideProgressIsNotReset() {
+        // Given we are inside application (initial state) and the  display override is not 0
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.inAppDisplayOverrideProgress = 0.5f
+        }
+
+        // When we switch to home
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.launcherState = BubbleLauncherState.HOME
+        }
+
+        // Then the in-app display override is not reset
+        assertThat(persistentTaskBarStashController.inAppDisplayOverrideProgress).isEqualTo(0.5f)
+    }
+
+    @Test
+    fun switchFromHomeToInApp_inAppDisplayOverrideProgressIsNotReset() {
+        // Given we are on home and the in-app display override is not 0
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.launcherState = BubbleLauncherState.HOME
+            persistentTaskBarStashController.inAppDisplayOverrideProgress = 0.5f
+        }
+
+        // When we switch to home
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.launcherState = BubbleLauncherState.IN_APP
+        }
+
+        // Then the in-app display override is not reset
+        assertThat(persistentTaskBarStashController.inAppDisplayOverrideProgress).isEqualTo(0.5f)
+    }
+
+    @Test
+    fun setStashedInPersistentTaskBar_passingTrue_bubbleBarIsStashed() {
+        // When setStashedInPersistentTaskBar is called with true
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.setStashedInPersistentTaskBar(true)
+            animatorTestRule.advanceTimeBy(BubbleStashController.BAR_TRANSLATION_DURATION)
+        }
+
+        // Then bubble bar is stashed
+        assertThat(bubbleBarView.translationY).isEqualTo(TASK_BAR_STASHED_TRANSLATION_Y)
+        assertThat(persistentTaskBarStashController.isStashed).isTrue()
+    }
+
+    @Test
+    fun noCallsToStashedInPersistentTaskBar_stashingTaskbarCallsDoesNotStashBubbleBar() {
+        // Given bubble bar is IN_APP and has bubbles
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.launcherState = BubbleLauncherState.HOME
+            whenever(bubbleBarViewController.hasBubbles()).thenReturn(true)
+            persistentTaskBarStashController.launcherState = BubbleLauncherState.IN_APP
+            animatorTestRule.advanceTimeBy(BubbleStashController.BAR_TRANSLATION_DURATION)
+            assertThat(bubbleBarView.translationY).isEqualTo(TASK_BAR_TRANSLATION_Y)
+        }
+
+        // When calling to stash
+        persistentTaskBarStashController.stashBubbleBar()
+
+        // Then translation Y remains the same
+        assertThat(bubbleBarView.translationY).isEqualTo(TASK_BAR_TRANSLATION_Y)
+    }
+
+    @Test
+    fun setStashedInPersistentTaskBar_passingTrue_unlocksOtherStashCalls() {
+        // Given stashing is unlocked and bubble bar is unstashed
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.setStashedInPersistentTaskBar(true)
+            animatorTestRule.advanceTimeBy(BubbleStashController.BAR_TRANSLATION_DURATION)
+            persistentTaskBarStashController.showBubbleBarImmediate()
+        }
+        // Check that bubble bar is un-stashed
+        assertThat(persistentTaskBarStashController.isStashed).isFalse()
+        assertThat(bubbleBarView.translationY).isEqualTo(TASK_BAR_TRANSLATION_Y)
+
+        // When calling to stash
+        getInstrumentation().runOnMainSync {
+            persistentTaskBarStashController.stashBubbleBar()
+            animatorTestRule.advanceTimeBy(BubbleStashController.BAR_TRANSLATION_DURATION)
+        }
+
+        // Then Bubble bar is stashed
+        assertThat(bubbleBarView.translationY).isEqualTo(TASK_BAR_STASHED_TRANSLATION_Y)
+        assertThat(persistentTaskBarStashController.isStashed).isTrue()
     }
 
     private fun advanceTimeBy(advanceMs: Long) {

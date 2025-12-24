@@ -18,32 +18,30 @@ package com.android.launcher3.taskbar.bubbles
 
 import android.content.Context
 import android.graphics.Color
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
 import android.platform.test.rule.ScreenRecordRule
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
 import androidx.activity.ComponentActivity
-import androidx.test.core.app.ApplicationProvider
 import com.android.launcher3.R
+import com.android.launcher3.imagecomparison.ViewBasedImageTest
 import com.android.wm.shell.shared.bubbles.BubbleBarLocation
-import com.google.android.apps.nexuslauncher.imagecomparison.goldenpathmanager.ViewScreenshotGoldenPathManager
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import platform.test.runner.parameterized.ParameterizedAndroidJunit4
 import platform.test.runner.parameterized.Parameters
 import platform.test.screenshot.DeviceEmulationSpec
 import platform.test.screenshot.Displays
-import platform.test.screenshot.ViewScreenshotTestRule
-import platform.test.screenshot.getEmulatedDevicePathConfig
 
 /** Screenshot tests for [BubbleBarView]. */
 @RunWith(ParameterizedAndroidJunit4::class)
 @ScreenRecordRule.ScreenRecord
-class BubbleBarViewScreenshotTest(emulationSpec: DeviceEmulationSpec) {
+class BubbleBarViewScreenshotTest(emulationSpec: DeviceEmulationSpec) :
+    ViewBasedImageTest(emulationSpec) {
 
-    private val context = ApplicationProvider.getApplicationContext<Context>()
     private lateinit var bubbleBarView: BubbleBarView
 
     companion object {
@@ -57,20 +55,13 @@ class BubbleBarViewScreenshotTest(emulationSpec: DeviceEmulationSpec) {
             )
     }
 
-    @get:Rule
-    val screenshotRule =
-        ViewScreenshotTestRule(
-            emulationSpec,
-            ViewScreenshotGoldenPathManager(getEmulatedDevicePathConfig(emulationSpec)),
-        )
-
     @Test
+    @DisableFlags("com.android.launcher3.avoid_display_cutout_bubble_bar")
     fun bubbleBarView_collapsed_oneBubble() {
-        screenshotRule.screenshotTest("bubbleBarView_collapsed_oneBubble") { activity ->
-            activity.actionBar?.hide()
-            setupBubbleBarView()
-            bubbleBarView.addBubble(createBubble("key1", Color.GREEN), false)
-            val container = FrameLayout(context)
+        screenshotRule.screenshotTest("collapsed_oneBubble") { activity ->
+            setupBubbleBarView(activity)
+            bubbleBarView.addBubble(createBubble(activity, "key1", Color.GREEN), false)
+            val container = FrameLayout(activity)
             val lp = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             container.layoutParams = lp
             container.addView(bubbleBarView)
@@ -79,13 +70,27 @@ class BubbleBarViewScreenshotTest(emulationSpec: DeviceEmulationSpec) {
     }
 
     @Test
+    @EnableFlags("com.android.launcher3.avoid_display_cutout_bubble_bar")
+    fun bubbleBarView_collapsed_oneBubble_flagOn() {
+        screenshotRule.screenshotTest("collapsed_oneBubble_flagOn") { activity ->
+            setupBubbleBarView(activity)
+            bubbleBarView.addBubble(createBubble(activity, "key1", Color.GREEN), false)
+            val container = FrameLayout(activity)
+            val lp = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            container.layoutParams = lp
+            container.addView(bubbleBarView)
+            container
+        }
+    }
+
+    @Test
+    @DisableFlags("com.android.launcher3.avoid_display_cutout_bubble_bar")
     fun bubbleBarView_collapsed_twoBubbles() {
-        screenshotRule.screenshotTest("bubbleBarView_collapsed_twoBubbles") { activity ->
-            activity.actionBar?.hide()
-            setupBubbleBarView()
-            bubbleBarView.addBubble(createBubble("key1", Color.GREEN), true)
-            bubbleBarView.addBubble(createBubble("key2", Color.CYAN), true)
-            val container = FrameLayout(context)
+        screenshotRule.screenshotTest("collapsed_twoBubbles") { activity ->
+            setupBubbleBarView(activity)
+            bubbleBarView.addBubble(createBubble(activity, "key1", Color.GREEN), true)
+            bubbleBarView.addBubble(createBubble(activity, "key2", Color.CYAN), true)
+            val container = FrameLayout(activity)
             val lp = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             container.layoutParams = lp
             container.addView(bubbleBarView)
@@ -94,21 +99,33 @@ class BubbleBarViewScreenshotTest(emulationSpec: DeviceEmulationSpec) {
     }
 
     @Test
+    @EnableFlags("com.android.launcher3.avoid_display_cutout_bubble_bar")
+    fun bubbleBarView_collapsed_twoBubbles_flagOn() {
+        screenshotRule.screenshotTest("collapsed_twoBubbles_flagOn") { activity ->
+            setupBubbleBarView(activity)
+            bubbleBarView.addBubble(createBubble(activity, "key1", Color.GREEN), true)
+            bubbleBarView.addBubble(createBubble(activity, "key2", Color.CYAN), true)
+            val container = FrameLayout(activity)
+            val lp = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            container.layoutParams = lp
+            container.addView(bubbleBarView)
+            container
+        }
+    }
+
+    @Test
+    @DisableFlags("com.android.launcher3.avoid_display_cutout_bubble_bar")
     fun bubbleBarView_expanded_threeBubbles() {
         // if we're still expanding, wait with taking a screenshot
         val shouldWait: (ComponentActivity, View) -> Boolean = { _, _ -> bubbleBarView.isExpanding }
         // increase the frame limit to allow the animation to end before taking the screenshot
         screenshotRule.frameLimit = 500
-        screenshotRule.screenshotTest(
-            "bubbleBarView_expanded_threeBubbles",
-            checkView = shouldWait,
-        ) { activity ->
-            activity.actionBar?.hide()
-            setupBubbleBarView()
-            bubbleBarView.addBubble(createBubble("key1", Color.GREEN), false)
-            bubbleBarView.addBubble(createBubble("key2", Color.CYAN), false)
-            bubbleBarView.addBubble(createBubble("key3", Color.MAGENTA), false)
-            val container = FrameLayout(context)
+        screenshotRule.screenshotTest("expanded_threeBubbles", checkView = shouldWait) { activity ->
+            setupBubbleBarView(activity)
+            bubbleBarView.addBubble(createBubble(activity, "key1", Color.GREEN), false)
+            bubbleBarView.addBubble(createBubble(activity, "key2", Color.CYAN), false)
+            bubbleBarView.addBubble(createBubble(activity, "key3", Color.MAGENTA), false)
+            val container = FrameLayout(activity)
             val lp = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             container.layoutParams = lp
             container.addView(bubbleBarView)
@@ -117,7 +134,29 @@ class BubbleBarViewScreenshotTest(emulationSpec: DeviceEmulationSpec) {
         }
     }
 
-    private fun setupBubbleBarView() {
+    @Test
+    @EnableFlags("com.android.launcher3.avoid_display_cutout_bubble_bar")
+    fun bubbleBarView_expanded_threeBubbles_flagOn() {
+        // if we're still expanding, wait with taking a screenshot
+        val shouldWait: (ComponentActivity, View) -> Boolean = { _, _ -> bubbleBarView.isExpanding }
+        // increase the frame limit to allow the animation to end before taking the screenshot
+        screenshotRule.frameLimit = 500
+        screenshotRule.screenshotTest("expanded_threeBubbles_flagOn", checkView = shouldWait) {
+            activity ->
+            setupBubbleBarView(activity)
+            bubbleBarView.addBubble(createBubble(activity, "key1", Color.GREEN), false)
+            bubbleBarView.addBubble(createBubble(activity, "key2", Color.CYAN), false)
+            bubbleBarView.addBubble(createBubble(activity, "key3", Color.MAGENTA), false)
+            val container = FrameLayout(activity)
+            val lp = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            container.layoutParams = lp
+            container.addView(bubbleBarView)
+            bubbleBarView.animateExpanded(true)
+            container
+        }
+    }
+
+    private fun setupBubbleBarView(context: Context) {
         bubbleBarView = BubbleBarView(context)
         val lp = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
         bubbleBarView.layoutParams = lp
@@ -145,7 +184,7 @@ class BubbleBarViewScreenshotTest(emulationSpec: DeviceEmulationSpec) {
         bubbleBarView.alpha = 1f
     }
 
-    private fun createBubble(key: String, color: Int): BubbleView {
+    private fun createBubble(context: Context, key: String, color: Int): BubbleView {
         val bubbleView =
             FakeBubbleViewFactory.createBubble(
                 context,

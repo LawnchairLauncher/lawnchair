@@ -47,4 +47,19 @@
         android:layout_marginStart="@dimen/popup_padding_start"
         android:layout_gravity="start|center_vertical"
         android:background="@drawable/ic_deepshortcut_placeholder"/>
+
+    <FrameLayout
+        android:id="@+id/deep_shortcut_add_button"
+        android:layout_width="@dimen/deep_shortcut_add_button_size"
+        android:layout_height="@dimen/deep_shortcut_add_button_size"
+        android:layout_gravity="end|center_vertical"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/action_add_to_workspace"
+            android:src="@drawable/ic_add_circle_filled"/>
+    </FrameLayout>
+
 </com.android.launcher3.shortcuts.DeepShortcutView>

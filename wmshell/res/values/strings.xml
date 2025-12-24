@@ -83,29 +83,33 @@
     <string name="divider_title">Split screen divider</string>
 
     <!-- Accessibility action for moving docked stack divider to make the left screen full screen [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_left_full">Left full screen</string>
+    <string name="accessibility_action_divider_left_full">Make left app full screen</string>
     <!-- Accessibility action for moving docked stack divider to make the left screen 70% [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_left_70">Left 70%</string>
+    <string formatted="false" name="accessibility_action_divider_left_10">10% left, 90% right</string>
+    <string formatted="false" name="accessibility_action_divider_left_30">30% left, 70% right</string>
     <!-- Accessibility action for moving docked stack divider to make the left screen 50% [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_left_50">Left 50%</string>
+    <string formatted="false" name="accessibility_action_divider_left_50">50% left, 50% right</string>
     <!-- Accessibility action for moving docked stack divider to make the left screen 30% [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_left_30">Left 30%</string>
+    <string formatted="false" name="accessibility_action_divider_left_70">70% left, 30% right</string>
+    <string formatted="false" name="accessibility_action_divider_left_90">90% left, 10% right</string>
     <!-- Accessibility action for moving docked stack divider to make the right screen full screen [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_right_full">Right full screen</string>
+    <string name="accessibility_action_divider_right_full">Make right app full screen</string>
     <!-- Accessibility action for swapping the apps around the divider (double tap action) [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_swap_vertical">Swap top app with bottom</string>
-    <string name="accessibility_action_divider_swap_horizontal">Swap left app with right</string>
+    <string name="accessibility_action_divider_swap_vertical">Swap top app with bottom app, keep current split</string>
+    <string name="accessibility_action_divider_swap_horizontal">Swap left app with right app, keep current split</string>
 
     <!-- Accessibility action for moving docked stack divider to make the top screen full screen [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_top_full">Top full screen</string>
+    <string name="accessibility_action_divider_top_full">Make top app full screen</string>
     <!-- Accessibility action for moving docked stack divider to make the top screen 70% [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_top_70">Top 70%</string>
+    <string formatted="false" name="accessibility_action_divider_top_10">10% top, 90% bottom</string>
+    <string formatted="false" name="accessibility_action_divider_top_30">30% top, 70% bottom</string>
     <!-- Accessibility action for moving docked stack divider to make the top screen 50% [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_top_50">Top 50%</string>
+    <string formatted="false" name="accessibility_action_divider_top_50">50% top, 50% bottom</string>
     <!-- Accessibility action for moving docked stack divider to make the top screen 30% [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_top_30">Top 30%</string>
+    <string formatted="false" name="accessibility_action_divider_top_70">70% top, 30% bottom</string>
+    <string formatted="false" name="accessibility_action_divider_top_90">90% top, 10% bottom</string>
     <!-- Accessibility action for moving docked stack divider to make the bottom screen full screen [CHAR LIMIT=NONE] -->
-    <string name="accessibility_action_divider_bottom_full">Bottom full screen</string>
+    <string name="accessibility_action_divider_bottom_full">Make bottom app full screen</string>
 
     <!-- Accessibility label for splitting to the left drop zone [CHAR LIMIT=NONE] -->
     <string name="accessibility_split_left">Split left</string>

@@ -131,6 +131,72 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
     }
 
     @Test
+    fun logSessionEnter_multipleSessions_logEnterReasonWithNewSessionId() {
+        desktopModeEventLogger.logSessionEnter(DEFAULT_DESK, EnterReason.KEYBOARD_SHORTCUT_ENTER)
+
+        val sessionId = desktopModeEventLogger.deskToSessionId[DEFAULT_DESK] ?: NO_SESSION_ID
+        assertThat(sessionId).isNotEqualTo(NO_SESSION_ID)
+        verifyOnlyOneUiChangedLogging(
+            FrameworkStatsLog.DESKTOP_MODE_UICHANGED__EVENT__ENTER,
+            FrameworkStatsLog.DESKTOP_MODE_UICHANGED__ENTER_REASON__KEYBOARD_SHORTCUT_ENTER,
+            0,
+            sessionId,
+        )
+        verify {
+            EventLogTags.writeWmShellEnterDesktopMode(
+                eq(EnterReason.KEYBOARD_SHORTCUT_ENTER.reason),
+                eq(sessionId),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+        clearInvocations(staticMockMarker(FrameworkStatsLog::class.java))
+        clearInvocations(staticMockMarker(EventLogTags::class.java))
+
+        val secondDesk = DEFAULT_DESK + 1
+        desktopModeEventLogger.logSessionEnter(secondDesk, EnterReason.KEYBOARD_SHORTCUT_ENTER)
+        val secondSession = desktopModeEventLogger.deskToSessionId[secondDesk] ?: NO_SESSION_ID
+        assertThat(secondSession).isNotEqualTo(NO_SESSION_ID)
+        assertThat(secondSession).isNotEqualTo(sessionId)
+        verifyOnlyOneUiChangedLogging(
+            FrameworkStatsLog.DESKTOP_MODE_UICHANGED__EVENT__ENTER,
+            FrameworkStatsLog.DESKTOP_MODE_UICHANGED__ENTER_REASON__KEYBOARD_SHORTCUT_ENTER,
+            0,
+            secondSession,
+        )
+        verify {
+            EventLogTags.writeWmShellEnterDesktopMode(
+                eq(EnterReason.KEYBOARD_SHORTCUT_ENTER.reason),
+                eq(secondSession),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
+    fun logSessionEnterDeskId_ongoingSession_logEnterReasonWithNewSessionId() {
+        val previousSessionId = startDesktopModeSession(DEFAULT_DESK)
+
+        desktopModeEventLogger.logSessionEnter(DEFAULT_DESK, EnterReason.KEYBOARD_SHORTCUT_ENTER)
+
+        val sessionId = desktopModeEventLogger.deskToSessionId[DEFAULT_DESK] ?: NO_SESSION_ID
+        assertThat(sessionId).isNotEqualTo(NO_SESSION_ID)
+        assertThat(sessionId).isNotEqualTo(previousSessionId)
+        verifyOnlyOneUiChangedLogging(
+            FrameworkStatsLog.DESKTOP_MODE_UICHANGED__EVENT__ENTER,
+            FrameworkStatsLog.DESKTOP_MODE_UICHANGED__ENTER_REASON__KEYBOARD_SHORTCUT_ENTER,
+            0,
+            sessionId,
+        )
+        verify {
+            EventLogTags.writeWmShellEnterDesktopMode(
+                eq(EnterReason.KEYBOARD_SHORTCUT_ENTER.reason),
+                eq(sessionId),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
     fun logSessionExit_noOngoingSession_doesNotLog() {
         desktopModeEventLogger.logSessionExit(ExitReason.DRAG_TO_EXIT)
 
@@ -162,8 +228,54 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
     }
 
     @Test
+    fun logSessionExit_noOngoingSession_doesNotLog_multiDesks() {
+        desktopModeEventLogger.logPendingSessionExit(DEFAULT_DESK, ExitReason.DRAG_TO_EXIT)
+        desktopModeEventLogger.logSessionExitIfNeeded()
+
+        verifyNoLogging()
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
+    fun logSessionExit_logExitReasonAndClearsSessionId_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+
+        desktopModeEventLogger.logPendingSessionExit(DEFAULT_DESK, ExitReason.DRAG_TO_EXIT)
+
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+
+        desktopModeEventLogger.logSessionExitIfNeeded()
+
+        verifyOnlyOneUiChangedLogging(
+            FrameworkStatsLog.DESKTOP_MODE_UICHANGED__EVENT__EXIT,
+            /* enter_reason */
+            0,
+            FrameworkStatsLog.DESKTOP_MODE_UICHANGED__EXIT_REASON__DRAG_TO_EXIT,
+            sessionId,
+        )
+        verify {
+            EventLogTags.writeWmShellExitDesktopMode(
+                eq(ExitReason.DRAG_TO_EXIT.reason),
+                eq(sessionId),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+        assertThat(desktopModeEventLogger.deskToSessionId.getOrDefault(DEFAULT_DESK, NO_SESSION_ID))
+            .isEqualTo(NO_SESSION_ID)
+    }
+
+    @Test
     fun logTaskAdded_noOngoingSession_doesNotLog() {
         desktopModeEventLogger.logTaskAdded(TASK_UPDATE)
+
+        verifyNoLogging()
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
+    fun logTaskAdded_noOngoingSession_doesNotLog_multiDesks() {
+        startDesktopModeSession(DEFAULT_DESK + 1)
+        desktopModeEventLogger.logTaskAdded(TASK_UPDATE, DEFAULT_DESK)
 
         verifyNoLogging()
         verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
@@ -209,8 +321,58 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
     }
 
     @Test
+    fun logTaskAdded_logsTaskUpdate_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+        // Second session.
+        startDesktopModeSession(DEFAULT_DESK + 1)
+
+        desktopModeEventLogger.logTaskAdded(TASK_UPDATE, DEFAULT_DESK)
+
+        verifyOnlyOneTaskUpdateLogging(
+            FrameworkStatsLog.DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_ADDED,
+            TASK_UPDATE.instanceId,
+            TASK_UPDATE.uid,
+            TASK_UPDATE.taskHeight,
+            TASK_UPDATE.taskWidth,
+            TASK_UPDATE.taskX,
+            TASK_UPDATE.taskY,
+            sessionId,
+            UNSET_MINIMIZE_REASON,
+            UNSET_UNMINIMIZE_REASON,
+            TASK_COUNT,
+            UNSET_FOCUS_REASON,
+        )
+        verify {
+            EventLogTags.writeWmShellDesktopModeTaskUpdate(
+                eq(FrameworkStatsLog.DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_ADDED),
+                eq(TASK_UPDATE.instanceId),
+                eq(TASK_UPDATE.uid),
+                eq(TASK_UPDATE.taskHeight),
+                eq(TASK_UPDATE.taskWidth),
+                eq(TASK_UPDATE.taskX),
+                eq(TASK_UPDATE.taskY),
+                eq(sessionId),
+                eq(UNSET_MINIMIZE_REASON),
+                eq(UNSET_UNMINIMIZE_REASON),
+                eq(TASK_COUNT),
+                eq(UNSET_FOCUS_REASON),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
     fun logTaskRemoved_noOngoingSession_doesNotLog() {
         desktopModeEventLogger.logTaskRemoved(TASK_UPDATE)
+
+        verifyNoLogging()
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
+    fun logTaskRemoved_noOngoingSession_doesNotLog_multiDesks() {
+        startDesktopModeSession(DEFAULT_DESK + 1)
+        desktopModeEventLogger.logTaskRemoved(TASK_UPDATE, DEFAULT_DESK)
 
         verifyNoLogging()
         verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
@@ -256,8 +418,58 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
     }
 
     @Test
+    fun logTaskRemoved_taskUpdate_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+        // Second session.
+        startDesktopModeSession(DEFAULT_DESK + 1)
+
+        desktopModeEventLogger.logTaskRemoved(TASK_UPDATE, DEFAULT_DESK)
+
+        verifyOnlyOneTaskUpdateLogging(
+            FrameworkStatsLog.DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_REMOVED,
+            TASK_UPDATE.instanceId,
+            TASK_UPDATE.uid,
+            TASK_UPDATE.taskHeight,
+            TASK_UPDATE.taskWidth,
+            TASK_UPDATE.taskX,
+            TASK_UPDATE.taskY,
+            sessionId,
+            UNSET_MINIMIZE_REASON,
+            UNSET_UNMINIMIZE_REASON,
+            TASK_COUNT,
+            UNSET_FOCUS_REASON,
+        )
+        verify {
+            EventLogTags.writeWmShellDesktopModeTaskUpdate(
+                eq(FrameworkStatsLog.DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_REMOVED),
+                eq(TASK_UPDATE.instanceId),
+                eq(TASK_UPDATE.uid),
+                eq(TASK_UPDATE.taskHeight),
+                eq(TASK_UPDATE.taskWidth),
+                eq(TASK_UPDATE.taskX),
+                eq(TASK_UPDATE.taskY),
+                eq(sessionId),
+                eq(UNSET_MINIMIZE_REASON),
+                eq(UNSET_UNMINIMIZE_REASON),
+                eq(TASK_COUNT),
+                eq(UNSET_FOCUS_REASON),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
     fun logTaskInfoChanged_noOngoingSession_doesNotLog() {
         desktopModeEventLogger.logTaskInfoChanged(TASK_UPDATE)
+
+        verifyNoLogging()
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
+    fun logTaskInfoChanged_noOngoingSession_doesNotLog_multiDesks() {
+        startDesktopModeSession(DEFAULT_DESK + 1)
+        desktopModeEventLogger.logTaskInfoChanged(TASK_UPDATE, DEFAULT_DESK)
 
         verifyNoLogging()
         verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
@@ -306,11 +518,102 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
     }
 
     @Test
+    fun logTaskInfoChanged_taskUpdate_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+        // Second session.
+        startDesktopModeSession(DEFAULT_DESK + 1)
+
+        desktopModeEventLogger.logTaskInfoChanged(TASK_UPDATE, DEFAULT_DESK)
+
+        verifyOnlyOneTaskUpdateLogging(
+            FrameworkStatsLog.DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_INFO_CHANGED,
+            TASK_UPDATE.instanceId,
+            TASK_UPDATE.uid,
+            TASK_UPDATE.taskHeight,
+            TASK_UPDATE.taskWidth,
+            TASK_UPDATE.taskX,
+            TASK_UPDATE.taskY,
+            sessionId,
+            UNSET_MINIMIZE_REASON,
+            UNSET_UNMINIMIZE_REASON,
+            TASK_COUNT,
+            UNSET_FOCUS_REASON,
+        )
+        verify {
+            EventLogTags.writeWmShellDesktopModeTaskUpdate(
+                eq(
+                    FrameworkStatsLog
+                        .DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_INFO_CHANGED
+                ),
+                eq(TASK_UPDATE.instanceId),
+                eq(TASK_UPDATE.uid),
+                eq(TASK_UPDATE.taskHeight),
+                eq(TASK_UPDATE.taskWidth),
+                eq(TASK_UPDATE.taskX),
+                eq(TASK_UPDATE.taskY),
+                eq(sessionId),
+                eq(UNSET_MINIMIZE_REASON),
+                eq(UNSET_UNMINIMIZE_REASON),
+                eq(TASK_COUNT),
+                eq(UNSET_FOCUS_REASON),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
     fun logTaskInfoChanged_logsTaskUpdateWithMinimizeReason() {
         val sessionId = startDesktopModeSession()
 
         desktopModeEventLogger.logTaskInfoChanged(
             createTaskUpdate(minimizeReason = MinimizeReason.TASK_LIMIT)
+        )
+
+        verifyOnlyOneTaskUpdateLogging(
+            FrameworkStatsLog.DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_INFO_CHANGED,
+            TASK_UPDATE.instanceId,
+            TASK_UPDATE.uid,
+            TASK_UPDATE.taskHeight,
+            TASK_UPDATE.taskWidth,
+            TASK_UPDATE.taskX,
+            TASK_UPDATE.taskY,
+            sessionId,
+            MinimizeReason.TASK_LIMIT.reason,
+            UNSET_UNMINIMIZE_REASON,
+            TASK_COUNT,
+            UNSET_FOCUS_REASON,
+        )
+        verify {
+            EventLogTags.writeWmShellDesktopModeTaskUpdate(
+                eq(
+                    FrameworkStatsLog
+                        .DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_INFO_CHANGED
+                ),
+                eq(TASK_UPDATE.instanceId),
+                eq(TASK_UPDATE.uid),
+                eq(TASK_UPDATE.taskHeight),
+                eq(TASK_UPDATE.taskWidth),
+                eq(TASK_UPDATE.taskX),
+                eq(TASK_UPDATE.taskY),
+                eq(sessionId),
+                eq(MinimizeReason.TASK_LIMIT.reason),
+                eq(UNSET_UNMINIMIZE_REASON),
+                eq(TASK_COUNT),
+                eq(UNSET_FOCUS_REASON),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
+    fun logTaskInfoChanged_logsTaskUpdateWithMinimizeReason_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+        // Second session.
+        startDesktopModeSession(DEFAULT_DESK + 1)
+
+        desktopModeEventLogger.logTaskInfoChanged(
+            createTaskUpdate(minimizeReason = MinimizeReason.TASK_LIMIT),
+            DEFAULT_DESK,
         )
 
         verifyOnlyOneTaskUpdateLogging(
@@ -394,6 +697,53 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
     }
 
     @Test
+    fun logTaskInfoChanged_logsTaskUpdateWithUnminimizeReason_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+        // Second session.
+        startDesktopModeSession(DEFAULT_DESK + 1)
+
+        desktopModeEventLogger.logTaskInfoChanged(
+            createTaskUpdate(unminimizeReason = UnminimizeReason.TASKBAR_TAP),
+            DEFAULT_DESK,
+        )
+
+        verifyOnlyOneTaskUpdateLogging(
+            FrameworkStatsLog.DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_INFO_CHANGED,
+            TASK_UPDATE.instanceId,
+            TASK_UPDATE.uid,
+            TASK_UPDATE.taskHeight,
+            TASK_UPDATE.taskWidth,
+            TASK_UPDATE.taskX,
+            TASK_UPDATE.taskY,
+            sessionId,
+            UNSET_MINIMIZE_REASON,
+            UnminimizeReason.TASKBAR_TAP.reason,
+            TASK_COUNT,
+            UNSET_FOCUS_REASON,
+        )
+        verify {
+            EventLogTags.writeWmShellDesktopModeTaskUpdate(
+                eq(
+                    FrameworkStatsLog
+                        .DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_INFO_CHANGED
+                ),
+                eq(TASK_UPDATE.instanceId),
+                eq(TASK_UPDATE.uid),
+                eq(TASK_UPDATE.taskHeight),
+                eq(TASK_UPDATE.taskWidth),
+                eq(TASK_UPDATE.taskX),
+                eq(TASK_UPDATE.taskY),
+                eq(sessionId),
+                eq(UNSET_MINIMIZE_REASON),
+                eq(UnminimizeReason.TASKBAR_TAP.reason),
+                eq(TASK_COUNT),
+                eq(UNSET_FOCUS_REASON),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
     fun logTaskInfoChanged_logsTaskUpdateWithFocusReason() {
         val sessionId = startDesktopModeSession()
 
@@ -438,11 +788,59 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
     }
 
     @Test
+    fun logTaskInfoChanged_logsTaskUpdateWithFocusReason_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+        // Second session.
+        startDesktopModeSession(DEFAULT_DESK + 1)
+
+        desktopModeEventLogger.logTaskInfoChanged(
+            createTaskUpdate(focusChangesReason = FocusReason.UNKNOWN),
+            DEFAULT_DESK,
+        )
+
+        verifyOnlyOneTaskUpdateLogging(
+            FrameworkStatsLog.DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_INFO_CHANGED,
+            TASK_UPDATE.instanceId,
+            TASK_UPDATE.uid,
+            TASK_UPDATE.taskHeight,
+            TASK_UPDATE.taskWidth,
+            TASK_UPDATE.taskX,
+            TASK_UPDATE.taskY,
+            sessionId,
+            UNSET_MINIMIZE_REASON,
+            UNSET_UNMINIMIZE_REASON,
+            TASK_COUNT,
+            FocusReason.UNKNOWN.reason,
+        )
+        verify {
+            EventLogTags.writeWmShellDesktopModeTaskUpdate(
+                eq(
+                    FrameworkStatsLog
+                        .DESKTOP_MODE_SESSION_TASK_UPDATE__TASK_EVENT__TASK_INFO_CHANGED
+                ),
+                eq(TASK_UPDATE.instanceId),
+                eq(TASK_UPDATE.uid),
+                eq(TASK_UPDATE.taskHeight),
+                eq(TASK_UPDATE.taskWidth),
+                eq(TASK_UPDATE.taskX),
+                eq(TASK_UPDATE.taskY),
+                eq(sessionId),
+                eq(UNSET_MINIMIZE_REASON),
+                eq(UNSET_UNMINIMIZE_REASON),
+                eq(TASK_COUNT),
+                eq(FocusReason.UNKNOWN.reason),
+            )
+        }
+        verifyNoMoreInteractions(staticMockMarker(EventLogTags::class.java))
+    }
+
+    @Test
     fun logTaskResizingStarted_noOngoingSession_doesNotLog() {
         desktopModeEventLogger.logTaskResizingStarted(
-            ResizeTrigger.CORNER,
-            InputMethod.UNKNOWN_INPUT_METHOD,
-            createTaskInfo(),
+            resizeTrigger = ResizeTrigger.CORNER,
+            inputMethod = InputMethod.UNKNOWN_INPUT_METHOD,
+            taskInfo = createTaskInfo(),
+            deskId = null,
         )
 
         verifyNoLogging()
@@ -455,12 +853,42 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
         val sessionId = startDesktopModeSession()
 
         desktopModeEventLogger.logTaskResizingStarted(
-            ResizeTrigger.CORNER,
-            InputMethod.UNKNOWN_INPUT_METHOD,
-            createTaskInfo(),
+            resizeTrigger = ResizeTrigger.CORNER,
+            inputMethod = InputMethod.UNKNOWN_INPUT_METHOD,
+            taskInfo = createTaskInfo(),
+            taskWidth = TASK_SIZE_UPDATE.taskWidth,
+            taskHeight = TASK_SIZE_UPDATE.taskHeight,
+            displayController = displayController,
+            deskId = null,
+        )
+
+        verifyOnlyOneTaskSizeUpdatedLogging(
+            FrameworkStatsLog.DESKTOP_MODE_TASK_SIZE_UPDATED__RESIZE_TRIGGER__CORNER_RESIZE_TRIGGER,
+            FrameworkStatsLog.DESKTOP_MODE_TASK_SIZE_UPDATED__RESIZING_STAGE__START_RESIZING_STAGE,
+            FrameworkStatsLog.DESKTOP_MODE_TASK_SIZE_UPDATED__INPUT_METHOD__UNKNOWN_INPUT_METHOD,
+            sessionId,
+            TASK_SIZE_UPDATE.instanceId,
+            TASK_SIZE_UPDATE.uid,
             TASK_SIZE_UPDATE.taskWidth,
             TASK_SIZE_UPDATE.taskHeight,
-            displayController,
+            DISPLAY_AREA,
+        )
+    }
+
+    @Test
+    fun logTaskResizingStarted_logsTaskSizeUpdatedWithStartResizingStage_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+        // Second session
+        startDesktopModeSession(DEFAULT_DESK + 1)
+
+        desktopModeEventLogger.logTaskResizingStarted(
+            resizeTrigger = ResizeTrigger.CORNER,
+            inputMethod = InputMethod.UNKNOWN_INPUT_METHOD,
+            taskInfo = createTaskInfo(),
+            taskWidth = TASK_SIZE_UPDATE.taskWidth,
+            taskHeight = TASK_SIZE_UPDATE.taskHeight,
+            displayController = displayController,
+            deskId = DEFAULT_DESK,
         )
 
         verifyOnlyOneTaskSizeUpdatedLogging(
@@ -479,9 +907,10 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
     @Test
     fun logTaskResizingEnded_noOngoingSession_doesNotLog() {
         desktopModeEventLogger.logTaskResizingEnded(
-            ResizeTrigger.CORNER,
-            InputMethod.UNKNOWN_INPUT_METHOD,
-            createTaskInfo(),
+            resizeTrigger = ResizeTrigger.CORNER,
+            inputMethod = InputMethod.UNKNOWN_INPUT_METHOD,
+            taskInfo = createTaskInfo(),
+            deskId = null,
         )
 
         verifyNoLogging()
@@ -494,10 +923,38 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
         val sessionId = startDesktopModeSession()
 
         desktopModeEventLogger.logTaskResizingEnded(
-            ResizeTrigger.CORNER,
-            InputMethod.UNKNOWN_INPUT_METHOD,
-            createTaskInfo(),
+            resizeTrigger = ResizeTrigger.CORNER,
+            inputMethod = InputMethod.UNKNOWN_INPUT_METHOD,
+            taskInfo = createTaskInfo(),
             displayController = displayController,
+            deskId = null,
+        )
+
+        verifyOnlyOneTaskSizeUpdatedLogging(
+            FrameworkStatsLog.DESKTOP_MODE_TASK_SIZE_UPDATED__RESIZE_TRIGGER__CORNER_RESIZE_TRIGGER,
+            FrameworkStatsLog.DESKTOP_MODE_TASK_SIZE_UPDATED__RESIZING_STAGE__END_RESIZING_STAGE,
+            FrameworkStatsLog.DESKTOP_MODE_TASK_SIZE_UPDATED__INPUT_METHOD__UNKNOWN_INPUT_METHOD,
+            sessionId,
+            TASK_SIZE_UPDATE.instanceId,
+            TASK_SIZE_UPDATE.uid,
+            TASK_SIZE_UPDATE.taskWidth,
+            TASK_SIZE_UPDATE.taskHeight,
+            DISPLAY_AREA,
+        )
+    }
+
+    @Test
+    fun logTaskResizingEnded_logsTaskSizeUpdatedWithEndResizingStage_multiDesks() {
+        val sessionId = startDesktopModeSession(DEFAULT_DESK)
+        // Second session
+        startDesktopModeSession(DEFAULT_DESK + 1)
+
+        desktopModeEventLogger.logTaskResizingEnded(
+            resizeTrigger = ResizeTrigger.CORNER,
+            inputMethod = InputMethod.UNKNOWN_INPUT_METHOD,
+            taskInfo = createTaskInfo(),
+            displayController = displayController,
+            deskId = DEFAULT_DESK,
         )
 
         verifyOnlyOneTaskSizeUpdatedLogging(
@@ -518,6 +975,13 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
         clearInvocations(staticMockMarker(FrameworkStatsLog::class.java))
         clearInvocations(staticMockMarker(EventLogTags::class.java))
         return desktopModeEventLogger.currentSessionId.get()
+    }
+
+    private fun startDesktopModeSession(deskId: Int): Int {
+        desktopModeEventLogger.logSessionEnter(deskId, EnterReason.KEYBOARD_SHORTCUT_ENTER)
+        clearInvocations(staticMockMarker(FrameworkStatsLog::class.java))
+        clearInvocations(staticMockMarker(EventLogTags::class.java))
+        return desktopModeEventLogger.deskToSessionId[deskId] ?: NO_SESSION_ID
     }
 
     @Test
@@ -743,6 +1207,7 @@ class DesktopModeEventLoggerTest : ShellTestCase() {
         private const val DISPLAY_WIDTH = 500
         private const val DISPLAY_HEIGHT = 500
         private const val DISPLAY_AREA = DISPLAY_HEIGHT * DISPLAY_WIDTH
+        private const val DEFAULT_DESK = 100
 
         private val TASK_UPDATE =
             TaskUpdate(

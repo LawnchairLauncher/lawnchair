@@ -16,23 +16,26 @@
 package com.android.wm.shell.desktopmode.multidesks
 
 import android.app.ActivityManager
-import android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM
+import android.app.ActivityOptions
 import android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED
+import android.platform.test.annotations.EnableFlags
 import android.testing.AndroidTestingRunner
 import android.view.Display.DEFAULT_DISPLAY
 import android.view.SurfaceControl
 import android.view.WindowManager.TRANSIT_TO_FRONT
-import android.window.DesktopExperienceFlags
 import android.window.DisplayAreaInfo
 import android.window.TransitionInfo
 import android.window.WindowContainerToken
 import android.window.WindowContainerTransaction
 import android.window.WindowContainerTransaction.Change
 import android.window.WindowContainerTransaction.HierarchyOp
+import android.window.WindowContainerTransaction.HierarchyOp.HIERARCHY_OP_TYPE_LAUNCH_TASK
 import android.window.WindowContainerTransaction.HierarchyOp.HIERARCHY_OP_TYPE_REORDER
 import android.window.WindowContainerTransaction.HierarchyOp.HIERARCHY_OP_TYPE_SET_LAUNCH_ROOT
+import android.window.WindowContainerTransaction.HierarchyOp.LAUNCH_KEY_TASK_ID
 import androidx.core.util.valueIterator
 import androidx.test.filters.SmallTest
+import com.android.window.flags2.Flags
 import com.android.wm.shell.MockToken
 import com.android.wm.shell.RootTaskDisplayAreaOrganizer
 import com.android.wm.shell.ShellTaskOrganizer
@@ -41,11 +44,14 @@ import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.TestShellExecutor
 import com.android.wm.shell.common.LaunchAdjacentController
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFreeformTask
+import com.android.wm.shell.desktopmode.DesktopTestHelpers.createRecentTaskInfo
 import com.android.wm.shell.desktopmode.multidesks.RootTaskDesksOrganizer.DeskMinimizationRoot
 import com.android.wm.shell.desktopmode.multidesks.RootTaskDesksOrganizer.DeskRoot
+import com.android.wm.shell.freeform.TaskChangeListener
 import com.android.wm.shell.sysui.ShellCommandHandler
 import com.android.wm.shell.sysui.ShellInit
 import com.google.common.truth.Truth.assertThat
+import java.util.Optional
 import kotlin.coroutines.suspendCoroutine
 import kotlin.test.assertNotNull
 import kotlinx.coroutines.test.runTest
@@ -77,6 +83,7 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
     private val mockShellCommandHandler = mock<ShellCommandHandler>()
     private val mockShellTaskOrganizer = mock<ShellTaskOrganizer>()
     private val mockTDAOrganizer = mock<RootTaskDisplayAreaOrganizer>()
+    private val mockTaskChangeListener = mock<TaskChangeListener>()
 
     private val launchAdjacentController = LaunchAdjacentController(mock())
     private val taskInfoChangedListener = mock<(ActivityManager.RunningTaskInfo) -> Unit>()
@@ -92,8 +99,9 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
                 mockShellTaskOrganizer,
                 launchAdjacentController,
                 mockTDAOrganizer,
+                Optional.of(mockTaskChangeListener),
             )
-        organizer.setOnDesktopTaskInfoChangedListener(taskInfoChangedListener)
+        organizer.addOnDesktopTaskInfoChangedListener(taskInfoChangedListener)
 
         val tda = DisplayAreaInfo(MockToken().token(), DEFAULT_DISPLAY, 0)
         whenever(mockTDAOrganizer.getDisplayAreaInfo(DEFAULT_DISPLAY)).thenReturn(tda)
@@ -236,11 +244,7 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
         organizer.createDesk(userId = PRIMARY_USER_ID, displayId = DEFAULT_DISPLAY) {}
 
         // Only one desk attempt.
-        verify(mockShellTaskOrganizer, times(1))
-            .createRootTask(
-                any(),
-                eq(organizer)
-            )
+        verify(mockShellTaskOrganizer, times(1)).createRootTask(any(), eq(organizer))
     }
 
     @Test
@@ -253,6 +257,8 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
             callbackApplied = true
         }
         organizer.onTaskAppeared(freeformRoot, SurfaceControl())
+        val minimizationRoot = createFreeformTask()
+        organizer.onTaskAppeared(minimizationRoot, SurfaceControl())
 
         assertThat(callbackApplied).isTrue()
     }
@@ -266,11 +272,7 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
         organizer.createDesk(userId = PRIMARY_USER_ID, displayId = DEFAULT_DISPLAY) {}
 
         // One for the warmup/first desk and one for the second desk.
-        verify(mockShellTaskOrganizer, times(2))
-            .createRootTask(
-                any(),
-                eq(organizer)
-            )
+        verify(mockShellTaskOrganizer, times(2)).createRootTask(any(), eq(organizer))
     }
 
     @Test
@@ -294,15 +296,6 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
                     }
                 }
             )
-    }
-
-    @Test
-    fun testOnTaskAppeared_withoutRequest_throws() = runTest {
-        val freeformRoot = createFreeformTask().apply { parentTaskId = -1 }
-
-        assertThrows(Exception::class.java) {
-            organizer.onTaskAppeared(freeformRoot, SurfaceControl())
-        }
     }
 
     @Test
@@ -340,6 +333,18 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
         organizer.onTaskVanished(desk.minimizationRoot.taskInfo)
 
         assertThat(organizer.deskMinimizationRootsByDeskId.contains(desk.deskRoot.deskId)).isFalse()
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_INVISIBLE_TASK_REMOVAL_CLEANUP_BUGFIX)
+    fun testOnTaskVanished_removesChildTask_invokesNonTransitionTaskClosing() = runTest {
+        val desk = createDeskSuspending()
+        val child = createFreeformTask().apply { parentTaskId = desk.deskRoot.deskId }
+
+        organizer.onTaskAppeared(child, SurfaceControl())
+        organizer.onTaskVanished(child)
+
+        verify(mockTaskChangeListener, times(1)).onNonTransitionTaskClosing(any())
     }
 
     @Test
@@ -523,7 +528,7 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
     }
 
     @Test
-    fun testMoveTaskToDesk() = runTest {
+    fun testMoveTaskToDesk_runningTask() = runTest {
         val desk = createDeskSuspending()
 
         val desktopTask = createFreeformTask().apply { parentTaskId = -1 }
@@ -587,6 +592,39 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
     }
 
     @Test
+    fun testMoveTaskToDesk_recentTask_launchesTask() = runTest {
+        val desk = createDeskSuspending()
+        val recentTask =
+            createRecentTaskInfo(taskId = TEST_CHILD_TASK_ID).apply { parentTaskId = -1 }
+        val wct = WindowContainerTransaction()
+
+        organizer.moveTaskToDesk(wct, desk.deskRoot.deskId, recentTask)
+
+        assertThat(
+                wct.hierarchyOps.any { hop ->
+                    hop.isReparent &&
+                        hop.toTop &&
+                        hop.container == recentTask.token.asBinder() &&
+                        hop.newParent == desk.deskRoot.taskInfo.token.asBinder()
+                }
+            )
+            .isTrue()
+        assertThat(
+                wct.changes.any { change ->
+                    change.key == recentTask.token.asBinder() &&
+                        change.value.windowingMode == WINDOWING_MODE_UNDEFINED
+                }
+            )
+            .isTrue()
+        assertThat(
+            wct.hierarchyOps.any { hop ->
+                hop.type == HIERARCHY_OP_TYPE_LAUNCH_TASK &&
+                    hop.launchOptions?.getInt(LAUNCH_KEY_TASK_ID) == TEST_CHILD_TASK_ID
+            }
+        )
+    }
+
+    @Test
     fun testGetDeskAtEnd() = runTest {
         val desk = createDeskSuspending()
 
@@ -639,6 +677,26 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
             )
 
         assertThat(isActive).isTrue()
+    }
+
+    @Test
+    fun getDeskIdFromTaskInfo_taskInDesk_returnsDesk() = runTest {
+        val desk = createDeskSuspending()
+        val taskInDesk = createFreeformTask().apply { parentTaskId = desk.deskRoot.deskId }
+
+        val deskId = organizer.getDeskIdFromTaskInfo(taskInDesk)
+
+        assertThat(deskId).isEqualTo(desk.deskRoot.deskId)
+    }
+
+    @Test
+    fun getDeskIdFromTaskInfo_taskNotInDesk_returnsNull() = runTest {
+        val desk = createDeskSuspending()
+        val taskInDesk = createFreeformTask().apply { parentTaskId = desk.deskRoot.deskId + 1 }
+
+        val deskId = organizer.getDeskIdFromTaskInfo(taskInDesk)
+
+        assertThat(deskId).isNull()
     }
 
     @Test
@@ -712,6 +770,22 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
                 }
             )
             .isFalse()
+    }
+
+    @Test
+    fun testDeactivateDesk_deskWasRemoved_skipsInsteadOfThrowing() = runTest {
+        val desk = createDeskSuspending(userId = PRIMARY_USER_ID)
+        organizer.removeDesk(
+            wct = WindowContainerTransaction(),
+            deskId = desk.deskRoot.deskId,
+            userId = PRIMARY_USER_ID,
+        )
+        organizer.onTaskVanished(desk.deskRoot.taskInfo)
+
+        val wct = WindowContainerTransaction()
+        organizer.deactivateDesk(wct, desk.deskRoot.deskId)
+
+        assertThat(wct.isEmpty).isTrue()
     }
 
     @Test
@@ -1014,6 +1088,19 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
     }
 
     @Test
+    fun onTaskInfoChanged_taskNotRoot_multipleListeners_invokesAllListeners() = runTest {
+        createDeskSuspending()
+        val task = createFreeformTask().apply { taskId = TEST_CHILD_TASK_ID }
+        val secondListener = mock<(ActivityManager.RunningTaskInfo) -> Unit>()
+        organizer.addOnDesktopTaskInfoChangedListener(secondListener)
+
+        organizer.onTaskInfoChanged(task)
+
+        verify(taskInfoChangedListener).invoke(task)
+        verify(secondListener).invoke(task)
+    }
+
+    @Test
     fun onTaskInfoChanged_isDeskRoot_doesNotInvokeListener() = runTest {
         val deskRoot = createDeskSuspending().deskRoot
 
@@ -1043,6 +1130,16 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
         assertThat(wct.hasDeskReparentHops(desk2, tda.token, toTop = true)).isTrue()
     }
 
+    @Test
+    fun addLaunchDeskToActivityOptions_launchRootTaskAdded() = runTest {
+        val deskRoot = createDeskSuspending().deskRoot
+        val activityOpts = ActivityOptions.makeBasic()
+
+        organizer.addLaunchDeskToActivityOptions(activityOpts, deskRoot.deskId)
+
+        assertThat(activityOpts.launchRootTask).isEqualTo(deskRoot.token)
+    }
+
     private data class DeskRoots(
         val deskRoot: DeskRoot,
         val minimizationRoot: DeskMinimizationRoot,
@@ -1066,12 +1163,7 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
                 this.displayId = displayId
             }
         Mockito.reset(mockShellTaskOrganizer)
-        whenever(
-                mockShellTaskOrganizer.createRootTask(
-                    any(),
-                    eq(organizer)
-                )
-            )
+        whenever(mockShellTaskOrganizer.createRootTask(any(), eq(organizer)))
             .thenAnswer { invocation ->
                 val listener = (invocation.arguments[1] as TaskListener)
                 listener.onTaskAppeared(freeformRootTask, SurfaceControl())
@@ -1098,12 +1190,7 @@ class RootTaskDesksOrganizerTest : ShellTestCase() {
                 this.displayId = displayId
             }
         Mockito.reset(mockShellTaskOrganizer)
-        whenever(
-                mockShellTaskOrganizer.createRootTask(
-                    any(),
-                    eq(organizer)
-                )
-            )
+        whenever(mockShellTaskOrganizer.createRootTask(any(), eq(organizer)))
             .thenAnswer { invocation ->
                 val listener = (invocation.arguments[1] as TaskListener)
                 listener.onTaskAppeared(freeformRootTask, SurfaceControl())

@@ -19,6 +19,7 @@ package com.android.launcher3.desktop
 import android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD
 import android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM
 import android.content.Context
+import android.content.res.Resources
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
@@ -29,6 +30,7 @@ import android.window.TransitionFilter.CONTAINER_ORDER_ANY
 import android.window.TransitionFilter.CONTAINER_ORDER_TOP
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.launcher3.util.DisplayController
 import com.android.quickstep.SystemUiProxy
 import com.android.window.flags2.Flags.FLAG_ENABLE_DESKTOP_APP_LAUNCH_BUGFIX
 import com.android.window.flags2.Flags.FLAG_ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX
@@ -52,14 +54,21 @@ class DesktopAppLaunchTransitionManagerTest {
     @get:Rule val mSetFlagsRule = SetFlagsRule()
 
     private val context = mock<Context>()
+    private val applicationContext = mock<Context>()
+    private val resources = mock<Resources>()
     private val systemUiProxy = mock<SystemUiProxy>()
+    private val displayController = mock<DisplayController>()
     private lateinit var transitionManager: DesktopAppLaunchTransitionManager
 
     @Before
     fun setUp() {
-        whenever(context.resources).thenReturn(mock())
+        whenever(context.applicationContext).thenReturn(applicationContext)
+        whenever(context.resources).thenReturn(resources)
+        whenever(applicationContext.resources).thenReturn(resources)
+        whenever(resources.getDimensionPixelSize(any())).thenReturn(42)
         whenever(DesktopModeStatus.canEnterDesktopMode(context)).thenReturn(true)
-        transitionManager = DesktopAppLaunchTransitionManager(context, systemUiProxy)
+        transitionManager =
+            DesktopAppLaunchTransitionManager(context, systemUiProxy, displayController)
     }
 
     @Test

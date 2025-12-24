@@ -47,12 +47,15 @@
     </target_preparer>
     <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
         <option name="test-user-token" value="%TEST_USER%"/>
+        <option name="throw-if-cmd-fail" value="true" />
         <option name="run-command" value="rm -rf /data/user/%TEST_USER%/files/*"/>
         <option name="run-command" value="settings put secure show_ime_with_hard_keyboard 1"/>
+        <option name="run-command" value="settings put secure clock_seconds 1"/>
         <option name="run-command" value="settings put system show_touches 1"/>
         <option name="run-command" value="settings put system pointer_location 1"/>
         <option name="teardown-command"
                 value="settings delete secure show_ime_with_hard_keyboard"/>
+        <option name="teardown-command" value="settings delete secure clock_seconds"/>
         <option name="teardown-command" value="settings delete system show_touches"/>
         <option name="teardown-command" value="settings delete system pointer_location"/>
         <option name="teardown-command"
@@ -62,6 +65,11 @@
         <option name="cleanup-apks" value="true"/>
         <option name="test-file-name" value="{MODULE}.apk"/>
         <option name="test-file-name" value="FlickerTestApp.apk"/>
+    </target_preparer>
+    <!-- Needed for bypassing the login screen -->
+    <!-- TODO(b/420640007): remove preparer if it's fixed at tradefed level -->
+    <target_preparer class="com.android.tradefed.targetprep.SwitchUserTargetPreparer">
+      <option name="user-type" value="full" />
     </target_preparer>
 
     <!-- Needed for pushing the trace config file -->

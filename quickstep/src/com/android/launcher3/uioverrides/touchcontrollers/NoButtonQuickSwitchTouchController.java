@@ -265,8 +265,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                 fromState.detachDesktopCarousel() ? 1f : 0);
         mRecentsView.setContentAlpha(1);
         mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
+        final boolean isOverviewActionVisible = (
+                fromState.getVisibleElements(mLauncher.getLauncherUiState())
+                        & OVERVIEW_ACTIONS) != 0;
         mLauncher.getActionsView().getVisibilityAlpha().updateValue(
-                (fromState.getVisibleElements(mLauncher) & OVERVIEW_ACTIONS) != 0 ? 1f : 0f);
+                isOverviewActionVisible ? 1f : 0f);
         mRecentsView.setTaskIconVisible(false);
 
         float[] scaleAndOffset = toState.getOverviewScaleAndOffset(mLauncher);

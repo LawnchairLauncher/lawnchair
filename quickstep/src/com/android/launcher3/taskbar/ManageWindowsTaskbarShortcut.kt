@@ -140,7 +140,7 @@ class ManageWindowsTaskbarShortcut<T>(
             )
 
         // If the view is removed from elsewhere, reset the state to allow the taskbar to auto-stash
-        taskbarShortcutAllWindowsView.menuView.rootView.addOnAttachStateChangeListener(
+        taskbarShortcutAllWindowsView.menuView.scrollableMenuView.addOnAttachStateChangeListener(
             object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View) {
                     return
@@ -203,11 +203,11 @@ class ManageWindowsTaskbarShortcut<T>(
                 taskbarActivityContext,
                 AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY,
             )
-            menuView.rootView.minimumHeight = menuView.menuHeight
-            menuView.rootView.minimumWidth = menuView.menuWidth
+            menuView.scrollableMenuView.minimumHeight = menuView.scrollableMenuHeight
+            menuView.scrollableMenuView.minimumWidth = menuView.menuWidth
 
-            taskbarOverlayContext.dragLayer?.addView(menuView.rootView)
-            menuView.rootView.requestFocus()
+            taskbarOverlayContext.dragLayer?.addView(menuView.scrollableMenuView)
+            menuView.scrollableMenuView.requestFocus()
         }
 
         /**
@@ -224,15 +224,15 @@ class ManageWindowsTaskbarShortcut<T>(
                 )
 
             // Calculate the Y position to place the carousel above the taskbar
-            menuView.rootView.y =
+            menuView.scrollableMenuView.y =
                 deviceProfile.deviceProperties.availableHeightPx -
-                    menuView.menuHeight -
+                    menuView.scrollableMenuHeight -
                     controllers.taskbarStashController.touchableHeight -
                     margin
 
             // Calculate the X position to align with the calling app,
             // but avoid clashing with the screen edge
-            menuView.rootView.translationX =
+            menuView.scrollableMenuView.translationX =
                 if (Utilities.isRtl(context.resources)) {
                     -(deviceProfile.deviceProperties.availableWidthPx - menuView.menuWidth) / 2f
                 } else {
@@ -250,7 +250,7 @@ class ManageWindowsTaskbarShortcut<T>(
                 FLAG_AUTOHIDE_SUSPEND_MULTI_INSTANCE_MENU_OPEN,
                 false,
             )
-            taskbarOverlayContext.dragLayer?.removeView(menuView.rootView)
+            taskbarOverlayContext.dragLayer?.removeView(menuView.scrollableMenuView)
             taskbarOverlayContext.dragLayer.removeTouchController(this)
             controllers.taskbarPopupController.cleanUpMultiInstanceMenuReference()
         }
@@ -264,7 +264,10 @@ class ManageWindowsTaskbarShortcut<T>(
             ev?.let {
                 if (
                     it.action == MotionEvent.ACTION_DOWN &&
-                        !taskbarOverlayContext.dragLayer.isEventOverView(menuView.rootView, it)
+                        !taskbarOverlayContext.dragLayer.isEventOverView(
+                            menuView.scrollableMenuView,
+                            it,
+                        )
                 ) {
                     animateClose()
                 }

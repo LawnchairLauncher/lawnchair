@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Αλλαγή λόγου διαστάσεων"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Πληροφορίες εφαρμογής για %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Ρυθμίσεις χρήσης για %1$s"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"Κλείσιμο %1$s"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"Νέο παράθυρο"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Διαχείριση παραθύρων"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"Κλείσιμο"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Αποθήκευση ζεύγους εφαρμογών"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Αυτό το ζεύγος εφαρμογών δεν υποστηρίζεται σε αυτή τη συσκευή"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Να μην προτείνεται"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Καρφίτσωμα πρόβλεψης"</string>
     <string name="bubble" msgid="3072951361014076670">"Συννεφάκι"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"Ρυθμίσεις"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"Καρφ. σε γρ. εργαλ."</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"Ξεκαρφ. από γρ. εργ."</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"εγκατάσταση συντομεύσεων"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Επιτρέπει σε μια εφαρμογή την προσθήκη συντομεύσεων χωρίς την παρέμβαση του χρήστη."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"ανάγνωση ρυθμίσεων και συντομεύσεων αρχικής οθόνης"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"Σελιδοποίηση δεξιά"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> είναι απενεργοποιημένη"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{Η εφαρμογή {app_name} έχει # ειδοποίηση}other{Η εφαρμογή {app_name} έχει # ειδοποιήσεις}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"Εφαρμογή από πρόβλεψη: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Σελίδα %1$d από %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Αρχική οθόνη %1$d από %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Νέα σελίδα αρχικής οθόνης"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"Ο φάκελος έκλεισε"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Ο φάκελος μετονομάστηκε σε <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> στοιχεία"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> στοιχεία, υπάρχουν ειδοποιήσεις"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ή περισσότερα στοιχεία"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ή περισσότερα στοιχεία, υπάρχουν ειδοποιήσεις"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"Φάκελος χωρίς όνομα"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"Ζεύγος εφαρμογών: <xliff:g id="APP1">%1$s</xliff:g> και <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Ταπετσαρία και στιλ"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Καρτέλα εφαρμογών εργασιών"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Προφίλ εργασίας"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Οι εφαρμογές εργασιών φέρουν σήμα και είναι ορατές στον διαχειριστή IT σας"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Το κατάλαβα"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Οι εφαρμογές εργασίας τέθηκαν σε παύση."</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Δεν θα λαμβάνετε ειδοποιήσεις από τις εφαρμογές εργασιών σας"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Οι εφαρμογές εργασίας δεν έχουν τη δυνατότητα αποστολής ειδοποιήσεων, χρήσης της μπαταρίας ή πρόσβασης στην τοποθεσία σας"</string>

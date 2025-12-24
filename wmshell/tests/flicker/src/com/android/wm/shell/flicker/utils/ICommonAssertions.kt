@@ -17,7 +17,7 @@
 package com.android.wm.shell.flicker.utils
 
 import android.platform.test.annotations.Presubmit
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerTest
 import android.tools.traces.component.ComponentNameMatcher
 import com.android.server.wm.flicker.entireScreenCovered
 import com.android.server.wm.flicker.navBarLayerIsVisibleAtStartAndEnd
@@ -33,7 +33,7 @@ import org.junit.Assume
 import org.junit.Test
 
 interface ICommonAssertions {
-    val flicker: LegacyFlickerTest
+    val flicker: FlickerTest
 
     val usesTaskbar: Boolean
         get() = flicker.scenario.isTablet || Flags.enableTaskbarOnPhones()

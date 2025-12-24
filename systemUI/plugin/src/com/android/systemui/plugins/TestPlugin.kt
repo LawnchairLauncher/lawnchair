@@ -29,5 +29,5 @@ interface TestPlugin : Plugin {
 
     @ProtectedReturn("return new Object();")
     /** Test method, implemented by test */
-    fun methodThrowsError(): Object
+    fun methodThrowsError(): Any
 }

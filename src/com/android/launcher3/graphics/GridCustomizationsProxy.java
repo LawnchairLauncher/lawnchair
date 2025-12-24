@@ -16,11 +16,12 @@
 package com.android.launcher3.graphics;
 
 import static com.android.launcher3.BuildConfigs.IS_DEBUG_DEVICE;
+import static com.android.launcher3.graphics.ThemeManager.PREF_ICON_SHAPE;
+import static com.android.launcher3.graphics.theme.ThemePreference.MONO_THEME_VALUE;
 import static com.android.launcher3.preview.PreviewSurfaceRenderer.KEY_BITMAP_GENERATION_DELAY_MS;
 import static com.android.launcher3.preview.PreviewSurfaceRenderer.KEY_VIEW_HEIGHT;
 import static com.android.launcher3.preview.PreviewSurfaceRenderer.KEY_VIEW_WIDTH;
 import static com.android.launcher3.preview.PreviewSurfaceRenderer.MIN_BITMAP_GENERATION_DELAY_MS;
-import static com.android.launcher3.graphics.ThemeManager.PREF_ICON_SHAPE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -51,6 +52,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.dagger.LauncherAppSingleton;
+import com.android.launcher3.graphics.theme.ThemePreference;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.preview.PreviewLifecycleObserver;
 import com.android.launcher3.preview.PreviewSurfaceRenderer;
@@ -139,6 +141,10 @@ public class GridCustomizationsProxy implements ProxyProvider {
     public static final String KEY_GRID_NAME = "grid_name";
     public static final String KEY_IMAGE = "image";
 
+    // Number of rows updated as part of an update call
+    protected static final int UPDATE_SETTING_SUCCESS = 1;
+    protected static final int UPDATE_SETTING_FAILURE = 0;
+
     public static final String KEY_UPDATE_METHOD = "update_method";
 
     // Set of all active previews used to track duplicate memory allocations
@@ -146,20 +152,20 @@ public class GridCustomizationsProxy implements ProxyProvider {
             Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private final Context mContext;
-    private final ThemeManager mThemeManager;
+    private final ThemePreference mThemePreference;
     private final LauncherPrefs mPrefs;
     private final InvariantDeviceProfile mIdp;
 
     @Inject
     protected GridCustomizationsProxy(
             @ApplicationContext Context context,
-            ThemeManager themeManager,
+            ThemePreference themePreference,
             LauncherPrefs prefs,
             InvariantDeviceProfile idp,
             DaggerSingletonTracker lifeCycle
     ) {
         mContext = context;
-        mThemeManager = themeManager;
+        mThemePreference = themePreference;
         mPrefs = prefs;
         mIdp = idp;
         lifeCycle.addCloseable(() -> mActivePreviews.forEach(PreviewLifecycleObserver::binderDied));
@@ -248,9 +254,9 @@ public class GridCustomizationsProxy implements ProxyProvider {
             case GET_ICON_THEMED:
             case ICON_THEMED: {
                 MatrixCursor cursor = new MatrixCursor(new String[]{BOOLEAN_VALUE});
-                cursor.newRow().add(BOOLEAN_VALUE, mThemeManager.isMonoThemeEnabled() ? 1 : 0);
-                Log.d(TAG, "query: path=" + path
-                        + ", isMonoThemeEnabled=" + mThemeManager.isMonoThemeEnabled());
+                boolean monoThemeEnabled = MONO_THEME_VALUE.equals(mThemePreference.getValue());
+                cursor.newRow().add(BOOLEAN_VALUE, monoThemeEnabled ? 1 : 0);
+                Log.d(TAG, "query: path=" + path + ", isMonoThemeEnabled=" + monoThemeEnabled);
                 return cursor;
             }
             default: {
@@ -289,9 +295,9 @@ public class GridCustomizationsProxy implements ProxyProvider {
                     }
                 }
                 if (match == null) {
-                    return 0;
+                    return UPDATE_SETTING_FAILURE;
                 }
-                mIdp.setCurrentGrid(mContext, gridName);
+                mIdp.setCurrentGrid(gridName);
 
                 LauncherModel launcherModel = LauncherAppState.getInstance(mContext).getModel();
                 if (Flags.newCustomizationPickerUi() && launcherModel.isActive()) {
@@ -309,14 +315,18 @@ public class GridCustomizationsProxy implements ProxyProvider {
                     mPrefs.put(PREF_ICON_SHAPE,
                             requireNonNullElse(values.getAsString(KEY_SHAPE_KEY), ""));
                 }
-                return 1;
+                return UPDATE_SETTING_SUCCESS;
             case ICON_THEMED:
             case SET_ICON_THEMED: {
-                mThemeManager.setMonoThemeEnabled(values.getAsBoolean(BOOLEAN_VALUE));
-                return 1;
+                if (values.getAsBoolean(BOOLEAN_VALUE)) {
+                    mThemePreference.setValue(MONO_THEME_VALUE);
+                } else {
+                    mThemePreference.setValue(null, MONO_THEME_VALUE::equals);
+                }
+                return UPDATE_SETTING_SUCCESS;
             }
             default:
-                return 0;
+                return UPDATE_SETTING_FAILURE;
         }
     }
 

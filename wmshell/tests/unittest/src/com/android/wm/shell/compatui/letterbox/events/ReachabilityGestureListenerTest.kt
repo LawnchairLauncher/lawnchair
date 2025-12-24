@@ -39,8 +39,7 @@ import org.mockito.kotlin.verify
 /**
  * Tests for [ReachabilityGestureListener].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:ReachabilityGestureListenerTest
+ * Build/Install/Run: atest WMShellUnitTests:ReachabilityGestureListenerTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
@@ -67,9 +66,7 @@ class ReachabilityGestureListenerTest : ShellTestCase() {
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<ReachabilityGestureListenerRobotTest>) {
         val robot = ReachabilityGestureListenerRobotTest()
         consumer.accept(robot)
@@ -77,15 +74,13 @@ class ReachabilityGestureListenerTest : ShellTestCase() {
 
     class ReachabilityGestureListenerRobotTest(
         taskId: Int = TASK_ID,
-        token: WindowContainerToken? = TOKEN
+        token: WindowContainerToken? = TOKEN,
     ) {
 
         companion object {
-            @JvmStatic
-            private val TASK_ID = 1
+            @JvmStatic private val TASK_ID = 1
 
-            @JvmStatic
-            private val TOKEN = mock<WindowContainerToken>()
+            @JvmStatic private val TOKEN = mock<WindowContainerToken>()
         }
 
         private val reachabilityListener: ReachabilityGestureListener
@@ -110,7 +105,7 @@ class ReachabilityGestureListenerTest : ShellTestCase() {
                     transitions,
                     animationHandler,
                     wctSupplier,
-                    letterboxState
+                    letterboxState,
                 )
         }
 
@@ -127,22 +122,14 @@ class ReachabilityGestureListenerTest : ShellTestCase() {
             x: Int,
             y: Int,
             taskId: Int = TASK_ID,
-            token: WindowContainerToken? = TOKEN
+            token: WindowContainerToken? = TOKEN,
         ) {
-            verify(wct, expected.asMode()).setReachabilityOffset(
-                token!!,
-                taskId,
-                x,
-                y
-            )
+            verify(wct, expected.asMode()).setReachabilityOffset(token!!, taskId, x, y)
         }
 
         fun verifyReachabilityTransitionStarted(expected: Boolean = true) {
-            verify(transitions, expected.asMode()).startTransition(
-                TRANSIT_MOVE_LETTERBOX_REACHABILITY,
-                wct,
-                animationHandler
-            )
+            verify(transitions, expected.asMode())
+                .startTransition(TRANSIT_MOVE_LETTERBOX_REACHABILITY, wct, animationHandler)
         }
 
         fun verifyEventIsHandled(expected: Boolean) {

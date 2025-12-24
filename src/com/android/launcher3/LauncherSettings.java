@@ -151,6 +151,28 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_PRIVATE_SPACE_INSTALL_APP_BUTTON = 11;
 
         /**
+         * The file item that comes from the local file system and is displayed on workspace.
+         */
+        public static final int ITEM_TYPE_FILE_SYSTEM_FILE = 12;
+
+        /**
+         * The folder item that comes from the local file system and is displayed on workspace.
+         */
+        public static final int ITEM_TYPE_FILE_SYSTEM_FOLDER = 13;
+
+        /**
+         * A custom view which typically implemented using
+         * {@link com.android.launcher3.model.data.ItemViewProvider}.
+         */
+        public static final int ITEM_TYPE_CUSTOM_VIEW = 14;
+
+        /**
+         * Type for a temporary item that exists during a system drag-and-drop sequence before being
+         * replaced with N-many items of more appropriate types during drop handling.
+         */
+        public static final int ITEM_TYPE_SYSTEM_DRAG = 15;
+
+        /**
          * The custom icon bitmap.
          * <P>Type: BLOB</P>
          */
@@ -221,6 +243,7 @@ public class LauncherSettings {
                 case ITEM_TYPE_APP_PAIR: return "APP_PAIR";
                 case ITEM_TYPE_PRIVATE_SPACE_INSTALL_APP_BUTTON:
                     return "PRIVATE_SPACE_INSTALL_APP_BUTTON";
+                case ITEM_TYPE_SYSTEM_DRAG: return "SYSTEM_DRAG";
                 default: return String.valueOf(type);
             }
         }

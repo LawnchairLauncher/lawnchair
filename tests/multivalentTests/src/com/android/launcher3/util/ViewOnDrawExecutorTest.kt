@@ -24,18 +24,21 @@ import com.android.launcher3.Workspace
 import com.android.launcher3.pageindicators.PageIndicator
 import java.util.function.Consumer
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.same
 import org.mockito.kotlin.verifyNoMoreInteractions
 
 @RunWith(AndroidJUnit4::class)
 class ViewOnDrawExecutorTest<T> where T : View, T : PageIndicator {
+
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
 
     @Mock private lateinit var runnable: Runnable
     @Mock private lateinit var consumer: Consumer<ViewOnDrawExecutor>
@@ -49,7 +52,6 @@ class ViewOnDrawExecutorTest<T> where T : View, T : PageIndicator {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         runnableList = RunnableList()
         runnableList.add(runnable)
         underTest = ViewOnDrawExecutor(runnableList, consumer)

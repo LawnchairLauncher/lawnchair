@@ -42,6 +42,8 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class TvPipBoundsState extends PipBoundsState {
 
+    private static final String TV_PIP_PREFS = "tv_pip_preferences";
+    private static final String KEY_LAST_PIP_GRAVITY = "last_user_pip_gravity";
     public static final int ORIENTATION_UNDETERMINED = 0;
     public static final int ORIENTATION_VERTICAL = 1;
     public static final int ORIENTATION_HORIZONTAL = 2;
@@ -81,8 +83,9 @@ public class TvPipBoundsState extends PipBoundsState {
         super(context, sizeSpecSource, pipDisplayLayoutState);
         mContext = context;
         updateDefaultGravity();
-        mTvPipGravity = mDefaultGravity;
-        mPreviousCollapsedGravity = mDefaultGravity;
+        mTvPipGravity = mContext.getSharedPreferences(TV_PIP_PREFS, Context.MODE_PRIVATE)
+                .getInt(KEY_LAST_PIP_GRAVITY, mDefaultGravity);
+        mPreviousCollapsedGravity = mTvPipGravity;
         mIsTvExpandedPipSupported = context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_EXPANDED_PICTURE_IN_PICTURE);
     }
@@ -130,8 +133,9 @@ public class TvPipBoundsState extends PipBoundsState {
     /** Resets the TV PiP state for a new activity. */
     public void resetTvPipState() {
         mTvFixedPipOrientation = ORIENTATION_UNDETERMINED;
-        mTvPipGravity = mDefaultGravity;
-        mPreviousCollapsedGravity = mDefaultGravity;
+        mTvPipGravity = mContext.getSharedPreferences(TV_PIP_PREFS, Context.MODE_PRIVATE)
+                .getInt(KEY_LAST_PIP_GRAVITY, mDefaultGravity);
+        mPreviousCollapsedGravity = mTvPipGravity;
         mIsTvPipExpanded = false;
         mTvPipManuallyCollapsed = false;
     }
@@ -184,7 +188,32 @@ public class TvPipBoundsState extends PipBoundsState {
 
     /** Sets the current gravity of the TV PiP. */
     public void setTvPipGravity(int gravity) {
+        if (gravity == mTvPipGravity) {
+            return;
+        }
         mTvPipGravity = gravity;
+        int gravityToSave = gravity;
+        if (mIsTvExpandedPipSupported
+                && mDesiredTvExpandedAspectRatio != 0
+                && !mTvPipManuallyCollapsed) {
+            // If expanded, calculate corresponding collapsed gravity.
+            int currentX = gravity & Gravity.HORIZONTAL_GRAVITY_MASK;
+            int currentY = gravity & Gravity.VERTICAL_GRAVITY_MASK;
+            int previousCollapsedX = mPreviousCollapsedGravity
+                    & Gravity.HORIZONTAL_GRAVITY_MASK;
+            int previousCollapsedY = mPreviousCollapsedGravity
+                    & Gravity.VERTICAL_GRAVITY_MASK;
+            if (getTvFixedPipOrientation() == ORIENTATION_HORIZONTAL) {
+                gravityToSave = previousCollapsedX | currentY;
+            } else {
+                gravityToSave = currentX | previousCollapsedY;
+            }
+        }
+        // Save the current collapsed gravity.
+        mContext.getSharedPreferences(TV_PIP_PREFS, Context.MODE_PRIVATE)
+                .edit()
+                .putInt(KEY_LAST_PIP_GRAVITY, gravityToSave)
+                .apply();
     }
 
     /** Returns the current gravity of the TV PiP. */

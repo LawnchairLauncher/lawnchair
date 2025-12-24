@@ -26,6 +26,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PointF;
@@ -38,12 +39,15 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.protolog.ProtoLog;
+import com.android.wm.shell.Flags;
 import com.android.wm.shell.animation.FlingAnimationUtils;
 import com.android.wm.shell.bubbles.BubbleExpandedView;
 import com.android.wm.shell.bubbles.BubblePositioner;
 import com.android.wm.shell.shared.animation.Interpolators;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -351,7 +355,8 @@ public class ExpandedViewAnimationControllerImpl implements ExpandedViewAnimatio
         return false;
     }
 
-    private AnimatorSet createCollapseAnimation(BubbleExpandedView expandedView,
+    @VisibleForTesting
+    AnimatorSet createCollapseAnimation(BubbleExpandedView expandedView,
             Runnable startStackCollapse, Runnable after) {
         List<Animator> animatorList = new ArrayList<>();
         animatorList.add(createHeightAnimation(expandedView));
@@ -370,6 +375,14 @@ public class ExpandedViewAnimationControllerImpl implements ExpandedViewAnimatio
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                if (Flags.fixBubblesCancelAnimation() && !notified[0]) {
+                    notified[0] = true;
+                    startStackCollapse.run();
+                }
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 after.run();
@@ -415,6 +428,33 @@ public class ExpandedViewAnimationControllerImpl implements ExpandedViewAnimatio
     private void vibrateIfEnabled() {
         if (mExpandedView != null) {
             mExpandedView.performHapticFeedback(HapticFeedbackConstants.DRAG_CROSSING);
+        }
+    }
+
+    /** Description of current animation controller state. */
+    @Override
+    public void dump(@NonNull PrintWriter pw) {
+        pw.println("ExpandedViewAnimationController:");
+        pw.print("  expandedView: "); pw.println(mExpandedView);
+        pw.print("  collapsedAmount: "); pw.println(mCollapsedAmount);
+        pw.print("  notifiedAboutThreshold: "); pw.println(mNotifiedAboutThreshold);
+        if (mCollapseAnimation != null) {
+            pw.print("  collapseAnimation running: ");
+            pw.println(mCollapseAnimation.isRunning());
+        } else {
+            pw.println("  collapseAnimation=null");
+        }
+        if (mBackToExpandedAnimation != null) {
+            pw.print("  backToExpandedAnimation running: ");
+            pw.println(mBackToExpandedAnimation.isRunning());
+        } else {
+            pw.println("  backToExpandedAnimation=null");
+        }
+        if (mBottomClipAnim != null) {
+            pw.print("  bottomClipAnim running: ");
+            pw.println(mBottomClipAnim.isRunning());
+        } else {
+            pw.println("  bottomClipAnim=null");
         }
     }
 }

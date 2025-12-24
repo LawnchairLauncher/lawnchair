@@ -5,8 +5,29 @@ public final class FeatureFlagsImpl implements FeatureFlags {
     @Override
 
 
-    public boolean enableAutoTaskStackController() {
+    public boolean bugRotationButtonCoverBubble() {
         return false;
+    }
+
+    @Override
+
+
+    public boolean dismissPipFromLockscreen() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enable2x1Split() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableAutoTaskStackController() {
+        return true;
     }
 
     @Override
@@ -14,13 +35,6 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
     public boolean enableBubbleAnything() {
         return false;
-    }
-
-    @Override
-
-
-    public boolean enableBubbleAppCompatFixes() {
-        return true;
     }
 
     @Override
@@ -40,21 +54,21 @@ public final class FeatureFlagsImpl implements FeatureFlags {
     @Override
 
 
-    public boolean enableBubbleStashing() {
-        return false;
-    }
-
-    @Override
-
-
-    public boolean enableBubbleSwipeUpCleanup() {
+    public boolean enableBubbleBarToFloatingTransition() {
         return true;
     }
 
     @Override
 
 
-    public boolean enableBubbleTaskViewListener() {
+    public boolean enableBubbleEventHistoryLogs() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableBubbleStashing() {
         return false;
     }
 
@@ -89,13 +103,6 @@ public final class FeatureFlagsImpl implements FeatureFlags {
     @Override
 
 
-    public boolean enableEnterSplitRemoveBubble() {
-        return false;
-    }
-
-    @Override
-
-
     public boolean enableFlexibleSplit() {
         return false;
     }
@@ -104,7 +111,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean enableFlexibleTwoAppSplit() {
-        return false;
+        return true;
     }
 
     @Override
@@ -139,6 +146,13 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean enablePip2() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enablePip2OnTv() {
         return false;
     }
 
@@ -159,14 +173,14 @@ public final class FeatureFlagsImpl implements FeatureFlags {
     @Override
 
 
-    public boolean enableRecentsBookendTransition() {
-        return true;
+    public boolean enableRetrievableBubbles() {
+        return false;
     }
 
     @Override
 
 
-    public boolean enableRetrievableBubbles() {
+    public boolean enableShellRestartBubbleCleanup() {
         return false;
     }
 
@@ -201,6 +215,48 @@ public final class FeatureFlagsImpl implements FeatureFlags {
     @Override
 
 
+    public boolean fixBubbleStackViewExpandedWhenAdded() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean fixBubblesAddSameBubbleBeingRemoved() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean fixBubblesCancelAnimation() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean fixBubblesExpandedSysuiFlag() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean fixBubblesImeFocusFlicker() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean fixExitSplitOnEnterBubble() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean fixMissingUserChangeCallbacks() {
         return true;
     }
@@ -208,15 +264,22 @@ public final class FeatureFlagsImpl implements FeatureFlags {
     @Override
 
 
-    public boolean onlyReuseBubbledTaskWhenLaunchedFromBubble() {
+    public boolean fixTaskViewRotationAnimation() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean splitDisableChildTaskBounds() {
         return true;
     }
 
     @Override
 
 
-    public boolean taskViewRepository() {
-        return true;
+    public boolean splitToFullSetWindowMode() {
+        return false;
     }
 
     @Override

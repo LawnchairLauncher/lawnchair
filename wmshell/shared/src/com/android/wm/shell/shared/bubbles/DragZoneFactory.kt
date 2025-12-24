@@ -220,7 +220,9 @@ class DragZoneFactory(
             is DraggedObject.Bubble -> {
                 dragZones.add(createDismissDragZone())
                 dragZones.addAll(createBubbleCornerDragZones())
-                dragZones.add(createFullScreenDragZone())
+                if (BubbleAnythingFlagHelper.enableBubbleToFullscreen()) {
+                    dragZones.add(createFullScreenDragZone())
+                }
                 if (shouldShowDesktopWindowDragZones()) {
                     dragZones.add(createDesktopWindowDragZoneForBubble())
                 }
@@ -228,7 +230,9 @@ class DragZoneFactory(
             }
             is DraggedObject.ExpandedView -> {
                 dragZones.add(createDismissDragZone())
-                dragZones.add(createFullScreenDragZone())
+                if (BubbleAnythingFlagHelper.enableBubbleToFullscreen()) {
+                    dragZones.add(createFullScreenDragZone())
+                }
                 if (shouldShowDesktopWindowDragZones()) {
                     dragZones.add(createDesktopWindowDragZoneForExpandedView())
                 }
@@ -240,8 +244,8 @@ class DragZoneFactory(
                 dragZones.addAll(createBubbleHalfScreenDragZones(forBubbleBar = false))
             }
             is DraggedObject.LauncherIcon -> {
-                val showDropTarget = draggedObject.showDropTarget
-                val showSecondDropTarget = !draggedObject.bubbleBarHasBubbles
+                val showDropTarget = draggedObject.showExpandedViewDropTarget
+                val showSecondDropTarget = draggedObject.showBubbleBarPillowDropTarget
                 dragZones.addAll(createBubbleCornerDragZones(showDropTarget, showSecondDropTarget))
             }
         }

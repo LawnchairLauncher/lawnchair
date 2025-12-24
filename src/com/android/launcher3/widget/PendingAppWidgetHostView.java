@@ -20,7 +20,7 @@ import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.graphics.Paint.DITHER_FLAG;
 import static android.graphics.Paint.FILTER_BITMAP_FLAG;
 
-import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
+import static com.android.launcher3.graphics.PreloadIconDelegate.newPendingIcon;
 import static com.android.launcher3.model.data.LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
 import static com.android.launcher3.icons.cache.CacheLookupFlag.DEFAULT_LOOKUP_FLAG;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -181,7 +181,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
         mPaint.setTextSize(TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_PX,
-                mActivityContext.getDeviceProfile().iconTextSizePx,
+                mActivityContext.getDeviceProfile().getWorkspaceIconProfile().getIconTextSizePx(),
                 getResources().getDisplayMetrics()));
         mPreviewPaint = new Paint(ANTI_ALIAS_FLAG | DITHER_FLAG | FILTER_BITMAP_FLAG);
 
@@ -318,7 +318,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
             mDragFlags |= FLAG_DRAW_SETTINGS | FLAG_DRAW_LABEL;
         } else {
-            mCenterDrawable = newPendingIcon(getContext(), info);
+            mCenterDrawable = newPendingIcon(info, getContext());
             mSettingIconDrawable = null;
             applyState();
         }
@@ -402,7 +402,10 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             iconSize = maxSize / settingIconScaleFactor;
         }
 
-        int actualIconSize = (int) Math.min(iconSize, grid.iconSizePx);
+        int actualIconSize = (int) Math.min(
+                iconSize,
+                grid.getWorkspaceIconProfile().getIconSizePx()
+        );
 
         // Icon top when we do not draw the text
         int iconTop = (getHeight() - actualIconSize) / 2;
@@ -417,12 +420,14 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
             // Extra icon size due to the setting icon
             float minHeightWithText = textHeight + actualIconSize * settingIconScaleFactor
-                    + grid.iconDrawablePaddingPx;
+                    + grid.getWorkspaceIconProfile().getIconDrawablePaddingPx();
 
             if (minHeightWithText < availableHeight) {
                 // We can draw the text as well
-                iconTop = (getHeight() - textHeight
-                        - grid.iconDrawablePaddingPx - actualIconSize) / 2;
+                iconTop = (getHeight()
+                        - textHeight
+                        - grid.getWorkspaceIconProfile().getIconDrawablePaddingPx()
+                        - actualIconSize) / 2;
 
             } else {
                 // We can't draw the text. Let the iconTop be same as before.
@@ -445,7 +450,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         if (mSetupTextLayout != null) {
             // Set up position for dragging the text
             mRect.left = paddingLeft + minPadding;
-            mRect.top = mCenterDrawable.getBounds().bottom + grid.iconDrawablePaddingPx;
+            mRect.top = mCenterDrawable.getBounds().bottom
+                    + grid.getWorkspaceIconProfile().getIconDrawablePaddingPx();
         }
     }
 

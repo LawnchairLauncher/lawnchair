@@ -9,10 +9,10 @@ Lawnchair rely on these JAR:
 
 | File                       | Command                 | Android Tag                 | Target Configuration                               |
 |----------------------------|-------------------------|-----------------------------|----------------------------------------------------|
-| framework-16.jar           | `m framework`           | android-16.0.0_r3           | `aosp_cf_x86_64_only_phone-aosp_current-userdebug` |
-| SystemUI-statsd-16.jar     | `m SystemUI-statsd`     | android-16.0.0_r3           | `aosp_cf_x86_64_only_phone-aosp_current-userdebug` |
-| WindowManager-Shell-16.jar | `m WindowManager-Shell` | android-16.0.0_r3           | `aosp_cf_x86_64_only_phone-aosp_current-userdebug` |
-| SystemUI-core-16.jar       | `m SystemUI-core`       | android-16.0.0_r3           | `aosp_cf_x86_64_only_phone-aosp_current-userdebug` |
+| framework-16.jar           | `m framework`           | android-16.0.0_r4           | `aosp_cf_x86_64_only_phone-aosp_current-userdebug` |
+| SystemUI-statsd-16.jar     | `m SystemUI-statsd`     | android-16.0.0_r4           | `aosp_cf_x86_64_only_phone-aosp_current-userdebug` |
+| WindowManager-Shell-16.jar | `m WindowManager-Shell` | android-16.0.0_r4           | `aosp_cf_x86_64_only_phone-aosp_current-userdebug` |
+| SystemUI-core-16.jar       | `m SystemUI-core`       | android-16.0.0_r4           | `aosp_cf_x86_64_only_phone-aosp_current-userdebug` |
 | framework-15.jar           | `m framework`           | android-15.0.0_r3           |                                                    |
 | framework-14.jar           | `m framework`           | android14-release           |                                                    |
 | framework-13.jar           | `m framework`           |                             |                                                    |

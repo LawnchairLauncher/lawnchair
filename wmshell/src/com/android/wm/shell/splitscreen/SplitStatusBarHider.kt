@@ -16,8 +16,13 @@
 
 package com.android.wm.shell.splitscreen
 
+import android.graphics.Insets
+import android.graphics.Rect
 import android.os.Binder
 import android.view.Display.DEFAULT_DISPLAY
+import android.view.InsetsSource.FLAG_FORCE_CONSUMING
+import android.view.InsetsState
+import android.view.WindowInsets.Type.captionBar
 import android.view.WindowInsets.Type.navigationBars
 import android.view.WindowInsets.Type.statusBars
 import android.window.WindowContainerToken
@@ -63,13 +68,17 @@ class SplitStatusBarHider(
      * immersive mode or not
      */
     private var statusBarImmersiveForSplit = false
+    /**
+     * The height of the status bar, in pixels, in the current configuration.
+     */
+    private var statusBarHeight = 0
 
     private lateinit var displayToken: WindowContainerToken
     private val splitStateListener: SplitState.SplitStateChangeListener =
         SplitState.SplitStateChangeListener {
             updateStatusBarBehavior(it, isLeftRightSplit, isSplitVisible)
         }
-    private val systemBarVisibilityOverrideCaller = Binder()
+    private val systemBarOwner = Binder()
 
     init {
         if (enableFlexibleTwoAppSplit()) {
@@ -93,6 +102,13 @@ class SplitStatusBarHider(
         updateStatusBarBehavior(currentSplitState, leftRightSplit, isSplitVisible)
     }
 
+    fun onInsetsChanged(insetsState: InsetsState, rootBounds: Rect) {
+        // Check the height of the status bar inset and store it.
+        statusBarHeight =
+            insetsState.calculateInsets(rootBounds, rootBounds, statusBars(), true).top
+    }
+
+    fun isStatusBarImmersive(): Boolean = statusBarImmersiveForSplit
     /**
      * Determines if we want to put the status bar in immersive mode or not based on
      * [currentSplitState], [isLeftRightSplit], and [isSplitVisible].
@@ -147,13 +163,20 @@ class SplitStatusBarHider(
     private fun setStatusBarVisibilityOverride(forceImmersive: Boolean) {
         val wct = WindowContainerTransaction()
         if (forceImmersive) {
+            // Add a "replacement" inset for the status bar that is being hidden. This ensures that
+            // apps lay out their contents in 90:10 in the same way as they do in 70:30, even though
+            // we are hiding the status bar in 90:10.
+            val flags = FLAG_FORCE_CONSUMING
+            wct.addInsetsSource(displayToken, systemBarOwner, 0, captionBar(),
+                Insets.of(0, statusBarHeight, 0, 0), null, flags)
             wct.setSystemBarVisibilityOverride(displayToken,
-                systemBarVisibilityOverrideCaller,
-                navigationBars() /*forciblyShowingTypes*/,
+                systemBarOwner,
+                navigationBars() or captionBar() /*forciblyShowingTypes*/,
                 statusBars() /*forciblyHidingTypes*/)
         } else {
+            wct.removeInsetsSource(displayToken, systemBarOwner, 0, captionBar())
             wct.setSystemBarVisibilityOverride(displayToken,
-                systemBarVisibilityOverrideCaller,
+                systemBarOwner,
                 0 /*forciblyShowingTypes*/,
                 0 /*forciblyHidingTypes*/)
         }
@@ -180,8 +203,8 @@ class SplitStatusBarHider(
         return hideStatusBarForSplitState(currentSplitState)
     }
 
-    private fun hideStatusBarForSplitState(splitState: Int) : Boolean {
-        return when(splitState) {
+    private fun hideStatusBarForSplitState(splitState: Int): Boolean {
+        return when (splitState) {
             SNAP_TO_2_10_90 -> true
             SNAP_TO_2_90_10 -> true
             ANIMATING_OFFSCREEN_TAP -> true

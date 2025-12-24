@@ -17,6 +17,7 @@
 package com.android.launcher3.uioverrides.states;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherUiState;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.util.SplitAnimationTimings;
 import com.android.quickstep.views.RecentsView;
@@ -31,7 +32,7 @@ public class SplitScreenSelectState extends OverviewState {
     }
 
     @Override
-    public int getVisibleElements(Launcher launcher) {
+    public int getVisibleElements(LauncherUiState launcherUiState) {
         return SPLIT_PLACHOLDER_VIEW;
     }
 

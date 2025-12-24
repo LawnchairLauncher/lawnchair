@@ -16,13 +16,13 @@
 
 package com.android.quickstep.util
 
+import android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Rect
 import android.view.Display.DEFAULT_DISPLAY
 import android.view.Display.INVALID_DISPLAY
 import com.android.launcher3.util.LauncherMultivalentJUnit
-import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.systemui.shared.recents.model.Task
 import com.android.wm.shell.shared.split.SplitBounds
 import com.android.wm.shell.shared.split.SplitScreenConstants
@@ -62,14 +62,7 @@ class GroupTaskTest {
 
     @Test
     fun testGroupTask_equalSplitTasks_isEqual() {
-        val splitBounds =
-            SplitBounds(
-                Rect(),
-                Rect(),
-                1,
-                2,
-                SplitScreenConstants.SNAP_TO_2_50_50,
-            )
+        val splitBounds = SplitBounds(Rect(), Rect(), 1, 2, SplitScreenConstants.SNAP_TO_2_50_50)
         val task1 = SplitTask(createTask(1), createTask(2), splitBounds)
         val task2 = SplitTask(createTask(1), createTask(2), splitBounds)
         assertThat(task1).isEqualTo(task2)
@@ -77,22 +70,8 @@ class GroupTaskTest {
 
     @Test
     fun testGroupTask_differentSplitTasks_isNotEqual() {
-        val splitBounds1 =
-            SplitBounds(
-                Rect(),
-                Rect(),
-                1,
-                2,
-                SplitScreenConstants.SNAP_TO_2_50_50,
-            )
-        val splitBounds2 =
-            SplitBounds(
-                Rect(),
-                Rect(),
-                1,
-                2,
-                SplitScreenConstants.SNAP_TO_2_33_66,
-            )
+        val splitBounds1 = SplitBounds(Rect(), Rect(), 1, 2, SplitScreenConstants.SNAP_TO_2_50_50)
+        val splitBounds2 = SplitBounds(Rect(), Rect(), 1, 2, SplitScreenConstants.SNAP_TO_2_33_66)
         val task1 = SplitTask(createTask(1), createTask(2), splitBounds1)
         val task2 = SplitTask(createTask(1), createTask(2), splitBounds2)
         assertThat(task1).isNotEqualTo(task2)
@@ -133,14 +112,7 @@ class GroupTaskTest {
 
     @Test
     fun testSplitTask_matchesDisplayId() {
-        val splitBounds =
-            SplitBounds(
-                Rect(),
-                Rect(),
-                1,
-                2,
-                SplitScreenConstants.SNAP_TO_2_50_50,
-            )
+        val splitBounds = SplitBounds(Rect(), Rect(), 1, 2, SplitScreenConstants.SNAP_TO_2_50_50)
         val task1 =
             SplitTask(createTask(1, INVALID_DISPLAY), createTask(2, INVALID_DISPLAY), splitBounds)
         assertThat(task1.matchesDisplayId(DEFAULT_DISPLAY)).isTrue()
@@ -178,6 +150,8 @@ class GroupTaskTest {
                 null,
                 0,
                 false,
+                false,
+                ACTIVITY_TYPE_STANDARD,
                 false,
             )
         )

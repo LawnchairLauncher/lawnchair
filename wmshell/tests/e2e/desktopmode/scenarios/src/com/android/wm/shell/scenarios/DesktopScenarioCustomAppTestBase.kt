@@ -17,6 +17,7 @@
 package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
+import android.tools.Rotation
 import android.tools.traces.parsers.WindowManagerStateHelper
 import android.tools.traces.parsers.toFlickerComponent
 import androidx.test.platform.app.InstrumentationRegistry
@@ -33,8 +34,9 @@ import org.junit.Ignore
 @Ignore("Base Test Class")
 abstract class DesktopScenarioCustomAppTestBase(
     isResizeable: Boolean = true,
-    isLandscapeApp: Boolean = true
-) : TestScenarioBase() {
+    isLandscapeApp: Boolean = true,
+    rotation: Rotation = Rotation.ROTATION_0
+) : TestScenarioBase(rotation) {
     val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
     val tapl = LauncherInstrumentation()
     val wmHelper = WindowManagerStateHelper(instrumentation)

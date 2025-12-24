@@ -43,7 +43,7 @@
     <color name="compat_controls_text">@android:color/system_neutral1_50</color>
 
     <!-- Letterbox Education -->
-    <color name="letterbox_education_text_secondary">@android:color/system_secondary_light</color>
+    <color name="letterbox_education_text_secondary">@android:color/system_neutral2_200</color>
 
     <!-- Letterbox Dialog -->
     <color name="letterbox_dialog_background">@android:color/system_neutral1_900</color>

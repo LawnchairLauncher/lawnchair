@@ -24,9 +24,8 @@ import kotlinx.coroutines.CoroutineScope
 /**
  * A supplier of [DefaultWindowDecorViewHost]s. It creates a new one every time one is requested.
  */
-class DefaultWindowDecorViewHostSupplier(
-    @ShellMainThread private val mainScope: CoroutineScope
-) : WindowDecorViewHostSupplier<WindowDecorViewHost> {
+class DefaultWindowDecorViewHostSupplier(@ShellMainThread private val mainScope: CoroutineScope) :
+    WindowDecorViewHostSupplier<WindowDecorViewHost> {
 
     override fun acquire(context: Context, display: Display): WindowDecorViewHost {
         return DefaultWindowDecorViewHost(context, mainScope, display)

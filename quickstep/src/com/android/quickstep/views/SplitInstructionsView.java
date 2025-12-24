@@ -166,7 +166,7 @@ public class SplitInstructionsView extends LinearLayout {
 
         AnimUtils.goToNormalStateWithSplitDismissal(stateManager, mContainer,
                 LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON,
-                splitSelectController.getSplitAnimationController());
+                splitSelectController.getSplitAnimationController(), /* onEndCallback= */ null);
     }
 
     void ensureProperRotation() {

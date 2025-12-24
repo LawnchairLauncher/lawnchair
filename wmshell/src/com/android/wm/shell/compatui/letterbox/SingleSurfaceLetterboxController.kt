@@ -27,84 +27,71 @@ import com.android.wm.shell.dagger.WMSingleton
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_APP_COMPAT
 import javax.inject.Inject
 
-/**
- * Component responsible for handling the lifecycle of a single letterbox surface.
- */
+/** Component responsible for handling the lifecycle of a single letterbox surface. */
 @WMSingleton
-class SingleSurfaceLetterboxController @Inject constructor(
-    private val letterboxBuilder: LetterboxSurfaceBuilder
-) : LetterboxController {
+class SingleSurfaceLetterboxController
+@Inject
+constructor(private val letterboxBuilder: LetterboxSurfaceBuilder) : LetterboxController {
 
     companion object {
-        @JvmStatic
-        private val TAG = "SingleSurfaceLetterboxController"
+        @JvmStatic private val TAG = "SingleSurfaceLetterboxController"
     }
 
     private val letterboxMap = mutableMapOf<Int, SurfaceControl>()
 
-    /**
-     * Creates a Letterbox Surface for a given displayId/taskId if it doesn't exist.
-     */
+    /** Creates a Letterbox Surface for a given displayId/taskId if it doesn't exist. */
     override fun createLetterboxSurface(
         key: LetterboxKey,
         transaction: Transaction,
         parentLeash: SurfaceControl,
-        token: WindowContainerToken?
+        token: WindowContainerToken?,
     ) {
-        letterboxMap.runOnItem(key.taskId, onMissed = { k, m ->
-            m[k] = letterboxBuilder.createSurface(
-                transaction,
-                parentLeash,
-                surfaceName = "ShellLetterboxSurface-$key",
-                callSite = "LetterboxController-createLetterboxSurface"
-            )
-        })
+        letterboxMap.runOnItem(
+            key.taskId,
+            onMissed = { k, m ->
+                m[k] =
+                    letterboxBuilder.createSurface(
+                        transaction,
+                        parentLeash,
+                        surfaceName = "ShellLetterboxSurface-$key",
+                        callSite = "LetterboxController-createLetterboxSurface",
+                    )
+            },
+        )
     }
 
-    /**
-     * Invoked to destroy the surfaces for a letterbox session for given displayId/taskId.
-     */
-    override fun destroyLetterboxSurface(
-        key: LetterboxKey,
-        transaction: Transaction
-    ) {
-        letterboxMap.runOnItem(key.taskId, onFound = { item ->
-            item.run {
-                transaction.remove(this)
-            }
-        })
+    /** Invoked to destroy the surfaces for a letterbox session for given displayId/taskId. */
+    override fun destroyLetterboxSurface(key: LetterboxKey, transaction: Transaction) {
+        letterboxMap.runOnItem(
+            key.taskId,
+            onFound = { item -> item.run { transaction.remove(this) } },
+        )
         letterboxMap.remove(key.taskId)
     }
 
-    /**
-     * Invoked to show/hide the letterbox surfaces for given displayId/taskId.
-     */
+    /** Invoked to show/hide the letterbox surfaces for given displayId/taskId. */
     override fun updateLetterboxSurfaceVisibility(
         key: LetterboxKey,
         transaction: Transaction,
-        visible: Boolean
+        visible: Boolean,
     ) {
-        letterboxMap.runOnItem(key.taskId, onFound = { item ->
-            item.run {
-                transaction.setVisibility(this, visible)
-            }
-        })
+        letterboxMap.runOnItem(
+            key.taskId,
+            onFound = { item -> item.run { transaction.setVisibility(this, visible) } },
+        )
     }
 
-    /**
-     * Updates the bounds for the letterbox surfaces for given displayId/taskId.
-     */
+    /** Updates the bounds for the letterbox surfaces for given displayId/taskId. */
     override fun updateLetterboxSurfaceBounds(
         key: LetterboxKey,
         transaction: Transaction,
         taskBounds: Rect,
-        activityBounds: Rect
+        activityBounds: Rect,
     ) {
-        letterboxMap.runOnItem(key.taskId, onFound = { item ->
-            item.run {
-                transaction.moveAndCrop(this, taskBounds)
-            }
-        })
+        letterboxMap.runOnItem(
+            key.taskId,
+            onFound = { item -> item.run { transaction.moveAndCrop(this, taskBounds) } },
+        )
     }
 
     override fun dump() {

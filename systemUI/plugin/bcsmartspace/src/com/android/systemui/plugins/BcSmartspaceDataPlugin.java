@@ -22,13 +22,13 @@ import android.app.smartspace.SmartspaceTarget;
 import android.app.smartspace.SmartspaceTargetEvent;
 import android.app.smartspace.uitemplatedata.TapAction;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
@@ -77,11 +77,12 @@ public interface BcSmartspaceDataPlugin extends Plugin {
      * Create a view to be shown within the parent. Do not add the view, as the parent
      * will be responsible for correctly setting the LayoutParams
      */
-    default SmartspaceView getView(ViewGroup parent) {
+    default SmartspaceView getView(Context context) {
         throw new UnsupportedOperationException("Not implemented by " + getClass());
     }
 
-    default SmartspaceView getLargeClockView(ViewGroup parent) {
+    /** Similar to getView, but for the large-clock version of a target view */
+    default SmartspaceView getLargeClockView(Context context) {
         throw new UnsupportedOperationException("Not implemented by " + getClass());
     }
 

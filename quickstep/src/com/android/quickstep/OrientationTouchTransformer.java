@@ -106,10 +106,14 @@ class OrientationTouchTransformer {
         mResources = resources;
         mMode = mode;
         mContractInfo = contractInfo;
-        mNavBarGesturalHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+        mNavBarGesturalHeight = calculateDefaultGesturalHeight();
         mNavBarLargerGesturalHeight = ResourceUtils.getDimenByName(
                 ResourceUtils.NAVBAR_BOTTOM_GESTURE_LARGER_SIZE, resources,
                 mNavBarGesturalHeight);
+    }
+
+    private int calculateDefaultGesturalHeight() {
+        return getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
     }
 
     private void refreshTouchRegion(Info info, Resources newRes, String reason) {
@@ -132,7 +136,14 @@ class OrientationTouchTransformer {
         refreshTouchRegion(info, newRes, "setNavigationMode");
     }
 
+    /**
+     * Touches within this number of pixels from the bottom of the screen can get intercepted to
+     * handle gesture navigation. Passing a value less than 0 will revert to a default value.
+     */
     void setGesturalHeight(int newGesturalHeight, Info info, Resources newRes) {
+        if (newGesturalHeight < 0) {
+            newGesturalHeight = calculateDefaultGesturalHeight();
+        }
         if (mNavBarGesturalHeight == newGesturalHeight) {
             return;
         }

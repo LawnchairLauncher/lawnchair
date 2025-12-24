@@ -16,6 +16,7 @@
 
 package com.android.quickstep
 
+import android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD
 import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
@@ -240,7 +241,7 @@ class AspectRatioSystemShortcutTests {
         val screenBounds = WindowBounds(widthPx, heightPx, widthPx, heightPx, Surface.ROTATION_0)
         val deviceProfile =
             InvariantDeviceProfile.INSTANCE[context].getDeviceProfile(context)
-                .toBuilder(context)
+                .toBuilder()
                 .setWindowBounds(screenBounds)
                 .build()
         whenever(launcher.getDeviceProfile()).thenReturn(deviceProfile)
@@ -261,6 +262,8 @@ class AspectRatioSystemShortcutTests {
                 /* numActivities */ 1,
                 /* isTopActivityNoDisplay */ false,
                 /* isActivityStackTransparent */ false,
+                /* topActivityType */ ACTIVITY_TYPE_STANDARD,
+                /* isTopActivityTransparent */ false,
             )
         )
 

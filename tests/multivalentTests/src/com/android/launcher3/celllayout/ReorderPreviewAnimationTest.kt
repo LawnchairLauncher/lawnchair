@@ -19,16 +19,16 @@ package com.android.launcher3.celllayout
 import android.content.Context
 import android.util.ArrayMap
 import android.view.View
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.CellLayout
 import com.android.launcher3.Reorderable
 import com.android.launcher3.celllayout.ReorderPreviewAnimation.Companion.HINT_DURATION
 import com.android.launcher3.celllayout.ReorderPreviewAnimation.Companion.PREVIEW_DURATION
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.MultiTranslateDelegate
 import com.android.launcher3.util.MultiTranslateDelegate.INDEX_REORDER_BOUNCE_OFFSET
+import com.android.launcher3.util.SandboxApplication
+import com.android.launcher3.util.TestActivityContext
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,6 +43,7 @@ class Mock(context: Context) : Reorderable, View(context) {
     private val translateDelegate = MultiTranslateDelegate(this)
 
     private var scaleForReorderBounce = 1f
+
     override fun getTranslateDelegate(): MultiTranslateDelegate {
         return translateDelegate
     }
@@ -59,7 +60,7 @@ class Mock(context: Context) : Reorderable, View(context) {
         return AnimationValues(
             (translateDelegate.getTranslationX(INDEX_REORDER_BOUNCE_OFFSET).value * 100).toInt(),
             (translateDelegate.getTranslationY(INDEX_REORDER_BOUNCE_OFFSET).value * 100).toInt(),
-            (scaleForReorderBounce * 100).toInt()
+            (scaleForReorderBounce * 100).toInt(),
         )
     }
 }
@@ -70,10 +71,8 @@ data class AnimationValues(val dx: Int, val dy: Int, val scale: Int)
 @RunWith(AndroidJUnit4::class)
 class ReorderPreviewAnimationTest {
 
-    @JvmField @Rule var cellLayoutBuilder = UnitTestCellLayoutBuilderRule()
-
-    private val applicationContext =
-        ActivityContextWrapper(ApplicationProvider.getApplicationContext())
+    @get:Rule val app = SandboxApplication()
+    @get:Rule val uiContext = TestActivityContext(app)
 
     /**
      * @param animationTime the time of the animation we will check the state against.
@@ -84,10 +83,10 @@ class ReorderPreviewAnimationTest {
     private fun testAnimationAtGivenProgress(
         animationTime: Int,
         mode: Int,
-        valueToMatch: AnimationValues
+        valueToMatch: AnimationValues,
     ) {
-        val view = Mock(applicationContext)
-        val cellLayout = cellLayoutBuilder.createCellLayout(100, 100, false)
+        val view = Mock(app)
+        val cellLayout = uiContext.createCellLayout(100, 100, false)
         val map = ArrayMap<Reorderable, ReorderPreviewAnimation<Mock>>()
         val animation =
             ReorderPreviewAnimation(
@@ -101,7 +100,7 @@ class ReorderPreviewAnimationTest {
                 1,
                 CellLayout.REORDER_PREVIEW_MAGNITUDE,
                 cellLayout,
-                map
+                map,
             )
         // Remove delay because it's randomly generated and it can slightly change the results.
         animation.animator.startDelay = 0
@@ -117,29 +116,29 @@ class ReorderPreviewAnimationTest {
         testAnimationAtGivenProgress(
             PREVIEW_DURATION * 0,
             ReorderPreviewAnimation.MODE_PREVIEW,
-            AnimationValues(dx = 0, dy = 0, scale = 100)
+            AnimationValues(dx = 0, dy = 0, scale = 100),
         )
         testAnimationAtGivenProgress(
             PREVIEW_DURATION / 2,
             ReorderPreviewAnimation.MODE_PREVIEW,
-            AnimationValues(dx = 2, dy = -5, scale = 98)
+            AnimationValues(dx = 2, dy = -5, scale = 98),
         )
         testAnimationAtGivenProgress(
             PREVIEW_DURATION / 3,
             ReorderPreviewAnimation.MODE_PREVIEW,
-            AnimationValues(dx = 1, dy = -2, scale = 99)
+            AnimationValues(dx = 1, dy = -2, scale = 99),
         )
         testAnimationAtGivenProgress(
             PREVIEW_DURATION,
             ReorderPreviewAnimation.MODE_PREVIEW,
-            AnimationValues(dx = 5, dy = -10, scale = 96)
+            AnimationValues(dx = 5, dy = -10, scale = 96),
         )
 
         // MODE_PREVIEW oscillates and goes back to 0,0
         testAnimationAtGivenProgress(
             PREVIEW_DURATION * 2,
             ReorderPreviewAnimation.MODE_PREVIEW,
-            AnimationValues(dx = 0, dy = 0, scale = 100)
+            AnimationValues(dx = 0, dy = 0, scale = 100),
         )
         // (b/339313407) Temporarily disable this test as the behavior is
         // inconsistent between Soong & Gradle builds.
@@ -152,12 +151,12 @@ class ReorderPreviewAnimationTest {
         testAnimationAtGivenProgress(
             PREVIEW_DURATION * 98,
             ReorderPreviewAnimation.MODE_PREVIEW,
-            AnimationValues(dx = 0, dy = 0, scale = 100)
+            AnimationValues(dx = 0, dy = 0, scale = 100),
         )
         testAnimationAtGivenProgress(
             (PREVIEW_DURATION * 1.5).toInt(),
             ReorderPreviewAnimation.MODE_PREVIEW,
-            AnimationValues(dx = 2, dy = -5, scale = 98)
+            AnimationValues(dx = 2, dy = -5, scale = 98),
         )
     }
 
@@ -166,39 +165,39 @@ class ReorderPreviewAnimationTest {
         testAnimationAtGivenProgress(
             HINT_DURATION * 0,
             ReorderPreviewAnimation.MODE_HINT,
-            AnimationValues(dx = 0, dy = 0, scale = 100)
+            AnimationValues(dx = 0, dy = 0, scale = 100),
         )
         testAnimationAtGivenProgress(
             HINT_DURATION,
             ReorderPreviewAnimation.MODE_HINT,
-            AnimationValues(dx = -5, dy = 10, scale = 96)
+            AnimationValues(dx = -5, dy = 10, scale = 96),
         )
         testAnimationAtGivenProgress(
             HINT_DURATION / 2,
             ReorderPreviewAnimation.MODE_HINT,
-            AnimationValues(dx = -2, dy = 5, scale = 98)
+            AnimationValues(dx = -2, dy = 5, scale = 98),
         )
         testAnimationAtGivenProgress(
             HINT_DURATION / 3,
             ReorderPreviewAnimation.MODE_HINT,
-            AnimationValues(dx = -1, dy = 2, scale = 99)
+            AnimationValues(dx = -1, dy = 2, scale = 99),
         )
         testAnimationAtGivenProgress(
             HINT_DURATION,
             ReorderPreviewAnimation.MODE_HINT,
-            AnimationValues(dx = -5, dy = 10, scale = 96)
+            AnimationValues(dx = -5, dy = 10, scale = 96),
         )
 
         // After one cycle the animationValues should always be the top values and don't cycle.
         testAnimationAtGivenProgress(
             HINT_DURATION * 2,
             ReorderPreviewAnimation.MODE_HINT,
-            AnimationValues(dx = -5, dy = 10, scale = 96)
+            AnimationValues(dx = -5, dy = 10, scale = 96),
         )
         testAnimationAtGivenProgress(
             HINT_DURATION * 99,
             ReorderPreviewAnimation.MODE_HINT,
-            AnimationValues(dx = -5, dy = 10, scale = 96)
+            AnimationValues(dx = -5, dy = 10, scale = 96),
         )
     }
 }

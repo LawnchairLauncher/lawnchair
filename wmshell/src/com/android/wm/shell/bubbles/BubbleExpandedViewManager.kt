@@ -97,7 +97,7 @@ interface BubbleExpandedViewManager {
                 }
 
                 override fun getAppBubbleRootTaskToken(): WindowContainerToken? =
-                    controller.appBubbleRootTaskInfo?.token
+                    controller.appBubbleRootTaskToken
 
                 override fun shouldBeAppBubble(taskInfo: ActivityManager.RunningTaskInfo): Boolean =
                     controller.shouldBeAppBubble(taskInfo)

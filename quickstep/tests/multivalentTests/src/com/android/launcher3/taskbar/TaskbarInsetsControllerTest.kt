@@ -65,7 +65,7 @@ class TaskbarInsetsControllerTest {
     @TaskbarMode(TRANSIENT)
     fun imeShowing_transientTaskbarUnstashed_taskbarWindowTouchable() {
         runOnMainSync {
-            taskbarContext.updateSysuiStateFlags(SYSUI_STATE_IME_VISIBLE, false)
+            taskbarContext.updateSysuiStateFlags(SYSUI_STATE_IME_VISIBLE, true)
             taskbarStashController.updateAndAnimateTransientTaskbar(false)
             animatorTestRule.advanceTimeBy(taskbarStashController.stashDuration)
         }
@@ -76,6 +76,20 @@ class TaskbarInsetsControllerTest {
                 .isEqualTo(ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION)
             assertThat(taskbarInsetsController.debugTouchableRegion.lastSetTouchableBounds.isEmpty)
                 .isFalse()
+        }
+    }
+
+    @Test
+    @TaskbarMode(TRANSIENT)
+    fun imeShowing_transientTaskbarStashed_taskbarWindowUntouchable() {
+        runOnMainSync { taskbarContext.updateSysuiStateFlags(SYSUI_STATE_IME_VISIBLE, true) }
+        runOnMainSync {
+            assertThat(taskbarInsetsController.debugTouchableRegion.lastSetTouchableReason)
+                .isEqualTo(ICONS_INVISIBLE)
+            assertThat(taskbarInsetsController.debugTouchableRegion.lastSetTouchableInsets)
+                .isEqualTo(ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION)
+            assertThat(taskbarInsetsController.debugTouchableRegion.lastSetTouchableBounds.isEmpty)
+                .isTrue()
         }
     }
 

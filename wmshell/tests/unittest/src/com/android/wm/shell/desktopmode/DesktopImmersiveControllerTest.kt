@@ -35,7 +35,7 @@ import android.window.TransitionInfo
 import android.window.WindowContainerToken
 import android.window.WindowContainerTransaction
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.ShellTaskOrganizer
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.TestShellExecutor
@@ -44,12 +44,16 @@ import com.android.wm.shell.common.DisplayLayout
 import com.android.wm.shell.desktopmode.DesktopImmersiveController.Direction
 import com.android.wm.shell.desktopmode.DesktopImmersiveController.ExitReason.USER_INTERACTION
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFreeformTask
+import com.android.wm.shell.desktopmode.data.DesktopRepository
 import com.android.wm.shell.shared.desktopmode.FakeDesktopConfig
 import com.android.wm.shell.shared.desktopmode.FakeDesktopState
 import com.android.wm.shell.sysui.ShellInit
 import com.android.wm.shell.transition.Transitions
 import com.android.wm.shell.util.StubTransaction
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.test.TestScope
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -87,6 +91,7 @@ class DesktopImmersiveControllerTest : ShellTestCase() {
 
     private lateinit var controller: DesktopImmersiveController
     private lateinit var desktopRepository: DesktopRepository
+    private val testScope = TestScope()
 
     @Before
     fun setUp() {
@@ -98,7 +103,8 @@ class DesktopImmersiveControllerTest : ShellTestCase() {
                 mock(),
                 mock(),
                 mock(),
-                mock(),
+                testScope.backgroundScope,
+                testScope.backgroundScope,
                 mock(),
                 desktopState,
                 desktopConfig,
@@ -123,6 +129,11 @@ class DesktopImmersiveControllerTest : ShellTestCase() {
         desktopRepository = userRepositories.current
         desktopRepository.addDesk(DEFAULT_DISPLAY, DEFAULT_DESK_ID)
         desktopRepository.setActiveDesk(DEFAULT_DISPLAY, DEFAULT_DESK_ID)
+    }
+
+    @After
+    fun tearDown() {
+        testScope.cancel()
     }
 
     @Test

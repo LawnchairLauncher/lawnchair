@@ -23,20 +23,13 @@ flag {
 }
 
 flag {
-    name: "enable_coroutine_threading_improvements"
+    name: "enable_later_is_locked_check"
     namespace: "launcher_overview"
-    description: "Enables changes to the threading model of Launcher's coroutines implementation"
-    bug: "416206104"
+    description: "Checks if users associated with tasks are locked later in the data flow to prevent stale data"
+    bug:  "417220811"
     metadata {
         purpose: PURPOSE_BUGFIX
     }
-}
-
-flag {
-    name: "enable_large_desktop_windowing_tile"
-    namespace: "launcher_overview"
-    description: "Makes the desktop tiles larger and moves them to the front of the list in Overview."
-    bug: "357860832"
 }
 
 flag {
@@ -51,6 +44,16 @@ flag {
     namespace: "launcher_overview"
     description: "Enables expressive motion and animations for dismissing a task in Overview."
     bug: "381239462"
+}
+
+flag {
+    name: "enable_meta_tab_toggle_in_overview"
+    namespace: "launcher_overview"
+    description: "Enables Meta-Tab toggle between Overview and recent tasks."
+    bug: "385128447"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {
@@ -89,18 +92,32 @@ flag {
 }
 
 flag {
-    name: "enable_desktop_menu_on_secondary_display_bugfix"
-    namespace: "launcher_overview"
-    description: "Enable the 'Desktop' menu entry on full screen tiles on secondary display."
-    bug:  "418822736"
-    metadata {
-        purpose: PURPOSE_BUGFIX
-    }
-}
-
-flag {
     name: "enable_simultaneous_overview_trigger_on_extended_desktop"
     namespace: "launcher_overview"
     description: "Enable Overview to launch and exit simultaneously on default and external displays wherever it was triggered or quit from"
     bug:  "421128035"
+}
+
+flag {
+    name: "enable_predictive_back_in_overview"
+    namespace: "launcher_overview"
+    description: "Enables predictive back animation in Overview on back navigation"
+    bug: "421292121"
+}
+
+flag {
+    name: "show_close_button_on_taskview_hover"
+    namespace: "launcher_overview"
+    description: "Enables showing a button to close the task in Overview when the TaskView is hovered."
+    bug: "426125944"
+}
+
+flag {
+    name: "enable_prevent_overview_mouse_drag"
+    namespace: "launcher_overview"
+    description: "Prevents the user from scrolling overview with a mouse via click and drag"
+    bug: "433705336"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }

@@ -59,6 +59,7 @@ import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.common.TabletopModeController;
 import com.android.wm.shell.common.TaskStackListenerImpl;
 import com.android.wm.shell.common.pip.IPip;
+import com.android.wm.shell.common.pip.IPipAnimationListener.PipResources;
 import com.android.wm.shell.common.pip.PhonePipKeepClearAlgorithm;
 import com.android.wm.shell.common.pip.PipAppOpsListener;
 import com.android.wm.shell.common.pip.PipBoundsAlgorithm;
@@ -69,6 +70,7 @@ import com.android.wm.shell.common.pip.PipSnapAlgorithm;
 import com.android.wm.shell.onehanded.OneHandedController;
 import com.android.wm.shell.pip.PipAnimationController;
 import com.android.wm.shell.pip.PipParamsChangedForwarder;
+import com.android.wm.shell.pip.PipSurfaceTransactionHelper;
 import com.android.wm.shell.pip.PipTaskOrganizer;
 import com.android.wm.shell.pip.PipTransitionController;
 import com.android.wm.shell.pip.PipTransitionState;
@@ -122,6 +124,7 @@ public class PipControllerTest extends ShellTestCase {
     @Mock private TabletopModeController mMockTabletopModeController;
     @Mock private Handler mMockHandler;
     @Mock private UserManager mMockUserManager;
+    @Mock private PipSurfaceTransactionHelper mMockPipSurfaceTransactionHelper;
 
     @Mock private DisplayLayout mMockDisplayLayout1;
     @Mock private DisplayLayout mMockDisplayLayout2;
@@ -145,7 +148,8 @@ public class PipControllerTest extends ShellTestCase {
                 mMockPipTransitionController, mMockWindowManagerShellWrapper,
                 mMockTaskStackListener, mMockPipParamsChangedForwarder,
                 mMockDisplayInsetsController, mMockTabletopModeController,
-                mMockOneHandedController, mMockExecutor, mMockHandler);
+                mMockOneHandedController, mMockExecutor, mMockHandler,
+                mMockPipSurfaceTransactionHelper);
         when(mMockPipBoundsAlgorithm.getSnapAlgorithm()).thenReturn(mMockPipSnapAlgorithm);
         when(mMockPipTouchHandler.getMotionHelper()).thenReturn(mMockPipMotionHelper);
         // Directly init mPipController instead of using ShellInit
@@ -204,7 +208,7 @@ public class PipControllerTest extends ShellTestCase {
             @Override
             public void onPipAnimationStarted() {}
             @Override
-            public void onPipResourceDimensionsChanged(int cornerRadius, int shadowRadius) {}
+            public void onPipResourceDimensionsChanged(PipResources res) {}
             @Override
             public void onExpandPip() {}
         });
@@ -233,7 +237,8 @@ public class PipControllerTest extends ShellTestCase {
                 mMockPipTransitionController, mMockWindowManagerShellWrapper,
                 mMockTaskStackListener, mMockPipParamsChangedForwarder,
                 mMockDisplayInsetsController, mMockTabletopModeController,
-                mMockOneHandedController, mMockExecutor, mMockHandler));
+                mMockOneHandedController, mMockExecutor, mMockHandler,
+                mMockPipSurfaceTransactionHelper));
     }
 
     @Test

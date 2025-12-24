@@ -32,8 +32,8 @@ import androidx.test.filters.SmallTest
 import com.android.dx.mockito.inline.extended.ExtendedMockito.mockitoSession
 import com.android.dx.mockito.inline.extended.ExtendedMockito.never
 import com.android.dx.mockito.inline.extended.StaticMockitoSession
-import com.android.window.flags.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE
-import com.android.window.flags.Flags.FLAG_RESPECT_ORIENTATION_CHANGE_FOR_UNRESIZEABLE
+import com.android.window.flags2.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE
+import com.android.window.flags2.Flags.FLAG_RESPECT_ORIENTATION_CHANGE_FOR_UNRESIZEABLE
 import com.android.wm.shell.ShellTaskOrganizer
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.common.DisplayController
@@ -42,9 +42,9 @@ import com.android.wm.shell.common.ShellExecutor
 import com.android.wm.shell.common.TaskStackListenerImpl
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFreeformTask
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFullscreenTask
-import com.android.wm.shell.desktopmode.persistence.Desktop
-import com.android.wm.shell.desktopmode.persistence.DesktopPersistentRepository
-import com.android.wm.shell.desktopmode.persistence.DesktopRepositoryInitializer
+import com.android.wm.shell.desktopmode.data.DesktopRepositoryInitializer
+import com.android.wm.shell.desktopmode.data.persistence.Desktop
+import com.android.wm.shell.desktopmode.data.persistence.DesktopPersistentRepository
 import com.android.wm.shell.shared.desktopmode.FakeDesktopConfig
 import com.android.wm.shell.shared.desktopmode.FakeDesktopState
 import com.android.wm.shell.sysui.ShellController
@@ -60,6 +60,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -127,6 +128,7 @@ class DesktopActivityOrientationChangeHandlerTest : ShellTestCase() {
                 persistentRepository,
                 repositoryInitializer,
                 testScope,
+                TestScope(),
                 userManager,
                 desktopState,
                 desktopConfig,

@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"가로세로 비율 변경"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s 앱 정보"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s의 사용량 설정"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"%1$s 닫기"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"새 창"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"창 관리"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"닫기"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"앱 페어링 저장"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"이 앱 페어링은 이 기기에서 지원되지 않습니다"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"앱 제안 받지 않음"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"예상 앱 고정"</string>
     <string name="bubble" msgid="3072951361014076670">"풍선"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"설정"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"태스크 바에 고정"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"태스크 바에서 고정 해제"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"바로가기 설치"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"앱이 사용자의 작업 없이 바로가기를 추가할 수 있도록 합니다."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"홈 설정 및 바로가기 읽기"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"오른쪽 페이지로 나누기"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> 사용 안함"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} 알림 #개}other{{app_name} 알림 #개}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"예상 앱: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"페이지 %1$d/%2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"홈 화면 %1$d/%2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"새로운 홈 화면 페이지"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"폴더 닫음"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"폴더 이름 변경: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"폴더: <xliff:g id="NAME">%1$s</xliff:g>, 항목 <xliff:g id="SIZE">%2$d</xliff:g>개"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"폴더: <xliff:g id="NAME">%1$s</xliff:g>, 항목 <xliff:g id="SIZE">%2$d</xliff:g>개, 알림 있음"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"폴더: <xliff:g id="NAME">%1$s</xliff:g>, 항목 <xliff:g id="SIZE">%2$d</xliff:g>개 이상"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"폴더: <xliff:g id="NAME">%1$s</xliff:g>, 항목 <xliff:g id="SIZE">%2$d</xliff:g>개 이상, 알림 있음"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"이름 없는 폴더"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"앱 페어링: <xliff:g id="APP1">%1$s</xliff:g> 및 <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"배경화면 및 스타일"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"직장 앱 탭"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"직장 프로필"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"확인"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"직장 앱이 일시중지됨"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"직장 앱에서 보내는 알림을 받지 않게 됩니다."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>

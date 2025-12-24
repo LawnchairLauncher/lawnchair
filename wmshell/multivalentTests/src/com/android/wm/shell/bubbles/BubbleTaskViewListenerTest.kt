@@ -39,7 +39,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.internal.protolog.ProtoLog
-import com.android.window.flags.Flags.FLAG_EXCLUDE_TASK_FROM_RECENTS
 import com.android.wm.shell.Flags.FLAG_ENABLE_BUBBLE_ANYTHING
 import com.android.wm.shell.Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE
 import com.android.wm.shell.MockToken
@@ -421,10 +420,7 @@ class BubbleTaskViewListenerTest {
     }
 
     @Test
-    @EnableFlags(
-        FLAG_ENABLE_BUBBLE_ANYTHING,
-        FLAG_EXCLUDE_TASK_FROM_RECENTS,
-    )
+    @EnableFlags(FLAG_ENABLE_BUBBLE_ANYTHING)
     fun onTaskCreated_appliesWctToEnterBubble() {
         val b = createAppBubble()
         bubbleTaskViewListener.setBubble(b)

@@ -24,6 +24,7 @@ import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -53,14 +54,14 @@ class HotseatSpecsProviderTest : AbstractDeviceProfileTest() {
                     dimensionType = ResponsiveSpec.DimensionType.HEIGHT,
                     specType = ResponsiveSpecType.Hotseat,
                     hotseatQsbSpace = SizeSpec(24f.dpToPx()),
-                    edgePadding = SizeSpec(48f.dpToPx())
+                    edgePadding = SizeSpec(48f.dpToPx()),
                 ),
                 HotseatSpec(
                     maxAvailableSize = 9999.dpToPx(),
                     dimensionType = ResponsiveSpec.DimensionType.HEIGHT,
                     specType = ResponsiveSpecType.Hotseat,
                     hotseatQsbSpace = SizeSpec(36f.dpToPx()),
-                    edgePadding = SizeSpec(48f.dpToPx())
+                    edgePadding = SizeSpec(48f.dpToPx()),
                 ),
             )
 
@@ -87,14 +88,14 @@ class HotseatSpecsProviderTest : AbstractDeviceProfileTest() {
                     dimensionType = ResponsiveSpec.DimensionType.WIDTH,
                     specType = ResponsiveSpecType.Hotseat,
                     hotseatQsbSpace = SizeSpec(0f),
-                    edgePadding = SizeSpec(48f.dpToPx())
+                    edgePadding = SizeSpec(48f.dpToPx()),
                 ),
                 HotseatSpec(
                     maxAvailableSize = 9999.dpToPx(),
                     dimensionType = ResponsiveSpec.DimensionType.WIDTH,
                     specType = ResponsiveSpecType.Hotseat,
                     hotseatQsbSpace = SizeSpec(0f),
-                    edgePadding = SizeSpec(64f.dpToPx())
+                    edgePadding = SizeSpec(64f.dpToPx()),
                 ),
             )
 
@@ -103,17 +104,21 @@ class HotseatSpecsProviderTest : AbstractDeviceProfileTest() {
         assertThat(specs.widthSpecs[1]).isEqualTo(expectedWidthSpecs[1])
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_spaceIsNotFixedSize_throwsError() {
-        HotseatSpecsProvider.create(
-            TestResourceHelper(context, "invalid_hotseat_file_case_1".xmlToId())
-        )
+        assertThrows(IllegalStateException::class.java) {
+            HotseatSpecsProvider.create(
+                TestResourceHelper(context, "invalid_hotseat_file_case_1".xmlToId())
+            )
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_invalidFixedSize_throwsError() {
-        HotseatSpecsProvider.create(
-            TestResourceHelper(context, "invalid_hotseat_file_case_2".xmlToId())
-        )
+        assertThrows(IllegalStateException::class.java) {
+            HotseatSpecsProvider.create(
+                TestResourceHelper(context, "invalid_hotseat_file_case_2".xmlToId())
+            )
+        }
     }
 }

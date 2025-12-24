@@ -52,7 +52,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OriginRemoteTransition extends IRemoteTransition.Stub implements
         TransitionAnimationController.AnimationRunnerListener {
     private static final String TAG = "OriginRemoteTransition";
-    private static final long FINISH_ANIMATION_TIMEOUT_MS = 100;
+    private static final long FINISH_ANIMATION_TIMEOUT_MS = 200;
 
     private final Context mContext;
     private final boolean mIsEntry;
@@ -104,7 +104,12 @@ public class OriginRemoteTransition extends IRemoteTransition.Stub implements
             SurfaceControl.Transaction t,
             IBinder mergeTarget,
             IRemoteTransitionFinishedCallback finishCallback) {
-        logD("mergeAnimation - " + info);
+        logD("mergeAnimation for: "
+                + transition
+                + " target: "
+                + mergeTarget
+                + " info: "
+                + info);
         cancel();
     }
 

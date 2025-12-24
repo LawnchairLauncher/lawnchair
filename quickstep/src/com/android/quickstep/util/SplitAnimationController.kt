@@ -43,6 +43,7 @@ import android.window.TransitionInfo
 import android.window.TransitionInfo.Change
 import android.window.WindowContainerToken
 import androidx.annotation.VisibleForTesting
+import androidx.core.animation.doOnEnd
 import androidx.core.util.component1
 import androidx.core.util.component2
 import com.android.app.animation.Interpolators
@@ -353,12 +354,21 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     }
 
     /** Does not play any animation if user is not currently in split selection state. */
-    fun playPlaceholderDismissAnim(container: RecentsViewContainer, splitDismissEvent: EventEnum) {
+    @JvmOverloads
+    fun playPlaceholderDismissAnim(
+        container: RecentsViewContainer,
+        splitDismissEvent: EventEnum,
+        onAnimationEnd: Runnable? = null,
+    ) {
         if (!splitSelectStateController.isSplitSelectActive) {
             return
         }
 
-        val anim = createPlaceholderDismissAnim(container, splitDismissEvent, null /*duration*/)
+        val anim =
+            createPlaceholderDismissAnim(container, splitDismissEvent, null /*duration*/).apply {
+                doOnEnd { onAnimationEnd?.run() }
+            }
+
         anim.start()
     }
 
@@ -772,8 +782,18 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         val drawableArea = launchingIconView.iconDrawableArea
         val appIcon1 = launchingIconView.info.getFirstApp().newIcon(launchingIconView.context)
         val appIcon2 = launchingIconView.info.getSecondApp().newIcon(launchingIconView.context)
-        appIcon1.setBounds(0, 0, dp.iconSizePx, dp.iconSizePx)
-        appIcon2.setBounds(0, 0, dp.iconSizePx, dp.iconSizePx)
+        appIcon1.setBounds(
+            0,
+            0,
+            dp.workspaceIconProfile.iconSizePx,
+            dp.workspaceIconProfile.iconSizePx,
+        )
+        appIcon2.setBounds(
+            0,
+            0,
+            dp.workspaceIconProfile.iconSizePx,
+            dp.workspaceIconProfile.iconSizePx,
+        )
 
         val floatingView =
             FloatingAppPairView.getFloatingAppPairView(
@@ -871,7 +891,12 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         // Create a new floating view in Launcher, positioned above the launching icon
         val drawableArea = launchingIconView.iconDrawableArea
         val appIcon = appInfo.newIcon(launchingIconView.context)
-        appIcon.setBounds(0, 0, dp.iconSizePx, dp.iconSizePx)
+        appIcon.setBounds(
+            0,
+            0,
+            dp.workspaceIconProfile.iconSizePx,
+            dp.workspaceIconProfile.iconSizePx,
+        )
 
         val floatingView =
             FloatingAppPairView.getFloatingAppPairView(

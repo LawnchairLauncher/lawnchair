@@ -18,6 +18,7 @@ package com.android.wm.shell.desktopmode;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
 import static android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW;
+import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.internal.policy.SystemBarUtils.getDesktopViewAppHeaderHeightPx;
 import static com.android.wm.shell.desktopmode.DesktopModeVisualIndicator.IndicatorType.NO_INDICATOR;
@@ -223,7 +224,7 @@ public class DesktopModeVisualIndicator {
         boolean leftRightSplitInPortrait = SplitScreenUtils.allowLeftRightSplitInPortrait(
                 context.getResources());
         return SplitScreenUtils.isLeftRightSplit(leftRightSplitInPortrait,
-                /* isLargeScreen= */ true, landscape);
+                /* isLargeScreen= */ true, landscape, taskInfo.displayId);
     }
 
     /** Start the fade out animation, running the callback on the main thread once it is done. */
@@ -303,10 +304,6 @@ public class DesktopModeVisualIndicator {
     private IndicatorType getIndicatorLargeTablet(PointF inputCoordinates) {
         // TODO(b/401596837): cache the regions to avoid recalculating on each motion event
         final DisplayLayout layout = mDisplayController.getDisplayLayout(mTaskInfo.displayId);
-        // Perform a quick check first: any input off the left edge of the display should be split
-        // left, and split right for the right edge. This is universal across all drag event types.
-        if (inputCoordinates.x < 0) return TO_SPLIT_LEFT_INDICATOR;
-        if (inputCoordinates.x > layout.width()) return TO_SPLIT_RIGHT_INDICATOR;
         // If we are in freeform, we don't want a visible indicator in the "freeform" drag zone.
         // In drags not originating on a freeform caption, we should default to a TO_DESKTOP
         // indicator.
@@ -318,22 +315,38 @@ public class DesktopModeVisualIndicator {
         // Because drags in freeform use task position for indicator calculation, we need to
         // account for the possibility of the task going off the top of the screen by captionHeight
         final int captionHeight = getDesktopViewAppHeaderHeightPx(mContext);
+        final int transitionAreaTop = getTransitionAreaTop(captionHeight);
+        if (isSplitAllowedOnDisplay()) {
+            // For task in DEFAULT_DISPLAY, or when NON_DEFAULT_DISPLAY_SPLIT is enabled,
+            // Perform a quick check first: any input off the left edge of the display should be
+            // split left, and split right for the right edge. This is universal across all drag
+            // event types.
+            if (inputCoordinates.x < 0 && inputCoordinates.y >= transitionAreaTop) {
+                return TO_SPLIT_LEFT_INDICATOR;
+            }
+            if (inputCoordinates.x > layout.width() && inputCoordinates.y >= transitionAreaTop) {
+                return TO_SPLIT_RIGHT_INDICATOR;
+            }
+        }
         final Region fullscreenRegion = calculateFullscreenRegion(layout, captionHeight);
-        final Rect splitLeftRegion = calculateSplitLeftRegion(layout, transitionAreaWidth,
-                captionHeight);
-        final Rect splitRightRegion = calculateSplitRightRegion(layout, transitionAreaWidth,
-                captionHeight);
+        final Rect splitLeftRegion =
+                calculateSplitLeftRegion(layout, transitionAreaWidth, captionHeight);
+        final Rect splitRightRegion =
+                calculateSplitRightRegion(layout, transitionAreaWidth, captionHeight);
         final int x = (int) inputCoordinates.x;
         final int y = (int) inputCoordinates.y;
         if (fullscreenRegion.contains(x, y)) {
             result = TO_FULLSCREEN_INDICATOR;
         }
-        if (splitLeftRegion.contains(x, y)) {
-            result = IndicatorType.TO_SPLIT_LEFT_INDICATOR;
+        if (isSplitAllowedOnDisplay()) {
+            if (splitLeftRegion.contains(x, y)) {
+                result = IndicatorType.TO_SPLIT_LEFT_INDICATOR;
+            }
+            if (splitRightRegion.contains(x, y)) {
+                result = IndicatorType.TO_SPLIT_RIGHT_INDICATOR;
+            }
         }
-        if (splitRightRegion.contains(x, y)) {
-            result = IndicatorType.TO_SPLIT_RIGHT_INDICATOR;
-        }
+
         if (BubbleAnythingFlagHelper.enableBubbleToFullscreen()
                 && mDragStartState == DragStartState.FROM_FULLSCREEN) {
             if (calculateBubbleLeftRegion(layout).contains(x, y)) {
@@ -394,26 +407,20 @@ public class DesktopModeVisualIndicator {
     }
 
     @VisibleForTesting
-    Rect calculateSplitLeftRegion(DisplayLayout layout,
-            int transitionEdgeWidth, int captionHeight) {
-        // In freeform, keep the top corners clear.
-        int transitionHeight = mDragStartState == DragStartState.FROM_FREEFORM
-                ? mContext.getResources().getDimensionPixelSize(
-                com.android.wm.shell.R.dimen.desktop_mode_split_from_desktop_height) :
-                -captionHeight;
-        return new Rect(0, transitionHeight, transitionEdgeWidth, layout.height());
+    Rect calculateSplitLeftRegion(
+            DisplayLayout layout, int transitionEdgeWidth, int captionHeight) {
+        return new Rect(
+                0, getTransitionAreaTop(captionHeight), transitionEdgeWidth, layout.height());
     }
 
     @VisibleForTesting
-    Rect calculateSplitRightRegion(DisplayLayout layout,
-            int transitionEdgeWidth, int captionHeight) {
-        // In freeform, keep the top corners clear.
-        int transitionHeight = mDragStartState == DragStartState.FROM_FREEFORM
-                ? mContext.getResources().getDimensionPixelSize(
-                com.android.wm.shell.R.dimen.desktop_mode_split_from_desktop_height) :
-                -captionHeight;
-        return new Rect(layout.width() - transitionEdgeWidth, transitionHeight,
-                layout.width(), layout.height());
+    Rect calculateSplitRightRegion(
+            DisplayLayout layout, int transitionEdgeWidth, int captionHeight) {
+        return new Rect(
+                layout.width() - transitionEdgeWidth,
+                getTransitionAreaTop(captionHeight),
+                layout.width(),
+                layout.height());
     }
 
     @VisibleForTesting
@@ -459,7 +466,7 @@ public class DesktopModeVisualIndicator {
             result.add(new Pair<>(calculateBubbleRightRegion(layout), TO_BUBBLE_RIGHT_INDICATOR));
         }
 
-        if (isLeftRightSplit) {
+        if (isSplitAllowedOnDisplay() && isLeftRightSplit) {
             int splitRegionWidth = mContext.getResources().getDimensionPixelSize(
                     com.android.wm.shell.shared.R.dimen.drag_zone_h_split_from_app_width_fold);
             result.add(new Pair<>(calculateSplitLeftRegion(layout, splitRegionWidth,
@@ -467,6 +474,7 @@ public class DesktopModeVisualIndicator {
             result.add(new Pair<>(calculateSplitRightRegion(layout, splitRegionWidth,
                     /* captionHeight= */ 0), TO_SPLIT_RIGHT_INDICATOR));
         }
+
         // TODO(b/401352409): add support for top/bottom split zones
         // default to fullscreen
         result.add(new Pair<>(new Rect(), TO_FULLSCREEN_INDICATOR));
@@ -495,5 +503,32 @@ public class DesktopModeVisualIndicator {
         // default to fullscreen
         result.add(new Pair<>(new Rect(), TO_FULLSCREEN_INDICATOR));
         return result;
+    }
+
+    // Calculates the top y coordinate of snap to side drag zone.
+    private int getTransitionAreaTop(int captionHeight) {
+        return mDragStartState == DragStartState.FROM_FREEFORM
+                ? mContext.getResources()
+                        .getDimensionPixelSize(
+                                com.android.wm.shell.R.dimen.desktop_mode_split_from_desktop_height)
+                : -captionHeight;
+    }
+
+    /**
+     * Determines whether split-screen is allowed on the display where the task is located.
+     *
+     * <p>Split-screen is always allowed on the default display. For non-default (external)
+     * displays, it is only allowed if the
+     * {@link DesktopExperienceFlags#ENABLE_NON_DEFAULT_DISPLAY_SPLIT} flag is enabled.
+     *
+     * @return {@code true} if split-screen is allowed on the task's current display,
+     *         {@code false} otherwise.
+     */
+    private boolean isSplitAllowedOnDisplay() {
+        if (mTaskInfo.getWindowingMode() == WINDOWING_MODE_FULLSCREEN) {
+            return mTaskInfo.displayId == DEFAULT_DISPLAY
+                    || DesktopExperienceFlags.ENABLE_NON_DEFAULT_DISPLAY_SPLIT.isTrue();
+        }
+        return true;
     }
 }

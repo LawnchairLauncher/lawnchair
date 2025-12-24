@@ -20,10 +20,12 @@ import android.util.AttributeSet
 import android.widget.TextView
 
 /** A custom [TextView] that allows better control over marquee animation used to ellipsize text. */
-class MarqueedTextView @JvmOverloads constructor(
+class MarqueedTextView
+@JvmOverloads
+constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = android.R.attr.textViewStyle
+    defStyleAttr: Int = android.R.attr.textViewStyle,
 ) : TextView(context, attrs, defStyleAttr) {
 
     /**
@@ -31,7 +33,7 @@ class MarqueedTextView @JvmOverloads constructor(
      * `android:ellipsize=marquee`, `android:singleLine=true`, and
      * `android:scrollHorizontally=true`.
      */
-    override public fun startMarquee() {
+    public override fun startMarquee() {
         super.startMarquee()
     }
 
@@ -42,7 +44,7 @@ class MarqueedTextView @JvmOverloads constructor(
      * We are not using [TextView.setSelected()] as this would dispatch undesired accessibility
      * events.
      */
-    override fun isSelected() : Boolean {
+    override fun isSelected(): Boolean {
         return true
     }
 }

@@ -409,66 +409,67 @@ object PhysicsAnimatorTestUtils {
         }
 
         private fun startForTest() {
-            // The testable animator needs to block the main thread until super.start() has been
-            // called, since callers expect .start() to be synchronous but we're posting it to a
-            // handler here. We may also continue blocking until all animations end, if
-            // startBlocksUntilAnimationsEnd = true.
-            val unblockLatch = CountDownLatch(if (startBlocksUntilAnimationsEnd) 2 else 1)
-
-            animationThreadHandler.post {
-                // Add an update listener that dispatches to any test update listeners added by
-                // tests.
-                animator.addUpdateListener(object : PhysicsAnimator.UpdateListener<T> {
-                    override fun onAnimationUpdateForProperty(
-                        target: T,
-                        values: ArrayMap<FloatPropertyCompat<in T>, PhysicsAnimator.AnimationUpdate>
-                    ) {
-                        values.forEach { (property, value) ->
-                            allUpdates.getOrPut(property, { ArrayList() }).add(value)
-                        }
-
-                        for (listener in testUpdateListeners) {
-                            listener.onAnimationUpdateForProperty(target, values)
-                        }
-                    }
-                })
-
-                // Add an end listener that dispatches to any test end listeners added by tests, and
-                // unblocks the main thread if required.
-                animator.addEndListener(object : PhysicsAnimator.EndListener<T> {
-                    override fun onAnimationEnd(
-                        target: T,
-                        property: FloatPropertyCompat<in T>,
-                        wasFling: Boolean,
-                        canceled: Boolean,
-                        finalValue: Float,
-                        finalVelocity: Float,
-                        allRelevantPropertyAnimsEnded: Boolean
-                    ) {
-                        for (listener in testEndListeners) {
-                            listener.onAnimationEnd(
-                                    target, property, wasFling, canceled, finalValue, finalVelocity,
-                                    allRelevantPropertyAnimsEnded)
-                        }
-
-                        if (allRelevantPropertyAnimsEnded) {
-                            testEndListeners.clear()
-                            testUpdateListeners.clear()
-
-                            if (startBlocksUntilAnimationsEnd) {
-                                unblockLatch.countDown()
-                            }
-                        }
-                    }
-                })
-
+            if (Looper.myLooper() == animationThreadHandler.looper) {
+                addTestStartListeners(null)
                 currentlyRunningStartInternal = true
                 animator.startInternal()
                 currentlyRunningStartInternal = false
-                unblockLatch.countDown()
+            } else {
+                // The testable animator needs to block the main thread until super.start() has been
+                // called, since callers expect .start() to be synchronous but we're posting it to a
+                // handler here. We may also continue blocking until all animations end, if
+                // startBlocksUntilAnimationsEnd = true.
+                val unblockLatch = CountDownLatch(if (startBlocksUntilAnimationsEnd) 2 else 1)
+                animationThreadHandler.post {
+                    // Add an update listener that dispatches to any test update listeners added by
+                    // tests.
+                    addTestStartListeners(unblockLatch)
+                    currentlyRunningStartInternal = true
+                    animator.startInternal()
+                    currentlyRunningStartInternal = false
+                    unblockLatch.countDown()
+                }
+                unblockLatch.await(timeoutMs, TimeUnit.MILLISECONDS)
+            }
+        }
+
+        private fun addTestStartListeners(unblockLatch: CountDownLatch?) {
+            animator.addUpdateListener { target, values ->
+                values.forEach { (property, value) ->
+                    allUpdates.getOrPut(property) { ArrayList() }.add(value)
+                }
+
+                for (listener in testUpdateListeners) {
+                    listener.onAnimationUpdateForProperty(target, values)
+                }
             }
 
-            unblockLatch.await(timeoutMs, TimeUnit.MILLISECONDS)
+            // Add an end listener that dispatches to any test end listeners added by tests, and
+            // unblocks the main thread if required.
+            animator.addEndListener{
+               target,
+               property,
+               wasFling,
+               canceled,
+               finalValue,
+               finalVelocity,
+               allRelevantPropertyAnimsEnded ->
+                for (listener in testEndListeners) {
+                    listener.onAnimationEnd(
+                        target, property, wasFling, canceled, finalValue, finalVelocity,
+                        allRelevantPropertyAnimsEnded
+                    )
+                }
+
+                if (allRelevantPropertyAnimsEnded) {
+                    testEndListeners.clear()
+                    testUpdateListeners.clear()
+
+                    if (startBlocksUntilAnimationsEnd) {
+                        unblockLatch?.countDown()
+                    }
+                }
+            }
         }
 
         private fun cancelForTest(properties: Set<FloatPropertyCompat<in T>>) {

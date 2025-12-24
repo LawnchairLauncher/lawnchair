@@ -17,13 +17,13 @@
 package com.android.wm.shell.pip2.phone.transition;
 
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Pair;
+import android.util.ArrayMap;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.wm.shell.common.pip.PipBoundsState;
@@ -32,15 +32,13 @@ import com.android.wm.shell.shared.TransitionUtil;
 import com.android.wm.shell.transition.Transitions;
 
 /**
- * An implementation of {@link Transitions.TransitionObserver} to track of external transitions
- * that might affect a PiP task as well.
+ * An implementation of {@link Transitions.TransitionObserver} to track external display change
+ * transitions that might affect a PiP task as well.
  */
 public class PipDisplayChangeObserver implements Transitions.TransitionObserver {
     private final PipTransitionState mPipTransitionState;
     private final PipBoundsState mPipBoundsState;
-
-    @Nullable
-    private Pair<IBinder, TransitionInfo> mDisplayChangeTransition;
+    private final ArrayMap<IBinder, TransitionInfo> mDisplayChangeTransitions = new ArrayMap<>();
 
     public PipDisplayChangeObserver(PipTransitionState pipTransitionState,
             PipBoundsState pipBoundsState) {
@@ -53,41 +51,62 @@ public class PipDisplayChangeObserver implements Transitions.TransitionObserver 
             @NonNull SurfaceControl.Transaction startTransaction,
             @NonNull SurfaceControl.Transaction finishTransaction) {
         if (TransitionUtil.hasDisplayChange(info)) {
-            mDisplayChangeTransition = new Pair<>(transition, info);
+            mDisplayChangeTransitions.put(transition, info);
+        }
+    }
+
+    @Override
+    public void onTransitionStarting(@NonNull IBinder transition) {
+        if (mDisplayChangeTransitions.containsKey(transition)) {
+            // The display change transition is being played now, so it's safe to reset
+            // the display change scheduled flag.
+            mPipTransitionState.setIsDisplayChangeScheduled(false);
+            onDisplayChangeStarting(mDisplayChangeTransitions.get(transition));
         }
     }
 
     @Override
     public void onTransitionMerged(@NonNull IBinder merged, @NonNull IBinder playing) {
-        if (mDisplayChangeTransition != null
-                && mDisplayChangeTransition.first == merged) {
-            maybeUpdatePipStateOnDisplayChange(mDisplayChangeTransition.second /* info */);
-            mPipTransitionState.setIsPipBoundsChangingWithDisplay(false);
-            mDisplayChangeTransition = null;
+        if (mDisplayChangeTransitions.containsKey(merged)) {
+            onDisplayChangeFinished(mDisplayChangeTransitions.get(merged));
+            mDisplayChangeTransitions.remove(merged);
         }
     }
 
     @Override
     public void onTransitionFinished(@NonNull IBinder transition, boolean aborted) {
-        if (mDisplayChangeTransition != null
-                && mDisplayChangeTransition.first == transition) {
-            maybeUpdatePipStateOnDisplayChange(mDisplayChangeTransition.second /* info */);
-            mPipTransitionState.setIsPipBoundsChangingWithDisplay(false);
-            mDisplayChangeTransition = null;
+        if (mDisplayChangeTransitions.containsKey(transition)) {
+            onDisplayChangeFinished(mDisplayChangeTransitions.get(transition));
+            mDisplayChangeTransitions.remove(transition);
         }
     }
 
     @VisibleForTesting
-    @Nullable
-    Pair<IBinder, TransitionInfo> getDisplayChangeTransition() {
-        return mDisplayChangeTransition;
+    ArrayMap<IBinder, TransitionInfo> getDisplayChangeTransitions() {
+        return mDisplayChangeTransitions;
     }
 
-    private void maybeUpdatePipStateOnDisplayChange(@NonNull TransitionInfo info) {
+    private void onDisplayChangeStarting(@NonNull TransitionInfo info) {
         final TransitionInfo.Change pipChange = PipTransitionUtils.getPipChange(info);
-        if (pipChange == null) return;
+        if (pipChange == null || !mPipTransitionState.isPipStateIdle()) return;
+
+        // We do not care about the extras in this case - just make sure to send a non-empty one;
+        // since otherwise PipTransitionState might throw an exception.
+        final Bundle extra = new Bundle();
+        extra.putInt("", 0);
+        // It is safe to advance to PiP bounds changing states, since this display change
+        // transition can never start playing while another PiP transition is already playing.
+        // This should help us block any interactions with PiP during this period.
+        mPipTransitionState.setState(PipTransitionState.SCHEDULED_BOUNDS_CHANGE, extra);
+    }
+
+    private void onDisplayChangeFinished(@NonNull TransitionInfo info) {
+        final TransitionInfo.Change pipChange = PipTransitionUtils.getPipChange(info);
+        if (pipChange == null || !mPipTransitionState.isInPip()) return;
 
         final Rect endBounds = pipChange.getEndAbsBounds();
         mPipBoundsState.setBounds(endBounds);
+        // Indicate that this display changing transition that was altering PiP bounds is over.
+        mPipTransitionState.setState(PipTransitionState.CHANGED_PIP_BOUNDS);
     }
 }

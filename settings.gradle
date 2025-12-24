@@ -98,6 +98,11 @@ project(':unfold').projectDir = new File(rootDir, 'systemUI/unfold')
 include ':utils'
 project(':utils').projectDir = new File(rootDir, 'systemUI/utils')
 
+include ':pods' // pE-TODO(QPR2): Fix me, this work for now
+project(':pods').projectDir = new File(rootDir, 'systemUI/pods') // pE-TODO(QPR2): Fix me, this work for now
+
+include ':pods:internal' // pE-TODO(QPR2): Fix me, this work for now
+project(':pods:internal').projectDir = new File(rootDir, 'systemUI/pods/src/com/android/systemui') // pE-TODO(QPR2): Fix me, this work for now
 
 include ':compatLib'
 include ':compatLib:compatLibVQ'
@@ -113,8 +118,9 @@ include ':baseline-profile'
 include ':androidx-lib'
 include ':flags'
 include ':wmshell'
+include ':wmshell:shared'
 include ':dagger'
-include ':concurrent'
+include ':modules:concurrent'
 //include ':compose'
 include ':modules:widgetpicker'
 

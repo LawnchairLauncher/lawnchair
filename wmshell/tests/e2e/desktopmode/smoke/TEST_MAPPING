@@ -1,7 +1,13 @@
 {
-  "wm-devices": [
+  "wm": [
     {
-      "name": "WMShellSmokeTestsDesktopMode"
+      "name": "WMShellSmokeTestsDesktopMode-ProjectedMode",
+      // TODO(b/439962697) - Remove "device" keyword once cf phone supports projected mode.
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellSmokeTestsDesktopMode-ExtendedMode",
+      "keywords": ["desktop"]
     }
   ]
 }

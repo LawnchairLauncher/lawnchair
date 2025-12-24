@@ -21,13 +21,17 @@ import com.android.launcher3.widgetpicker.WidgetPickerRepository
 import com.android.launcher3.widgetpicker.WidgetPickerSingleton
 import com.android.launcher3.widgetpicker.data.repository.WidgetUsersRepository
 import com.android.launcher3.widgetpicker.data.repository.WidgetsRepository
+import com.android.launcher3.widgetpicker.domain.model.SearchResult
 import com.android.launcher3.widgetpicker.domain.usecase.FilterWidgetsForHostUseCase
 import com.android.launcher3.widgetpicker.domain.usecase.GroupWidgetAppsByProfileUseCase
 import com.android.launcher3.widgetpicker.shared.model.PickableWidget
 import com.android.launcher3.widgetpicker.shared.model.WidgetApp
+import com.android.launcher3.widgetpicker.shared.model.WidgetAppId
 import com.android.launcher3.widgetpicker.shared.model.WidgetId
 import com.android.launcher3.widgetpicker.shared.model.WidgetPreview
 import com.android.launcher3.widgetpicker.shared.model.WidgetUserProfile
+import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -35,8 +39,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * A domain layer object that enables the UI layer to interact with the widgets in data layer.
@@ -47,35 +49,37 @@ import kotlin.coroutines.CoroutineContext
 class WidgetsInteractor
 @Inject
 constructor(
-    @WidgetPickerRepository
-    private val widgetsRepository: WidgetsRepository,
-    @WidgetPickerRepository
-    private val widgetUsersRepository: WidgetUsersRepository,
+    @WidgetPickerRepository private val widgetsRepository: WidgetsRepository,
+    @WidgetPickerRepository private val widgetUsersRepository: WidgetUsersRepository,
     private val filterWidgetsForHostUseCase: FilterWidgetsForHostUseCase,
     private val getWidgetAppsByProfileUseCase: GroupWidgetAppsByProfileUseCase,
-    @WidgetPickerBackground
-    private val backgroundContext: CoroutineContext,
+    @WidgetPickerBackground private val backgroundContext: CoroutineContext,
 ) {
     /** Returns the list of widget apps per user profiles. */
     fun getWidgetAppsByProfile(): Flow<Map<WidgetUserProfile, List<WidgetApp>>> =
-        combine(
-            widgetsRepository.observeWidgets(),
-            widgetUsersRepository.observeUserProfiles()
-        ) { widgetApps,
-            widgetUserProfiles ->
-            val filteredWidgets =
-                widgetApps
-                    .map { it.copy(widgets = filterWidgetsForHostUseCase(it.widgets)) }
-                    .filter { it.widgets.isNotEmpty() }
-                    .sortedBy { it.title?.toString() ?: "" }
-            widgetUserProfiles?.let {
-                getWidgetAppsByProfileUseCase(
-                    filteredWidgets,
-                    widgetUserProfiles,
-                    widgetUsersRepository.getWorkProfileUser(),
-                )
-            } ?: emptyMap()
-        }
+        combine(widgetsRepository.observeWidgets(), widgetUsersRepository.observeUserProfiles()) {
+                widgetApps,
+                widgetUserProfiles ->
+                val filteredWidgets =
+                    widgetApps
+                        .map { it.copy(widgets = filterWidgetsForHostUseCase(it.widgets)) }
+                        .filter { it.widgets.isNotEmpty() }
+                        .sortedBy { it.title?.toString() ?: "" }
+                widgetUserProfiles?.let {
+                    getWidgetAppsByProfileUseCase(
+                        filteredWidgets,
+                        widgetUserProfiles,
+                        widgetUsersRepository.getWorkProfileUser(),
+                    )
+                } ?: emptyMap()
+            }
+            .distinctUntilChanged()
+            .flowOn(backgroundContext)
+
+    /** Returns the widget app with the widgets that it hosts. */
+    fun getWidgetApp(widgetAppId: WidgetAppId): Flow<WidgetApp?> =
+        widgetsRepository
+            .observeWidgetApp(widgetAppId)
             .distinctUntilChanged()
             .flowOn(backgroundContext)
 
@@ -91,8 +95,7 @@ constructor(
         ) { widgets, widgetUserProfiles ->
             val filteredWidgets = filterWidgetsForHostUseCase(widgets)
 
-            val hasPausedWorkProfile =
-                widgetUserProfiles?.work?.paused ?: false
+            val hasPausedWorkProfile = widgetUserProfiles?.work?.paused ?: false
             val workProfileUser =
                 if (hasPausedWorkProfile) {
                     checkNotNull(widgetUsersRepository.getWorkProfileUser())
@@ -105,7 +108,7 @@ constructor(
             }
         }
 
-    /***
+    /**
      * Returns the list of widget apps that match the given plain text [query] string entered by the
      * user. The widget's label, description and app's title is expected to be considered for
      * returning matches.
@@ -114,27 +117,42 @@ constructor(
      * - widgets that don't match the host criteria
      * - when work profile is paused, work profile widgets are also filtered out.
      */
-    suspend fun searchWidgetApps(query: String): Flow<List<WidgetApp>> =
+    suspend fun searchWidgetApps(query: String): Flow<List<SearchResult>> =
         withContext(backgroundContext) {
-            val matchedWidgetApps = widgetsRepository.searchWidgets(query).map {
-                it.copy(
-                    widgets = filterWidgetsForHostUseCase(it.widgets)
-                )
-            }.filter { it.widgets.isNotEmpty() }
+            val matchedWidgetApps =
+                widgetsRepository
+                    .searchWidgets(query)
+                    .map { it.copy(widgets = filterWidgetsForHostUseCase(it.widgets)) }
+                    .filter { it.widgets.isNotEmpty() }
 
             // business rule: We don't show work profile widgets when profile is paused.
             val workProfileUser = widgetUsersRepository.getWorkProfileUser()
             if (workProfileUser != null) {
                 widgetUsersRepository.observeUserProfiles().map { profiles ->
-                    val paused = checkNotNull(profiles?.work).paused
-                    if (paused) {
-                        matchedWidgetApps.filter { it.id.userHandle != workProfileUser }
-                    } else {
-                        matchedWidgetApps
+                    val workUserProfile = checkNotNull(profiles?.work)
+                    val filteredWidgetApps =
+                        if (workUserProfile.paused) {
+                            matchedWidgetApps.filter { it.id.userHandle != workProfileUser }
+                        } else {
+                            matchedWidgetApps
+                        }
+
+                    filteredWidgetApps.map {
+                        val isWorkApp = it.id.userHandle == workProfileUser
+
+                        SearchResult(
+                            widgetApp = it,
+                            resultLabel =
+                                when {
+                                    isWorkApp -> profiles?.work?.label
+                                    else ->
+                                        null // personal is default, so don't label it explicitly.
+                                },
+                        )
                     }
                 }
             } else {
-                flowOf(matchedWidgetApps)
+                flowOf(matchedWidgetApps.map { SearchResult(widgetApp = it) })
             }
         }
 }

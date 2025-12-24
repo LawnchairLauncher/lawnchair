@@ -22,10 +22,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.ServiceManager
 import android.tools.Rotation
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.FlickerTestData
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTestData
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import android.tools.helpers.SYSTEMUI_PACKAGE
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiObject2
@@ -36,7 +36,7 @@ import com.android.wm.shell.flicker.BaseTest
 import org.junit.runners.Parameterized
 
 /** Base configurations for Bubble flicker tests */
-abstract class BaseBubbleScreen(flicker: LegacyFlickerTest) : BaseTest(flicker) {
+abstract class BaseBubbleScreen(flicker: FlickerTest) : BaseTest(flicker) {
 
     protected val context: Context = instrumentation.context
     protected val testApp = LaunchBubbleHelper(instrumentation)
@@ -101,7 +101,7 @@ abstract class BaseBubbleScreen(flicker: LegacyFlickerTest) : BaseTest(flicker) 
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getParams() =
-            LegacyFlickerTestFactory.nonRotationTests(
+            FlickerTestFactory.nonRotationTests(
                 supportedRotations = listOf(Rotation.ROTATION_0)
             )
 

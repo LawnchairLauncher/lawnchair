@@ -257,7 +257,7 @@ object WidgetsGridTestSamples {
             widgetInfo = WidgetInfo.AppWidgetInfo(newAppWidgetInfo("OneByOneProvider")),
         )
 
-    private fun twoByTwo(cellWidth: Int, cellHeight: Int) =
+    internal fun twoByTwo(cellWidth: Int, cellHeight: Int) =
         PickableWidget(
             id = newWidgetId("TwoByTwo"),
             appId = TEST_WIDGET_APP_ID,

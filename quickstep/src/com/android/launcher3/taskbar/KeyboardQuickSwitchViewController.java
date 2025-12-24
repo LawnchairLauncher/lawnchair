@@ -43,6 +43,7 @@ import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.desktop.DesktopAppLaunchTransition;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayDragLayer;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.FocusState;
 import com.android.quickstep.SystemUiProxy;
@@ -59,6 +60,7 @@ import com.android.wm.shell.shared.desktopmode.DesktopTaskToFrontReason;
 
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -136,7 +138,8 @@ public class KeyboardQuickSwitchViewController {
                 updateTasks,
                 currentFocusIndexOverride,
                 mViewCallbacks,
-                /* useDesktopTaskView= */ !onDesktop && hasDesktopTask);
+                /* useDesktopTaskView= */ !onDesktop && hasDesktopTask,
+                /* useAnimationStartDelay= */ !wasOpenedFromTaskbar);
     }
 
     protected void updateQuickSwitchView(
@@ -144,7 +147,8 @@ public class KeyboardQuickSwitchViewController {
             int numHiddenTasks,
             int currentFocusIndexOverride,
             boolean hasDesktopTask,
-            boolean wasDesktopTaskFilteredOut) {
+            boolean wasDesktopTaskFilteredOut,
+            boolean useAnimationStartDelay) {
         mWasDesktopTaskFilteredOut = wasDesktopTaskFilteredOut;
         mKeyboardQuickSwitchView.applyLoadPlan(
                 mOverlayContext,
@@ -153,7 +157,8 @@ public class KeyboardQuickSwitchViewController {
                 /* updateTasks= */ true,
                 currentFocusIndexOverride,
                 mViewCallbacks,
-                /* useDesktopTaskView= */ !mOnDesktop && hasDesktopTask);
+                /* useDesktopTaskView= */ !mOnDesktop && hasDesktopTask,
+                useAnimationStartDelay);
     }
 
     protected void positionView(boolean wasOpenedFromTaskbar, boolean isTransientTaskbar) {
@@ -184,18 +189,13 @@ public class KeyboardQuickSwitchViewController {
         mKeyboardQuickSwitchView.setLayoutParams(lp);
     }
 
-    protected void updateLayoutForSurface(boolean updateLayoutFromTaskbar,
-            int currentFocusIndexOverride) {
-        BaseDragLayer.LayoutParams lp =
-                (BaseDragLayer.LayoutParams) mKeyboardQuickSwitchView.getLayoutParams();
+    protected void updateLayoutForSurface(
+            boolean updateLayoutFromTaskbar, int currentFocusIndexOverride) {
+        mKeyboardQuickSwitchView.getLayoutParams().width = updateLayoutFromTaskbar
+                ? BaseDragLayer.LayoutParams.WRAP_CONTENT
+                : BaseDragLayer.LayoutParams.MATCH_PARENT;
 
-        if (updateLayoutFromTaskbar) {
-            lp.width = BaseDragLayer.LayoutParams.WRAP_CONTENT;
-        } else {
-            lp.width = BaseDragLayer.LayoutParams.MATCH_PARENT;
-        }
-
-        mKeyboardQuickSwitchView.animateOpen(currentFocusIndexOverride);
+        mKeyboardQuickSwitchView.animateOpen(currentFocusIndexOverride, !updateLayoutFromTaskbar);
     }
 
     boolean isCloseAnimationRunning() {
@@ -239,7 +239,8 @@ public class KeyboardQuickSwitchViewController {
      * If the index is not -1, then the {@link com.android.quickstep.views.TaskView} at the returned
      * index will be focused.
      */
-    protected int launchFocusedTask() {
+    @Nullable
+    protected Set<Integer> launchFocusedTask() {
         if (mCurrentFocusIndex != -1) {
             return launchTaskAt(mCurrentFocusIndex);
         }
@@ -248,15 +249,14 @@ public class KeyboardQuickSwitchViewController {
                 && mKeyboardQuickSwitchView.getTaskCount() > 1 ? 1 : 0);
     }
 
-    private int launchTaskAt(int index) {
+    @Nullable
+    private Set<Integer> launchTaskAt(int index) {
         if (isCloseAnimationRunning()) {
             // Ignore taps on task views and alt key unpresses while the close animation is running.
-            return -1;
+            return null;
         }
         if (index == mKeyboardQuickSwitchView.getOverviewTaskIndex()) {
-            // If there is a desktop task view, then we should account for it when focusing the
-            // first hidden non-desktop task view in recents view
-            return mOnDesktop ? 1 : (mWasDesktopTaskFilteredOut ? index + 1 : index);
+            return mControllerCallbacks.getFirstHiddenTaskIds();
         }
         TaskbarActivityContext context = mControllers.taskbarActivityContext;
         final RemoteTransition slideInTransition = new RemoteTransition(new SlideInRemoteTransition(
@@ -273,25 +273,27 @@ public class KeyboardQuickSwitchViewController {
                     systemUiProxy
                             .showDesktopApps(
                                     mKeyboardQuickSwitchView.getDisplay().getDisplayId(),
-                                    slideInTransition));
-            return -1;
+                                    slideInTransition,
+                                    /* taskIdReorderToFront */ null,
+                                    DesktopModeTransitionSource.KEYBOARD_SHORTCUT));
+            return null;
         }
         // Even with a valid index, this can be null if the user tries to quick switch before the
         // views have been added in the KeyboardQuickSwitchView.
         GroupTask task = mControllerCallbacks.getTaskAt(index);
         if (task == null) {
-            return mOnDesktop ? 1 : Math.max(0, index);
+            return mControllerCallbacks.getFirstHiddenTaskIds();
         }
 
         if (enableAltTabKqsFlatenning.isTrue()
                 && tryLaunchingCombinedTask(task, slideInTransition, systemUiProxy)) {
-            return -1;
+            return null;
         }
 
         // TODO b/414410702: move this check to before tryLaunchingCombinedTask() call.
         if (mControllerCallbacks.isTaskRunning(task)) {
             // Ignore attempts to run the selected task if it is already running.
-            return -1;
+            return null;
         }
 
         RemoteTransition remoteTransition = slideInTransition;
@@ -306,29 +308,23 @@ public class KeyboardQuickSwitchViewController {
                 task,
                 remoteTransition,
                 mOnDesktop,
-                DesktopTaskToFrontReason.ALT_TAB);
-        return -1;
+                DesktopTaskToFrontReason.ALT_TAB,
+                mKeyboardQuickSwitchView.getTaskAt(index),
+                DesktopModeTransitionSource.KEYBOARD_SHORTCUT);
+        return null;
     }
 
     private boolean tryLaunchingCombinedTask(GroupTask task, RemoteTransition slideInTransition,
             SystemUiProxy systemUiProxy) {
-        TaskbarActivityContext context = mControllers.taskbarActivityContext;
         int taskId = task.getTasks().getFirst().key.id;
 
         // All DesktopTasks, irrespective of whether desktop mode is active, are launched here as
         // the class DesktopTask is used in a special way by KQS view for showing thumbnails of
         // freeform tasks.
         if (task instanceof DesktopTask desktopTask) {
-            boolean canUnminimizeDesktopTask = context.canUnminimizeDesktopTask(taskId);
-            UI_HELPER_EXECUTOR.execute(() -> {
-                if (!mOnDesktop) {
-                    systemUiProxy.activateDesk(desktopTask.getDeskId(), slideInTransition);
-                }
-
-                systemUiProxy.showDesktopApp(taskId,
-                        canUnminimizeDesktopTask ? getUnminimizeTransition() : null,
-                        DesktopTaskToFrontReason.ALT_TAB);
-            });
+            UI_HELPER_EXECUTOR.execute(
+                    () -> systemUiProxy.activateDesk(desktopTask.getDeskId(), slideInTransition,
+                            taskId, DesktopModeTransitionSource.KEYBOARD_SHORTCUT));
             return true;
         } else if (mOnDesktop && task instanceof SingleTask) {
             // Use the special API if user wants to switch to a fullscreen app while in desktop.
@@ -346,6 +342,7 @@ public class KeyboardQuickSwitchViewController {
         return new RemoteTransition(
                 new DesktopAppLaunchTransition(
                         mControllers.taskbarActivityContext,
+                        DisplayController.INSTANCE.get(mControllers.taskbarActivityContext),
                         UNMINIMIZE,
                         Cuj.CUJ_DESKTOP_MODE_KEYBOARD_QUICK_SWITCH_APP_LAUNCH,
                         MAIN_EXECUTOR
@@ -451,6 +448,10 @@ public class KeyboardQuickSwitchViewController {
 
         boolean isAspectRatioSquare() {
             return mControllerCallbacks.isAspectRatioSquare();
+        }
+
+        boolean isLandscape() {
+            return mControllerCallbacks.isLandscape();
         }
 
         void onViewDetchedFromWindow() {

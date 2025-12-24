@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:lineSpacingExtra="4sp"
         android:textAlignment="center"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="@androidprv:color/materialColorOnSurface"
         android:textSize="14sp"/>
 
 </LinearLayout>

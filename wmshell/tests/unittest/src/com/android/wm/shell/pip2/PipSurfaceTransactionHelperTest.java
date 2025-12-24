@@ -22,7 +22,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.intThat;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -208,7 +207,8 @@ public class PipSurfaceTransactionHelperTest {
 
         verify(mMockTransaction).setBoxShadowSettings(eq(mTestLeash), boxShadow.capture());
         verify(mMockTransaction).setBorderSettings(eq(mTestLeash), border.capture());
-        verify(mMockTransaction, never()).setShadowRadius(any(), anyFloat());
+        // Ensure that box shadow clears elevation shadow which may be set by window decorations.
+        verify(mMockTransaction).setShadowRadius(eq(mTestLeash), eq(0.0f));
 
         assertEquals(0, boxShadow.getValue().boxShadows.length);
         assertEquals(0, border.getValue().strokeWidth, 0.0);
@@ -227,7 +227,8 @@ public class PipSurfaceTransactionHelperTest {
         verify(mMockTransaction).setBoxShadowSettings(eq(mTestLeash),
                 eq(mDarkBoxShadowSettings));
         verify(mMockTransaction).setBorderSettings(eq(mTestLeash), eq(mDarkBorderSettings));
-        verify(mMockTransaction, never()).setShadowRadius(any(), anyFloat());
+        // Ensure that box shadow clears elevation shadow which may be set by window decorations.
+        verify(mMockTransaction).setShadowRadius(eq(mTestLeash), eq(0.0f));
     }
 
 
@@ -243,7 +244,8 @@ public class PipSurfaceTransactionHelperTest {
         verify(mMockTransaction).setBoxShadowSettings(eq(mTestLeash),
                 eq(mLightBoxShadowSettings));
         verify(mMockTransaction).setBorderSettings(eq(mTestLeash), eq(mLightBorderSettings));
-        verify(mMockTransaction, never()).setShadowRadius(any(), anyFloat());
+        // Ensure that box shadow clears elevation shadow which may be set by window decorations.
+        verify(mMockTransaction).setShadowRadius(eq(mTestLeash), eq(0.0f));
     }
 
     @Test

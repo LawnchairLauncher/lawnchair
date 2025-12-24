@@ -18,6 +18,8 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.Utilities.ATLEAST_Q;
 
+import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Rect;
@@ -44,16 +46,20 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.popup.Poppable;
+import com.android.launcher3.popup.PoppableType;
+import com.android.launcher3.popup.PopupController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
+import com.android.launcher3.views.UpdateDeferrableView;
 
 /**
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
-        implements TouchCompleteListener, View.OnLongClickListener {
+        implements TouchCompleteListener, View.OnLongClickListener, UpdateDeferrableView, Poppable {
 
     private static final String TAG = "LauncherAppWidgetHostView";
 
@@ -87,6 +93,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private boolean mTrackingWidgetUpdate = false;
 
     private int mFocusRectOutsets = 0;
+    private PopupController mPopupController;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -126,7 +133,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     @Override
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
         super.setAppWidget(appWidgetId, info);
-        if (!mTrackingWidgetUpdate && appWidgetId != -1) {
+        if (!mTrackingWidgetUpdate && appWidgetId != INVALID_APPWIDGET_ID) {
             mTrackingWidgetUpdate = true;
             Log.i(TAG, "App widget created with id: " + appWidgetId);
             if (ATLEAST_Q) {
@@ -203,7 +210,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     /**
      * Returns true if the application of {@link RemoteViews} through {@link #updateAppWidget} are
      * currently being deferred.
-     * @see #beginDeferringUpdates()
+     * @see #setUpdatesDeferred
      */
     private boolean isDeferringUpdates() {
         return SystemClock.uptimeMillis() < mDeferUpdatesUntilMillis;
@@ -211,21 +218,18 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     /**
      * Begin deferring the application of any {@link RemoteViews} updates made through
-     * {@link #updateAppWidget} until {@link #endDeferringUpdates()} has been called or the next
+     * {@link #updateAppWidget} until deferring has been stopped or the next
      * {@link #updateAppWidget} call after {@link #UPDATE_LOCK_TIMEOUT_MILLIS} have elapsed.
      */
-    public void beginDeferringUpdates() {
-        mDeferUpdatesUntilMillis = SystemClock.uptimeMillis() + UPDATE_LOCK_TIMEOUT_MILLIS;
-    }
-
-    /**
-     * Stop deferring the application of {@link RemoteViews} updates made through
-     * {@link #updateAppWidget} and apply any deferred updates.
-     */
-    public void endDeferringUpdates() {
-        mDeferUpdatesUntilMillis = 0;
-        if (mReapplyOnResumeUpdates) {
-            updateAppWidget(mLastRemoteViews);
+    @Override
+    public void setUpdatesDeferred(boolean isDeferred) {
+        if (isDeferred) {
+            mDeferUpdatesUntilMillis = SystemClock.uptimeMillis() + UPDATE_LOCK_TIMEOUT_MILLIS;
+        } else {
+            mDeferUpdatesUntilMillis = 0;
+            if (mReapplyOnResumeUpdates) {
+                updateAppWidget(mLastRemoteViews);
+            }
         }
     }
 
@@ -396,6 +400,12 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
             return item.spanX == 1 && item.spanY == 1;
         }
         return false;
+    }
+
+    @NonNull
+    @Override
+    public PoppableType getPoppableType() {
+        return PoppableType.WIDGET;
     }
 
     @Override

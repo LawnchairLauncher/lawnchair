@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Приложение не поддерживает всплывающие чаты."</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Разделитель экрана"</string>
     <string name="divider_title" msgid="1963391955593749442">"Разделитель экрана"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Левый во весь экран"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Левый на 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Левый на 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Левый на 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Правый во весь экран"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Поменять местами приложения сверху и снизу"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Поменять местами приложения слева и справа"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Верхний во весь экран"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Верхний на 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Верхний на 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Верхний на 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Нижний во весь экран"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Развернуть на весь экран приложение слева"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10 % слева, 90 % справа"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30 % слева, 70 % справа"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50 % слева, 50 % справа"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70 % слева, 30 % справа"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90 % слева, 10 % справа"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Развернуть на весь экран приложение справа"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Поменять местами приложения сверху и снизу, сохранив текущую пропорцию"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Поменять местами приложения слева и справа, сохранив текущую пропорцию"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Развернуть на весь экран приложение сверху"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10 % сверху, 90 % снизу"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30 % сверху, 70 % снизу"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50 % сверху, 50 % снизу"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70 % сверху, 30 % снизу"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90 % сверху, 10 % снизу"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Развернуть на весь экран приложение снизу"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Приложение слева"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Приложение справа"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Приложение сверху"</string>
@@ -96,7 +100,7 @@
     <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Всплывающие чаты"</string>
     <string name="restart_button_description" msgid="4564728020654658478">"Нажмите, чтобы перезапустить приложение и оптимизировать размер"</string>
     <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Изменить соотношение сторон приложения в настройках"</string>
-    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Изменить соотношение сторон"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Соотношение сторон"</string>
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Проблемы с камерой?\nНажмите, чтобы исправить."</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Не помогло?\nНажмите, чтобы отменить изменения."</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Нет проблем с камерой? Нажмите, чтобы закрыть."</string>
@@ -132,7 +136,7 @@
     <string name="open_in_app_text" msgid="2874590745116268525">"Открыть в приложении"</string>
     <string name="new_window_text" msgid="6318648868380652280">"Новое окно"</string>
     <string name="manage_windows_text" msgid="5567366688493093920">"Управление окнами"</string>
-    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Изменить соотношение сторон"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Соотношение сторон"</string>
     <string name="handle_menu_restart_text" msgid="3907767216238298098">"Оптимизировать"</string>
     <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"Значок ошибки"</string>
     <string name="close_text" msgid="4986518933445178928">"Закрыть"</string>

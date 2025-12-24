@@ -22,6 +22,7 @@
     android:contentDescription="@string/recent_task_desktop"
     android:defaultFocusHighlightEnabled="false"
     android:focusable="true"
+    android:clipChildren="false"
     launcher:focusBorderColor="@color/materialColorOutline"
     launcher:hoverBorderColor="@color/materialColorPrimary">
 
@@ -36,10 +37,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <View
+        <!-- TODO(b/405863833): Fix desktop tile background in portrait. -->
+        <com.android.quickstep.views.FixedSizeImageView
             android:id="@+id/background"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scaleType="matrix" />
 
     </com.android.quickstep.views.DesktopTaskContentView>
 

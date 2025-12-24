@@ -16,24 +16,18 @@
 
 package com.android.wm.shell.compatui.api
 
-/**
- * Abstraction for the repository of all the available CompatUISpec
- */
+/** Abstraction for the repository of all the available CompatUISpec */
 interface CompatUIRepository {
     /**
      * Adds a {@link CompatUISpec} to the repository
+     *
      * @throws IllegalStateException in case of illegal spec
      */
     fun addSpec(spec: CompatUISpec)
 
-    /**
-     * Iterates on the list of available {@link CompatUISpec} invoking
-     * fn for each of them.
-     */
+    /** Iterates on the list of available {@link CompatUISpec} invoking fn for each of them. */
     fun iterateOn(fn: (CompatUISpec) -> Unit)
 
-    /**
-     * Returns the {@link CompatUISpec} for a given key
-     */
+    /** Returns the {@link CompatUISpec} for a given key */
     fun findSpec(name: String): CompatUISpec?
 }

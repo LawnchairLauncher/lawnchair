@@ -60,6 +60,7 @@ public class TaskStackListenerImpl extends TaskStackListener implements Handler.
     private static final int ON_TASK_DESCRIPTION_CHANGED = 19;
     private static final int ON_ACTIVITY_ROTATION = 20;
     private static final int ON_RECENT_TASK_REMOVED_FOR_ADD_TASK = 21;
+    private static final int ON_LOCK_TASK_MODE_CHANGE = 22;
 
     /**
      * List of {@link TaskStackListenerCallback} registered from {@link #addListener}.
@@ -138,6 +139,11 @@ public class TaskStackListenerImpl extends TaskStackListener implements Handler.
     }
 
     @Override
+    public void onLockTaskModeChanged(int mode) {
+        mMainHandler.obtainMessage(ON_LOCK_TASK_MODE_CHANGE, mode, 0 /* unused */).sendToTarget();
+    }
+
+    @Override
     public void onTaskStackChanged() {
         // Call the task changed callback for the non-ui thread listeners first. Copy to a set
         // of temp listeners so that we don't lock on mTaskStackListeners while calling all the
@@ -188,6 +194,10 @@ public class TaskStackListenerImpl extends TaskStackListener implements Handler.
 
     @Override
     public void onTaskSnapshotChanged(int taskId, TaskSnapshot snapshot) {
+        if (com.android.window.flags2.Flags.reduceTaskSnapshotMemoryUsage()) {
+            // No implementation in TaskStackListenerCallback#onTaskSnapshotChanged
+            return;
+        }
         mMainHandler.obtainMessage(ON_TASK_SNAPSHOT_CHANGED, taskId, 0, snapshot)
                 .sendToTarget();
     }
@@ -287,8 +297,12 @@ public class TaskStackListenerImpl extends TaskStackListener implements Handler.
                                 msg.arg1, snapshot);
                         snapshotConsumed |= consumed;
                     }
-                    if (!snapshotConsumed && snapshot.getHardwareBuffer() != null) {
-                        snapshot.getHardwareBuffer().close();
+                    if (!snapshotConsumed) {
+                        if (com.android.window.flags2.Flags.reduceTaskSnapshotMemoryUsage()) {
+                            snapshot.closeBuffer();
+                        } else if (snapshot.getHardwareBuffer() != null) {
+                            snapshot.getHardwareBuffer().close();
+                        }
                     }
                     Trace.endSection();
                     break;
@@ -432,6 +446,12 @@ public class TaskStackListenerImpl extends TaskStackListener implements Handler.
                 case ON_ACTIVITY_ROTATION: {
                     for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
                         mTaskStackListeners.get(i).onActivityRotation(msg.arg1);
+                    }
+                    break;
+                }
+                case ON_LOCK_TASK_MODE_CHANGE: {
+                    for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
+                        mTaskStackListeners.get(i).onLockTaskModeChanged(msg.arg1);
                     }
                     break;
                 }

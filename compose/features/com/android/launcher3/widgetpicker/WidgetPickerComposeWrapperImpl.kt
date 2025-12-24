@@ -19,14 +19,14 @@ package com.android.launcher3.widgetpicker
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
+import android.util.Log
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalView
 import com.android.launcher3.Launcher
+import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.R
 import com.android.launcher3.compose.ComposeFacade
 import com.android.launcher3.compose.core.widgetpicker.WidgetPickerComposeWrapper
@@ -39,14 +39,15 @@ import com.android.launcher3.widgetpicker.data.repository.WidgetUsersRepository
 import com.android.launcher3.widgetpicker.data.repository.WidgetsRepository
 import com.android.launcher3.widgetpicker.listeners.WidgetPickerAddItemListener
 import com.android.launcher3.widgetpicker.listeners.WidgetPickerDragItemListener
+import com.android.launcher3.widgetpicker.logging.LauncherWidgetPickerCuiReporter
+import com.android.launcher3.widgetpicker.shared.model.CloseBehavior
 import com.android.launcher3.widgetpicker.shared.model.HostConstraint
 import com.android.launcher3.widgetpicker.shared.model.WidgetHostInfo
 import com.android.launcher3.widgetpicker.shared.model.isAppWidget
-import com.android.launcher3.widgetpicker.theme.darkWidgetPickerColors
-import com.android.launcher3.widgetpicker.theme.lightWidgetPickerColors
+import com.android.launcher3.widgetpicker.theme.LauncherWidgetPickerTheme
 import com.android.launcher3.widgetpicker.ui.WidgetInteractionInfo
+import com.android.launcher3.widgetpicker.ui.WidgetInteractionSource
 import com.android.launcher3.widgetpicker.ui.WidgetPickerEventListeners
-import com.android.launcher3.widgetpicker.ui.theme.WidgetPickerTheme
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.coroutines.CoroutineContext
@@ -76,6 +77,7 @@ constructor(
     ) {
         val widgetPickerComponent = newWidgetPickerComponent(widgetPickerConfig)
         val callbacks = activity.buildEventListeners(widgetPickerConfig, apiWrapper)
+        val uiEventsReporter = LauncherWidgetPickerCuiReporter(activity.statsLogManager)
 
         val fullWidgetsCatalog = widgetPickerComponent.getFullWidgetsCatalog()
         val composeView = ComposeFacade.initComposeView(activity.asContext()) as ComposeView
@@ -85,18 +87,9 @@ constructor(
                 val scope = rememberCoroutineScope()
                 val view = LocalView.current
 
-                val widgetPickerColors =
-                    if (isSystemInDarkTheme()) {
-                        darkWidgetPickerColors()
-                    } else {
-                        lightWidgetPickerColors()
-                    }
-
-                MaterialTheme { // TODO(b/408283627): Use launcher theme.
-                    WidgetPickerTheme(colors = widgetPickerColors) {
-                        val eventListeners = remember { callbacks }
-                        fullWidgetsCatalog.Content(eventListeners)
-                    }
+                LauncherWidgetPickerTheme {
+                    val eventListeners = remember { callbacks }
+                    fullWidgetsCatalog.Content(eventListeners, uiEventsReporter)
                 }
 
                 DisposableEffect(view) {
@@ -127,6 +120,10 @@ constructor(
                         description = widgetPickerConfig.description,
                         constraints = widgetPickerConfig.asHostConstraints(),
                         showDragShadow = !widgetPickerConfig.isForHomeScreen,
+                        enableSwipeUpToDismiss = widgetPickerConfig.enableSwipeUpToDismiss,
+                        closeBehavior =
+                            if (widgetPickerConfig.isDesktopFormFactor) CloseBehavior.CLOSE_BUTTON
+                            else CloseBehavior.DRAG_HANDLE,
                     ),
                 backgroundContext = backgroundContext,
             )
@@ -145,6 +142,7 @@ constructor(
     }
 
     companion object {
+        private const val TAG = "WidgetPickerComposeWrapperImpl"
         private const val HOME_SCREEN_WIDGET_INTERACTION_REASON_STRING =
             "WidgetPickerActivity.OnWidgetInteraction"
 
@@ -154,6 +152,7 @@ constructor(
         ) =
             object : WidgetPickerEventListeners {
                 override fun onClose() {
+                    Log.d(TAG, "Closing widget picker")
                     finish()
                 }
 
@@ -184,6 +183,7 @@ constructor(
                 when (interactionInfo) {
                     is WidgetInteractionInfo.WidgetDragInfo ->
                         WidgetPickerDragItemListener(
+                            container = interactionInfo.source.toContainer(),
                             mimeType = interactionInfo.mimeType,
                             widgetInfo = interactionInfo.widgetInfo,
                             widgetPreview = interactionInfo.previewInfo,
@@ -192,7 +192,10 @@ constructor(
                         )
 
                     is WidgetInteractionInfo.WidgetAddInfo ->
-                        WidgetPickerAddItemListener(interactionInfo.widgetInfo)
+                        WidgetPickerAddItemListener(
+                            container = interactionInfo.source.toContainer(),
+                            widgetInfo = interactionInfo.widgetInfo,
+                        )
                 }
             Launcher.ACTIVITY_TRACKER.registerCallback(
                 interactionListener,
@@ -263,5 +266,12 @@ constructor(
                 )
             }
         }
+
+        private fun WidgetInteractionSource.toContainer(): Int =
+            when (this) {
+                WidgetInteractionSource.FEATURED -> Favorites.CONTAINER_WIDGETS_PREDICTION
+                WidgetInteractionSource.SEARCH,
+                WidgetInteractionSource.BROWSE -> Favorites.CONTAINER_WIDGETS_TRAY
+            }
     }
 }

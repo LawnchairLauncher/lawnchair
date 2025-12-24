@@ -136,6 +136,9 @@ public class DragAndDropController implements RemoteCallable<DragAndDropControll
                 @NonNull Consumer<Boolean> onFinishCallback) {
             return false;
         }
+
+        /** Called when the configuration changed. */
+        default void onConfigurationChanged() {}
     }
 
     public DragAndDropController(Context context,
@@ -519,6 +522,9 @@ public class DragAndDropController implements RemoteCallable<DragAndDropControll
         mMainExecutor.execute(() -> {
             for (int i = 0; i < mDisplayDropTargets.size(); i++) {
                 mDisplayDropTargets.get(i).dragLayout.onConfigChanged(newConfig);
+            }
+            for (DragAndDropListener listener : mListeners) {
+                listener.onConfigurationChanged();
             }
         });
     }

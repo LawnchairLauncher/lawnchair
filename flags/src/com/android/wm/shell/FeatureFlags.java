@@ -6,15 +6,23 @@ public interface FeatureFlags {
 
 
 
+    boolean bugRotationButtonCoverBubble();
+
+
+
+    boolean dismissPipFromLockscreen();
+
+
+
+    boolean enable2x1Split();
+
+
+
     boolean enableAutoTaskStackController();
 
 
 
     boolean enableBubbleAnything();
-
-
-
-    boolean enableBubbleAppCompatFixes();
 
 
 
@@ -26,15 +34,15 @@ public interface FeatureFlags {
 
 
 
+    boolean enableBubbleBarToFloatingTransition();
+
+
+
+    boolean enableBubbleEventHistoryLogs();
+
+
+
     boolean enableBubbleStashing();
-
-
-
-    boolean enableBubbleSwipeUpCleanup();
-
-
-
-    boolean enableBubbleTaskViewListener();
 
 
 
@@ -51,10 +59,6 @@ public interface FeatureFlags {
 
 
     boolean enableDynamicInsetsForAppLaunch();
-
-
-
-    boolean enableEnterSplitRemoveBubble();
 
 
 
@@ -86,6 +90,10 @@ public interface FeatureFlags {
 
 
 
+    boolean enablePip2OnTv();
+
+
+
     boolean enablePipBoxShadows();
 
 
@@ -94,11 +102,11 @@ public interface FeatureFlags {
 
 
 
-    boolean enableRecentsBookendTransition();
-
-
-
     boolean enableRetrievableBubbles();
+
+
+
+    boolean enableShellRestartBubbleCleanup();
 
 
 
@@ -118,15 +126,43 @@ public interface FeatureFlags {
 
 
 
+    boolean fixBubbleStackViewExpandedWhenAdded();
+
+
+
+    boolean fixBubblesAddSameBubbleBeingRemoved();
+
+
+
+    boolean fixBubblesCancelAnimation();
+
+
+
+    boolean fixBubblesExpandedSysuiFlag();
+
+
+
+    boolean fixBubblesImeFocusFlicker();
+
+
+
+    boolean fixExitSplitOnEnterBubble();
+
+
+
     boolean fixMissingUserChangeCallbacks();
 
 
 
-    boolean onlyReuseBubbledTaskWhenLaunchedFromBubble();
+    boolean fixTaskViewRotationAnimation();
 
 
 
-    boolean taskViewRepository();
+    boolean splitDisableChildTaskBounds();
+
+
+
+    boolean splitToFullSetWindowMode();
 
 
 

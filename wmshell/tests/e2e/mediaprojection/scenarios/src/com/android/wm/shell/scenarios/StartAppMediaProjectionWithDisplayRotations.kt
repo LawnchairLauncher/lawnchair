@@ -54,6 +54,7 @@ open class StartAppMediaProjectionWithDisplayRotations {
 
     @Before
     fun setup() {
+        tapl.expectedRotationCheckEnabled = false
         tapl.setEnableRotation(true)
         tapl.setExpectedRotation(initialRotation.value)
         testApp.launchViaIntent(wmHelper)

@@ -15,6 +15,7 @@ package com.android.systemui.plugins;
 
 import android.content.Context;
 
+import com.android.systemui.plugins.annotations.ProtectedBaseInterface;
 import com.android.systemui.plugins.annotations.ProtectedReturn;
 import com.android.systemui.plugins.annotations.Requires;
 
@@ -111,6 +112,7 @@ import com.android.systemui.plugins.annotations.Requires;
  * }
  * </pre>
  */
+@ProtectedBaseInterface
 public interface Plugin {
 
     /**

@@ -18,7 +18,6 @@ package com.android.quickstep.interaction;
 import android.graphics.PointF;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
 import com.android.quickstep.util.LottieAnimationColorUtils;
@@ -34,17 +33,15 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
         // Set the Lottie animation colors specifically for the Home gesture
         LottieAnimationColorUtils.updateToArgbColors(
                 mAnimatedGestureDemonstration,
-                Map.of(".onSurfaceHome", fragment.mRootView.mColorOnSurfaceHome,
-                        ".surfaceHome", fragment.mRootView.mColorSurfaceHome,
-                        ".secondaryHome", fragment.mRootView.mColorSecondaryHome));
+                Map.of(".primaryContainer", fragment.mRootView.mColorContainerHome,
+                        ".onPrimaryContainer", fragment.mRootView.mColorOnContainerHome));
+
+        mAnimatedGestureDemonstration.setBackgroundColor(fragment.mRootView.mColorContainerHome);
 
         LottieAnimationColorUtils.updateToArgbColors(
                 mCheckmarkAnimation,
-                Map.of(".checkmark",
-                        Utilities.isDarkTheme(mContext)
-                                ? fragment.mRootView.mColorOnSurfaceHome
-                                : fragment.mRootView.mColorSecondaryHome,
-                        ".checkmarkBackground", fragment.mRootView.mColorSurfaceHome));
+                Map.of(".onCheckmarkContainer", fragment.mRootView.mColorContainerHome,
+                        ".checkmarkContainer", fragment.mRootView.mColorOnContainerHome));
     }
 
     @Override
@@ -80,15 +77,23 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
+    public int getSubtitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_Subtitle_Home;
+    }
+
+    @Override
+    public int getSuccessSubtitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_Subtitle_Success_Home;
+    }
+
+    @Override
     public int getDoneButtonTextAppearance() {
         return R.style.TextAppearance_GestureTutorial_ButtonLabel_Home;
     }
 
     @Override
     public int getDoneButtonColor() {
-        return Utilities.isDarkTheme(mContext)
-                ? mTutorialFragment.mRootView.mColorOnSurfaceHome
-                : mTutorialFragment.mRootView.mColorSecondaryHome;
+        return mTutorialFragment.mRootView.mColorOnContainerHome;
     }
 
     @Override
@@ -119,7 +124,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     protected int getExitingAppColor() {
-        return mTutorialFragment.mRootView.mColorSurfaceHome;
+        return mTutorialFragment.mRootView.mColorContainerHome;
     }
 
     @Override

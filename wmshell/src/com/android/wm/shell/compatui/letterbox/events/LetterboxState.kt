@@ -19,12 +19,9 @@ package com.android.wm.shell.compatui.letterbox.events
 import com.android.wm.shell.dagger.WMSingleton
 import javax.inject.Inject
 
-/**
- * Singleton component containing information about the current Letterbox state.
- */
+/** Singleton component containing information about the current Letterbox state. */
 @WMSingleton
 class LetterboxState @Inject constructor() {
 
-    @Volatile
-    var lastInputSourceId = -1
+    @Volatile var lastInputSourceId = -1
 }

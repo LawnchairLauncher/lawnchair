@@ -35,7 +35,7 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.taskbar.LauncherTaskbarUIController;
+import com.android.launcher3.taskbar.TaskbarInteractor;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.OverviewComponentObserver;
@@ -98,7 +98,7 @@ public class SplitWithKeyboardShortcutController {
                         ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS);
                 options.setTransientLaunch();
                 SystemUiProxy.INSTANCE.get(mLauncher.getApplicationContext())
-                        .startRecentsActivity(mOverviewComponentObserver.getOverviewIntent(),
+                        .startRecentsTransition(mOverviewComponentObserver.getOverviewIntent(),
                                 ActivityOptions.makeBasic(), callbacks,
                                 false /* useSyntheticRecentsTransition */, null, displayId);
             });
@@ -154,16 +154,17 @@ public class SplitWithKeyboardShortcutController {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     controller.finish(
-                            true /* toRecents */,
-                            () -> {
-                                LauncherTaskbarUIController controller =
-                                        mLauncher.getTaskbarUIController();
-                                if (controller != null) {
-                                    controller.updateTaskbarLauncherStateGoingHome();
+                            /* toHome= */ true,
+                            /* onFinishComplete= */ () -> {
+                                TaskbarInteractor taskbarInteractor =
+                                        mLauncher.getTaskbarInteractor();
+                                if (taskbarInteractor != null) {
+                                    taskbarInteractor.updateTaskbarLauncherStateGoingHome();
                                 }
-
                             },
-                            false /* sendUserLeaveHint */);
+                            /* sendUserLeaveHint= */ false,
+                            /* reason= */ new ActiveGestureLog.CompoundString(
+                                    "SplitWithKeyboardShortcutRecentsAnimationListener"));
                 }
 
                 @Override

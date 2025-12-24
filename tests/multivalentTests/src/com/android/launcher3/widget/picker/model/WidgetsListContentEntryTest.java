@@ -46,7 +46,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.HashMap;
 import java.util.List;
@@ -67,14 +68,14 @@ public final class WidgetsListContentEntryTest {
     private final Map<ComponentName, String> mWidgetsToLabels = new HashMap();
 
     @Rule public SandboxApplication app = new SandboxApplication();
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock private IconCache mIconCache;
 
     private InvariantDeviceProfile mTestProfile;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
         mWidgetsToLabels.put(mWidget1, "Cat");
         mWidgetsToLabels.put(mWidget2, "Dog");
         mWidgetsToLabels.put(mWidget3, "Bird");

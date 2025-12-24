@@ -17,6 +17,7 @@
 package com.android.wm.shell.common;
 
 import static android.app.WindowConfiguration.ROTATION_UNDEFINED;
+import static android.view.Display.INVALID_DISPLAY;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -69,8 +70,9 @@ public class DisplayController {
     private final DesktopState mDesktopState;
 
     private final SparseArray<DisplayRecord> mDisplays = new SparseArray<>();
+
     private final ArrayList<OnDisplaysChangedListener> mDisplayChangedListeners = new ArrayList<>();
-    private final Map<Integer, RectF> mUnpopulatedDisplayBounds = new HashMap<>();
+
     private DisplayTopology mDisplayTopology;
 
     public DisplayController(Context context, IWindowManager wmService, ShellInit shellInit,
@@ -118,6 +120,43 @@ public class DisplayController {
     }
 
     /**
+     * Gets the uniqueId associated with the provided displayId, if it is associated with one.
+     */
+    @Nullable
+    public String getDisplayUniqueId(int displayId) {
+        final DisplayRecord r = mDisplays.get(displayId);
+        return r != null ? r.mUniqueId : null;
+    }
+
+    /**
+     * Gets the displayId associated with the provided uniqueId, if it is associated with one.
+     * Because this calls an IPC, we should only use this in time sensitive cases where we suspect
+     * DisplayManager has more up to date information than mDisplays (i.e., during reboot). For
+     * other cases, use getAllDisplaysByUniqueId below.
+     */
+    public int getDisplayIdByUniqueIdBlocking(String uniqueId) {
+        for (Display display : mDisplayManager.getDisplays()) {
+            if (uniqueId.equals(display.getUniqueId())) return display.getDisplayId();
+        }
+        return INVALID_DISPLAY;
+    }
+
+    /**
+     * Gets a map of all displays by uniqueId from DisplayManager.
+     */
+    @Nullable
+    public Map<String, Integer> getAllDisplaysByUniqueId() {
+        HashMap<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < mDisplays.size(); i++) {
+            final String uniqueId = mDisplays.valueAt(i).mUniqueId;
+            if (uniqueId != null) {
+                map.put(uniqueId, mDisplays.keyAt(i));
+            }
+        }
+        return map;
+    }
+
+    /**
      * Returns true if the display with the given displayId is part of the topology.
      */
     public boolean isDisplayInTopology(int displayId) {
@@ -150,12 +189,37 @@ public class DisplayController {
     }
 
     /**
+     * Returns whether animations are disabled for the given displayId.
+     */
+    public boolean isAnimationsDisabled(int displayId) {
+        final DisplayRecord r = mDisplays.get(displayId);
+        return r == null || r.mAnimationsDisabled;
+    }
+
+    /**
      * Updates the insets for a given display.
      */
     public void updateDisplayInsets(int displayId, InsetsState state) {
+        final Rect oldStableBounds = new Rect();
+        final Rect newStableBounds = new Rect();
+        final DisplayLayout oldDisplayLayout = getDisplayLayout(displayId);
+        if (oldDisplayLayout != null) {
+            oldDisplayLayout.getStableBounds(oldStableBounds);
+        }
         final DisplayRecord r = mDisplays.get(displayId);
         if (r != null) {
             r.setInsets(state);
+        }
+        final DisplayLayout newDisplayLayout = getDisplayLayout(displayId);
+        if (newDisplayLayout != null) {
+            newDisplayLayout.getStableBounds(newStableBounds);
+        }
+
+        if (!oldStableBounds.equals(newStableBounds)) {
+            for (int i = 0; i < mDisplayChangedListeners.size(); ++i) {
+                mDisplayChangedListeners.get(i).onStableInsetsChanging(
+                        displayId, oldDisplayLayout);
+            }
         }
     }
 
@@ -220,11 +284,11 @@ public class DisplayController {
             }
             final DisplayRecord record = new DisplayRecord(displayId, hasStatusAndNavBars);
             DisplayLayout displayLayout = record.createLayout(context, display);
-            if (DesktopExperienceFlags.ENABLE_CONNECTED_DISPLAYS_WINDOW_DRAG.isTrue()
-                    && mUnpopulatedDisplayBounds.containsKey(displayId)) {
-                displayLayout.setGlobalBoundsDp(mUnpopulatedDisplayBounds.get(displayId));
-            }
             record.setDisplayLayout(context, displayLayout);
+            final String uniqueId = display.getUniqueId();
+            if (uniqueId != null) {
+                record.setUniqueId(uniqueId);
+            }
             mDisplays.put(displayId, record);
             for (int i = 0; i < mDisplayChangedListeners.size(); ++i) {
                 mDisplayChangedListeners.get(i).onDisplayAdded(displayId);
@@ -254,13 +318,18 @@ public class DisplayController {
         final Context ctx = getDisplayContext(displayId);
         if (dl == null || ctx == null) return;
 
-        if (endBounds != null) {
-            // Note that endAbsBounds should ignore any potential rotation changes, so
-            // we still need to rotate the layout after if needed.
-            dl.resizeTo(ctx.getResources(), new Size(endBounds.width(), endBounds.height()));
-        }
-        if (fromRotation != toRotation && toRotation != ROTATION_UNDEFINED) {
+        boolean hasRotationChanged = fromRotation != toRotation && toRotation != ROTATION_UNDEFINED;
+        final Size endSize = endBounds != null
+                ? new Size(endBounds.width(), endBounds.height()) : null;
+
+        if (hasRotationChanged && endSize != null) {
+            // If rotation and display size are happening in sync, we have to follow a convention
+            // that DisplayLayout implements.
+            dl.rotateAndResizeTo(ctx.getResources(), toRotation, endSize);
+        } else if (hasRotationChanged) {
             dl.rotateTo(ctx.getResources(), toRotation);
+        } else if (endBounds != null) {
+            dl.resizeTo(ctx.getResources(), endSize);
         }
     }
 
@@ -270,17 +339,10 @@ public class DisplayController {
         }
         mDisplayTopology = topology;
         SparseArray<RectF> absoluteBounds = topology.getAbsoluteBounds();
-        mUnpopulatedDisplayBounds.clear();
         for (int i = 0; i < absoluteBounds.size(); ++i) {
             int displayId = absoluteBounds.keyAt(i);
             DisplayLayout displayLayout = getDisplayLayout(displayId);
-            if (displayLayout == null) {
-                // onDisplayTopologyChanged can arrive before onDisplayAdded.
-                // Store the bounds to be applied later in onDisplayAdded.
-                Slog.d(TAG, "Storing bounds for onDisplayTopologyChanged on unknown"
-                        + " display, displayId=" + displayId);
-                mUnpopulatedDisplayBounds.put(displayId, absoluteBounds.valueAt(i));
-            } else {
+            if (displayLayout != null) {
                 displayLayout.setGlobalBoundsDp(absoluteBounds.valueAt(i));
             }
         }
@@ -307,17 +369,13 @@ public class DisplayController {
             final Context perDisplayContext = (displayId == Display.DEFAULT_DISPLAY)
                     ? mContext
                     : mContext.createDisplayContext(display);
+            DisplayLayout oldLayout = dr.mDisplayLayout;
             final Context context = perDisplayContext.createConfigurationContext(newConfig);
             final DisplayLayout displayLayout = dr.createLayout(context, display);
-            if (mDisplayTopology != null) {
-                displayLayout.setGlobalBoundsDp(
-                        mDisplayTopology.getAbsoluteBounds().get(
-                                displayId, displayLayout.globalBoundsDp()));
-            }
             dr.setDisplayLayout(context, displayLayout);
             for (int i = 0; i < mDisplayChangedListeners.size(); ++i) {
                 mDisplayChangedListeners.get(i).onDisplayConfigurationChanged(
-                        displayId, newConfig);
+                        displayId, newConfig, oldLayout);
             }
         }
     }
@@ -395,25 +453,45 @@ public class DisplayController {
         }
     }
 
-    private static class DisplayRecord {
+    private void onAnimationsDisabled(int displayId, boolean disabled) {
+        synchronized (mDisplays) {
+            DisplayRecord r = mDisplays.get(displayId);
+            if (r != null) {
+                r.mAnimationsDisabled = disabled;
+            }
+        }
+    }
+
+    private class DisplayRecord {
         private final int mDisplayId;
+        private String mUniqueId;
         private Context mContext;
         private DisplayLayout mDisplayLayout;
         private InsetsState mInsetsState = new InsetsState();
         private boolean mHasStatusAndNavBars;
+        private boolean mAnimationsDisabled;
 
         private DisplayRecord(int displayId, boolean hasStatusAndNavBars) {
             mDisplayId = displayId;
             mHasStatusAndNavBars = hasStatusAndNavBars;
+            mAnimationsDisabled = false;
         }
 
         private DisplayLayout createLayout(Context context, Display display) {
-            if (mDisplayId != Display.DEFAULT_DISPLAY && mHasStatusAndNavBars) {
-                return new DisplayLayout(context, display, true /* hasNavigationBar */,
-                        true /* hasTaskBar */);
-            } else {
-                return new DisplayLayout(context, display);
+            final boolean shouldInitWithSystemDecorations =
+                    mDisplayId != Display.DEFAULT_DISPLAY && mHasStatusAndNavBars;
+            final DisplayLayout layout = shouldInitWithSystemDecorations
+                    ? new DisplayLayout(
+                            context, display, true /* hasNavigationBar */, true /* hasTaskBar */)
+                    : new DisplayLayout(context, display);
+            if (DesktopExperienceFlags.ENABLE_CONNECTED_DISPLAYS_WINDOW_DRAG.isTrue()
+                    && mDisplayTopology != null) {
+                final RectF globalBounds = mDisplayTopology.getAbsoluteBounds().get(mDisplayId);
+                if (globalBounds != null) {
+                    layout.setGlobalBoundsDp(globalBounds);
+                }
             }
+            return layout;
         }
 
 
@@ -432,6 +510,10 @@ public class DisplayController {
             mContext = context;
             mDisplayLayout = displayLayout;
             mDisplayLayout.setInsets(mContext.getResources(), mInsetsState);
+        }
+
+        private void setUniqueId(String uniqueId) {
+            mUniqueId = uniqueId;
         }
 
         private void setInsets(InsetsState state) {
@@ -498,6 +580,12 @@ public class DisplayController {
 
         @Override
         public void onDisplayRemoveSystemDecorations(int displayId) { }
+
+        @Override
+        public void onDisplayAnimationsDisabledChanged(int displayId, boolean disabled) {
+            mMainExecutor.execute(
+                    () -> DisplayController.this.onAnimationsDisabled(displayId, disabled));
+        }
     }
 
     /**
@@ -518,6 +606,22 @@ public class DisplayController {
          */
         default void onDisplayConfigurationChanged(int displayId, Configuration newConfig) {}
 
+        /**
+         * Called when a display's window-container configuration changes, includes old layout.
+         */
+        default void onDisplayConfigurationChanged(int displayId, Configuration newConfig,
+                DisplayLayout oldLayout) {
+            this.onDisplayConfigurationChanged(displayId, newConfig);
+        }
+
+        /**
+         * Notifies listeners of a stable insets change.
+         * This is usually called after a configuration change when the system components update
+         * their bounds.
+         * @param displayId display who's layout is changing.
+         * @param oldLayout the layout of this display before the change is applied.
+         */
+        default void onStableInsetsChanging(int displayId, DisplayLayout oldLayout) {}
         /**
          * Called when a display is removed.
          */

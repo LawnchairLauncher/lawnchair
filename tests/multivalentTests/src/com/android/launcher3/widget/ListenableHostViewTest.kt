@@ -16,13 +16,12 @@
 
 package com.android.launcher3.widget
 
-import android.content.Context
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import androidx.test.platform.app.InstrumentationRegistry
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.TestActivityContext
 import com.google.common.truth.Truth
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -30,8 +29,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ListenableHostViewTest {
 
-    private val context: Context
-        get() = ActivityContextWrapper(InstrumentationRegistry.getInstrumentation().targetContext)
+    @get:Rule val context = TestActivityContext()
 
     @Test
     fun updateAppWidget_notifiesListeners() {
@@ -39,7 +37,7 @@ class ListenableHostViewTest {
         var wasNotifiedOfUpdate = false
         val updateListener = Runnable { wasNotifiedOfUpdate = true }
         hostView.addUpdateListener(updateListener)
-        hostView.beginDeferringUpdates()
+        hostView.setUpdatesDeferred(true)
         hostView.updateAppWidget(null)
         Truth.assertThat(wasNotifiedOfUpdate).isTrue()
     }

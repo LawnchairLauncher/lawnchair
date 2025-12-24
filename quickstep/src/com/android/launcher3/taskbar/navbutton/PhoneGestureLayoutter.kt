@@ -47,4 +47,8 @@ class PhoneGestureLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
     }
+
+    override fun addThreeButtons() {
+        // No-op
+    }
 }

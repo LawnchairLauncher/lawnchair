@@ -42,6 +42,7 @@ import java.util.function.Consumer
 import java.util.function.Supplier
 import kotlin.test.assertNotNull
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
@@ -51,12 +52,12 @@ import org.mockito.kotlin.argThat
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 /**
  * Tests for [DragResizeInputListener].
  *
- * Build/Install/Run:
- *   atest WMShellUnitTests:DragResizeInputListenerTest
+ * Build/Install/Run: atest WMShellUnitTests:DragResizeInputListenerTest
  */
 @SmallTest
 @TestableLooper.RunWithLooper
@@ -66,11 +67,29 @@ class DragResizeInputListenerTest : ShellTestCase() {
     private val testBgExecutor = TestShellExecutor()
     private val mockWindowSession = mock<IWindowSession>()
     private val mockInputEventReceiver = mock<TaskResizeInputEventReceiver>()
-    private val inputChannel = mock<InputChannel>()
-    private val sinkInputChannel = mock<InputChannel>()
     private val decorationSurface = SurfaceControl.Builder().setName("decoration surface").build()
     private val createdSurfaces = ArrayList<SurfaceControl>()
     private val removedSurfaces = ArrayList<SurfaceControl>()
+
+    @Before
+    fun setUp() {
+        whenever(
+                mockWindowSession.grantInputChannel(
+                    anyInt(), // displayId
+                    any(), // decorationSurface
+                    any(), // clientToken
+                    anyOrNull(), // hostInputToken
+                    anyInt(), // flags
+                    anyInt(), // privateFlags
+                    anyInt(), // inputFeatures
+                    anyInt(), // type
+                    anyOrNull(), // windowToken
+                    any(), // inputTransferToken
+                    any(), // name
+                )
+            )
+            .thenReturn(InputChannel())
+    }
 
     @After
     fun tearDown() {
@@ -107,7 +126,6 @@ class DragResizeInputListenerTest : ShellTestCase() {
                     anyInt(),
                     anyInt(),
                     anyOrNull(),
-                    any(),
                     any(),
                     any(),
                 )
@@ -193,8 +211,6 @@ class DragResizeInputListenerTest : ShellTestCase() {
         testBgExecutor.flushAll()
         inputListener.close()
         testMainExecutor.flushAll()
-        verify(inputChannel).dispose()
-        verify(sinkInputChannel).dispose()
     }
 
     @Test
@@ -248,7 +264,6 @@ class DragResizeInputListenerTest : ShellTestCase() {
                 anyOrNull(),
                 any(),
                 any(),
-                any(),
             )
     }
 
@@ -284,8 +299,6 @@ class DragResizeInputListenerTest : ShellTestCase() {
             },
             mock<DisplayController>(),
             mock<DesktopModeEventLogger>(),
-            inputChannel,
-            sinkInputChannel,
         )
 
     private class TestInitializationCallback : Runnable {

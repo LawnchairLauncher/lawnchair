@@ -16,11 +16,12 @@
 
 package com.android.quickstep
 
+import android.app.WindowConfiguration.ACTIVITY_TYPE_DREAM
+import android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
 import android.view.Display.DEFAULT_DISPLAY
@@ -30,7 +31,6 @@ import com.android.dx.mockito.inline.extended.StaticMockitoSession
 import com.android.internal.R
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingViewHelper
-import com.android.launcher3.Flags
 import com.android.launcher3.Flags.enableRefactorTaskContentView
 import com.android.launcher3.Flags.enableRefactorTaskThumbnail
 import com.android.launcher3.logging.StatsLogManager
@@ -50,7 +50,8 @@ import com.android.quickstep.views.TaskViewIcon
 import com.android.quickstep.views.TaskViewType
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.Task.TaskKey
-import com.android.window.flags2.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODALS_POLICY
+import com.android.window.flags.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODALS_POLICY
+import com.android.window.flags.Flags.FLAG_ENABLE_DREAM_ACTIVITY_WINDOWING_EXCLUSION
 import com.android.wm.shell.shared.desktopmode.DesktopModeStatus
 import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource
 import com.google.common.truth.Truth.assertThat
@@ -134,6 +135,8 @@ class DesktopSystemShortcutTest {
                 /* numActivities */ 1,
                 /* isTopActivityNoDisplay */ true,
                 /* isActivityStackTransparent */ false,
+                /* topActivityType */ ACTIVITY_TYPE_STANDARD,
+                /* isTopActivityTransparent */ false,
             )
         val taskContainer = createTaskContainer(Task(taskKey))
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
@@ -156,6 +159,8 @@ class DesktopSystemShortcutTest {
                 /* numActivities */ 1,
                 /* isTopActivityNoDisplay */ false,
                 /* isActivityStackTransparent */ true,
+                /* topActivityType */ ACTIVITY_TYPE_STANDARD,
+                /* isTopActivityTransparent */ false,
             )
         val taskContainer = createTaskContainer(Task(taskKey))
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
@@ -180,6 +185,8 @@ class DesktopSystemShortcutTest {
                 /* numActivities */ 1,
                 /* isTopActivityNoDisplay */ false,
                 /* isActivityStackTransparent */ false,
+                /* topActivityType */ ACTIVITY_TYPE_STANDARD,
+                /* isTopActivityTransparent */ false,
             )
         val taskContainer = createTaskContainer(Task(taskKey))
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
@@ -206,8 +213,38 @@ class DesktopSystemShortcutTest {
                 /* numActivities */ 1,
                 /* isTopActivityNoDisplay */ false,
                 /* isActivityStackTransparent */ false,
+                /* topActivityType */ ACTIVITY_TYPE_STANDARD,
+                /* isTopActivityTransparent */ false,
             )
         val taskContainer = createTaskContainer(Task(taskKey).apply { isDockable = true })
+        val shortcuts = factory.getShortcuts(launcher, taskContainer)
+        assertThat(shortcuts).isNull()
+    }
+
+    @Test
+    @EnableFlags(
+        FLAG_ENABLE_DESKTOP_WINDOWING_MODALS_POLICY,
+        FLAG_ENABLE_DREAM_ACTIVITY_WINDOWING_EXCLUSION,
+    )
+    fun createDesktopTaskShortcutFactory_dreamActivity() {
+        val baseComponent = ComponentName("", /* class */ "")
+        val taskKey =
+            TaskKey(
+                /* id */ 1,
+                /* windowingMode */ 0,
+                Intent(),
+                baseComponent,
+                /* userId */ 0,
+                /* lastActiveTime */ 2000,
+                DEFAULT_DISPLAY,
+                baseComponent,
+                /* numActivities */ 1,
+                /* isTopActivityNoDisplay */ false,
+                /* isActivityStackTransparent */ false,
+                /* topActivityType */ ACTIVITY_TYPE_DREAM,
+                /* isTopActivityTransparent */ false,
+            )
+        val taskContainer = createTaskContainer(Task(taskKey))
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
         assertThat(shortcuts).isNull()
     }
@@ -272,24 +309,11 @@ class DesktopSystemShortcutTest {
         verify(recentsView)
             .moveTaskToDesktop(
                 eq(taskContainer),
-                eq(DesktopModeTransitionSource.APP_FROM_OVERVIEW),
+                eq(DesktopModeTransitionSource.OVERVIEW_TASK_MENU),
                 any(),
             )
         verify(statsLogger).withItemInfo(taskViewItemInfo)
         verify(statsLogger).log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_DESKTOP_TAP)
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_ENABLE_DESKTOP_MENU_ON_SECONDARY_DISPLAY_BUGFIX)
-    fun createDesktopTaskShortcutFactoryOnSecondaryDisplayWithoutFlag() {
-        `when`(DesktopModeStatus.canEnterDesktopMode(any())).thenReturn(true)
-        `when`(DesktopModeStatus.isDesktopModeSupportedOnDisplay(any(), any())).thenReturn(true)
-        doReturn(SECONDARY_DISPLAY).whenever(context).displayId
-
-        val taskContainer = createTaskContainer(createTask(displayId = SECONDARY_DISPLAY))
-
-        val shortcuts = factory.getShortcuts(launcher, taskContainer)
-        assertThat(shortcuts).isNull()
     }
 
     private fun createTask(displayId: Int = DEFAULT_DISPLAY) =
@@ -306,6 +330,8 @@ class DesktopSystemShortcutTest {
                     /* numActivities */ 1,
                     /* isTopActivityNoDisplay */ false,
                     /* isActivityStackTransparent */ false,
+                    /* topActivityType */ ACTIVITY_TYPE_STANDARD,
+                    /* isTopActivityTransparent */ false,
                 )
             )
             .apply { isDockable = true }

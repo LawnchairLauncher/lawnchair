@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="@androidprv:color/materialColorOnSurface"
             android:textAppearance="@*android:style/TextAppearance.DeviceDefault"
             android:text="@string/bubble_dismiss_text" />
 
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="@androidprv:color/materialColorOnSurface"
             android:textAppearance="@*android:style/TextAppearance.DeviceDefault"
             android:text="@string/bubbles_dont_bubble_conversation" />
 
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="@androidprv:color/materialColorOnSurface"
             android:textAppearance="@*android:style/TextAppearance.DeviceDefault" />
 
     </LinearLayout>
@@ -131,7 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/bubble_fullscreen_text"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="@androidprv:color/materialColorOnSurface"
             android:textAppearance="@*android:style/TextAppearance.DeviceDefault" />
 
     </LinearLayout>

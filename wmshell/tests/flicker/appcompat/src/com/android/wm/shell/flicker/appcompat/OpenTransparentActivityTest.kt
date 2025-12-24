@@ -17,11 +17,11 @@
 package com.android.wm.shell.flicker.appcompat
 
 import android.platform.test.annotations.Postsubmit
-import android.tools.flicker.assertions.FlickerTest
+import android.tools.flicker.assertions.FlickerChecker
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import android.tools.traces.component.ComponentNameMatcher
 import androidx.test.filters.RequiresDevice
 import org.junit.Test
@@ -48,7 +48,7 @@ import org.junit.runners.Parameterized
 @RequiresDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
-class OpenTransparentActivityTest(flicker: LegacyFlickerTest) : TransparentBaseAppCompat(flicker) {
+class OpenTransparentActivityTest(flicker: FlickerTest) : TransparentBaseAppCompat(flicker) {
 
     /** {@inheritDoc} */
     override val transition: FlickerBuilder.() -> Unit
@@ -107,8 +107,8 @@ class OpenTransparentActivityTest(flicker: LegacyFlickerTest) : TransparentBaseA
          */
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun getParams(): Collection<FlickerTest> {
-            return LegacyFlickerTestFactory.nonRotationTests()
+        fun getParams(): Collection<FlickerChecker> {
+            return FlickerTestFactory.nonRotationTests()
         }
     }
 }

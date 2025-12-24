@@ -37,6 +37,10 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
 
     @Override
     protected boolean shouldDraw(View item) {
+        if (!item.hasWindowFocus()) {
+            return false;
+        }
+
         if (Flags.enableFocusOutline()) {
             // Not draw outline in page transition because the outline just remains fully
             // persistent during the transition and does not look smooth

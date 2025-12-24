@@ -1,0 +1,167 @@
+/*
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.launcher3.model.tasks;
+
+import static android.os.Process.myUserHandle;
+
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY;
+import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY2;
+import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY3;
+import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
+import static com.android.launcher3.util.ModelTestExtensions.countPersistedModelItems;
+import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
+
+import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
+import com.android.launcher3.Flags;
+import com.android.launcher3.model.TestableModelState;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.LauncherLayoutBuilder;
+import com.android.launcher3.util.LayoutResource;
+import com.android.launcher3.util.ModelTestExtensions;
+import com.android.launcher3.util.SandboxApplication;
+import com.android.launcher3.util.rule.InstallerSessionRule;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Tests for {@link PackageInstallStateChangedTask}
+ */
+@SmallTest
+@RunWith(AndroidJUnit4.class)
+public class PackageInstallStateChangedTaskTest {
+
+    private static final String PENDING_APP_1 = TEST_PACKAGE + ".pending1";
+    private static final String PENDING_APP_2 = TEST_PACKAGE + ".pending2";
+
+    @Rule public SandboxApplication mContext = new SandboxApplication().withModelDependency();
+    @Rule public SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule public LayoutResource mLayout = new LayoutResource(mContext);
+    @Rule public InstallerSessionRule mInstallerSessionRule = new InstallerSessionRule();
+
+    private final List<AppInfo> mIncrementalUpdates = new ArrayList<>();
+    private TestableModelState mModelState;
+    private IntSet mDownloadingApps;
+
+    @Before
+    public void setup() throws Exception {
+        mInstallerSessionRule.createInstallerSession(PENDING_APP_1);
+        mInstallerSessionRule.createInstallerSession(PENDING_APP_2);
+
+        mModelState = mContext.getAppComponent().getTestableModelState();
+
+        LauncherLayoutBuilder builder = new LauncherLayoutBuilder()
+                .atWorkspace(0, 0, 1).putApp(TEST_PACKAGE, TEST_ACTIVITY)               // 1
+                .atWorkspace(0, 0, 2).putApp(TEST_PACKAGE, TEST_ACTIVITY2)              // 2
+                .atWorkspace(0, 0, 3).putApp(TEST_PACKAGE, TEST_ACTIVITY3)              // 3
+
+                .atWorkspace(0, 0, 4).putApp(PENDING_APP_1, TEST_ACTIVITY)              // 4
+                .atWorkspace(0, 0, 5).putApp(PENDING_APP_1, TEST_ACTIVITY2)             // 5
+                .atWorkspace(0, 0, 6).putApp(PENDING_APP_1, TEST_ACTIVITY3)             // 6
+                .atWorkspace(0, 0, 7).putWidget(PENDING_APP_1, "pending.widget", 1, 1)  // 7
+
+                .atWorkspace(0, 0, 8).putApp(PENDING_APP_2, TEST_ACTIVITY)              // 8
+                .atWorkspace(0, 0, 9).putApp(PENDING_APP_2, TEST_ACTIVITY2)             // 9
+                .atWorkspace(0, 0, 10).putApp(PENDING_APP_2, TEST_ACTIVITY3);           // 10
+
+        mDownloadingApps = IntSet.wrap(4, 5, 6, 7, 8, 9, 10);
+        mLayout.set(builder);
+        assertTrue(mModelState.model.isModelLoaded());
+        assertEquals(10, countPersistedModelItems(mModelState.dataModel.itemsIdMap));
+
+        mModelState.appsRepo.getIncrementalUpdates().forEach(MODEL_EXECUTOR, info -> {
+            mIncrementalUpdates.add(info);
+            return null;
+        });
+    }
+
+    private PackageInstallStateChangedTask newTask(String pkg, int progress) {
+        return new PackageInstallStateChangedTask(new PackageInstallInfo(
+                pkg, PackageInstallInfo.STATUS_INSTALLING, progress, myUserHandle()));
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_MODEL_REPOSITORY)
+    public void testSessionUpdate_ignore_installed() {
+        // Run on model executor so that no other task runs in the middle.
+        runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            mModelState.model.enqueueModelUpdateTask(newTask(TEST_PACKAGE, 30));
+
+            // No shortcuts were updated
+            verifyProgressUpdate(0);
+            assertThat(mIncrementalUpdates).isEmpty();
+        });
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_MODEL_REPOSITORY)
+    public void testSessionUpdate_shortcuts_updated() {
+        // Run on model executor so that no other task runs in the middle.
+        runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            mModelState.model.enqueueModelUpdateTask(newTask(PENDING_APP_1, 30));
+
+            verifyProgressUpdate(30, 4, 5, 6, 7);
+            assertThat(mIncrementalUpdates).isEmpty();
+        });
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_MODEL_REPOSITORY)
+    public void testSessionUpdate_widgets_updated() {
+        // Run on model executor so that no other task runs in the middle.
+        runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            mModelState.model.enqueueModelUpdateTask(newTask(PENDING_APP_2, 30));
+
+            verifyProgressUpdate(30, 8, 9, 10);
+            assertThat(mIncrementalUpdates).isEmpty();
+        });
+    }
+
+    private void verifyProgressUpdate(int progress, int... idsUpdated) {
+        IntSet updates = IntSet.wrap(idsUpdated);
+        for (ItemInfo info : mModelState.dataModel.itemsIdMap) {
+            if (info.id < 0 || !ModelTestExtensions.isPersistedModelItem(info)) continue;
+            int expectedProgress = updates.contains(info.id) ? progress
+                    : (mDownloadingApps.contains(info.id) ? 0 : 100);
+            if (info instanceof WorkspaceItemInfo wi) {
+                assertEquals(expectedProgress, wi.getProgressLevel());
+            } else {
+                assertEquals(expectedProgress, ((LauncherAppWidgetInfo) info).installProgress);
+            }
+        }
+    }
+}

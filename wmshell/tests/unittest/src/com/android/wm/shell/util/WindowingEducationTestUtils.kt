@@ -34,7 +34,6 @@ fun createAppHandleState(
     runningTaskInfo: RunningTaskInfo = createTaskInfo(),
     isHandleMenuExpanded: Boolean = false,
     globalAppHandleBounds: Rect = Rect(),
-    isCapturedLinkAvailable: Boolean = false,
     appHandleIdentifier: AppHandleIdentifier = mock(),
     isFocused: Boolean = true,
 ): CaptionState.AppHandle =
@@ -42,7 +41,6 @@ fun createAppHandleState(
         runningTaskInfo = runningTaskInfo,
         isHandleMenuExpanded = isHandleMenuExpanded,
         globalAppHandleBounds = globalAppHandleBounds,
-        isCapturedLinkAvailable = isCapturedLinkAvailable,
         appHandleIdentifier = appHandleIdentifier,
         isFocused = isFocused,
     )
@@ -56,15 +54,13 @@ fun createAppHeaderState(
     runningTaskInfo: RunningTaskInfo = createTaskInfo(),
     isHeaderMenuExpanded: Boolean = false,
     globalAppChipBounds: Rect = Rect(),
-    isCapturedLinkAvailable: Boolean = false,
     isFocused: Boolean = true,
 ): CaptionState.AppHeader =
     CaptionState.AppHeader(
         runningTaskInfo = runningTaskInfo,
         isHeaderMenuExpanded = isHeaderMenuExpanded,
         globalAppChipBounds = globalAppChipBounds,
-        isCapturedLinkAvailable = isCapturedLinkAvailable,
-        isFocused = isFocused
+        isFocused = isFocused,
     )
 
 /**

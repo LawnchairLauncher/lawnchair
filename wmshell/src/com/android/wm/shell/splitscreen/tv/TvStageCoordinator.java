@@ -68,7 +68,8 @@ public class TvStageCoordinator extends StageCoordinator
                 displayInsetsController, transitions, transactionPool, iconProvider,
                 mainExecutor, mainHandler, recentTasks, launchAdjacentController,
                 Optional.empty(), splitState, Optional.empty(), Optional.empty(), rootTDAOrganizer,
-                rootDisplayAreaOrganizer, desktopState, activityTaskManager, msdlPlayer);
+                rootDisplayAreaOrganizer, desktopState, activityTaskManager, msdlPlayer,
+                Optional.empty());
 
         mTvSplitMenuController = new TvSplitMenuController(context, this,
                 systemWindows, mainHandler);

@@ -17,6 +17,8 @@ package com.android.quickstep;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.Flags.enableRecentsInTaskbar;
+
 import static junit.framework.TestCase.assertEquals;
 
 import android.content.Context;
@@ -24,8 +26,8 @@ import android.content.Intent;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.Taskbar;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.LauncherLayoutBuilder;
+import com.android.launcher3.util.TaskbarModeUtil;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.ui.AbstractLauncherUiTest;
 
@@ -38,6 +40,7 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
 
     protected static final String TEST_APP_PACKAGE =
             getInstrumentation().getContext().getPackageName();
+    protected static final String CALCULATOR_APP_NAME = "Calculator";
     protected static final String CALCULATOR_APP_PACKAGE =
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
 
@@ -47,7 +50,7 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
 
     @Override
     public void setUp() throws Exception {
-        Assume.assumeTrue(mLauncher.isTablet());
+        Assume.assumeTrue("Ignoring test because device is not a tablet", mLauncher.isTablet());
         super.setUp();
 
         LauncherLayoutBuilder layoutBuilder = new LauncherLayoutBuilder().atHotseat(0).putApp(
@@ -71,7 +74,7 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
     }
 
     protected static boolean isTaskbarInTransientMode(Context context) {
-        return DisplayController.isTransientTaskbar(context);
+        return TaskbarModeUtil.INSTANCE.get(context).isTransient();
     }
 
     protected boolean startCalendarAppDuringSetup() {
@@ -91,12 +94,15 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
         List<String> taskbarIconNames = taskbar.getIconNames();
         List<String> hotseatIconNames = mLauncher.getHotseatIconNames();
 
-        assertEquals("Taskbar and hotseat icon counts do not match",
-                taskbarIconNames.size(), hotseatIconNames.size());
+        // TODO(b/343522351): Re-enable asserts when recents are on home screen too.
+        if (!enableRecentsInTaskbar()) {
+            assertEquals("Taskbar and hotseat icon counts do not match",
+                    taskbarIconNames.size(), hotseatIconNames.size());
 
-        for (int i = 0; i < taskbarIconNames.size(); i++) {
-            assertEquals("Taskbar and Hotseat icons do not match",
-                    taskbarIconNames, hotseatIconNames);
+            for (int i = 0; i < taskbarIconNames.size(); i++) {
+                assertEquals("Taskbar and Hotseat icons do not match",
+                        taskbarIconNames, hotseatIconNames);
+            }
         }
 
         return taskbar;
@@ -107,6 +113,6 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
         launcher.enableTransientTaskbar(expectTransientTaskbar);
         launcher.recreateTaskbar();
         launcher.checkForAnomaly(true, true);
-        AbstractLauncherUiTest.checkDetectedLeaks(launcher, true);
+        AbstractLauncherUiTest.checkDetectedLeaks(launcher);
     }
 }

@@ -18,7 +18,10 @@ package com.android.launcher3.tapl;
 
 import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+import static com.android.launcher3.tapl.LauncherInstrumentation.eventListToString;
+import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.LauncherInstrumentation.log;
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
@@ -38,6 +41,7 @@ import androidx.test.uiautomator.UiObject2;
 import com.android.launcher3.tapl.Taskbar.TaskbarLocation;
 import com.android.launcher3.testing.shared.TestProtocol;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -74,6 +78,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         super(launcher);
         verifyActiveContainer();
         verifyActionsViewVisibility();
+        verifyAddDesktopButtonVisibility();
         if (launchedFromApp) {
             mLiveTileTask = getCurrentTaskUnchecked();
         } else {
@@ -93,6 +98,25 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             flingForwardImpl();
         }
+    }
+
+    /**
+     * Scrolls forward (left) by the width of one task.
+     */
+    public BaseOverview scrollForwardByOneTask() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "scrolling forward by one task in overview")) {
+            final OverviewTask currentTask = getCurrentTask();
+            final int taskWidth = currentTask.getUiObject().getVisibleBounds().width();
+            final int pageSpacing = mLauncher.getOverviewPageSpacing();
+            final int scrollDistance =
+                    taskWidth + pageSpacing + mLauncher.getTouchSlop();
+
+            final UiObject2 overview = verifyActiveContainer();
+            mLauncher.scrollLeftByDistance(overview, scrollDistance);
+        }
+        return this;
     }
 
     private void flingForwardImpl() {
@@ -138,16 +162,22 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         }
     }
 
+    /**
+     * Flings to the 1st (right-most) task in Overview.
+     */
     private OverviewTask flingToFirstTask() {
-        OverviewTask currentTask = getCurrentTask();
-
-        while (mLauncher.getRealDisplaySize().x - currentTask.getUiObject().getVisibleBounds().right
-                <= mLauncher.getOverviewPageSpacing()) {
+        UiObject2 rightMostTask = getRightMostTaskOnScreen();
+        while (rightMostTask != null && !isFirstTask(rightMostTask)) {
             flingBackwardImpl();
-            currentTask = getCurrentTask();
+            rightMostTask = getRightMostTaskOnScreen();
         }
+        mLauncher.assertNotNull("Unable to find the rightmost task", rightMostTask);
+        return new OverviewTask(mLauncher, rightMostTask, this);
+    }
 
-        return currentTask;
+    private boolean isFirstTask(@NonNull UiObject2 task) {
+        return mLauncher.getRealDisplaySize().x - task.getVisibleBounds().right
+                > mLauncher.getOverviewPageSpacing();
     }
 
     /**
@@ -167,20 +197,58 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             final Runnable clickClearAll = () -> mLauncher.clickLauncherObject(
                     mLauncher.waitForObjectInContainer(verifyActiveContainer(),
                             clearAllSelector));
-            // When the recents window is enabled, there is no RecentsActivity to send
-            // LAUNCHER_ACTIVITY_STOPPED_MESSAGE in the 3P launcher case.
-            if (mLauncher.is3PLauncher() && !mLauncher.isRecentsWindowEnabled()) {
-                mLauncher.executeAndWaitForLauncherStop(
-                        clickClearAll,
+
+            if (mLauncher.isInDesktopFirstMode()) {
+                // In desktop-first mode clear-all does not go to a home
+                mLauncher.executeAndWaitForEvent(clickClearAll,
+                        event -> TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE
+                                .equals(event.getClassName().toString()),
+                        () -> "'Clear All' didn't complete",
                         "clicking 'Clear All'");
             } else {
-                mLauncher.runToState(
-                        clickClearAll,
-                        NORMAL_STATE_ORDINAL,
-                        "clicking 'Clear All'");
-            }
+                // When the recents window is enabled, there is no RecentsActivity to send
+                // LAUNCHER_ACTIVITY_STOPPED_MESSAGE in the 3P launcher case.
+                if (mLauncher.is3PLauncher() && !mLauncher.isRecentsWindowEnabled()) {
+                    mLauncher.executeAndWaitForLauncherStop(
+                            clickClearAll,
+                            "clicking 'Clear All'");
+                } else {
+                    boolean[] isNormalState = new boolean[]{false};
+                    boolean[] isDismissEnded = new boolean[]{false};
+                    final List<Integer> actualEvents = new ArrayList<>();
+                    mLauncher.executeAndWaitForEvent(
+                            clickClearAll,
+                            event -> {
+                                if (!isNormalState[0] && mLauncher.isSwitchToStateEvent(event,
+                                        NORMAL_STATE_ORDINAL, actualEvents)) {
+                                    isNormalState[0] = true;
+                                }
+                                if (!isDismissEnded[0]
+                                        && TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE.equals(
+                                        event.getClassName())) {
+                                    isDismissEnded[0] = true;
+                                }
 
-            mLauncher.waitUntilLauncherObjectGone(clearAllSelector);
+                                return isNormalState[0] && isDismissEnded[0];
+                            },
+                            () -> {
+                                StringBuilder failureMessage = new StringBuilder();
+                                if (!isNormalState[0]) {
+                                    failureMessage.append(
+                                            "Failed to receive event for state change to Normal. "
+                                                    + "Actual events: ").append(
+                                            eventListToString(actualEvents));
+                                }
+                                if (!isDismissEnded[0]) {
+                                    failureMessage.append(
+                                            "Failed to receive dismiss animation ends message.");
+                                }
+                                return failureMessage.toString();
+                            },
+                            "clicking 'Clear All'");
+                }
+                mLauncher.waitUntilLauncherObjectGone(clearAllSelector);
+            }
         }
     }
 
@@ -337,6 +405,23 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     }
 
     /**
+     * Gets the top-right most task on screen.
+     */
+    @Nullable
+    private UiObject2 getRightMostTaskOnScreen() {
+        final List<UiObject2> taskViews = getTasks();
+        if (taskViews.isEmpty()) {
+            return null;
+        }
+
+        // The most top-right task.
+        return Collections.max(taskViews,
+                Comparator.comparingInt((UiObject2 t) -> t.getVisibleCenter().x)
+                        .thenComparing(Comparator.comparing(
+                                (UiObject2 t) -> t.getVisibleCenter().y).reversed()));
+    }
+
+    /**
      * Returns an overview task that contains the specified test activity in its thumbnails.
      *
      * @param activityIndex index of TestActivity to match against
@@ -426,6 +511,37 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     }
 
     /**
+     * Clicks the 'Add desktop' button to create a new empty desk.
+     */
+    public BaseOverview createDeskViaClickAddDesktopButton() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to click add desktop button")) {
+            flingToFirstTask();
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "scrolled to add desktop button")) {
+                int desktopTasksCount = getDesktopTasksCount();
+                mLauncher.clickLauncherObject(mLauncher
+                        .waitForOverviewObject("add_desktop_button"));
+                mLauncher.assertTrue("Failed to verify the num of desks, expected num is: "
+                        + (desktopTasksCount + 1) + ", but get: " + getDesktopTasksCount(),
+                        mLauncher.waitAndGet(() -> getDesktopTasksCount() == desktopTasksCount + 1,
+                        WAIT_TIME_MS, DEFAULT_POLL_INTERVAL));
+                return new BaseOverview(mLauncher);
+            }
+        }
+    }
+
+    /**
+     * Returns the number of desktops in Overview.
+     */
+    public int getDesktopTasksCount() {
+        return (int) getTasks().stream()
+                .filter(task -> OverviewTask.getType(task) == OverviewTask.TaskViewType.DESKTOP)
+                .count();
+    }
+
+    /**
      * Returns the taskbar if it's a tablet, or {@code null} otherwise.
      */
     @Nullable
@@ -446,10 +562,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * The bubble bar must already be visible when calling this method.
      */
     public BubbleBar getBubbleBar() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to get the bubble bar")) {
-            return new BubbleBar(mLauncher);
-        }
+        return mLauncher.getBubbleBar();
     }
 
     protected boolean isActionsViewVisible() {
@@ -534,25 +647,36 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             return;
         }
 
-        boolean isTablet = mLauncher.isTablet();
-        OverviewTask task = isTablet ? getFocusedTaskForTablet() : getCurrentTask();
-
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to assert overview actions view visibility="
-                        + isActionsViewVisible()
-                        + ", focused task is "
-                        + (task == null ? "null" : (task.isGrouped() ? "split" : "not split"))
-                )) {
-
-            if (isActionsViewVisible()) {
-                if (task.isGrouped()) {
-                    mLauncher.waitForOverviewObject("action_save_app_pair");
-                } else {
-                    mLauncher.waitForOverviewObject("action_buttons");
-                }
+        boolean isActionsViewVisible = isActionsViewVisible();
+        try (LauncherInstrumentation.Closable ignored = mLauncher.addContextLayer(
+                "want to assert overview actions view visibility=" + isActionsViewVisible)) {
+            if (isActionsViewVisible) {
+                mLauncher.waitForOverviewObject("action_buttons");
             } else {
                 mLauncher.waitUntilOverviewObjectGone("action_buttons");
-                mLauncher.waitUntilOverviewObjectGone("action_save_app_pair");
+            }
+        }
+    }
+
+    protected boolean isAddDesktopButtonExpected() {
+        UiObject2 rightMostTask = getRightMostTaskOnScreen();
+        return mLauncher.areMultiDesksFlagsEnabled() && rightMostTask != null
+                && isFirstTask(rightMostTask);
+    }
+
+    /**
+     * Verifies that the 'Add desktop' button is visible if it is expected.
+     */
+    private void verifyAddDesktopButtonVisibility() {
+        final boolean expected = isAddDesktopButtonExpected();
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to assert add desktop button visibility="
+                        + expected
+        )) {
+            if (expected) {
+                mLauncher.waitForOverviewObject("add_desktop_button");
+            } else {
+                mLauncher.waitUntilOverviewObjectGone("add_desktop_button");
             }
         }
     }

@@ -39,7 +39,7 @@ class AssistContentRequester(
     private val callBackExecutor: Executor,
     private val systemInteractionExecutor: Executor
 ) {
-    interface Callback {
+    fun interface Callback {
         // Called when the [AssistContent] of the requested task is available.
         fun onAssistContentAvailable(assistContent: AssistContent?)
     }

@@ -34,11 +34,13 @@ import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.graphics.ThemeManager
+import com.android.launcher3.icons.IconChangeTracker
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.icons.LauncherIconProvider.ATTR_DRAWABLE
 import com.android.launcher3.icons.LauncherIconProvider.ATTR_PACKAGE
 import com.android.launcher3.icons.LauncherIconProvider.TAG_ICON
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.util.SafeCloseable
 import org.xmlpull.v1.XmlPullParser
 
@@ -197,21 +199,10 @@ class LawnchairIconProvider @JvmOverloads constructor(
         mSystemState += "," + mThemeManager?.iconState?.toUniqueId()
     }
 
-    override fun registerIconChangeListener(
-        callback: IconChangeListener,
-        handler: Handler,
-    ): SafeCloseable {
-        return MultiSafeCloseable().apply {
-            add(super.registerIconChangeListener(callback, handler))
-            add(IconPackChangeReceiver(context, handler, callback))
-            add(LawniconsChangeReceiver(context, handler, callback))
-        }
-    }
-
     private inner class IconPackChangeReceiver(
         private val context: Context,
         private val handler: Handler,
-        private val callback: IconChangeListener,
+        private val callback: IconChangeTracker,
     ) : SafeCloseable {
 
         private var calendarAndClockChangeReceiver: CalendarAndClockChangeReceiver? = null
@@ -264,7 +255,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
         private val context: Context,
         handler: Handler,
         private val iconPack: IconPack,
-        private val callback: IconChangeListener,
+        private val callback: IconChangeTracker,
     ) : BroadcastReceiver(),
         SafeCloseable {
 
@@ -281,7 +272,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 ACTION_TIMEZONE_CHANGED, ACTION_TIME_CHANGED, ACTION_TIME_TICK -> {
                     context.getSystemService<UserManager>()?.userProfiles?.forEach { user ->
                         iconPack.getClocks().forEach { componentName ->
-                            callback.onAppIconChanged(
+                            callback.notifyIconChanged(
                                 componentName.packageName,
                                 user,
                             )
@@ -292,7 +283,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 ACTION_DATE_CHANGED -> {
                     context.getSystemService<UserManager>()?.userProfiles?.forEach { user ->
                         iconPack.getCalendars().forEach { componentName ->
-                            callback.onAppIconChanged(componentName.packageName, user)
+                            callback.notifyIconChanged(componentName.packageName, user)
                         }
                     }
                 }
@@ -307,7 +298,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
     private inner class LawniconsChangeReceiver(
         private val context: Context,
         handler: Handler,
-        private val callback: IconChangeListener,
+        private val callback: IconChangeTracker,
     ) : BroadcastReceiver(),
         SafeCloseable {
 

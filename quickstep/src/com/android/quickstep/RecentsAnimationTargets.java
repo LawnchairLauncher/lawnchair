@@ -35,14 +35,12 @@ import java.io.PrintWriter;
 public class RecentsAnimationTargets extends RemoteAnimationTargets {
 
     public final Rect homeContentInsets;
-    public final Rect minimizedHomeBounds;
 
     public RecentsAnimationTargets(RemoteAnimationTarget[] apps,
             RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
-            Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras) {
+            Rect homeContentInsets, Bundle extras) {
         super(apps, wallpapers, nonApps, MODE_CLOSING, extras);
         this.homeContentInsets = homeContentInsets;
-        this.minimizedHomeBounds = minimizedHomeBounds;
     }
 
     public boolean hasTargets() {
@@ -75,6 +73,5 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
         pw.println(prefix + "RecentsAnimationTargets:");
 
         pw.println(prefix + "\thomeContentInsets=" + homeContentInsets);
-        pw.println(prefix + "\tminimizedHomeBounds=" + minimizedHomeBounds);
     }
 }

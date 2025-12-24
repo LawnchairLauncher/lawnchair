@@ -16,26 +16,19 @@
 
 package com.android.wm.shell.scenarios
 
-import android.platform.test.annotations.Postsubmit
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.ImeAppHelper
 import com.android.server.wm.flicker.helpers.MailAppHelper
 import com.android.server.wm.flicker.helpers.NewTasksAppHelper
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.window.flags.Flags
-import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
 
-@RunWith(BlockJUnit4ClassRunner::class)
-@Postsubmit
-open class DragAppWindowMultiWindowAndPip : DragAppWindowScenarioTestBase()
+@Ignore("Test Base Class")
+abstract class DragAppWindowMultiWindowAndPip : DragAppWindowScenarioTestBase()
 {
     private val imeAppHelper = ImeAppHelper(instrumentation)
     private val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
@@ -46,10 +39,6 @@ open class DragAppWindowMultiWindowAndPip : DragAppWindowScenarioTestBase()
 
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
         testApp.enterDesktopMode(wmHelper, device)
         // Set string extra to ensure the app is on PiP mode at launch
         pipApp.launchViaIntentAndWaitForPip(wmHelper, stringExtras = mapOf("enter_pip" to "true"))

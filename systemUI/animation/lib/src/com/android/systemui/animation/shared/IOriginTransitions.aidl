@@ -17,6 +17,7 @@
 package com.android.systemui.animation.shared;
 
 import android.window.RemoteTransition;
+import android.window.TransitionFilter;
 
 /**
  * An interface for an app to link a launch transition and a return transition together into an
@@ -46,4 +47,21 @@ interface IOriginTransitions {
      * Returns the token to be used as the default `apply` token with SurfaceControl.Transaction.
      */
     IBinder getDefaultTransactionApplyToken() = 3;
+
+    /**
+     * Create a new "origin transition" which wraps a launch transition and a set of possible
+     * return transitions (where the return transition options are defined by a pair of lists -
+     * the first specifying the set of returns and the second the corresponding filters).
+     * The returned {@link RemoteTransition} is expected to be passed to
+     * {@link ActivityOptions#makeRemoteTransition(RemoteTransition)} to create an
+     * {@link ActivityOptions} and being used to launch an intent. When being used with
+     * {@link ActivityOptions}, the launch transition will be triggered for launching the intent,
+     * and the return transitions will be remembered with the selected one being triggered for
+     * returning from the launched activity based on filter matching.
+     * Note that the list elements (filters/transitions) will be paired in order, that is the
+     * first filter will correspond to the first transition and so on. The lists must be
+     * non-empty and of matching length otherwise an exception will be thrown.
+     */
+    RemoteTransition makeOriginTransitionWithReturnFilters(in RemoteTransition launchTransition,
+            in List<RemoteTransition> returnTransitions, in List<TransitionFilter> returnFilters) = 4;
 }

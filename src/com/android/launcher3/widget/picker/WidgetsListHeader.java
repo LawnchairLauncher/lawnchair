@@ -38,8 +38,9 @@ import androidx.core.view.ViewCompat;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
-import com.android.launcher3.icons.PlaceHolderIconDrawable;
+import com.android.launcher3.icons.PlaceHolderDrawableDelegate;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.CancellableTask;
@@ -90,7 +91,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.WidgetsListRowHeader, defStyleAttr, /* defStyleRes= */ 0);
         mIconSize = a.getDimensionPixelSize(R.styleable.WidgetsListRowHeader_appIconSize,
-                grid.iconSizePx);
+                grid.getWorkspaceIconProfile().getIconSizePx());
         mIsCollapsable = a.getBoolean(R.styleable.WidgetsListRowHeader_collapsable, true);
     }
 
@@ -202,10 +203,10 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mAppIcon.setImageDrawable(icon);
 
         // If the current icon is a placeholder color, animate its update.
-        if (mIconDrawable != null
-                && mIconDrawable instanceof PlaceHolderIconDrawable
+        if ((mIconDrawable instanceof FastBitmapDrawable fbd)
+                && (fbd.getDelegate() instanceof PlaceHolderDrawableDelegate delegate)
                 && mEnableIconUpdateAnimation) {
-            ((PlaceHolderIconDrawable) mIconDrawable).animateIconUpdate(icon);
+            delegate.animateIconUpdate(icon);
         }
     }
 

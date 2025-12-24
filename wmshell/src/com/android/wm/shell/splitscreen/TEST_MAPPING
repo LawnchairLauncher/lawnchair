@@ -1,0 +1,11 @@
+{
+  "imports": [
+    {
+      // Includes all flicker configs that rely on these scenarios
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/flicker-legacy"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/scenarios"
+    }
+  ]
+}

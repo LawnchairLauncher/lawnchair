@@ -93,6 +93,9 @@ public class CompatUIConfiguration implements DeviceConfig.OnPropertiesChangedLi
     // Whether the extended restart dialog is enabled
     private boolean mIsRestartDialogEnabled;
 
+    // Whether the restart button is enabled
+    private boolean mIsRestartButtonConfigEnabled;
+
     // Whether the additional education about reachability is enabled
     private boolean mIsReachabilityEducationEnabled;
 
@@ -112,6 +115,8 @@ public class CompatUIConfiguration implements DeviceConfig.OnPropertiesChangedLi
     public CompatUIConfiguration(Context context, @ShellMainThread ShellExecutor mainExecutor) {
         mIsRestartDialogEnabled = context.getResources().getBoolean(
                 R.bool.config_letterboxIsRestartDialogEnabled);
+        mIsRestartButtonConfigEnabled = context.getResources().getBoolean(
+                R.bool.config_isSizeCompatRestartButtonEnabled);
         mIsReachabilityEducationEnabled = context.getResources().getBoolean(
                 R.bool.config_letterboxIsReachabilityEducationEnabled);
         final int tolerance = context.getResources().getInteger(
@@ -144,6 +149,13 @@ public class CompatUIConfiguration implements DeviceConfig.OnPropertiesChangedLi
      */
     void setIsRestartDialogOverrideEnabled(boolean enabled) {
         mIsRestartDialogOverrideEnabled = enabled;
+    }
+
+    /**
+     * @return whether the restart button is enabled
+     */
+    boolean isRestartButtonConfigEnabled() {
+        return mIsRestartButtonConfigEnabled;
     }
 
     /**

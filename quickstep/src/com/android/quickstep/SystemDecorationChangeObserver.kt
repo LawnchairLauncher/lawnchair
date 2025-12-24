@@ -22,12 +22,16 @@ import com.android.app.displaylib.DisplayDecorationListener
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
-import com.android.launcher3.util.Executors.MAIN_EXECUTOR
+import com.android.launcher3.concurrent.annotations.Ui
 import com.android.quickstep.dagger.QuickstepBaseAppComponent
+import java.util.concurrent.Executor
 import javax.inject.Inject
 
 @LauncherAppSingleton
-class SystemDecorationChangeObserver @Inject constructor(@ApplicationContext context: Context) {
+class SystemDecorationChangeObserver @Inject constructor(
+    @ApplicationContext context: Context,
+    @Ui private val uiExecutor: Executor
+) {
     companion object {
         private const val TAG = "SystemDecorationChangeObserver"
         private const val DEBUG = false
@@ -42,21 +46,21 @@ class SystemDecorationChangeObserver @Inject constructor(@ApplicationContext con
     fun notifyAddSystemDecorations(displayId: Int) {
         if (DEBUG) Log.d(TAG, "SystemDecorationAdded: $displayId")
         for (listener in mDisplayDecorationListeners) {
-            MAIN_EXECUTOR.execute { listener.onDisplayAddSystemDecorations(displayId) }
+            uiExecutor.execute { listener.onDisplayAddSystemDecorations(displayId) }
         }
     }
 
     fun notifyOnDisplayRemoved(displayId: Int) {
         if (DEBUG) Log.d(TAG, "displayRemoved: $displayId")
         for (listener in mDisplayDecorationListeners) {
-            MAIN_EXECUTOR.execute { listener.onDisplayRemoved(displayId) }
+            uiExecutor.execute { listener.onDisplayRemoved(displayId) }
         }
     }
 
     fun notifyDisplayRemoveSystemDecorations(displayId: Int) {
         if (DEBUG) Log.d(TAG, "SystemDecorationRemoved: $displayId")
         for (listener in mDisplayDecorationListeners) {
-            MAIN_EXECUTOR.execute { listener.onDisplayRemoveSystemDecorations(displayId) }
+            uiExecutor.execute { listener.onDisplayRemoveSystemDecorations(displayId) }
         }
     }
 

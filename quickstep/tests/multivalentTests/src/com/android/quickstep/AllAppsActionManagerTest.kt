@@ -61,7 +61,14 @@ class AllAppsActionManagerTest {
     private val settingsCacheSandbox =
         SettingsCacheSandbox().also { it[USER_SETUP_COMPLETE_URI] = 1 }
     private val quickstepKeyGestureEventsManager by
-        lazy(LazyThreadSafetyMode.NONE) { spy(QuickstepKeyGestureEventsManager(context)) }
+        lazy(LazyThreadSafetyMode.NONE) {
+            spy(
+                QuickstepKeyGestureEventsManager(
+                    context,
+                    settingsCacheSandbox.cache,
+                )
+            )
+        }
 
     private val allAppsActionManager by
         lazy(LazyThreadSafetyMode.NONE) {
@@ -72,7 +79,7 @@ class AllAppsActionManagerTest {
         }
 
     @Before
-    fun setUp() {
+    fun initDaggerGraph() {
         context.initDaggerComponent(
             DaggerAllAppsActionManagerTestComponent.builder()
                 .bindSettingsCache(settingsCacheSandbox.cache)
@@ -81,6 +88,8 @@ class AllAppsActionManagerTest {
         doNothing().whenever(inputManager).registerKeyGestureEventHandler(any(), any())
         doNothing().whenever(inputManager).unregisterKeyGestureEventHandler(any())
     }
+
+    @Before fun unlockUser() = allAppsActionManager.onUserUnlocked()
 
     @After fun destroyManager() = allAppsActionManager.onDestroy()
 

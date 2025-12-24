@@ -16,55 +16,86 @@
 
 package com.android.launcher3.recyclerview
 
-import android.content.Context
 import android.util.Log
 import android.view.ContextThemeWrapper
-import android.view.InflateException
 import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.Companion.PRIVATE
 import androidx.annotation.VisibleForTesting.Companion.PROTECTED
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.BuildConfig
+import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.BaseAllAppsAdapter
-import com.android.launcher3.config.FeatureFlags
-import com.android.launcher3.util.CancellableTask
+import com.android.launcher3.dagger.ActivityContextSingleton
+import com.android.launcher3.pm.UserCache
+import com.android.launcher3.util.AsyncObjectAllocator
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
-import com.android.launcher3.util.Executors.VIEW_PREINFLATION_EXECUTOR
+import com.android.launcher3.util.SafeCloseable
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
-
-const val PREINFLATE_ICONS_ROW_COUNT = 4
-const val EXTRA_ICONS_COUNT = 2
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * An [RecycledViewPool] that preinflates app icons ([ViewHolder] of [BubbleTextView]) of all apps
  * [RecyclerView]. The view inflation will happen on background thread and inflated [ViewHolder]s
  * will be added to [RecycledViewPool] on main thread.
  */
-class AllAppsRecyclerViewPool<T> : RecycledViewPool() where T : Context, T : ActivityContext {
+@ActivityContextSingleton
+class AllAppsRecyclerViewPool
+@Inject
+constructor(
+    private val activityContext: ActivityContext,
+    private val allAppsStore: AllAppsStore,
+    @Named(PRELOAD_ALL_APPS_DAGGER_KEY) private val preInflateAllApps: Boolean,
+    private val userCache: UserCache,
+) : RecycledViewPool() {
 
-    var hasWorkProfile = false
-    @VisibleForTesting(otherwise = PROTECTED)
-    var mCancellableTask: CancellableTask<List<ViewHolder>>? = null
+    // Initialized to RecycledViewPool.DEFAULT_MAX_SCRAP
+    private var targetPoolSize: Int = 0
 
-    companion object {
-        private const val TAG = "AllAppsRecyclerViewPool"
-        private const val NULL_LAYOUT_MANAGER_ERROR_STRING =
-            "activeRv's layoutManager should not be null"
+    @VisibleForTesting(otherwise = PROTECTED) var mCancellableTask: SafeCloseable? = null
+
+    init {
+        // This class is a activity level singleton, so no need to remove the listener
+        activityContext.addOnDeviceProfileChangeListener { updatePoolSize() }
+        // Update pool size, in-case the work-profile availability changes
+        allAppsStore.addUpdateListener { updatePoolSize() }
+        updatePoolSize()
+    }
+
+    /**
+     * After testing on phone, foldable and tablet, we found [PREINFLATE_ICONS_ROW_COUNT] rows of
+     * app icons plus [EXTRA_ICONS_COUNT] is the magic minimal count of app icons to preinflate to
+     * suffice fast scrolling.
+     */
+    private fun updatePoolSize() {
+        val grid = activityContext.deviceProfile
+        var targetCount =
+            EXTRA_ICONS_COUNT +
+                (PREINFLATE_ICONS_ROW_COUNT + grid.maxAllAppsRowCount) * grid.numShownAllAppsColumns
+
+        // Double the count if there is a work tab
+        if (allAppsStore.apps.any { userCache.getUserInfo(it.user).isWork }) {
+            targetCount *= 2
+        }
+        targetPoolSize = targetCount
+        setMaxRecycledViews(BaseAllAppsAdapter.VIEW_TYPE_ICON, targetPoolSize)
+        if (preInflateAllApps) {
+            schedulePreInflation()
+        }
     }
 
     /**
      * Preinflate app icons. If all apps RV cannot be scrolled down, we don't need to preinflate.
      */
-    fun preInflateAllAppsViewHolders(context: T) {
-        val appsView = context.appsView ?: return
+    private fun schedulePreInflation() {
+        val appsView = activityContext.appsView ?: return
         val activeRv: RecyclerView = appsView.activeRecyclerView ?: return
-        val preInflateCount = getPreinflateCount(context)
-        if (preInflateCount <= 0) {
-            return
-        }
+        val preInflateCount = getPreInflateCount()
+        if (preInflateCount <= 0) return
 
         if (activeRv.layoutManager == null) {
             if (false) {
@@ -74,6 +105,8 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() where T : Context, T : Act
             }
             return
         }
+
+        val context = activityContext.asContext()
 
         // Create a separate context dedicated for all apps preinflation thread. The goal is to
         // create a separate AssetManager obj internally to avoid lock contention with
@@ -89,9 +122,9 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() where T : Context, T : Act
         // data source information.
         val adapter: RecyclerView.Adapter<BaseAllAppsAdapter.ViewHolder> =
             object :
-                BaseAllAppsAdapter<T>(
-                    context,
-                    context.appsView.layoutInflater.cloneInContext(allAppsPreInflationContext),
+                BaseAllAppsAdapter(
+                    activityContext,
+                    appsView.layoutInflater.cloneInContext(allAppsPreInflationContext),
                     null,
                     null,
                 ) {
@@ -106,59 +139,37 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() where T : Context, T : Act
             activeRv,
             preInflateCount,
         ) {
-            getPreinflateCount(context)
+            getPreInflateCount()
         }
     }
 
-    @VisibleForTesting(otherwise = PROTECTED)
-    fun preInflateAllAppsViewHolders(
+    @VisibleForTesting(otherwise = PRIVATE)
+    inline fun preInflateAllAppsViewHolders(
         adapter: RecyclerView.Adapter<*>,
         viewType: Int,
         activeRv: RecyclerView,
         preInflationCount: Int,
-        preInflationCountProvider: () -> Int,
+        crossinline preInflationCountProvider: () -> Int,
     ) {
         if (preInflationCount <= 0) {
             return
         }
-        mCancellableTask?.cancel()
-        var task: CancellableTask<List<ViewHolder>>? = null
-        task =
-            CancellableTask(
-                {
-                    val list: ArrayList<ViewHolder> = ArrayList()
-                    for (i in 0 until preInflationCount) {
-                        if (task?.canceled == true) {
-                            break
-                        }
-                        // If activeRv's layout manager has been reset to null on main thread, skip
-                        // the preinflation as we cannot generate correct LayoutParams
-                        if (activeRv.layoutManager == null) {
-                            list.clear()
-                            break
-                        }
-                        try {
-                            list.add(adapter.createViewHolder(activeRv, viewType))
-                        } catch (e: InflateException) {
-                            list.clear()
-                            // It's still possible for UI thread to set activeRv's layout manager to
-                            // null and we should break the loop and cancel the preinflation.
-                            break
-                        }
-                    }
-                    list
+        mCancellableTask?.close()
+        mCancellableTask =
+            AsyncObjectAllocator.allocate(
+                count = preInflationCount,
+                factory = {
+                    // If activeRv's layout manager has been reset to null on main thread, skip
+                    // the preinflation as we cannot generate correct LayoutParams
+                    // It's still possible for UI thread to set activeRv's layout manager to
+                    // null, in which case the allocator will catch any error and cancel.
+                    if (activeRv.layoutManager != null) adapter.createViewHolder(activeRv, viewType)
+                    else null
                 },
-                MAIN_EXECUTOR,
-                { viewHolders ->
-                    // Run preInflationCountProvider again as the needed VH might have changed
-                    val newPreInflationCount = preInflationCountProvider.invoke()
-                    for (i in 0 until minOf(viewHolders.size, newPreInflationCount)) {
-                        putRecycledView(viewHolders[i])
-                    }
-                },
-            )
-        mCancellableTask = task
-        VIEW_PREINFLATION_EXECUTOR.execute(mCancellableTask)
+                callbackExecutor = MAIN_EXECUTOR,
+            ) {
+                if (preInflationCountProvider.invoke() > 0) putRecycledView(it)
+            }
     }
 
     /**
@@ -167,28 +178,21 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() where T : Context, T : Act
      */
     override fun clear() {
         super.clear()
-        mCancellableTask?.cancel()
+        mCancellableTask?.close()
     }
 
-    /**
-     * After testing on phone, foldable and tablet, we found [PREINFLATE_ICONS_ROW_COUNT] rows of
-     * app icons plus [EXTRA_ICONS_COUNT] is the magic minimal count of app icons to preinflate to
-     * suffice fast scrolling.
-     *
-     * Note that if [FeatureFlags.ALL_APPS_GONE_VISIBILITY] is enabled, we need to preinfate extra
-     * app icons in size of one all apps pages, so that opening all apps don't need to inflate app
-     * icons.
-     */
-    fun getPreinflateCount(context: T): Int {
-        var targetPreinflateCount =
-            PREINFLATE_ICONS_ROW_COUNT * context.deviceProfile.numShownAllAppsColumns +
-                EXTRA_ICONS_COUNT
-        val grid = ActivityContext.lookupContext<T>(context).deviceProfile
-        targetPreinflateCount += grid.maxAllAppsRowCount * grid.numShownAllAppsColumns
-        if (hasWorkProfile) {
-            targetPreinflateCount *= 2
-        }
-        val existingPreinflateCount = getRecycledViewCount(BaseAllAppsAdapter.VIEW_TYPE_ICON)
-        return targetPreinflateCount - existingPreinflateCount
+    private fun getPreInflateCount(): Int =
+        targetPoolSize - getRecycledViewCount(BaseAllAppsAdapter.VIEW_TYPE_ICON)
+
+    companion object {
+
+        private const val TAG = "AllAppsRecyclerViewPool"
+        private const val NULL_LAYOUT_MANAGER_ERROR_STRING =
+            "activeRv's layoutManager should not be null"
+
+        private const val PREINFLATE_ICONS_ROW_COUNT = 4
+        private const val EXTRA_ICONS_COUNT = 2
+
+        const val PRELOAD_ALL_APPS_DAGGER_KEY = "PRELOAD_ALL_APPS"
     }
 }

@@ -23,7 +23,7 @@ import android.os.IRemoteCallback;
 import android.view.MotionEvent;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
-// Next ID: 39
+// Next ID: 40
 oneway interface ILauncherProxy {
 
     void onActiveNavBarRegionChanges(in Region activeRegion) = 11;

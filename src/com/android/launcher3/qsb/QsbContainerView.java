@@ -50,8 +50,8 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
+import com.android.launcher3.dagger.LauncherComponentProvider;
 import com.android.launcher3.graphics.FragmentWithPreview;
-import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
@@ -306,8 +306,8 @@ public class QsbContainerView extends FrameLayout {
 
         protected Bundle createBindOptions() {
             InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
-            return WidgetSizes.getWidgetSizeOptions(getContext(), mWidgetInfo.provider,
-                    idp.numColumns, 1);
+            return LauncherComponentProvider.get(getContext())
+                    .getWidgetSizeHandler().getWidgetSizeOptions(idp.numColumns, 1);
         }
 
         protected View getDefaultView(ViewGroup container, boolean showSetupIcon) {

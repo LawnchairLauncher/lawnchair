@@ -77,8 +77,6 @@ open class BaseLauncherActivityTest<LAUNCHER_TYPE : Launcher> {
             it.appsView.appsStore.enableDeferUpdates(DEFER_UPDATES_TEST)
         }
 
-    fun executeShellCommand(cmd: String) = uiDevice.executeShellCommand(cmd)
-
     fun addToWorkspace(view: View) {
         TestUtil.runOnExecutorSync(Executors.MAIN_EXECUTOR) {
             view.accessibilityDelegate.performAccessibilityAction(

@@ -22,7 +22,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.systemui.dagger.qualifiers.Main;
-import com.android.systemui.plugins.log.TableLogBufferBase;
+import com.android.systemui.log.table.TableLogBuffer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +42,7 @@ public class Monitor {
     private final String mTag = getClass().getSimpleName();
     private final Executor mExecutor;
     private final Set<Condition> mPreconditions;
-    private final TableLogBufferBase mLogBuffer;
+    private final TableLogBuffer mLogBuffer;
 
     private final HashMap<Condition, ArraySet<Subscription.Token>> mConditions = new HashMap<>();
     private final HashMap<Subscription.Token, SubscriptionState> mSubscriptions = new HashMap<>();
@@ -168,7 +168,7 @@ public class Monitor {
     /**
      * Main constructor, allowing specifying preconditions and a log buffer for logging.
      */
-    public Monitor(Executor executor, Set<Condition> preconditions, TableLogBufferBase logBuffer) {
+    public Monitor(Executor executor, Set<Condition> preconditions, TableLogBuffer logBuffer) {
         mExecutor = executor;
         mPreconditions = preconditions;
         mLogBuffer = logBuffer;

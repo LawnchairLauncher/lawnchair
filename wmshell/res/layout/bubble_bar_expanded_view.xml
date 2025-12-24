@@ -22,10 +22,10 @@
     android:clipChildren="false"
     android:id="@+id/bubble_expanded_view">
 
-    <com.android.wm.shell.bubbles.bar.BubbleBarHandleView
-        android:id="@+id/bubble_bar_handle_view"
+    <com.android.wm.shell.bubbles.bar.BubbleBarCaptionView
+        android:id="@+id/bubble_bar_caption_view"
         android:layout_height="@dimen/bubble_bar_expanded_view_caption_height"
-        android:layout_width="@dimen/bubble_bar_expanded_view_caption_width"
+        android:layout_width="@dimen/bubble_bar_expanded_view_width"
         android:layout_gravity="top|center_horizontal" />
 
 </com.android.wm.shell.bubbles.bar.BubbleBarExpandedView>

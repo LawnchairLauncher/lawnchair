@@ -19,7 +19,6 @@ package com.android.launcher3.widget.picker.util
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.Point
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.DeviceProfile
@@ -28,37 +27,38 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.dagger.LauncherComponentProvider.appComponent
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.model.WidgetItem
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.TestActivityContext
 import com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class WidgetPreviewContainerSizesTest {
-    private lateinit var context: Context
+    @get:Rule val context = TestActivityContext()
+
     private lateinit var deviceProfile: DeviceProfile
     private lateinit var testInvariantProfile: InvariantDeviceProfile
     private lateinit var widgetItemInvariantProfile: InvariantDeviceProfile
 
     @Mock private lateinit var iconCache: IconCache
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        context = ActivityContextWrapper(ApplicationProvider.getApplicationContext())
         testInvariantProfile = LauncherAppState.getIDP(context)
         widgetItemInvariantProfile =
             context.appComponent.idp.apply {
                 numRows = TEST_GRID_SIZE
                 numColumns = TEST_GRID_SIZE
             }
-        deviceProfile = testInvariantProfile.getDeviceProfile(context).copy(context)
+        deviceProfile = testInvariantProfile.getDeviceProfile(context).copy()
     }
 
     @Test
@@ -92,12 +92,13 @@ class WidgetPreviewContainerSizesTest {
                 Point(4, 1) to WidgetPreviewContainerSize(4, 1),
                 // 2x2
                 Point(2, 2) to WidgetPreviewContainerSize(2, 2),
+                Point(3, 2) to WidgetPreviewContainerSize(3, 2),
                 Point(3, 3) to WidgetPreviewContainerSize(2, 2),
-                Point(3, 2) to WidgetPreviewContainerSize(2, 2),
                 // 2x3
                 Point(2, 3) to WidgetPreviewContainerSize(2, 3),
-                Point(3, 4) to WidgetPreviewContainerSize(2, 3),
-                Point(3, 5) to WidgetPreviewContainerSize(2, 3),
+                // 3x2 would be closest.
+                Point(3, 4) to WidgetPreviewContainerSize(3, 2),
+                Point(3, 5) to WidgetPreviewContainerSize(3, 2),
                 // 4x2
                 Point(4, 2) to WidgetPreviewContainerSize(4, 2),
                 // 4x3

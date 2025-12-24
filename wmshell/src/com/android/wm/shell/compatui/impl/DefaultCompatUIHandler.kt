@@ -27,15 +27,13 @@ import com.android.wm.shell.compatui.api.CompatUIRequest
 import com.android.wm.shell.compatui.api.CompatUIState
 import java.util.function.Consumer
 
-/**
- * Default implementation of {@link CompatUIHandler} to handle CompatUI components
- */
+/** Default implementation of {@link CompatUIHandler} to handle CompatUI components */
 class DefaultCompatUIHandler(
     private val compatUIRepository: CompatUIRepository,
     private val compatUIState: CompatUIState,
     private val componentIdGenerator: CompatUIComponentIdGenerator,
     private val componentFactory: CompatUIComponentFactory,
-    private val executor: ShellExecutor
+    private val executor: ShellExecutor,
 ) : CompatUIHandler {
 
     private var compatUIEventSender: Consumer<CompatUIEvent>? = null
@@ -58,10 +56,8 @@ class DefaultCompatUIHandler(
                         componentFactory.create(spec, componentId, compatUIState, compatUIInfo)
                     spec.log("Component $componentId created $component")
                     // We initialize the state for the component
-                    val compState = spec.lifecycle.stateBuilder(
-                        compatUIInfo,
-                        compatUIState.sharedState
-                    )
+                    val compState =
+                        spec.lifecycle.stateBuilder(compatUIInfo, compatUIState.sharedState)
                     spec.log("Component $componentId initial state $compState")
                     compatUIState.registerUIComponent(componentId, component, compState)
                     spec.log("Component $componentId registered")
@@ -77,11 +73,13 @@ class DefaultCompatUIHandler(
                 }
             } else {
                 // The component is present. We check if we need to remove it
-                if (spec.lifecycle.removalPredicate(
+                if (
+                    spec.lifecycle.removalPredicate(
                         compatUIInfo,
                         compatUIState.sharedState,
-                        compatUIState.stateForComponent(componentId)
-                    )) {
+                        compatUIState.stateForComponent(componentId),
+                    )
+                ) {
                     spec.log("Component $componentId should be removed")
                     // We clean the component
                     component.release()

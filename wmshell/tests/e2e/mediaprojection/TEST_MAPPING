@@ -1,7 +1,8 @@
 {
-  "wm-devices": [
+  "wm": [
     {
-      "name": "WMShellScenariosMediaProjection"
+      "name": "WMShellScenariosMediaProjection",
+      "keywords": ["device"]
     }
   ]
 }

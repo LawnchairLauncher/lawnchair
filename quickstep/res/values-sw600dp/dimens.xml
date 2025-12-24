@@ -38,6 +38,7 @@
 
     <!-- All Set page -->
     <dimen name="allset_page_padding_horizontal">120dp</dimen>
+    <dimen name="allset_page_expressive_padding_horizontal">48dp</dimen>
     <dimen name="allset_page_allset_text_size">38sp</dimen>
     <dimen name="allset_page_swipe_up_text_size">15sp</dimen>
     <dimen name="allset_page_swipe_up_text_size_expressive">16sp</dimen>

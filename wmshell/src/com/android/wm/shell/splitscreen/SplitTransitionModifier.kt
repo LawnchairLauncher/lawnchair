@@ -36,25 +36,55 @@ import com.android.wm.shell.shared.split.SplitScreenConstants
 class SplitTransitionModifier {
     private val TAG = "SplitTransitionModifier"
 
-    /** Add the dim layer for the given [stage] to the [info].  */
+    /**
+     * Adds a dim layer to the transition root. We do this by creating a Change and a SurfaceControl
+     * that are reparented under the associated app layer (so that it moves together with the app
+     * layer).
+     */
     fun addDimLayerToTransition(
         info: TransitionInfo, show: Boolean,
         stage: StageTaskListener, bounds: Rect,
-        parentToken: WindowContainerToken
+        t: SurfaceControl.Transaction
     ) {
+        val stageTaskId = stage.runningTaskInfo.taskId
         val dimLayer = stage.mDimLayer
         if (dimLayer == null || !dimLayer.isValid) {
             Slog.w(TAG, "addDimLayerToTransition but leash was released or not created")
         } else {
-            val change =
-                TransitionInfo.Change(null,  /* token */dimLayer)
-            change.parent = parentToken
+            // Find the first change in the TransitionInfo that has a parentTaskId matching the
+            // stage root. There should only be one such app layer, but since changes in
+            // TransitionInfo are ordered from top to bottom (guaranteed by the system), we'll get
+            // the top one in any case.
+            var appLayerToken: WindowContainerToken? = null
+
+            for (c in info.changes) {
+                if (c.taskInfo?.parentTaskId == stageTaskId) {
+                    appLayerToken = c.container
+                    break
+                }
+            }
+
+            if (appLayerToken == null) {
+                Slog.w(TAG, "addDimLayerToTransition but no app layer found")
+                return
+            }
+
+            val dimLayerCopy = SurfaceControl(dimLayer, "addDimLayerToTransition")
+
+            val change = TransitionInfo.Change(null /* container */, dimLayerCopy)
+            change.parent = appLayerToken
             change.setStartAbsBounds(bounds)
             change.setEndAbsBounds(bounds)
             change.mode =
                 if (show) TRANSIT_TO_FRONT else TRANSIT_TO_BACK
             change.flags = SplitScreenConstants.FLAG_IS_DIM_LAYER
             info.addChange(change)
+
+            t.reparent(dimLayerCopy, info.getChange(appLayerToken)?.leash)
+            t.setLayer(dimLayerCopy, Int.MAX_VALUE)
+            t.setPosition(dimLayerCopy, 0f, 0f)
+            val crop = Rect(0, 0, bounds.width(), bounds.height())
+            t.setCrop(dimLayerCopy, crop)
         }
     }
 
@@ -82,9 +112,9 @@ class SplitTransitionModifier {
         val sideStageChildren: List<TransitionInfo.Change>
         // No task parent :(
         val remainingChanges: List<TransitionInfo.Change>
-        val mainStageChange : TransitionInfo.Change
-        val sideStageChange : TransitionInfo.Change
-        val splitRootChange : TransitionInfo.Change
+        val mainStageChange: TransitionInfo.Change
+        val sideStageChange: TransitionInfo.Change
+        val splitRootChange: TransitionInfo.Change
 
         // If any children are opening, set the roots to be opening
         val mode = if (anySplitChangesToFront(info, mainStage, sideStage))
@@ -226,7 +256,7 @@ class SplitTransitionModifier {
     private fun getChildrenForParent(
         info: TransitionInfo,
         parentChange: TransitionInfo.Change,
-        setParent: Boolean) : List<TransitionInfo.Change> {
+        setParent: Boolean): List<TransitionInfo.Change> {
         val childrenOfChange = mutableListOf<TransitionInfo.Change>()
         info.changes.stream()
             .filter { change: TransitionInfo.Change ->

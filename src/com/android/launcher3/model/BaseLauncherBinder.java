@@ -35,7 +35,6 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppsListData;
 import com.android.launcher3.model.data.WorkspaceData;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.widget.model.WidgetsListBaseEntriesBuilder;
@@ -46,7 +45,6 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -102,7 +100,7 @@ public class BaseLauncherBinder {
                     mBgDataModel.lastLoadId = mModel.getLastLoadId();
                 }
                 mMyBindingId = mBgDataModel.lastBindId;
-                stringCache = mBgDataModel.stringCache.clone();
+                stringCache = mBgDataModel.getStringCache();
             }
 
             for (Callbacks cb : mCallbacksList) {
@@ -116,20 +114,6 @@ public class BaseLauncherBinder {
         } finally {
             Trace.endSection();
         }
-    }
-
-    /**
-     * BindDeepShortcuts is abstract because it is a no-op for the go launcher.
-     */
-    public void bindDeepShortcuts() {
-        if (!WIDGETS_ENABLED) {
-            return;
-        }
-        final HashMap<ComponentKey, Integer> shortcutMapCopy;
-        synchronized (mBgDataModel) {
-            shortcutMapCopy = new HashMap<>(mBgDataModel.deepShortcutMap);
-        }
-        executeCallbacksTask(c -> c.bindDeepShortcutMap(shortcutMapCopy), mUiExecutor);
     }
 
     /**
@@ -152,6 +136,7 @@ public class BaseLauncherBinder {
         }
         List<WidgetsListBaseEntry> widgets = new WidgetsListBaseEntriesBuilder(mContext)
                 .build(mBgDataModel.widgetsModel.getWidgetsByPackageItemForPicker());
+        mBgDataModel.notifyWidgetsUpdate(widgets);
         executeCallbacksTask(c -> c.bindAllWidgets(widgets), mUiExecutor);
     }
 

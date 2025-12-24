@@ -17,7 +17,6 @@
 package com.android.wm.shell.fullscreen;
 
 import static com.android.wm.shell.ShellTaskOrganizer.TASK_LISTENER_TYPE_FULLSCREEN;
-import static com.android.wm.shell.ShellTaskOrganizer.taskListenerTypeToString;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -143,20 +142,29 @@ public class FullscreenTaskListener implements ShellTaskOrganizer.TaskListener {
 
     @Override
     public void attachChildSurfaceToTask(int taskId, SurfaceControl.Builder b) {
-        b.setParent(findTaskSurface(taskId));
+        final SurfaceControl taskSurface = findTaskSurface(taskId);
+        if (taskSurface != null) {
+            b.setParent(taskSurface);
+        }
     }
 
     @Override
     public void reparentChildSurfaceToTask(int taskId, SurfaceControl sc,
             SurfaceControl.Transaction t) {
-        t.reparent(sc, findTaskSurface(taskId));
+        final SurfaceControl taskSurface = findTaskSurface(taskId);
+        if (taskSurface != null) {
+            t.reparent(sc, taskSurface);
+        }
     }
 
     private SurfaceControl findTaskSurface(int taskId) {
-        if (!mTasks.contains(taskId)) {
-            throw new IllegalArgumentException("There is no surface for taskId=" + taskId);
+        final State state = mTasks.get(taskId);
+        if (state != null) {
+            return state.mLeash;
         }
-        return mTasks.get(taskId).mLeash;
+        ProtoLog.w(ShellProtoLogGroup.WM_SHELL_TASK_ORG, "Surface not found: #%d",
+                taskId);
+        return null;
     }
 
     @Override
@@ -168,6 +176,6 @@ public class FullscreenTaskListener implements ShellTaskOrganizer.TaskListener {
 
     @Override
     public String toString() {
-        return TAG + ":" + taskListenerTypeToString(TASK_LISTENER_TYPE_FULLSCREEN);
+        return TAG;
     }
 }

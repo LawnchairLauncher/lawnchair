@@ -151,7 +151,7 @@ class InMemoryLauncherPrefsTest {
     @Test
     fun removeListener_updateItem_listenerNotInvoked() {
         prefs.addListener(listener, TEST_BOOLEAN_ITEM)
-        prefs.put(TEST_BOOLEAN_ITEM, true)
+        getInstrumentation().runOnMainSync { prefs.put(TEST_BOOLEAN_ITEM, true) }
 
         lastChangedKey = null
         prefs.removeListener(listener, TEST_BOOLEAN_ITEM)

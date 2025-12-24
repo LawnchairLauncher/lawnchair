@@ -231,16 +231,17 @@ public class RecyclerViewAnimationController {
             Log.w(LOG_TAG, "Can't determine span index - child not found in adapter");
             return 0;
         }
-        if (!(appsRecyclerView.getAdapter() instanceof AllAppsGridAdapter<?>)) {
-            Log.e(LOG_TAG, "Search RV doesn't have an AllAppsGridAdapter?");
+
+        if (appsRecyclerView.getAdapter() instanceof AllAppsGridAdapter adapter) {
+            return adapter.getSpanIndex(adapterPosition);
+        } else if (!Utilities.IS_DEBUG_DEVICE) {
             // This case shouldn't happen, but for debug devices we will continue to create a more
             // visible crash.
-            if (!Utilities.IS_DEBUG_DEVICE) {
-                return 0;
-            }
+            Log.e(LOG_TAG, "Search RV doesn't have an AllAppsGridAdapter?");
+            return 0;
+        } else {
+            throw new IllegalArgumentException("Search RV doesn't have an AllAppsGridAdapter?");
         }
-        AllAppsGridAdapter<?> adapter = (AllAppsGridAdapter<?>) appsRecyclerView.getAdapter();
-        return adapter.getSpanIndex(adapterPosition);
     }
 
     protected TimeInterpolator getInterpolator() {

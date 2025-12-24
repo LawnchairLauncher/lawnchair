@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.app.animation.Interpolators.DECELERATE_2;
-import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 
 import android.content.Context;
@@ -28,6 +27,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherUiState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
@@ -118,7 +118,8 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(launcher.getDeviceProfile().workspaceContentScale, NO_OFFSET,
+        return new ScaleAndTranslation(
+                launcher.getDeviceProfile().mWorkspaceProfile.getWorkspaceContentScale(), NO_OFFSET,
                 NO_OFFSET);
     }
 
@@ -130,7 +131,7 @@ public class AllAppsState extends LauncherState {
             ScaleAndTranslation overviewScaleAndTranslation = LauncherState.OVERVIEW
                     .getWorkspaceScaleAndTranslation(launcher);
             return new ScaleAndTranslation(
-                    launcher.getDeviceProfile().workspaceContentScale,
+                    launcher.getDeviceProfile().mWorkspaceProfile.getWorkspaceContentScale(),
                     overviewScaleAndTranslation.translationX,
                     overviewScaleAndTranslation.translationY);
         }
@@ -143,14 +144,9 @@ public class AllAppsState extends LauncherState {
             return context.getDeviceProfile().getBottomSheetProfile().getBottomSheetDepth();
         } else {
             // The scrim fades in at approximately 50% of the swipe gesture.
-            if (enableScalingRevealHomeAnimation()) {
-                // This means that the depth should be twice of what we want, in order to fully zoom
-                // out during the visible portion of the animation.
-                return BaseDepthController.DEPTH_60_PERCENT;
-            } else {
-                // This means that the depth should be greater than 1, in order to fully zoom out.
-                return 2f;
-            }
+            // The depth should be twice of what we want, in order to fully zoom out during the
+            // visible portion of the animation.
+            return BaseDepthController.DEPTH_60_PERCENT;
         }
     }
 
@@ -173,9 +169,9 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public int getVisibleElements(Launcher launcher) {
+    public int getVisibleElements(LauncherUiState launcherUiState) {
         int elements = ALL_APPS_CONTENT | FLOATING_SEARCH_BAR;
-        if (isWorkspaceVisible(launcher.getDeviceProfile())) {
+        if (isWorkspaceVisible(launcherUiState.getDeviceProfileRef().getValue())) {
             elements |= HOTSEAT_ICONS;
         }
         return elements;

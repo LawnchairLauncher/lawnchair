@@ -16,17 +16,13 @@
 package com.android.wm.shell.windowdecor
 
 /**
- * Listener that allows notifies when an animation that is repositioning a task is starting
- * and finishing the animation.
+ * Listener that allows notifies when an animation that is repositioning a task is starting and
+ * finishing the animation.
  */
 interface OnTaskRepositionAnimationListener {
-    /**
-     * Notifies that an animation is about to be started.
-     */
+    /** Notifies that an animation is about to be started. */
     fun onAnimationStart(taskId: Int)
 
-    /**
-     * Notifies that an animation is about to be finished.
-     */
+    /** Notifies that an animation is about to be finished. */
     fun onAnimationEnd(taskId: Int)
 }

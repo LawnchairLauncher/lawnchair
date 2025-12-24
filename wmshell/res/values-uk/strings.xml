@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Додаток не підтримує спливаючі чати"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Розділювач екрана"</string>
     <string name="divider_title" msgid="1963391955593749442">"Розділювач екрана"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Ліве вікно на весь екран"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Ліве вікно на 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Ліве вікно на 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Ліве вікно на 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Праве вікно на весь екран"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Поміняти місцями додатки зверху й знизу"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Поміняти місцями додатки ліворуч і праворуч"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Верхнє вікно на весь екран"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Верхнє вікно на 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Верхнє вікно на 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Верхнє вікно на 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Нижнє вікно на весь екран"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Розгорнути додаток ліворуч на весь екран"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"Ліворуч: 10%, праворуч: 90%"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"Ліворуч: 30%, праворуч: 70%"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"Ліворуч: 50%, праворуч: 50%"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"Ліворуч: 70%, праворуч: 30%"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"Ліворуч: 90%, праворуч: 10%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Розгорнути додаток праворуч на весь екран"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Поміняти місцями верхній і нижній додатки, зберегти поточний поділ екрана"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Поміняти місцями додатки ліворуч і праворуч, зберегти поточний поділ екрана"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Розгорнути верхній додаток на весь екран"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"Зверху: 10%, знизу: 90%"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"Зверху: 30%, знизу: 70%"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"Зверху: 50%, знизу: 50%"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"Зверху: 70%, знизу: 30%"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"Зверху: 90%, знизу: 10%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Розгорнути нижній додаток на весь екран"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Розділити зліва"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Розділити справа"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Розділити вгорі"</string>

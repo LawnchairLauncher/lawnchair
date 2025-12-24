@@ -29,6 +29,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.Flags
 import com.android.quickstep.recents.data.FakeAppTimersRepository
 import com.android.quickstep.recents.data.FakeTasksRepository
+import com.android.quickstep.recents.data.FakeUserLockedStateRepository
 import com.android.quickstep.recents.domain.model.TaskModel
 import com.android.systemui.shared.recents.model.Task
 import com.google.common.truth.Truth.assertThat
@@ -58,11 +59,13 @@ class GetTaskUseCaseTest {
 
     private val tasksRepository = FakeTasksRepository()
     private val timersRepository = FakeAppTimersRepository()
+    private val userLockedStateRepository = FakeUserLockedStateRepository()
     private val getRemainingAppTimerDurationUseCase =
         spy(GetRemainingAppTimerDurationUseCase(timersRepository))
     private val sut =
         GetTaskUseCase(
             tasksRepository = tasksRepository,
+            userLockedStateRepository = userLockedStateRepository,
             getRemainingAppTimerDurationUseCase = getRemainingAppTimerDurationUseCase,
         )
 
@@ -170,6 +173,18 @@ class GetTaskUseCaseTest {
                 )
             verify(getRemainingAppTimerDurationUseCase, times(0))
                 .invoke(anyString(), any<UserHandle>())
+        }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_LATER_IS_LOCKED_CHECK)
+    fun taskUserIsLocked_getsValueFromRepository() =
+        testScope.runTest {
+            tasksRepository.setVisibleTasks(DEFAULT_DISPLAY, setOf(TASK_1_ID))
+            userLockedStateRepository.setLockedStates(mapOf(USER_1 to true))
+
+            val result = sut.invoke(TASK_1_ID).firstOrNull()
+
+            assertThat(result!!.isLocked).isTrue()
         }
 
     private companion object {

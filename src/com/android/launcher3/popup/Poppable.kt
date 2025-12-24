@@ -26,13 +26,6 @@ enum class PoppableType {
 
 /** Items for which we can trigger a popup menu would implement this interface. */
 interface Poppable {
-
-    /** @return a controller to handle actions for the popup. */
-    fun getPopupController(): PopupController?
-
-    /** Sets the popup controller to help us handle actions for the popup. */
-    fun setPopupController(popupController: PopupController)
-
     /** @return the type of poppable that this item is. */
     fun getPoppableType(): PoppableType
 }

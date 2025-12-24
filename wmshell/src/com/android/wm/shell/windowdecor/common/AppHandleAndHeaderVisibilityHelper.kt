@@ -18,14 +18,15 @@ package com.android.wm.shell.windowdecor.common
 
 import android.app.ActivityManager
 import android.app.WindowConfiguration
+import android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM
 import android.view.Display
 import android.view.WindowManager
 import android.window.DesktopExperienceFlags.ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE
+import com.android.internal.policy.DesktopModeCompatPolicy
 import com.android.wm.shell.bubbles.BubbleController
 import com.android.wm.shell.common.DisplayController
 import com.android.wm.shell.desktopmode.DesktopWallpaperActivity.Companion.isWallpaperTask
 import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper
-import com.android.wm.shell.shared.desktopmode.DesktopModeCompatPolicy
 import com.android.wm.shell.shared.desktopmode.DesktopState
 import com.android.wm.shell.splitscreen.SplitScreenController
 import java.util.Optional
@@ -34,7 +35,7 @@ import java.util.Optional
  * Resolves whether, given a task and its associated display that it is currently on, to show the
  * app handle/header or not.
  */
-class AppHandleAndHeaderVisibilityHelper (
+class AppHandleAndHeaderVisibilityHelper(
     private val displayController: DisplayController,
     private val desktopModeCompatPolicy: DesktopModeCompatPolicy,
     private val desktopState: DesktopState,
@@ -43,20 +44,14 @@ class AppHandleAndHeaderVisibilityHelper (
     var splitScreenController: SplitScreenController? = null
 
     /**
-     * Returns, given a task's attribute and its display attribute, whether the app
-     * handle/header should show or not for this task.
+     * Returns, given a task's attribute and its display attribute, whether the app handle/header
+     * should show or not for this task.
      */
     fun shouldShowAppHandleOrHeader(taskInfo: ActivityManager.RunningTaskInfo): Boolean {
 
+        // If DisplayController doesn't have it tracked, it could be a private/managed display, so
+        // return false if display is null
         val display = displayController.getDisplay(taskInfo.displayId) ?: return false
-        if (display == null) {
-            // If DisplayController doesn't have it tracked, it could be a private/managed display.
-            return false
-        }
-        // All freeform windows should show the app header.
-        if (taskInfo.windowingMode == WindowConfiguration.WINDOWING_MODE_FREEFORM) {
-            return true
-        }
 
         if (!ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE.isTrue) {
             return allowedForTask(taskInfo, display)
@@ -64,7 +59,14 @@ class AppHandleAndHeaderVisibilityHelper (
         return allowedForTask(taskInfo, display) && allowedForDisplay(display)
     }
 
-    private fun allowedForTask(taskInfo: ActivityManager.RunningTaskInfo, display: Display): Boolean {
+    private fun allowedForTask(
+        taskInfo: ActivityManager.RunningTaskInfo,
+        display: Display,
+    ): Boolean {
+        if (taskInfo.windowingMode == WINDOWING_MODE_FREEFORM) {
+            return true
+        }
+
         if (splitScreenController?.isTaskRootOrStageRoot(taskInfo.taskId) == true) {
             return false
         }
@@ -74,19 +76,22 @@ class AppHandleAndHeaderVisibilityHelper (
         }
 
         // TODO (b/382023296): Remove once we no longer rely on
-        //  DesktopModeFlags.ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE as it is taken care of in #allowedForDisplay
+        //  DesktopModeFlags.ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE as it is taken care of in
+        // #allowedForDisplay
         val isOnLargeScreen =
             display.minSizeDimensionDp >= WindowManager.LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP
-        if (!desktopState.canEnterDesktopMode
-            && desktopState.overridesShowAppHandle
-            && !isOnLargeScreen
+        if (
+            !desktopState.canEnterDesktopMode &&
+                desktopState.overridesShowAppHandle &&
+                !isOnLargeScreen
         ) {
             // Devices with multiple screens may enable the app handle but it should not show on
             // small screens
             return false
         }
-        if (BubbleAnythingFlagHelper.enableBubbleToFullscreen()
-            && !desktopState.isDesktopModeSupportedOnDisplay(display)
+        if (
+            BubbleAnythingFlagHelper.enableBubbleToFullscreen() &&
+                !desktopState.isDesktopModeSupportedOnDisplay(display)
         ) {
             // TODO(b/388853233): enable handles for split tasks once drag to bubble is enabled
             if (taskInfo.windowingMode != WindowConfiguration.WINDOWING_MODE_FULLSCREEN) {
@@ -97,23 +102,25 @@ class AppHandleAndHeaderVisibilityHelper (
         // Bubble tasks reset alwaysOnTop when reordering a task to the bottom to hide its task view
         // in TaskViewTransitions#setTaskViewVisible, so we need to explicitly check here.
         fun ActivityManager.RunningTaskInfo.isBubble(): Boolean =
-            if (BubbleAnythingFlagHelper.enableCreateAnyBubbleWithForceExcludedFromRecents()) {
+            if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
                 bubbleController.map { it.hasStableBubbleForTask(taskId) }.orElse(false)
             } else {
                 false
             }
 
-        return desktopState.canEnterDesktopModeOrShowAppHandle
-                && !isWallpaperTask(taskInfo)
-                && taskInfo.windowingMode != WindowConfiguration.WINDOWING_MODE_PINNED
-                && taskInfo.activityType == WindowConfiguration.ACTIVITY_TYPE_STANDARD
-                && !taskInfo.configuration.windowConfiguration.isAlwaysOnTop
-                && !taskInfo.isBubble()
+        return desktopState.canEnterDesktopModeOrShowAppHandle &&
+            !isWallpaperTask(taskInfo) &&
+            taskInfo.windowingMode != WindowConfiguration.WINDOWING_MODE_PINNED &&
+            taskInfo.activityType == WindowConfiguration.ACTIVITY_TYPE_STANDARD &&
+            !taskInfo.configuration.windowConfiguration.isAlwaysOnTop &&
+            !taskInfo.isBubble()
     }
 
     private fun allowedForDisplay(display: Display): Boolean {
-        if (display.type != Display.TYPE_INTERNAL
-            && !displayController.isDisplayInTopology(display.displayId)) {
+        if (
+            display.type != Display.TYPE_INTERNAL &&
+                !displayController.isDisplayInTopology(display.displayId)
+        ) {
             return false
         }
 
@@ -121,7 +128,7 @@ class AppHandleAndHeaderVisibilityHelper (
             return true
         }
         // If on default display and on Large Screen (unfolded), show app handle
-        return desktopState.overridesShowAppHandle
-                && display.minSizeDimensionDp >= WindowManager.LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP
+        return desktopState.overridesShowAppHandle &&
+            display.minSizeDimensionDp >= WindowManager.LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP
     }
 }

@@ -16,6 +16,8 @@
 
 package com.android.quickstep.taskbar.customization
 
+import com.android.launcher3.DeviceProfile
+import com.android.launcher3.deviceprofile.DeviceProperties
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.taskbar.customization.TaskbarFeatureEvaluator
 import com.android.launcher3.taskbar.customization.TaskbarIconSpecs
@@ -34,13 +36,17 @@ class TaskbarSpecsEvaluatorTest {
 
     private val taskbarFeatureEvaluator = mock<TaskbarFeatureEvaluator>()
     private val taskbarActivityContext = mock<TaskbarActivityContext>()
+    private val deviceProfile = mock<DeviceProfile>()
+    private val deviceProperties = mock<DeviceProperties>()
     private var taskbarSpecsEvaluator =
         spy(TaskbarSpecsEvaluator(taskbarActivityContext, taskbarFeatureEvaluator, 0, 0))
 
     @Test
     fun testGetIconSizeByGrid_whenTaskbarIsTransient_withValidRowAndColumnInLandscape() {
         doReturn(true).whenever(taskbarFeatureEvaluator).isTransient
-        doReturn(true).whenever(taskbarFeatureEvaluator).isLandscape
+        doReturn(deviceProfile).whenever(taskbarActivityContext).deviceProfile
+        doReturn(deviceProperties).whenever(deviceProfile).deviceProperties
+        doReturn(true).whenever(deviceProperties).isLandscape
         assertThat(taskbarSpecsEvaluator.getIconSizeByGrid(4, 4))
             .isEqualTo(TaskbarIconSpecs.iconSize52dp)
     }
@@ -48,7 +54,9 @@ class TaskbarSpecsEvaluatorTest {
     @Test
     fun testGetIconSizeByGrid_whenTaskbarIsTransient_withValidRowAndColumnInPortrait() {
         doReturn(true).whenever(taskbarFeatureEvaluator).isTransient
-        doReturn(false).whenever(taskbarFeatureEvaluator).isLandscape
+        doReturn(deviceProfile).whenever(taskbarActivityContext).deviceProfile
+        doReturn(deviceProperties).whenever(deviceProfile).deviceProperties
+        doReturn(false).whenever(deviceProperties).isLandscape
         assertThat(taskbarSpecsEvaluator.getIconSizeByGrid(4, 4))
             .isEqualTo(TaskbarIconSpecs.iconSize48dp)
     }
@@ -56,6 +64,9 @@ class TaskbarSpecsEvaluatorTest {
     @Test
     fun testGetIconSizeByGrid_whenTaskbarIsTransient_withInvalidRowAndColumn() {
         doReturn(true).whenever(taskbarFeatureEvaluator).isTransient
+        doReturn(deviceProfile).whenever(taskbarActivityContext).deviceProfile
+        doReturn(deviceProperties).whenever(deviceProfile).deviceProperties
+        doReturn(true).whenever(deviceProperties).isLandscape
         assertThat(taskbarSpecsEvaluator.getIconSizeByGrid(1, 2))
             .isEqualTo(TaskbarIconSpecs.defaultTransientIconSize)
     }

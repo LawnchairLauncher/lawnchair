@@ -64,7 +64,7 @@
                     android:lineSpacingExtra="4sp"
                     android:text="@string/letterbox_education_dialog_title"
                     android:textAlignment="center"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@androidprv:color/materialColorOnSurface"
                     android:fontFamily="@*android:string/config_headlineFontFamily"
                     android:textSize="24sp"/>
 

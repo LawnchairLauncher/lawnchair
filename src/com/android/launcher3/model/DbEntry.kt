@@ -35,7 +35,7 @@ import java.util.Objects
 class DbEntry : ItemInfo(), Comparable<DbEntry> {
     @JvmField var mIntent: String? = null
     @JvmField var mProvider: String? = null
-    @JvmField var mFolderItems: MutableMap<String, Set<Int>> = HashMap()
+    @JvmField var mFolderItems: MutableMap<String, MutableSet<Int>> = HashMap()
 
     /** Id of the specific widget. */
     @JvmField var appWidgetId: Int = NO_ID

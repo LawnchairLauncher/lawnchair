@@ -550,17 +550,6 @@ public class WindowManagerProxy {
     /** A listener for when the user enters/exits Desktop Mode.  */
     public interface DesktopVisibilityListener {
         /**
-         * Called when the desktop mode state on the display whose ID is `displayId` changes.
-         *
-         * @param displayId The ID of the display for which this notification is triggering.
-         * @param isInDesktopModeAndNotInOverview True if a desktop is currently active on the given
-         *                                        display, and Overview is currently inactive.
-         */
-        default void onIsInDesktopModeChanged(int displayId,
-                boolean isInDesktopModeAndNotInOverview) {
-        }
-
-        /**
          * Called whenever the conditions that allow the creation of desks change.
          *
          * @param canCreateDesks whether it is possible to create new desks.
@@ -594,6 +583,9 @@ public class WindowManagerProxy {
          *                      active before.
          */
         default void onActiveDeskChanged(int displayId, int newActiveDesk, int oldActiveDesk) {}
+
+        /** Called when the listener is initialised from shell. */
+        default void onListenerInitializedFromShell() {}
     }
 
 }

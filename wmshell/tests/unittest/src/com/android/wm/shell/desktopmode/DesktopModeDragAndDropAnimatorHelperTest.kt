@@ -32,7 +32,7 @@ import android.window.TransitionInfo
 import android.window.WindowContainerTransaction
 import androidx.core.util.Supplier
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.desktopmode.DesktopModeDragAndDropAnimatorHelper.Companion.FADE_IN_ANIMATION_DURATION
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before

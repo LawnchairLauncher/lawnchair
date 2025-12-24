@@ -17,21 +17,16 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 
-import android.content.Context;
-import android.util.LongSparseArray;
+import android.util.SparseArray;
 
-import app.lawnchair.preferences2.PreferenceManager2;
-import com.android.launcher3.BuildConfig;
-import com.android.launcher3.BuildConfigs;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemCoordinates;
 import com.android.launcher3.util.GridOccupancy;
-import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -41,9 +36,9 @@ import javax.inject.Inject;
  */
 public class WorkspaceItemSpaceFinder {
 
-    private BgDataModel mDataModel;
-    private InvariantDeviceProfile mIDP;
-    private LauncherModel mModel;
+    private final BgDataModel mDataModel;
+    private final InvariantDeviceProfile mIDP;
+    private final LauncherModel mModel;
 
     @Inject
     public WorkspaceItemSpaceFinder(
@@ -56,11 +51,13 @@ public class WorkspaceItemSpaceFinder {
     /**
      * Find a position on the screen for the given size or adds a new screen.
      *
-     * @return screenId and the coordinates for the item in an int array of size 3.
+     * @return screenId and the coordinates for the item wrapped in
+     * {@link WorkspaceItemCoordinates}.
      */
-    public int[] findSpaceForItem(IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal,
-            ArrayList<ItemInfo> addItemsFinal, int spanX, int spanY, Context context) {
-        LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
+    public WorkspaceItemCoordinates findSpaceForItem(ArrayList<ItemInfo> addItemsFinal, int spanX,
+            int spanY, IntSet excludedScreens) {
+        SparseArray<ArrayList<ItemInfo>> screenItems = new SparseArray<>();
+        screenItems.put(FIRST_SCREEN_ID, new ArrayList<>());
 
         // Use sBgItemsIdMap as all the items are already loaded.
         synchronized (mDataModel) {
@@ -93,18 +90,9 @@ public class WorkspaceItemSpaceFinder {
         int[] coordinates = new int[2];
         boolean found = false;
 
-        int screenCount = workspaceScreens.size();
-        // First check the preferred screen.
-        IntSet screensToExclude = new IntSet();
-        
-        boolean smartspaceEnabled = PreferenceExtensionsKt.firstBlocking(PreferenceManager2.INSTANCE.get(context).getEnableSmartspace());
-        if (smartspaceEnabled) {
-            screensToExclude.add(FIRST_SCREEN_ID);
-        }
-
-        for (int screen = 0; screen < screenCount; screen++) {
-            screenId = workspaceScreens.get(screen);
-            if (!screensToExclude.contains(screenId) && findNextAvailableIconSpaceInScreen(
+        for (int screen = 0; screen < screenItems.size(); screen++) {
+            screenId = screenItems.keyAt(screen);
+            if (!excludedScreens.contains(screenId) && findNextAvailableIconSpaceInScreen(
                     screenItems.get(screenId), coordinates, spanX, spanY)) {
                 // We found a space for it
                 found = true;
@@ -116,17 +104,13 @@ public class WorkspaceItemSpaceFinder {
             // Still no position found. Add a new screen to the end.
             screenId = mModel.getModelDbController().getNewScreenId();
 
-            // Save the screen id for binding in the workspace
-            workspaceScreens.add(screenId);
-            addedWorkspaceScreensFinal.add(screenId);
-
             // If we still can't find an empty space, then God help us all!!!
             if (!findNextAvailableIconSpaceInScreen(
                     screenItems.get(screenId), coordinates, spanX, spanY)) {
                 throw new RuntimeException("Can't find space to add the item");
             }
         }
-        return new int[]{screenId, coordinates[0], coordinates[1]};
+        return new WorkspaceItemCoordinates(screenId, coordinates[0], coordinates[1]);
     }
 
     private boolean findNextAvailableIconSpaceInScreen(

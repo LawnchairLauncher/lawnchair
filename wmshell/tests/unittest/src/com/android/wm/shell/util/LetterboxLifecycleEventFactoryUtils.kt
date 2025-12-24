@@ -16,7 +16,6 @@
 
 package com.android.wm.shell.util
 
-import android.window.TransitionInfo.Change
 import com.android.wm.shell.compatui.letterbox.lifecycle.LetterboxLifecycleEvent
 import com.android.wm.shell.compatui.letterbox.lifecycle.LetterboxLifecycleEventFactory
 
@@ -24,19 +23,9 @@ import com.android.wm.shell.compatui.letterbox.lifecycle.LetterboxLifecycleEvent
 annotation class LetterboxLifecycleEventFactoryTagMarker
 
 @LetterboxLifecycleEventFactoryTagMarker
-class LetterboxLifecycleEventTestContext(
+class LetterboxLifecycleEventFactoryTestContext(
     private val testSubjectFactory: () -> LetterboxLifecycleEventFactory
-) {
-
-    private lateinit var inputObject: Change
-
-    fun inputChange(builder: ChangeTestInputBuilder.() -> Unit): Change {
-        val inputFactoryObj = ChangeTestInputBuilder()
-        inputFactoryObj.builder()
-        return inputFactoryObj.build().apply {
-            inputObject = this
-        }
-    }
+) : BaseChangeTestContext() {
 
     fun validateCreateLifecycleEvent(verifier: (LetterboxLifecycleEvent?) -> Unit) {
         // We execute the test subject using the input
@@ -54,9 +43,9 @@ class LetterboxLifecycleEventTestContext(
  */
 fun testLetterboxLifecycleEventFactory(
     testSubjectFactory: () -> LetterboxLifecycleEventFactory,
-    init: LetterboxLifecycleEventTestContext.() -> Unit
-): LetterboxLifecycleEventTestContext {
-    val testContext = LetterboxLifecycleEventTestContext(testSubjectFactory)
+    init: LetterboxLifecycleEventFactoryTestContext.() -> Unit
+): LetterboxLifecycleEventFactoryTestContext {
+    val testContext = LetterboxLifecycleEventFactoryTestContext(testSubjectFactory)
     testContext.init()
     return testContext
 }

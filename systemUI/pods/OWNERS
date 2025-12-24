@@ -1,0 +1,4 @@
+# Bug component: 78010
+
+per-file {**/,}Android.bp = set noparent
+per-file {**/,}Android.bp = file:../BUILD_OWNERS

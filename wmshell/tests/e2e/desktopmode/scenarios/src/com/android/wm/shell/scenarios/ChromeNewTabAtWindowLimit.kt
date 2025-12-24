@@ -17,32 +17,24 @@
 package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
-import android.tools.NavBar
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
 import android.tools.Rotation
 import android.tools.device.apphelpers.BrowserAppHelper
 import android.tools.device.apphelpers.CalculatorAppHelper
 import android.tools.device.apphelpers.ClockAppHelper
-import android.tools.flicker.rules.ChangeDisplayOrientationRule
 import android.tools.traces.parsers.WindowManagerStateHelper
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.android.launcher3.tapl.LauncherInstrumentation
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.MailAppHelper
-import com.android.window.flags.Flags
-import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 @Ignore("Test Base Class")
 abstract class ChromeNewTabAtWindowLimit(val rotation: Rotation = Rotation.ROTATION_0) :
-    TestScenarioBase() {
+    TestScenarioBase(rotation) {
 
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
     private val tapl = LauncherInstrumentation()
@@ -54,21 +46,8 @@ abstract class ChromeNewTabAtWindowLimit(val rotation: Rotation = Rotation.ROTAT
     private val clockAppHelper = ClockAppHelper()
     private val browserAppHelper = BrowserAppHelper(instrumentation)
 
-    @Rule
-    @JvmField val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, rotation)
-
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
-        tapl.apply {
-            setEnableRotation(true)
-            setExpectedRotation(rotation.value)
-            enableTransientTaskbar(false)
-        }
-        ChangeDisplayOrientationRule.setRotation(rotation)
         mailAppDesktopHelper.enterDesktopMode(wmHelper, device)
         calculatorHelper.launchViaIntent(wmHelper)
         clockAppHelper.launchViaIntent(wmHelper)

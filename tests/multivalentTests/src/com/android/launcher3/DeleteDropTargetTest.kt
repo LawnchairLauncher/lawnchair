@@ -1,15 +1,13 @@
 package com.android.launcher3
 
-import android.content.Context
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.android.launcher3.Utilities.*
+import com.android.launcher3.Utilities.enableRunningInTestHarnessForTests
 import com.android.launcher3.dragndrop.DragView
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.MSDLPlayerWrapper
+import com.android.launcher3.util.TestActivityContext
 import com.google.android.msdl.data.model.MSDLToken
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -28,10 +26,9 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 class DeleteDropTargetTest {
 
     @get:Rule val mSetFlagsRule = SetFlagsRule()
+    @get:Rule val mContext = TestActivityContext()
 
     @Mock private val msdlPlayerWrapper = mock<MSDLPlayerWrapper>()
-
-    private var mContext: Context = ActivityContextWrapper(getApplicationContext())
 
     // Use a non-abstract class implementation
     private var buttonDropTarget: DeleteDropTarget = DeleteDropTarget(mContext)

@@ -18,7 +18,6 @@ package com.android.quickstep.util
 
 import android.animation.AnimatorSet
 import android.content.Context
-import com.android.launcher3.Flags
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAnimationRunner.AnimationResult
 import com.android.launcher3.LauncherState
@@ -41,19 +40,9 @@ class AnimatorBackState(private val springAnim: RectFSpringAnim?, private val an
 
     override fun addOnAnimCompleteCallback(r: Runnable) {
         val animWait = RunnableList()
-        if (Flags.predictiveBackToHomePolish()) {
-            springAnim?.addAnimatorListener(forEndCallback(animWait::executeAllAndDestroy))
-                ?: anim?.addListener(forEndCallback(animWait::executeAllAndDestroy))
-                ?: animWait.executeAllAndDestroy()
-        } else {
-            val springAnimWait = RunnableList()
-            springAnim?.addAnimatorListener(forEndCallback(springAnimWait::executeAllAndDestroy))
-                ?: springAnimWait.executeAllAndDestroy()
-
-            anim?.addListener(
-                forEndCallback(Runnable { springAnimWait.add(animWait::executeAllAndDestroy) })
-            ) ?: springAnimWait.add(animWait::executeAllAndDestroy)
-        }
+        springAnim?.addAnimatorListener(forEndCallback(animWait::executeAllAndDestroy))
+            ?: anim?.addListener(forEndCallback(animWait::executeAllAndDestroy))
+            ?: animWait.executeAllAndDestroy()
         animWait.add(r)
     }
 

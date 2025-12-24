@@ -132,7 +132,7 @@ class DismissView(context: Context) : FrameLayout(context) {
 
         // Setup gradient
         gradientDrawable = createGradient(color = config.floatingGradientColorResId)
-        setBackgroundDrawable(gradientDrawable)
+        setBackground(gradientDrawable)
 
         // Setup DismissCircleView
         circle.id = config.dismissViewResId

@@ -16,20 +16,39 @@
 
 package com.android.wm.shell.windowdecor;
 
+import static android.view.InputDevice.SOURCE_MOUSE;
+import static android.view.InputDevice.SOURCE_TOUCHSCREEN;
+import static android.view.MotionEvent.TOOL_TYPE_ERASER;
+import static android.view.MotionEvent.TOOL_TYPE_FINGER;
+import static android.view.MotionEvent.TOOL_TYPE_MOUSE;
+import static android.view.MotionEvent.TOOL_TYPE_PALM;
+import static android.view.MotionEvent.TOOL_TYPE_STYLUS;
+import static android.view.MotionEvent.TOOL_TYPE_UNKNOWN;
+
 import static com.android.wm.shell.windowdecor.DragPositioningCallback.CTRL_TYPE_BOTTOM;
 import static com.android.wm.shell.windowdecor.DragPositioningCallback.CTRL_TYPE_LEFT;
 import static com.android.wm.shell.windowdecor.DragPositioningCallback.CTRL_TYPE_RIGHT;
 import static com.android.wm.shell.windowdecor.DragPositioningCallback.CTRL_TYPE_TOP;
 import static com.android.wm.shell.windowdecor.DragPositioningCallback.CTRL_TYPE_UNDEFINED;
+import static com.android.wm.shell.windowdecor.DragPositioningCallback.INPUT_METHOD_TYPE_MOUSE;
+import static com.android.wm.shell.windowdecor.DragPositioningCallback.INPUT_METHOD_TYPE_STYLUS;
+import static com.android.wm.shell.windowdecor.DragPositioningCallback.INPUT_METHOD_TYPE_TOUCH;
+import static com.android.wm.shell.windowdecor.DragPositioningCallback.INPUT_METHOD_TYPE_TOUCHPAD;
+import static com.android.wm.shell.windowdecor.DragPositioningCallback.INPUT_METHOD_TYPE_UNKNOWN;
 
+import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.SurfaceControl;
 import android.window.DesktopModeFlags;
 
 import com.android.wm.shell.R;
 import com.android.wm.shell.common.DisplayController;
+import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.InputMethod;
+import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.ResizeTrigger;
 
 /**
  * Utility class that contains logic common to classes implementing {@link DragPositioningCallback}
@@ -66,7 +85,7 @@ public class DragPositioningCallbackUtility {
      */
     static boolean changeBounds(int ctrlType, Rect repositionTaskBounds, Rect taskBoundsAtDragStart,
             Rect stableBounds, PointF delta, DisplayController displayController,
-            WindowDecoration windowDecoration, boolean canEnterDesktopMode) {
+            WindowDecorationWrapper windowDecoration, boolean canEnterDesktopMode) {
         // If task is being dragged rather than resized, return since this method only handles
         // with resizing
         if (ctrlType == CTRL_TYPE_UNDEFINED) {
@@ -144,7 +163,7 @@ public class DragPositioningCallbackUtility {
         // location or to a stable bound edge, reset all the bounds to maintain the applications
         // aspect ratio.
         if (DesktopModeFlags.ENABLE_WINDOWING_SCALED_RESIZING.isTrue()
-                && !isAspectRatioMaintained && !windowDecoration.mTaskInfo.isResizeable) {
+                && !isAspectRatioMaintained && !windowDecoration.getTaskInfo().isResizeable) {
             repositionTaskBounds.top = oldTop;
             repositionTaskBounds.bottom = oldBottom;
             repositionTaskBounds.right = oldRight;
@@ -161,11 +180,12 @@ public class DragPositioningCallbackUtility {
     /**
      * Set bounds using a {@link SurfaceControl.Transaction}.
      */
-    static void setPositionOnDrag(WindowDecoration decoration, Rect repositionTaskBounds,
+    static void setPositionOnDrag(WindowDecorationWrapper decoration, Rect repositionTaskBounds,
             Rect taskBoundsAtDragStart, PointF repositionStartPoint, SurfaceControl.Transaction t,
             float x, float y) {
         updateTaskBounds(repositionTaskBounds, taskBoundsAtDragStart, repositionStartPoint, x, y);
-        t.setPosition(decoration.mTaskSurface, repositionTaskBounds.left, repositionTaskBounds.top);
+        t.setPosition(decoration.getTaskSurface(), repositionTaskBounds.left,
+                repositionTaskBounds.top);
     }
 
     static void updateTaskBounds(Rect repositionTaskBounds, Rect taskBoundsAtDragStart,
@@ -218,7 +238,7 @@ public class DragPositioningCallbackUtility {
      */
     public static boolean isExceedingWidthConstraint(int repositionedWidth, int startingWidth,
             Rect maxResizeBounds, DisplayController displayController,
-            WindowDecoration windowDecoration, boolean canEnterDesktopMode) {
+            WindowDecorationWrapper windowDecoration, boolean canEnterDesktopMode) {
         boolean isSizeIncreasing = (repositionedWidth - startingWidth) > 0;
         // Check if width is less than the minimum width constraint.
         if (repositionedWidth < getMinWidth(displayController, windowDecoration,
@@ -244,7 +264,7 @@ public class DragPositioningCallbackUtility {
      */
     public static boolean isExceedingHeightConstraint(int repositionedHeight, int startingHeight,
             Rect maxResizeBounds, DisplayController displayController,
-            WindowDecoration windowDecoration, boolean canEnterDesktopMode) {
+            WindowDecorationWrapper windowDecoration, boolean canEnterDesktopMode) {
         boolean isSizeIncreasing = (repositionedHeight - startingHeight) > 0;
         // Check if height is less than the minimum height constraint.
         if (repositionedHeight < getMinHeight(displayController, windowDecoration,
@@ -258,45 +278,70 @@ public class DragPositioningCallbackUtility {
                 && repositionedHeight > maxResizeBounds.height() && isSizeIncreasing;
     }
 
+    /**
+     * Returns the corresponding input method type used such as a finger or stylus, if known.
+     */
+    @DragPositioningCallback.InputMethodType
+    public static int getInputMethodFromMotionEvent(@Nullable MotionEvent e) {
+        if (e == null) return INPUT_METHOD_TYPE_UNKNOWN;
+
+        final int toolType = e.getToolType(e.findPointerIndex(e.getPointerId(0)));
+        return switch (toolType) {
+            case TOOL_TYPE_STYLUS -> INPUT_METHOD_TYPE_STYLUS;
+            case TOOL_TYPE_MOUSE -> INPUT_METHOD_TYPE_MOUSE;
+            case TOOL_TYPE_FINGER -> {
+                final int source = e.getSource();
+                if (source == SOURCE_MOUSE) {
+                    yield INPUT_METHOD_TYPE_TOUCHPAD;
+                } else if (source == SOURCE_TOUCHSCREEN) {
+                    yield INPUT_METHOD_TYPE_TOUCH;
+                }
+                yield INPUT_METHOD_TYPE_UNKNOWN;
+            }
+            case TOOL_TYPE_ERASER, TOOL_TYPE_PALM, TOOL_TYPE_UNKNOWN -> INPUT_METHOD_TYPE_UNKNOWN;
+            default -> INPUT_METHOD_TYPE_UNKNOWN;
+        };
+    }
+
     private static float getMinWidth(DisplayController displayController,
-            WindowDecoration windowDecoration, boolean canEnterDesktopMode) {
-        return windowDecoration.mTaskInfo.minWidth < 0 ? getDefaultMinWidth(displayController,
+            WindowDecorationWrapper windowDecoration, boolean canEnterDesktopMode) {
+        return windowDecoration.getTaskInfo().minWidth < 0 ? getDefaultMinWidth(displayController,
                 windowDecoration, canEnterDesktopMode)
-                : windowDecoration.mTaskInfo.minWidth;
+                : windowDecoration.getTaskInfo().minWidth;
     }
 
     private static float getMinHeight(DisplayController displayController,
-            WindowDecoration windowDecoration, boolean canEnterDesktopMode) {
-        return windowDecoration.mTaskInfo.minHeight < 0 ? getDefaultMinHeight(displayController,
+            WindowDecorationWrapper windowDecoration, boolean canEnterDesktopMode) {
+        return windowDecoration.getTaskInfo().minHeight < 0 ? getDefaultMinHeight(displayController,
                 windowDecoration, canEnterDesktopMode)
-                : windowDecoration.mTaskInfo.minHeight;
+                : windowDecoration.getTaskInfo().minHeight;
     }
 
     private static float getDefaultMinWidth(DisplayController displayController,
-            WindowDecoration windowDecoration, boolean canEnterDesktopMode) {
+            WindowDecorationWrapper windowDecoration, boolean canEnterDesktopMode) {
         if (isSizeConstraintForDesktopModeEnabled(canEnterDesktopMode)) {
             return WindowDecoration.loadDimensionPixelSize(
-                    windowDecoration.mDecorWindowContext.getResources(),
+                    windowDecoration.getDecorWindowContext().getResources(),
                     R.dimen.desktop_mode_minimum_window_width);
         }
         return getDefaultMinSize(displayController, windowDecoration);
     }
 
     private static float getDefaultMinHeight(DisplayController displayController,
-            WindowDecoration windowDecoration, boolean canEnterDesktopMode) {
+            WindowDecorationWrapper windowDecoration, boolean canEnterDesktopMode) {
         if (isSizeConstraintForDesktopModeEnabled(canEnterDesktopMode)) {
             return WindowDecoration.loadDimensionPixelSize(
-                    windowDecoration.mDecorWindowContext.getResources(),
+                    windowDecoration.getDecorWindowContext().getResources(),
                     R.dimen.desktop_mode_minimum_window_height);
         }
         return getDefaultMinSize(displayController, windowDecoration);
     }
 
     private static float getDefaultMinSize(DisplayController displayController,
-            WindowDecoration windowDecoration) {
-        float density = displayController.getDisplayLayout(windowDecoration.mTaskInfo.displayId)
+            WindowDecorationWrapper windowDecoration) {
+        float density = displayController.getDisplayLayout(windowDecoration.getTaskInfo().displayId)
                 .densityDpi() * DisplayMetrics.DENSITY_DEFAULT_SCALE;
-        return windowDecoration.mTaskInfo.defaultMinSize * density;
+        return windowDecoration.getTaskInfo().defaultMinSize * density;
     }
 
     private static boolean isSizeConstraintForDesktopModeEnabled(boolean canEnterDesktopMode) {
@@ -311,5 +356,17 @@ public class DragPositioningCallbackUtility {
          * @param taskId id of this positioner's {@link WindowDecoration}
          */
         void onDragMove(int taskId);
+
+        /**
+         * Inform the implementing class that a drag resize has started.
+         */
+        default void onDragResizeStarted(int taskId, @NonNull ResizeTrigger resizeTrigger,
+                @NonNull InputMethod inputMethod, @NonNull Rect startTaskBounds) {}
+
+        /**
+         * Inform the implementing class that a drag resize has ended.
+         */
+        default void onDragResizeEnded(int taskId, @NonNull ResizeTrigger resizeTrigger,
+                @NonNull InputMethod inputMethod, @NonNull Rect endTaskBounds) {}
     }
 }

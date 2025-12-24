@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"ایپس کی تجاویز کو خالی اسپیس میں شامل کر دیا گیا"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ایپ کی تجاویز فعال ہیں"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ایپ کی تجاویز غیر فعال ہیں"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"پیشن گوئی کردہ ایپ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"اشاروں والی نیویگیشن ٹیوٹوریل"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"اپنا آلہ گھمائیں"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"براہ کرم اشاروں والی نیویگیشن کا ٹیوٹوریل مکمل کرنے کے لیے اپنا آلہ گھمائیں"</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"سسٹم نیویگیشن کی ترتیبات"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"آپ کا <xliff:g id="DEVICE">%1$s</xliff:g> \nتیار ہے!"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"آپ کا آلہ \nتیار ہے!"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"آپ رول کرنے کے لئے تیار ہیں!"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"اپنے نئے <xliff:g id="DEVICE">%1$s</xliff:g> کا لطف اٹھائیں!"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"اپنے <xliff:g id="DEVICE">%1$s</xliff:g> کے ساتھ شروع کرنے کے لیے سوائپ کریں"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"اپنے <xliff:g id="DEVICE">%1$s</xliff:g> کے ساتھ شروع کرنے کے لیے تھپتھپائیں"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356">"‫"<annotation id="link">"نیویگیٹ کرنے کا طریقہ منتخب کریں"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"اوپر کی طرف سوائپ کریں"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"ہوم بٹن پر تھپتھپائیں"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"اطلاعات"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"فوری ترتیبات"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"ٹاسک بار"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ٹاشک بار دکھایا گیا"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"ٹاسک بار و بلبلے بائیں طرف ہیں"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"ٹاسک بار و بلبلے دائیں طرف ہیں"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"نیویگیشن بار"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"ہمیشہ ٹاسک بار دکھائیں"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"نیویگیشن موڈ تبدیل کریں"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"ٹاسک بار ڈیوائیڈر"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"دیگر حالیہ ایپس"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"ایپ کو ٹاسک بار میں شامل کیا گیا"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"ایپ کو ٹاسک بار سے نکالا گیا"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"اوپر/بائیں طرف منتقل کریں"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"نیچے/دائیں طرف منتقل کریں"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"ایپ کو بطور ببل کھولیں"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"ایپ آئیکن"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"ایپ کا عنوان"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"\'بند کریں\' بٹن"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"ٹاسک بار میں پن کریں"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"ٹاسک بار سے پن ہٹائیں"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"کھسکائیں"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"بند کریں"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"تصویر کو کھسکائیں"</string>

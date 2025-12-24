@@ -17,16 +17,12 @@
 package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
-import android.tools.NavBar
-import android.tools.Rotation
 import android.tools.device.apphelpers.StandardAppHelper
 import android.tools.traces.parsers.WindowManagerStateHelper
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.android.launcher3.tapl.LauncherInstrumentation
-import com.android.wm.shell.Utils
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 /** Base test class for window drag CUJ. */
@@ -37,10 +33,6 @@ abstract class DragAppWindowScenarioTestBase : TestScenarioBase() {
     val tapl = LauncherInstrumentation()
     val wmHelper = WindowManagerStateHelper(instrumentation)
     val device = UiDevice.getInstance(instrumentation)
-
-    @Rule
-    @JvmField
-    val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, Rotation.ROTATION_0)
 
     @Test abstract fun dragAppWindow()
 

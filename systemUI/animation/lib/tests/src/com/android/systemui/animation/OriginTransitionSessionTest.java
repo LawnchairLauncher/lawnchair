@@ -34,6 +34,7 @@ import android.window.ActivityTransitionInfo;
 import android.window.IRemoteTransition;
 import android.window.IRemoteTransitionFinishedCallback;
 import android.window.RemoteTransition;
+import android.window.TransitionFilter;
 import android.window.TransitionInfo;
 import android.window.WindowAnimationState;
 import android.window.WindowContainerTransaction;
@@ -48,6 +49,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -336,6 +338,15 @@ public final class OriginTransitionSessionTest {
         public RemoteTransition makeOriginTransition(
                 RemoteTransition launchTransition, RemoteTransition returnTransition) {
             mRecords.put(launchTransition, returnTransition);
+            return launchTransition;
+        }
+
+        @Override
+        public RemoteTransition makeOriginTransitionWithReturnFilters(
+                RemoteTransition launchTransition,
+                List<RemoteTransition> returnTransition,
+                List<TransitionFilter> returnFilters) {
+            mRecords.put(launchTransition, returnTransition.get(0));
             return launchTransition;
         }
 

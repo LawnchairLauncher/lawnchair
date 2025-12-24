@@ -22,10 +22,11 @@ import com.android.launcher3.util.DaggerSingletonTracker
 import com.android.launcher3.util.LauncherMultivalentJUnit
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 
 private val TEST_CONSTANT_ITEM = LauncherPrefs.nonRestorableItem("TEST_BOOLEAN_ITEM", false)
 
@@ -41,12 +42,12 @@ private val TEST_CONTEXTUAL_ITEM =
 @RunWith(LauncherMultivalentJUnit::class)
 class FakeLauncherPrefsTest {
 
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
     @Mock lateinit var lifeCycle: DaggerSingletonTracker
     private lateinit var launcherPrefs: FakeLauncherPrefs
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         launcherPrefs = FakeLauncherPrefs(getApplicationContext(), lifeCycle)
     }
 

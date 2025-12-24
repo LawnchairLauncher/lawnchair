@@ -32,15 +32,19 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_NEW_TOUCHPAD_GESTURES_TUTORIAL = "com.android.systemui.shared.new_touchpad_gestures_tutorial";
     /** @hide */
-    public static final String FLAG_RETURN_ANIMATION_FRAMEWORK_LIBRARY = "com.android.systemui.shared.return_animation_framework_library";
+    public static final String FLAG_NOTIFICATION_DOT_CONTRAST_BORDER = "com.android.systemui.shared.notification_dot_contrast_border";
     /** @hide */
-    public static final String FLAG_RETURN_ANIMATION_FRAMEWORK_LONG_LIVED = "com.android.systemui.shared.return_animation_framework_long_lived";
+    public static final String FLAG_PAN_AND_ZOOM_IN_EXTENDED_WALLPAPER_EFFECTS = "com.android.systemui.shared.pan_and_zoom_in_extended_wallpaper_effects";
     /** @hide */
     public static final String FLAG_SCREENSHOT_CONTEXT_URL = "com.android.systemui.shared.screenshot_context_url";
     /** @hide */
     public static final String FLAG_SHADE_ALLOW_BACK_GESTURE = "com.android.systemui.shared.shade_allow_back_gesture";
     /** @hide */
     public static final String FLAG_SIDEFPS_CONTROLLER_REFACTOR = "com.android.systemui.shared.sidefps_controller_refactor";
+    /** @hide */
+    public static final String FLAG_SMARTSPACE_AQI_UPDATED_DESIGN = "com.android.systemui.shared.smartspace_aqi_updated_design";
+    /** @hide */
+    public static final String FLAG_SMARTSPACE_SEMANTIC_WEATHER_DATA = "com.android.systemui.shared.smartspace_semantic_weather_data";
     /** @hide */
     public static final String FLAG_SMARTSPACE_SPORTS_CARD_BACKGROUND = "com.android.systemui.shared.smartspace_sports_card_background";
     /** @hide */
@@ -141,15 +145,15 @@ public final class Flags {
     }
 
 
-    public static boolean returnAnimationFrameworkLibrary() {
+    public static boolean notificationDotContrastBorder() {
         
-        return FEATURE_FLAGS.returnAnimationFrameworkLibrary();
+        return FEATURE_FLAGS.notificationDotContrastBorder();
     }
 
 
-    public static boolean returnAnimationFrameworkLongLived() {
+    public static boolean panAndZoomInExtendedWallpaperEffects() {
         
-        return FEATURE_FLAGS.returnAnimationFrameworkLongLived();
+        return FEATURE_FLAGS.panAndZoomInExtendedWallpaperEffects();
     }
 
 
@@ -168,6 +172,18 @@ public final class Flags {
     public static boolean sidefpsControllerRefactor() {
         
         return FEATURE_FLAGS.sidefpsControllerRefactor();
+    }
+
+
+    public static boolean smartspaceAqiUpdatedDesign() {
+        
+        return FEATURE_FLAGS.smartspaceAqiUpdatedDesign();
+    }
+
+
+    public static boolean smartspaceSemanticWeatherData() {
+        
+        return FEATURE_FLAGS.smartspaceSemanticWeatherData();
     }
 
 

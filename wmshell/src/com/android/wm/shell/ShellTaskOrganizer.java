@@ -25,9 +25,12 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static com.android.window.flags2.Flags.unifyShellBinders;
 import static com.android.wm.shell.compatui.impl.CompatUIEventsKt.SIZE_COMPAT_RESTART_BUTTON_APPEARED;
 import static com.android.wm.shell.compatui.impl.CompatUIEventsKt.SIZE_COMPAT_RESTART_BUTTON_CLICKED;
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_TASK_ORG;
+import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_TASK_ORG_NOISY;
+import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_TRANSITIONS;
 
 import android.annotation.IntDef;
 import android.annotation.NonNull;
@@ -50,12 +53,15 @@ import android.window.StartingWindowInfo;
 import android.window.StartingWindowRemovalInfo;
 import android.window.TaskAppearedInfo;
 import android.window.TaskOrganizer;
+import android.window.TransitionInfo;
+import android.window.TransitionRequestInfo;
 import android.window.WindowContainerTransaction;
 import android.window.WindowContainerTransactionCallback;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.protolog.ProtoLog;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.launcher3.Flags;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.compatui.CompatUIController;
 import com.android.wm.shell.compatui.api.CompatUIHandler;
@@ -66,6 +72,7 @@ import com.android.wm.shell.recents.RecentTasksController;
 import com.android.wm.shell.startingsurface.StartingWindowController;
 import com.android.wm.shell.sysui.ShellCommandHandler;
 import com.android.wm.shell.sysui.ShellInit;
+import com.android.wm.shell.transition.Transitions;
 import com.android.wm.shell.unfold.UnfoldAnimationController;
 
 import java.io.PrintWriter;
@@ -106,6 +113,12 @@ public class ShellTaskOrganizer extends TaskOrganizer {
     public interface TaskListener extends TaskVanishedListener, TaskAppearedListener,
             TaskInfoChangedListener {
 
+        /**
+         * Invoked when back is pressed on the base activity of the task. If the task is not
+         * organized, there will be no callback.
+         *
+         * @param taskInfo The RunningTaskInfo for the Task which received back event.
+         */
         default void onBackPressedOnTaskRoot(RunningTaskInfo taskInfo) {}
         /** Whether this task listener supports compat UI. */
         default boolean supportCompatUI() {
@@ -243,7 +256,13 @@ public class ShellTaskOrganizer extends TaskOrganizer {
             .build();
 
     /**
-     * In charge of showing compat UI. Can be {@code null} if the device doesn't support size
+     * Overlay surface for overview. Attached to the display area per display and will be used
+     * to put overview overlays above the home task.
+     */
+    private final SparseArray<SurfaceControl> mOverviewOverlayLeashes = new SparseArray<>();
+
+    /**
+     * In charge of showing compat UI. Can be {@code null} if the device doesn't support sizef
      * compat or if this isn't the main {@link ShellTaskOrganizer}.
      *
      * <p>NOTE: only the main {@link ShellTaskOrganizer} should have a {@link CompatUIHandler},
@@ -255,6 +274,9 @@ public class ShellTaskOrganizer extends TaskOrganizer {
     @NonNull
     private final ShellCommandHandler mShellCommandHandler;
 
+    @NonNull
+    private final RootTaskDisplayAreaOrganizer mRootTaskDisplayAreaOrganizer;
+
     @Nullable
     private final Optional<RecentTasksController> mRecentTasks;
 
@@ -263,6 +285,8 @@ public class ShellTaskOrganizer extends TaskOrganizer {
 
     @Nullable
     private RunningTaskInfo mLastFocusedTaskInfo;
+
+    private Transitions mTransitions;
 
     public ShellTaskOrganizer(ShellExecutor mainExecutor) {
         this(null /* shellInit */, null /* shellCommandHandler */,
@@ -274,17 +298,20 @@ public class ShellTaskOrganizer extends TaskOrganizer {
 
     public ShellTaskOrganizer(ShellInit shellInit,
             ShellCommandHandler shellCommandHandler,
+            RootTaskDisplayAreaOrganizer rootTaskDisplayAreaOrganizer,
             @Nullable CompatUIHandler compatUI,
             Optional<UnfoldAnimationController> unfoldAnimationController,
             Optional<RecentTasksController> recentTasks,
             ShellExecutor mainExecutor) {
-        this(shellInit, shellCommandHandler, null /* taskOrganizerController */, compatUI,
+        this(shellInit, shellCommandHandler, rootTaskDisplayAreaOrganizer,
+                null /* taskOrganizerController */, compatUI,
                 unfoldAnimationController, recentTasks, mainExecutor);
     }
 
     @VisibleForTesting
     protected ShellTaskOrganizer(ShellInit shellInit,
             ShellCommandHandler shellCommandHandler,
+            RootTaskDisplayAreaOrganizer rootDisplayAreaOrganizer,
             ITaskOrganizerController taskOrganizerController,
             @Nullable CompatUIHandler compatUI,
             Optional<UnfoldAnimationController> unfoldAnimationController,
@@ -292,6 +319,7 @@ public class ShellTaskOrganizer extends TaskOrganizer {
             ShellExecutor mainExecutor) {
         super(taskOrganizerController, mainExecutor);
         mShellCommandHandler = shellCommandHandler;
+        mRootTaskDisplayAreaOrganizer = rootDisplayAreaOrganizer;
         mCompatUI = compatUI;
         mRecentTasks = recentTasks;
         mUnfoldAnimationController = unfoldAnimationController.orElse(null);
@@ -316,7 +344,10 @@ public class ShellTaskOrganizer extends TaskOrganizer {
                 }
             });
         }
-        registerOrganizer();
+        if (!unifyShellBinders()) {
+            // wait to register until Transitions is initialized
+            registerOrganizer();
+        }
     }
 
     @Override
@@ -326,7 +357,7 @@ public class ShellTaskOrganizer extends TaskOrganizer {
             final List<TaskAppearedInfo> taskInfos = super.registerOrganizer();
             for (int i = 0; i < taskInfos.size(); i++) {
                 final TaskAppearedInfo info = taskInfos.get(i);
-                ProtoLog.v(WM_SHELL_TASK_ORG, "Existing task: id=%d component=%s",
+                ProtoLog.v(WM_SHELL_TASK_ORG_NOISY, "Existing task: id=%d component=%s",
                         info.getTaskInfo().taskId, info.getTaskInfo().baseIntent);
                 onTaskAppeared(info);
             }
@@ -342,10 +373,18 @@ public class ShellTaskOrganizer extends TaskOrganizer {
         }
     }
 
+    /**
+     * Initialize this organizer with required components.
+     */
+    public void initializeDependencies(Transitions transitions) {
+        mTransitions = transitions;
+        registerOrganizer();
+    }
+
     @Override
     public void applyTransaction(@NonNull WindowContainerTransaction t) {
         if (!t.isEmpty()) {
-            ProtoLog.v(WM_SHELL_TASK_ORG, "applyTransaction(): wct=%s caller=%s",
+            ProtoLog.v(WM_SHELL_TASK_ORG_NOISY, "applyTransaction(): wct=%s caller=%s",
                     t, Debug.getCallers(4));
         }
         super.applyTransaction(t);
@@ -355,7 +394,7 @@ public class ShellTaskOrganizer extends TaskOrganizer {
     public int applySyncTransaction(@NonNull WindowContainerTransaction t,
             @NonNull WindowContainerTransactionCallback callback) {
         if (!t.isEmpty()) {
-            ProtoLog.v(WM_SHELL_TASK_ORG, "applySyncTransaction(): wct=%s caller=%s",
+            ProtoLog.v(WM_SHELL_TASK_ORG_NOISY, "applySyncTransaction(): wct=%s caller=%s",
                     t, Debug.getCallers(4));
         }
         return super.applySyncTransaction(t, callback);
@@ -502,7 +541,14 @@ public class ShellTaskOrganizer extends TaskOrganizer {
         synchronized (mLock) {
             ProtoLog.v(WM_SHELL_TASK_ORG, "Remove listener=%s", listener);
 
-            // Remove all occurrences of the pending listener
+            // Remove all occurrences of the pending listener by launch cookie
+            for (int i = mLaunchCookieToListener.size() - 1; i >= 0; --i) {
+                if (mLaunchCookieToListener.valueAt(i) == listener) {
+                    mLaunchCookieToListener.removeAt(i);
+                }
+            }
+
+            // Remove all occurrences of the pending listener by task id
             for (int i = mPendingTaskToListener.size() - 1; i >= 0; --i) {
                 if (mPendingTaskToListener.valueAt(i) == listener) {
                     mPendingTaskToListener.removeAt(i);
@@ -650,6 +696,35 @@ public class ShellTaskOrganizer extends TaskOrganizer {
     }
 
     /**
+     * Returns a surface which can be used to attach overview overlays above home root task
+     */
+    @Nullable
+    public SurfaceControl getOverviewOverlayContainer(int displayId) {
+        return getOrCreateOverviewOverlayContainer(displayId);
+    }
+
+    /**
+     * Returns or creates a surface which can be used to attach overlays to the home root task
+     */
+    private SurfaceControl getOrCreateOverviewOverlayContainer(int displayId) {
+        if (!isOverviewOverlayEnabled(displayId)) {
+            return null;
+        }
+        if (!mOverviewOverlayLeashes.contains(displayId)
+                && Flags.enableOverviewOnConnectedDisplays()) {
+            SurfaceControl.Builder builder = new SurfaceControl.Builder()
+                    .setName("overview_overlay_container")
+                    .setContainerLayer()
+                    .setHidden(false)
+                    .setCallsite("ShellTaskOrganizer.mOverviewOverlayLeashes");
+
+            mRootTaskDisplayAreaOrganizer.attachToDisplayArea(displayId, builder);
+            mOverviewOverlayLeashes.put(displayId, builder.build());
+        }
+        return mOverviewOverlayLeashes.get(displayId);
+    }
+
+    /**
      * Returns a surface which can be used to attach overlays to the home root task
      */
     @NonNull
@@ -730,6 +805,17 @@ public class ShellTaskOrganizer extends TaskOrganizer {
             mUnfoldAnimationController.onTaskAppeared(info.getTaskInfo(), info.getLeash());
         }
 
+        int displayId = info.getTaskInfo().displayId;
+        if (isOverviewOverlayEnabled(displayId)
+                && info.getTaskInfo().getActivityType() == ACTIVITY_TYPE_HOME) {
+            ProtoLog.v(WM_SHELL_TASK_ORG,
+                    "Adding overview overlay to home task on displayId=%d", displayId);
+            SurfaceControl overviewOverlay = getOrCreateOverviewOverlayContainer(displayId);
+            final SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+            t.setRelativeLayer(overviewOverlay, info.getLeash(), 1);
+            t.apply();
+        }
+
         if (isHomeTaskOnDefaultDisplay(info.getTaskInfo())) {
             ProtoLog.v(WM_SHELL_TASK_ORG, "Adding overlay to home task");
             final SurfaceControl.Transaction t = new SurfaceControl.Transaction();
@@ -749,7 +835,7 @@ public class ShellTaskOrganizer extends TaskOrganizer {
     @Override
     public void onTaskInfoChanged(RunningTaskInfo taskInfo) {
         synchronized (mLock) {
-            ProtoLog.v(WM_SHELL_TASK_ORG, "Task info changed taskId=%d", taskInfo.taskId);
+            ProtoLog.v(WM_SHELL_TASK_ORG_NOISY, "Task info changed taskId=%d", taskInfo.taskId);
 
             if (mUnfoldAnimationController != null) {
                 mUnfoldAnimationController.onTaskInfoChanged(taskInfo);
@@ -839,6 +925,19 @@ public class ShellTaskOrganizer extends TaskOrganizer {
             notifyCompatUI(taskInfo, null /* taskListener */);
             // Notify the recent tasks that a task has been removed
             mRecentTasks.ifPresent(recentTasks -> recentTasks.onTaskRemoved(taskInfo));
+
+            int displayId = taskInfo.displayId;
+            if (isOverviewOverlayEnabled(displayId)
+                    && taskInfo.getActivityType() == ACTIVITY_TYPE_HOME
+                    && mOverviewOverlayLeashes.contains(displayId)) {
+                ProtoLog.v(WM_SHELL_TASK_ORG,
+                        "Removing overview overlay on displayId=%d", displayId);
+                SurfaceControl surfaceControl = mOverviewOverlayLeashes.removeReturnOld(displayId);
+                SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+                t.remove(surfaceControl);
+                t.apply();
+            }
+
             if (isHomeTaskOnDefaultDisplay(taskInfo)) {
                 SurfaceControl.Transaction t = new SurfaceControl.Transaction();
                 t.reparent(mHomeTaskOverlayContainer, null);
@@ -977,7 +1076,8 @@ public class ShellTaskOrganizer extends TaskOrganizer {
         if (info == null) {
             return;
         }
-        logSizeCompatRestartButtonEventReported(info,
+        logCompatRestartButtonEventReported(info.getTaskInfo(),
+                FrameworkStatsLog.SIZE_COMPAT_RESTART_BUTTON_EVENT_REPORTED,
                 FrameworkStatsLog.SIZE_COMPAT_RESTART_BUTTON_EVENT_REPORTED__EVENT__APPEARED);
     }
 
@@ -991,19 +1091,31 @@ public class ShellTaskOrganizer extends TaskOrganizer {
         if (info == null) {
             return;
         }
-        logSizeCompatRestartButtonEventReported(info,
-                FrameworkStatsLog.SIZE_COMPAT_RESTART_BUTTON_EVENT_REPORTED__EVENT__CLICKED);
-        restartTaskTopActivityProcessIfVisible(info.getTaskInfo().token);
+        final RunningTaskInfo taskInfo = info.getTaskInfo();
+        logCompatRestartButtonClicked(taskInfo);
+        restartTaskTopActivityProcessIfVisible(taskInfo.token);
     }
 
-    private void logSizeCompatRestartButtonEventReported(@NonNull TaskAppearedInfo info,
-            int event) {
-        ActivityInfo topActivityInfo = info.getTaskInfo().topActivityInfo;
+    private void logCompatRestartButtonClicked(@NonNull RunningTaskInfo taskInfo) {
+        if (taskInfo.appCompatTaskInfo.isRestartMenuEnabledForDisplayMove()) {
+            final int type = FrameworkStatsLog
+                    .DISPLAY_COMPAT_RESTART_MENU_EVENT_REPORTED__EVENT__RESTART_MENU_EVENT_CLICKED;
+            logCompatRestartButtonEventReported(taskInfo,
+                    FrameworkStatsLog.DISPLAY_COMPAT_RESTART_MENU_EVENT_REPORTED, type);
+        } else {
+            logCompatRestartButtonEventReported(taskInfo,
+                    FrameworkStatsLog.SIZE_COMPAT_RESTART_BUTTON_EVENT_REPORTED,
+                    FrameworkStatsLog.SIZE_COMPAT_RESTART_BUTTON_EVENT_REPORTED__EVENT__CLICKED);
+        }
+    }
+
+    private void logCompatRestartButtonEventReported(@NonNull RunningTaskInfo taskInfo, int event,
+            int type) {
+        ActivityInfo topActivityInfo = taskInfo.topActivityInfo;
         if (topActivityInfo == null) {
             return;
         }
-        FrameworkStatsLog.write(FrameworkStatsLog.SIZE_COMPAT_RESTART_BUTTON_EVENT_REPORTED,
-                topActivityInfo.applicationInfo.uid, event);
+        FrameworkStatsLog.write(event, topActivityInfo.applicationInfo.uid, type);
     }
 
     /**
@@ -1138,6 +1250,32 @@ public class ShellTaskOrganizer extends TaskOrganizer {
     static boolean isHomeTaskOnDefaultDisplay(RunningTaskInfo taskInfo) {
         return taskInfo.getActivityType() == ACTIVITY_TYPE_HOME
                 && taskInfo.displayId == DEFAULT_DISPLAY;
+    }
+
+    private boolean isOverviewOverlayEnabled(int displayId) {
+        return (Flags.enableLauncherOverviewInWindow()
+                || Flags.enableFallbackOverviewInWindow()
+                || (Flags.enableOverviewOnConnectedDisplays() && displayId != DEFAULT_DISPLAY));
+    }
+
+    @Override
+    public void onTransitionReady(IBinder iBinder, TransitionInfo transitionInfo,
+            SurfaceControl.Transaction t, SurfaceControl.Transaction finishT) {
+        if (!unifyShellBinders()) return;
+        if (mTransitions == null) {
+            throw new IllegalStateException("No transition player registered!");
+        }
+        ProtoLog.v(WM_SHELL_TRANSITIONS, "onTransitionReady(transaction=%d)", t.getId());
+        mTransitions.onTransitionReady(iBinder, transitionInfo, t, finishT);
+    }
+
+    @Override
+    public void requestStartTransition(IBinder iBinder, TransitionRequestInfo request) {
+        if (!unifyShellBinders()) return;
+        if (mTransitions == null) {
+            throw new IllegalStateException("No transition player registered!");
+        }
+        mTransitions.requestStartTransition(iBinder, request);
     }
 
     public void dump(@NonNull PrintWriter pw, String prefix) {

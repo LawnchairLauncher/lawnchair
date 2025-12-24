@@ -17,9 +17,9 @@
 package com.android.wm.shell.flicker.splitscreen.benchmark
 
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import androidx.test.filters.RequiresDevice
 import com.android.wm.shell.flicker.utils.SplitScreenUtils
 import org.junit.Assume
@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-abstract class DragDividerToResizeBenchmark(override val flicker: LegacyFlickerTest) :
+abstract class DragDividerToResizeBenchmark(override val flicker: FlickerTest) :
     SplitScreenBase(flicker) {
     protected val thisTransition: FlickerBuilder.() -> Unit
         get() = {
@@ -58,6 +58,6 @@ abstract class DragDividerToResizeBenchmark(override val flicker: LegacyFlickerT
     companion object {
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun getParams() = LegacyFlickerTestFactory.nonRotationTests()
+        fun getParams() = FlickerTestFactory.nonRotationTests()
     }
 }

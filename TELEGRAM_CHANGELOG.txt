@@ -1,25 +1,18 @@
 # Bubble Tea
 
-## Bubble Tea [QPR1]
+## Bubble Tea [QPR2]
 
-### 🥞 Snapshot 7 (Development 4 Release 1)
+### 🥞 SNAPSHOT 12
 
-Build: BS7.1711
+Build: BS11.0712 (latest), BS11.0612
 
-This snapshot marks the first time Bubble Tea QPR1 is able to pass KSP build stage without any
-hiccups, the next 1 or 2 snapshots will be focusing on compilation stage, which should be the last
-stage before we can get started on pE Development 4.
+Initial QPR2 merge, buildable stage, fastest ever in any merge.
 
 This is a developer-focused change log:
-* Codebase updated to Android 16-0.0_r3 (Android 16.0.0 Release 3)
-* Prebuilt updated to Android 16-0.0_r3 (Android 16.0.0 Release 3)
-* Platform libs updated to Android 16-0.0_r3 (Android 16.0.0 Release 3)
-  * Move ViewCapture to platform lib
-  * Add Displaylib
-* Flags updated to Android 16-0.0_r3 (Android 16.0.0 Release 3)
-* Pull concurrent, dagger (the launcher3) as module
-  * TODO? We might need to migrate it to build source like compose instead
-* Lots of prebuilt documentations update
-* Add compose as part of launcher3 build source
-  * Removed test because I hate configuration gradle
-  * cc: @validcube fix me, cc: too bad
+* Add Quickstep compose facade to build
+* Add SystemUI Pods
+* Merge some lawnchair code change back
+* Merge some launcher3 code change back
+* More workaround for some trivial files
+* Move from BuildConfig to BuildConfigs when identifying studio build
+* Updated Compatlib to frameworks 16 (Compatibility not tested)

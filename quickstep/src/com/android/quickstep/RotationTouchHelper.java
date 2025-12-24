@@ -24,11 +24,12 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 
+import android.annotation.NonNull;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 
@@ -39,6 +40,8 @@ import com.android.launcher3.util.DaggerSingletonObject;
 import com.android.launcher3.util.DaggerSingletonTracker;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
+import com.android.launcher3.concurrent.annotations.LightweightBackground;
+import static com.android.launcher3.concurrent.annotations.LightweightBackgroundPriority.UI;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.dagger.QuickstepBaseAppComponent;
@@ -53,6 +56,7 @@ import dagger.assisted.AssistedFactory;
 import dagger.assisted.AssistedInject;
 
 import java.io.PrintWriter;
+import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
@@ -66,11 +70,13 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     public static final DaggerSingletonObject<PerDisplayRepository<RotationTouchHelper>>
             REPOSITORY_INSTANCE = new DaggerSingletonObject<>(
             QuickstepBaseAppComponent::getRotationTouchHelperRepository);
+    private static final String TAG = "RotationTouchHelper";
 
     private final OrientationTouchTransformer mOrientationTouchTransformer;
     private final DisplayController mDisplayController;
     private final SystemUiProxy mSystemUiProxy;
     private final int mDisplayId;
+    private final Executor mLightweightBackgroundExecutor;
     private int mDisplayRotation;
 
     private NavigationMode mMode = THREE_BUTTONS;
@@ -144,11 +150,14 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
             @Assisted Context windowContext,
             DisplayController displayController,
             SystemUiProxy systemUiProxy,
-            DaggerSingletonTracker lifeCycle) {
+            DaggerSingletonTracker lifeCycle,
+            @LightweightBackground(priority = UI) Executor lightweightBackgroundExecutor
+        ) {
         mWindowContext = windowContext;
         mDisplayId = windowContext.getDisplayId();
         mDisplayController = displayController;
         mSystemUiProxy = systemUiProxy;
+        mLightweightBackgroundExecutor = lightweightBackgroundExecutor;
 
         Resources resources = mWindowContext.getResources();
         mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
@@ -157,7 +166,11 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
         // Register for navigation mode and rotation changes
         mDisplayController.addChangeListenerForDisplay(this, mDisplayId);
         DisplayController.Info info = mDisplayController.getInfoForDisplay(mDisplayId);
-        onDisplayInfoChanged(mWindowContext, info, CHANGE_ALL);
+        if (info != null) {
+            onDisplayInfoChanged(mWindowContext, info, CHANGE_ALL);
+        } else {
+            Log.w(TAG, "Info null for display " + mDisplayId);
+        }
 
         mOrientationListener = new OrientationEventListener(mWindowContext) {
             @Override
@@ -207,9 +220,13 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
             return;
         }
 
-        mOrientationTouchTransformer.createOrAddTouchRegion(
-                mDisplayController.getInfoForDisplay(mDisplayId),
-                "RTH.updateGestureTouchRegions");
+        DisplayController.Info info = mDisplayController.getInfoForDisplay(mDisplayId);
+        if (info != null) {
+            mOrientationTouchTransformer.createOrAddTouchRegion(info,
+                    "RTH.updateGestureTouchRegions");
+        } else {
+            Log.w(TAG, "Info null for display " + mDisplayId);
+        }
     }
 
     /**
@@ -235,14 +252,14 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     }
 
     @Override
-    public void onDisplayInfoChanged(Context context, Info info, int flags) {
+    public void onDisplayInfoChanged(Context context, @NonNull Info displayInfo, int flags) {
         if ((flags & (CHANGE_ROTATION | CHANGE_ACTIVE_SCREEN | CHANGE_NAVIGATION_MODE
                 | CHANGE_SUPPORTED_BOUNDS)) != 0) {
-            mDisplayRotation = info.rotation;
+            mDisplayRotation = displayInfo.rotation;
 
             if (hasGestures(mMode)) {
                 updateGestureTouchRegions();
-                mOrientationTouchTransformer.createOrAddTouchRegion(info,
+                mOrientationTouchTransformer.createOrAddTouchRegion(displayInfo,
                         "RTH.onDisplayInfoChanged");
                 mCurrentAppRotation = mDisplayRotation;
 
@@ -264,9 +281,8 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
         }
 
         if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
-            NavigationMode newMode = info.getNavigationMode();
-            mOrientationTouchTransformer.setNavigationMode(newMode,
-                    mDisplayController.getInfoForDisplay(mDisplayId),
+            NavigationMode newMode = displayInfo.getNavigationMode();
+            mOrientationTouchTransformer.setNavigationMode(newMode, displayInfo,
                     mWindowContext.getResources());
 
             TaskStackChangeListeners.getInstance()
@@ -284,12 +300,15 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     }
 
     /**
-     * Sets the gestural height.
+     * Touches within this number of pixels from the bottom of the screen can get intercepted to
+     * handle gesture navigation. Passing a value less than 0 will revert to a default value.
      */
     void setGesturalHeight(int newGesturalHeight) {
-        mOrientationTouchTransformer.setGesturalHeight(
-                newGesturalHeight, mDisplayController.getInfoForDisplay(mDisplayId),
-                mWindowContext.getResources());
+        Info displayInfo = mDisplayController.getInfoForDisplay(mDisplayId);
+        if (displayInfo != null) {
+            mOrientationTouchTransformer.setGesturalHeight(
+                    newGesturalHeight, displayInfo, mWindowContext.getResources());
+        }
     }
 
     /**
@@ -305,15 +324,17 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     }
 
     private void enableMultipleRegions(boolean enable) {
-        mOrientationTouchTransformer.enableMultipleRegions(enable,
-                mDisplayController.getInfoForDisplay(mDisplayId));
+        Info displayInfo = mDisplayController.getInfoForDisplay(mDisplayId);
+        if (displayInfo != null) {
+            mOrientationTouchTransformer.enableMultipleRegions(enable, displayInfo);
+        }
         notifySysuiOfCurrentRotation(mOrientationTouchTransformer.getQuickStepStartingRotation());
         if (enable && !mInOverview && !TestProtocol.sDisableSensorRotation) {
             // Clear any previous state from sensor manager
             mSensorRotation = mCurrentAppRotation;
-            UI_HELPER_EXECUTOR.execute(mOrientationListener::enable);
+            mLightweightBackgroundExecutor.execute(mOrientationListener::enable);
         } else {
-            UI_HELPER_EXECUTOR.execute(mOrientationListener::disable);
+            mLightweightBackgroundExecutor.execute(mOrientationListener::disable);
         }
     }
 
@@ -361,7 +382,8 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     }
 
     private void notifySysuiOfCurrentRotation(int rotation) {
-        UI_HELPER_EXECUTOR.execute(() -> mSystemUiProxy.notifyPrioritizedRotation(rotation));
+        mLightweightBackgroundExecutor.execute(
+                () -> mSystemUiProxy.notifyPrioritizedRotation(rotation));
     }
 
     /**
@@ -369,8 +391,12 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      * notifies system UI of the primary rotation the user is interacting with
      */
     private void toggleSecondaryNavBarsForRotation() {
-        mOrientationTouchTransformer.setSingleActiveRegion(
-                mDisplayController.getInfoForDisplay(mDisplayId));
+        Info displayInfo = mDisplayController.getInfoForDisplay(mDisplayId);
+        if (displayInfo != null) {
+            mOrientationTouchTransformer.setSingleActiveRegion(displayInfo);
+        } else {
+            Log.w(TAG, "Info null for display " + mDisplayId);
+        }
         notifySysuiOfCurrentRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
     }
 
@@ -387,10 +413,6 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
         pw.println("  currentActiveRotation=" + getCurrentActiveRotation());
         pw.println("  displayRotation=" + getDisplayRotation());
         mOrientationTouchTransformer.dump(pw);
-    }
-
-    public OrientationTouchTransformer getOrientationTouchTransformer() {
-        return mOrientationTouchTransformer;
     }
 
     private boolean hasGestures(NavigationMode mode) {

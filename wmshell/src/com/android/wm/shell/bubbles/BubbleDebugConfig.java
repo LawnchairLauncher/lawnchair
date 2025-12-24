@@ -77,11 +77,24 @@ public class BubbleDebugConfig {
                         && bubble == selected);
                 String arrow = isSelected ? "=>" : "  ";
 
-                sb.append(String.format("%s Bubble{act=%12d, showInShade=%d, key=%s}",
-                        arrow,
-                        bubble.getLastActivity(),
-                        (bubble.showInShade() ? 1 : 0),
-                        bubble.getKey()));
+                BadgedImageView iconView = bubble.getIconView();
+                if (iconView != null) {
+                    sb.append(String.format(
+                            "%s Bubble{act=%12d, showInShade=%d, key=%s, vis=%d, alpha=%f}",
+                            arrow,
+                            bubble.getLastActivity(),
+                            (bubble.showInShade() ? 1 : 0),
+                            bubble.getKey(),
+                            iconView.getVisibility(),
+                            iconView.getAlpha()));
+                } else {
+                    sb.append(String.format(
+                            "%s Bubble{act=%12d, showInShade=%d, key=%s, icon=null}",
+                            arrow,
+                            bubble.getLastActivity(),
+                            (bubble.showInShade() ? 1 : 0),
+                            bubble.getKey()));
+                }
             }
             if (i != bubbles.size() - 1) {
                 sb.append("\n");

@@ -51,6 +51,14 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     private static final String TAG = "NavHandleLongPressIC";
     private static final boolean DEBUG_NAV_HANDLE = Utilities.isPropertyEnabled(
             NAV_HANDLE_LONG_PRESS);
+
+    @VisibleForTesting static final String CANCEL_REASON_INTERCEPT_DISALLOWED =
+            "intercept disallowed by child input consumer";
+    @VisibleForTesting static final String CANCEL_REASON_TOUCH_UP = "touch action up";
+    @VisibleForTesting static final String CANCEL_REASON_TOUCH_CANCEL = "touch action cancel";
+    @VisibleForTesting static final String CANCEL_REASON_TOUCH_SLOP_PASSED = "touch slop passed";
+    @VisibleForTesting static final String CANCEL_REASON_INPUT_CONSUMER_SWITCHED =
+            "input consumer switched";
     // Minimum time between touch down and abandon to log.
     @VisibleForTesting static final long MIN_TIME_TO_LOG_ABANDON_MS = 200;
 
@@ -141,7 +149,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         if (mDelegate.allowInterceptByParent()) {
             handleMotionEvent(ev);
         } else if (MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)) {
-            cancelLongPress("intercept disallowed by child input consumer");
+            cancelLongPress(CANCEL_REASON_INTERCEPT_DISALLOWED);
         }
 
         if (mState != STATE_ACTIVE) {
@@ -152,6 +160,14 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     @Override
     public void onHoverEvent(MotionEvent ev) {
         mDelegate.onHoverEvent(ev);
+    }
+
+    @Override
+    public void onConsumerAboutToBeSwitched() {
+        super.onConsumerAboutToBeSwitched();
+        if (MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)) {
+            cancelLongPress(CANCEL_REASON_INPUT_CONSUMER_SWITCHED);
+        }
     }
 
     private void handleMotionEvent(MotionEvent ev) {
@@ -201,11 +217,11 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                     if (DEBUG_NAV_HANDLE) {
                         Log.d(TAG, "Touch slop out. mTouchSlopSquared=" + mTouchSlopSquared);
                     }
-                    cancelLongPress("touch slop passed");
+                    cancelLongPress(CANCEL_REASON_TOUCH_SLOP_PASSED);
                 }
             }
-            case MotionEvent.ACTION_UP -> cancelLongPress("touch action up");
-            case MotionEvent.ACTION_CANCEL -> cancelLongPress("touch action cancel");
+            case MotionEvent.ACTION_UP -> cancelLongPress(CANCEL_REASON_TOUCH_UP);
+            case MotionEvent.ACTION_CANCEL -> cancelLongPress(CANCEL_REASON_TOUCH_CANCEL);
         }
 
         // If the gesture is deep press then trigger long press asap

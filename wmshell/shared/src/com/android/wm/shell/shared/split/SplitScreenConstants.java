@@ -31,6 +31,8 @@ public class SplitScreenConstants {
     public static final int FADE_DURATION = 133;
     /** Duration where we keep an app veiled to allow it to redraw itself behind the scenes. */
     public static final int VEIL_DELAY_DURATION = 300;
+    /** The default amount to dim an app that is partially offscreen. */
+    public static float DEFAULT_OFFSCREEN_DIM = 0.32f;
 
     /** Key for passing in widget intents when invoking split from launcher workspace. */
     public static final String KEY_EXTRA_WIDGET_INTENT = "key_extra_widget_intent";

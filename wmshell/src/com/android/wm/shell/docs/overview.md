@@ -54,5 +54,5 @@ aidegen frameworks/base \
 ```
 
 ## Other useful links
-- [go/o-o-summit-20](go/o-o-summit-20) (Video presentations from the WM team)
-- [go/o-o-summit-21](go/o-o-summit-21)
+- [go/o-o-summit-20](http://go/o-o-summit-20) (Video presentations from the WM team)
+- [go/o-o-summit-21](http://go/o-o-summit-21)

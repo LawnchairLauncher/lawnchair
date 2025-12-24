@@ -37,8 +37,7 @@ import org.mockito.kotlin.verify
 /**
  * Tests for [LetterboxUtils].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:LetterboxUtilsTest
+ * Build/Install/Run: atest WMShellUnitTests:LetterboxUtilsTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
@@ -150,9 +149,7 @@ class LetterboxUtilsTest : ShellTestCase() {
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<AppendLetterboxControllerRobotTest>) {
         consumer.accept(AppendLetterboxControllerRobotTest().apply { initController() })
     }
@@ -171,57 +168,48 @@ class LetterboxUtilsTest : ShellTestCase() {
 
         private val surface = SurfaceControl()
 
-        fun verifyCreateSurfaceInvokedWithRequest(
-            target: LetterboxController,
-            times: Int = 1
-        ) {
+        fun verifyCreateSurfaceInvokedWithRequest(target: LetterboxController, times: Int = 1) {
             verify(target, times(times)).createLetterboxSurface(any(), any(), any(), any())
         }
 
-        fun verifyDestroySurfaceInvokedWithRequest(
-            target: LetterboxController,
-            times: Int = 1
-        ) {
+        fun verifyDestroySurfaceInvokedWithRequest(target: LetterboxController, times: Int = 1) {
             verify(target, times(times)).destroyLetterboxSurface(any(), any())
         }
 
         fun verifyUpdateVisibilitySurfaceInvokedWithRequest(
             target: LetterboxController,
-            times: Int = 1
+            times: Int = 1,
         ) {
             verify(target, times(times)).updateLetterboxSurfaceVisibility(any(), any(), any())
         }
 
         fun verifyUpdateSurfaceBoundsInvokedWithRequest(
             target: LetterboxController,
-            times: Int = 1
+            times: Int = 1,
         ) {
             verify(target, times(times)).updateLetterboxSurfaceBounds(any(), any(), any(), any())
         }
 
-        fun verifyDumpInvoked(
-            target: LetterboxController,
-            times: Int = 1
-        ) {
+        fun verifyDumpInvoked(target: LetterboxController, times: Int = 1) {
             verify(target, times(times)).dump()
         }
 
         fun initMap(vararg values: Pair<Int, Int>) = testableMap.putAll(values.toMap())
 
         fun <T> runOnItem(key: Int) {
-            testableMap.runOnItem(key, onFound = { item ->
-                onItemState = item
-            }, onMissed = { k, m ->
-                onMissingStateKey = k
-                onMissingStateMap = m
-            })
+            testableMap.runOnItem(
+                key,
+                onFound = { item -> onItemState = item },
+                onMissed = { k, m ->
+                    onMissingStateKey = k
+                    onMissingStateMap = m
+                },
+            )
         }
 
         fun <T> runOnFilteredItem(predicate: (Int) -> Boolean) {
             onFilteredStateMap.clear()
-            testableMap.runOnFilteredItem(predicate) { k, v ->
-                onFilteredStateMap[k] = v
-            }
+            testableMap.runOnFilteredItem(predicate) { k, v -> onFilteredStateMap[k] = v }
         }
 
         fun verifyOnItemInvoked(expectedItem: Int) {
@@ -263,7 +251,8 @@ class LetterboxUtilsTest : ShellTestCase() {
         }
 
         override fun buildController(): LetterboxController =
-            firstLetterboxController.append(secondLetterboxController)
+            firstLetterboxController
+                .append(secondLetterboxController)
                 .append(thirdLetterboxController)
     }
 }

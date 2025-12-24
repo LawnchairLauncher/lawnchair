@@ -59,7 +59,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.graphics.Bitmap;
-import android.os.Process;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -96,7 +95,7 @@ public class LoaderCursorTest {
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule(DEVICE_DEFAULT);
 
     @Rule
-    public final SandboxApplication mContext = new SandboxApplication();
+    public final SandboxApplication mContext = new SandboxApplication().withModelDependency();
 
     private LauncherAppState mApp;
     private LauncherPrefs mPrefs;
@@ -125,10 +124,8 @@ public class LoaderCursorTest {
                 SPANX, SPANY, RANK, OPTIONS, APPWIDGET_SOURCE
         });
 
-        UserManagerState ums = new UserManagerState();
-        mLoaderCursor = mContext.getAppComponent().getLoaderCursorFactory()
-                .createLoaderCursor(mCursor, ums, null);
-        ums.allUsers.put(0, Process.myUserHandle());
+        mLoaderCursor = mContext.getAppComponent().getLoaderCursorFactory().createLoaderCursor(
+                mCursor, mContext.getAppComponent().getUserCache().getUserManagerState(), null);
     }
 
     @After
@@ -263,7 +260,8 @@ public class LoaderCursorTest {
         WorkspaceItemInfo itemInfo = new WorkspaceItemInfo();
         itemInfo.runtimeStatusFlags |= FLAG_ARCHIVED;
         Bitmap expectedBitmap = LauncherIcons.obtain(mContext)
-                .createIconBitmap(decodeByteArray(sTestBlob, 0, sTestBlob.length))
+                .createIconBitmap(
+                        decodeByteArray(sTestBlob, 0, sTestBlob.length), /* isFullBleed **/ false)
                 .icon;
 
         // When

@@ -26,9 +26,9 @@ import com.android.wm.shell.transition.Transitions
 import com.android.wm.shell.transition.Transitions.TRANSIT_MOVE_LETTERBOX_REACHABILITY
 
 /**
- * [GestureDetector.SimpleOnGestureListener] implementation which receives events from the
- * Letterbox Input surface, understands the type of event and filter them based on the current
- * letterbox position.
+ * [GestureDetector.SimpleOnGestureListener] implementation which receives events from the Letterbox
+ * Input surface, understands the type of event and filter them based on the current letterbox
+ * position.
  */
 class ReachabilityGestureListener(
     private val taskId: Int,
@@ -36,7 +36,7 @@ class ReachabilityGestureListener(
     private val transitions: Transitions,
     private val animationHandler: LetterboxAnimationHandler,
     private val wctSupplier: WindowContainerTransactionSupplier,
-    private val letterboxState: LetterboxState
+    private val letterboxState: LetterboxState,
 ) : GestureDetector.SimpleOnGestureListener() {
 
     // The current letterbox bounds. Double tap events are ignored when happening in these bounds.
@@ -47,22 +47,14 @@ class ReachabilityGestureListener(
         val y = e.rawY.toInt()
         if (!activityBounds.contains(x, y)) {
             letterboxState.lastInputSourceId = taskId
-            val wct = wctSupplier.get().apply {
-                setReachabilityOffset(token!!, taskId, x, y)
-            }
-            transitions.startTransition(
-                TRANSIT_MOVE_LETTERBOX_REACHABILITY,
-                wct,
-                animationHandler
-            )
+            val wct = wctSupplier.get().apply { setReachabilityOffset(token!!, taskId, x, y) }
+            transitions.startTransition(TRANSIT_MOVE_LETTERBOX_REACHABILITY, wct, animationHandler)
             return true
         }
         return false
     }
 
-    /**
-     * Updates the bounds for the letterboxed activity.
-     */
+    /** Updates the bounds for the letterboxed activity. */
     fun updateActivityBounds(newActivityBounds: Rect) {
         activityBounds.set(newActivityBounds)
     }

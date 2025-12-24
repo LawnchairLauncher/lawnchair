@@ -29,6 +29,8 @@ interface TaskbarManager : DisplayDecorationListener {
 
     fun createLauncherStartFromSuwAnim(duration: Int): AnimatorPlaybackController?
 
+    fun shouldForceAllSetFallbackAnimation(): Boolean
+
     fun onUserUnlocked()
 
     fun setActivity(activity: StatefulActivity<*>)

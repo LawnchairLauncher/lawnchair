@@ -25,12 +25,15 @@ import static android.window.TransitionInfo.FLAG_MOVED_TO_TOP;
 
 import static com.android.dx.mockito.inline.extended.ExtendedMockito.verify;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -44,10 +47,12 @@ import android.window.TransitionInfo.TransitionMode;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.android.window.flags.Flags;
+import com.android.window.flags2.Flags;
 import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.TestShellExecutor;
 import com.android.wm.shell.shared.FocusTransitionListener;
+import com.android.wm.shell.sysui.ShellCommandHandler;
+import com.android.wm.shell.sysui.ShellInit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,13 +74,18 @@ public class FocusTransitionObserverTest extends ShellTestCase {
 
     private FocusTransitionListener mListener;
     private final TestShellExecutor mShellExecutor = new TestShellExecutor();
+    private ShellInit mShellInit;
+    private ShellCommandHandler mShellCommandHandler;
     private FocusTransitionObserver mFocusTransitionObserver;
 
     @Before
     public void setUp() {
         mListener = mock(FocusTransitionListener.class);
-        mFocusTransitionObserver = new FocusTransitionObserver();
+        mShellInit = spy(new ShellInit(mShellExecutor));
+        mShellCommandHandler = mock(ShellCommandHandler.class);
+        mFocusTransitionObserver = new FocusTransitionObserver(mShellInit, mShellCommandHandler);
         mFocusTransitionObserver.setLocalFocusTransitionListener(mListener, mShellExecutor);
+        mShellInit.init();
         mShellExecutor.flushAll();
         clearInvocations(mListener);
     }
@@ -252,6 +262,12 @@ public class FocusTransitionObserverTest extends ShellTestCase {
                 argThat(new RunningTaskInfoMatcher(change3.getTaskInfo())),
                 eq(true) /* isFocusedOnDisplay */, eq(true) /* isFocusedGlobally */);
         clearInvocations(mListener);
+    }
+
+    @Test
+    public void testAddDump() {
+        verify(mShellCommandHandler, times(1)).addDumpCallback(
+                any(), isA(FocusTransitionObserver.class));
     }
 
     private TransitionInfo.Change setupTaskChange(List<TransitionInfo.Change> changes, int taskId,

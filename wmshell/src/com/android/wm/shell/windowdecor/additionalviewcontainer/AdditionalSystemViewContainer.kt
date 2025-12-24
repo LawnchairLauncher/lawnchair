@@ -29,8 +29,8 @@ import android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALW
 import com.android.wm.shell.windowdecor.WindowManagerWrapper
 
 /**
- * An [AdditionalViewContainer] that uses the system [WindowManager] instance. Intended
- * for view containers that should be above the status bar layer.
+ * An [AdditionalViewContainer] that uses the system [WindowManager] instance. Intended for view
+ * containers that should be above the status bar layer.
  */
 class AdditionalSystemViewContainer(
     private val windowManagerWrapper: WindowManagerWrapper,
@@ -42,23 +42,28 @@ class AdditionalSystemViewContainer(
     flags: Int,
     @WindowInsets.Type.InsetsType forciblyShownTypes: Int = 0,
     ignoreCutouts: Boolean = false,
-    override val view: View
+    override val view: View,
 ) : AdditionalViewContainer() {
-    val lp: WindowManager.LayoutParams = WindowManager.LayoutParams(
-        width, height, x, y,
-        WindowManager.LayoutParams.TYPE_STATUS_BAR_ADDITIONAL,
-        flags,
-        PixelFormat.TRANSPARENT
-    ).apply {
-        title = "Additional view container of Task=$taskId"
-        gravity = Gravity.LEFT or Gravity.TOP
-        setTrustedOverlay()
-        this.forciblyShownTypes = forciblyShownTypes
-        if (ignoreCutouts) {
-            fitInsetsTypes = 0
-            layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
-        }
-    }
+    val lp: WindowManager.LayoutParams =
+        WindowManager.LayoutParams(
+                width,
+                height,
+                x,
+                y,
+                WindowManager.LayoutParams.TYPE_STATUS_BAR_ADDITIONAL,
+                flags,
+                PixelFormat.TRANSPARENT,
+            )
+            .apply {
+                title = "Additional view container of Task=$taskId"
+                gravity = Gravity.LEFT or Gravity.TOP
+                setTrustedOverlay()
+                this.forciblyShownTypes = forciblyShownTypes
+                if (ignoreCutouts) {
+                    fitInsetsTypes = 0
+                    layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                }
+            }
 
     constructor(
         context: Context,
@@ -70,7 +75,7 @@ class AdditionalSystemViewContainer(
         height: Int,
         flags: Int,
         @LayoutRes layoutId: Int,
-        ignoreCutouts: Boolean = false
+        ignoreCutouts: Boolean = false,
     ) : this(
         windowManagerWrapper = windowManagerWrapper,
         taskId = taskId,
@@ -80,7 +85,7 @@ class AdditionalSystemViewContainer(
         height = height,
         flags = flags,
         view = LayoutInflater.from(context).inflate(layoutId, null /* parent */),
-        ignoreCutouts = ignoreCutouts
+        ignoreCutouts = ignoreCutouts,
     )
 
     constructor(
@@ -92,7 +97,7 @@ class AdditionalSystemViewContainer(
         width: Int,
         height: Int,
         flags: Int,
-        ignoreCutouts: Boolean = false
+        ignoreCutouts: Boolean = false,
     ) : this(
         windowManagerWrapper = windowManagerWrapper,
         taskId = taskId,
@@ -102,7 +107,7 @@ class AdditionalSystemViewContainer(
         height = height,
         flags = flags,
         view = View(context),
-        ignoreCutouts = ignoreCutouts
+        ignoreCutouts = ignoreCutouts,
     )
 
     init {
@@ -114,10 +119,11 @@ class AdditionalSystemViewContainer(
     }
 
     override fun setPosition(t: SurfaceControl.Transaction, x: Float, y: Float) {
-        val lp = (view.layoutParams as WindowManager.LayoutParams).apply {
-            this.x = x.toInt()
-            this.y = y.toInt()
-        }
+        val lp =
+            (view.layoutParams as WindowManager.LayoutParams).apply {
+                this.x = x.toInt()
+                this.y = y.toInt()
+            }
         windowManagerWrapper.updateViewLayout(view, lp)
     }
 
@@ -140,7 +146,7 @@ class AdditionalSystemViewContainer(
                 width = width,
                 height = height,
                 flags = flags,
-                view = view
+                view = view,
             )
     }
 }

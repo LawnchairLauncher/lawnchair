@@ -29,7 +29,7 @@ data class LetterboxSurfaces(
     var leftSurface: SurfaceControl? = null,
     var topSurface: SurfaceControl? = null,
     var rightSurface: SurfaceControl? = null,
-    var bottomSurface: SurfaceControl? = null
+    var bottomSurface: SurfaceControl? = null,
 ) : Iterable<SurfaceControl?> {
     override fun iterator() =
         listOf(leftSurface, topSurface, rightSurface, bottomSurface).iterator()
@@ -38,11 +38,9 @@ data class LetterboxSurfaces(
 // Encapsulate the object used for event detection.
 data class LetterboxInputItems(
     val inputDetector: LetterboxInputDetector,
-    val gestureListener: ReachabilityGestureListener
+    val gestureListener: ReachabilityGestureListener,
 )
 
-/**
- * Extract the [LetterboxKey] from the [LetterboxLifecycleEvent].
- */
+/** Extract the [LetterboxKey] from the [LetterboxLifecycleEvent]. */
 fun RunningTaskInfo.letterboxKey(): LetterboxKey =
     LetterboxKey(displayId = displayId, taskId = taskId)

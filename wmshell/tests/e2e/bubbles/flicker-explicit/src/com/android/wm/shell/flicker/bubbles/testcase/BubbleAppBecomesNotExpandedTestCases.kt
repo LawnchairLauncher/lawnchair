@@ -17,14 +17,18 @@
 package com.android.wm.shell.flicker.bubbles.testcase
 
 import android.tools.traces.component.ComponentNameMatcher.Companion.LAUNCHER
+import android.tools.traces.component.IComponentNameMatcher
 import com.android.wm.shell.flicker.bubbles.utils.BubbleFlickerSubjects
 import org.junit.Test
 
 /**
- * The test cases to verify [testApp] becomes invisible and [LAUNCHER] replaces [testApp] to be top
- * focused because the bubble app goes to collapsed or dismissed state.
+ * The test cases to verify [testApp] becomes invisible and [previousApp] replaces [testApp] to be
+ * top focused because the bubble app goes to collapsed or dismissed state.
  */
 interface BubbleAppBecomesNotExpandedTestCases : BubbleFlickerSubjects {
+
+    val previousApp: IComponentNameMatcher
+        get() = LAUNCHER
 
     /**
      * Verifies bubble app window becomes invisible.
@@ -51,42 +55,67 @@ interface BubbleAppBecomesNotExpandedTestCases : BubbleFlickerSubjects {
     }
 
     /**
-     * Verifies the focus changed from launcher to bubble app.
+     * Verifies the [testApp] window has rounded corner at the start of the transition.
      */
     @Test
-    fun focusChanges() {
-        eventLogSubject.focusChanges(testApp.toWindowName(), LAUNCHER.toWindowName())
+    fun appWindowHasRoundedCornerAtStart() {
+        layerTraceEntrySubjectAtStart.hasRoundedCorners(testApp)
     }
 
     /**
-     * Verifies the bubble app replaces launcher to be the top window.
+     * Verifies bubble app window is invisible at the end of the transition.
      */
     @Test
-    fun launcherWindowReplacesTestAppAsTopWindow() {
+    fun appWindowIsInvisibleAtEnd() {
+        wmStateSubjectAtEnd.isAppWindowInvisible(testApp)
+    }
+
+    /**
+     * Verifies bubble app layer is invisible at the end of the transition.
+     */
+    @Test
+    fun appLayerIsInvisibleAtEnd() {
+        // TestApp may be gone if it's in dismissed state.
+        layerTraceEntrySubjectAtEnd.isInvisible(testApp)
+    }
+
+    /**
+     * Verifies the focus changed from bubble app to [previousApp].
+     */
+    @Test
+    fun focusChanges() {
+        eventLogSubject.focusChanges(testApp.toWindowName(), previousApp.toWindowName())
+    }
+
+    /**
+     * Verifies the bubble app replaces [previousApp] to be the top window.
+     */
+    @Test
+    fun previousAppWindowReplacesTestAppAsTopWindow() {
         wmTraceSubject
             .isAppWindowOnTop(testApp)
             .then()
-            .isAppWindowOnTop(LAUNCHER)
+            .isAppWindowOnTop(previousApp)
             .forAllEntries()
     }
 
     /**
-     * Verifies [LAUNCHER] is the top window at the end of transition.
+     * Verifies [previousApp] is the top window at the end of transition.
      */
     @Test
-    fun launcherWindowAsTopWindowAtEnd() {
-        wmStateSubjectAtEnd.isAppWindowOnTop(LAUNCHER)
+    fun previousWindowAsTopWindowAtEnd() {
+        wmStateSubjectAtEnd.isAppWindowOnTop(previousApp)
     }
 
     /**
-     * Verifies the [LAUNCHER] becomes the top window.
+     * Verifies the [previousApp] becomes the top window.
      */
     @Test
-    fun launcherWindowBecomesTopWindow() {
+    fun previousAppWindowBecomesTopWindow() {
         wmTraceSubject
-            .isAppWindowNotOnTop(LAUNCHER)
+            .isAppWindowNotOnTop(previousApp)
             .then()
-            .isAppWindowOnTop(LAUNCHER)
+            .isAppWindowOnTop(previousApp)
             .forAllEntries()
     }
 }

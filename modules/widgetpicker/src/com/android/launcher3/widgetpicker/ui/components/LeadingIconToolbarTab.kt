@@ -38,6 +38,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.widgetpicker.ui.theme.WidgetPickerTheme
 
@@ -51,12 +55,15 @@ import com.android.launcher3.widgetpicker.ui.theme.WidgetPickerTheme
 fun LeadingIconToolbarTab(
     leadingIcon: ImageVector,
     label: String,
+    contentDescription: String,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     iconEnterTransition: EnterTransition = LeadingIconToolbarTabDefaults.iconEnterTransition,
     iconExitTransition: ExitTransition = LeadingIconToolbarTabDefaults.iconExitTransition,
 ) {
+    val haptic = LocalHapticFeedback.current
+
     val backgroundColor =
         if (selected) {
             WidgetPickerTheme.colors.toolbarTabSelectedBackground
@@ -71,7 +78,10 @@ fun LeadingIconToolbarTab(
                 .clip(CircleShape)
                 .selectable(
                     selected = selected,
-                    onClick = onClick
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                        onClick()
+                    },
                 )
                 .background(color = backgroundColor)
                 .minimumInteractiveComponentSize()
@@ -88,13 +98,24 @@ fun LeadingIconToolbarTab(
                 imageVector = leadingIcon,
                 contentDescription = null, // decorative
                 modifier = Modifier.padding(end = LeadingIconToolbarTabDefaults.contentSpacing),
-                tint = WidgetPickerTheme.colors.toolbarTabContent,
+                tint = WidgetPickerTheme.colors.toolbarSelectedTabContent,
             )
         }
         Text(
+            modifier = Modifier.semantics { this.contentDescription = contentDescription },
             text = label,
-            style = WidgetPickerTheme.typography.toolbarTabLabel,
-            color = WidgetPickerTheme.colors.toolbarTabContent,
+            style =
+                if (selected) {
+                    WidgetPickerTheme.typography.toolbarSelectedTabLabel
+                } else {
+                    WidgetPickerTheme.typography.toolbarUnSelectedTabLabel
+                },
+            color =
+                if (selected) {
+                    WidgetPickerTheme.colors.toolbarSelectedTabContent
+                } else {
+                    WidgetPickerTheme.colors.toolbarUnSelectedTabContent
+                },
         )
     }
 }

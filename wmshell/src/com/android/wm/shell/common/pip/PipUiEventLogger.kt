@@ -19,6 +19,8 @@ import android.app.TaskInfo
 import android.content.pm.PackageManager
 import com.android.internal.logging.UiEvent
 import com.android.internal.logging.UiEventLogger
+import com.android.internal.protolog.ProtoLog
+import com.android.wm.shell.protolog.ShellProtoLogGroup
 
 /**
  * Helper class that ends PiP log to UiEvent, see also go/uievent
@@ -47,6 +49,8 @@ class PipUiEventLogger(
         if (mPackageName == null || mPackageUid == INVALID_PACKAGE_UID) {
             return
         }
+        ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+            "UiEvent(%s) sent for %s", event?.name, mPackageName)
         mUiEventLogger.log(event!!, mPackageUid, mPackageName)
     }
 

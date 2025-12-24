@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"تمت إضافة التطبيقات المقترحة إلى مساحة فارغة."</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"تم تفعيل ميزة \"التطبيقات المقترحة\"."</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ميزة \"التطبيقات المقترحة\" غير مفعّلة."</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"التطبيق المتوقع: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"دليل توجيهي للتنقُّل بالإيماءات"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"يُرجى تدوير الجهاز"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"يُرجى تدوير جهازك لإكمال الدليل التوجيهي للتنقُّل بالإيماءات."</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"إعدادات التنقّل داخل النظام"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"أصبح <xliff:g id="DEVICE">%1$s</xliff:g> \nجاهزًا"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"أصبح الجهاز \nجاهزًا"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"يمكنك الآن بدء استخدام الجهاز"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"أصبح <xliff:g id="DEVICE">%1$s</xliff:g> جاهزًا ويمكنك استخدامه"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"لبدء استخدام <xliff:g id="DEVICE">%1$s</xliff:g>، يُرجى التمرير سريعًا للأعلى"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"يُرجى النقر لبدء استخدام <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"اختيار طريقة التنقّل"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"يمكنك التمرير سريعًا للأعلى"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"يمكنك النقر على زر الشاشة الرئيسية"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"الإشعارات"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"إعدادات سريعة"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"شريط التطبيقات"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"تم إظهار شريط التطبيقات"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"يتم عرض \"شريط التطبيقات\" و\"فقاعات المحادثات\" يمينًا"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"يتم عرض \"شريط التطبيقات\" و\"فقاعات المحادثات\" يسارًا"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"شريط التنقل"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"إظهار شريط التطبيقات دائمًا"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"تغيير وضع التنقل"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"مقسِّم شريط التطبيقات"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"التطبيقات الأخرى المستخدَمة مؤخرًا"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"تمت إضافة التطبيق إلى \"شريط التطبيقات\""</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"تمت إزالة التطبيق من \"شريط التطبيقات\""</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"الانتقال إلى يمين الشاشة أو أعلاها"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"الانتقال إلى يسار الشاشة أو أسفلها"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"فتح التطبيق كفقاعة"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"رمز التطبيق"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"عنوان التطبيق"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"زر الإغلاق"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"التثبيت على شريط التطبيقات"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"إزالة التثبيت من شريط التطبيقات"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"تذكير تلقائي"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"إغلاق"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"صورة تذكير تلقائي"</string>

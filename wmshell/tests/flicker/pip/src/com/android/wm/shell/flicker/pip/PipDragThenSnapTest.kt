@@ -17,14 +17,14 @@
 package com.android.wm.shell.flicker.pip
 
 import android.graphics.Rect
-import android.platform.test.annotations.FlakyTest
-import android.platform.test.annotations.RequiresDevice
+import androidx.test.filters.FlakyTest
+import androidx.test.filters.RequiresDevice
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.Rotation
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import android.tools.flicker.rules.RemoveAllTasksButHomeRule
 import com.android.server.wm.flicker.helpers.setRotation
 import com.android.server.wm.flicker.testapp.ActivityOptions
@@ -43,7 +43,7 @@ import org.junit.runners.Parameterized
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
-class PipDragThenSnapTest(flicker: LegacyFlickerTest) : PipTransition(flicker) {
+class PipDragThenSnapTest(flicker: FlickerTest) : PipTransition(flicker) {
     // represents the direction in which the pip window should be snapping
     private var willSnapRight: Boolean = true
 
@@ -196,13 +196,13 @@ class PipDragThenSnapTest(flicker: LegacyFlickerTest) : PipTransition(flicker) {
         /**
          * Creates the test configurations.
          *
-         * See [LegacyFlickerTestFactory.nonRotationTests] for configuring screen orientation and
+         * See [FlickerTestFactory.nonRotationTests] for configuring screen orientation and
          * navigation modes.
          */
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getParams() =
-            LegacyFlickerTestFactory.nonRotationTests(
+            FlickerTestFactory.nonRotationTests(
                 supportedRotations = listOf(Rotation.ROTATION_0)
             )
     }

@@ -18,7 +18,7 @@ package com.android.wm.shell.bubbles.bar;
 import android.annotation.ColorInt;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -62,16 +62,20 @@ public class BubbleBarMenuItemView extends LinearLayout {
     /**
      * Update menu item with the details and tint color
      */
-    void update(Icon icon, String title, @ColorInt int tint) {
+    void update(DrawableProvider icon, String title, @ColorInt int tint) {
+        Drawable drawable = icon == null ? null : icon.getDrawable(getContext());
         if (tint == Color.TRANSPARENT) {
             mTextView.setTextColor(
                     getContext().getColor(com.android.internal.R.color.materialColorOnSurface));
         } else {
-            icon.setTint(tint);
+            if (drawable != null) {
+                drawable.mutate();
+                drawable.setTint(tint);
+            }
             mTextView.setTextColor(tint);
         }
 
-        mImageView.setImageIcon(icon);
+        mImageView.setImageDrawable(drawable);
         mTextView.setText(title);
     }
 }

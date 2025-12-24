@@ -36,6 +36,7 @@ import com.android.quickstep.views.TaskContainer
 import com.android.quickstep.views.TaskView
 import com.android.window.flags2.Flags
 import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource
+import com.android.wm.shell.shared.desktopmode.DesktopState
 import java.util.function.Consumer
 
 /** Manage recents related operations with desktop tasks */
@@ -44,6 +45,7 @@ class DesktopRecentsTransitionController(
     private val systemUiProxy: SystemUiProxy,
     private val appThread: IApplicationThread,
     private val depthController: DepthController?,
+    private val desktopState: DesktopState,
 ) {
 
     /**
@@ -61,17 +63,24 @@ class DesktopRecentsTransitionController(
                 desktopTaskView,
                 animated,
                 stateManager,
+                desktopState.shouldShowHomeBehindDesktop,
                 depthController,
                 callback,
             )
         val transition = RemoteTransition(animRunner, appThread, "RecentsToDesktop")
         if (areMultiDesksFlagsEnabled()) {
-            systemUiProxy.activateDesk(desktopTaskView.deskId, transition, taskIdToReorderToFront)
+            systemUiProxy.activateDesk(
+                desktopTaskView.deskId,
+                transition,
+                taskIdToReorderToFront,
+                DesktopModeTransitionSource.RECENTS,
+            )
         } else {
             systemUiProxy.showDesktopApps(
                 desktopTaskView.displayId,
                 transition,
                 taskIdToReorderToFront,
+                DesktopModeTransitionSource.RECENTS,
             )
         }
     }
@@ -91,17 +100,30 @@ class DesktopRecentsTransitionController(
     }
 
     /** Move task to external display from recents view */
-    fun moveToExternalDisplay(taskId: Int) {
-        systemUiProxy.moveToExternalDisplay(taskId)
+    fun moveToExternalDisplay(taskId: Int, transitionSource: DesktopModeTransitionSource) {
+        systemUiProxy.moveToExternalDisplay(taskId, transitionSource)
     }
 
     private class RemoteDesktopLaunchTransitionRunner(
         private val taskView: TaskView,
         private val animated: Boolean,
         private val stateManager: StateManager<*, *>,
+        private val shouldShowHomeBehindDesktop: Boolean,
         private val depthController: DepthController?,
         private val successCallback: Consumer<Boolean>?,
     ) : RemoteTransitionStub() {
+
+        override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {
+            if (shouldShowHomeBehindDesktop) {
+                // This transition can be consumed in the empty desk case when there are no windows
+                // to animate, which means the launcher won't animate to a NORMAL state. However in
+                // this case we still want to animate launcher back from OVERVIEW to NORMAL state.
+                MAIN_EXECUTOR.execute {
+                    stateManager.moveToRestState()
+                    successCallback?.accept(true)
+                }
+            }
+        }
 
         override fun startAnimation(
             token: IBinder,

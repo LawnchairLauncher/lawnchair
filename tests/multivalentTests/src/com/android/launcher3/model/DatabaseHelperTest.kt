@@ -2,17 +2,16 @@ package com.android.launcher3.model
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import android.os.UserHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME
 import com.android.launcher3.LauncherSettings.Favorites.TMP_TABLE
 import com.android.launcher3.LauncherSettings.Favorites.addTableToDb
-import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.LauncherDbUtils
+import com.android.launcher3.util.Executors
 import com.android.launcher3.util.ModelTestExtensions
-import java.util.function.ToLongFunction
+import com.android.launcher3.util.TestUtil
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -34,7 +33,7 @@ class DatabaseHelperTest {
 
     @Before
     fun setUp() {
-        db = ModelTestExtensions.createInMemoryDb(INSERTION_SQL)
+        db = ModelTestExtensions.createInMemoryDb(context, INSERTION_SQL)
     }
 
     @After
@@ -50,14 +49,8 @@ class DatabaseHelperTest {
      */
     @Test
     fun onUpgrade_to_version_32_from_30() {
-        val userSerialProvider =
-            ToLongFunction<UserHandle> {
-                UserCache.INSTANCE.get(context).getSerialNumberForUser(it)
-            }
-        val dbHelper = DatabaseHelper(context, null, userSerialProvider) {}
-
-        dbHelper.onUpgrade(db, 30, 32)
-
+        val dbHelper = DatabaseHelper(context, null) {}
+        TestUtil.runOnExecutorSync(Executors.MODEL_EXECUTOR) { dbHelper.onUpgrade(db, 30, 32) }
         assertFalse(hasFavoritesColumn(db, ICON_PACKAGE))
         assertFalse(hasFavoritesColumn(db, ICON_RESOURCE))
     }

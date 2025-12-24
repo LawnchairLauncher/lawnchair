@@ -17,11 +17,10 @@ package com.android.quickstep;
 
 import static com.android.app.animation.Interpolators.EXAGGERATED_EASE;
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
-import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
+import static com.android.quickstep.util.FloatingIconViewHelper.getFloatingIconView;
 
 import android.animation.AnimatorSet;
 import android.content.Context;
@@ -49,14 +48,13 @@ import com.android.launcher3.views.ClipIconView;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.ScalingWorkspaceRevealAnim;
-import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.animation.TransitionAnimator;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InputConsumerController;
 
@@ -118,9 +116,7 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
 
         mContainer.getRootView().setForceHideBackArrow(true);
 
-        boolean handOffAnimation = TransitionAnimator.Companion.longLivedReturnAnimationsEnabled()
-                && mHandOffAnimationToHome;
-        if (handOffAnimation || !canUseWorkspaceView || appCanEnterPip || mIsSwipeForSplit) {
+        if (mHandOffAnimationToHome || !canUseWorkspaceView || appCanEnterPip || mIsSwipeForSplit) {
             return new LauncherHomeAnimationFactory() {
 
                 @Nullable
@@ -141,9 +137,9 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
             View workspaceView, @Nullable TaskView targetTaskView) {
         RectF iconLocation = new RectF();
         FloatingIconView floatingIconView = getFloatingIconView(mContainer, workspaceView, null,
-                mContainer.getTaskbarUIController() == null
+                mContainer.getTaskbarInteractor() == null
                         ? null
-                        : mContainer.getTaskbarUIController().findMatchingView(workspaceView),
+                        : mContainer.getTaskbarInteractor().findMatchingAsyncView(workspaceView),
                 true /* hideOriginal */, iconLocation, false /* isOpening */);
 
         // We want the window alpha to be 0 once this threshold is met, so that the
@@ -169,14 +165,10 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
             @NonNull
             @Override
             public RectF getWindowTargetRect() {
-                if (enableScalingRevealHomeAnimation()) {
-                    if (mTargetRect == null) {
-                        mTargetRect = new RectF(iconLocation);
-                    }
-                    return mTargetRect;
-                } else {
-                    return iconLocation;
+                if (mTargetRect == null) {
+                    mTargetRect = new RectF(iconLocation);
                 }
+                return mTargetRect;
             }
 
             @Override
@@ -259,14 +251,10 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
 
             @Override
             public RectF getWindowTargetRect() {
-                if (enableScalingRevealHomeAnimation()) {
-                    if (mTargetRect == null) {
-                        mTargetRect = new RectF(backgroundLocation);
-                    }
-                    return mTargetRect;
-                } else {
-                    return backgroundLocation;
+                if (mTargetRect == null) {
+                    mTargetRect = new RectF(backgroundLocation);
                 }
+                return mTargetRect;
             }
 
             @Override
@@ -331,7 +319,11 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
             mRecentsView.cleanupRemoteTargets();
         }
         mRecentsAnimationController.finish(
-                true /* toRecents */, callback, true /* sendUserLeaveHint */);
+                /* toHome= */true,
+                callback,
+                /* sendUserLeaveHint= */ true,
+                /* reason= */ new ActiveGestureLog.CompoundString(
+                        "LauncherSwipeHandlerV2.finishRecentsControllerToHome"));
     }
 
     private class FloatingViewHomeAnimationFactory extends LauncherHomeAnimationFactory {
@@ -347,7 +339,8 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
         protected void playScalingRevealAnimation() {
             if (mContainer != null) {
                 new ScalingWorkspaceRevealAnim(mContainer, mSiblingAnimation,
-                        getWindowTargetRect(), true /* playAlphaReveal */).start();
+                        getWindowTargetRect(), true /* playAlphaReveal */,
+                        true /* playBlur */).start();
             }
         }
 
@@ -380,13 +373,7 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
 
         @Override
         public void playAtomicAnimation(float velocity) {
-            if (enableScalingRevealHomeAnimation()) {
-                playScalingRevealAnimation();
-            } else {
-                new StaggeredWorkspaceAnim(mContainer, velocity, true /* animateOverviewScrim */,
-                        getViewIgnoredInWorkspaceRevealAnimation())
-                        .start();
-            }
+            playScalingRevealAnimation();
         }
 
         /**
@@ -396,8 +383,8 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
         protected void playScalingRevealAnimation() {
             if (mContainer != null) {
                 new ScalingWorkspaceRevealAnim(
-                        mContainer, null /* siblingAnimation */,
-                        null /* windowTargetRect */, true /* playAlphaReveal */).start();
+                        mContainer, null /* siblingAnimation */, null /* windowTargetRect */,
+                        true /* playAlphaReveal */, true /* playBlur */).start();
             }
         }
     }

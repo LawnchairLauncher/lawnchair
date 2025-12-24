@@ -18,6 +18,7 @@ package com.android.wm.shell.bubbles.appinfo
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.UserHandle
 import com.android.wm.shell.bubbles.Bubble
 
 /** Resolves app info for bubbles. */
@@ -27,4 +28,4 @@ fun interface BubbleAppInfoProvider {
 }
 
 /** Data object for the resolved app info. */
-data class BubbleAppInfo(val appName: String?, val appIcon: Drawable, val badgedIcon: Drawable)
+data class BubbleAppInfo(val appName: String?, val appIcon: Drawable, val user: UserHandle)

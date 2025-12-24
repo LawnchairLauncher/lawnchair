@@ -25,7 +25,7 @@
     <string name="pip_expand" msgid="1051966011679297308">"گسترده کردن"</string>
     <string name="pip_collapse" msgid="3903295106641385962">"جمع کردن"</string>
     <string name="pip_edu_text" msgid="7930546669915337998">"برای کنترل‌ها، دکمه "<annotation icon="home_icon">"صفحه اصلی"</annotation>" را دوبار فشار دهید"</string>
-    <string name="a11y_pip_menu_entered" msgid="5106343214776801614">"منوی تصویر در تصویر."</string>
+    <string name="a11y_pip_menu_entered" msgid="5106343214776801614">"منو تصویر در تصویر."</string>
     <string name="a11y_action_pip_move_left" msgid="6612980937817141583">"انتقال به‌چپ"</string>
     <string name="a11y_action_pip_move_right" msgid="1119409122645529936">"انتقال به‌راست"</string>
     <string name="a11y_action_pip_move_up" msgid="98502616918621959">"انتقال به‌بالا"</string>

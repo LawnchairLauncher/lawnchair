@@ -21,6 +21,7 @@ import android.platform.uiautomatorhelpers.DeviceHelpers.context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.icons.BitmapInfo
+import com.android.launcher3.icons.FastBitmapDrawable
 import com.android.launcher3.icons.mono.MonoIconThemeControllerTest.Companion.ensureBitmapSerializationSupported
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -32,22 +33,29 @@ class MonoThemedBitmapTest {
 
     @Test
     fun `newDrawable returns valid drawable`() {
-        val bitmap =
-            MonoThemedBitmap(
-                Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8),
-                Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888),
+        val bitmap = MonoThemedBitmap(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8))
+        val d =
+            FastBitmapDrawable(
+                info = BitmapInfo.LOW_RES_INFO,
+                delegateFactory = bitmap.newDelegateFactory(BitmapInfo.LOW_RES_INFO, context),
             )
-        val d = bitmap.newDrawable(BitmapInfo.LOW_RES_INFO, context)
-        assertTrue(d is ThemedIconDrawable)
+        assertTrue(d.delegate is ThemedIconDelegate)
     }
 
     @Test
     fun `serialize returns valid bytes`() {
         ensureBitmapSerializationSupported()
+        val bitmap = MonoThemedBitmap(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8))
+        assertTrue(bitmap.serialize().isNotEmpty())
+    }
+
+    @Test
+    fun `serialize with luminanceDelta returns valid bytes`() {
+        ensureBitmapSerializationSupported()
         val bitmap =
             MonoThemedBitmap(
-                Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8),
-                Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888),
+                mono = Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8),
+                luminanceDelta = 2.3,
             )
         assertTrue(bitmap.serialize().isNotEmpty())
     }

@@ -14,4 +14,4 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.uioverrides.PredictedAppIcon style="@style/BaseIcon.Workspace.Taskbar" />
+<com.android.launcher3.views.PredictedAppIcon style="@style/BaseIcon.Workspace.Taskbar" />

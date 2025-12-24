@@ -34,7 +34,8 @@ import java.lang.annotation.RetentionPolicy;
 public class PipInteractionHandler {
     @IntDef(prefix = {"INTERACTION_"}, value = {
             INTERACTION_EXIT_PIP,
-            INTERACTION_EXIT_PIP_TO_SPLIT
+            INTERACTION_EXIT_PIP_TO_SPLIT,
+            INTERACTION_ENTER_PIP
     })
 
     @Retention(RetentionPolicy.SOURCE)
@@ -42,6 +43,7 @@ public class PipInteractionHandler {
 
     public static final int INTERACTION_EXIT_PIP = 0;
     public static final int INTERACTION_EXIT_PIP_TO_SPLIT = 1;
+    public static final int INTERACTION_ENTER_PIP = 2;
 
     private final Context mContext;
     private final Handler mHandler;
@@ -82,6 +84,7 @@ public class PipInteractionHandler {
         return switch (interaction) {
             case INTERACTION_EXIT_PIP -> "EXIT_PIP";
             case INTERACTION_EXIT_PIP_TO_SPLIT -> "EXIT_PIP_TO_SPLIT";
+            case INTERACTION_ENTER_PIP -> "ENTER_PIP";
             default -> "";
         };
     }

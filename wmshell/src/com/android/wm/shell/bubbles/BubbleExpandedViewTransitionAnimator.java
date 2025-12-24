@@ -50,10 +50,14 @@ public interface BubbleExpandedViewTransitionAnimator {
 
     /**
      * Call to prepare the provided {@param bubble} to be animated.
-     * <p>
-     * Should make the current expanded bubble visible immediately so it gets a surface that can be
-     * animated. Since the surface may not be ready yet, it should keep the TaskView alpha=0.
+     *
+     * <p>Should make the current expanded bubble visible immediately so it gets a surface that can
+     * be animated. Since the surface may not be ready yet, it should keep the TaskView alpha=0.
+     *
+     * @return the currently expanded bubble if it exists so that it can be removed later in the
+     *         transition
      */
+    @Nullable
     BubbleViewProvider prepareConvertedView(BubbleViewProvider bubble);
 
     /**

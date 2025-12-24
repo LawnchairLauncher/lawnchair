@@ -37,6 +37,7 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PredictedContainerInfo;
+import com.android.launcher3.model.data.PredictedItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import java.util.ArrayList;
@@ -56,7 +57,10 @@ public class PredictionUpdateTask implements ModelUpdateTask {
     private final List<AppTarget> mTargets;
     private final PredictorState mPredictorState;
 
-    PredictionUpdateTask(PredictorState predictorState, List<AppTarget> targets) {
+    PredictionUpdateTask(
+            PredictorState predictorState,
+            List<AppTarget> targets
+    ) {
         mPredictorState = predictorState;
         mTargets = targets;
     }
@@ -117,7 +121,7 @@ public class PredictionUpdateTask implements ModelUpdateTask {
             }
 
             itemInfo.container = mPredictorState.containerId;
-            items.add(itemInfo);
+            items.add(new PredictedItemInfo(itemInfo));
         }
 
         PredictedContainerInfo pci = new PredictedContainerInfo(mPredictorState.containerId, items);

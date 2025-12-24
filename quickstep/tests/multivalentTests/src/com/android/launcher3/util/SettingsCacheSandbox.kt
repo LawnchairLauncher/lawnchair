@@ -35,11 +35,7 @@ class SettingsCacheSandbox {
      */
     val cache =
         mock<SettingsCache> {
-            on { getValue(any<Uri>()) } doAnswer { mock.getValue(it.getArgument(0), 1) }
-            on { getValue(any<Uri>(), any<Int>()) } doAnswer
-                {
-                    values.getOrDefault(it.getArgument(0), it.getArgument(1)) == 1
-                }
+            on { getValue(any<Uri>()) } doAnswer { values.getOrDefault(it.getArgument(0), 0) == 1 }
 
             doAnswer {
                     listeners.getOrPut(it.getArgument(0)) { mutableSetOf() }.add(it.getArgument(1))

@@ -48,15 +48,20 @@ import com.android.quickstep.views.TaskView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 @SmallTest
 public class TaskViewTest {
 
     private final SandboxContext mApplicationContext =
             new SandboxContext(InstrumentationRegistry.getInstrumentation().getTargetContext());
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private QuickstepLauncher mContext;
     @Mock
@@ -69,7 +74,6 @@ public class TaskViewTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(mResource.getDisplayMetrics()).thenReturn(mock(DisplayMetrics.class));
         when(mResource.getConfiguration()).thenReturn(new Configuration());
 

@@ -31,9 +31,9 @@ import android.window.WindowContainerTransaction
 import androidx.core.animation.addListener
 import com.android.internal.annotations.VisibleForTesting
 import com.android.internal.protolog.ProtoLog
-import com.android.window.flags.Flags
 import com.android.wm.shell.ShellTaskOrganizer
 import com.android.wm.shell.common.DisplayController
+import com.android.wm.shell.desktopmode.data.DesktopRepository
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_DESKTOP_MODE
 import com.android.wm.shell.sysui.ShellCommandHandler
 import com.android.wm.shell.sysui.ShellInit

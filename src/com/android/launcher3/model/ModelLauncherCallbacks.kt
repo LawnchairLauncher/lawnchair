@@ -22,14 +22,16 @@ import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import android.text.TextUtils
 import com.android.launcher3.LauncherModel.ModelUpdateTask
-import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.logging.FileLog
-import com.android.launcher3.model.PackageUpdatedTask.OP_ADD
-import com.android.launcher3.model.PackageUpdatedTask.OP_REMOVE
-import com.android.launcher3.model.PackageUpdatedTask.OP_SUSPEND
-import com.android.launcher3.model.PackageUpdatedTask.OP_UNAVAILABLE
-import com.android.launcher3.model.PackageUpdatedTask.OP_UNSUSPEND
-import com.android.launcher3.model.PackageUpdatedTask.OP_UPDATE
+import com.android.launcher3.model.tasks.CacheDataUpdatedTask
+import com.android.launcher3.model.tasks.PackageIncrementalDownloadUpdatedTask
+import com.android.launcher3.model.tasks.PackageInstallStateChangedTask
+import com.android.launcher3.model.tasks.PackageTaskFactory
+import com.android.launcher3.model.tasks.PackageUpdatedTask
+import com.android.launcher3.model.tasks.PackageUpdatedTask.OP_ADD
+import com.android.launcher3.model.tasks.PackageUpdatedTask.OP_UPDATE
+import com.android.launcher3.model.tasks.SessionFailureTask
+import com.android.launcher3.model.tasks.ShortcutsChangedTask
 import com.android.launcher3.pm.InstallSessionTracker
 import com.android.launcher3.pm.PackageInstallInfo
 import com.android.launcher3.util.PackageUserKey
@@ -61,7 +63,7 @@ class ModelLauncherCallbacks(private var taskExecutor: Consumer<ModelUpdateTask>
 
     override fun onPackageRemoved(packageName: String, user: UserHandle) {
         FileLog.d(TAG, "onPackageRemoved triggered for packageName=$packageName, user=$user")
-        taskExecutor.accept(PackageUpdatedTask(OP_REMOVE, user, packageName))
+        taskExecutor.accept(PackageTaskFactory.appsRemoved(user, setOf(packageName)))
     }
 
     override fun onPackagesAvailable(
@@ -73,7 +75,7 @@ class ModelLauncherCallbacks(private var taskExecutor: Consumer<ModelUpdateTask>
     }
 
     override fun onPackagesSuspended(vararg packageNames: String, user: UserHandle) {
-        taskExecutor.accept(PackageUpdatedTask(OP_SUSPEND, user, *packageNames))
+        taskExecutor.accept(PackageTaskFactory.appsSuspended(user, packageNames.toSet()))
     }
 
     override fun onPackagesUnavailable(
@@ -82,12 +84,12 @@ class ModelLauncherCallbacks(private var taskExecutor: Consumer<ModelUpdateTask>
         replacing: Boolean,
     ) {
         if (!replacing) {
-            taskExecutor.accept(PackageUpdatedTask(OP_UNAVAILABLE, user, *packageNames))
+            taskExecutor.accept(PackageTaskFactory.appsUnavailable(user, packageNames.toSet()))
         }
     }
 
     override fun onPackagesUnsuspended(vararg packageNames: String, user: UserHandle) {
-        taskExecutor.accept(PackageUpdatedTask(OP_UNSUSPEND, user, *packageNames))
+        taskExecutor.accept(PackageTaskFactory.appsUnsuspended(user, packageNames.toSet()))
     }
 
     override fun onShortcutsChanged(
@@ -100,7 +102,7 @@ class ModelLauncherCallbacks(private var taskExecutor: Consumer<ModelUpdateTask>
 
     fun onPackagesRemoved(user: UserHandle, packages: List<String>) {
         FileLog.d(TAG, "package removed received " + TextUtils.join(",", packages))
-        taskExecutor.accept(PackageUpdatedTask(OP_REMOVE, user, *packages.toTypedArray()))
+        taskExecutor.accept(PackageTaskFactory.appsRemoved(user, packages.toSet()))
     }
 
     override fun onSessionFailure(packageName: String, user: UserHandle) {
@@ -125,14 +127,7 @@ class ModelLauncherCallbacks(private var taskExecutor: Consumer<ModelUpdateTask>
         )
     }
 
-    override fun onInstallSessionCreated(sessionInfo: PackageInstallInfo) {
-        if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
-            taskExecutor.accept { taskController, _, apps ->
-                apps.addPromiseApp(taskController.context, sessionInfo)
-                taskController.bindApplicationsIfNeeded()
-            }
-        }
-    }
+    override fun onInstallSessionCreated(sessionInfo: PackageInstallInfo) {}
 
     companion object {
         private const val TAG = "LauncherAppsCallbackImpl"

@@ -38,8 +38,7 @@ class UserBadgeDrawableTest {
             context,
             R.drawable.ic_work_app_badge,
             R.color.badge_tint_work,
-            false /* isThemed */,
-            null, /* shape */
+            false, /* isThemed */
         )
 
     @Test

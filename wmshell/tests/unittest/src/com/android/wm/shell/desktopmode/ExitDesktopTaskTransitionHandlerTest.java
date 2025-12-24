@@ -18,18 +18,19 @@ package com.android.wm.shell.desktopmode;
 
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
+import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_EXIT_DESKTOP_MODE_UNKNOWN;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.animation.AnimatorTestRule;
 import android.annotation.NonNull;
 import android.app.ActivityManager;
-import android.app.WindowConfiguration;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -49,6 +50,7 @@ import androidx.test.filters.SmallTest;
 
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.wm.shell.ShellTestCase;
+import com.android.wm.shell.common.DisplayController;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource;
 import com.android.wm.shell.transition.Transitions;
@@ -67,6 +69,8 @@ import java.util.function.Supplier;
 @TestableLooper.RunWithLooper
 @RunWith(AndroidTestingRunner.class)
 public class ExitDesktopTaskTransitionHandlerTest extends ShellTestCase {
+    private static final int TRANSITION_TYPE = TRANSIT_EXIT_DESKTOP_MODE_UNKNOWN;
+    private static final int TASK_ID = 1;
 
     @Rule
     public final AnimatorTestRule mAnimatorTestRule = new AnimatorTestRule(this);
@@ -92,6 +96,9 @@ public class ExitDesktopTaskTransitionHandlerTest extends ShellTestCase {
     @Mock
     Handler mHandler;
 
+    @Mock
+    DisplayController mDisplayController;
+
     private Point mPoint;
     private ExitDesktopTaskTransitionHandler mExitDesktopTaskTransitionHandler;
 
@@ -101,30 +108,29 @@ public class ExitDesktopTaskTransitionHandlerTest extends ShellTestCase {
 
         doReturn(mExecutor).when(mTransitions).getMainExecutor();
         doReturn(new SurfaceControl.Transaction()).when(mTransactionFactory).get();
+        doReturn(mContext).when(mDisplayController).getDisplayContext(DEFAULT_DISPLAY);
         doReturn(mResources).when(mContext).getResources();
         doReturn(mDisplayMetrics).when(mResources).getDisplayMetrics();
         when(mResources.getDisplayMetrics())
                 .thenReturn(getContext().getResources().getDisplayMetrics());
 
         mExitDesktopTaskTransitionHandler = new ExitDesktopTaskTransitionHandler(mTransitions,
-                mContext, mInteractionJankMonitor, mHandler);
+                mContext, mInteractionJankMonitor, mHandler, mDisplayController);
         mPoint = new Point(0, 0);
     }
 
     @Test
     public void testTransitExitDesktopModeAnimation() {
-        final int transitionType = TRANSIT_EXIT_DESKTOP_MODE_UNKNOWN;
-        final int taskId = 1;
         WindowContainerTransaction wct = new WindowContainerTransaction();
         doReturn(mToken).when(mTransitions)
-                .startTransition(transitionType, wct, mExitDesktopTaskTransitionHandler);
+                .startTransition(TRANSITION_TYPE, wct, mExitDesktopTaskTransitionHandler);
 
         mExitDesktopTaskTransitionHandler.startTransition(DesktopModeTransitionSource.UNKNOWN,
                 wct, mPoint, null);
 
         TransitionInfo.Change change =
-                createChange(WindowManager.TRANSIT_CHANGE, taskId, WINDOWING_MODE_FULLSCREEN);
-        TransitionInfo info = createTransitionInfo(TRANSIT_EXIT_DESKTOP_MODE_UNKNOWN, change);
+                createChange(WindowManager.TRANSIT_CHANGE, /* displayId= */ 0);
+        TransitionInfo info = createTransitionInfo(TRANSITION_TYPE, change);
 
         final boolean animated = mExitDesktopTaskTransitionHandler
                 .startAnimation(mToken, info,
@@ -137,12 +143,33 @@ public class ExitDesktopTaskTransitionHandlerTest extends ShellTestCase {
         assertTrue(animated);
     }
 
-    private TransitionInfo.Change createChange(@WindowManager.TransitionType int type, int taskId,
-            @WindowConfiguration.WindowingMode int windowingMode) {
+    @Test
+    public void exitDesktop_usesCorrectDisplay() {
+        final int displayId = 2;
+        doReturn(mContext).when(mDisplayController).getDisplayContext(displayId);
+        WindowContainerTransaction wct = new WindowContainerTransaction();
+        doReturn(mToken).when(mTransitions)
+                .startTransition(TRANSITION_TYPE, wct, mExitDesktopTaskTransitionHandler);
+        mExitDesktopTaskTransitionHandler.startTransition(DesktopModeTransitionSource.UNKNOWN,
+                wct, mPoint, null);
+        TransitionInfo.Change change =
+                createChange(WindowManager.TRANSIT_CHANGE, displayId);
+        TransitionInfo info = createTransitionInfo(TRANSITION_TYPE, change);
+
+        mExitDesktopTaskTransitionHandler.startAnimation(mToken, info,
+                new SurfaceControl.Transaction(), new SurfaceControl.Transaction(),
+                mTransitionFinishCallback);
+
+        verify(mDisplayController).getDisplayContext(displayId);
+    }
+
+    private TransitionInfo.Change createChange(
+            @WindowManager.TransitionType int type, int displayId) {
         final ActivityManager.RunningTaskInfo taskInfo = new ActivityManager.RunningTaskInfo();
-        taskInfo.taskId = taskId;
+        taskInfo.taskId = TASK_ID;
         taskInfo.token = new WindowContainerToken(mock(IWindowContainerToken.class));
-        taskInfo.configuration.windowConfiguration.setWindowingMode(windowingMode);
+        taskInfo.configuration.windowConfiguration.setWindowingMode(WINDOWING_MODE_FULLSCREEN);
+        taskInfo.displayId = displayId;
         SurfaceControl.Builder b = new SurfaceControl.Builder()
                 .setName("test task");
         final TransitionInfo.Change change = new TransitionInfo.Change(

@@ -16,25 +16,47 @@
 
 package com.android.launcher3.taskbar
 
+import com.android.launcher3.Flags.refactorTaskbarUiState
 import com.android.launcher3.statehandlers.DesktopVisibilityController
 import com.android.launcher3.statehandlers.DesktopVisibilityController.TaskbarDesktopModeListener
 import com.android.launcher3.taskbar.TaskbarBackgroundRenderer.Companion.MAX_ROUNDNESS
+import com.android.launcher3.taskbar.TaskbarManagerImpl.TASKBAR_UI_THREAD
+import com.android.launcher3.util.DisplayController
 
 /** Handles Taskbar in Desktop Windowing mode. */
 class TaskbarDesktopModeController(
     private val taskbarActivityContext: TaskbarActivityContext,
     private val desktopVisibilityController: DesktopVisibilityController,
 ) : TaskbarDesktopModeListener {
+
+    private val displayInfoChangeListener =
+        DisplayController.DisplayInfoChangeListener { _, _, _ ->
+            // DisplayInfoChangeListener is called on main thread, we should switch to taskbar's UI
+            // thread to update UI state.
+            TASKBAR_UI_THREAD.execute { updateTaskbarUiState() }
+        }
+
     private lateinit var taskbarControllers: TaskbarControllers
     private lateinit var taskbarSharedState: TaskbarSharedState
+    private lateinit var taskbarUiState: TaskbarUiState
 
     val isLauncherAnimationRunning: Boolean
         get() = desktopVisibilityController.launcherAnimationRunning
 
-    fun init(controllers: TaskbarControllers, sharedState: TaskbarSharedState) {
+    fun init(
+        controllers: TaskbarControllers,
+        sharedState: TaskbarSharedState,
+        uiState: TaskbarUiState,
+    ) {
         taskbarControllers = controllers
         taskbarSharedState = sharedState
+        taskbarUiState = uiState
         desktopVisibilityController.registerTaskbarDesktopModeListener(this)
+        if (refactorTaskbarUiState()) {
+            DisplayController.INSTANCE.get(taskbarActivityContext)
+                .addChangeListener(displayInfoChangeListener)
+            updateTaskbarUiState()
+        }
     }
 
     fun isInDesktopMode(displayId: Int) = desktopVisibilityController.isInDesktopMode(displayId)
@@ -68,5 +90,24 @@ class TaskbarDesktopModeController(
         }
     }
 
-    fun onDestroy() = desktopVisibilityController.unregisterTaskbarDesktopModeListener(this)
+    val getActiveDeskId: Int
+        get() =
+            desktopVisibilityController.getActiveDeskId(taskbarActivityContext.displayId)
+
+    fun onDestroy() {
+        desktopVisibilityController.unregisterTaskbarDesktopModeListener(this)
+        if (refactorTaskbarUiState()) {
+            DisplayController.INSTANCE.get(taskbarActivityContext)
+                .removeChangeListener(displayInfoChangeListener)
+        }
+    }
+
+    private fun updateTaskbarUiState() {
+        taskbarUiState.setShowDesktopTaskbarForFreeformDisplay(
+            DisplayController.showDesktopTaskbarForFreeformDisplay(taskbarActivityContext)
+        )
+        taskbarUiState.setShowLockedTaskbarOnHome(
+            DisplayController.showLockedTaskbarOnHome(taskbarActivityContext)
+        )
+    }
 }

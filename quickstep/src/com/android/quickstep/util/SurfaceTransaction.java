@@ -65,6 +65,15 @@ public class SurfaceTransaction {
         }
 
         /**
+         * @param opaque Whether the surface is opaque.
+         * @return this Builder
+         */
+        public SurfaceProperties setOpaque(boolean opaque) {
+            mTransaction.setOpaque(mSurface, opaque);
+            return this;
+        }
+
+        /**
          * @param matrix The matrix to apply to the surface.
          * @return this Builder
          */
@@ -83,11 +92,30 @@ public class SurfaceTransaction {
         }
 
         /**
-         * @param relativeLayer The relative layer.
+         * @param z The Z-order of the surface.
          * @return this Builder
          */
-        public SurfaceProperties setLayer(int relativeLayer) {
-            mTransaction.setLayer(mSurface, relativeLayer);
+        public SurfaceProperties setLayer(int z) {
+            mTransaction.setLayer(mSurface, z);
+            return this;
+        }
+
+        /**
+         * @param relativeTo The surface to apply the Z-order relative to.
+         * @param z The Z-order to apply to the current surface relative to the relativeTo surface.
+         * @return this Builder
+         */
+        public SurfaceProperties setRelativeLayer(SurfaceControl relativeTo, int z) {
+            mTransaction.setRelativeLayer(mSurface, relativeTo, z);
+            return this;
+        }
+
+        /**
+         * @param newParent The new parent for the surface.
+         * @return this Builder
+         */
+        public SurfaceProperties reparent(SurfaceControl newParent) {
+            mTransaction.reparent(mSurface, newParent);
             return this;
         }
 
@@ -145,6 +173,7 @@ public class SurfaceTransaction {
     public class MockProperties extends SurfaceProperties {
 
         public float alpha = -1;
+        public boolean opaque = false;
         public Matrix matrix = null;
         public Rect windowCrop = null;
         public float cornerRadius = 0;
@@ -162,6 +191,12 @@ public class SurfaceTransaction {
         }
 
         @Override
+        public SurfaceProperties setOpaque(boolean opaque) {
+            this.opaque = opaque;
+            return this;
+        }
+
+        @Override
         public SurfaceProperties setMatrix(Matrix matrix) {
             this.matrix = matrix;
             return this;
@@ -174,7 +209,17 @@ public class SurfaceTransaction {
         }
 
         @Override
-        public SurfaceProperties setLayer(int relativeLayer) {
+        public SurfaceProperties setLayer(int z) {
+            return this;
+        }
+
+        @Override
+        public SurfaceProperties setRelativeLayer(SurfaceControl relativeTo, int z) {
+            return this;
+        }
+
+        @Override
+        public SurfaceProperties reparent(SurfaceControl newParent) {
             return this;
         }
 

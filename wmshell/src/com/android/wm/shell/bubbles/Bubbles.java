@@ -32,8 +32,8 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.NotificationListenerService.RankingMap;
 import android.util.Pair;
 import android.util.SparseArray;
-import android.window.ScreenCapture.ScreenshotHardwareBuffer;
-import android.window.ScreenCapture.SynchronousScreenCaptureListener;
+import android.window.ScreenCaptureInternal.ScreenshotHardwareBuffer;
+import android.window.ScreenCaptureInternal.SynchronousScreenCaptureListener;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -86,6 +86,7 @@ public interface Bubbles {
     int DISMISS_USER_ACCOUNT_REMOVED = 16;
     int DISMISS_SWITCH_TO_STACK = 17;
     int DISMISS_USER_GESTURE_FROM_LAUNCHER = 18;
+    int DISMISS_JUMPCUT_BUBBLE_SWITCH = 19;
 
     /** Returns a binder that can be passed to an external process to manipulate Bubbles. */
     default IBubbles createExternalInterface() {
@@ -354,13 +355,8 @@ public interface Bubbles {
          */
         void animateBubbleBarLocation(BubbleBarLocation location);
 
-        /**
-         * Show the bubble bar pillow view at the provided location.
-         * If the location is null, the pillow view is should be hidden.
-         *
-         * @param location The location to show the pillow view, or null to hide it.
-         */
-        void showBubbleBarPillowAt(@Nullable BubbleBarLocation location);
+        /** Show bubble bar drop target at provided location or hide if location is null. */
+        void showBubbleBarDropTargetAt(@Nullable BubbleBarLocation location);
     }
 
     /** Listener to find out about stack expansion / collapse events. */
@@ -404,7 +400,7 @@ public interface Bubbles {
 
         void setNotificationInterruption(String key);
 
-        void requestNotificationShadeTopUi(boolean requestTopUi, String componentTag);
+        void requestTopUi(boolean requestTopUi, String componentTag);
 
         void notifyRemoveNotification(String key, int reason);
 

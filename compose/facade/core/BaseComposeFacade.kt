@@ -23,4 +23,6 @@ interface BaseComposeFacade {
     fun isComposeAvailable(): Boolean
 
     fun initComposeView(appContext: Context): View
+
+    fun disposeComposition(view: View)
 }

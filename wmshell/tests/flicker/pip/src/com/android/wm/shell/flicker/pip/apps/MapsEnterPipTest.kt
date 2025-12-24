@@ -27,8 +27,8 @@ import android.os.SystemClock
 import android.platform.test.annotations.Postsubmit
 import android.tools.device.apphelpers.MapsAppHelper
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
 import android.tools.flicker.subject.layers.LayersTraceSubject.Companion.VISIBLE_FOR_MORE_THAN_ONE_ENTRY_IGNORE_LAYERS
 import android.tools.traces.component.ComponentRegexMatcher
 import androidx.test.filters.RequiresDevice
@@ -55,7 +55,7 @@ import org.junit.runners.Parameterized
  *     1. Some default assertions (e.g., nav bar, status bar and screen covered)
  *        are inherited from [PipTransition]
  *     2. Part of the test setup occurs automatically via
- *        [android.tools.flicker.legacy.runner.TransitionRunner],
+ *        [android.tools.flicker.runner.TransitionRunner],
  *        including configuring navigation mode, initial orientation and ensuring no
  *        apps are running before setup
  * ```
@@ -64,7 +64,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-open class MapsEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransition(flicker) {
+open class MapsEnterPipTest(flicker: FlickerTest) : AppsEnterPipTransition(flicker) {
     override val pipApp: MapsAppHelper = MapsAppHelper(instrumentation)
 
     override val permissions: Array<String> =

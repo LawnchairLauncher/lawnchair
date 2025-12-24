@@ -19,23 +19,31 @@ package com.android.wm.shell.shared.bubbles
 import android.content.Context
 import android.graphics.Insets
 import android.graphics.Rect
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.wm.shell.Flags.FLAG_ENABLE_BUBBLE_TO_FULLSCREEN
+import com.android.wm.shell.Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE
 import com.android.wm.shell.shared.bubbles.DragZoneFactory.BubbleBarPropertiesProvider
 import com.android.wm.shell.shared.bubbles.DragZoneFactory.DesktopWindowModeChecker
 import com.android.wm.shell.shared.bubbles.DragZoneFactory.SplitScreenModeChecker
 import com.android.wm.shell.shared.bubbles.DragZoneFactory.SplitScreenModeChecker.SplitScreenMode
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 private typealias DragZoneVerifier = (dragZone: DragZone) -> Unit
 
 @SmallTest
+@EnableFlags(FLAG_ENABLE_BUBBLE_TO_FULLSCREEN, FLAG_ENABLE_CREATE_ANY_BUBBLE)
 @RunWith(AndroidJUnit4::class)
 /** Unit tests for [DragZoneFactory]. */
 class DragZoneFactoryTest {
+
+    @get:Rule val flagsRule = SetFlagsRule()
 
     private val context = getApplicationContext<Context>()
     private lateinit var dragZoneFactory: DragZoneFactory
@@ -378,7 +386,7 @@ class DragZoneFactoryTest {
             )
         val dragZones =
             dragZoneFactory.createSortedDragZones(
-                DraggedObject.LauncherIcon(bubbleBarHasBubbles = true) { }
+                DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = false)
             )
         val expectedZones: List<DragZoneVerifier> =
             listOf(verifyInstance<DragZone.Bubble.Left>(), verifyInstance<DragZone.Bubble.Right>())
@@ -401,7 +409,7 @@ class DragZoneFactoryTest {
             )
         val dragZones =
             dragZoneFactory.createSortedDragZones(
-                DraggedObject.LauncherIcon(bubbleBarHasBubbles = false) { }
+                DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true)
             )
         val expectedZones: List<DragZoneVerifier> =
             listOf(verifyInstance<DragZone.Bubble.Left>(), verifyInstance<DragZone.Bubble.Right>())
@@ -424,7 +432,10 @@ class DragZoneFactoryTest {
             )
         val dragZones =
             dragZoneFactory.createSortedDragZones(
-                DraggedObject.LauncherIcon(showDropTarget = false, bubbleBarHasBubbles = false) { }
+                DraggedObject.LauncherIcon(
+                    showExpandedViewDropTarget = false,
+                    showBubbleBarPillowDropTarget = true
+                )
             )
         val expectedZones: List<DragZoneVerifier> =
             listOf(verifyInstance<DragZone.Bubble.Left>(), verifyInstance<DragZone.Bubble.Right>())

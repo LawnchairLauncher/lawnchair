@@ -25,6 +25,8 @@ import static android.provider.Settings.Global.DEVELOPMENT_FORCE_DESKTOP_MODE_ON
 import static android.view.WindowManager.TRANSIT_CHANGE;
 import static android.window.DesktopExperienceFlags.ENABLE_DISPLAY_FOCUS_IN_SHELL_TRANSITIONS;
 
+import static com.android.wm.shell.windowdecor.DragPositioningCallbackUtility.getInputMethodFromMotionEvent;
+
 import android.annotation.NonNull;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ContentResolver;
@@ -106,7 +108,7 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
      */
     private boolean mShouldPilferCaptionEvents;
 
-    private final SparseArray<CaptionWindowDecoration> mWindowDecorByTaskId = new SparseArray<>();
+    private final SparseArray<WindowDecorationWrapper> mWindowDecorByTaskId = new SparseArray<>();
 
     private final ISystemGestureExclusionListener mGestureExclusionListener =
             new ISystemGestureExclusionListener.Stub() {
@@ -122,6 +124,9 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
                     });
                 }
             };
+
+    private final WindowDecorationWrapper.Factory mWindowDecorationWrapperFactory =
+            new WindowDecorationWrapper.Factory();
 
     public CaptionWindowDecorViewModel(
             Context context,
@@ -173,9 +178,9 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
     @Override
     public void onFocusedTaskChanged(RunningTaskInfo taskInfo, boolean isFocusedOnDisplay,
             boolean isFocusedGlobally) {
-        final WindowDecoration decor = mWindowDecorByTaskId.get(taskInfo.taskId);
+        final WindowDecorationWrapper decor = mWindowDecorByTaskId.get(taskInfo.taskId);
         if (decor != null) {
-            decor.relayout(decor.mTaskInfo, isFocusedGlobally, decor.mExclusionRegion);
+            decor.relayout(decor.getTaskInfo(), isFocusedGlobally, decor.getExclusionRegion());
         }
     }
 
@@ -200,7 +205,7 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
 
     @Override
     public void onTaskInfoChanged(RunningTaskInfo taskInfo) {
-        final CaptionWindowDecoration decoration = mWindowDecorByTaskId.get(taskInfo.taskId);
+        final WindowDecorationWrapper decoration = mWindowDecorByTaskId.get(taskInfo.taskId);
 
         if (decoration == null) return;
 
@@ -211,9 +216,10 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
 
         if (ENABLE_DISPLAY_FOCUS_IN_SHELL_TRANSITIONS.isTrue()) {
             // Pass the current global focus status to avoid updates outside of a ShellTransition.
-            decoration.relayout(taskInfo, decoration.mHasGlobalFocus, decoration.mExclusionRegion);
+            decoration.relayout(
+                    taskInfo, decoration.getHasGlobalFocus(), decoration.getExclusionRegion());
         } else {
-            decoration.relayout(taskInfo, taskInfo.isFocused, decoration.mExclusionRegion);
+            decoration.relayout(taskInfo, taskInfo.isFocused, decoration.getExclusionRegion());
         }
     }
 
@@ -238,7 +244,7 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
             SurfaceControl taskSurface,
             SurfaceControl.Transaction startT,
             SurfaceControl.Transaction finishT) {
-        final CaptionWindowDecoration decoration = mWindowDecorByTaskId.get(taskInfo.taskId);
+        final WindowDecorationWrapper decoration = mWindowDecorByTaskId.get(taskInfo.taskId);
 
         if (!shouldShowWindowDecor(taskInfo)) {
             if (decoration != null) {
@@ -253,7 +259,7 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
             decoration.relayout(taskInfo, startT, finishT, false /* applyStartTransactionOnDraw */,
                     false /* setTaskCropAndPosition */,
                     mFocusTransitionObserver.hasGlobalFocus(taskInfo), mExclusionRegion,
-                    /* inSyncWithTransition= */ true);
+                    /* inSyncWithTransition= */ true, taskSurface);
         }
     }
 
@@ -262,18 +268,18 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
             RunningTaskInfo taskInfo,
             SurfaceControl.Transaction startT,
             SurfaceControl.Transaction finishT) {
-        final CaptionWindowDecoration decoration = mWindowDecorByTaskId.get(taskInfo.taskId);
+        final WindowDecorationWrapper decoration = mWindowDecorByTaskId.get(taskInfo.taskId);
         if (decoration == null) return;
 
         decoration.relayout(taskInfo, startT, finishT, false /* applyStartTransactionOnDraw */,
                 false /* setTaskCropAndPosition */,
                 mFocusTransitionObserver.hasGlobalFocus(taskInfo), mExclusionRegion,
-                /* inSyncWithTransition= */ true);
+                /* inSyncWithTransition= */ true, /* taskSurface */ null);
     }
 
     @Override
     public void destroyWindowDecoration(RunningTaskInfo taskInfo) {
-        final CaptionWindowDecoration decoration =
+        final WindowDecorationWrapper decoration =
                 mWindowDecorByTaskId.removeReturnOld(taskInfo.taskId);
         if (decoration == null) return;
 
@@ -283,8 +289,8 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
     private void onExclusionRegionChanged(int displayId, @NonNull Region exclusionRegion) {
         final int decorCount = mWindowDecorByTaskId.size();
         for (int i = 0; i < decorCount; i++) {
-            final CaptionWindowDecoration decoration = mWindowDecorByTaskId.valueAt(i);
-            if (decoration.mTaskInfo.displayId != displayId) continue;
+            final WindowDecorationWrapper decoration = mWindowDecorByTaskId.valueAt(i);
+            if (decoration.getTaskInfo().displayId != displayId) continue;
             decoration.onExclusionRegionChanged(exclusionRegion);
         }
     }
@@ -331,15 +337,16 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
             SurfaceControl taskSurface,
             SurfaceControl.Transaction startT,
             SurfaceControl.Transaction finishT) {
-        final CaptionWindowDecoration oldDecoration = mWindowDecorByTaskId.get(taskInfo.taskId);
+        final WindowDecorationWrapper oldDecoration = mWindowDecorByTaskId.get(taskInfo.taskId);
         if (oldDecoration != null) {
             // close the old decoration if it exists to avoid two window decorations being added
             oldDecoration.close();
         }
-        final CaptionWindowDecoration windowDecoration =
-                new CaptionWindowDecoration(
+        final WindowDecorationWrapper windowDecoration = mWindowDecorationWrapperFactory
+                .fromCaptionDecoration(new CaptionWindowDecoration(
                         mContext,
-                        mContext.createContextAsUser(UserHandle.of(taskInfo.userId), 0 /* flags */),
+                        mContext.createContextAsUser(UserHandle.of(taskInfo.userId),
+                                0 /* flags */),
                         mDisplayController,
                         mTaskOrganizer,
                         taskInfo,
@@ -351,7 +358,8 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
                         mMainChoreographer,
                         mSyncQueue,
                         mWindowDecorViewHostSupplier,
-                        mDesktopConfig);
+                        mDesktopConfig)
+                );
         mWindowDecorByTaskId.put(taskInfo.taskId, windowDecoration);
 
         final FluidResizeTaskPositioner taskPositioner =
@@ -359,13 +367,14 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
                         mDisplayController, mDesktopState);
         final CaptionTouchEventListener touchEventListener =
                 new CaptionTouchEventListener(taskInfo, taskPositioner);
-        windowDecoration.setCaptionListeners(touchEventListener, touchEventListener);
+        windowDecoration.setCaptionListeners(touchEventListener, touchEventListener,
+                /* onLongClickListener= */ null, /* onGenericMotionListener= */ null);
         windowDecoration.setDragPositioningCallback(taskPositioner);
         windowDecoration.setTaskDragResizer(taskPositioner);
         windowDecoration.relayout(taskInfo, startT, finishT,
                 false /* applyStartTransactionOnDraw */, false /* setTaskCropAndPosition */,
                 mFocusTransitionObserver.hasGlobalFocus(taskInfo), mExclusionRegion,
-                /* inSyncWithTransition= */ true);
+                /* inSyncWithTransition= */ true, taskSurface);
     }
 
     private class CaptionTouchEventListener implements
@@ -424,7 +433,7 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
                     mSyncQueue.queue(wct);
                 }
             }
-            final CaptionWindowDecoration decoration = mWindowDecorByTaskId.get(mTaskId);
+            final WindowDecorationWrapper decoration = mWindowDecorByTaskId.get(mTaskId);
 
             final int actionMasked = e.getActionMasked();
             final boolean isDown = actionMasked == MotionEvent.ACTION_DOWN;
@@ -436,7 +445,7 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
                 final boolean downInExclusionRegion = mExclusionRegion.contains(
                         (int) e.getRawX(), (int) e.getRawY());
                 final boolean isTransparentCaption =
-                        TaskInfoKt.isTransparentCaptionBarAppearance(decoration.mTaskInfo);
+                        TaskInfoKt.isTransparentCaptionBarAppearance(decoration.getTaskInfo());
                 // MotionEvent's coordinates are relative to view, we want location in window
                 // to offset position relative to caption as a whole.
                 int[] viewLocation = new int[2];
@@ -484,7 +493,8 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
                 case MotionEvent.ACTION_DOWN: {
                     mDragPointerId = e.getPointerId(0);
                     mDragPositioningCallback.onDragPositioningStart(
-                            0 /* ctrlType */, e.getDisplayId(), e.getRawX(0), e.getRawY(0));
+                            0 /* ctrlType */, e.getDisplayId(), e.getRawX(0), e.getRawY(0),
+                            getInputMethodFromMotionEvent(e));
                     mIsDragging = false;
                     return false;
                 }
@@ -492,7 +502,7 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
                     if (e.findPointerIndex(mDragPointerId) == -1) {
                         mDragPointerId = e.getPointerId(0);
                     }
-                    final CaptionWindowDecoration decoration = mWindowDecorByTaskId.get(mTaskId);
+                    final WindowDecorationWrapper decoration = mWindowDecorByTaskId.get(mTaskId);
                     // If a decor's resize drag zone is active, don't also try to reposition it.
                     if (decoration.isHandlingDragResize()) break;
                     final int dragPointerIdx = e.findPointerIndex(mDragPointerId);
@@ -512,7 +522,7 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel, FocusT
                             e.getDisplayId(),
                             e.getRawX(dragPointerIdx), e.getRawY(dragPointerIdx));
                     DragPositioningCallbackUtility.snapTaskBoundsIfNecessary(newTaskBounds,
-                            mWindowDecorByTaskId.get(mTaskId).calculateValidDragArea());
+                            mWindowDecorByTaskId.get(mTaskId).getValidDragArea());
                     if (newTaskBounds != taskInfo.configuration.windowConfiguration.getBounds()) {
                         final WindowContainerTransaction wct = new WindowContainerTransaction();
                         wct.setBounds(taskInfo.token, newTaskBounds);

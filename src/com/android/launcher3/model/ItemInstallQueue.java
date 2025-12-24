@@ -56,6 +56,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.model.tasks.AddWorkspaceItemsTask;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.DaggerSingletonObject;
@@ -63,8 +64,8 @@ import com.android.launcher3.util.PersistedItemArray;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -172,7 +173,7 @@ public class ItemInstallQueue {
      * Removes previously added items from the queue.
      */
     @WorkerThread
-    public void removeFromInstallQueue(HashSet<String> packageNames, UserHandle user) {
+    public void removeFromInstallQueue(Set<String> packageNames, UserHandle user) {
         if (packageNames.isEmpty()) {
             return;
         }

@@ -15,28 +15,42 @@
  */
 package com.android.wm.shell.bubbles.animation;
 
+import static com.android.wm.shell.Flags.FLAG_FIX_BUBBLES_CANCEL_ANIMATION;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.animation.AnimatorSet;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.testing.AndroidTestingRunner;
 import android.testing.TestableLooper;
+import android.view.LayoutInflater;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import androidx.test.filters.SmallTest;
 
+import com.android.wm.shell.R;
 import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.bubbles.BubbleExpandedView;
+import com.android.wm.shell.bubbles.BubbleExpandedViewManager;
+import com.android.wm.shell.bubbles.BubblePositioner;
+import com.android.wm.shell.bubbles.BubbleStackView;
+import com.android.wm.shell.bubbles.BubbleTaskView;
 import com.android.wm.shell.bubbles.TestableBubblePositioner;
+import com.android.wm.shell.taskview.TaskView;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -47,10 +61,15 @@ import org.mockito.MockitoAnnotations;
 @TestableLooper.RunWithLooper(setAsMainLooper = true)
 public class ExpandedViewAnimationControllerTest extends ShellTestCase {
 
-    private ExpandedViewAnimationController mController;
+    @Rule
+    public final SetFlagsRule setFlagsRule = new SetFlagsRule();
+
+    private ExpandedViewAnimationControllerImpl mController;
 
     @Mock
     private BubbleExpandedView mMockExpandedView;
+
+    private BubbleExpandedView mExpandedView;
 
     @Before
     public void setUp() {
@@ -59,6 +78,14 @@ public class ExpandedViewAnimationControllerTest extends ShellTestCase {
         TestableBubblePositioner positioner = new TestableBubblePositioner(getContext(),
                 getContext().getSystemService(WindowManager.class));
         mController = new ExpandedViewAnimationControllerImpl(getContext(), positioner);
+
+        mExpandedView = (BubbleExpandedView) LayoutInflater.from(getContext()).inflate(
+                R.layout.bubble_expanded_view, null, false /* attachToRoot */);
+
+        BubbleTaskView bubbleTaskView = mock(BubbleTaskView.class);
+        when(bubbleTaskView.getTaskView()).thenReturn(mock(TaskView.class));
+        mExpandedView.initialize(mock(BubbleExpandedViewManager.class), mock(BubbleStackView.class),
+                mock(BubblePositioner.class), false, bubbleTaskView);
 
         mController.setExpandedView(mMockExpandedView);
         when(mMockExpandedView.getContentHeight()).thenReturn(1000);
@@ -144,6 +171,64 @@ public class ExpandedViewAnimationControllerTest extends ShellTestCase {
     public void testShouldCollapse_collapseIfPastThreshold() {
         mController.updateDrag(500);
         assertThat(mController.shouldCollapse()).isTrue();
+    }
+
+    @EnableFlags(FLAG_FIX_BUBBLES_CANCEL_ANIMATION)
+    @Test
+    public void testCollapseAnimation_canceledNotNotified() {
+        Runnable stackCollapseRunnable = mock(Runnable.class);
+        Runnable afterRunnable = mock(Runnable.class);
+        mController.setExpandedView(mExpandedView);
+
+        AnimatorSet animation = mController.createCollapseAnimation(mExpandedView,
+                stackCollapseRunnable,
+                afterRunnable);
+        animation.setDuration(200);
+        // Set playtime before the stackCollapseRunnable would be run
+        animation.setCurrentPlayTime(10);
+        animation.cancel();
+
+        // Even though we canceled before the stackCollapseRunnable was run, it should get
+        // run on cancel
+        verify(stackCollapseRunnable, times(1)).run();
+        verify(afterRunnable, times(1)).run();
+    }
+
+    @Test
+    public void testCollapseAnimation_canceledHasNotified() {
+        Runnable stackCollapseRunnable = mock(Runnable.class);
+        Runnable afterRunnable = mock(Runnable.class);
+
+        mController.setExpandedView(mExpandedView);
+        AnimatorSet animation = mController.createCollapseAnimation(mExpandedView,
+                stackCollapseRunnable,
+                afterRunnable);
+        animation.setDuration(200);
+        final float duration = animation.getDuration();
+        // Set playtime AFTER the stackCollapseRunnable would be run
+        animation.setCurrentPlayTime(195);
+        animation.cancel();
+        // Both runnables are run only once
+        verify(stackCollapseRunnable, times(1)).run();
+        verify(afterRunnable, times(1)).run();
+    }
+
+    @Test
+    public void testCollapseAnimation() {
+        Runnable stackCollapseRunnable = mock(Runnable.class);
+        Runnable afterRunnable = mock(Runnable.class);
+
+        mController.setExpandedView(mExpandedView);
+        AnimatorSet animation = mController.createCollapseAnimation(mExpandedView,
+                stackCollapseRunnable,
+                afterRunnable);
+        animation.setDuration(200);
+        animation.start();
+        animation.setCurrentPlayTime(200);
+        animation.end();
+
+        verify(stackCollapseRunnable, times(1)).run();
+        verify(afterRunnable, times(1)).run();
     }
 
     @Test

@@ -16,15 +16,10 @@
 
 package com.android.launcher3.model;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 
 import static junit.framework.Assert.assertEquals;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import android.app.prediction.AppTarget;
 import android.content.ComponentName;
@@ -35,66 +30,39 @@ import android.os.UserHandle;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.android.launcher3.dagger.LauncherAppComponent;
-import com.android.launcher3.dagger.LauncherAppSingleton;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.util.AllModulesForTest;
-import com.android.launcher3.util.SandboxContext;
+import com.android.launcher3.util.SandboxApplication;
 import com.android.launcher3.util.UserIconInfo;
+import com.android.launcher3.util.rule.MockUsersRule;
+import com.android.launcher3.util.rule.MockUsersRule.MockUser;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-
-import dagger.BindsInstance;
-import dagger.Component;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class AppEventProducerTest {
 
     private static final UserHandle MAIN_HANDLE = Process.myUserHandle();
-    private static final UserHandle PRIVATE_HANDLE = new UserHandle(11);
 
-    private static final UserIconInfo MAIN_ICON_INFO =
-            new UserIconInfo(MAIN_HANDLE, UserIconInfo.TYPE_MAIN);
-    private static final UserIconInfo PRIVATE_ICON_INFO =
-            new UserIconInfo(PRIVATE_HANDLE, UserIconInfo.TYPE_PRIVATE);
+    @Rule public SandboxApplication mContext = new SandboxApplication();
+    @Rule public MockUsersRule mMockUsersRule = new MockUsersRule(mContext);
 
-    private SandboxContext mContext;
     private AppEventProducer mAppEventProducer;
-    @Mock
-    private UserCache mUserCache;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mContext = new SandboxContext(getApplicationContext());
-        mContext.initDaggerComponent(
-                DaggerAppEventProducerTest_TestComponent.builder().bindUserCache(mUserCache)
-        );
         mAppEventProducer = new AppEventProducer(mContext, null);
     }
 
-    @After
-    public void tearDown() {
-        mContext.onDestroy();
-    }
-
+    @MockUser(userType = UserIconInfo.TYPE_MAIN)
+    @MockUser(userType = UserIconInfo.TYPE_PRIVATE)
     @Test
     public void buildAppTarget_containsCorrectUser() {
-        when(mUserCache.getUserProfiles())
-                .thenReturn(Arrays.asList(MAIN_HANDLE, PRIVATE_HANDLE));
-        when(mUserCache.getUserInfo(any(UserHandle.class)))
-                .thenReturn(MAIN_ICON_INFO, PRIVATE_ICON_INFO);
         ComponentName gmailComponentName = new ComponentName(mContext,
                 "com.android.launcher3.tests.Activity" + "Gmail");
         AppInfo gmailAppInfo = new
@@ -102,29 +70,30 @@ public class AppEventProducerTest {
         gmailAppInfo.container = CONTAINER_ALL_APPS;
         gmailAppInfo.itemType = ITEM_TYPE_APPLICATION;
 
+        UserHandle privateUserHandler = mMockUsersRule.findUser(UserIconInfo::isPrivate);
+
         AppTarget gmailTarget = mAppEventProducer
-                .toAppTarget(buildItemInfoProtoForAppInfo(gmailAppInfo));
+                .toAppTarget(buildItemInfoProtoForAppInfo(gmailAppInfo, privateUserHandler));
 
         assert gmailTarget != null;
         assertEquals(gmailTarget.getUser(), MAIN_HANDLE);
 
-        when(mUserCache.getUserInfo(any(UserHandle.class)))
-                .thenReturn(MAIN_ICON_INFO, PRIVATE_ICON_INFO);
         AppInfo gmailAppInfoPrivate = new
-                AppInfo(gmailComponentName, "Gmail", PRIVATE_HANDLE, new Intent());
+                AppInfo(gmailComponentName, "Gmail", privateUserHandler, new Intent());
         gmailAppInfoPrivate.container = CONTAINER_ALL_APPS;
         gmailAppInfoPrivate.itemType = ITEM_TYPE_APPLICATION;
 
         AppTarget gmailPrivateTarget = mAppEventProducer
-                .toAppTarget(buildItemInfoProtoForAppInfo(gmailAppInfoPrivate));
+                .toAppTarget(buildItemInfoProtoForAppInfo(gmailAppInfoPrivate, privateUserHandler));
 
         assert gmailPrivateTarget != null;
-        assertEquals(gmailPrivateTarget.getUser(), PRIVATE_HANDLE);
+        assertEquals(gmailPrivateTarget.getUser(), privateUserHandler);
     }
 
-    private LauncherAtom.ItemInfo buildItemInfoProtoForAppInfo(AppInfo appInfo) {
+    private LauncherAtom.ItemInfo buildItemInfoProtoForAppInfo(
+            AppInfo appInfo, UserHandle privateUserHandler) {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
-        if (appInfo.user.equals(PRIVATE_HANDLE)) {
+        if (appInfo.user.equals(privateUserHandler)) {
             itemBuilder.setUserType(SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_PRIVATE);
         } else {
             itemBuilder.setUserType(SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_MAIN);
@@ -136,16 +105,5 @@ public class AppEventProducerTest {
                 .setAllAppsContainer(LauncherAtom.AllAppsContainer.getDefaultInstance())
                 .build());
         return itemBuilder.build();
-    }
-
-    @LauncherAppSingleton
-    @Component(modules = { AllModulesForTest.class })
-    interface TestComponent extends LauncherAppComponent {
-        @Component.Builder
-        interface Builder extends LauncherAppComponent.Builder {
-            @BindsInstance
-            AppEventProducerTest.TestComponent.Builder bindUserCache(UserCache userCache);
-            @Override LauncherAppComponent build();
-        }
     }
 }

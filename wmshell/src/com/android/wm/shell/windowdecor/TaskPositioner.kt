@@ -16,7 +16,5 @@
 
 package com.android.wm.shell.windowdecor
 
-/**
- * Interface for TaskPositioner.
- */
+/** Interface for TaskPositioner. */
 interface TaskPositioner : DragPositioningCallback, TaskDragResizer

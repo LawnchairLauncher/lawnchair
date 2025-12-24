@@ -21,9 +21,11 @@
 
     <!-- Accessibility actions for the docked stack divider -->
     <item type="id" name="action_move_tl_full" />
+    <item type="id" name="action_move_tl_90" />
     <item type="id" name="action_move_tl_70" />
     <item type="id" name="action_move_tl_50" />
     <item type="id" name="action_move_tl_30" />
+    <item type="id" name="action_move_tl_10" />
     <item type="id" name="action_move_rb_full" />
     <item type="id" name="action_swap_apps" />
 
@@ -46,7 +48,9 @@
     <item type="id" name="action_move_bubble_bar_left"/>
     <item type="id" name="action_move_bubble_bar_right"/>
 
+    <!-- Views for bubbles. -->
     <item type="id" name="dismiss_view"/>
+    <item type="id" name="bubble_bar_handle_view"/>
 
     <!-- Accessibility actions for desktop windowing. -->
     <item type="id" name="action_snap_left"/>

@@ -14,8 +14,8 @@
 package com.android.systemui.plugins.annotations
 
 /**
- * This annotation marks denotes that an interface should use a proxy layer to protect the plugin
- * host from crashing due to the [Exception] types originating within the plugin's implementation.
+ * This annotation denotes that an interface should use a proxy layer to protect the plugin host
+ * from crashing due to the [Exception] types originating within the plugin's implementation.
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
@@ -24,6 +24,16 @@ annotation class ProtectedInterface(vararg val exTypes: String) {
         val Default = ProtectedInterface("java.lang.Exception", "java.lang.LinkageError")
     }
 }
+
+/**
+ * This annotation denotes an interface that serves as a base-type for other interfaces marked by
+ * [Protectedinterface]. Annotating an interface with this will not generate a proxy implementation,
+ * instead it will generate a static builder method that is used to select the appropriate proxy
+ * implementation for a target object.
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.BINARY)
+annotation class ProtectedBaseInterface
 
 /**
  * This annotation specifies any additional imports that the processor will require when generating
@@ -69,3 +79,18 @@ annotation class ProtectedReturn(val statement: String)
 )
 @Retention(AnnotationRetention.BINARY)
 annotation class SimpleProperty
+
+/**
+ * Marks a method or property as being acceptable to throw exceptions from. This doesn't remove the
+ * normal try-catch, and it will still execute the error callback and attempt to disable the plugin.
+ * It merely throws an exception if a valid return value isn't available, and disables the
+ * associated build error.
+ */
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER,
+)
+@Retention(AnnotationRetention.BINARY)
+annotation class ThrowsOnFailure

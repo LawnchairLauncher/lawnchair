@@ -42,6 +42,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.R
@@ -121,7 +122,7 @@ fun ProvideBottomSheetHandler(
             }
 
             if (showBottomSheet) {
-                val supportsBlur = BlurUtils.supportsBlursOnWindows()
+                val supportsBlur = BlurUtils.supportsBlursOnWindows(LocalContext.current)
 
                 if (supportsBlur) {
                     Box(

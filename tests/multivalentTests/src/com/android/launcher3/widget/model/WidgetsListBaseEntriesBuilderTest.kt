@@ -17,12 +17,10 @@
 package com.android.launcher3.widget.model
 
 import android.content.ComponentName
-import android.content.Context
 import android.os.UserHandle
 import android.platform.test.rule.AllowedDevices
 import android.platform.test.rule.DeviceProduct
 import android.platform.test.rule.LimitDevicesRule
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
@@ -30,7 +28,7 @@ import com.android.launcher3.icons.IconCache
 import com.android.launcher3.icons.cache.CachedObject
 import com.android.launcher3.model.WidgetItem
 import com.android.launcher3.model.data.PackageItemInfo
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.TestActivityContext
 import com.android.launcher3.util.WidgetUtils
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.google.common.truth.Truth.assertThat
@@ -50,11 +48,11 @@ import org.mockito.kotlin.doAnswer
 class WidgetsListBaseEntriesBuilderTest {
     @Rule @JvmField val limitDevicesRule = LimitDevicesRule()
     @Rule @JvmField val mockitoRule: MockitoRule = MockitoJUnit.rule()
+    @get:Rule val context = TestActivityContext()
 
     @Mock private lateinit var iconCache: IconCache
 
     private lateinit var userHandle: UserHandle
-    private lateinit var context: Context
     private lateinit var testInvariantProfile: InvariantDeviceProfile
     private lateinit var allWidgets: Map<PackageItemInfo, List<WidgetItem>>
     private lateinit var underTest: WidgetsListBaseEntriesBuilder
@@ -62,7 +60,6 @@ class WidgetsListBaseEntriesBuilderTest {
     @Before
     fun setUp() {
         userHandle = UserHandle.CURRENT
-        context = ActivityContextWrapper(ApplicationProvider.getApplicationContext())
         testInvariantProfile = LauncherAppState.getIDP(context)
 
         doAnswer { invocation: InvocationOnMock ->

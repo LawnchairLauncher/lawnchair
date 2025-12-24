@@ -31,43 +31,27 @@ class CompatUILifecyclePredicates(
     // Predicate evaluating to true if the component needs to be created
     val creationPredicate: (CompatUIInfo, CompatUISharedState) -> Boolean,
     // Predicate evaluating to true if the component needs to be destroyed
-    val removalPredicate: (
-        CompatUIInfo,
-        CompatUISharedState,
-        CompatUIComponentState?
-    ) -> Boolean,
+    val removalPredicate: (CompatUIInfo, CompatUISharedState, CompatUIComponentState?) -> Boolean,
     // Builder for the initial state of the component
-    val stateBuilder: (
-        CompatUIInfo,
-        CompatUISharedState
-    ) -> CompatUIComponentState? = { _, _ -> null }
+    val stateBuilder: (CompatUIInfo, CompatUISharedState) -> CompatUIComponentState? = { _, _ ->
+        null
+    },
 )
 
-/**
- * Layout configuration
- */
+/** Layout configuration */
 data class CompatUILayout(
     val zOrder: Int = 0,
     val layoutParamFlags: Int = FLAG_NOT_FOCUSABLE or FLAG_NOT_TOUCH_MODAL,
     val viewBuilder: (Context, CompatUIInfo, CompatUIComponentState?) -> View,
-    val viewBinder: (
-        View,
-        CompatUIInfo,
-        CompatUISharedState,
-        CompatUIComponentState?
-    ) -> Unit = { _, _, _, _ -> },
-    val positionFactory: (
-        View,
-        CompatUIInfo,
-        CompatUISharedState,
-        CompatUIComponentState?
-    ) -> Point,
-    val viewReleaser: () -> Unit = {}
+    val viewBinder: (View, CompatUIInfo, CompatUISharedState, CompatUIComponentState?) -> Unit =
+        { _, _, _, _ ->
+        },
+    val positionFactory:
+        (View, CompatUIInfo, CompatUISharedState, CompatUIComponentState?) -> Point,
+    val viewReleaser: () -> Unit = {},
 )
 
-/**
- * Describes each compat ui component to the framework.
- */
+/** Describes each compat ui component to the framework. */
 class CompatUISpec(
     val log: (String) -> Unit = { str -> ProtoLog.v(ShellProtoLogGroup.WM_SHELL_COMPAT_UI, str) },
     // Unique name for the component. It's used for debug and for generating the
@@ -76,5 +60,5 @@ class CompatUISpec(
     // The lifecycle definition
     val lifecycle: CompatUILifecyclePredicates,
     // The layout definition
-    val layout: CompatUILayout
+    val layout: CompatUILayout,
 )

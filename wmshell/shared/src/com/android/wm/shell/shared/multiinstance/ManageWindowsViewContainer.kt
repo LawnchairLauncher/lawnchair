@@ -31,11 +31,13 @@ import android.view.View
 import android.view.View.ALPHA
 import android.view.View.SCALE_X
 import android.view.View.SCALE_Y
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowManager
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.window.TaskSnapshot
-import com.android.wm.shell.R
-//import com.android.wm.shell.shared.R
+import com.android.wm.shell.shared.R
 
 /**
  * View for the All Windows menu option, used by both Desktop Windowing and Taskbar.
@@ -108,14 +110,21 @@ abstract class ManageWindowsViewContainer(
     ) {
         private val animators = mutableListOf<Animator>()
         private val iconViews = mutableListOf<SurfaceView>()
-        val rootView: LinearLayout = LinearLayout(context)
-        var menuHeight = 0
+        val scrollableMenuView: ScrollView = ScrollView(context).apply {
+            isVerticalScrollBarEnabled = false
+        }
+        private val menuBaseView: LinearLayout = LinearLayout(context)
+        var scrollableMenuHeight = 0
         var menuWidth = 0
         var onIconClickListener: ((Int) -> Unit)? = null
         var onOutsideClickListener: (() -> Unit)? = null
 
         init {
-            rootView.orientation = LinearLayout.VERTICAL
+            val menuLayoutParams = WindowManager.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+            menuLayoutParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            scrollableMenuView.addView(menuBaseView, menuLayoutParams)
+            menuBaseView.orientation = LinearLayout.VERTICAL
             val menuBackground = ShapeDrawable()
             val menuRadius = getDimensionPixelSize(MENU_RADIUS_DP)
             menuBackground.shape = RoundRectShape(
@@ -124,13 +133,15 @@ abstract class ManageWindowsViewContainer(
                 null
             )
             menuBackground.paint.color = menuBackgroundColor
-            rootView.background = menuBackground
-            rootView.elevation = getDimensionPixelSize(MENU_ELEVATION_DP)
-            rootView.setOnTouchListener { _, event ->
+            scrollableMenuView.alpha = 0f
+            scrollableMenuView.background = menuBackground
+            scrollableMenuView.elevation = getDimensionPixelSize(MENU_ELEVATION_DP)
+            scrollableMenuView.setOnTouchListener { _, event ->
                 if (event.actionMasked == ACTION_OUTSIDE) {
                     onOutsideClickListener?.invoke()
                 }
-                return@setOnTouchListener true
+                // Do not consume a touch event that may be used for menu scrolling.
+                return@setOnTouchListener false
             }
         }
 
@@ -143,8 +154,7 @@ abstract class ManageWindowsViewContainer(
             snapshotList: List<Pair<Int, Bitmap?>>
         ) {
             menuWidth = 0
-            menuHeight = 0
-            rootView.removeAllViews()
+            menuBaseView.removeAllViews()
             val instanceIconHeight = getDimensionPixelSize(ICON_HEIGHT_DP)
             val instanceIconWidth = getDimensionPixelSize(ICON_WIDTH_DP)
             val iconRadius = getDimensionPixelSize(ICON_RADIUS_DP)
@@ -158,8 +168,12 @@ abstract class ManageWindowsViewContainer(
                 if (iconCount % MENU_MAX_ICONS_PER_ROW == 0) {
                     rowLayout = LinearLayout(context)
                     rowLayout.orientation = LinearLayout.HORIZONTAL
-                    rootView.addView(rowLayout)
-                    menuHeight += (instanceIconHeight + iconMargin).toInt()
+                    menuBaseView.addView(rowLayout)
+                    val addedHeight = (instanceIconHeight + iconMargin).toInt()
+                    // Increase ScrollView height up to the limit.
+                    if (iconCount < MENU_MAX_ICONS_PER_ROW * MENU_MAX_ROWS_BEFORE_SCROLL) {
+                        scrollableMenuHeight += addedHeight
+                    }
                 }
 
                 val croppedBitmap = snapshotBitmap?.let { cropBitmap(it) }
@@ -190,6 +204,7 @@ abstract class ManageWindowsViewContainer(
                     menuWidth += (instanceIconWidth + iconMargin).toInt()
                 }
                 rowLayout?.addView(appSnapshotButton)
+                appSnapshotButton.alpha = 0f
                 iconViews += appSnapshotButton
                 appSnapshotButton.requestLayout()
                 rowLayout?.post {
@@ -202,7 +217,7 @@ abstract class ManageWindowsViewContainer(
             }
             // Add margin again for the right/bottom of the menu.
             menuWidth += iconMargin.toInt()
-            menuHeight += iconMargin.toInt()
+            scrollableMenuHeight += iconMargin.toInt()
         }
 
         private fun cropBitmap(
@@ -236,12 +251,12 @@ abstract class ManageWindowsViewContainer(
 
         /** Play the animation for opening the menu. */
         fun animateOpen() {
-            animateView(rootView, MENU_BOUNDS_SHRUNK_SCALE, MENU_BOUNDS_FULL_SCALE,
+            animateView(scrollableMenuView, MENU_BOUNDS_SHRUNK_SCALE, MENU_BOUNDS_FULL_SCALE,
                 MENU_START_ALPHA, MENU_FULL_ALPHA
             )
             for (view in iconViews) {
                 animateView(view, MENU_BOUNDS_SHRUNK_SCALE, MENU_BOUNDS_FULL_SCALE,
-                    MENU_START_ALPHA, MENU_FULL_ALPHA
+                    MENU_START_ALPHA, MENU_FULL_ALPHA, delay = MENU_ALPHA_ANIM_DELAY
                 )
             }
             createAnimatorSet().start()
@@ -249,12 +264,12 @@ abstract class ManageWindowsViewContainer(
 
         /** Play the animation for closing the menu. */
         fun animateClose(callback: () -> Unit) {
-            animateView(rootView, MENU_BOUNDS_FULL_SCALE, MENU_BOUNDS_SHRUNK_SCALE,
+            animateView(scrollableMenuView, MENU_BOUNDS_FULL_SCALE, MENU_BOUNDS_SHRUNK_SCALE,
                 MENU_FULL_ALPHA, MENU_START_ALPHA
             )
             for (view in iconViews) {
                 animateView(view, MENU_BOUNDS_FULL_SCALE, MENU_BOUNDS_SHRUNK_SCALE,
-                    MENU_FULL_ALPHA, MENU_START_ALPHA
+                    MENU_FULL_ALPHA, MENU_START_ALPHA, delay = MENU_ALPHA_ANIM_DELAY
                 )
             }
             createAnimatorSet().apply {
@@ -274,7 +289,9 @@ abstract class ManageWindowsViewContainer(
             startBoundsScale: Float,
             endBoundsScale: Float,
             startAlpha: Float,
-            endAlpha: Float) {
+            endAlpha: Float,
+            delay: Long = 0
+        ) {
             animators += ObjectAnimator.ofFloat(
                 view,
                 SCALE_X,
@@ -298,7 +315,7 @@ abstract class ManageWindowsViewContainer(
                 endAlpha
             ).apply {
                 duration = MENU_ALPHA_ANIM_DURATION
-                startDelay = MENU_ALPHA_ANIM_DELAY
+                startDelay = delay
             }
         }
 
@@ -318,6 +335,7 @@ abstract class ManageWindowsViewContainer(
             private const val ICON_MARGIN_DP = 16f
             private const val MENU_ELEVATION_DP = 1f
             private const val MENU_MAX_ICONS_PER_ROW = 3
+            private const val MENU_MAX_ROWS_BEFORE_SCROLL = 2
             private const val MENU_BOUNDS_ANIM_DURATION = 200L
             private const val MENU_BOUNDS_SHRUNK_SCALE = 0.8f
             private const val MENU_BOUNDS_FULL_SCALE = 1f

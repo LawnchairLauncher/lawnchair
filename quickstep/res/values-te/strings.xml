@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"యాప్ సూచ‌న‌లు ఖాళీ స్పేస్‌కు జోడించబడ్డాయి"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"యాప్ సలహాలు ఎనేబుల్ చేయబడ్డాయి"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"యాప్ సూచ‌న‌లు డిజేబుల్‌ చేయబడ్డాయి"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"సూచించబడిన యాప్: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"సంజ్ఞ నావిగేషన్ ట్యుటోరియల్"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"మీ పరికరాన్ని రొటేట్ చేయండి"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"సంజ్ఞ నావిగేషన్ ట్యుటోరియల్‌ను పూర్తి చేయడానికి దయచేసి మీ పరికరాన్ని రొటేట్ చేయండి"</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"సిస్టమ్ నావిగేషన్ సెట్టింగ్‌లు"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"మీ <xliff:g id="DEVICE">%1$s</xliff:g> సిద్ధంగా \nఉంది!"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"మీ డివైజ్ సిద్ధంగా \nఉంది!"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"మీరు ఉపయోగించడానికి సిద్ధమైపోయారు!"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"మీ కొత్త <xliff:g id="DEVICE">%1$s</xliff:g>‌ను ఉపయోగిస్తూ ఎంజాయ్ చేయండి!"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"మీ <xliff:g id="DEVICE">%1$s</xliff:g>తో ప్రారంభించడానికి పైకి స్వైప్ చేయండి"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"మీ <xliff:g id="DEVICE">%1$s</xliff:g>ను ప్రారంభించడానికి ట్యాప్ చేయండి"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"ఎలా నావిగేట్ చేయాలో ఎంచుకోండి"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"పైకి స్వైప్ చేయండి"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"హోమ్ బటన్‌ను ట్యాప్ చేయండి"</string>
@@ -137,16 +139,15 @@
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME స్విచ్చర్"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ఇటీవలివి"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"నోటిఫికేషన్‌లు"</string>
-    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"క్విక్ సెట్టింగ్‌లు"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"క్విక్ సెట్టింగ్స్"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"టాస్క్‌బార్"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"టాస్క్‌బార్ చూపబడింది"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"టాస్క్‌బార్, బబుల్స్ ఎడమవైపున చూపబడ్డాయి"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"టాస్క్‌బార్, బబుల్స్ కుడివైపున చూపబడ్డాయి"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"నావిగేషన్ బార్"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"టాస్క్‌బార్‌ను నిరంతరం చూపండి"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"నావిగేషన్ మోడ్‌ను మార్చండి"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"టాస్క్‌బార్ డివైడర్"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"ఇతర ఇటీవలి యాప్‌లు"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"టాస్క్‌బార్‌కు యాప్ జోడించబడింది"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"టాస్క్‌బార్ నుండి యాప్ తీసివేయబడింది"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ఎగువ/ఎడమ వైపునకు తరలించండి"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"దిగువ/కుడి వైపునకు తరలించండి"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"యాప్‌ను బబుల్‌లాగా తెరవండి"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"యాప్ చిహ్నం"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"యాప్ టైటిల్"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"\'మూసివేయండి\' బటన్"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"టాస్క్‌బార్‌కు పిన్"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"టాస్క్‌బార్ అన్‌పిన్"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"ఆటోమేటిక్ రిమైండర్"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"మూసివేయండి"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"ఆటోమేటిక్ రిమైండర్ ఇమేజ్"</string>

@@ -47,7 +47,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Trace;
 import android.os.UserHandle;
-import android.os.UserManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +83,7 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -149,11 +149,11 @@ public class PrivateProfileManager extends UserProfileManager {
     private final String mUnLockedStateContentDesc;
     private final String mPSAppTitleOverride;
 
-    public PrivateProfileManager(UserManager userManager,
+    public PrivateProfileManager(
             ActivityAllAppsContainerView<?> allApps,
             StatsLogManager statsLogManager,
             UserCache userCache) {
-        super(userManager, statsLogManager, userCache);
+        super(statsLogManager, userCache);
         mAllApps = allApps;
         mPrivateProfileMatcher = (user) -> userCache.getUserInfo(user).isPrivate();
 
@@ -219,7 +219,7 @@ public class PrivateProfileManager extends UserProfileManager {
     public boolean isPrivateSpaceHiddenWhenLocked() {
         try {
             return SettingsCache.INSTANCE
-                    .get(mAllApps.getContext()).getValue(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI, 0);
+                    .get(mAllApps.getContext()).getValue(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI);
         } catch (Throwable t) {
             Log.e("PrivateSpaceManager", "Cannot access setting: hide_privatespace_entry_point", t);
             return false;
@@ -355,7 +355,7 @@ public class PrivateProfileManager extends UserProfileManager {
      * When the list of system apps is empty, all apps are treated as system.
      */
     public Predicate<AppInfo> splitIntoUserInstalledAndSystemApps(Context context) {
-        List<String> preInstallApps = UserCache.getInstance(context)
+        Set<String> preInstallApps = UserCache.getInstance(context)
                 .getPreInstallApps(getProfileUser());
         return appInfo -> !preInstallApps.isEmpty()
                 && (appInfo.componentName == null
@@ -386,6 +386,8 @@ public class PrivateProfileManager extends UserProfileManager {
         assert lockPill != null;
         mLockText = lockPill.findViewById(R.id.lock_text);
         assert mLockText != null;
+        ViewGroup.MarginLayoutParams lockTextLayoutParams =
+                (ViewGroup.MarginLayoutParams) mLockText.getLayoutParams();
         mPrivateSpaceSettingsButton = mPSHeader.findViewById(R.id.ps_settings_button);
         assert mPrivateSpaceSettingsButton != null;
         //Add image for private space transitioning view
@@ -403,9 +405,15 @@ public class PrivateProfileManager extends UserProfileManager {
                     mLockText.setVisibility(VISIBLE);
                     mLockText.setAlpha(1);
                     mLockText.setHorizontallyScrolling(false);
+                    mLockText.measure(0,0);
+                    lockTextLayoutParams.width = mLockText.getMeasuredWidth();
+                    lockTextLayoutParams.setMarginStart(mLockTextMarginStart);
+                    lockTextLayoutParams.setMarginEnd(mLockTextMarginEnd);
+
                     mPrivateSpaceSettingsButton.setVisibility(
                             isPrivateSpaceSettingsAvailable() ? VISIBLE : GONE);
                     mPrivateSpaceSettingsButton.setClickable(isPrivateSpaceSettingsAvailable());
+                    mPrivateSpaceSettingsButton.setAlpha(1f);
                 }
                 lockPill.setVisibility(VISIBLE);
                 lockPill.setOnClickListener(view -> lockingAction(/* lock */ true));
@@ -423,12 +431,16 @@ public class PrivateProfileManager extends UserProfileManager {
                 mLockText.setVisibility(GONE);
                 mLockText.setAlpha(0);
                 mLockText.setHorizontallyScrolling(false);
+                lockTextLayoutParams.width = 0;
+                lockTextLayoutParams.setMarginStart(0);
+                lockTextLayoutParams.setMarginEnd(0);
                 lockPill.setVisibility(VISIBLE);
                 lockPill.setOnClickListener(view -> lockingAction(/* lock */ false));
                 lockPill.setContentDescription(mLockedStateContentDesc);
 
                 mPrivateSpaceSettingsButton.setVisibility(GONE);
                 mPrivateSpaceSettingsButton.setClickable(false);
+                mPrivateSpaceSettingsButton.setAlpha(0f);
                 transitionView.setVisibility(GONE);
             }
             case STATE_TRANSITION -> {
@@ -436,6 +448,7 @@ public class PrivateProfileManager extends UserProfileManager {
                 lockPill.setVisibility(GONE);
             }
         }
+        mLockText.setLayoutParams(lockTextLayoutParams);
         mPSHeader.invalidate();
         Trace.endSection();
     }

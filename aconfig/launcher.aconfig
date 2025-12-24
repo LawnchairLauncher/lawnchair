@@ -23,13 +23,6 @@ flag {
 }
 
 flag {
-    name: "enable_cursor_hover_states"
-    namespace: "launcher"
-    description: "Enables cursor hover states for certain elements."
-    bug: "243191650"
-}
-
-flag {
     name: "enable_responsive_workspace"
     namespace: "launcher"
     description: "Enables new workspace grid calculations method."
@@ -72,6 +65,16 @@ flag {
 }
 
 flag {
+  name: "enable_taskbar_icon_container"
+  namespace: "launcher"
+  description: "Enables code path that uses TaskbarIconsContainer"
+  bug: "437189890"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
     name: "enable_tablet_two_pane_picker_v2"
     namespace: "launcher"
     description: "Enables full width two pane widget picker for tablets in landscape and portrait"
@@ -86,24 +89,10 @@ flag {
 }
 
 flag {
-    name: "enable_predictive_back_gesture"
-    namespace: "launcher"
-    description: "Enable predictive back gesture on Launcher (including all apps and widget picker)."
-    bug: "238475505"
-}
-
-flag {
     name: "enable_support_for_archiving"
     namespace: "launcher"
     description: "Enables support for archived apps in Launcher3, such as empty progress bar etc."
     bug: "210590852"
-}
-
-flag {
-    name: "enable_private_space_install_shortcut"
-    namespace: "launcher"
-    description: "Enables long-press shortcut to install a copy of an app to Private space"
-    bug: "316118005"
 }
 
 flag {
@@ -122,24 +111,10 @@ flag {
 }
 
 flag {
-    name: "enable_workspace_inflation"
-    namespace: "launcher"
-    description: "Enables asnc inflation of workspace icons"
-    bug: "318539160"
-}
-
-flag {
     name: "enable_unfold_state_animation"
     namespace: "launcher"
     description: "Tie unfold animation with state animation"
     bug: "297057373"
-}
-
-flag {
-    name: "enable_generated_previews"
-    namespace: "launcher"
-    description: "Enables support for RemoteViews previews in the widget picker."
-    bug: "306546610"
 }
 
 flag {
@@ -157,16 +132,6 @@ flag {
 }
 
 flag {
-  name: "enable_add_app_widget_via_config_activity_v2"
-  namespace: "launcher"
-  description: "When adding app widget through config activity, directly add it to workspace to reduce flicker"
-  bug: "284236964"
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
     name: "enable_narrow_grid_restore"
     namespace: "launcher"
     description: "Using only the most recent workspace when restoring to avoid confusion."
@@ -175,20 +140,6 @@ flag {
     metadata {
       purpose: PURPOSE_BUGFIX
     }
-}
-
-flag {
-    name: "enable_scaling_reveal_home_animation"
-    namespace: "launcher"
-    description: "Enables the Home gesture animation"
-    bug: "308801666"
-}
-
-flag {
-    name: "enable_widget_tap_to_add"
-    namespace: "launcher"
-    description: "Enables an add button in the widget picker"
-    bug: "323886237"
 }
 
 flag {
@@ -224,13 +175,6 @@ flag {
 }
 
 flag {
-    name: "enable_container_return_animations"
-    namespace: "launcher"
-    description: "Enables the container return animation mirroring launches."
-    bug: "341017746"
-}
-
-flag {
     name: "floating_search_bar"
     namespace: "launcher"
     description: "Search bar persists at the bottom of the screen across Launcher states"
@@ -249,6 +193,16 @@ flag {
     namespace: "launcher"
     description: "Content behind the all apps panel in Launcher will be blurred."
     bug: "400827727"
+}
+
+flag {
+    name: "blurred_home_animation"
+    namespace: "launcher"
+    description: "Launcher will be blurred when the user swipes to home."
+    bug: "441691917"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {
@@ -314,13 +268,6 @@ flag {
 }
 
 flag {
-    name: "grid_migration_refactor"
-    namespace: "launcher"
-    description: "Refactor grid migration such that the code is simpler to understand and update"
-    bug: "358399271"
-}
-
-flag {
     name: "accessibility_scroll_on_allapps"
     namespace: "launcher"
     description: "Scroll to item position if accessibility focused"
@@ -328,13 +275,6 @@ flag {
     metadata {
       purpose: PURPOSE_BUGFIX
     }
-}
-
-flag {
-    name: "enable_dismiss_prediction_undo"
-    namespace: "launcher"
-    description: "Show an 'Undo' snackbar when users dismiss a predicted hotseat item"
-    bug: "270394476"
 }
 
 flag {
@@ -418,52 +358,10 @@ flag {
 }
 
 flag {
-  name: "predictive_back_to_home_polish"
-  namespace: "launcher"
-  description: "Enables workspace reveal animation for predictive back-to-home"
-  bug: "382453424"
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
-  name: "predictive_back_to_home_blur"
-  namespace: "launcher"
-  description: "Adds blur for predictive back-to-home"
-  bug: "342178850"
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
   name: "enable_launcher_visual_refresh"
   namespace: "launcher"
   description: "Adds refresh for font family, app longpress menu icons, and pagination dots"
   bug: "395145453"
-}
-
-flag {
-  name: "external_data_access"
-  namespace: "launcher"
-  description: "For LauncherProvider bug fixes and new static permissions as part of the cross oem backup / restore effort."
-  bug: "395145453"
-  is_fixed_read_only: true
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
-  name: "gsf_res"
-  namespace: "launcher"
-  description: "Adds refresh for font family. Needs to be fixed to be used in resources."
-  bug: "395145453"
-  is_fixed_read_only: true
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
 }
 
 flag {
@@ -498,16 +396,6 @@ flag {
   namespace: "lse_desktop_experience"
   description: "Enable Alt + Tab KQS support on connected displays"
   bug: "394007677"
-}
-
-flag {
-  name: "expressive_theme_in_taskbar_and_navigation"
-  namespace: "launcher"
-  description: "Enables the expressive theme and GSF font styles for Taskbar and Gesture Navigation"
-  bug: "394613212"
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
 }
 
 flag {
@@ -549,16 +437,6 @@ flag {
 }
 
 flag {
-  name: "enable_gesture_nav_horizontal_touch_slop"
-  namespace: "launcher"
-  description: "Enables horizontal touch slop checking in non-vertical fling navigation gestures"
-  bug: "394364217"
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
   name: "sync_app_launch_with_taskbar_stash"
   namespace: "launcher"
   description: "Syncs the two animations (app launch, taskbar stash) so they play at the same time."
@@ -596,6 +474,13 @@ flag {
 }
 
 flag {
+  name: "refactor_taskbar_ui_state"
+  namespace: "launcher"
+  description: "Refactor taskbar ui states into TaskbarUiState class."
+  bug: "404636836"
+}
+
+flag {
   name: "enable_expressive_folder_expansion"
   namespace: "launcher"
   description: "Enables expressive folder expansion motion"
@@ -609,6 +494,13 @@ flag {
   name: "model_repository"
   namespace: "launcher"
   description: "Adds various data repositories for the model"
+  bug: "390572144"
+}
+
+flag {
+  name: "simplified_launcher_model_binding"
+  namespace: "launcher"
+  description: "Simplified approach to binding launcher model asynchronously"
   bug: "390572144"
 }
 
@@ -634,11 +526,127 @@ flag {
 }
 
 flag {
-  name: "enable_long_press_remove_shortcut"
+  name: "enable_new_all_set_animation"
   namespace: "launcher"
-  description: "Enables remove app shortcut on long press menu"
-  bug: "419289205"
+  description: "Enables the new animation for the All Set page"
+  bug: "424506400"
   metadata {
     purpose: PURPOSE_BUGFIX
   }
+}
+
+flag {
+    namespace: "multitasking"
+    name: "avoid_display_cutout_bubble_bar"
+    description: "Use the DisplayCutout insets to avoid intersecting with the bubble bar."
+    bug: "329903073"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "injectable_model_items"
+    namespace: "launcher"
+    description: "Enable model items to be provided by dagger"
+    bug: "423957181"
+}
+
+flag {
+  name: "enable_taskbar_recents_themed_icons"
+  namespace: "launcher"
+  description: "Have recent icons in Taskbar respect icon theme preferences"
+  bug: "407950127"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+  name: "enable_taskbar_drag_and_drop"
+  namespace: "launcher"
+  description: "Enable dragging and dropping app icons on the taskbar."
+  bug: "442605300"
+}
+
+flag {
+    name: "first_page_pinned_widget_removal_toggle"
+    namespace: "launcher"
+    description: "Enable first page pinned widget removal toggle"
+    bug: "427478072"
+}
+
+flag {
+    name: "unpin_first_page_pinned_widget"
+    namespace: "launcher"
+    description: "Enable making the first page pinned widget movable"
+    bug: "427478072"
+}
+
+flag {
+    name: "show_files_on_home_screen"
+    namespace: "launcher"
+    description: "Enables file and folder items on the home screen"
+    bug: "375644352"
+}
+
+flag {
+    name: "enable_system_drag"
+    namespace: "launcher"
+    description: "Enables system-level drag-and-drop"
+    bug: "402183121"
+}
+
+flag {
+  name: "force_monochrome_app_icons_adapt_colors"
+  namespace: "launcher"
+  description: "Adapt colors for monochromatic icons, only valid if force_monochrome_app_icons is enabled"
+  bug: "418850749"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+  name: "enable_custom_height_for_all_apps_on_cd"
+  namespace: "launcher"
+  description: "Enables custom height for all apps on CD"
+  bug: "416220478"
+   metadata {
+       purpose: PURPOSE_BUGFIX
+     }
+ }
+
+flag {
+  name: "enable_auto_stash_connected_display_taskbar"
+  namespace: "launcher"
+  description: "Enables auto stashing of connected display taskbar when in full or split screen"
+  bug: "394486228"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+    name: "expandable_long_press_menu"
+    namespace: "launcher"
+    description: "Enables expandable long press menu"
+    bug: "444003708"
+}
+
+flag {
+  name: "enable_app_widget_picker_refactor"
+  namespace: "launcher"
+  description: "Migrates the small widget pickers to compose"
+  bug: "436344835"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+  name: "enable_cursor_driven_workflows"
+  namespace: "launcher"
+  description: "Enables mouse based workflows for interacting with launcher"
+  bug: "388897603"
 }

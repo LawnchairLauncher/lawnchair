@@ -27,7 +27,8 @@ class AppPairIconDrawingParams(val context: Context, container: Int) {
     companion object {
         // Design specs -- the below ratios are in relation to the size of a standard app icon.
         // Note: The standard app icon has two sizes. One is the full size of the drawable (returned
-        // by dp.iconSizePx), and one is the visual size of the icon on-screen (11/12 of that).
+        // by dp.workspaceIconProfile.iconSizePx), and one is the visual size of the icon
+        // on-screen (11/12 of that).
         // Hence the calculations below.
         const val STANDARD_ICON_PADDING = 1 / 24f
         const val STANDARD_ICON_SHRINK = 1 - STANDARD_ICON_PADDING * 2
@@ -70,7 +71,9 @@ class AppPairIconDrawingParams(val context: Context, container: Int) {
     init {
         val activity: ActivityContext = ActivityContext.lookupContext(context)
         val dp = activity.deviceProfile
-        iconSize = if (container == DISPLAY_FOLDER) dp.folderChildIconSizePx else dp.iconSizePx
+        iconSize =
+            if (container == DISPLAY_FOLDER) dp.folderProfile.childIconSizePx
+            else dp.workspaceIconProfile.iconSizePx
         standardIconPadding = iconSize * STANDARD_ICON_PADDING
         outerPadding = iconSize * OUTER_PADDING_SCALE
         backgroundSize = iconSize * STANDARD_ICON_SHRINK - (outerPadding * 2)

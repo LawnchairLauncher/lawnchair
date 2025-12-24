@@ -1,35 +1,40 @@
 {
   "imports": [
     {
-      // Includes all flicker configs that rely on these scenarios
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/desktopmode/flicker-service"
-    },
-    {
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/desktopmode/scenarios"
-    },
-    {
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/mediaprojection"
-    },
-    {
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/flicker-legacy"
-    },
-    {
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/flicker-service"
-    },
-    {
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/platinum"
-    },
-    {
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/appcompat"
-    },
-    {
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/bubble"
-    },
-    {
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/pip"
-    },
-    {
       "path": "frameworks/base/libs/WindowManager/Shell/tests/unittest"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/multivalentTests"
+    },
+    {
+      // Includes all CTS configs other than: Display, IME
+      // CTS Keyguard is moved to keyguard subfolder
+      // CTS BackNavigation is moved to back subfolder
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/activity"
+    },
+    {
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/am"
+    },
+    {
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/animations"
+    },
+    {
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/input"
+    },
+    {
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/insets"
+    },
+    {
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/multidisplay"
+    },
+    {
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/other"
+    },
+    {
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/taskfragment"
+    },
+    {
+      "path": "cts/tests/framework/base/windowmanager/src/android/server/wm/window"
     }
   ]
 }

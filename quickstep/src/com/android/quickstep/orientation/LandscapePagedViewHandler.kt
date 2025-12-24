@@ -37,7 +37,6 @@ import android.widget.LinearLayout
 import androidx.annotation.VisibleForTesting
 import androidx.core.util.component1
 import androidx.core.util.component2
-import androidx.core.view.marginStart
 import androidx.core.view.updateLayoutParams
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.LauncherAnimUtils

@@ -19,21 +19,19 @@ package com.android.wm.shell.compatui.letterbox.lifecycle
 import android.window.TransitionInfo.Change
 
 /**
- * [LetterboxLifecycleEventFactory] implementation which aggregates other implementation in a
- * Chain of Responsibility logic. The [candidates] are evaluated in order.
+ * [LetterboxLifecycleEventFactory] implementation which aggregates other implementation in a Chain
+ * of Responsibility logic. The [candidates] are evaluated in order.
  */
 class MultiLetterboxLifecycleEventFactory(
     private val candidates: List<LetterboxLifecycleEventFactory>
 ) : LetterboxLifecycleEventFactory {
 
-    /**
-     * @return [true] in case any of the [candidates] can handle the [Change] in input.
-     */
+    /** @return [true] in case any of the [candidates] can handle the [Change] in input. */
     override fun canHandle(change: Change): Boolean = candidates.any { it.canHandle(change) }
 
     /**
      * @return The [LetterboxLifecycleEvent] from the selected candidate which is the first in
-     *         [candidates], if any, which [@canHandle] the [Change].
+     *   [candidates], if any, which [@canHandle] the [Change].
      */
     override fun createLifecycleEvent(change: Change): LetterboxLifecycleEvent? =
         candidates.firstOrNull { it.canHandle(change) }?.createLifecycleEvent(change)

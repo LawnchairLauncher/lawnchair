@@ -43,6 +43,7 @@ class TasksRepository(
     private val recentsModel: RecentTasksDataSource,
     private val taskThumbnailDataSource: TaskThumbnailDataSource,
     private val taskIconDataSource: TaskIconDataSource,
+    private val userLockedStateRepository: UserLockedStateRepository,
     private val taskVisualsChangedDelegate: TaskVisualsChangedDelegate,
     private val recentsCoroutineScope: CoroutineScope,
     private val dispatcherProvider: DispatcherProvider,
@@ -57,12 +58,15 @@ class TasksRepository(
         }
         if (forceRefresh) {
             recentsModel.getTasks { newTaskList ->
+                userLockedStateRepository.invalidateCachedValues()
+
                 val recentTasks =
                     newTaskList.flatMap { groupTask -> groupTask.tasks }.associateBy { it.key.id }
                 Log.d(
                     TAG,
                     "getAllTaskData: oldTasks ${tasks.value.keys}, newTasks: ${recentTasks.keys}",
                 )
+
                 tasks.update { oldTaskList ->
                     // Copy retrieved visuals to new Task objects
                     recentTasks.forEach { (taskId, task) ->
@@ -214,6 +218,10 @@ class TasksRepository(
 
     private fun updateThumbnail(taskId: Int, thumbnail: ThumbnailData?) {
         tasks.update { currentTasks ->
+            Log.d(
+                "b/417220811",
+                "Current thumbnail: ${currentTasks[taskId]?.thumbnail?.thumbnail}, replacing with ${thumbnail?.thumbnail}",
+            )
             currentTasks[taskId]?.thumbnail = thumbnail
             MapForStateFlow(currentTasks)
         }

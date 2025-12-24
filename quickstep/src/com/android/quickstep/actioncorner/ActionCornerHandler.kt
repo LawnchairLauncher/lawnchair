@@ -18,6 +18,7 @@ package com.android.quickstep.actioncorner
 
 import android.app.ActivityOptions
 import android.content.Context
+import android.view.Display.DEFAULT_DISPLAY
 import android.window.SplashScreen
 import com.android.launcher3.Flags.enableReversibleHomeActionCorner
 import com.android.launcher3.concurrent.annotations.LightweightBackground
@@ -41,6 +42,7 @@ import com.android.systemui.shared.system.actioncorner.ActionCornerConstants.Act
 import com.android.systemui.shared.system.actioncorner.ActionCornerConstants.HOME
 import com.android.systemui.shared.system.actioncorner.ActionCornerConstants.OVERVIEW
 import com.android.wm.shell.shared.GroupedTaskInfo
+import com.android.wm.shell.shared.desktopmode.DesktopState
 import com.android.wm.shell.shared.split.SplitScreenConstants
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -60,6 +62,7 @@ constructor(
     private val topTaskTracker: TopTaskTracker,
     private val recentsModel: RecentsModel,
     private val activityManagerWrapper: ActivityManagerWrapper,
+    private val desktopState: DesktopState,
     @LightweightBackground private val executor: Executor,
     @Assisted private val overviewCommandHelper: OverviewCommandHelper,
 ) {
@@ -72,8 +75,15 @@ constructor(
 
     fun handleAction(@Action action: Int, displayId: Int) {
         when (action) {
-            // TODO(b/410798748): handle projected mode when launching overview
-            OVERVIEW -> overviewCommandHelper.addCommandsForAllDisplays(TOGGLE_OVERVIEW_PREVIOUS)
+            OVERVIEW ->
+                if (desktopState.isProjectedMode()) {
+                    overviewCommandHelper.addCommandsForDisplaysExcept(
+                        TOGGLE_OVERVIEW_PREVIOUS,
+                        DEFAULT_DISPLAY,
+                    )
+                } else {
+                    overviewCommandHelper.addCommandsForAllDisplays(TOGGLE_OVERVIEW_PREVIOUS)
+                }
             HOME ->
                 if (enableReversibleHomeActionCorner()) {
                     handleHomeAction(displayId)

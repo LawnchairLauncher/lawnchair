@@ -38,6 +38,8 @@ android_test {
         "truth",
         "platform-parametric-runner-lib",
         "platform-screenshot-diff-core",
+        "platform-test-annotations",
+        "platform-test-rules",
     ],
     libs: [
         "android.test.base.stubs.system",

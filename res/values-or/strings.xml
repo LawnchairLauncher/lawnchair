@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"ଚଉଡ଼ା ଓ ଉଚ୍ଚତାର ଅନୁପାତ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ପାଇଁ ଆପ ସୂଚନା"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s ପାଇଁ ବ୍ୟବହାର ସେଟିଂସ"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"%1$s ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"ନୂଆ ୱିଣ୍ଡୋ"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"ୱିଣ୍ଡୋଗୁଡ଼ିକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ଆପ ପେୟାର ସେଭ କରନ୍ତୁ"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ଏହି ଆପ ପେୟାର ଏ ଡିଭାଇସରେ ସମର୍ଥିତ ନୁହେଁ"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ଆପ ପରାମର୍ଶ ଦିଅନ୍ତୁ ନାହିଁ"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ପୂର୍ବାନୁମାନକୁ ପିନ୍ କରନ୍ତୁ"</string>
     <string name="bubble" msgid="3072951361014076670">"ବବଲ"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"ସେଟିଂସ"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"ଟାସ୍କବାରରେ ପିନ କର"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"ଟାସ୍କବାରରୁ ଅନପିନ କର"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ସର୍ଟକଟ୍‍ ଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ୟୁଜରଙ୍କ ବିନା ହସ୍ତକ୍ଷେପରେ ଶର୍ଟକଟ୍‌ ଯୋଡ଼ିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"ହୋମ ସେଟିଂସ ଏବଂ ସର୍ଟକଟଗୁଡ଼ିକୁ ପଢ଼ନ୍ତୁ"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"ପୃଷ୍ଠାର ଡାହାଣପଟେ ପୃଷ୍ଠା ସଂଖ୍ୟା ଲେଖନ୍ତୁ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ଅକ୍ଷମ କରାଗଲା"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name}ର #ଟି ବିଜ୍ଞପ୍ତି ଅଛି}other{{app_name}ର #ଟି ବିଜ୍ଞପ୍ତି ଅଛି}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"ଅନୁମାନ କରାଯାଇଥିବା ଆପ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"ମୋଟ %2$dରୁ %1$d ନମ୍ବର ପୃଷ୍ଠା"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$dରୁ %1$d ହୋମ ସ୍କ୍ରିନ"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ନୂଆ ହୋମ ସ୍କ୍ରିନ ପେଜ"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"ଫୋଲ୍ଡର ବନ୍ଦ କରାଗଲା"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ଫୋଲ୍ଡରର ନାମ <xliff:g id="NAME">%1$s</xliff:g>କୁ ବଦଳାଗଲା"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ଆଇଟମଗୁଡ଼ିକ"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"ଫୋଲ୍ଡର: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ଆଇଟମ, ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ଅଛି"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ଫୋଲ୍ଡର୍: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> କିମ୍ବା ଅଧିକ ଆଇଟମ୍"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"ଫୋଲ୍ଡର: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> କିମ୍ବା ଅଧିକ ଆଇଟମ, ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ଅଛି"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"ବେନାମୀ ଫୋଲ୍ଡର"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"ଆପ ପେୟାର: <xliff:g id="APP1">%1$s</xliff:g> ଏବଂ <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ୱାଲପେପର ଏବଂ ଷ୍ଟାଇଲ"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"ୱାର୍କ ଆପ୍ସ ଟାବ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ୱର୍କ ପ୍ରୋଫାଇଲ୍‌"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ୱାର୍କ ଆପ୍ସକୁ ବେଜ କରାଯାଇଛି ଏବଂ ସେଗୁଡ଼ିକ ଆପଣଙ୍କ IT ଆଡମିନଙ୍କୁ ଦେଖାଯାଉଛି"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ବୁଝିଗଲି"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"ୱାର୍କ ଆପ୍ସ ବିରତ କରାଯାଇଛି"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"ଆପଣ ଆପଣଙ୍କ ୱାର୍କ ଆପ୍ସରୁ ବିଜ୍ଞପ୍ତି ପାଇବେ ନାହିଁ"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ଆପଣଙ୍କ ୱାର୍କ ଆପ୍ସ ଆପଣଙ୍କୁ ବିଜ୍ଞପ୍ତି ପଠାଇପାରିବ ନାହିଁ, ଆପଣଙ୍କ ବ୍ୟାଟେରୀକୁ ବ୍ୟବହାର କରିପାରିବ ନାହିଁ କିମ୍ବା ଆପଣଙ୍କର ଲୋକେସନକୁ ଆକ୍ସେସ କରିପାରିବ ନାହିଁ"</string>

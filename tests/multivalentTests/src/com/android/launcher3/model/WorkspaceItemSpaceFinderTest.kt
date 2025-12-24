@@ -19,7 +19,10 @@ import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
+import com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.model.data.WorkspaceItemCoordinates
+import com.android.launcher3.util.IntSet
 import com.android.launcher3.util.ModelTestExtensions.bgDataModel
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -36,12 +39,15 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
         super.setup()
     }
 
-    private fun findSpace(spanX: Int, spanY: Int): NewItemSpace =
-        WorkspaceItemSpaceFinder(model.bgDataModel, mAppState.invariantDeviceProfile, model)
-            .findSpaceForItem(mExistingScreens, mNewScreens, mAddedWorkspaceItems, spanX, spanY)
-            .let { NewItemSpace.fromIntArray(it) }
+    private fun findSpace(spanX: Int, spanY: Int): WorkspaceItemCoordinates =
+        WorkspaceItemSpaceFinder(
+                mTargetContext.bgDataModel,
+                mAppState.invariantDeviceProfile,
+                model,
+            )
+            .findSpaceForItem(mAddedWorkspaceItems, spanX, spanY, IntSet.wrap(FIRST_SCREEN_ID))
 
-    private fun assertRegionVacant(newItemSpace: NewItemSpace, spanX: Int, spanY: Int) {
+    private fun assertRegionVacant(newItemSpace: WorkspaceItemCoordinates, spanX: Int, spanY: Int) {
         assertThat(
                 mScreenOccupancy[newItemSpace.screenId].isRegionVacant(
                     newItemSpace.cellX,
@@ -66,6 +72,7 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
         val spaceFound = findSpace(1, 1)
 
         assertThat(spaceFound.screenId).isEqualTo(1)
+        assertThat(mExistingScreens.contains(spaceFound.screenId)).isTrue()
         assertRegionVacant(spaceFound, 1, 1)
     }
 
@@ -93,6 +100,7 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
         val spaceFound = findSpace(1, 1)
 
         assertThat(spaceFound.screenId).isEqualTo(1)
+        assertThat(mExistingScreens.contains(spaceFound.screenId)).isTrue()
         assertThat(spaceFound.cellX).isEqualTo(2)
         assertThat(spaceFound.cellY).isEqualTo(3)
         assertRegionVacant(spaceFound, 1, 1)
@@ -114,6 +122,7 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
         val spaceFound = findSpace(2, 3)
 
         assertThat(spaceFound.screenId).isEqualTo(2)
+        assertThat(mExistingScreens.contains(spaceFound.screenId)).isTrue()
         assertRegionVacant(spaceFound, 2, 3)
     }
 
@@ -128,11 +137,10 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
             screen2 = listOf(Rect(1, 0, 2, 2), Rect(3, 2, 5, 4)),
         )
 
-        val oldScreens = mExistingScreens.clone()
         val spaceFound = findSpace(3, 3)
 
-        assertThat(oldScreens.contains(spaceFound.screenId)).isFalse()
-        assertThat(mNewScreens.contains(spaceFound.screenId)).isTrue()
+        assertThat(spaceFound.screenId).isEqualTo(3)
+        assertThat(mExistingScreens.contains(spaceFound.screenId)).isFalse()
     }
 
     @Test
@@ -147,6 +155,7 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
         val spaceFound = findSpace(2, 1)
 
         assertThat(spaceFound.screenId).isEqualTo(2)
+        assertThat(mExistingScreens.contains(spaceFound.screenId)).isTrue()
         assertRegionVacant(spaceFound, 2, 1)
     }
 
@@ -162,6 +171,7 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
         val spaceFound = findSpace(2, 3)
 
         assertThat(spaceFound.screenId).isEqualTo(3)
+        assertThat(mExistingScreens.contains(spaceFound.screenId)).isTrue()
         assertRegionVacant(spaceFound, 2, 3)
     }
 
@@ -177,7 +187,7 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
         val spaceFound = findSpace(2, 3)
 
         assertThat(spaceFound.screenId).isEqualTo(3)
-        assertThat(mNewScreens.contains(spaceFound.screenId)).isTrue()
+        assertThat(mExistingScreens.contains(spaceFound.screenId)).isFalse()
     }
 
     @Test
@@ -193,6 +203,7 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
         val spaceFound = findSpace(3, 1)
 
         assertThat(spaceFound.screenId).isEqualTo(3)
+        assertThat(mExistingScreens.contains(spaceFound.screenId)).isTrue()
         assertRegionVacant(spaceFound, 3, 1)
     }
 }

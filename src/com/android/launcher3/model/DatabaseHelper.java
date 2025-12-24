@@ -17,6 +17,7 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+import static com.android.launcher3.util.SQLiteCacheHelper.createNoLocaleParams;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Process;
 import android.os.UserHandle;
@@ -34,11 +36,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import app.lawnchair.preferences2.PreferenceManager2;
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.BuildConfigs;
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
@@ -48,39 +50,38 @@ import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
-import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
+
+import app.lawnchair.preferences2.PreferenceManager2;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 /**
  * SqLite database for launcher home-screen model
  * The class is subclassed in tests to create an in-memory db.
  */
-public class DatabaseHelper extends NoLocaleSQLiteHelper implements
+public class DatabaseHelper extends SQLiteOpenHelper implements
         LayoutParserCallback {
 
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      * When increasing the scheme version, ensure that downgrade_schema.json is updated
      */
-    public static final int SCHEMA_VERSION = 32;
+    public static final int SCHEMA_VERSION = Flags.enableLauncherIconShapes() ? 34 : 32;
     private static final String TAG = "DatabaseHelper";
     private static final boolean LOGD = false;
 
     private static final String DOWNGRADE_SCHEMA_FILE = "downgrade_schema.json";
 
     private final Context mContext;
-    private final ToLongFunction<UserHandle> mUserSerialProvider;
     private final Runnable mOnEmptyDbCreateCallback;
     private final AtomicInteger mMaxItemId = new AtomicInteger(-1);
 
@@ -89,11 +90,9 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     /**
      * Constructor used in tests and for restore.
      */
-    public DatabaseHelper(Context context, String dbName,
-            ToLongFunction<UserHandle> userSerialProvider, Runnable onEmptyDbCreateCallback) {
-        super(context, dbName, SCHEMA_VERSION);
+    public DatabaseHelper(Context context, String dbName, Runnable onEmptyDbCreateCallback) {
+        super(context, dbName, SCHEMA_VERSION, createNoLocaleParams());
         mContext = context;
-        mUserSerialProvider = userSerialProvider;
         mOnEmptyDbCreateCallback = onEmptyDbCreateCallback;
     }
 
@@ -124,7 +123,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     }
 
     private long getDefaultUserSerial() {
-        return mUserSerialProvider.applyAsLong(Process.myUserHandle());
+        return UserCache.INSTANCE.get(mContext).getSerialNumberForUser(Process.myUserHandle());
     }
 
     @Override
@@ -273,8 +272,15 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
             case 31: {
                 LauncherDbUtils.migrateLegacyShortcuts(mContext, db);
             }
+            // Skip version 32 as it introduced a restore bug, and is no longer necessary
+            case 32:
+            case 33: {
+                // Ensure backup icons are updated to default shape to handle downgrade backup
+                FileLog.d(TAG, "Cropping db icons to default shape for downgrade backup");
+                LauncherDbUtils.updateBackupIcons(mContext, db, /** useDefaultShape */ true);
+            }
             // Fall through
-            case 32: {
+            case 34: {
                 // DB Upgraded successfully
                 return;
             }

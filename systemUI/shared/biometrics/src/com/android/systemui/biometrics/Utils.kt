@@ -103,6 +103,11 @@ object Utils {
         context.getSystemService(UserManager::class.java)?.isManagedProfile(userId) ?: false
 
     @JvmStatic
+    fun isSupervisingProfile(context: Context, userId: Int): Boolean =
+        context.getSystemService(UserManager::class.java)?.getUserInfo(userId)?.userType ==
+            UserManager.USER_TYPE_PROFILE_SUPERVISING
+
+    @JvmStatic
     fun <T : SensorPropertiesInternal> findFirstSensorProperties(
         properties: List<T>?,
         sensorIds: IntArray,
@@ -117,10 +122,13 @@ object Utils {
     }
 
     @JvmStatic
-    fun getNavbarInsets(context: Context): Insets {
+    fun getNavbarInsets(context: Context) = getInsetsOf(context, WindowInsets.Type.navigationBars())
+
+    @JvmStatic
+    fun getInsetsOf(context: Context, typeMask: Int): Insets {
         val windowManager: WindowManager = WindowManagerUtils.getWindowManager(context)
         val windowMetrics: WindowMetrics = windowManager.maximumWindowMetrics
-        return windowMetrics.windowInsets.getInsets(WindowInsets.Type.navigationBars())
+        return windowMetrics.windowInsets.getInsets(typeMask)
     }
 
     /** Converts `drawable` to a [Bitmap]. */

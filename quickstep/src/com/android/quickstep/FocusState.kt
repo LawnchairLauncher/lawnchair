@@ -19,6 +19,7 @@ package com.android.quickstep
 import android.os.RemoteException
 import android.util.Log
 import android.view.Display.DEFAULT_DISPLAY
+import androidx.annotation.VisibleForTesting
 import com.android.launcher3.util.Executors
 import com.android.wm.shell.shared.IFocusTransitionListener.Stub
 import com.android.wm.shell.shared.IShellTransitions
@@ -27,7 +28,8 @@ import com.android.wm.shell.shared.IShellTransitions
 class FocusState {
 
     var focusedDisplayId = DEFAULT_DISPLAY
-        private set(value) {
+        @VisibleForTesting
+        set(value) {
             field = value
             listeners.forEach { it.onFocusedDisplayChanged(value) }
         }

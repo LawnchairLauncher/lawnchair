@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright 2025 Google Inc. All Rights Reserved.
+ -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.wm.shell.flicker">
+  <uses-sdk android:minSdkVersion="29" android:targetSdkVersion="29"/>
+  <application />
+</manifest>

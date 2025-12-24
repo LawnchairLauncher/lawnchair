@@ -167,12 +167,9 @@ public class TvSplitMenuController implements TvSplitMenuView.Listener {
     }
 
     private void setMenuFocus(boolean focused) {
-        try {
-            WindowManagerGlobal.getWindowSession().grantEmbeddedWindowFocus(null,
-                    mSystemWindows.getFocusGrantToken(mSplitMenuView), focused);
-        } catch (RemoteException e) {
+        if (!mSystemWindows.requestInputFocus(mSplitMenuView, focused)) {
             ProtoLog.e(ShellProtoLogGroup.WM_SHELL_SPLIT_SCREEN,
-                    "%s: Unable to update focus, %s", TAG, e);
+                    "%s: Unable to update focus", TAG);
         }
     }
 

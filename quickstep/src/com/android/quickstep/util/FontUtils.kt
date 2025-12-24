@@ -19,9 +19,11 @@ package com.android.quickstep.util
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Typeface
+import android.util.Log
 import com.android.wm.shell.shared.TypefaceUtils
 
 object FontUtils {
+    private const val TAG = "FontUtils"
 
     private val baseTypeface =
         Typeface.create(TypefaceUtils.FontFamily.GSF_LABEL_LARGE.value, Typeface.NORMAL)
@@ -32,10 +34,19 @@ object FontUtils {
 
     fun getFontWeight(resources: Resources): Int {
         val fontWeightAdjustment: Int = resources.configuration.fontWeightAdjustment
-        return if (fontWeightAdjustment != Configuration.FONT_WEIGHT_ADJUSTMENT_UNDEFINED) {
-            Typeface.Builder.NORMAL_WEIGHT + fontWeightAdjustment
-        } else {
-            Typeface.Builder.NORMAL_WEIGHT
+        val adjusted =
+            if (fontWeightAdjustment != Configuration.FONT_WEIGHT_ADJUSTMENT_UNDEFINED) {
+                Typeface.Builder.NORMAL_WEIGHT + fontWeightAdjustment
+            } else {
+                Typeface.Builder.NORMAL_WEIGHT
+            }
+        if (adjusted !in 0..1000) {
+            Log.w(
+                TAG,
+                "Calculated font weight $adjusted is out of bounds (0-1000) " +
+                    "after adjustment: $fontWeightAdjustment.",
+            )
         }
+        return adjusted.coerceIn(0, 1000)
     }
 }

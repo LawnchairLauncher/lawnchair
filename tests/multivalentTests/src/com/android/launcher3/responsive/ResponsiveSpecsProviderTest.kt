@@ -25,6 +25,7 @@ import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecT
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -55,7 +56,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
             portraitSpecs,
             aspectRatioPortrait,
             expectedPortWidthSpecs,
-            expectedPortHeightSpecs
+            expectedPortHeightSpecs,
         )
 
         // Validate Landscape
@@ -67,7 +68,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
             landscapeSpecs,
             aspectRatioLandscape,
             expectedLandWidthSpecs,
-            expectedLandHeightSpecs
+            expectedLandHeightSpecs,
         )
 
         // Validate Extra Spec
@@ -83,7 +84,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(1f.dpToPx()),
                     endPadding = SizeSpec(1f.dpToPx()),
                     gutter = SizeSpec(8f.dpToPx()),
-                    cellSize = SizeSpec(ofRemainderSpace = 1f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f),
                 )
             )
 
@@ -96,66 +97,81 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(2f.dpToPx()),
                     endPadding = SizeSpec(2f.dpToPx()),
                     gutter = SizeSpec(8f.dpToPx()),
-                    cellSize = SizeSpec(ofRemainderSpace = 1f)
-                ),
+                    cellSize = SizeSpec(ofRemainderSpace = 1f),
+                )
             )
 
         validateSpecs(
             extraSpecs,
             aspectRatioExtra,
             expectedOtherWidthSpecs,
-            expectedOtherHeightSpecs
+            expectedOtherHeightSpecs,
         )
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseValidFile_invalidAspectRatio_throwsError() {
         val resourceHelper = TestResourceHelper(context, "valid_responsive_spec_unsorted".xmlToId())
         val provider = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
-        provider.getSpecsByAspectRatio(0f)
+        assertThrows(IllegalStateException::class.java) { provider.getSpecsByAspectRatio(0f) }
     }
 
-    @Test(expected = InvalidResponsiveGridSpec::class)
+    @Test
     fun parseInvalidFile_missingGroups_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_1".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        assertThrows(InvalidResponsiveGridSpec::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        }
     }
 
-    @Test(expected = InvalidResponsiveGridSpec::class)
+    @Test
     fun parseInvalidFile_partialGroups_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_2".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+
+        assertThrows(InvalidResponsiveGridSpec::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_invalidAspectRatio_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_3".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_invalidRemainderSpace_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_4".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_invalidAvailableSpace_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_5".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_invalidFixedSize_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_6".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
+        }
     }
 
     private fun validateSpecs(
         specs: ResponsiveSpecGroup<ResponsiveSpec>,
         expectedAspectRatio: Float,
         expectedWidthSpecs: List<ResponsiveSpec>,
-        expectedHeightSpecs: List<ResponsiveSpec>
+        expectedHeightSpecs: List<ResponsiveSpec>,
     ) {
         assertThat(specs.aspectRatio).isAtLeast(expectedAspectRatio)
 
@@ -181,7 +197,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(22f.dpToPx()),
                     endPadding = SizeSpec(22f.dpToPx()),
                     gutter = sizeSpec16,
-                    cellSize = SizeSpec(ofRemainderSpace = 1f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f),
                 )
             )
 
@@ -194,7 +210,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(0f),
                     endPadding = SizeSpec(32f.dpToPx()),
                     gutter = sizeSpec16,
-                    cellSize = SizeSpec(ofAvailableSpace = .15808f)
+                    cellSize = SizeSpec(ofAvailableSpace = .15808f),
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 612.dpToPx(),
@@ -203,7 +219,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(0f),
                     endPadding = SizeSpec(ofRemainderSpace = 1f),
                     gutter = sizeSpec16,
-                    cellSize = SizeSpec(104f.dpToPx())
+                    cellSize = SizeSpec(104f.dpToPx()),
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 9999.dpToPx(),
@@ -212,7 +228,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(8f.dpToPx()),
                     endPadding = SizeSpec(ofRemainderSpace = 1f),
                     gutter = sizeSpec16,
-                    cellSize = SizeSpec(104f.dpToPx())
+                    cellSize = SizeSpec(104f.dpToPx()),
                 ),
             )
 
@@ -230,7 +246,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(0f.dpToPx()),
                     endPadding = SizeSpec(36f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = 1f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f),
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 716.dpToPx(),
@@ -239,7 +255,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(16f.dpToPx()),
                     endPadding = SizeSpec(64f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = 1f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f),
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 9999.dpToPx(),
@@ -248,8 +264,8 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(36f.dpToPx()),
                     endPadding = SizeSpec(80f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = 1f)
-                )
+                    cellSize = SizeSpec(ofRemainderSpace = 1f),
+                ),
             )
 
         val expectedHeightSpecs =
@@ -261,7 +277,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(0f),
                     endPadding = SizeSpec(24f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = 1f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f),
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 9999.dpToPx(),
@@ -270,7 +286,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(0f),
                     endPadding = SizeSpec(34f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = 1f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f),
                 ),
             )
 

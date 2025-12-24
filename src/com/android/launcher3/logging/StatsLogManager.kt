@@ -123,6 +123,22 @@ open class StatsLogManager protected constructor(@JvmField protected val mContex
                     "widget picker.")
         )
         LAUNCHER_WIDGETSTRAY_EXPAND_PRESS(1978),
+        @UiEvent(doc = ("Widget picker began animating to open."))
+        LAUNCHER_WIDGET_PICKER_OPEN_ANIMATION_BEGIN(1979),
+        @UiEvent(doc = ("Widget picker was fully opened"))
+        LAUNCHER_WIDGET_PICKER_OPEN_ANIMATION_END(1980),
+        @UiEvent(
+            doc =
+                ("User tapped on an app in the single pane variant of widget picker to" +
+                    " expand it.")
+        )
+        LAUNCHER_WIDGET_PICKER_APP_EXPAND_ANIMATION_BEGIN(1981),
+        @UiEvent(
+            doc =
+                ("An app section that user tapped on in the single pane variant of widget " +
+                    "picker was fully expanded.")
+        )
+        LAUNCHER_WIDGET_PICKER_APP_EXPAND_ANIMATION_END(1982),
         @UiEvent(doc = "A dragged item is dropped on 'Remove' button in the target bar")
         LAUNCHER_ITEM_DROPPED_ON_REMOVE(465),
         @UiEvent(doc = "A dragged item is dropped on 'Cancel' button in the target bar")
@@ -628,6 +644,12 @@ open class StatsLogManager protected constructor(@JvmField protected val mContex
         LAUNCHER_DESKTOP_MODE_TASKBAR_UNPINNED(2242),
         @UiEvent(doc = "Launcher window insets controller reportedly null")
         LAUNCHER_WINDOW_INSETS_CONTROLLER_NULL(2400),
+        @UiEvent(doc = "Widget settings tapped on QSB in launcher")
+        LAUNCHER_QSB_WIDGET_SETTINGS_TAP(2415),
+        @UiEvent(doc = "User tapped to add an icon to home screen from all apps")
+        LAUNCHER_TAP_TO_ADD_TO_HOME_SCREEN_FROM_ALL_APPS(2445),
+        @UiEvent(doc = "User tapped to add a deep shortcut from the long press menu")
+        LAUNCHER_TAP_TO_ADD_DEEP_SHORTCUT(2446),
         // ADD MORE
     }
 

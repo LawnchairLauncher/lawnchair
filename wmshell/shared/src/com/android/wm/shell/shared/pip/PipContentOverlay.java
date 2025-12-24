@@ -143,13 +143,25 @@ public abstract class PipContentOverlay {
 
         @Override
         public void attach(SurfaceControl.Transaction tx, SurfaceControl parentLeash) {
-            final float taskSnapshotScaleX = (float) mSnapshot.getTaskSize().x
-                    / mSnapshot.getHardwareBuffer().getWidth();
-            final float taskSnapshotScaleY = (float) mSnapshot.getTaskSize().y
-                    / mSnapshot.getHardwareBuffer().getHeight();
+            final float taskSnapshotScaleX;
+            final float taskSnapshotScaleY;
+            if (com.android.window.flags2.Flags.reduceTaskSnapshotMemoryUsage()) {
+                taskSnapshotScaleX = (float) mSnapshot.getTaskSize().x
+                        / mSnapshot.getHardwareBufferWidth();
+                taskSnapshotScaleY = (float) mSnapshot.getTaskSize().y
+                        / mSnapshot.getHardwareBufferHeight();
+                mSnapshot.setBufferToSurface(tx, mLeash);
+            } else {
+                final HardwareBuffer hw = mSnapshot.getHardwareBuffer();
+                taskSnapshotScaleX = (float) mSnapshot.getTaskSize().x
+                        / hw.getWidth();
+                taskSnapshotScaleY = (float) mSnapshot.getTaskSize().y
+                        / hw.getHeight();
+                tx.setBuffer(mLeash, hw);
+            }
+
             tx.show(mLeash);
             tx.setLayer(mLeash, Integer.MAX_VALUE);
-            tx.setBuffer(mLeash, mSnapshot.getHardwareBuffer());
             // Relocate the content to parentLeash's coordinates.
             tx.setPosition(mLeash, -mSourceRectHint.left, -mSourceRectHint.top);
             tx.setScale(mLeash, taskSnapshotScaleX, taskSnapshotScaleY);

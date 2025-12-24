@@ -111,7 +111,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
         } else if (mInsets.bottom > 0) {
             widthUsed = mInsets.left + mInsets.right;
         } else {
-            Rect padding = deviceProfile.workspacePadding;
+            Rect padding = deviceProfile.mWorkspaceProfile.getWorkspacePadding();
             widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
         }

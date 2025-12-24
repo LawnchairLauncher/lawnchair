@@ -22,7 +22,6 @@ import static android.content.pm.ActivityInfo.CONFIG_LAYOUT_DIRECTION;
 import static android.content.pm.ActivityInfo.CONFIG_LOCALE;
 import static android.content.pm.ActivityInfo.CONFIG_SMALLEST_SCREEN_SIZE;
 import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
-import static android.window.DesktopExperienceFlags.DesktopExperienceFlag;
 
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_INIT;
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_SYSUI_EVENTS;
@@ -45,7 +44,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.protolog.ProtoLog;
-import com.android.wm.shell.Flags;
+import com.android.wm.shell.common.DisplayChangeController;
 import com.android.wm.shell.common.DisplayInsetsController;
 import com.android.wm.shell.common.DisplayInsetsController.OnInsetsChangedListener;
 import com.android.wm.shell.common.ExternalInterfaceBinder;
@@ -66,10 +65,6 @@ import java.util.function.Supplier;
  */
 public class ShellController {
     private static final String TAG = ShellController.class.getSimpleName();
-
-    public static final DesktopExperienceFlag FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG =
-            new DesktopExperienceFlag(Flags::fixMissingUserChangeCallbacks, true,
-                    Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS);
 
     private final Context mContext;
     private final ShellInit mShellInit;
@@ -154,11 +149,9 @@ public class ShellController {
         mUserManager = userManager;
         mMainExecutor = mainExecutor;
         shellInit.addInitCallback(this::onInit, this);
-        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue()) {
-            final int currentUserId = ActivityManager.getCurrentUser();
-            updateCurrentUser(currentUserId, getOrCreateUserContext(currentUserId));
-            updateProfiles(getUserProfiles(currentUserId));
-        }
+        final int currentUserId = ActivityManager.getCurrentUser();
+        updateCurrentUser(currentUserId, getOrCreateUserContext(currentUserId));
+        updateProfiles(getUserProfiles(currentUserId));
     }
 
     private void onInit() {
@@ -166,12 +159,10 @@ public class ShellController {
         mShellCommandHandler.addDumpCallback(this::dump, this);
         mDisplayInsetsController.addInsetsChangedListener(
                 mContext.getDisplayId(), mInsetsChangeListener);
-        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue()) {
-            // Update current user again, in case it changed between the constructor and |onInit|.
-            final int currentUserId = ActivityManager.getCurrentUser();
-            updateCurrentUser(currentUserId, getOrCreateUserContext(currentUserId));
-            updateProfiles(getUserProfiles(currentUserId));
-        }
+        // Update current user again, in case it changed between the constructor and |onInit|.
+        final int currentUserId = ActivityManager.getCurrentUser();
+        updateCurrentUser(currentUserId, getOrCreateUserContext(currentUserId));
+        updateProfiles(getUserProfiles(currentUserId));
     }
 
     /**
@@ -184,7 +175,13 @@ public class ShellController {
     /**
      * Adds a new configuration listener. The configuration change callbacks are not made in any
      * particular order.
+     *
+     * Note: This callback only propagates the application configuration from SysUI which will be
+     * incomplete for multi-display scenarios. To cover both single and multi-display scenarios,
+     * you should use {@link DisplayController#addDisplayChangingController()} to register for
+     * callbacks for your display.
      */
+    @Deprecated
     public void addConfigurationChangeListener(ConfigurationChangeListener listener) {
         mConfigChangeListeners.remove(listener);
         mConfigChangeListeners.add(listener);
@@ -192,14 +189,17 @@ public class ShellController {
 
     /**
      * Removes an existing configuration listener.
+     *
+     * Note: Callers use {@link DisplayController#add/removeDisplayChangingController()}
      */
+    @Deprecated
     public void removeConfigurationChangeListener(ConfigurationChangeListener listener) {
         mConfigChangeListeners.remove(listener);
     }
 
     /**
      * Adds a new Keyguard listener. The Keyguard change callbacks are not made in any
-     * particular order.
+     * particular order, and are not synchronized with transitions.
      */
     public void addKeyguardChangeListener(KeyguardChangeListener listener) {
         mKeyguardChangeListeners.remove(listener);
@@ -215,15 +215,13 @@ public class ShellController {
 
     /**
      * Adds a new user-change listener. The user change callbacks are not made in any
-     * particular order.
+     * particular order, and are not synchronized with transitions.
      */
     public void addUserChangeListener(UserChangeListener listener) {
         mUserChangeListeners.remove(listener);
         mUserChangeListeners.add(listener);
-        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue()) {
-            listener.onUserChanged(mUserId, mUserContext);
-            listener.onUserProfilesChanged(mProfiles);
-        }
+        listener.onUserChanged(mUserId, mUserContext);
+        listener.onUserProfilesChanged(mProfiles);
     }
 
     /**
@@ -283,10 +281,9 @@ public class ShellController {
         return mUserId;
     }
 
-    /** Returns the current user id. */
-    @VisibleForTesting
+    /** Returns the current user profiles. */
     @NonNull
-    List<UserInfo> getCurrentUserProfiles() {
+    public List<UserInfo> getCurrentUserProfiles() {
         return mProfiles;
     }
 
@@ -298,7 +295,6 @@ public class ShellController {
             ProtoLog.v(WM_SHELL_SYSUI_EVENTS, "Initial Configuration: %s", newConfig);
             return;
         }
-
         final int diff = newConfig.diff(mLastConfiguration);
         ProtoLog.v(WM_SHELL_SYSUI_EVENTS, "New configuration change: %s", newConfig);
         ProtoLog.v(WM_SHELL_SYSUI_EVENTS, "\tchanges=%s",
@@ -349,8 +345,7 @@ public class ShellController {
 
     @VisibleForTesting
     void onUserChanged(int newUserId, @NonNull Context userContext) {
-        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue()
-                && !updateCurrentUser(newUserId, userContext)) {
+        if (!updateCurrentUser(newUserId, userContext)) {
             // No change, do not notify listeners.
             return;
         }
@@ -360,9 +355,13 @@ public class ShellController {
         }
     }
 
+    public Configuration getLastConfiguration() {
+        return mLastConfiguration;
+    }
+
     @VisibleForTesting
     void onUserProfilesChanged(@NonNull List<UserInfo> profiles) {
-        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue() && !updateProfiles(profiles)) {
+        if (!updateProfiles(profiles)) {
             // No change, do not notify listeners.
             return;
         }

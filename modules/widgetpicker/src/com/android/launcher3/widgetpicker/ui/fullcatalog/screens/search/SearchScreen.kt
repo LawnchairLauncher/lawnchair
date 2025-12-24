@@ -16,6 +16,8 @@
 
 package com.android.launcher3.widgetpicker.ui.fullcatalog.screens.search
 
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,10 +25,14 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import com.android.launcher3.widgetpicker.R
 import com.android.launcher3.widgetpicker.shared.model.WidgetAppId
 import com.android.launcher3.widgetpicker.ui.WidgetInteractionInfo
+import com.android.launcher3.widgetpicker.ui.WidgetInteractionSource
 import com.android.launcher3.widgetpicker.ui.components.AppHeaderDescriptionStyle
 import com.android.launcher3.widgetpicker.ui.components.SinglePaneLayout
 import com.android.launcher3.widgetpicker.ui.components.TwoPaneLayout
@@ -137,7 +143,11 @@ private fun SearchScreenSinglePane(
     SinglePaneLayout(
         searchBar = searchBar,
         content = {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .hideKeyboardOnTouch()
+            ) {
                 WidgetAppsList(
                     modifier = Modifier.fillMaxSize(),
                     widgetApps = resultsState.results,
@@ -147,9 +157,11 @@ private fun SearchScreenSinglePane(
                     onWidgetAppClick = { widgetApp -> onSelectedWidgetAppChange(widgetApp.id) },
                     appIcons = appIconsState.icons,
                     widgetPreviews = widgetPreviewsState.previews,
+                    widgetInteractionSource = WidgetInteractionSource.SEARCH,
                     onWidgetInteraction = onWidgetInteraction,
                     showDragShadow = showDragShadow,
                     emptyWidgetsErrorMessage = emptyWidgetsErrorMessage,
+                    autoScrollToTopOnChange = true,
                 )
             }
         },
@@ -169,7 +181,9 @@ fun SearchScreenTwoPane(
     emptyWidgetsErrorMessage: String,
 ) {
     TwoPaneLayout(
+        modifier = Modifier.hideKeyboardOnTouch(),
         searchBar = searchBar,
+        leftPaneTitle = stringResource(R.string.widget_picker_left_pane_accessibility_label),
         leftContent = {
             Box(modifier = Modifier.fillMaxSize()) {
                 WidgetAppsList(
@@ -181,9 +195,11 @@ fun SearchScreenTwoPane(
                     appIcons = appIconsState.icons,
                     widgetPreviews = widgetPreviewsState.previews,
                     onWidgetAppClick = { widgetApp -> onSelectedWidgetAppChange(widgetApp.id) },
+                    widgetInteractionSource = WidgetInteractionSource.SEARCH,
                     onWidgetInteraction = onWidgetInteraction,
                     showDragShadow = showDragShadow,
                     emptyWidgetsErrorMessage = emptyWidgetsErrorMessage,
+                    autoScrollToTopOnChange = true,
                 )
             }
         },
@@ -199,11 +215,14 @@ fun SearchScreenTwoPane(
                     }
 
                 WidgetsGrid(
-                    modifier = Modifier.fillMaxWidth().wrapContentSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentSize(),
                     showAllWidgetDetails = true,
                     widgetSizeGroups = selectedWidgets,
                     previews = widgetPreviewsState.previews,
                     onWidgetInteraction = onWidgetInteraction,
+                    widgetInteractionSource = WidgetInteractionSource.SEARCH,
                     showDragShadow = showDragShadow,
                 )
             }
@@ -229,5 +248,19 @@ private fun rightPaneTitle(
         stringResource(R.string.widget_picker_right_pane_accessibility_label, selectedAppName)
     } else {
         null
+    }
+}
+
+/**
+ * On touch, on first unconsumed event, hides the keyboard
+ */
+private fun Modifier.hideKeyboardOnTouch(): Modifier = composed {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    this.pointerInput(Unit) {
+        awaitEachGesture {
+            awaitFirstDown(requireUnconsumed = false)
+            keyboardController?.hide()
+        }
     }
 }

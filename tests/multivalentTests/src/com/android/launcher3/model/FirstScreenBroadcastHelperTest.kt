@@ -25,9 +25,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
-import com.android.launcher3.model.FirstScreenBroadcastHelper.MAX_BROADCAST_SIZE
-import com.android.launcher3.model.FirstScreenBroadcastHelper.getTotalItemCount
-import com.android.launcher3.model.FirstScreenBroadcastHelper.truncateModelForBroadcast
+import com.android.launcher3.model.FirstScreenBroadcastHelper.Companion.MAX_BROADCAST_SIZE
+import com.android.launcher3.model.FirstScreenBroadcastHelper.Companion.truncateModelForBroadcast
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
@@ -93,12 +92,13 @@ class FirstScreenBroadcastHelperTest {
 
         // When
         val actualResult =
-            FirstScreenBroadcastHelper.createModelsForFirstScreenBroadcast(
-                packageManagerHelper = mockPmHelper,
-                firstScreenItems = firstScreenItems,
-                userKeyToSessionMap = sessionInfoMap,
-                allWidgets = listOf(),
-            )
+            FirstScreenBroadcastHelper(mockPmHelper)
+                .createModelsForFirstScreenBroadcast(
+                    firstScreenItems = firstScreenItems,
+                    userKeyToSessionMap = sessionInfoMap,
+                    allWidgets = listOf(),
+                    shouldAttachArchivingExtras = true,
+                )
 
         // Then
         val expectedResult =
@@ -122,18 +122,19 @@ class FirstScreenBroadcastHelperTest {
 
         // When
         val actualResult =
-            FirstScreenBroadcastHelper.createModelsForFirstScreenBroadcast(
-                packageManagerHelper = mockPmHelper,
-                firstScreenItems = firstScreenItems,
-                userKeyToSessionMap = hashMapOf(),
-                allWidgets =
-                    listOf(
-                        LauncherAppWidgetInfo().apply {
-                            providerName = expectedComponentName
-                            screenId = 0
-                        }
-                    ),
-            )
+            FirstScreenBroadcastHelper(mockPmHelper)
+                .createModelsForFirstScreenBroadcast(
+                    firstScreenItems = firstScreenItems,
+                    userKeyToSessionMap = hashMapOf(),
+                    allWidgets =
+                        listOf(
+                            LauncherAppWidgetInfo().apply {
+                                providerName = expectedComponentName
+                                screenId = 0
+                            }
+                        ),
+                    shouldAttachArchivingExtras = true,
+                )
 
         // Then
         val expectedResult =
@@ -142,7 +143,41 @@ class FirstScreenBroadcastHelperTest {
                     installerPackage = expectedInstallerPackage,
                     installedHotseatItems = mutableSetOf(expectedAppPackage),
                     installedWorkspaceItems = mutableSetOf(expectedAppPackage),
-                    firstScreenInstalledWidgets = mutableSetOf(expectedAppPackage),
+                    installedWidgets = linkedSetOf(expectedAppPackage),
+                    shouldAttachArchivingExtras = true,
+                )
+            )
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `installed items not present when shouldAttachArchivingExtras is false`() {
+        // Given
+        whenever(mockPmHelper.getAppInstallerPackage(expectedAppPackage))
+            .thenReturn(expectedInstallerPackage)
+
+        // When
+        val actualResult =
+            FirstScreenBroadcastHelper(mockPmHelper)
+                .createModelsForFirstScreenBroadcast(
+                    firstScreenItems = firstScreenItems,
+                    userKeyToSessionMap = hashMapOf(),
+                    allWidgets =
+                        listOf(
+                            LauncherAppWidgetInfo().apply {
+                                providerName = expectedComponentName
+                                screenId = 0
+                            }
+                        ),
+                    shouldAttachArchivingExtras = false,
+                )
+
+        // Then
+        val expectedResult =
+            listOf(
+                FirstScreenBroadcastModel(
+                    installerPackage = expectedInstallerPackage,
+                    shouldAttachArchivingExtras = false,
                 )
             )
         assertEquals(expectedResult, actualResult)
@@ -160,26 +195,27 @@ class FirstScreenBroadcastHelperTest {
 
         // When
         val actualResult =
-            FirstScreenBroadcastHelper.createModelsForFirstScreenBroadcast(
-                packageManagerHelper = mockPmHelper,
-                firstScreenItems = listOf(),
-                userKeyToSessionMap = hashMapOf(),
-                allWidgets =
-                    listOf(
-                        LauncherAppWidgetInfo().apply {
-                            providerName = expectedComponentName
-                            screenId = 0
-                        },
-                        LauncherAppWidgetInfo().apply {
-                            providerName = expectedComponentName2
-                            screenId = 1
-                        },
-                        LauncherAppWidgetInfo().apply {
-                            providerName = unexpectedComponentName
-                            screenId = 0
-                        },
-                    ),
-            )
+            FirstScreenBroadcastHelper(mockPmHelper)
+                .createModelsForFirstScreenBroadcast(
+                    firstScreenItems = listOf(),
+                    userKeyToSessionMap = hashMapOf(),
+                    allWidgets =
+                        listOf(
+                            LauncherAppWidgetInfo().apply {
+                                providerName = expectedComponentName
+                                screenId = 0
+                            },
+                            LauncherAppWidgetInfo().apply {
+                                providerName = expectedComponentName2
+                                screenId = 1
+                            },
+                            LauncherAppWidgetInfo().apply {
+                                providerName = unexpectedComponentName
+                                screenId = 0
+                            },
+                        ),
+                    shouldAttachArchivingExtras = true,
+                )
 
         // Then
         val expectedResult =
@@ -188,8 +224,8 @@ class FirstScreenBroadcastHelperTest {
                     installerPackage = expectedInstallerPackage,
                     installedHotseatItems = mutableSetOf(),
                     installedWorkspaceItems = mutableSetOf(),
-                    firstScreenInstalledWidgets = mutableSetOf(expectedAppPackage),
-                    secondaryScreenInstalledWidgets = mutableSetOf(expectedAppPackage2),
+                    installedWidgets = linkedSetOf(expectedAppPackage, expectedAppPackage2),
+                    shouldAttachArchivingExtras = true,
                 )
             )
         assertEquals(expectedResult, actualResult)
@@ -221,12 +257,13 @@ class FirstScreenBroadcastHelperTest {
 
         // When
         val actualResult =
-            FirstScreenBroadcastHelper.createModelsForFirstScreenBroadcast(
-                packageManagerHelper = mockPmHelper,
-                firstScreenItems = firstScreenItems,
-                userKeyToSessionMap = sessionInfoMap,
-                allWidgets = listOf(),
-            )
+            FirstScreenBroadcastHelper(mockPmHelper)
+                .createModelsForFirstScreenBroadcast(
+                    firstScreenItems = firstScreenItems,
+                    userKeyToSessionMap = sessionInfoMap,
+                    allWidgets = listOf(),
+                    shouldAttachArchivingExtras = true,
+                )
 
         // Then
         val expectedResult =
@@ -257,10 +294,7 @@ class FirstScreenBroadcastHelperTest {
                     mutableSetOf<String>().apply { repeat(20) { add(it.toString()) } },
                 installedHotseatItems =
                     mutableSetOf<String>().apply { repeat(20) { add(it.toString()) } },
-                firstScreenInstalledWidgets =
-                    mutableSetOf<String>().apply { repeat(20) { add(it.toString()) } },
-                secondaryScreenInstalledWidgets =
-                    mutableSetOf<String>().apply { repeat(20) { add(it.toString()) } },
+                installedWidgets = linkedSetOf<String>().apply { repeat(40) { add(it.toString()) } },
             )
 
         // When
@@ -278,10 +312,8 @@ class FirstScreenBroadcastHelperTest {
                 installerPackage = expectedInstallerPackage,
                 installedWorkspaceItems =
                     mutableSetOf<String>().apply { repeat(50) { add(it.toString()) } },
-                firstScreenInstalledWidgets =
-                    mutableSetOf<String>().apply { repeat(10) { add(it.toString()) } },
-                secondaryScreenInstalledWidgets =
-                    mutableSetOf<String>().apply { repeat(10) { add((it + 10).toString()) } },
+                installedWidgets =
+                    linkedSetOf<String>().apply { repeat(20) { add(it.toString()) } },
                 installedHotseatItems =
                     mutableSetOf<String>().apply { repeat(10) { add(it.toString()) } },
             )
@@ -292,8 +324,7 @@ class FirstScreenBroadcastHelperTest {
         // Then
         assertEquals(MAX_BROADCAST_SIZE, broadcastModel.getTotalItemCount())
         assertEquals(50, broadcastModel.installedWorkspaceItems.size)
-        assertEquals(10, broadcastModel.firstScreenInstalledWidgets.size)
-        assertEquals(10, broadcastModel.secondaryScreenInstalledWidgets.size)
+        assertEquals(20, broadcastModel.installedWidgets.size)
         assertEquals(0, broadcastModel.installedHotseatItems.size)
     }
 
@@ -305,10 +336,7 @@ class FirstScreenBroadcastHelperTest {
                 installerPackage = expectedInstallerPackage,
                 installedWorkspaceItems =
                     mutableSetOf<String>().apply { repeat(70) { add(it.toString()) } },
-                firstScreenInstalledWidgets =
-                    mutableSetOf<String>().apply { repeat(20) { add(it.toString()) } },
-                secondaryScreenInstalledWidgets =
-                    mutableSetOf<String>().apply { repeat(20) { add(it.toString()) } },
+                installedWidgets = linkedSetOf<String>().apply { repeat(40) { add(it.toString()) } },
             )
 
         // When
@@ -317,8 +345,7 @@ class FirstScreenBroadcastHelperTest {
         // Then
         assertEquals(MAX_BROADCAST_SIZE, broadcastModel.getTotalItemCount())
         assertEquals(70, broadcastModel.installedWorkspaceItems.size)
-        assertEquals(0, broadcastModel.firstScreenInstalledWidgets.size)
-        assertEquals(0, broadcastModel.secondaryScreenInstalledWidgets.size)
+        assertEquals(0, broadcastModel.installedWidgets.size)
     }
 
     @Test
@@ -334,8 +361,11 @@ class FirstScreenBroadcastHelperTest {
                     pendingWidgetItems = mutableSetOf("pendingWidgetItems"),
                     installedWorkspaceItems = mutableSetOf("installedWorkspaceItems"),
                     installedHotseatItems = mutableSetOf("installedHotseatItems"),
-                    firstScreenInstalledWidgets = mutableSetOf("firstScreenInstalledWidgetItems"),
-                    secondaryScreenInstalledWidgets = mutableSetOf("secondaryInstalledWidgetItems"),
+                    installedWidgets =
+                        linkedSetOf(
+                            "firstScreenInstalledWidgetItems",
+                            "secondaryInstalledWidgetItems",
+                        ),
                 )
             )
         val expectedPendingIntent =
@@ -347,7 +377,7 @@ class FirstScreenBroadcastHelperTest {
             )
 
         // When
-        FirstScreenBroadcastHelper.sendBroadcastsForModels(context, broadcastModels)
+        broadcastModels.forEach { it.sentBroadcast(context) }
 
         // Then
         val argumentCaptor = ArgumentCaptor.forClass(Intent::class.java)

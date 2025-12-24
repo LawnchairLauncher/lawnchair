@@ -26,13 +26,13 @@ import android.view.MotionEvent;
 public interface InputConsumer {
 
     int TYPE_NO_OP = 1 << 0;
-    int TYPE_OVERVIEW = 1 << 1;
+    int TYPE_LAUNCHER = 1 << 1;
     int TYPE_OTHER_ACTIVITY = 1 << 2;
     int TYPE_ASSISTANT = 1 << 3;
     int TYPE_DEVICE_LOCKED = 1 << 4;
     int TYPE_ACCESSIBILITY = 1 << 5;
     int TYPE_SCREEN_PINNED = 1 << 6;
-    int TYPE_OVERVIEW_WITHOUT_FOCUS = 1 << 7;
+    int TYPE_LAUNCHER_WITHOUT_FOCUS = 1 << 7;
     int TYPE_RESET_GESTURE = 1 << 8;
     int TYPE_PROGRESS_DELEGATE = 1 << 9;
     int TYPE_SYSUI_OVERLAY = 1 << 10;
@@ -45,13 +45,13 @@ public interface InputConsumer {
 
     String[] NAMES = new String[] {
            "TYPE_NO_OP",                    // 0
-            "TYPE_OVERVIEW",                // 1
+            "TYPE_LAUNCHER",                // 1
             "TYPE_OTHER_ACTIVITY",          // 2
             "TYPE_ASSISTANT",               // 3
             "TYPE_DEVICE_LOCKED",           // 4
             "TYPE_ACCESSIBILITY",           // 5
             "TYPE_SCREEN_PINNED",           // 6
-            "TYPE_OVERVIEW_WITHOUT_FOCUS",  // 7
+            "TYPE_LAUNCHER_WITHOUT_FOCUS",  // 7
             "TYPE_RESET_GESTURE",           // 8
             "TYPE_PROGRESS_DELEGATE",       // 9
             "TYPE_SYSUI_OVERLAY",           // 10

@@ -209,7 +209,7 @@ public interface QSTile {
 
         /** Get the state text. */
         public CharSequence getStateText(int arrayResId, Resources resources) {
-            if (state == Tile.STATE_UNAVAILABLE || this instanceof QSTile.BooleanState) {
+            if (state == Tile.STATE_UNAVAILABLE || this instanceof BooleanState) {
                 String[] array = resources.getStringArray(arrayResId);
                 return array[state];
             } else {
@@ -333,7 +333,7 @@ public interface QSTile {
             return rt;
         }
 
-        @androidx.annotation.NonNull
+        @NonNull
         @Override
         public State copy() {
             AdapterState state = new AdapterState();
@@ -346,7 +346,7 @@ public interface QSTile {
     class BooleanState extends AdapterState {
         public static final int VERSION = 1;
 
-        @androidx.annotation.NonNull
+        @NonNull
         @Override
         public State copy() {
             BooleanState state = new BooleanState();

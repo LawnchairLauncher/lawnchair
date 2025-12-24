@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -11,13 +14,15 @@ android {
     namespace "com.android.wm.shell"
     buildFeatures {
         aidl true
+        compose true
     }
     sourceSets {
         main {
-            java.srcDirs = ['shared/src']
-            aidl.srcDirs = ['shared/src']
+            java.srcDirs = ['src']
+//            aidl.srcDirs = ['src']
+            proto.srcDirs = ['src']
             manifest.srcFile 'AndroidManifest.xml'
-            res.srcDirs = ['shared', 'shared/res']
+            res.srcDirs = ['res']
         }
     }
 }
@@ -30,9 +35,21 @@ dependencies {
     ksp libs.dagger.hilt.compiler
     implementation libs.androidx.core.animation
     implementation libs.androidx.dynamicanimation
+    implementation libs.androidx.datastore.preferences
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.activity.compose
+    implementation libs.compose.material3
+    implementation libs.airbnb.lottie
     compileOnly projects.iconloaderlib
     compileOnly projects.flags
     compileOnly projects.utils
+    compileOnly projects.wmshell.shared
+    compileOnly projects.msdllib
+    compileOnly projects.animation
+    compileOnly projects.mechanics
+    compileOnly projects.animationlib
+    compileOnly projects.viewcapturelib
 }
 
 ksp {

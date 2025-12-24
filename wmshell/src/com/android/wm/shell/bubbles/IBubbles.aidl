@@ -23,6 +23,7 @@ import android.graphics.Rect;
 import android.os.UserHandle;
 import com.android.wm.shell.bubbles.IBubblesListener;
 import com.android.wm.shell.shared.bubbles.BubbleBarLocation;
+import com.android.wm.shell.shared.bubbles.logging.EntryPoint;
 
 /**
  * Interface that is exposed to remote callers (launcher) to manipulate the bubbles feature when
@@ -50,11 +51,14 @@ interface IBubbles {
 
     oneway void updateBubbleBarTopToScreenBottom(in int bubbleBarTopToScreenBottom) = 10;
 
-    oneway void stopBubbleDrag(in BubbleBarLocation location, in int bubbleBarTopToScreenBottom) = 11;
+    oneway void stopBubbleDrag(in BubbleBarLocation location,
+            in int bubbleBarTopToScreenBottom) = 11;
 
-    oneway void showShortcutBubble(in ShortcutInfo info, in @nullable BubbleBarLocation location) = 12;
+    oneway void showShortcutBubble(in ShortcutInfo info,
+            in EntryPoint entryPoint, in @nullable BubbleBarLocation location) = 12;
 
-    oneway void showAppBubble(in Intent intent, in UserHandle user, in @nullable BubbleBarLocation location) = 13;
+    oneway void showAppBubble(in Intent intent, in UserHandle user,
+            in EntryPoint entryPoint, in @nullable BubbleBarLocation location) = 13;
 
     oneway void showExpandedView() = 14;
 

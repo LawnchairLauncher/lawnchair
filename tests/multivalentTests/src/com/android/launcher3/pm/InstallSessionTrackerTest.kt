@@ -44,7 +44,7 @@ import org.mockito.kotlin.whenever
 @RunWith(AndroidJUnit4::class)
 class InstallSessionTrackerTest {
     @get:Rule val setFlagsRule = SetFlagsRule()
-    @get:Rule val sandboxContext = SandboxApplication()
+    @get:Rule val sandboxContext = SandboxApplication().withModelDependency()
 
     private val mockInstallSessionHelper: InstallSessionHelper = mock()
     private val mockCallback: InstallSessionTracker.Callback = mock()

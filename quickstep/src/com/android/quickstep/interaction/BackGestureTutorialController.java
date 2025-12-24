@@ -38,20 +38,19 @@ final class BackGestureTutorialController extends TutorialController {
 
     BackGestureTutorialController(BackGestureTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
+
         // Set the Lottie animation colors specifically for the Back gesture
         LottieAnimationColorUtils.updateToArgbColors(
                 mAnimatedGestureDemonstration,
-                Map.of(".onSurfaceBack", fragment.mRootView.mColorOnSurfaceBack,
-                        ".surfaceBack", fragment.mRootView.mColorSurfaceBack,
-                        ".secondaryBack", fragment.mRootView.mColorSecondaryBack));
+                Map.of(".tertiaryContainer", fragment.mRootView.mColorContainerBack,
+                        ".onTertiaryContainer", fragment.mRootView.mColorOnContainerBack));
+
+        mAnimatedGestureDemonstration.setBackgroundColor(fragment.mRootView.mColorContainerBack);
 
         LottieAnimationColorUtils.updateToArgbColors(
                 mCheckmarkAnimation,
-                Map.of(".checkmark",
-                        Utilities.isDarkTheme(mContext)
-                                ? fragment.mRootView.mColorOnSurfaceBack
-                                : fragment.mRootView.mColorSecondaryBack,
-                        ".checkmarkBackground", fragment.mRootView.mColorSurfaceBack));
+                Map.of(".onCheckmarkContainer", fragment.mRootView.mColorContainerBack,
+                        ".checkmarkContainer", fragment.mRootView.mColorOnContainerBack));
     }
 
     @Override
@@ -87,15 +86,23 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
+    public int getSubtitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_Subtitle_Back;
+    }
+
+    @Override
     public int getDoneButtonTextAppearance() {
         return R.style.TextAppearance_GestureTutorial_ButtonLabel_Back;
     }
 
     @Override
+    public int getSuccessSubtitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_Subtitle_Success_Back;
+    }
+
+    @Override
     public int getDoneButtonColor() {
-        return Utilities.isDarkTheme(mContext)
-                ? mTutorialFragment.mRootView.mColorOnSurfaceBack
-                : mTutorialFragment.mRootView.mColorSecondaryBack;
+        return mTutorialFragment.mRootView.mColorOnContainerBack;
     }
 
     @Override
@@ -129,7 +136,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     protected int getExitingAppColor() {
-        return mTutorialFragment.mRootView.mColorSurfaceBack;
+        return mTutorialFragment.mRootView.mColorContainerBack;
     }
 
     @Override

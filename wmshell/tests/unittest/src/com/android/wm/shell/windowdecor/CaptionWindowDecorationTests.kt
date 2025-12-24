@@ -27,6 +27,7 @@ import android.view.WindowInsetsController
 import androidx.test.filters.SmallTest
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.TestRunningTaskInfoBuilder
+import com.android.wm.shell.windowdecor.caption.OccludingElement
 import com.google.common.truth.Truth
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,7 +59,7 @@ class CaptionWindowDecorationTests : ShellTestCase() {
             true /* hasGlobalFocus */,
             exclusionRegion,
             false /* shouldSetBackground */,
-            /* inSyncWithTransition= */ true
+            /* inSyncWithTransition= */ true,
         )
 
         Truth.assertThat(relayoutParams.hasInputFeatureSpy()).isTrue()
@@ -84,7 +85,7 @@ class CaptionWindowDecorationTests : ShellTestCase() {
             true /* hasGlobalFocus */,
             exclusionRegion,
             false /* shouldSetBackground */,
-            /* inSyncWithTransition= */ true
+            /* inSyncWithTransition= */ true,
         )
 
         Truth.assertThat(relayoutParams.hasInputFeatureSpy()).isFalse()
@@ -106,31 +107,27 @@ class CaptionWindowDecorationTests : ShellTestCase() {
             true /* hasGlobalFocus */,
             exclusionRegion,
             false /* shouldSetBackground */,
-            /* inSyncWithTransition= */ true
+            /* inSyncWithTransition= */ true,
         )
-        Truth.assertThat(relayoutParams.mOccludingCaptionElements.size).isEqualTo(2)
-        Truth.assertThat(relayoutParams.mOccludingCaptionElements[0].mAlignment).isEqualTo(
-            WindowDecoration.RelayoutParams.OccludingCaptionElement.Alignment.START)
-        Truth.assertThat(relayoutParams.mOccludingCaptionElements[1].mAlignment).isEqualTo(
-            WindowDecoration.RelayoutParams.OccludingCaptionElement.Alignment.END)
+
+        val elements = relayoutParams.mOccludingElementsCalculator.get()
+        Truth.assertThat(elements).hasSize(2)
+        Truth.assertThat(elements[0].alignment).isEqualTo(OccludingElement.Alignment.START)
+        Truth.assertThat(elements[1].alignment).isEqualTo(OccludingElement.Alignment.END)
     }
 
     private fun createTaskInfo(): ActivityManager.RunningTaskInfo {
-        val taskDescriptionBuilder =
-            ActivityManager.TaskDescription.Builder()
-        val taskInfo = TestRunningTaskInfoBuilder()
-            .setDisplayId(Display.DEFAULT_DISPLAY)
-            .setTaskDescriptionBuilder(taskDescriptionBuilder)
-            .setVisible(true)
-            .build()
-        taskInfo.realActivity = ComponentName(
-            "com.android.wm.shell.windowdecor",
-            "CaptionWindowDecorationTests"
-        )
-        taskInfo.baseActivity = ComponentName(
-            "com.android.wm.shell.windowdecor",
-            "CaptionWindowDecorationTests"
-        )
+        val taskDescriptionBuilder = ActivityManager.TaskDescription.Builder()
+        val taskInfo =
+            TestRunningTaskInfoBuilder()
+                .setDisplayId(Display.DEFAULT_DISPLAY)
+                .setTaskDescriptionBuilder(taskDescriptionBuilder)
+                .setVisible(true)
+                .build()
+        taskInfo.realActivity =
+            ComponentName("com.android.wm.shell.windowdecor", "CaptionWindowDecorationTests")
+        taskInfo.baseActivity =
+            ComponentName("com.android.wm.shell.windowdecor", "CaptionWindowDecorationTests")
         return taskInfo
     }
 }

@@ -39,14 +39,17 @@ import android.view.animation.PathInterpolator;
 import androidx.test.annotation.UiThreadTest;
 import androidx.test.filters.SmallTest;
 
+import com.android.launcher3.icons.FastBitmapDrawableDelegate.SimpleDelegateFactory;
 import com.android.launcher3.util.LauncherMultivalentJUnit;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 /**
  * Tests for FastBitmapDrawable.
@@ -57,6 +60,9 @@ import org.mockito.Spy;
 public class FastBitmapDrawableTest {
     private static final float EPSILON = 0.00001f;
 
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Spy
     FastBitmapDrawable mFastBitmapDrawable =
             spy(new FastBitmapDrawable(Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)));
@@ -64,7 +70,6 @@ public class FastBitmapDrawableTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         when(mFastBitmapDrawable.isVisible()).thenReturn(true);
         mFastBitmapDrawable.isPressed = false;
         mFastBitmapDrawable.isHovered = false;
@@ -321,10 +326,17 @@ public class FastBitmapDrawableTest {
 
     @Test
     public void testUpdateBadgeAlpha() {
-        mFastBitmapDrawable.setBadge(mBadge);
+        FastBitmapDrawable drawable = new FastBitmapDrawable(
+                BitmapInfo.LOW_RES_INFO,
+                IconShape.EMPTY,
+                SimpleDelegateFactory.INSTANCE,
+                0 /* creation flags */,
+                1f /* disabledAlpha */,
+                mBadge
+            );
 
-        mFastBitmapDrawable.setAlpha(1);
-        mFastBitmapDrawable.setAlpha(0);
+        drawable.setAlpha(1);
+        drawable.setAlpha(0);
 
         verify(mBadge).setAlpha(1);
         verify(mBadge).setAlpha(0);

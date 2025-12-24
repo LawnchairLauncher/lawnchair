@@ -25,6 +25,7 @@ import android.content.Intent
 import android.os.Process
 import android.os.UserHandle
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.launcher3.LauncherUiState
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
@@ -64,6 +65,7 @@ class SplitSelectDataHolderTest {
     private val sampleItemInfo2 = ItemInfo()
     private val samplePackage =
         AbstractLauncherUiTest.resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR)
+    private val launcherUiState = LauncherUiState()
 
     @Before
     fun setup() {
@@ -77,6 +79,7 @@ class SplitSelectDataHolderTest {
         sampleShortcut2.setPackage(samplePackage)
         sampleShortcut.putExtra(ShortcutKey.EXTRA_SHORTCUT_ID, "sampleShortcut")
         sampleShortcut2.putExtra(ShortcutKey.EXTRA_SHORTCUT_ID, "sampleShortcut2")
+        splitSelectDataHolder.setLauncherUiState(launcherUiState)
     }
 
     @Test
@@ -88,6 +91,7 @@ class SplitSelectDataHolderTest {
             null,
         )
         assertTrue(splitSelectDataHolder.isSplitSelectActive())
+        assertTrue(launcherUiState.isSplitSelectActiveRef.value)
     }
 
     @Test
@@ -100,6 +104,7 @@ class SplitSelectDataHolderTest {
             INVALID_TASK_ID,
         )
         assertTrue(splitSelectDataHolder.isSplitSelectActive())
+        assertTrue(launcherUiState.isSplitSelectActiveRef.value)
     }
 
     @Test
@@ -112,6 +117,7 @@ class SplitSelectDataHolderTest {
             sampleTaskId,
         )
         assertTrue(splitSelectDataHolder.isSplitSelectActive())
+        assertTrue(launcherUiState.isSplitSelectActiveRef.value)
     }
 
     @Test
@@ -124,6 +130,7 @@ class SplitSelectDataHolderTest {
             INVALID_TASK_ID,
         )
         assertTrue(splitSelectDataHolder.isSplitSelectActive())
+        assertTrue(launcherUiState.isSplitSelectActiveRef.value)
     }
 
     @Test
@@ -178,13 +185,13 @@ class SplitSelectDataHolderTest {
         assertEquals(launchData.splitLaunchType, SPLIT_TASK_TASK)
 
         // should contain a valid task ID for first app, and no intent or shortcut
-        assertNotEquals(launchData.initialTaskId, INVALID_TASK_ID)
-        assertNull(launchData.initialPendingIntent)
+        assertNotEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.initialTask.pendingIntent)
         assertNull(launchData.initialShortcut)
 
         // should contain a valid task ID for second app, and no intent or shortcut
-        assertNotEquals(launchData.secondTaskId, INVALID_TASK_ID)
-        assertNull(launchData.secondPendingIntent)
+        assertNotEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.secondTask.pendingIntent)
         assertNull(launchData.secondShortcut)
     }
 
@@ -202,13 +209,13 @@ class SplitSelectDataHolderTest {
         assertEquals(launchData.splitLaunchType, SPLIT_TASK_PENDINGINTENT)
 
         // should contain a valid task ID for first app, and no intent or shortcut
-        assertNotEquals(launchData.initialTaskId, INVALID_TASK_ID)
-        assertNull(launchData.initialPendingIntent)
+        assertNotEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.initialTask.pendingIntent)
         assertNull(launchData.initialShortcut)
 
         // should contain a valid intent for second app, and no task ID or shortcut
-        assertNotNull(launchData.secondPendingIntent)
-        assertEquals(launchData.secondTaskId, INVALID_TASK_ID)
+        assertNotNull(launchData.secondTask.pendingIntent)
+        assertEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
         assertNull(launchData.secondShortcut)
     }
 
@@ -226,14 +233,14 @@ class SplitSelectDataHolderTest {
         assertEquals(launchData.splitLaunchType, SPLIT_TASK_SHORTCUT)
 
         // should contain a valid task ID for first app, and no intent or shortcut
-        assertNotEquals(launchData.initialTaskId, INVALID_TASK_ID)
-        assertNull(launchData.initialPendingIntent)
+        assertNotEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.initialTask.pendingIntent)
         assertNull(launchData.initialShortcut)
 
         // should contain a valid shortcut and intent for second app, and no task ID
         assertNotNull(launchData.secondShortcut)
-        assertNotNull(launchData.secondPendingIntent)
-        assertEquals(launchData.secondTaskId, INVALID_TASK_ID)
+        assertNotNull(launchData.secondTask.pendingIntent)
+        assertEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
     }
 
     @Test
@@ -251,13 +258,13 @@ class SplitSelectDataHolderTest {
         assertEquals(launchData.splitLaunchType, SPLIT_PENDINGINTENT_TASK)
 
         // should contain a valid intent for first app, and no task ID or shortcut
-        assertNotNull(launchData.initialPendingIntent)
-        assertEquals(launchData.initialTaskId, INVALID_TASK_ID)
+        assertNotNull(launchData.initialTask.pendingIntent)
+        assertEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
         assertNull(launchData.initialShortcut)
 
         // should contain a valid task ID for second app, and no intent or shortcut
-        assertNotEquals(launchData.secondTaskId, INVALID_TASK_ID)
-        assertNull(launchData.secondPendingIntent)
+        assertNotEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.secondTask.pendingIntent)
         assertNull(launchData.secondShortcut)
     }
 
@@ -277,12 +284,12 @@ class SplitSelectDataHolderTest {
 
         // should contain a valid shortcut and intent for first app, and no task ID
         assertNotNull(launchData.initialShortcut)
-        assertNotNull(launchData.initialPendingIntent)
-        assertEquals(launchData.initialTaskId, INVALID_TASK_ID)
+        assertNotNull(launchData.initialTask.pendingIntent)
+        assertEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
 
         // should contain a valid task ID for second app, and no intent or shortcut
-        assertNotEquals(launchData.secondTaskId, INVALID_TASK_ID)
-        assertNull(launchData.secondPendingIntent)
+        assertNotEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.secondTask.pendingIntent)
         assertNull(launchData.secondShortcut)
     }
 
@@ -301,13 +308,13 @@ class SplitSelectDataHolderTest {
         assertEquals(launchData.splitLaunchType, SPLIT_PENDINGINTENT_PENDINGINTENT)
 
         // should contain a valid intent for first app, and no task ID or shortcut
-        assertNotNull(launchData.initialPendingIntent)
-        assertEquals(launchData.initialTaskId, INVALID_TASK_ID)
+        assertNotNull(launchData.initialTask.pendingIntent)
+        assertEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
         assertNull(launchData.initialShortcut)
 
         // should contain a valid intent for second app, and no task ID or shortcut
-        assertNotNull(launchData.secondPendingIntent)
-        assertEquals(launchData.secondTaskId, INVALID_TASK_ID)
+        assertNotNull(launchData.secondTask.pendingIntent)
+        assertEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
         assertNull(launchData.secondShortcut)
     }
 
@@ -324,13 +331,13 @@ class SplitSelectDataHolderTest {
         assertEquals(launchData.splitLaunchType, SPLIT_SINGLE_TASK_FULLSCREEN)
 
         // should contain a valid task ID for first app, and no intent or shortcut
-        assertNotEquals(launchData.initialTaskId, INVALID_TASK_ID)
-        assertNull(launchData.initialPendingIntent)
+        assertNotEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.initialTask.pendingIntent)
         assertNull(launchData.initialShortcut)
 
         // should contain no task ID, intent, or shortcut for second app
-        assertEquals(launchData.secondTaskId, INVALID_TASK_ID)
-        assertNull(launchData.secondPendingIntent)
+        assertEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.secondTask.pendingIntent)
         assertNull(launchData.secondShortcut)
     }
 
@@ -348,13 +355,13 @@ class SplitSelectDataHolderTest {
         assertEquals(launchData.splitLaunchType, SPLIT_SINGLE_INTENT_FULLSCREEN)
 
         // should contain a valid intent for first app, and no task ID or shortcut
-        assertNotNull(launchData.initialPendingIntent)
-        assertEquals(launchData.initialTaskId, INVALID_TASK_ID)
+        assertNotNull(launchData.initialTask.pendingIntent)
+        assertEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
         assertNull(launchData.initialShortcut)
 
         // should contain no task ID, intent, or shortcut for second app
-        assertEquals(launchData.secondTaskId, INVALID_TASK_ID)
-        assertNull(launchData.secondPendingIntent)
+        assertEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.secondTask.pendingIntent)
         assertNull(launchData.secondShortcut)
     }
 
@@ -373,12 +380,12 @@ class SplitSelectDataHolderTest {
 
         // should contain a valid shortcut and intent for first app, and no task ID
         assertNotNull(launchData.initialShortcut)
-        assertNotNull(launchData.initialPendingIntent)
-        assertEquals(launchData.initialTaskId, INVALID_TASK_ID)
+        assertNotNull(launchData.initialTask.pendingIntent)
+        assertEquals(launchData.initialTask.taskId, INVALID_TASK_ID)
 
         // should contain no task ID, intent, or shortcut for second app
-        assertEquals(launchData.secondTaskId, INVALID_TASK_ID)
-        assertNull(launchData.secondPendingIntent)
+        assertEquals(launchData.secondTask.taskId, INVALID_TASK_ID)
+        assertNull(launchData.secondTask.pendingIntent)
         assertNull(launchData.secondShortcut)
     }
 
@@ -393,6 +400,7 @@ class SplitSelectDataHolderTest {
         splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         splitSelectDataHolder.resetState()
         assertFalse(splitSelectDataHolder.isSplitSelectActive())
+        assertFalse(launcherUiState.isSplitSelectActiveRef.value)
     }
 
     @Test
@@ -407,5 +415,6 @@ class SplitSelectDataHolderTest {
         splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         splitSelectDataHolder.resetState()
         assertFalse(splitSelectDataHolder.isSplitSelectActive())
+        assertFalse(launcherUiState.isSplitSelectActiveRef.value)
     }
 }

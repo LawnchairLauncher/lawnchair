@@ -17,10 +17,7 @@
 package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
-import android.tools.NavBar
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
 import android.tools.Rotation
-import android.tools.flicker.rules.ChangeDisplayOrientationRule
 import android.tools.traces.parsers.WindowManagerStateHelper
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -29,20 +26,16 @@ import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper.AppProperty
 import com.android.server.wm.flicker.helpers.NonResizeableAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 @Ignore("Test Base Class")
 abstract class MaximiseAppWithCornerResize(
     val rotation: Rotation = Rotation.ROTATION_0,
     val appProperty: AppProperty = AppProperty.STANDARD
-) : TestScenarioBase() {
+) : TestScenarioBase(rotation) {
 
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
     private val tapl = LauncherInstrumentation()
@@ -57,19 +50,8 @@ abstract class MaximiseAppWithCornerResize(
             }
         )
 
-    @Rule
-    @JvmField
-    val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, rotation)
-
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
-        tapl.setEnableRotation(true)
-        tapl.setExpectedRotation(rotation.value)
-        ChangeDisplayOrientationRule.setRotation(rotation)
         testApp.enterDesktopMode(wmHelper, device)
         testApp.cornerResize(
             wmHelper,

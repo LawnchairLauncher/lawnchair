@@ -19,6 +19,8 @@ package com.android.launcher3.widgetpicker.ui.theme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,10 +31,14 @@ import androidx.compose.ui.unit.sp
  *
  * @param sheetTitle style for the title of entire bottom sheet
  * @param sheetDescription style for the long description displayed below the [sheetTitle].
- * @param selectedListHeaderTitle style for the label of widget app that's currently expanded /
- *   selected in the list of widget apps.
- * @param unSelectedListHeaderTitle style for the label of widget's app that's currently collapsed /
- *   not-selected in the list of widget apps.
+ * @param expandableListHeaderTitle style for the title of expandable widget app header (in the
+ *   single pane variant of widget picker).
+ * @param expandableListHeaderSubTitle style for the subtitle of expandable widget app header (in
+ *   the single pane variant of widget picker).
+ * @param selectedListHeaderTitle style for the title of widget app that's currently selected
+ *   selected in the list of widget apps (in the two pane variant of widget picker)
+ * @param unSelectedListHeaderTitle style for the title of widget's app that's currently
+ *   not-selected in the list of widget apps (in the two pane variant of widget picker).
  * @param selectedListHeaderSubTitle style for the sub-title text shown below the
  *   [selectedListHeaderTitle] for the widget app that's currently expanded / selected in the list
  *   of widget apps.
@@ -44,18 +50,26 @@ import androidx.compose.ui.unit.sp
  * @param widgetSpanText style for the text showing the dimensions of the widget.
  * @param widgetDescription style for the text showing the long description of the widget.
  * @param addWidgetButtonLabel style for the "add" text on the button shown to add the widget.
- * @param toolbarTabLabel style for the text shown on each tab within the floating toolbar (e.g.
- *   personal, work, browse, featured).
+ * @param toolbarUnSelectedTabLabel style for the text shown on unselected tabs within the floating
+ *   toolbar (e.g. personal, work, browse, featured).
+ * @param toolbarSelectedTabLabel style for the text shown on selected tab within the floating
+ *   toolbar (e.g. personal, work, browse, featured).
  * @param searchBarPlaceholderText style of the text shown as placeholder when user hasn't typed
  *   anything in searchbar.
  * @param searchBarText style of the text that user types in the search bar.
  */
+@Stable
+@Immutable
 data class WidgetPickerTextStyles(
     // Titled bottom sheet
     val sheetTitle: TextStyle,
     val sheetDescription: TextStyle,
 
-    // Expandable list
+    // Expandable List
+    val expandableListHeaderTitle: TextStyle,
+    val expandableListHeaderSubTitle: TextStyle,
+
+    // Selectable list
     val selectedListHeaderTitle: TextStyle,
     val unSelectedListHeaderTitle: TextStyle,
     val selectedListHeaderSubTitle: TextStyle,
@@ -69,7 +83,8 @@ data class WidgetPickerTextStyles(
     val widgetSpanText: TextStyle,
     val widgetDescription: TextStyle,
     val addWidgetButtonLabel: TextStyle,
-    val toolbarTabLabel: TextStyle,
+    val toolbarUnSelectedTabLabel: TextStyle,
+    val toolbarSelectedTabLabel: TextStyle,
 
     // Search bar
     val searchBarPlaceholderText: TextStyle,
@@ -103,7 +118,13 @@ fun defaultWidgetPickerTextStyles() =
         sheetTitle = MaterialTheme.typography.headlineSmallEmphasized,
         sheetDescription = MaterialTheme.typography.bodyMedium,
 
-        // Expandable list
+        // Expandable list headers
+        expandableListHeaderTitle =
+            MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
+        expandableListHeaderSubTitle =
+            MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
+
+        // Clickable List headers
         selectedListHeaderTitle =
             MaterialTheme.typography.titleMediumEmphasized.copy(fontWeight = FontWeight.Medium),
         unSelectedListHeaderTitle =
@@ -123,7 +144,8 @@ fun defaultWidgetPickerTextStyles() =
         addWidgetButtonLabel = MaterialTheme.typography.labelLarge,
 
         // Floating toolbar
-        toolbarTabLabel = MaterialTheme.typography.labelLarge,
+        toolbarUnSelectedTabLabel = MaterialTheme.typography.labelLarge,
+        toolbarSelectedTabLabel = MaterialTheme.typography.labelLargeEmphasized,
 
         // Search bar
         searchBarPlaceholderText =

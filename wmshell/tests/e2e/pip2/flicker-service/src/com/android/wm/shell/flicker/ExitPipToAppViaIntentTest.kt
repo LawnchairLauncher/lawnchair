@@ -17,11 +17,15 @@
 package com.android.wm.shell.flicker
 
 import android.app.Instrumentation
+import android.platform.test.annotations.Postsubmit
 import android.tools.NavBar
 import android.tools.Rotation
+import android.tools.flicker.AssertionInvocationGroup
 import android.tools.flicker.FlickerConfig
 import android.tools.flicker.annotation.ExpectedScenarios
 import android.tools.flicker.annotation.FlickerConfigProvider
+import android.tools.flicker.assertors.ComponentTemplate
+import android.tools.flicker.assertors.assertions.LayerExpands
 import android.tools.flicker.config.AssertionTemplates
 import android.tools.flicker.config.FlickerConfig
 import android.tools.flicker.config.FlickerConfigEntry
@@ -31,6 +35,7 @@ import android.tools.flicker.extractors.TaggedScenarioExtractorBuilder
 import android.tools.flicker.junit.FlickerServiceJUnit4ClassRunner
 import android.tools.traces.events.CujType
 import android.tools.traces.parsers.WindowManagerStateHelper
+import androidx.test.filters.RequiresDevice
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.server.wm.flicker.testapp.ActivityOptions
@@ -52,12 +57,10 @@ import org.junit.runner.RunWith
  *     Expand [pipApp] app to full screen via an intent
  * ```
  */
+@RequiresDevice
+@Postsubmit
 @RunWith(FlickerServiceJUnit4ClassRunner::class)
 class ExitPipToAppViaIntentTest {
-    val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
-    val wmHelper = WindowManagerStateHelper(instrumentation)
-    val pipApp: PipAppHelper = PipAppHelper(instrumentation)
-
     @Rule
     @JvmField
     val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, Rotation.ROTATION_0)
@@ -82,15 +85,23 @@ class ExitPipToAppViaIntentTest {
     }
 
     companion object {
+        val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
+        val wmHelper = WindowManagerStateHelper(instrumentation)
+        val pipApp: PipAppHelper = PipAppHelper(instrumentation)
+        private val pipAppComponentTemplate = ComponentTemplate("PIP_APP") { _ -> pipApp }
+
         private val PIP_EXPAND_CUJ_EXTRACTOR = TaggedScenarioExtractorBuilder()
                 .setTargetTag(CujType.CUJ_PIP_TRANSITION)
                 .setAdditionalCujFilter {
                     it.tag == "EXIT_PIP"
                 }.build()
+
         private val PIP_EXPAND_CUJ_CONFIG = FlickerConfigEntry(
                 scenarioId = ScenarioId("PIP_EXPAND_TO_FULLSCREEN"),
                 extractor = PIP_EXPAND_CUJ_EXTRACTOR,
-                assertions = AssertionTemplates.COMMON_ASSERTIONS,
+                assertions = AssertionTemplates.COMMON_ASSERTIONS + mapOf(
+                    LayerExpands(pipAppComponentTemplate) to AssertionInvocationGroup.BLOCKING
+                ),
                 enabled = true
         )
 

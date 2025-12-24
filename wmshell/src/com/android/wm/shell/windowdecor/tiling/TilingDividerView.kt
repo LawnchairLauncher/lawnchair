@@ -16,7 +16,6 @@
 package com.android.wm.shell.windowdecor.tiling
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
@@ -28,7 +27,7 @@ import android.view.PointerIcon
 import android.view.View
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
-import androidx.compose.ui.graphics.toArgb
+import com.android.internal.R as InternalR
 import com.android.internal.annotations.VisibleForTesting
 import com.android.internal.config.sysui.SystemUiDeviceConfigFlags
 import com.android.wm.shell.R
@@ -36,7 +35,6 @@ import com.android.wm.shell.common.split.DividerHandleView
 import com.android.wm.shell.common.split.DividerRoundedCorner
 import com.android.wm.shell.shared.animation.Interpolators
 import com.android.wm.shell.windowdecor.DragDetector
-import com.android.wm.shell.windowdecor.common.DecorThemeUtil
 
 /** Divider for tiling split screen, currently mostly a copy of [DividerView]. */
 class TilingDividerView : FrameLayout, View.OnTouchListener, DragDetector.MotionEventHandler {
@@ -57,7 +55,6 @@ class TilingDividerView : FrameLayout, View.OnTouchListener, DragDetector.Motion
     private var canResize = false
     private var resized = false
     private var isDarkMode = false
-    private var decorThemeUtil = DecorThemeUtil(context)
 
     /**
      * Tracks divider bar visible bounds in screen-based coordination. Used to calculate with
@@ -94,14 +91,15 @@ class TilingDividerView : FrameLayout, View.OnTouchListener, DragDetector.Motion
         callback = dividerMoveCallback
         this.dividerBounds.set(dividerBounds)
         this.isDarkMode = isDarkMode
-        paint.color = decorThemeUtil.getColorScheme(isDarkMode).outlineVariant.toArgb()
+        paint.color = getDividerColor()
         handle.setIsLeftRightSplit(true)
-        handle.setColor(getTilingHandleColor(isDarkMode), /* invalidateView = */ false)
+        handle.setColor(getTilingHandleColor(isDarkMode), /* invalidateView= */ false)
         handle.alpha = HANDLE_ALPHA
         corners.setIsLeftRightSplit(true)
         corners.setRadiusResource(
-            com.android.wm.shell.shared.R.dimen.desktop_windowing_freeform_rounded_corner_radius)
-        corners.setRoundCornerColor(paint.color, /* invalidateView = */ false)
+            com.android.wm.shell.shared.R.dimen.desktop_windowing_freeform_rounded_corner_radius
+        )
+        corners.setRoundCornerColor(paint.color, /* invalidateView= */ false)
         handleRegionHeight = handleRegionSize.height
         handleRegionWidth = handleRegionSize.width
         initHandleYCoordinates()
@@ -115,17 +113,17 @@ class TilingDividerView : FrameLayout, View.OnTouchListener, DragDetector.Motion
 
     fun onUiModeChange(isDarkMode: Boolean) {
         this.isDarkMode = isDarkMode
-        handle.setColor(getTilingHandleColor(isDarkMode), /* invalidateView = */ true)
-        paint.color = decorThemeUtil.getColorScheme(isDarkMode).outlineVariant.toArgb()
-        corners.setRoundCornerColor(paint.color, /* invalidateView = */ true)
+        handle.setColor(getTilingHandleColor(isDarkMode), /* invalidateView= */ true)
+        paint.color = getDividerColor()
+        corners.setRoundCornerColor(paint.color, /* invalidateView= */ true)
         invalidate()
     }
 
-    fun onTaskInfoChange() {
-        decorThemeUtil = DecorThemeUtil(context)
-        if (paint.color != decorThemeUtil.getColorScheme(isDarkMode).outlineVariant.toArgb()) {
-            paint.color = decorThemeUtil.getColorScheme(isDarkMode).outlineVariant.toArgb()
-            corners.setRoundCornerColor(paint.color, /* invalidateView = */ true)
+    fun onThemeChanged() {
+        val newColor = getDividerColor()
+        if (paint.color != newColor) {
+            paint.color = newColor
+            corners.setRoundCornerColor(paint.color, /* invalidateView= */ true)
             invalidate()
         }
     }
@@ -139,10 +137,7 @@ class TilingDividerView : FrameLayout, View.OnTouchListener, DragDetector.Motion
             resources.getDimensionPixelSize(R.dimen.docked_stack_divider_lift_elevation)
         setOnTouchListener(this)
         setWillNotDraw(false)
-        val isDarkMode =
-            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
-                Configuration.UI_MODE_NIGHT_YES
-        paint.color = decorThemeUtil.getColorScheme(isDarkMode).outlineVariant.toArgb()
+        paint.color = getDividerColor()
         paint.isAntiAlias = true
         paint.style = Paint.Style.FILL
     }
@@ -159,8 +154,12 @@ class TilingDividerView : FrameLayout, View.OnTouchListener, DragDetector.Motion
         }
     }
 
-    override fun onResolvePointerIcon(event: MotionEvent, pointerIndex: Int): PointerIcon =
-        PointerIcon.getSystemIcon(context, PointerIcon.TYPE_HORIZONTAL_DOUBLE_ARROW)
+    override fun onResolvePointerIcon(event: MotionEvent, pointerIndex: Int): PointerIcon {
+        if (isWithinHandleRegion(event.y.toInt())) {
+            return PointerIcon.getSystemIcon(context, PointerIcon.TYPE_HORIZONTAL_DOUBLE_ARROW)
+        }
+        return PointerIcon.getSystemIcon(context, PointerIcon.TYPE_ARROW)
+    }
 
     override fun onTouch(v: View, event: MotionEvent): Boolean =
         dragDetector.onMotionEvent(v, event)
@@ -177,6 +176,9 @@ class TilingDividerView : FrameLayout, View.OnTouchListener, DragDetector.Motion
             .start()
     }
 
+    private fun getDividerColor(): Int =
+        context.resources.getColor(InternalR.color.customColorOverviewBackground, context.theme)
+
     /**
      * Retrieves the tiling handle background color based on the current dark mode status.
      *
@@ -184,12 +186,13 @@ class TilingDividerView : FrameLayout, View.OnTouchListener, DragDetector.Motion
      * @return The integer color value for the tiling handle background.
      */
     private fun getTilingHandleColor(isDarkMode: Boolean): Int {
-        val colorResId = if (isDarkMode) {
-            R.color.tiling_handle_background_dark
-        } else {
-            R.color.tiling_handle_background_light
-        }
-        return resources.getColor(colorResId, /* theme = */ null)
+        val colorResId =
+            if (isDarkMode) {
+                R.color.tiling_handle_background_dark
+            } else {
+                R.color.tiling_handle_background_light
+            }
+        return resources.getColor(colorResId, /* theme= */ null)
     }
 
     private fun releaseTouching() {

@@ -36,6 +36,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.os.UserHandle;
@@ -313,6 +314,42 @@ public class BubbleTest extends ShellTestCase {
 
         bubble.cleanupTaskView();
         assertThat(bubble.getTaskId()).isEqualTo(INVALID_TASK_ID);
+    }
+
+    @Test
+    public void testAsBubbleBarBubble_showFlyoutFalse() {
+        Bubble b = createChatBubble(true);
+        BubbleViewInfoTask.BubbleViewInfo info = new BubbleViewInfoTask.BubbleViewInfo();
+        info.flyoutMessage = createFlyoutMessage();
+        b.setViewInfo(info);
+        b.setSuppressFlyout(true);
+
+        assertThat(b.showFlyout()).isFalse();
+
+        BubbleInfo bubbleInfo = b.asBubbleBarBubble();
+        assertThat(bubbleInfo.getParcelableFlyoutMessage()).isNull();
+    }
+
+    @Test
+    public void testAsBubbleBarBubble_showFlyoutTrue() {
+        Bubble b = createChatBubble(true);
+        BubbleViewInfoTask.BubbleViewInfo info = new BubbleViewInfoTask.BubbleViewInfo();
+        info.flyoutMessage = createFlyoutMessage();
+        b.setViewInfo(info);
+
+        assertThat(b.showFlyout()).isTrue();
+
+        BubbleInfo bubbleInfo = b.asBubbleBarBubble();
+        assertThat(bubbleInfo.getParcelableFlyoutMessage()).isNotNull();
+    }
+
+    private Bubble.FlyoutMessage createFlyoutMessage() {
+        Bubble.FlyoutMessage flyout = new Bubble.FlyoutMessage();
+        flyout.senderIcon = mock(Icon.class);
+        flyout.senderAvatar = mock(Drawable.class);
+        flyout.senderName = "senderName";
+        flyout.message = "help I'm trapped in a bubble";
+        return flyout;
     }
 
     private Intent createIntent() {

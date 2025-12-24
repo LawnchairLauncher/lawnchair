@@ -156,6 +156,11 @@ public class PipTransitionState {
     @Nullable
     private TaskInfo mPipTaskInfo;
 
+    // PiP candidate task info sent to Shell during transition request;
+    // this might not be the same as mPipTaskInfo, if in multi-activity case for example.
+    @Nullable
+    private TaskInfo mPipCandidateTaskInfo;
+
     // Overlay leash potentially used during swipe PiP to home transition;
     // if null while mInSwipePipToHomeTransition is true, then srcRectHint was invalid.
     @Nullable
@@ -169,7 +174,13 @@ public class PipTransitionState {
 
     private boolean mInFixedRotation = false;
 
-    private boolean mIsPipBoundsChangingWithDisplay = false;
+    /*
+     * A flag to keep track of the period between a display change being requested and the point
+     * when display change transition starts playing.
+     * We keep track of this separately from bounds change states, since display change transition
+     * request can come in at any point while a PiP resize is still scheduled or running.
+     */
+    private boolean mIsDisplayChangeScheduled = false;
 
     /**
      * An interface to track state updates as we progress through PiP transitions.
@@ -322,6 +333,15 @@ public class PipTransitionState {
         return mState > ENTERING_PIP && mState < EXITING_PIP;
     }
 
+    /**
+     * @return true if we have either scheduled enter PiP or are animating the entering.
+     */
+    public boolean isEnterPipScheduled() {
+        return mState == PipTransitionState.ENTERING_PIP
+                || mState == PipTransitionState.SCHEDULED_ENTER_PIP;
+    }
+
+
     void setSwipePipToHomeState(@Nullable SurfaceControl overlayLeash,
             @NonNull Rect appBounds) {
         mInSwipePipToHomeTransition = true;
@@ -347,15 +367,34 @@ public class PipTransitionState {
     }
 
     void setPinnedTaskLeash(@Nullable SurfaceControl leash) {
-        mPinnedTaskLeash = leash;
+        if (!com.android.window.flags2.Flags.releaseAllTransitionSurfaces()) {
+            mPinnedTaskLeash = leash;
+            return;
+        }
+        if (mPinnedTaskLeash != null) {
+            if (leash != null && leash.isSameSurface(mPinnedTaskLeash)) {
+                return;
+            }
+            mPinnedTaskLeash.release();
+        }
+        mPinnedTaskLeash = leash != null
+                ? new SurfaceControl(leash, "PipTransitionState") : null;
     }
 
-    @Nullable TaskInfo getPipTaskInfo() {
+    @Nullable public TaskInfo getPipTaskInfo() {
         return mPipTaskInfo;
     }
 
     void setPipTaskInfo(@Nullable TaskInfo pipTaskInfo) {
         mPipTaskInfo = pipTaskInfo;
+    }
+
+    @Nullable TaskInfo getPipCandidateTaskInfo() {
+        return mPipCandidateTaskInfo;
+    }
+
+    void setPipCandidateTaskInfo(@Nullable TaskInfo pipCandidateTaskInfo) {
+        mPipCandidateTaskInfo = pipCandidateTaskInfo;
     }
 
     /**
@@ -376,22 +415,31 @@ public class PipTransitionState {
     }
 
     /**
-     * @return true if a display change is ungoing with a PiP bounds change.
+     * @return true if PiP state affecting display change has been requested but hasn't played yet.
      */
-    public boolean isPipBoundsChangingWithDisplay() {
-        return mIsPipBoundsChangingWithDisplay;
+    public boolean isDisplayChangeScheduled() {
+        return mIsDisplayChangeScheduled;
     }
 
     /**
-     * Sets the PiP bounds change with display change flag.
+     * Sets the display change scheduled flag.
+     *
+     * The caller is expected to:
+     * <ul>
+     *   <li>reset this flag once display change transition starts playing,</li>
+     *   <li>synchronously set PiP transition state to SCHEDULED_BOUNDS_CHANGE,
+     *   putting PiP back into a non-idle state.</li>
+     *   <li>progress as usual to CHANGING_PIP_BOUNDS followed by CHANGED_PIP_BOUNDS states
+     *   to put PiP back into an idle state</li>
+     * </ul>
+     *
+     * <p>Note: this won't run the on-idle runnable as we are expected to be put into a non-idle
+     * state immediately after.</p>
      */
-    public void setIsPipBoundsChangingWithDisplay(boolean isPipBoundsChangingWithDisplay) {
+    public void setIsDisplayChangeScheduled(boolean isDisplayChangeScheduled) {
         ProtoLog.v(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
-                "%s: Set mIsPipBoundsChangingWithDisplay=%b", TAG, isPipBoundsChangingWithDisplay);
-        mIsPipBoundsChangingWithDisplay = isPipBoundsChangingWithDisplay;
-        if (!isPipBoundsChangingWithDisplay) {
-            maybeRunOnIdlePipTransitionStateCallback();
-        }
+                "%s: Set mIsDisplayChangeScheduled=%b", TAG, isDisplayChangeScheduled);
+        mIsDisplayChangeScheduled = isDisplayChangeScheduled;
     }
 
     /**
@@ -466,14 +514,14 @@ public class PipTransitionState {
     public boolean isPipStateIdle() {
         // This needs to be a valid in-PiP state that isn't a transient state.
         return (mState == ENTERED_PIP || mState == CHANGED_PIP_BOUNDS)
-                && !isInFixedRotation() && !isPipBoundsChangingWithDisplay();
+                && !isInFixedRotation() && !isDisplayChangeScheduled();
     }
 
     @Override
     public String toString() {
         return String.format("PipTransitionState(mState=%s, mInSwipePipToHomeTransition=%b, "
-                + "mIsPipBoundsChangingWithDisplay=%b, mInFixedRotation=%b",
-                stateToString(mState), mInSwipePipToHomeTransition, mIsPipBoundsChangingWithDisplay,
+                + "mIsDisplayChangeScheduled=%b, mInFixedRotation=%b",
+                stateToString(mState), mInSwipePipToHomeTransition, mIsDisplayChangeScheduled,
                         mInFixedRotation);
     }
 
@@ -483,7 +531,7 @@ public class PipTransitionState {
         pw.println(prefix + TAG);
         pw.println(innerPrefix + "mState=" + stateToString(mState));
         pw.println(innerPrefix + "mInFixedRotation=" + mInFixedRotation);
-        pw.println(innerPrefix + "mIsPipBoundsChangingWithDisplay="
-                + mIsPipBoundsChangingWithDisplay);
+        pw.println(innerPrefix + "mIsDisplayChangeScheduled="
+                + mIsDisplayChangeScheduled);
     }
 }

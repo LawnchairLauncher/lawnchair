@@ -16,11 +16,10 @@
 
 package com.android.wm.shell.bubbles.bar;
 
-import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_BUBBLES;
+import static com.android.wm.shell.bubbles.Bubbles.DISMISS_USER_GESTURE;
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_BUBBLES_NOISY;
 import static com.android.wm.shell.shared.animation.Interpolators.ALPHA_IN;
 import static com.android.wm.shell.shared.animation.Interpolators.ALPHA_OUT;
-import static com.android.wm.shell.bubbles.Bubbles.DISMISS_USER_GESTURE;
 import static com.android.wm.shell.shared.bubbles.BubbleConstants.BUBBLE_EXPANDED_SCRIM_ALPHA;
 
 import android.annotation.Nullable;
@@ -54,8 +53,8 @@ import com.android.wm.shell.bubbles.BubblePositioner;
 import com.android.wm.shell.bubbles.BubbleViewProvider;
 import com.android.wm.shell.bubbles.DismissViewUtils;
 import com.android.wm.shell.bubbles.bar.BubbleBarExpandedViewDragController.DragListener;
-import com.android.wm.shell.shared.bubbles.BaseBubblePinController;
-import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper;
+import com.android.wm.shell.bubbles.util.ReferenceCounter;
+import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.shared.bubbles.BubbleBarLocation;
 import com.android.wm.shell.shared.bubbles.DeviceConfig;
 import com.android.wm.shell.shared.bubbles.DismissView;
@@ -88,11 +87,8 @@ public class BubbleBarLayerView extends FrameLayout
     private final BubbleBarAnimationHelper mAnimationHelper;
     private final BubbleEducationViewController mEducationViewController;
     private final View mScrimView;
-    private final BubbleExpandedViewPinController mBubbleExpandedViewPinController;
-    @Nullable
-    private DropTargetManager mDropTargetManager = null;
-    @Nullable
-    private DragZoneFactory mDragZoneFactory = null;
+    private DropTargetManager mDropTargetManager;
+    private DragZoneFactory mDragZoneFactory;
 
     @Nullable
     private BubbleViewProvider mExpandedBubble;
@@ -114,15 +110,22 @@ public class BubbleBarLayerView extends FrameLayout
     private final Rect mHandleTouchBounds = new Rect();
     private Insets mInsets;
 
+    /**
+     * Tracks bubbles used in animations. We keep animating bubbles attached until the end of all
+     * animations.
+     */
+    private final ReferenceCounter<BubbleViewProvider> mAnimatingBubbleTracker =
+            new ReferenceCounter();
+
     public BubbleBarLayerView(Context context, BubbleController controller, BubbleData bubbleData,
-            BubbleLogger bubbleLogger) {
+            BubbleLogger bubbleLogger, ShellExecutor mainExecutor) {
         super(context);
         mBubbleController = controller;
         mBubbleData = bubbleData;
         mPositioner = mBubbleController.getPositioner();
         mBubbleLogger = bubbleLogger;
 
-        mAnimationHelper = new BubbleBarAnimationHelper(context, mPositioner);
+        mAnimationHelper = new BubbleBarAnimationHelper(context, mPositioner, mainExecutor);
         mEducationViewController = new BubbleEducationViewController(context, (boolean visible) -> {
             if (mExpandedView == null) return;
             mExpandedView.setObscured(visible);
@@ -138,112 +141,118 @@ public class BubbleBarLayerView extends FrameLayout
                 getResources().getColor(android.R.color.system_neutral1_1000)));
 
         setUpDismissView();
-
-        mBubbleExpandedViewPinController = new BubbleExpandedViewPinController(
-                context, this, mPositioner);
-        LocationChangeListener locationChangeListener = new LocationChangeListener();
-        mBubbleExpandedViewPinController.setListener(locationChangeListener);
-
-        if (BubbleAnythingFlagHelper.enableBubbleToFullscreen()) {
-            mDropTargetManager = new DropTargetManager(context, this,
-                    new DropTargetManager.DragZoneChangedListener() {
-                        private DragZone mLastBubbleLocationDragZone = null;
-                        private BubbleBarLocation mInitialLocation = null;
-                        @Override
-                        public void onDragEnded(@Nullable DragZone zone) {
-                            if (mExpandedBubble == null || !(mExpandedBubble instanceof Bubble)) {
-                                Log.w(TAG, "dropped invalid bubble: " + mExpandedBubble);
-                                return;
-                            }
-
-                            final boolean isBubbleLeft = zone instanceof DragZone.Bubble.Left;
-                            final boolean isBubbleRight = zone instanceof DragZone.Bubble.Right;
-                            if (!isBubbleLeft && !isBubbleRight) {
-                                // If we didn't finish the "change" animation make sure to animate
-                                // it back to the right spot
-                                locationChangeListener.onChange(mInitialLocation);
-                            }
-                            if (zone instanceof DragZone.FullScreen) {
-                                ((Bubble) mExpandedBubble).getTaskView().moveToFullscreen();
-                                // Make sure location change listener is updated with the initial
-                                // location -- even if we "switched sides" during the drag, since
-                                // we've ended up in fullscreen, the location shouldn't change.
-                                locationChangeListener.onRelease(mInitialLocation);
-                            } else if (isBubbleLeft) {
-                                locationChangeListener.onRelease(BubbleBarLocation.LEFT);
-                            } else if (isBubbleRight) {
-                                locationChangeListener.onRelease(BubbleBarLocation.RIGHT);
-                            }
-                        }
-
-                        @Override
-                        public void onInitialDragZoneSet(@Nullable DragZone dragZone) {
-                            mInitialLocation = dragZone instanceof DragZone.Bubble.Left
-                                    ? BubbleBarLocation.LEFT
-                                    : BubbleBarLocation.RIGHT;
-                            locationChangeListener.onStart(mInitialLocation);
-                        }
-
-                        @Override
-                        public void onDragZoneChanged(@NonNull DraggedObject draggedObject,
-                                @Nullable DragZone from, @Nullable DragZone to) {
-                            final boolean isBubbleLeft = to instanceof DragZone.Bubble.Left;
-                            final boolean isBubbleRight = to instanceof DragZone.Bubble.Right;
-                            if ((isBubbleLeft || isBubbleRight)
-                                    && to != mLastBubbleLocationDragZone) {
-                                mLastBubbleLocationDragZone = to;
-                                locationChangeListener.onChange(isBubbleLeft
-                                        ? BubbleBarLocation.LEFT
-                                        : BubbleBarLocation.RIGHT);
-
-                            }
-                        }
-                    });
-            // TODO - currently only fullscreen is supported, should enable for split & desktop
-            mDragZoneFactory = new DragZoneFactory(context, mPositioner.getCurrentConfig(),
-                    new DragZoneFactory.SplitScreenModeChecker() {
-                        @NonNull
-                        @Override
-                        public SplitScreenMode getSplitScreenMode() {
-                            return SplitScreenMode.UNSUPPORTED;
-                        }
-                    },
-                    new DragZoneFactory.DesktopWindowModeChecker() {
-                        @Override
-                        public boolean isSupported() {
-                            return false;
-                        }
-                    },
-                    new DragZoneFactory.BubbleBarPropertiesProvider() {
-                        // this is only used in launcher
-                        @Override
-                        public int getBottomPadding() {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getWidth() {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getHeight() {
-                            return 0;
-                        }
-                    });
-        }
+        setupDropTargetManager();
+        setupDragZoneFactory();
         setOnClickListener(view -> hideModalOrCollapse());
     }
 
-    /** Hides the expanded view drop target. */
-    public void hideBubbleBarExpandedViewDropTarget() {
-        mBubbleExpandedViewPinController.hideDropTarget();
+    private void setupDropTargetManager() {
+        mDropTargetManager = new DropTargetManager(getContext(), this,
+                new DropTargetManager.DragZoneChangedListener() {
+                    private DragZone mLastBubbleLocationDragZone = null;
+                    private BubbleBarLocation mInitialLocation = null;
+
+                    @Override
+                    public void onDragEnded(@Nullable DragZone zone) {
+                        if (mExpandedBubble == null || !(mExpandedBubble instanceof Bubble)) {
+                            Log.w(TAG, "dropped invalid bubble: " + mExpandedBubble);
+                            return;
+                        }
+
+                        final boolean isBubbleLeft = zone instanceof DragZone.Bubble.Left;
+                        final boolean isBubbleRight = zone instanceof DragZone.Bubble.Right;
+                        if (!isBubbleLeft && !isBubbleRight) {
+                            // If we didn't finish the "change" animation make sure to animate
+                            // it back to the right spot
+                            mBubbleController.animateBubbleBarLocation(mInitialLocation);
+                        }
+                        if (zone instanceof DragZone.FullScreen) {
+                            ((Bubble) mExpandedBubble).getTaskView().moveToFullscreen();
+                            // Make sure location change listener is updated with the initial
+                            // location -- even if we "switched sides" during the drag, since
+                            // we've ended up in fullscreen, the location shouldn't change.
+                            onRelease(mInitialLocation);
+                        } else if (isBubbleLeft) {
+                            onRelease(BubbleBarLocation.LEFT);
+                        } else if (isBubbleRight) {
+                            onRelease(BubbleBarLocation.RIGHT);
+                        }
+                    }
+
+                    @Override
+                    public void onInitialDragZoneSet(@Nullable DragZone dragZone) {
+                        mInitialLocation = dragZone instanceof DragZone.Bubble.Left
+                                ? BubbleBarLocation.LEFT
+                                : BubbleBarLocation.RIGHT;
+                    }
+
+                    @Override
+                    public void onDragZoneChanged(@NonNull DraggedObject draggedObject,
+                            @Nullable DragZone from, @Nullable DragZone to) {
+                        final boolean isBubbleLeft = to instanceof DragZone.Bubble.Left;
+                        final boolean isBubbleRight = to instanceof DragZone.Bubble.Right;
+                        if ((isBubbleLeft || isBubbleRight)
+                                && to != mLastBubbleLocationDragZone) {
+                            mLastBubbleLocationDragZone = to;
+                            mBubbleController.animateBubbleBarLocation(isBubbleLeft
+                                    ? BubbleBarLocation.LEFT
+                                    : BubbleBarLocation.RIGHT);
+
+                        }
+                    }
+
+                    private void onRelease(BubbleBarLocation location) {
+                        mBubbleController.setBubbleBarLocation(location,
+                                BubbleBarLocation.UpdateSource.DRAG_EXP_VIEW);
+                        if (location != mInitialLocation) {
+                            BubbleLogger.Event event = location.isOnLeft(isLayoutRtl())
+                                    ? BubbleLogger.Event.BUBBLE_BAR_MOVED_LEFT_DRAG_EXP_VIEW
+                                    : BubbleLogger.Event.BUBBLE_BAR_MOVED_RIGHT_DRAG_EXP_VIEW;
+                            logBubbleEvent(event);
+                        }
+                    }
+                });
     }
 
-    /** Shows the expanded view drop target at the requested {@link BubbleBarLocation location} */
-    public void showBubbleBarExtendedViewDropTarget(@NonNull BubbleBarLocation bubbleBarLocation) {
-        setVisibility(VISIBLE);
-        mBubbleExpandedViewPinController.showDropTarget(bubbleBarLocation);
+    private void setupDragZoneFactory() {
+        DragZoneFactory.SplitScreenModeChecker splitScreenModeChecker =
+                new DragZoneFactory.SplitScreenModeChecker() {
+                    @NonNull
+                    @Override
+                    public SplitScreenMode getSplitScreenMode() {
+                        return SplitScreenMode.UNSUPPORTED;
+                    }
+                };
+
+        DragZoneFactory.DesktopWindowModeChecker desktopWindowModeChecker =
+                new DragZoneFactory.DesktopWindowModeChecker() {
+                    @Override
+                    public boolean isSupported() {
+                        return false;
+                    }
+                };
+
+        DragZoneFactory.BubbleBarPropertiesProvider bubbleBarPropertiesProvider =
+                new DragZoneFactory.BubbleBarPropertiesProvider() {
+                    // this is only used in launcher
+                    @Override
+                    public int getBottomPadding() {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getWidth() {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getHeight() {
+                        return 0;
+                    }
+                };
+
+        mDragZoneFactory = new DragZoneFactory(getContext(), mPositioner.getCurrentConfig(),
+                splitScreenModeChecker, desktopWindowModeChecker, bubbleBarPropertiesProvider);
     }
 
     @Override
@@ -300,7 +309,7 @@ public class BubbleBarLayerView extends FrameLayout
 
     /**
      * @return whether it's possible to expand {@param b} right now. This is {@code false} if
-     *         the bubble has no view or if the bubble is already showing.
+     * the bubble has no view or if the bubble is already showing.
      */
     @Override
     public boolean canExpandView(BubbleViewProvider b) {
@@ -339,11 +348,22 @@ public class BubbleBarLayerView extends FrameLayout
             mExpandedView = null;
         }
         if (mExpandedView == null) {
+            boolean expandedViewAlreadyAdded = false;
             if (expandedView.getParent() != null) {
-                // Expanded view might be animating collapse and is still attached
-                // Cancel current animations and remove from parent
+                // Expanded view might be animating collapse and is still attached. Cancel current
+                // animations.
+                // Add temporary references to the previous and the current bubbles to prevent
+                // them from being removed when canceling ongoing animations. References will be
+                // added again when starting the switch animation.
+                mAnimatingBubbleTracker.increment(previousBubble, b);
                 mAnimationHelper.cancelAnimations();
-                removeView(expandedView);
+                mAnimatingBubbleTracker.decrement(previousBubble, b);
+
+                // Need to check again because cancelAnimations might remove it from the parent.
+                // TODO(b/403612574) use reference tracking for other animations.
+                if (expandedView.getParent() != null) {
+                    expandedViewAlreadyAdded = true;
+                }
             }
             mExpandedBubble = b;
             mExpandedView = expandedView;
@@ -394,12 +414,16 @@ public class BubbleBarLayerView extends FrameLayout
                     mDismissView,
                     mAnimationHelper,
                     mPositioner,
-                    mBubbleExpandedViewPinController,
                     mDropTargetManager,
                     mDragZoneFactory,
                     dragListener);
 
-            addView(mExpandedView, new LayoutParams(width, height, Gravity.LEFT));
+            final LayoutParams layoutParams = new LayoutParams(width, height, Gravity.LEFT);
+            if (expandedViewAlreadyAdded) {
+                mExpandedView.setLayoutParams(layoutParams);
+            } else {
+                addView(mExpandedView, layoutParams);
+            }
         }
 
         if (mEducationViewController.isEducationVisible()) {
@@ -427,15 +451,20 @@ public class BubbleBarLayerView extends FrameLayout
      *
      * @param previousBubble If non-null, this is a bubble that is already showing before the new
      *                       bubble is expanded.
-     * @param animFinish If non-null, the callback triggered after the expand animation completes
+     * @param animFinish     If non-null, the callback triggered after the expand animation
+     *                       completes
      */
     @Override
     public void animateExpand(BubbleViewProvider previousBubble,
             @Nullable Runnable animFinish) {
         if (!mIsExpanded || mExpandedBubble == null) {
-            throw new IllegalStateException("Can't animateExpand without expnaded state");
+            throw new IllegalStateException("Can't animateExpand without expanded state");
         }
-        final Runnable afterAnimation = () -> {
+        final BubbleViewProvider expandedBubble = mExpandedBubble;
+        mAnimatingBubbleTracker.increment(previousBubble, expandedBubble);
+        final Runnable endRunnable = () -> {
+            mAnimatingBubbleTracker.decrement(previousBubble, expandedBubble);
+            ensureAnimationEndingState();
             if (mExpandedView == null) return;
             // Touch delegate for the menu
             BubbleBarHandleView view = mExpandedView.getHandleView();
@@ -452,14 +481,12 @@ public class BubbleBarLayerView extends FrameLayout
         };
 
         if (previousBubble != null) {
-            final BubbleBarExpandedView previousExpandedView =
-                    previousBubble.getBubbleBarExpandedView();
-            mAnimationHelper.animateSwitch(previousBubble, mExpandedBubble, () -> {
-                removeView(previousExpandedView);
-                afterAnimation.run();
-            });
+            final boolean shouldApplyAsJumpcut = (expandedBubble instanceof Bubble bubble)
+                    && bubble.isJumpcutBubbleSwitching();
+            mAnimationHelper.animateSwitch(previousBubble, expandedBubble, shouldApplyAsJumpcut,
+                    endRunnable);
         } else {
-            mAnimationHelper.animateExpansion(mExpandedBubble, afterAnimation);
+            mAnimationHelper.animateExpansion(expandedBubble, endRunnable);
         }
     }
 
@@ -497,8 +524,15 @@ public class BubbleBarLayerView extends FrameLayout
         if (!mIsExpanded || mExpandedBubble == null) {
             throw new IllegalStateException("Can't animateExpand without expanded state");
         }
+        final BubbleViewProvider expandedBubble = mExpandedBubble;
+        mAnimatingBubbleTracker.increment(expandedBubble);
+        final Runnable endRunnable = () -> {
+            mAnimatingBubbleTracker.decrement(expandedBubble);
+            ensureAnimationEndingState();
+            animFinish.run();
+        };
         mAnimationHelper.animateConvert(mExpandedBubble, startT, startBounds, startScale, snapshot,
-                taskLeash, animFinish);
+                taskLeash, endRunnable);
     }
 
     public void removeBubble(@NonNull Bubble bubble, @NonNull Runnable endAction) {
@@ -543,10 +577,12 @@ public class BubbleBarLayerView extends FrameLayout
             return;
         }
         mIsExpanded = false;
-        final BubbleBarExpandedView viewToRemove = mExpandedView;
+        final BubbleViewProvider bubbleToCollapse = mExpandedBubble;
         mEducationViewController.hideEducation(/* animated = */ true);
-        Runnable runnable = () -> {
-            removeView(viewToRemove);
+        mAnimatingBubbleTracker.increment(bubbleToCollapse);
+        final Runnable endRunnable = () -> {
+            mAnimatingBubbleTracker.decrement(bubbleToCollapse);
+            ensureAnimationEndingState();
             if (endAction != null) {
                 endAction.run();
             }
@@ -555,12 +591,13 @@ public class BubbleBarLayerView extends FrameLayout
             }
         };
         if (mDragController != null && mDragController.isStuckToDismiss()) {
-            mAnimationHelper.animateDismiss(runnable);
+            mAnimationHelper.animateDismiss(endRunnable);
         } else {
-            mAnimationHelper.animateCollapse(runnable);
+            mAnimationHelper.animateCollapse(endRunnable);
         }
         mBubbleController.getSysuiProxy().onStackExpandChanged(false);
         mExpandedView = null;
+        mExpandedBubble = null;
         mDragController = null;
         setTouchDelegate(null);
         showScrim(false);
@@ -568,6 +605,7 @@ public class BubbleBarLayerView extends FrameLayout
 
     /**
      * Show bubble bar user education relative to the reference position.
+     *
      * @param position the reference position in Screen coordinates.
      */
     public void showUserEducation(Point position) {
@@ -691,33 +729,24 @@ public class BubbleBarLayerView extends FrameLayout
             mInsets = newInsets;
             updateExpandedView();
         }
+        setupDragZoneFactory();
     }
 
-    private class LocationChangeListener implements
-            BaseBubblePinController.LocationChangeListener {
-
-        private BubbleBarLocation mInitialLocation;
-
-        @Override
-        public void onStart(@NonNull BubbleBarLocation location) {
-            mInitialLocation = location;
+    /** Ensures that only the expanded bubble is added at the end of all animations. */
+    private void ensureAnimationEndingState() {
+        if (!mAnimatingBubbleTracker.hasReferences()) {
+            // All animations are done, so we remove bubbles except for the expanded one.
+            mAnimatingBubbleTracker.forEach(bubble -> {
+                if (bubble != mExpandedBubble) {
+                    removeView(bubble.getBubbleBarExpandedView());
+                }
+            });
+            mAnimatingBubbleTracker.clear();
         }
+    }
 
-        @Override
-        public void onChange(@NonNull BubbleBarLocation bubbleBarLocation) {
-            mBubbleController.animateBubbleBarLocation(bubbleBarLocation);
-        }
-
-        @Override
-        public void onRelease(@NonNull BubbleBarLocation location) {
-            mBubbleController.setBubbleBarLocation(location,
-                    BubbleBarLocation.UpdateSource.DRAG_EXP_VIEW);
-            if (location != mInitialLocation) {
-                BubbleLogger.Event event = location.isOnLeft(isLayoutRtl())
-                        ? BubbleLogger.Event.BUBBLE_BAR_MOVED_LEFT_DRAG_EXP_VIEW
-                        : BubbleLogger.Event.BUBBLE_BAR_MOVED_RIGHT_DRAG_EXP_VIEW;
-                logBubbleEvent(event);
-            }
-        }
+    @VisibleForTesting
+    boolean isAnimatingBubbleTracked(@NonNull BubbleViewProvider bubble) {
+        return mAnimatingBubbleTracker.isTracked(bubble);
     }
 }

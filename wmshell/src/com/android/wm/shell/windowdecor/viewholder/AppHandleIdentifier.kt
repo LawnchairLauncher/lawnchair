@@ -21,8 +21,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 /**
- * A simple data class to hold identifying information,
- * including a bounding Rect and a display ID.
+ * A simple data class to hold identifying information, including a bounding Rect and a display ID.
  *
  * @property rect The screen coordinate Rect associated with the handle.
  * @property displayId The ID of the display where the handle exists.
@@ -31,24 +30,25 @@ data class AppHandleIdentifier(
     val rect: Rect,
     val displayId: Int,
     val taskId: Int,
-    val windowingMode: AppHandleWindowingMode
-) : Parcelable
-{
+    val windowingMode: AppHandleWindowingMode,
+) : Parcelable {
 
     /** Indicates which type of windowing mode this AppHandle's window is in. */
     enum class AppHandleWindowingMode {
         APP_HANDLE_WINDOWING_MODE_SPLIT_SCREEN,
         APP_HANDLE_WINDOWING_MODE_BUBBLE,
-        APP_HANDLE_WINDOWING_MODE_FULLSCREEN
+        APP_HANDLE_WINDOWING_MODE_FULLSCREEN,
     }
 
-    constructor(parcel: Parcel) : this(
+    constructor(
+        parcel: Parcel
+    ) : this(
         parcel.readTypedObject(Rect.CREATOR) ?: Rect(),
         parcel.readInt(),
         parcel.readInt(),
         AppHandleWindowingMode.valueOf(
             parcel.readString() ?: "APP_HANDLE_WINDOWING_MODE_FULLSCREEN"
-        )
+        ),
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

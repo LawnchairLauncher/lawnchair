@@ -79,7 +79,8 @@ class TurbulenceNoiseShader(val baseType: Type = Type.SIMPLEX_NOISE) :
                 // Compute turbulence effect with the uv distorted with simplex noise.
                 vec3 noisePos = vec3(uv + in_noiseMove.xy, in_noiseMove.z) * in_gridNum;
                 float mixFactor = simplex3d(noisePos) * 0.5 + 0.5;
-                return mix(in_color, in_screenColor, mixFactor);
+                vec4 mixedColor = mix(in_screenColor * in_screenColor.a, in_color * in_color.a, mixFactor);
+                return mixedColor * in_opacity;
             }
         """
 

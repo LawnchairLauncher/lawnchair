@@ -21,9 +21,7 @@ import com.android.wm.shell.compatui.api.CompatUIInfo
 import com.android.wm.shell.compatui.api.CompatUISpec
 import junit.framework.Assert.assertEquals
 
-/**
- * A Fake {@link CompatUIComponentIdGenerator} implementation.
- */
+/** A Fake {@link CompatUIComponentIdGenerator} implementation. */
 class FakeCompatUIComponentIdGenerator(var generatedComponentId: String = "compId") :
     CompatUIComponentIdGenerator {
 
@@ -38,6 +36,5 @@ class FakeCompatUIComponentIdGenerator(var generatedComponentId: String = "compI
         generateInvocations = 0
     }
 
-    fun assertGenerateInvocations(expected: Int) =
-        assertEquals(expected, generateInvocations)
+    fun assertGenerateInvocations(expected: Int) = assertEquals(expected, generateInvocations)
 }

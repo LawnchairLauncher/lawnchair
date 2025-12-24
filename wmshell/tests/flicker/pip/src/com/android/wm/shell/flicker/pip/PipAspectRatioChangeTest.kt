@@ -20,9 +20,10 @@ import android.platform.test.annotations.Presubmit
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.Rotation
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
+import androidx.test.filters.RequiresDevice
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.PipTransition
@@ -33,11 +34,12 @@ import org.junit.runners.MethodSorters
 import org.junit.runners.Parameterized
 
 /** Test changing aspect ratio of pip. */
+@RequiresDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
-class PipAspectRatioChangeTest(flicker: LegacyFlickerTest) : PipTransition(flicker) {
+class PipAspectRatioChangeTest(flicker: FlickerTest) : PipTransition(flicker) {
     override val pipApp: PipAppHelper = PipAppHelper(instrumentation)
 
     override val thisTransition: FlickerBuilder.() -> Unit = {
@@ -55,13 +57,13 @@ class PipAspectRatioChangeTest(flicker: LegacyFlickerTest) : PipTransition(flick
         /**
          * Creates the test configurations.
          *
-         * See [LegacyFlickerTestFactory.nonRotationTests] for configuring screen orientation and
+         * See [FlickerTestFactory.nonRotationTests] for configuring screen orientation and
          * navigation modes.
          */
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getParams() =
-            LegacyFlickerTestFactory.nonRotationTests(
+            FlickerTestFactory.nonRotationTests(
                 supportedRotations = listOf(Rotation.ROTATION_0)
             )
     }

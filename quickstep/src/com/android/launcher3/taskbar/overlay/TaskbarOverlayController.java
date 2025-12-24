@@ -49,6 +49,8 @@ import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.launcher3.taskbar.bubbles.BubbleActivityStarter;
+import com.android.launcher3.taskbar.bubbles.BubbleActivityStarter.Listener;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
@@ -72,6 +74,14 @@ public final class TaskbarOverlayController {
     private final TaskbarOverlayProxyView mProxyView;
     private final LayoutParams mLayoutParams;
     private final int mMaxBlurRadius;
+    private final BubbleActivityStarter mBubbleBarActivityStarter;
+
+    private final Listener mBubbleShowListener = new Listener() {
+        @Override
+        public void onBubbleLaunchRequested() {
+            mBubbleShowRequested = true;
+        }
+    };
 
     private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
@@ -94,7 +104,10 @@ public final class TaskbarOverlayController {
 
         private void hideWindowOnTaskStackChange() {
             // A task was launched while overlay window was open, so stash Taskbar.
-            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(
+                    /* stash = */ true,
+                    /* shouldBubblesFollow = */ !mBubbleShowRequested
+            );
             hideWindow();
         }
     };
@@ -104,6 +117,7 @@ public final class TaskbarOverlayController {
     private TaskbarControllers mControllers; // Initialized in init.
     // True if we have alerted surface flinger of an expensive call for blur.
     private boolean mInEarlyWakeUp;
+    private boolean mBubbleShowRequested;
     /**
      * Token for early wakeup requests to SurfaceFlinger.
      */
@@ -120,6 +134,7 @@ public final class TaskbarOverlayController {
                 R.dimen.max_depth_blur_radius_enhanced);
         mEarlyWakeupInfo.token = new Binder();
         mEarlyWakeupInfo.trace = TaskbarOverlayController.class.getName();
+        mBubbleBarActivityStarter = BubbleActivityStarter.INSTANCE.get(taskbarContext);
     }
 
     /** Initialize the controller. */
@@ -135,6 +150,7 @@ public final class TaskbarOverlayController {
         if (mOverlayContext == null) {
             mOverlayContext = TaskbarOverlayContextFactory.newInstance(mWindowContext).create(
                     mWindowContext, mTaskbarContext, mControllers);
+            mBubbleBarActivityStarter.addListener(mBubbleShowListener);
         }
 
         if (!mProxyView.isOpen()) {
@@ -182,6 +198,8 @@ public final class TaskbarOverlayController {
             }
         });
         mOverlayContext = null;
+        mBubbleBarActivityStarter.removeListener(mBubbleShowListener);
+        mBubbleShowRequested = false;
     }
 
     /** The current device profile for the overlay window. */
@@ -234,7 +252,7 @@ public final class TaskbarOverlayController {
         if (!Flags.allAppsBlur()) {
             return;
         }
-        if (!BlurUtils.supportsBlursOnWindows()) {
+        if (!BlurUtils.supportsBlursOnWindows(mWindowContext)) {
             Log.d(TAG, "setBackgroundBlurRadius: not supported, setting to 0");
             radius = 0;
             // intentionally falling through in case a non-0 blur was previously set.
@@ -303,8 +321,16 @@ public final class TaskbarOverlayController {
     }
 
     boolean isBackgroundBlurEnabled() {
-        return BlurUtils.supportsBlursOnWindows()
+        return BlurUtils.supportsBlursOnWindows(mWindowContext)
                 && CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled();
+    }
+
+    /** Returns {@code true} if overlay or Taskbar windows are handling a system drag. */
+    public boolean isAnySystemDragInProgress() {
+        boolean overlaySystemDragInProgress = mOverlayContext != null
+                && mOverlayContext.getDragController().isSystemDragInProgress();
+        return overlaySystemDragInProgress
+                || mTaskbarContext.getDragController().isSystemDragInProgress();
     }
 
     /**

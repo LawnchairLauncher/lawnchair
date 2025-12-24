@@ -18,22 +18,14 @@ package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
 import android.platform.test.annotations.RequiresFlagsEnabled
-import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import android.tools.NavBar
 import android.tools.Rotation
-import android.tools.flicker.rules.ChangeDisplayOrientationRule
 import android.tools.traces.parsers.WindowManagerStateHelper
-import android.view.Display.DEFAULT_DISPLAY
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.android.launcher3.tapl.LauncherInstrumentation
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.window.flags.Flags
-import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
+import com.android.window.flags2.Flags
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -51,30 +43,17 @@ import platform.test.desktop.SimulatedConnectedDisplayTestRule
     Flags.FLAG_ENABLE_DESKTOP_FIRST_BASED_DRAG_TO_MAXIMIZE,
 )
 abstract class MaximizeAppWindowWithDragToTopDragZoneInDesktopFirst(
-    private val rotation: Rotation = Rotation.ROTATION_0,
-) : TestScenarioBase() {
+    rotation: Rotation = Rotation.ROTATION_0,
+) : TestScenarioBase(rotation) {
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
-    private val tapl = LauncherInstrumentation()
     private val wmHelper = WindowManagerStateHelper(instrumentation)
     private val device = UiDevice.getInstance(instrumentation)
-    private val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
+    val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
 
-    @get:Rule(order = 0)
-    val checkFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
-
-    @get:Rule(order = 1)
-    val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, rotation)
-
-    @get:Rule(order = 2)
-    val connectedDisplayRule = SimulatedConnectedDisplayTestRule()
+    @get:Rule val connectedDisplayRule = SimulatedConnectedDisplayTestRule()
 
     @Before
     fun setup() {
-        val desktopState = DesktopState.fromContext(instrumentation.context)
-        Assume.assumeTrue(desktopState.isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY))
-        tapl.setEnableRotation(true)
-        tapl.setExpectedRotation(rotation.value)
-        ChangeDisplayOrientationRule.setRotation(rotation)
         testApp.enterDesktopMode(wmHelper, device)
         connectedDisplayRule.setupTestDisplay()
     }

@@ -63,22 +63,17 @@ constructor(
         if (workspaceUpdates.isNotEmpty()) {
             scheduleCallbackTask { it.bindItemsUpdated(workspaceUpdates) }
         }
-        dataModel.updateItems(allUpdates.toList(), null)
     }
 
     fun bindExtraContainerItems(item: FixedContainerItems) {
         scheduleCallbackTask { it.bindExtraContainerItems(item) }
     }
 
-    fun bindDeepShortcuts(dataModel: BgDataModel) {
-        val shortcutMapCopy = HashMap(dataModel.deepShortcutMap)
-        scheduleCallbackTask { it.bindDeepShortcutMap(shortcutMapCopy) }
-    }
-
     fun bindUpdatedWidgets(dataModel: BgDataModel) {
         val allWidgets =
             WidgetsListBaseEntriesBuilder(context)
                 .build(dataModel.widgetsModel.widgetsByPackageItemForPicker)
+        dataModel.notifyWidgetsUpdate(allWidgets)
         scheduleCallbackTask { it.bindAllWidgets(allWidgets) }
     }
 

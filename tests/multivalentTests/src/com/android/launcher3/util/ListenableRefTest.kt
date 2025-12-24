@@ -124,4 +124,22 @@ class ListenableRefTest {
         listenableRef.dispatchValue(5)
         assertThat(listenableRef.value).isEqualTo(5)
     }
+
+    @Test
+    fun mutableListenableRef_forEach_dispatches_currentValue() {
+        val listenableRef = MutableListenableRef(3)
+
+        val executor = mutableListOf<Runnable>()
+        val callback = mutableListOf<Int>()
+
+        listenableRef
+            .forEach(executor::add) { callback.add(it) }
+            .use {
+                assertThat(executor).hasSize(1)
+                assertThat(callback).isEmpty()
+                executor[0].run()
+                assertThat(callback).hasSize(1)
+                assertThat(callback[0]).isEqualTo(3)
+            }
+    }
 }

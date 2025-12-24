@@ -18,6 +18,6 @@ package com.android.systemui.coroutines
 
 import kotlin.coroutines.CoroutineContext
 
-fun newTracingContext(name: String): CoroutineContext? {
-    return null // LC-Ignored
+fun newTracingContext(name: String) {
+    // No-op
 }

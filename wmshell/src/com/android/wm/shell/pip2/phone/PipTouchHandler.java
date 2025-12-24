@@ -38,6 +38,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.provider.DeviceConfig;
 import android.util.Size;
 import android.view.DisplayCutout;
@@ -74,6 +75,7 @@ import com.android.wm.shell.sysui.ShellInit;
 
 import java.io.PrintWriter;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Manages all the touch handling for PIP on the Phone, including moving, dismissing and expanding
@@ -144,6 +146,9 @@ public class PipTouchHandler implements PipTransitionState.PipTransitionStateCha
 
     // Temp vars
     private final Rect mTmpBounds = new Rect();
+
+    // Random int for tracking trace begin and end
+    private int mUniqueCookie;
 
     // Callbacks
     private final Runnable mMoveOnShelVisibilityChanged;
@@ -266,6 +271,8 @@ public class PipTouchHandler implements PipTransitionState.PipTransitionStateCha
         if (PipFlags.isPip2ExperimentEnabled()) {
             shellInit.addInitCallback(this::onInit, this);
         }
+
+        mUniqueCookie = new Random().nextInt();
     }
 
     /**
@@ -587,6 +594,7 @@ public class PipTouchHandler implements PipTransitionState.PipTransitionStateCha
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+                Trace.beginAsyncSection("PipTouchHandler#onDown", mUniqueCookie);
                 mGesture.onDown(mTouchState);
                 break;
             }
@@ -602,7 +610,7 @@ public class PipTouchHandler implements PipTransitionState.PipTransitionStateCha
                 // Update the movement bounds again if the state has changed since the user started
                 // dragging (ie. when the IME shows)
                 updateMovementBounds();
-
+                Trace.endAsyncSection("PipTouchHandler#onDown", mUniqueCookie);
                 if (mGesture.onUp(mTouchState)) {
                     break;
                 }
@@ -614,6 +622,7 @@ public class PipTouchHandler implements PipTransitionState.PipTransitionStateCha
                 }
                 shouldDeliverToMenu = !mTouchState.startedDragging() && !mTouchState.isDragging();
                 mTouchState.reset();
+                mPipDismissTargetHandler.cleanUpDismissTarget();
                 break;
             }
             case MotionEvent.ACTION_HOVER_ENTER: {

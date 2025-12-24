@@ -3,6 +3,7 @@ package com.android.launcher3.util;
 import static android.content.Intent.ACTION_WALLPAPER_CHANGED;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.SimpleBroadcastReceiver.actionsFilter;
 
 import android.app.WallpaperManager;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.view.animation.Interpolator;
 
 import app.lawnchair.preferences.PreferenceManager;
 import androidx.annotation.AnyThread;
+import androidx.annotation.WorkerThread;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.Utilities;
@@ -33,6 +35,7 @@ public class WallpaperOffsetInterpolator {
     private static final int MIN_PARALLAX_PAGE_SPAN = 4;
 
     private final SimpleBroadcastReceiver mWallpaperChangeReceiver;
+    private final Context mContext;
     private final Workspace<?> mWorkspace;
     private final boolean mIsRtl;
     private final Handler mHandler;
@@ -47,6 +50,7 @@ public class WallpaperOffsetInterpolator {
     private PreferenceManager prefs;
 
     public WallpaperOffsetInterpolator(Workspace<?> workspace) {
+        mContext = workspace.getContext();
         mWorkspace = workspace;
         mWallpaperChangeReceiver = new SimpleBroadcastReceiver(
                 workspace.getContext(), UI_HELPER_EXECUTOR, i -> onWallpaperChanged());
@@ -203,22 +207,24 @@ public class WallpaperOffsetInterpolator {
     public void setWindowToken(IBinder token) {
         mWindowToken = token;
         if (mWindowToken == null && mRegistered) {
-            mWallpaperChangeReceiver.unregisterReceiverSafely();
+            mWallpaperChangeReceiver.close();
             mRegistered = false;
         } else if (mWindowToken != null && !mRegistered) {
-            mWallpaperChangeReceiver.register(ACTION_WALLPAPER_CHANGED);
-            onWallpaperChanged();
+            mWallpaperChangeReceiver.register(
+                    actionsFilter(ACTION_WALLPAPER_CHANGED),
+                    0 /* flags */,
+                    null /* permission */,
+                    this::onWallpaperChanged);
             mRegistered = true;
         }
     }
 
+    @WorkerThread
     private void onWallpaperChanged() {
-        UI_HELPER_EXECUTOR.execute(() -> {
-            // Updating the boolean on a background thread is fine as the assignments are atomic
-            mWallpaperIsLiveWallpaper = WallpaperManager.getInstance(mWorkspace.getContext())
-                    .getWallpaperInfo() != null;
-            updateOffset();
-        });
+        // Updating the boolean on a background thread is fine as the assignments are atomic
+        mWallpaperIsLiveWallpaper = WallpaperManager.getInstance(mContext)
+                .getWallpaperInfo() != null;
+        updateOffset();
     }
 
     private static final int MSG_START_ANIMATION = 1;

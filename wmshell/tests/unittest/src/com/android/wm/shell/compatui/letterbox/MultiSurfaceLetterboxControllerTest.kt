@@ -35,8 +35,7 @@ import org.mockito.kotlin.verify
 /**
  * Tests for [MultiSurfaceLetterboxController].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:MultiSurfaceLetterboxControllerTest
+ * Build/Install/Run: atest WMShellUnitTests:MultiSurfaceLetterboxControllerTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
@@ -105,7 +104,7 @@ class MultiSurfaceLetterboxControllerTest : ShellTestCase() {
         runTestScenario { r ->
             r.sendUpdateSurfaceBoundsRequest(
                 taskBounds = Rect(0, 0, 2000, 1000),
-                activityBounds = Rect(500, 0, 1500, 1000)
+                activityBounds = Rect(500, 0, 1500, 1000),
             )
 
             r.checkSurfacePositionUpdated(times = 0)
@@ -116,7 +115,7 @@ class MultiSurfaceLetterboxControllerTest : ShellTestCase() {
             // Pillarbox.
             r.sendUpdateSurfaceBoundsRequest(
                 taskBounds = Rect(0, 0, 2000, 1000),
-                activityBounds = Rect(500, 0, 1500, 1000)
+                activityBounds = Rect(500, 0, 1500, 1000),
             )
             // The Left and Top surfaces.
             r.checkSurfacePositionUpdated(times = 2, expectedX = 0f, expectedY = 0f)
@@ -134,7 +133,7 @@ class MultiSurfaceLetterboxControllerTest : ShellTestCase() {
             // Letterbox.
             r.sendUpdateSurfaceBoundsRequest(
                 taskBounds = Rect(0, 0, 1000, 2000),
-                activityBounds = Rect(0, 500, 1000, 1500)
+                activityBounds = Rect(0, 500, 1000, 1500),
             )
             // Top and Left surfaces.
             r.checkSurfacePositionUpdated(times = 2, expectedX = 0f, expectedY = 0f)
@@ -150,15 +149,12 @@ class MultiSurfaceLetterboxControllerTest : ShellTestCase() {
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<MultiLetterboxControllerRobotTest>) {
         consumer.accept(MultiLetterboxControllerRobotTest(mContext).apply { initController() })
     }
 
-    class MultiLetterboxControllerRobotTest(context: Context) :
-        LetterboxControllerRobotTest() {
+    class MultiLetterboxControllerRobotTest(context: Context) : LetterboxControllerRobotTest() {
 
         private val letterboxConfiguration: LetterboxConfiguration
         private val surfaceBuilder: LetterboxSurfaceBuilder
@@ -173,13 +169,14 @@ class MultiSurfaceLetterboxControllerTest : ShellTestCase() {
             MultiSurfaceLetterboxController(surfaceBuilder)
 
         fun checkSurfaceBuilderInvoked(times: Int = 1, name: String = "", callSite: String = "") {
-            verify(surfaceBuilder, times(times)).createSurface(
-                eq(transaction),
-                eq(parentLeash),
-                name.asAnyMode(),
-                callSite.asAnyMode(),
-                any()
-            )
+            verify(surfaceBuilder, times(times))
+                .createSurface(
+                    eq(transaction),
+                    eq(parentLeash),
+                    name.asAnyMode(),
+                    callSite.asAnyMode(),
+                    any(),
+                )
         }
     }
 }

@@ -16,34 +16,34 @@
 
 package com.android.wm.shell.compatui.letterbox
 
+import android.graphics.Rect
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.testing.AndroidTestingRunner
 import android.view.SurfaceControl
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.common.ShellExecutor
 import com.android.wm.shell.compatui.letterbox.lifecycle.FakeLetterboxLifecycleEventFactory
 import com.android.wm.shell.compatui.letterbox.lifecycle.LetterboxLifecycleController
 import com.android.wm.shell.compatui.letterbox.lifecycle.LetterboxLifecycleEvent
-import com.android.wm.shell.compatui.letterbox.lifecycle.toLetterboxLifecycleEvent
 import com.android.wm.shell.sysui.ShellInit
 import com.android.wm.shell.transition.Transitions
+import com.android.wm.shell.transition.Transitions.TRANSIT_MOVE_LETTERBOX_REACHABILITY
 import com.android.wm.shell.util.executeTransitionObserverTest
+import java.util.function.Consumer
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.times
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import java.util.function.Consumer
 
 /**
  * Tests for [DelegateLetterboxTransitionObserver].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:DelegateLetterboxTransitionObserverTest
+ * Build/Install/Run: atest WMShellUnitTests:DelegateLetterboxTransitionObserverTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
@@ -72,54 +72,94 @@ class DelegateLetterboxTransitionObserverTest : ShellTestCase() {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_APP_COMPAT_REFACTORING)
+    fun `LetterboxLifecycleController ignores Changes about Reachability`() {
+        runTestScenario { r ->
+            executeTransitionObserverTest(observerFactory = r.observerFactory) {
+                r.invokeShellInit()
+                transitionInfo {
+                    type = TRANSIT_MOVE_LETTERBOX_REACHABILITY
+                    addChange { runningTaskInfo { ti -> ti.appCompatTaskInfo.setIsLeafTask(true) } }
+                }
+                validateOnTransitionReady { r.checkLifecycleControllerInvoked(times = 0) }
+            }
+        }
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_APP_COMPAT_REFACTORING)
+    @DisableFlags(Flags.FLAG_APP_COMPAT_REFACTORING_FIX_MULTIWINDOW_TASK_HIERARCHY)
+    fun `With flag disabled LetterboxLifecycleController ignored for not leaf tasks`() {
+        runTestScenario { r ->
+            executeTransitionObserverTest(observerFactory = r.observerFactory) {
+                r.invokeShellInit()
+                transitionInfo {
+                    addChange {
+                        runningTaskInfo { ti -> ti.appCompatTaskInfo.setIsLeafTask(false) }
+                    }
+                }
+                validateOnTransitionReady { r.checkLifecycleControllerInvoked(times = 0) }
+            }
+        }
+    }
+
+    @Test
+    @EnableFlags(
+        Flags.FLAG_APP_COMPAT_REFACTORING,
+        Flags.FLAG_APP_COMPAT_REFACTORING_FIX_MULTIWINDOW_TASK_HIERARCHY,
+    )
+    fun `With flag enabled LetterboxLifecycleController not for not leaf tasks`() {
+        runTestScenario { r ->
+            executeTransitionObserverTest(observerFactory = r.observerFactory) {
+                r.invokeShellInit()
+                transitionInfo {
+                    addChange {
+                        runningTaskInfo { ti -> ti.appCompatTaskInfo.setIsLeafTask(false) }
+                    }
+                }
+                validateOnTransitionReady { r.checkLifecycleControllerInvoked(times = 1) }
+            }
+        }
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_APP_COMPAT_REFACTORING)
     fun `LetterboxLifecycleController not used with no changes`() {
         runTestScenario { r ->
             executeTransitionObserverTest(observerFactory = r.observerFactory) {
                 r.invokeShellInit()
-
-                inputBuilder {
-                    buildTransitionInfo()
-                }
-
-                validateOutput {
-                    r.checkLifecycleControllerInvoked(times = 0)
-                }
+                transitionInfo {}
+                validateOnTransitionReady { r.checkLifecycleControllerInvoked(times = 0) }
             }
         }
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_APP_COMPAT_REFACTORING)
     fun `LetterboxLifecycleController used with a single change`() {
         runTestScenario { r ->
             executeTransitionObserverTest(observerFactory = r.observerFactory) {
                 r.invokeShellInit()
-
-                inputBuilder {
-                    buildTransitionInfo()
-                    addChange(createChange())
+                transitionInfo {
+                    addChange { runningTaskInfo { ti -> ti.appCompatTaskInfo.setIsLeafTask(true) } }
                 }
-
-                validateOutput {
-                    r.checkLifecycleControllerInvoked(times = 1)
-                }
+                validateOnTransitionReady { r.checkLifecycleControllerInvoked(times = 1) }
             }
         }
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_APP_COMPAT_REFACTORING)
     fun `LetterboxLifecycleController used for each change`() {
         runTestScenario { r ->
             executeTransitionObserverTest(observerFactory = r.observerFactory) {
                 r.invokeShellInit()
-
-                inputBuilder {
-                    buildTransitionInfo()
-                    addChange(createChange())
-                    addChange(createChange())
-                    addChange(createChange())
+                transitionInfo {
+                    addChange { runningTaskInfo { ti -> ti.appCompatTaskInfo.setIsLeafTask(true) } }
+                    addChange { runningTaskInfo { ti -> ti.appCompatTaskInfo.setIsLeafTask(true) } }
+                    addChange { runningTaskInfo { ti -> ti.appCompatTaskInfo.setIsLeafTask(true) } }
                 }
-
-                validateOutput {
+                validateOnTransitionReady {
                     r.checkLifecycleControllerInvoked(times = 3)
                     r.checkOnLetterboxLifecycleEventFactory { factory ->
                         assert(factory.canHandleInvokeTimes == 3)
@@ -129,9 +169,7 @@ class DelegateLetterboxTransitionObserverTest : ShellTestCase() {
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<LetterboxTransitionObserverRobotTest>) {
         val robot = LetterboxTransitionObserverRobotTest()
         consumer.accept(robot)
@@ -146,6 +184,9 @@ class DelegateLetterboxTransitionObserverTest : ShellTestCase() {
         private val letterboxLifecycleController: LetterboxLifecycleController
         private var letterboxLifecycleEventFactory: FakeLetterboxLifecycleEventFactory
 
+        private var inputEvent: LetterboxLifecycleEvent? =
+            LetterboxLifecycleEvent(taskBounds = Rect())
+
         val observerFactory: () -> DelegateLetterboxTransitionObserver
 
         init {
@@ -153,15 +194,14 @@ class DelegateLetterboxTransitionObserverTest : ShellTestCase() {
             shellInit = ShellInit(executor)
             transitions = mock<Transitions>()
             letterboxLifecycleController = mock<LetterboxLifecycleController>()
-            letterboxLifecycleEventFactory = FakeLetterboxLifecycleEventFactory(
-                eventToReturnFactory = { c -> c.toLetterboxLifecycleEvent() }
-            )
+            letterboxLifecycleEventFactory =
+                FakeLetterboxLifecycleEventFactory(eventToReturnFactory = { _ -> inputEvent })
             letterboxObserver =
                 DelegateLetterboxTransitionObserver(
                     shellInit,
                     transitions,
                     letterboxLifecycleController,
-                    letterboxLifecycleEventFactory
+                    letterboxLifecycleEventFactory,
                 )
             observerFactory = { letterboxObserver }
         }
@@ -180,15 +220,12 @@ class DelegateLetterboxTransitionObserverTest : ShellTestCase() {
             consumer(letterboxLifecycleEventFactory)
         }
 
-        fun checkLifecycleControllerInvoked(
-            times: Int = 1,
-        ) = verify(
-            letterboxLifecycleController,
-            times(times)
-        ).onLetterboxLifecycleEvent(
-            any<LetterboxLifecycleEvent>(),
-            any<SurfaceControl.Transaction>(),
-            any<SurfaceControl.Transaction>()
-        )
+        fun checkLifecycleControllerInvoked(times: Int = 1) =
+            verify(letterboxLifecycleController, times(times))
+                .onLetterboxLifecycleEvent(
+                    any<LetterboxLifecycleEvent>(),
+                    any<SurfaceControl.Transaction>(),
+                    any<SurfaceControl.Transaction>(),
+                )
     }
 }

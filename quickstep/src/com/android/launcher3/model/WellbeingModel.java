@@ -18,20 +18,18 @@ package com.android.launcher3.model;
 
 import static android.content.ContentResolver.SCHEME_CONTENT;
 
-import static com.android.launcher3.util.SimpleBroadcastReceiver.getPackageFilter;
+import static com.android.launcher3.util.SimpleBroadcastReceiver.packageFilter;
 
 import android.app.RemoteAction;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.LauncherApps;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.DeadObjectException;
-import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
@@ -52,6 +50,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.DaggerSingletonObject;
 import com.android.launcher3.util.DaggerSingletonTracker;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -88,7 +87,7 @@ public final class WellbeingModel implements SafeCloseable {
     private final Context mContext;
     private final String mWellbeingProviderPkg;
 
-    private final Handler mWorkerHandler;
+    private final LooperExecutor mWorkerExecutor;
     private final ContentObserver mContentObserver;
     private final SimpleBroadcastReceiver mWellbeingAppChangeReceiver;
     private final SimpleBroadcastReceiver mAppAddRemoveReceiver;
@@ -105,40 +104,37 @@ public final class WellbeingModel implements SafeCloseable {
             DaggerSingletonTracker tracker) {
         mContext = context;
         mWellbeingProviderPkg = mContext.getString(R.string.wellbeing_provider_pkg);
-        mWorkerHandler = new Handler(TextUtils.isEmpty(mWellbeingProviderPkg)
-                ? Executors.UI_HELPER_EXECUTOR.getLooper()
-                : Executors.getPackageExecutor(mWellbeingProviderPkg).getLooper());
+        mWorkerExecutor = TextUtils.isEmpty(mWellbeingProviderPkg)
+                ? Executors.UI_HELPER_EXECUTOR
+                : Executors.getPackageExecutor(mWellbeingProviderPkg);
         mWellbeingAppChangeReceiver =
-                new SimpleBroadcastReceiver(context, mWorkerHandler, t -> restartObserver());
+                new SimpleBroadcastReceiver(context, mWorkerExecutor, t -> restartObserver());
         mAppAddRemoveReceiver =
-                new SimpleBroadcastReceiver(context, mWorkerHandler, this::onAppPackageChanged);
+                new SimpleBroadcastReceiver(context, mWorkerExecutor, this::onAppPackageChanged);
 
 
-        mContentObserver = new ContentObserver(mWorkerHandler) {
+        mContentObserver = new ContentObserver(mWorkerExecutor.getHandler()) {
             @Override
             public void onChange(boolean selfChange, Uri uri) {
                 updateAllPackages();
             }
         };
-        mWorkerHandler.post(this::initializeInBackground);
+        mWorkerExecutor.execute(this::initializeInBackground);
         tracker.addCloseable(this);
     }
 
     @WorkerThread
     private void initializeInBackground() {
         if (!TextUtils.isEmpty(mWellbeingProviderPkg)) {
-            mContext.registerReceiver(
-                    mWellbeingAppChangeReceiver,
-                    getPackageFilter(mWellbeingProviderPkg,
-                            Intent.ACTION_PACKAGE_ADDED, Intent.ACTION_PACKAGE_CHANGED,
-                            Intent.ACTION_PACKAGE_REMOVED, Intent.ACTION_PACKAGE_DATA_CLEARED,
-                            Intent.ACTION_PACKAGE_RESTARTED),
-                    null, mWorkerHandler);
+            mWellbeingAppChangeReceiver.register(packageFilter(mWellbeingProviderPkg,
+                    Intent.ACTION_PACKAGE_ADDED,
+                    Intent.ACTION_PACKAGE_CHANGED,
+                    Intent.ACTION_PACKAGE_REMOVED,
+                    Intent.ACTION_PACKAGE_DATA_CLEARED,
+                    Intent.ACTION_PACKAGE_RESTARTED));
 
-            IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
-            filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-            filter.addDataScheme("package");
-            mContext.registerReceiver(mAppAddRemoveReceiver, filter, null, mWorkerHandler);
+            mAppAddRemoveReceiver.register(packageFilter(null,
+                    Intent.ACTION_PACKAGE_ADDED, Intent.ACTION_PACKAGE_REMOVED));
 
             restartObserver();
         }
@@ -147,11 +143,10 @@ public final class WellbeingModel implements SafeCloseable {
     @Override
     public void close() {
         if (!TextUtils.isEmpty(mWellbeingProviderPkg)) {
-            mWorkerHandler.post(() -> {
-                mWellbeingAppChangeReceiver.unregisterReceiverSafely();
-                mAppAddRemoveReceiver.unregisterReceiverSafely();
-                mContext.getContentResolver().unregisterContentObserver(mContentObserver);
-            });
+            mWellbeingAppChangeReceiver.close();
+            mAppAddRemoveReceiver.close();
+            mWorkerExecutor.execute(() ->
+                    mContext.getContentResolver().unregisterContentObserver(mContentObserver));
         }
     }
 
@@ -288,7 +283,7 @@ public final class WellbeingModel implements SafeCloseable {
                 .toArray(String[]::new)
                 : new String[]{packageName};
 
-        mWorkerHandler.removeCallbacksAndMessages(packageName);
+        mWorkerExecutor.getHandler().removeCallbacksAndMessages(packageName);
         if (updateActions(packageNames)) {
             return;
         }
@@ -296,7 +291,7 @@ public final class WellbeingModel implements SafeCloseable {
             // To many retries, skip
             return;
         }
-        mWorkerHandler.postDelayed(
+        mWorkerExecutor.getHandler().postDelayed(
                 () -> {
                     if (DEBUG || mIsInTest) Log.i(TAG, "Retrying; attempt " + (retryCount + 1));
                     updateActionsWithRetry(retryCount + 1, packageName);
@@ -322,7 +317,7 @@ public final class WellbeingModel implements SafeCloseable {
         }
         final String action = intent.getAction();
         if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-            mWorkerHandler.removeCallbacksAndMessages(packageName);
+            mWorkerExecutor.getHandler().removeCallbacksAndMessages(packageName);
             synchronized (mModelLock) {
                 mPackageToActionId.remove(packageName);
             }
@@ -335,10 +330,12 @@ public final class WellbeingModel implements SafeCloseable {
      * Shortcut factory for generating wellbeing action
      */
     public static final SystemShortcut.Factory<ActivityContext> SHORTCUT_FACTORY =
-            (context, info, originalView) ->
-                    (info.getTargetComponent() == null) ? null
-                            : INSTANCE.get(originalView.getContext()).getShortcutForApp(
-                                    info.getTargetComponent().getPackageName(), info.user.getIdentifier(),
-                                    ActivityContext.lookupContext(originalView.getContext()),
-                                    info, originalView);
+            (context, info, originalView) -> (info.getTargetComponent() == null)
+                    ? null
+                    : INSTANCE.get(originalView.getContext()).getShortcutForApp(
+                            info.getTargetComponent().getPackageName(),
+                            info.user.getIdentifier(),
+                            ActivityContext.lookupContext(originalView.getContext()),
+                            info,
+                            originalView);
 }

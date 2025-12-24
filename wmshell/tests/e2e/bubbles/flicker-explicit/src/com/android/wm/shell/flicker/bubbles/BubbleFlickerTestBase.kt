@@ -16,9 +16,11 @@
 
 package com.android.wm.shell.flicker.bubbles
 
+import android.app.Instrumentation
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.tools.Tag
+import android.tools.device.apphelpers.StandardAppHelper
 import android.tools.flicker.assertions.SubjectsParser
 import android.tools.flicker.subject.events.EventLogSubject
 import android.tools.flicker.subject.layers.LayerTraceEntrySubject
@@ -27,20 +29,25 @@ import android.tools.flicker.subject.wm.WindowManagerStateSubject
 import android.tools.flicker.subject.wm.WindowManagerTraceSubject
 import android.tools.io.Reader
 import android.tools.traces.component.ComponentNameMatcher
+import android.tools.traces.parsers.WindowManagerStateHelper
 import android.tools.traces.surfaceflinger.LayerTraceEntry
 import android.tools.traces.wm.WindowManagerState
+import androidx.annotation.CallSuper
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
+import com.android.launcher3.tapl.LauncherInstrumentation
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel
 import com.android.server.wm.flicker.assertNavBarPosition
 import com.android.server.wm.flicker.assertStatusBarLayerPosition
+import com.android.server.wm.flicker.helpers.SimpleAppHelper
 import com.android.wm.shell.flicker.bubbles.utils.BubbleFlickerSubjects
-import com.android.wm.shell.flicker.bubbles.utils.FlickerPropertyInitializer
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 /**
  * The base class of Bubble flicker tests, which includes:
  * - Generic tests: checks there's no flicker in visible windows/layers
- * - Launcher visibility tests: checks launcher window/layer is always visible
  * - System Bars tests; checks the visibility of navigation and status bar
  */
 abstract class BubbleFlickerTestBase : BubbleFlickerSubjects {
@@ -56,46 +63,39 @@ abstract class BubbleFlickerTestBase : BubbleFlickerSubjects {
     /**
      * The event log subject.
      */
-    override val eventLogSubject = EventLogSubject(
-        traceDataReader.readEventLogTrace() ?: error("Failed to read event log"),
-        traceDataReader
-    )
+    final override lateinit var eventLogSubject: EventLogSubject
 
     /**
      * The WindowManager trace subject, which is equivalent to the data shown in
      * `Window Manager` tab in go/winscope.
      */
-    override val wmTraceSubject = WindowManagerTraceSubject(
-        traceDataReader.readWmTrace() ?: error("Failed to read WM trace")
-    )
+    final override lateinit var wmTraceSubject: WindowManagerTraceSubject
 
     /**
      * The Layer trace subject, which is equivalent to the data shown in
      * `Surface Flinger` tab in go/winscope.
      */
-    override val layersTraceSubject = LayersTraceSubject(
-        traceDataReader.readLayersTrace() ?: error("Failed to read layer trace")
-    )
+    final override lateinit var layersTraceSubject: LayersTraceSubject
 
     /**
      * The first [WindowManagerState] of the WindowManager trace.
      */
-    final override val wmStateSubjectAtStart: WindowManagerStateSubject
+    final override lateinit var wmStateSubjectAtStart: WindowManagerStateSubject
 
     /**
      * The last [WindowManagerState] of the WindowManager trace.
      */
-    final override val wmStateSubjectAtEnd: WindowManagerStateSubject
+    final override lateinit var wmStateSubjectAtEnd: WindowManagerStateSubject
 
     /**
      * The first [LayerTraceEntry] of the Layers trace.
      */
-    final override val layerTraceEntrySubjectAtStart: LayerTraceEntrySubject
+    final override lateinit var layerTraceEntrySubjectAtStart: LayerTraceEntrySubject
 
     /**
      * The last [LayerTraceEntry] of the Layers trace.
      */
-    final override val layerTraceEntrySubjectAtEnd: LayerTraceEntrySubject
+    final override lateinit var layerTraceEntrySubjectAtEnd: LayerTraceEntrySubject
 
     // TODO(b/396020056): Verify bubble scenarios in 3-button mode.
     /**
@@ -103,13 +103,30 @@ abstract class BubbleFlickerTestBase : BubbleFlickerSubjects {
      */
     override val isGesturalNavBar = tapl.navigationModel == NavigationModel.ZERO_BUTTON
 
-    override val testApp
-        get() = BubbleFlickerTestBase.testApp
+    /**
+     * The app used in flicker tests to verify with.
+     *
+     * Note that it's necessary to override this [testApp] if the test use [SimpleAppHelper].
+     */
+    override val testApp: StandardAppHelper = FlickerProperties.testApp
 
     /**
      * Initialize subjects inherited from [FlickerSubject].
      */
-    init {
+    @CallSuper
+    @Before
+    open fun setUp() {
+        eventLogSubject = EventLogSubject(
+            traceDataReader.readEventLogTrace() ?: error("Failed to read event log"),
+            traceDataReader
+        )
+        wmTraceSubject = WindowManagerTraceSubject(
+            traceDataReader.readWmTrace() ?: error("Failed to read WM trace")
+        )
+        layersTraceSubject = LayersTraceSubject(
+            traceDataReader.readLayersTrace() ?: error("Failed to read layer trace")
+        )
+
         val parser = SubjectsParser(traceDataReader)
         wmStateSubjectAtStart = parser.getSubjectOfType(Tag.START)
         wmStateSubjectAtEnd = parser.getSubjectOfType(Tag.END)
@@ -139,34 +156,28 @@ abstract class BubbleFlickerTestBase : BubbleFlickerSubjects {
      * consecutive entries
      */
     @Test
-    fun visibleLayersShownMoreThanOneConsecutiveEntry() {
+    open fun visibleLayersShownMoreThanOneConsecutiveEntry() {
         layersTraceSubject
             .visibleLayersShownMoreThanOneConsecutiveEntry()
             .forAllEntries()
     }
 
-// endregion
-
-// region Launcher visibility tests
-
     /**
-     * Verifies the launcher window is always visible.
+     * Verifies if the stack space of all displays is fully covered by any visible
+     * layer, during the whole transitions.
      */
     @Test
-    fun launcherWindowIsAlwaysVisible() {
-        wmTraceSubject.isAppWindowVisible(ComponentNameMatcher.LAUNCHER).forAllEntries()
-    }
-
-    /**
-     * Verifies the launcher layer is always visible.
-     */
-    @Test
-    fun launcherLayerIsAlwaysVisible() {
-        layersTraceSubject.isVisible(ComponentNameMatcher.LAUNCHER).forAllEntries()
+    fun entireScreenCovered() {
+        layersTraceSubject.invoke("entireScreenCovered") { entry ->
+            entry.entry.displays
+                .filter { it.isOn }
+                .forEach { display ->
+                    entry.visibleRegion().coversAtLeast(display.layerStackSpace)
+                }
+        }
     }
 
 // endregion
-
 // region System bars tests
 
     /**
@@ -227,5 +238,31 @@ abstract class BubbleFlickerTestBase : BubbleFlickerSubjects {
 
 // endregion
 
-    companion object : FlickerPropertyInitializer()
+    /**
+     * Essential properties to launch flicker tests.
+     */
+    companion object FlickerProperties {
+        val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
+        val uiDevice: UiDevice = UiDevice.getInstance(instrumentation)
+
+        /**
+         * Helper class to wait on [WindowManagerState] or [LayerTraceEntry] conditions.
+         *
+         * This is also used to wait for transition completes.
+         */
+        val wmHelper = WindowManagerStateHelper(
+            instrumentation,
+            clearCacheAfterParsing = false,
+        )
+
+        /**
+         * Used for building the scenario.
+         */
+        val tapl: LauncherInstrumentation = LauncherInstrumentation()
+
+        /**
+         * The default app used in flicker tests to verify with.
+         */
+        val testApp: StandardAppHelper = SimpleAppHelper(instrumentation)
+    }
 }

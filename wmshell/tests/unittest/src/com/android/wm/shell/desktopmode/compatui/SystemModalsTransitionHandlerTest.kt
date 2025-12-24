@@ -29,9 +29,9 @@ import android.view.WindowManager.TRANSIT_CHANGE
 import android.view.WindowManager.TRANSIT_CLOSE
 import android.view.WindowManager.TRANSIT_OPEN
 import androidx.test.filters.SmallTest
+import com.android.internal.policy.DesktopModeCompatPolicy
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.common.ShellExecutor
-import com.android.wm.shell.desktopmode.DesktopRepository
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFullscreenTask
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFullscreenTaskBuilder
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createSystemModalTask
@@ -39,7 +39,7 @@ import com.android.wm.shell.desktopmode.DesktopTestHelpers.createSystemModalTask
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createSystemModalTaskWithBaseActivity
 import com.android.wm.shell.desktopmode.DesktopUserRepositories
 import com.android.wm.shell.desktopmode.DesktopWallpaperActivity
-import com.android.wm.shell.shared.desktopmode.DesktopModeCompatPolicy
+import com.android.wm.shell.desktopmode.data.DesktopRepository
 import com.android.wm.shell.sysui.ShellInit
 import com.android.wm.shell.transition.TransitionInfoBuilder
 import com.android.wm.shell.transition.Transitions

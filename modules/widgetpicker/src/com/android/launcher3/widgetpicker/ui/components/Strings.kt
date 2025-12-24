@@ -17,6 +17,7 @@
 package com.android.launcher3.widgetpicker.ui.components
 
 import android.icu.text.MessageFormat
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.android.launcher3.widgetpicker.R
@@ -24,13 +25,24 @@ import java.util.Locale
 
 /** Helper to build a string representing widgets count */
 @Composable
-fun widgetsCountString(count: Int): String {
-    val icuCountFormat =
-        MessageFormat(
-            stringResource(R.string.widgets_list_header_widgets_count_label),
-            Locale.getDefault(),
-        )
-    return icuCountFormat.format(mapOf(COUNT_KEY to count))
+fun widgetsCountString(widgets: Int, shortcuts: Int): String {
+    @Composable
+    fun icuString(@StringRes resId: Int, count: Int): String {
+        val icuStringFormat = MessageFormat(stringResource(resId), Locale.getDefault())
+        return icuStringFormat.format(mapOf(COUNT_KEY to count))
+    }
+
+    return when {
+        shortcuts > 0 && widgets > 0 ->
+            stringResource(
+                R.string.widgets_list_header_widgets_and_shortcuts_count_label,
+                icuString(R.string.widgets_list_header_widgets_count_label, widgets),
+                icuString(R.string.widgets_list_header_shortcuts_count_label, shortcuts),
+            )
+
+        shortcuts == 0 -> icuString(R.string.widgets_list_header_widgets_count_label, widgets)
+        else -> icuString(R.string.widgets_list_header_shortcuts_count_label, shortcuts)
+    }
 }
 
 private const val COUNT_KEY = "count"

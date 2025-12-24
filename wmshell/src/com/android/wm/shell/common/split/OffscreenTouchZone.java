@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_TRUSTED_OVERL
 
 import static com.android.wm.shell.common.split.SplitLayout.RESTING_TOUCH_LAYER;
 
+import android.app.TaskInfo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
@@ -57,9 +58,10 @@ public class OffscreenTouchZone {
     private final boolean mIsTopLeft;
     /** The function that will be run when this zone is tapped. */
     private final Runnable mOnClickRunnable;
-    private SurfaceControlViewHost mViewHost;
-    private SurfaceControl mLeash;
+
+    private TouchInterceptLayer mInterceptLayer;
     private GestureDetector mGestureDetector;
+
     private final GestureDetector.SimpleOnGestureListener mTapDetector =
             new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -68,6 +70,7 @@ public class OffscreenTouchZone {
                     return true;
                 }
             };
+
     private final View.OnDragListener mDragListener = new View.OnDragListener() {
         @Override
         public boolean onDrag(View view, DragEvent dragEvent) {
@@ -77,6 +80,14 @@ public class OffscreenTouchZone {
             return false;
         }
     };
+
+    private final View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            return mGestureDetector.onTouchEvent(motionEvent);
+        }
+    };
+
     /**
      * @param isTopLeft Whether the desired touch zone will be on the top/left or the bottom/right
      *                  screen edge.
@@ -88,75 +99,19 @@ public class OffscreenTouchZone {
     }
 
     /** Sets up a touch zone. */
-    public void inflate(Context context, Configuration config, SyncTransactionQueue syncQueue,
-            SurfaceControl stageRoot) {
-        View touchableView = new View(context);
+    public void inflate(Context context, SurfaceControl rootLeash, TaskInfo rootTaskInfo) {
         mGestureDetector = new GestureDetector(context, mTapDetector);
-        touchableView.setOnTouchListener(new OffscreenTouchListener());
-
-        // Set WM flags, tokens, and sizing on the touchable view. It will be the same size as its
-        // parent, the stage root.
-        // TODO (b/349828130): It's a bit wasteful to have the touch zone cover the whole app
-        //  surface, even extending offscreen (keeps buffer active in memory), so can trim it down
-        //  to the visible onscreen area in a future patch.
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_INPUT_CONSUMER,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
-        lp.token = new Binder();
-        lp.setTitle(TAG);
-        lp.privateFlags |= PRIVATE_FLAG_NO_MOVE_ANIMATION | PRIVATE_FLAG_TRUSTED_OVERLAY;
-        touchableView.setLayoutParams(lp);
-        touchableView.setOnDragListener(mDragListener);
-
-        // Create a new leash under our stage leash.
-        final SurfaceControl.Builder builder = new SurfaceControl.Builder()
-                .setContainerLayer()
-                .setName(TAG + (mIsTopLeft ? "TopLeft" : "BottomRight"))
-                .setCallsite("OffscreenTouchZone::init");
-        builder.setParent(stageRoot);
-        SurfaceControl leash = builder.build();
-        mLeash = leash;
-
-        // Create a ViewHost that will hold our view.
-        WindowlessWindowManager wwm = new WindowlessWindowManager(config, leash, null);
-        mViewHost = new SurfaceControlViewHost(context, context.getDisplay(), wwm,
-                "SplitTouchZones");
-        mViewHost.setView(touchableView, lp);
-
-        // Create a transaction so that we can activate and reposition our surface.
-        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
-        // Set layer to maximum. We want this surface to be above the app layer, or else touches
-        // will be blocked.
-        t.setLayer(leash, RESTING_TOUCH_LAYER);
-        // Leash starts off hidden, show it.
-        t.show(leash);
-        syncQueue.runInSync(transaction -> {
-            transaction.merge(t);
-            t.close();
-        });
+        mInterceptLayer = new TouchInterceptLayer(TAG + (mIsTopLeft ? "TopLeft" : "BottomRight"));
+        mInterceptLayer.inflate(rootLeash, rootTaskInfo);
+        mInterceptLayer.setTouchListener(mTouchListener);
+        mInterceptLayer.setDragListener(mDragListener);
     }
 
     /** Releases the touch zone when it's no longer needed. */
     void release(SurfaceControl.Transaction t) {
-        if (mViewHost != null) {
-            mViewHost.release();
-        }
-        if (mLeash != null) {
-            t.remove(mLeash);
-            mLeash = null;
-        }
-    }
-
-    /**
-     * Listens for touch events.
-     */
-    private class OffscreenTouchListener implements View.OnTouchListener {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return mGestureDetector.onTouchEvent(motionEvent);
+        if (mInterceptLayer != null) {
+            mInterceptLayer.release();
+            mInterceptLayer = null;
         }
     }
 

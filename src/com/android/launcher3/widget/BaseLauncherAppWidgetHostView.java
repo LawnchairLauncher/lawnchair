@@ -16,6 +16,7 @@
 
 package com.android.launcher3.widget;
 
+import android.app.AppComponentFactory;
 import android.content.Context;
 import android.graphics.Outline;
 import android.graphics.Rect;
@@ -26,13 +27,18 @@ import android.widget.RemoteViews;
 
 import androidx.annotation.UiThread;
 
+import com.android.launcher3.LauncherApplication;
 import com.android.launcher3.R;
+import com.android.launcher3.dagger.LauncherBaseAppComponent;
+import com.android.launcher3.dagger.LauncherComponentProvider;
+import com.android.launcher3.preview.PreviewContext.PreviewAppComponent;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.widget.LocalColorExtractor.Listener;
 
 /**
  * Launcher AppWidgetHostView with support for rounded corners and a fallback View.
  */
-public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHostView implements LocalColorExtractor.Listener {
+public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHostView implements Listener {
 
     private static final ViewOutlineProvider VIEW_OUTLINE_PROVIDER = new ViewOutlineProvider() {
         @Override
@@ -65,6 +71,8 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
     // Lawnchair: LocalColorExtractor
     private final LocalColorExtractor mColorExtractor;
 
+    private final PreviewAppComponent mAppComponent = (PreviewAppComponent) LauncherComponentProvider.get(getContext());
+
     public BaseLauncherAppWidgetHostView(Context context) {
         super(context);
 
@@ -73,7 +81,7 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
 
         mInflater = LayoutInflater.from(context);
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
-        mColorExtractor = LocalColorExtractor.newInstance(getContext());
+        mColorExtractor = mAppComponent.getLocalColorExtractor();
     }
 
     @Override

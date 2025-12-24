@@ -19,8 +19,8 @@ import androidx.test.annotation.UiThreadTest
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.launcher3.BuildConfig.WIDGETS_ENABLED
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.LauncherMultivalentJUnit
+import com.android.launcher3.util.TestActivityContext
 import com.android.launcher3.widget.LauncherWidgetHolder.FLAG_ACTIVITY_RESUMED
 import com.android.launcher3.widget.LauncherWidgetHolder.FLAG_ACTIVITY_STARTED
 import com.android.launcher3.widget.LauncherWidgetHolder.FLAG_STATE_IS_NORMAL
@@ -30,6 +30,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
@@ -41,13 +42,14 @@ import org.mockito.kotlin.whenever
 @SmallTest
 @RunWith(LauncherMultivalentJUnit::class)
 class LauncherWidgetHolderTest {
+    @get:Rule val mContext = TestActivityContext()
+
     private lateinit var widgetHolder: LauncherWidgetHolder
 
     @Before
     fun setUp() {
         assertTrue(WIDGETS_ENABLED)
-        widgetHolder =
-            LauncherWidgetHolder(ActivityContextWrapper(getInstrumentation().targetContext))
+        widgetHolder = LauncherWidgetHolder(mContext)
     }
 
     @After

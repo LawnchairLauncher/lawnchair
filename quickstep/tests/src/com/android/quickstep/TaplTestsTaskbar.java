@@ -24,6 +24,7 @@ import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.TRANSIENT;
 import androidx.test.filters.LargeTest;
 
 import com.android.launcher3.util.ui.PortraitLandscapeRunner.PortraitLandscape;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,6 +93,7 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
 
     @Test
     @PortraitLandscape
+    @ScreenRecordRule.ScreenRecord // b/414900465
     public void testLaunchAppInSplitscreen() {
         getTaskbar().getAppIcon(TEST_APP_NAME).dragToSplitscreen(
                 TEST_APP_PACKAGE, CALCULATOR_APP_PACKAGE);
@@ -105,6 +107,7 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
 
     @Test
     @PortraitLandscape
+    @ScreenRecordRule.ScreenRecord // b/414900465
     public void testLaunchShortcutInSplitscreen() {
         getTaskbar().getAppIcon(TEST_APP_NAME)
                 .openDeepShortcutMenu()

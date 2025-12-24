@@ -131,7 +131,7 @@ class LawnchairFloatingSurfaceView @JvmOverloads constructor(
         val launcherAnimator = AnimatorSet()
         val endListener: Runnable?
 
-        val scales = floatArrayOf(mDeviceProfile.workspaceContentScale, 1f)
+        val scales = floatArrayOf(mDeviceProfile.mWorkspaceProfile.workspaceContentScale, 1f)
 
         mLauncher.pauseExpensiveViewUpdates()
 

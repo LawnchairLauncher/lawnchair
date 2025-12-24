@@ -376,17 +376,12 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     override fun onSearchResult(query: String, items: ArrayList<AdapterItem>?) {
         if (items != null) {
-            apps.setSearchResults(items)
             notifyResultChanged()
             appsView.setSearchResults(items)
         }
     }
 
     override fun clearSearchResult() {
-        if (apps.setSearchResults(null)) {
-            notifyResultChanged()
-        }
-
         // Clear the search query
         searchQueryBuilder.clear()
         searchQueryBuilder.clearSpans()

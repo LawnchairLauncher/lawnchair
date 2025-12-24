@@ -11,6 +11,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 
 import android.animation.AnimatorSet;
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.Nullable;
@@ -33,6 +35,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -49,7 +52,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
-import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.popup.PopupContainer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.IntArray;
@@ -61,7 +64,7 @@ import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.views.OptionsPopupView.OptionItem;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
-import com.android.launcher3.widget.util.WidgetSizes;
+import com.android.launcher3.widget.util.WidgetSizeHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -169,9 +172,10 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         if (host == null || !(host.getTag() instanceof  ItemInfo)) {
             return Collections.emptyList();
         }
-        PopupContainerWithArrow container = PopupContainerWithArrow.getOpen(launcher);
+        PopupContainer<?> container = PopupContainer.getOpen(launcher);
         LauncherAccessibilityDelegate delegate = container != null
-                ? container.getAccessibilityDelegate() : launcher.getAccessibilityDelegate();
+                ? (LauncherAccessibilityDelegate) container.getAccessibilityDelegate()
+                : launcher.getAccessibilityDelegate();
         List<LauncherAction> result = new ArrayList<>();
         delegate.getSupportedActions(host, (ItemInfo) host.getTag(), result);
         return result;
@@ -186,11 +190,13 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             // Shortcuts / Notifications / Actions pop-up menu, and not start a drag as the
             // standard long press path does.
             if (host instanceof BubbleTextView) {
-                dragCondition = ((BubbleTextView) host).startLongPressAction();
+                dragCondition = ((BubbleTextView) host)
+                        .startLongPressAction(mContext.getPopupControllerForAppIcons());
             } else if (host instanceof BubbleTextHolder) {
                 BubbleTextHolder holder = (BubbleTextHolder) host;
                 dragCondition = holder.getBubbleText() == null ? null
-                        : holder.getBubbleText().startLongPressAction();
+                        : holder.getBubbleText()
+                                .startLongPressAction(mContext.getPopupControllerForAppIcons());
             }
             return dragCondition != null;
         } else if (action == MOVE) {
@@ -224,7 +230,10 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             BubbleTextView btv = host instanceof BubbleTextView ? (BubbleTextView) host
                     : (host instanceof BubbleTextHolder
                             ? ((BubbleTextHolder) host).getBubbleText() : null);
-            return btv != null && PopupContainerWithArrow.showForIcon(btv) != null;
+
+            return btv != null
+                    && mContext.getPopupControllerForAppIcons()
+                    .show(btv) != null;
         } else if (action == CLOSE) {
             if (host instanceof AppWidgetResizeFrame) {
                 AbstractFloatingView.closeOpenViews(mContext, /* animate= */ false,
@@ -253,11 +262,15 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             return actions;
         }
 
+        ViewParent contentParent = host.getParent() instanceof DragView dragView
+                ? dragView.getContentViewParent()
+                : host.getParent();
         CellLayout layout;
-        if (host.getParent() instanceof DragView) {
-            layout = (CellLayout) ((DragView) host.getParent()).getContentViewParent().getParent();
+        if (contentParent instanceof ShortcutAndWidgetContainer
+                && contentParent.getParent() instanceof CellLayout cl) {
+            layout = cl;
         } else {
-            layout = (CellLayout) host.getParent().getParent();
+            return actions;
         }
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0) {
             if (layout.isRegionVacant(info.cellX + info.spanX, info.cellY, 1, info.spanY) ||
@@ -329,8 +342,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         }
 
         layout.markCellsAsOccupiedForView(host);
-        WidgetSizes.updateWidgetSizeRanges(((LauncherAppWidgetHostView) host), mContext,
-                info.spanX, info.spanY);
+        WidgetSizeHandler.updateSizeRanges((AppWidgetHostView) host, info.spanX, info.spanY);
         host.requestLayout();
         mContext.getModelWriter().updateItemInDatabase(info);
         return true;

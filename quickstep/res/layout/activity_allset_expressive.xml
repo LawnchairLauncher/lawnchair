@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="72dp"
             android:fitsSystemWindows="true"
-            android:paddingHorizontal="@dimen/allset_page_padding_horizontal">
+            android:paddingHorizontal="@dimen/allset_page_expressive_padding_horizontal">
 
             <TextView
                 android:id="@+id/title"
@@ -74,7 +74,7 @@
                 style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="@dimen/allset_hint_margin_bottom"
                 android:gravity="center"
                 android:textColor="@color/suw_all_set_expressive_theme_color"
                 android:textSize="@dimen/allset_page_swipe_up_text_size_expressive"
@@ -88,5 +88,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <com.android.quickstep.views.WallpaperScreenshotClipView
+        android:id="@+id/wallpaper_clip_path"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

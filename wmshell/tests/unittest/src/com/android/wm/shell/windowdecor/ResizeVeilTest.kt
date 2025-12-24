@@ -55,12 +55,10 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
-
 /**
  * Tests for [ResizeVeil].
  *
- * Build/Install/Run:
- * atest WMShellUnitTests:ResizeVeilTest
+ * Build/Install/Run: atest WMShellUnitTests:ResizeVeilTest
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @SmallTest
@@ -68,51 +66,43 @@ import org.mockito.kotlin.whenever
 @TestableLooper.RunWithLooper
 class ResizeVeilTest : ShellTestCase() {
 
-    @Mock
-    private lateinit var mockDisplayController: DisplayController
-    @Mock
-    private lateinit var mockAppIcon: Bitmap
-    @Mock
-    private lateinit var mockDisplay: Display
-    @Mock
-    private lateinit var mockSurfaceControlViewHost: SurfaceControlViewHost
+    @Mock private lateinit var mockDisplayController: DisplayController
+    @Mock private lateinit var mockAppIcon: Bitmap
+    @Mock private lateinit var mockDisplay: Display
+    @Mock private lateinit var mockSurfaceControlViewHost: SurfaceControlViewHost
     @Mock
     private lateinit var mockSurfaceControlBuilderFactory: ResizeVeil.SurfaceControlBuilderFactory
-    @Mock
-    private lateinit var mockSurfaceControlViewHostFactory: SurfaceControlViewHostFactory
-    @Spy
-    private val spyResizeVeilSurfaceBuilder = SurfaceControl.Builder()
-    @Mock
-    private lateinit var mockResizeVeilSurface: SurfaceControl
-    @Spy
-    private val spyBackgroundSurfaceBuilder = SurfaceControl.Builder()
-    @Mock
-    private lateinit var mockBackgroundSurface: SurfaceControl
-    @Spy
-    private val spyIconSurfaceBuilder = SurfaceControl.Builder()
-    @Mock
-    private lateinit var mockIconSurface: SurfaceControl
-    @Mock
-    private lateinit var mockTransaction: SurfaceControl.Transaction
-    @Mock
-    private lateinit var mockTaskResourceLoader: WindowDecorTaskResourceLoader
+    @Mock private lateinit var mockSurfaceControlViewHostFactory: SurfaceControlViewHostFactory
+    @Spy private val spyResizeVeilSurfaceBuilder = SurfaceControl.Builder()
+    @Mock private lateinit var mockResizeVeilSurface: SurfaceControl
+    @Spy private val spyBackgroundSurfaceBuilder = SurfaceControl.Builder()
+    @Mock private lateinit var mockBackgroundSurface: SurfaceControl
+    @Spy private val spyIconSurfaceBuilder = SurfaceControl.Builder()
+    @Mock private lateinit var mockIconSurface: SurfaceControl
+    @Mock private lateinit var mockTransaction: SurfaceControl.Transaction
+    @Mock private lateinit var mockTaskResourceLoader: WindowDecorTaskResourceLoader
 
     private val taskInfo = TestRunningTaskInfoBuilder().build()
 
     @Before
     fun setUp() {
         whenever(mockSurfaceControlViewHostFactory.create(any(), any(), any(), any()))
-                .thenReturn(mockSurfaceControlViewHost)
-        whenever(mockSurfaceControlBuilderFactory
-            .create("Resize veil of Task=" + taskInfo.taskId))
+            .thenReturn(mockSurfaceControlViewHost)
+        whenever(mockSurfaceControlBuilderFactory.create("Resize veil of Task=" + taskInfo.taskId))
             .thenReturn(spyResizeVeilSurfaceBuilder)
         doReturn(mockResizeVeilSurface).whenever(spyResizeVeilSurfaceBuilder).build()
-        whenever(mockSurfaceControlBuilderFactory
-            .create(eq("Resize veil background of Task=" + taskInfo.taskId)))
+        whenever(
+                mockSurfaceControlBuilderFactory.create(
+                    eq("Resize veil background of Task=" + taskInfo.taskId)
+                )
+            )
             .thenReturn(spyBackgroundSurfaceBuilder)
         doReturn(mockBackgroundSurface).whenever(spyBackgroundSurfaceBuilder).build()
-        whenever(mockSurfaceControlBuilderFactory
-            .create("Resize veil icon of Task=" + taskInfo.taskId))
+        whenever(
+                mockSurfaceControlBuilderFactory.create(
+                    "Resize veil icon of Task=" + taskInfo.taskId
+                )
+            )
             .thenReturn(spyIconSurfaceBuilder)
         doReturn(mockIconSurface).whenever(spyIconSurfaceBuilder).build()
 
@@ -120,8 +110,9 @@ class ResizeVeilTest : ShellTestCase() {
         doReturn(mockTransaction).whenever(mockTransaction).setAlpha(any(), anyFloat())
         doReturn(mockTransaction).whenever(mockTransaction).show(any())
         doReturn(mockTransaction).whenever(mockTransaction).hide(any())
-        doReturn(mockTransaction).whenever(mockTransaction)
-                .setPosition(any(), anyFloat(), anyFloat())
+        doReturn(mockTransaction)
+            .whenever(mockTransaction)
+            .setPosition(any(), anyFloat(), anyFloat())
         doReturn(mockTransaction).whenever(mockTransaction).setWindowCrop(any(), anyInt(), anyInt())
     }
 
@@ -204,7 +195,7 @@ class ResizeVeilTest : ShellTestCase() {
             newParent,
             Rect(0, 0, 100, 100),
             taskInfo,
-            false /* fadeIn */
+            false, /* fadeIn */
         )
 
         verify(mockTransaction).reparent(mockResizeVeilSurface, newParent)
@@ -241,9 +232,9 @@ class ResizeVeilTest : ShellTestCase() {
         assertThat(veil.iconView.drawable).isNull()
     }
 
-    private fun TestScope.createResizeVeil(
+    private suspend fun TestScope.createResizeVeil(
         withDisplayAvailable: Boolean = true,
-        parent: SurfaceControl = mock()
+        parent: SurfaceControl = mock(),
     ): ResizeVeil {
         whenever(mockDisplayController.getDisplay(taskInfo.displayId))
             .thenReturn(if (withDisplayAvailable) mockDisplay else null)
@@ -258,7 +249,7 @@ class ResizeVeilTest : ShellTestCase() {
             { mockTransaction },
             mockSurfaceControlBuilderFactory,
             mockSurfaceControlViewHostFactory,
-            taskInfo
+            taskInfo,
         )
     }
 }

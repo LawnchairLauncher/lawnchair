@@ -20,9 +20,7 @@ import com.android.wm.shell.compatui.api.CompatUIRequest
 
 internal const val DISPLAY_COMPAT_SHOW_RESTART_DIALOG = 0
 
-/**
- * All the {@link CompatUIRequest} the Compat UI Framework can handle
- */
+/** All the {@link CompatUIRequest} the Compat UI Framework can handle */
 sealed class CompatUIRequests(override val requestId: Int) : CompatUIRequest {
     /** Sent when the restart handle menu is clicked, and a restart dialog is requested. */
     data class DisplayCompatShowRestartDialog(val taskId: Int) :

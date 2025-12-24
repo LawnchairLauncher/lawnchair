@@ -15,12 +15,9 @@
  */
 package com.android.launcher3.celllayout;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.View;
@@ -36,7 +33,8 @@ import com.android.launcher3.celllayout.board.PermutedBoardComparator;
 import com.android.launcher3.celllayout.board.WidgetRect;
 import com.android.launcher3.celllayout.testgenerator.RandomBoardGenerator;
 import com.android.launcher3.celllayout.testgenerator.RandomMultiBoardGenerator;
-import com.android.launcher3.util.ActivityContextWrapper;
+import com.android.launcher3.util.SandboxApplication;
+import com.android.launcher3.util.TestActivityContext;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
@@ -66,13 +64,15 @@ public class ReorderAlgorithmUnitTest {
     private static final int MAX_BOARD_SIZE = 13;
 
     private static final int TOTAL_OF_CASES_GENERATED = 300;
-    private Context mApplicationContext;
 
     @Rule
     public TestStabilityRule mTestStabilityRule = new TestStabilityRule();
 
     @Rule
-    public UnitTestCellLayoutBuilderRule mCellLayoutBuilder = new UnitTestCellLayoutBuilderRule();
+    public SandboxApplication mApplication = new SandboxApplication();
+
+    @Rule
+    public TestActivityContext mUiContext = new TestActivityContext(mApplication);
 
     /**
      * This test reads existing test cases and makes sure the CellLayout produces the same
@@ -82,7 +82,6 @@ public class ReorderAlgorithmUnitTest {
     public void testAllCases() throws IOException {
         List<ReorderAlgorithmUnitTestCase> testCases = getTestCases(
                 "ReorderAlgorithmUnitTest/reorder_algorithm_test_cases");
-        mApplicationContext = new ActivityContextWrapper(getApplicationContext());
         List<Integer> failingCases = new ArrayList<>();
         for (int i = 0; i < testCases.size(); i++) {
             try {
@@ -103,7 +102,6 @@ public class ReorderAlgorithmUnitTest {
     @Test
     public void generateValidTests() {
         Random generator = new Random(SEED);
-        mApplicationContext = new ActivityContextWrapper(getApplicationContext());
         for (int i = 0; i < TOTAL_OF_CASES_GENERATED; i++) {
             // Using a new seed so that we can replicate the same test cases.
             int seed = generator.nextInt();
@@ -123,7 +121,6 @@ public class ReorderAlgorithmUnitTest {
     @Test
     public void generateValidTests_Multi() {
         Random generator = new Random(SEED);
-        mApplicationContext = new ActivityContextWrapper(getApplicationContext());
         for (int i = 0; i < TOTAL_OF_CASES_GENERATED; i++) {
             // Using a new seed so that we can replicate the same test cases.
             int seed = generator.nextInt();
@@ -139,8 +136,7 @@ public class ReorderAlgorithmUnitTest {
 
     private void addViewInCellLayout(CellLayout cellLayout, int cellX, int cellY, int spanX,
             int spanY, boolean isWidget) {
-        View cell = isWidget ? new View(mApplicationContext) : new DoubleShadowBubbleTextView(
-                mApplicationContext);
+        View cell = isWidget ? new View(mUiContext) : new DoubleShadowBubbleTextView(mUiContext);
         cell.setLayoutParams(new CellLayoutLayoutParams(cellX, cellY, spanX, spanY));
         cellLayout.addViewToCellLayout(cell, -1, cell.getId(),
                 (CellLayoutLayoutParams) cell.getLayoutParams(), true);
@@ -148,8 +144,7 @@ public class ReorderAlgorithmUnitTest {
 
     public ItemConfiguration solve(CellLayoutBoard board, int x, int y, int spanX,
             int spanY, int minSpanX, int minSpanY, boolean isMulti) {
-        CellLayout cl = mCellLayoutBuilder.createCellLayoutDefaultSize(board.getWidth(),
-                board.getHeight(), isMulti);
+        CellLayout cl = mUiContext.createCellLayout(board.getWidth(), board.getHeight(), isMulti);
 
         // The views have to be sorted or the result can vary
         board.getIcons()

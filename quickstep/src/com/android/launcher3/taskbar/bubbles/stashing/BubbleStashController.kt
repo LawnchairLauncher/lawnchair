@@ -125,6 +125,9 @@ interface BubbleStashController {
     /** Set a bubble bar location */
     fun setBubbleBarLocation(bubbleBarLocation: BubbleBarLocation)
 
+    /** Stashes the bubble bar in the persistent taskbar mode. */
+    fun setStashedInPersistentTaskBar(stashed: Boolean) {}
+
     /**
      * Stashes the bubble bar (transform to the handle view), or just shrink width of the expanded
      * bubble bar based on the controller implementation.

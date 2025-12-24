@@ -16,12 +16,13 @@
 
 package com.android.wm.shell.bubbles.util
 
+import android.graphics.Rect
 import android.os.Binder
+import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.window.WindowContainerToken
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags.FLAG_EXCLUDE_TASK_FROM_RECENTS
-import com.android.wm.shell.Flags.FLAG_ENABLE_BUBBLE_APP_COMPAT_FIXES
+import com.android.window.flags2.Flags.FLAG_ROOT_TASK_FOR_BUBBLE
 import com.android.wm.shell.Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.bubbles.util.BubbleTestUtils.verifyEnterBubbleTransaction
@@ -49,27 +50,34 @@ class BubbleUtilsTest : ShellTestCase() {
     private val token = mock<WindowContainerToken> {
         on { asBinder() } doReturn binder
     }
+    private val rootTaskToken = mock<WindowContainerToken> {
+        on { asBinder() } doReturn binder
+    }
+    private val bounds = Rect(0, 0, 100, 100)
     private val captionInsetsOwner = Binder()
 
-    @EnableFlags(
-        FLAG_ENABLE_CREATE_ANY_BUBBLE,
-        FLAG_EXCLUDE_TASK_FROM_RECENTS,
-    )
+    @EnableFlags(FLAG_ENABLE_CREATE_ANY_BUBBLE)
+    @DisableFlags(FLAG_ROOT_TASK_FOR_BUBBLE)
     @Test
     fun testGetEnterBubbleTransaction(@TestParameter isAppBubble: Boolean) {
-        val wctWithLaunchNextToBubble = getEnterBubbleTransaction(token, isAppBubble)
+        val wctWithLaunchNextToBubble =
+            getEnterBubbleTransaction(token, null /* rootToken */, bounds, isAppBubble)
 
         verifyEnterBubbleTransaction(wctWithLaunchNextToBubble, token.asBinder(), isAppBubble)
     }
 
-    @EnableFlags(
-        FLAG_ENABLE_CREATE_ANY_BUBBLE,
-        FLAG_EXCLUDE_TASK_FROM_RECENTS,
-    )
+    @EnableFlags(FLAG_ENABLE_CREATE_ANY_BUBBLE)
+    @DisableFlags(FLAG_ROOT_TASK_FOR_BUBBLE)
     @Test
     fun testGetEnterBubbleTransaction_reparentToTda(@TestParameter isAppBubble: Boolean) {
         val wctWithLaunchNextToBubble =
-            getEnterBubbleTransaction(token, isAppBubble, reparentToTda = true)
+            getEnterBubbleTransaction(
+                token,
+                rootToken = null,
+                bounds,
+                isAppBubble,
+                reparentToTda = true
+            )
 
         verifyEnterBubbleTransaction(
             wctWithLaunchNextToBubble,
@@ -79,11 +87,21 @@ class BubbleUtilsTest : ShellTestCase() {
         )
     }
 
-    @EnableFlags(
-        FLAG_ENABLE_CREATE_ANY_BUBBLE,
-        FLAG_EXCLUDE_TASK_FROM_RECENTS,
-        FLAG_ENABLE_BUBBLE_APP_COMPAT_FIXES,
-    )
+    @EnableFlags(FLAG_ENABLE_CREATE_ANY_BUBBLE, FLAG_ROOT_TASK_FOR_BUBBLE)
+    @Test
+    fun testRootBubbleGetEnterBubbleTransaction() {
+        val isAppBubble = true
+        val wct = getEnterBubbleTransaction(token, rootTaskToken, bounds, isAppBubble)
+
+        verifyEnterBubbleTransaction(
+            wct,
+            token.asBinder(),
+            isAppBubble,
+            rootTaskToken = rootTaskToken.asBinder()
+        )
+    }
+
+    @EnableFlags(FLAG_ENABLE_CREATE_ANY_BUBBLE)
     @Test
     fun testGetExitBubbleTransaction() {
         val wct = getExitBubbleTransaction(token, captionInsetsOwner)

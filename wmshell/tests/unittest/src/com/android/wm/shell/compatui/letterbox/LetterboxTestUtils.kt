@@ -29,27 +29,22 @@ import org.mockito.kotlin.times
 import org.mockito.verification.VerificationMode
 
 /**
- * @return A [SurfaceControl.Transaction] mock supporting chaining for some operations. Please
- *         add other operations if needed.
+ * @return A [SurfaceControl.Transaction] mock supporting chaining for some operations. Please add
+ *   other operations if needed.
  */
-fun getTransactionMock(): SurfaceControl.Transaction = mock<SurfaceControl.Transaction>().apply {
-    doReturn(this).`when`(this).setLayer(anyOrNull(), anyOrNull())
-    doReturn(this).`when`(this).setColorSpaceAgnostic(anyOrNull(), anyOrNull())
-    doReturn(this).`when`(this).setPosition(anyOrNull(), any(), any())
-    doReturn(this).`when`(this).setWindowCrop(anyOrNull(), any(), any())
-}
+fun getTransactionMock(): SurfaceControl.Transaction =
+    mock<SurfaceControl.Transaction>().apply {
+        doReturn(this).`when`(this).setLayer(anyOrNull(), anyOrNull())
+        doReturn(this).`when`(this).setColorSpaceAgnostic(anyOrNull(), anyOrNull())
+        doReturn(this).`when`(this).setPosition(anyOrNull(), any(), any())
+        doReturn(this).`when`(this).setWindowCrop(anyOrNull(), any(), any())
+    }
 
-/**
- * @return A [LetterboxInputSurfaceBuilder] mock to use in tests.
- */
-fun getLetterboxInputSurfaceBuilderMock() = mock<LetterboxInputSurfaceBuilder>().apply {
-    doReturn(SurfaceControl()).`when`(this).createInputSurface(
-        any(),
-        any(),
-        any(),
-        any()
-    )
-}
+/** @return A [LetterboxInputSurfaceBuilder] mock to use in tests. */
+fun getLetterboxInputSurfaceBuilderMock() =
+    mock<LetterboxInputSurfaceBuilder>().apply {
+        doReturn(SurfaceControl()).`when`(this).createInputSurface(any(), any(), any(), any())
+    }
 
 // Utility to make verification mode depending on a [Boolean].
 fun Boolean.asMode(): VerificationMode = if (this) times(1) else never()
@@ -57,13 +52,14 @@ fun Boolean.asMode(): VerificationMode = if (this) times(1) else never()
 // Utility matchers to use for the main types as Mockito [VerificationMode].
 object LetterboxMatchers {
     fun Int.asAnyMode() = asAnyMode { this < 0 }
+
     fun Float.asAnyMode() = asAnyMode { this < 0f }
+
     fun String.asAnyMode() = asAnyMode { this.isEmpty() }
 }
 
 object LetterboxEvents {
-    fun motionEventAt(x: Float, y: Float) =
-        obtain(0, 10, ACTION_DOWN, x, y, 0)
+    fun motionEventAt(x: Float, y: Float) = obtain(0, 10, ACTION_DOWN, x, y, 0)
 }
 
 private inline fun <reified T : Any> T.asAnyMode(condition: () -> Boolean) =

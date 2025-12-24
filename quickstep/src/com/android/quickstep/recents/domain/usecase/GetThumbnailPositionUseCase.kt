@@ -22,6 +22,7 @@ import com.android.quickstep.recents.data.RecentsDeviceProfileRepository
 import com.android.quickstep.recents.data.RecentsRotationStateRepository
 import com.android.systemui.shared.recents.model.ThumbnailData
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper
+import com.android.wm.shell.shared.split.SplitBounds
 
 /** Use case for retrieving [Matrix] for positioning Thumbnail in a View */
 class GetThumbnailPositionUseCase(
@@ -34,11 +35,15 @@ class GetThumbnailPositionUseCase(
         width: Int,
         height: Int,
         isRtl: Boolean,
+        splitBounds: SplitBounds?,
+        splitPosition: Int,
+        densityDpi: Int,
     ): ThumbnailPosition {
         val thumbnail =
             thumbnailData?.thumbnail ?: return ThumbnailPosition(Matrix.IDENTITY_MATRIX, false)
 
         val previewPositionHelper = previewPositionHelperFactory.create()
+        previewPositionHelper.setSplitBounds(splitBounds, splitPosition)
         previewPositionHelper.updateThumbnailMatrix(
             Rect(0, 0, thumbnail.width, thumbnail.height),
             thumbnailData,
@@ -47,6 +52,7 @@ class GetThumbnailPositionUseCase(
             deviceProfileRepository.getRecentsDeviceProfile().isLargeScreen,
             rotationStateRepository.getRecentsRotationState().activityRotation,
             isRtl,
+            densityDpi,
         )
         return ThumbnailPosition(
             matrix = previewPositionHelper.matrix,

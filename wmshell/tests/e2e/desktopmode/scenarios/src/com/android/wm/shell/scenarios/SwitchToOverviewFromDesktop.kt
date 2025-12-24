@@ -18,7 +18,6 @@ package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
 import android.tools.NavBar
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
 import android.tools.Rotation
 import android.tools.traces.parsers.WindowManagerStateHelper
 import androidx.test.platform.app.InstrumentationRegistry
@@ -26,11 +25,8 @@ import androidx.test.uiautomator.UiDevice
 import com.android.launcher3.tapl.LauncherInstrumentation
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.window.flags.Flags
 import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -43,22 +39,21 @@ import org.junit.Test
 */
 @Ignore("Base Test Class")
 abstract class SwitchToOverviewFromDesktop
-constructor(val navigationMode: NavBar = NavBar.MODE_GESTURAL) : TestScenarioBase() {
+constructor(
+    val navigationMode: NavBar = NavBar.MODE_GESTURAL,
+    val rotation: Rotation = Rotation.ROTATION_0
+) : TestScenarioBase(rotation) {
 
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
     private val tapl = LauncherInstrumentation()
     private val wmHelper = WindowManagerStateHelper(instrumentation)
     private val device = UiDevice.getInstance(instrumentation)
-    private val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
+    val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
 
-    @Rule @JvmField val testSetupRule = Utils.testSetupRule(navigationMode, Rotation.ROTATION_0)
+    @Rule @JvmField val testSetup = Utils.testSetupRule(navigationMode, Rotation.ROTATION_0)
 
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
         testApp.enterDesktopMode(wmHelper, device)
     }
 

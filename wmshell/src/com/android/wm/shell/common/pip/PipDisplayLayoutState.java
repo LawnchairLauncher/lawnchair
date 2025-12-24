@@ -16,6 +16,8 @@
 
 package com.android.wm.shell.common.pip;
 
+import static android.view.Surface.ROTATION_0;
+
 import static com.android.wm.shell.common.pip.PipUtils.dpToPx;
 
 import static java.lang.Math.max;
@@ -25,6 +27,7 @@ import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.RotationUtils;
 import android.util.Size;
 import android.view.Surface;
 
@@ -141,7 +144,12 @@ public class PipDisplayLayoutState {
      * @param targetRotation
      */
     public void rotateTo(@Surface.Rotation int targetRotation) {
+        final int fromRotation = getRotation();
         mDisplayLayout.rotateTo(mUiContext.getResources(), targetRotation);
+        final int rotation = RotationUtils.deltaRotation(fromRotation, targetRotation);
+        if (rotation != ROTATION_0) {
+            mNavigationBarsInsets = RotationUtils.rotateInsets(mNavigationBarsInsets, rotation);
+        }
     }
 
     /** Returns the current display rotation of this layout state. */
@@ -202,6 +210,7 @@ public class PipDisplayLayoutState {
         pw.println(prefix + TAG);
         pw.println(innerPrefix + "mDisplayId=" + mDisplayId);
         pw.println(innerPrefix + "getDisplayBounds=" + getDisplayBounds());
+        pw.println(innerPrefix + "getDisplayLayout#densityDpi=" + getDisplayLayout().densityDpi());
         pw.println(innerPrefix + "mScreenEdgeInsets=" + mScreenEdgeInsets);
         pw.println(innerPrefix + "mNavigationBarsInsets=" + mNavigationBarsInsets);
     }

@@ -21,9 +21,9 @@ import android.platform.test.annotations.Postsubmit
 import android.tools.Rotation
 import android.tools.device.apphelpers.NetflixAppHelper
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import android.tools.helpers.WindowUtils
 import android.tools.traces.component.ComponentNameMatcher
 import androidx.test.filters.RequiresDevice
@@ -51,7 +51,7 @@ import org.junit.runners.Parameterized
  *     1. Some default assertions (e.g., nav bar, status bar and screen covered)
  *        are inherited from [PipTransition]
  *     2. Part of the test setup occurs automatically via
- *        [android.tools.flicker.legacy.runner.TransitionRunner],
+ *        [android.tools.flicker.runner.TransitionRunner],
  *        including configuring navigation mode, initial orientation and ensuring no
  *        apps are running before setup
  * ```
@@ -60,7 +60,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-open class NetflixEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransition(flicker) {
+open class NetflixEnterPipTest(flicker: FlickerTest) : AppsEnterPipTransition(flicker) {
     override val pipApp: NetflixAppHelper = NetflixAppHelper(instrumentation)
     private val startingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_90)
     private val endingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_0)
@@ -165,13 +165,13 @@ open class NetflixEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransit
         /**
          * Creates the test configurations.
          *
-         * See [LegacyFlickerTestFactory.nonRotationTests] for configuring repetitions, screen
+         * See [FlickerTestFactory.nonRotationTests] for configuring repetitions, screen
          * orientation and navigation modes.
          */
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getParams() =
-            LegacyFlickerTestFactory.nonRotationTests(
+            FlickerTestFactory.nonRotationTests(
                 supportedRotations = listOf(Rotation.ROTATION_0)
             )
     }

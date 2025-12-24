@@ -99,7 +99,7 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher,
                 () -> LauncherState.NORMAL);
         waitForResumed("Launcher internal state is still Background");
 
-        checkDetectedLeaks(mLauncher, true);
+        checkDetectedLeaks(mLauncher);
     }
 
     @Override
@@ -303,11 +303,16 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher,
         assertTrue("App didn't start: " + selector,
                 TestHelpers.wait(Until.hasObject(selector), TestUtil.DEFAULT_UI_TIMEOUT));
 
-        // Wait for the Launcher to stop.
         final LauncherInstrumentation launcherInstrumentation = new LauncherInstrumentation();
-        Wait.atMost("Launcher activity didn't stop",
-                () -> !launcherInstrumentation.isLauncherActivityStarted(),
-                launcherInstrumentation);
+        if (!launcherInstrumentation.shouldShowHomeBehindDesktop()) {
+            // Wait for the Launcher to stop.
+            Wait.atMost("Launcher activity didn't stop",
+                    () -> !launcherInstrumentation.isLauncherActivityStarted(),
+                    launcherInstrumentation);
+        } else {
+            assertTrue("Launcher activity not started when it should be",
+                    launcherInstrumentation.isLauncherActivityStarted());
+        }
     }
 
 

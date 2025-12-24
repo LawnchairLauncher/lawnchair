@@ -2,7 +2,7 @@
   "imports": [
     {
       // Includes all flicker configs that rely on the utils in this directory
-      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/flicker-service"
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/flicker-legacy"
     },
     {
       // Includes all platinum tests that rely on the utils in this directory

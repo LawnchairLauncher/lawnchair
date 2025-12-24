@@ -120,30 +120,34 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo impleme
                 continue;
             }
 
-            dp.getCellSize(cellSize);
+            cellSize = dp.getWorkspaceIconProfile().getCellSize();
             Rect widgetPadding = dp.widgetPadding;
 
             minSpanX = Math.max(minSpanX,
-                    getSpanX(widgetPadding, minResizeWidth, dp.cellLayoutBorderSpacePx.x,
+                    getSpanX(widgetPadding, minResizeWidth,
+                            dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().x,
                             cellSize.x));
             minSpanY = Math.max(minSpanY,
-                    getSpanY(widgetPadding, minResizeHeight, dp.cellLayoutBorderSpacePx.y,
+                    getSpanY(widgetPadding, minResizeHeight,
+                            dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().y,
                             cellSize.y));
 
             if (maxResizeWidth > 0) {
                 maxSpanX = Math.min(maxSpanX, getSpanX(widgetPadding, maxResizeWidth,
-                        dp.cellLayoutBorderSpacePx.x, cellSize.x));
+                        dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().x, cellSize.x));
             }
             if (maxResizeHeight > 0) {
                 maxSpanY = Math.min(maxSpanY, getSpanY(widgetPadding, maxResizeHeight,
-                        dp.cellLayoutBorderSpacePx.y, cellSize.y));
+                        dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().y, cellSize.y));
             }
 
             spanX = Math.max(spanX,
-                    getSpanX(widgetPadding, minWidth, dp.cellLayoutBorderSpacePx.x,
+                    getSpanX(widgetPadding, minWidth,
+                            dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().x,
                             cellSize.x));
             spanY = Math.max(spanY,
-                    getSpanY(widgetPadding, minHeight, dp.cellLayoutBorderSpacePx.y,
+                    getSpanY(widgetPadding, minHeight,
+                            dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().y,
                             cellSize.y));
         }
 

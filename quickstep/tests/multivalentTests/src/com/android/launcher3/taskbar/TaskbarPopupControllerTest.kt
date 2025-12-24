@@ -84,10 +84,10 @@ class TaskbarPopupControllerTest {
                 .map { item -> AppInfo(item.targetComponent, item.title, item.user, item.intent) }
                 .toTypedArray()
         )
-        popupController.setHotseatInfosList(SparseArray())
+        popupController.setTaskbarInfoList(SparseArray())
         val recentItems = createRecents(2)
         runOnMainSync {
-            taskbarView.updateItems(hotseatItems, recentItems)
+            taskbarView.updateItems(hotseatItems, recentItems, emptyList())
             hotseatIcon =
                 taskbarView.iconViews.filterIsInstance<BubbleTextView>().first {
                     it.tag is WorkspaceItemInfo
@@ -102,7 +102,7 @@ class TaskbarPopupControllerTest {
     @Test
     fun showForIcon_hotseatItem() {
         assertThat(hasPopupMenu()).isFalse()
-        runOnMainSync { popupController.showForIcon(hotseatIcon) }
+        runOnMainSync { popupController.show(hotseatIcon) }
         assertThat(hasPopupMenu()).isTrue()
     }
 
@@ -111,7 +111,7 @@ class TaskbarPopupControllerTest {
     fun showForIcon_recentTask() {
         whenever(desktopVisibilityController.isInDesktopMode(context.displayId)).thenReturn(true)
         assertThat(hasPopupMenu()).isFalse()
-        runOnMainSync { popupController.showForIcon(recentTaskIcon) }
+        runOnMainSync { popupController.show(recentTaskIcon) }
         assertThat(hasPopupMenu()).isTrue()
     }
 
@@ -140,7 +140,7 @@ class TaskbarPopupControllerTest {
             )
 
         hotseatItems.put(0, pinnedItemInHotseat)
-        popupController.setHotseatInfosList(hotseatItems)
+        popupController.setTaskbarInfoList(hotseatItems)
         val allAppsAppIcon = Mockito.mock(BubbleTextView::class.java)
 
         val shortcut =
@@ -150,13 +150,29 @@ class TaskbarPopupControllerTest {
             "Shortcut should be PinToTaskbarShortcut",
             shortcut is PinToTaskbarShortcut<*>,
         )
-        Assert.assertFalse((shortcut as PinToTaskbarShortcut<*>).mIsPin)
+        Assert.assertFalse((shortcut as PinToTaskbarShortcut<*>).isPin)
     }
 
     private fun hasPopupMenu(): Boolean {
         return AbstractFloatingView.hasOpenView(
             taskbarContext,
             AbstractFloatingView.TYPE_ACTION_POPUP,
+        )
+    }
+
+    @Test
+    fun createPinShortcut_forAllAppsPredictedApp_returnsShortcut() {
+        val item = ItemInfo()
+        item.container = LauncherSettings.Favorites.CONTAINER_ALL_APPS_PREDICTION
+        val shortcut =
+            popupController.createPinShortcut(
+                taskbarContext,
+                item,
+                Mockito.mock(BubbleTextView::class.java),
+            )
+        Assert.assertNotNull(
+            "Pin shortcut should be available for predicted All Apps items",
+            shortcut,
         )
     }
 }

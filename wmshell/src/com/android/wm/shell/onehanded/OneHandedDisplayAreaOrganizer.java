@@ -335,6 +335,9 @@ public class OneHandedDisplayAreaOrganizer extends DisplayAreaOrganizer {
     }
 
     void beginCUJTracing(@CujType int cujType, @Nullable String tag) {
+        if (getDisplayAreaTokenMap().isEmpty()) {
+            return;
+        }
         final Map.Entry<WindowContainerToken, SurfaceControl> firstEntry =
                 getDisplayAreaTokenMap().entrySet().iterator().next();
         final InteractionJankMonitor.Configuration.Builder builder =

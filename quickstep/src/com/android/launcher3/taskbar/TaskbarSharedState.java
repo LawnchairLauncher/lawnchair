@@ -71,6 +71,12 @@ public class TaskbarSharedState {
     public int mLumaSamplingDisplayId = DEFAULT_DISPLAY;
     public boolean mIsLumaSamplingEnabled = true;
 
+    /**
+     * Whether long pressing home should bring up assistant.
+     * @see TaskbarManagerImpl#onLongPressHomeEnabled(boolean)
+     */
+    public boolean assistantLongPressEnabled;
+
     public boolean setupUIVisible = false;
 
     public boolean wallpaperVisible = false;
@@ -80,6 +86,8 @@ public class TaskbarSharedState {
     public boolean bubbleBarExpanded = false;
 
     public boolean bubbleBarStashed = false;
+
+    public boolean bubbleBarHasOverflow;
 
     public String selectedBubbleKey;
 
@@ -143,4 +151,6 @@ public class TaskbarSharedState {
     public boolean showCornerRadiusInDesktopMode = false;
 
     public List<GroupTask> recentTasksBeforeTaskbarRecreate = new ArrayList<>();
+
+    public final List<Integer> recentOrderedRunningTaskIds = new ArrayList<>();
 }

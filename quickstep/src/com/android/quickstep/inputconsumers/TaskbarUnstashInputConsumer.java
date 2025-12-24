@@ -20,13 +20,10 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static android.view.RoundedCorner.POSITION_BOTTOM_LEFT;
 import static android.view.RoundedCorner.POSITION_BOTTOM_RIGHT;
 
-import static com.android.launcher3.Flags.enableCursorHoverStates;
-import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING;
 import static com.android.systemui.shared.Flags.cursorHotCorner;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -48,7 +45,6 @@ import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarThresholdUtils;
 import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
 import com.android.launcher3.touch.OverScroll;
-import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.OverviewCommandHelper;
@@ -98,7 +94,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
     private float mTaskbarSlowVelocityYThreshold;
 
     public TaskbarUnstashInputConsumer(
-            Context context,
             InputConsumer delegate,
             InputMonitorCompat inputMonitor,
             TaskbarActivityContext taskbarActivityContext,
@@ -106,12 +101,12 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
             GestureState gestureState) {
         super(gestureState.getDisplayId(), delegate, inputMonitor);
         mTaskbarActivityContext = taskbarActivityContext;
-        mIsTransientTaskbar = DisplayController.isTransientTaskbar(context);
+        mIsTransientTaskbar = taskbarActivityContext.getTaskbarFeatureEvaluator().isTransient();
         mOverviewCommandHelper = overviewCommandHelper;
-        mDisplayManager = context.getSystemService(DisplayManager.class);
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        mDisplayManager = taskbarActivityContext.getSystemService(DisplayManager.class);
+        mTouchSlop = ViewConfiguration.get(taskbarActivityContext).getScaledTouchSlop();
 
-        Resources res = context.getResources();
+        Resources res = taskbarActivityContext.getResources();
         mUnstashArea = res.getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
         mActionCornerPadding = res.getDimensionPixelSize(
                 R.dimen.transient_taskbar_action_corner_padding);
@@ -123,8 +118,9 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                 pinnedTaskbarWithAutoStashing ? 0 : TaskbarThresholdUtils.getFromNavThreshold(res,
                         taskbarActivityContext.getDeviceProfile());
 
-        mTaskbarNavThresholdY = taskbarActivityContext.getDeviceProfile().getDeviceProperties().getHeightPx()
-                - mTaskbarNavThreshold;
+        mTaskbarNavThresholdY =
+                taskbarActivityContext.getDeviceProfile().getDeviceProperties().getHeightPx()
+                        - mTaskbarNavThreshold;
         mIsTaskbarAllAppsOpen = mTaskbarActivityContext.isTaskbarAllAppsOpen();
 
         mTaskbarSlowVelocityYThreshold =
@@ -153,7 +149,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
-        if (enableScalingRevealHomeAnimation() && mIsTransientTaskbar) {
+        if (mIsTransientTaskbar) {
             checkVelocityForTaskbarBackground(ev);
         }
         if (mState != STATE_ACTIVE) {
@@ -287,7 +283,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
      */
     @Override
     public void onHoverEvent(MotionEvent ev) {
-        if (!enableCursorHoverStates() || mTaskbarActivityContext == null
+        if (mTaskbarActivityContext == null
                 || !mTaskbarActivityContext.isTaskbarStashed()) {
             return;
         }
@@ -365,8 +361,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
 
     private boolean isStashedTaskbarHovered(int x, int y) {
         if (!mTaskbarActivityContext.isTaskbarStashed()
-                || mTaskbarActivityContext.isTaskbarAllAppsOpen()
-                || !enableCursorHoverStates()) {
+                || mTaskbarActivityContext.isTaskbarAllAppsOpen()) {
             return false;
         }
         DeviceProfile dp = mTaskbarActivityContext.getDeviceProfile();

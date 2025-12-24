@@ -21,7 +21,7 @@ import android.hardware.display.DisplayManager
 import android.view.Display
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags.enableMultiDisplaySplit
+import com.android.window.flags2.Flags.enableMultiDisplaySplit
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.common.split.SplitLayout
 import com.google.common.truth.Truth.assertThat

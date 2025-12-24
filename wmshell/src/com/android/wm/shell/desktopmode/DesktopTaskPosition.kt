@@ -22,6 +22,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.view.Gravity
 import com.android.internal.annotations.VisibleForTesting
+import com.android.internal.policy.DesktopModeCompatUtils.applyLayoutGravity
 import com.android.wm.shell.R
 import com.android.wm.shell.desktopmode.DesktopTaskPosition.BottomLeft
 import com.android.wm.shell.desktopmode.DesktopTaskPosition.BottomRight
@@ -81,17 +82,18 @@ sealed class DesktopTaskPosition {
     abstract fun next(): DesktopTaskPosition
 }
 
-/**
- * If the app has specified horizontal or vertical gravity layout, don't change the task position
- * for cascading effect.
- */
-fun canChangeTaskPosition(taskInfo: TaskInfo): Boolean {
+fun applyLayoutGravityIfNeeded(taskInfo: TaskInfo, bounds: Rect, stableBounds: Rect): Boolean {
+    var horizontalGravity = 0
+    var verticalGravity = 0
     taskInfo.topActivityInfo?.windowLayout?.let {
-        val horizontalGravityApplied = it.gravity.and(Gravity.HORIZONTAL_GRAVITY_MASK)
-        val verticalGravityApplied = it.gravity.and(Gravity.VERTICAL_GRAVITY_MASK)
-        return horizontalGravityApplied == 0 && verticalGravityApplied == 0
+        horizontalGravity = it.gravity.and(Gravity.HORIZONTAL_GRAVITY_MASK)
+        verticalGravity = it.gravity.and(Gravity.VERTICAL_GRAVITY_MASK)
     }
-    return true
+    if (verticalGravity > 0 || horizontalGravity > 0) {
+        applyLayoutGravity(verticalGravity, horizontalGravity, bounds, stableBounds)
+        return true
+    }
+    return false
 }
 
 /** Returns the current DesktopTaskPosition for a given window in the frame. */

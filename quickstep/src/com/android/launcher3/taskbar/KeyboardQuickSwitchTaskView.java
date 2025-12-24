@@ -17,7 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static com.android.quickstep.util.BorderAnimator.DEFAULT_BORDER_COLOR;
 
-import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -55,8 +56,9 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
     private static final float THUMBNAIL_BLUR_RADIUS = 1f;
     private static final int INVALID_BORDER_RADIUS = -1;
 
-    @ColorInt private final int mBorderColor;
-    @ColorInt private final int mBorderRadius;
+    @ColorInt private final int mFocusBorderColor;
+    @ColorInt private int mHoverBorderColor;
+    private final int mBorderRadius;
 
     @Nullable private BorderAnimator mBorderAnimator;
 
@@ -65,6 +67,9 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
     @Nullable private ImageView mIcon1;
     @Nullable private ImageView mIcon2;
     @Nullable private View mContent;
+
+    private boolean mIsFocused = false;
+    private boolean mIsHovered = false;
 
     // Describe the task position in the parent container. Used to add information about the task's
     // position in a task list to the task view's content description.
@@ -95,8 +100,10 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
 
         setWillNotDraw(false);
 
-        mBorderColor = ta.getColor(
+        mFocusBorderColor = ta.getColor(
                 R.styleable.TaskView_focusBorderColor, DEFAULT_BORDER_COLOR);
+        mHoverBorderColor = ta.getColor(R.styleable.TaskView_hoverBorderColor,
+                DEFAULT_BORDER_COLOR);
         mBorderRadius = ta.getDimensionPixelSize(
                 R.styleable.TaskView_focusBorderRadius, INVALID_BORDER_RADIUS);
         ta.recycle();
@@ -138,12 +145,19 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
                 },
                 /* targetView= */ this,
                 /* contentView= */ mContent,
-                /* borderColor= */ mBorderColor);
+                /* borderColor= */ mFocusBorderColor);
     }
 
-    @Nullable
-    protected Animator getFocusAnimator(boolean focused) {
-        return mBorderAnimator == null ? null : mBorderAnimator.buildAnimator(focused);
+    protected void addFocusAnimation(boolean focused, AnimatorSet animation) {
+        mIsFocused = focused;
+
+        if (mBorderAnimator == null) {
+            return;
+        }
+
+        mBorderAnimator.setBorderColor((mIsFocused || !mIsHovered)
+                ? mFocusBorderColor : mHoverBorderColor);
+        animation.play(mBorderAnimator.buildAnimator(mIsFocused || mIsHovered));
     }
 
     @Override
@@ -152,6 +166,24 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
         if (mBorderAnimator != null) {
             mBorderAnimator.drawBorder(canvas);
         }
+    }
+
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        if (mBorderAnimator == null) {
+            return super.onHoverEvent(event);
+        }
+
+        if (event.getAction() != MotionEvent.ACTION_HOVER_ENTER
+                && event.getAction() != MotionEvent.ACTION_HOVER_EXIT) {
+            return super.onHoverEvent(event);
+        }
+
+        mIsHovered = event.getAction() == MotionEvent.ACTION_HOVER_ENTER;
+        mBorderAnimator.setBorderColor((mIsHovered || !mIsFocused)
+                ? mHoverBorderColor : mFocusBorderColor);
+        mBorderAnimator.setBorderVisibility(mIsHovered || mIsFocused, true);
+        return super.onHoverEvent(event);
     }
 
     protected void setThumbnails(

@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
@@ -33,13 +35,13 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.util.BaseLauncherActivityTest;
 import com.android.launcher3.util.TestUtil;
-import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 
@@ -57,9 +59,6 @@ public class WorkProfileTest extends BaseLauncherActivityTest<Launcher> {
 
     private static final int WORK_PAGE = ActivityAllAppsContainerView.AdapterHolder.WORK;
     public static final int WAIT_TIME_MS = 30000;
-
-    @Rule
-    public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
     @Rule
     public TestStabilityRule mTestStabilityRule = new TestStabilityRule();
 
@@ -69,9 +68,14 @@ public class WorkProfileTest extends BaseLauncherActivityTest<Launcher> {
 
     @Before
     public void setUp() throws Exception {
-        String output = executeShellCommand(String.format(
-                "pm create-user --profileOf %d --managed TestProfile",
-                Process.myUserHandle().getIdentifier()));
+        String output = UiDevice
+                .getInstance(getInstrumentation())
+                .executeShellCommand(
+                        String.format(
+                                "pm create-user --profileOf %d --managed TestProfile",
+                                Process.myUserHandle().getIdentifier()
+                        )
+                );
         updateWorkProfileSetupSuccessful("pm create-user", output);
 
         String[] tokens = output.split("\\s+");
@@ -94,7 +98,8 @@ public class WorkProfileTest extends BaseLauncherActivityTest<Launcher> {
     @After
     public void removeWorkProfile() throws Exception {
         TestUtil.uninstallDummyApp();
-        executeShellCommand("pm remove-user --wait " + mProfileUserId);
+        UiDevice.getInstance(getInstrumentation())
+                .executeShellCommand("pm remove-user --wait " + mProfileUserId);
     }
 
     private void waitForWorkTabSetup() {
@@ -108,7 +113,6 @@ public class WorkProfileTest extends BaseLauncherActivityTest<Launcher> {
     }
 
     @Test
-    @com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord // b/325383911
     public void workTabExists() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();

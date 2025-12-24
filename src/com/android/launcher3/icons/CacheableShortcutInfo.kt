@@ -35,12 +35,24 @@ import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
 
 /** Wrapper over ShortcutInfo to provide extra information related to ShortcutInfo */
-class CacheableShortcutInfo(val shortcutInfo: ShortcutInfo, val appInfo: ApplicationInfoWrapper) {
+class CacheableShortcutInfo
+@JvmOverloads
+constructor(
+    val shortcutInfo: ShortcutInfo,
+    val appInfo: ApplicationInfoWrapper,
+    val fallbackIconProvider: (BaseIconFactory) -> BitmapInfo? = { null },
+) {
 
+    @JvmOverloads
     constructor(
         info: ShortcutInfo,
         ctx: Context,
-    ) : this(info, ApplicationInfoWrapper(ctx, info.getPackage(), info.userHandle))
+        fallbackIconProvider: (BaseIconFactory) -> BitmapInfo? = { null },
+    ) : this(
+        info,
+        ApplicationInfoWrapper(ctx, info.getPackage(), info.userHandle),
+        fallbackIconProvider,
+    )
 
     companion object {
         private const val TAG = "CacheableShortcutInfo"
@@ -124,7 +136,7 @@ object CacheableShortcutCachingLogic : CachingLogic<CacheableShortcutInfo> {
                                     )
                             ),
                     )
-                } ?: BitmapInfo.LOW_RES_INFO
+                } ?: info.fallbackIconProvider.invoke(li) ?: BitmapInfo.LOW_RES_INFO
         }
 
     override fun getFreshnessIdentifier(

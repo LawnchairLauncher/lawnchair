@@ -16,12 +16,10 @@
 
 package com.android.launcher3.celllayout
 
-import android.content.Context
 import android.graphics.Point
 import android.util.Log
 import android.view.View
 import androidx.core.view.get
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.CellLayout
@@ -30,7 +28,8 @@ import com.android.launcher3.celllayout.board.IconPoint
 import com.android.launcher3.celllayout.board.PermutedBoardComparator
 import com.android.launcher3.celllayout.board.WidgetRect
 import com.android.launcher3.celllayout.testgenerator.RandomBoardGenerator
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.SandboxApplication
+import com.android.launcher3.util.TestActivityContext
 import com.android.launcher3.views.DoubleShadowBubbleTextView
 import java.util.Random
 import org.junit.Assert
@@ -40,7 +39,7 @@ import org.junit.runner.RunWith
 
 private class HotseatReorderTestCase(
     val startBoard: CellLayoutBoard,
-    val endBoard: CellLayoutBoard
+    val endBoard: CellLayoutBoard,
 ) {
     override fun toString(): String {
         return "$startBoard#endBoard:\n$endBoard"
@@ -51,10 +50,8 @@ private class HotseatReorderTestCase(
 @RunWith(AndroidJUnit4::class)
 class HotseatReorderUnitTest {
 
-    private val applicationContext: Context =
-        ActivityContextWrapper(ApplicationProvider.getApplicationContext())
-
-    @JvmField @Rule var cellLayoutBuilder = UnitTestCellLayoutBuilderRule()
+    @get:Rule val app = SandboxApplication()
+    @get:Rule val uiContext = TestActivityContext(app)
 
     /**
      * This test generates random CellLayout configurations and then try to reorder it and makes
@@ -74,7 +71,7 @@ class HotseatReorderUnitTest {
 
             Assert.assertTrue(
                 "invalid case $i",
-                PermutedBoardComparator().compare(testCase.startBoard, testCase.endBoard) == 0
+                PermutedBoardComparator().compare(testCase.startBoard, testCase.endBoard) == 0,
             )
         }
     }
@@ -85,23 +82,21 @@ class HotseatReorderUnitTest {
         cellY: Int,
         spanX: Int,
         spanY: Int,
-        isWidget: Boolean
+        isWidget: Boolean,
     ) {
-        val cell =
-            if (isWidget) View(applicationContext)
-            else DoubleShadowBubbleTextView(applicationContext)
+        val cell = if (isWidget) View(uiContext) else DoubleShadowBubbleTextView(uiContext)
         cell.layoutParams = CellLayoutLayoutParams(cellX, cellY, spanX, spanY)
         cellLayout.addViewToCellLayout(
             cell,
             -1,
             cell.id,
             cell.layoutParams as CellLayoutLayoutParams,
-            true
+            true,
         )
     }
 
     private fun solve(board: CellLayoutBoard): CellLayout {
-        val cl = cellLayoutBuilder.createCellLayout(board.width, board.height, false)
+        val cl = uiContext.createCellLayout(board.width, board.height, false)
         // The views have to be sorted or the result can vary
         board.icons
             .map(IconPoint::coord)
@@ -116,7 +111,7 @@ class HotseatReorderUnitTest {
                     cellY = p.y,
                     spanX = 1,
                     spanY = 1,
-                    isWidget = false
+                    isWidget = false,
                 )
             }
         board.widgets
@@ -128,7 +123,7 @@ class HotseatReorderUnitTest {
                     widget.cellY,
                     widget.spanX,
                     widget.spanY,
-                    isWidget = true
+                    isWidget = true,
                 )
             }
         if (cl.makeSpaceForHotseatMigration(true)) {

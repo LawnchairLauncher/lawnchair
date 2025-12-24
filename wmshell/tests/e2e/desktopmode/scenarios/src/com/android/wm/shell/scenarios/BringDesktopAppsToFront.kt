@@ -21,7 +21,7 @@ import android.tools.Rotation
 import android.tools.flicker.rules.ChangeDisplayOrientationRule
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.MailAppHelper
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.Utils
 import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After

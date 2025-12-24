@@ -79,19 +79,15 @@ public class DisplayImeControllerTest extends ShellTestCase {
         mExecutor = spy(Runnable::run);
         mDisplayImeController = new DisplayImeController(mWm, mShellInit, null, null,
                 new TransactionPool() {
-            @Override
-            public SurfaceControl.Transaction acquire() {
-                return mT;
-            }
+                    @Override
+                    public SurfaceControl.Transaction acquire() {
+                        return mT;
+                    }
 
-            @Override
-            public void release(SurfaceControl.Transaction t) {
-            }
-        }, mExecutor) {
-            @Override
-            void removeImeSurface(int displayId) {
-            }
-        };
+                    @Override
+                    public void release(SurfaceControl.Transaction t) {
+                    }
+                }, mExecutor);
         mPerDisplay = mDisplayImeController.new PerDisplay(DEFAULT_DISPLAY, ROTATION_0);
     }
 

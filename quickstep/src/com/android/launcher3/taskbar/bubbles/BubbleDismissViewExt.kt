@@ -18,7 +18,7 @@
 package com.android.launcher3.taskbar.bubbles
 
 import com.android.launcher3.R
-import com.android.wm.shell.R as SharedR // WM and WMShared are "shared" or linked together.
+import com.android.wm.shell.shared.R as SharedR // WM and WMShared are "shared" or linked together.
 import com.android.wm.shell.shared.bubbles.DismissView
 
 /**

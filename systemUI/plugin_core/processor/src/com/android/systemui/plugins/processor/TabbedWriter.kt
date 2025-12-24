@@ -14,27 +14,41 @@
 package com.android.systemui.plugins.processor
 
 import java.io.BufferedWriter
-import java.io.Writer
+
+interface TabbedWriter {
+    val tabCount: Int
+
+    fun line()
+
+    fun line(str: String)
+
+    fun completeLine(str: String)
+
+    fun startLine(str: String)
+
+    fun appendLine(str: String)
+
+    fun braceBlock(str: String = "", write: TabbedWriter.() -> Unit)
+
+    fun parenBlock(str: String = "", write: TabbedWriter.() -> Unit)
+}
 
 /**
- * [TabbedWriter] is a convience class which tracks and writes correctly tabbed lines for generating
- * source files. These files don't need to be correctly tabbed as they're ephemeral and not part of
- * the source tree, but correct tabbing makes debugging much easier when the build fails.
+ * [TabbedWriter] is a convenience class which tracks and writes correctly tabbed lines of text for
+ * generating source files. These files don't need to be correctly tabbed as they're ephemeral and
+ * not part of the source tree, but correct tabbing makes debugging much easier.
  */
-class TabbedWriter(writer: Writer) : AutoCloseable {
-    private val target = BufferedWriter(writer)
+class TabbedWriterImpl(private val target: BufferedWriter) : TabbedWriter {
     private var isInProgress = false
-    var tabCount: Int = 0
+    override var tabCount: Int = 0
         private set
 
-    override fun close() = target.close()
-
-    fun line() {
+    override fun line() {
         target.newLine()
         isInProgress = false
     }
 
-    fun line(str: String) {
+    override fun line(str: String) {
         if (isInProgress) {
             target.newLine()
         }
@@ -45,9 +59,8 @@ class TabbedWriter(writer: Writer) : AutoCloseable {
         isInProgress = false
     }
 
-    fun completeLine(str: String) {
+    override fun completeLine(str: String) {
         if (!isInProgress) {
-            target.newLine()
             target.append("    ".repeat(tabCount))
         }
 
@@ -56,7 +69,7 @@ class TabbedWriter(writer: Writer) : AutoCloseable {
         isInProgress = false
     }
 
-    fun startLine(str: String) {
+    override fun startLine(str: String) {
         if (isInProgress) {
             target.newLine()
         }
@@ -66,7 +79,7 @@ class TabbedWriter(writer: Writer) : AutoCloseable {
         isInProgress = true
     }
 
-    fun appendLine(str: String) {
+    override fun appendLine(str: String) {
         if (!isInProgress) {
             target.append("    ".repeat(tabCount))
         }
@@ -75,38 +88,34 @@ class TabbedWriter(writer: Writer) : AutoCloseable {
         isInProgress = true
     }
 
-    fun braceBlock(str: String = "", write: TabbedWriter.() -> Unit) {
-        block(str, " {", "}", true, write)
+    override fun braceBlock(str: String, write: TabbedWriter.() -> Unit) {
+        block(str, " {", "}", newLine = true, write)
     }
 
-    fun parenBlock(str: String = "", write: TabbedWriter.() -> Unit) {
-        block(str, "(", ")", false, write)
+    override fun parenBlock(str: String, write: TabbedWriter.() -> Unit) {
+        block(str, "(", ")", newLine = false, write)
     }
 
     private fun block(
         str: String,
         start: String,
         end: String,
-        newLineForEnd: Boolean,
+        newLine: Boolean,
         write: TabbedWriter.() -> Unit,
     ) {
-        appendLine(str)
-        completeLine(start)
+        if (str != "") {
+            startLine(str)
+        }
+        appendLine(start)
 
         tabCount++
         this.write()
         tabCount--
 
-        if (newLineForEnd) {
-            line(end)
+        if (newLine) {
+            completeLine(end)
         } else {
-            startLine(end)
-        }
-    }
-
-    companion object {
-        fun writeTo(writer: Writer, write: TabbedWriter.() -> Unit) {
-            TabbedWriter(writer).use { it.write() }
+            appendLine(end)
         }
     }
 }

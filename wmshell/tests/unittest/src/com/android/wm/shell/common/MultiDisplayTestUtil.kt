@@ -42,6 +42,10 @@ object MultiDisplayTestUtil {
         fun getSpyDisplayLayout(resources: Resources): DisplayLayout {
             val displayInfo = DisplayInfo()
             displayInfo.logicalDensityDpi = dpi
+            displayInfo.logicalWidth =
+                (bounds.width() * dpi / DisplayMetrics.DENSITY_DEFAULT).toInt()
+            displayInfo.logicalHeight =
+                (bounds.height() * dpi / DisplayMetrics.DENSITY_DEFAULT).toInt()
             val displayLayout = spy(DisplayLayout(displayInfo, resources, true, true))
             displayLayout.setGlobalBoundsDp(bounds)
             return displayLayout

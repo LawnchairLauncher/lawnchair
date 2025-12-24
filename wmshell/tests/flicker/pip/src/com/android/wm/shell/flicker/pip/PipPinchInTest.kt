@@ -17,13 +17,13 @@
 package com.android.wm.shell.flicker.pip
 
 import android.platform.test.annotations.Presubmit
-import android.platform.test.annotations.RequiresDevice
+import androidx.test.filters.RequiresDevice
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.Rotation
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import android.tools.flicker.subject.exceptions.IncorrectRegionException
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.wm.shell.Flags
@@ -40,7 +40,7 @@ import org.junit.runners.Parameterized
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
-class PipPinchInTest(flicker: LegacyFlickerTest) : PipTransition(flicker) {
+class PipPinchInTest(flicker: FlickerTest) : PipTransition(flicker) {
     override val pipApp: PipAppHelper = PipAppHelper(instrumentation)
 
     override val thisTransition: FlickerBuilder.() -> Unit = {
@@ -75,13 +75,13 @@ class PipPinchInTest(flicker: LegacyFlickerTest) : PipTransition(flicker) {
         /**
          * Creates the test configurations.
          *
-         * See [LegacyFlickerTestFactory.nonRotationTests] for configuring screen orientation and
+         * See [FlickerTestFactory.nonRotationTests] for configuring screen orientation and
          * navigation modes.
          */
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getParams() =
-            LegacyFlickerTestFactory.nonRotationTests(
+            FlickerTestFactory.nonRotationTests(
                 supportedRotations = listOf(Rotation.ROTATION_0)
             )
     }

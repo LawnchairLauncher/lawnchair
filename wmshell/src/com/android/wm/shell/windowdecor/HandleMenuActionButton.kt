@@ -28,23 +28,22 @@ import com.android.wm.shell.R
 
 /**
  * Button-like component used to display the "Additional options" elements of the Handle menu window
- *  decoration.
+ * decoration.
  *
  * The possible options for which this button is used for are "Screenshot", "New Window", "Manage
  * Windows" and "Change Aspect Ratio".
  */
-class HandleMenuActionButton @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
+class HandleMenuActionButton
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    LinearLayout(context, attrs, defStyleAttr) {
 
     val iconView: ImageView
     val textView: MarqueedTextView
 
     init {
-        LayoutInflater.from(context).inflate(
-            R.layout.desktop_mode_window_decor_handle_menu_action_button, this, true)
+        LayoutInflater.from(context)
+            .inflate(R.layout.desktop_mode_window_decor_handle_menu_action_button, this, true)
         iconView = findViewById(R.id.image)
         textView = findViewById(R.id.label)
 
@@ -52,10 +51,11 @@ class HandleMenuActionButton @JvmOverloads constructor(
             contentDescription = getString(R.styleable.HandleMenuActionButton_android_text)
             textView.text = getString(R.styleable.HandleMenuActionButton_android_text)
             textView.setTextColor(getColor(R.styleable.HandleMenuActionButton_android_textColor, 0))
-            iconView.setImageResource(getResourceId(
-                R.styleable.HandleMenuActionButton_android_src, 0))
-            iconView.imageTintList = getColorStateList(
-                R.styleable.HandleMenuActionButton_android_drawableTint)
+            iconView.setImageResource(
+                getResourceId(R.styleable.HandleMenuActionButton_android_src, 0)
+            )
+            iconView.imageTintList =
+                getColorStateList(R.styleable.HandleMenuActionButton_android_drawableTint)
         }
     }
 

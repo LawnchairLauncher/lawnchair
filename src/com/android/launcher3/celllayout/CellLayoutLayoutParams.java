@@ -121,9 +121,6 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
     /**
      * Use this method, as opposed to {@link #setup(int, int, boolean, int, int, Point)},
      * if the view needs to be scaled.
-     *
-     * ie. In multi-window mode, we setup widgets so that they are measured and laid out
-     * using their full/invariant device profile sizes.
      */
     public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
             int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,

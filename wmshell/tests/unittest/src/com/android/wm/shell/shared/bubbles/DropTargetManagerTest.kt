@@ -388,7 +388,7 @@ class DropTargetManagerTest {
     @Test
     fun onDragStarted_noInitialDragZone_notifiesInitialDragZoneNull() {
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = true) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = false),
             listOf(bubbleLeftDragZone, bubbleRightDragZone)
         )
         assertThat(dragZoneChangedListener.initialDragZone).isNull()
@@ -397,15 +397,15 @@ class DropTargetManagerTest {
     @Test
     fun onDragStartedMultipleTimes_secondDropViewRemoved() {
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = false) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
             listOf(bubbleLeftDragZoneWithSecondDropTarget, bubbleRightDragZoneWithSecondDropTarget)
         )
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = false) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
             listOf(bubbleLeftDragZoneWithSecondDropTarget, bubbleRightDragZoneWithSecondDropTarget)
         )
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = true) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = false),
             listOf(bubbleLeftDragZone, bubbleRightDragZone)
         )
         assertThat(container.childCount).isEqualTo(DROP_VIEWS_COUNT)
@@ -413,9 +413,8 @@ class DropTargetManagerTest {
 
     @Test
     fun onDragUpdated_noZoneToZoneWithDropTargetView_listenerNotified() {
-        val onDropAction = Runnable { }
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = true, onDropAction = onDropAction),
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = false),
             listOf(bubbleLeftDragZone, bubbleRightDragZone)
         )
 
@@ -428,15 +427,12 @@ class DropTargetManagerTest {
         }
         assertThat(dragZoneChangedListener.fromDragZone).isNull()
         assertThat(dragZoneChangedListener.toDragZone).isEqualTo(bubbleLeftDragZone)
-        val launcherIconAction =
-            (dragZoneChangedListener.draggedObject as DraggedObject.LauncherIcon).onDropAction
-        assertThat(launcherIconAction).isEqualTo(onDropAction)
     }
 
     @Test
     fun onDragUpdated_noZoneToZoneWithDropTargetView_dropTargetShown() {
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = true) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = false),
             listOf(bubbleLeftDragZone, bubbleRightDragZone)
         )
 
@@ -459,7 +455,7 @@ class DropTargetManagerTest {
     @Test
     fun onDragUpdated_noZoneToZoneWithTwoDropTargetViews_dropTargetsShown() {
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = false) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
             listOf(bubbleLeftDragZoneWithSecondDropTarget, bubbleRightDragZoneWithSecondDropTarget)
         )
 
@@ -485,7 +481,7 @@ class DropTargetManagerTest {
     @Test
     fun onDragUpdated_noZoneToZoneWithOnlySecondDropTargetView_secondDropTargetShown() {
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = false) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
             listOf(bubbleLeftDragZoneOnlySecondDropTarget, bubbleRightDragZoneOnlySecondDropTarget)
         )
 
@@ -512,7 +508,7 @@ class DropTargetManagerTest {
         var runnableExecuted = false
         val action = Runnable { runnableExecuted = true }
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = false) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
             listOf(bubbleLeftDragZoneWithSecondDropTarget, bubbleRightDragZoneWithSecondDropTarget)
         )
         assertThat(container.childCount).isEqualTo(DROP_VIEWS_COUNT_FOR_TWO_DROP_TARGETS)
@@ -555,7 +551,7 @@ class DropTargetManagerTest {
     @Test
     fun onDragUpdated_reEnterZoneWithMultipleDropTargetViews_dropTargetsShown() {
         dropTargetManager.onDragStarted(
-            DraggedObject.LauncherIcon(bubbleBarHasBubbles = false) {},
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
             listOf(bubbleLeftDragZoneWithSecondDropTarget, bubbleRightDragZoneWithSecondDropTarget)
         )
         val pointX = 200
@@ -588,6 +584,214 @@ class DropTargetManagerTest {
             secondDropTargetView!!,
             bubbleRightDragZoneWithSecondDropTarget.secondDropTarget!!.rect
         )
+    }
+
+    @Test
+    fun onDropTargetsRemoved_multipleManagers_actionExecutedOnlyWhenItsViewsAreRemoved() {
+        var firstRunnableExecuted = false
+        val firstAction = Runnable { firstRunnableExecuted = true }
+
+        var secondRunnableExecuted = false
+        val secondAction = Runnable { secondRunnableExecuted = true }
+
+        // Create a second DropTargetManager sharing the same container
+        val secondDropTargetManager =
+            DropTargetManager(context, container, FakeDragZoneChangedListener())
+
+        val randomViewsCount = 10
+
+        // Add some random views to the shared container
+        repeat(randomViewsCount) {
+            container.addView(View(context))
+        }
+
+        // First manager starts a drag, adds its views
+        dropTargetManager.onDragStarted(
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
+            listOf(bubbleLeftDragZoneWithSecondDropTarget)
+        )
+        assertThat(container.childCount)
+            .isEqualTo(randomViewsCount + DROP_VIEWS_COUNT_FOR_TWO_DROP_TARGETS)
+        dropTargetManager.onDropTargetRemoved(firstAction)
+        assertThat(firstRunnableExecuted).isFalse() // Manager 1 views are still there
+
+        // Second manager starts a drag, adds its views
+        secondDropTargetManager.onDragStarted(
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
+            listOf(bubbleRightDragZoneWithSecondDropTarget)
+        )
+        // Now container has views from both managers
+        assertThat(container.childCount)
+            .isEqualTo(randomViewsCount + DROP_VIEWS_COUNT_FOR_TWO_DROP_TARGETS * 2)
+        secondDropTargetManager.onDropTargetRemoved(secondAction)
+        assertThat(secondRunnableExecuted).isFalse() // Second manager views are still there
+
+        // First manager ends its drag
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            dropTargetManager.onDragEnded()
+            animatorTestRule.advanceTimeBy(250) // Ensure fade out completes
+        }
+
+        // First manager's views should be removed, its runnable executed.
+        // Second manager's views are still present.
+        assertThat(firstRunnableExecuted).isTrue()
+        assertThat(secondRunnableExecuted).isFalse()
+        // Count should be only manager 2's views
+        assertThat(container.childCount)
+            .isEqualTo(randomViewsCount + DROP_VIEWS_COUNT_FOR_TWO_DROP_TARGETS)
+
+        // Second manager ends its drag
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            secondDropTargetManager.onDragEnded()
+            animatorTestRule.advanceTimeBy(250) // Ensure fade out completes
+        }
+
+        // Second manager's views should be removed, its runnable executed.
+        assertThat(secondRunnableExecuted).isTrue()
+        assertThat(container.childCount).isEqualTo(randomViewsCount) // All managers views removed
+    }
+
+    @Test
+    fun hideDropTargets_whenInAZone_notifiesAndHidesDropTarget() {
+        dropTargetManager.onDragStarted(
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = false),
+            listOf(bubbleLeftDragZone, bubbleRightDragZone)
+        )
+        // Initially, drag into the left zone
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            val dragZone = dropTargetManager.onDragUpdated(
+                bubbleLeftDragZone.bounds.rect.centerX(),
+                bubbleLeftDragZone.bounds.rect.centerY()
+            )
+            assertThat(dragZone).isEqualTo(bubbleLeftDragZone)
+            animatorTestRule.advanceTimeBy(250)
+        }
+        assertThat(dropTargetView.alpha).isEqualTo(1f)
+        assertThat(dragZoneChangedListener.toDragZone).isEqualTo(bubbleLeftDragZone)
+
+        // Call hideDropTargets
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            dropTargetManager.hideDropTargets()
+            animatorTestRule.advanceTimeBy(250)
+        }
+
+        // Verify listener was notified of leaving the zone
+        assertThat(dragZoneChangedListener.fromDragZone).isEqualTo(bubbleLeftDragZone)
+        assertThat(dragZoneChangedListener.toDragZone).isNull()
+        // Verify drop target is hidden and container still has the view
+        assertThat(dropTargetView.alpha).isEqualTo(0f)
+        assertThat(container.childCount).isEqualTo(DROP_VIEWS_COUNT)
+    }
+
+    @Test
+    fun hideDropTargets_whenInAZoneWithSecondDropTarget_notifiesAndHidesBothDropTargets() {
+        dropTargetManager.onDragStarted(
+            DraggedObject.LauncherIcon(showBubbleBarPillowDropTarget = true),
+            listOf(bubbleLeftDragZoneWithSecondDropTarget, bubbleRightDragZoneWithSecondDropTarget)
+        )
+        // Initially, drag into the left zone
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            val dragZone = dropTargetManager.onDragUpdated(
+                bubbleLeftDragZoneWithSecondDropTarget.bounds.rect.centerX(),
+                bubbleLeftDragZoneWithSecondDropTarget.bounds.rect.centerY()
+            )
+            assertThat(dragZone).isEqualTo(bubbleLeftDragZoneWithSecondDropTarget)
+            animatorTestRule.advanceTimeBy(250)
+        }
+        assertThat(dropTargetView.alpha).isEqualTo(1f)
+        assertThat(secondDropTargetView!!.alpha).isEqualTo(1f)
+        assertThat(dragZoneChangedListener.toDragZone).isEqualTo(
+            bubbleLeftDragZoneWithSecondDropTarget
+        )
+
+        // Call hideDropTargets
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            dropTargetManager.hideDropTargets()
+            animatorTestRule.advanceTimeBy(250)
+        }
+
+        // Verify listener was notified of leaving the zone
+        assertThat(dragZoneChangedListener.fromDragZone).isEqualTo(
+            bubbleLeftDragZoneWithSecondDropTarget
+        )
+        assertThat(dragZoneChangedListener.toDragZone).isNull()
+        // Verify drop targets are hidden and container still has the views
+        assertThat(dropTargetView.alpha).isEqualTo(0f)
+        assertThat(secondDropTargetView!!.alpha).isEqualTo(0f)
+        assertThat(container.childCount).isEqualTo(DROP_VIEWS_COUNT_FOR_TWO_DROP_TARGETS)
+    }
+
+    @Test
+    fun hideDropTargets_whenAlreadyOutsideZones_doesNothingAndDoesNotNotify() {
+        dropTargetManager.onDragStarted(
+            DraggedObject.Bubble(BubbleBarLocation.LEFT),
+            listOf(bubbleLeftDragZone, bubbleRightDragZone)
+        )
+        // Initially, drag outside all zones
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            val dragZone = dropTargetManager.onDragUpdated(
+                500, // outside any defined zone
+                500
+            )
+            assertThat(dragZone).isNull()
+            animatorTestRule.advanceTimeBy(250)
+        }
+        assertThat(dropTargetView.alpha).isEqualTo(0f)
+        assertThat(dragZoneChangedListener.fromDragZone).isEqualTo(bubbleLeftDragZone)
+        assertThat(dragZoneChangedListener.toDragZone).isNull()
+
+        // Reset listener state
+        dragZoneChangedListener.fromDragZone = null
+        dragZoneChangedListener.toDragZone = null
+
+        // Call hideDropTargets
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            // No animation should occur as it's already hidden
+            dropTargetManager.hideDropTargets()
+        }
+
+        // Verify listener was NOT notified again (already outside)
+        assertThat(dragZoneChangedListener.fromDragZone).isNull()
+        assertThat(dragZoneChangedListener.toDragZone).isNull()
+        // Verify drop target remains hidden
+        assertThat(dropTargetView.alpha).isEqualTo(0f)
+        assertThat(container.childCount).isEqualTo(DROP_VIEWS_COUNT)
+    }
+
+    @Test
+    fun hideDropTargets_dragNotStarted_doesNothing() {
+        // Call hideDropTargets
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            dropTargetManager.hideDropTargets()
+        }
+
+        // Verify no listener calls
+        assertThat(dragZoneChangedListener.initialDragZone).isNull()
+        assertThat(dragZoneChangedListener.fromDragZone).isNull()
+        assertThat(dragZoneChangedListener.toDragZone).isNull()
+        assertThat(container.childCount).isEqualTo(0)
+    }
+
+    @Test
+    fun hideDropTargets_afterDragEnded_doesNothing() {
+        dropTargetManager.onDragStarted(
+            DraggedObject.Bubble(BubbleBarLocation.LEFT),
+            listOf(bubbleLeftDragZone, bubbleRightDragZone)
+        )
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            dropTargetManager.onDragEnded()
+            animatorTestRule.advanceTimeBy(250)
+        }
+        assertThat(container.childCount).isEqualTo(0) // Views removed on drag end
+
+        // Call hideDropTargets
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            dropTargetManager.hideDropTargets()
+        }
+
+        // Drop target alpha is irrelevant as views are removed.
+        // Listener should not be affected further.
+        assertThat(dragZoneChangedListener.endedDragZone).isEqualTo(bubbleLeftDragZone) // From onDragEnded
     }
 
     private fun verifyDropTargetPosition(rect: Rect) {

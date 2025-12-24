@@ -365,7 +365,7 @@ public class PipMotionHelper implements PipAppOpsListener.Callback,
         if (PipUtils.isContentPip(mPipTransitionState.getPipTaskInfo())) {
             mPipScheduler.scheduleRemovePip(true /* withFadeout */);
         } else {
-            mPipScheduler.scheduleExitPipViaExpand();
+            mPipScheduler.scheduleExitPipViaExpand(true /* wasVisible */);
         }
     }
 

@@ -54,6 +54,10 @@ public class BubbleBarUpdate implements Parcelable {
     public Point expandedViewDropTargetSize;
     public boolean showOverflowChanged;
     public boolean showOverflow;
+    /**
+     * Whether to suppress the animation of this update. Currently, this is only used for jumpcut.
+     */
+    public boolean suppressAnimation;
 
     // This is only populated if bubbles have been removed.
     public List<RemovedBubble> removedBubbles = new ArrayList<>();
@@ -96,6 +100,7 @@ public class BubbleBarUpdate implements Parcelable {
                 Point.class);
         showOverflowChanged = parcel.readBoolean();
         showOverflow = parcel.readBoolean();
+        suppressAnimation = parcel.readBoolean();
     }
 
     /**
@@ -135,6 +140,7 @@ public class BubbleBarUpdate implements Parcelable {
                 + " expandedViewDropTargetSize=" + expandedViewDropTargetSize
                 + " showOverflowChanged=" + showOverflowChanged
                 + " showOverflow=" + showOverflow
+                + " suppressAnimation=" + suppressAnimation
                 + " }";
     }
 
@@ -161,6 +167,7 @@ public class BubbleBarUpdate implements Parcelable {
         parcel.writeParcelable(expandedViewDropTargetSize, flags);
         parcel.writeBoolean(showOverflowChanged);
         parcel.writeBoolean(showOverflow);
+        parcel.writeBoolean(suppressAnimation);
     }
 
     /**

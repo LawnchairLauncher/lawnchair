@@ -39,26 +39,30 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Қолданба қалқыма терезеге қолдау көрсетпейді."</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Экранды бөлу режимінің бөлгіші"</string>
     <string name="divider_title" msgid="1963391955593749442">"Экранды бөлу режимінің бөлгіші"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Сол жағын толық экранға шығару"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"70% сол жақта"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"50% сол жақта"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"30% сол жақта"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Оң жағын толық экранға шығару"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Жоғарыдағы қолданбаны төмендегімен орнын ауыстыру"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Сол жақтағы қолданбаны оң жақтағымен орнын ауыстыру"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Жоғарғы жағын толық экранға шығару"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"70% жоғарғы жақта"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"50% жоғарғы жақта"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"30% жоғарғы жақта"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Төменгісін толық экранға шығару"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Сол жақтағы қолданбаны толық экранға шығару"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"Сол жақ: 10%, оң жақ: 90%"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"Сол жақ: 30%, оң жақ: 70%"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"Сол жақ: 50%, оң жақ: 50%"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"Сол жақ: 70%, оң жақ: 30%"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"Сол жақ: 90%, оң жақ: 10%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Оң жақтағы қолданбаны толық экранға шығару"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Төмендегі қолданбаны жоғарыдағымен ауыстыру, қазіргі бөлінген экранды сақтау"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Сол жақтағы қолданбаны оң жақтағымен ауыстыру, қазіргі бөлінген экранды сақтау"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Жоғарғы қолданбаны толық экранға шығару"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"Жоғарғы жақ: 10%, төменгі жақ: 90%"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"Жоғарғы жақ: 30%, төменгі жақ: 70%"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"Жоғарғы жақ: 50%, төменгі жақ: 50%"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"Жоғарғы жақ: 70%, төменгі жақ: 30%"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"Жоғарғы жақ: 90%, төменгі жақ: 10%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Төмендегі қолданбаны толық экранға шығару"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Сол жақтан шығару"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Оң жақтан шығару"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Жоғарыдан шығару"</string>
     <string name="accessibility_split_bottom" msgid="8694551025220868191">"Астынан шығару"</string>
-    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Бір қолмен енгізу режимін пайдалану"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Бір қолмен басқару режимі қосылып тұр"</string>
     <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Шығу үшін экранның төменгі жағынан жоғары қарай сырғытыңыз немесе қолданбаның үстінен кез келген жерден түртіңіз."</string>
-    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Бір қолмен енгізу режимін іске қосу"</string>
-    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Бір қолмен енгізу режимінен шығу"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Бір қолмен басқару режимін іске қосу"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Бір қолмен басқару режимінен шығу"</string>
     <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> қалқыма хабарларының параметрлері"</string>
     <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Қосымша мәзір"</string>
     <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Стекке қайта енгізу"</string>

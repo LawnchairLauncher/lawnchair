@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"L\'aplicació no admet la bombolla"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Separador de pantalla dividida"</string>
     <string name="divider_title" msgid="1963391955593749442">"Separador de pantalla dividida"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Pantalla esquerra completa"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Pantalla esquerra al 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Pantalla esquerra al 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Pantalla esquerra al 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Pantalla dreta completa"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Intercanvia l\'aplicació superior amb la inferior"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Intercanvia l\'aplicació esquerra amb la dreta"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Pantalla superior completa"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Pantalla superior al 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Pantalla superior al 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Pantalla superior al 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Pantalla inferior completa"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Mostra l\'aplicació de l\'esquerra en pantalla completa"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"Esquerra: 10 %, dreta: 90 %"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"Esquerra: 30 %, dreta: 70 %"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"Esquerra: 50 %, dreta: 50 %"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"Esquerra: 70 %, dreta: 30 %"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"Esquerra: 90 %, dreta: 10 %"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Mostra l\'aplicació de la dreta en pantalla completa"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Intercanvia l\'aplicació de la part superior amb la de la part inferior i mantén la divisió actual"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Intercanvia l\'aplicació de l\'esquerra amb la de la dreta i mantén la divisió actual"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Mostra l\'aplicació de la part superior en pantalla completa"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"Superior: 10 %, inferior: 90 %"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"Superior: 30 %, inferior: 70 %"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"Superior: 50 %, inferior: 50 %"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"Superior: 70 %, inferior: 30 %"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"Superior: 90 %, inferior: 10 %"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Mostra l\'aplicació de la part inferior en pantalla completa"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Divideix a l\'esquerra"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Divideix a la dreta"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Divideix a la part superior"</string>
@@ -165,7 +169,7 @@
     <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"Minimitza la finestra de l\'aplicació"</string>
     <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"Tanca la finestra de l\'aplicació"</string>
     <string name="open_by_default_settings_text" msgid="2526548548598185500">"Configuració d\'obertura predeterminada"</string>
-    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Tria com vols obrir els enllaços web per a aquesta aplicació"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Tria com vols obrir els enllaços web d\'aquesta aplicació"</string>
     <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"A l\'aplicació"</string>
     <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"Al navegador"</string>
     <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"D\'acord"</string>

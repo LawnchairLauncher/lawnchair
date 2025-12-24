@@ -25,19 +25,17 @@ import com.android.wm.shell.compatui.api.CompatUIInfo
 import com.android.wm.shell.compatui.api.CompatUISpec
 import com.android.wm.shell.compatui.api.CompatUIState
 
-/**
- * Default {@link CompatUIComponentFactory } implementation
- */
+/** Default {@link CompatUIComponentFactory } implementation */
 class DefaultCompatUIComponentFactory(
     private val context: Context,
     private val syncQueue: SyncTransactionQueue,
-    private val displayController: DisplayController
+    private val displayController: DisplayController,
 ) : CompatUIComponentFactory {
     override fun create(
         spec: CompatUISpec,
         compId: String,
         state: CompatUIState,
-        compatUIInfo: CompatUIInfo
+        compatUIInfo: CompatUIInfo,
     ): CompatUIComponent =
         CompatUIComponent(
             spec,
@@ -46,6 +44,6 @@ class DefaultCompatUIComponentFactory(
             state,
             compatUIInfo,
             syncQueue,
-            displayController.getDisplayLayout(compatUIInfo.taskInfo.displayId)
+            displayController.getDisplayLayout(compatUIInfo.taskInfo.displayId),
         )
 }

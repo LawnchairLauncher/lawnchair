@@ -25,8 +25,8 @@ sealed class TaskHeaderUiState {
     data object HideHeader : TaskHeaderUiState()
 
     data class ThumbnailHeader(
-        val icon: Drawable,
-        val title: String,
+        val icon: Drawable?,
+        val title: String?,
         val clickCloseListener: View.OnClickListener,
     )
 }

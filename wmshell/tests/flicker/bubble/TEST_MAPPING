@@ -1,22 +1,28 @@
 {
-  "wm-devices": [
+  "wm": [
     {
-      "name": "WMShellFlickerTestsBubbles-CatchAll"
+      "name": "WMShellFlickerTestsBubbles-CatchAll",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellFlickerTestsBubbles-ChangeActiveActivityFromBubbleTest"
+      "name": "WMShellFlickerTestsBubbles-ChangeActiveActivityFromBubbleTest",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellFlickerTestsBubbles-DragToDismissBubbleScreenTest"
+      "name": "WMShellFlickerTestsBubbles-DragToDismissBubbleScreenTest",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellFlickerTestsBubbles-OpenActivityFromBubbleOnLocksreenTest"
+      "name": "WMShellFlickerTestsBubbles-OpenActivityFromBubbleOnLockscreenTest",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellFlickerTestsBubbles-OpenActivityFromBubbleTest"
+      "name": "WMShellFlickerTestsBubbles-OpenActivityFromBubbleTest",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellFlickerTestsBubbles-SendBubbleNotificationTest"
+      "name": "WMShellFlickerTestsBubbles-SendBubbleNotificationTest",
+      "keywords": ["device"]
     }
   ]
 }

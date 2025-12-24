@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"एस्पेक्ट रेसियो परिवर्तन गर्नुहोस्"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s का हकमा एपसम्बन्धी जानकारी"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s को प्रयोगसम्बन्धी सेटिङ"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"%1$s बन्द गर्नुहोस्"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"नयाँ विन्डो"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"विन्डोहरू व्यवस्थापन गर्नुहोस्"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"बन्द गर्नुहोस्"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"एपको पेयर सेभ गर्नुहोस्"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"यस डिभाइसमा यो एप पेयर प्रयोग गर्न मिल्दैन"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"एप सिफारिस नगर्नुहोस्"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"सिफारिस गरिएको एप पिन गर्नुहोस्"</string>
     <string name="bubble" msgid="3072951361014076670">"बबल"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"सेटिङ"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"टास्कबारमा पिन गर्नुहोस्"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"टास्कबारबाट अनपिन गर्नुहोस्"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा एपलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"होम स्क्रिनका सेटिङ र सर्टकटहरू रिड गर्नुहोस्"</string>
@@ -116,7 +121,8 @@
     <string name="paginate_left" msgid="7915437358451360433">"बायाँतिर पेजिनेट गर्नुहोस्"</string>
     <string name="paginate_right" msgid="6701038155201975878">"दायाँतिर पेजिनेट गर्नुहोस्"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"असक्षम पारिएको <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} सँग सम्बन्धित # सूचना छ}other{{app_name} सँग सम्बन्धित # वटा सूचना छन्}}"</string>
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} सँग सम्बन्धित # नोटिफिकेसन छ}other{{app_name} सँग सम्बन्धित # वटा नोटिफिकेसन छन्}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"पूर्वानुमान गरिएको एप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d को %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रिन %1$d को %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"नयाँ होम स्क्रिन पृष्ठ"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"फोल्डर बन्द भयो"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"फोल्डर <xliff:g id="NAME">%1$s</xliff:g> मा पुनःनामाकरण गरियो।"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> वस्तुहरू"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"<xliff:g id="SIZE">%2$d</xliff:g> वटा वस्तु भएको <xliff:g id="NAME">%1$s</xliff:g> नाम गरेको फोल्डरमा नोटिफिकेसनहरू प्राप्त भएका छन्"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> वा सोभन्दा बढी वस्तुहरू"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"<xliff:g id="SIZE">%2$d</xliff:g> वा सोभन्दा बढी वस्तु भएको <xliff:g id="NAME">%1$s</xliff:g> नाम गरेको फोल्डरमा नोटिफिकेसनहरू प्राप्त भएका छन्"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"नामरहित फोल्डर"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"एप पेयर: <xliff:g id="APP1">%1$s</xliff:g> र <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वालपेपर तथा शैली"</string>
@@ -194,17 +202,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"व्यक्तिगत"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कामसम्बन्धी"</string>
     <string name="all_apps_personal_tab_content_description" msgid="6286808898381807242">"\"व्यक्तिगत एपहरू\" ट्याब"</string>
-    <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"\"कामसम्बन्धी एपहरू\" ट्याब"</string>
+    <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"\"वर्क एपहरू\" ट्याब"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"वर्क प्रोफाइल"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"कामसम्बन्धी एपहरूमा ब्याज अङ्कित हुन्छ र तपाईंका IT एड्मिन ती एप हेर्न सक्छन्"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"बुझेँ"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"कामसम्बन्धी एपहरू पज गरिएका छन्"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"वर्क एपहरू पज गरिएका छन्"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"तपाईं कामसम्बन्धी एपबाट सूचनाहरू प्राप्त गर्नु हुने छैन"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"तपाईंका कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको डिभाइसको ब्याट्री प्रयोग गर्न वा तपाईंको लोकेसन हेर्न सक्दैनन्"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"तपाईंका कामसम्बन्धी एपहरूले तपाईंलाई नोटिफिकेसन पठाउन, तपाईंको डिभाइसको ब्याट्री प्रयोग गर्न वा तपाईंको लोकेसन हेर्न सक्दैनन्"</string>
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"तपाईं कामसम्बन्धी एपबाट फोन कल, टेक्स्ट म्यासेज वा सूचनाहरू प्राप्त गर्नु हुने छैन"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"कामसम्बन्धी एपमा ब्याज अङ्कित हुन्छ र तपाईंका IT एड्मिन ती एप हेर्न सक्नुहुन्छ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"बुझेँ"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"कामसम्बन्धी एपहरू पज गर्नुहोस्"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"वर्क एपहरू पज गर्नुहोस्"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"सुचारु गर्नुहोस्"</string>
     <string name="work_scheduler_button_content_description" msgid="917340740986764967">"कामसम्बन्धी एपहरूको समयतालिका"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>

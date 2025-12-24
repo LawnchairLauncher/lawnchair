@@ -37,20 +37,22 @@ interface IDesktopMode {
      * If [taskIdToReorderToFront] is a valid id (not [INVALID_TASK_ID]) and is already on the given
      * desk, bring it to the front.
      */
-    oneway void activateDesk(int deskId, in RemoteTransition remoteTransition, int taskIdToReorderToFront);
+    oneway void activateDesk(int deskId, in RemoteTransition remoteTransition,
+            int taskIdToReorderToFront, in DesktopModeTransitionSource transitionSource);
 
     /** Removes the desk with the given `deskId`. */
-    oneway void removeDesk(int deskId);
+    oneway void removeDesk(int deskId, in DesktopModeTransitionSource transitionSource);
 
     /** Removes all the available desks on all displays. */
-    oneway void removeAllDesks();
+    oneway void removeAllDesks(in DesktopModeTransitionSource transitionSource);
 
     /**
      * Show apps on the desktop on the given display and bring [taskIdToReorderToFront] to front if
      * it's provided and already on the default desk on the given display. If the provided
      * [taskIdToReorderToFront]'s value is [INVALID_TASK_ID], do not change the windows' activation.
      */
-    void showDesktopApps(int displayId, in RemoteTransition remoteTransition, int taskIdToReorderToFront);
+    void showDesktopApps(int displayId, in RemoteTransition remoteTransition,
+            int taskIdToReorderToFront, in DesktopModeTransitionSource transitionSource);
 
     /** @deprecated use {@link #showDesktopApps} instead. */
     void stashDesktopApps(int displayId);
@@ -79,8 +81,8 @@ interface IDesktopMode {
     oneway void moveToFullscreen(int taskId, in DesktopModeTransitionSource transitionSource,
             in @nullable RemoteTransition remoteTransition);
 
-    /** Perform cleanup transactions after the animation to split select is complete */
-    oneway void onDesktopSplitSelectAnimComplete(in RunningTaskInfo taskInfo);
+    /** Perform cleanup transactions after choosing a split select task launch option. */
+    oneway void onDesktopSplitSelectChoice(in RunningTaskInfo taskInfo);
 
     /** Set listener that will receive callbacks about updates to desktop tasks */
     oneway void setTaskListener(IDesktopTaskListener listener);
@@ -94,10 +96,11 @@ interface IDesktopMode {
      * Removes the default desktop on the given display.
      * @deprecated with multi-desks, we should use `removeDesk()`.
      */
-    oneway void removeDefaultDeskInDisplay(int displayId);
+    oneway void removeDefaultDeskInDisplay(int displayId,
+            in DesktopModeTransitionSource transitionSource);
 
     /** Move a task with given `taskId` to external display */
-    void moveToExternalDisplay(int taskId);
+    void moveToExternalDisplay(int taskId, in DesktopModeTransitionSource transitionSource);
 
     /** Start a transition when launching an intent in desktop mode */
     void startLaunchIntentTransition(in Intent intent, in Bundle options, in int displayId);

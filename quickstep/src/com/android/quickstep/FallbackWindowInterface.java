@@ -25,24 +25,27 @@ import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.RemoteAnimationTarget;
+import android.view.SurfaceControl;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.app.displaylib.PerDisplayRepository;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.statemanager.StateManager;
-import com.android.launcher3.taskbar.TaskbarUIController;
+import com.android.launcher3.taskbar.TaskbarInteractor;
 import com.android.launcher3.util.DaggerSingletonObject;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.views.ScrimColors;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.dagger.QuickstepBaseAppComponent;
 import com.android.quickstep.fallback.RecentsState;
-import com.android.quickstep.fallback.window.RecentsWindowManager;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.ContextInitListener;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.window.RecentsWindowManager;
+import com.android.quickstep.window.RecentsWindowTracker;
 
 import dagger.assisted.AssistedInject;
 
@@ -61,11 +64,13 @@ public final class FallbackWindowInterface extends BaseWindowInterface {
             REPOSITORY_INSTANCE = new DaggerSingletonObject<>(
             QuickstepBaseAppComponent::getFallbackWindowInterfaceRepository);
 
+    @NonNull private final RecentsWindowTracker mRecentsWindowTracker;
     @Nullable private RecentsWindowManager mRecentsWindowManager = null;
 
     @AssistedInject
-    public FallbackWindowInterface() {
+    public FallbackWindowInterface(@NonNull RecentsWindowTracker recentsWindowTracker) {
         super(DEFAULT, BACKGROUND_APP);
+        mRecentsWindowTracker = recentsWindowTracker;
     }
 
     public void setRecentsWindowManager(@Nullable RecentsWindowManager recentsWindowManager) {
@@ -108,7 +113,7 @@ public final class FallbackWindowInterface extends BaseWindowInterface {
             Predicate<Boolean> onInitListener) {
         return new ContextInitListener<>(
                 (activity, alreadyOnHome) -> onInitListener.test(alreadyOnHome),
-                RecentsWindowManager.getRecentsWindowTracker());
+                mRecentsWindowTracker);
     }
 
     @Nullable
@@ -117,10 +122,19 @@ public final class FallbackWindowInterface extends BaseWindowInterface {
         return mRecentsWindowManager;
     }
 
+    @Nullable
+    public SurfaceControl getOverviewOverlay() {
+        if (mRecentsWindowManager == null) {
+            return null;
+        }
+        return mRecentsWindowManager.getOverviewOverlay();
+    }
+
+
     @Override
-    public TaskbarUIController getTaskbarController() {
+    public TaskbarInteractor getTaskbarInteractor() {
         RecentsWindowManager manager = getCreatedContainer();
-        return manager == null ? null : manager.getTaskbarUIController();
+        return manager == null ? null : manager.getTaskbarInteractor();
     }
 
     @Override
@@ -184,27 +198,20 @@ public final class FallbackWindowInterface extends BaseWindowInterface {
 
     @Override
     public void onLaunchTaskFailed() {
-        // TODO: probably go back to overview instead.
         RecentsWindowManager manager = getCreatedContainer();
         if (manager == null) {
             return;
         }
-        manager.<RecentsView>getOverviewPanel().startHome();
+        manager.getStateManager().goToState(DEFAULT);
     }
 
     @Override
-    public RecentsState stateFromGestureEndTarget(GestureEndTarget endTarget) {
-        switch (endTarget) {
-            case RECENTS:
-                return DEFAULT;
-            case NEW_TASK:
-            case LAST_TASK:
-                return BACKGROUND_APP;
-            case HOME:
-            case ALL_APPS:
-            default:
-                return HOME;
-        }
+    public RecentsState stateFromGestureEndTarget(@NonNull GestureEndTarget endTarget) {
+        return switch (endTarget) {
+            case RECENTS -> DEFAULT;
+            case NEW_TASK, LAST_TASK -> BACKGROUND_APP;
+            default -> HOME;
+        };
     }
 
     private void notifyRecentsOfOrientation() {
@@ -218,13 +225,13 @@ public final class FallbackWindowInterface extends BaseWindowInterface {
     @Override
     public @Nullable Animator getParallelAnimationToGestureEndTarget(GestureEndTarget endTarget,
             long duration, RecentsAnimationCallbacks callbacks) {
-        TaskbarUIController uiController = getTaskbarController();
+        TaskbarInteractor taskbarInteractor = getTaskbarInteractor();
         Animator superAnimator = super.getParallelAnimationToGestureEndTarget(
                 endTarget, duration, callbacks);
-        if (uiController == null) {
+        if (taskbarInteractor == null) {
             return superAnimator;
         }
-        Animator taskbarAnimator = uiController.getParallelAnimationToGestureEndTarget(
+        Animator taskbarAnimator = taskbarInteractor.getParallelAnimationToGestureEndTarget(
                 endTarget, duration, callbacks);
         if (taskbarAnimator == null) {
             return superAnimator;

@@ -18,14 +18,12 @@ package com.android.wm.shell.flicker.pip.nonmatchparent
 
 import android.platform.test.annotations.Postsubmit
 import android.platform.test.annotations.Presubmit
-import android.platform.test.annotations.RequiresDevice
+import androidx.test.filters.RequiresDevice
 import android.platform.test.annotations.RequiresFlagsDisabled
-import android.platform.test.annotations.RequiresFlagsEnabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
 import androidx.test.filters.FlakyTest
-import com.android.window.flags.Flags
 import com.android.wm.shell.flicker.pip.common.widthNotSmallerThan
 import org.junit.Assume
 import org.junit.FixMethodOrder
@@ -52,19 +50,18 @@ import org.junit.runners.Parameterized
  * ```
  *     1. All assertions are inherited from [EnterPipTest]
  *     2. Part of the test setup occurs automatically via
- *        [android.tools.flicker.legacy.runner.TransitionRunner],
+ *        [android.tools.flicker.runner.TransitionRunner],
  *        including configuring navigation mode, initial orientation and ensuring no
  *        apps are running before setup
  * ```
  */
 // TODO(b/380796448): re-enable tests after the support of non-match parent PIP animation for PIP2.
 @RequiresFlagsDisabled(com.android.wm.shell.Flags.FLAG_ENABLE_PIP2)
-@RequiresFlagsEnabled(Flags.FLAG_BETTER_SUPPORT_NON_MATCH_PARENT_ACTIVITY)
 @RequiresDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class BottomHalfAutoEnterPipOnGoToHomeTest(flicker: LegacyFlickerTest) :
+class BottomHalfAutoEnterPipOnGoToHomeTest(flicker: FlickerTest) :
     BottomHalfEnterPipTransition(flicker) {
 
     override val thisTransition: FlickerBuilder.() -> Unit = { transitions {

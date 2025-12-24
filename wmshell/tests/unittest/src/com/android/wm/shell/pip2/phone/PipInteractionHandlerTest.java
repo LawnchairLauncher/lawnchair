@@ -17,6 +17,7 @@
 package com.android.wm.shell.pip2.phone;
 
 import static com.android.internal.jank.Cuj.CUJ_PIP_TRANSITION;
+import static com.android.wm.shell.pip2.phone.PipInteractionHandler.INTERACTION_ENTER_PIP;
 import static com.android.wm.shell.pip2.phone.PipInteractionHandler.INTERACTION_EXIT_PIP;
 import static com.android.wm.shell.pip2.phone.PipInteractionHandler.INTERACTION_EXIT_PIP_TO_SPLIT;
 
@@ -84,6 +85,15 @@ public class PipInteractionHandlerTest {
         verify(mMockInteractionJankMonitor, times(1)).begin(eq(mTestLeash),
                 eq(mMockContext), eq(mMockHandler), eq(CUJ_PIP_TRANSITION),
                 eq(PipInteractionHandler.pipInteractionToString(INTERACTION_EXIT_PIP_TO_SPLIT)));
+    }
+
+    @Test
+    public void begin_enter_startsTracking() {
+        mPipInteractionHandler.begin(mTestLeash, INTERACTION_ENTER_PIP);
+
+        verify(mMockInteractionJankMonitor, times(1)).begin(eq(mTestLeash),
+                eq(mMockContext), eq(mMockHandler), eq(CUJ_PIP_TRANSITION),
+                eq(PipInteractionHandler.pipInteractionToString(INTERACTION_ENTER_PIP)));
     }
 
     @Test

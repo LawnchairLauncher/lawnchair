@@ -25,7 +25,6 @@ import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.NonNull;
@@ -38,6 +37,7 @@ import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.views.ClipIconView;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
@@ -185,7 +185,7 @@ public abstract class SwipeUpAnimationLogic implements
         public @NonNull RectF getWindowTargetRect() {
             PagedOrientationHandler orientationHandler = getOrientationHandler();
             DeviceProfile dp = mDp;
-            final int halfIconSize = dp.iconSizePx / 2;
+            final int halfIconSize = dp.getWorkspaceIconProfile().getIconSizePx() / 2;
             float primaryDimension = orientationHandler.getPrimaryValue(
                     dp.getDeviceProperties().getAvailableWidthPx(),
                     dp.getDeviceProperties().getAvailableHeightPx()
@@ -504,7 +504,7 @@ public abstract class SwipeUpAnimationLogic implements
             if (isStartWidthValid && isStartHeightValid) {
                 scale = Math.min(currentWidth, currentHeight) / Math.min(startWidth, startHeight);
             } else {
-                Log.e(TAG, "TaskView starting bounds are invalid: " + mThumbnailStartBounds);
+                FileLog.e(TAG, "TaskView starting bounds are invalid: " + mThumbnailStartBounds);
                 if (isStartWidthValid) {
                     scale = currentWidth / startWidth;
                 } else if (isStartHeightValid) {
@@ -515,8 +515,9 @@ public abstract class SwipeUpAnimationLogic implements
             }
 
             if (Float.isNaN(scale)) {
-                Log.e(TAG, "Scale is NaN: starting dimensions=[" + startWidth + ", " + startHeight
-                        + "], current dimensions=[" + currentWidth + ", " + currentHeight + "]");
+                FileLog.e(TAG, "Scale is NaN: starting dimensions=[" + startWidth + ", "
+                        + startHeight + "], current dimensions=[" + currentWidth + ", "
+                        + currentHeight + "]");
             }
 
             mTargetTaskView.setScaleX(scale);

@@ -408,7 +408,7 @@ public class TaskViewTaskController implements ShellTaskOrganizer.TaskListener {
         WindowContainerTransaction wct = new WindowContainerTransaction();
         if (mCaptionInsets != null) {
             int flags = 0;
-            if (BubbleAnythingFlagHelper.enableCreateAnyBubbleWithAppCompatFixes()) {
+            if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
                 // When the bubble bar app handle is visible, the caption insets will be set and
                 // should always be consumed, otherwise the handle may block app content.
                 flags = FLAG_FORCE_CONSUMING | FLAG_FORCE_CONSUMING_OPAQUE_CAPTION_BAR;

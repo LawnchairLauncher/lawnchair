@@ -26,10 +26,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ import com.android.launcher3.widgetpicker.shared.model.WidgetAppId
 import com.android.launcher3.widgetpicker.shared.model.WidgetId
 import com.android.launcher3.widgetpicker.shared.model.WidgetPreview
 import com.android.launcher3.widgetpicker.ui.WidgetInteractionInfo
+import com.android.launcher3.widgetpicker.ui.WidgetInteractionSource
 import com.android.launcher3.widgetpicker.ui.model.DisplayableWidgetApp
 import com.android.launcher3.widgetpicker.ui.theme.WidgetPickerTheme
 
@@ -59,11 +62,13 @@ fun WidgetAppsList(
     onWidgetAppClick: (DisplayableWidgetApp) -> Unit,
     appIcons: Map<WidgetAppId, WidgetAppIcon>,
     widgetPreviews: Map<WidgetId, WidgetPreview>,
+    widgetInteractionSource: WidgetInteractionSource,
     onWidgetInteraction: (WidgetInteractionInfo) -> Unit,
     showDragShadow: Boolean,
     bottomContentSpacing: Dp = 0.dp,
     headerDescriptionStyle: AppHeaderDescriptionStyle = AppHeaderDescriptionStyle.WIDGETS_COUNT,
     emptyWidgetsErrorMessage: String? = null,
+    autoScrollToTopOnChange: Boolean = false,
 ) {
     if (widgetApps.isEmpty()) {
         NoWidgetsError(
@@ -110,9 +115,11 @@ fun WidgetAppsList(
                             widgetApp = widgetApp,
                             appIcon = appIcon,
                             title = title,
+                            accessibilityPrefix = widgetApp.accessibilityPrefix,
                             description = description,
                             widgetPreviews = widgetPreviews,
                             onWidgetAppClick = onWidgetAppClick,
+                            widgetInteractionSource = widgetInteractionSource,
                             onWidgetInteraction = onWidgetInteraction,
                             showDragShadow = showDragShadow,
                         )
@@ -137,6 +144,22 @@ fun WidgetAppsList(
                 }
             }
         }
+
+        // When screen size changes, snap to the currently selected item as it may not end up in
+        // currently visible area.
+        LaunchedEffect(LocalWindowInfo.current.containerSize) {
+            val index = widgetApps.indexOfFirst { it.id == selectedWidgetAppId }
+            if (
+                index != INDEX_NOT_FOUND &&
+                    listState.layoutInfo.visibleItemsInfo.none { it.index == index }
+            ) {
+                listState.scrollToItem(index)
+            }
+        }
+
+        if (autoScrollToTopOnChange) {
+            LaunchedEffect(widgetApps.size) { listState.scrollToItem(0) }
+        }
     }
 }
 
@@ -159,9 +182,11 @@ private fun ExpandableWidgetAppHeader(
     widgetApp: DisplayableWidgetApp,
     appIcon: @Composable () -> Unit,
     title: String,
+    accessibilityPrefix: String?,
     description: String,
     widgetPreviews: Map<WidgetId, WidgetPreview>,
     onWidgetAppClick: (DisplayableWidgetApp) -> Unit,
+    widgetInteractionSource: WidgetInteractionSource,
     onWidgetInteraction: (WidgetInteractionInfo) -> Unit,
     showDragShadow: Boolean,
 ) {
@@ -173,6 +198,7 @@ private fun ExpandableWidgetAppHeader(
                     showAllWidgetDetails = true,
                     previews = widgetPreviews,
                     modifier = Modifier.fillMaxWidth(),
+                    widgetInteractionSource = widgetInteractionSource,
                     onWidgetInteraction = onWidgetInteraction,
                     showDragShadow = showDragShadow,
                 )
@@ -184,6 +210,7 @@ private fun ExpandableWidgetAppHeader(
         expanded = expanded,
         leadingAppIcon = appIcon,
         title = title,
+        accessibilityPrefix = accessibilityPrefix,
         subTitle = description,
         expandedContent = expandedContent,
         onClick = { onWidgetAppClick(widgetApp) },
@@ -205,7 +232,7 @@ private fun DisplayableWidgetApp.widgetHeaderTitle(): String {
 @Composable
 private fun DisplayableWidgetApp.widgetHeaderDescription(style: AppHeaderDescriptionStyle): String {
     return when (style) {
-        AppHeaderDescriptionStyle.WIDGETS_COUNT -> widgetsCountString(widgetsCount)
+        AppHeaderDescriptionStyle.WIDGETS_COUNT -> widgetsCountString(widgetsCount, shortcutsCount)
 
         AppHeaderDescriptionStyle.COMBINED_WIDGETS_TITLE ->
             widgetSizeGroups.flatMap { it.widgets }.map { it.label }.joinToString { it }
@@ -227,9 +254,10 @@ enum class AppHeaderDescriptionStyle {
 }
 
 private const val SPACER_LIST_ITEM_TYPE = "spacer"
+private const val INDEX_NOT_FOUND = -1
 
 private object WidgetAppsListDimensions {
-    val itemSpacing = 4.dp
+    val itemSpacing = 2.dp
 
     val largeRadius = 24.dp
     val smallRadius = 4.dp

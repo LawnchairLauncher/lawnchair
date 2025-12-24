@@ -32,9 +32,11 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"အချိုးအစား ပြောင်းရန်"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s အတွက် အက်ပ်အချက်အလက်"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s အတွက် အသုံးပြုမှုဆက်တင်များ"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"%1$s ကို ပိတ်ရန်"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"ဝင်းဒိုးအသစ်"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"ဝင်းဒိုးများ စီမံရန်"</string>
-    <string name="save_app_pair" msgid="5647523853662686243">"အက်ပ်တွဲချိတ်ခြင်း သိမ်းရန်"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"ပိတ်ရန်"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"အက်ပ်အတွဲ သိမ်းရန်"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ဤအက်ပ်တွဲချိတ်ခြင်းကို ဤစက်တွင် ပံ့ပိုးမထားပါ"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"ဤအက်ပ်တွဲချိတ်ခြင်းကို သုံးရန် စက်ကိုဖြန့်ပါ"</string>
@@ -93,7 +95,7 @@
     <string name="all_apps_search_results" msgid="5889367432531296759">"ရှာဖွေမှု ရလဒ်များ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"တစ်ကိုယ်ရေသုံး အက်ပ်စာရင်း"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"အလုပ်သုံး အက်ပ်စာရင်း"</string>
-    <string name="remove_drop_target_label" msgid="7812859488053230776">"ဖယ်ရှားမည်"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"ဖယ်ရှားရန်"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ဖြုတ်ရန်"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"အက်ပ်အချက်အလက်"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"သီးသန့်တွင် ထည့်သွင်းရန်"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"အက်ပ်အကြံမပြုပါနှင့်"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ခန့်မှန်းချက်ကို ပင်ထိုးရန်"</string>
     <string name="bubble" msgid="3072951361014076670">"ပူဖောင်းကွက်"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"ဆက်တင်များ"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"Taskbar ၌ ပင်ထိုးရန်"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"Taskbar မှ ဖြုတ်ရန်"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ဖြတ်လမ်းလင့်ခ်များ ထည့်သွင်းခြင်း"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"အသုံးပြုသူ လုပ်ဆောင်မှုမရှိပဲ အပ်ပလီကေးရှင်းကို အတိုကောက်မှတ်သားမှုများ ပြုလုပ်ခွင့် ပေးခြင်း"</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"ပင်မဆက်တင်နှင့် ဖြတ်လမ်းလင့်ခ်များ ဖတ်ခြင်း"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"ညာဘက်သို့ စာမျက်နှာများအဖြစ် ခွဲထုတ်ရန်"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ကို ပိတ်ထားသည်"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} တွင် အကြောင်းကြားချက် # ခု ရှိသည်}other{{app_name} တွင် အကြောင်းကြားချက် # ခု ရှိသည်}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"ကြိုတင်မှန်းဆထားသော အက်ပ်− <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"စာမျက်နှာ %1$d မှ %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ပင်မစာမျက်နှာ %1$d မှ %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ပင်မမျက်နှာပြင် စာမျက်နှာသစ်"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"ပိတ်ထားသောအကန့်"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ပြောင်းလဲလိုက်သော အကန့်အမည် <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ဖိုင်တွဲ - <xliff:g id="NAME">%1$s</xliff:g>၊ <xliff:g id="SIZE">%2$d</xliff:g> ဖိုင်များ"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"ဖိုင်တွဲ- <xliff:g id="NAME">%1$s</xliff:g>၊ ဖိုင် <xliff:g id="SIZE">%2$d</xliff:g> ဖိုင်၊ အကြောင်းကြားချက်များရှိသည်"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ဖိုင်တွဲ - <xliff:g id="NAME">%1$s</xliff:g>၊ <xliff:g id="SIZE">%2$d</xliff:g> သို့မဟုတ် နောက်ထပ်ဖိုင်များ"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"ဖိုင်တွဲ- <xliff:g id="NAME">%1$s</xliff:g>၊ ဖိုင် <xliff:g id="SIZE">%2$d</xliff:g> ဖိုင်နှင့်အထက်၊ အကြောင်းကြားချက်များရှိသည်"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"အမည်ပေးမထားသောဖိုင်တွဲ"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"အက်ပ်တွဲချိတ်ခြင်း- <xliff:g id="APP1">%1$s</xliff:g> နှင့် <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"နောက်ခံနှင့် ပုံစံ"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"အလုပ်သုံးအက်ပ် တဘ်"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"အလုပ်ပရိုဖိုင်"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"အလုပ်သုံးအက်ပ်များကို တံဆိပ်တပ်ထားပြီး သင်၏ IT စီမံခန့်ခွဲသူက မြင်နိုင်ပါသည်"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ရပါပြီ"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"အလုပ်သုံးအက်ပ်များကို ခေတ္တရပ်ထားသည်"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"သင်၏ အလုပ်သုံးအက်ပ်များမှ အကြောင်းကြားချက်များကို ရရှိမည်မဟုတ်ပါ"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"သင်၏ အလုပ်သုံးအက်ပ်များက အကြောင်းကြားချက်များ ပို့ခြင်း၊ သင့်ဘက်ထရီ သုံးခြင်း (သို့) သင့်တည်နေရာ သုံးခြင်းတို့ မပြုလုပ်နိုင်ပါ"</string>

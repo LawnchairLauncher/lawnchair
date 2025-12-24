@@ -61,6 +61,18 @@ public class WidgetAddFlowHandler implements Parcelable {
     }
 
     /**
+     * Starts the config activity if the widget supports a configuration activity irrespective of
+     * its configuration optional setting (e.g. when user taps on pending widget)
+     */
+    public void startConfigActivityIfSupported(Launcher launcher, LauncherAppWidgetInfo info,
+            int requestCode) {
+        if (!supportsConfiguration()) {
+            return;
+        }
+        launchConfigActivity(launcher, info.appWidgetId, info, requestCode);
+    }
+
+    /**
      * @see #startConfigActivity(Launcher, int, ItemInfo, int)
      */
     public boolean startConfigActivity(Launcher launcher, LauncherAppWidgetInfo info,
@@ -77,9 +89,14 @@ public class WidgetAddFlowHandler implements Parcelable {
         if (!needsConfigure()) {
             return false;
         }
+        launchConfigActivity(launcher, appWidgetId, info, requestCode);
+        return true;
+    }
+
+    private void launchConfigActivity(Launcher launcher, int appWidgetId, ItemInfo info,
+            int requestCode) {
         launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
         launcher.getAppWidgetHolder().startConfigActivity(launcher, appWidgetId, requestCode);
-        return true;
     }
 
     /**
@@ -98,6 +115,15 @@ public class WidgetAddFlowHandler implements Parcelable {
                 && (featureFlags & WIDGET_FEATURE_RECONFIGURABLE) != 0;
 
         return mProviderInfo.configure != null && !configurationOptional;
+    }
+
+    /**
+     * Returns true if a widget supports configuration via a config activity.
+     *
+     * @see #needsConfigure() which should be used instead if adding widget for first time.
+     */
+    public boolean supportsConfiguration() {
+        return mProviderInfo.configure != null;
     }
 
     public LauncherAppWidgetProviderInfo getProviderInfo(Context context) {

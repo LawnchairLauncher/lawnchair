@@ -19,7 +19,6 @@ import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP;
-import static com.android.window.flags2.Flags.predictiveBackThreeButtonNav;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -101,6 +100,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     protected int getScrimColor(Context context) {
+        // pE-TODO(QPR2): Investigate colour widgets_picker_scrim
         return ColorTokens.WidgetsPickerScrim.resolveColor(context);
     }
 
@@ -134,15 +134,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     @Override
     public void setScaleY(float scaleY) {
         super.setScaleY(scaleY);
-        try {
-            if (predictiveBackThreeButtonNav() && mNavBarScrimHeight > 0) {
-                // Call invalidate to prevent navbar scrim from scaling. The navbar scrim is drawn
-                // directly onto the canvas. To prevent it from being scaled with the canvas, there's a
-                // counter scale applied in dispatchDraw.
-                invalidate();
-            }
-        } catch (Throwable t) {
-            // LC-Ignored
+        if (mNavBarScrimHeight > 0) {
+            // Call invalidate to prevent navbar scrim from scaling. The navbar scrim is drawn
+            // directly onto the canvas. To prevent it from being scaled with the canvas, there's a
+            // counter scale applied in dispatchDraw.
+            invalidate();
         }
     }
 
@@ -284,6 +280,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     public boolean onLongClick(View v) {
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
         v.cancelLongPress();
+        // pE-TODO(QPR2): Investigate if this is needed anymore?
         if (!ItemLongClickListener.canStartDrag(Launcher.getLauncher(mActivityContext)))
             return false;
 
@@ -372,7 +369,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         } else if (mInsets.bottom > 0) {
             widthUsed = mInsets.left + mInsets.right;
         } else {
-            Rect padding = deviceProfile.workspacePadding;
+            Rect padding = deviceProfile.mWorkspaceProfile.getWorkspacePadding();
             widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
         }

@@ -274,7 +274,12 @@ public class DefaultTransitionHandlerTest extends ShellTestCase {
 
     @Test
     public void startAnimation_neverFindsErrors_animationMode() {
-        final TransitionInfo info = mock(TransitionInfo.class);
+        final TransitionInfo.Change open = new ChangeBuilder(TRANSIT_OPEN).build();
+        final TransitionInfo.Change close = new ChangeBuilder(TRANSIT_TO_BACK).build();
+        final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_OPEN)
+                .addChange(open)
+                .addChange(close)
+                .build();
         final IBinder token = mock(Binder.class);
 
         TransitionDispatchState dispatchState = new TransitionDispatchState(token, info);
@@ -291,7 +296,12 @@ public class DefaultTransitionHandlerTest extends ShellTestCase {
 
     @Test
     public void startAnimation_neverFindsErrors_dataCollectionMode() {
-        final TransitionInfo info = mock(TransitionInfo.class);
+        final TransitionInfo.Change open = new ChangeBuilder(TRANSIT_OPEN).build();
+        final TransitionInfo.Change close = new ChangeBuilder(TRANSIT_TO_BACK).build();
+        final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_OPEN)
+                .addChange(open)
+                .addChange(close)
+                .build();
         final IBinder token = mock(Binder.class);
 
         TransitionDispatchState dispatchState = new TransitionDispatchState(token, info);

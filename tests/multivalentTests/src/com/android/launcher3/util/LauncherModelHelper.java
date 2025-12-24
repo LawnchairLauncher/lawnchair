@@ -41,6 +41,11 @@ public class LauncherModelHelper {
     public static final String TEST_ACTIVITY13 = "com.android.launcher3.tests.Activity14";
     public static final String TEST_ACTIVITY14 = "com.android.launcher3.tests.Activity15";
 
+    public static final String SHORTCUT_ID = "shortcut2";
+
+    public static final String SETTINGS_PACKAGE = "com.android.settings";
+    public static final String SETTINGS_COMPONENT = "com.android.settings.Settings";
+
     public static final List<String> ACTIVITY_LIST = Arrays.asList(
             TEST_ACTIVITY,
             TEST_ACTIVITY2,

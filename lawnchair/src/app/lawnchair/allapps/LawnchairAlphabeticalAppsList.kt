@@ -27,10 +27,10 @@ import java.util.function.Predicate
 @Suppress("SYNTHETIC_PROPERTY_WITHOUT_JAVA_ORIGIN")
 class LawnchairAlphabeticalAppsList<T>(
     private val context: T,
-    private val appsStore: AllAppsStore<T>,
+    private val appsStore: AllAppsStore,
     workProfileManager: WorkProfileManager?,
     privateProfileManager: PrivateProfileManager?,
-) : AlphabeticalAppsList<T>(context, appsStore, workProfileManager, privateProfileManager),
+) : AlphabeticalAppsList(context, appsStore, workProfileManager, privateProfileManager),
     OnIDPChangeListener
     where T : Context, T : ActivityContext {
 

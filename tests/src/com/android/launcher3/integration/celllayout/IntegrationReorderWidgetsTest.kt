@@ -18,16 +18,18 @@ package com.android.launcher3.integration.celllayout
 
 import android.content.Context
 import android.graphics.Point
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import android.platform.uiautomatorhelpers.DeviceHelpers.context
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.launcher3.AppWidgetResizeFrame
+import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherState
 import com.android.launcher3.celllayout.CellInfo
 import com.android.launcher3.celllayout.CellLayoutTestCaseReader
 import com.android.launcher3.celllayout.CellLayoutTestCaseReader.Board
@@ -45,7 +47,6 @@ import com.android.launcher3.integration.util.TestUtils.getCellTopLeftRelativeTo
 import com.android.launcher3.integration.util.TestUtils.getWidgetAtCell
 import com.android.launcher3.integration.util.TestUtils.searchChildren
 import com.android.launcher3.integration.util.events.ActivityTestEvents.createResizeFrameShownWaiter
-import com.android.launcher3.integration.util.events.ActivityTestEvents.createStateWaiter
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.CellAndSpan
 import com.android.launcher3.util.ModelTestExtensions.clearModelDb
@@ -63,24 +64,24 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
+@EnableFlags(Flags.FLAG_HOME_SCREEN_EDIT_IMPROVEMENTS)
 class IntegrationReorderWidgetsTest {
 
     var targetContext: Context = getInstrumentation().targetContext
 
-    var eventsRule = EventsRule(targetContext)
+    @get:Rule val setFlagsRule: SetFlagsRule = SetFlagsRule()
 
-    var launcherActivity = LauncherActivityScenarioRule<Launcher>(targetContext, false)
+    @get:Rule var screenRecordRule: ScreenRecordRule = ScreenRecordRule()
 
-    @get:Rule var mScreenRecordRule: ScreenRecordRule = ScreenRecordRule()
+    @get:Rule var eventsRule: EventsRule = EventsRule(targetContext)
 
-    @get:Rule val chainRule = RuleChain.outerRule(eventsRule).around(launcherActivity)
+    @get:Rule var grantWidgetRule: ShellCommandRule = ShellCommandRule.grantWidgetBind()
 
-    @get:Rule var grantWidgetRule = ShellCommandRule.grantWidgetBind()
+    @get:Rule var launcherActivity = LauncherActivityScenarioRule<Launcher>(targetContext, false)
 
     private var workspaceBuilder: TestWorkspaceBuilder? = null
 
@@ -174,7 +175,7 @@ class IntegrationReorderWidgetsTest {
     }
 
     private fun simulateDrag(fromCell: CellAndSpan, toCell: CellAndSpan) {
-        val editModeWaiter = launcherActivity.createStateWaiter(LauncherState.SPRING_LOADED)
+        val resizeFrameWaiter = launcherActivity.createResizeFrameShownWaiter()
         launcherActivity.executeOnLauncher {
             val widget: LauncherAppWidgetHostView =
                 getWidgetAtCell(it.workspace, fromCell.cellX, fromCell.cellY)
@@ -195,7 +196,7 @@ class IntegrationReorderWidgetsTest {
             it.workspace.onDragOver(it.dragController.mDragObject)
         }
         getInstrumentation().waitForIdleSync()
-        editModeWaiter.waitForSignal()
+        resizeFrameWaiter.waitForSignal()
         moveDragObjectToLocation(toCell)
         launcherActivity.executeOnLauncher {
             it.workspace.onDragOver(it.dragController.mDragObject)

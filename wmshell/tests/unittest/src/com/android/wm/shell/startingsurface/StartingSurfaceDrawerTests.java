@@ -30,13 +30,16 @@ import static com.android.wm.shell.startingsurface.SplashscreenContentDrawer.MIN
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.app.ActivityManager;
+import android.app.UiModeManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -185,18 +188,19 @@ public class StartingSurfaceDrawerTests extends ShellTestCase {
         final int configHash = 1;
         final int windowBgColor = 0xff000000;
         final int windowBgResId = 1;
+        final int forceInvertState = UiModeManager.FORCE_INVERT_TYPE_OFF;
         final IntSupplier windowBgColorSupplier = () -> windowBgColor;
         final SplashscreenContentDrawer.ColorCache colorCache =
                 mStartingSurfaceDrawer.mSplashscreenContentDrawer.mColorCache;
         final SplashscreenContentDrawer.ColorCache.WindowColor windowColor1 =
                 colorCache.getWindowColor(packageName, configHash, windowBgColor, windowBgResId,
-                        windowBgColorSupplier);
+                        forceInvertState, windowBgColorSupplier);
         assertEquals(windowBgColor, windowColor1.mBgColor);
         assertEquals(0, windowColor1.mReuseCount);
 
         final SplashscreenContentDrawer.ColorCache.WindowColor windowColor2 =
                 colorCache.getWindowColor(packageName, configHash, windowBgColor, windowBgResId,
-                        windowBgColorSupplier);
+                        forceInvertState, windowBgColorSupplier);
         assertEquals(windowColor1, windowColor2);
         assertEquals(1, windowColor1.mReuseCount);
 
@@ -206,7 +210,7 @@ public class StartingSurfaceDrawerTests extends ShellTestCase {
 
         final SplashscreenContentDrawer.ColorCache.WindowColor windowColor3 =
                 colorCache.getWindowColor(packageName, configHash, windowBgColor, windowBgResId,
-                        windowBgColorSupplier);
+                        forceInvertState, windowBgColorSupplier);
         assertEquals(0, windowColor3.mReuseCount);
     }
 
@@ -237,14 +241,16 @@ public class StartingSurfaceDrawerTests extends ShellTestCase {
             // Simulate a task snapshot window created with hasImeSurface.
             mStartingSurfaceDrawer.makeTaskSnapshotWindow(windowInfo, snapshot);
             waitHandlerIdle(mTestHandler);
-
-            // Verify the task snapshot with hasImeSurface will be removed when receiving the
-            // callback that the real IME was drawn.
-            // makeTaskSnapshotWindow shall call removeWindowSynced before there add a new
-            // StartingWindowRecord for the task.
+            reset(mStartingSurfaceDrawer.mWindowRecords);
+            // Verify the task snapshot with hasImeSurface will not be removed immediately when
+            // receiving the callback that the real IME was drawn.
             mStartingSurfaceDrawer.onImeDrawnOnTask(1);
-            verify(mStartingSurfaceDrawer.mWindowRecords, times(2))
-                    .removeWindow(any(), eq(true));
+            verify(mStartingSurfaceDrawer.mWindowRecords, never())
+                    .removeWindow(any(), anyBoolean());
+            final StartingWindowRemovalInfo removalInfo = new StartingWindowRemovalInfo();
+            removalInfo.taskId = windowInfo.taskInfo.taskId;
+            mStartingSurfaceDrawer.removeStartingWindow(removalInfo);
+            verify(mStartingSurfaceDrawer.mWindowRecords).removeWindow(any(), anyBoolean());
         }
     }
 
@@ -357,6 +363,6 @@ public class StartingSurfaceDrawerTests extends ShellTestCase {
                 Surface.ROTATION_0, taskSize, contentInsets, new Rect() /* letterboxInsets */,
                 false, true /* isRealSnapshot */, WINDOWING_MODE_FULLSCREEN,
                 0 /* systemUiVisibility */, false /* isTranslucent */,
-                hasImeSurface /* hasImeSurface */, 0 /* uiMode */);
+                hasImeSurface /* hasImeSurface */, 0 /* uiMode */, 300 /* densityDpi */);
     }
 }

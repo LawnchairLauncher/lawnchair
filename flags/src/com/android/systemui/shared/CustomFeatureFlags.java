@@ -115,16 +115,16 @@ public class CustomFeatureFlags implements FeatureFlags {
 
     @Override
 
-    public boolean returnAnimationFrameworkLibrary() {
-        return getValue(Flags.FLAG_RETURN_ANIMATION_FRAMEWORK_LIBRARY,
-            FeatureFlags::returnAnimationFrameworkLibrary);
+    public boolean notificationDotContrastBorder() {
+        return getValue(Flags.FLAG_NOTIFICATION_DOT_CONTRAST_BORDER,
+            FeatureFlags::notificationDotContrastBorder);
     }
 
     @Override
 
-    public boolean returnAnimationFrameworkLongLived() {
-        return getValue(Flags.FLAG_RETURN_ANIMATION_FRAMEWORK_LONG_LIVED,
-            FeatureFlags::returnAnimationFrameworkLongLived);
+    public boolean panAndZoomInExtendedWallpaperEffects() {
+        return getValue(Flags.FLAG_PAN_AND_ZOOM_IN_EXTENDED_WALLPAPER_EFFECTS,
+            FeatureFlags::panAndZoomInExtendedWallpaperEffects);
     }
 
     @Override
@@ -146,6 +146,20 @@ public class CustomFeatureFlags implements FeatureFlags {
     public boolean sidefpsControllerRefactor() {
         return getValue(Flags.FLAG_SIDEFPS_CONTROLLER_REFACTOR,
             FeatureFlags::sidefpsControllerRefactor);
+    }
+
+    @Override
+
+    public boolean smartspaceAqiUpdatedDesign() {
+        return getValue(Flags.FLAG_SMARTSPACE_AQI_UPDATED_DESIGN,
+            FeatureFlags::smartspaceAqiUpdatedDesign);
+    }
+
+    @Override
+
+    public boolean smartspaceSemanticWeatherData() {
+        return getValue(Flags.FLAG_SMARTSPACE_SEMANTIC_WEATHER_DATA,
+            FeatureFlags::smartspaceSemanticWeatherData);
     }
 
     @Override
@@ -230,11 +244,13 @@ public class CustomFeatureFlags implements FeatureFlags {
             Flags.FLAG_LOCKSCREEN_CUSTOM_CLOCKS,
             Flags.FLAG_NEW_CUSTOMIZATION_PICKER_UI,
             Flags.FLAG_NEW_TOUCHPAD_GESTURES_TUTORIAL,
-            Flags.FLAG_RETURN_ANIMATION_FRAMEWORK_LIBRARY,
-            Flags.FLAG_RETURN_ANIMATION_FRAMEWORK_LONG_LIVED,
+            Flags.FLAG_NOTIFICATION_DOT_CONTRAST_BORDER,
+            Flags.FLAG_PAN_AND_ZOOM_IN_EXTENDED_WALLPAPER_EFFECTS,
             Flags.FLAG_SCREENSHOT_CONTEXT_URL,
             Flags.FLAG_SHADE_ALLOW_BACK_GESTURE,
             Flags.FLAG_SIDEFPS_CONTROLLER_REFACTOR,
+            Flags.FLAG_SMARTSPACE_AQI_UPDATED_DESIGN,
+            Flags.FLAG_SMARTSPACE_SEMANTIC_WEATHER_DATA,
             Flags.FLAG_SMARTSPACE_SPORTS_CARD_BACKGROUND,
             Flags.FLAG_SMARTSPACE_UI_UPDATE,
             Flags.FLAG_SMARTSPACE_UI_UPDATE_RESOURCES,
@@ -261,11 +277,13 @@ public class CustomFeatureFlags implements FeatureFlags {
             Flags.FLAG_LOCKSCREEN_CUSTOM_CLOCKS,
             Flags.FLAG_NEW_CUSTOMIZATION_PICKER_UI,
             Flags.FLAG_NEW_TOUCHPAD_GESTURES_TUTORIAL,
-            Flags.FLAG_RETURN_ANIMATION_FRAMEWORK_LIBRARY,
-            Flags.FLAG_RETURN_ANIMATION_FRAMEWORK_LONG_LIVED,
+            Flags.FLAG_NOTIFICATION_DOT_CONTRAST_BORDER,
+            Flags.FLAG_PAN_AND_ZOOM_IN_EXTENDED_WALLPAPER_EFFECTS,
             Flags.FLAG_SCREENSHOT_CONTEXT_URL,
             Flags.FLAG_SHADE_ALLOW_BACK_GESTURE,
             Flags.FLAG_SIDEFPS_CONTROLLER_REFACTOR,
+            Flags.FLAG_SMARTSPACE_AQI_UPDATED_DESIGN,
+            Flags.FLAG_SMARTSPACE_SEMANTIC_WEATHER_DATA,
             Flags.FLAG_SMARTSPACE_SPORTS_CARD_BACKGROUND,
             Flags.FLAG_SMARTSPACE_UI_UPDATE,
             Flags.FLAG_SMARTSPACE_UI_UPDATE_RESOURCES,

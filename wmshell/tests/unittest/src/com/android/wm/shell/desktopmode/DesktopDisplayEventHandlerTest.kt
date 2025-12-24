@@ -16,29 +16,37 @@
 
 package com.android.wm.shell.desktopmode
 
+import android.app.ActivityManager.RunningTaskInfo
+import android.app.KeyguardManager
 import android.platform.test.annotations.EnableFlags
 import android.testing.AndroidTestingRunner
+import android.view.Display
 import android.view.Display.DEFAULT_DISPLAY
+import android.view.WindowManager.TRANSIT_CHANGE
 import android.window.DisplayAreaInfo
+import android.window.TransitionInfo
 import androidx.test.filters.SmallTest
 import com.android.server.display.feature.flags.Flags as DisplayFlags
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.RootTaskDisplayAreaOrganizer
 import com.android.wm.shell.RootTaskDisplayAreaOrganizer.RootTaskDisplayAreaListener
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.common.DisplayController
 import com.android.wm.shell.common.DisplayController.OnDisplaysChangedListener
 import com.android.wm.shell.common.ShellExecutor
+import com.android.wm.shell.desktopmode.data.DesktopDisplay
+import com.android.wm.shell.desktopmode.data.DesktopRepository
+import com.android.wm.shell.desktopmode.data.DesktopRepositoryInitializer
 import com.android.wm.shell.desktopmode.desktopfirst.DESKTOP_FIRST_DISPLAY_WINDOWING_MODE
 import com.android.wm.shell.desktopmode.desktopfirst.DesktopDisplayModeController
 import com.android.wm.shell.desktopmode.desktopfirst.TOUCH_FIRST_DISPLAY_WINDOWING_MODE
 import com.android.wm.shell.desktopmode.multidesks.DesksOrganizer
 import com.android.wm.shell.desktopmode.multidesks.DesksTransitionObserver
-import com.android.wm.shell.desktopmode.persistence.DesktopRepositoryInitializer
 import com.android.wm.shell.shared.desktopmode.FakeDesktopState
 import com.android.wm.shell.sysui.ShellController
 import com.android.wm.shell.sysui.ShellInit
 import com.android.wm.shell.sysui.UserChangeListener
+import com.android.wm.shell.transition.Transitions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +62,7 @@ import org.mockito.Mockito.spy
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.eq
@@ -80,6 +89,9 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
     @Mock private lateinit var mockDesktopTasksController: DesktopTasksController
     @Mock private lateinit var mockDesktopDisplayModeController: DesktopDisplayModeController
     @Mock private lateinit var mockDesksTransitionObserver: DesksTransitionObserver
+
+    @Mock private lateinit var transitions: Transitions
+    @Mock private lateinit var keyguardManager: KeyguardManager
     private val desktopRepositoryInitializer = FakeDesktopRepositoryInitializer()
     private val testScope = TestScope()
     private val desktopState = FakeDesktopState()
@@ -110,10 +122,15 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
                 mockDesktopDisplayModeController,
                 mockDesksTransitionObserver,
                 desktopState,
+                transitions,
+                keyguardManager,
             )
         shellInit.init()
         verify(displayController)
             .addDisplayWindowListener(onDisplaysChangedListenerCaptor.capture())
+        val mockDisplay = mock<Display>()
+        whenever(mockDisplay.uniqueId).thenReturn(UNIQUE_DISPLAY_ID)
+        whenever(displayController.getDisplay(externalDisplayId)).thenReturn(mockDisplay)
     }
 
     @After
@@ -150,7 +167,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
             runCurrent()
 
             verify(mockDesktopTasksController)
-                .createDesk(eq(SECOND_DISPLAY), eq(PRIMARY_USER_ID), any(), any(), any())
+                .createDesk(eq(SECOND_DISPLAY), eq(PRIMARY_USER_ID), any(), any(), any(), any())
         }
 
     @Test
@@ -166,6 +183,31 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
             verify(mockDesksOrganizer)
                 .warmUpDefaultDesk(DEFAULT_DISPLAY, mockDesktopRepository.userId)
         }
+
+    @Test
+    fun onTransitionReady_emptyChanges_doesNothing() {
+        val info = TransitionInfo(TRANSIT_CHANGE, 0)
+
+        handler.onTransitionReady(mock(), info, mock(), mock())
+
+        verify(mockDesktopTasksController, never())
+            .onDisplayDpiChanging(any(), anyOrNull(), anyOrNull())
+        verify(transitions, never()).unregisterObserver(any())
+    }
+
+    @Test
+    fun onTransitionReady_displayIdNotInConfig_doesNothing() {
+        val info = TransitionInfo(TRANSIT_CHANGE, 0)
+        val mockChange: TransitionInfo.Change = mock()
+        info.changes.add(mockChange)
+        whenever(mockChange.endDisplayId).thenReturn(externalDisplayId)
+
+        handler.onTransitionReady(mock(), info, mock(), mock())
+
+        verify(mockDesktopTasksController, never())
+            .onDisplayDpiChanging(any(), anyOrNull(), anyOrNull())
+        verify(transitions, never()).unregisterObserver(any())
+    }
 
     @Test
     @EnableFlags(
@@ -186,6 +228,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
                     userId = eq(PRIMARY_USER_ID),
                     enforceDeskLimit = eq(false),
                     activateDesk = eq(true),
+                    enterReason = any(),
                     onResult = any(),
                 )
         }
@@ -200,7 +243,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
             runCurrent()
 
             verify(mockDesktopTasksController, never())
-                .createDesk(eq(DEFAULT_DISPLAY), any(), any(), any(), any())
+                .createDesk(eq(DEFAULT_DISPLAY), any(), any(), any(), any(), any())
         }
 
     @Test
@@ -215,7 +258,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
             runCurrent()
 
             verify(mockDesktopTasksController, times(1))
-                .createDesk(eq(SECOND_DISPLAY), eq(PRIMARY_USER_ID), any(), any(), any())
+                .createDesk(eq(SECOND_DISPLAY), eq(PRIMARY_USER_ID), any(), any(), any(), any())
         }
 
     @Test
@@ -245,7 +288,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
             runCurrent()
 
             verify(mockDesktopTasksController, never())
-                .createDesk(eq(DEFAULT_DISPLAY), any(), any(), any(), any())
+                .createDesk(eq(DEFAULT_DISPLAY), any(), any(), any(), any(), any())
             verify(mockDesksOrganizer, never())
                 .warmUpDefaultDesk(DEFAULT_DISPLAY, mockDesktopRepository.userId)
         }
@@ -261,7 +304,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
             runCurrent()
 
             verify(mockDesktopTasksController, never())
-                .createDesk(eq(DEFAULT_DISPLAY), any(), any(), any(), any())
+                .createDesk(eq(DEFAULT_DISPLAY), any(), any(), any(), any(), any())
             verify(mockDesksOrganizer, never())
                 .warmUpDefaultDesk(DEFAULT_DISPLAY, mockDesktopRepository.userId)
         }
@@ -283,6 +326,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
                     eq(PRIMARY_USER_ID),
                     enforceDeskLimit = eq(false),
                     activateDesk = any(),
+                    enterReason = any(),
                     onResult = any(),
                 )
         }
@@ -322,6 +366,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
                     userId = eq(PRIMARY_USER_ID),
                     enforceDeskLimit = eq(false),
                     activateDesk = eq(true),
+                    enterReason = any(),
                     onResult = any(),
                 )
         }
@@ -337,7 +382,8 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
             handler.onDeskRemoved(DEFAULT_DISPLAY, deskId = 1)
             runCurrent()
 
-            verify(mockDesktopTasksController, never()).createDesk(DEFAULT_DISPLAY)
+            verify(mockDesktopTasksController, never())
+                .createDesk(eq(DEFAULT_DISPLAY), any(), any(), any(), any(), any())
             verify(mockDesksOrganizer, never())
                 .warmUpDefaultDesk(DEFAULT_DISPLAY, mockDesktopRepository.userId)
         }
@@ -379,6 +425,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
                     userId = eq(userId),
                     enforceDeskLimit = eq(false),
                     activateDesk = any(),
+                    enterReason = any(),
                     onResult = any(),
                 )
             verify(mockDesktopTasksController)
@@ -387,6 +434,7 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
                     userId = eq(userId),
                     enforceDeskLimit = eq(false),
                     activateDesk = any(),
+                    enterReason = any(),
                     onResult = any(),
                 )
             verify(mockDesktopTasksController, never())
@@ -395,9 +443,17 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
                     userId = any(),
                     enforceDeskLimit = any(),
                     activateDesk = any(),
+                    enterReason = any(),
                     onResult = any(),
                 )
         }
+
+    @Test
+    fun testConnectDefaultDisplay() {
+        onDisplaysChangedListenerCaptor.lastValue.onDisplayAdded(DEFAULT_DISPLAY)
+        verify(mockDesktopDisplayModeController, never()).updateExternalDisplayWindowingMode(any())
+        verify(mockDesktopDisplayModeController).updateDefaultDisplayWindowingMode()
+    }
 
     @Test
     fun testConnectExternalDisplay() {
@@ -420,6 +476,106 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
         verify(mockDesktopDisplayModeController)
             .updateExternalDisplayWindowingMode(externalDisplayId)
         verify(mockDesktopDisplayModeController).updateDefaultDisplayWindowingMode()
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_DISPLAY_DISCONNECT_INTERACTION)
+    fun testDesktopModeEligibleChanged_performsDisconnect() {
+        desktopState.overrideDesktopModeSupportPerDisplay[externalDisplayId] = false
+        onDisplaysChangedListenerCaptor.lastValue.onDesktopModeEligibleChanged(externalDisplayId)
+        verify(mockDesktopTasksController).disconnectDisplay(externalDisplayId)
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_DISPLAY_RECONNECT_INTERACTION)
+    fun testDesktopModeEligibleChanged_performsReconnect() {
+        desktopState.overrideDesktopModeSupportPerDisplay[externalDisplayId] = true
+        val mockPreservedDisplay = mock<DesktopDisplay>()
+        whenever(mockDesktopRepository.removePreservedDisplay(UNIQUE_DISPLAY_ID))
+            .thenReturn(mockPreservedDisplay)
+        val preservedFocusedTaskIds = listOf(1)
+        whenever(mockDesktopRepository.getPreservedTasks(mockPreservedDisplay))
+            .thenReturn(preservedFocusedTaskIds)
+        whenever(mockDesktopTasksController.getFocusedNonDesktopTasks(any(), any()))
+            .thenReturn(emptyList())
+
+        onDisplaysChangedListenerCaptor.lastValue.onDesktopModeEligibleChanged(externalDisplayId)
+        testScope.runCurrent()
+
+        verify(mockDesktopTasksController)
+            .restoreDisplay(eq(externalDisplayId), eq(mockPreservedDisplay), eq(PRIMARY_USER_ID))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_DISPLAY_RECONNECT_INTERACTION)
+    fun testMultipleReconnectEvents_onlyOneRestore() =
+        testScope.runTest {
+            desktopState.overrideDesktopModeSupportPerDisplay[DEFAULT_DISPLAY] = true
+            desktopState.overrideDesktopModeSupportPerDisplay[externalDisplayId] = true
+            var preservedDisplayPresent = true
+            val mockPreservedDisplay = mock<DesktopDisplay>()
+            whenever(mockDesktopRepository.removePreservedDisplay(any())).thenAnswer {
+                val preservedDisplay = if (preservedDisplayPresent) mockPreservedDisplay else null
+                preservedDisplayPresent = false
+                preservedDisplay
+            }
+            whenever(mockDesktopRepository.getPreservedTasks(mockPreservedDisplay))
+                .thenReturn(listOf(1, 2, 3))
+
+            handler.onKeyguardVisibilityChanged(
+                visible = false,
+                occluded = false,
+                animatingDismiss = false,
+            )
+            handler.onDesktopModeEligibleChanged(externalDisplayId)
+            runCurrent()
+
+            verify(mockDesktopTasksController, times(1))
+                .restoreDisplay(
+                    eq(externalDisplayId),
+                    eq(mockPreservedDisplay),
+                    eq(PRIMARY_USER_ID),
+                )
+        }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_DISPLAY_RECONNECT_INTERACTION)
+    fun testDisplayReconnected_tasksFocusedOnDefaultDisplay_skipsReconnect() {
+        desktopState.overrideDesktopModeSupportPerDisplay[DEFAULT_DISPLAY] = false
+        desktopState.overrideDesktopModeSupportPerDisplay[externalDisplayId] = true
+        val mockPreservedDisplay = mock<DesktopDisplay>()
+        whenever(mockDesktopRepository.removePreservedDisplay(any()))
+            .thenReturn(mockPreservedDisplay)
+        val preservedFocusedTaskIds = listOf(1)
+        whenever(mockDesktopRepository.getPreservedTasks(mockPreservedDisplay))
+            .thenReturn(preservedFocusedTaskIds)
+        val task = RunningTaskInfo().apply { this.taskId = 1 }
+        whenever(mockDesktopTasksController.getFocusedNonDesktopTasks(any(), any()))
+            .thenReturn(listOf(task))
+
+        addDisplay(SECOND_DISPLAY)
+
+        verify(mockDesktopTasksController, never())
+            .restoreDisplay(eq(externalDisplayId), eq(mockPreservedDisplay), eq(PRIMARY_USER_ID))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_DISPLAY_RECONNECT_INTERACTION)
+    fun testDisplayReconnected_keyguardLocked_noOp() {
+        desktopState.overrideDesktopModeSupportPerDisplay[DEFAULT_DISPLAY] = true
+        desktopState.overrideDesktopModeSupportPerDisplay[externalDisplayId] = true
+        val mockPreservedDisplay = mock<DesktopDisplay>()
+        whenever(mockDesktopRepository.removePreservedDisplay(UNIQUE_DISPLAY_ID))
+            .thenReturn(mockPreservedDisplay)
+        val preservedFocusedTaskIds = listOf(1, 2, 3)
+        whenever(mockDesktopRepository.getPreservedTasks(mockPreservedDisplay))
+            .thenReturn(preservedFocusedTaskIds)
+        whenever(keyguardManager.isKeyguardLocked).thenReturn(true)
+
+        addDisplay(2)
+
+        verify(mockDesktopTasksController, never())
+            .restoreDisplay(eq(externalDisplayId), eq(mockPreservedDisplay), eq(PRIMARY_USER_ID))
     }
 
     private fun addDisplay(displayId: Int, withTda: Boolean = false) {
@@ -469,5 +625,6 @@ class DesktopDisplayEventHandlerTest : ShellTestCase() {
     companion object {
         private const val SECOND_DISPLAY = 2
         private const val PRIMARY_USER_ID = 10
+        private const val UNIQUE_DISPLAY_ID = "unique_id"
     }
 }

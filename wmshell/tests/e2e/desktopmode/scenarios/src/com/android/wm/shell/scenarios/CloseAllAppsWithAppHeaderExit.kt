@@ -17,53 +17,43 @@
 package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
-import android.tools.NavBar
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
 import android.tools.Rotation
 import android.tools.traces.parsers.WindowManagerStateHelper
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.android.launcher3.tapl.LauncherInstrumentation
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.MailAppHelper
 import com.android.server.wm.flicker.helpers.NonResizeableAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.window.flags.Flags
-import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 @Ignore("Base Test Class")
 abstract class CloseAllAppsWithAppHeaderExit (
     val rotation: Rotation = Rotation.ROTATION_0
-) : TestScenarioBase() {
+) : TestScenarioBase(rotation) {
 
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
-    private val tapl = LauncherInstrumentation()
     private val wmHelper = WindowManagerStateHelper(instrumentation)
     private val device = UiDevice.getInstance(instrumentation)
-    private val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
     private val mailApp = DesktopModeAppHelper(MailAppHelper(instrumentation))
     private val nonResizeableApp = DesktopModeAppHelper(NonResizeableAppHelper(instrumentation))
+    private val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
 
-    @Rule @JvmField val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, rotation)
+    val appsInZOrder: ArrayList<DesktopModeAppHelper> = ArrayList()
 
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
-        tapl.setEnableRotation(true)
-        tapl.setExpectedRotation(rotation.value)
         testApp.enterDesktopMode(wmHelper, device)
+        appsInZOrder.add(testApp)
+
         mailApp.launchViaIntent(wmHelper)
+        appsInZOrder.add( mailApp)
+
         nonResizeableApp.launchViaIntent(wmHelper)
+        appsInZOrder.add(nonResizeableApp)
     }
 
     @Test

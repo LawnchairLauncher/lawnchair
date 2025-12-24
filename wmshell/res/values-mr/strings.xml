@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"अ‍ॅप बबलला सपोर्ट करत नाही"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"स्प्लिट स्क्रीन विभाजक"</string>
     <string name="divider_title" msgid="1963391955593749442">"स्प्लिट स्क्रीन विभाजक"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"डावी फुल स्क्रीन"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"डावी 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"डावी 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"डावी 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"उजवी फुल स्क्रीन"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"सर्वात वरचे अ‍ॅप हे तळाशी असलेल्या अ‍ॅपने स्वॅप करा"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"डावीकडील अ‍ॅप हे उजवीकडील अ‍ॅपने स्वॅप करा"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"शीर्ष फुल स्क्रीन"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"शीर्ष 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"शीर्ष 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"शीर्ष 10"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"तळाशी फुल स्क्रीन"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"डावीकडे असलेले अ‍ॅप फुल स्क्रीन करा"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"१०% डावीकडे, ९०% उजवीकडे"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"३०% डावीकडे, ७०% उजवीकडे"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"५०% डावीकडे, ५०% उजवीकडे"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"७०% डावीकडे, ३०% उजवीकडे"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"९०% डावीकडे, १०% उजवीकडे"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"उजवीकडे असलेले अ‍ॅप फुल स्क्रीन करा"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"वर असलेले अ‍ॅप खालच्या अ‍ॅपसह स्वॅप करा, सद्य स्प्लिट असू द्या"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"डावीकडे असलेले अ‍ॅप उजवीकडच्या अ‍ॅपसह स्वॅप करा, सद्य स्प्लिट असू द्या"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"वर असलेले अ‍ॅप फुल स्क्रीन करा"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"१०% वर, ९०% खाली"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"३०% वर, ७०% खाली"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"५०% वर, ५०% खाली"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"७०% वर, ३०% खाली"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"९०% वर, १०% खाली"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"खाली असलेले अ‍ॅप फुल स्क्रीन करा"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"डावीकडे स्प्लिट करा"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"उजवीकडे स्प्लिट करा"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"सर्वात वरती स्प्लिट करा"</string>

@@ -24,7 +24,7 @@ import android.graphics.Point
 import android.os.SystemProperties
 import android.view.View.LAYOUT_DIRECTION_RTL
 import android.window.DesktopExperienceFlags
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.R
 import com.android.wm.shell.desktopmode.CaptionState
 import com.android.wm.shell.desktopmode.DesktopModeUiEventLogger

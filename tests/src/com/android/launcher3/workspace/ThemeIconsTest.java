@@ -36,7 +36,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.dagger.LauncherComponentProvider;
-import com.android.launcher3.icons.mono.ThemedIconDrawable;
+import com.android.launcher3.icons.mono.ThemedIconDelegate;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.util.BaseLauncherActivityTest;
 import com.android.launcher3.util.Executors;
@@ -151,7 +151,7 @@ public class ThemeIconsTest extends BaseLauncherActivityTest<Launcher> {
     private BubbleTextView verifyIconTheme(String title, ViewGroup parent, boolean isThemed) {
         BubbleTextView icon = findBtv(title, parent);
         assertNotNull(icon.getIcon());
-        assertEquals(isThemed, icon.getIcon() instanceof ThemedIconDrawable);
+        assertEquals(isThemed, icon.getIcon().getDelegate() instanceof ThemedIconDelegate);
         return icon;
     }
 

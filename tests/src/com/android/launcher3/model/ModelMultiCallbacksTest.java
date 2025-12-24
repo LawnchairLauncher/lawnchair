@@ -16,7 +16,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
-import static com.android.launcher3.util.ModelTestExtensions.nonPredictedItemCount;
+import static com.android.launcher3.util.ModelTestExtensions.countPersistedModelItems;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,14 +34,13 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceData;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LauncherLayoutBuilder;
+import com.android.launcher3.util.LayoutResource;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SandboxApplication;
 import com.android.launcher3.util.TestUtil;
-import com.android.launcher3.util.rule.LayoutProviderRule;
 
 import org.junit.After;
 import org.junit.Rule;
@@ -49,7 +48,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,7 +60,7 @@ import java.util.stream.Collectors;
 public class ModelMultiCallbacksTest {
 
     @Rule public SandboxApplication mContext = new SandboxApplication().withModelDependency();
-    @Rule public LayoutProviderRule mLayoutProvider = new LayoutProviderRule(mContext);
+    @Rule public LayoutResource mLayoutProvider = new LayoutResource(mContext);
 
     @After
     public void tearDown() throws Exception {
@@ -161,7 +159,7 @@ public class ModelMultiCallbacksTest {
         for (int i = 0; i < pageCount; i++) {
             builder.atWorkspace(1, 1, i).putApp(TEST_PACKAGE, TEST_PACKAGE);
         }
-        mLayoutProvider.setupDefaultLayoutProvider(builder);
+        mLayoutProvider.set(builder);
     }
 
     private LauncherModel getModel() {
@@ -170,14 +168,14 @@ public class ModelMultiCallbacksTest {
 
     private abstract static class MyCallbacks implements Callbacks {
 
-        List<ItemInfo> mItems = null;
+        WorkspaceData mItems = null;
         AppInfo[] mAppInfos;
 
         MyCallbacks() { }
 
         @Override
         public void bindCompleteModel(WorkspaceData itemIdMap, boolean isBindingSync) {
-            mItems = itemIdMap.stream().toList();
+            mItems = itemIdMap;
         }
 
         @Override
@@ -193,7 +191,7 @@ public class ModelMultiCallbacksTest {
 
         public void verifyItemsBound(int totalItems) {
             assertNotNull(mItems);
-            assertEquals(totalItems, nonPredictedItemCount(mItems));
+            assertEquals(totalItems, countPersistedModelItems(mItems));
         }
 
         public Set<String> allApps() {

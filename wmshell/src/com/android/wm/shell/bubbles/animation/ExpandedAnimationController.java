@@ -168,13 +168,22 @@ public class ExpandedAnimationController
         mCollapsePoint = point;
     }
 
+    /** Snaps the bubbles to their position when expanded without animation. */
+    public void snapToExpandedState() {
+        for (int i = 0; i < mLayout.getChildCount(); i++) {
+            final View bubble = mLayout.getChildAt(i);
+            final PointF p = mPositioner.getExpandedBubbleXY(i, mBubbleStackView.getState());
+            bubble.setTranslationX(p.x);
+            bubble.setTranslationY(p.y);
+        }
+    }
+
     /**
      * Animates expanding the bubbles into a row along the top of the screen, optionally running an
      * end action when the entire animation completes, and an end action when the lead bubble's
      * animation ends.
      */
-    public void expandFromStack(
-            @Nullable Runnable after, @Nullable Runnable leadBubbleEndAction) {
+    public void expandFromStack(@Nullable Runnable after, @Nullable Runnable leadBubbleEndAction) {
         mPreparingToCollapse = false;
         mAnimatingCollapse = false;
         mAnimatingExpand = true;

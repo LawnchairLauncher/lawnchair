@@ -25,6 +25,7 @@ import static com.android.wm.shell.shared.split.SplitScreenConstants.CONTROLLED_
 import android.app.ActivityManager;
 import android.app.ActivityManager.TaskDescription;
 import android.app.TaskInfo;
+import android.app.WindowConfiguration;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Point;
@@ -90,6 +91,15 @@ public class Task {
          * Whether fillsParent() is false for every activity in the tasks stack.
          */
         public boolean isActivityStackTransparent;
+        /**
+         * The type of the top most activity.
+         */
+        public @WindowConfiguration.ActivityType int topActivityType;
+        /**
+         * Whether the top activity fillsParent() is false. This is used to determine if the
+         * activity is translucent.
+         */
+        public boolean isTopActivityTransparent;
 
         // The source component name which started this task
         public final ComponentName sourceComponent;
@@ -97,6 +107,9 @@ public class Task {
         private int mHashCode;
 
         public TaskKey(TaskInfo t) {
+            this(t, t.displayId);
+        }
+        public TaskKey(TaskInfo t, int displayIdOverride) {
             ComponentName sourceComponent = t.origActivity != null
                     // Activity alias if there is one
                     ? t.origActivity
@@ -108,11 +121,13 @@ public class Task {
             this.sourceComponent = sourceComponent;
             this.userId = t.userId;
             this.lastActiveTime = t.lastActiveTime;
-            this.displayId = t.displayId;
+            this.displayId = displayIdOverride;
             this.baseActivity = t.baseActivity;
             this.numActivities = t.numActivities;
             this.isTopActivityNoDisplay = t.isTopActivityNoDisplay;
             this.isActivityStackTransparent = t.isActivityStackTransparent;
+            this.topActivityType = t.topActivityType;
+            this.isTopActivityTransparent = t.isTopActivityTransparent;
             updateHashCode();
         }
 
@@ -131,7 +146,9 @@ public class Task {
         public TaskKey(int id, int windowingMode, @NonNull Intent intent,
                 ComponentName sourceComponent, int userId, long lastActiveTime, int displayId,
                 @Nullable ComponentName baseActivity, int numActivities,
-                boolean isTopActivityNoDisplay, boolean isActivityStackTransparent) {
+                boolean isTopActivityNoDisplay, boolean isActivityStackTransparent,
+                @WindowConfiguration.ActivityType int topActivityType,
+                boolean isTopActivityTransparent) {
             this.id = id;
             this.windowingMode = windowingMode;
             this.baseIntent = intent;
@@ -143,6 +160,8 @@ public class Task {
             this.numActivities = numActivities;
             this.isTopActivityNoDisplay = isTopActivityNoDisplay;
             this.isActivityStackTransparent = isActivityStackTransparent;
+            this.topActivityType = topActivityType;
+            this.isTopActivityTransparent = isTopActivityTransparent;
             updateHashCode();
         }
 
@@ -192,8 +211,8 @@ public class Task {
             mHashCode = Objects.hash(id, windowingMode, userId);
         }
 
-        public static final Parcelable.Creator<TaskKey> CREATOR =
-                new Parcelable.Creator<TaskKey>() {
+        public static final Creator<TaskKey> CREATOR =
+                new Creator<TaskKey>() {
                     @Override
                     public TaskKey createFromParcel(Parcel source) {
                         return TaskKey.readFromParcel(source);
@@ -218,6 +237,8 @@ public class Task {
             parcel.writeInt(numActivities);
             parcel.writeBoolean(isTopActivityNoDisplay);
             parcel.writeBoolean(isActivityStackTransparent);
+            parcel.writeInt(topActivityType);
+            parcel.writeBoolean(isTopActivityTransparent);
         }
 
         private static TaskKey readFromParcel(Parcel parcel) {
@@ -232,10 +253,11 @@ public class Task {
             int numActivities = parcel.readInt();
             boolean isTopActivityNoDisplay = parcel.readBoolean();
             boolean isActivityStackTransparent = parcel.readBoolean();
-
+            int topActivityType = parcel.readInt();
+            boolean isTopActivityTransparent = parcel.readBoolean();
             return new TaskKey(id, windowingMode, baseIntent, sourceComponent, userId,
                     lastActiveTime, displayId, baseActivity, numActivities, isTopActivityNoDisplay,
-                    isActivityStackTransparent);
+                    isActivityStackTransparent, topActivityType, isTopActivityTransparent);
         }
 
         @Override
@@ -295,7 +317,7 @@ public class Task {
      * Creates a task object from the provided task info
      */
     public static Task from(TaskKey taskKey, TaskInfo taskInfo, boolean isLocked) {
-        ActivityManager.TaskDescription td = taskInfo.taskDescription;
+        TaskDescription td = taskInfo.taskDescription;
         // Also consider undefined activity type to include tasks in overview right after rebooting
         // the device.
         final boolean isDockable = taskInfo.supportsMultiWindow
@@ -303,10 +325,12 @@ public class Task {
                         CONTROLLED_WINDOWING_MODES_WHEN_ACTIVE, taskInfo.getWindowingMode())
                 && (taskInfo.getActivityType() == ACTIVITY_TYPE_UNDEFINED
                 || ArrayUtils.contains(CONTROLLED_ACTIVITY_TYPES, taskInfo.getActivityType()));
-        return new Task(taskKey,
+        Task result = new Task(taskKey,
                 td != null ? td.getPrimaryColor() : 0,
                 td != null ? td.getBackgroundColor() : 0, isDockable , isLocked, td,
                 taskInfo.topActivity);
+        result.appBounds = taskInfo.configuration.windowConfiguration.getAppBounds();
+        return result;
     }
 
     /**

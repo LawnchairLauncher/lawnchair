@@ -20,10 +20,10 @@ import android.os.Process.myUserHandle
 import android.os.UserHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.util.SandboxApplication
-import com.android.launcher3.util.TestUtil
 import com.android.launcher3.util.UserIconInfo
+import com.android.launcher3.util.rule.MockUsersRule
+import com.android.launcher3.util.rule.MockUsersRule.MockUser
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -32,17 +32,14 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class UserCacheTest {
 
-    @get:Rule val sandboxContext = SandboxApplication()
+    @get:Rule val sandboxContext = SandboxApplication().withModelDependency()
+    @get:Rule val mockUsersRule = MockUsersRule(sandboxContext)
 
     private val userCache: UserCache by lazy { UserCache.getInstance(sandboxContext) }
 
+    @MockUser(userType = UserIconInfo.TYPE_WORK)
     @Test
     fun `getBadgeDrawable only returns a UserBadgeDrawable given a user in the cache`() {
-        // Given
-        val expectedIconInfo = UserIconInfo(myUserHandle(), UserIconInfo.TYPE_WORK)
-        TestUtil.runOnExecutorSync(MODEL_EXECUTOR) {
-            userCache.putToCache(myUserHandle(), expectedIconInfo)
-        }
         InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         // When
         val actualDrawable = UserCache.getBadgeDrawable(sandboxContext, myUserHandle())
@@ -52,78 +49,41 @@ class UserCacheTest {
         assertThat(unexpectedDrawable).isNull()
     }
 
+    @MockUser(userType = UserIconInfo.TYPE_WORK, preinstalledApps = ["Google"])
     @Test
     fun `getPreInstallApps returns list of pre installed apps given a user`() {
-        // Given
-        val expectedApps = listOf("Google")
-        TestUtil.runOnExecutorSync(MODEL_EXECUTOR) {
-            userCache.putToPreInstallCache(myUserHandle(), expectedApps)
-        }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         // When
         val actualApps = userCache.getPreInstallApps(myUserHandle())
         // Then
-        assertThat(actualApps).isEqualTo(expectedApps)
+        assertThat(actualApps).isEqualTo(setOf("Google"))
     }
 
     @Test
-    fun `getUserProfiles returns copy of UserCache profiles`() {
-        // Given
-        val expectedProfiles = listOf(myUserHandle())
-        val expectedIconInfo = UserIconInfo(myUserHandle(), UserIconInfo.TYPE_MAIN)
-        TestUtil.runOnExecutorSync(MODEL_EXECUTOR) {
-            userCache.putToCache(myUserHandle(), expectedIconInfo)
-        }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
-        // When
-        val actualProfiles = userCache.userProfiles
-        // Then
-        assertThat(actualProfiles).isEqualTo(expectedProfiles)
-    }
-
-    @Test
+    @MockUser(userType = UserIconInfo.TYPE_MAIN, userSerial = 42)
     fun `getUserForSerialNumber returns user key matching given entry serial number`() {
-        // Given
-        val expectedSerial = 42L
-        val expectedProfile = UserHandle(42)
-        val expectedIconInfo = UserIconInfo(myUserHandle(), UserIconInfo.TYPE_MAIN, expectedSerial)
-        TestUtil.runOnExecutorSync(MODEL_EXECUTOR) {
-            userCache.putToCache(expectedProfile, expectedIconInfo)
-        }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         // When
-        val actualProfile = userCache.getUserForSerialNumber(expectedSerial)
+        val actualProfile = userCache.getUserForSerialNumber(42L)
         // Then
-        assertThat(actualProfile).isEqualTo(expectedProfile)
+        assertThat(actualProfile).isEqualTo(myUserHandle())
     }
 
     @Test
+    @MockUser(userType = UserIconInfo.TYPE_WORK)
     fun `getUserInfo returns cached UserIconInfo given user key`() {
-        // Given
-        val expectedProfile = UserHandle(1)
-        val expectedIconInfo = UserIconInfo(myUserHandle(), UserIconInfo.TYPE_WORK)
-        TestUtil.runOnExecutorSync(MODEL_EXECUTOR) {
-            userCache.putToCache(expectedProfile, expectedIconInfo)
-        }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         // When
-        val actualIconInfo = userCache.getUserInfo(expectedProfile)
+        val actualIconInfo = userCache.getUserInfo(myUserHandle())
         // Then
-        assertThat(actualIconInfo).isEqualTo(expectedIconInfo)
+        assertThat(actualIconInfo).isEqualTo(UserIconInfo(myUserHandle(), UserIconInfo.TYPE_WORK))
     }
 
     @Test
+    @MockUser(userType = UserIconInfo.TYPE_WORK, userSerial = 42)
     fun `getSerialNumberForUser returns cached UserIconInfo serial number given user key`() {
         // Given
         val expectedSerial = 42L
-        val expectedProfile = UserHandle(1)
-        val expectedIconInfo = UserIconInfo(myUserHandle(), UserIconInfo.TYPE_WORK, expectedSerial)
-        TestUtil.runOnExecutorSync(MODEL_EXECUTOR) {
-            userCache.putToCache(expectedProfile, expectedIconInfo)
-        }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+
         // When
-        val actualSerial = userCache.getSerialNumberForUser(expectedProfile)
+        val actualSerial = userCache.getSerialNumberForUser(myUserHandle())
         // Then
         assertThat(actualSerial).isEqualTo(expectedSerial)
     }

@@ -21,6 +21,7 @@ import android.net.Uri
 import android.os.Looper
 import java.io.InputStream
 import java.util.function.Supplier
+import org.junit.rules.TestRule
 import org.robolectric.Shadows
 
 object RoboApiWrapper {
@@ -36,4 +37,7 @@ object RoboApiWrapper {
     fun waitForLooperSync(looper: Looper) {
         Shadows.shadowOf(looper).runToEndOfTasks()
     }
+
+    /** Rule to grant shortcuts permission. No-op when running on robolectric */
+    fun grantShortcutsPermissionRule(): TestRule = TestRule { statement, _ -> statement }
 }

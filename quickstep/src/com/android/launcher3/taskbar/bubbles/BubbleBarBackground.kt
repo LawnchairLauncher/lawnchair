@@ -43,7 +43,6 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
     private val arrowTipRadius: Float
     private val arrowVisibleHeight: Float
 
-    private val strokeAlpha: Int
     private val strokeColor: Int
     private val strokeColorDropTarget: Int
     private val shadowAlpha: Int
@@ -111,13 +110,11 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
         strokePaint.strokeWidth = res.getDimension(R.dimen.transient_taskbar_stroke_width)
         // apply theme alpha attributes
         if (Utilities.isDarkTheme(context)) {
-            strokeAlpha = DARK_THEME_STROKE_ALPHA
             shadowAlpha = DARK_THEME_SHADOW_ALPHA
         } else {
-            strokeAlpha = LIGHT_THEME_STROKE_ALPHA
             shadowAlpha = LIGHT_THEME_SHADOW_ALPHA
         }
-        strokePaint.alpha = strokeAlpha
+        strokePaint.alpha = STROKE_ALPHA
         shadowBlur = res.getDimension(R.dimen.transient_taskbar_shadow_blur)
         keyShadowDistance = res.getDimension(R.dimen.transient_taskbar_key_shadow_distance)
         arrowWidth = res.getDimension(R.dimen.bubblebar_pointer_width)
@@ -201,7 +198,7 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
 
     override fun setAlpha(alpha: Int) {
         fillPaint.alpha = alpha
-        strokePaint.alpha = mapToRange(alpha, 0, 255, 0, strokeAlpha, Interpolators.LINEAR)
+        strokePaint.alpha = mapToRange(alpha, 0, 255, 0, STROKE_ALPHA, Interpolators.LINEAR)
         invalidateSelf()
     }
 
@@ -247,7 +244,7 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
         }
         isShowingDropTarget = isDropTarget
         val strokeColor = if (isDropTarget) strokeColorDropTarget else strokeColor
-        val alpha = if (isDropTarget) DRAG_STROKE_ALPHA else strokeAlpha
+        val alpha = if (isDropTarget) DRAG_STROKE_ALPHA else STROKE_ALPHA
         strokePaint.color = strokeColor
         strokePaint.alpha = alpha
         invalidateSelf()
@@ -256,8 +253,7 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
     fun isShowingDropTarget() = isShowingDropTarget
 
     companion object {
-        private const val DARK_THEME_STROKE_ALPHA = 51
-        private const val LIGHT_THEME_STROKE_ALPHA = 41
+        private const val STROKE_ALPHA = 51
         private const val DRAG_STROKE_ALPHA = 255
         private const val DARK_THEME_SHADOW_ALPHA = 51
         private const val LIGHT_THEME_SHADOW_ALPHA = 25

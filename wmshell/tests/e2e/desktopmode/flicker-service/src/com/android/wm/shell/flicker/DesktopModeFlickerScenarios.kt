@@ -16,8 +16,8 @@
 
 package com.android.wm.shell.flicker
 
-import android.tools.PlatformConsts.DESKTOP_MODE_MINIMUM_WINDOW_HEIGHT
-import android.tools.PlatformConsts.DESKTOP_MODE_MINIMUM_WINDOW_WIDTH
+import android.tools.PlatformConsts.DESKTOP_MODE_MINIMUM_WINDOW_HEIGHT_DP
+import android.tools.PlatformConsts.DESKTOP_MODE_MINIMUM_WINDOW_WIDTH_DP
 import android.tools.flicker.AssertionInvocationGroup
 import android.tools.flicker.assertors.assertions.AppLayerCoversFullScreenAtEnd
 import android.tools.flicker.assertors.assertions.ResizeVeilKeepsIncreasingInSize
@@ -259,8 +259,8 @@ class DesktopModeFlickerScenarios {
                         listOf(
                             AppWindowHasSizeOfAtLeast(
                                 DESKTOP_MODE_APP,
-                                DESKTOP_MODE_MINIMUM_WINDOW_WIDTH,
-                                DESKTOP_MODE_MINIMUM_WINDOW_HEIGHT
+                                DESKTOP_MODE_MINIMUM_WINDOW_WIDTH_DP,
+                                DESKTOP_MODE_MINIMUM_WINDOW_HEIGHT_DP
                             )
                         )
                             .associateBy({ it }, { AssertionInvocationGroup.BLOCKING }),
@@ -549,8 +549,7 @@ class DesktopModeFlickerScenarios {
                     } +
                     listOf(
                         AppWindowBecomesInvisible(DESKTOP_MODE_APP),
-                        AppWindowOnTopAtEnd(LAUNCHER),
-                        AppWindowIsInvisibleAtEnd(DESKTOP_WALLPAPER),
+                        AppWindowOnTopAtEnd(DESKTOP_WALLPAPER),
                     ).associateBy({ it }, { AssertionInvocationGroup.BLOCKING })
             )
         val OPEN_UNLIMITED_APPS =

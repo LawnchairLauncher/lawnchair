@@ -24,14 +24,17 @@ import com.android.wm.shell.Flags
 class PipFlags {
     companion object {
         /**
-         * Returns true if PiP2 implementation should be used. Special note: if PiP on Desktop
-         * Windowing is enabled, override the PiP2 gantry flag to be ON.
+         * @return {@code true} if PiP2 implementation should be used.
+         *
+         * Note: if PiP on Desktop Windowing is enabled, override the PiP2 gantry flag to be ON.
+         * Note: For form factors other than phone, such as TV, separate flag needs to be ON.
          */
         @JvmStatic
         val isPip2ExperimentEnabled: Boolean by lazy {
             val isTv = AppGlobals.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_LEANBACK, 0)
-            (Flags.enablePip2() || ENABLE_DESKTOP_WINDOWING_PIP.isTrue) && !isTv
+            (Flags.enablePip2() || ENABLE_DESKTOP_WINDOWING_PIP.isTrue) &&
+                    (!isTv || Flags.enablePip2OnTv())
         }
 
         @JvmStatic

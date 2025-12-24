@@ -27,7 +27,7 @@ import static android.view.WindowManager.TRANSIT_TO_FRONT;
 import static android.window.TransitionInfo.FLAG_BACK_GESTURE_ANIMATED;
 
 import static com.android.dx.mockito.inline.extended.ExtendedMockito.verify;
-import static com.android.window.flags.Flags.FLAG_ENABLE_DRAG_TO_DESKTOP_INCOMING_TRANSITIONS_BUGFIX;
+import static com.android.window.flags2.Flags.FLAG_ENABLE_DRAG_TO_DESKTOP_INCOMING_TRANSITIONS_BUGFIX;
 import static com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_DESKTOP_MODE_START_DRAG_TO_DESKTOP;
 import static com.android.wm.shell.transition.Transitions.TRANSIT_CONVERT_TO_BUBBLE;
 
@@ -81,6 +81,9 @@ import java.util.List;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class HomeTransitionObserverTest extends ShellTestCase {
+    private static final int TEST_USER = 0;
+    private static final int TEST_USER_2 = 10;
+
     private final ShellTaskOrganizer mOrganizer = mock(ShellTaskOrganizer.class);
     private final TransactionPool mTransactionPool = mock(TransactionPool.class);
     private final Context mContext =
@@ -93,6 +96,7 @@ public class HomeTransitionObserverTest extends ShellTestCase {
             mock(DisplayInsetsController.class);
 
     private IHomeTransitionListener mListener;
+    private IHomeTransitionListener mListener2;
     private Transitions mTransition;
     private HomeTransitionObserver mHomeTransitionObserver;
 
@@ -100,6 +104,8 @@ public class HomeTransitionObserverTest extends ShellTestCase {
     public void setUp() {
         mListener = mock(IHomeTransitionListener.class);
         when(mListener.asBinder()).thenReturn(mock(IBinder.class));
+        mListener2 = mock(IHomeTransitionListener.class);
+        when(mListener2.asBinder()).thenReturn(mock(IBinder.class));
 
         mHomeTransitionObserver = new HomeTransitionObserver(mContext, mMainExecutor,
                 mDisplayInsetsController, mock(ShellInit.class));
@@ -107,7 +113,7 @@ public class HomeTransitionObserverTest extends ShellTestCase {
                 mOrganizer, mTransactionPool, mDisplayController, mDisplayInsetsController,
                 mMainExecutor, mMainHandler, mAnimExecutor, mHomeTransitionObserver,
                 mock(FocusTransitionObserver.class));
-        mHomeTransitionObserver.setHomeTransitionListener(mTransition, mListener);
+        mHomeTransitionObserver.setHomeTransitionListener(mTransition, mListener, TEST_USER);
     }
 
     @Test
@@ -144,6 +150,26 @@ public class HomeTransitionObserverTest extends ShellTestCase {
                 mock(SurfaceControl.Transaction.class));
 
         verify(mListener, times(1)).onHomeVisibilityChanged(false);
+    }
+
+    @Test
+    public void testHomeActivity_differentUserTransition_doesNotTriggerCallbackForCurrentUser()
+            throws RemoteException {
+        TransitionInfo info = mock(TransitionInfo.class);
+        TransitionInfo.Change change = mock(TransitionInfo.Change.class);
+        ActivityManager.RunningTaskInfo taskInfo = mock(ActivityManager.RunningTaskInfo.class);
+        when(change.getTaskInfo()).thenReturn(taskInfo);
+        when(info.getChanges()).thenReturn(new ArrayList<>(List.of(change)));
+
+        taskInfo.userId = TEST_USER_2;
+        setupTransitionInfo(taskInfo, change, ACTIVITY_TYPE_HOME, TRANSIT_OPEN, true);
+
+        mHomeTransitionObserver.onTransitionReady(mock(IBinder.class),
+                info,
+                mock(SurfaceControl.Transaction.class),
+                mock(SurfaceControl.Transaction.class));
+
+        verify(mListener, never()).onHomeVisibilityChanged(anyBoolean());
     }
 
     @Test
@@ -360,6 +386,58 @@ public class HomeTransitionObserverTest extends ShellTestCase {
                 mock(SurfaceControl.Transaction.class),
                 mock(SurfaceControl.Transaction.class));
         verify(mListener, times(1)).onHomeVisibilityChanged(true);
+    }
+
+    @Test
+    public void testSetListener_userSwitched_triggersWhenUserRegistersListener()
+            throws RemoteException {
+        TransitionInfo info = mock(TransitionInfo.class);
+        TransitionInfo.Change change = mock(TransitionInfo.Change.class);
+        ActivityManager.RunningTaskInfo taskInfo = mock(ActivityManager.RunningTaskInfo.class);
+        when(change.getTaskInfo()).thenReturn(taskInfo);
+        when(info.getChanges()).thenReturn(new ArrayList<>(List.of(change)));
+
+        // Switch to user with visible home.
+        taskInfo.userId = TEST_USER_2;
+        setupTransitionInfo(taskInfo, change, ACTIVITY_TYPE_HOME, TRANSIT_OPEN, true);
+        mHomeTransitionObserver.onTransitionReady(mock(IBinder.class),
+                info,
+                mock(SurfaceControl.Transaction.class),
+                mock(SurfaceControl.Transaction.class));
+
+        mHomeTransitionObserver.setHomeTransitionListener(mTransition, mListener2, TEST_USER_2);
+        verify(mListener2, times(1)).onHomeVisibilityChanged(true);
+    }
+
+    @Test
+    public void testSetListener_userSwitchedBack_triggersWithPreviousVisibility()
+            throws RemoteException {
+        TransitionInfo info = mock(TransitionInfo.class);
+        TransitionInfo.Change change = mock(TransitionInfo.Change.class);
+        ActivityManager.RunningTaskInfo taskInfo = mock(ActivityManager.RunningTaskInfo.class);
+        when(change.getTaskInfo()).thenReturn(taskInfo);
+        when(info.getChanges()).thenReturn(new ArrayList<>(List.of(change)));
+
+        // Switch to user with visible home, and register its listener.
+        taskInfo.userId = TEST_USER_2;
+        setupTransitionInfo(taskInfo, change, ACTIVITY_TYPE_HOME, TRANSIT_OPEN, true);
+        mHomeTransitionObserver.onTransitionReady(mock(IBinder.class),
+                info,
+                mock(SurfaceControl.Transaction.class),
+                mock(SurfaceControl.Transaction.class));
+        mHomeTransitionObserver.setHomeTransitionListener(mTransition, mListener2, TEST_USER_2);
+
+        // Switch back to first user with invisible home, and register its listener.
+        taskInfo.userId = TEST_USER;
+        setupTransitionInfo(taskInfo, change, ACTIVITY_TYPE_HOME, TRANSIT_TO_BACK, true);
+        mHomeTransitionObserver.onTransitionReady(mock(IBinder.class),
+                info,
+                mock(SurfaceControl.Transaction.class),
+                mock(SurfaceControl.Transaction.class));
+
+        verify(mListener, never()).onHomeVisibilityChanged(false); // Not invoked yet (not set).
+        mHomeTransitionObserver.setHomeTransitionListener(mTransition, mListener, TEST_USER);
+        verify(mListener, times(1)).onHomeVisibilityChanged(false);
     }
 
     /**

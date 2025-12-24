@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2023 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,28 +13,35 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.android.wm.shell.compatui.UserAspectRatioSettingsLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="bottom|end">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <include android:id="@+id/user_aspect_ratio_settings_hint"
-        android:visibility="gone"
-        android:layout_width="@dimen/compat_hint_width"
-        android:layout_height="wrap_content"
-        layout="@layout/compat_mode_hint"/>
-
-    <ImageButton
-        android:id="@+id/user_aspect_ratio_settings_button"
-        android:visibility="gone"
+    <com.android.wm.shell.compatui.UserAspectRatioSettingsLayout
+        android:id="@+id/user_aspect_ratio_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/compat_button_margin"
-        android:layout_marginBottom="@dimen/compat_button_margin"
-        android:src="@drawable/user_aspect_ratio_settings_button_ripple"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/user_aspect_ratio_settings_button_description"/>
+        android:orientation="vertical"
+        android:gravity="bottom|end"
+        android:layout_gravity="bottom|end">
 
-</com.android.wm.shell.compatui.UserAspectRatioSettingsLayout>
+        <include
+            android:id="@+id/user_aspect_ratio_settings_hint"
+            android:visibility="gone"
+            android:layout_width="@dimen/compat_hint_width"
+            android:layout_height="wrap_content"
+            layout="@layout/compat_mode_hint" />
+
+        <ImageButton
+            android:id="@+id/user_aspect_ratio_settings_button"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/compat_button_margin"
+            android:layout_marginBottom="@dimen/compat_button_margin"
+            android:src="@drawable/user_aspect_ratio_settings_button_ripple"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/user_aspect_ratio_settings_button_description" />
+
+    </com.android.wm.shell.compatui.UserAspectRatioSettingsLayout>
+</FrameLayout>

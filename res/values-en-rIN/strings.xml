@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Change aspect ratio"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"App info for %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Usage settings for %1$s"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"Close %1$s"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"New window"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Manage windows"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"Close"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Save app pair"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"This app pair isn\'t supported on this device"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Don\'t suggest app"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Pin prediction"</string>
     <string name="bubble" msgid="3072951361014076670">"Bubble"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"Settings"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"Pin to Taskbar"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"Unpin from Taskbar"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"install shortcuts"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Allows an app to add shortcuts without user intervention."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"read Home settings and shortcuts"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"Paginate right"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Disabled <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} has # notification}other{{app_name} has # notifications}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"Predicted app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Page %1$d of %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Home screen %1$d of %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"New home screen page"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"Folder closed"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Folder renamed to <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> items"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> items, has notifications"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> or more items"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> or more items, has notifications"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"Unnamed folder"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"App pair: <xliff:g id="APP1">%1$s</xliff:g> and <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Wallpaper and style"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Work apps tab"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Work profile"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Work apps are badged and visible to your IT admin"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Work apps are paused"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"You won’t receive notifications from your work apps"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Your work apps can’t send you notifications, use your battery or access your location"</string>

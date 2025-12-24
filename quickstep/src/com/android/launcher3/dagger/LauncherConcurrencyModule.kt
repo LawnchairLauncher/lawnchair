@@ -38,18 +38,15 @@ object LauncherConcurrencyModule {
     private const val BG_SLOW_DISPATCH_THRESHOLD = 1000L
     private const val BG_SLOW_DELIVERY_THRESHOLD = 1000L
 
-    /** Background Looper */
-    @Provides
-    @LauncherAppSingleton
-    @Background
-    fun provideBgLooper(): Looper {
+    private val bgLooper: Looper by lazy {
         val thread = HandlerThread("LauncherBg", Process.THREAD_PRIORITY_BACKGROUND)
         thread.start()
-        thread
-            .getLooper()
-            .setSlowLogThresholdMs(BG_SLOW_DISPATCH_THRESHOLD, BG_SLOW_DELIVERY_THRESHOLD)
-        return thread.getLooper()
+        thread.looper.setSlowLogThresholdMs(BG_SLOW_DISPATCH_THRESHOLD, BG_SLOW_DELIVERY_THRESHOLD)
+        thread.looper
     }
+
+    /** Background Looper */
+    @Provides @LauncherAppSingleton @Background fun provideBgLooper(): Looper = bgLooper
 
     /**
      * Background Handler.

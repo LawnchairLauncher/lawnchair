@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import com.android.wm.shell.Flags;
 import com.android.wm.shell.R;
 import com.android.wm.shell.common.BoxShadowHelper;
+import com.android.wm.shell.common.pip.IPipAnimationListener.PipResources;
 import com.android.wm.shell.common.pip.PipDisplayLayoutState;
 import com.android.wm.shell.common.pip.PipUtils;
 import com.android.wm.shell.sysui.ShellInit;
@@ -107,6 +108,19 @@ public class PipSurfaceTransactionHelper implements PipDisplayLayoutState.Displa
      */
     public int getCornerRadius() {
         return mCornerRadius;
+    }
+
+    /**
+     * Gets PiP resources;
+     * @return the resources.
+     */
+    public PipResources getPipResources() {
+        PipResources res = new PipResources();
+        res.cornerRadius = mCornerRadius;
+        res.shadowRadius = mShadowRadius;
+        res.boxShadowSettings = mBoxShadowSettings;
+        res.borderSettings = mBorderSettings;
+        return res;
     }
 
     /**
@@ -221,6 +235,15 @@ public class PipSurfaceTransactionHelper implements PipDisplayLayoutState.Displa
     public PipSurfaceTransactionHelper shadow(SurfaceControl.Transaction tx, SurfaceControl leash,
             boolean applyShadowRadius) {
         if (Flags.enablePipBoxShadows()) {
+            // Override and disable elevation shadows set by freeform transition.
+            //
+            // PiP uses box shadows but freeform windows use
+            // elevation shadows (i.e. setShadowRadius).
+            // To avoid having double shadows applied, disable the shadows set by freeform.
+            //
+            // TODO(b/367464660): Remove this once freeform box shadows are enabled
+            tx.setShadowRadius(leash, 0);
+
             if (applyShadowRadius) {
                 tx.setBoxShadowSettings(leash, mBoxShadowSettings);
                 tx.setBorderSettings(leash, mBorderSettings);

@@ -77,7 +77,7 @@ class TaskbarHoverToolTipControllerTest {
                 createHotseatFolderItem(),
             )
         runOnMainSync {
-            taskbarView.updateItems(hotseatItems, emptyList())
+            taskbarView.updateItems(hotseatItems, emptyList(), emptyList())
             iconView =
                 taskbarView.iconViews.filterIsInstance<BubbleTextView>().first {
                     it.tag is WorkspaceItemInfo
@@ -141,7 +141,7 @@ class TaskbarHoverToolTipControllerTest {
     @Test
     fun onHover_hoverEnterPopupOpen_noToolTip() {
         runOnMainSync {
-            popupController.showForIcon(iconView)
+            popupController.show(iconView)
             iconView.dispatchGenericMotionEvent(HOVER_ENTER)
         }
         assertThat(isHoverToolTipOpen).isFalse()

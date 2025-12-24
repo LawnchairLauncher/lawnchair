@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.model.data.ResolvedTargetInfo
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
@@ -39,12 +40,14 @@ import com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_66_33
 import java.util.function.Consumer
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doNothing
@@ -84,6 +87,8 @@ class AppPairsControllerTest {
         appPairsController.encodeRank(STAGE_POSITION_BOTTOM_OR_RIGHT, SNAP_TO_2_66_33)
     }
 
+    @get:Rule var mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     @Mock lateinit var mockAppPairIcon: AppPairIcon
     @Mock lateinit var mockDisplay: Display
     @Mock lateinit var mockTaskbarActivityContext: TaskbarActivityContext
@@ -91,6 +96,8 @@ class AppPairsControllerTest {
     @Mock lateinit var mockCachedTaskInfo: CachedTaskInfo
     @Mock lateinit var mockItemInfo1: ItemInfo
     @Mock lateinit var mockItemInfo2: ItemInfo
+    @Mock lateinit var mockResolvedTargetInfo1: ResolvedTargetInfo
+    @Mock lateinit var mockResolvedTargetInfo2: ResolvedTargetInfo
     @Mock lateinit var mockTask1: Task
     @Mock lateinit var mockTask2: Task
     @Mock lateinit var mockTaskKey1: TaskKey
@@ -101,7 +108,6 @@ class AppPairsControllerTest {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         appPairsController =
             AppPairsController(context, splitSelectStateController, statsLogManager)
 
@@ -114,6 +120,8 @@ class AppPairsControllerTest {
         whenever(mockTopTaskTracker.getCachedTopTask(any(), any())).thenReturn(mockCachedTaskInfo)
         whenever(mockTask1.getKey()).thenReturn(mockTaskKey1)
         whenever(mockTask2.getKey()).thenReturn(mockTaskKey2)
+        whenever(mockItemInfo1.resolvedTargetInfo).thenReturn(mockResolvedTargetInfo1)
+        whenever(mockItemInfo2.resolvedTargetInfo).thenReturn(mockResolvedTargetInfo2)
         doNothing().whenever(spyAppPairsController).launchAppPair(any(), any())
         doNothing()
             .whenever(spyAppPairsController)

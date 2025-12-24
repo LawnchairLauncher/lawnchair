@@ -425,6 +425,13 @@ public class StackAnimationController extends
         return stackPos;
     }
 
+    /**
+     * Clean up state when all bubbles have been removed
+     */
+    public void onLastBubbleRemoved() {
+        mFloatingContentCoordinator.onContentRemoved(mStackFloatingContent);
+    }
+
     /** Description of current animation controller state. */
     public void dump(PrintWriter pw) {
         pw.println("StackAnimationController state:");
@@ -749,10 +756,6 @@ public class StackAnimationController extends
         } else {
             // When all children are removed ensure stack position is sane
             mPositioner.setRestingPosition(mPositioner.getRestingPosition());
-
-            // Remove the stack from the coordinator since we don't have any bubbles and aren't
-            // visible.
-            mFloatingContentCoordinator.onContentRemoved(mStackFloatingContent);
         }
     }
 
@@ -762,7 +765,9 @@ public class StackAnimationController extends
         Runnable updateAllIcons = () -> {
             for (int newIndex = 0; newIndex < bubbleViews.size(); newIndex++) {
                 View view = bubbleViews.get(newIndex);
-                updateBadgesAndZOrder(view, newIndex);
+                if (view != null) {
+                    updateBadgesAndZOrder(view, newIndex);
+                }
             }
         };
 
@@ -772,6 +777,8 @@ public class StackAnimationController extends
             if (view != null) {
                 final int oldIndex = mLayout.indexOfChild(view);
                 swapped |= animateSwap(view, oldIndex, newIndex, updateAllIcons, after);
+            } else {
+                Log.w(TAG, "bubbleViews[" + newIndex + "] is null");
             }
         }
         if (!swapped) {
@@ -824,6 +831,10 @@ public class StackAnimationController extends
 
     // TODO: do we need this & BubbleStackView#updateBadgesAndZOrder?
     private void updateBadgesAndZOrder(View v, int index) {
+        if (v == null) {
+            // View was removed
+            return;
+        }
         v.setZ(index < NUM_VISIBLE_WHEN_RESTING ? (mMaxBubbles * mElevation) - index : 0f);
         BadgedImageView bv = (BadgedImageView) v;
         if (index == 0) {

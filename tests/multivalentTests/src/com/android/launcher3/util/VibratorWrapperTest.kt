@@ -36,7 +36,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.any
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.never
 import org.mockito.kotlin.same
 
@@ -51,11 +51,12 @@ class VibratorWrapperTest {
     @Mock private lateinit var tracker: DaggerSingletonTracker
     private lateinit var underTest: VibratorWrapper
 
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
+
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         vibrator = context.spyService(Vibrator::class.java)
-        `when`(settingsCache.getValue(HAPTIC_FEEDBACK_URI, 0)).thenReturn(true)
+        `when`(settingsCache.getValue(HAPTIC_FEEDBACK_URI)).thenReturn(true)
         `when`(vibrator.hasVibrator()).thenReturn(true)
         `when`(vibrator.areAllPrimitivesSupported(PRIMITIVE_TICK)).thenReturn(true)
         `when`(vibrator.areAllPrimitivesSupported(PRIMITIVE_LOW_TICK)).thenReturn(true)

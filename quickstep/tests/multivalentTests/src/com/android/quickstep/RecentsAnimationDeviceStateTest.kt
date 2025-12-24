@@ -35,7 +35,8 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
@@ -48,6 +49,8 @@ class RecentsAnimationDeviceStateTest {
 
     @get:Rule val context = SandboxApplication()
 
+    @get:Rule var mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     @Mock private lateinit var exclusionManager: GestureExclusionManager
     @Mock private lateinit var info: Info
     @Mock private lateinit var rotationTouchHelper: RotationTouchHelper
@@ -56,8 +59,6 @@ class RecentsAnimationDeviceStateTest {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
-
         val component = LauncherComponentProvider.get(context)
         underTest =
             RecentsAnimationDeviceState(

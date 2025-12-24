@@ -19,21 +19,21 @@ package com.android.wm.shell.compatui.letterbox.lifecycle
 import android.window.TransitionInfo.Change
 
 /**
- * Abstracts the different way we can use to create a [LetterboxLifecycleEvent]
- * from a [TransitionInfo.Change].
+ * Abstracts the different way we can use to create a [LetterboxLifecycleEvent] from a
+ * [TransitionInfo.Change].
  */
 interface LetterboxLifecycleEventFactory {
 
     /**
      * @return [true] in case the specific implementation can handle the Change and return a
-     *         [LetterboxLifecycleEvent] from it.
+     *   [LetterboxLifecycleEvent] from it.
      */
     fun canHandle(change: Change): Boolean
 
     /**
      * If [#canHandle()] returns [true], this builds the [LetterboxLifecycleEvent] from the
-     * [TransitionInfo.Change] in input. The [null] value represents a no-op and this should be
-     * the value to return when [#canHandle()] returns [false].
+     * [TransitionInfo.Change] in input. The [null] value represents a no-op and this should be the
+     * value to return when [#canHandle()] returns [false].
      */
     fun createLifecycleEvent(change: Change): LetterboxLifecycleEvent?
 }

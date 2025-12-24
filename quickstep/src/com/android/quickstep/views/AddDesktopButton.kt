@@ -48,6 +48,7 @@ class AddDesktopButton @JvmOverloads constructor(context: Context, attrs: Attrib
     var contentAlpha by MultiPropertyDelegate(addDeskButtonAlpha, Alpha.CONTENT)
     var visibilityAlpha by MultiPropertyDelegate(addDeskButtonAlpha, Alpha.VISIBILITY)
     var clickAlpha by MultiPropertyDelegate(addDeskButtonAlpha, Alpha.CLICK)
+    var gestureAlpha by MultiPropertyDelegate(addDeskButtonAlpha, Alpha.GESTURE)
 
     private val multiTranslationX =
         MultiPropertyFactory(this, VIEW_TRANSLATE_X, TranslationX.entries.size) { a: Float, b: Float
@@ -81,11 +82,22 @@ class AddDesktopButton @JvmOverloads constructor(context: Context, attrs: Attrib
         }
 
     @JvmOverloads
-    fun animateVisibility(toVisible: Boolean, onAnimationEndAction: Runnable? = null) {
+    fun setContentVisibility(
+        toVisible: Boolean,
+        animate: Boolean,
+        onAnimationEndAction: Runnable? = null,
+    ) {
         val targetButtonAlpha = if (toVisible) 1f else 0f
         val targetDrawableAlpha = if (toVisible) 255 else 0
 
-        val iconDrawable: Drawable = this.drawable.mutate()
+        if (!animate) {
+            clickAlpha = targetButtonAlpha
+            drawable.mutate().alpha = targetDrawableAlpha
+            onAnimationEndAction?.run()
+            return
+        }
+
+        val iconDrawable: Drawable = drawable.mutate()
         val fadeDuration =
             context.resources.getInteger(R.integer.add_desktop_button_fade_duration).toLong()
         val fadeDelay =
@@ -139,6 +151,7 @@ class AddDesktopButton @JvmOverloads constructor(context: Context, attrs: Attrib
             CONTENT,
             VISIBILITY,
             CLICK,
+            GESTURE,
         }
 
         private enum class TranslationX {
@@ -152,5 +165,9 @@ class AddDesktopButton @JvmOverloads constructor(context: Context, attrs: Attrib
 
         private val CLICK_ALPHA: FloatProperty<AddDesktopButton> =
             KFloatProperty(AddDesktopButton::clickAlpha)
+
+        @JvmField
+        val GESTURE_ALPHA: FloatProperty<AddDesktopButton> =
+            KFloatProperty(AddDesktopButton::gestureAlpha)
     }
 }

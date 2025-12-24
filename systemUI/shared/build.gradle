@@ -35,10 +35,12 @@ dependencies {
     compileOnly projects.plugin
     compileOnly projects.plugincore
     compileOnly projects.flags
-    compileOnly projects.wmshell
+    compileOnly projects.wmshell.shared
     compileOnly projects.animationlib
     compileOnly projects.utils
     compileOnly projects.log
+
+    compileOnly projects.pods.internal // pE-TODO(QPR2): Fix me, this work for now
 
     implementation libs.dagger.hilt.android
     ksp libs.dagger.hilt.compiler

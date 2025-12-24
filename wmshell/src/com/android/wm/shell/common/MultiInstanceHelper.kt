@@ -41,8 +41,7 @@ class MultiInstanceHelper @JvmOverloads constructor(
     private val staticAppsSupportingMultiInstance: Array<String> = context.resources
             .getStringArray(R.array.config_appsSupportMultiInstancesSplit),
     shellInit: ShellInit,
-    private val shellCommandHandler: ShellCommandHandler,
-    private val supportsMultiInstanceProperty: Boolean
+    private val shellCommandHandler: ShellCommandHandler
 ) : ShellCommandHandler.ShellCommandActionHandler {
 
     init {
@@ -70,11 +69,6 @@ class MultiInstanceHelper @JvmOverloads constructor(
                     packageName)
                 return true
             }
-        }
-
-        if (!supportsMultiInstanceProperty) {
-            // If not checking the multi-instance properties, then return early
-            return false
         }
 
         // Check the activity property first

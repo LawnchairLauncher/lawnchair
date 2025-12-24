@@ -31,8 +31,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.UserManager;
-import android.platform.test.annotations.DisableFlags;
-import android.platform.test.annotations.EnableFlags;
 import android.testing.AndroidTestingRunner;
 import android.testing.TestableLooper;
 
@@ -40,7 +38,6 @@ import androidx.annotation.NonNull;
 import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.wm.shell.Flags;
 import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.TestShellExecutor;
 import com.android.wm.shell.common.DisplayInsetsController;
@@ -108,7 +105,6 @@ public class ShellControllerTest extends ShellTestCase {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
     public void testOnInit_updatesCurrentUser() {
         mController.onUserChanged(TEST_SECOND_USER_ID, mTestSecondUserContext);
         final List<UserInfo> profiles = new ArrayList<>();
@@ -207,17 +203,6 @@ public class ShellControllerTest extends ShellTestCase {
     }
 
     @Test
-    @DisableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
-    public void testAddUserChangeListener_ensureCallback() {
-        mController.addUserChangeListener(mUserChangeListener);
-
-        mController.onUserChanged(TEST_USER_ID, mTestUserContext);
-        assertTrue(mUserChangeListener.userChanged == 1);
-        assertTrue(mUserChangeListener.lastUserContext == mTestUserContext);
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
     public void testAddUserChangeListener_changed_ensureCallback() {
         mController.addUserChangeListener(mUserChangeListener);
 
@@ -228,7 +213,6 @@ public class ShellControllerTest extends ShellTestCase {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
     public void testAddUserChangeListener_ensureCallbacksWithCurrentUser() {
         mController.addUserChangeListener(mUserChangeListener);
 
@@ -260,7 +244,6 @@ public class ShellControllerTest extends ShellTestCase {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
     public void testUserChanged_noChange_ensureNoCallback() {
         mController.addUserChangeListener(mUserChangeListener);
         mController.onUserChanged(TEST_SECOND_USER_ID, mTestSecondUserContext);
@@ -283,7 +266,6 @@ public class ShellControllerTest extends ShellTestCase {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
     public void testUserProfilesChanged_noChange_ensureNoCallback() {
         ArrayList<UserInfo> profiles = new ArrayList<>();
         profiles.add(mock(UserInfo.class));

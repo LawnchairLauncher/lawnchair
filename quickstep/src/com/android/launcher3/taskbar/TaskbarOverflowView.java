@@ -43,9 +43,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.shared.recents.model.Task;
+import com.android.quickstep.util.SingleTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +165,7 @@ public class TaskbarOverflowView extends FrameLayout implements Reorderable {
             };
 
     private boolean mIsRtlLayout;
-    private final List<Task> mItems = new ArrayList<Task>();
+    private final List<TaskbarOverflowItem> mItems = new ArrayList<TaskbarOverflowItem>();
     private int mIconSize;
     private Paint mItemBackgroundPaint;
     private final MultiTranslateDelegate mTranslateDelegate = new MultiTranslateDelegate(this);
@@ -265,7 +266,7 @@ public class TaskbarOverflowView extends FrameLayout implements Reorderable {
 
         int itemsToShow = Math.min(mItems.size(), MAX_ITEMS_IN_PREVIEW);
         for (int i = itemsToShow - 1; i >= 0; --i) {
-            Drawable icon = mItems.get(mItems.size() - i - 1).icon;
+            Drawable icon = mItems.get(mItems.size() - i - 1).getDrawableIcon();
             if (icon == null) {
                 continue;
             }
@@ -311,7 +312,7 @@ public class TaskbarOverflowView extends FrameLayout implements Reorderable {
      * Update the view to represent a new list of recent tasks.
      * @param items Items to be shown in the view.
      */
-    public void setItems(List<Task> items) {
+    public void setItems(List<? extends TaskbarOverflowItem> items) {
         mItems.clear();
         mItems.addAll(items);
         invalidate();
@@ -319,19 +320,24 @@ public class TaskbarOverflowView extends FrameLayout implements Reorderable {
 
     @VisibleForTesting
     public List<Integer> getItemIds() {
-        return mItems.stream().map(task -> task.key.id).toList();
+        return mItems.stream().map(TaskbarOverflowItem::getItemId).toList();
+    }
+
+    List<ItemInfo> getOverflowInfoList() {
+        return mItems.stream().map(item -> ((ItemInfoWrapper) item).getItemInfo()).toList();
     }
 
     /**
      * Called when a task is updated. If the task is contained within the view, it's cached value
      * gets updated. If the task is shown within the icon, invalidates the view, so the task icon
      * gets updated.
-     * @param task The updated task.
+     * @param singleTask The updated SingeTask.
      */
-    public void updateTaskIsShown(Task task) {
+    public void updateTaskIsShown(SingleTask singleTask) {
         for (int i = 0; i < mItems.size(); ++i) {
-            if (mItems.get(i).key.id == task.key.id) {
-                mItems.set(i, task);
+            if (mItems.get(i) instanceof TaskWrapper taskItem
+                    && taskItem.getItemId() == singleTask.getTask().key.id) {
+                mItems.set(i, new TaskWrapper(getContext(), singleTask));
                 if (i >= mItems.size() - MAX_ITEMS_IN_PREVIEW) {
                     invalidate();
                 }

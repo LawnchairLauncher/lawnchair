@@ -64,6 +64,7 @@ open class StartRecentAppMediaProjectionFromSplitScreen {
     @Before
     fun setup() {
         RemoveAllTasksButHomeRule.removeAllTasksButHome()
+        tapl.expectedRotationCheckEnabled = false
         tapl.setEnableRotation(true)
         tapl.setExpectedRotation(initialRotation.value)
         targetApp.open()

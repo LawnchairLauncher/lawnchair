@@ -19,7 +19,5 @@ package com.android.wm.shell.compatui.api
 import android.app.TaskInfo
 import com.android.wm.shell.ShellTaskOrganizer
 
-/**
- * Encapsulate the info of the message from core.
- */
+/** Encapsulate the info of the message from core. */
 data class CompatUIInfo(val taskInfo: TaskInfo, val listener: ShellTaskOrganizer.TaskListener?)

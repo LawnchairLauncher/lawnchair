@@ -93,7 +93,6 @@ public class TaskViewTest extends ShellTestCase {
     @Parameters(name = "{0}")
     public static List<FlagsParameterization> getParams() {
         return FlagsParameterization.allCombinationsOf(
-                Flags.FLAG_TASK_VIEW_REPOSITORY,
                 Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE
         );
     }
@@ -425,14 +424,9 @@ public class TaskViewTest extends ShellTestCase {
 
         // Surface created, but task not available so bounds / visibility isn't set
         mTaskView.surfaceCreated(mock(SurfaceHolder.class));
-        if (TaskViewTransitions.useRepo()) {
-            assertNotNull(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController));
-            assertFalse(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
-                    .mVisible);
-        } else {
-            verify(mTaskViewTransitions, never()).updateVisibilityState(
-                    eq(mTaskViewTaskController), eq(true));
-        }
+        assertNotNull(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController));
+        assertFalse(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
+                .mVisible);
 
         // Make the task available
         WindowContainerTransaction wct = mock(WindowContainerTransaction.class);
@@ -441,16 +435,10 @@ public class TaskViewTest extends ShellTestCase {
         // Bounds got set
         verify(wct).setBounds(any(WindowContainerToken.class), eq(bounds));
         // Visibility & bounds state got set
-        if (TaskViewTransitions.useRepo()) {
-            assertTrue(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
-                    .mVisible);
-            assertEquals(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
-                    .mBounds, bounds);
-        } else {
-            verify(mTaskViewTransitions).updateVisibilityState(eq(mTaskViewTaskController),
-                    eq(true));
-            verify(mTaskViewTransitions).updateBoundsState(eq(mTaskViewTaskController), eq(bounds));
-        }
+        assertTrue(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
+                .mVisible);
+        assertEquals(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
+                .mBounds, bounds);
     }
 
     @Test
@@ -471,15 +459,10 @@ public class TaskViewTest extends ShellTestCase {
 
         // Surface created, but task not available so bounds / visibility isn't set
         mTaskView.surfaceCreated(mock(SurfaceHolder.class));
-        if (TaskViewTransitions.useRepo()) {
-            assertNotNull(mTaskViewTransitions.getRepository().byTaskView(
-                    mTaskViewTaskController));
-            assertFalse(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
-                    .mVisible);
-        } else {
-            verify(mTaskViewTransitions, never()).updateVisibilityState(
-                    eq(mTaskViewTaskController), eq(true));
-        }
+        assertNotNull(mTaskViewTransitions.getRepository().byTaskView(
+                mTaskViewTaskController));
+        assertFalse(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
+                .mVisible);
 
         // Make the task available / start prepareOpen
         WindowContainerTransaction wct = mock(WindowContainerTransaction.class);
@@ -490,16 +473,10 @@ public class TaskViewTest extends ShellTestCase {
         // Bounds got set
         verify(wct).setBounds(any(WindowContainerToken.class), eq(bounds));
         // Visibility & bounds state got set
-        if (TaskViewTransitions.useRepo()) {
-            assertTrue(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
-                    .mVisible);
-            assertEquals(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
-                    .mBounds, bounds);
-        } else {
-            verify(mTaskViewTransitions).updateVisibilityState(eq(mTaskViewTaskController),
-                    eq(true));
-            verify(mTaskViewTransitions).updateBoundsState(eq(mTaskViewTaskController), eq(bounds));
-        }
+        assertTrue(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
+                .mVisible);
+        assertEquals(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
+                .mBounds, bounds);
     }
 
     @Test
@@ -518,17 +495,10 @@ public class TaskViewTest extends ShellTestCase {
         // Bounds do not get set as there is no surface
         verify(wct, never()).setBounds(any(WindowContainerToken.class), any());
         // Visibility is set to false, bounds aren't set
-        if (TaskViewTransitions.useRepo()) {
-            assertFalse(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
-                    .mVisible);
-            assertTrue(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
-                    .mBounds.isEmpty());
-        } else {
-            verify(mTaskViewTransitions).updateVisibilityState(eq(mTaskViewTaskController),
-                    eq(false));
-            verify(mTaskViewTransitions, never()).updateBoundsState(eq(mTaskViewTaskController),
-                    any());
-        }
+        assertFalse(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
+                .mVisible);
+        assertTrue(mTaskViewTransitions.getRepository().byTaskView(mTaskViewTaskController)
+                .mBounds.isEmpty());
     }
 
     @Test

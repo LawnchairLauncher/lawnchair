@@ -30,6 +30,7 @@ import com.android.wm.shell.compatui.letterbox.asMode
 import java.util.function.Consumer
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -37,28 +38,29 @@ import org.mockito.kotlin.verify
 /**
  * Tests for [LetterboxLifecycleControllerImpl].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:LetterboxLifecycleControllerImplTest
+ * Build/Install/Run: atest WMShellUnitTests:LetterboxLifecycleControllerImplTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
 class LetterboxLifecycleControllerImplTest : ShellTestCase() {
 
     @Test
-    fun `this is my test`() {
+    fun `Letterbox is hidden with OPEN Transition but not letterboxed`() {
         runTestScenario { r ->
             r.invokeLifecycleControllerWith(
-                r.createLifecycleEvent()
+                r.createLifecycleEvent(type = LetterboxLifecycleEventType.OPEN)
             )
+            r.verifyUpdateLetterboxSurfaceVisibility(expected = true)
         }
     }
 
     @Test
-    fun `Letterbox is hidden with OPEN Transition but not letterboxed`() {
+    fun `Letterbox is hidden with OPEN Transition but not letterboxed as empty`() {
         runTestScenario { r ->
             r.invokeLifecycleControllerWith(
                 r.createLifecycleEvent(
-                    type = LetterboxLifecycleEventType.OPEN
+                    type = LetterboxLifecycleEventType.OPEN,
+                    letterboxBounds = Rect(),
                 )
             )
             r.verifyUpdateLetterboxSurfaceVisibility(expected = true)
@@ -71,10 +73,25 @@ class LetterboxLifecycleControllerImplTest : ShellTestCase() {
             r.invokeLifecycleControllerWith(
                 r.createLifecycleEvent(
                     type = LetterboxLifecycleEventType.OPEN,
-                    letterboxBounds = Rect(500, 0, 800, 1800)
+                    letterboxBounds = Rect(500, 0, 800, 1800),
                 )
             )
+            r.verifyStrategyIsInvoked(expected = true)
             r.verifyCreateLetterboxSurface(expected = true)
+        }
+    }
+
+    @Test
+    fun `Surface NOT created with OPEN Transition and NO letterboxed with leash`() {
+        runTestScenario { r ->
+            r.invokeLifecycleControllerWith(
+                r.createLifecycleEvent(
+                    type = LetterboxLifecycleEventType.OPEN,
+                    letterboxBounds = Rect(),
+                )
+            )
+            r.verifyStrategyIsInvoked(expected = false)
+            r.verifyCreateLetterboxSurface(expected = false)
         }
     }
 
@@ -85,9 +102,10 @@ class LetterboxLifecycleControllerImplTest : ShellTestCase() {
                 r.createLifecycleEvent(
                     type = LetterboxLifecycleEventType.OPEN,
                     letterboxBounds = Rect(500, 0, 800, 1800),
-                    eventTaskLeash = null
+                    eventTaskLeash = null,
                 )
             )
+            r.verifyStrategyIsInvoked(expected = false)
             r.verifyCreateLetterboxSurface(expected = false)
         }
     }
@@ -99,19 +117,31 @@ class LetterboxLifecycleControllerImplTest : ShellTestCase() {
                 r.createLifecycleEvent(
                     type = LetterboxLifecycleEventType.OPEN,
                     letterboxBounds = Rect(500, 0, 800, 1800),
-                    eventTaskLeash = null
+                    eventTaskLeash = null,
                 )
             )
             r.verifyUpdateLetterboxSurfaceBounds(
                 expected = true,
-                letterboxBounds = Rect(500, 0, 800, 1800)
+                letterboxBounds = Rect(500, 0, 800, 1800),
             )
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    @Test
+    fun `Surface Bounds NOT updated with OPEN Transition and NOT letterboxed`() {
+        runTestScenario { r ->
+            r.invokeLifecycleControllerWith(
+                r.createLifecycleEvent(
+                    type = LetterboxLifecycleEventType.OPEN,
+                    letterboxBounds = Rect(),
+                    eventTaskLeash = null,
+                )
+            )
+            r.verifyUpdateLetterboxSurfaceBounds(expected = false, letterboxBounds = Rect())
+        }
+    }
+
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<LetterboxLifecycleControllerImplRobotTest>) {
         val robot = LetterboxLifecycleControllerImplRobotTest()
         consumer.accept(robot)
@@ -128,14 +158,11 @@ class LetterboxLifecycleControllerImplTest : ShellTestCase() {
         private val taskLeash: SurfaceControl
 
         companion object {
-            @JvmStatic
-            private val DISPLAY_ID = 1
+            @JvmStatic private val DISPLAY_ID = 1
 
-            @JvmStatic
-            private val TASK_ID = 20
+            @JvmStatic private val TASK_ID = 20
 
-            @JvmStatic
-            private val TASK_BOUNDS = Rect(0, 0, 2800, 1400)
+            @JvmStatic private val TASK_BOUNDS = Rect(0, 0, 2800, 1400)
         }
 
         init {
@@ -145,10 +172,8 @@ class LetterboxLifecycleControllerImplTest : ShellTestCase() {
             finishTransaction = mock<Transaction>()
             token = mock<WindowContainerToken>()
             taskLeash = mock<SurfaceControl>()
-            lifecycleController = LetterboxLifecycleControllerImpl(
-                letterboxController,
-                letterboxModeStrategy
-            )
+            lifecycleController =
+                LetterboxLifecycleControllerImpl(letterboxController, letterboxModeStrategy)
         }
 
         fun createLifecycleEvent(
@@ -158,54 +183,51 @@ class LetterboxLifecycleControllerImplTest : ShellTestCase() {
             taskBounds: Rect = TASK_BOUNDS,
             letterboxBounds: Rect? = null,
             letterboxActivityToken: WindowContainerToken = token,
-            eventTaskLeash: SurfaceControl? = taskLeash
-        ): LetterboxLifecycleEvent = LetterboxLifecycleEvent(
-            type = type,
-            displayId = displayId,
-            taskId = taskId,
-            taskBounds = taskBounds,
-            letterboxBounds = letterboxBounds,
-            containerToken = letterboxActivityToken,
-            taskLeash = eventTaskLeash
-        )
+            eventTaskLeash: SurfaceControl? = taskLeash,
+        ): LetterboxLifecycleEvent =
+            LetterboxLifecycleEvent(
+                type = type,
+                displayId = displayId,
+                taskId = taskId,
+                taskBounds = taskBounds,
+                letterboxBounds = letterboxBounds,
+                containerToken = letterboxActivityToken,
+                taskLeash = eventTaskLeash,
+            )
 
         fun invokeLifecycleControllerWith(event: LetterboxLifecycleEvent) {
             lifecycleController.onLetterboxLifecycleEvent(
                 event,
                 startTransaction,
-                finishTransaction
+                finishTransaction,
             )
         }
 
         fun verifyCreateLetterboxSurface(
             expected: Boolean,
             displayId: Int = DISPLAY_ID,
-            taskId: Int = TASK_ID
+            taskId: Int = TASK_ID,
         ) {
-            verify(
-                letterboxController,
-                expected.asMode()
-            ).createLetterboxSurface(
-                eq(LetterboxKey(displayId, taskId)),
-                eq(startTransaction),
-                eq(taskLeash),
-                eq(token)
-            )
+            verify(letterboxController, expected.asMode())
+                .createLetterboxSurface(
+                    eq(LetterboxKey(displayId, taskId)),
+                    eq(startTransaction),
+                    eq(taskLeash),
+                    eq(token),
+                )
         }
 
         fun verifyUpdateLetterboxSurfaceVisibility(
             expected: Boolean,
             displayId: Int = DISPLAY_ID,
-            taskId: Int = TASK_ID
+            taskId: Int = TASK_ID,
         ) {
-            verify(
-                letterboxController,
-                expected.asMode()
-            ).updateLetterboxSurfaceVisibility(
-                eq(LetterboxKey(displayId, taskId)),
-                eq(startTransaction),
-                eq(false)
-            )
+            verify(letterboxController, expected.asMode())
+                .updateLetterboxSurfaceVisibility(
+                    eq(LetterboxKey(displayId, taskId)),
+                    eq(startTransaction),
+                    eq(false),
+                )
         }
 
         fun verifyUpdateLetterboxSurfaceBounds(
@@ -214,17 +236,19 @@ class LetterboxLifecycleControllerImplTest : ShellTestCase() {
             taskId: Int = TASK_ID,
             taskBounds: Rect = TASK_BOUNDS,
             letterboxBounds: Rect,
+        ) {
+            verify(letterboxController, expected.asMode())
+                .updateLetterboxSurfaceBounds(
+                    eq(LetterboxKey(displayId, taskId)),
+                    eq(startTransaction),
+                    eq(taskBounds),
+                    eq(letterboxBounds),
+                )
+        }
 
-            ) {
-            verify(
-                letterboxController,
-                expected.asMode()
-            ).updateLetterboxSurfaceBounds(
-                eq(LetterboxKey(displayId, taskId)),
-                eq(startTransaction),
-                eq(taskBounds),
-                eq(letterboxBounds)
-            )
+        fun verifyStrategyIsInvoked(expected: Boolean = true) {
+            verify(letterboxModeStrategy, expected.asMode())
+                .configureLetterboxMode(any<LetterboxLifecycleEvent>())
         }
     }
 }

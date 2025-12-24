@@ -1,0 +1,51 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.ksp)
+    id 'kotlin-parcelize' // pE-TODO(QPR2): Move to version catalog
+}
+
+// LC-Build-TODO: addFrameworkJar() doesn't work, what???
+def frameworkJar = new File("$rootDir/prebuilts/libs", "framework-16.jar")
+tasks.withType(JavaCompile).configureEach {
+    classpath = files(frameworkJar)
+}
+tasks.withType(KotlinCompile).configureEach {
+    libraries.from(files(frameworkJar))
+}
+compileOnlyCommonJars()
+
+android {
+    buildToolsVersion "36.1.0"
+    namespace "com.android.wm.shell.shared"
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+        }
+    }
+}
+
+addFrameworkJar('framework-16.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    implementation libs.dagger.hilt.android
+    ksp libs.dagger.hilt.compiler
+    implementation libs.androidx.core.animation
+    implementation libs.androidx.dynamicanimation
+    implementation projects.iconloaderlib
+    implementation projects.flags
+    implementation projects.utils
+}
+
+ksp {
+    arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+}

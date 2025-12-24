@@ -64,7 +64,7 @@
                 android:textFontWeight="500"
                 android:importantForAccessibility="no"
                 android:text="@string/desktop_mode_maximize_menu_immersive_button_text"
-                android:textColor="?android:attr/textColorPrimary"
+                android:textColor="@androidprv:color/materialColorOnSurface"
                 android:singleLine="true"
                 android:alpha="0"/>
         </LinearLayout>
@@ -100,7 +100,7 @@
                 android:textFontWeight="500"
                 android:importantForAccessibility="no"
                 android:text="@string/desktop_mode_maximize_menu_maximize_text"
-                android:textColor="?android:attr/textColorPrimary"
+                android:textColor="@androidprv:color/materialColorOnSurface"
                 android:singleLine="true"
                 android:alpha="0"/>
         </LinearLayout>
@@ -154,7 +154,7 @@
                 android:fontFamily="google-sans-text"
                 android:textFontWeight="500"
                 android:text="@string/desktop_mode_maximize_menu_snap_text"
-                android:textColor="?android:attr/textColorPrimary"
+                android:textColor="@androidprv:color/materialColorOnSurface"
                 android:singleLine="true"
                 android:alpha="0"/>
         </LinearLayout>

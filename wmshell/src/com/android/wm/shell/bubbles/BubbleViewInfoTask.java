@@ -16,7 +16,6 @@
 
 package com.android.wm.shell.bubbles;
 
-import static com.android.wm.shell.bubbles.BadgedImageView.DEFAULT_PATH_SIZE;
 import static com.android.wm.shell.bubbles.BadgedImageView.WHITE_SCRIM_ALPHA;
 import static com.android.wm.shell.bubbles.BubbleDebugConfig.TAG_BUBBLES;
 import static com.android.wm.shell.bubbles.BubbleDebugConfig.TAG_WITH_CLASS_NAME;
@@ -28,13 +27,9 @@ import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.util.PathParser;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.graphics.ColorUtils;
@@ -46,7 +41,6 @@ import com.android.wm.shell.bubbles.appinfo.BubbleAppInfo;
 import com.android.wm.shell.bubbles.appinfo.BubbleAppInfoProvider;
 import com.android.wm.shell.bubbles.bar.BubbleBarExpandedView;
 import com.android.wm.shell.bubbles.bar.BubbleBarLayerView;
-import com.android.wm.shell.shared.handles.RegionSamplingHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Executor;
@@ -225,23 +219,16 @@ public class BubbleViewInfoTask {
                 ProtoLog.v(WM_SHELL_BUBBLES, "Task initializing bubble bar expanded view key=%s",
                         mBubble.getKey());
                 viewInfo.bubbleBarExpandedView.initialize(mExpandedViewManager.get(),
-                        mPositioner.get(), false /* isOverflow */, mBubble,
-                        viewInfo.taskView, mMainExecutor, mBgExecutor,
-                        new RegionSamplingProvider() {
-                            @Override
-                            public RegionSamplingHelper createHelper(View sampledView,
-                                    RegionSamplingHelper.SamplingCallback callback,
-                                    Executor backgroundExecutor, Executor mainExecutor) {
-                                return RegionSamplingProvider.super.createHelper(sampledView,
-                                        callback, backgroundExecutor, mainExecutor);
-                            }
-                        });
+                        mPositioner.get(), false /* isOverflow */, mBubble, viewInfo.taskView);
             }
         }
 
         mBubble.setViewInfo(viewInfo);
         if (mCallback != null) {
             mCallback.onBubbleViewsReady(mBubble);
+        }
+        if (mBubble.isConvertingToBar()) {
+            mBubble.getPreparingTransition().continueExpand();
         }
     }
 
@@ -266,7 +253,8 @@ public class BubbleViewInfoTask {
         // Always populated
         ShortcutInfo shortcutInfo;
         String appName;
-        Bitmap rawBadgeBitmap;
+        BitmapInfo rawBadgeBitmap;
+        BitmapInfo badgeBitmap;
 
         // Only populated when showing in taskbar
         @Nullable BubbleBarExpandedView bubbleBarExpandedView;
@@ -275,10 +263,8 @@ public class BubbleViewInfoTask {
         @Nullable BadgedImageView imageView;
         @Nullable BubbleExpandedView expandedView;
         int dotColor;
-        Path dotPath;
         Bubble.FlyoutMessage flyoutMessage;
         Bitmap bubbleBitmap;
-        Bitmap badgeBitmap;
 
         @Nullable
         public static BubbleViewInfo populateForBubbleBar(Context c,
@@ -368,7 +354,6 @@ public class BubbleViewInfoTask {
             return false;
         }
 
-        Drawable badgedIcon = appInfo.getBadgedIcon();
         Drawable appIcon = appInfo.getAppIcon();
         if (appInfo.getAppName() != null) {
             info.appName = appInfo.getAppName();
@@ -389,27 +374,18 @@ public class BubbleViewInfoTask {
             bubbleDrawable = appIcon;
         }
 
-        BitmapInfo badgeBitmapInfo = iconFactory.getBadgeBitmap(badgedIcon,
+        BitmapInfo badgeBitmapInfo = iconFactory.getBadgeBitmap(
+                appIcon,
+                appInfo.getUser(),
                 b.isImportantConversation());
-        info.badgeBitmap = badgeBitmapInfo.icon;
+        info.badgeBitmap = badgeBitmapInfo;
         // Raw badge bitmap never includes the important conversation ring
         info.rawBadgeBitmap = b.isImportantConversation()
-                ? iconFactory.getBadgeBitmap(badgedIcon, false).icon
-                : badgeBitmapInfo.icon;
+                ? iconFactory.getBadgeBitmap(appIcon, appInfo.getUser(), false)
+                : badgeBitmapInfo;
 
-        float[] bubbleBitmapScale = new float[1];
-        info.bubbleBitmap = iconFactory.getBubbleBitmap(bubbleDrawable, bubbleBitmapScale);
+        info.bubbleBitmap = iconFactory.getBubbleBitmap(bubbleDrawable);
 
-        // Dot color & placement
-        Path iconPath = PathParser.createPathFromPathData(
-                c.getResources().getString(com.android.internal.R.string.config_icon_mask));
-        Matrix matrix = new Matrix();
-        float scale = bubbleBitmapScale[0];
-        float radius = DEFAULT_PATH_SIZE / 2f;
-        matrix.setScale(scale /* x scale */, scale /* y scale */, radius /* pivot x */,
-                radius /* pivot y */);
-        iconPath.transform(matrix);
-        info.dotPath = iconPath;
         info.dotColor = ColorUtils.blendARGB(badgeBitmapInfo.color,
                 Color.WHITE, WHITE_SCRIM_ALPHA);
         return true;

@@ -30,7 +30,7 @@ import android.window.InputTransferToken;
 
 /**
  * A generic receiver that specifically handles SurfaceView request created by {@link
- * com.android.systemui.shared.system.SurfaceViewRequestUtils}.
+ * SurfaceViewRequestUtils}.
  */
 public class SurfaceViewRequestReceiver {
 

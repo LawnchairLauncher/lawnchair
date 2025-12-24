@@ -31,7 +31,7 @@ java_library {
         "src/**/*.kt",
     ],
     exclude_srcs: [
-        "src/**/PluginProtectorStub.kt",
+        "src/**/PluginProtector.kt",
     ],
 
     optimize: {
@@ -42,27 +42,28 @@ java_library {
     },
 
     plugins: ["PluginAnnotationProcessor"],
+    static_kotlin_stdlib: false,
 
     // If you add a static lib here, you may need to also add the package to the ClassLoaderFilter
     // in PluginInstance. That will ensure that loaded plugins have access to the related classes.
     // You should also add it to proguard_common.flags so that proguard does not remove the portions
     // of the library which are used by the plugins but not by systemui itself.
     static_libs: [
-        "androidx.annotation_annotation",
-        "androidx-constraintlayout_constraintlayout",
         "PlatformAnimationLib",
+        "PlatformComposeSceneTransitionLayout",
         "PluginCoreLib",
         "SystemUICommon",
         "SystemUILogLib",
+        "androidx-constraintlayout_constraintlayout",
         "androidx.annotation_annotation",
-        "androidx.compose.ui_ui",
+        "androidx.annotation_annotation",
         "androidx.compose.runtime_runtime",
+        "androidx.compose.ui_ui",
         "monet",
     ],
 }
 
 android_app {
-
     // Dummy to generate .toc files.
     name: "PluginDummyLib",
     use_resource_processor: true,
@@ -74,5 +75,4 @@ android_app {
     optimize: {
         enabled: false,
     },
-
 }

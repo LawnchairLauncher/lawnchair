@@ -42,9 +42,11 @@ import kotlinx.coroutines.launch
  * View model for the search screen that allows searching for all widgets in the full catalog view
  * of the widget picker.
  */
-class SearchScreenViewModel @AssistedInject constructor(
+class SearchScreenViewModel
+@AssistedInject
+constructor(
     private val widgetsInteractor: WidgetsInteractor,
-    private val widgetAppIconsInteractor: WidgetAppIconsInteractor
+    private val widgetAppIconsInteractor: WidgetAppIconsInteractor,
 ) : ViewModel {
     /** Data backing the results (widget apps & their widgets) that match the provided input. */
     var resultsState by mutableStateOf(SearchResultsState())
@@ -64,9 +66,7 @@ class SearchScreenViewModel @AssistedInject constructor(
      */
     var selectedWidgetAppId by mutableStateOf<WidgetAppId?>(null)
     private val _selectedWidgetAppWidgetIds = snapshotFlow {
-        selectedWidgetAppId?.let {
-            resultsState.results.getWidgetIdsForApp(it)
-        } ?: listOf()
+        selectedWidgetAppId?.let { resultsState.results.getWidgetIdsForApp(it) } ?: listOf()
     }
 
     /** Preview information about the widgets in the search results. */
@@ -82,17 +82,24 @@ class SearchScreenViewModel @AssistedInject constructor(
     }
 
     private suspend fun initializeSearchResults() {
-        snapshotFlow { query }.collectLatest { newInput ->
-            if (newInput.isEmpty()) {
-                resultsState = SearchResultsState()
-            } else {
-                widgetsInteractor.searchWidgetApps(query).collectLatest { matchedResults ->
-                    resultsState = SearchResultsState(
-                        results = matchedResults.map { DisplayableWidgetApp.fromWidgetApp(it) }
-                    )
+        snapshotFlow { query }
+            .collectLatest { newInput ->
+                selectedWidgetAppId = null
+                if (newInput.isEmpty()) {
+                    resultsState = SearchResultsState()
+                } else {
+                    widgetsInteractor.searchWidgetApps(query).collectLatest { matchedResults ->
+                        resultsState =
+                            SearchResultsState(
+                                results =
+                                    matchedResults.map {
+                                        DisplayableWidgetApp.fromWidgetApp(it.widgetApp)
+                                            .copy(accessibilityPrefix = it.resultLabel)
+                                    }
+                            )
+                    }
                 }
             }
-        }
 
         awaitCancellation()
     }
@@ -110,15 +117,16 @@ class SearchScreenViewModel @AssistedInject constructor(
             previewsState =
                 PreviewsState(
                     previewsState.previews +
-                            ids.associateWith { widgetsInteractor.getWidgetPreview(it) })
+                        ids.associateWith { widgetsInteractor.getWidgetPreview(it) }
+                )
         }
 
         awaitCancellation()
     }
 
     /**
-     * Callback for when user types a search query and its changed. Updates the [query] state
-     * so that the search results can update as well.
+     * Callback for when user types a search query and its changed. Updates the [query] state so
+     * that the search results can update as well.
      */
     fun onQueryChange(query: String) {
         this.query = query
@@ -129,16 +137,17 @@ class SearchScreenViewModel @AssistedInject constructor(
      * clicks an app to expand or collapse.
      *
      * @param id id of the widget app that was tapped; if its same as last id that was tapped, the
-     * [selectedWidgetAppId] is reset to null (aka toggled); if its different, then the provided id
-     * is set as the [selectedWidgetAppId]. To clear the [selectedWidgetAppId] invoke this with
-     * `null`
+     *   [selectedWidgetAppId] is reset to null (aka toggled); if its different, then the provided
+     *   id is set as the [selectedWidgetAppId]. To clear the [selectedWidgetAppId] invoke this with
+     *   `null`
      */
     fun onSelectedWidgetAppToggle(id: WidgetAppId) {
-        selectedWidgetAppId = if (selectedWidgetAppId != id) {
-            id
-        } else {
-            null
-        }
+        selectedWidgetAppId =
+            if (selectedWidgetAppId != id) {
+                id
+            } else {
+                null
+            }
     }
 
     /** A factory that should be injected whenever [SearchScreenViewModel] is required. */
@@ -152,6 +161,4 @@ class SearchScreenViewModel @AssistedInject constructor(
 /** Represents data that backs the list of widget apps (and their widgets) shown in the results. */
 @Stable
 @Immutable
-data class SearchResultsState(
-    val results: List<DisplayableWidgetApp> = emptyList()
-)
+data class SearchResultsState(val results: List<DisplayableWidgetApp> = emptyList())

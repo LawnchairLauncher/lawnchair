@@ -92,7 +92,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext)
-                .copy(mContext);
+                .copy();
         mTaskViewSwipeUpAnimation.initDp(dp);
 
         int height = mTutorialFragment.getRootView().getFullscreenHeight();

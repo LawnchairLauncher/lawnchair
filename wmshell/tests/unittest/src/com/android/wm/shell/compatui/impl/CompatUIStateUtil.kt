@@ -22,29 +22,20 @@ import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertNull
 
-/**
- * Asserts no component state exists for the given CompatUISpec
- */
+/** Asserts no component state exists for the given CompatUISpec */
 internal fun CompatUIState.assertHasNoStateFor(componentId: String) =
     assertNull(stateForComponent(componentId))
 
-/**
- * Asserts component state for the given CompatUISpec
- */
+/** Asserts component state for the given CompatUISpec */
 internal fun CompatUIState.assertHasStateEqualsTo(
     componentId: String,
-    expected: CompatUIComponentState
-) =
-    assertEquals(stateForComponent(componentId), expected)
+    expected: CompatUIComponentState,
+) = assertEquals(stateForComponent(componentId), expected)
 
-/**
- * Asserts no component exists for the given CompatUISpec
- */
+/** Asserts no component exists for the given CompatUISpec */
 internal fun CompatUIState.assertHasNoComponentFor(componentId: String) =
     assertNull(getUIComponent(componentId))
 
-/**
- * Asserts component for the given CompatUISpec
- */
+/** Asserts component for the given CompatUISpec */
 internal fun CompatUIState.assertHasComponentFor(componentId: String) =
     assertNotNull(getUIComponent(componentId))

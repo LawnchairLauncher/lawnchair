@@ -19,6 +19,7 @@ package com.android.wm.shell.desktopmode;
 import android.annotation.NonNull;
 import android.graphics.Region;
 
+import com.android.wm.shell.desktopmode.data.DesktopRepository;
 import com.android.wm.shell.shared.annotations.ExternalThread;
 import com.android.wm.shell.shared.desktopmode.DesktopFirstListener;
 import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource;
@@ -42,6 +43,15 @@ public interface DesktopMode {
             Executor callbackExecutor);
 
     /**
+     * Adds a listener to find out about desk changes.
+     *
+     * @param listener the listener to add.
+     * @param callbackExecutor the executor to call the listener on.
+     */
+    void addDeskChangeListener(DesktopRepository.DeskChangeListener listener,
+            Executor callbackExecutor);
+
+    /**
      * Adds a consumer to listen for Desktop task corner changes. This is used for gesture
      * exclusion. The SparseArray contains a list of four corner resize handles mapped to each
      * desktop task's taskId. The resize handle Rects are stored in the following order:
@@ -60,6 +70,10 @@ public interface DesktopMode {
     /** Called when requested to go to split screen from the current focused desktop app. */
     void moveFocusedTaskToStageSplit(int displayId, boolean leftOrTop);
 
+    /** Called when requested to toggle the fullscreen state of the focused app. */
+    void toggleFocusedTaskFullscreenState(
+            int displayId, DesktopModeTransitionSource transitionSource);
+
     /**
      * Register a listener that will receive callbacks about desktop-first state. Once it's
      * registered, the listener immediately receives the current state.
@@ -70,4 +84,7 @@ public interface DesktopMode {
      * Unregister a registered desktop-first listener
      */
     void unregisterDesktopFirstListener(@NonNull DesktopFirstListener listener);
+
+    /** Check is a specific displayId is in DesktopMode. */
+    boolean isDisplayInDesktopMode(int displayId);
 }

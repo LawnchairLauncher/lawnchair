@@ -16,7 +16,6 @@
 
 package com.android.wm.shell.desktopmode
 
-import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.UserInfo
 import android.os.UserManager
@@ -25,8 +24,9 @@ import android.window.DesktopExperienceFlags
 import android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_HSUM
 import androidx.core.util.forEach
 import com.android.internal.protolog.ProtoLog
-import com.android.wm.shell.desktopmode.persistence.DesktopPersistentRepository
-import com.android.wm.shell.desktopmode.persistence.DesktopRepositoryInitializer
+import com.android.wm.shell.desktopmode.data.DesktopRepository
+import com.android.wm.shell.desktopmode.data.DesktopRepositoryInitializer
+import com.android.wm.shell.desktopmode.data.persistence.DesktopPersistentRepository
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_DESKTOP_MODE
 import com.android.wm.shell.shared.annotations.ShellMainThread
 import com.android.wm.shell.shared.desktopmode.DesktopConfig
@@ -45,6 +45,7 @@ class DesktopUserRepositories(
     private val persistentRepository: DesktopPersistentRepository,
     private val repositoryInitializer: DesktopRepositoryInitializer,
     @ShellMainThread private val mainCoroutineScope: CoroutineScope,
+    @ShellMainThread private val bgCoroutineScope: CoroutineScope,
     private val userManager: UserManager,
     desktopState: DesktopState,
     desktopConfig: DesktopConfig,
@@ -64,6 +65,7 @@ class DesktopUserRepositories(
                     ?: DesktopRepository(
                             persistentRepository,
                             mainCoroutineScope,
+                            bgCoroutineScope,
                             userId,
                             desktopConfig,
                         )
@@ -71,7 +73,7 @@ class DesktopUserRepositories(
         }
 
     init {
-        userId = ActivityManager.getCurrentUser()
+        userId = shellController.currentUserId
         if (ENABLE_DESKTOP_WINDOWING_HSUM.isTrue) {
             userIdToProfileIdsMap[userId] = userManager.getProfiles(userId).map { it.id }
         }
@@ -87,8 +89,8 @@ class DesktopUserRepositories(
             ENABLE_DESKTOP_WINDOWING_HSUM.isTrue() &&
                 DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue
         ) {
-            userId = ActivityManager.getCurrentUser()
-            userIdToProfileIdsMap[userId] = userManager.getProfiles(userId).map { it.id }
+            userId = shellController.currentUserId
+            userIdToProfileIdsMap[userId] = shellController.currentUserProfiles.map { it.id }
         }
     }
 

@@ -21,8 +21,8 @@ import android.view.SurfaceControlViewHost
 import java.util.function.Supplier
 
 /**
- * An [AdditionalViewContainer] that uses a [SurfaceControlViewHost] to show the window.
- * Intended for view containers in freeform tasks that do not extend beyond task bounds.
+ * An [AdditionalViewContainer] that uses a [SurfaceControlViewHost] to show the window. Intended
+ * for view containers in freeform tasks that do not extend beyond task bounds.
  */
 class AdditionalViewHostViewContainer(
     private val windowSurface: SurfaceControl,

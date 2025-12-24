@@ -91,6 +91,7 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
                     return thumbnailView.mSplashAlpha / 255f;
                 }
             };
+    private static final int IGNORE_DENSITY_SCALING = 0;
 
     private final RecentsViewContainer mContainer;
     private TaskOverlay<?> mOverlay;
@@ -469,7 +470,8 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
             int currentRotation = mTaskView.getOrientedState().getRecentsActivityRotation();
             boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
-                    getMeasuredWidth(), getMeasuredHeight(), dp.getDeviceProperties().isTablet(), currentRotation, isRtl);
+                    getMeasuredWidth(), getMeasuredHeight(), dp.getDeviceProperties().isTablet(),
+                    currentRotation, isRtl, IGNORE_DENSITY_SCALING);
 
             mBitmapShader.setLocalMatrix(mPreviewPositionHelper.getMatrix());
             mPaint.setShader(mBitmapShader);

@@ -22,6 +22,7 @@ import static android.view.KeyEvent.KEYCODE_TAB;
 import static android.view.KeyEvent.META_META_ON;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 
+import static com.android.launcher3.tapl.BubbleBar.RES_ID_NAME_BUBBLE_BAR;
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
@@ -98,10 +99,16 @@ public final class Workspace extends Home {
                             + ", swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
 
+            final int xPosition;
+            if (shouldEscapeBubbleBar()) {
+                xPosition = mLauncher.getRealDisplaySize().x - windowCornerRadius;
+            } else {
+                xPosition = windowCornerRadius;
+            }
             mLauncher.swipeToState(
-                    windowCornerRadius,
+                    xPosition,
                     startY,
-                    windowCornerRadius,
+                    xPosition,
                     startY - swipeHeight - mLauncher.getTouchSlop(),
                     12,
                     ALL_APPS_STATE_ORDINAL,
@@ -112,6 +119,18 @@ public final class Workspace extends Home {
                 return new HomeAllApps(mLauncher);
             }
         }
+    }
+
+    private boolean shouldEscapeBubbleBar() {
+        final BySelector bubbleBarSelector = mLauncher
+                .getLauncherObjectSelector(RES_ID_NAME_BUBBLE_BAR);
+        final UiObject2 bubbleBarView = mLauncher.getDevice().findObject(bubbleBarSelector);
+        if (bubbleBarView == null) {
+            // Early return if no bubble bar.
+            return false;
+        }
+        // Only need to escape bubble bar if it shows at left.
+        return bubbleBarView.getVisibleCenter().x < mLauncher.getRealDisplaySize().x / 2;
     }
 
     /** Opens the Launcher all apps page with the meta keyboard shortcut. */
@@ -832,13 +851,10 @@ public final class Workspace extends Home {
      */
     @NonNull
     public Widgets openAllWidgets() {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            verifyActiveContainer();
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_CTRL_W_UP);
-            mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
-            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer("pressed Ctrl+W")) {
-                return new Widgets(mLauncher);
-            }
+        verifyActiveContainer();
+        mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer("pressed Ctrl+W")) {
+            return new Widgets(mLauncher);
         }
     }
 

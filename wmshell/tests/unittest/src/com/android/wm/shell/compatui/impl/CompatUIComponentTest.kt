@@ -38,8 +38,7 @@ import org.mockito.kotlin.mock
 /**
  * Tests for {@link CompatUIComponent}.
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:CompatUIComponentTest
+ * Build/Install/Run: atest WMShellUnitTests:CompatUIComponentTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
@@ -56,9 +55,7 @@ class CompatUIComponentTest : ShellTestCase() {
     private lateinit var position: Point
     private lateinit var componentState: CompatUIComponentState
 
-    @JvmField
-    @Rule
-    val compatUIHandlerRule: CompatUIHandlerRule = CompatUIHandlerRule()
+    @JvmField @Rule val compatUIHandlerRule: CompatUIHandlerRule = CompatUIHandlerRule()
 
     @Before
     fun setUp() {
@@ -71,22 +68,22 @@ class CompatUIComponentTest : ShellTestCase() {
         syncQueue = mock<SyncTransactionQueue>()
         displayLayout = mock<DisplayLayout>()
         component =
-            CompatUIComponent(spec.getSpec(),
+            CompatUIComponent(
+                spec.getSpec(),
                 "compId",
                 mContext,
                 state,
                 info,
                 syncQueue,
-                displayLayout)
+                displayLayout,
+            )
         componentState = object : CompatUIComponentState {}
         state.registerUIComponent("compId", component, componentState)
     }
 
     @Test
     fun `when initLayout is invoked spec fields are used`() {
-        compatUIHandlerRule.postBlocking {
-            component.initLayout(info)
-        }
+        compatUIHandlerRule.postBlocking { component.initLayout(info) }
         with(layout) {
             assertViewBuilderInvocation(1)
             assertEquals(info, lastViewBuilderCompatUIInfo)

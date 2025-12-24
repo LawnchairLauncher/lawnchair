@@ -117,7 +117,7 @@ java_library {
 
     srcs: [
         "src/com/android/wm/shell/desktopmode/education/data/proto/**/*.proto",
-        "src/com/android/wm/shell/desktopmode/persistence/*.proto",
+        "src/com/android/wm/shell/desktopmode/data/persistence/*.proto",
     ],
     proto: {
         type: "lite",
@@ -137,7 +137,13 @@ android_library {
     resource_dirs: [
         "res",
     ],
+    aidl: {
+        include_dirs: [
+            "frameworks/native/libs/gui",
+        ],
+    },
     static_libs: [
+        "android.gui.boxshadow-java",
         "//frameworks/base/packages/SystemUI/aconfig:com_android_systemui_flags_lib",
         "//frameworks/libs/systemui:com_android_systemui_shared_flags_lib",
         "//frameworks/libs/systemui:iconloader_base",
@@ -148,6 +154,7 @@ android_library {
         "WindowManager-Shell-lite-proto",
         "WindowManager-Shell-proto",
         "WindowManager-Shell-shared",
+        "am_flags_lib",
         "androidx-constraintlayout_constraintlayout",
         "androidx.appcompat_appcompat",
         "androidx.arch.core_core-runtime",
@@ -158,10 +165,12 @@ android_library {
         "androidx.recyclerview_recyclerview",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
+        "PlatformAnimationLib",
         "dagger2",
         "jsr330",
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
+        "lottie",
         "mechanics",
         "perfetto_trace_java_protos",
     ],
@@ -171,6 +180,7 @@ android_library {
         "kotlin-annotations",
     ],
     flags_packages: [
+        "am_flags",
         "com_android_wm_shell_flags",
     ],
     kotlincflags: ["-Xjvm-default=all"],

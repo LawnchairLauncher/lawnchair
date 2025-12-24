@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.util.launcheremulator.models
 
+import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.launcheremulator.DensityPicker.Density
 import com.android.launcher3.util.launcheremulator.models.DeviceEmulationData.Companion.FIXED_LANDSCAPE_GRID
 import com.android.launcher3.util.launcheremulator.models.EmulationParamsUtils.getDensityShort
@@ -42,6 +43,7 @@ constructor(
     val isRtl: Boolean = false,
     val isDarkTheme: Boolean = false,
     val isUsingThemeIcons: Boolean = false,
+    var navigationMode: NavigationMode? = null,
 ) {
 
     init {

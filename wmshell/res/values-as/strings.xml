@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"এপে বাবল সমৰ্থন নকৰে"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"স্প্লিট স্ক্ৰীনৰ বিভাজক"</string>
     <string name="divider_title" msgid="1963391955593749442">"স্প্লিট স্ক্ৰীনৰ বিভাজক"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"বাওঁফালৰ স্ক্ৰীনখন সম্পূৰ্ণ স্ক্ৰীন কৰক"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"বাওঁফালৰ স্ক্ৰীনখন ৭০% কৰক"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"বাওঁফালৰ স্ক্ৰীনখন ৫০% কৰক"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"বাওঁফালৰ স্ক্ৰীনখন ৩০% কৰক"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"সোঁফালৰ স্ক্ৰীনখন সম্পূৰ্ণ স্ক্ৰীন কৰক"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"একেবাৰে তলৰ সৈতে একেবাৰে ওপৰৰ এপ্‌টো সলনাসলনি কৰক"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"সোঁফালৰ সৈতে বাওঁফালৰ এপ্‌টো সলনাসলনি কৰক"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"শীৰ্ষ স্ক্ৰীনখন সম্পূৰ্ণ স্ক্ৰীন কৰক"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"শীর্ষ স্ক্ৰীনখন ৭০% কৰক"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"শীর্ষ স্ক্ৰীনখন ৫০% কৰক"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"শীর্ষ স্ক্ৰীনখন ৩০% কৰক"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"তলৰ স্ক্ৰীনখন সম্পূৰ্ণ স্ক্ৰীন কৰক"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"বাওঁফালে থকা এপ্‌ পূৰ্ণ স্ক্ৰীনত খোলক"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"বাওঁফালে ১০%, সোঁফালে ৯০%"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"বাওঁফালে ৩০%, সোঁফালে ৭০%"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"বাওঁফালে ৫০%, সোঁফালে ৫০%"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"বাওঁফালে ৭০%, সোঁফালে ৩০%"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"বাওঁফালে ৯০%, সোঁফালে ১০%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"সোঁফালে থকা এপ্‌ পূৰ্ণ স্ক্ৰীনত খোলক"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"একেবাৰে ওপৰত থকা এপৰ সৈতে একেবাৰে তলত থকা এপ্‌ সলনাসলনি কৰক, চলিত বিভাজন ৰাখক"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"বাওঁফালৰ এপৰ সৈতে সোঁফালৰ এপ্‌ সলনাসলনি কৰক, চলিত বিভাজন ৰাখক"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"একেবাৰে ওপৰত থকা এপ্‌ পূৰ্ণ স্ক্ৰীনত খোলক"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"একেবাৰে ওপৰত ১০%, একেবাৰে তলত ৯০%"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"একেবাৰে ওপৰত ৩০%, একেবাৰে তলত ৭০%"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"একেবাৰে ওপৰত ৫০%, একেবাৰে তলত ৫০%"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"একেবাৰে ওপৰত ৭০%, একেবাৰে তলত ৩০%"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"একেবাৰে ওপৰত ৯০%, একেবাৰে তলত ১০%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"একেবাৰে তলত থকা এপ্‌ পূৰ্ণ স্ক্ৰীনত খোলক"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"বাওঁফালে বিভাজন কৰক"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"সোঁফালে বিভাজন কৰক"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"একেবাৰে ওপৰৰফালে বিভাজন কৰক"</string>

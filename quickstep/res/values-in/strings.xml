@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Saran aplikasi ditambahkan ke ruang kosong"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Saran aplikasi diaktifkan"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Saran aplikasi dinonaktifkan"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplikasi yang diprediksi: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"Tutorial Navigasi Gestur"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Putar perangkat Anda"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Putar perangkat Anda untuk menyelesaikan tutorial navigasi gestur"</string>
@@ -56,7 +55,7 @@
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Anda telah belajar cara geser dari kanan untuk kembali. Berikutnya, pelajari cara beralih aplikasi."</string>
     <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Anda telah menyelesaikan gestur kembali. Selanjutnya, pelajari cara beralih aplikasi."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Anda telah menyelesaikan gestur untuk kembali"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Pastikan Anda tidak menggeser terlalu dekat ke bagian bawah layar"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Jangan geser terlalu dekat ke bagian bawah layar"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Untuk mengubah sensitivitas gestur kembali, buka Setelan"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Geser untuk kembali"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Untuk kembali ke layar yang sebelumnya dibuka, geser dari tepi kiri atau kanan ke tengah layar."</string>
@@ -64,7 +63,7 @@
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Geser dari tepi kiri atau kanan ke tengah layar"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Pastikan Anda menggeser ke atas dari tepi bawah layar"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Pastikan Anda tidak berhenti sebelum melepaskan sentuhan"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Pastikan Anda menggeser lurus ke atas"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Geser lurus ke atas"</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Anda telah menyelesaikan gestur buka layar utama. Berikutnya, pelajari cara melakukan gestur kembali."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Anda telah menyelesaikan gestur buka layar utama"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Geser untuk beralih ke layar utama"</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Setelan navigasi sistem"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"<xliff:g id="DEVICE">%1$s</xliff:g> Anda sudah \nsiap."</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Perangkat Anda sudah \nsiap."</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"Penyiapan selesai."</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"Selamat menikmati <xliff:g id="DEVICE">%1$s</xliff:g> baru Anda."</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"Geser ke atas untuk mulai menggunakan <xliff:g id="DEVICE">%1$s</xliff:g> Anda"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"Ketuk untuk mulai menggunakan <xliff:g id="DEVICE">%1$s</xliff:g> Anda"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Pilih cara menavigasi"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"Geser ke atas"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"Ketuk tombol layar utama"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notifikasi"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Setelan Cepat"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Taskbar"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskbar ditampilkan"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Taskbar &amp; balon kiri ditampilkan"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Taskbar &amp; bubbles kanan ditampilkan"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Menu navigasi"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Selalu tampilkan Taskbar"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Ubah mode navigasi"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Pemisah Taskbar"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Aplikasi terbaru lainnya"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"Aplikasi ditambahkan ke Taskbar"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"Aplikasi dihapus dari Taskbar"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Pindahkan ke atas/kiri"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Pindahkan ke bawah/kanan"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Buka aplikasi sebagai balon"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"Ikon aplikasi"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"Judul aplikasi"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"Tombol tutup"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"Sematkan ke taskbar"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Lepaskan dari taskbar"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"Saran tindak lanjut"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"Tutup"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"Gambar saran tindak lanjut"</string>

@@ -17,7 +17,6 @@
 package com.android.launcher3.taskbar
 
 import android.animation.AnimatorTestRule
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.BubbleTextView.RunningAppState
 import com.android.launcher3.BubbleTextView.RunningAppState.MINIMIZED
@@ -27,9 +26,9 @@ import com.android.launcher3.model.data.TaskItemInfo
 import com.android.launcher3.taskbar.TaskbarControllerTestUtil.runOnMainSync
 import com.android.launcher3.taskbar.TaskbarRunningAppStateAnimationController.Companion.LINE_ANIM_DURATION
 import com.android.launcher3.taskbar.TaskbarRunningAppStateAnimationController.Companion.UNPINNED_APP_LINE_ANIM_DELAY
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.LauncherMultivalentJUnit
 import com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_APP_RUNNING_STATE_ANIM
+import com.android.launcher3.util.TestActivityContext
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -43,8 +42,8 @@ private val UNPINNED_APP = TaskbarViewTestUtil.createRecentTask(1)
 class TaskbarRunningAppStateAnimationControllerTest {
 
     @get:Rule val animatorTestRule = AnimatorTestRule(this)
+    @get:Rule val context = TestActivityContext()
 
-    private val context = ActivityContextWrapper(getInstrumentation().targetContext)
     private val btv = BubbleTextView(context)
     private val controller = TaskbarRunningAppStateAnimationController(context)
 

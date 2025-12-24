@@ -48,6 +48,7 @@
     </target_preparer>
     <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
         <option name="test-user-token" value="%TEST_USER%"/>
+        <option name="throw-if-cmd-fail" value="true" />
         <option name="run-command" value="rm -rf /data/user/%TEST_USER%/files/*"/>
         <!-- Disable AOD -->
         <option name="run-command" value="settings put secure doze_always_on 0"/>

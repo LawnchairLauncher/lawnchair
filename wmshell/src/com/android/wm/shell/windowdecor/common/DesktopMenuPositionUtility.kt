@@ -27,7 +27,6 @@ import com.android.wm.shell.windowdecor.extension.isFullscreen
 fun calculateMenuPosition(
     splitScreenController: SplitScreenController,
     taskInfo: RunningTaskInfo,
-    marginStart: Int,
     marginTop: Int,
     captionX: Int,
     captionY: Int,
@@ -38,12 +37,9 @@ fun calculateMenuPosition(
     if (taskInfo.isFreeform) {
         val taskBounds = taskInfo.configuration.windowConfiguration.bounds
         return if (isRtl) {
-            Point(
-                /* x= */ taskBounds.right - menuWidth - marginStart,
-                /* y= */ taskBounds.top + marginTop,
-            )
+            Point(/* x= */ taskBounds.right - menuWidth, /* y= */ taskBounds.top + marginTop)
         } else {
-            Point(/* x= */ taskBounds.left + marginStart, /* y= */ taskBounds.top + marginTop)
+            Point(/* x= */ taskBounds.left, /* y= */ taskBounds.top + marginTop)
         }
     }
     val nonFreeformPosition = Point(captionX + (captionWidth / 2) - (menuWidth / 2), captionY)

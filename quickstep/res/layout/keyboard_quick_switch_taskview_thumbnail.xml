@@ -19,5 +19,6 @@
     android:layout_height="match_parent"
     android:scaleType="centerCrop"
     android:background="@drawable/keyboard_quick_switch_thumbnail_background"
+    android:foreground="#29000000"
     android:clipToOutline="true"
     android:importantForAccessibility="no"/>

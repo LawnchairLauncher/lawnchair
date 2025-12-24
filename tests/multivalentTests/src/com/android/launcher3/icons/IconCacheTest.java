@@ -195,7 +195,8 @@ public class IconCacheTest {
         ShortcutKey cacheKey = ShortcutKey.fromInfo(si.getShortcutInfo());
 
         WorkspaceItemInfo info = new WorkspaceItemInfo();
-        runOnExecutorSync(MODEL_EXECUTOR, () -> mIconCache.getShortcutIcon(info, si));
+        runOnExecutorSync(MODEL_EXECUTOR,
+                () -> mIconCache.getShortcutIcon(info, si, DEFAULT_LOOKUP_FLAG));
         assertNotNull(info.bitmap);
         assertFalse(info.bitmap.isLowRes());
 

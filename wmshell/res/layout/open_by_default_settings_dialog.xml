@@ -64,10 +64,11 @@
                     android:lineHeight="32dp"
                     android:textFontWeight="400"
                     android:textSize="24sp"
-                    android:textColor="@android:color/system_on_surface_variant_light"
+                    android:textColor="@androidprv:color/materialColorOnSurfaceVariant"
                     tools:text="Gmail" />
 
                 <TextView
+                    android:id="@+id/dialog_subheader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
@@ -75,7 +76,7 @@
                     android:lineHeight="28dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="16dp"
-                    android:textColor="@android:color/system_on_surface_variant_light"
+                    android:textColor="@androidprv:color/materialColorOnSurfaceVariant"
                     android:text="@string/open_by_default_dialog_subheader_text"/>
 
                 <RadioGroup

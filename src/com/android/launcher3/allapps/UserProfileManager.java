@@ -60,15 +60,11 @@ public abstract class UserProfileManager {
     public @interface UserProfileState { }
 
     protected final StatsLogManager mStatsLogManager;
-    protected final UserManager mUserManager;
     protected final UserCache mUserCache;
 
     @UserProfileState
     private int mCurrentState;
-    protected UserProfileManager(UserManager userManager,
-            StatsLogManager statsLogManager,
-            UserCache userCache) {
-        mUserManager = userManager;
+    protected UserProfileManager(StatsLogManager statsLogManager, UserCache userCache) {
         mStatsLogManager = statsLogManager;
         mUserCache = userCache;
     }
@@ -91,7 +87,7 @@ public abstract class UserProfileManager {
     private void setQuietModeSafely(boolean enable, UserHandle userHandle, Context context) {
         try {
             if (ATLEAST_P) {
-                mUserManager.requestQuietModeEnabled(enable, userHandle);
+                context.getSystemService(UserManager.class).requestQuietModeEnabled(enable, userHandle);
             }
         } catch (SecurityException ex) {
             ApiWrapper.INSTANCE.get(context).assignDefaultHomeRole(context);

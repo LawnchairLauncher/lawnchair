@@ -17,6 +17,7 @@
 package com.android.wm.shell.unfold;
 
 import static android.view.WindowManager.TRANSIT_CHANGE;
+import static android.view.WindowManager.TRANSIT_CLOSE;
 import static android.view.WindowManager.TRANSIT_FLAG_KEYGUARD_GOING_AWAY;
 import static android.view.WindowManager.TRANSIT_NONE;
 
@@ -25,12 +26,15 @@ import static com.android.wm.shell.unfold.UnfoldTransitionHandler.FINISH_ANIMATI
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.RETURNS_SELF;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.app.ActivityManager;
 import android.graphics.Rect;
 import android.os.Binder;
@@ -161,19 +165,11 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
         // Starts the animation, the handler should wait for mShellUnfoldProgressProvider to
         // notify about the end of the animation
-        mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        startAnimation(finishCallback);
 
         // Send fold transition request
         TransitionFinishCallback mergeFinishCallback = mock(TransitionFinishCallback.class);
-        mUnfoldTransitionHandler.mergeAnimation(new Binder(), createFoldTransitionInfo(),
-                mock(SurfaceControl.Transaction.class), mock(SurfaceControl.Transaction.class),
-                mTransition, mergeFinishCallback);
+        mergeAnimation(createFoldTransitionInfo(), mergeFinishCallback);
         mTestLooper.dispatchAll();
 
         // Verify that fold transition is merged into unfold and that unfold is finished
@@ -183,18 +179,60 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
     }
 
     @Test
+    public void handleCloseTransitionMergeRequestWithTaskFragmentClose_acceptsMerge() {
+        TransitionRequestInfo requestInfo = createUnfoldTransitionRequestInfo();
+        mUnfoldTransitionHandler.handleRequest(mTransition, requestInfo);
+        TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
+        // Starts the animation, the handler should wait for mShellUnfoldProgressProvider to
+        // notify about the end of the animation
+        startAnimation(finishCallback);
+
+        // Create CLOSE transition request with task fragment TRANSIT_CLOSE change
+        final TransitionInfo.Change closeTaskFragmentChange =
+                new TransitionInfo.Change(/* container= */ null, /* leash= */ null);
+        closeTaskFragmentChange.setTaskFragmentToken(new Binder());
+        closeTaskFragmentChange.setMode(TRANSIT_CLOSE);
+        final TransitionInfo closeTransitionInfo =
+                createCloseTransitionInfo(closeTaskFragmentChange);
+
+        TransitionFinishCallback mergeFinishCallback = mock(TransitionFinishCallback.class);
+        mergeAnimation(closeTransitionInfo, mergeFinishCallback);
+        mTestLooper.dispatchAll();
+
+        verify(mergeFinishCallback).onTransitionFinished(any());
+    }
+
+    @Test
+    public void handleCloseTransitionMergeRequestWithoutTaskFragmentClose_doesNotAcceptMerge() {
+        TransitionRequestInfo requestInfo = createUnfoldTransitionRequestInfo();
+        mUnfoldTransitionHandler.handleRequest(mTransition, requestInfo);
+        TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
+        // Starts the animation, the handler should wait for mShellUnfoldProgressProvider to
+        // notify about the end of the animation
+        startAnimation(finishCallback);
+
+        // Create CLOSE transition without task fragment change (task fragment token is null)
+        final TransitionInfo.Change closeTaskFragmentChange =
+                new TransitionInfo.Change(/* container= */ null, /* leash= */ null);
+        closeTaskFragmentChange.setTaskFragmentToken(null);
+        closeTaskFragmentChange.setMode(TRANSIT_CLOSE);
+        final TransitionInfo closeTransitionInfo =
+                createCloseTransitionInfo(closeTaskFragmentChange);
+
+        TransitionFinishCallback mergeFinishCallback = mock(TransitionFinishCallback.class);
+        mergeAnimation(closeTransitionInfo, mergeFinishCallback);
+        mTestLooper.dispatchAll();
+
+        verify(mergeFinishCallback, never()).onTransitionFinished(any());
+    }
+
+    @Test
     public void startAnimation_animationHasNotFinishedYet_doesNotFinishTheTransition() {
         TransitionRequestInfo requestInfo = createUnfoldTransitionRequestInfo();
         mUnfoldTransitionHandler.handleRequest(mTransition, requestInfo);
         TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
 
-        mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        startAnimation(finishCallback);
 
         verify(finishCallback, never()).onTransitionFinished(any());
     }
@@ -205,11 +243,9 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         mUnfoldTransitionHandler.handleRequest(mTransition, requestInfo);
         TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
 
-        boolean animationStarted = mUnfoldTransitionHandler.startAnimation(
+        boolean animationStarted = startAnimation(
                 mTransition,
                 mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
                 finishCallback
         );
 
@@ -221,13 +257,7 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         TransitionRequestInfo requestInfo = createUnfoldTransitionRequestInfo();
         mUnfoldTransitionHandler.handleRequest(mTransition, requestInfo);
         TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
-        mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        startAnimation(finishCallback);
 
         mTestLooper.moveTimeForward(FINISH_ANIMATION_TIMEOUT_MILLIS + 1);
         mTestLooper.dispatchAll();
@@ -240,13 +270,8 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         mUnfoldTransitionHandler.handleRequest(new Binder(), createNoneTransitionInfo());
         TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
 
-        boolean animationStarted = mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                createUnfoldTransitionInfo(),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        boolean animationStarted = startAnimation(mTransition, createUnfoldTransitionInfo(),
+                finishCallback);
 
         assertThat(animationStarted).isFalse();
     }
@@ -256,13 +281,8 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         mUnfoldTransitionHandler.handleRequest(new Binder(), createNoneTransitionInfo());
         TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
 
-        boolean animationStarted = mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                createNonUnfoldTransitionInfo(),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        boolean animationStarted = startAnimation(mTransition, createNonUnfoldTransitionInfo(),
+                finishCallback);
 
         assertThat(animationStarted).isFalse();
     }
@@ -273,13 +293,7 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         mUnfoldTransitionHandler.handleRequest(mTransition, requestInfo);
         TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
 
-        mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        startAnimation(finishCallback);
         mShellUnfoldProgressProvider.onStateChangeStarted();
         mShellUnfoldProgressProvider.onStateChangeFinished();
 
@@ -295,13 +309,7 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         mShellUnfoldProgressProvider.onStateChangeStarted();
         mShellUnfoldProgressProvider.onStateChangeProgress(0.5f);
         mShellUnfoldProgressProvider.onStateChangeFinished();
-        mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        startAnimation(finishCallback);
 
         verify(finishCallback).onTransitionFinished(any());
     }
@@ -316,13 +324,7 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         mShellUnfoldProgressProvider.onStateChangeStarted();
         mShellUnfoldProgressProvider.onStateChangeFinished();
         mUnfoldTransitionHandler.handleRequest(mTransition, requestInfo);
-        mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        startAnimation(finishCallback);
         clearInvocations(finishCallback);
 
         // Fold
@@ -354,13 +356,7 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         // Unfold
         mShellUnfoldProgressProvider.onFoldStateChanged(/* isFolded= */ false);
         mUnfoldTransitionHandler.handleRequest(mTransition, requestInfo);
-        mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback
-        );
+        startAnimation(finishCallback);
 
         // Start animation but don't finish it
         mShellUnfoldProgressProvider.onStateChangeStarted();
@@ -379,31 +375,16 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         TransitionFinishCallback finishCallback = mock(TransitionFinishCallback.class);
         TransitionFinishCallback mergeCallback = mock(TransitionFinishCallback.class);
 
-        mUnfoldTransitionHandler.startAnimation(
-                mTransition,
-                mock(TransitionInfo.class),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                finishCallback);
+        startAnimation(finishCallback);
 
         // Offer a keyguard unlock transition - this should NOT merge
-        mUnfoldTransitionHandler.mergeAnimation(
-                new Binder(),
+        mergeAnimation(
                 new TransitionInfoBuilder(TRANSIT_CHANGE, TRANSIT_FLAG_KEYGUARD_GOING_AWAY).build(),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                mTransition,
                 mergeCallback);
         verify(finishCallback, never()).onTransitionFinished(any());
 
         // Offer a CHANGE-only transition - this SHOULD merge (b/278064943)
-        mUnfoldTransitionHandler.mergeAnimation(
-                new Binder(),
-                new TransitionInfoBuilder(TRANSIT_CHANGE).build(),
-                mock(SurfaceControl.Transaction.class),
-                mock(SurfaceControl.Transaction.class),
-                mTransition,
-                mergeCallback);
+        mergeAnimation(new TransitionInfoBuilder(TRANSIT_CHANGE).build(), mergeCallback);
         verify(mergeCallback).onTransitionFinished(any());
 
         // We should never have finished the original transition.
@@ -432,6 +413,38 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
         transitionInfo.addChange(change);
 
         return transitionInfo;
+    }
+
+    private TransitionInfo createCloseTransitionInfo(@Nullable TransitionInfo.Change changeToAdd) {
+        final TransitionInfo transitionInfo = new TransitionInfo(TRANSIT_CLOSE, /* flags= */ 0);
+        transitionInfo.addChange(changeToAdd);
+        return transitionInfo;
+    }
+
+    private boolean startAnimation(@NonNull IBinder transition,
+            @NonNull TransitionInfo transitionInfo,
+            @NonNull TransitionFinishCallback finishCallback) {
+        return mUnfoldTransitionHandler.startAnimation(
+                transition,
+                transitionInfo,
+                mTransactionPool.acquire(),
+                mTransactionPool.acquire(),
+                finishCallback);
+    }
+
+    private boolean startAnimation(@NonNull TransitionFinishCallback finishCallback) {
+        return startAnimation(mTransition, mock(TransitionInfo.class), finishCallback);
+    }
+
+    private void mergeAnimation(@NonNull TransitionInfo transitionInfo,
+            @NonNull TransitionFinishCallback mergeCallback) {
+        mUnfoldTransitionHandler.mergeAnimation(
+                new Binder(),
+                transitionInfo,
+                mTransactionPool.acquire(),
+                mTransactionPool.acquire(),
+                mTransition,
+                mergeCallback);
     }
 
     private TransitionRequestInfo createNoneTransitionInfo() {
@@ -474,7 +487,7 @@ public class UnfoldTransitionHandlerTest extends ShellTestCase {
     private static class TestTransactionPool extends TransactionPool {
         @Override
         public SurfaceControl.Transaction acquire() {
-            return mock(SurfaceControl.Transaction.class);
+            return mock(SurfaceControl.Transaction.class, RETURNS_SELF);
         }
 
         @Override

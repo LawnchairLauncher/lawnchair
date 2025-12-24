@@ -20,13 +20,9 @@ import com.android.wm.shell.compatui.api.CompatUIComponentIdGenerator
 import com.android.wm.shell.compatui.api.CompatUIInfo
 import com.android.wm.shell.compatui.api.CompatUISpec
 
-/**
- * Default {@link CompatUIComponentIdGenerator} implementation.
- */
+/** Default {@link CompatUIComponentIdGenerator} implementation. */
 class DefaultComponentIdGenerator : CompatUIComponentIdGenerator {
-    /**
-     * Simple implementation generating the id from taskId and component name.
-     */
+    /** Simple implementation generating the id from taskId and component name. */
     override fun generateId(compatUIInfo: CompatUIInfo, spec: CompatUISpec): String =
         "${compatUIInfo.taskInfo.taskId}-${spec.name}"
 }

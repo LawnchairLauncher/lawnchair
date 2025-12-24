@@ -90,6 +90,11 @@ public class DragDetector {
      * {@link #mEventHandler} handles the previous down event if the event shouldn't be passed
      */
     public boolean onMotionEvent(View v, MotionEvent ev) {
+        if (ev.isSynthesizedTouchpadGesture()) {
+            // Touchpad finger gestures are ignored.
+            return false;
+        }
+
         final boolean isTouchScreen =
                 (ev.getSource() & SOURCE_TOUCHSCREEN) == SOURCE_TOUCHSCREEN;
         if (!isTouchScreen) {

@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"යෙදුම බුබුලට සහාය නොදක්වයි"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"බෙදුම් තිර වෙන්කරණය"</string>
     <string name="divider_title" msgid="1963391955593749442">"බෙදුම් තිර වෙන්කරණය"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"වම් පූර්ණ තිරය"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"වම් 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"වම් 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"වම් 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"දකුණු පූර්ණ තිරය"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"ඉහළ යෙදුම පහළ සමග මාරු කරන්න"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"වම් යෙදුම දකුණ සමග මාරු කරන්න"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"ඉහළම පූර්ණ තිරය"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ඉහළම 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ඉහළම 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"ඉහළම 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"පහළ පූර්ණ තිරය"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"වම් යෙදුම පූර්ණ තිරය බවට පත් කරන්න"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10% වම, 90% දකුණ"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30% වම, 70% දකුණ"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50% වම, 50% දකුණ"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70% වම, 30% දකුණ"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90% වම, 10% දකුණ"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"දකුණු යෙදුම පූර්ණ තිරය බවට පත් කරන්න"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"ඉහළ යෙදුම පහළ යෙදුම සමග මාරු කරන්න, වත්මන් බෙදීම තබා ගන්න"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"වම් යෙදුම දකුණු යෙදුම සමග මාරු කරන්න, වත්මන් බෙදීම තබා ගන්න"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"ඉහළම යෙදුම පූර්ණ තිරය බවට පත් කරන්න"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10% ඉහළ, 90% පහළ"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30% ඉහළ, 70% පහළ"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50% ඉහළ, 50% පහළ"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70% ඉහළ, 30% පහළ"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90% ඉහළ, 10% පහළ"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"පහළ යෙදුම පූර්ණ තිරය බවට පත් කරන්න"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"වම බෙදන්න"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"දකුණ බෙදන්න"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"ඉහළ බෙදන්න"</string>

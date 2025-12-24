@@ -35,7 +35,7 @@ import android.util.Size;
 
 import androidx.test.filters.SmallTest;
 
-import com.android.window.flags.Flags;
+import com.android.window.flags2.Flags;
 import com.android.wm.shell.ShellTestCase;
 
 import org.junit.Test;

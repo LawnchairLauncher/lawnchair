@@ -37,7 +37,7 @@ class KidsNavLayoutter(
     startContextualContainer: ViewGroup,
     imeSwitcher: ImageView?,
     a11yButton: ImageView?,
-    space: Space?
+    space: Space?,
 ) :
     AbstractNavButtonLayoutter(
         resources,
@@ -46,7 +46,7 @@ class KidsNavLayoutter(
         startContextualContainer,
         imeSwitcher,
         a11yButton,
-        space
+        space,
     ) {
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
@@ -110,7 +110,7 @@ class KidsNavLayoutter(
             WRAP_CONTENT,
             contextualMargin,
             contextualMargin,
-            Gravity.START
+            Gravity.START,
         )
 
         if (imeSwitcher != null) {
@@ -121,5 +121,9 @@ class KidsNavLayoutter(
             endContextualContainer.addView(a11yButton)
             a11yButton.layoutParams = getParamsToCenterView()
         }
+    }
+
+    override fun addThreeButtons() {
+        // No-op
     }
 }

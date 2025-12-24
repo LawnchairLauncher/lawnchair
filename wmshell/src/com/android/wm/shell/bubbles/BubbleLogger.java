@@ -16,17 +16,22 @@
 
 package com.android.wm.shell.bubbles;
 
+import com.android.internal.logging.InstanceId;
 import com.android.internal.logging.UiEvent;
 import com.android.internal.logging.UiEventLogger;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.wm.shell.bubbles.logging.BubbleLoggerExt;
+import com.android.wm.shell.dagger.WMSingleton;
+import com.android.wm.shell.shared.bubbles.logging.EntryPoint;
 
 import javax.inject.Inject;
 
 /**
  * Implementation of UiEventLogger for logging bubble UI events.
  *
- * See UiEventReported atom in atoms.proto for more context.
+ * <p>See UiEventReported atom in atoms.proto for more context.
  */
+@WMSingleton
 public class BubbleLogger {
 
     private final UiEventLogger mUiEventLogger;
@@ -67,6 +72,33 @@ public class BubbleLogger {
 
         @UiEvent(doc = "Restore bubble to overflow after phone reboot.")
         BUBBLE_OVERFLOW_RECOVER(691),
+
+        @UiEvent(doc = "Bubble session started.")
+        BUBBLE_SESSION_STARTED(2422),
+
+        @UiEvent(doc = "Bubble session ended.")
+        BUBBLE_SESSION_ENDED(2423),
+
+        @UiEvent(doc = "The newly selected bubble while expanded.")
+        BUBBLE_SESSION_SWITCHED_TO(2427),
+
+        @UiEvent(doc = "The previously selected bubble while expanded.")
+        BUBBLE_SESSION_SWITCHED_FROM(2428),
+
+        @UiEvent(doc = "New bubble created from a notification for a previously promoted chat.")
+        BUBBLE_CREATED_FROM_NOTIF(2432),
+
+        @UiEvent(doc = "New bubble created by tapping on the bubble button on the notification.")
+        BUBBLE_CREATED_FROM_NOTIF_BUBBLE_BUTTON(2433),
+
+        @UiEvent(doc = "New bubble created from an all apps icon menu.")
+        BUBBLE_CREATED_FROM_ALL_APPS_ICON_MENU(2436),
+
+        @UiEvent(doc = "New bubble created from a launcher icon menu.")
+        BUBBLE_CREATED_FROM_LAUNCHER_ICON_MENU(2437),
+
+        @UiEvent(doc = "New bubble created from a hotseat icon menu.")
+        BUBBLE_CREATED_FROM_HOTSEAT_ICON_MENU(2456),
 
         // endregion
 
@@ -162,6 +194,42 @@ public class BubbleLogger {
         @UiEvent(doc = "bubble bar moved to the right edge of the screen by dragging a task")
         BUBBLE_BAR_MOVED_RIGHT_DRAG_TASK(2147),
 
+        @UiEvent(doc = "Bubble Bar session started.")
+        BUBBLE_BAR_SESSION_STARTED(2424),
+
+        @UiEvent(doc = "Bubble Bar session ended.")
+        BUBBLE_BAR_SESSION_ENDED(2425),
+
+        @UiEvent(doc = "The newly selected bubble bar bubble while expanded.")
+        BUBBLE_BAR_SESSION_SWITCHED_TO(2429),
+
+        @UiEvent(doc = "The previously selected bubble bar bubble while expanded.")
+        BUBBLE_BAR_SESSION_SWITCHED_FROM(2430),
+
+        @UiEvent(doc = "New bubble created from a notification for a previously promoted chat.")
+        BUBBLE_BAR_CREATED_FROM_NOTIF(2438),
+
+        @UiEvent(doc = "New bubble created by tapping on the bubble button on the notification.")
+        BUBBLE_BAR_CREATED_FROM_NOTIF_BUBBLE_BUTTON(2439),
+
+        @UiEvent(doc = "New bubble created by dragging a taskbar icon.")
+        BUBBLE_BAR_CREATED_FROM_TASKBAR_ICON_DRAG(2440),
+
+        @UiEvent(doc = "New bubble created by dragging an all apps icon.")
+        BUBBLE_BAR_CREATED_FROM_ALL_APPS_ICON_DRAG(2441),
+
+        @UiEvent(doc = "New bubble created from an all apps icon menu.")
+        BUBBLE_BAR_CREATED_FROM_ALL_APPS_ICON_MENU(2442),
+
+        @UiEvent(doc = "New bubble created from a launcher icon menu.")
+        BUBBLE_BAR_CREATED_FROM_LAUNCHER_ICON_MENU(2443),
+
+        @UiEvent(doc = "New bubble created from a taskbar icon menu.")
+        BUBBLE_BAR_CREATED_FROM_TASKBAR_ICON_MENU(2444),
+
+        @UiEvent(doc = "New bubble created from a hotseat icon menu.")
+        BUBBLE_BAR_CREATED_FROM_HOTSEAT_ICON_MENU(2457),
+
         // endregion
         ;
 
@@ -194,6 +262,22 @@ public class BubbleLogger {
      */
     public void log(Bubble b, UiEventLogger.UiEventEnum e) {
         mUiEventLogger.logWithInstanceId(e, b.getAppUid(), b.getPackageName(), b.getInstanceId());
+    }
+
+    /** Log a UiEvent for the specified {@code sessionId}. */
+    public void logWithSessionId(UiEventLogger.UiEventEnum e, String packageName,
+            InstanceId sessionId) {
+        mUiEventLogger.logWithInstanceId(e, /* uid= */ 0, packageName, sessionId);
+    }
+
+    /** Logs a UiEvent for the bubble entry point. */
+    public void logEntryPoint(boolean isBubbleBar, EntryPoint entryPoint, String packageName) {
+        UiEventLogger.UiEventEnum e = isBubbleBar
+                ? BubbleLoggerExt.toBubbleBarUiEvent(entryPoint)
+                : BubbleLoggerExt.toFloatingBubblesUiEvent(entryPoint);
+        if (e != null) {
+            mUiEventLogger.log(e, /* uid= */ 0, packageName);
+        }
     }
 
     /**

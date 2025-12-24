@@ -23,13 +23,13 @@ package {
     default_applicable_licenses: ["frameworks_base_license"],
 }
 
-java_library {
+android_library {
     name: "WMShellScenariosDesktopMode",
     platform_apis: true,
     optimize: {
         enabled: false,
     },
-    srcs: ["src/**/*.kt"],
+    srcs: ["src/**/scenarios/*.kt"],
     static_libs: [
         "WMShellFlickerTestsBase",
         "WMShellTestUtils",
@@ -43,6 +43,714 @@ java_library {
         "wm-flicker-common-app-helpers",
         "launcher-helper-lib",
         "launcher-aosp-tapl",
+        "systemui-tapl",
+        "sysui-helper",
+        "systemui-helper",
         "desktop-test-lib",
     ],
+}
+
+android_test {
+    name: "FunctionalTestsDesktopMode",
+    defaults: ["WMShellFlickerTestsDefault"],
+    manifest: "AndroidManifest.xml",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: ["src/com/android/wm/shell/functional/**/*.kt"],
+    static_libs: [
+        "WMShellFlickerTestsBase",
+        "WMShellScenariosDesktopMode",
+        "WMShellTestUtils",
+    ],
+    data: ["trace_config/*"],
+}
+
+// Auto generated section, don't update it manually
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-CatchAll",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    exclude_filters: [
+        "com.android.wm.shell.functional.ChromeNewTabAtWindowLimitTest",
+        "com.android.wm.shell.functional.CloseAllAppsWithAppHeaderExitTest",
+        "com.android.wm.shell.functional.DisableDisplayMirroringSwitchTest",
+        "com.android.wm.shell.functional.DragMoveWindowToNextDisplayTest",
+        "com.android.wm.shell.functional.EnableDisplayMirroringSwitchTest",
+        "com.android.wm.shell.functional.EnterDesktopViaMenuOfLiveOverviewTaskTest",
+        "com.android.wm.shell.functional.EnterDesktopViaMenuOfStaticOverviewTaskTest",
+        "com.android.wm.shell.functional.EnterDesktopViaStaticDesktopOverviewTaskTest",
+        "com.android.wm.shell.functional.EnterDesktopWithDragExistingWindowsTest",
+        "com.android.wm.shell.functional.EnterDesktopWithDragWindowsLimitTest",
+        "com.android.wm.shell.functional.FocusAppFromAllAppsTest",
+        "com.android.wm.shell.functional.FocusAppFromTaskbarTest",
+        "com.android.wm.shell.functional.FocusAppFromTaskbarOverflowTest",
+        "com.android.wm.shell.functional.MoveToNextDisplayTest",
+        "com.android.wm.shell.functional.MoveToNextDisplayProjectedTest",
+        "com.android.wm.shell.functional.OpenTrampolineAppInDesktopModeTaskLimitTest",
+        "com.android.wm.shell.functional.TabTearingDesktopWindowingLimitTest",
+        "com.android.wm.shell.functional.TabTearingTest",
+        "com.android.wm.shell.functional.UnmaximizeAppWindowTest",
+        "com.android.wm.shell.functional.UnminimizeAppFromAllAppsTest",
+        "com.android.wm.shell.functional.UnminimizeAppFromTaskbarTest",
+        "com.android.wm.shell.functional.appcompat.DialogStaysInsideDesktopAppTest",
+        "com.android.wm.shell.functional.appcompat.ResizeActivityEmbeddedAppToMinimumWindowTest",
+        "com.android.wm.shell.functional.appcompat.ShowAppDialogInDesktopModeTest",
+        "com.android.wm.shell.functional.appcompat.ShowQuickShareDialogFromQuickSettingsTest",
+        "com.android.wm.shell.functional.exit.ExitDesktopToFullScreenWithAppHeaderMenuTest",
+        "com.android.wm.shell.functional.exit.ExitDesktopToSplitScreenWithAppHeaderMenuTest",
+        "com.android.wm.shell.functional.exit.ExitDesktopWithDragToTopDragZoneTest",
+        "com.android.wm.shell.functional.externaldisplay.MaximizeAppWindowWithDragToTopDragZoneInDesktopFirstTest",
+        "com.android.wm.shell.functional.externaldisplay.OpenAppWithExternalDisplayConnectedTest",
+        "com.android.wm.shell.functional.fundamentals.CloseAllAppsViaAppHeaderExitTest",
+        "com.android.wm.shell.functional.fundamentals.CloseAllAppsWithBackNavigationTest",
+        "com.android.wm.shell.functional.fundamentals.DragAppWindowMultiWindowAndPipTest",
+        "com.android.wm.shell.functional.fundamentals.DragAppWindowSingleWindowTest",
+        "com.android.wm.shell.functional.fundamentals.EnterDesktopFromSplitScreenWithAppHandleMenuTest",
+        "com.android.wm.shell.functional.fundamentals.EnterDesktopWithAppHandleMenuExistingWindowsTest",
+        "com.android.wm.shell.functional.fundamentals.EnterDesktopWithAppHandleMenuTest",
+        "com.android.wm.shell.functional.fundamentals.EnterDesktopWithDragTest",
+        "com.android.wm.shell.functional.fundamentals.EnterSplitScreenWithAppHandleMenuTest",
+        "com.android.wm.shell.functional.fundamentals.EnterSplitScreenWithDragTest",
+        "com.android.wm.shell.functional.fundamentals.OpenAppFromAllAppsTest",
+        "com.android.wm.shell.functional.fundamentals.OpenAppFromTaskbarTest",
+        "com.android.wm.shell.functional.fundamentals.OpenAppsInDesktopModeTest",
+        "com.android.wm.shell.functional.fundamentals.OpenUnlimitedAppsTest",
+        "com.android.wm.shell.functional.fundamentals.QuickSwitchBetweenDesktopAndFullscreenTest",
+        "com.android.wm.shell.functional.fundamentals.SwitchFocusBetweenAppsTest",
+        "com.android.wm.shell.functional.fundamentals.SwitchToDesktopFromOverviewTest",
+        "com.android.wm.shell.functional.fundamentals.SwitchToHomeFromDesktopTest",
+        "com.android.wm.shell.functional.fundamentals.SwitchToOverviewFromDesktopTest",
+        "com.android.wm.shell.functional.fundamentals.TaskbarInDesktopModeTest",
+        "com.android.wm.shell.functional.fundamentals.UnlockIntoDesktopFromLockScreenTest",
+        "com.android.wm.shell.functional.fundamentals.focus.ClickAndFocusTest",
+        "com.android.wm.shell.functional.fundamentals.focus.CloseThenMoveFocusTest",
+        "com.android.wm.shell.functional.fundamentals.focus.DragAndKeepFocusTest",
+        "com.android.wm.shell.functional.fundamentals.focus.MoveToNextDisplayAndFocusTest",
+        "com.android.wm.shell.functional.fundamentals.focus.OpenAndFocusTest",
+        "com.android.wm.shell.functional.immersive.EnterImmersiveViaHeaderMenuTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.ActionTabSwitchToDesktopAppTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.AltTabSwitchInDesktopModeTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.AltTabSwitchOutDesktopModeTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.AltTabSwitchToUnminimizeInDesktopModeTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.EnterDesktopFromKeyboardShortcutTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.ExitDesktopFromKeyboardShortcutTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.ExitImmersiveToDesktopWithKeyboardShortcutTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.OpenAppFromAllAppsUsingKeyboardTest",
+        "com.android.wm.shell.functional.keyboardshortcuts.OpenBrowserWithKeyboardShortcutTest",
+        "com.android.wm.shell.functional.maximize.MaximizeAppWindowTest",
+        "com.android.wm.shell.functional.maximize.MaximizeUnfocusedAppWindowTest",
+        "com.android.wm.shell.functional.mediaprojection.StartAppMediaProjectionResizeAndDragTest",
+        "com.android.wm.shell.functional.mediaprojection.StartAppMediaProjectionWithMaxDesktopWindowsTest",
+        "com.android.wm.shell.functional.mediaprojection.StartScreenMediaProjectionWithMaxDesktopWindowsTest",
+        "com.android.wm.shell.functional.minimize.MinimizeAppWindowsTest",
+        "com.android.wm.shell.functional.minimize.MinimizeAutoPipAppWindowTest",
+        "com.android.wm.shell.functional.minimize.MinimizeWindowOnAppOpenTest",
+        "com.android.wm.shell.functional.minimize.MinimizeWindowOnAppOpenViaIntentTest",
+        "com.android.wm.shell.functional.resizing.ResizeAppCornerMultiWindowAndPipTest",
+        "com.android.wm.shell.functional.resizing.ResizeAppCornerMultiWindowTest",
+        "com.android.wm.shell.functional.resizing.ResizeAppWithCornerResizeTest",
+        "com.android.wm.shell.functional.resizing.ResizeAppWithEdgeResizeTest",
+        "com.android.wm.shell.functional.resizing.RestartSizeCompatAppInDesktopMode",
+        "com.android.wm.shell.functional.resizing.ScaleDensityForExternalDisplayTest",
+        "com.android.wm.shell.functional.resizing.SnapResizeAppWindowWithButtonTest",
+        "com.android.wm.shell.functional.resizing.SnapResizeAppWindowWithDragTest",
+        "com.android.wm.shell.functional.resizing.SnapResizeAppWindowWithKeyboardTest",
+        "com.android.wm.shell.functional.taskbar.LaunchNewInstanceFromTaskbarMenuTest",
+        "com.android.wm.shell.functional.tiling.TilingTest",
+    ],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-ChromeNewTabAtWindowLimitTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.ChromeNewTabAtWindowLimitTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-CloseAllAppsWithAppHeaderExitTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.CloseAllAppsWithAppHeaderExitTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-DisableDisplayMirroringSwitchTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.DisableDisplayMirroringSwitchTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-DragMoveWindowToNextDisplayTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.DragMoveWindowToNextDisplayTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-EnableDisplayMirroringSwitchTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.EnableDisplayMirroringSwitchTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-EnterDesktopViaMenuOfLiveOverviewTaskTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.EnterDesktopViaMenuOfLiveOverviewTaskTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-EnterDesktopViaMenuOfStaticOverviewTaskTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.EnterDesktopViaMenuOfStaticOverviewTaskTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-EnterDesktopViaStaticDesktopOverviewTaskTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.EnterDesktopViaStaticDesktopOverviewTaskTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-EnterDesktopWithDragExistingWindowsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.EnterDesktopWithDragExistingWindowsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-EnterDesktopWithDragWindowsLimitTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.EnterDesktopWithDragWindowsLimitTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-FocusAppFromAllAppsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.FocusAppFromAllAppsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-FocusAppFromTaskbarTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.FocusAppFromTaskbarTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-FocusAppFromTaskbarOverflowTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.FocusAppFromTaskbarOverflowTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-MoveToNextDisplayTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.MoveToNextDisplayTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-MoveToNextDisplayProjectedTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.MoveToNextDisplayProjectedTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-OpenTrampolineAppInDesktopModeTaskLimitTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.OpenTrampolineAppInDesktopModeTaskLimitTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-TabTearingDesktopWindowingLimitTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.TabTearingDesktopWindowingLimitTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-TabTearingTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.TabTearingTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-UnmaximizeAppWindowTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.UnmaximizeAppWindowTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-UnminimizeAppFromAllAppsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.UnminimizeAppFromAllAppsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-UnminimizeAppFromTaskbarTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.UnminimizeAppFromTaskbarTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-appcompat-DialogStaysInsideDesktopAppTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.appcompat.DialogStaysInsideDesktopAppTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-appcompat-ResizeActivityEmbeddedAppToMinimumWindowTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.appcompat.ResizeActivityEmbeddedAppToMinimumWindowTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-appcompat-ShowAppDialogInDesktopModeTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.appcompat.ShowAppDialogInDesktopModeTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-appcompat-ShowQuickShareDialogFromQuickSettingsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.appcompat.ShowQuickShareDialogFromQuickSettingsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-exit-ExitDesktopToFullScreenWithAppHeaderMenuTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.exit.ExitDesktopToFullScreenWithAppHeaderMenuTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-exit-ExitDesktopToSplitScreenWithAppHeaderMenuTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.exit.ExitDesktopToSplitScreenWithAppHeaderMenuTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-exit-ExitDesktopWithDragToTopDragZoneTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.exit.ExitDesktopWithDragToTopDragZoneTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-externaldisplay-MaximizeAppWindowWithDragToTopDragZoneInDesktopFirstTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.externaldisplay.MaximizeAppWindowWithDragToTopDragZoneInDesktopFirstTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-externaldisplay-OpenAppWithExternalDisplayConnectedTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.externaldisplay.OpenAppWithExternalDisplayConnectedTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-CloseAllAppsViaAppHeaderExitTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.CloseAllAppsViaAppHeaderExitTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-CloseAllAppsWithBackNavigationTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.CloseAllAppsWithBackNavigationTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-DragAppWindowMultiWindowAndPipTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.DragAppWindowMultiWindowAndPipTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-DragAppWindowSingleWindowTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.DragAppWindowSingleWindowTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-EnterDesktopFromSplitScreenWithAppHandleMenuTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.EnterDesktopFromSplitScreenWithAppHandleMenuTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-EnterDesktopWithAppHandleMenuExistingWindowsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.EnterDesktopWithAppHandleMenuExistingWindowsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-EnterDesktopWithAppHandleMenuTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.EnterDesktopWithAppHandleMenuTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-EnterDesktopWithDragTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.EnterDesktopWithDragTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-EnterSplitScreenWithAppHandleMenuTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.EnterSplitScreenWithAppHandleMenuTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-EnterSplitScreenWithDragTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.EnterSplitScreenWithDragTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-OpenAppFromAllAppsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.OpenAppFromAllAppsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-OpenAppFromTaskbarTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.OpenAppFromTaskbarTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-OpenAppsInDesktopModeTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.OpenAppsInDesktopModeTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-OpenUnlimitedAppsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.OpenUnlimitedAppsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-QuickSwitchBetweenDesktopAndFullscreenTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.QuickSwitchBetweenDesktopAndFullscreenTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-SwitchFocusBetweenAppsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.SwitchFocusBetweenAppsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-SwitchToDesktopFromOverviewTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.SwitchToDesktopFromOverviewTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-SwitchToHomeFromDesktopTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.SwitchToHomeFromDesktopTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-SwitchToOverviewFromDesktopTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.SwitchToOverviewFromDesktopTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-TaskbarInDesktopModeTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.TaskbarInDesktopModeTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-UnlockIntoDesktopFromLockScreenTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.UnlockIntoDesktopFromLockScreenTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-focus-ClickAndFocusTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.focus.ClickAndFocusTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-focus-CloseThenMoveFocusTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.focus.CloseThenMoveFocusTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-focus-DragAndKeepFocusTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.focus.DragAndKeepFocusTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-focus-MoveToNextDisplayAndFocusTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.focus.MoveToNextDisplayAndFocusTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-fundamentals-focus-OpenAndFocusTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.fundamentals.focus.OpenAndFocusTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-immersive-EnterImmersiveViaHeaderMenuTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.immersive.EnterImmersiveViaHeaderMenuTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-keyboardshortcuts-AltTabSwitchInDesktopModeTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.keyboardshortcuts.AltTabSwitchInDesktopModeTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-keyboardshortcuts-AltTabSwitchOutDesktopModeTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.keyboardshortcuts.AltTabSwitchOutDesktopModeTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-keyboardshortcuts-AltTabSwitchToUnminimizeInDesktopModeTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.keyboardshortcuts.AltTabSwitchToUnminimizeInDesktopModeTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-keyboardshortcuts-EnterDesktopFromKeyboardShortcutTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.keyboardshortcuts.EnterDesktopFromKeyboardShortcutTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-keyboardshortcuts-ExitDesktopFromKeyboardShortcutTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.keyboardshortcuts.ExitDesktopFromKeyboardShortcutTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-keyboardshortcuts-ExitImmersiveToDesktopWithKeyboardShortcutTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.keyboardshortcuts.ExitImmersiveToDesktopWithKeyboardShortcutTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-keyboardshortcuts-OpenAppFromAllAppsUsingKeyboardTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.keyboardshortcuts.OpenAppFromAllAppsUsingKeyboardTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-keyboardshortcuts-OpenBrowserWithKeyboardShortcutTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.keyboardshortcuts.OpenBrowserWithKeyboardShortcutTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-maximize-MaximizeAppWindowTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.maximize.MaximizeAppWindowTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-maximize-MaximizeUnfocusedAppWindowTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.maximize.MaximizeUnfocusedAppWindowTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-mediaprojection-StartAppMediaProjectionResizeAndDragTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.mediaprojection.StartAppMediaProjectionResizeAndDragTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-mediaprojection-StartAppMediaProjectionWithMaxDesktopWindowsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.mediaprojection.StartAppMediaProjectionWithMaxDesktopWindowsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-mediaprojection-StartScreenMediaProjectionWithMaxDesktopWindowsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.mediaprojection.StartScreenMediaProjectionWithMaxDesktopWindowsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-minimize-MinimizeAppWindowsTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.minimize.MinimizeAppWindowsTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-minimize-MinimizeAutoPipAppWindowTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.minimize.MinimizeAutoPipAppWindowTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-minimize-MinimizeWindowOnAppOpenTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.minimize.MinimizeWindowOnAppOpenTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-minimize-MinimizeWindowOnAppOpenViaIntentTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.minimize.MinimizeWindowOnAppOpenViaIntentTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-ResizeAppCornerMultiWindowAndPipTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.ResizeAppCornerMultiWindowAndPipTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-ResizeAppCornerMultiWindowTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.ResizeAppCornerMultiWindowTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-ResizeAppWithCornerResizeTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.ResizeAppWithCornerResizeTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-ResizeAppWithEdgeResizeTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.ResizeAppWithEdgeResizeTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-RestartSizeCompatAppInDesktopMode",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.RestartSizeCompatAppInDesktopMode"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-ScaleDensityForExternalDisplayTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.ScaleDensityForExternalDisplayTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-SnapResizeAppWindowWithButtonTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.SnapResizeAppWindowWithButtonTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-SnapResizeAppWindowWithDragTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.SnapResizeAppWindowWithDragTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-resizing-SnapResizeAppWindowWithKeyboardTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.resizing.SnapResizeAppWindowWithKeyboardTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-taskbar-LaunchNewInstanceFromTaskbarMenuTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.taskbar.LaunchNewInstanceFromTaskbarMenuTest"],
+}
+
+test_module_config {
+    name: "FunctionalTestsDesktopMode-tiling-TilingTest",
+    base: "FunctionalTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.functional.tiling.TilingTest"],
 }

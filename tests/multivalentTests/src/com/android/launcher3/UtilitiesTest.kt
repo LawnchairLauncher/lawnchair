@@ -16,7 +16,6 @@
 
 package com.android.launcher3
 
-import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Rect
 import android.graphics.RectF
@@ -24,15 +23,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.deviceprofile.DeviceProperties
+import com.android.launcher3.util.TestActivityContext
+import com.android.window.flags.Flags.enableNonDefaultDisplaySplit
 import kotlin.random.Random
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
+import org.junit.Assume
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 @RunWith(AndroidJUnit4::class)
 class UtilitiesTest {
@@ -41,11 +45,16 @@ class UtilitiesTest {
         const val SEED = 827
     }
 
-    private lateinit var mContext: Context
+    @get:Rule val mContext = TestActivityContext()
 
-    @Before
-    fun setUp() {
-        mContext = ActivityContextWrapper(getApplicationContext())
+    private val mockDeviceProperties = mock(DeviceProperties::class.java)
+
+    private fun mockDeviceIsTablet(isTablet: Boolean) {
+        `when`(mockDeviceProperties!!.isTablet).thenReturn(isTablet)
+    }
+
+    private fun mockDeviceIsLandscape(isLandscape: Boolean) {
+        `when`(mockDeviceProperties!!.isLandscape).thenReturn(isLandscape)
     }
 
     @Test
@@ -129,22 +138,22 @@ class UtilitiesTest {
             assertEquals(
                 "Utilities.boundToRange doesn't match Kotlin coerceIn",
                 value.coerceIn(lowerBound, higherBound),
-                Utilities.boundToRange(value, lowerBound, higherBound)
+                Utilities.boundToRange(value, lowerBound, higherBound),
             )
             assertEquals(
                 "Utilities.boundToRange doesn't match Kotlin coerceIn",
                 value.toInt().coerceIn(lowerBound.toInt(), higherBound.toInt()),
-                Utilities.boundToRange(value.toInt(), lowerBound.toInt(), higherBound.toInt())
+                Utilities.boundToRange(value.toInt(), lowerBound.toInt(), higherBound.toInt()),
             )
             assertEquals(
                 "Utilities.boundToRange doesn't match Kotlin coerceIn",
                 value.toLong().coerceIn(lowerBound.toLong(), higherBound.toLong()),
-                Utilities.boundToRange(value.toLong(), lowerBound.toLong(), higherBound.toLong())
+                Utilities.boundToRange(value.toLong(), lowerBound.toLong(), higherBound.toLong()),
             )
             assertEquals(
                 "If the lower bound is higher than lower bound, it should return the lower bound",
                 higherBound,
-                Utilities.boundToRange(value, higherBound, lowerBound)
+                Utilities.boundToRange(value, higherBound, lowerBound),
             )
         }
     }
@@ -179,7 +188,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_RIGHT
+            Utilities.TRANSLATE_RIGHT,
         )
         assertEquals(30f, targetView.translationX)
         Utilities.translateOverlappingView(
@@ -187,7 +196,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_LEFT
+            Utilities.TRANSLATE_LEFT,
         )
         assertEquals(-30f, targetView.translationX)
         Utilities.translateOverlappingView(
@@ -195,7 +204,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_DOWN
+            Utilities.TRANSLATE_DOWN,
         )
         assertEquals(30f, targetView.translationY)
         Utilities.translateOverlappingView(
@@ -203,7 +212,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_UP
+            Utilities.TRANSLATE_UP,
         )
         assertEquals(-30f, targetView.translationY)
     }
@@ -233,7 +242,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_RIGHT
+            Utilities.TRANSLATE_RIGHT,
         )
         assertEquals(0f, targetView.translationX)
         Utilities.translateOverlappingView(
@@ -241,7 +250,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_LEFT
+            Utilities.TRANSLATE_LEFT,
         )
         assertEquals(0f, targetView.translationX)
         Utilities.translateOverlappingView(
@@ -249,7 +258,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_DOWN
+            Utilities.TRANSLATE_DOWN,
         )
         assertEquals(0f, targetView.translationY)
         Utilities.translateOverlappingView(
@@ -257,7 +266,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_UP
+            Utilities.TRANSLATE_UP,
         )
         assertEquals(0f, targetView.translationY)
     }
@@ -285,7 +294,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_RIGHT
+            Utilities.TRANSLATE_RIGHT,
         )
         assertEquals(15f, targetView.translationX)
         Utilities.translateOverlappingView(
@@ -293,7 +302,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_LEFT
+            Utilities.TRANSLATE_LEFT,
         )
         assertEquals(-5f, targetView.translationX)
         Utilities.translateOverlappingView(
@@ -301,7 +310,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_DOWN
+            Utilities.TRANSLATE_DOWN,
         )
         assertEquals(15f, targetView.translationY)
         Utilities.translateOverlappingView(
@@ -309,7 +318,7 @@ class UtilitiesTest {
             targetViewBounds,
             inclusionBounds,
             exclusionBounds,
-            Utilities.TRANSLATE_UP
+            Utilities.TRANSLATE_UP,
         )
         assertEquals(-5f, targetView.translationY)
     }
@@ -384,5 +393,130 @@ class UtilitiesTest {
         rect = Rect(20, 70, 60, 80)
         Utilities.rotateBounds(rect, 100, 100, 3)
         assertEquals(Rect(20, 20, 30, 60), rect)
+    }
+
+    @Test
+    fun testIsLeftRightSplit_portraitMode() {
+        // Mock a device in portrait mode.
+        mockDeviceIsLandscape(false)
+
+        // WHEN: `allowLeftRightSplitInPortrait` is false, and it's not a tablet.
+        mockDeviceIsTablet(false)
+        var result: Boolean =
+            Utilities.calculateIsLeftRightSplit(false, mockDeviceProperties, false)
+        // THEN: The split should be top/bottom, so `false` is returned.
+        assertEquals(false, result)
+
+        // WHEN: `allowLeftRightSplitInPortrait` is true, but it's not a tablet.
+        mockDeviceIsTablet(false)
+        result = Utilities.calculateIsLeftRightSplit(true, mockDeviceProperties, false)
+        // THEN: The split should still be top/bottom, so `false` is returned.
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun testIsLeftRightSplit_landscapeMode() {
+        // Mock a device in landscape mode.
+        mockDeviceIsLandscape(true)
+
+        // WHEN: `allowLeftRightSplitInPortrait` is false.
+        var result: Boolean =
+            Utilities.calculateIsLeftRightSplit(false, mockDeviceProperties, false)
+        // THEN: The split should be left/right, so `true` is returned.
+        assertEquals(true, result)
+
+        // WHEN: `allowLeftRightSplitInPortrait` is true, but it's not a tablet.
+        mockDeviceIsTablet(false)
+        result = Utilities.calculateIsLeftRightSplit(true, mockDeviceProperties, false)
+        // THEN: The split should be left/right, so `true` is returned.
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun testIsLeftRightSplit_tablet_portrait_noExternalDisplay() {
+        // GIVEN: A tablet in portrait mode.
+        mockDeviceIsTablet(true)
+        mockDeviceIsLandscape(false)
+
+        // WHEN: It's not an external display.
+        val result: Boolean = Utilities.calculateIsLeftRightSplit(true, mockDeviceProperties, false)
+        // THEN: The split should be left/right, so `true` is returned.
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun testIsLeftRightSplit_tablet_landscape_noExternalDisplay() {
+        // GIVEN: A tablet in landscape mode.
+        mockDeviceIsTablet(true)
+        mockDeviceIsLandscape(true)
+
+        // WHEN: It's not an external display.
+        val result: Boolean = Utilities.calculateIsLeftRightSplit(true, mockDeviceProperties, false)
+        // THEN: The split should be top/bottom, so `false` is returned.
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun testIsLeftRightSplit_tablet_portrait_externalDisplay_disabled() {
+        Assume.assumeFalse(
+            "assume FLAG_ENABLE_NON_DEFAULT_DISPLAY_SPLIT is not enabled.",
+            enableNonDefaultDisplaySplit(),
+        )
+
+        // GIVEN: A tablet in portrait mode, on an external display.
+        mockDeviceIsTablet(true)
+        mockDeviceIsLandscape(false)
+
+        val result: Boolean = Utilities.calculateIsLeftRightSplit(true, mockDeviceProperties, true)
+        // THEN: The split should be left/right, so `true` is returned.
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun testIsLeftRightSplit_tablet_landscape_externalDisplay_disabled() {
+        Assume.assumeFalse(
+            "assume FLAG_ENABLE_NON_DEFAULT_DISPLAY_SPLIT is not enabled.",
+            enableNonDefaultDisplaySplit(),
+        )
+
+        // GIVEN: A tablet in landscape mode, on an external display.
+        mockDeviceIsTablet(true)
+        mockDeviceIsLandscape(true)
+
+        val result: Boolean = Utilities.calculateIsLeftRightSplit(true, mockDeviceProperties, true)
+        // THEN: The split should be top/bottom, so `false` is returned.
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun testIsLeftRightSplit_tablet_portrait_externalDisplay_enabled() {
+        Assume.assumeTrue(
+            "assume FLAG_ENABLE_NON_DEFAULT_DISPLAY_SPLIT is enabled.",
+            enableNonDefaultDisplaySplit(),
+        )
+
+        // GIVEN: A tablet in portrait mode, on an external display.
+        mockDeviceIsTablet(true)
+        mockDeviceIsLandscape(false)
+
+        val result: Boolean = Utilities.calculateIsLeftRightSplit(true, mockDeviceProperties, true)
+        // THEN: The split should be top/bottom, so `false` is returned.
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun testIsLeftRightSplit_tablet_landscape_externalDisplay_enabled() {
+        Assume.assumeTrue(
+            "assume FLAG_ENABLE_NON_DEFAULT_DISPLAY_SPLIT is enabled.",
+            enableNonDefaultDisplaySplit(),
+        )
+
+        // GIVEN: A tablet in landscape mode, on an external display.
+        mockDeviceIsTablet(true)
+        mockDeviceIsLandscape(true)
+
+        val result: Boolean = Utilities.calculateIsLeftRightSplit(true, mockDeviceProperties, true)
+        // THEN: The split should be left/right, so `true` is returned.
+        assertEquals(true, result)
     }
 }

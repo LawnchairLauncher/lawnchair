@@ -34,6 +34,7 @@ import android.view.WindowManager.TRANSIT_SLEEP
 import android.view.WindowManager.TRANSIT_TO_BACK
 import android.view.WindowManager.TRANSIT_TO_FRONT
 import android.view.WindowManager.TRANSIT_WAKE
+import android.window.DesktopExperienceFlags
 import android.window.IWindowContainerToken
 import android.window.TransitionInfo
 import android.window.TransitionInfo.Change
@@ -52,18 +53,18 @@ import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.TaskUpd
 import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.UnminimizeReason
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_DESKTOP_MODE_END_DRAG_TO_DESKTOP
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_DESKTOP_MODE_TASK_LIMIT_MINIMIZE
-import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_ENTER_DESKTOP_FROM_APP_FROM_OVERVIEW
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_ENTER_DESKTOP_FROM_APP_HANDLE_MENU_BUTTON
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_ENTER_DESKTOP_FROM_KEYBOARD_SHORTCUT
+import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_ENTER_DESKTOP_FROM_OVERVIEW_TASK_MENU
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_ENTER_DESKTOP_FROM_UNKNOWN
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_EXIT_DESKTOP_MODE_HANDLE_MENU_BUTTON
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_EXIT_DESKTOP_MODE_KEYBOARD_SHORTCUT
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_EXIT_DESKTOP_MODE_TASK_DRAG
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.TRANSIT_EXIT_DESKTOP_MODE_UNKNOWN
+import com.android.wm.shell.desktopmode.multidesks.DesksOrganizer
 import com.android.wm.shell.shared.desktopmode.FakeDesktopState
 import com.android.wm.shell.sysui.ShellInit
 import com.android.wm.shell.transition.TransitionInfoBuilder
-import com.android.wm.shell.transition.Transitions
 import com.android.wm.shell.transition.Transitions.TRANSIT_MINIMIZE
 import java.util.Optional
 import kotlin.test.assertFalse
@@ -75,6 +76,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
+import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
@@ -103,9 +105,9 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
 
     private val testExecutor = mock<ShellExecutor>()
     private val mockShellInit = mock<ShellInit>()
-    private val transitions = mock<Transitions>()
     private val desktopTasksLimiter = mock<DesktopTasksLimiter>()
     private val desktopState = FakeDesktopState()
+    private val desksOrganizer = mock<DesksOrganizer>()
 
     private lateinit var transitionObserver: DesktopModeLoggerTransitionObserver
     private lateinit var shellInit: ShellInit
@@ -120,10 +122,10 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
         transitionObserver =
             DesktopModeLoggerTransitionObserver(
                 mockShellInit,
-                transitions,
                 desktopModeEventLogger,
                 Optional.of(desktopTasksLimiter),
                 desktopState,
+                desksOrganizer,
             )
         val initRunnableCaptor = ArgumentCaptor.forClass(Runnable::class.java)
         verify(mockShellInit)
@@ -148,19 +150,25 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     }
 
     @Test
-    fun testRegistersObserverAtInit() {
-        verify(transitions).registerObserver(same(transitionObserver))
-    }
-
-    @Test
     fun transitOpen_notFreeformWindow_doesNotLogTaskAddedOrSessionEnter() {
         val change = createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FULLSCREEN))
         val transitionInfo = TransitionInfoBuilder(TRANSIT_OPEN, 0).addChange(change).build()
 
         callOnTransitionReady(transitionInfo)
 
-        verify(desktopModeEventLogger, never()).logSessionEnter(any())
-        verify(desktopModeEventLogger, never()).logTaskAdded(any())
+        verify(desktopModeEventLogger, never()).logTaskAdded(any(), any())
+    }
+
+    @Test
+    fun transitOpen_rootDeskChange_doesNotLogTaskAdded() {
+        val taskInfo = createTaskInfo(WINDOWING_MODE_FREEFORM)
+        val change = createChange(TRANSIT_OPEN, taskInfo)
+        val transitionInfo = TransitionInfoBuilder(TRANSIT_OPEN, 0).addChange(change).build()
+        `when`(desksOrganizer.isDeskChange(change, taskInfo.taskId)).thenReturn(true)
+
+        callOnTransitionReady(transitionInfo)
+
+        verify(desktopModeEventLogger, never()).logTaskAdded(any(), any())
     }
 
     @Test
@@ -210,17 +218,17 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     }
 
     @Test
-    fun transitEnterDesktopFromAppFromOverview_logTaskAddedAndEnterReasonAppFromOverview() {
+    fun transitEnterDesktopFromOverviewTaskMenu_logTaskAddedAndEnterReasonOverviewTaskMenu() {
         val change = createChange(TRANSIT_TO_FRONT, createTaskInfo(WINDOWING_MODE_FREEFORM))
         val transitionInfo =
-            TransitionInfoBuilder(TRANSIT_ENTER_DESKTOP_FROM_APP_FROM_OVERVIEW, 0)
+            TransitionInfoBuilder(TRANSIT_ENTER_DESKTOP_FROM_OVERVIEW_TASK_MENU, 0)
                 .addChange(change)
                 .build()
 
         callOnTransitionReady(transitionInfo)
 
         verifyTaskAddedAndEnterLogging(
-            EnterReason.APP_FROM_OVERVIEW,
+            EnterReason.OVERVIEW_TASK_MENU,
             DEFAULT_TASK_UPDATE.copy(visibleTaskCount = 1),
         )
     }
@@ -258,18 +266,18 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun transitToFront_previousTransitionExitToOverview_logTaskAddedAndEnterReasonOverview() {
         // previous exit to overview transition
         // add a freeform task
-        val previousTaskInfo = createTaskInfo(WINDOWING_MODE_FREEFORM)
-        transitionObserver.addTaskInfosToCachedMap(previousTaskInfo)
+        val previousChange = createChange(TRANSIT_TO_BACK, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(previousChange)
         transitionObserver.isSessionActive = true
         val previousTransitionInfo =
             TransitionInfoBuilder(TRANSIT_TO_FRONT, TRANSIT_FLAG_IS_RECENTS)
-                .addChange(createChange(TRANSIT_TO_BACK, previousTaskInfo))
+                .addChange(previousChange)
                 .build()
 
         callOnTransitionReady(previousTransitionInfo)
 
         verifyTaskRemovedAndExitLogging(ExitReason.RETURN_HOME_OR_OVERVIEW, DEFAULT_TASK_UPDATE)
-
+        clearInvocations(desktopModeEventLogger)
         // Enter desktop mode from cancelled recents has no transition. Enter is detected on the
         // next transition involving freeform windows
 
@@ -289,17 +297,18 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun transitChange_previousTransitionExitToOverview_logTaskAddedAndEnterReasonOverview() {
         // previous exit to overview transition
         // add a freeform task
-        val previousTaskInfo = createTaskInfo(WINDOWING_MODE_FREEFORM)
-        transitionObserver.addTaskInfosToCachedMap(previousTaskInfo)
+        val previousChange = createChange(TRANSIT_TO_BACK, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(previousChange)
         transitionObserver.isSessionActive = true
         val previousTransitionInfo =
             TransitionInfoBuilder(TRANSIT_TO_FRONT, TRANSIT_FLAG_IS_RECENTS)
-                .addChange(createChange(TRANSIT_TO_BACK, previousTaskInfo))
+                .addChange(previousChange)
                 .build()
 
         callOnTransitionReady(previousTransitionInfo)
 
         verifyTaskRemovedAndExitLogging(ExitReason.RETURN_HOME_OR_OVERVIEW, DEFAULT_TASK_UPDATE)
+        clearInvocations(desktopModeEventLogger)
 
         // Enter desktop mode from cancelled recents has no transition. Enter is detected on the
         // next transition involving freeform windows
@@ -320,17 +329,18 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun transitOpen_previousTransitionExitToOverview_logTaskAddedAndEnterReasonOverview() {
         // previous exit to overview transition
         // add a freeform task
-        val previousTaskInfo = createTaskInfo(WINDOWING_MODE_FREEFORM)
-        transitionObserver.addTaskInfosToCachedMap(previousTaskInfo)
+        val previousChange = createChange(TRANSIT_TO_BACK, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(previousChange)
         transitionObserver.isSessionActive = true
         val previousTransitionInfo =
             TransitionInfoBuilder(TRANSIT_TO_FRONT, TRANSIT_FLAG_IS_RECENTS)
-                .addChange(createChange(TRANSIT_TO_BACK, previousTaskInfo))
+                .addChange(previousChange)
                 .build()
 
         callOnTransitionReady(previousTransitionInfo)
 
         verifyTaskRemovedAndExitLogging(ExitReason.RETURN_HOME_OR_OVERVIEW, DEFAULT_TASK_UPDATE)
+        clearInvocations(desktopModeEventLogger)
 
         // Enter desktop mode from cancelled recents has no transition. Enter is detected on the
         // next transition involving freeform windows
@@ -349,34 +359,35 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
 
     @Test
     @Suppress("ktlint:standard:max-line-length")
-    fun transitEnterDesktopFromAppFromOverview_previousTransitionExitToOverview_logTaskAddedAndEnterReasonAppFromOverview() {
-        // Tests for AppFromOverview precedence in compared to cancelled Overview
+    fun transitEnterDesktopFromOverviewTaskMenu_previousTransitionExitToOverview_logTaskAddedAndEnterReasonOverviewTaskMenu() {
+        // Tests for OverviewTaskMenu precedence in compared to cancelled Overview
 
         // previous exit to overview transition
         // add a freeform task
-        val previousTaskInfo = createTaskInfo(WINDOWING_MODE_FREEFORM)
-        transitionObserver.addTaskInfosToCachedMap(previousTaskInfo)
+        val previousChange = createChange(TRANSIT_TO_BACK, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(previousChange)
         transitionObserver.isSessionActive = true
         val previousTransitionInfo =
             TransitionInfoBuilder(TRANSIT_TO_FRONT, TRANSIT_FLAG_IS_RECENTS)
-                .addChange(createChange(TRANSIT_TO_BACK, previousTaskInfo))
+                .addChange(previousChange)
                 .build()
 
         callOnTransitionReady(previousTransitionInfo)
 
         verifyTaskRemovedAndExitLogging(ExitReason.RETURN_HOME_OR_OVERVIEW, DEFAULT_TASK_UPDATE)
+        clearInvocations(desktopModeEventLogger)
 
-        // TRANSIT_ENTER_DESKTOP_FROM_APP_FROM_OVERVIEW
+        // TRANSIT_ENTER_DESKTOP_FROM_OVERVIEW_TASK_MENU
         val change = createChange(TRANSIT_TO_FRONT, createTaskInfo(WINDOWING_MODE_FREEFORM))
         val transitionInfo =
-            TransitionInfoBuilder(TRANSIT_ENTER_DESKTOP_FROM_APP_FROM_OVERVIEW, 0)
+            TransitionInfoBuilder(TRANSIT_ENTER_DESKTOP_FROM_OVERVIEW_TASK_MENU, 0)
                 .addChange(change)
                 .build()
 
         callOnTransitionReady(transitionInfo)
 
         verifyTaskAddedAndEnterLogging(
-            EnterReason.APP_FROM_OVERVIEW,
+            EnterReason.OVERVIEW_TASK_MENU,
             DEFAULT_TASK_UPDATE.copy(visibleTaskCount = 1),
         )
     }
@@ -412,10 +423,12 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun transitBack_previousExitReasonScreenOff_logTaskAddedAndEnterReasonScreenOn() {
         val freeformTask = createTaskInfo(WINDOWING_MODE_FREEFORM)
         // Previous Exit reason recorded as Screen Off
-        transitionObserver.addTaskInfosToCachedMap(freeformTask)
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_SLEEP, freeformTask))
         transitionObserver.isSessionActive = true
         callOnTransitionReady(TransitionInfoBuilder(TRANSIT_SLEEP).build())
-        verifyTaskRemovedAndExitLogging(ExitReason.SCREEN_OFF, DEFAULT_TASK_UPDATE)
+        verifyScreenOff(DEFAULT_TASK_UPDATE)
+        clearInvocations(desktopModeEventLogger)
+
         // Enter desktop through back transition, this happens when user enters after dismissing
         // keyguard
         val change = createChange(TRANSIT_TO_FRONT, freeformTask)
@@ -433,10 +446,11 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun transitEndDragToDesktop_previousExitReasonScreenOff_logTaskAddedAndEnterReasonAppDrag() {
         val freeformTask = createTaskInfo(WINDOWING_MODE_FREEFORM)
         // Previous Exit reason recorded as Screen Off
-        transitionObserver.addTaskInfosToCachedMap(freeformTask)
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_SLEEP, freeformTask))
         transitionObserver.isSessionActive = true
         callOnTransitionReady(TransitionInfoBuilder(TRANSIT_SLEEP).build())
-        verifyTaskRemovedAndExitLogging(ExitReason.SCREEN_OFF, DEFAULT_TASK_UPDATE)
+        verifyScreenOff(DEFAULT_TASK_UPDATE)
+        clearInvocations(desktopModeEventLogger)
 
         // Enter desktop through app handle drag. This represents cases where instead of moving to
         // desktop right after turning the screen on, we move to fullscreen then move another task
@@ -456,19 +470,23 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     @Test
     fun transitSleep_logTaskRemovedAndExitReasonScreenOff() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         val transitionInfo = TransitionInfoBuilder(TRANSIT_SLEEP).build()
         callOnTransitionReady(transitionInfo)
 
-        verifyTaskRemovedAndExitLogging(ExitReason.SCREEN_OFF, DEFAULT_TASK_UPDATE)
+        verifyScreenOff(DEFAULT_TASK_UPDATE)
     }
 
     @Test
     fun transitExitDesktopTaskDrag_logTaskRemovedAndExitReasonDragToExit() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // window mode changing from FREEFORM to FULLSCREEN
@@ -483,7 +501,9 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     @Test
     fun transitExitDesktopAppHandleButton_logTaskRemovedAndExitReasonButton() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // window mode changing from FREEFORM to FULLSCREEN
@@ -500,7 +520,9 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     @Test
     fun transitExitDesktopUsingKeyboard_logTaskRemovedAndExitReasonKeyboard() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // window mode changing from FREEFORM to FULLSCREEN
@@ -517,7 +539,9 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     @Test
     fun transitExitBackGesture_logTaskRemovedAndExitReasonTaskMovedToBack() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // task moved to back
@@ -531,7 +555,9 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     @Test
     fun transitExitDesktopUnknown_logTaskRemovedAndExitReasonUnknown() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // window mode changing from FREEFORM to FULLSCREEN
@@ -546,7 +572,9 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     @Test
     fun transitToFrontWithFlagRecents_logTaskRemovedAndExitReasonOverview() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // recents transition
@@ -563,7 +591,9 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     @Test
     fun transitClose_logTaskRemovedAndExitReasonTaskFinished() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // task closing
@@ -575,9 +605,11 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     }
 
     @Test
-    fun transitMinimize_logExitReasongMinimized() {
+    fun transitMinimize_logExitReasonMinimized() {
         // add a freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // minimize the task
@@ -585,12 +617,12 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
         val transitionInfo = TransitionInfoBuilder(TRANSIT_MINIMIZE).addChange(change).build()
         callOnTransitionReady(transitionInfo)
 
-        assertFalse(transitionObserver.isSessionActive)
-        verify(desktopModeEventLogger, times(1)).logSessionExit(eq(ExitReason.TASK_MINIMIZED))
         verify(desktopModeEventLogger, times(1))
             .logTaskRemoved(
-                eq(DEFAULT_TASK_UPDATE.copy(minimizeReason = MinimizeReason.MINIMIZE_BUTTON))
+                eq(DEFAULT_TASK_UPDATE.copy(minimizeReason = MinimizeReason.MINIMIZE_BUTTON)),
+                any(),
             )
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
         verifyNoMoreInteractions(desktopModeEventLogger)
     }
 
@@ -598,7 +630,7 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun sessionExitByRecents_cancelledAnimation_sessionRestored() {
         // add a freeform task to an existing session
         val taskInfo = createTaskInfo(WINDOWING_MODE_FREEFORM)
-        transitionObserver.addTaskInfosToCachedMap(taskInfo)
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo))
         transitionObserver.isSessionActive = true
 
         // recents transition sent freeform window to back
@@ -610,6 +642,7 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
         callOnTransitionReady(transitionInfo1)
 
         verifyTaskRemovedAndExitLogging(ExitReason.RETURN_HOME_OR_OVERVIEW, DEFAULT_TASK_UPDATE)
+        clearInvocations(desktopModeEventLogger)
 
         val transitionInfo2 = TransitionInfoBuilder(TRANSIT_NONE).build()
         callOnTransitionReady(transitionInfo2)
@@ -623,7 +656,9 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     @Test
     fun sessionAlreadyStarted_newFreeformTaskAdded_logsTaskAdded() {
         // add an existing freeform task
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
         transitionObserver.isSessionActive = true
 
         // new freeform task added
@@ -639,7 +674,8 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
                         visibleTaskCount = 2,
                         focusReason = FocusReason.UNKNOWN,
                     )
-                )
+                ),
+                any(),
             )
         verify(desktopModeEventLogger, never()).logSessionEnter(any())
     }
@@ -648,7 +684,7 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun sessionAlreadyStarted_taskPositionChanged_logsTaskUpdate() {
         // add an existing freeform task
         val taskInfo = createTaskInfo(WINDOWING_MODE_FREEFORM)
-        transitionObserver.addTaskInfosToCachedMap(taskInfo)
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo))
         transitionObserver.isSessionActive = true
 
         // task position changed
@@ -661,8 +697,10 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
 
         verify(desktopModeEventLogger, times(1))
             .logTaskInfoChanged(
-                eq(DEFAULT_TASK_UPDATE.copy(taskX = DEFAULT_TASK_X + 100, visibleTaskCount = 1))
+                eq(DEFAULT_TASK_UPDATE.copy(taskX = DEFAULT_TASK_X + 100, visibleTaskCount = 1)),
+                any(),
             )
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
         verifyNoMoreInteractions(desktopModeEventLogger)
     }
 
@@ -670,7 +708,7 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun sessionAlreadyStarted_taskResized_logsTaskUpdate() {
         // add an existing freeform task
         val taskInfo = createTaskInfo(WINDOWING_MODE_FREEFORM)
-        transitionObserver.addTaskInfosToCachedMap(taskInfo)
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo))
         transitionObserver.isSessionActive = true
 
         // task resized
@@ -694,8 +732,10 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
                         taskHeight = DEFAULT_TASK_HEIGHT - 100,
                         visibleTaskCount = 1,
                     )
-                )
+                ),
+                any(),
             )
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
         verifyNoMoreInteractions(desktopModeEventLogger)
     }
 
@@ -703,8 +743,8 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     fun sessionAlreadyStarted_taskFocusChanged_logsTaskUpdate() {
         val taskInfo1 = createTaskInfo(WINDOWING_MODE_FREEFORM, id = 1)
         val taskInfo2 = createTaskInfo(WINDOWING_MODE_FREEFORM, id = 2)
-        transitionObserver.addTaskInfosToCachedMap(taskInfo1)
-        transitionObserver.addTaskInfosToCachedMap(taskInfo2)
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo1))
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo2))
         transitionObserver.isSessionActive = true
         transitionObserver.setFocusedTaskForTesting(taskInfo1)
 
@@ -722,8 +762,10 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
                         visibleTaskCount = 2,
                         focusReason = FocusReason.UNKNOWN,
                     )
-                )
+                ),
+                any(),
             )
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
         verifyNoMoreInteractions(desktopModeEventLogger)
     }
 
@@ -732,8 +774,8 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
         // add 2 existing freeform task
         val taskInfo1 = createTaskInfo(WINDOWING_MODE_FREEFORM)
         val taskInfo2 = createTaskInfo(WINDOWING_MODE_FREEFORM, id = 2)
-        transitionObserver.addTaskInfosToCachedMap(taskInfo1)
-        transitionObserver.addTaskInfosToCachedMap(taskInfo2)
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo1))
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo2))
         transitionObserver.isSessionActive = true
 
         // task 1 position update
@@ -746,9 +788,12 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
 
         verify(desktopModeEventLogger, times(1))
             .logTaskInfoChanged(
-                eq(DEFAULT_TASK_UPDATE.copy(taskX = DEFAULT_TASK_X + 100, visibleTaskCount = 2))
+                eq(DEFAULT_TASK_UPDATE.copy(taskX = DEFAULT_TASK_X + 100, visibleTaskCount = 2)),
+                any(),
             )
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
         verifyNoMoreInteractions(desktopModeEventLogger)
+        clearInvocations(desktopModeEventLogger)
 
         // task 2 resize
         val newTaskInfo2 =
@@ -774,16 +819,22 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
                         taskHeight = DEFAULT_TASK_HEIGHT - 100,
                         visibleTaskCount = 2,
                     )
-                )
+                ),
+                any(),
             )
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
         verifyNoMoreInteractions(desktopModeEventLogger)
     }
 
     @Test
     fun sessionAlreadyStarted_freeformTaskRemoved_logsTaskRemoved() {
         // add two existing freeform tasks
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM))
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM, id = 2))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM))
+        )
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM, id = 2))
+        )
         transitionObserver.isSessionActive = true
 
         // new freeform task closed
@@ -792,16 +843,21 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
         callOnTransitionReady(transitionInfo)
 
         verify(desktopModeEventLogger, times(1))
-            .logTaskRemoved(eq(DEFAULT_TASK_UPDATE.copy(instanceId = 2, visibleTaskCount = 1)))
+            .logTaskRemoved(
+                eq(DEFAULT_TASK_UPDATE.copy(instanceId = 2, visibleTaskCount = 1)),
+                any(),
+            )
         verify(desktopModeEventLogger, never()).logSessionExit(any())
     }
 
     @Test
     fun onTransitionReady_taskIsBeingMinimized_logsTaskMinimized() {
         transitionObserver.isSessionActive = true
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM, id = 1))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM, id = 1))
+        )
         val taskInfo2 = createTaskInfo(WINDOWING_MODE_FREEFORM, id = 2)
-        transitionObserver.addTaskInfosToCachedMap(taskInfo2)
+        transitionObserver.addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo2))
         val transitionInfo =
             TransitionInfoBuilder(TRANSIT_TO_BACK, 0)
                 .addChange(createChange(TRANSIT_TO_BACK, taskInfo2))
@@ -825,14 +881,17 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
                         visibleTaskCount = 1,
                         minimizeReason = MinimizeReason.TASK_LIMIT,
                     )
-                )
+                ),
+                any(),
             )
     }
 
     @Test
     fun onTransitionReady_taskIsBeingUnminimized_logsTaskUnminimized() {
         transitionObserver.isSessionActive = true
-        transitionObserver.addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM, id = 1))
+        transitionObserver.addChangeToCachedMap(
+            createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM, id = 1))
+        )
         val taskInfo2 = createTaskInfo(WINDOWING_MODE_FREEFORM, id = 2)
         val transitionInfo =
             TransitionInfoBuilder(TRANSIT_TO_FRONT, /* flags= */ 0)
@@ -857,7 +916,8 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
                         visibleTaskCount = 2,
                         unminimizeReason = UnminimizeReason.TASKBAR_MANAGE_WINDOW,
                     )
-                )
+                ),
+                any(),
             )
     }
 
@@ -866,8 +926,10 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
         val taskInfo2 = createTaskInfo(WINDOWING_MODE_FREEFORM, id = 2)
         transitionObserver.apply {
             isSessionActive = true
-            addTaskInfosToCachedMap(createTaskInfo(WINDOWING_MODE_FREEFORM, id = 1))
-            addTaskInfosToCachedMap(taskInfo2)
+            addChangeToCachedMap(
+                createChange(TRANSIT_OPEN, createTaskInfo(WINDOWING_MODE_FREEFORM, id = 1))
+            )
+            addChangeToCachedMap(createChange(TRANSIT_OPEN, taskInfo2))
         }
         val transitionInfo =
             TransitionInfoBuilder(TRANSIT_DESKTOP_MODE_TASK_LIMIT_MINIMIZE, /* flags= */ 0)
@@ -884,7 +946,8 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
                         visibleTaskCount = 1,
                         minimizeReason = MinimizeReason.TASK_LIMIT,
                     )
-                )
+                ),
+                any(),
             )
     }
 
@@ -898,9 +961,11 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
     }
 
     private fun verifyTaskAddedAndEnterLogging(enterReason: EnterReason, taskUpdate: TaskUpdate) {
-        assertTrue(transitionObserver.isSessionActive)
-        verify(desktopModeEventLogger, times(1)).logSessionEnter(eq(enterReason))
-        verify(desktopModeEventLogger, times(1)).logTaskAdded(eq(taskUpdate))
+        if (!DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue) {
+            assertTrue(transitionObserver.isSessionActive)
+            verify(desktopModeEventLogger, times(1)).logSessionEnter(eq(enterReason))
+        }
+        verify(desktopModeEventLogger, times(1)).logTaskAdded(eq(taskUpdate), any())
         ExtendedMockito.verify {
             Trace.setCounter(
                 eq(Trace.TRACE_TAG_WINDOW_MANAGER),
@@ -914,13 +979,24 @@ class DesktopModeLoggerTransitionObserverTest : ShellTestCase() {
                 eq(taskUpdate.visibleTaskCount.toString()),
             )
         }
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
         verifyNoMoreInteractions(desktopModeEventLogger)
     }
 
     private fun verifyTaskRemovedAndExitLogging(exitReason: ExitReason, taskUpdate: TaskUpdate) {
-        assertFalse(transitionObserver.isSessionActive)
-        verify(desktopModeEventLogger, times(1)).logTaskRemoved(eq(taskUpdate))
-        verify(desktopModeEventLogger, times(1)).logSessionExit(eq(exitReason))
+        verify(desktopModeEventLogger, times(1)).logTaskRemoved(eq(taskUpdate), any())
+        if (!DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue) {
+            assertFalse(transitionObserver.isSessionActive)
+            verify(desktopModeEventLogger, times(1)).logSessionExit(eq(exitReason))
+        }
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
+        verifyNoMoreInteractions(desktopModeEventLogger)
+    }
+
+    private fun verifyScreenOff(taskUpdate: TaskUpdate) {
+        verify(desktopModeEventLogger, times(1)).logTaskRemoved(eq(taskUpdate), any())
+        verify(desktopModeEventLogger, times(1)).logScreenOff()
+        verify(desktopModeEventLogger, times(1)).logSessionExitIfNeeded()
         verifyNoMoreInteractions(desktopModeEventLogger)
     }
 

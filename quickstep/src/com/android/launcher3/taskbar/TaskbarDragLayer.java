@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar;
 import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_BACK;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -144,7 +143,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     protected void onDestroy() {
-        onDestroy(!ENABLE_TASKBAR_NAVBAR_UNIFICATION);
+        onDestroy(false /*forceDestroy*/);
     }
 
     @Override

@@ -17,15 +17,14 @@
 package com.android.wm.shell.desktopmode
 
 import android.content.res.Configuration
+import android.graphics.PointF
 import android.graphics.Rect
 import android.hardware.display.DisplayTopology
 import android.hardware.display.DisplayTopologyGraph
-import android.hardware.display.DisplayTopologyGraph.AdjacentDisplay
-import android.hardware.display.DisplayTopologyGraph.DisplayNode
 import android.platform.test.annotations.EnableFlags
 import android.testing.AndroidTestingRunner
 import android.testing.TestableLooper.RunWithLooper
-import com.android.window.flags.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE
+import com.android.window.flags2.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.TestShellExecutor
 import com.android.wm.shell.common.DisplayController
@@ -67,8 +66,6 @@ import org.mockito.kotlin.whenever
 class VisualIndicatorUpdateSchedulerTest : ShellTestCase() {
     private var mockDisplayController = mock<DisplayController>()
     private var mockIndicator = mock<DesktopModeVisualIndicator>()
-    private var mockDisplayTopology = mock<DisplayTopology>()
-    private var mockDisplayTopologyGraph = mock<DisplayTopologyGraph>()
 
     @Captor
     private lateinit var displayListenerCaptor:
@@ -96,39 +93,34 @@ class VisualIndicatorUpdateSchedulerTest : ShellTestCase() {
     // |   0   | 3 |
     // +-------+   |
     //         +---+
-
-    private val adjacentDisplay1To0 =
-        AdjacentDisplay(displayId1, DisplayTopology.TreeNode.POSITION_TOP, 100f)
-    private val adjacentDisplay3To0 =
-        AdjacentDisplay(displayId3, DisplayTopology.TreeNode.POSITION_RIGHT, 0f)
-
-    private val adjacentDisplay0To1 =
-        AdjacentDisplay(displayId0, DisplayTopology.TreeNode.POSITION_BOTTOM, -200f)
-
-    private val adjacentDisplay0To3 =
-        AdjacentDisplay(displayId0, DisplayTopology.TreeNode.POSITION_LEFT, 0f)
-
-    private val displayNodes =
-        listOf(
-            DisplayNode(
+    private val displayTopology =
+        DisplayTopology().apply {
+            addDisplay(
                 displayId0,
+                TestDisplay.DISPLAY_0.bounds.width().toInt(),
+                TestDisplay.DISPLAY_0.bounds.height().toInt(),
                 TestDisplay.DISPLAY_0.dpi,
-                TestDisplay.DISPLAY_0.bounds,
-                arrayOf(adjacentDisplay1To0, adjacentDisplay3To0),
-            ),
-            DisplayNode(
+            )
+            addDisplay(
                 displayId1,
+                TestDisplay.DISPLAY_1.bounds.width().toInt(),
+                TestDisplay.DISPLAY_1.bounds.height().toInt(),
                 TestDisplay.DISPLAY_1.dpi,
-                TestDisplay.DISPLAY_1.bounds,
-                arrayOf(adjacentDisplay0To1),
-            ),
-            DisplayNode(
+            )
+            addDisplay(
                 displayId3,
+                TestDisplay.DISPLAY_3.bounds.width().toInt(),
+                TestDisplay.DISPLAY_3.bounds.height().toInt(),
                 TestDisplay.DISPLAY_3.dpi,
-                TestDisplay.DISPLAY_3.bounds,
-                arrayOf(adjacentDisplay0To3),
-            ),
-        )
+            )
+            rearrange(
+                mapOf(
+                    0 to PointF(0f, 0f),
+                    1 to PointF(100f, -TestDisplay.DISPLAY_1.bounds.height()),
+                    3 to PointF(TestDisplay.DISPLAY_0.bounds.width(), 0f),
+                )
+            )
+        }
 
     @Before
     fun setUp() {
@@ -157,9 +149,7 @@ class VisualIndicatorUpdateSchedulerTest : ShellTestCase() {
         whenever(mockDisplayController.getDisplayLayout(displayId0)).thenReturn(spyDisplayLayout0)
         whenever(mockDisplayController.getDisplayLayout(displayId1)).thenReturn(spyDisplayLayout1)
         whenever(mockDisplayController.getDisplayLayout(displayId3)).thenReturn(spyDisplayLayout3)
-        whenever(mockDisplayTopology.getGraph()).thenReturn(mockDisplayTopologyGraph)
-        whenever(mockDisplayTopologyGraph.displayNodes).thenReturn(displayNodes)
-        displayListenerCaptor.value.onTopologyChanged(mockDisplayTopology)
+        displayListenerCaptor.value.onTopologyChanged(displayTopology)
     }
 
     @After

@@ -28,14 +28,17 @@ import android.platform.test.flag.junit.FlagsParameterization
 import android.view.Display.DEFAULT_DISPLAY
 import android.window.WindowContainerTransaction
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags
-import com.android.window.flags.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_PIP
-import com.android.window.flags.Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND
+import com.android.window.flags2.Flags
+import com.android.window.flags2.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_PIP
+import com.android.window.flags2.Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND
 import com.android.wm.shell.ShellTaskOrganizer
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.common.pip.PipDesktopState
+import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.EnterReason
+import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.ExitReason
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFreeformTask
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFullscreenTask
+import com.android.wm.shell.desktopmode.data.DesktopRepository
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -72,6 +75,7 @@ class DesktopPipTransitionControllerTest(flags: FlagsParameterization) : ShellTe
     private val taskInfo =
         createFreeformTask().apply {
             lastParentTaskIdBeforePip = ActivityTaskManager.INVALID_TASK_ID
+            userId = mockDesktopRepository.userId
         }
     private val freeformParentTask =
         createFreeformTask().apply { lastNonFullscreenBounds = FREEFORM_BOUNDS }
@@ -174,19 +178,35 @@ class DesktopPipTransitionControllerTest(flags: FlagsParameterization) : ShellTe
         controller.maybeReparentTaskToDesk(wct, taskInfo.taskId)
 
         verify(mockDesktopTasksController, never())
-            .addMoveToDeskTaskChanges(wct = wct, task = taskInfo, deskId = DESK_ID)
+            .addMoveToDeskTaskChanges(wct = any(), task = any(), deskId = any())
     }
 
     @EnableFlags(FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND)
     @Test
-    fun maybeReparentTaskToDesk_multiActivity_addMoveTaskToFrontChanges() {
+    fun maybeReparentTaskToDesk_multiActivity_parentInDesk_addMoveTaskToFrontChanges() {
         val wct = WindowContainerTransaction()
-        taskInfo.lastParentTaskIdBeforePip = freeformParentTask.taskId
+        val parentTaskId = freeformParentTask.taskId
+        taskInfo.lastParentTaskIdBeforePip = parentTaskId
+        whenever(mockDesktopRepository.isActiveTask(parentTaskId)).thenReturn(true)
 
         controller.maybeReparentTaskToDesk(wct, taskInfo.taskId)
 
         verify(mockDesktopTasksController)
             .addMoveTaskToFrontChanges(wct = wct, deskId = DESK_ID, taskInfo = freeformParentTask)
+    }
+
+    @EnableFlags(FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND)
+    @Test
+    fun maybeReparentTaskToDesk_multiActivity_parentNotInDesk_addMoveToDeskTaskChanges() {
+        val wct = WindowContainerTransaction()
+        val parentTaskId = freeformParentTask.taskId
+        taskInfo.lastParentTaskIdBeforePip = parentTaskId
+        whenever(mockDesktopRepository.isActiveTask(parentTaskId)).thenReturn(false)
+
+        controller.maybeReparentTaskToDesk(wct, taskInfo.taskId)
+
+        verify(mockDesktopTasksController)
+            .addMoveToDeskTaskChanges(wct = wct, task = freeformParentTask, deskId = DESK_ID)
     }
 
     @EnableFlags(FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND)
@@ -198,7 +218,7 @@ class DesktopPipTransitionControllerTest(flags: FlagsParameterization) : ShellTe
         controller.maybeReparentTaskToDesk(wct, taskInfo.taskId)
 
         verify(mockDesktopTasksController, never())
-            .addMoveToDeskTaskChanges(wct = wct, task = taskInfo, deskId = DESK_ID)
+            .addMoveToDeskTaskChanges(wct = any(), task = any(), deskId = any())
     }
 
     @EnableFlags(FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND)
@@ -214,7 +234,7 @@ class DesktopPipTransitionControllerTest(flags: FlagsParameterization) : ShellTe
 
     @EnableFlags(FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND)
     @Test
-    fun maybeReparentTaskToDesk_desktopFirstDisplay_addDeskActivationChanges() {
+    fun maybeReparentTaskToDesk_noDeskActive_desktopFirstDisplay_addDeskActivationChanges() {
         val wct = WindowContainerTransaction()
         whenever(mockDesktopRepository.getActiveDeskId(any())).thenReturn(null)
         whenever(mockPipDesktopState.isDisplayDesktopFirst(any())).thenReturn(true)
@@ -227,7 +247,9 @@ class DesktopPipTransitionControllerTest(flags: FlagsParameterization) : ShellTe
                 deskId = DESK_ID,
                 wct = wct,
                 newTask = taskInfo,
+                userId = mockDesktopRepository.userId,
                 displayId = taskInfo.displayId,
+                enterReason = EnterReason.EXIT_PIP,
             )
         verify(mockDesktopTasksController)
             .addMoveToDeskTaskChanges(wct = wct, task = taskInfo, deskId = DESK_ID)
@@ -275,6 +297,16 @@ class DesktopPipTransitionControllerTest(flags: FlagsParameterization) : ShellTe
         verifyPerformDesktopExitCleanupAfterPip(isCalled = true)
     }
 
+    @Test
+    fun handlePipTransition_multiActivityPip_minimizeMultiActivityPipTask() {
+        taskInfo.numActivities = 2
+
+        controller.handlePipTransition(wct, transition, taskInfo)
+
+        verify(mockDesktopTasksController)
+            .minimizeMultiActivityPipTask(wct = wct, deskId = DESK_ID, task = taskInfo)
+    }
+
     private fun verifyPerformDesktopExitCleanupAfterPip(isCalled: Boolean) {
         if (isCalled) {
             verify(mockDesktopTasksController)
@@ -282,11 +314,25 @@ class DesktopPipTransitionControllerTest(flags: FlagsParameterization) : ShellTe
                     wct = wct,
                     deskId = DESK_ID,
                     displayId = DEFAULT_DISPLAY,
+                    userId = taskInfo.userId,
                     willExitDesktop = true,
+                    removingLastTaskId = taskInfo.taskId,
+                    exitReason = ExitReason.ENTER_PIP,
                 )
         } else {
             verify(mockDesktopTasksController, never())
-                .performDesktopExitCleanUp(any(), anyOrNull(), any(), any(), any(), any(), any())
+                .performDesktopExitCleanUp(
+                    wct = any(),
+                    deskId = anyOrNull(),
+                    displayId = any(),
+                    userId = any(),
+                    willExitDesktop = any(),
+                    removingLastTaskId = anyOrNull(),
+                    shouldEndUpAtHome = any(),
+                    skipWallpaperAndHomeOrdering = any(),
+                    skipUpdatingExitDesktopListener = any(),
+                    exitReason = any(),
+                )
         }
     }
 

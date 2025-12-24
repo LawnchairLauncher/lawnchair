@@ -22,10 +22,12 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.launcher3.DeviceProfile;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.function.Supplier;
 
@@ -37,6 +39,10 @@ public class RecentsHitboxExtenderTest {
     private static final int BUTTON_HEIGHT = 10;
 
     private final RecentsHitboxExtender mHitboxExtender = new RecentsHitboxExtender();
+
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     View mMockRecentsButton;
     @Mock
@@ -52,7 +58,6 @@ public class RecentsHitboxExtenderTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         mContext = instrumentation.getContext();
         mHitboxExtender.init(mMockRecentsButton, mMockRecentsParent, mMockDeviceProfile, mSupplier,

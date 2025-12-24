@@ -18,12 +18,14 @@ package com.android.launcher3.taskbar
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController
 import com.android.launcher3.taskbar.bubbles.BubbleControllers
 import com.android.launcher3.taskbar.growth.NudgeController
+import com.android.launcher3.taskbar.handoff.TaskbarHandoffController
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController
 import com.android.systemui.shared.rotation.RotationButtonController
 import java.util.Optional
 import org.junit.Before
+import org.junit.Rule
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 
 /**
  * Helper class to extend to get access to all controllers. Gotta be careful of your relationship
@@ -31,6 +33,7 @@ import org.mockito.MockitoAnnotations
  */
 abstract class TaskbarBaseTestCase {
 
+    @get:Rule val mockito = MockitoJUnit.rule()
     @Mock lateinit var taskbarActivityContext: TaskbarActivityContext
     @Mock lateinit var taskbarDragController: TaskbarDragController
     @Mock lateinit var navButtonController: TaskbarNavButtonController
@@ -61,6 +64,7 @@ abstract class TaskbarBaseTestCase {
     @Mock lateinit var taskbarDesktopModeController: TaskbarDesktopModeController
     @Mock lateinit var nudgeController: NudgeController
     @Mock lateinit var nudgeViewController: NudgeViewController
+    @Mock lateinit var taskbarHandoffController: TaskbarHandoffController
 
     lateinit var taskbarControllers: TaskbarControllers
 
@@ -73,7 +77,6 @@ abstract class TaskbarBaseTestCase {
          * If you want to mock one of those methods, you need to make a parent interface that
          * includes that method to allow mocking it.
          */
-        MockitoAnnotations.initMocks(this)
         taskbarControllers =
             TaskbarControllers(
                 taskbarActivityContext,
@@ -104,7 +107,8 @@ abstract class TaskbarBaseTestCase {
                 optionalBubbleControllers,
                 taskbarDesktopModeController,
                 nudgeController,
-                nudgeViewController
+                nudgeViewController,
+                taskbarHandoffController,
             )
     }
 }

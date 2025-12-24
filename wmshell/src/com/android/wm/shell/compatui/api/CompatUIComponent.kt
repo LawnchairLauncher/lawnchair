@@ -30,9 +30,7 @@ import android.view.WindowlessWindowManager
 import com.android.wm.shell.common.DisplayLayout
 import com.android.wm.shell.common.SyncTransactionQueue
 
-/**
- * The component created after a {@link CompatUISpec} definition
- */
+/** The component created after a {@link CompatUISpec} definition */
 class CompatUIComponent(
     private val spec: CompatUISpec,
     private val id: String,
@@ -40,14 +38,15 @@ class CompatUIComponent(
     private val state: CompatUIState,
     private var compatUIInfo: CompatUIInfo,
     private val syncQueue: SyncTransactionQueue,
-    private var displayLayout: DisplayLayout?
-) : WindowlessWindowManager(
-    compatUIInfo.taskInfo.configuration,
-    /* rootSurface */
-    null,
-    /* hostInputToken */
-    null
-) {
+    private var displayLayout: DisplayLayout?,
+) :
+    WindowlessWindowManager(
+        compatUIInfo.taskInfo.configuration,
+        /* rootSurface */
+        null,
+        /* hostInputToken */
+        null,
+    ) {
 
     private val tag
         get() = "CompatUI {id = $id}"
@@ -56,20 +55,17 @@ class CompatUIComponent(
 
     private var layout: View? = null
 
-    /**
-     * Utility class for adding and releasing a View hierarchy for this [ ] to `mLeash`.
-     */
+    /** Utility class for adding and releasing a View hierarchy for this [ ] to `mLeash`. */
     protected var viewHost: SurfaceControlViewHost? = null
 
     override fun setConfiguration(configuration: Configuration?) {
         super.setConfiguration(configuration)
-        configuration?.let {
-            context = context.createConfigurationContext(it)
-        }
+        configuration?.let { context = context.createConfigurationContext(it) }
     }
 
     /**
      * Invoked every time a new CompatUIInfo comes from core
+     *
      * @param newInfo The new CompatUIInfo object
      */
     fun update(newInfo: CompatUIInfo) {
@@ -89,11 +85,7 @@ class CompatUIComponent(
         viewHost = null
         leash?.run {
             val localLeash: SurfaceControl = this
-            syncQueue.runInSync { t: SurfaceControl.Transaction ->
-                t.remove(
-                    localLeash
-                )
-            }
+            syncQueue.runInSync { t: SurfaceControl.Transaction -> t.remove(localLeash) }
             leash = null
             spec.log("$tag leash removed")
         }
@@ -102,10 +94,11 @@ class CompatUIComponent(
 
     override fun getParentSurface(
         window: IWindow,
-        attrs: WindowManager.LayoutParams
+        attrs: WindowManager.LayoutParams,
     ): SurfaceControl? {
         val className = javaClass.simpleName
-        val builder = SurfaceControl.Builder()
+        val builder =
+            SurfaceControl.Builder()
                 .setContainerLayer()
                 .setName(className + "Leash")
                 .setHidden(false)
@@ -129,14 +122,15 @@ class CompatUIComponent(
         // We inflate the layout
         layout = spec.layout.viewBuilder(context, compatUIInfo, componentState)
         spec.log("$tag layout: $layout")
-        viewHost = createSurfaceViewHost().apply {
-            spec.log("$tag adding view $layout to host $this")
-            setView(layout!!, getWindowLayoutParams())
-        }
+        viewHost =
+            createSurfaceViewHost().apply {
+                spec.log("$tag adding view $layout to host $this")
+                setView(layout!!, getWindowLayoutParams())
+            }
         updateSurfacePosition()
     }
 
-    /** Creates a [SurfaceControlViewHost] for this window manager.  */
+    /** Creates a [SurfaceControlViewHost] for this window manager. */
     fun createSurfaceViewHost(): SurfaceControlViewHost =
         SurfaceControlViewHost(context, context.display, this, javaClass.simpleName)
 
@@ -156,7 +150,7 @@ class CompatUIComponent(
                     it,
                     compatUIInfo,
                     state.sharedState,
-                    state.stateForComponent(id)
+                    state.stateForComponent(id),
                 )
             )
         }
@@ -170,24 +164,23 @@ class CompatUIComponent(
                 height,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 spec.layout.layoutParamFlags,
-                PixelFormat.TRANSLUCENT
+                PixelFormat.TRANSLUCENT,
             )
         winParams.token = Binder()
         winParams.title = javaClass.simpleName + compatUIInfo.taskInfo.taskId
         winParams.privateFlags =
-            winParams.privateFlags or (WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION
-                    or WindowManager.LayoutParams.PRIVATE_FLAG_TRUSTED_OVERLAY)
+            winParams.privateFlags or
+                (WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION or
+                    WindowManager.LayoutParams.PRIVATE_FLAG_TRUSTED_OVERLAY)
         spec.log("$tag getWindowLayoutParams $winParams")
         return winParams
     }
 
-    /** Gets the layout params.  */
+    /** Gets the layout params. */
     protected fun getWindowLayoutParams(): WindowManager.LayoutParams =
         layout?.run {
             measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            spec.log(
-                "$tag getWindowLayoutParams size: ${measuredWidth}x$measuredHeight"
-            )
+            spec.log("$tag getWindowLayoutParams size: ${measuredWidth}x$measuredHeight")
             return getWindowLayoutParams(measuredWidth, measuredHeight)
         } ?: WindowManager.LayoutParams()
 
@@ -207,7 +200,7 @@ class CompatUIComponent(
 
     private fun updateComponentState(
         newInfo: CompatUIInfo,
-        componentState: CompatUIComponentState?
+        componentState: CompatUIComponentState?,
     ) {
         spec.log("$tag component state updating.... $componentState")
         compatUIInfo = newInfo

@@ -27,7 +27,7 @@ import android.window.TransitionRequestInfo
 import android.window.WindowContainerTransaction
 import com.android.app.animation.Interpolators
 import com.android.internal.protolog.ProtoLog
-import com.android.window.flags.Flags.appCompatRefactoring
+import com.android.window.flags2.Flags.appCompatRefactoring
 import com.android.wm.shell.common.ShellExecutor
 import com.android.wm.shell.common.suppliers.TransactionSupplier
 import com.android.wm.shell.compatui.letterbox.LetterboxKey
@@ -42,28 +42,25 @@ import com.android.wm.shell.transition.Transitions.TRANSIT_MOVE_LETTERBOX_REACHA
 import com.android.wm.shell.transition.Transitions.TransitionFinishCallback
 import javax.inject.Inject
 
-/**
- * The [Transitions.TransitionHandler] to handle Reachability animations.
- */
+/** The [Transitions.TransitionHandler] to handle Reachability animations. */
 @WMSingleton
-class LetterboxAnimationHandler @Inject constructor(
+class LetterboxAnimationHandler
+@Inject
+constructor(
     shellInit: ShellInit,
     transitions: Transitions,
     @ShellMainThread private val animExecutor: ShellExecutor,
     private val transactionSupplier: TransactionSupplier,
     private val mixedLetterboxController: dagger.Lazy<MixedLetterboxController>,
-    private val letterboxState: LetterboxState
+    private val letterboxState: LetterboxState,
 ) : Transitions.TransitionHandler {
 
     companion object {
-        @JvmStatic
-        private val TAG = "LetterboxAnimationHandler"
+        @JvmStatic private val TAG = "LetterboxAnimationHandler"
 
-        @JvmStatic
-        private val ANIMATION_DURATION_MS = 500L
+        @JvmStatic private val ANIMATION_DURATION_MS = 500L
 
-        @JvmStatic
-        private val ANIMATION_INTERPOLATOR = Interpolators.EMPHASIZED
+        @JvmStatic private val ANIMATION_INTERPOLATOR = Interpolators.EMPHASIZED
     }
 
     private var boundsAnimator: ValueAnimator? = null
@@ -73,9 +70,7 @@ class LetterboxAnimationHandler @Inject constructor(
     init {
         if (appCompatRefactoring()) {
             ProtoLog.v(WM_SHELL_APP_COMPAT, "%s: %s", TAG, "Initializing...")
-            shellInit.addInitCallback({
-                transitions.addHandler(this)
-            }, this)
+            shellInit.addInitCallback({ transitions.addHandler(this) }, this)
         }
     }
 
@@ -84,7 +79,7 @@ class LetterboxAnimationHandler @Inject constructor(
         info: TransitionInfo,
         startTransaction: Transaction,
         finishTransaction: Transaction,
-        finishCallback: TransitionFinishCallback
+        finishCallback: TransitionFinishCallback,
     ): Boolean {
         if (info.type != TRANSIT_MOVE_LETTERBOX_REACHABILITY || info.changes.isEmpty()) {
             return false
@@ -102,59 +97,38 @@ class LetterboxAnimationHandler @Inject constructor(
             if (finalX == startBounds.left && finalY == startBounds.top) {
                 return false
             }
-            controller.updateLetterboxSurfaceBounds(
-                key,
-                startTransaction,
-                taskBounds,
-                startBounds
-            )
+            controller.updateLetterboxSurfaceBounds(key, startTransaction, taskBounds, startBounds)
             val tx: Transaction = transactionSupplier.get()
-            animExecutor.execute {
-                boundsAnimator?.cancel()
-            }
+            animExecutor.execute { boundsAnimator?.cancel() }
             // Only the position changes.
-            val endBounds = Rect(
-                finalX,
-                finalY,
-                finalX + startBounds.width(),
-                finalY + startBounds.height()
-            )
+            val endBounds =
+                Rect(finalX, finalY, finalX + startBounds.width(), finalY + startBounds.height())
             ValueAnimator.ofObject(rectEvaluator, startBounds, endBounds)
-                .setDuration(ANIMATION_DURATION_MS).apply {
+                .setDuration(ANIMATION_DURATION_MS)
+                .apply {
                     setInterpolator { value -> ANIMATION_INTERPOLATOR.getInterpolation(value) }
-                    addListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(animation: Animator) {
-                        }
+                    addListener(
+                        object : Animator.AnimatorListener {
+                            override fun onAnimationStart(animation: Animator) {}
 
-                        override fun onAnimationEnd(animation: Animator) {
-                            finishTransaction.apply()
-                            finishCallback.onTransitionFinished(null)
-                            boundsAnimator = null
-                        }
+                            override fun onAnimationEnd(animation: Animator) {
+                                finishTransaction.apply()
+                                finishCallback.onTransitionFinished(null)
+                                boundsAnimator = null
+                            }
 
-                        override fun onAnimationCancel(animation: Animator) {
-                        }
+                            override fun onAnimationCancel(animation: Animator) {}
 
-                        override fun onAnimationRepeat(animation: Animator) {
+                            override fun onAnimationRepeat(animation: Animator) {}
                         }
-                    })
+                    )
                     addUpdateListener { animation ->
-                        val rect =
-                            animation.animatedValue as Rect
+                        val rect = animation.animatedValue as Rect
 
                         for (c in info.changes) {
-                            tx.setPosition(
-                                c.leash,
-                                rect.left.toFloat(),
-                                rect.top.toFloat()
-                            )
+                            tx.setPosition(c.leash, rect.left.toFloat(), rect.top.toFloat())
                         }
-                        controller.updateLetterboxSurfaceBounds(
-                            key,
-                            tx,
-                            taskBounds,
-                            rect
-                        )
+                        controller.updateLetterboxSurfaceBounds(key, tx, taskBounds, rect)
                         tx.apply()
                     }
                     animExecutor.execute {
@@ -171,6 +145,6 @@ class LetterboxAnimationHandler @Inject constructor(
 
     override fun handleRequest(
         transition: IBinder,
-        request: TransitionRequestInfo
+        request: TransitionRequestInfo,
     ): WindowContainerTransaction? = null
 }

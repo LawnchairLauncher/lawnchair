@@ -41,8 +41,6 @@ import com.android.internal.dynamicanimation.animation.SpringAnimation
 import com.android.internal.dynamicanimation.animation.SpringForce
 import com.android.systemui.Flags
 import com.android.systemui.Flags.moveTransitionAnimationLayer
-import com.android.systemui.shared.Flags.returnAnimationFrameworkLibrary
-import com.android.systemui.shared.Flags.returnAnimationFrameworkLongLived
 import java.util.concurrent.Executor
 import kotlin.math.abs
 import kotlin.math.max
@@ -117,26 +115,6 @@ class TransitionAnimator(
                 1.0f,
             )
         }
-
-        fun assertReturnAnimations() {
-            check(returnAnimationsEnabled()) {
-                "isLaunching cannot be false when the returnAnimationFrameworkLibrary flag " +
-                    "is disabled"
-            }
-        }
-
-        fun returnAnimationsEnabled() = returnAnimationFrameworkLibrary()
-
-        fun assertLongLivedReturnAnimations() {
-            check(longLivedReturnAnimationsEnabled()) {
-                "Long-lived registrations cannot be used when the " +
-                    "returnAnimationFrameworkLibrary or the " +
-                    "returnAnimationFrameworkLongLived flag are disabled"
-            }
-        }
-
-        fun longLivedReturnAnimationsEnabled() =
-            returnAnimationFrameworkLibrary() && returnAnimationFrameworkLongLived()
 
         internal fun WindowAnimationState.toTransitionState() =
             State().also {
@@ -520,16 +498,13 @@ class TransitionAnimator(
      */
     fun startAnimation(
         controller: Controller,
-        endState: State,
+        calculateEndState: () -> State,
         windowBackgroundColor: Int,
         shouldFadeWindowBackgroundLayer: () -> Boolean = { true },
         drawHole: Boolean = false,
         startVelocity: PointF? = null,
         startFrameTime: Long = -1,
     ): Animation {
-        if (!controller.isLaunching) assertReturnAnimations()
-        if (startVelocity != null) assertLongLivedReturnAnimations()
-
         // We add an extra layer with the same color as the dialog/app splash screen background
         // color, which is usually the same color of the app background. We first fade in this layer
         // to hide the expanding view, then we fade it out with SRC mode to draw a hole in the
@@ -543,7 +518,7 @@ class TransitionAnimator(
         return createAnimation(
                 controller,
                 controller.createAnimatorState(),
-                endState,
+                calculateEndState,
                 windowBackgroundLayer,
                 shouldFadeWindowBackgroundLayer,
                 drawHole,
@@ -557,7 +532,7 @@ class TransitionAnimator(
     fun createAnimation(
         controller: Controller,
         startState: State,
-        endState: State,
+        calculateEndState: () -> State,
         windowBackgroundLayer: GradientDrawable,
         shouldFadeWindowBackgroundLayer: () -> Boolean = { true },
         drawHole: Boolean = false,
@@ -583,7 +558,7 @@ class TransitionAnimator(
             createSpringAnimation(
                 controller,
                 startState,
-                endState,
+                calculateEndState,
                 startVelocity,
                 startFrameTime,
                 windowBackgroundLayer,
@@ -599,7 +574,7 @@ class TransitionAnimator(
             createInterpolatedAnimation(
                 controller,
                 startState,
-                endState,
+                calculateEndState,
                 windowBackgroundLayer,
                 transitionContainer,
                 transitionContainerOverlay,
@@ -619,7 +594,7 @@ class TransitionAnimator(
     private fun createInterpolatedAnimation(
         controller: Controller,
         state: State,
-        endState: State,
+        calculateEndState: () -> State,
         windowBackgroundLayer: GradientDrawable,
         transitionContainer: View,
         transitionContainerOverlay: ViewGroupOverlay,
@@ -640,21 +615,27 @@ class TransitionAnimator(
         val startBottomCornerRadius = state.bottomCornerRadius
 
         // End state.
+        var endState = calculateEndState()
         var endTop = endState.top
         var endBottom = endState.bottom
         var endLeft = endState.left
         var endRight = endState.right
         var endCenterX = (endLeft + endRight) / 2f
         var endWidth = endRight - endLeft
-        val endTopCornerRadius = endState.topCornerRadius
-        val endBottomCornerRadius = endState.bottomCornerRadius
+        var endTopCornerRadius = endState.topCornerRadius
+        var endBottomCornerRadius = endState.bottomCornerRadius
 
         fun maybeUpdateEndState() {
+            if (Flags.dialogAnimEndStateUpdate()) {
+                endState = calculateEndState()
+            }
             if (
                 endTop != endState.top ||
                     endBottom != endState.bottom ||
                     endLeft != endState.left ||
-                    endRight != endState.right
+                    endRight != endState.right ||
+                    endTopCornerRadius != endState.topCornerRadius ||
+                    endBottomCornerRadius != endState.bottomCornerRadius
             ) {
                 endTop = endState.top
                 endBottom = endState.bottom
@@ -662,6 +643,10 @@ class TransitionAnimator(
                 endRight = endState.right
                 endCenterX = (endLeft + endRight) / 2f
                 endWidth = endRight - endLeft
+                if (Flags.dialogAnimEndStateUpdate()) {
+                    endTopCornerRadius = endState.topCornerRadius
+                    endBottomCornerRadius = endState.bottomCornerRadius
+                }
             }
         }
 
@@ -769,7 +754,7 @@ class TransitionAnimator(
     private fun createSpringAnimation(
         controller: Controller,
         startState: State,
-        endState: State,
+        calculateEndState: () -> State,
         startVelocity: PointF,
         startFrameTime: Long,
         windowBackgroundLayer: GradientDrawable,
@@ -781,6 +766,8 @@ class TransitionAnimator(
         drawHole: Boolean = false,
         moveBackgroundLayerWhenAppVisibilityChanges: Boolean = false,
     ): Animation {
+
+        var endState = calculateEndState()
         var springX: SpringAnimation? = null
         var springY: SpringAnimation? = null
         var targetX = endState.centerX
@@ -789,6 +776,9 @@ class TransitionAnimator(
         var movedBackgroundLayer = false
 
         fun maybeUpdateEndState() {
+            if (Flags.dialogAnimEndStateUpdate()) {
+                endState = calculateEndState()
+            }
             if (endState.centerX != targetX && endState.centerY != targetY) {
                 targetX = endState.centerX
                 targetY = endState.centerY

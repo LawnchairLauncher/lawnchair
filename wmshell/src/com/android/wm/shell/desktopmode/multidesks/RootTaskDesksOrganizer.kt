@@ -16,13 +16,18 @@
 package com.android.wm.shell.desktopmode.multidesks
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager.RecentTaskInfo
 import android.app.ActivityManager.RunningTaskInfo
+import android.app.ActivityOptions
 import android.app.ActivityTaskManager.INVALID_TASK_ID
+import android.app.TaskInfo
 import android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD
 import android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED
 import android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM
 import android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED
 import android.app.WindowConfiguration.windowingModeToString
+import android.content.res.Configuration
+import android.os.Trace
 import android.util.SparseArray
 import android.view.SurfaceControl
 import android.view.WindowManager.TRANSIT_TO_FRONT
@@ -38,11 +43,14 @@ import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.RootTaskDisplayAreaOrganizer
 import com.android.wm.shell.ShellTaskOrganizer
 import com.android.wm.shell.common.LaunchAdjacentController
+import com.android.wm.shell.desktopmode.createActivityOptionsForStartTask
 import com.android.wm.shell.desktopmode.multidesks.DesksOrganizer.OnCreateCallback
+import com.android.wm.shell.freeform.TaskChangeListener
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_DESKTOP_MODE
 import com.android.wm.shell.sysui.ShellCommandHandler
 import com.android.wm.shell.sysui.ShellInit
 import java.io.PrintWriter
+import java.util.Optional
 
 /**
  * A [DesksOrganizer] that uses root tasks as the container of each desk.
@@ -57,6 +65,7 @@ class RootTaskDesksOrganizer(
     private val shellTaskOrganizer: ShellTaskOrganizer,
     private val launchAdjacentController: LaunchAdjacentController,
     private val rootTaskDisplayAreaOrganizer: RootTaskDisplayAreaOrganizer,
+    private val taskChangeListener: Optional<TaskChangeListener>,
 ) : DesksOrganizer, ShellTaskOrganizer.TaskListener {
 
     private val createDeskRootRequests = mutableListOf<CreateDeskRequest>()
@@ -67,7 +76,7 @@ class RootTaskDesksOrganizer(
     val deskMinimizationRootsByDeskId: MutableMap<Int, DeskMinimizationRoot> = mutableMapOf()
     private val removeDeskRootRequests = mutableSetOf<Int>()
     @VisibleForTesting val childLeashes = SparseArray<SurfaceControl>()
-    private var onTaskInfoChangedListener: ((RunningTaskInfo) -> Unit)? = null
+    private val onTaskInfoChangedListeners = mutableListOf<(RunningTaskInfo) -> Unit>()
 
     init {
         if (DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue) {
@@ -157,9 +166,9 @@ class RootTaskDesksOrganizer(
                 .setDisplayId(displayId)
                 .setWindowingMode(WINDOWING_MODE_FREEFORM)
                 .setRemoveWithTaskOrganizer(true)
-                .setReparentOnDisplayRemoval(DesktopExperienceFlags
-                    .ENABLE_DISPLAY_DISCONNECT_INTERACTION
-                    .isTrue),
+                .setReparentOnDisplayRemoval(
+                    DesktopExperienceFlags.ENABLE_DISPLAY_DISCONNECT_INTERACTION.isTrue
+                ),
             this,
         )
     }
@@ -205,9 +214,15 @@ class RootTaskDesksOrganizer(
         // to prevent this when the changes merge.
         wct.setWindowingMode(root.token, WINDOWING_MODE_FREEFORM)
         wct.setWindowingMode(minimizationRoot.token, WINDOWING_MODE_FREEFORM)
+        wct.setDensityDpi(root.token, Configuration.DENSITY_DPI_UNDEFINED)
+        wct.setDensityDpi(minimizationRoot.token, Configuration.DENSITY_DPI_UNDEFINED)
     }
 
     override fun activateDesk(wct: WindowContainerTransaction, deskId: Int, skipReorder: Boolean) {
+        Trace.instant(
+            Trace.TRACE_TAG_WINDOW_MANAGER,
+            "RootTaskDesksOrganizer#activateDesk: $deskId",
+        )
         logV("activateDesk %d", deskId)
         val root = checkNotNull(deskRootsByDeskId[deskId]) { "Root not found for desk: $deskId" }
         if (!skipReorder) wct.reorder(root.token, /* onTop= */ true)
@@ -220,11 +235,30 @@ class RootTaskDesksOrganizer(
         deskId: Int,
         skipReorder: Boolean,
     ) {
+        Trace.instant(
+            Trace.TRACE_TAG_WINDOW_MANAGER,
+            "RootTaskDesksOrganizer#deactivateDesk: $deskId",
+        )
         logV("deactivateDesk %d", deskId)
-        val root = checkNotNull(deskRootsByDeskId[deskId]) { "Root not found for desk: $deskId" }
+        val root = deskRootsByDeskId[deskId]
+        if (root == null) {
+            // This is possible because a deactivation might be requested soon after a removal as
+            // part of the same two-part recents transition (so not the same WCT), so if the
+            // removal (all the way through onTaskVanish) is faster than the second part of the
+            // transition, the desk root will have been removed already. See b/427563407.
+            // No-op in this case, since the desk is already gone anyway it doesn't matter whether
+            // it is deactivated.
+            logW("Attempted to deactivate non-existent desk=%d", deskId)
+            return
+        }
         if (!skipReorder) wct.reorder(root.taskInfo.token, /* onTop= */ false)
         updateLaunchRoot(wct, deskId, enabled = false)
         updateTaskMoveAllowed(wct, deskId, allowed = false)
+    }
+
+    override fun addLaunchDeskToActivityOptions(activityOptions: ActivityOptions, deskId: Int) {
+        val root = checkNotNull(deskRootsByDeskId[deskId]) { "Root not found for desk: $deskId" }
+        activityOptions.launchRootTask = root.token
     }
 
     private fun updateLaunchRoot(wct: WindowContainerTransaction, deskId: Int, enabled: Boolean) {
@@ -276,11 +310,14 @@ class RootTaskDesksOrganizer(
     override fun moveTaskToDesk(
         wct: WindowContainerTransaction,
         deskId: Int,
-        task: RunningTaskInfo,
+        task: TaskInfo,
         minimized: Boolean,
     ) {
         logV("moveTaskToDesk task=${task.taskId} desk=$deskId minimized=$minimized")
         val root = deskRootsByDeskId[deskId] ?: error("Root not found for desk: $deskId")
+        if (task is RecentTaskInfo) {
+            wct.startTask(task.taskId, createActivityOptionsForStartTask(deskId, this).toBundle())
+        }
         wct.setWindowingMode(task.token, WINDOWING_MODE_UNDEFINED)
         if (!minimized) {
             wct.reparent(task.token, root.taskInfo.token, /* onTop= */ true)
@@ -326,7 +363,7 @@ class RootTaskDesksOrganizer(
     private fun minimizeTaskInner(
         wct: WindowContainerTransaction,
         deskId: Int,
-        task: RunningTaskInfo,
+        task: TaskInfo,
         enforceTaskInDesk: Boolean = true,
     ) {
         logV(
@@ -387,6 +424,13 @@ class RootTaskDesksOrganizer(
     override fun getDeskIdFromChange(change: TransitionInfo.Change): Int? =
         change.takeIf { isDeskRootChange(it) }?.taskId
 
+    override fun getDeskIdFromTaskInfo(taskInfo: TaskInfo): Int? {
+        val parentTaskId = taskInfo.parentTaskId
+        if (parentTaskId == INVALID_TASK_ID) return null
+        if (parentTaskId in deskRootsByDeskId) return parentTaskId
+        return null
+    }
+
     private fun isDeskRootChange(change: TransitionInfo.Change): Boolean =
         change.taskId in deskRootsByDeskId
 
@@ -419,8 +463,9 @@ class RootTaskDesksOrganizer(
             change.taskInfo?.isVisibleRequested == true &&
             change.mode == TRANSIT_TO_FRONT
 
-    override fun setOnDesktopTaskInfoChangedListener(listener: (RunningTaskInfo) -> Unit) {
-        onTaskInfoChangedListener = listener
+    override fun addOnDesktopTaskInfoChangedListener(listener: (RunningTaskInfo) -> Unit) {
+        if (listener in onTaskInfoChangedListeners) return
+        onTaskInfoChangedListeners += listener
     }
 
     override fun onTaskAppeared(taskInfo: RunningTaskInfo, leash: SurfaceControl) {
@@ -434,7 +479,9 @@ class RootTaskDesksOrganizer(
             taskInfo.taskId !in deskRootsByDeskId &&
                 deskMinimizationRootsByDeskId.values.none { it.rootId == taskInfo.taskId }
         ) {
-            onTaskInfoChangedListener?.invoke(taskInfo)
+            onTaskInfoChangedListeners.forEach { onTaskInfoChangedListener ->
+                onTaskInfoChangedListener(taskInfo)
+            }
         }
         updateLaunchAdjacentController()
     }
@@ -479,6 +526,13 @@ class RootTaskDesksOrganizer(
         }
 
         val appearingInDisplayId = taskInfo.displayId
+        logV(
+            "Task #%d appeared in display #%d, deskRootRequests=%s minimizationRootRequests=%s",
+            taskInfo.taskId,
+            appearingInDisplayId,
+            createDeskRootRequests,
+            createDeskMinimizationRootRequests,
+        )
         // Check if there's any pending desk creation requests under this display.
         val deskRequest =
             createDeskRootRequests.firstOrNull { it.displayId == appearingInDisplayId }
@@ -505,18 +559,30 @@ class RootTaskDesksOrganizer(
                         },
                 )
             createDeskRootRequests.remove(deskRequest)
-            deskRequest.onCreateCallback.onCreated(deskId)
-            createDeskMinimizationRoot(displayId = appearingInDisplayId, deskId = deskId)
+            createDeskMinimizationRoot(
+                displayId = appearingInDisplayId,
+                deskId = deskId,
+                callback = deskRequest.onCreateCallback,
+            )
             return
         }
         // Check if there's any pending minimization container creation requests under this display.
         val deskMinimizationRootRequest =
-            createDeskMinimizationRootRequests.first { it.displayId == appearingInDisplayId }
+            createDeskMinimizationRootRequests.firstOrNull { it.displayId == appearingInDisplayId }
+        if (deskMinimizationRootRequest == null) {
+            logE(
+                "Did not find a matching desk minimization root request for task#%d in display#%d",
+                taskInfo.taskId,
+                taskInfo.displayId,
+            )
+            return
+        }
         val deskId = deskMinimizationRootRequest.deskId
         logV("Minimization container for desk #$deskId appeared with id=${taskInfo.taskId}")
         val deskMinimizationRoot = DeskMinimizationRoot(deskId, taskInfo, leash)
         deskMinimizationRootsByDeskId[deskId] = deskMinimizationRoot
         createDeskMinimizationRootRequests.remove(deskMinimizationRootRequest)
+        deskMinimizationRootRequest.callback.onCreated(deskId)
         hideMinimizationRoot(deskMinimizationRoot)
     }
 
@@ -600,7 +666,7 @@ class RootTaskDesksOrganizer(
         deskRootsByDeskId.forEach { deskId, deskRoot ->
             if (deskRoot.children.remove(taskInfo.taskId)) {
                 logV("Task #${taskInfo.taskId} vanished from desk #$deskId")
-                childLeashes.remove(taskInfo.taskId)
+                cleanUpChildTask(taskInfo)
                 return
             }
         }
@@ -609,24 +675,40 @@ class RootTaskDesksOrganizer(
             val taskId = taskInfo.taskId
             if (root.children.remove(taskId)) {
                 logV("Task #$taskId vanished from minimization root of desk #${root.deskId}")
-                childLeashes.remove(taskInfo.taskId)
+                cleanUpChildTask(taskInfo)
                 return
             }
         }
     }
 
-    private fun createDeskMinimizationRoot(displayId: Int, deskId: Int) {
+    private fun cleanUpChildTask(taskInfo: RunningTaskInfo) {
+        childLeashes.remove(taskInfo.taskId)
+
+        // Notify task close events to the [TaskChangeListener] since [TransitionsObserver]
+        // does not trigger them when invisible tasks are removed.
+        taskChangeListener.ifPresent { listener -> listener.onNonTransitionTaskClosing(taskInfo) }
+    }
+
+    private fun createDeskMinimizationRoot(
+        displayId: Int,
+        deskId: Int,
+        callback: OnCreateCallback,
+    ) {
         createDeskMinimizationRootRequests +=
-            CreateDeskMinimizationRootRequest(displayId = displayId, deskId = deskId)
+            CreateDeskMinimizationRootRequest(
+                displayId = displayId,
+                deskId = deskId,
+                callback = callback,
+            )
         shellTaskOrganizer.createRootTask(
             TaskOrganizer.CreateRootTaskRequest()
                 .setName("MinimizedDesk_$deskId")
                 .setDisplayId(displayId)
                 .setWindowingMode(WINDOWING_MODE_FREEFORM)
                 .setRemoveWithTaskOrganizer(true)
-                .setReparentOnDisplayRemoval(DesktopExperienceFlags
-                    .ENABLE_DISPLAY_DISCONNECT_INTERACTION
-                    .isTrue),
+                .setReparentOnDisplayRemoval(
+                    DesktopExperienceFlags.ENABLE_DISPLAY_DISCONNECT_INTERACTION.isTrue
+                ),
             this,
         )
     }
@@ -708,7 +790,11 @@ class RootTaskDesksOrganizer(
         val onCreateCallback: OnCreateCallback,
     )
 
-    private data class CreateDeskMinimizationRootRequest(val displayId: Int, val deskId: Int)
+    private data class CreateDeskMinimizationRootRequest(
+        val displayId: Int,
+        val deskId: Int,
+        val callback: OnCreateCallback,
+    )
 
     private fun logD(msg: String, vararg arguments: Any?) {
         ProtoLog.d(WM_SHELL_DESKTOP_MODE, "%s: $msg", TAG, *arguments)

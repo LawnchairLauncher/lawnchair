@@ -18,6 +18,8 @@ package com.android.wm.shell.compatui;
 
 import static android.window.TaskConstants.TASK_CHILD_LAYER_COMPAT_UI;
 
+import static com.android.window.flags2.Flags.enableCompatuiSysuiLauncherFix;
+
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.AppCompatTaskInfo;
@@ -25,13 +27,19 @@ import android.app.TaskInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.SurfaceControl;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.FrameLayout;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.util.function.TriConsumer;
 import com.android.wm.shell.R;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.common.DisplayLayout;
@@ -39,7 +47,6 @@ import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.common.SyncTransactionQueue;
 import com.android.wm.shell.compatui.CompatUIController.CompatUIHintsState;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -54,7 +61,7 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
 
     private long mNextButtonHideTimeMs = -1L;
 
-    private final BiConsumer<TaskInfo, ShellTaskOrganizer.TaskListener> mOnButtonClicked;
+    private final TriConsumer<TaskInfo, ShellTaskOrganizer.TaskListener, View> mOnButtonClicked;
 
     private final Function<Integer, Integer> mDisappearTimeSupplier;
 
@@ -76,15 +83,20 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
     @Nullable
     private UserAspectRatioSettingsLayout mLayout;
 
+    @Nullable
+    private FrameLayout mLayoutParent;
+
     // Remember the last reported states in case visibility changes due to keyguard or IME updates.
     @VisibleForTesting
     boolean mHasUserAspectRatioSettingsButton;
+
+    boolean mIsAnimatingToHide;
 
     UserAspectRatioSettingsWindowManager(@NonNull Context context, @NonNull TaskInfo taskInfo,
             @NonNull SyncTransactionQueue syncQueue,
             @Nullable ShellTaskOrganizer.TaskListener taskListener,
             @NonNull DisplayLayout displayLayout, @NonNull CompatUIHintsState compatUIHintsState,
-            @NonNull BiConsumer<TaskInfo, ShellTaskOrganizer.TaskListener> onButtonClicked,
+            @NonNull TriConsumer<TaskInfo, ShellTaskOrganizer.TaskListener, View> onButtonClicked,
             @NonNull ShellExecutor shellExecutor,
             @NonNull Function<Integer, Integer> disappearTimeSupplier,
             @NonNull Supplier<Boolean> userAspectRatioButtonStateChecker,
@@ -114,6 +126,7 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
     protected void removeLayout() {
         mLayoutBounds.setEmpty();
         mLayout = null;
+        mLayoutParent = null;
     }
 
     @Override
@@ -123,18 +136,40 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
 
     @Override
     protected View createLayout() {
-        mLayout = inflateLayout();
+        mLayoutParent = inflateLayout();
+        mLayout = mLayoutParent.findViewById(R.id.user_aspect_ratio_layout);
         mLayout.inject(this);
 
         updateVisibilityOfViews();
 
-        return mLayout;
+        if (enableCompatuiSysuiLauncherFix()) {
+            // Don't let the fullscreen parent view steal input events by adding only the button
+            // bounds to the touchable region.
+            mLayoutParent.getViewTreeObserver().addOnComputeInternalInsetsListener(info -> {
+                if (mLayout == null || mLayout.getVisibility() != View.VISIBLE) {
+                    info.touchableRegion.setEmpty();
+                } else {
+                    final Region touchableRegion = new Region();
+                    final Rect layoutBounds = new Rect(mLayout.getLeft(), mLayout.getTop(),
+                            mLayout.getRight(), mLayout.getBottom());
+                    touchableRegion.op(layoutBounds, Region.Op.UNION);
+                    info.touchableRegion.set(touchableRegion);
+                }
+                info.setTouchableInsets(
+                        ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION);
+            });
+
+            return mLayoutParent;
+        } else {
+            mLayoutParent.removeView(mLayout);
+            return mLayout;
+        }
     }
 
     @VisibleForTesting
-    UserAspectRatioSettingsLayout inflateLayout() {
-        return (UserAspectRatioSettingsLayout) LayoutInflater.from(mContext).inflate(
-                R.layout.user_aspect_ratio_settings_layout, null);
+    FrameLayout inflateLayout() {
+        return (FrameLayout) LayoutInflater.from(mContext)
+                .inflate(R.layout.user_aspect_ratio_settings_layout, null);
     }
 
     @Override
@@ -156,7 +191,7 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
 
     /** Called when the user aspect ratio settings button is clicked. */
     void onUserAspectRatioSettingsButtonClicked() {
-        mOnButtonClicked.accept(getLastTaskInfo(), getTaskListener());
+        mOnButtonClicked.accept(getLastTaskInfo(), getTaskListener(), mLayout);
     }
 
     /** Called when the user aspect ratio settings button is long clicked. */
@@ -170,6 +205,25 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
         mShellExecutor.executeDelayed(this::hideUserAspectRatioButton, disappearTimeMs);
     }
 
+    boolean isAnimatingToHide() {
+        return mIsAnimatingToHide;
+    }
+
+    void setIsAnimatingToHide(boolean isAnimatingToHide) {
+        mIsAnimatingToHide = isAnimatingToHide;
+        if (isAnimatingToHide) {
+            mLayout.setUserAspectRatioSettingsHintVisibility(false);
+        }
+    }
+
+    @Override
+    public void release() {
+        if (mIsAnimatingToHide) {
+            return;
+        }
+        super.release();
+    }
+
     @Override
     @VisibleForTesting
     public void updateSurfacePosition() {
@@ -178,6 +232,15 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
             return;
         }
         updateSurfacePosition(mLayoutBounds.left, mLayoutBounds.top);
+    }
+
+    @Override
+    protected WindowManager.LayoutParams getWindowLayoutParams() {
+        if (!enableCompatuiSysuiLauncherFix()) {
+            return super.getWindowLayoutParams();
+        }
+        final Rect taskBounds = getTaskBounds();
+        return getWindowLayoutParams(taskBounds.width(), taskBounds.height());
     }
 
     @Override
@@ -218,6 +281,17 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
         // Position of the button in the container coordinate.
         final Rect taskBounds = getTaskBounds();
         final Rect taskStableBounds = getTaskStableBounds();
+        if (enableCompatuiSysuiLauncherFix()) {
+            mLayoutBounds.set(taskBounds);
+            ViewGroup.LayoutParams params = mLayout.getLayoutParams();
+            if (params instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) params;
+                marginParams.setMargins(0, 0, 0, taskBounds.bottom - taskStableBounds.bottom);
+                mLayout.setLayoutParams(marginParams);
+            }
+            return;
+        }
+
         final int layoutWidth = mLayout.getMeasuredWidth();
         final int layoutHeight = mLayout.getMeasuredHeight();
         final int positionX = getLayoutDirection() == View.LAYOUT_DIRECTION_RTL

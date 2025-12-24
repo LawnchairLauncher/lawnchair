@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executor
 
 /** Represents a stream of data which supports listening for updates */
-interface ListenableStream<T : Any> {
+interface ListenableStream<T> {
 
     /**
      * Registers a listener for getting all new events from now on. Multiple callbacks on the same
@@ -32,7 +32,7 @@ interface ListenableStream<T : Any> {
 }
 
 /** [ListenableStream] which allows dispatching custom value */
-open class MutableListenableStream<T : Any> : ListenableStream<T> {
+open class MutableListenableStream<T> : ListenableStream<T> {
 
     internal val listeners = ConcurrentHashMap<Executor, CopyOnWriteArrayList<(T) -> Unit>>()
 
@@ -55,16 +55,22 @@ open class MutableListenableStream<T : Any> : ListenableStream<T> {
 }
 
 /** A [ListenableStream] which also holds a reference to the last value */
-interface ListenableRef<T : Any> : ListenableStream<T> {
+interface ListenableRef<T> : ListenableStream<T> {
     /* The current value */
     val value: T
 }
 
 /** [ListenableRef] which allows updating its value */
-class MutableListenableRef<T : Any>(initValue: T) : MutableListenableStream<T>(), ListenableRef<T> {
+class MutableListenableRef<T>(initValue: T) : MutableListenableStream<T>(), ListenableRef<T> {
 
     override var value: T = initValue
         private set
+
+    override fun forEach(executor: Executor, callback: (T) -> Unit): SafeCloseable {
+        return super.forEach(executor, callback).also {
+            executor.execute { callback.invoke(value) }
+        }
+    }
 
     /** Updates the reference [value] and also dispatches it to the stream */
     override fun dispatchValue(newValue: T) {
@@ -73,4 +79,41 @@ class MutableListenableRef<T : Any>(initValue: T) : MutableListenableStream<T>()
     }
 
     override fun asListenable(): ListenableRef<T> = this
+}
+
+/**
+ * A [ListenableRef] which also supports listening to changes
+ *
+ * @param R The type of the diff
+ */
+interface ListenableDiffAwareRef<T, R> : ListenableRef<T> {
+
+    /** Stream of ongoing changes */
+    val changes: ListenableStream<R>
+}
+
+/** [ListenableDiffAwareRef] which allows updating its value */
+class MutableDiffAwareRef<T, R>(initValue: T) : ListenableDiffAwareRef<T, R> {
+
+    private val _changes = MutableListenableStream<R>()
+    override val changes: ListenableStream<R> = _changes
+
+    private val _value = MutableListenableRef(initValue)
+
+    override val value: T
+        get() = _value.value
+
+    override fun forEach(executor: Executor, callback: (T) -> Unit) =
+        _value.forEach(executor, callback)
+
+    /**
+     * Updates the reference [value] and also dispatches it to the stream, followed by dispatching
+     * the [diff] to the changes stream
+     */
+    fun dispatchValue(newValue: T, diff: R) {
+        _value.dispatchValue(newValue)
+        _changes.dispatchValue(diff)
+    }
+
+    fun asListenable(): ListenableDiffAwareRef<T, R> = this
 }

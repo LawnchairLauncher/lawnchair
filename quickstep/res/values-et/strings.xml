@@ -23,11 +23,11 @@
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Vabavorm"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Lauaarvuti režiim"</string>
     <string name="recent_task_option_external_display" msgid="4533840664313389484">"Liikuge välisele ekraanile"</string>
-    <string name="recent_task_option_remove_task" msgid="803559928027541555">"Eemaldamine"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"Tühjenda"</string>
     <string name="recent_task_desktop" msgid="8081113562549637334">"Töölaud"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Hiljutisi üksusi pole"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Rakenduse kasutuse seaded"</string>
-    <string name="recents_clear_all" msgid="5328176793634888831">"Sule kõik"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"Tühjenda kõik"</string>
     <string name="add_desk_button_content_description" msgid="5866025518368823735">"Uue töölaua lisamine"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Hiljutised rakendused"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g> <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
@@ -47,11 +47,10 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Rakenduste soovitused lisati tühjale kohale"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Rakenduste soovitused on lubatud"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Rakenduste soovitused on keelatud"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Ennustatud rakendus: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"Liigutustega navigeerimise juhend"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Pöörake seadet"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Pöörake seadet, et liigutustega navigeerimise õpetused lõpetada"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Pühkige kindlasti parem- või vasakpoolsest servast"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Pühkige kindlasti parem- või vasakpoolsest servast."</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Pühkige ekraani paremast või vasakust servast keskele ja eemaldage sõrm"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Õppisite, kuidas tagasiliikumiseks paremalt pühkida. Nüüd vaadake, kuidas rakenduste vahel vahetada."</string>
     <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Tegite tagasiliikumise liigutuse. Järgmisena vaadake, kuidas rakenduste vahel vahetada."</string>
@@ -73,7 +72,7 @@
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Pühkige ekraani allosast üles."</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Väga hea!"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Pühkige kindlasti ekraani alumisest servast üles."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Hoidke sõrme aknal pisut kauem, enne kui vabastate"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Hoidke sõrme aknal pisut kauem, enne kui vabastate."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Pühkige kindlasti otse üles, seejärel peatuge."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Õppisite liigutusi kasutama. Liigutuste väljalülitamiseks avage Seaded."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Tegite rakenduste vahel vahetamise liigutuse."</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Süsteemi navigeerimisseaded"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"Teie <xliff:g id="DEVICE">%1$s</xliff:g> on \nvalmis!"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Teie seade on \nvalmis!"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"Olete avaldamiseks valmis!"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"Nautige oma uut <xliff:g id="DEVICE">%1$s</xliff:g> seadet!"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"Pühkige üles, et oma seadet <xliff:g id="DEVICE">%1$s</xliff:g> kasutama hakata"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"Puudutage, et oma seadme <xliff:g id="DEVICE">%1$s</xliff:g> kasutamist alustada"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Valige, kuidas navigeerida"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"Pühkige üles"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"Puudutage avakuva nuppu"</string>
@@ -105,7 +107,7 @@
     <string name="action_share" msgid="2648470652637092375">"Jaga"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Ekraanipilt"</string>
     <string name="action_split" msgid="2098009717623550676">"Jaga pooleks"</string>
-    <string name="action_save_app_pair" msgid="5974823919237645229">"Salvesta rakendusepaar"</string>
+    <string name="action_save_app_pair" msgid="5974823919237645229">"Salvesta äpipaar"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Jagatud ekraanikuva kasutamiseks puudutage muud rakendust"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Valige jagatud ekraanikuva jaoks muu rakendus."</string>
     <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"Tühista"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Märguanded"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Kiirseaded"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Tegumiriba"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Tegumiriba on kuvatud"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Tegumiriba ja mullid kuvatakse"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Tegumiriba ja mullid kuvatakse paremal"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigeerimisriba"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Kuva tegumiriba alati"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Navigeerimisrežiimi muutmine"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Tegumiriba jagaja"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Muud hiljutised rakendused"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"Rakendus lisati tegumiribale"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"Rakendus eemaldati tegumiribalt"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Teisalda üles/vasakule"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Teisalda alla/paremale"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Rakenduse avamine mullina"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"Rakenduse ikoon"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"Rakenduse pealkiri"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"Sulgemisnupp"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"Tegumiribale kinnitamine"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Tegumiribalt vabastamine"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"Müksamine"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"Sulgemine"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"Müksamise pilt"</string>

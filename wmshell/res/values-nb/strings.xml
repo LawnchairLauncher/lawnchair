@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Appen støtter ikke bobler"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Skilleelement for delt skjerm"</string>
     <string name="divider_title" msgid="1963391955593749442">"Skilleelement for delt skjerm"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Utvid den venstre delen av skjermen til hele skjermen"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Sett størrelsen på den venstre delen av skjermen til 70 %"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Sett størrelsen på den venstre delen av skjermen til 50 %"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Sett størrelsen på den venstre delen av skjermen til 30 %"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Utvid den høyre delen av skjermen til hele skjermen"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Bytt om på den øvre og nedre appen"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Bytt om på venstre og høyre app"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Utvid den øverste delen av skjermen til hele skjermen"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Sett størrelsen på den øverste delen av skjermen til 70 %"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Sett størrelsen på den øverste delen av skjermen til 50 %"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Sett størrelsen på den øverste delen av skjermen til 30 %"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Utvid den nederste delen av skjermen til hele skjermen"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Sett den venstre appen i fullskjermmodus"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10 % venstre, 90 % høyre"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30 % venstre, 70 % høyre"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50 % venstre, 50 % høyre"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70 % venstre, 30 % høyre"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90 % venstre, 10 % høyre"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Sett den høyre appen i fullskjermmodus"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Bytt om på den øvre og nedre appen, og behold den nåværende oppdelingen"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Bytt om på venstre og høyre app, og behold den nåværende oppdelingen"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Sett den øvre appen i fullskjermmodus"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10 % oppe, 90 % nede"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30 % oppe, 70 % nede"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50 % oppe, 50 % nede"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70 % oppe, 30 % nede"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90 % oppe, 10 % nede"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Sett den nedre appen i fullskjermmodus"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Del opp til venstre"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Del opp til høyre"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Del opp øverst"</string>
@@ -96,7 +100,7 @@
     <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Vis bobler"</string>
     <string name="restart_button_description" msgid="4564728020654658478">"Trykk for å starte denne appen på nytt og få en bedre visning"</string>
     <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Endre høyde/bredde-forholdet for denne appen i Innstillinger"</string>
-    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Endre høyde/bredde-forholdet"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Høyde/bredde-forhold"</string>
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Har du kameraproblemer?\nTrykk for å tilpasse"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Ble ikke problemet løst?\nTrykk for å gå tilbake"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Har du ingen kameraproblemer? Trykk for å lukke."</string>
@@ -131,8 +135,8 @@
     <string name="open_in_browser_text" msgid="9181692926376072904">"Åpne i nettleseren"</string>
     <string name="open_in_app_text" msgid="2874590745116268525">"Åpne i appen"</string>
     <string name="new_window_text" msgid="6318648868380652280">"Nytt vindu"</string>
-    <string name="manage_windows_text" msgid="5567366688493093920">"Administrer vinduene"</string>
-    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Endre høyde/bredde-forholdet"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"Administrer vinduer"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Høyde/bredde-forhold"</string>
     <string name="handle_menu_restart_text" msgid="3907767216238298098">"Optimaliser visning"</string>
     <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"Feilikon"</string>
     <string name="close_text" msgid="4986518933445178928">"Lukk"</string>

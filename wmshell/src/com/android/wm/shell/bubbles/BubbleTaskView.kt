@@ -21,7 +21,11 @@ import android.app.ActivityTaskManager.INVALID_TASK_ID
 import android.content.ComponentName
 import androidx.annotation.VisibleForTesting
 import com.android.wm.shell.bubbles.util.BubbleUtils.isBubbleToFullscreen
+import com.android.wm.shell.bubbles.util.BubbleUtils.isBubbleToSplit
+import com.android.wm.shell.splitscreen.SplitScreenController
 import com.android.wm.shell.taskview.TaskView
+import dagger.Lazy
+import java.util.Optional
 import java.util.concurrent.Executor
 
 /**
@@ -29,7 +33,12 @@ import java.util.concurrent.Executor
  *
  * [delegateListener] allows callers to change listeners after a task has been created.
  */
-class BubbleTaskView(val taskView: TaskView, executor: Executor) {
+class BubbleTaskView @JvmOverloads constructor(
+    val taskView: TaskView,
+    executor: Executor,
+    private val splitScreenController: Lazy<Optional<SplitScreenController>> =
+        Lazy { Optional.empty() },
+) {
 
     /** Whether the task is already created. */
     var isCreated = false
@@ -108,7 +117,8 @@ class BubbleTaskView(val taskView: TaskView, executor: Executor) {
      * This should be called after all other cleanup animations have finished.
      */
     fun cleanup() {
-        if (isBubbleToFullscreen(taskView.taskInfo)) {
+        val task = taskView.taskInfo
+        if (task.isBubbleToFullscreen() || task.isBubbleToSplit(splitScreenController)) {
             taskView.unregisterTask()
         } else {
             taskView.removeTask()

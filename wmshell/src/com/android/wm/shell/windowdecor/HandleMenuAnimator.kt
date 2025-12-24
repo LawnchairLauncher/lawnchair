@@ -18,7 +18,11 @@ package com.android.wm.shell.windowdecor
 
 import android.animation.Animator
 import android.animation.AnimatorSet
+import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.content.Context
+import android.content.res.ColorStateList
 import android.view.View
 import android.view.View.ALPHA
 import android.view.View.SCALE_X
@@ -27,17 +31,24 @@ import android.view.View.TRANSLATION_Y
 import android.view.View.TRANSLATION_Z
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
-import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.window.DesktopExperienceFlags
 import androidx.core.animation.doOnEnd
 import androidx.core.view.children
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import com.android.app.animation.Interpolators.EMPHASIZED
 import com.android.wm.shell.R
 import com.android.wm.shell.shared.animation.Interpolators
+import kotlin.math.max
 
 /** Animates the Handle Menu opening. */
 class HandleMenuAnimator(
+    private val context: Context,
     private val handleMenu: View,
     private val menuWidth: Int,
-    private val captionHeight: Float
+    private val captionHeight: Float,
 ) {
     companion object {
         // Open animation constants
@@ -66,9 +77,18 @@ class HandleMenuAnimator(
         private const val HEADER_CONTENT_OPACITY_CLOSE_DELAY: Long = 25
         private const val HEADER_CONTENT_OPACITY_CLOSE_DURATION: Long = 25
         private const val BODY_CLOSE_DURATION: Long = 50
+
+        // Handle->menu animation constants
+        private const val WIDTH_SWAP_FRACTION = 0.19f
+        private const val HEADER_ICON_NAME_SWAP_FRACTION = 0.1f
+        private const val HEADER_MENU_NAME_LATE_FADE_IN_FRACTION = 0.8f
+        private const val HANDLE_MENU_OPEN_CLOSE_DURATION: Long = 600
+
+        private const val HEADER_MENU_OPEN_CLOSE_DURATION: Long = 600
     }
 
     private val animators: MutableList<Animator> = mutableListOf()
+    private val argbEvaluator: ArgbEvaluator = ArgbEvaluator.getInstance()
     private var runningAnimation: AnimatorSet? = null
 
     private val appInfoPill: ViewGroup = handleMenu.requireViewById(R.id.app_info_pill)
@@ -77,19 +97,71 @@ class HandleMenuAnimator(
     private val openInAppOrBrowserPill: ViewGroup =
         handleMenu.requireViewById(R.id.open_in_app_or_browser_pill)
 
-    /** Animates the opening of the handle menu. */
-    fun animateOpen() {
-        prepareMenuForAnimation()
-        appInfoPillExpand()
-        animateAppInfoPillOpen()
-        animateWindowingPillOpen()
-        animateMoreActionsPillOpen()
-        animateOpenInAppOrBrowserPill()
-        runAnimations {
+    private val windowDecorHeight: Float =
+        context.resources
+            .getDimensionPixelSize(R.dimen.desktop_mode_fullscreen_decor_caption_height)
+            .toFloat()
+    private val handleHeight: Float =
+        context.resources.getDimensionPixelSize(R.dimen.app_handle_height).toFloat()
+    private val handleWidth: Float =
+        context.resources.getDimensionPixelSize(R.dimen.app_handle_width).toFloat()
+    private val handleMenuWidth: Float =
+        context.resources.getDimensionPixelSize(R.dimen.desktop_mode_handle_menu_width).toFloat()
+    private val appInfoPillHeight: Float =
+        context.resources
+            .getDimensionPixelSize(R.dimen.desktop_mode_handle_menu_app_info_pill_height)
+            .toFloat()
+    private val marginMenuTop =
+        context.resources.getDimensionPixelSize(R.dimen.desktop_mode_handle_menu_margin_top)
+    private val marginMenuLeftRightPadding =
+        context.resources.getDimensionPixelSize(
+            R.dimen.desktop_mode_handle_menu_padding_left_bottom_right
+        )
+    private val menuItemElevation: Int =
+        context.getResources().getDimensionPixelSize(R.dimen.app_menu_elevation)
+    private val menuAppIconHeight: Int =
+        context.resources.getDimensionPixelSize(R.dimen.desktop_mode_handle_menu_icon_radius)
+    private val headerAppIconHeight: Int =
+        context.resources.getDimensionPixelSize(R.dimen.desktop_mode_caption_icon_radius)
+
+    /**
+     * Animates the App Header from resting state to the menu, giving an illusion they are the same
+     * surface.
+     */
+    fun animateCaptionHeaderExpandToOpen(headerView: View) {
+        if (
+            DesktopExperienceFlags.ENABLE_DRAWING_APP_HANDLE.isTrue &&
+                DesktopExperienceFlags.ENABLE_TALL_APP_HEADERS.isTrue
+        ) {
+            setupHeaderAnimator(headerView, true /* expand */)
+        } else {
+            prepareMenuForAnimation()
+            appInfoPillExpand()
+            animateAppInfoPillOpen()
+            animateWindowingPillOpen()
+            animateMoreActionsPillOpen()
+            animateOpenInAppOrBrowserPill()
+        }
+        val animationCallback: () -> Unit = {
             appInfoPill.post {
-                appInfoPill.requireViewById<View>(R.id.collapse_menu_button).sendAccessibilityEvent(
-                    AccessibilityEvent.TYPE_VIEW_FOCUSED)
+                appInfoPill
+                    .requireViewById<View>(R.id.collapse_menu_button)
+                    .sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
             }
+        }
+        if (!handleMenu.isAttachedToWindow) {
+            handleMenu.addOnAttachStateChangeListener(
+                object : View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(v: View) {
+                        runAnimations(animationCallback)
+                        handleMenu.removeOnAttachStateChangeListener(this)
+                    }
+
+                    override fun onViewDetachedFromWindow(v: View) {}
+                }
+            )
+        } else {
+            runAnimations(animationCallback)
         }
     }
 
@@ -98,18 +170,38 @@ class HandleMenuAnimator(
      * will expand until it assumes the shape of the app info pill. Then, the other two pills will
      * appear.
      */
-    fun animateCaptionHandleExpandToOpen() {
-        prepareMenuForAnimation()
-        captionHandleExpandIntoAppInfoPill()
-        animateAppInfoPillOpen()
-        animateWindowingPillOpen()
-        animateMoreActionsPillOpen()
-        animateOpenInAppOrBrowserPill()
-        runAnimations {
+    fun animateCaptionHandleExpandToOpen(handleView: View) {
+        if (DesktopExperienceFlags.ENABLE_DRAWING_APP_HANDLE.isTrue) {
+
+            setupHandleAnimator(handleView, true /* expand */)
+        } else {
+            prepareMenuForAnimation()
+            captionHandleExpandIntoAppInfoPill()
+            animateAppInfoPillOpen()
+            animateWindowingPillOpen()
+            animateMoreActionsPillOpen()
+            animateOpenInAppOrBrowserPill()
+        }
+        val animationCallback: () -> Unit = {
             appInfoPill.post {
-                appInfoPill.requireViewById<View>(R.id.collapse_menu_button).sendAccessibilityEvent(
-                    AccessibilityEvent.TYPE_VIEW_FOCUSED)
+                appInfoPill
+                    .requireViewById<View>(R.id.collapse_menu_button)
+                    .sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
             }
+        }
+        if (!handleMenu.isAttachedToWindow) {
+            handleMenu.addOnAttachStateChangeListener(
+                object : View.OnAttachStateChangeListener {
+                    override fun onViewAttachedToWindow(v: View) {
+                        runAnimations(animationCallback)
+                        handleMenu.removeOnAttachStateChangeListener(this)
+                    }
+
+                    override fun onViewDetachedFromWindow(v: View) {}
+                }
+            )
+        } else {
+            runAnimations(animationCallback)
         }
     }
 
@@ -120,12 +212,16 @@ class HandleMenuAnimator(
      *
      * @param after runs after the animation finishes.
      */
-    fun animateCollapseIntoHandleClose(after: () -> Unit) {
-        appInfoCollapseToHandle()
-        animateAppInfoPillFadeOut()
-        windowingPillClose()
-        moreActionsPillClose()
-        openInAppOrBrowserPillClose()
+    fun animateCollapseIntoHandleClose(handleView: View, after: () -> Unit) {
+        if (DesktopExperienceFlags.ENABLE_DRAWING_APP_HANDLE.isTrue) {
+            setupHandleAnimator(handleView, false /* expand */)
+        } else {
+            appInfoCollapseToHandle()
+            animateAppInfoPillFadeOut()
+            windowingPillClose()
+            moreActionsPillClose()
+            openInAppOrBrowserPillClose()
+        }
         runAnimations(after)
     }
 
@@ -135,15 +231,186 @@ class HandleMenuAnimator(
      * screen.
      *
      * @param after runs after animation finishes.
-     *
      */
-    fun animateClose(after: () -> Unit) {
-        appInfoPillCollapse()
-        animateAppInfoPillFadeOut()
-        windowingPillClose()
-        moreActionsPillClose()
-        openInAppOrBrowserPillClose()
+    fun animateCollapseIntoHeaderClose(headerView: View, after: () -> Unit) {
+        if (
+            DesktopExperienceFlags.ENABLE_DRAWING_APP_HANDLE.isTrue &&
+                DesktopExperienceFlags.ENABLE_TALL_APP_HEADERS.isTrue
+        ) {
+            setupHeaderAnimator(headerView, false /* expand */)
+        } else {
+            appInfoPillCollapse()
+            animateAppInfoPillFadeOut()
+            windowingPillClose()
+            moreActionsPillClose()
+            openInAppOrBrowserPillClose()
+        }
         runAnimations(after)
+    }
+
+    private fun setupHandleAnimator(handleView: View, expand: Boolean) {
+        val showMenuAnimation =
+            if (expand) {
+                    ValueAnimator.ofFloat(0f, 1f)
+                } else {
+                    ValueAnimator.ofFloat(1f, 0f)
+                }
+                .apply {
+                    duration = HANDLE_MENU_OPEN_CLOSE_DURATION
+                    interpolator = EMPHASIZED
+                }
+        val widthDiff: Int = (handleMenuWidth - handleWidth).toInt()
+        val targetWidth: Float = handleWidth + widthDiff * WIDTH_SWAP_FRACTION
+        val swapScale: Float = targetWidth / handleMenuWidth
+        val targetHeight: Float = targetWidth / handleMenuWidth * appInfoPillHeight
+
+        // Calculating deltas
+        val handleWidthDelta: Float = targetWidth - handleWidth
+        val handleHeightDelta = targetHeight - handleHeight
+
+        showMenuAnimation.addUpdateListener { animator ->
+            val progress: Float = animator.animatedValue as Float
+            val showHandle: Boolean = (progress <= WIDTH_SWAP_FRACTION)
+            handleView.isVisible = showHandle
+            handleMenu.isVisible = !showHandle
+            if (showHandle) {
+                val handleAnimationProgress: Float = progress / WIDTH_SWAP_FRACTION
+                val heightIncrement = handleHeightDelta * handleAnimationProgress
+                val widthIncrement = handleWidthDelta * handleAnimationProgress
+                val scaleYGrowth: Float = (heightIncrement + handleHeight) / handleHeight
+                val scaleXGrowth: Float = (widthIncrement + handleWidth) / handleWidth
+                handleView.pivotY = windowDecorHeight / 2
+                handleView.pivotX = handleWidth / 2
+                handleView.scaleX = scaleXGrowth
+                handleView.scaleY = scaleYGrowth
+                handleView.translationY = heightIncrement / 2 * handleAnimationProgress
+            } else {
+                val menuAnimationProgress: Float =
+                    (progress - WIDTH_SWAP_FRACTION) / (1 - WIDTH_SWAP_FRACTION)
+                val oldCenterY =
+                    captionHeight / 2 + (handleHeight + handleHeightDelta * progress) / 2
+                val currentMenuScale = swapScale + (1 - swapScale) * menuAnimationProgress
+                val finalCenterY = currentMenuScale * appInfoPillHeight / 2 + marginMenuTop
+                val diff = oldCenterY - finalCenterY
+                handleMenu.translationY = diff * (1 - menuAnimationProgress)
+                handleMenu.pivotY = 0f
+                handleMenu.pivotX = handleMenu.width.toFloat() / 2
+                handleMenu.scaleX = currentMenuScale
+                handleMenu.scaleY = currentMenuScale
+
+                appInfoPill.children.forEach { it.alpha = progress }
+                appInfoPill.elevation = menuItemElevation * progress
+                animateRestOfTheMenu(menuAnimationProgress)
+            }
+        }
+        animators += showMenuAnimation
+    }
+
+    private fun setupHeaderAnimator(headerView: View, expand: Boolean) {
+        val showMenuAnimation =
+            if (expand) {
+                    ValueAnimator.ofFloat(0f, 1f)
+                } else {
+                    ValueAnimator.ofFloat(1f, 0f)
+                }
+                .apply {
+                    duration = HEADER_MENU_OPEN_CLOSE_DURATION
+                    interpolator = EMPHASIZED
+                }
+        val openMenuView = headerView.findViewById<LinearLayout>(R.id.open_menu_button)
+        val headerAppIcon = openMenuView.findViewById<View>(R.id.application_icon)
+        val headerAppName = openMenuView.findViewById<TextView>(R.id.application_name)
+        val expandMenuButton = openMenuView.findViewById<View>(R.id.expand_menu_button)
+        val menuAppIcon = appInfoPill.findViewById<View>(R.id.application_icon)
+        val menuAppName = appInfoPill.findViewById<TextView>(R.id.application_name)
+        val startingMenuAppNameColor = headerAppName.textColors.defaultColor
+        val finalMenuAppNameColor = menuAppName.textColors.defaultColor
+
+        val shouldLateFadeInAppName =
+            headerAppName.isGone || headerAppName.text == null || headerAppName.text.isEmpty()
+        val startingScaleForMenu = headerAppIconHeight.toFloat() / menuAppIconHeight.toFloat()
+
+        showMenuAnimation.addUpdateListener { animator ->
+            val progress: Float = animator.animatedValue as Float
+            if (progress < HEADER_ICON_NAME_SWAP_FRACTION) {
+                val headerAppNameAndIconProgress = 1f - progress / HEADER_ICON_NAME_SWAP_FRACTION
+                headerAppIcon.alpha = headerAppNameAndIconProgress
+                headerAppName.alpha = headerAppNameAndIconProgress
+                expandMenuButton.alpha = headerAppNameAndIconProgress
+                val menuIconsAndNameProgress = progress / HEADER_ICON_NAME_SWAP_FRACTION
+                menuAppIcon.alpha = menuIconsAndNameProgress
+                if (!shouldLateFadeInAppName) {
+                    menuAppName.alpha = menuIconsAndNameProgress
+                }
+            } else {
+                headerAppIcon.alpha = 0f
+                headerAppName.alpha = 0f
+                expandMenuButton.alpha = 0f
+                menuAppIcon.alpha = 1f
+                if (!shouldLateFadeInAppName) {
+                    menuAppName.alpha = 1f
+                }
+            }
+
+            val currentMenuScale = (1 - startingScaleForMenu) * progress + startingScaleForMenu
+            // First, scale and translate the menu itself accordingly
+            handleMenu.pivotY = 0f
+            handleMenu.pivotX = marginMenuLeftRightPadding.toFloat() * (1 / startingScaleForMenu)
+            handleMenu.scaleX = currentMenuScale
+            handleMenu.scaleY = currentMenuScale
+            handleMenu.translationY = -marginMenuTop.toFloat() / 2 * (1 - progress)
+            handleMenu.translationX =
+                marginMenuLeftRightPadding.toFloat() / 3f *
+                    (1 / startingScaleForMenu) *
+                    (1 - progress)
+
+            // Next, transform the individual parts of the app pill
+            // appInfoPill: fade in the background
+            // appName: since we want to keep the text the same size, we are un-scaling it, and
+            // move it in the x-axis to keep the spacing the same at the beginning
+            // CollapseMenuButton: fade it in, but after the handoff fraction period
+            appInfoPill.background.alpha = (progress * 255f).toInt()
+            appInfoPill.elevation = menuItemElevation * progress
+            menuAppName.scaleX = 1f / currentMenuScale
+            menuAppName.scaleY = 1f / currentMenuScale
+            menuAppName.translationX = marginMenuLeftRightPadding.toFloat() * (3f) * (1f - progress)
+            val color =
+                argbEvaluator.evaluate(progress, startingMenuAppNameColor, finalMenuAppNameColor)
+                    as Int
+            menuAppName.setTextColor(ColorStateList.valueOf(color))
+            if (shouldLateFadeInAppName) {
+                if (progress > (1 - HEADER_MENU_NAME_LATE_FADE_IN_FRACTION)) {
+                    menuAppName.alpha =
+                        (progress - (1 - HEADER_MENU_NAME_LATE_FADE_IN_FRACTION)) /
+                            HEADER_MENU_NAME_LATE_FADE_IN_FRACTION
+                } else {
+                    menuAppName.alpha = 0f
+                }
+            }
+            val collapsedMenuButtonAnimationProgress: Float =
+                (progress - HEADER_ICON_NAME_SWAP_FRACTION) / (1 - HEADER_ICON_NAME_SWAP_FRACTION)
+            val collapseMenuButton = appInfoPill.findViewById<View>(R.id.collapse_menu_button)
+            collapseMenuButton.alpha = collapsedMenuButtonAnimationProgress
+
+            animateRestOfTheMenu(progress)
+        }
+        animators += showMenuAnimation
+    }
+
+    private fun animateRestOfTheMenu(progress: Float) {
+        val showMenuStagesCount = 3
+        val actionsBackgroundAlpha =
+            max(0f, (progress - 1f / showMenuStagesCount) * (showMenuStagesCount - 1))
+        val actionItemsAlpha = max(0f, (progress - 2f / showMenuStagesCount) * showMenuStagesCount)
+        windowingPill.setAlpha(actionsBackgroundAlpha)
+        windowingPill.setElevation(menuItemElevation * actionsBackgroundAlpha)
+        windowingPill.children.forEach { it.alpha = actionItemsAlpha }
+        moreActionsPill.setAlpha(actionsBackgroundAlpha)
+        moreActionsPill.setElevation(menuItemElevation * actionsBackgroundAlpha)
+        moreActionsPill.children.forEach { it.alpha = actionItemsAlpha }
+        openInAppOrBrowserPill.setAlpha(actionsBackgroundAlpha)
+        openInAppOrBrowserPill.setElevation(menuItemElevation * actionsBackgroundAlpha)
+        openInAppOrBrowserPill.children.forEach { it.alpha = actionItemsAlpha }
     }
 
     /**
@@ -290,50 +557,51 @@ class HandleMenuAnimator(
         // More Actions Content Opacity Animation
         moreActionsPill.children.forEach {
             animators +=
-                    ObjectAnimator.ofFloat(it, ALPHA, 1f).apply {
-                        startDelay = BODY_ALPHA_OPEN_DELAY
-                        duration = BODY_CONTENT_ALPHA_OPEN_DURATION
-                        interpolator = Interpolators.FAST_OUT_SLOW_IN
-                    }
+                ObjectAnimator.ofFloat(it, ALPHA, 1f).apply {
+                    startDelay = BODY_ALPHA_OPEN_DELAY
+                    duration = BODY_CONTENT_ALPHA_OPEN_DURATION
+                    interpolator = Interpolators.FAST_OUT_SLOW_IN
+                }
         }
     }
 
     private fun animateOpenInAppOrBrowserPill() {
         // Open in Browser X & Y Scaling Animation
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_X, HALF_INITIAL_SCALE, 1f).apply {
-                    startDelay = BODY_SCALE_OPEN_DELAY
-                    duration = BODY_SCALE_OPEN_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_X, HALF_INITIAL_SCALE, 1f).apply {
+                startDelay = BODY_SCALE_OPEN_DELAY
+                duration = BODY_SCALE_OPEN_DURATION
+            }
 
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_Y, HALF_INITIAL_SCALE, 1f).apply {
-                    startDelay = BODY_SCALE_OPEN_DELAY
-                    duration = BODY_SCALE_OPEN_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_Y, HALF_INITIAL_SCALE, 1f).apply {
+                startDelay = BODY_SCALE_OPEN_DELAY
+                duration = BODY_SCALE_OPEN_DURATION
+            }
 
         // Open in Browser Opacity Animation
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 1f).apply {
-                    startDelay = BODY_ALPHA_OPEN_DELAY
-                    duration = BODY_ALPHA_OPEN_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 1f).apply {
+                startDelay = BODY_ALPHA_OPEN_DELAY
+                duration = BODY_ALPHA_OPEN_DURATION
+            }
 
         // Open in Browser Elevation Animation
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, TRANSLATION_Z, 1f).apply {
-                    startDelay = ELEVATION_OPEN_DELAY
-                    duration = BODY_ELEVATION_OPEN_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, TRANSLATION_Z, 1f).apply {
+                startDelay = ELEVATION_OPEN_DELAY
+                duration = BODY_ELEVATION_OPEN_DURATION
+            }
 
         // Open in Browser Button Opacity Animation
-        val button = openInAppOrBrowserPill.requireViewById<View>(R.id.open_in_app_or_browser_button)
+        val button =
+            openInAppOrBrowserPill.requireViewById<View>(R.id.open_in_app_or_browser_button)
         animators +=
-                ObjectAnimator.ofFloat(button, ALPHA, 1f).apply {
-                    startDelay = BODY_ALPHA_OPEN_DELAY
-                    duration = BODY_CONTENT_ALPHA_OPEN_DURATION
-                    interpolator = Interpolators.FAST_OUT_SLOW_IN
-                }
+            ObjectAnimator.ofFloat(button, ALPHA, 1f).apply {
+                startDelay = BODY_ALPHA_OPEN_DELAY
+                duration = BODY_CONTENT_ALPHA_OPEN_DURATION
+                interpolator = Interpolators.FAST_OUT_SLOW_IN
+            }
     }
 
     private fun appInfoPillCollapse() {
@@ -442,32 +710,32 @@ class HandleMenuAnimator(
     private fun openInAppOrBrowserPillClose() {
         // Open in Browser X & Y Scaling Animation
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_X, HALF_INITIAL_SCALE).apply {
-                    duration = BODY_CLOSE_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_X, HALF_INITIAL_SCALE).apply {
+                duration = BODY_CLOSE_DURATION
+            }
 
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_Y, HALF_INITIAL_SCALE).apply {
-                    duration = BODY_CLOSE_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_Y, HALF_INITIAL_SCALE).apply {
+                duration = BODY_CLOSE_DURATION
+            }
 
         // Open in Browser Opacity Animation
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 0f).apply {
-                    duration = BODY_CLOSE_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 0f).apply {
+                duration = BODY_CLOSE_DURATION
+            }
 
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 0f).apply {
-                    duration = BODY_CLOSE_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 0f).apply {
+                duration = BODY_CLOSE_DURATION
+            }
 
         // Upward Open in Browser y-translation Animation
         val yStart: Float = -captionHeight / 2
         animators +=
-                ObjectAnimator.ofFloat(openInAppOrBrowserPill, TRANSLATION_Y, yStart).apply {
-                    duration = BODY_CLOSE_DURATION
-                }
+            ObjectAnimator.ofFloat(openInAppOrBrowserPill, TRANSLATION_Y, yStart).apply {
+                duration = BODY_CLOSE_DURATION
+            }
     }
 
     /**
@@ -483,14 +751,15 @@ class HandleMenuAnimator(
             cancel()
         }
 
-        runningAnimation = AnimatorSet().apply {
-            playTogether(animators)
-            animators.clear()
-            doOnEnd {
-                after?.invoke()
-                runningAnimation = null
+        runningAnimation =
+            AnimatorSet().apply {
+                playTogether(animators)
+                animators.clear()
+                doOnEnd {
+                    after?.invoke()
+                    runningAnimation = null
+                }
+                start()
             }
-            start()
-        }
     }
 }

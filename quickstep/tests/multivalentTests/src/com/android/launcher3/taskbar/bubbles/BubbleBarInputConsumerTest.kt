@@ -24,10 +24,12 @@ import com.android.quickstep.inputconsumers.BubbleBarInputConsumer
 import com.google.common.truth.Truth.assertThat
 import java.util.Optional
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 
@@ -40,6 +42,8 @@ class BubbleBarInputConsumerTest {
 
     private lateinit var bubbleControllers: BubbleControllers
 
+    @get:Rule var mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     @Mock private lateinit var taskbarActivityContext: TaskbarActivityContext
     @Mock private lateinit var bubbleBarController: BubbleBarController
     @Mock private lateinit var bubbleBarViewController: BubbleBarViewController
@@ -47,8 +51,6 @@ class BubbleBarInputConsumerTest {
     @Mock private lateinit var bubbleStashedHandleViewController: BubbleStashedHandleViewController
     @Mock private lateinit var bubbleDragController: BubbleDragController
     @Mock private lateinit var bubbleDismissController: BubbleDismissController
-    @Mock private lateinit var bubbleBarPinController: BubbleBarPinController
-    @Mock private lateinit var bubblePinController: BubblePinController
     @Mock private lateinit var bubbleBarSwipeController: BubbleBarSwipeController
     @Mock private lateinit var dragToBubbleController: DragToBubbleController
     @Mock private lateinit var bubbleCreator: BubbleCreator
@@ -57,8 +59,6 @@ class BubbleBarInputConsumerTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
-
         bubbleControllers =
             BubbleControllers(
                 bubbleBarController,
@@ -67,8 +67,6 @@ class BubbleBarInputConsumerTest {
                 Optional.of(bubbleStashedHandleViewController),
                 bubbleDragController,
                 bubbleDismissController,
-                bubbleBarPinController,
-                bubblePinController,
                 Optional.of(bubbleBarSwipeController),
                 dragToBubbleController,
                 bubbleCreator,

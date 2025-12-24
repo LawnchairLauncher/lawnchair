@@ -6,13 +6,17 @@ import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_10_90;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_90_10;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
 
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -52,12 +56,13 @@ public class PreviewPositionHelper {
         return mIsOrientationChanged;
     }
 
+    // TODO: b/428707131 - Pass-in visibleRect of thumbnail, removing setSplitBounds method.
     /**
      * Updates the matrix based on the provided parameters
      */
-    public void updateThumbnailMatrix(Rect thumbnailBounds, ThumbnailData thumbnailData,
+    public void updateThumbnailMatrix(Rect thumbnailBounds, @NonNull ThumbnailData thumbnailData,
             int canvasWidth, int canvasHeight, boolean isLargeScreen, int currentRotation,
-            boolean isRtl) {
+            boolean isRtl, int deviceDensityDpi) {
         boolean isRotated = false;
         boolean isOrientationDifferent;
 
@@ -66,6 +71,7 @@ public class PreviewPositionHelper {
         RectF thumbnailClipHint = new RectF();
         float scale = thumbnailData.scale;
         final float thumbnailScale;
+        float rotationYClipHint = 0;
 
         // Landscape vs portrait change.
         // Note: Disable rotation in grid layout.
@@ -93,7 +99,7 @@ public class PreviewPositionHelper {
             boolean isAspectLargelyDifferent =
                     Utilities.isRelativePercentDifferenceGreaterThan(canvasAspect,
                             availableAspect, MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT);
-            if (isRotated && isAspectLargelyDifferent) {
+            if (isRotated && !shouldRotateThumbnail(isAspectLargelyDifferent)) {
                 // Do not rotate thumbnail if it would not improve fit
                 isRotated = false;
                 isOrientationDifferent = false;
@@ -164,8 +170,16 @@ public class PreviewPositionHelper {
                 thumbnailClipHint.bottom = 0;
             }
 
-            thumbnailScale = targetW / (croppedWidth * scale);
+            final float densityScale;
+            if (thumbnailData.getThumbnail() != null
+                    && thumbnailData.getThumbnail().getDensity() != Bitmap.DENSITY_NONE
+                    && deviceDensityDpi > 0) {
+                densityScale = (float) deviceDensityDpi / thumbnailData.getThumbnail().getDensity();
+            } else {
+                densityScale = 1f;
+            }
 
+            thumbnailScale = targetW / (croppedWidth * scale * densityScale);
             if (mSplitBounds != null
                     && mSplitBounds.snapPosition == SNAP_TO_2_10_90
                     && mSplitPosition == SPLIT_POSITION_TOP_OR_LEFT) {
@@ -175,14 +189,19 @@ public class PreviewPositionHelper {
                     thumbnailClipHint.left += availableWidth - croppedWidth;
                 }
             }
+            // Adjust translation for specific horizontal split-screen scenarios
+            // where clipping occurs.
+            if (shouldApplySplitScreenClippingAdjustment(deltaRotate)) {
+                rotationYClipHint = availableWidth - croppedWidth;
+            }
         }
 
-        if (!isRotated) {
+        if (isRotated) {
+            setThumbnailRotation(deltaRotate, thumbnailBounds, rotationYClipHint);
+        } else {
             mMatrix.setTranslate(
                     -thumbnailClipHint.left * scale,
                     -thumbnailClipHint.top * scale);
-        } else {
-            setThumbnailRotation(deltaRotate, thumbnailBounds);
         }
 
         mMatrix.postScale(thumbnailScale, thumbnailScale);
@@ -204,11 +223,12 @@ public class PreviewPositionHelper {
         return deltaRotation == ROTATION_90 || deltaRotation == ROTATION_270;
     }
 
-    private void setThumbnailRotation(int deltaRotate, Rect thumbnailPosition) {
+    private void setThumbnailRotation(int deltaRotate, Rect thumbnailPosition,
+            float rotationYClipHint) {
+        mMatrix.setRotate(90 * deltaRotate);
+
         float translateX = 0;
         float translateY = 0;
-
-        mMatrix.setRotate(90 * deltaRotate);
         switch (deltaRotate) { /* Counter-clockwise */
             case ROTATION_90:
                 translateX = thumbnailPosition.height();
@@ -221,7 +241,61 @@ public class PreviewPositionHelper {
                 translateY = thumbnailPosition.height();
                 break;
         }
+        // Adjust translationY with clip hint.
+        translateY -= rotationYClipHint;
         mMatrix.postTranslate(translateX, translateY);
+    }
+
+    /**
+     * Determines whether the thumbnail should be rotated based on aspect ratio differences
+     * and split-screen conditions.
+     *
+     * @param isAspectLargelyDifferent True if the aspect ratio of the task is significantly
+     *                                 different from the current display, false otherwise.
+     * @return True if the thumbnail should be rotated, false otherwise.
+     */
+    private boolean shouldRotateThumbnail(boolean isAspectLargelyDifferent) {
+        // If aspect ratio is not largely different, always rotate.
+        if (!isAspectLargelyDifferent) {
+            return true;
+        }
+
+        // If no split screen, always not rotate.
+        if (mSplitBounds == null) {
+            return false;
+        }
+
+        // Aspect is different AND split screen is active, check specific split conditions
+        boolean isTopLeftSnap = (mSplitBounds.snapPosition == SNAP_TO_2_10_90
+                && mSplitPosition == SPLIT_POSITION_TOP_OR_LEFT);
+        boolean isBottomRightSnap = (mSplitBounds.snapPosition == SNAP_TO_2_90_10
+                && mSplitPosition == SPLIT_POSITION_BOTTOM_OR_RIGHT);
+
+        return isTopLeftSnap || isBottomRightSnap;
+    }
+
+    /**
+     * Checks if a special translation adjustment is needed for split-screen clipping.
+     * This applies when apps are stacked horizontally and specific rotation/snap
+     * positions occur, causing part of the thumbnail to be clipped.
+     *
+     * @param deltaRotate The current rotation delta.
+     * @return {@code true} if the adjustment should be applied, {@code false} otherwise.
+     */
+    private boolean shouldApplySplitScreenClippingAdjustment(int deltaRotate) {
+        if (mSplitBounds == null || mSplitBounds.appsStackedVertically) {
+            return false;
+        }
+
+        boolean isRotated90AndLeftSnapped = (deltaRotate == ROTATION_90
+                && mSplitBounds.snapPosition == SNAP_TO_2_10_90
+                && mSplitPosition == SPLIT_POSITION_TOP_OR_LEFT);
+
+        boolean isRotated270AndRightSnapped = (deltaRotate == ROTATION_270
+                && mSplitBounds.snapPosition == SNAP_TO_2_90_10
+                && mSplitPosition == SPLIT_POSITION_BOTTOM_OR_RIGHT);
+
+        return isRotated90AndLeftSnapped || isRotated270AndRightSnapped;
     }
 
     public void setSplitBounds(SplitBounds splitBounds, int stagePosition) {

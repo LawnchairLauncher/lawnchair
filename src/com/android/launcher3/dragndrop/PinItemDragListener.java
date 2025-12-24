@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PIN_WID
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.pm.LauncherApps.PinItemRequest;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -71,7 +72,8 @@ public class PinItemDragListener extends BaseItemDragListener {
     }
 
     @Override
-    protected PendingItemDragHelper createDragHelper() {
+    protected void startDrag(Rect previewRect, int previewBitmapWidth, int previewViewWidth,
+            Point screenPos, DragOptions options) {
         final PendingAddItemInfo item;
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             item = new PendingAddShortcutInfo(
@@ -97,7 +99,9 @@ public class PinItemDragListener extends BaseItemDragListener {
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_APPWIDGET) {
             dragHelper.setRemoteViewsPreview(getPreview(mRequest), mPreviewScale);
         }
-        return dragHelper;
+
+        dragHelper.startDrag(previewRect, previewBitmapWidth, previewViewWidth,
+                screenPos, /*source=*/ this, options);
     }
 
     @Override

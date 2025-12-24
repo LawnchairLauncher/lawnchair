@@ -224,26 +224,26 @@ public class KeyButtonRipple extends Drawable {
         }
     }
 
-    /** Gets the glow alpha, used by {@link android.animation.ObjectAnimator} via reflection. */
+    /** Gets the glow alpha, used by {@link ObjectAnimator} via reflection. */
     @Keep
     public float getGlowAlpha() {
         return mGlowAlpha;
     }
 
-    /** Sets the glow alpha, used by {@link android.animation.ObjectAnimator} via reflection. */
+    /** Sets the glow alpha, used by {@link ObjectAnimator} via reflection. */
     @Keep
     public void setGlowAlpha(float x) {
         mGlowAlpha = x;
         invalidateSelf();
     }
 
-    /** Gets the glow scale, used by {@link android.animation.ObjectAnimator} via reflection. */
+    /** Gets the glow scale, used by {@link ObjectAnimator} via reflection. */
     @Keep
     public float getGlowScale() {
         return mGlowScale;
     }
 
-    /** Sets the glow scale, used by {@link android.animation.ObjectAnimator} via reflection. */
+    /** Sets the glow scale, used by {@link ObjectAnimator} via reflection. */
     @Keep
     public void setGlowScale(float x) {
         mGlowScale = x;

@@ -16,8 +16,10 @@
 
 package com.android.launcher3.taskbar
 
+import android.app.contextualsearch.ContextualSearchConfig
 import android.app.contextualsearch.ContextualSearchManager.ENTRYPOINT_LONG_PRESS_META
 import android.content.Context
+import android.graphics.Rect
 import com.android.launcher3.dagger.LauncherComponentProvider
 import com.android.launcher3.logging.StatsLogManager
 import com.android.quickstep.TopTaskTracker
@@ -33,11 +35,19 @@ open class TaskbarViewCallbacksFactory @Inject constructor() {
         taskbarView: TaskbarView,
     ): TaskbarViewCallbacks {
         return object : TaskbarViewCallbacks(activity, controllers, taskbarView) {
+            val tempRect = Rect()
+
             override fun triggerAllAppsButtonLongClick() {
                 super.triggerAllAppsButtonLongClick()
 
+                taskbarView.allAppsButtonContainer.getBoundsOnScreen(tempRect)
+                val config =
+                    ContextualSearchConfig.Builder()
+                        .setSourceBounds(tempRect)
+                        .setDisplayId(activity.displayId)
+                        .build()
                 val contextualSearchInvoked =
-                    ContextualSearchInvoker(activity).show(ENTRYPOINT_LONG_PRESS_META)
+                    ContextualSearchInvoker(activity).show(ENTRYPOINT_LONG_PRESS_META, config)
                 if (contextualSearchInvoked) {
                     val runningPackage =
                         TopTaskTracker.INSTANCE[activity].getCachedTopTask(

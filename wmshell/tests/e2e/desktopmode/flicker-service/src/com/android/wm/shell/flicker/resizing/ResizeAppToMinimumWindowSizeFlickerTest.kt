@@ -16,15 +16,16 @@
 
 package com.android.wm.shell.flicker.resizing
 
-import android.platform.test.annotations.RequiresDevice
+import android.platform.test.annotations.Postsubmit
+import android.platform.test.annotations.RequiresDesktopDevice
 import android.tools.NavBar
-import android.tools.PlatformConsts.DESKTOP_MODE_MINIMUM_WINDOW_HEIGHT
-import android.tools.PlatformConsts.DESKTOP_MODE_MINIMUM_WINDOW_WIDTH
-import android.tools.flicker.assertions.FlickerTest
+import android.tools.PlatformConsts.DESKTOP_MODE_MINIMUM_WINDOW_HEIGHT_DP
+import android.tools.PlatformConsts.DESKTOP_MODE_MINIMUM_WINDOW_WIDTH_DP
+import android.tools.flicker.assertions.FlickerChecker
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import com.android.wm.shell.Utils
 import com.android.wm.shell.flicker.DesktopModeBaseTest
 import com.android.wm.shell.scenarios.ResizeAppWithCornerResize
@@ -40,10 +41,11 @@ import com.android.wm.shell.flicker.utils.resizeVeilKeepsDecreasingInSize
  *
  * Assert that the minimum window size constraint is maintained.
  */
-@RequiresDevice
+@RequiresDesktopDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
-class ResizeAppToMinimumWindowSizeFlickerTest(flicker: LegacyFlickerTest) : DesktopModeBaseTest(
+@Postsubmit
+class ResizeAppToMinimumWindowSizeFlickerTest(flicker: FlickerTest) : DesktopModeBaseTest(
     flicker
 ) {
     inner class ResizeAppToMinimumSize : ResizeAppWithCornerResize(
@@ -74,8 +76,8 @@ class ResizeAppToMinimumWindowSizeFlickerTest(flicker: LegacyFlickerTest) : Desk
     @Test
     fun appLayerHasSizeAtEnd() = flicker.appLayerHasSizeAtEnd(
         testApp,
-        DESKTOP_MODE_MINIMUM_WINDOW_WIDTH,
-        DESKTOP_MODE_MINIMUM_WINDOW_HEIGHT
+        DESKTOP_MODE_MINIMUM_WINDOW_WIDTH_DP,
+        DESKTOP_MODE_MINIMUM_WINDOW_HEIGHT_DP
     )
 
     @Test
@@ -84,8 +86,8 @@ class ResizeAppToMinimumWindowSizeFlickerTest(flicker: LegacyFlickerTest) : Desk
     companion object {
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun getParams(): Collection<FlickerTest> {
-            return LegacyFlickerTestFactory.nonRotationTests(
+        fun getParams(): Collection<FlickerChecker> {
+            return FlickerTestFactory.nonRotationTests(
                 supportedNavigationModes = listOf(NavBar.MODE_GESTURAL)
             )
         }

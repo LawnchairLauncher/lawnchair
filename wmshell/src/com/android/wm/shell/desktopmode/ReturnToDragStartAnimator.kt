@@ -24,6 +24,8 @@ import android.view.SurfaceControl
 import androidx.core.animation.addListener
 import com.android.internal.jank.Cuj
 import com.android.internal.jank.InteractionJankMonitor
+import com.android.internal.protolog.ProtoLog
+import com.android.wm.shell.protolog.ShellProtoLogGroup
 import com.android.wm.shell.windowdecor.OnTaskRepositionAnimationListener
 import java.util.function.Supplier
 
@@ -52,6 +54,15 @@ class ReturnToDragStartAnimator(
         endBounds: Rect,
         doOnEnd: (() -> Unit)? = null,
     ) {
+        if (startBounds == endBounds) {
+            ProtoLog.w(
+                ShellProtoLogGroup.WM_SHELL_DESKTOP_MODE,
+                "%s: reposition animation request with equal start/end bounds=%s, ignoring",
+                TAG,
+                startBounds,
+            )
+            return
+        }
         val tx = transactionSupplier.get()
 
         boundsAnimator?.cancel()
@@ -61,27 +72,31 @@ class ReturnToDragStartAnimator(
                 .apply {
                     addListener(
                         onStart = {
-                            val startTransaction = transactionSupplier.get()
-                            startTransaction
-                                .setPosition(
-                                    taskSurface,
-                                    startBounds.left.toFloat(),
-                                    startBounds.top.toFloat(),
-                                )
-                                .show(taskSurface)
-                                .apply()
-                            taskRepositionAnimationListener.onAnimationStart(taskId)
+                            taskSurface.checkValidOrCancel()?.let { surface ->
+                                val startTransaction = transactionSupplier.get()
+                                startTransaction
+                                    .setPosition(
+                                        surface,
+                                        startBounds.left.toFloat(),
+                                        startBounds.top.toFloat(),
+                                    )
+                                    .show(surface)
+                                    .apply()
+                                taskRepositionAnimationListener.onAnimationStart(taskId)
+                            }
                         },
                         onEnd = {
-                            val finishTransaction = transactionSupplier.get()
-                            finishTransaction
-                                .setPosition(
-                                    taskSurface,
-                                    endBounds.left.toFloat(),
-                                    endBounds.top.toFloat(),
-                                )
-                                .show(taskSurface)
-                                .apply()
+                            taskSurface.checkValid()?.let { surface ->
+                                val finishTransaction = transactionSupplier.get()
+                                finishTransaction
+                                    .setPosition(
+                                        surface,
+                                        endBounds.left.toFloat(),
+                                        endBounds.top.toFloat(),
+                                    )
+                                    .show(surface)
+                                    .apply()
+                            }
                             taskRepositionAnimationListener.onAnimationEnd(taskId)
                             boundsAnimator = null
                             doOnEnd?.invoke()
@@ -89,16 +104,29 @@ class ReturnToDragStartAnimator(
                         },
                     )
                     addUpdateListener { anim ->
-                        val rect = anim.animatedValue as Rect
-                        tx.setPosition(taskSurface, rect.left.toFloat(), rect.top.toFloat())
-                            .show(taskSurface)
-                            .apply()
+                        taskSurface.checkValidOrCancel()?.let { surface ->
+                            val rect = anim.animatedValue as Rect
+                            tx.setPosition(surface, rect.left.toFloat(), rect.top.toFloat())
+                                .show(surface)
+                                .apply()
+                        }
                     }
                 }
                 .also(ValueAnimator::start)
     }
 
+    private fun SurfaceControl.checkValid(): SurfaceControl? = if (isValid) this else null
+
+    private fun SurfaceControl.checkValidOrCancel(): SurfaceControl? {
+        if (isValid) {
+            return this
+        }
+        boundsAnimator?.cancel()
+        return null
+    }
+
     companion object {
+        private const val TAG = "ReturnToDragStartAnimator"
         const val RETURN_TO_DRAG_START_ANIMATION_MS = 300L
     }
 }

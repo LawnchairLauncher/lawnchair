@@ -39,12 +39,14 @@ import com.android.app.animation.Interpolators
 import com.android.internal.jank.Cuj
 import com.android.launcher3.desktop.DesktopAppLaunchAnimatorHelper
 import com.android.launcher3.desktop.DesktopAppLaunchTransition.AppLaunchType
+import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.window.flags2.Flags
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -56,6 +58,11 @@ class DesktopAppLaunchAnimatorHelperTest {
 
     private val context = mock<Context>()
     private val resources = mock<Resources>()
+    private val displayContext = mock<Context>()
+    private val displayResources = mock<Resources>()
+
+    private val displayController = mock<DisplayController>()
+    private val displayInfo = mock<DisplayController.Info>()
     private val transaction = mock<SurfaceControl.Transaction>()
     private val transactionSupplier = mock<Supplier<SurfaceControl.Transaction>>()
 
@@ -63,22 +70,31 @@ class DesktopAppLaunchAnimatorHelperTest {
 
     @Before
     fun setUp() {
+        whenever(context.resources).thenReturn(resources)
+        whenever(resources.getDimensionPixelSize(any())).thenReturn(CONTEXT_CORNER_RADIUS)
+
+        whenever(displayController.getInfoForDisplay(any())).thenReturn(displayInfo)
+        whenever(displayInfo.getContext()).thenReturn(displayContext)
+        whenever(displayContext.resources).thenReturn(displayResources)
+        whenever(displayResources.getDimensionPixelSize(any()))
+            .thenReturn(DISPLAY_CONTEXT_CORNER_RADIUS)
+
         helper =
             DesktopAppLaunchAnimatorHelper(
                 context = context,
+                displayController = displayController,
                 launchType = AppLaunchType.LAUNCH,
                 cujType = Cuj.CUJ_DESKTOP_MODE_APP_LAUNCH_FROM_INTENT,
                 transactionSupplier = transactionSupplier,
             )
         whenever(transactionSupplier.get()).thenReturn(transaction)
         whenever(transaction.setCrop(any(), any())).thenReturn(transaction)
-        whenever(transaction.setCornerRadius(any(), any())).thenReturn(transaction)
+        whenever(transaction.setCornerRadius(any(), anyFloat())).thenReturn(transaction)
         whenever(transaction.setScale(any(), any(), any())).thenReturn(transaction)
         whenever(transaction.setPosition(any(), any(), any())).thenReturn(transaction)
         whenever(transaction.setAlpha(any(), any())).thenReturn(transaction)
         whenever(transaction.setFrameTimeline(any())).thenReturn(transaction)
 
-        whenever(context.resources).thenReturn(resources)
         whenever(resources.displayMetrics).thenReturn(DisplayMetrics())
         whenever(context.mainThreadHandler).thenReturn(MAIN_EXECUTOR.handler)
     }
@@ -186,29 +202,66 @@ class DesktopAppLaunchAnimatorHelperTest {
 
     @Test
     @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_TRAMPOLINE_CLOSE_ANIMATION_BUGFIX)
-    fun trampolineTransition_flagEnabled_hitDesktopWindowLimit_returnsLaunchMinimizeCloseAnimator() = runOnUiThread {
-        val transitionInfo = createTransitionInfo(
-            listOf(OPEN_CHANGE, MINIMIZE_CHANGE, CLOSE_CHANGE))
+    fun trampolineTransition_flagEnabled_hitDesktopWindowLimit_returnsLaunchMinimizeCloseAnimator() =
+        runOnUiThread {
+            val transitionInfo =
+                createTransitionInfo(listOf(OPEN_CHANGE, MINIMIZE_CHANGE, CLOSE_CHANGE))
 
-        val actual = helper.createAnimators(transitionInfo, finishCallback = {})
+            val actual = helper.createAnimators(transitionInfo, finishCallback = {})
 
-        assertThat(actual).hasSize(3)
-        assertTrampolineLaunchAnimator(actual[0])
-        assertMinimizeAnimator(actual[1])
-        assertCloseAnimator(actual[2])
-    }
+            assertThat(actual).hasSize(3)
+            assertTrampolineLaunchAnimator(actual[0])
+            assertMinimizeAnimator(actual[1])
+            assertCloseAnimator(actual[2])
+        }
 
     @Test
     @DisableFlags(Flags.FLAG_ENABLE_DESKTOP_TRAMPOLINE_CLOSE_ANIMATION_BUGFIX)
-    fun trampolineTransition_flagDisabled_hitDesktopWindowLimit_returnsLaunchMinimizeAnimator() = runOnUiThread {
-        val transitionInfo = createTransitionInfo(
-            listOf(OPEN_CHANGE, MINIMIZE_CHANGE, CLOSE_CHANGE))
+    fun trampolineTransition_flagDisabled_hitDesktopWindowLimit_returnsLaunchMinimizeAnimator() =
+        runOnUiThread {
+            val transitionInfo =
+                createTransitionInfo(listOf(OPEN_CHANGE, MINIMIZE_CHANGE, CLOSE_CHANGE))
 
-        val actual = helper.createAnimators(transitionInfo, finishCallback = {})
+            val actual = helper.createAnimators(transitionInfo, finishCallback = {})
 
-        assertThat(actual).hasSize(2)
-        assertLaunchAnimator(actual[0])
-        assertMinimizeAnimator(actual[1])
+            assertThat(actual).hasSize(2)
+            assertLaunchAnimator(actual[0])
+            assertMinimizeAnimator(actual[1])
+        }
+
+    @Test
+    fun createLaunchAnimator_usesDisplayContextResources() = runOnUiThread {
+        whenever(displayController.getInfoForDisplay(OPEN_CHANGE.endDisplayId))
+            .thenReturn(displayInfo)
+        whenever(displayInfo.getContext()).thenReturn(displayContext)
+        val transitionInfo = createTransitionInfo(listOf(OPEN_CHANGE))
+
+        helper.createAnimators(transitionInfo, finishCallback = {})
+
+        verify(transaction)
+            .setCornerRadius(OPEN_CHANGE.leash, DISPLAY_CONTEXT_CORNER_RADIUS.toFloat())
+    }
+
+    @Test
+    fun createLaunchAnimator_displayInfoNull_usesFallbackContextResources() = runOnUiThread {
+        whenever(displayController.getInfoForDisplay(OPEN_CHANGE.endDisplayId)).thenReturn(null)
+        val transitionInfo = createTransitionInfo(listOf(OPEN_CHANGE))
+
+        helper.createAnimators(transitionInfo, finishCallback = {})
+
+        verify(transaction).setCornerRadius(OPEN_CHANGE.leash, CONTEXT_CORNER_RADIUS.toFloat())
+    }
+
+    @Test
+    fun createLaunchAnimator_displayContextNull_usesFallbackContextResources() = runOnUiThread {
+        whenever(displayController.getInfoForDisplay(OPEN_CHANGE.endDisplayId))
+            .thenReturn(displayInfo)
+        whenever(displayInfo.getContext()).thenReturn(null)
+        val transitionInfo = createTransitionInfo(listOf(OPEN_CHANGE))
+
+        helper.createAnimators(transitionInfo, finishCallback = {})
+
+        verify(transaction).setCornerRadius(OPEN_CHANGE.leash, CONTEXT_CORNER_RADIUS.toFloat())
     }
 
     private fun assertLaunchAnimator(animator: Animator) {
@@ -260,6 +313,9 @@ class DesktopAppLaunchAnimatorHelperTest {
     }
 
     private companion object {
+        const val CONTEXT_CORNER_RADIUS = 42
+        const val DISPLAY_CONTEXT_CORNER_RADIUS = 99
+
         val TASK_INFO_FREEFORM =
             ActivityManager.RunningTaskInfo().apply {
                 baseIntent =

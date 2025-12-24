@@ -20,6 +20,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -29,6 +31,8 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.core.graphics.toColorInt
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import com.android.wm.shell.Flags.FLAG_ENABLE_BUBBLE_TO_FULLSCREEN
+import com.android.wm.shell.Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE
 import com.android.wm.shell.shared.bubbles.DragZoneFactory.BubbleBarPropertiesProvider
 import com.android.wm.shell.shared.bubbles.DragZoneFactory.DesktopWindowModeChecker
 import com.android.wm.shell.shared.bubbles.DragZoneFactory.SplitScreenModeChecker
@@ -45,6 +49,7 @@ import platform.test.screenshot.ViewScreenshotTestRule
 import platform.test.screenshot.ViewScreenshotTestRule.Mode
 import platform.test.screenshot.getEmulatedDevicePathConfig
 
+@EnableFlags(FLAG_ENABLE_BUBBLE_TO_FULLSCREEN, FLAG_ENABLE_CREATE_ANY_BUBBLE)
 @RunWith(ParameterizedAndroidJunit4::class)
 class DragZoneFactoryScreenshotTest(private val param: Param) {
     companion object {
@@ -107,6 +112,8 @@ class DragZoneFactoryScreenshotTest(private val param: Param) {
 
         override fun toString() = "${emulationSpec}_$testName"
     }
+
+    @get:Rule val flagsRule = SetFlagsRule()
 
     @get:Rule
     val screenshotRule =

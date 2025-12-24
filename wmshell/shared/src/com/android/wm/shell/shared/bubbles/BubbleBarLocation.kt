@@ -19,13 +19,11 @@ import android.annotation.IntDef
 import android.os.Parcel
 import android.os.Parcelable
 
-/**
- * The location of the bubble bar.
- */
+/** The location of the bubble bar. */
 enum class BubbleBarLocation : Parcelable {
     /**
-     * Place bubble bar at the default location for the chosen system language.
-     * If an RTL language is used, it is on the left. Otherwise on the right.
+     * Place bubble bar at the default location for the chosen system language. If an RTL language
+     * is used, it is on the left. Otherwise on the right.
      */
     DEFAULT,
     /** Default bubble bar location is overridden. Place bubble bar on the left. */
@@ -33,9 +31,7 @@ enum class BubbleBarLocation : Parcelable {
     /** Default bubble bar location is overridden. Place bubble bar on the right. */
     RIGHT;
 
-    /**
-     * Returns whether bubble bar is pinned to the left edge or right edge.
-     */
+    /** Returns whether bubble bar is pinned to the left edge or right edge. */
     fun isOnLeft(isRtl: Boolean): Boolean {
         if (this == DEFAULT) {
             return isRtl
@@ -53,24 +49,28 @@ enum class BubbleBarLocation : Parcelable {
 
     companion object {
         @JvmField
-        val CREATOR = object : Parcelable.Creator<BubbleBarLocation> {
-            override fun createFromParcel(parcel: Parcel): BubbleBarLocation {
-                return parcel.readString()?.let { valueOf(it) } ?: DEFAULT
-            }
+        val CREATOR =
+            object : Parcelable.Creator<BubbleBarLocation> {
+                override fun createFromParcel(parcel: Parcel): BubbleBarLocation {
+                    return parcel.readString()?.let { valueOf(it) } ?: DEFAULT
+                }
 
-            override fun newArray(size: Int) = arrayOfNulls<BubbleBarLocation>(size)
-        }
+                override fun newArray(size: Int) = arrayOfNulls<BubbleBarLocation>(size)
+            }
 
         /**
          * Checks whether locations are on the different sides from each other. If any of the
          * locations is null returns false.
          */
+        @JvmStatic
         fun isDifferentSides(
             first: BubbleBarLocation?,
             second: BubbleBarLocation?,
             isRtl: Boolean
         ): Boolean {
-            return first != null && second != null && first.isOnLeft(isRtl) != second.isOnLeft(isRtl)
+            return first != null &&
+                second != null &&
+                first.isOnLeft(isRtl) != second.isOnLeft(isRtl)
         }
     }
 
@@ -113,4 +113,7 @@ enum class BubbleBarLocation : Parcelable {
             const val DRAG_TASK = 8
         }
     }
+
+    /** A request to update the location of the bubble bar. */
+    data class UpdateLocationRequest(val location: BubbleBarLocation, @UpdateSource val source: Int)
 }

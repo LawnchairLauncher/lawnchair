@@ -104,7 +104,8 @@ public abstract class Pip1Module {
             TabletopModeController pipTabletopController,
             Optional<OneHandedController> oneHandedController,
             @ShellMainThread ShellExecutor mainExecutor,
-            @ShellMainThread Handler handler) {
+            @ShellMainThread Handler handler,
+            PipSurfaceTransactionHelper pipSurfaceTransactionHelper) {
         return Optional.ofNullable(PipController.create(
                 context, shellInit, shellCommandHandler, shellController,
                 displayController, pipAnimationController, pipAppOpsListener,
@@ -114,7 +115,7 @@ public abstract class Pip1Module {
                 pipTransitionState, pipTouchHandler, pipTransitionController,
                 windowManagerShellWrapper, taskStackListener, pipParamsChangedForwarder,
                 displayInsetsController, pipTabletopController, oneHandedController,
-                mainExecutor, handler));
+                mainExecutor, handler, pipSurfaceTransactionHelper));
     }
 
     // Handler is used by Icon.loadDrawableAsync

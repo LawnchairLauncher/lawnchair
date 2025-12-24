@@ -34,7 +34,8 @@ import java.io.StringWriter
 import org.junit.Before
 import org.junit.Rule
 import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.whenever
 
 /**
@@ -50,7 +51,7 @@ abstract class FakeInvariantDeviceProfileTest {
     @get:Rule val context = SandboxApplication()
 
     protected lateinit var inv: InvariantDeviceProfile
-    protected val info = mock<Info>()
+    protected val info = spy(Info(context, context.appComponent.wmProxy))
     protected lateinit var windowBounds: WindowBounds
     private var transposeLayoutWithOrientation = false
     private var useTwoPanels = false
@@ -68,20 +69,17 @@ abstract class FakeInvariantDeviceProfileTest {
 
     protected fun newDP(): DeviceProfile =
         DeviceProfile(
-            context,
             inv,
             info,
             context.appComponent.wmProxy,
-            context.appComponent.themeManager,
             windowBounds,
             SparseArray(),
-            /*isMultiWindowMode=*/ false,
+            /*isExternalDisplay=*/ false,
             transposeLayoutWithOrientation,
             useTwoPanels,
             isGestureMode,
             DEFAULT_PROVIDER,
             DEFAULT_DIMENSION_PROVIDER,
-            isTransientTaskbar,
             createDefaultDisplayOptionSpec(
                 info,
                 windowBounds,
@@ -107,9 +105,9 @@ abstract class FakeInvariantDeviceProfileTest {
                 ),
             )
 
-        whenever(info.isTablet(any())).thenReturn(false)
-        whenever(info.getDensityDpi()).thenReturn(420)
-        whenever(info.smallestSizeDp(any())).thenReturn(411f)
+        doReturn(false).whenever(info).isTablet(any())
+        doReturn(420).whenever(info).getDensityDpi()
+        doReturn(411f).whenever(info).smallestSizeDp(any())
 
         this.isGestureMode = isGestureMode
         this.isTransientTaskbar = false
@@ -197,9 +195,9 @@ abstract class FakeInvariantDeviceProfileTest {
 
         windowBounds = WindowBounds(Rect(0, 0, x, y), Rect(0, 104, 0, 0))
 
-        whenever(info.isTablet(any())).thenReturn(true)
-        whenever(info.getDensityDpi()).thenReturn(320)
-        whenever(info.smallestSizeDp(any())).thenReturn(800f)
+        doReturn(true).whenever(info).isTablet(any())
+        doReturn(320).whenever(info).getDensityDpi()
+        doReturn(800f).whenever(info).smallestSizeDp(any())
 
         this.isGestureMode = isGestureMode
         this.isTransientTaskbar = true
@@ -290,9 +288,9 @@ abstract class FakeInvariantDeviceProfileTest {
 
         windowBounds = WindowBounds(Rect(0, 0, x, y), Rect(0, 110, 0, 0))
 
-        whenever(info.isTablet(any())).thenReturn(true)
-        whenever(info.getDensityDpi()).thenReturn(420)
-        whenever(info.smallestSizeDp(any())).thenReturn(700f)
+        doReturn(true).whenever(info).isTablet(any())
+        doReturn(420).whenever(info).getDensityDpi()
+        doReturn(700f).whenever(info).smallestSizeDp(any())
 
         this.isGestureMode = isGestureMode
         this.isTransientTaskbar = true

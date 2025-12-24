@@ -187,7 +187,7 @@ public class NavigationModeSwitchRule implements TestRule {
                         + launcher.getNavigationModeMismatchError(false),
                 () -> launcher.getNavigationModeMismatchError(false) == null,
                 launcher);
-        AbstractLauncherUiTest.checkDetectedLeaks(launcher, false);
+        AbstractLauncherUiTest.checkDetectedLeaks(launcher);
         return true;
     }
 

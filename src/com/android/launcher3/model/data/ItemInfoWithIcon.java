@@ -27,11 +27,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.Flags;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.ThemeManager;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapInfo.DrawableCreationFlags;
 import com.android.launcher3.icons.FastBitmapDrawable;
+import com.android.launcher3.icons.IconShape;
 import com.android.launcher3.icons.cache.CacheLookupFlag;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.PackageInstallInfo;
@@ -326,18 +326,39 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
         return newIcon(context, shouldTheme ? BitmapInfo.FLAG_THEMED : BitmapInfo.FLAG_NO_BADGE);
     }
 
-    /**
-     * Returns a FastBitmapDrawable with the icon and context theme applied
-     */
     public FastBitmapDrawable newIcon(Context context, @DrawableCreationFlags int creationFlags) {
         var shouldTheme = PreferenceManager.getInstance(context).getThemedIcons().get();
+
+        ThemeManager themeManager = ThemeManager.INSTANCE.get(context);
+        IconShape iconShape = null;
+        if (supportsCustomShapes(creationFlags)) {
+            iconShape = themeManager.getIconShapeData().getValue();
+        }
         if (!shouldTheme) {
             creationFlags &= ~FLAG_THEMED;
         }
-        FastBitmapDrawable drawable = bitmap.newIcon(
-                context, creationFlags, Utilities.getIconShapeOrNull(context));
+        FastBitmapDrawable drawable = bitmap.newIcon(context, creationFlags, iconShape);
         drawable.setDisabled(isDisabled());
         return drawable;
+    }
+
+    /**
+     * Returns true if the current BitmapInfo can support cropping to custom icon shapes.
+     */
+    public boolean supportsCustomShapes(@DrawableCreationFlags int creationFlags) {
+        return Flags.enableLauncherIconShapes()
+                && (creationFlags & FLAG_THEMED) != 0
+                && bitmap.isFullBleed();
+    }
+
+    /**
+     * Returns true if item is a Promise Icon or actively downloading, and the item is not an
+     * inactive archived app.
+     */
+    public boolean shouldShowPendingIcon() {
+        return (((this instanceof WorkspaceItemInfo wii) && wii.hasPromiseIconUi())
+                || (runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0)
+                && !(Flags.useNewIconForArchivedApps() && isInactiveArchive());
     }
 
     @Override

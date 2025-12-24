@@ -155,7 +155,19 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     }
 
     private void onClick() {
-        SystemUiProxy.INSTANCE.get(mActivity).onBackEvent(null);
+        mControllers.bubbleControllers.map(bc -> bc.bubbleBarViewController).ifPresentOrElse(
+                /* BubbleBarViewController */ bBVC -> {
+                    if (bBVC.hasBubbles() && bBVC.isExpanded()) {
+                        bBVC.animateExpanded(/* isExpanded  = */ false);
+                    } else {
+                        triggerBackEvent();
+                    }
+                }, this::triggerBackEvent
+        );
+    }
+
+    private void triggerBackEvent() {
+        SystemUiProxy.INSTANCE.get(mActivity).onBackEvent(null, mActivity.getDisplayId());
     }
 
     @Override

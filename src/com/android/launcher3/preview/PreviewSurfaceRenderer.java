@@ -166,7 +166,8 @@ public class PreviewSurfaceRenderer {
                 context.createDisplayContext(display),
                 gridName,
                 widgetHostId,
-                layoutXml);
+                layoutXml,
+                mWorkspacePageId);
 
         mViewRoot = new FrameLayout(mPreviewContext);
         mAppComponent = (PreviewAppComponent) LauncherComponentProvider.get(mPreviewContext);
@@ -311,20 +312,21 @@ public class PreviewSurfaceRenderer {
 
         final SparseIntArray wallpaperColorResources;
 
+        LocalColorExtractor localColorExtractor = mAppComponent.getLocalColorExtractor();
         if (Flags.newCustomizationPickerUi() && mPreviewColorOverride != null) {
-            LocalColorExtractor.newInstance(context)
+            localColorExtractor
                     .applyColorsOverride(context, mPreviewColorOverride);
             wallpaperColorResources = mPreviewColorOverride;
         } else if (mWallpaperColors != null) {
-            LocalColorExtractor.newInstance(context)
+            localColorExtractor
                     .applyColorsOverride(context, mWallpaperColors);
-            wallpaperColorResources = LocalColorExtractor.newInstance(context)
+            wallpaperColorResources = localColorExtractor
                     .generateColorsOverride(mWallpaperColors);
         } else {
             WallpaperColors wallpaperColors =
                     WallpaperManager.getInstance(context).getWallpaperColors(FLAG_SYSTEM);
             wallpaperColorResources = wallpaperColors == null ? null
-                    : LocalColorExtractor.newInstance(context)
+                    : localColorExtractor
                             .generateColorsOverride(wallpaperColors);
         }
 

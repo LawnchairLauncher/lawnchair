@@ -18,7 +18,6 @@ package com.android.launcher3.widgetpicker.listeners
 
 import android.view.View
 import com.android.launcher3.Launcher
-import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY
 import com.android.launcher3.PendingAddItemInfo
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.pm.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO
@@ -33,8 +32,12 @@ import com.android.launcher3.widgetpicker.shared.model.WidgetInfo
  * picker activity. Invoked once widget picker is closed and home screen is showing / ready.
  *
  * Also logs to stats logger once widget is added.
+ *
+ * @param container the Favorites container that the widget was interacted from e.g.
+ *   CONTAINER_WIDGETS_PREDICTION; enables the stats logs to capture the source container.
+ * @param widgetInfo metadata of the widget being added
  */
-class WidgetPickerAddItemListener(private val widgetInfo: WidgetInfo) :
+class WidgetPickerAddItemListener(private val container: Int, private val widgetInfo: WidgetInfo) :
     SchedulerCallback<Launcher> {
     override fun init(launcher: Launcher?, isHomeStarted: Boolean): Boolean {
         checkNotNull(launcher)
@@ -47,7 +50,7 @@ class WidgetPickerAddItemListener(private val widgetInfo: WidgetInfo) :
                             launcher,
                             widgetInfo.appWidgetProviderInfo,
                         )
-                    PendingAddWidgetInfo(launcherProviderInfo, CONTAINER_WIDGETS_TRAY)
+                    PendingAddWidgetInfo(launcherProviderInfo, container)
                 }
 
                 is WidgetInfo.ShortcutInfo ->

@@ -21,7 +21,6 @@ import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
 
 import android.content.Context;
 
-import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
@@ -59,13 +58,7 @@ public class FavoriteItemsTransaction {
         runOnExecutorSync(MODEL_EXECUTOR, () -> {
             ModelDbController controller = model.getModelDbController();
             // Migrate any previous data so that the DB state is correct
-            if (Flags.gridMigrationRefactor()) {
-                controller.attemptMigrateDb(
-                        null /* restoreEventLogger */, model.getModelDelegate());
-            } else {
-                controller.tryMigrateDB(null /* restoreEventLogger */,
-                        model.getModelDelegate());
-            }
+            controller.attemptMigrateDb(null /* restoreEventLogger */, model.getModelDelegate());
 
             // Create DB again to load fresh data
             controller.createEmptyDB();

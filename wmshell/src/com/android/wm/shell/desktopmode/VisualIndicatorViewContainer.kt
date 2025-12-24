@@ -569,7 +569,7 @@ constructor(
 
                     IndicatorType.TO_DESKTOP_INDICATOR -> {
                         val adjustmentPercentage =
-                            (1f - DesktopTasksController.DESKTOP_MODE_INITIAL_BOUNDS_SCALE)
+                            (1f - DESKTOP_MODE_INITIAL_BOUNDS_SCALE)
                         return Rect(
                             (adjustmentPercentage * desktopStableBounds.width() / 2).toInt(),
                             (adjustmentPercentage * desktopStableBounds.height() / 2).toInt(),

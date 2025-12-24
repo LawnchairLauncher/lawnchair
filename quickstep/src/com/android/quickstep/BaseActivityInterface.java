@@ -15,22 +15,10 @@
  */
 package com.android.quickstep;
 
-import static com.android.app.animation.Interpolators.ACCELERATE_2;
-import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
-import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_ATTACHED_ALPHA_ANIM;
-import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
-import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
-import static com.android.quickstep.views.RecentsView.RUNNING_TASK_ATTACH_ALPHA;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
-
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 
 import androidx.annotation.Nullable;
 
@@ -39,7 +27,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.taskbar.TaskbarUIController;
+import com.android.launcher3.taskbar.TaskbarInteractor;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -89,8 +77,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Closes any overlays.
      */
     public void closeOverlay() {
-        Optional.ofNullable(getTaskbarController()).ifPresent(
-                TaskbarUIController::hideOverlayWindow);
+        Optional.ofNullable(getTaskbarInteractor()).ifPresent(
+                TaskbarInteractor::hideOverlayWindow);
     }
 
     public void switchRunningTaskViewToScreenshot(HashMap<Integer, ThumbnailData> thumbnailDatas,
@@ -109,7 +97,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         recentsView.switchToScreenshot(thumbnailDatas, runnable);
     }
 
-    class DefaultAnimationFactory implements AnimationFactory {
+    class DefaultAnimationFactory implements AnimationFactory<STATE_TYPE, ACTIVITY_TYPE> {
 
         protected final ACTIVITY_TYPE mActivity;
         private final STATE_TYPE mStartState;
@@ -166,56 +154,16 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         }
 
         @Override
-        public void setRecentsAttachedToAppWindow(
-                boolean attached, boolean animate, boolean updateRunningTaskAlpha) {
-            if (mIsAttachedToWindow == attached && animate) {
-                return;
+        public ACTIVITY_TYPE getContainer() {
+            return mActivity;
+        }
+
+        @Override
+        public void onAttachedToWindowStateUpdated(boolean isAttachedToWindow) {
+            mIsAttachedToWindow = isAttachedToWindow;
+            if (isAttachedToWindow) {
+                mHasEverAttachedToWindow = true;
             }
-            mActivity.getStateManager()
-                    .cancelStateElementAnimation(INDEX_RECENTS_FADE_ANIM);
-            mActivity.getStateManager()
-                    .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
-            if (updateRunningTaskAlpha) {
-                mActivity.getStateManager()
-                        .cancelStateElementAnimation(INDEX_RECENTS_ATTACHED_ALPHA_ANIM);
-            }
-
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    mIsAttachedToWindow = attached;
-                    if (attached) {
-                        mHasEverAttachedToWindow = true;
-                    }
-                }});
-
-            long animationDuration = animate ? RECENTS_ATTACH_DURATION : 0;
-            Animator fadeAnim = mActivity.getStateManager()
-                    .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1f : 0f);
-            fadeAnim.setInterpolator(attached ? INSTANT : ACCELERATE_2);
-            fadeAnim.setDuration(animationDuration);
-            animatorSet.play(fadeAnim);
-
-            float fromTranslation = ADJACENT_PAGE_HORIZONTAL_OFFSET.get(
-                    mActivity.getOverviewPanel());
-            float toTranslation = attached ? 0f : 1f;
-            Animator translationAnimator = mActivity.getStateManager().createStateElementAnimation(
-                    INDEX_RECENTS_TRANSLATE_X_ANIM, fromTranslation, toTranslation);
-            translationAnimator.setDuration(animationDuration);
-            animatorSet.play(translationAnimator);
-
-            if (updateRunningTaskAlpha) {
-                float fromAlpha = RUNNING_TASK_ATTACH_ALPHA.get(mActivity.getOverviewPanel());
-                float toAlpha = attached ? 1f : 0f;
-                Animator runningTaskAttachAlphaAnimator = mActivity.getStateManager()
-                        .createStateElementAnimation(
-                                INDEX_RECENTS_ATTACHED_ALPHA_ANIM, fromAlpha, toAlpha);
-                runningTaskAttachAlphaAnimator.setDuration(animationDuration);
-                animatorSet.play(runningTaskAttachAlphaAnimator);
-            }
-            animatorSet.start();
         }
 
         @Override
@@ -239,16 +187,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             pa.addFloat(recentsView, RECENTS_SCALE_PROPERTY,
                     recentsView.getMaxScaleForFullScreen(), 1, LINEAR);
             pa.addFloat(recentsView, FULLSCREEN_PROGRESS, 1, 0, LINEAR);
-
-            pa.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    TaskbarUIController taskbarUIController = getTaskbarController();
-                    if (taskbarUIController != null) {
-                        taskbarUIController.setSystemGestureInProgress(true);
-                    }
-                }
-            });
         }
     }
 }

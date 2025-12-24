@@ -24,20 +24,28 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
 import android.os.PersistableBundle
 import android.os.Process
-import android.os.UserManager
 import android.text.TextUtils
+import androidx.annotation.WorkerThread
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_FILE_SYSTEM_FILE
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_FILE_SYSTEM_FOLDER
 import com.android.launcher3.LauncherSettings.Favorites.SCREEN
 import com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME
 import com.android.launcher3.LauncherSettings.Favorites._ID
 import com.android.launcher3.Utilities
 import com.android.launcher3.dagger.LauncherComponentProvider.appComponent
+import com.android.launcher3.homescreenfiles.HomeScreenFilesUtils
+import com.android.launcher3.icons.GraphicsUtils
+import com.android.launcher3.icons.GraphicsUtils.flattenBitmap
 import com.android.launcher3.icons.IconCache
-import com.android.launcher3.model.UserManagerState
+import com.android.launcher3.logging.FileLog
 import com.android.launcher3.pm.PinRequestHelper
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.shortcuts.ShortcutKey
@@ -46,6 +54,8 @@ import com.android.launcher3.util.IntSet
 
 /** A set of utility methods for Launcher DB used for DB updates and migration. */
 object LauncherDbUtils {
+    const val TAG = "LauncherDbUtils"
+
     /**
      * Returns a string which can be used as a where clause for DB query to match the given itemId
      */
@@ -157,20 +167,8 @@ object LauncherDbUtils {
      */
     @JvmStatic
     fun migrateLegacyShortcuts(context: Context, db: SQLiteDatabase) {
-        val c =
-            db.query(
-                LauncherSettings.Favorites.TABLE_NAME,
-                null,
-                "itemType = 1",
-                null,
-                null,
-                null,
-                null,
-            )
-        val ums = UserManagerState()
-        ums.run {
-            init(UserCache.INSTANCE[context], context.getSystemService(UserManager::class.java))
-        }
+        val c = db.query(TABLE_NAME, null, "itemType = 1", null, null, null, null)
+        val ums = UserCache.INSTANCE[context].userManagerState
         val lc = context.appComponent.loaderCursorFactory.createLoaderCursor(c, ums, null)
         val deletedShortcuts = IntSet()
 
@@ -230,26 +228,18 @@ object LauncherDbUtils {
             }
             val update =
                 ContentValues().apply {
-                    put(
-                        LauncherSettings.Favorites.ITEM_TYPE,
-                        LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT,
-                    )
+                    put(ITEM_TYPE, ITEM_TYPE_DEEP_SHORTCUT)
                     put(
                         LauncherSettings.Favorites.INTENT,
                         ShortcutKey.makeIntent(info.id, context.packageName).toUri(0),
                     )
                 }
-            db.update(
-                LauncherSettings.Favorites.TABLE_NAME,
-                update,
-                "_id = ?",
-                arrayOf(lc.id.toString()),
-            )
+            db.update(TABLE_NAME, update, "_id = ?", arrayOf(lc.id.toString()))
         }
         lc.close()
         if (deletedShortcuts.isEmpty.not()) {
             db.delete(
-                /* table = */ LauncherSettings.Favorites.TABLE_NAME,
+                /* table = */ TABLE_NAME,
                 /* whereClause = */ Utilities.createDbSelectionQuery(
                     LauncherSettings.Favorites._ID,
                     deletedShortcuts.array,
@@ -260,10 +250,64 @@ object LauncherDbUtils {
 
         // Drop the unused columns
         db.run {
-            execSQL("ALTER TABLE ${LauncherSettings.Favorites.TABLE_NAME} DROP COLUMN iconPackage;")
-            execSQL(
-                "ALTER TABLE ${LauncherSettings.Favorites.TABLE_NAME} DROP COLUMN iconResource;"
+            execSQL("ALTER TABLE $TABLE_NAME DROP COLUMN iconPackage;")
+            execSQL("ALTER TABLE $TABLE_NAME DROP COLUMN iconResource;")
+        }
+    }
+
+    @JvmStatic
+    @WorkerThread
+    fun updateBackupIcons(context: Context, db: SQLiteDatabase, useDefaultShape: Boolean) {
+        val cursor =
+            db.query(
+                TABLE_NAME,
+                null,
+                /* selection */ "itemType = ? OR itemType = ?",
+                /* selectionArgs */ arrayOf(
+                    ITEM_TYPE_APPLICATION.toString(),
+                    ITEM_TYPE_DEEP_SHORTCUT.toString(),
+                ),
+                null,
+                null,
+                null,
             )
+        val userManagerState = UserCache.INSTANCE[context].userManagerState
+        val loaderCursor =
+            context.appComponent.loaderCursorFactory.createLoaderCursor(
+                cursor,
+                userManagerState,
+                /* restoreEventLogger */ null,
+            )
+        try {
+            SQLiteTransaction(db).use {
+                while (loaderCursor.moveToNext()) {
+                    val intent = loaderCursor.parseIntent()
+                    val itemInfo =
+                        loaderCursor.getAppShortcutInfo(
+                            intent,
+                            /* allowMissingTarget */ false,
+                            /* useLowResIcon */ false,
+                        )
+                    if (itemInfo == null) continue
+                    val update =
+                        ContentValues().apply {
+                            put(
+                                Favorites.ICON,
+                                if (useDefaultShape) {
+                                    GraphicsUtils.createDefaultFlatBitmap(itemInfo.bitmap)
+                                } else {
+                                    flattenBitmap(itemInfo.bitmap.icon)
+                                },
+                            )
+                        }
+                    db.update(TABLE_NAME, update, "_id = ?", arrayOf(loaderCursor.id.toString()))
+                }
+                it.commit()
+            }
+        } catch (e: Exception) {
+            FileLog.e(TAG, "updateBackupIcons: Failed to update backup icons in Launcher db.", e)
+        } finally {
+            loaderCursor.close()
         }
     }
 
@@ -276,5 +320,21 @@ object LauncherDbUtils {
         fun commit() = db.setTransactionSuccessful()
 
         override fun close() = db.endTransaction()
+    }
+
+    /**
+     * Returns the sort order string for [com.android.launcher3.model.ModelDbController.query],
+     * which places file system items ([ITEM_TYPE_FILE_SYSTEM_FILE] and
+     * [ITEM_TYPE_FILE_SYSTEM_FOLDER]) at the end, allowing more time for the IPC call while still
+     * processing regular items.
+     */
+    @JvmStatic
+    fun getLoaderCursorQuerySortOrder(): String? {
+        if (HomeScreenFilesUtils.isFeatureEnabled) {
+            val inClause =
+                intArrayOf(ITEM_TYPE_FILE_SYSTEM_FILE, ITEM_TYPE_FILE_SYSTEM_FOLDER).joinToString()
+            return "CASE WHEN $ITEM_TYPE IN ($inClause) THEN 1 ELSE 0 END, $_ID"
+        }
+        return null
     }
 }

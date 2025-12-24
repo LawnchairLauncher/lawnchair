@@ -19,159 +19,169 @@ package com.android.launcher3.util
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
+import android.os.Process
+import android.os.SystemClock
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
+import com.android.launcher3.util.SimpleBroadcastReceiver.Companion.actionsFilter
+import com.android.launcher3.util.SimpleBroadcastReceiver.Companion.packageFilter
 import com.google.common.truth.Truth.assertThat
+import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.ArgumentMatchers.same
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class SimpleBroadcastReceiverTest {
 
-    private lateinit var underTest: SimpleBroadcastReceiver
+    @get:Rule val context = spy(SandboxApplication())
 
-    @Mock private lateinit var intentConsumer: Consumer<Intent>
-    @Mock private lateinit var context: Context
-    @Mock private lateinit var completionRunnable: Runnable
-    @Captor private lateinit var intentFilterCaptor: ArgumentCaptor<IntentFilter>
+    private lateinit var executorThread: HandlerThread
+    private lateinit var executor: LooperExecutor
+
+    private lateinit var callbackExecutorThread: HandlerThread
+    private lateinit var callbackExecutor: LooperExecutor
+
+    private var intentConsumer: Consumer<Intent> = Consumer {}
+
+    private val underTest: SimpleBroadcastReceiver by lazy {
+        SimpleBroadcastReceiver(
+            context = context,
+            executor = executor,
+            callbackExecutor = callbackExecutor,
+            intentConsumer = intentConsumer,
+        )
+    }
 
     @Before
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        underTest = SimpleBroadcastReceiver(context, UI_HELPER_EXECUTOR, intentConsumer)
-        if (Looper.getMainLooper() == null) {
-            Looper.prepareMainLooper()
-        }
+    fun setup() {
+        executorThread =
+            HandlerThread("executor-for-registration", Process.THREAD_PRIORITY_DEFAULT).apply {
+                start()
+            }
+        executor = LooperExecutor(executorThread.looper, Process.THREAD_PRIORITY_DEFAULT)
+
+        callbackExecutorThread =
+            HandlerThread("executor-for-callback", Process.THREAD_PRIORITY_DEFAULT).apply {
+                start()
+            }
+        callbackExecutor =
+            LooperExecutor(callbackExecutorThread.looper, Process.THREAD_PRIORITY_DEFAULT)
+    }
+
+    @After
+    fun tearDown() {
+        underTest.close()
+        TestUtil.runOnExecutorSync(executor) {}
+        executorThread.quit()
+        executorThread.join()
+
+        TestUtil.runOnExecutorSync(callbackExecutor) {}
+        callbackExecutorThread.quit()
+        callbackExecutorThread.join()
     }
 
     @Test
-    fun async_register() {
-        underTest.register("test_action_1", "test_action_2")
+    fun register_executes_on_executor() {
+        var registrationLooper: Looper? = null
+        doAnswer {
+                registrationLooper = Looper.myLooper()
+                null
+            }
+            .whenever(context)
+            .registerReceiver(any(), any(), any(), any(), any())
+
+        val filter = actionsFilter("test_action_1", "test_action_2")
+        underTest.register(filter = filter, flags = 32, permission = "test-permission")
         awaitTasksCompleted()
-
-        verify(context).registerReceiver(same(underTest), intentFilterCaptor.capture())
-        val intentFilter = intentFilterCaptor.value
-        assertThat(intentFilter.countActions()).isEqualTo(2)
-        assertThat(intentFilter.getAction(0)).isEqualTo("test_action_1")
-        assertThat(intentFilter.getAction(1)).isEqualTo("test_action_2")
-    }
-
-    @Test
-    fun async_register_withCompletionRunnable() {
-        underTest.register(completionRunnable, "test_action_1", "test_action_2")
-        awaitTasksCompleted()
-
-        verify(context).registerReceiver(same(underTest), intentFilterCaptor.capture())
-        verify(completionRunnable).run()
-        val intentFilter = intentFilterCaptor.value
-        assertThat(intentFilter.countActions()).isEqualTo(2)
-        assertThat(intentFilter.getAction(0)).isEqualTo("test_action_1")
-        assertThat(intentFilter.getAction(1)).isEqualTo("test_action_2")
-    }
-
-    @Test
-    fun async_register_withCompletionRunnable_and_flag() {
-        underTest.register(completionRunnable, 1, "test_action_1", "test_action_2")
-        awaitTasksCompleted()
-
-        verify(context).registerReceiver(same(underTest), intentFilterCaptor.capture(), eq(1))
-        verify(completionRunnable).run()
-        val intentFilter = intentFilterCaptor.value
-        assertThat(intentFilter.countActions()).isEqualTo(2)
-        assertThat(intentFilter.getAction(0)).isEqualTo("test_action_1")
-        assertThat(intentFilter.getAction(1)).isEqualTo("test_action_2")
-    }
-
-    @Test
-    fun async_register_with_package() {
-        underTest.registerPkgActions("pkg", "test_action_1", "test_action_2")
-
-        awaitTasksCompleted()
-        verify(context).registerReceiver(same(underTest), intentFilterCaptor.capture())
-        val intentFilter = intentFilterCaptor.value
-        assertThat(intentFilter.getDataScheme(0)).isEqualTo("package")
-        assertThat(intentFilter.getDataSchemeSpecificPart(0).path).isEqualTo("pkg")
-        assertThat(intentFilter.countActions()).isEqualTo(2)
-        assertThat(intentFilter.getAction(0)).isEqualTo("test_action_1")
-        assertThat(intentFilter.getAction(1)).isEqualTo("test_action_2")
-    }
-
-    @Test
-    fun sync_register_withCompletionRunnable_and_flag() {
-        underTest =
-            SimpleBroadcastReceiver(context, Handler(Looper.getMainLooper()), intentConsumer)
-
-        underTest.register(completionRunnable, 1, "test_action_1", "test_action_2")
-        getInstrumentation().waitForIdleSync()
-
-        verify(context).registerReceiver(same(underTest), intentFilterCaptor.capture(), eq(1))
-        verify(completionRunnable).run()
-        val intentFilter = intentFilterCaptor.value
-        assertThat(intentFilter.countActions()).isEqualTo(2)
-        assertThat(intentFilter.getAction(0)).isEqualTo("test_action_1")
-        assertThat(intentFilter.getAction(1)).isEqualTo("test_action_2")
-    }
-
-    @Test
-    fun sync_register_withCompletionRunnable_and_permission_and_flag() {
-        underTest =
-            SimpleBroadcastReceiver(context, Handler(Looper.getMainLooper()), intentConsumer)
-
-        underTest.register(completionRunnable, "permission", 1, "test_action_1", "test_action_2")
-        getInstrumentation().waitForIdleSync()
 
         verify(context)
             .registerReceiver(
                 same(underTest),
-                intentFilterCaptor.capture(),
-                eq("permission"),
-                eq(null),
-                eq(1),
+                same(filter),
+                eq("test-permission"),
+                same(callbackExecutor.handler),
+                eq(32),
             )
-        verify(completionRunnable).run()
-        val intentFilter = intentFilterCaptor.value
-        assertThat(intentFilter.countActions()).isEqualTo(2)
-        assertThat(intentFilter.getAction(0)).isEqualTo("test_action_1")
-        assertThat(intentFilter.getAction(1)).isEqualTo("test_action_2")
+        assertThat(registrationLooper).isEqualTo(executor.looper)
     }
 
     @Test
-    fun async_unregister() {
-        underTest.unregisterReceiverSafely()
+    fun completion_executes_on_callback_executor() {
+        val filter = actionsFilter("test_action_2", "test_action_3")
+        val onCompleteCallback = CompletableFuture<Looper>()
+        doReturn(null).whenever(context).registerReceiver(any(), any(), any(), any(), any())
+
+        underTest.register(
+            filter = filter,
+            flags = 33,
+            permission = "test-permission2",
+            completionCallback = { onCompleteCallback.complete(Looper.myLooper()) },
+        )
+        awaitTasksCompleted()
+
+        verify(context)
+            .registerReceiver(
+                same(underTest),
+                same(filter),
+                eq("test-permission2"),
+                same(callbackExecutor.handler),
+                eq(33),
+            )
+        // Callback called on completion executor
+        assertThat(onCompleteCallback.join()).isEqualTo(callbackExecutor.looper)
+    }
+
+    @Test
+    fun callback_executes_on_callback_executor() {
+        val action = "test_action_${SystemClock.uptimeNanos()}"
+
+        val callbackResult = CompletableFuture<Pair<Looper, Intent>>()
+        intentConsumer = Consumer { callbackResult.complete(Pair(Looper.myLooper()!!, it)) }
+        underTest.register(filter = IntentFilter(action), flags = Context.RECEIVER_EXPORTED)
+
+        awaitTasksCompleted()
+        context.sendBroadcast(Intent(action))
+
+        val result = callbackResult.join()
+        assertThat(result.first).isEqualTo(callbackExecutor.looper)
+        assertThat(result.second.action).isEqualTo(action)
+    }
+
+    @Test
+    fun unregister_executes_on_executor() {
+        var closeLooper: Looper? = null
+        doAnswer {
+                closeLooper = Looper.myLooper()
+                null
+            }
+            .whenever(context)
+            .unregisterReceiver(any())
+
+        underTest.close()
 
         awaitTasksCompleted()
         verify(context).unregisterReceiver(same(underTest))
+        assertThat(closeLooper).isEqualTo(executor.looper)
     }
 
     @Test
-    fun sync_unregister() {
-        underTest =
-            SimpleBroadcastReceiver(context, Handler(Looper.getMainLooper()), intentConsumer)
-
-        underTest.unregisterReceiverSafely()
-        getInstrumentation().waitForIdleSync()
-
-        verify(context).unregisterReceiver(same(underTest))
-    }
-
-    @Test
-    fun getPackageFilter() {
-        val intentFilter =
-            SimpleBroadcastReceiver.getPackageFilter("pkg", "test_action_1", "test_action_2")
+    fun verifyPackageFilter() {
+        val intentFilter = packageFilter("pkg", "test_action_1", "test_action_2")
 
         assertThat(intentFilter.getDataScheme(0)).isEqualTo("package")
         assertThat(intentFilter.getDataSchemeSpecificPart(0).path).isEqualTo("pkg")
@@ -180,7 +190,19 @@ class SimpleBroadcastReceiverTest {
         assertThat(intentFilter.getAction(1)).isEqualTo("test_action_2")
     }
 
+    @Test
+    fun verifyActionsFilter() {
+        val intentFilter = actionsFilter("test_action_1", "test_action_2", "test_action_3")
+
+        assertThat(intentFilter.countDataSchemes()).isEqualTo(0)
+        assertThat(intentFilter.countActions()).isEqualTo(3)
+        assertThat(intentFilter.getAction(0)).isEqualTo("test_action_1")
+        assertThat(intentFilter.getAction(1)).isEqualTo("test_action_2")
+        assertThat(intentFilter.getAction(2)).isEqualTo("test_action_3")
+    }
+
     private fun awaitTasksCompleted() {
-        UI_HELPER_EXECUTOR.submit<Any?> { null }.get()
+        TestUtil.runOnExecutorSync(executor) {}
+        TestUtil.runOnExecutorSync(callbackExecutor) {}
     }
 }

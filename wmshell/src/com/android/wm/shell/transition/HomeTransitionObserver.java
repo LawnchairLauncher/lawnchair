@@ -17,6 +17,7 @@
 package com.android.wm.shell.transition;
 
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
+import static android.os.UserHandle.USER_NULL;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.window.DesktopModeFlags.ENABLE_DRAG_TO_DESKTOP_INCOMING_TRANSITIONS_BUGFIX;
 import static android.window.TransitionInfo.FLAG_BACK_GESTURE_ANIMATED;
@@ -42,6 +43,9 @@ import com.android.wm.shell.shared.TransitionUtil;
 import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper;
 import com.android.wm.shell.sysui.ShellInit;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The {@link TransitionObserver} that observes for transitions involving the home
  * activity on the {@link android.view.Display#DEFAULT_DISPLAY} only.
@@ -56,7 +60,9 @@ public class HomeTransitionObserver implements TransitionObserver,
     private @NonNull final ShellExecutor mMainExecutor;
     private @NonNull final DisplayInsetsController mDisplayInsetsController;
     private IBinder mPendingStartDragTransition;
-    private Boolean mPendingHomeVisibilityUpdate;
+
+    private int mListenerUserId = USER_NULL; // UserId associated with the registered listener.
+    private final Map<Integer, Boolean> mIsHomeVisibleForUser = new HashMap<>();
 
     public HomeTransitionObserver(@NonNull Context context,
             @NonNull ShellExecutor mainExecutor,
@@ -85,42 +91,54 @@ public class HomeTransitionObserver implements TransitionObserver,
             @NonNull TransitionInfo info,
             @NonNull SurfaceControl.Transaction startTransaction,
             @NonNull SurfaceControl.Transaction finishTransaction) {
-        Boolean homeVisibilityUpdate = getHomeVisibilityUpdate(info);
+        Boolean homeVisibilityUpdate = updateHomeVisibilityForUser(info);
 
-        if (info.getType() == TRANSIT_DESKTOP_MODE_START_DRAG_TO_DESKTOP) {
+        if (info.getType() == TRANSIT_DESKTOP_MODE_START_DRAG_TO_DESKTOP
+                && homeVisibilityUpdate != null) {
             // Do not apply at the start of desktop drag as that updates launcher UI visibility.
             // Store the value and apply with a next transition or when cancelling the
             // desktop-drag transition.
-            storePendingHomeVisibilityUpdate(transition, homeVisibilityUpdate);
+            storePendingStartDragTransition(transition);
             return;
         }
 
         if (BubbleAnythingFlagHelper.enableBubbleToFullscreen()
                 && info.getType() == TRANSIT_CONVERT_TO_BUBBLE
-                && homeVisibilityUpdate == null) {
+                && homeVisibilityUpdate == null
+                && mPendingStartDragTransition != null) {
             // We are converting to bubble and we did not get a change to home visibility in this
             // transition. Apply the value from start of drag.
-            homeVisibilityUpdate = mPendingHomeVisibilityUpdate;
+            homeVisibilityUpdate = mIsHomeVisibleForUser.get(mListenerUserId);
         }
 
         if (homeVisibilityUpdate != null) {
-            mPendingHomeVisibilityUpdate = null;
             mPendingStartDragTransition = null;
             notifyHomeVisibilityChanged(homeVisibilityUpdate);
         }
     }
 
-    private void storePendingHomeVisibilityUpdate(
-            IBinder transition, Boolean homeVisibilityUpdate) {
+    private void storePendingStartDragTransition(IBinder transition) {
         if (!BubbleAnythingFlagHelper.enableBubbleToFullscreen()
                 && !ENABLE_DRAG_TO_DESKTOP_INCOMING_TRANSITIONS_BUGFIX.isTrue()) {
             return;
         }
-        mPendingHomeVisibilityUpdate = homeVisibilityUpdate;
         mPendingStartDragTransition = transition;
     }
 
-    private Boolean getHomeVisibilityUpdate(TransitionInfo info) {
+    /**
+     * Determines if a given transition represents a change in home visibility for the current user.
+     * <p>
+     * Only returns the visibility for the current user if it is in the transition.
+     * <p>
+     * If a change is a visibility change for any user, it is cached in
+     * {@link #mIsHomeVisibleForUser} for pending transitions or when registering a listener.
+     *
+     * @param info The information about the transition.
+     * @return Considering the current user, {@code true} if its home activity is becoming visible,
+     *         {@code false} if invisible, or {@code null} if this change does not involve its home
+     *         visibility.
+     */
+    private Boolean updateHomeVisibilityForUser(TransitionInfo info) {
         Boolean homeVisibilityUpdate = null;
         for (TransitionInfo.Change change : info.getChanges()) {
             final ActivityManager.RunningTaskInfo taskInfo = change.getTaskInfo();
@@ -130,15 +148,27 @@ public class HomeTransitionObserver implements TransitionObserver,
                     || !taskInfo.isRunning) {
                 continue;
             }
-            Boolean update = getHomeVisibilityUpdate(info, change, taskInfo);
+            Boolean update = getHomeVisibilityUpdateForChange(info, change, taskInfo);
             if (update != null) {
-                homeVisibilityUpdate = update;
+                mIsHomeVisibleForUser.put(taskInfo.userId, update);
+                if (taskInfo.userId == mListenerUserId) {
+                    homeVisibilityUpdate = update;
+                }
             }
         }
         return homeVisibilityUpdate;
     }
 
-    private Boolean getHomeVisibilityUpdate(TransitionInfo info,
+    /**
+     * Determines if a given transition change for a task represents a change in home visibility.
+     *
+     * @param info The information about the transition.
+     * @param change The specific change within the transition.
+     * @param taskInfo The information about the task associated with the change.
+     * @return {@code true} if the home activity is becoming visible, {@code false} if it's becoming
+     *         invisible, or {@code null} if this change does not affect home visibility.
+     */
+    private Boolean getHomeVisibilityUpdateForChange(TransitionInfo info,
             TransitionInfo.Change change, ActivityManager.RunningTaskInfo taskInfo) {
         final int mode = change.getMode();
         final boolean isBackGesture = change.hasFlags(FLAG_BACK_GESTURE_ANIMATED);
@@ -174,9 +204,9 @@ public class HomeTransitionObserver implements TransitionObserver,
         }
         mPendingStartDragTransition = null;
 
-        if (mPendingHomeVisibilityUpdate != null) {
-            notifyHomeVisibilityChanged(mPendingHomeVisibilityUpdate);
-            mPendingHomeVisibilityUpdate = null;
+        Boolean pendingVisibility = mIsHomeVisibleForUser.get(mListenerUserId);
+        if (pendingVisibility != null) {
+            notifyHomeVisibilityChanged(pendingVisibility);
         }
     }
 
@@ -184,8 +214,8 @@ public class HomeTransitionObserver implements TransitionObserver,
      * Sets the home transition listener that receives any transitions resulting in a change of
      *
      */
-    public void setHomeTransitionListener(Transitions transitions,
-            IHomeTransitionListener listener) {
+    public void setHomeTransitionListener(Transitions transitions, IHomeTransitionListener listener,
+            int userId) {
         if (mListener == null) {
             mListener = new SingleInstanceRemoteListener<>(this,
                     c -> transitions.registerObserver(this),
@@ -193,9 +223,15 @@ public class HomeTransitionObserver implements TransitionObserver,
         }
 
         if (listener != null) {
+            mListenerUserId = userId;
             mListener.register(listener);
+            Boolean isVisible = mIsHomeVisibleForUser.get(userId);
+            if (isVisible != null) {
+                notifyHomeVisibilityChanged(isVisible);
+            }
         } else {
             mListener.unregister();
+            mListenerUserId = USER_NULL;
         }
     }
 

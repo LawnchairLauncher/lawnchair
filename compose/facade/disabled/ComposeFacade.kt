@@ -29,4 +29,11 @@ object ComposeFacade : BaseComposeFacade {
                 " other function on ComposeFacade."
         )
     }
+
+    override fun disposeComposition(view: View) {
+        error(
+            "Compose is not available. Make sure to check isComposeAvailable() before calling any" +
+                " other function on ComposeFacade."
+        )
+    }
 }

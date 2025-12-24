@@ -79,6 +79,8 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
 
+    <include layout="@layout/task_dismiss_button" />
+
     <ViewStub
         android:id="@+id/digital_wellbeing_toast"
         android:inflatedId="@id/digital_wellbeing_toast"

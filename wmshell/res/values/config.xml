@@ -177,6 +177,9 @@
     <!-- Whether CompatUIController is enabled -->
     <bool name="config_enableCompatUIController">true</bool>
 
+    <!-- Whether the size compat restart button should be enabled -->
+    <bool name="config_isSizeCompatRestartButtonEnabled">true</bool>
+
     <!-- Whether pointer pilfer is required to start back animation. -->
     <bool name="config_backAnimationRequiresPointerPilfer">true</bool>
 
@@ -188,4 +191,9 @@
     <string-array name="desktop_windowing_app_handle_education_allowlist_apps"></string-array>
     <!-- Apps that can trigger Desktop Windowing App-To-Web Education -->
     <string-array name="desktop_windowing_app_to_web_education_allowlist_apps"></string-array>
+
+    <!-- Whether the status bar input layer should be removed.
+         TODO: b/444730302 - remove config once status bar input layer can be removed for all
+          devices. -->
+    <bool name="config_removeStatusBarInputLayer">true</bool>
 </resources>

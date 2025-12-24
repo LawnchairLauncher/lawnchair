@@ -26,6 +26,7 @@ import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.widget.LocalColorExtractor;
 
 import java.util.Map;
@@ -34,6 +35,7 @@ import app.lawnchair.theme.ThemeProvider;
 import app.lawnchair.theme.color.AndroidColor;
 import dev.kdrag0n.colorkt.Color;
 import dev.kdrag0n.monet.theme.ColorScheme;
+import javax.inject.Inject;
 
 @RequiresApi(api = Build.VERSION_CODES.S)
 public class AccentColorExtractor extends LocalColorExtractor implements ThemeProvider.ColorSchemeChangeListener {
@@ -42,7 +44,8 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
     private Listener mListener;
 
     @Keep
-    public AccentColorExtractor(Context context) {
+    @Inject
+    public AccentColorExtractor(@ApplicationContext Context context) {
         mThemeProvider = ThemeProvider.INSTANCE.get(context);
     }
 

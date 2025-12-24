@@ -13,12 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-  android:viewportWidth="24"
-  android:viewportHeight="24"
-  android:width="24dp"
-  android:height="24dp">
-  <path
-      android:fillColor="#1A73E8"
-      android:pathData="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-</vector>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+  <background android:drawable="@color/materialColorPrimaryFixed" />
+  <foreground>
+    <inset android:inset="16dp">
+      <vector
+          android:viewportWidth="24"
+          android:viewportHeight="24"
+          android:width="24dp"
+          android:height="24dp"
+          android:tint="@color/materialColorOnPrimaryFixed">
+        <path
+            android:fillColor="#1A73E8"
+            android:pathData="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </vector>
+    </inset>
+  </foreground>
+</adaptive-icon>

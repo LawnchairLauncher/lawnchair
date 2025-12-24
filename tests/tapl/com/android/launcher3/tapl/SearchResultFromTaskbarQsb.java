@@ -37,7 +37,7 @@ public class SearchResultFromTaskbarQsb extends SearchResultFromQsb {
 
     @Override
     protected TaskbarAppIcon createAppIcon(UiObject2 icon) {
-        return new TaskbarAppIcon(mLauncher, icon, mTaskbarLocation);
+        return new TaskbarAppIcon(mLauncher, icon, mTaskbarLocation, true);
     }
 
     @Override

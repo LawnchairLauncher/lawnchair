@@ -45,12 +45,12 @@ import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.MultiPropertyFactory
 import com.android.launcher3.util.OverviewReleaseFlags.enableOverviewIconMenu
 import com.android.launcher3.util.SplitConfigurationOptions
+import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
 import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.TaskOverlayFactory
 import com.android.quickstep.TaskUtils
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler
 import com.android.quickstep.util.TaskCornerRadius
-import java.util.function.Consumer
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -68,8 +68,19 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
     private var revealAnimator: ValueAnimator? = null
     private var onClosingStartCallback: Runnable? = null
     private lateinit var orientationHandler: RecentsPagedOrientationHandler
-    private lateinit var taskView: TaskView
-    private lateinit var taskContainer: TaskContainer
+    private lateinit var taskTarget: TaskTarget
+    private val taskView: TaskView
+        get() = taskTarget.taskView
+
+    private val taskContainer: TaskContainer?
+        get() = (taskTarget as? TaskTarget.FromTaskContainer)?.container
+
+    private val containerView: View
+        get() = taskContainer?.snapshotView ?: taskView
+
+    private val stagePosition: Int
+        get() = taskContainer?.stagePosition ?: STAGE_POSITION_UNDEFINED
+
     private var menuTranslationXBeforeOpen = 0f
     private var menuTranslationYBeforeOpen = 0f
 
@@ -78,7 +89,7 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
         recentsViewContainer.deviceProfile.deviceProperties.heightPx -
             recentsViewContainer.deviceProfile.overviewActionsClaimedSpaceBelow
     }
-    private val minMenuTop by lazy { taskContainer.iconView.asView().height.toFloat() }
+    private val minMenuTop by lazy { iconView.height.toFloat() }
     private val maxMenuBottom by lazy { taskbarTop - recentsViewContainer.dragLayer.insets.top }
 
     init {
@@ -134,11 +145,10 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
         }
     }
 
-    private fun populateAndShowForTask(taskContainer: TaskContainer): Boolean {
+    private fun populateAndShowForTask(taskTarget: TaskTarget): Boolean {
         if (isAttachedToWindow) return false
         recentsViewContainer.dragLayer.addView(this)
-        taskView = taskContainer.taskView
-        this.taskContainer = taskContainer
+        this.taskTarget = taskTarget
         if (!populateAndLayoutMenu()) return false
         post { this.animateOpen() }
         return true
@@ -146,20 +156,22 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
 
     /** @return true if successfully able to populate task view menu, false otherwise */
     private fun populateAndLayoutMenu(): Boolean {
-        addMenuOptions(taskContainer)
-        orientAroundTaskView(taskContainer)
+        addMenuOptions()
+        orientAroundTaskView()
         return true
     }
 
-    private fun addMenuOptions(taskContainer: TaskContainer) {
+    private fun addMenuOptions() {
         if (enableOverviewIconMenu()) {
             removeView(taskName)
         } else {
-            taskName.text = TaskUtils.getTitle(context, taskContainer.task)
+            taskName.text = TaskUtils.getTitle(context, taskContainer?.task)
             taskName.setOnClickListener { close(true) }
         }
-        TaskOverlayFactory.getEnabledShortcuts(taskView, taskContainer)
-            .forEach(Consumer { menuOption: SystemShortcut<*> -> this.addMenuOption(menuOption) })
+        TaskOverlayFactory.getEnabledShortcuts(taskView, taskContainer).forEach {
+            menuOption: SystemShortcut<*> ->
+            addMenuOption(menuOption)
+        }
     }
 
     private fun addMenuOption(menuOption: SystemShortcut<*>) {
@@ -190,7 +202,7 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
         optionLayout.addView(menuOptionView)
     }
 
-    private fun orientAroundTaskView(taskContainer: TaskContainer) {
+    private fun orientAroundTaskView() {
         val recentsView = recentsViewContainer.getOverviewPanel<RecentsView<*, *>>()
         orientationHandler = recentsView.pagedOrientationHandler
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
@@ -199,17 +211,13 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
         val deviceProfile = recentsViewContainer.deviceProfile
         recentsViewContainer.dragLayer.getDescendantRectRelativeToSelf(
             if (enableOverviewIconMenu()) iconView.findViewById(R.id.icon_view_menu_anchor)
-            else taskContainer.snapshotView,
+            else containerView,
             tempRect,
         )
         val insets = recentsViewContainer.dragLayer.insets
         val params = layoutParams as BaseDragLayer.LayoutParams
         params.width =
-            orientationHandler.getTaskMenuWidth(
-                taskContainer.snapshotView,
-                deviceProfile,
-                taskContainer.stagePosition,
-            )
+            orientationHandler.getTaskMenuWidth(containerView, deviceProfile, stagePosition)
         // Gravity set to Left instead of Start as sTempRect.left measures Left distance not Start
         params.gravity =
             if (enableOverviewIconMenu() && orientationHandler.isLayoutNaturalToLauncher)
@@ -270,7 +278,7 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
         translationX =
             orientationHandler.getTaskMenuX(
                 thumbnailAlignedX,
-                this.taskContainer.snapshotView,
+                containerView,
                 deviceProfile,
                 taskInsetMargin,
                 iconView,
@@ -278,8 +286,8 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
         translationY =
             orientationHandler.getTaskMenuY(
                 thumbnailAlignedY,
-                this.taskContainer.snapshotView,
-                this.taskContainer.stagePosition,
+                containerView,
+                stagePosition,
                 this,
                 taskInsetMargin,
                 iconView,
@@ -294,9 +302,10 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
     }
 
     private val iconView: View
-        get() = taskContainer.iconView.asView()
+        get() = taskContainer?.iconView?.asView() ?: taskView.getTaskIcons().first().first.asView()
 
     private fun animateOpenOrClosed(closing: Boolean, animated: Boolean = true) {
+        if (!iconView.isAttachedToWindow) return
         openCloseAnimator?.let { if (it.isRunning) it.cancel() }
         // If we're opening, we just start from the beginning as a new `TaskMenuView` is
         // created
@@ -317,7 +326,7 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
                             val animatedFraction = animation.animatedFraction
                             val openProgress =
                                 if (closing) (1 - animatedFraction) else animatedFraction
-                            taskContainer.updateMenuOpenProgress(openProgress)
+                            taskContainer?.updateMenuOpenProgress(openProgress)
                         }
                     }
                 }
@@ -354,13 +363,15 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
                     }
 
                     if (!enableRefactorTaskThumbnail()) {
-                        animatorBuilder.with(
-                            ObjectAnimator.ofFloat(
-                                taskContainer.thumbnailViewDeprecated,
-                                TaskThumbnailViewDeprecated.DIM_ALPHA,
-                                if (closing) 0f else TaskView.MAX_PAGE_SCRIM_ALPHA,
+                        taskContainer?.let {
+                            animatorBuilder.with(
+                                ObjectAnimator.ofFloat(
+                                    it.thumbnailViewDeprecated,
+                                    TaskThumbnailViewDeprecated.DIM_ALPHA,
+                                    if (closing) 0f else TaskView.MAX_PAGE_SCRIM_ALPHA,
+                                )
                             )
-                        )
+                        }
                     }
 
                     animator.start()
@@ -428,7 +439,7 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
             }
         }
 
-        val iconAppChip = taskContainer.iconView.asView() as IconAppChipView
+        val iconAppChip = iconView as IconAppChipView
 
         // Animate menu up for enough room to display full menu when task on bottom row.
         var additionalTranslationY = 0f
@@ -471,7 +482,7 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
         var additionalTranslationX = 0f
         if (
             taskView.pagedOrientationHandler.isLayoutNaturalToLauncher &&
-                taskContainer.stagePosition ==
+                taskContainer?.stagePosition ==
                     SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
         ) {
             // Animate menu and icon when split task would display off the side of the screen.
@@ -580,20 +591,29 @@ constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
         private val REVEAL_CLOSE_DURATION = if (enableOverviewIconMenu()) 333L else 100L
         private const val CONTAINER_SCALE_PERCENTAGE = .8f
 
-        /** Show a task menu for the given taskContainer. */
-        /** Show a task menu for the given taskContainer. */
-        @JvmOverloads
-        fun showForTask(
-            taskContainer: TaskContainer,
-            onClosingStartCallback: Runnable? = null,
-        ): Boolean {
+        /** Show a task menu for the given task. */
+        fun showForTask(taskTarget: TaskTarget, onClosingStartCallback: Runnable? = null): Boolean {
             val container: RecentsViewContainer =
-                RecentsViewContainer.containerFromContext(taskContainer.taskView.context)
+                RecentsViewContainer.containerFromContext(taskTarget.context)
             val taskMenuView =
                 container.layoutInflater.inflate(R.layout.task_menu, container.dragLayer, false)
                     as TaskMenuView
             taskMenuView.setOnClosingStartCallback(onClosingStartCallback)
-            return taskMenuView.populateAndShowForTask(taskContainer)
+            return taskMenuView.populateAndShowForTask(taskTarget)
         }
+    }
+
+    /** An identifier for a task, which can be either a [TaskContainer] or a [TaskView]. */
+    sealed class TaskTarget {
+        abstract val taskView: TaskView
+        val context: Context
+            get() = taskView.context
+
+        data class FromTaskContainer(val container: TaskContainer) : TaskTarget() {
+            override val taskView: TaskView
+                get() = container.taskView
+        }
+
+        data class FromTaskView(override val taskView: TaskView) : TaskTarget()
     }
 }

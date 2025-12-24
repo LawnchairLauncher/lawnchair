@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Cambia proporzioni"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informazioni sull\'app %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Impostazioni di utilizzo per %1$s"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"Chiudi %1$s"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"Nuova finestra"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Gestisci finestre"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"Chiudi"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Salva coppia di app"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Questa coppia di app non è supportata su questo dispositivo"</string>
@@ -83,13 +85,13 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nessuna app trovata corrispondente a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Tutte le app"</string>
-    <string name="all_apps_list_label" msgid="5106226764073070906">"Elenco di app"</string>
+    <string name="all_apps_list_label" msgid="5106226764073070906">"Lista di app"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifiche"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Tocca e tieni premuto per spostare una scorciatoia."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Tocca due volte e tieni premuto per spostare una scorciatoia o per usare le azioni personalizzate."</string>
     <string name="out_of_space" msgid="6455557115204099579">"Non c\'è più spazio nella schermata Home"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spazio esaurito nella barra dei Preferiti"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"Elenco di app"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Lista di app"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Risultati di ricerca"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Elenco di app personali"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Elenco di app di lavoro"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Non suggerire app"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Blocca previsione"</string>
     <string name="bubble" msgid="3072951361014076670">"Fumetto"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"Impostazioni"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"Fissa alla barra delle app"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"Stacca da barra app"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Aggiunta di scorciatoie"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Consente a un\'app di aggiungere scorciatoie automaticamente."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"leggere le impostazioni e le scorciatoie nella schermata Home"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"Impagina a destra"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"App <xliff:g id="APP_NAME">%1$s</xliff:g> disattivata"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} ha # notifica}other{{app_name} ha # notifiche}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"App prevista: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pagina %1$d di %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Schermata Home %1$d di %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nuova pagina Schermata Home"</string>
@@ -128,12 +134,14 @@
     <string name="folder_closed" msgid="4100806530910930934">"Cartella chiusa"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Nome della cartella sostituito con <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Cartella: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elementi"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"Cartella: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elemento/i, ha notifiche"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Cartella: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> o più elementi"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"Cartella: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> o più elementi, ha notifiche"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"Cartella senza nome"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"Coppia di app: <xliff:g id="APP1">%1$s</xliff:g> and <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Sfondo e stile"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Modifica schermata Home"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Impostazioni schermata Home"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Impostazioni Home"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Disattivata dall\'amministratore"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Consenti rotazione della schermata Home"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Con il telefono ruotato"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Scheda App di lavoro"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profilo di lavoro"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Le app di lavoro sono contrassegnate con un badge e visibili all\'amministratore IT"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Le app di lavoro sono in pausa"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Non riceverai notifiche dalle app di lavoro"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Le app di lavoro non possono inviarti notifiche, usare la batteria o accedere alla tua posizione"</string>

@@ -17,22 +17,22 @@
 package com.android.wm.shell.windowdecor.viewholder
 
 /**
- * Listener for receiving updates about the current list of application handles.
- * Defined as a nested functional interface within [AppHandleManager].
- * Being a 'fun interface' allows SAM (Single Abstract Method) conversion for lambda usage.
+ * Listener for receiving updates about the current list of application handles. Defined as a nested
+ * functional interface within [AppHandleManager]. Being a 'fun interface' allows SAM (Single
+ * Abstract Method) conversion for lambda usage.
  */
 fun interface AppHandlePositionCallback {
 
     /**
      * Called when the list of current application handles changes or is updated.
      *
-     * Implementations should expect this callback to occur on the same thread of the Executor
-     * that was passed in when adding this listener.
-     * See [AppHandles.addListener]
+     * Implementations should expect this callback to occur on the same thread of the Executor that
+     * was passed in when adding this listener. See [AppHandles.addListener]
      *
      * @param handles The new map of [AppHandleIdentifier] objects key'd by taskId.
-     *                TODO(b/417194560): Make AppHandle key'd on both taskId and displayId.
-     *                The map is never null, may be empty.
+     *
+     *     TODO(b/417194560): Make AppHandle key'd on both taskId and displayId. The map is never
+     *       null, may be empty.
      */
     fun onAppHandlesUpdated(handles: Map<Int, AppHandleIdentifier>)
 }

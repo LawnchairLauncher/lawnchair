@@ -18,24 +18,21 @@ package com.android.launcher3.model
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
-import android.content.Context
 import android.os.UserHandle
 import android.platform.test.rule.AllowedDevices
 import android.platform.test.rule.DeviceProduct
 import android.platform.test.rule.LimitDevicesRule
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.AppFilter
-import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.model.data.PackageItemInfo
 import com.android.launcher3.pm.UserCache
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.IntSet
 import com.android.launcher3.util.PackageUserKey
+import com.android.launcher3.util.SandboxApplication
 import com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.android.launcher3.widget.WidgetSections
@@ -60,11 +57,11 @@ import org.mockito.kotlin.whenever
 class WidgetsModelTest {
     @Rule @JvmField val limitDevicesRule = LimitDevicesRule()
     @Rule @JvmField val mockitoRule: MockitoRule = MockitoJUnit.rule()
+    @get:Rule val context = SandboxApplication()
 
-    @Mock private lateinit var appWidgetManager: AppWidgetManager
+    private lateinit var appWidgetManager: AppWidgetManager
     @Mock private lateinit var iconCacheMock: IconCache
 
-    private lateinit var context: Context
     private lateinit var idp: InvariantDeviceProfile
     private lateinit var underTest: WidgetsModel
 
@@ -73,22 +70,8 @@ class WidgetsModelTest {
 
     @Before
     fun setUp() {
-        val appContext: Context = ApplicationProvider.getApplicationContext()
-        idp = InvariantDeviceProfile.INSTANCE[appContext]
-
-        context =
-            object : ActivityContextWrapper(ApplicationProvider.getApplicationContext()) {
-                override fun getSystemService(name: String): Any? {
-                    if (name == "appwidget") {
-                        return appWidgetManager
-                    }
-                    return super.getSystemService(name)
-                }
-
-                override fun getDeviceProfile(): DeviceProfile {
-                    return idp.getDeviceProfile(applicationContext).copy(applicationContext)
-                }
-            }
+        idp = InvariantDeviceProfile.INSTANCE[context]
+        appWidgetManager = context.spyService(AppWidgetManager::class.java)
 
         whenever(iconCacheMock.getTitleNoCache(any<LauncherAppWidgetProviderInfo>()))
             .thenReturn("title")

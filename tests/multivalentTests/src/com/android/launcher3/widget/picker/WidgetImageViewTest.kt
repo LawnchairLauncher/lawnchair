@@ -16,36 +16,33 @@
 
 package com.android.launcher3.widget.picker
 
-import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.TestActivityContext
 import com.android.launcher3.widget.WidgetImageView
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.spy
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.whenever
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
 class WidgetImageViewTest {
-    private lateinit var context: Context
+    @get:Rule val context = TestActivityContext()
     private lateinit var widgetImageView: WidgetImageView
 
     @Mock private lateinit var testDrawable: Drawable
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
-
-        context = ActivityContextWrapper(ApplicationProvider.getApplicationContext())
         widgetImageView = spy(WidgetImageView(context))
     }
 

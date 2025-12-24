@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_OUTSIDE;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Flags.enableSystemDrag;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 
 import android.content.Context;
@@ -38,9 +39,12 @@ import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -125,6 +129,14 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         super(context, attrs);
         mContainer = ActivityContext.lookupContext(context);
         mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
+
+        if (enableSystemDrag()) {
+            // Delegate handling of system drag events to the drag controller.
+            super.setOnDragListener((view, event) -> {
+                final DragController<T> dragController = mContainer.getDragController();
+                return dragController != null && dragController.onDragEvent(event);
+            });
+        }
     }
 
     /**
@@ -580,5 +592,14 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             }
         }
         return super.dispatchApplyWindowInsets(insets);
+    }
+
+    @Override
+    public void setOnDragListener(@Nullable OnDragListener listener) {
+        if (enableSystemDrag()) {
+            Log.e(TAG, "Use `DragController#addSystemDragHandler()` instead.");
+            return;
+        }
+        super.setOnDragListener(listener);
     }
 }

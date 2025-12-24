@@ -16,12 +16,16 @@
 
 package com.android.wm.shell.functional.resizing
 
-import android.platform.test.annotations.Postsubmit
+import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresDesktopDevice
+import android.platform.test.rule.ScreenRecordRule
 import com.android.wm.shell.scenarios.ScaleDensityForExternalDisplay
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 /* Functional test for [ScaleDensityForExternalDisplay]. */
 @RunWith(BlockJUnit4ClassRunner::class)
-@Postsubmit
+@RequiresDesktopDevice
+@Presubmit
+@ScreenRecordRule.ScreenRecord
 class ScaleDensityForExternalDisplayTest : ScaleDensityForExternalDisplay()

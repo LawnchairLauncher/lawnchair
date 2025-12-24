@@ -44,16 +44,19 @@ class DragToBubblesZoneChangeListener(
         from: DragZone?,
         to: DragZone?,
     ) {
-        val updateLocation = to.toBubbleBarLocation()
-        updateBubbleBarLocation(updateLocation)
-        lastUpdateLocation = updateLocation
+        processLocationUpdate(to.toBubbleBarLocation())
     }
 
     override fun onDragEnded(zone: DragZone?) {
-        updateBubbleBarLocation(updateLocation = null)
+        processLocationUpdate(updateLocation = null)
     }
 
-    fun updateBubbleBarLocation(updateLocation: BubbleBarLocation?) {
+    private fun processLocationUpdate(updateLocation: BubbleBarLocation?) {
+        actOnLocationUpdate(updateLocation)
+        lastUpdateLocation = updateLocation
+    }
+
+    private fun actOnLocationUpdate(updateLocation: BubbleBarLocation?) {
         val updatedBefore = lastUpdateLocation != null
         val originalLocation = callback.getStartingBubbleBarLocation()
         val isLocationUpdated = isDifferentSides(lastUpdateLocation, updateLocation, isRtl)
@@ -114,8 +117,9 @@ class DragToBubblesZoneChangeListener(
         fun hasBubbles(): Boolean
 
         /** Called when need to animate the bubble bar location. */
-        fun animateBubbleBarLocation(bubbleBarLocation: BubbleBarLocation)
+        fun animateBubbleBarLocation(bubbleBarLocation: BubbleBarLocation) {}
 
+        // TODO(b/411505605) remove all related code
         /** Called when the bubble bar pillow view is shown at position. */
         fun bubbleBarPillowShownAtLocation(bubbleBarLocation: BubbleBarLocation?) {}
 
@@ -125,7 +129,7 @@ class DragToBubblesZoneChangeListener(
          * @param bubbleBarLocation The [BubbleBarLocation] that the drag operation has entered.
          *                          This will be non-null if the drag has entered a valid bubble bar
          *                          location. It will be `null` if the drag operation has exited
-         *                          all bubble bar locations.
+         *                          all bubble bar locations. Values are guaranteed to be distinct.
          */
         fun onDragEnteredLocation(bubbleBarLocation: BubbleBarLocation?) {}
     }

@@ -17,27 +17,33 @@
 package com.android.quickstep
 
 import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import android.platform.test.rule.ScreenRecordRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.android.launcher3.tapl.BubbleBar
 import com.android.launcher3.util.LauncherLayoutBuilder
 import com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME
 import com.android.launcher3.util.TestUtil
 import com.android.wm.shell.Flags
 import org.junit.After
 import org.junit.Assume
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+// TODO(b/418015387) remove once issues like b/418015387 disappear completely
+@ScreenRecordRule.ScreenRecord
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-@RequiresFlagsEnabled(Flags.FLAG_ENABLE_BUBBLE_ANYTHING)
+@RequiresFlagsEnabled(Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE)
 class TaplTestTaskbarIconDrag : AbstractQuickStepTest() {
 
-    private var mLauncherLayout: AutoCloseable? = null
+    @get:Rule val checkFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+
+    private var launcherLayout: AutoCloseable? = null
 
     override fun setUp() {
-        Assume.assumeTrue(mLauncher.isTablet)
+        Assume.assumeTrue("Ignoring test because device is not a tablet", mLauncher.isTablet)
         super.setUp()
         val layoutBuilder =
             LauncherLayoutBuilder()
@@ -46,15 +52,16 @@ class TaplTestTaskbarIconDrag : AbstractQuickStepTest() {
                     "com.google.android.apps.nexuslauncher.tests",
                     "com.android.launcher3.testcomponent.BaseTestingActivity",
                 )
-        mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, layoutBuilder)
+        launcherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, layoutBuilder)
         performInitialization()
         mLauncher.enableBlockTimeout(true)
     }
 
     @After
     fun tearDown() {
+        mLauncher.removeAllBubbles()
         mLauncher.enableBlockTimeout(false)
-        mLauncherLayout?.close()
+        launcherLayout?.close()
     }
 
     @Test
@@ -64,7 +71,6 @@ class TaplTestTaskbarIconDrag : AbstractQuickStepTest() {
         overview.taskbar!!
             .getAppIcon(TEST_APP_NAME)
             .dragToBubbleBarLocation(/* isBubbleBarLeftDropTarget= */ true)
-        dismissExpandedBubbleBar(overview.bubbleBar)
     }
 
     @Test
@@ -76,17 +82,27 @@ class TaplTestTaskbarIconDrag : AbstractQuickStepTest() {
         launchedAppState.taskbar
             .getAppIcon(TEST_APP_NAME)
             .dragToBubbleBarLocation(/* isBubbleBarLeftDropTarget= */ false)
-        // close expanded bubble
-        dismissExpandedBubbleBar(launchedAppState.bubbleBar)
     }
 
-    private fun dismissExpandedBubbleBar(bubbleBar: BubbleBar) {
-        // close expanded bubble bar
-        mLauncher.pressBack()
-        bubbleBar.verifyCollapsed()
-        // at this moment the bubble bar will be hidden, so need to show it again
-        mLauncher.showBubbleBarIfHidden()
-        // dismiss bubble bar
-        bubbleBar.dragToDismiss()
+    @Test
+    fun testAppIconDragOnOverviewFromTaskBarAllAppsToBubbleBar() {
+        val overview = mLauncher.workspace.switchToOverview()
+        // test right drop target
+        overview.taskbar!!
+            .openAllApps()
+            .getAppIcon(TEST_APP_NAME)
+            .dragToBubbleBarLocation(/* isBubbleBarLeftDropTarget= */ false)
+    }
+
+    @Test
+    fun testAppIconDragInRunningAppFromTaskBarAllAppsToBubbleBar() {
+        startAppFast(AbstractTaplTestsTaskbar.CALCULATOR_APP_PACKAGE)
+        val launchedAppState = mLauncher.launchedAppState
+        mLauncher.showTaskbarIfHidden()
+        // test left drop target
+        launchedAppState.taskbar
+            .openAllApps()
+            .getAppIcon(TEST_APP_NAME)
+            .dragToBubbleBarLocation(/* isBubbleBarLeftDropTarget= */ true)
     }
 }

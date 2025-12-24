@@ -53,7 +53,6 @@ import com.android.internal.jank.Cuj
 import com.android.internal.policy.ScreenDecorationsUtils
 import com.android.internal.policy.SystemBarUtils
 import com.android.internal.protolog.ProtoLog
-import com.android.window.flags2.Flags.predictiveBackTimestampApi
 import com.android.wm.shell.R
 import com.android.wm.shell.RootTaskDisplayAreaOrganizer
 import com.android.wm.shell.protolog.ShellProtoLogGroup
@@ -249,9 +248,7 @@ abstract class CrossActivityBackAnimation(
         )
         applyTransaction()
         background.customizeStatusBarAppearance(currentClosingRect.top.toInt())
-        if (predictiveBackTimestampApi()) {
-            velocityTracker.addPosition(backEvent.frameTimeMillis, progress)
-        }
+        velocityTracker.addPosition(backEvent.frameTimeMillis, progress)
     }
 
     private fun getYOffset(centeredRect: RectF, touchY: Float): Float {
@@ -283,14 +280,9 @@ abstract class CrossActivityBackAnimation(
 
         // kick off spring animation with the current velocity from the pre-commit phase, this
         // affects the scaling of the closing and/or opening activity during post-commit
-
-        var startVelocity = if (predictiveBackTimestampApi()) {
-            // pronounce fling animation more for gestures
-            val velocityFactor = if (swipeEdge == EDGE_LEFT || swipeEdge == EDGE_RIGHT) 2f else 1f
-            velocity * SPRING_SCALE * (1f - MAX_SCALE) * velocityFactor
-        } else {
-            velocity * SPRING_SCALE
-        }
+        // pronounce fling animation more for gestures
+        val velocityFactor = if (swipeEdge == EDGE_LEFT || swipeEdge == EDGE_RIGHT) 2f else 1f
+        var startVelocity = velocity * SPRING_SCALE * (1f - MAX_SCALE) * velocityFactor
         if (gestureProgress < 0.1f) {
             startVelocity = startVelocity.coerceAtLeast(DEFAULT_FLING_VELOCITY)
         }
@@ -552,11 +544,7 @@ abstract class CrossActivityBackAnimation(
         override fun onBackInvoked() {
             triggerBack = true
             progressAnimator.reset()
-            if (predictiveBackTimestampApi()) {
-                onGestureCommitted(velocityTracker.calculateVelocity())
-            } else {
-                onGestureCommitted(progressAnimator.velocity)
-            }
+            onGestureCommitted(velocityTracker.calculateVelocity())
         }
     }
 

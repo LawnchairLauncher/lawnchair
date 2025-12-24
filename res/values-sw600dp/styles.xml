@@ -19,6 +19,6 @@
         <item name="iconDrawablePadding">7dp</item>
     </style>
     <style name="DropTargetButton" parent="DropTargetButtonBase">
-        <item name="android:fontFamily" android:featureFlag="com.android.launcher3.gsf_res">variable-title-large</item>
+        <item name="android:fontFamily">variable-title-large</item>
     </style>
 </resources>

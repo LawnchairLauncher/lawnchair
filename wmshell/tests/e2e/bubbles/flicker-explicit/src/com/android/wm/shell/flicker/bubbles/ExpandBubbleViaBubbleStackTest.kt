@@ -17,24 +17,24 @@
 package com.android.wm.shell.flicker.bubbles
 
 import android.platform.test.annotations.Presubmit
-import android.platform.test.annotations.RequiresDevice
 import android.platform.test.annotations.RequiresFlagsEnabled
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import android.tools.NavBar
+import androidx.test.filters.RequiresDevice
 import com.android.wm.shell.Flags
-import com.android.wm.shell.flicker.bubbles.testcase.BubbleAppBecomesExpandedTestCases
-import com.android.wm.shell.flicker.bubbles.testcase.BubbleStackAlwaysVisibleTestCases
-import com.android.wm.shell.flicker.bubbles.utils.FlickerPropertyInitializer
+import com.android.wm.shell.Utils
+import com.android.wm.shell.flicker.bubbles.testcase.ExpandBubbleTestCases
+import com.android.wm.shell.flicker.bubbles.utils.ApplyPerParameterRule
+import com.android.wm.shell.flicker.bubbles.utils.BubbleFlickerTestHelper.collapseBubbleAppViaBackKey
+import com.android.wm.shell.flicker.bubbles.utils.BubbleFlickerTestHelper.expandBubbleAppViaTapOnBubbleStack
+import com.android.wm.shell.flicker.bubbles.utils.BubbleFlickerTestHelper.launchBubbleViaBubbleMenu
 import com.android.wm.shell.flicker.bubbles.utils.RecordTraceWithTransitionRule
-import com.android.wm.shell.flicker.bubbles.utils.collapseBubbleViaBackKey
-import com.android.wm.shell.flicker.bubbles.utils.expandBubbleViaTapOnBubbleStack
-import com.android.wm.shell.flicker.bubbles.utils.launchBubbleViaBubbleMenu
-import com.android.wm.shell.flicker.bubbles.utils.setUpBeforeTransition
 import org.junit.Assume.assumeFalse
 import org.junit.Before
-import org.junit.ClassRule
 import org.junit.FixMethodOrder
+import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import org.junit.runners.Parameterized
 
 /**
  * Test clicking bubble to expand a bubble that was in collapsed state.
@@ -52,38 +52,43 @@ import org.junit.runners.MethodSorters
  * ```
  * Verified tests:
  * - [BubbleFlickerTestBase]
- * - [BubbleStackAlwaysVisibleTestCases]
- * - [BubbleAppBecomesExpandedTestCases]
+ * - [ExpandBubbleTestCases]
  */
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE)
-@RunWith(AndroidJUnit4::class)
 @RequiresDevice
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Presubmit
-class ExpandBubbleViaBubbleStackTest :
-    BubbleFlickerTestBase(), BubbleStackAlwaysVisibleTestCases, BubbleAppBecomesExpandedTestCases {
+@RunWith(Parameterized::class)
+class ExpandBubbleViaBubbleStackTest(navBar: NavBar) : BubbleFlickerTestBase(),
+    ExpandBubbleTestCases {
+
+    companion object {
+        private val recordTraceWithTransitionRule = RecordTraceWithTransitionRule(
+            setUpBeforeTransition = {
+                launchBubbleViaBubbleMenu(testApp, tapl, wmHelper)
+                collapseBubbleAppViaBackKey(testApp, tapl, wmHelper)
+            },
+            transition = { expandBubbleAppViaTapOnBubbleStack(testApp, wmHelper) },
+            tearDownAfterTransition = { testApp.exit(wmHelper) }
+        )
+
+        @Parameterized.Parameters(name = "{0}")
+        @JvmStatic
+        fun data(): List<NavBar> = listOf(NavBar.MODE_GESTURAL, NavBar.MODE_3BUTTON)
+    }
+
+    @get:Rule
+    val setUpRule = ApplyPerParameterRule(
+        Utils.testSetupRule(navBar).around(recordTraceWithTransitionRule),
+        params = arrayOf(navBar),
+    )
 
     override val traceDataReader
         get() = recordTraceWithTransitionRule.reader
 
-    // TODO(b/396020056): Verify expand bubble with bubble bar.
     @Before
-    fun setUp() {
+    override fun setUp() {
         assumeFalse(tapl.isTablet)
-    }
-
-    companion object : FlickerPropertyInitializer() {
-
-        @ClassRule
-        @JvmField
-        val recordTraceWithTransitionRule = RecordTraceWithTransitionRule(
-            setUpBeforeTransition = {
-                setUpBeforeTransition(instrumentation, wmHelper)
-                launchBubbleViaBubbleMenu(testApp, tapl, wmHelper)
-                collapseBubbleViaBackKey(testApp, tapl, wmHelper)
-            },
-            transition = { expandBubbleViaTapOnBubbleStack(uiDevice, testApp, wmHelper) },
-            tearDownAfterTransition = { testApp.exit(wmHelper) }
-        )
+        super.setUp()
     }
 }

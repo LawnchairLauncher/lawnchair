@@ -62,11 +62,11 @@ public interface FeatureFlags {
 
 
 
-    boolean returnAnimationFrameworkLibrary();
+    boolean notificationDotContrastBorder();
 
 
 
-    boolean returnAnimationFrameworkLongLived();
+    boolean panAndZoomInExtendedWallpaperEffects();
 
 
 
@@ -79,6 +79,14 @@ public interface FeatureFlags {
 
 
     boolean sidefpsControllerRefactor();
+
+
+
+    boolean smartspaceAqiUpdatedDesign();
+
+
+
+    boolean smartspaceSemanticWeatherData();
 
 
 

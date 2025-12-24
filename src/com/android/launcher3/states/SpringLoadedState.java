@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.states;
 
-import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
@@ -66,11 +65,7 @@ public class SpringLoadedState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        if (enableScalingRevealHomeAnimation()) {
-            return DEPTH_15_PERCENT;
-        } else {
-            return 0.5f;
-        }
+        return DEPTH_15_PERCENT;
     }
 
     @Override

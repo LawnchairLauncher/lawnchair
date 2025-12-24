@@ -20,23 +20,25 @@ import android.database.sqlite.SQLiteDatabase
 import android.graphics.Point
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.BuildConfigs
 import com.android.launcher3.Flags
 import com.android.launcher3.LauncherPrefs
-import com.android.launcher3.LauncherPrefs.Companion.get
 import com.android.launcher3.LauncherSettings
+import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME
 import com.android.launcher3.LauncherSettings.Favorites.TMP_TABLE
+import com.android.launcher3.Utilities.qsbOnFirstScreen
+import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.logging.FileLog
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ROW_SHIFT_GRID_MIGRATION
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ROW_SHIFT_ONE_GRID_MIGRATION
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_STANDARD_GRID_MIGRATION
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_STANDARD_ONE_GRID_MIGRATION
-import com.android.launcher3.model.GridSizeMigrationDBController.DbReader
+import com.android.launcher3.logging.StatsLogManager.StatsLogManagerFactory
 import com.android.launcher3.model.GridSizeMigrationDBController.isOneGridMigration
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction
 import com.android.launcher3.provider.LauncherDbUtils.copyTable
 import com.android.launcher3.provider.LauncherDbUtils.dropTable
@@ -44,16 +46,27 @@ import com.android.launcher3.provider.LauncherDbUtils.shiftWorkspaceByXCells
 import com.android.launcher3.util.CellAndSpan
 import com.android.launcher3.util.GridOccupancy
 import com.android.launcher3.util.IntArray
+import dagger.Lazy
+import javax.inject.Inject
+import javax.inject.Named
+
+import app.lawnchair.preferences2.PreferenceManager2
 import com.patrykmichalik.opto.core.firstBlocking
 
-class GridSizeMigrationLogic {
+class GridSizeMigrationLogic
+@Inject
+constructor(
+    @ApplicationContext val context: Context,
+    private val launcherPrefs: LauncherPrefs,
+    private val logFactory: StatsLogManagerFactory,
+    @Named("MODEL_ITEMS") private val extraItemsProvider: Lazy<Set<ItemInfo>>,
+) {
     /**
      * Migrates the grid size from srcDeviceState to destDeviceState and make those changes in the
      * target DB, using the source DB to determine what to add/remove/move/resize in the destination
      * DB.
      */
     fun migrateGrid(
-        context: Context,
         srcDeviceState: DeviceGridState,
         destDeviceState: DeviceGridState,
         target: DatabaseHelper,
@@ -61,13 +74,13 @@ class GridSizeMigrationLogic {
         isDestNewDb: Boolean,
         modelDelegate: ModelDelegate,
     ) {
+
         if (!GridSizeMigrationDBController.needsToMigrate(srcDeviceState, destDeviceState)) {
             return
         }
+        val statsLogManager: StatsLogManager = logFactory.create(context)
+        val isAfterRestore = launcherPrefs.get(LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE)
 
-        val statsLogManager: StatsLogManager = StatsLogManager.newInstance(context)
-
-        val isAfterRestore = get(context).get(LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE)
         FileLog.d(
             TAG,
             "Begin grid migration. isAfterRestore: $isAfterRestore\nsrcDeviceState: " +
@@ -332,7 +345,6 @@ class GridSizeMigrationLogic {
             }
             itemsToPlace =
                 solveGridPlacement(
-                    destReader.mContext,
                     screenId,
                     trgX,
                     trgY,
@@ -360,7 +372,6 @@ class GridSizeMigrationLogic {
         while (itemsToPlace.mRemainingItemsToPlace.isNotEmpty()) {
             itemsToPlace =
                 solveGridPlacement(
-                    destReader.mContext,
                     screenId,
                     trgX,
                     trgY,
@@ -493,21 +504,17 @@ class GridSizeMigrationLogic {
     }
 
     private fun solveGridPlacement(
-        context: Context,
         screenId: Int,
         trgX: Int,
         trgY: Int,
         sortedItemsToPlace: MutableList<DbEntry>,
-        existedEntries: MutableList<DbEntry>?,
+        existedEntries: List<DbEntry>?,
     ): WorkspaceItemsToPlace {
         val itemsToPlace = WorkspaceItemsToPlace(sortedItemsToPlace, mutableListOf())
         val occupied = GridOccupancy(trgX, trgY)
         val trg = Point(trgX, trgY)
-
-        val prefs2 = PreferenceManager2.INSTANCE.get(context)
-
         val next: Point =
-            if (screenId == 0 && prefs2.enableSmartspace.firstBlocking()) {
+            if (screenId == 0 && qsbOnFirstScreen()) {
                 Point(0, 1 /* smartspace */)
             } else {
                 Point(0, 0)
@@ -517,6 +524,14 @@ class GridSizeMigrationLogic {
                 occupied.markCells(entry, true)
             }
         }
+        if (Flags.injectableModelItems()) {
+            extraItemsProvider.get().forEach {
+                if (it.container == Favorites.CONTAINER_DESKTOP && it.screenId == screenId) {
+                    occupied.markCells(it, true)
+                }
+            }
+        }
+
         val iterator = itemsToPlace.mRemainingItemsToPlace.iterator()
         while (iterator.hasNext()) {
             val entry = iterator.next()

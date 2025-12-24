@@ -18,12 +18,9 @@ package com.android.launcher3.widgetpicker.ui.components
 
 import androidx.activity.BackEventCompat
 import androidx.activity.compose.PredictiveBackHandler
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.CircleShape
@@ -45,19 +42,27 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.isEditable
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.widgetpicker.R
+import com.android.launcher3.widgetpicker.ui.components.WidgetsSearchBarDefaults.searchBarShape
 import com.android.launcher3.widgetpicker.ui.theme.WidgetPickerTheme
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.Flow
@@ -97,25 +102,52 @@ fun WidgetsSearchBar(
         onToggleSearchMode(false)
     }
 
+    val searchContentDescription = stringResource(R.string.widgets_search_bar_hint)
+    // In non-search mode, we add a click handler to let user enter search mode.
+    // In case of touch / mouse clicks, on click user will enter search mode
+    // In case of physical keyboard user can focus and then press enter to enter in to search mode.
+    val clickToEnableSearchModifier =
+        if (!isSearching) {
+            Modifier.clearAndSetSemantics {
+                    contentDescription = searchContentDescription
+                    this.isEditable = true
+                    onClick {
+                        onToggleSearchMode(true)
+                        true
+                    }
+                }
+                .clickable { onToggleSearchMode(true) }
+                .onKeyEvent { event ->
+                    if (event.key == Key.Enter) {
+                        onToggleSearchMode(true)
+                        return@onKeyEvent true
+                    }
+                    false
+                }
+        } else {
+            Modifier
+        }
+
     BasicTextField(
         modifier =
             modifier
                 .heightIn(min = WidgetsSearchBarDimens.minHeight)
-                .focusRequester(focusRequester)
-                .onFocusChanged { focusState ->
-                    if (focusState.isFocused) {
-                        onToggleSearchMode(true)
-                    }
-                },
+                .clip(searchBarShape)
+                .then(clickToEnableSearchModifier)
+                .focusRequester(focusRequester),
         value = text,
         onValueChange = { onSearch(it) },
         singleLine = true,
+        enabled = isSearching,
         cursorBrush = SolidColor(WidgetPickerTheme.colors.searchBarCursor),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = {
-            keyboardController?.hide()
-            onSearch(text)
-        }),
+        keyboardActions =
+            KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    onSearch(text)
+                }
+            ),
         interactionSource = interactionSource,
         textStyle =
             WidgetPickerTheme.typography.searchBarText.copy(
@@ -170,7 +202,7 @@ private fun WidgetsSearchBarContent(
                 enabled = true,
                 isError = false,
                 interactionSource = interactionSource,
-                shape = CircleShape,
+                shape = searchBarShape,
                 colors =
                     TextFieldDefaults.colors(
                         focusedContainerColor = WidgetPickerTheme.colors.searchBarBackground,
@@ -182,45 +214,42 @@ private fun WidgetsSearchBarContent(
         },
         placeholder = { PlaceholderText() },
         leadingIcon = { LeadingButton(isSearching = isSearching, onBack = exitSearchMode) },
-        trailingIcon = {
+        trailingIcon =
             if (text.isNotEmpty()) {
-                ClearButton(onClick = onClear)
-            }
-        },
+                { ClearButton(onClick = onClear) }
+            } else {
+                null
+            },
     )
 }
 
 @Composable
 private fun LeadingButton(isSearching: Boolean, onBack: () -> Unit) {
-    AnimatedContent(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.minimumInteractiveComponentSize(),
-        targetState = isSearching,
-        transitionSpec = {
-            fadeIn(animationSpec = tween(durationMillis = 300)) togetherWith
-                fadeOut(animationSpec = tween(durationMillis = 300))
-        },
-    ) { showBackButton ->
-        if (showBackButton) {
-            BackButton(onClick = onBack)
-        } else {
-            SearchIcon()
-        }
+    if (isSearching) {
+        BackButton(onClick = onBack)
+    } else {
+        SearchIcon()
     }
 }
 
 @Composable
 private fun SearchIcon() {
-    Icon(
-        imageVector = Icons.Filled.Search,
-        tint = WidgetPickerTheme.colors.searchBarSearchIcon,
-        contentDescription = null, // decorative
-    )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.minimumInteractiveComponentSize().fadeInWhenVisible("WidgetSearchIcon"),
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Search,
+            tint = WidgetPickerTheme.colors.searchBarSearchIcon,
+            contentDescription = null, // decorative
+        )
+    }
 }
 
 @Composable
 private fun BackButton(onClick: () -> Unit) {
     IconButton(
+        modifier = Modifier.fadeInWhenVisible("WidgetSearchBackButton"),
         colors =
             IconButtonDefaults.iconButtonColors()
                 .copy(
@@ -268,4 +297,8 @@ private fun ClearButton(onClick: () -> Unit) {
 private object WidgetsSearchBarDimens {
     val paddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     val minHeight = 52.dp
+}
+
+private object WidgetsSearchBarDefaults {
+    val searchBarShape = CircleShape
 }

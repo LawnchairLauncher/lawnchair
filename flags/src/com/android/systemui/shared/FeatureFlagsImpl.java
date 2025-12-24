@@ -34,7 +34,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean cursorHotCorner() {
-        return false;
+        return true;
     }
 
     @Override
@@ -103,22 +103,22 @@ public final class FeatureFlagsImpl implements FeatureFlags {
     @Override
 
 
-    public boolean returnAnimationFrameworkLibrary() {
-        return true;
+    public boolean notificationDotContrastBorder() {
+        return false;
     }
 
     @Override
 
 
-    public boolean returnAnimationFrameworkLongLived() {
-        return true;
+    public boolean panAndZoomInExtendedWallpaperEffects() {
+        return false;
     }
 
     @Override
 
 
     public boolean screenshotContextUrl() {
-        return false;
+        return true;
     }
 
     @Override
@@ -133,6 +133,20 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
     public boolean sidefpsControllerRefactor() {
         return true;
+    }
+
+    @Override
+
+
+    public boolean smartspaceAqiUpdatedDesign() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean smartspaceSemanticWeatherData() {
+        return false;
     }
 
     @Override
@@ -167,7 +181,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean statusBarConnectedDisplays() {
-        return false;
+        return true;
     }
 
     @Override

@@ -95,6 +95,12 @@ class RingBuffer<T>(private val maxSize: Int, private val factory: () -> T) : It
         return buffer[indexOf(start + index)]!!
     }
 
+    /** Clears contents of the buffer. */
+    fun clear() {
+        omega = 0
+        buffer.fill(null)
+    }
+
     override fun iterator(): Iterator<T> {
         return object : Iterator<T> {
             private var position: Int = 0

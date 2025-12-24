@@ -32,7 +32,9 @@ public enum ShellProtoLogGroup implements IProtoLogGroup {
             Consts.TAG_WM_SHELL),
     WM_SHELL_INIT(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             Consts.TAG_WM_SHELL),
-    WM_SHELL_TASK_ORG(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
+    WM_SHELL_TASK_ORG(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
+            "ShellTaskOrganizer"),
+    WM_SHELL_TASK_ORG_NOISY(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
             "ShellTaskOrganizer"),
     WM_SHELL_TRANSITIONS(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             Consts.TAG_WM_SHELL),
@@ -44,7 +46,7 @@ public enum ShellProtoLogGroup implements IProtoLogGroup {
             "ShellDragAndDrop"),
     WM_SHELL_STARTING_WINDOW(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
             Consts.TAG_WM_STARTING_WINDOW),
-    WM_SHELL_REMOVE_STARTING_TRACKER(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
+    WM_SHELL_REMOVE_STARTING_TRACKER(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
             Consts.TAG_WM_STARTING_WINDOW),
     WM_SHELL_BACK_PREVIEW(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             "ShellBackPreview"),
@@ -73,7 +75,7 @@ public enum ShellProtoLogGroup implements IProtoLogGroup {
             Consts.TAG_WM_BUBBLES),
     WM_SHELL_COMPAT_UI(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
             Consts.TAG_WM_COMPAT_UI),
-    WM_SHELL_APP_COMPAT(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
+    WM_SHELL_APP_COMPAT(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             Consts.TAG_WM_APP_COMPAT),
     WM_SHELL_APP_HANDLES(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
             Consts.TAG_WM_APP_HANDLES),
@@ -105,28 +107,13 @@ public enum ShellProtoLogGroup implements IProtoLogGroup {
     }
 
     @Override
-    public boolean isLogToProto() {
-        return mLogToProto;
-    }
-
-    @Override
     public boolean isLogToLogcat() {
         return mLogToLogcat;
     }
 
     @Override
-    public boolean isLogToAny() {
-        return mLogToLogcat || mLogToProto;
-    }
-
-    @Override
     public String getTag() {
         return mTag;
-    }
-
-    @Override
-    public void setLogToProto(boolean logToProto) {
-        this.mLogToProto = logToProto;
     }
 
     @Override

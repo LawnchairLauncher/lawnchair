@@ -17,37 +17,28 @@
 package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
-import android.tools.NavBar
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
 import android.tools.Rotation
 import android.tools.traces.parsers.WindowManagerStateHelper
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.android.launcher3.tapl.LauncherInstrumentation
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.ImeAppHelper
 import com.android.server.wm.flicker.helpers.MailAppHelper
 import com.android.server.wm.flicker.helpers.NewTasksAppHelper
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.window.flags.Flags
-import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 @Ignore("Test Base Class")
 abstract class ResizeAppCornerMultiWindowAndPip
 constructor(val rotation: Rotation = Rotation.ROTATION_0,
     val horizontalChange: Int = 50,
-    val verticalChange: Int = -50) : TestScenarioBase() {
+    val verticalChange: Int = -50) : TestScenarioBase(rotation) {
 
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
-    private val tapl = LauncherInstrumentation()
     private val wmHelper = WindowManagerStateHelper(instrumentation)
     private val device = UiDevice.getInstance(instrumentation)
     private val testApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
@@ -56,18 +47,8 @@ constructor(val rotation: Rotation = Rotation.ROTATION_0,
     private val newTasksApp = DesktopModeAppHelper(NewTasksAppHelper(instrumentation))
     private val imeApp = DesktopModeAppHelper(ImeAppHelper(instrumentation))
 
-    @Rule
-    @JvmField
-    val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, rotation)
-
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
-        tapl.setEnableRotation(true)
-        tapl.setExpectedRotation(rotation.value)
         testApp.enterDesktopMode(wmHelper, device)
         // Set string extra to ensure the app is on PiP mode at launch
         pipApp.launchViaIntentAndWaitForPip(wmHelper, stringExtras = mapOf("enter_pip" to "true"))

@@ -21,7 +21,7 @@ import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.annotations.Presubmit
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.util.createTaskInfo
 import com.google.common.truth.Truth.assertThat

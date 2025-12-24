@@ -21,6 +21,7 @@ import static com.android.launcher3.tapl.LauncherInstrumentation.log;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.graphics.Point;
 import android.graphics.Rect;
 
 import androidx.test.uiautomator.By;
@@ -40,11 +41,38 @@ import java.util.List;
 public final class Widgets extends LauncherInstrumentation.VisibleContainer
         implements KeyboardQuickSwitchSource {
     private static final int FLING_STEPS = 10;
-    private static final int SCROLL_ATTEMPTS = 60;
+    private static final int SCROLL_STEPS = 10;
+
+    // Number of times to scroll to find a header in the widget list.
+    private static final int SCROLL_ATTEMPTS_WIDGET_LIST = 60;
+    // Number of times to scroll to find a widget in the widget grid.
+    private static final int SCROLL_ATTEMPTS_WIDGETS_GRID = 20;
+
+    // Distance to scroll in the widget list to find a header.
+    private static final int WIDGET_LIST_SCROLL_DISTANCE = 300;
+    // Distance to scroll in the widget grid to find a widget.
+    private static final int WIDGET_GRID_SCROLL_DISTANCE = 150;
+
+    // Difference between the widget preview and the label needs to be less than this threshold
+    // for the widget to be considered as a match.
+    private static final int WIDGET_PREVIEW_DIFF_Y_THRESHOLD = 50;
+
+    private static final String WIDGET_PICKER_MODULE_PACKAGE = "com.android.launcher3.widgetpicker";
+    private static final String WIDGET_PICKER_V2_CONTENT_RES_ID = "widgets_catalog";
+    private static final BySelector BROWSE_TAB_SELECTOR = By.res(WIDGET_PICKER_MODULE_PACKAGE,
+            "personal_widgets_tab");
+    private static final BySelector BROWSE_WIDGETS_LIST_SELECTOR = By.res(
+            WIDGET_PICKER_MODULE_PACKAGE,
+            "personal_widgets_list");
+    private static final BySelector WIDGETS_PREVIEW_SELECTOR = By.res(
+            WIDGET_PICKER_MODULE_PACKAGE,
+            "widget_preview");
+
+    private UiObject2 mContainer;
 
     Widgets(LauncherInstrumentation launcher) {
         super(launcher);
-        verifyActiveContainer();
+        mContainer = verifyActiveContainer();
     }
 
     @Override
@@ -60,6 +88,20 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer
     @Override
     public boolean isHomeState() {
         return true;
+    }
+
+    public void close() {
+        final Point displaySize = mLauncher.getRealDisplaySize();
+        mLauncher.linearGesture(
+                /*startX=*/ displaySize.x / 2,
+                /*startY=*/ displaySize.y - 1,
+                /*endX=*/ displaySize.x / 2,
+                /*endY=*/ displaySize.y / 2,
+                /*steps=*/ 100,
+                /*slowDown=*/ false,
+                /*gestureScope=*/ LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+        // Wait for the workspace to be visible.
+        mLauncher.getWorkspace();
     }
 
     /**
@@ -127,6 +169,11 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "getting widget " + labelText + " in widgets list")) {
+
+            if (mContainer.getResourceName().contains(WIDGET_PICKER_V2_CONTENT_RES_ID)) {
+                return getWidgetFromPickerV2(labelText, testAppWidgetPackage);
+            }
+
             final UiObject2 searchBar = findSearchBar();
             final int searchBarHeight = searchBar.getVisibleBounds().height();
             final UiObject2 fullWidgetsPicker = verifyActiveContainer();
@@ -168,7 +215,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer
                     }
                 }
 
-                mLauncher.assertTrue("Too many attempts", ++i <= SCROLL_ATTEMPTS);
+                mLauncher.assertTrue("Too many attempts", ++i <= SCROLL_ATTEMPTS_WIDGET_LIST);
                 final int scroll = getWidgetsScroll();
                 mLauncher.scrollDownByDistance(fullWidgetsPicker, searchBarHeight);
                 final int newScroll = getWidgetsScroll();
@@ -199,6 +246,165 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer
         return searchBar;
     }
 
+    /** Gets the widget from the Widget Picker variant written in Jetpack compose. */
+    private Widget getWidgetFromPickerV2(String labelText, @Nullable String testAppWidgetPackage) {
+        final UiObject2 browseTab =
+                mLauncher.findObjectInContainer(mContainer, BROWSE_TAB_SELECTOR);
+        // With just personal profile, there is no browse tab when in a large screen layout with two
+        // panes.
+        boolean isSinglePane = browseTab != null;
+
+        if (browseTab != null) {
+            browseTab.click();
+        }
+
+        final UiObject2 browseList = mLauncher.waitForObjectBySelector(
+                BROWSE_WIDGETS_LIST_SELECTOR);
+
+        String packageNameToFind = getPackageNameToFind(testAppWidgetPackage);
+        final BySelector headerSelector =
+                By.clazz("android.widget.TextView").text(packageNameToFind);
+        UiObject2 header = findWidgetHeader(
+                browseList,
+                headerSelector,
+                isSinglePane);
+        mLauncher.assertTrue("Header not found", header != null);
+
+        mLauncher.waitForIdle();
+        UiObject2 headerParent = header.getParent();
+        headerParent.wait(Until.clickable(true), WAIT_TIME_MS);
+        headerParent.click();
+
+        LauncherInstrumentation.log("Clicked header");
+
+        if (isSinglePane) {
+            mLauncher.waitForObjectBySelector(headerSelector);
+            mLauncher.waitForObjectsBySelector(WIDGETS_PREVIEW_SELECTOR);
+        } else {
+            header.wait(Until.selected(true), WAIT_TIME_MS);
+        }
+
+        final UiObject2 matchedWidgetPreview = findWidget(labelText, isSinglePane);
+
+        mLauncher.assertTrue("Widget not found " + labelText, matchedWidgetPreview != null);
+        return new Widget(mLauncher, matchedWidgetPreview);
+    }
+
+    private UiObject2 findWidgetHeader(
+            UiObject2 container, BySelector headerSelector, boolean isSinglePane) {
+        final Rect containerRect = mLauncher.getVisibleBounds(container);
+        int startX = containerRect.centerX();
+        int endX = startX;
+        int startY = containerRect.centerY();
+        int endY = startY - WIDGET_LIST_SCROLL_DISTANCE;
+
+        for (int i = 0; i < SCROLL_ATTEMPTS_WIDGET_LIST; i++) {
+            UiObject2 matchedAppHeader = container.findObject(headerSelector);
+
+            if (matchedAppHeader == null) {
+                LauncherInstrumentation.log("[findWidgetHeader]: no match yet, scrolling");
+                mLauncher.linearGesture(
+                        startX,
+                        startY,
+                        endX,
+                        endY,
+                        SCROLL_STEPS,
+                        /* slowDown= */ true,
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+                mLauncher.waitForObjectBySelector(BROWSE_WIDGETS_LIST_SELECTOR);
+            } else {
+                if (isSinglePane) {
+                    // Ensure header is fully visible (e.g. not occluded by browse tabs) and
+                    // scroll is finished.
+                    scrollAndWait(startX, startY, endX, endY);
+                } else {
+                    // Wait for scroll to be stabilized
+                    scrollAndWait(startX, startY, endX, startY - 1);
+                }
+                // Return latest matching header.
+                return mLauncher.waitForObjectBySelector(headerSelector);
+            }
+        }
+        LauncherInstrumentation.log("[findWidgetHeader]: exceeded scroll attempts");
+        return null;
+    }
+
+    private void scrollAndWait(int startX, int startY, int endX, int endY) {
+        mLauncher.getDevice().performActionAndWait(() -> mLauncher.linearGesture(
+                        startX,
+                        startY,
+                        endX,
+                        endY,
+                        SCROLL_STEPS,
+                        /* slowDown= */ true,
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER),
+                Until.scrollFinished(Direction.DOWN), WAIT_TIME_MS);
+    }
+
+    private UiObject2 findWidget(String labelText, boolean isSinglePane) {
+        final BySelector labelTextSelector =
+                By.clazz("android.widget.TextView").textContains(labelText);
+
+        for (int scrollAttempt = 0; scrollAttempt < SCROLL_ATTEMPTS_WIDGETS_GRID; scrollAttempt++) {
+            final UiObject2 container;
+            if (isSinglePane) {
+                container = mLauncher.waitForObjectBySelector(BROWSE_WIDGETS_LIST_SELECTOR);
+            } else {
+                container = mContainer;
+            }
+
+            List<UiObject2> widgetPreviews = mContainer.findObjects(WIDGETS_PREVIEW_SELECTOR);
+
+            UiObject2 label =  mLauncher.findObjectInContainer(container, labelTextSelector);
+
+            if (label != null) {
+                Point labelCenter = label.getVisibleCenter();
+                int lastYDiff = Integer.MAX_VALUE;
+                UiObject2 match = null;
+
+                for (int previewIndex = 0; previewIndex < widgetPreviews.size(); previewIndex++) {
+                    Point previewCenter = widgetPreviews.get(previewIndex).getVisibleCenter();
+                    int diffX = Math.abs(previewCenter.x - labelCenter.x);
+                    int diffY = previewCenter.y - labelCenter.y;
+                    // Negative diffY means preview is above the label - which is what we want.
+                    boolean isAboveLabel = diffY < 0;
+
+                    // Pick the preview that is above the label and is closest to the label.
+                    if (diffX < WIDGET_PREVIEW_DIFF_Y_THRESHOLD
+                            && isAboveLabel
+                            && Math.abs(diffY) < Math.abs(lastYDiff)) {
+                        match = widgetPreviews.get(previewIndex);
+                        lastYDiff = diffY;
+                    }
+                }
+
+                if (match != null) {
+                    return match;
+                }
+            }
+
+            // Keep scrolling.
+            LauncherInstrumentation.log("[Finding widget] did not find label, scrolling now");
+            final Rect containerRect = mLauncher.getVisibleBounds(container);
+            int startX = containerRect.centerX();
+            int endX = startX;
+            int startY = containerRect.centerY();
+            int endY = startY - WIDGET_GRID_SCROLL_DISTANCE;
+
+            mLauncher.linearGesture(
+                    startX,
+                    startY,
+                    endX,
+                    endY,
+                    SCROLL_STEPS,
+                    /* slowDown= */ false,
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+
+        }
+
+        return null;
+    }
+
     /**
      * Finds the widgets list of this test app or supplied test app package from the collapsed full
      * widgets picker.
@@ -209,11 +415,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer
         final BySelector widgetPickerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "container");
 
-        String packageName =  mLauncher.getContext().getPackageName();
-        String packageNameToFind =
-                (testAppWidgetPackage == null || testAppWidgetPackage.isEmpty()) ? packageName
-                        : testAppWidgetPackage;
-
+        String packageNameToFind = getPackageNameToFind(testAppWidgetPackage);
         final BySelector targetAppSelector = By
                 .clazz("android.widget.TextView")
                 .text(packageNameToFind);
@@ -227,7 +429,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer
         boolean hasListExpanded = false;
 
         int scrollDistance = 0;
-        for (int i = 0; i < SCROLL_ATTEMPTS; i++) {
+        for (int i = 0; i < SCROLL_ATTEMPTS_WIDGET_LIST; i++) {
             UiObject2 widgetPicker = mLauncher.waitForLauncherObject(widgetPickerSelector);
             UiObject2 widgetListView = verifyActiveContainer();
 
@@ -322,6 +524,12 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer
         }
 
         return null;
+    }
+
+    private String getPackageNameToFind(@Nullable String testAppWidgetPackage) {
+        return (testAppWidgetPackage == null || testAppWidgetPackage.isEmpty())
+                ? mLauncher.getContext().getPackageName()
+                : testAppWidgetPackage;
     }
 
     @NonNull

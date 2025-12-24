@@ -53,9 +53,6 @@ class FakeBubbleFactory {
                             false, /* isOverflow */
                             bubble,
                             bubbleTaskView,
-                            mainExecutor,
-                            bgExecutor,
-                            null, /* regionSamplingProvider */
                         )
                     }
             bubble.setViewInfo(createViewInfo(bubbleBarExpandedView))

@@ -65,10 +65,12 @@ import com.android.wm.shell.shared.annotations.ShellBackgroundThread;
 import com.android.wm.shell.shared.annotations.ShellMainThread;
 import com.android.wm.shell.shared.desktopmode.DesktopConfig;
 import com.android.wm.shell.transition.Transitions;
+import com.android.wm.shell.windowdecor.caption.OccludingElement;
 import com.android.wm.shell.windowdecor.common.viewhost.WindowDecorViewHost;
 import com.android.wm.shell.windowdecor.common.viewhost.WindowDecorViewHostSupplier;
 import com.android.wm.shell.windowdecor.extension.TaskInfoKt;
 
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -79,7 +81,6 @@ import java.util.function.BiFunction;
 public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearLayout> {
     private final Handler mHandler;
     private final @ShellMainThread ShellExecutor mMainExecutor;
-    private final @ShellBackgroundThread ShellExecutor mBgExecutor;
     private final Choreographer mChoreographer;
     private final SyncTransactionQueue mSyncQueue;
     private final DesktopConfig mDesktopConfig;
@@ -109,10 +110,9 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
             @NonNull WindowDecorViewHostSupplier<WindowDecorViewHost> windowDecorViewHostSupplier,
             DesktopConfig desktopConfig) {
         super(context, handler, transitions, userContext, displayController, taskOrganizer,
-                taskInfo, taskSurface, windowDecorViewHostSupplier);
+                taskInfo, taskSurface, windowDecorViewHostSupplier, bgExecutor);
         mHandler = handler;
         mMainExecutor = mainExecutor;
-        mBgExecutor = bgExecutor;
         mChoreographer = choreographer;
         mSyncQueue = syncQueue;
         mDesktopConfig = desktopConfig;
@@ -129,7 +129,6 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
         mDragPositioningCallback = dragPositioningCallback;
     }
 
-    @Override
     @NonNull
     Rect calculateValidDragArea() {
         final Context displayContext = mDisplayController.getDisplayContext(mTaskInfo.displayId);
@@ -254,17 +253,17 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
             // their custom content.
             relayoutParams.mInputFeatures |= WindowManager.LayoutParams.INPUT_FEATURE_SPY;
         }
-        final RelayoutParams.OccludingCaptionElement backButtonElement =
-                new RelayoutParams.OccludingCaptionElement();
-        backButtonElement.mWidthResId = R.dimen.caption_left_buttons_width;
-        backButtonElement.mAlignment = RelayoutParams.OccludingCaptionElement.Alignment.START;
-        relayoutParams.mOccludingCaptionElements.add(backButtonElement);
-        // Then, the right-aligned section (minimize, maximize and close buttons).
-        final RelayoutParams.OccludingCaptionElement controlsElement =
-                new RelayoutParams.OccludingCaptionElement();
-        controlsElement.mWidthResId = R.dimen.caption_right_buttons_width;
-        controlsElement.mAlignment = RelayoutParams.OccludingCaptionElement.Alignment.END;
-        relayoutParams.mOccludingCaptionElements.add(controlsElement);
+        relayoutParams.mOccludingElementsCalculator = () -> List.of(
+                // First, the left-aligned section (back button).
+                new OccludingElement(context.getResources()
+                        .getDimensionPixelSize(R.dimen.caption_left_buttons_width),
+                        OccludingElement.Alignment.START),
+                // Then, the right-aligned section (minimize, maximize and close buttons).
+                new OccludingElement(context.getResources()
+                        .getDimensionPixelSize(R.dimen.caption_right_buttons_width),
+                        OccludingElement.Alignment.END)
+        );
+
         relayoutParams.mCaptionTopPadding = getTopPadding(relayoutParams,
                 taskInfo.getConfiguration().windowConfiguration.getBounds(), displayInsetsState);
         // Set opaque background for all freeform tasks to prevent freeform tasks below
@@ -295,7 +294,7 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
                 globalExclusionRegion, mDesktopConfig.shouldSetBackground(taskInfo),
                 inSyncWithTransition);
 
-        relayout(mRelayoutParams, startT, finishT, wct, oldRootView, mResult);
+        relayout(mRelayoutParams, startT, finishT, wct, oldRootView, getLeash(), mResult);
         // After this line, mTaskInfo is up-to-date and should be used instead of taskInfo
 
         mBgExecutor.execute(() -> mTaskOrganizer.applyTransaction(wct));

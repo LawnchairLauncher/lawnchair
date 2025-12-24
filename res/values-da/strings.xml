@@ -30,15 +30,17 @@
     <string name="set_default_home_app" msgid="5808906607627586381">"Angiv <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> som standardstartapp i Indstillinger"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Opdel skærm"</string>
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Skift billedformat"</string>
-    <string name="split_app_info_accessibility" msgid="5475288491241414932">"Appinfo for %1$s"</string>
+    <string name="split_app_info_accessibility" msgid="5475288491241414932">"Appoplysninger for %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Indstillinger for brug af %1$s"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"Luk %1$s"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"Nyt vindue"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Administrer vinduer"</string>
-    <string name="save_app_pair" msgid="5647523853662686243">"Gem appsammenknytning"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"Luk"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Gem app-parring"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Denne appsammenknytning understøttes ikke på enheden"</string>
-    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Fold enheden ud for at bruge denne appsammenknytning"</string>
-    <string name="app_pair_not_available" msgid="3556767440808032031">"Appsammenknytning er ikke tilgængelig"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Denne app-parring understøttes ikke på enheden"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Fold enheden ud for at bruge denne app-parring"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"App-parring er ikke tilgængelig"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Hold en widget nede for at flytte den."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Tryk to gange, og hold en widget nede for at flytte den eller bruge tilpassede handlinger."</string>
     <string name="widget_picker_widget_options_button_description" msgid="4770099264476852363">"Flere valgmuligheder"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Foreslå ikke en app"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Fastgør forslaget"</string>
     <string name="bubble" msgid="3072951361014076670">"Boble"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"Indstillinger"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"Fastgør til proceslinje"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"Frigør fra proceslinje"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installere genveje"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Tillader, at en app tilføjer genveje uden brugerens indgriben."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"læs indstillinger og genveje for startskærm"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"Sideinddeling til højre"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> er deaktiveret"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} har # notifikation}one{{app_name} har # notifikation}other{{app_name} har # notifikationer}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"App, du forventes at skulle bruge: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Side %1$d ud af %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startskærm %1$d ud af %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Ny startskærm"</string>
@@ -128,9 +134,11 @@
     <string name="folder_closed" msgid="4100806530910930934">"Mappen er lukket"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Mappen er omdøbt til <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Mappe: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elementer"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"Mappe: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elementer, har notifikationer"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mappe: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> eller flere elementer"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"Mappe: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> eller flere elementer, har notifikationer"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"Unavngiven mappe"</string>
-    <string name="app_pair_name_format" msgid="8134106404716224054">"Appsammenknytning: <xliff:g id="APP1">%1$s</xliff:g> og <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"App-parring: <xliff:g id="APP1">%1$s</xliff:g> og <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Baggrund og stil"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Rediger startskærm"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Indst. for startskærm"</string>
@@ -189,7 +197,7 @@
     <string name="action_deep_shortcut" msgid="4766835855579976045">"Genvejsmenu"</string>
     <string name="widget_frame_name" msgid="8782828448471444270">"Widget til at tilpasse størrelsen på rammen for <xliff:g id="STRING">%1$s</xliff:g>"</string>
     <string name="action_close" msgid="1077760267194136901">"Luk"</string>
-    <string name="action_dismiss_notification" msgid="5909461085055959187">"Afvis"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Luk"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Luk"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personlig"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Arbejde"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Fanen Arbejdsapps"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Arbejdsprofil"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Arbejdsapps har badges og kan ses af din it-administrator"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Dine arbejdsapps er sat på pause"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Du vil ikke modtage notifikationer fra dine arbejdsapps"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Arbejdsapps kan ikke sende dig notifikationer, bruge dit batteri eller få adgang til din lokation"</string>

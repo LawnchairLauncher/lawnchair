@@ -16,17 +16,16 @@
 
 package com.android.launcher3.accessibility
 
-import android.content.Context
 import android.view.ViewGroup
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.CellLayout
 import com.android.launcher3.DropTarget.DragObject
 import com.android.launcher3.dragndrop.DragOptions
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.TestActivityContext
 import java.util.function.Function
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
@@ -38,16 +37,16 @@ import org.mockito.kotlin.any
 @RunWith(AndroidJUnit4::class)
 class AccessibleDragListenerAdapterTest {
 
+    @get:Rule val mContext = TestActivityContext()
+
     private lateinit var mockViewGroup: ViewGroup
     private lateinit var mockChildOne: CellLayout
     private lateinit var mockChildTwo: CellLayout
     private lateinit var mDelegateFactory: Function<CellLayout, DragAndDropAccessibilityDelegate>
     private lateinit var adapter: AccessibleDragListenerAdapter
-    private lateinit var mContext: Context
 
     @Before
     fun setup() {
-        mContext = ActivityContextWrapper(getApplicationContext())
         mockViewGroup = mock(ViewGroup::class.java)
         mockChildOne = mock(CellLayout::class.java)
         mockChildTwo = mock(CellLayout::class.java)

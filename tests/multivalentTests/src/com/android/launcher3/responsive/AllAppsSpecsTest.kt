@@ -24,6 +24,7 @@ import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,7 +46,7 @@ class AllAppsSpecsTest : AbstractDeviceProfileTest() {
         val allAppsSpecs =
             ResponsiveSpecsProvider.create(
                 TestResourceHelper(context, "valid_all_apps_file".xmlToId()),
-                ResponsiveSpecType.AllApps
+                ResponsiveSpecType.AllApps,
             )
 
         val specs = allAppsSpecs.getSpecsByAspectRatio(aspectRatio)
@@ -110,27 +111,33 @@ class AllAppsSpecsTest : AbstractDeviceProfileTest() {
             )
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_missingTag_throwsError() {
-        ResponsiveSpecsProvider.create(
-            TestResourceHelper(context, "invalid_all_apps_file_case_1".xmlToId()),
-            ResponsiveSpecType.AllApps
-        )
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(
+                TestResourceHelper(context, "invalid_all_apps_file_case_1".xmlToId()),
+                ResponsiveSpecType.AllApps,
+            )
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_moreThanOneValuePerTag_throwsError() {
-        ResponsiveSpecsProvider.create(
-            TestResourceHelper(context, "invalid_all_apps_file_case_2".xmlToId()),
-            ResponsiveSpecType.AllApps
-        )
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(
+                TestResourceHelper(context, "invalid_all_apps_file_case_2".xmlToId()),
+                ResponsiveSpecType.AllApps,
+            )
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_valueBiggerThan1_throwsError() {
-        ResponsiveSpecsProvider.create(
-            TestResourceHelper(context, "invalid_all_apps_file_case_3".xmlToId()),
-            ResponsiveSpecType.AllApps
-        )
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(
+                TestResourceHelper(context, "invalid_all_apps_file_case_3".xmlToId()),
+                ResponsiveSpecType.AllApps,
+            )
+        }
     }
 }

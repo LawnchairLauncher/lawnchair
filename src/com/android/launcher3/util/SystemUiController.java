@@ -20,6 +20,7 @@ import android.view.View;
 
 import androidx.annotation.IntDef;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -108,5 +109,18 @@ public class SystemUiController {
     @Override
     public String toString() {
         return "mStates=" + Arrays.toString(mStates);
+    }
+
+    /**
+     * Dumps the state of the SystemUiController to a PrintWriter.
+     * @param writer The PrintWriter to dump to.
+     */
+    public void dump(PrintWriter writer) {
+        writer.println("SystemUiController state:");
+        writer.println("\t BaseWindow: " + mStates[UI_STATE_BASE_WINDOW]);
+        writer.println("\t ScrimView: " + mStates[UI_STATE_SCRIM_VIEW]);
+        writer.println("\t WidgetBottomSheet: " + mStates[UI_STATE_WIDGET_BOTTOM_SHEET]);
+        writer.println("\t FullscreenTask: " + mStates[UI_STATE_FULLSCREEN_TASK]);
+        writer.println("\t AllApps: " + mStates[UI_STATE_ALL_APPS]);
     }
 }

@@ -16,48 +16,43 @@
 
 package com.android.launcher3.notification;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
-import android.annotation.TargetApi;
+import static java.util.Collections.emptyList;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
-import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
-import android.util.ArraySet;
 import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.dagger.LauncherComponentProvider;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SettingsCache;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import app.lawnchair.NotificationManager;
 
 /**
- * A {@link NotificationListenerService} that sends updates to its
- * {@link NotificationsChangedListener} when notifications are posted or canceled,
- * as well and when this service first connects. An instance of NotificationListener,
- * and its methods for getting notifications, can be obtained via {@link #getInstanceIfConnected()}.
+ * A {@link NotificationListenerService} that sends updates to
+ * {@link NotificationRepository} when notifications are posted or canceled,
+ * as well and when this service first connects.
  */
-@TargetApi(Build.VERSION_CODES.O)
 public class NotificationListener extends NotificationListenerService {
 
     public static final String TAG = "NotificationListener";
@@ -67,14 +62,15 @@ public class NotificationListener extends NotificationListenerService {
     private static final int MSG_NOTIFICATION_FULL_REFRESH = 3;
     private static final int MSG_RANKING_UPDATE = 4;
 
-    private static NotificationListener sNotificationListenerInstance = null;
-    private static final ArraySet<NotificationsChangedListener> sNotificationsChangedListeners =
-            new ArraySet<>();
-    private static boolean sIsConnected;
+    private static final Function<PackageUserKey, DotInfo> DOT_FACTOR = key -> new DotInfo();
 
     private final Handler mWorkerHandler;
-    private final Handler mUiHandler;
     private final Ranking mTempRanking = new Ranking();
+
+    private boolean mIsConnected = false;
+
+    /** Maps packages to their DotInfo's . */
+    private final Map<PackageUserKey, DotInfo> mPackageUserToDotInfos = new HashMap<>();
 
     /** Maps groupKey's to the corresponding group of notifications. */
     private final Map<String, NotificationGroup> mNotificationGroupMap = new HashMap<>();
@@ -87,36 +83,7 @@ public class NotificationListener extends NotificationListenerService {
     private NotificationManager mNotificationManager;
 
     public NotificationListener() {
-        mWorkerHandler = new Handler(MODEL_EXECUTOR.getLooper(), this::handleWorkerMessage);
-        mUiHandler = new Handler(Looper.getMainLooper(), this::handleUiMessage);
-        sNotificationListenerInstance = this;
-    }
-
-    public static @Nullable NotificationListener getInstanceIfConnected() {
-        return sIsConnected ? sNotificationListenerInstance : null;
-    }
-
-    public static void addNotificationsChangedListener(NotificationsChangedListener listener) {
-        if (listener == null) {
-            return;
-        }
-        sNotificationsChangedListeners.add(listener);
-
-        NotificationListener notificationListener = getInstanceIfConnected();
-        if (notificationListener != null) {
-            notificationListener.onNotificationFullRefresh();
-        } else {
-            // User turned off dots globally, so we unbound this service;
-            // tell the listener that there are no notifications to remove dots.
-            MODEL_EXECUTOR.submit(() -> MAIN_EXECUTOR.submit(() ->
-                            listener.onNotificationFullRefresh(Collections.emptyList())));
-        }
-    }
-
-    public static void removeNotificationsChangedListener(NotificationsChangedListener listener) {
-        if (listener != null) {
-            sNotificationsChangedListeners.remove(listener);
-        }
+        mWorkerHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleWorkerMessage);
     }
 
     @Override
@@ -129,16 +96,15 @@ public class NotificationListener extends NotificationListenerService {
         switch (message.what) {
             case MSG_NOTIFICATION_POSTED: {
                 StatusBarNotification sbn = (StatusBarNotification) message.obj;
-                mUiHandler.obtainMessage(notificationIsValidForUI(sbn)
-                                ? MSG_NOTIFICATION_POSTED : MSG_NOTIFICATION_REMOVED,
-                        toKeyPair(sbn)).sendToTarget();
+                if (notificationIsValidForUI(sbn)) {
+                    handleNotificationPosted(sbn);
+                } else {
+                    handleNotificationRemoved(sbn);
+                }
                 return true;
             }
             case MSG_NOTIFICATION_REMOVED: {
                 StatusBarNotification sbn = (StatusBarNotification) message.obj;
-                mUiHandler.obtainMessage(MSG_NOTIFICATION_REMOVED,
-                        toKeyPair(sbn)).sendToTarget();
-
                 NotificationGroup notificationGroup = mNotificationGroupMap.get(sbn.getGroupKey());
                 String key = sbn.getKey();
                 if (notificationGroup != null) {
@@ -147,19 +113,16 @@ public class NotificationListener extends NotificationListenerService {
                         mNotificationGroupMap.remove(sbn.getGroupKey());
                     }
                 }
+
+                handleNotificationRemoved(sbn);
                 return true;
             }
             case MSG_NOTIFICATION_FULL_REFRESH:
-                List<StatusBarNotification> activeNotifications = null;
-                if (sIsConnected) {
-                    activeNotifications = Arrays.stream(getActiveNotificationsSafely(null))
+                handleNotificationFullRefresh(mIsConnected
+                        ? Arrays.stream(getActiveNotificationsSafely(null))
                             .filter(this::notificationIsValidForUI)
-                            .collect(Collectors.toList());
-                } else {
-                    activeNotifications = new ArrayList<>();
-                }
-
-                mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
+                            .toList()
+                        : emptyList());
                 return true;
             case MSG_RANKING_UPDATE: {
                 String[] keys = ((RankingMap) message.obj).getOrderedKeys();
@@ -172,45 +135,58 @@ public class NotificationListener extends NotificationListenerService {
         return false;
     }
 
-    private boolean handleUiMessage(Message message) {
-        switch (message.what) {
-            case MSG_NOTIFICATION_POSTED:
-                if (sNotificationsChangedListeners.size() > 0) {
-                    Pair<PackageUserKey, NotificationKeyData> msg = (Pair) message.obj;
-                    for (NotificationsChangedListener listener : sNotificationsChangedListeners) {
-                        listener.onNotificationPosted(msg.first, msg.second);
-                    }
-                    Log.i(TAG, "received notification posted event - " + msg.first);
-                } else {
-                    Log.i(TAG, "received notification posted event, but there are no listeners");
-                }
-                break;
-            case MSG_NOTIFICATION_REMOVED:
-                if (sNotificationsChangedListeners.size() > 0) {
-                    Pair<PackageUserKey, NotificationKeyData> msg = (Pair) message.obj;
-                    for (NotificationsChangedListener listener : sNotificationsChangedListeners) {
-                        listener.onNotificationRemoved(msg.first, msg.second);
-                    }
-                    Log.i(TAG, "received notification removed event - " + msg.first);
-                } else {
-                    Log.i(TAG, "received notification removed event, but there are no listeners");
-                }
-                break;
-            case MSG_NOTIFICATION_FULL_REFRESH:
-                if (sNotificationsChangedListeners.size() > 0) {
-                    for (NotificationsChangedListener listener : sNotificationsChangedListeners) {
-                        listener.onNotificationFullRefresh(
-                                (List<StatusBarNotification>) message.obj);
-                    }
-                    ((List<StatusBarNotification>) message.obj).forEach(sbn -> Log.i(TAG,
-                            "Handling notification state refresh for " + sbn.getPackageName() + "#"
-                                    + sbn.getUserId()));
-                } else {
-                    Log.i(TAG, "received notification refresh event, but there are no listeners");
-                }
-                break;
+    private void handleNotificationPosted(StatusBarNotification sbn) {
+        PackageUserKey postedPackageUserKey = PackageUserKey.fromNotification(sbn);
+        if (mPackageUserToDotInfos.computeIfAbsent(postedPackageUserKey, DOT_FACTOR)
+                .addOrUpdateNotificationKey(NotificationKeyData.fromNotification(sbn))) {
+            dispatchUpdate(postedPackageUserKey::equals);
         }
-        return true;
+    }
+
+    private void handleNotificationRemoved(StatusBarNotification sbn) {
+        PackageUserKey removedPackageUserKey = PackageUserKey.fromNotification(sbn);
+        DotInfo oldDotInfo = mPackageUserToDotInfos.get(removedPackageUserKey);
+        if (oldDotInfo != null
+                && oldDotInfo.removeNotificationKey(NotificationKeyData.fromNotification(sbn))) {
+            if (oldDotInfo.getNotificationKeys().isEmpty()) {
+                mPackageUserToDotInfos.remove(removedPackageUserKey);
+            }
+            dispatchUpdate(removedPackageUserKey::equals);
+        }
+    }
+
+    private void handleNotificationFullRefresh(List<StatusBarNotification> activeNotifications) {
+        // This will contain the PackageUserKeys which have updated dots.
+        HashMap<PackageUserKey, DotInfo> updatedDots = new HashMap<>(mPackageUserToDotInfos);
+        mPackageUserToDotInfos.clear();
+        for (StatusBarNotification notification : activeNotifications) {
+            PackageUserKey packageUserKey = PackageUserKey.fromNotification(notification);
+            mPackageUserToDotInfos.computeIfAbsent(packageUserKey, DOT_FACTOR)
+                    .addOrUpdateNotificationKey(NotificationKeyData.fromNotification(notification));
+        }
+
+        // Add and remove from updatedDots so it contains the PackageUserKeys of updated dots.
+        for (PackageUserKey packageUserKey : mPackageUserToDotInfos.keySet()) {
+            DotInfo prevDot = updatedDots.get(packageUserKey);
+            DotInfo newDot = mPackageUserToDotInfos.get(packageUserKey);
+            if (prevDot == null
+                    || prevDot.getNotificationCount() != newDot.getNotificationCount()) {
+                updatedDots.put(packageUserKey, newDot);
+            } else {
+                // No need to update the dot if it already existed (no visual change).
+                // Note that if the dot was removed entirely, we wouldn't reach this point because
+                // this loop only includes active notifications added above.
+                updatedDots.remove(packageUserKey);
+            }
+        }
+        if (!updatedDots.isEmpty()) {
+            dispatchUpdate(updatedDots::containsKey);
+        }
+    }
+
+    private void dispatchUpdate(Predicate<PackageUserKey> updatedDots) {
+        LauncherComponentProvider.get(this).getNotificationRepository().dispatchUpdate(
+                new HashMap<>(mPackageUserToDotInfos), updatedDots);
     }
 
     private @NonNull StatusBarNotification[] getActiveNotificationsSafely(@Nullable String[] keys) {
@@ -231,7 +207,7 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerConnected() {
         super.onListenerConnected();
         Log.i(TAG, "onListenerConnected");
-        sIsConnected = true;
+        mIsConnected = true;
 
         // Register an observer to rebind the notification listener when dots are re-enabled.
         mSettingsCache = SettingsCache.INSTANCE.get(this);
@@ -244,7 +220,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
-        if (!areNotificationDotsEnabled && sIsConnected) {
+        if (!areNotificationDotsEnabled && mIsConnected) {
             requestUnbind();
         }
     }
@@ -258,7 +234,7 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         Log.i(TAG, "onListenerDisconnected");
-        sIsConnected = false;
+        mIsConnected = false;
         mSettingsCache.unregister(NOTIFICATION_BADGING_URI, mNotificationSettingsChangedListener);
         onNotificationFullRefresh();
     }
@@ -343,18 +319,5 @@ public class NotificationListener extends NotificationListenerService {
         boolean missingTitleAndText = TextUtils.isEmpty(title) && TextUtils.isEmpty(text);
         boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
         return !isGroupHeader && !missingTitleAndText;
-    }
-
-    private static Pair<PackageUserKey, NotificationKeyData> toKeyPair(StatusBarNotification sbn) {
-        return Pair.create(PackageUserKey.fromNotification(sbn),
-                NotificationKeyData.fromNotification(sbn));
-    }
-
-    public interface NotificationsChangedListener {
-        void onNotificationPosted(PackageUserKey postedPackageUserKey,
-                NotificationKeyData notificationKey);
-        void onNotificationRemoved(PackageUserKey removedPackageUserKey,
-                NotificationKeyData notificationKey);
-        void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications);
     }
 }

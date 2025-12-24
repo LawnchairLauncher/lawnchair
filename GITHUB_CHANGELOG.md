@@ -1,5 +1,36 @@
 # Bubble Tea
 
+## Bubble Tea [QPR2]
+
+### 🥞 SNAPSHOT 12
+
+Build: BS11.0712 (latest), BS11.0612
+
+Initial QPR2 merge, buildable stage, fastest ever in any merge.
+
+This is a developer-focused change log:
+* Add Quickstep compose facade to build
+* Add SystemUI Pods
+* Merge some lawnchair code change back
+* Merge some launcher3 code change back
+* More workaround for some trivial files
+* Move from BuildConfig to BuildConfigs when identifying studio build
+~~* Updated Compatlib to frameworks 16 (Compatibility not tested)~~
+
+### SNAPSHOT 11
+
+Build: BS11.0412-b (latest), BS11.0412, BS11.1212 (Botched use BS11.0312 instead)
+
+Initial QPR2 merge, this is the first time that Lawnchair is able to get pass KSP stage 
+(and first time that rebase is faster than previous attempt, this rebase took 2 days to finish
+instead of more than a week.).
+
+This is a developer-focused change log:
+* Codebase updated to Android 16-0.0_r4 (Android 16.0.0 Release 4)
+* Prebuilt updated to Android 16-0.0_r4 (Android 16.0.0 Release 4)
+* Flags updated to Android 16-0.0_r4 (Android 16.0.0 Release 4)
+* Platform libs updated to Android 16-0.0_r4 (Android 16.0.0 Release 4)
+
 ## Bubble Tea [QPR1]
 
 ### 🥞 Development 4 Release 1 (Snapshot 10)
@@ -54,7 +85,7 @@ Compatibility list:
 * [Launcher3] Widget preview crash for no reason at all on compatible Android version*
 * [Launcher3] Correct fallback (blur unsupported) allapps colour
 
-### 🥞 Snapshot 9 (Development 4 Release 1)
+### Snapshot 9 (Development 4 Release 1)
 
 This snapshot marks the first time Bubble Tea QPR1 is able to assemble the APK without errors, 
 all that's left is bug bash testing. Limited visibility closed testing is available.

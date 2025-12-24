@@ -36,6 +36,22 @@ public interface DragPositioningCallback {
     int CTRL_TYPE_RIGHT = 2;
     int CTRL_TYPE_TOP = 4;
     int CTRL_TYPE_BOTTOM = 8;
+
+    /**
+     * Indicates the input method type when resizing.
+     */
+    @IntDef(flag = true, value = {
+            INPUT_METHOD_TYPE_UNKNOWN, INPUT_METHOD_TYPE_TOUCH, INPUT_METHOD_TYPE_STYLUS,
+            INPUT_METHOD_TYPE_MOUSE, INPUT_METHOD_TYPE_TOUCHPAD
+    })
+    @interface InputMethodType {}
+
+    int INPUT_METHOD_TYPE_UNKNOWN = 0;
+    int INPUT_METHOD_TYPE_TOUCH = 1;
+    int INPUT_METHOD_TYPE_STYLUS = 2;
+    int INPUT_METHOD_TYPE_MOUSE = 3;
+    int INPUT_METHOD_TYPE_TOUCHPAD = 4;
+
     /**
      * Called when a drag-resize or drag-move starts.
      *
@@ -44,9 +60,12 @@ public interface DragPositioningCallback {
      * @param displayId the ID of the display where the drag starts
      * @param x x coordinate in window decoration coordinate system where the drag starts
      * @param y y coordinate in window decoration coordinate system where the drag starts
+     * @param inputMethodType {@link InputMethodType} indicating the type of tool used to make
+     *                 contact such as a finger or stylus, if known.
      * @return the starting task bounds
      */
-    Rect onDragPositioningStart(@CtrlType int ctrlType, int displayId, float x, float y);
+    Rect onDragPositioningStart(@CtrlType int ctrlType, int displayId, float x, float y,
+            @InputMethodType int inputMethodType);
 
     /**
      * Called when the pointer moves during a drag-resize or drag-move.

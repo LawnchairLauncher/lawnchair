@@ -40,6 +40,7 @@ import android.view.animation.Interpolator;
 import androidx.annotation.FloatRange;
 import androidx.annotation.StringRes;
 
+import com.android.launcher3.deviceprofile.DeviceProperties;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.EditModeState;
@@ -232,7 +233,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public int getFloatingSearchBarRestingMarginBottom(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
-        return areElementsVisible(launcher, FLOATING_SEARCH_BAR) ? dp.getQsbOffsetY()
+        return areElementsVisible(launcher.getLauncherUiState(), FLOATING_SEARCH_BAR)
+                ? dp.getQsbOffsetY()
                 : -dp.getHotseatProfile().getQsbHeight();
     }
 
@@ -269,10 +271,13 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return false;
     }
 
-    public int getVisibleElements(Launcher launcher) {
+    /** We should remove Launcher param after roll out refactorTaskbarUiState() flag. */
+    public int getVisibleElements(LauncherUiState launcherUiState) {
         int elements = HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR;
         // Floating search bar is visible in normal state except in landscape on phones.
-        if (!(launcher.getDeviceProfile().getDeviceProperties().isPhone() && launcher.getDeviceProfile().getDeviceProperties().isLandscape())) {
+        DeviceProperties dp = launcherUiState.getDeviceProfileRef().getValue()
+                .getDeviceProperties();
+        if (!(dp.isPhone() && dp.isLandscape())) {
             elements |= FLOATING_SEARCH_BAR;
         }
         return elements;
@@ -282,8 +287,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * A shorthand for checking getVisibleElements() & elements == elements.
      * @return Whether all of the given elements are visible.
      */
-    public boolean areElementsVisible(Launcher launcher, int elements) {
-        return (getVisibleElements(launcher) & elements) == elements;
+    public boolean areElementsVisible(LauncherUiState launcherUiState, int elements) {
+        return (getVisibleElements(launcherUiState) & elements) == elements;
     }
 
     /**
@@ -291,12 +296,12 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * 1) replace hotseat or taskbar icons with a handle in gesture navigation mode or
      * 2) fade out the hotseat or taskbar icons in 3-button navigation mode.
      */
-    public boolean isTaskbarStashed(Launcher launcher) {
+    public boolean isTaskbarStashed(DeviceProfile deviceProfile) {
         return false;
     }
 
     /** Returns whether taskbar is aligned with the hotseat vs position inside apps */
-    public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
+    public boolean isTaskbarAlignedWithHotseat() {
         return true;
     }
 
@@ -360,20 +365,6 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public final  <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
             float getDepth(DEVICE_PROFILE_CONTEXT context) {
-        return getDepth(context,
-                ActivityContext.lookupContext(context).getDeviceProfile().getDeviceProperties().isMultiWindowMode());
-    }
-
-    /**
-     * Returns the amount of blur and wallpaper zoom for this state with {@param isMultiWindowMode}.
-     *
-     * @see #getDepth(Context).
-     */
-    public final <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
-            float getDepth(DEVICE_PROFILE_CONTEXT context, boolean isMultiWindowMode) {
-        if (isMultiWindowMode) {
-            return 0;
-        }
         return getDepthUnchecked(context);
     }
 

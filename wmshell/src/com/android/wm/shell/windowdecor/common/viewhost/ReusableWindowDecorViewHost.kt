@@ -19,6 +19,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.graphics.Region
+//import android.os.Trace.TRACE_TAG_WINDOW_MANAGER
 import android.view.Display
 import android.view.SurfaceControl
 import android.view.View
@@ -26,9 +27,11 @@ import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 import android.view.WindowManager.LayoutParams.TYPE_APPLICATION
 import android.widget.FrameLayout
-import androidx.tracing.Trace
+//import androidx.tracing.Trace
+//import com.android.app.tracing.traceSection
 import com.android.internal.annotations.VisibleForTesting
 import com.android.wm.shell.shared.annotations.ShellMainThread
+import com.android.wm.shell.windowdecor.extension.identityHashCode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -45,40 +48,42 @@ import kotlinx.coroutines.launch
 class ReusableWindowDecorViewHost(
     private val context: Context,
     @ShellMainThread private val mainScope: CoroutineScope,
-    display: Display,
+    private val display: Display,
     val id: Int,
     @VisibleForTesting
     val viewHostAdapter: SurfaceControlViewHostAdapter =
         SurfaceControlViewHostAdapter(context, display),
-    private val rootView: FrameLayout = FrameLayout(context)
+    private val rootView: FrameLayout = FrameLayout(context),
 ) : WindowDecorViewHost, Warmable {
+
+    @VisibleForTesting
+    val defaultLayoutParams =
+        WindowManager.LayoutParams(
+                0 /* width*/,
+                0 /* height */,
+                TYPE_APPLICATION,
+                FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSPARENT,
+            )
+            .apply {
+                setTitle("View root of $TAG#$id")
+                setTrustedOverlay()
+            }
+
     private var currentUpdateJob: Job? = null
 
     override val surfaceControl: SurfaceControl
         get() = viewHostAdapter.rootSurface
+
+    override val displayId: Int
+        get() = display.displayId
 
     override fun warmUp() {
         if (viewHostAdapter.isInitialized()) {
             // Already warmed up.
             return
         }
-        Trace.beginSection("$TAG#warmUp")
-        viewHostAdapter.prepareViewHost(context.resources.configuration, touchableRegion = null)
-        viewHostAdapter.updateView(
-            rootView,
-            WindowManager.LayoutParams(
-                    0 /* width*/,
-                    0 /* height */,
-                    TYPE_APPLICATION,
-                    FLAG_NOT_FOCUSABLE,
-                    PixelFormat.TRANSPARENT,
-                )
-                .apply {
-                    setTitle("View root of $TAG#$id")
-                    setTrustedOverlay()
-                },
-        )
-        Trace.endSection()
+        reset()
     }
 
     override fun updateView(
@@ -88,10 +93,10 @@ class ReusableWindowDecorViewHost(
         touchableRegion: Region?,
         onDrawTransaction: SurfaceControl.Transaction?,
     ) {
-        Trace.beginSection("ReusableWindowDecorViewHost#updateView")
+//        Trace.beginSection("ReusableWindowDecorViewHost#updateView")
         clearCurrentUpdateJob()
         updateViewHost(view, attrs, configuration, touchableRegion, onDrawTransaction)
-        Trace.endSection()
+//        Trace.endSection()
     }
 
     override fun updateViewAsync(
@@ -100,7 +105,7 @@ class ReusableWindowDecorViewHost(
         configuration: Configuration,
         touchableRegion: Region?,
     ) {
-        Trace.beginSection("ReusableWindowDecorViewHost#updateViewAsync")
+//        Trace.beginSection("ReusableWindowDecorViewHost#updateViewAsync")
         clearCurrentUpdateJob()
         currentUpdateJob =
             mainScope.launch {
@@ -112,8 +117,19 @@ class ReusableWindowDecorViewHost(
                     onDrawTransaction = null,
                 )
             }
-        Trace.endSection()
+//        Trace.endSection()
     }
+
+    override fun reset() {
+            clearCurrentUpdateJob()
+            updateViewHost(
+                view = null,
+                defaultLayoutParams,
+                context.resources.configuration,
+                touchableRegion = null,
+                onDrawTransaction = null,
+            )
+        }
 
     override fun release(t: SurfaceControl.Transaction) {
         clearCurrentUpdateJob()
@@ -121,26 +137,37 @@ class ReusableWindowDecorViewHost(
     }
 
     private fun updateViewHost(
-        view: View,
+        view: View?,
         attrs: WindowManager.LayoutParams,
         configuration: Configuration,
         touchableRegion: Region?,
         onDrawTransaction: SurfaceControl.Transaction?,
     ) {
-        Trace.beginSection("ReusableWindowDecorViewHost#updateViewHost")
+//        Trace.beginSection("ReusableWindowDecorViewHost#updateViewHost")
+        rootView.layoutDirection = configuration.layoutDirection
         viewHostAdapter.prepareViewHost(configuration, touchableRegion)
         onDrawTransaction?.let { viewHostAdapter.applyTransactionOnDraw(it) }
-        if (view.parent != rootView) {
-            rootView.removeAllViews()
-            rootView.addView(view)
+        when {
+            view == null -> rootView.removeAllViews()
+            view.parent != rootView -> {
+                rootView.removeAllViews()
+                rootView.addView(view)
+            }
         }
         viewHostAdapter.updateView(rootView, attrs)
-        Trace.endSection()
+//        Trace.endSection()
     }
 
     private fun clearCurrentUpdateJob() {
         currentUpdateJob?.cancel()
         currentUpdateJob = null
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    override fun toString(): String {
+        return "ReusableWindowDecorViewHost(" +
+            "rootView=${rootView.identityHashCode.toHexString()}" +
+            ")"
     }
 
     companion object {

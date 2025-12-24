@@ -16,7 +16,6 @@
 
 package com.android.wm.shell.compatui;
 
-import static android.view.WindowManager.LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP;
 import static android.window.TaskConstants.TASK_CHILD_LAYER_COMPAT_UI;
 
 import android.annotation.NonNull;
@@ -199,8 +198,11 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
 
     @VisibleForTesting
     boolean shouldShowSizeCompatRestartButton(@NonNull TaskInfo taskInfo) {
+        if (!mCompatUIConfiguration.isRestartButtonConfigEnabled()) {
+            return false;
+        }
         // Always show button if display is phone sized.
-        if (taskInfo.configuration.smallestScreenWidthDp < LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP) {
+        if (CompatUIUtils.shouldShowSizeCompatRestartForPhoneScreen(taskInfo)) {
             return true;
         }
 

@@ -1,6 +1,7 @@
 package com.android.launcher3
 
 import android.content.ComponentName
+import android.util.Log
 import android.view.View
 import com.android.launcher3.BaseActivity.EVENT_RESUMED
 import com.android.launcher3.DropTarget.DragObject
@@ -43,11 +44,9 @@ class DropTargetHandler(launcher: Launcher) {
 
     fun reconfigureWidget(widgetId: Int, info: ItemInfo) {
         mLauncher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(widgetId, null, info))
-        mLauncher.appWidgetHolder.startConfigActivity(
-            mLauncher,
-            widgetId,
-            ActivityCodes.REQUEST_RECONFIGURE_APPWIDGET,
-        )
+        mLauncher.appWidgetHolder?.also {
+            it.startConfigActivity(mLauncher, widgetId, ActivityCodes.REQUEST_RECONFIGURE_APPWIDGET)
+        } ?: Log.e(TAG, "appWidgetHolder is null, cannot start config activity.")
     }
 
     fun getViewUnderDrag(info: ItemInfo): View? {
@@ -69,7 +68,7 @@ class DropTargetHandler(launcher: Launcher) {
         AbstractFloatingView.closeOpenViews(
             mLauncher,
             false,
-            AbstractFloatingView.TYPE_WIDGET_RESIZE_FRAME,
+            AbstractFloatingView.TYPE_WIDGET_RESIZE_FRAME or AbstractFloatingView.TYPE_FOLDER,
         )
         var pageItem: ItemInfo = item
         if (item.container >= 0) {
@@ -115,5 +114,9 @@ class DropTargetHandler(launcher: Launcher) {
         // a folder) in Folder.beginDrag()
         mLauncher.removeItem(view, item, true /* deleteFromDb */, "removed by accessibility drop")
         mLauncher.workspace.stripEmptyScreens()
+    }
+
+    companion object {
+        private const val TAG = "DropTargetHandler"
     }
 }

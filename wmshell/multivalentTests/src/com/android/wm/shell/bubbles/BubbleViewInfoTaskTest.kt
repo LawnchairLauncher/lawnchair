@@ -30,11 +30,14 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.internal.R
+import com.android.internal.logging.InstanceIdSequence
 import com.android.internal.logging.testing.UiEventLoggerFake
 import com.android.internal.protolog.ProtoLog
 import com.android.internal.statusbar.IStatusBarService
 import com.android.launcher3.icons.BubbleIconFactory
 import com.android.wm.shell.ShellTaskOrganizer
+import com.android.wm.shell.bubbles.logging.BubbleSessionTracker
+import com.android.wm.shell.bubbles.logging.BubbleSessionTrackerImpl
 import com.android.wm.shell.bubbles.storage.BubblePersistentRepository
 import com.android.wm.shell.common.DisplayController
 import com.android.wm.shell.common.DisplayImeController
@@ -78,6 +81,7 @@ class BubbleViewInfoTaskTest {
     private lateinit var bubbleLogger: BubbleLogger
     private lateinit var expandedViewManager: BubbleExpandedViewManager
     private lateinit var appInfoProvider: FakeBubbleAppInfoProvider
+    private lateinit var sessionTracker: BubbleSessionTracker
 
     private val bubbleTaskViewFactory = BubbleTaskViewFactory {
         BubbleTaskView(mock<TaskView>(), directExecutor())
@@ -112,6 +116,8 @@ class BubbleViewInfoTaskTest {
             )
         bubblePositioner = BubblePositioner(context, windowManager)
         bubbleLogger = BubbleLogger(UiEventLoggerFake())
+        val instanceIdSequence = InstanceIdSequence(/* instanceIdMax= */ 10)
+        sessionTracker = BubbleSessionTrackerImpl(instanceIdSequence, bubbleLogger)
         val bubbleData =
             BubbleData(
                 context,
@@ -169,6 +175,9 @@ class BubbleViewInfoTaskTest {
                 HomeIntentProvider(context),
                 appInfoProvider,
                 { Optional.empty() },
+                Optional.empty(),
+                { false },
+                sessionTracker,
             )
 
         // TODO: (b/371829099) - when optional overflow is no longer flagged we can enable this

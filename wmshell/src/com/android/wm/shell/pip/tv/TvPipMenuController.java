@@ -161,7 +161,7 @@ public class TvPipMenuController implements PipMenuController, TvPipMenuView.Lis
             throw new IllegalStateException("Delegate is not set.");
         }
 
-        mLeash = leash;
+        mLeash = new SurfaceControl(leash, "TvPipMenuController");
         attachPipMenu(/* showEduText */ true);
     }
 
@@ -294,7 +294,10 @@ public class TvPipMenuController implements PipMenuController, TvPipMenuView.Lis
     public void detach() {
         detachPipMenu();
         switchToMenuMode(MODE_NO_MENU);
-        mLeash = null;
+        if (mLeash != null) {
+            mLeash.release();
+            mLeash = null;
+        }
     }
 
     @Override
@@ -522,12 +525,9 @@ public class TvPipMenuController implements PipMenuController, TvPipMenuView.Lis
         ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
                 "%s: requestPipMenuFocus(%b)", TAG, focus);
 
-        try {
-            WindowManagerGlobal.getWindowSession().grantEmbeddedWindowFocus(null /* window */,
-                    mSystemWindows.getFocusGrantToken(mPipMenuView), focus);
-        } catch (Exception e) {
+        if (!mSystemWindows.requestInputFocus(mPipMenuView, focus)) {
             ProtoLog.e(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
-                    "%s: Unable to update focus, %s", TAG, e);
+                    "%s: Unable to update focus", TAG);
         }
     }
 

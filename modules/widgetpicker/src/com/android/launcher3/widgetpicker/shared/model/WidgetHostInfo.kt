@@ -28,12 +28,18 @@ import android.os.UserHandle
  * @param showDragShadow indicates whether to show drag shadow for the widgets when dragging them;
  *   can be set to false if host manages drag shadow on its own (e.g. home screen to animate the
  *   shadow with actual content)
+ * @param enableSwipeUpToDismiss indicates whether host wants to delegate the handling of swipe up
+ *   from bottom gesture to the picker UI. It is responsibility of activity to disable gesture nav
+ *   for this to be effective.
+ * @param closeBehavior indicates the how the picker is closed.
  */
 data class WidgetHostInfo(
     val title: String? = null,
     val description: String? = null,
     val constraints: List<HostConstraint> = emptyList(),
     val showDragShadow: Boolean = true,
+    val enableSwipeUpToDismiss: Boolean = false,
+    val closeBehavior: CloseBehavior = CloseBehavior.DRAG_HANDLE,
 )
 
 /** Various constraints for the widget host. */
@@ -63,4 +69,16 @@ sealed class HostConstraint {
 
     /** Indicates that the host doesn't support shortcuts. */
     data object NoShortcutsConstraint : HostConstraint()
+}
+
+/** Describes how the bottom sheet is closed. */
+enum class CloseBehavior {
+    /**
+     * Adds the handle on the top of the sheet which allows users to click and drag the bottom
+     * sheet.
+     */
+    DRAG_HANDLE,
+
+    /** Adds the close button on the top of the sheet that users can click on. */
+    CLOSE_BUTTON,
 }

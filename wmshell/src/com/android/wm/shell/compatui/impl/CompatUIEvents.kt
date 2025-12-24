@@ -21,9 +21,7 @@ import com.android.wm.shell.compatui.api.CompatUIEvent
 internal const val SIZE_COMPAT_RESTART_BUTTON_APPEARED = 0
 internal const val SIZE_COMPAT_RESTART_BUTTON_CLICKED = 1
 
-/**
- * All the {@link CompatUIEvent} the Compat UI Framework can handle
- */
+/** All the {@link CompatUIEvent} the Compat UI Framework can handle */
 sealed class CompatUIEvents(override val eventId: Int) : CompatUIEvent {
     /** Sent when the size compat restart button appears. */
     data class SizeCompatRestartButtonAppeared(val taskId: Int) :

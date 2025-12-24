@@ -27,23 +27,17 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
-/**
- * Robot to test [LetterboxController] implementations.
- */
+/** Robot to test [LetterboxController] implementations. */
 abstract class LetterboxControllerRobotTest {
 
     companion object {
-        @JvmStatic
-        val DISPLAY_ID = 1
+        @JvmStatic val DISPLAY_ID = 1
 
-        @JvmStatic
-        val TASK_ID = 20
+        @JvmStatic val TASK_ID = 20
 
-        @JvmStatic
-        val ANOTHER_TASK_ID = 10
+        @JvmStatic val ANOTHER_TASK_ID = 10
 
-        @JvmStatic
-        private val TOKEN = mock<WindowContainerToken>()
+        @JvmStatic val TOKEN = mock<WindowContainerToken>()
     }
 
     lateinit var letterboxController: LetterboxController
@@ -64,43 +58,44 @@ abstract class LetterboxControllerRobotTest {
     fun sendCreateSurfaceRequest(
         displayId: Int = DISPLAY_ID,
         taskId: Int = TASK_ID,
-        token: WindowContainerToken? = TOKEN
-    ) = letterboxController.createLetterboxSurface(
-        key = LetterboxKey(displayId, taskId),
-        transaction = transaction,
-        parentLeash = parentLeash,
-        token = token
-    )
+        token: WindowContainerToken? = TOKEN,
+    ) =
+        letterboxController.createLetterboxSurface(
+            key = LetterboxKey(displayId, taskId),
+            transaction = transaction,
+            parentLeash = parentLeash,
+            token = token,
+        )
 
-    fun sendDestroySurfaceRequest(
-        displayId: Int = DISPLAY_ID,
-        taskId: Int = TASK_ID
-    ) = letterboxController.destroyLetterboxSurface(
-        key = LetterboxKey(displayId, taskId),
-        transaction = transaction
-    )
+    fun sendDestroySurfaceRequest(displayId: Int = DISPLAY_ID, taskId: Int = TASK_ID) =
+        letterboxController.destroyLetterboxSurface(
+            key = LetterboxKey(displayId, taskId),
+            transaction = transaction,
+        )
 
     fun sendUpdateSurfaceVisibilityRequest(
         displayId: Int = DISPLAY_ID,
         taskId: Int = TASK_ID,
-        visible: Boolean
-    ) = letterboxController.updateLetterboxSurfaceVisibility(
-        key = LetterboxKey(displayId, taskId),
-        transaction = transaction,
-        visible = visible
-    )
+        visible: Boolean,
+    ) =
+        letterboxController.updateLetterboxSurfaceVisibility(
+            key = LetterboxKey(displayId, taskId),
+            transaction = transaction,
+            visible = visible,
+        )
 
     fun sendUpdateSurfaceBoundsRequest(
         displayId: Int = DISPLAY_ID,
         taskId: Int = TASK_ID,
         taskBounds: Rect,
-        activityBounds: Rect
-    ) = letterboxController.updateLetterboxSurfaceBounds(
-        key = LetterboxKey(displayId, taskId),
-        transaction = transaction,
-        taskBounds = taskBounds,
-        activityBounds = activityBounds
-    )
+        activityBounds: Rect,
+    ) =
+        letterboxController.updateLetterboxSurfaceBounds(
+            key = LetterboxKey(displayId, taskId),
+            transaction = transaction,
+            taskBounds = taskBounds,
+            activityBounds = activityBounds,
+        )
 
     fun invokeDump() {
         letterboxController.dump()
@@ -117,21 +112,15 @@ abstract class LetterboxControllerRobotTest {
     fun checkSurfacePositionUpdated(
         times: Int = 1,
         expectedX: Float = -1f,
-        expectedY: Float = -1f
+        expectedY: Float = -1f,
     ) {
-        verify(transaction, times(times)).setPosition(
-            any(),
-            expectedX.asAnyMode(),
-            expectedY.asAnyMode()
-        )
+        verify(transaction, times(times))
+            .setPosition(any(), expectedX.asAnyMode(), expectedY.asAnyMode())
     }
 
     fun checkSurfaceSizeUpdated(times: Int = 1, expectedWidth: Int = -1, expectedHeight: Int = -1) {
-        verify(transaction, times(times)).setWindowCrop(
-            any(),
-            expectedWidth.asAnyMode(),
-            expectedHeight.asAnyMode()
-        )
+        verify(transaction, times(times))
+            .setWindowCrop(any(), expectedWidth.asAnyMode(), expectedHeight.asAnyMode())
     }
 
     fun resetTransitionTest() {

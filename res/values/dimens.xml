@@ -218,12 +218,22 @@
     <dimen name="widget_cell_add_button_line_height">20sp</dimen>
     <dimen name="widget_cell_add_button_drawable_padding">8dp</dimen>
     <dimen name="widget_cell_add_button_drawable_width">19dp</dimen>
+    <dimen name="widget_picker_toolbar_tab_label_font_size">14sp</dimen>
+    <integer name="widget_picker_toolbar_tab_label_font_weight">500</integer>
+    <dimen name="widget_picker_toolbar_tab_label_line_height">20sp</dimen>
+    <dimen name="widget_picker_search_bar_font_size">20sp</dimen>
+    <integer name="widget_picker_search_bar_label_font_weight">400</integer>
+    <dimen name="widget_picker_error_text_font_size">16sp</dimen>
+    <integer name="widget_picker_error_text_label_font_weight">400</integer>
+    <dimen name="widget_picker_error_text_label_line_height">24sp</dimen>
 
     <dimen name="widget_tabs_button_horizontal_padding">4dp</dimen>
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
     <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
+    <dimen name="widget_picker_title_font_size">24sp</dimen>
+    <dimen name="widget_picker_description_font_size">12sp</dimen>
     <dimen name="widget_picker_header_app_title_font_size">16sp</dimen>
     <integer name="widget_picker_header_app_title_font_weight">500</integer>
     <integer name="widget_picker_header_selected_app_title_font_weight">600</integer>
@@ -351,6 +361,8 @@
     <dimen name="bg_popup_item_height">52dp</dimen>
     <dimen name="bg_popup_item_vertical_padding">12dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
+    <dimen name="deep_shortcut_add_button_size">48dp</dimen>
+    <dimen name="deep_shortcut_text_end_padding">48dp</dimen>
     <!-- Minimum size of the widget dragged view to keep it visible under the finger. -->
     <dimen name="widget_drag_view_min_scale_down_size">70dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
@@ -470,8 +482,9 @@
     <dimen name="taskbar_button_margin_split">0dp</dimen>
     <dimen name="taskbar_button_margin_6_5">0dp</dimen>
 
-    <!--- Floating Ime Inset height-->
-    <dimen name="floating_ime_inset_height">0dp</dimen>
+    <!--- The minimum insets size for the IME to be considered docked (placeholders to compile in
+    Launcher3 without Quickstep). -->
+    <dimen name="ime_docked_threshold">0dp</dimen>
 
     <!-- Bubble bar (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="bubblebar_hotseat_adjustment_threshold">0dp</dimen>
@@ -492,7 +505,6 @@
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
     <dimen name="task_thumbnail_icon_menu_drawable_touch_size">0dp</dimen>
     <dimen name="task_menu_edge_padding">0dp</dimen>
-    <dimen name="task_dismiss_max_undershoot">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
     <dimen name="overview_actions_height">0dp</dimen>
     <dimen name="overview_actions_margin_gesture">0dp</dimen>

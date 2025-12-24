@@ -18,6 +18,9 @@ package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
 import android.graphics.drawable.RotateDrawable
+import android.net.Uri
+import android.provider.Settings
+import android.provider.Settings.Secure.NAVIGATIONBAR_KEY_ORDER
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -28,6 +31,7 @@ import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter
+import com.android.launcher3.util.SettingsCache
 
 /**
  * Meant to be a simple container for data subclasses will need
@@ -48,14 +52,16 @@ abstract class AbstractNavButtonLayoutter(
     protected val imeSwitcher: ImageView?,
     protected val a11yButton: ImageView?,
     protected val space: Space?,
+    protected val backButton: ImageView? = navButtonContainer.findViewById(R.id.back),
+    protected val homeButton: ImageView? = navButtonContainer.findViewById(R.id.home),
+    protected val recentsButton: ImageView? = navButtonContainer.findViewById(R.id.recent_apps),
 ) : NavButtonLayoutter {
-    protected val homeButton: ImageView? = navButtonContainer.findViewById(R.id.home)
-    protected val recentsButton: ImageView? = navButtonContainer.findViewById(R.id.recent_apps)
-    protected val backButton: ImageView? = navButtonContainer.findViewById(R.id.back)
+
+    open val orientation: Int = LinearLayout.HORIZONTAL
 
     init {
         // setup back button drawable
-        if (backButton != null) {
+        if (backButton != null && backButton.resources != null) {
             val rotateDrawable = RotateDrawable()
             rotateDrawable.drawable = backButton.context?.getDrawable(R.drawable.ic_sysbar_back)
             rotateDrawable.fromDegrees = 0f
@@ -89,12 +95,7 @@ abstract class AbstractNavButtonLayoutter(
         val phoneOrPortraitSetupMargin =
             resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_margin)
         nearestTouchFrameLayoutParams.marginStart = phoneOrPortraitSetupMargin
-        nearestTouchFrameLayoutParams.bottomMargin =
-            if (!deviceProfile.deviceProperties.isLandscape) 0
-            else
-                phoneOrPortraitSetupMargin -
-                    resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size) / 2
-
+        nearestTouchFrameLayoutParams.bottomMargin = 0
         nearestTouchFrameLayoutParams.height =
             resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_height)
     }
@@ -116,5 +117,42 @@ abstract class AbstractNavButtonLayoutter(
         }
         contextualContainerParams.gravity = gravity or Gravity.CENTER_VERTICAL
         contextualContainer.layoutParams = contextualContainerParams
+    }
+
+    /** For ordered layouts, this determines if the order of buttons should be flipped. */
+    open fun shouldFlipButtonOrder(): Boolean {
+        val isFlipEnabledBySetting =
+            android.view.accessibility.Flags.navbarFlipOrderOption() &&
+                SettingsCache.INSTANCE.get(navButtonContainer.context)
+                    .getValue(NAVBAR_KEY_ORDER_URI)
+
+        return Utilities.isRtl(resources) xor isFlipEnabledBySetting
+    }
+
+    /**
+     * Attaches the three primary buttons to the nav button container, in the appropriate order.
+     * Clears all views from the container beforehand.
+     */
+    override fun addThreeButtons() {
+        if (backButton == null || homeButton == null || recentsButton == null) {
+            return
+        }
+
+        navButtonContainer.removeAllViews()
+        navButtonContainer.orientation = orientation
+        // Flip ordering of back and recents buttons
+        if (shouldFlipButtonOrder()) {
+            navButtonContainer.addView(recentsButton)
+            navButtonContainer.addView(homeButton)
+            navButtonContainer.addView(backButton)
+        } else {
+            navButtonContainer.addView(backButton)
+            navButtonContainer.addView(homeButton)
+            navButtonContainer.addView(recentsButton)
+        }
+    }
+
+    companion object {
+        val NAVBAR_KEY_ORDER_URI: Uri = Settings.Secure.getUriFor(NAVIGATIONBAR_KEY_ORDER)
     }
 }

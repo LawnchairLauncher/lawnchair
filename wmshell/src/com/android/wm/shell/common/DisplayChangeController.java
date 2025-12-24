@@ -102,13 +102,14 @@ public class DisplayChangeController {
     void onDisplayChange(int displayId, int fromRotation, int toRotation,
             DisplayAreaInfo newDisplayAreaInfo, IDisplayChangeWindowCallback callback) {
         final DisplayLayout dl = mDisplayController.getDisplayLayout(displayId);
-        if (dl != null && newDisplayAreaInfo != null) {
+        if (dl != null) {
             // Note: there is a chance Transitions has triggered
             // DisplayController#onDisplayChangeRequested first, in which case layout was updated
             // and startBounds equals endBounds; then DisplayLayout size remains the same.
             // TODO(b/370721807): Remove DisplayChangeWindowControllerImpl and rely on transitions.
             final Rect startBounds = new Rect(0, 0, dl.width(), dl.height());
-            final Rect endBounds = newDisplayAreaInfo.configuration.windowConfiguration.getBounds();
+            final Rect endBounds = newDisplayAreaInfo != null
+                    ? newDisplayAreaInfo.configuration.windowConfiguration.getBounds() : null;
             mDisplayController.updateDisplayLayout(displayId, startBounds, endBounds,
                     fromRotation, toRotation);
         }

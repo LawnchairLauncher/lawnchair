@@ -18,7 +18,8 @@ package com.android.quickstep;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
-import static com.android.window.flags2.Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND;
+import static com.android.launcher3.Flags.FLAG_ENABLE_LATER_IS_LOCKED_CHECK;
+import static com.android.window.flags.Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -37,6 +38,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RecentTaskInfo;
 import android.app.KeyguardManager;
 import android.app.TaskInfo;
+import android.companion.virtual.VirtualDeviceManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -64,7 +66,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,6 +79,9 @@ import java.util.stream.Collectors;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class RecentTasksListTest {
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Rule
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
@@ -87,24 +93,28 @@ public class RecentTasksListTest {
     private SystemUiProxy mSystemUiProxy;
     @Mock
     private TopTaskTracker mTopTaskTracker;
+    @Mock
+    private KeyguardManager mKeyguardManager;
+    @Mock
+    private VirtualDeviceManager mVirtualDeviceManager;
 
     // Class under test
     private RecentTasksList mRecentTasksList;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         LooperExecutor mainThreadExecutor = Executors.MAIN_EXECUTOR;
-        KeyguardManager mockKeyguardManager = mock(KeyguardManager.class);
 
         // Set desktop mode supported
         when(mContext.getResources()).thenReturn(mResources);
         when(mResources.getBoolean(R.bool.config_isDesktopModeSupported)).thenReturn(true);
         when(mResources.getBoolean(R.bool.config_canInternalDisplayHostDesktops))
                 .thenReturn(true);
+        when(mVirtualDeviceManager.getDeviceIdForDisplayId(anyInt()))
+                .thenReturn(Context.DEVICE_ID_DEFAULT);
 
         mRecentTasksList = new RecentTasksList(mContext, mainThreadExecutor,
-                mockKeyguardManager, mSystemUiProxy, mTopTaskTracker,
+                mKeyguardManager, mVirtualDeviceManager, mSystemUiProxy, mTopTaskTracker,
                 mock(DaggerSingletonTracker.class));
     }
 
@@ -132,6 +142,46 @@ public class RecentTasksListTest {
 
         assertEquals(1, taskList.size());
         taskList.get(0).getTasks().forEach(t -> assertNull(t.taskDescription.getLabel()));
+    }
+
+    @Test
+    public void loadTasksInBackground_VdmDisplay() throws Exception  {
+        int virtualDeviceDisplayId = 10;
+        int nonVirtualDeviceDisplayId = 11;
+        int virtualDeviceId = 42;
+        when(mVirtualDeviceManager.getDeviceIdForDisplayId(virtualDeviceDisplayId))
+                .thenReturn(virtualDeviceId);
+        when(mVirtualDeviceManager.getDeviceIdForDisplayId(nonVirtualDeviceDisplayId))
+                .thenReturn(Context.DEVICE_ID_DEFAULT);
+
+        GroupedTaskInfo virtualDeviceDisplayTaskInfo = GroupedTaskInfo.forFullscreenTasks(
+                createRecentTaskInfo(/* taskId= */ 1, /* displayId= */ virtualDeviceDisplayId));
+        GroupedTaskInfo nonVirtualDeviceDisplayTaskInfo = GroupedTaskInfo.forFullscreenTasks(
+                createRecentTaskInfo(/* taskId= */ 2, /* displayId= */ nonVirtualDeviceDisplayId));
+        when(mSystemUiProxy.getRecentTasks(anyInt(), anyInt())).thenReturn(
+                new ArrayList<>(List.of(virtualDeviceDisplayTaskInfo,
+                        nonVirtualDeviceDisplayTaskInfo)));
+        List<GroupTask> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1,
+                false);
+
+        assertThat(taskList).hasSize(2);
+        assertThat(taskList.get(0).taskViewType).isEqualTo(TaskViewType.SINGLE);
+        assertThat(taskList.get(1).taskViewType).isEqualTo(TaskViewType.SINGLE);
+
+        List<Task> virtualDeviceTasks = taskList.get(1).getTasks();
+        assertThat(virtualDeviceTasks).hasSize(1);
+        assertThat(virtualDeviceTasks.get(0).key.displayId).isEqualTo(DEFAULT_DISPLAY);
+
+        List<Task> nonVirtualDeviceTasks = taskList.get(0).getTasks();
+        assertThat(nonVirtualDeviceTasks).hasSize(1);
+        assertThat(nonVirtualDeviceTasks.get(0).key.displayId).isEqualTo(nonVirtualDeviceDisplayId);
+
+        // The displayIds are cached and there are no more calls to VDM.
+        mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1, false);
+        verify(mVirtualDeviceManager, times(1))
+                .getDeviceIdForDisplayId(virtualDeviceDisplayId);
+        verify(mVirtualDeviceManager, times(1))
+                .getDeviceIdForDisplayId(nonVirtualDeviceDisplayId);
     }
 
     @Test
@@ -231,6 +281,19 @@ public class RecentTasksListTest {
         assertEquals(2, tasks.size());
         assertEquals(taskDescription, tasks.get(0).taskDescription.getLabel());
         assertNull(tasks.get(1).taskDescription.getLabel());
+    }
+
+    @Test
+    @EnableFlags(FLAG_ENABLE_LATER_IS_LOCKED_CHECK)
+    public void loadTasksInBackground_moreThanKeys_doesNotCallIsDeviceLocked() throws Exception {
+        GroupedTaskInfo recentTaskInfos =
+                GroupedTaskInfo.forFullscreenTasks(createRecentTaskInfo(1, DEFAULT_DISPLAY));
+        when(mSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
+                .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
+
+        mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1, false);
+
+        verify(mKeyguardManager, times(0)).isDeviceLocked();
     }
 
     @Test

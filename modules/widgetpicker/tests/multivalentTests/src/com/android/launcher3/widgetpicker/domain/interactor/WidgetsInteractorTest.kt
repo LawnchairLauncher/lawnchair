@@ -55,7 +55,7 @@ class WidgetsInteractorTest {
             widgetUsersRepository = widgetUsersRepository,
             getWidgetAppsByProfileUseCase = GroupWidgetAppsByProfileUseCase(),
             filterWidgetsForHostUseCase = FilterWidgetsForHostUseCase(WidgetHostInfo()),
-            backgroundContext = testDispatcher
+            backgroundContext = testDispatcher,
         )
 
     @Test
@@ -98,6 +98,25 @@ class WidgetsInteractorTest {
             assertThat(result[widgetUserProfilePersonal])
                 .containsExactlyElementsIn(PERSONAL_TEST_APPS)
             assertThat(result[widgetUserProfileWork]).containsExactlyElementsIn(WORK_TEST_APPS)
+        }
+
+    @Test
+    fun getWidgetsForApp_returnsWidgetsForGivenApp() =
+        testScope.runTest {
+            val app1Id = PERSONAL_TEST_APPS[0].id
+            widgetUsersRepository.seedUserProfiles(
+                profiles =
+                    WidgetUserProfiles(
+                        personal = widgetUserProfilePersonal,
+                        work = widgetUserProfileWork,
+                    ),
+                workProfileUser = workUser,
+            )
+            widgetsRepository.seedWidgets(PERSONAL_TEST_APPS + WORK_TEST_APPS)
+
+            val result = underTest.getWidgetApp(app1Id).first()
+
+            assertThat(result).isEqualTo(PERSONAL_TEST_APPS[0])
         }
 
     @Test
@@ -200,8 +219,8 @@ class WidgetsInteractorTest {
             runCurrent()
 
             assertThat(result.size).isEqualTo(1)
-            assertThat(result[0].widgets.size).isEqualTo(1)
-            assertThat(result[0].widgets[0].label).isEqualTo(input)
+            assertThat(result[0].widgetApp.widgets.size).isEqualTo(1)
+            assertThat(result[0].widgetApp.widgets[0].label).isEqualTo(input)
         }
 
     @Test
@@ -223,6 +242,6 @@ class WidgetsInteractorTest {
             runCurrent()
 
             assertThat(result.size).isEqualTo(PERSONAL_TEST_APPS.size)
-            assertThat(result.filter { it.title == WORK_TEST_APPS[0].title }).isEmpty()
+            assertThat(result.filter { it.widgetApp.title == WORK_TEST_APPS[0].title }).isEmpty()
         }
 }

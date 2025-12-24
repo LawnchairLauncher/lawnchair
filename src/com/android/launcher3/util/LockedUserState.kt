@@ -25,6 +25,7 @@ import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
+import com.android.launcher3.util.SimpleBroadcastReceiver.Companion.actionsFilter
 import javax.inject.Inject
 
 @LauncherAppSingleton
@@ -44,7 +45,7 @@ constructor(@ApplicationContext private val context: Context, lifeCycle: DaggerS
 
     @VisibleForTesting
     val userUnlockedReceiver =
-        SimpleBroadcastReceiver(context, UI_HELPER_EXECUTOR) {
+        SimpleBroadcastReceiver(context, UI_HELPER_EXECUTOR, MAIN_EXECUTOR) {
             if (Intent.ACTION_USER_UNLOCKED == it.action) {
                 isUserUnlocked = true
             }
@@ -60,18 +61,15 @@ constructor(@ApplicationContext private val context: Context, lifeCycle: DaggerS
         isUserUnlocked = checkIsUserUnlocked()
         isUserUnlockedAtLauncherStartup = isUserUnlocked
         if (!isUserUnlocked) {
-            userUnlockedReceiver.register(
-                {
-                    // If user is unlocked while registering broadcast receiver, we should update
-                    // [isUserUnlocked], which will call [notifyUserUnlocked] in setter
-                    if (checkIsUserUnlocked()) {
-                        MAIN_EXECUTOR.execute { isUserUnlocked = true }
-                    }
-                },
-                Intent.ACTION_USER_UNLOCKED,
-            )
+            userUnlockedReceiver.register(actionsFilter(Intent.ACTION_USER_UNLOCKED)) {
+                // If user is unlocked while registering broadcast receiver, we should update
+                // [isUserUnlocked], which will call [notifyUserUnlocked] in setter
+                if (checkIsUserUnlocked()) {
+                    MAIN_EXECUTOR.execute { isUserUnlocked = true }
+                }
+            }
         }
-        lifeCycle.addCloseable { userUnlockedReceiver.unregisterReceiverSafely() }
+        lifeCycle.addCloseable(userUnlockedReceiver)
     }
 
     private fun checkIsUserUnlocked() =
@@ -79,7 +77,7 @@ constructor(@ApplicationContext private val context: Context, lifeCycle: DaggerS
 
     private fun notifyUserUnlocked() {
         mUserUnlockedActions.executeAllAndDestroy()
-        userUnlockedReceiver.unregisterReceiverSafely()
+        userUnlockedReceiver.close()
     }
 
     /**

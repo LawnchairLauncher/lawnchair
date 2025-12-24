@@ -16,7 +16,5 @@
 
 package com.android.wm.shell.compatui.api
 
-/**
- * Represents the state shared between all the components.
- */
+/** Represents the state shared between all the components. */
 class CompatUISharedState

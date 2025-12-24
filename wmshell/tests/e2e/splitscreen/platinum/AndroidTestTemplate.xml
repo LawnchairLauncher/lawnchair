@@ -47,6 +47,7 @@
     </target_preparer>
     <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
         <option name="test-user-token" value="%TEST_USER%"/>
+        <option name="throw-if-cmd-fail" value="true" />
         <option name="run-command" value="rm -rf /data/user/%TEST_USER%/files/*"/>
         <!-- Disable AOD -->
         <option name="run-command" value="settings put secure doze_always_on 0"/>
@@ -76,7 +77,6 @@
         <option name="hidden-api-checks" value="false"/>
         <option name="device-listeners" value="android.tools.collectors.DefaultUITraceListener"/>
         <!-- DefaultUITraceListener args -->
-        <option name="instrumentation-arg" key="per_run" value="true"/>
         <option name="instrumentation-arg" key="perfetto_persist_pid_track" value="true"/>
     </test>
     <!-- Needed for pulling the collected trace config on to the host -->

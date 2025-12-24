@@ -55,17 +55,22 @@ import com.android.launcher3.widgetpicker.ui.theme.WidgetPickerTheme
  * @param searchBar A sticky search bar shown on top in the left pane.
  * @param leftContent list options available for user to select that will be shown on left
  * @param rightContent content for the currently selected list option
+ * @param leftPaneTitle title of the left pane for accessibility services to be able to enable
+ *   user to jump between.
  * @param rightPaneTitle when a user selects an option on left pane, changing this title for right
  *   pane guides the user that content for selected option is now visible on right. When using
  *   accessibility services like talkback, after selecting an option on left, the users can use four
  *   finger swipe down to move focus to the right pane.
+ * @param modifier modifications to be applied to top level composable of the layout
  */
 @Composable
 fun TwoPaneLayout(
     searchBar: @Composable () -> Unit,
     leftContent: @Composable () -> Unit,
     rightContent: @Composable () -> Unit,
+    leftPaneTitle: String,
     rightPaneTitle: String?,
+    modifier: Modifier = Modifier
 ) {
     val rightPaneModifier =
         if (rightPaneTitle != null) {
@@ -75,7 +80,11 @@ fun TwoPaneLayout(
     val leftPane: @Composable RowScope.() -> Unit = {
         Column(
             modifier =
-                Modifier.semantics { isTraversalGroup = true }
+                Modifier
+                    .semantics {
+                        isTraversalGroup = true
+                        paneTitle = leftPaneTitle
+                    }
                     .fillMaxHeight()
                     .padding(end = paneSpacing)
                     .weight(LEFT_PANE_WEIGHT)
@@ -101,7 +110,7 @@ fun TwoPaneLayout(
         }
     }
 
-    Row(modifier = Modifier.padding(horizontal = horizontalPadding).fillMaxSize()) {
+    Row(modifier = modifier.padding(horizontal = horizontalPadding).fillMaxSize()) {
         leftPane()
         rightPane()
     }

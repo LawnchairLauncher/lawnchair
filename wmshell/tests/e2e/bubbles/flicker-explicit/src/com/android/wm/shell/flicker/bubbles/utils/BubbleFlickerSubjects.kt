@@ -30,7 +30,7 @@ import android.tools.traces.wm.WindowManagerState
  * which should be inherited for test subsets or test base.
  *
  * @see com.android.wm.shell.flicker.bubbles.BubbleFlickerTestBase
- * @see com.android.wm.shell.flicker.bubbles.testcase.BubbleStackAlwaysVisibleTestCases
+ * @see com.android.wm.shell.flicker.bubbles.testcase.BubbleAlwaysVisibleTestCases
  */
 interface BubbleFlickerSubjects {
 

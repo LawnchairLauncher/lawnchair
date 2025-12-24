@@ -27,60 +27,66 @@ import android.graphics.drawable.shapes.RoundRectShape
  * Represents drawable insets, specifying the number of pixels to inset a drawable from its bounds.
  */
 data class DrawableInsets(val l: Int, val t: Int, val r: Int, val b: Int) {
-    constructor(vertical: Int = 0, horizontal: Int = 0) :
-            this(horizontal, vertical, horizontal, vertical)
-    constructor(vertical: Int = 0, horizontalLeft: Int = 0, horizontalRight: Int = 0) :
-            this(horizontalLeft, vertical, horizontalRight, vertical)
+    constructor(insets: Int) : this(insets, insets, insets, insets)
+
+    constructor(
+        vertical: Int = 0,
+        horizontal: Int = 0,
+    ) : this(horizontal, vertical, horizontal, vertical)
+
+    constructor(
+        vertical: Int = 0,
+        horizontalLeft: Int = 0,
+        horizontalRight: Int = 0,
+    ) : this(horizontalLeft, vertical, horizontalRight, vertical)
 }
 
-/**
- * Replaces the alpha component of a color with the given alpha value.
- */
+/** Replaces the alpha component of a color with the given alpha value. */
 @ColorInt
 fun replaceColorAlpha(@ColorInt color: Int, alpha: Int): Int {
-    return Color.argb(
-        alpha,
-        Color.red(color),
-        Color.green(color),
-        Color.blue(color)
-    )
+    return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
 }
 
-/**
- * Creates a background drawable with specified color, corner radius, and insets.
- */
+/** Creates a background drawable with specified color, corner radius, and insets. */
 fun createBackgroundDrawable(
-    @ColorInt color: Int, cornerRadius: Int, drawableInsets: DrawableInsets
-): Drawable = createBackgroundDrawable(
-    color,
-    FloatArray(8) { cornerRadius.toFloat() },
-    drawableInsets)
+    @ColorInt color: Int,
+    cornerRadius: Int,
+    drawableInsets: DrawableInsets,
+): Drawable =
+    createBackgroundDrawable(color, FloatArray(8) { cornerRadius.toFloat() }, drawableInsets)
 
-/**
- * Creates a background drawable with specified color, corner radius, and insets.
- */
+/** Creates a background drawable with specified color, corner radius, and insets. */
 fun createBackgroundDrawable(
-    @ColorInt color: Int, cornerRadius: FloatArray, drawableInsets: DrawableInsets
-): Drawable = LayerDrawable(arrayOf(
-    ShapeDrawable().apply {
-        shape = RoundRectShape(
-            cornerRadius,
-            /* inset= */ null,
-            /* innerRadii= */ null
-        )
-        setTintList(ColorStateList(
+    @ColorInt color: Int,
+    cornerRadius: FloatArray,
+    drawableInsets: DrawableInsets,
+): Drawable =
+    LayerDrawable(
             arrayOf(
-                intArrayOf(android.R.attr.state_hovered),
-                intArrayOf(android.R.attr.state_pressed),
-            ),
-            intArrayOf(
-                replaceColorAlpha(color, OPACITY_11),
-                replaceColorAlpha(color, OPACITY_15),
+                ShapeDrawable().apply {
+                    shape = RoundRectShape(cornerRadius, /* inset= */ null, /* innerRadii= */ null)
+                    setTintList(
+                        ColorStateList(
+                            arrayOf(
+                                intArrayOf(android.R.attr.state_hovered),
+                                intArrayOf(android.R.attr.state_pressed),
+                            ),
+                            intArrayOf(
+                                replaceColorAlpha(color, OPACITY_11),
+                                replaceColorAlpha(color, OPACITY_15),
+                            ),
+                        )
+                    )
+                }
             )
-        ))
-    }
-)).apply {
-    require(numberOfLayers == 1) { "Must only contain one layer" }
-    setLayerInset(/* index= */ 0,
-        drawableInsets.l, drawableInsets.t, drawableInsets.r, drawableInsets.b)
-}
+        )
+        .apply {
+            require(numberOfLayers == 1) { "Must only contain one layer" }
+            setLayerInset(
+                /* index= */ 0,
+                drawableInsets.l,
+                drawableInsets.t,
+                drawableInsets.r,
+                drawableInsets.b,
+            )
+        }

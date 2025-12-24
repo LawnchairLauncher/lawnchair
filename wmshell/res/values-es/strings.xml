@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"La aplicación no es compatible con burbujas"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Divisor de pantalla dividida"</string>
     <string name="divider_title" msgid="1963391955593749442">"Divisor de pantalla dividida"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Pantalla izquierda completa"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Izquierda 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Izquierda 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Izquierda 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Pantalla derecha completa"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Intercambiar aplicación superior con inferior"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Intercambiar aplicación izquierda con derecha"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Pantalla superior completa"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Superior 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Superior 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Superior 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Pantalla inferior completa"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Mostrar aplicación izquierda a pantalla completa"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"Izquierda 10 %, derecha 90 %"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"Izquierda 30 %, derecha 70 %"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"Izquierda 50 %, derecha 50 %"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"Izquierda 70 %, derecha 30 %"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"Izquierda 90 %, derecha 10 %"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Mostrar aplicación derecha a pantalla completa"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Intercambiar aplicación superior con inferior, mantener división actual"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Intercambiar aplicación izquierda con derecha, mantener división actual"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Mostrar aplicación superior a pantalla completa"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"Superior 10 %, inferior 90 %"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"Superior 30 %, inferior 70 %"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"Superior 50 %, inferior 50 %"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"Superior 70 %, inferior 30 %"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"Superior 90 %, inferior 10 %"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Mostrar aplicación inferior a pantalla completa"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Dividir en la parte izquierda"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Dividir en la parte derecha"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Dividir en la parte superior"</string>
@@ -88,7 +92,7 @@
     <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Chatea con burbujas"</string>
     <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Las nuevas conversaciones aparecen como iconos en una esquina inferior de la pantalla. Tócalas para ampliarlas o arrástralas para cerrarlas."</string>
     <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Controla las burbujas cuando quieras"</string>
-    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Toca aquí para gestionar qué aplicaciones y conversaciones pueden usar burbujas"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Toca aquí para gestionar qué apps y conversaciones pueden usar burbujas"</string>
     <string name="notification_bubble_title" msgid="6082910224488253378">"Burbuja"</string>
     <string name="manage_bubbles_text" msgid="7730624269650594419">"Gestionar"</string>
     <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Burbuja cerrada."</string>
@@ -96,13 +100,13 @@
     <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Mostrar burbujas"</string>
     <string name="restart_button_description" msgid="4564728020654658478">"Toca para reiniciar esta aplicación y obtener una mejor vista"</string>
     <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Cambiar la relación de aspecto de esta aplicación en Ajustes"</string>
-    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Cambiar relación de aspecto"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Relación de aspecto"</string>
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"¿Problemas con la cámara?\nToca para reajustar"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"¿No se ha solucionado?\nToca para revertir"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"¿No hay problemas con la cámara? Toca para cerrar."</string>
     <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"El menú de la aplicación se encuentra aquí"</string>
-    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"Usa el modo Ventanas si quieres abrir varias aplicaciones a la vez"</string>
-    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"Vuelve a la pantalla completa en cualquier momento desde el menú de aplicaciones"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"Usa el modo Ventanas si quieres abrir varias apps a la vez"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"Vuelve a la pantalla completa en cualquier momento desde el menú de apps"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Consulta más información y haz más"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Arrastra otra aplicación para activar la pantalla dividida"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Toca dos veces fuera de una aplicación para cambiarla de posición"</string>
@@ -139,7 +143,7 @@
     <string name="collapse_menu_text" msgid="7515008122450342029">"Cerrar menú"</string>
     <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (modo Ventanas)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Maximizar pantalla"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"Dividir pantalla"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"Cambiar tamaño"</string>
     <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"La aplicación no se puede mover aquí"</string>
     <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"Abriendo nueva ventana de la aplicación"</string>
     <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"Cerrando ventana de la aplicación"</string>
@@ -169,5 +173,5 @@
     <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"En la aplicación"</string>
     <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"En el navegador"</string>
     <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"Aceptar"</string>
-    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"Abre rápidamente aplicaciones en tu navegador aquí"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"Abre rápidamente apps en tu navegador aquí"</string>
 </resources>

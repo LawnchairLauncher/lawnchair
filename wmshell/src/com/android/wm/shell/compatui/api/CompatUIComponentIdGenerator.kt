@@ -16,16 +16,15 @@
 
 package com.android.wm.shell.compatui.api
 
-/**
- * Any object responsible to generate an id for a component.
- */
+/** Any object responsible to generate an id for a component. */
 interface CompatUIComponentIdGenerator {
 
     /**
-     * Generates the unique id for a component given a {@link CompatUIInfo} and component
-     * {@link CompatUISpec}.
-     * @param compatUIInfo  The object encapsulating information about the current Task.
-     * @param spec  The {@link CompatUISpec} for the component.
+     * Generates the unique id for a component given a {@link CompatUIInfo} and component {@link
+     * CompatUISpec}.
+     *
+     * @param compatUIInfo The object encapsulating information about the current Task.
+     * @param spec The {@link CompatUISpec} for the component.
      */
     fun generateId(compatUIInfo: CompatUIInfo, spec: CompatUISpec): String
 }

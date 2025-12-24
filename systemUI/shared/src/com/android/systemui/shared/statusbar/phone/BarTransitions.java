@@ -230,7 +230,7 @@ public class BarTransitions {
 
         @Override
         public void setTint(int color) {
-            PorterDuff.Mode targetMode = mTintFilter == null ? Mode.SRC_IN :
+            Mode targetMode = mTintFilter == null ? Mode.SRC_IN :
                     mTintFilter.getMode();
             if (mTintFilter == null || mTintFilter.getColor() != color) {
                 mTintFilter = new PorterDuffColorFilter(color, targetMode);

@@ -29,7 +29,7 @@ import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.graphics.ThemeManager
-import com.android.launcher3.icons.GraphicsUtils
+import com.android.launcher3.icons.RoundRectEstimator
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.firstBlocking
@@ -88,7 +88,7 @@ class IconShapeManager @Inject constructor(
                 shapeR.setPath(shapePath, clip)
                 shapeR.op(iconR, Region.Op.XOR)
 
-                GraphicsUtils.getArea(shapeR)
+                RoundRectEstimator.getArea(shapeR)
             }!!
     }
 

@@ -17,7 +17,7 @@
 package com.android.launcher3.taskbar
 
 import android.content.Context
-import com.android.launcher3.dagger.LauncherComponentProvider
+import com.android.launcher3.dagger.LauncherComponentProvider.appComponent
 import javax.inject.Inject
 
 /** Creates [TaskbarModelCallbacks] instances. */
@@ -31,7 +31,7 @@ open class TaskbarModelCallbacksFactory @Inject constructor() {
     companion object {
         @JvmStatic
         fun newInstance(context: Context): TaskbarModelCallbacksFactory {
-            return LauncherComponentProvider.get(context).getTaskbarModelCallbacksFactory()
+            return context.appComponent.getTaskbarModelCallbacksFactory()
         }
     }
 }

@@ -17,6 +17,7 @@
 package com.android.quickstep.fallback
 
 import com.android.launcher3.LauncherState
+import com.android.launcher3.testing.shared.TestProtocol
 
 fun RecentsState.toLauncherState(): LauncherState {
     return when (ordinal) {
@@ -27,6 +28,17 @@ fun RecentsState.toLauncherState(): LauncherState {
         RecentsState.BG_LAUNCHER_ORDINAL -> LauncherState.NORMAL
         RecentsState.OVERVIEW_SPLIT_SELECT_ORDINAL -> LauncherState.OVERVIEW_SPLIT_SELECT
         else -> LauncherState.NORMAL
+    }
+}
+
+fun LauncherState.toRecentsState(): RecentsState {
+    return when (ordinal) {
+        TestProtocol.OVERVIEW_STATE_ORDINAL -> RecentsState.DEFAULT
+        TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL -> RecentsState.MODAL_TASK
+        TestProtocol.BACKGROUND_APP_STATE_ORDINAL -> RecentsState.BACKGROUND_APP
+        TestProtocol.NORMAL_STATE_ORDINAL -> RecentsState.HOME
+        TestProtocol.OVERVIEW_SPLIT_SELECT_ORDINAL -> RecentsState.OVERVIEW_SPLIT_SELECT
+        else -> RecentsState.BG_LAUNCHER
     }
 }
 

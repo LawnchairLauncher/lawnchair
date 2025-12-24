@@ -47,7 +47,7 @@ android_test {
         "androidx.test.ext.junit",
         "androidx.test.rules",
         "androidx.test.runner",
-        "com.android.window.flags.window-aconfig-java",
+        "com.android.window.flags2.window-aconfig-java",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
         "dagger2",

@@ -23,7 +23,6 @@ import android.os.Process;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -32,7 +31,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Various different executors used in Launcher
+ *
+ * @deprecated To help promote adoption of dagger and other dependency injection frameworks,
+ * this class is deprecated. Please use dagger to inject executors instead via the
+ * {@link com.android.launcher3.concurrent} package. See go/launcher-executors-module for more
+ * details.
  */
+@Deprecated
 public class Executors {
 
     private static final int POOL_SIZE =
@@ -44,24 +49,39 @@ public class Executors {
 
     /**
      * An {@link ThreadPoolExecutor} to be used with async task with no limit on the queue size.
+     *
+     * @deprecated Use {@link com.android.launcher3.concurrent.ExecutorsModule} to inject an
+     * executor annotated with
+     * {@link com.android.launcher3.concurrent.annotations.ThreadPool} instead.
      */
     public static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             POOL_SIZE, POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
     /**
      * An {@link LooperExecutor} to be used with async task where order is important.
+     *
+     * @deprecated Use {@link com.android.launcher3.concurrent.ExecutorsModule} to inject an
+     * executor annotated with {@link com.android.launcher3.concurrent.annotations.Background}
+     * instead.
      */
     public static final LooperExecutor ORDERED_BG_EXECUTOR =
             new LooperExecutor("BackgroundExecutor", THREAD_PRIORITY_BACKGROUND);
 
     /**
      * Returns the executor for running tasks on the main thread.
+     *
+     * @deprecated Use {@link com.android.launcher3.concurrent.ExecutorsModule} to inject an
+     * executor annotated with {@link com.android.launcher3.concurrent.annotations.Ui} instead.
      */
     public static final LooperExecutor MAIN_EXECUTOR =
             new LooperExecutor(Looper.getMainLooper(), THREAD_PRIORITY_FOREGROUND);
 
     /**
      * A background executor for using time sensitive actions where user is waiting for response.
+     *
+     * @deprecated Use {@link com.android.launcher3.concurrent.ExecutorsModule} to inject an
+     * executor annotated with {@link
+     * com.android.launcher3.concurrent.annotations.LightweightBackground} instead.
      */
     public static final LooperExecutor UI_HELPER_EXECUTOR =
             new LooperExecutor("UiThreadHelper", Process.THREAD_PRIORITY_FOREGROUND);
@@ -69,15 +89,13 @@ public class Executors {
     /**
      * A background executor for running tasks that are not time sensitive, typically for data
      * transformations.
+     *
+     * @deprecated Use {@link com.android.launcher3.concurrent.ExecutorsModule} to inject an
+     * executor annotated with {@link
+     * com.android.launcher3.concurrent.annotations.LightweightBackground} instead.
      */
     public static final LooperExecutor DATA_HELPER_EXECUTOR =
             new LooperExecutor("DataThreadHelper", Process.THREAD_PRIORITY_DEFAULT);
-
-    /** A background executor to preinflate views. */
-    public static final ExecutorService VIEW_PREINFLATION_EXECUTOR =
-            java.util.concurrent.Executors.newSingleThreadExecutor(
-                    new SimpleThreadFactory(
-                            "preinflate-allapps-icons", THREAD_PRIORITY_BACKGROUND));
 
     /**
      * Executor used for running Launcher model related tasks (eg loading icons or updated db)
@@ -87,6 +105,8 @@ public class Executors {
     /**
      * Returns and caches a single thread executor for a given package.
      *
+     * @deprecated Prefer using an executor annotated from the {@link
+     * com.android.launcher3.concurrent} package.
      * @param packageName Package associated with the executor.
      */
     public static LooperExecutor getPackageExecutor(String packageName) {
@@ -95,6 +115,9 @@ public class Executors {
 
     /**
      * A simple ThreadFactory to set the thread name and priority when used with executors.
+     *
+     * @deprecated Prefer using an executor annotated from the
+     * {@link com.android.launcher3.concurrent} package.
      */
     public static class SimpleThreadFactory implements ThreadFactory {
 

@@ -29,6 +29,7 @@ import android.window.WindowContainerTransaction
 import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.back.BackAnimationController
 import com.android.wm.shell.desktopmode.DesktopModeTransitionTypes.isExitDesktopModeTransition
+import com.android.wm.shell.desktopmode.data.DesktopRepository
 import com.android.wm.shell.desktopmode.multidesks.DesksOrganizer
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_DESKTOP_MODE
 import com.android.wm.shell.shared.TransitionUtil

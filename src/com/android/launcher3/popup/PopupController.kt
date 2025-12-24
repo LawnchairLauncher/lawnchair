@@ -16,21 +16,22 @@
 
 package com.android.launcher3.popup
 
-import com.android.launcher3.model.data.ItemInfo
+import android.content.Context
+import android.view.View
+import com.android.launcher3.dragndrop.LauncherDragController
+import com.android.launcher3.views.ActivityContext
 
 /**
  * Controller interface for popups. It handles actions for the popups such as showing and dismissing
  * popups.
  */
-interface PopupController {
+interface PopupController<T> where T : Context, T : ActivityContext {
     /**
      * Shows the popup when called.
      *
-     * @param popupDataRepository is the repository which has all the data we need to show the
-     *   correct long press menu shortcuts.
-     * @return PopupDragController which handles drag related actions due to showing the popup.
+     * @return Popup which handles drag related actions due to showing the popup.
      */
-    fun show(popupDataRepository: PopupDataRepository): Popup?
+    fun show(view: View): Popup?
 
     /** Dismisses the popup when called. */
     fun dismiss()
@@ -40,12 +41,26 @@ interface PopupController {
         /**
          * Creates a popup controller.
          *
-         * @param itemInfo is the item info for the popup controller for which we create the popup
-         *   controller.
+         * @param popupDataRepository has the popup data for each item.
+         * @param dragController handles drag actions.
          * @return a new PopupController.
          */
-        fun createPopupControllerFactory(itemInfo: ItemInfo): PopupController {
-            return TODO("Provide the return value")
+        fun <T> createPopupController(
+            popupDataRepository: PopupDataRepository,
+            dragController: LauncherDragController,
+        ): PopupController<T> where T : Context, T : ActivityContext? {
+            return PopupControllerForExtraHomeScreenItems(popupDataRepository, dragController)
+        }
+
+        /**
+         * Creates a popup controller.
+         *
+         * @return a new PopupController.
+         */
+        fun <T> createPopupController(): PopupController<T> where
+        T : Context,
+        T : ActivityContext? {
+            return PopupControllerForAppIcon()
         }
     }
 }

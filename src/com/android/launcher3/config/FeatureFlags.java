@@ -18,10 +18,6 @@ package com.android.launcher3.config;
 
 import static com.android.launcher3.config.FeatureFlags.BooleanFlag.DISABLED;
 import static com.android.launcher3.config.FeatureFlags.BooleanFlag.ENABLED;
-import static com.android.wm.shell.Flags.enableTaskbarNavbarUnification;
-import static com.android.wm.shell.Flags.enableTaskbarOnPhones;
-
-import android.content.res.Resources;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -89,38 +85,8 @@ public final class FeatureFlags {
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag(270393108, "NOTIFY_CRASHES",
             DISABLED, "Sends a notification whenever launcher encounters an uncaught exception.");
 
-    public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
-            enableTaskbarNavbarUnification() && (!isPhone() || enableTaskbarOnPhones());
-
-    private static boolean isPhone() {
-        final boolean isPhone;
-        int foldedDeviceStatesId = Resources.getSystem().getIdentifier(
-                "config_foldedDeviceStates", "array", "android");
-        if (foldedDeviceStatesId != 0) {
-            isPhone = Resources.getSystem().getIntArray(foldedDeviceStatesId).length == 0;
-        } else {
-            isPhone = true;
-        }
-        return isPhone;
-    }
-
-    // Aconfig migration complete for ENABLE_TASKBAR_NO_RECREATION.
-    public static final BooleanFlag ENABLE_TASKBAR_NO_RECREATION = getDebugFlag(299193589,
-            "ENABLE_TASKBAR_NO_RECREATION", DISABLED,
-            "Enables taskbar with no recreation from lifecycle changes of TaskbarActivityContext.");
-    public static boolean enableTaskbarNoRecreate() {
-        return ENABLE_TASKBAR_NO_RECREATION.get() || Flags.enableTaskbarNoRecreate()
-                // Task bar pinning and task bar nav bar unification are both dependent on
-                // ENABLE_TASKBAR_NO_RECREATION. We want to turn ENABLE_TASKBAR_NO_RECREATION on
-                // when either of the dependent features is turned on.
-                || enableTaskbarPinning() || ENABLE_TASKBAR_NAVBAR_UNIFICATION;
-    }
 
     // TODO(Block 16): Clean up flags
-    // When enabled the promise icon is visible in all apps while installation an app.
-    public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(270390012,
-            "PROMISE_APPS_IN_ALL_APPS", DISABLED, "Add promise icon in all-apps");
-
     // Aconfig migration complete for ENABLE_EXPANDING_PAUSE_WORK_BUTTON.
     public static final BooleanFlag ENABLE_EXPANDING_PAUSE_WORK_BUTTON = getDebugFlag(270390779,
             "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", DISABLED,
@@ -154,11 +120,6 @@ public final class FeatureFlags {
     // TODO(Block 21): Clean up flags
     public static final BooleanFlag ENABLE_APP_ICON_FOR_INLINE_SHORTCUTS = getDebugFlag(270395087,
             "ENABLE_APP_ICON_IN_INLINE_SHORTCUTS", DISABLED, "Show app icon for inline shortcut");
-
-    // TODO(Block 22): Clean up flags
-    public static final BooleanFlag ENABLE_WIDGET_TRANSITION_FOR_RESIZING = getDebugFlag(268553314,
-            "ENABLE_WIDGET_TRANSITION_FOR_RESIZING", ENABLED,
-            "Enable widget transition animation when resizing the widgets");
 
     // TODO(Block 27): Clean up flags
     public static final BooleanFlag ENABLE_OVERLAY_CONNECTION_OPTIM = getDebugFlag(270392629,

@@ -35,8 +35,7 @@ import org.mockito.kotlin.verify
 /**
  * Tests for [SingleSurfaceLetterboxController].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:SingleSurfaceLetterboxControllerTest
+ * Build/Install/Run: atest WMShellUnitTests:SingleSurfaceLetterboxControllerTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
@@ -94,9 +93,9 @@ class SingleSurfaceLetterboxControllerTest : ShellTestCase() {
         runTestScenario { r ->
             r.sendCreateSurfaceRequest()
             r.sendUpdateSurfaceVisibilityRequest(visible = true)
-            r.sendUpdateSurfaceVisibilityRequest(visible = true, displayId = ANOTHER_TASK_ID)
+            r.sendUpdateSurfaceVisibilityRequest(visible = true, taskId = ANOTHER_TASK_ID)
 
-            r.checkVisibilityUpdated(times = 2, expectedVisibility = true)
+            r.checkVisibilityUpdated(times = 1, expectedVisibility = true)
         }
     }
 
@@ -105,7 +104,7 @@ class SingleSurfaceLetterboxControllerTest : ShellTestCase() {
         runTestScenario { r ->
             r.sendUpdateSurfaceBoundsRequest(
                 taskBounds = Rect(0, 0, 2000, 1000),
-                activityBounds = Rect(500, 0, 1500, 1000)
+                activityBounds = Rect(500, 0, 1500, 1000),
             )
 
             r.checkSurfacePositionUpdated(times = 0)
@@ -116,22 +115,19 @@ class SingleSurfaceLetterboxControllerTest : ShellTestCase() {
             r.sendCreateSurfaceRequest()
             r.sendUpdateSurfaceBoundsRequest(
                 taskBounds = Rect(0, 0, 2000, 1000),
-                activityBounds = Rect(500, 0, 1500, 1000)
+                activityBounds = Rect(500, 0, 1500, 1000),
             )
             r.checkSurfacePositionUpdated(times = 1, expectedX = 0f, expectedY = 0f)
             r.checkSurfaceSizeUpdated(times = 1, expectedWidth = 2000, expectedHeight = 1000)
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<SingleLetterboxControllerRobotTest>) {
         consumer.accept(SingleLetterboxControllerRobotTest(mContext).apply { initController() })
     }
 
-    class SingleLetterboxControllerRobotTest(context: Context) :
-        LetterboxControllerRobotTest() {
+    class SingleLetterboxControllerRobotTest(context: Context) : LetterboxControllerRobotTest() {
 
         private val letterboxConfiguration: LetterboxConfiguration
         private val surfaceBuilder: LetterboxSurfaceBuilder
@@ -146,13 +142,14 @@ class SingleSurfaceLetterboxControllerTest : ShellTestCase() {
             SingleSurfaceLetterboxController(surfaceBuilder)
 
         fun checkSurfaceBuilderInvoked(times: Int = 1, name: String = "", callSite: String = "") {
-            verify(surfaceBuilder, times(times)).createSurface(
-                eq(transaction),
-                eq(parentLeash),
-                name.asAnyMode(),
-                callSite.asAnyMode(),
-                any()
-            )
+            verify(surfaceBuilder, times(times))
+                .createSurface(
+                    eq(transaction),
+                    eq(parentLeash),
+                    name.asAnyMode(),
+                    callSite.asAnyMode(),
+                    any(),
+                )
         }
     }
 }

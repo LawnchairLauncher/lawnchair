@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"ایپ ببل کو سپورٹ نہیں کرتی ہے"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"اسپلٹ اسکرین ڈیوائیڈر"</string>
     <string name="divider_title" msgid="1963391955593749442">"اسپلٹ اسکرین ڈیوائیڈر"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"بائیں فل اسکرین"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"بائیں %70"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"بائیں %50"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"بائیں %30"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"دائیں فل اسکرین"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"اوپری ایپ کو نیچے کے ساتھ سویپ کریں"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"بائیں ایپ کو دائیں کے ساتھ سویپ کریں"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"بالائی فل اسکرین"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"اوپر %70"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"اوپر %50"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"اوپر %30"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"نچلی فل اسکرین"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"بائیں جانب والی ایپ کو فُل اسکرین پر کریں"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"‫10% بائیں، %90 دائیں"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"‫30% بائیں، %70 دائیں"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"‫50 بائیں، %50 دائیں"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"‫70% بائیں، %30 دائیں"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"‫90% بائیں، %10 دائیں"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"دائیں جانب والی ایپ کو فُل اسکرین پر کریں"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"اوپر والی ایپ کو نیچے والی ایپ سے تبدیل کریں، موجودہ تقسیم کو برقرار رکھیں"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"بائیں ایپ کو دائیں ایپ کے ساتھ تبدیل کریں، موجودہ تقسیم کو برقرار رکھیں"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"اوپر والی ایپ کو فُل اسکرین پر کریں"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"‫10% اوپر، %90 نیچے"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"‫10% اوپر، %70 نیچے"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"‫50% اوپر، %50 نیچے"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"‫70% اوپر، %30 نیچے"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"‫90% اوپر، %10 نیچے"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"نیچے والی ایپ کو فُل اسکرین پر کریں"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"دائیں طرف تقسیم کریں"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"بائیں طرف تقسیم کریں"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"اوپر کی طرف تقسیم کریں"</string>

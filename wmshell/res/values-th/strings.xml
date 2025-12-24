@@ -39,24 +39,28 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"แอปไม่รองรับบับเบิล"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"เส้นแยกหน้าจอ"</string>
     <string name="divider_title" msgid="1963391955593749442">"เส้นแยกหน้าจอ"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"เต็มหน้าจอทางซ้าย"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"ซ้าย 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ซ้าย 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ซ้าย 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"เต็มหน้าจอทางขวา"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"สลับแอปด้านบนกับด้านล่าง"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"สลับแอปด้านซ้ายกับด้านขวา"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"เต็มหน้าจอด้านบน"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ด้านบน 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ด้านบน 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"ด้านบน 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"เต็มหน้าจอด้านล่าง"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"แสดงแอปด้านซ้ายแบบเต็มหน้าจอ"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"ซ้าย 10%, ขวา 90%"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"ซ้าย 30%, ขวา 70%"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"ซ้าย 50%, ขวา 50%"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"ซ้าย 70%, ขวา 30%"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"ซ้าย 90%, ขวา 10%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"แสดงแอปด้านขวาแบบเต็มหน้าจอ"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"สลับแอปด้านบนกับแอปด้านล่างโดยคงการแยกหน้าจอปัจจุบันไว้"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"สลับแอปด้านซ้ายกับด้านขวาโดยคงการแยกหน้าจอปัจจุบันไว้"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"แสดงแอปด้านบนแบบเต็มหน้าจอ"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"บน 10%, ล่าง 90%"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"บน 30%, ล่าง 70%"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"บน 50%, ล่าง 50%"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"บน 70%, ล่าง 30%"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"บน 90%, ล่าง 10%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"แสดงแอปด้านล่างแบบเต็มหน้าจอ"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"แยกไปทางซ้าย"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"แยกไปทางขวา"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"แยกไปด้านบน"</string>
     <string name="accessibility_split_bottom" msgid="8694551025220868191">"แยกไปด้านล่าง"</string>
     <string name="one_handed_tutorial_title" msgid="4583241688067426350">"การใช้โหมดมือเดียว"</string>
-    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"หากต้องการออก ให้เลื่อนขึ้นจากด้านล่างของหน้าจอหรือแตะที่ใดก็ได้เหนือแอป"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"หากต้องการออก ให้ปัดขึ้นจากด้านล่างของหน้าจอหรือแตะที่ใดก็ได้เหนือแอป"</string>
     <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"เริ่มโหมดมือเดียว"</string>
     <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"ออกจากโหมดมือเดียว"</string>
     <string name="bubbles_settings_button_description" msgid="1301286017420516912">"การตั้งค่าบับเบิล <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>

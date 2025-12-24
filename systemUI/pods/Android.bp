@@ -1,0 +1,100 @@
+//
+// Copyright (C) 2024 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+package {
+    default_applicable_licenses: ["frameworks_base_packages_SystemUI_license"],
+    // The package default_visibility specified here is inherited to subpackages that do not
+    // specify default_visibility:
+    default_visibility: ["//visibility:private"],
+}
+
+java_defaults {
+    name: "SystemUI_pod_defaults_api",
+    libs: [
+        "jsr330",
+    ],
+    lint: {
+        extra_check_modules: ["SystemUILintChecker"],
+        warning_checks: ["MissingApacheLicenseDetector"],
+    },
+    kotlincflags: [
+        "-Xexplicit-api=strict",
+        "-Xjvm-default=all",
+    ],
+    visibility: ["//visibility:public"],
+    defaults_visibility: [":__subpackages__"],
+}
+
+java_defaults {
+    name: "SystemUI_pod_defaults_impl",
+    libs: [
+        "dagger2",
+        "jsr330",
+    ],
+    lint: {
+        extra_check_modules: ["SystemUILintChecker"],
+        warning_checks: ["MissingApacheLicenseDetector"],
+    },
+    kotlincflags: [
+        "-Xexplicit-api=strict",
+        "-Xjvm-default=all",
+    ],
+    plugins: [
+        // Needed so that @Provides methods in Dagger are correctly generated.
+        "dagger2-compiler",
+    ],
+    // TODO(b/423659894): Once SysUI stands up its Dagger graph in its own build target, this
+    // visibility should be updated to just that build target.
+    visibility: ["//frameworks/base/packages/SystemUI:__subpackages__"],
+    defaults_visibility: [":__subpackages__"],
+}
+
+// Have all pod APIs in the same java_library so that new pods don't need to modify
+// packages/SystemUI/Android.bp.
+java_library {
+    name: "com.android.systemui.pods-api-aosp-handheld",
+    static_libs: [
+        "com.android.systemui-api",
+        "com.android.systemui.dagger-api",
+        "com.android.systemui.log-api",
+        "com.android.systemui.log.table-api",
+        "com.android.systemui.retail.data-api",
+        "com.android.systemui.retail.domain-api",
+        "com.android.systemui.rotation-api",
+        "com.android.systemui.statusbar.pipeline.airplane.data.repository-api",
+        "com.android.systemui.statusbar.pipeline.airplane.shared-api",
+        "com.android.systemui.util.kotlin",
+        "com.android.systemui.util.settings-api",
+        "com.android.systemui.util.time-api",
+    ],
+    visibility: ["//frameworks/base/packages/SystemUI:__pkg__"],
+}
+
+// Have all pod impls in the same java_library so that new pods don't need to modify
+// packages/SystemUI/Android.bp.
+java_library {
+    name: "com.android.systemui.pods-impl-aosp-handheld",
+    static_libs: [
+        "com.android.systemui.pods-api-aosp-handheld",
+        "com.android.systemui.notifications.ui.composable",
+        "com.android.systemui.retail-impl",
+        "com.android.systemui.rotation-impl",
+        "com.android.systemui.statusbar.pipeline.airplane.data.repository-impl",
+        "com.android.systemui.statusbar.pipeline.airplane.shared-impl",
+        "com.android.systemui.util.time-impl",
+    ],
+    visibility: ["//frameworks/base/packages/SystemUI:__pkg__"],
+}

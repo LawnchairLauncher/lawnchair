@@ -97,7 +97,10 @@ public class ContentWriter {
         Preconditions.assertNonUiThread();
         if (mIcon != null && !LauncherAppState.getInstance(context).getIconCache()
                 .isDefaultIcon(mIcon, mUser)) {
-            mValues.put(LauncherSettings.Favorites.ICON, GraphicsUtils.flattenBitmap(mIcon.icon));
+            mValues.put(
+                    LauncherSettings.Favorites.ICON,
+                    GraphicsUtils.createDefaultFlatBitmap(mIcon)
+            );
             mIcon = null;
         }
         return mValues;

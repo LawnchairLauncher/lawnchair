@@ -24,7 +24,6 @@ import android.view.SurfaceControl
 import android.view.SurfaceControl.Transaction
 import android.window.WindowContainerToken
 import com.android.internal.protolog.ProtoLog
-import com.android.wm.shell.common.suppliers.InputChannelSupplier
 import com.android.wm.shell.common.suppliers.WindowSessionSupplier
 import com.android.wm.shell.compatui.letterbox.LetterboxUtils.Maps.runOnItem
 import com.android.wm.shell.compatui.letterbox.events.ReachabilityGestureListenerFactory
@@ -34,22 +33,22 @@ import com.android.wm.shell.shared.annotations.ShellMainThread
 import javax.inject.Inject
 
 /**
- * [LetterboxController] implementation responsible for handling the spy [SurfaceControl] we use
- * to detect letterbox events.
+ * [LetterboxController] implementation responsible for handling the spy [SurfaceControl] we use to
+ * detect letterbox events.
  */
 @WMSingleton
-class LetterboxInputController @Inject constructor(
+class LetterboxInputController
+@Inject
+constructor(
     private val context: Context,
     @ShellMainThread private val handler: Handler,
     private val inputSurfaceBuilder: LetterboxInputSurfaceBuilder,
     private val listenerFactory: ReachabilityGestureListenerFactory,
     private val windowSessionSupplier: WindowSessionSupplier,
-    private val inputChannelSupplier: InputChannelSupplier
 ) : LetterboxController {
 
     companion object {
-        @JvmStatic
-        private val TAG = "LetterboxInputController"
+        @JvmStatic private val TAG = "LetterboxInputController"
     }
 
     private val inputDetectorMap = mutableMapOf<Int, LetterboxInputItems>()
@@ -58,33 +57,30 @@ class LetterboxInputController @Inject constructor(
         key: LetterboxKey,
         transaction: Transaction,
         parentLeash: SurfaceControl,
-        token: WindowContainerToken?
+        token: WindowContainerToken?,
     ) {
-        inputDetectorMap.runOnItem(key.taskId, onMissed = { k, m ->
-            val gestureListener =
-                listenerFactory.createReachabilityGestureListener(key.taskId, token)
-            val detector = LetterboxInputDetector(
-                context,
-                handler,
-                gestureListener,
-                inputSurfaceBuilder,
-                windowSessionSupplier,
-                inputChannelSupplier
-            ).apply {
-                start(transaction, parentLeash, key)
-            }
-            m[k] = LetterboxInputItems(detector, gestureListener)
-        })
+        inputDetectorMap.runOnItem(
+            key.taskId,
+            onMissed = { k, m ->
+                val gestureListener =
+                    listenerFactory.createReachabilityGestureListener(key.taskId, token)
+                val detector =
+                    LetterboxInputDetector(
+                            context,
+                            handler,
+                            gestureListener,
+                            inputSurfaceBuilder,
+                            windowSessionSupplier,
+                        )
+                        .apply { start(transaction, parentLeash, key) }
+                m[k] = LetterboxInputItems(detector, gestureListener)
+            },
+        )
     }
 
-    override fun destroyLetterboxSurface(
-        key: LetterboxKey,
-        transaction: Transaction
-    ) {
+    override fun destroyLetterboxSurface(key: LetterboxKey, transaction: Transaction) {
         with(inputDetectorMap) {
-            runOnItem(key.taskId, onFound = { item ->
-                item.inputDetector.stop(transaction)
-            })
+            runOnItem(key.taskId, onFound = { item -> item.inputDetector.stop(transaction) })
             remove(key.taskId)
         }
     }
@@ -92,12 +88,13 @@ class LetterboxInputController @Inject constructor(
     override fun updateLetterboxSurfaceVisibility(
         key: LetterboxKey,
         transaction: Transaction,
-        visible: Boolean
+        visible: Boolean,
     ) {
         with(inputDetectorMap) {
-            runOnItem(key.taskId, onFound = { item ->
-                item.inputDetector.updateVisibility(transaction, visible)
-            })
+            runOnItem(
+                key.taskId,
+                onFound = { item -> item.inputDetector.updateVisibility(transaction, visible) },
+            )
         }
     }
 
@@ -105,12 +102,15 @@ class LetterboxInputController @Inject constructor(
         key: LetterboxKey,
         transaction: Transaction,
         taskBounds: Rect,
-        activityBounds: Rect
+        activityBounds: Rect,
     ) {
-        inputDetectorMap.runOnItem(key.taskId, onFound = { item ->
-            item.inputDetector.updateTouchableRegion(transaction, Region(taskBounds))
-            item.gestureListener.updateActivityBounds(activityBounds)
-        })
+        inputDetectorMap.runOnItem(
+            key.taskId,
+            onFound = { item ->
+                item.inputDetector.updateTouchableRegion(transaction, Region(taskBounds))
+                item.gestureListener.updateActivityBounds(activityBounds)
+            },
+        )
     }
 
     override fun dump() {

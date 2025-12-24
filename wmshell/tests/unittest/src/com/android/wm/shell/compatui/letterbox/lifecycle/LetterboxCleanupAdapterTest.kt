@@ -28,7 +28,7 @@ import android.view.SurfaceControl.Transaction
 import android.window.IWindowContainerToken
 import android.window.WindowContainerToken
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.ShellTaskOrganizer
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.common.ShellExecutor
@@ -37,6 +37,7 @@ import com.android.wm.shell.compatui.letterbox.LetterboxKey
 import com.android.wm.shell.compatui.letterbox.MixedLetterboxController
 import com.android.wm.shell.compatui.letterbox.asMode
 import com.android.wm.shell.sysui.ShellInit
+import java.util.function.Consumer
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
@@ -44,13 +45,11 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import java.util.function.Consumer
 
 /**
  * Tests for [LetterboxCleanupAdapter].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:LetterboxCleanupAdapterTest
+ * Build/Install/Run: atest WMShellUnitTests:LetterboxCleanupAdapterTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
@@ -79,21 +78,14 @@ class LetterboxCleanupAdapterTest : ShellTestCase() {
     fun `When Task destroyed letterbox surfaces are removed`() {
         runTestScenario { r ->
             r.invokeShellInit()
-            r.sendTaskDestroyEvent(
-                r.createTaskInfo(
-                    id = 20,
-                    taskDisplayId = 3
-                )
-            )
+            r.sendTaskDestroyEvent(r.createTaskInfo(id = 20, taskDisplayId = 3))
 
             r.checkTransactionSupplierIsInvoked(expected = true)
             r.checkControllerIsInvoked(expected = true, taskId = 20, displayId = 3)
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<LetterboxCleanerAdapterRobotTest>) {
         val robot = LetterboxCleanerAdapterRobotTest()
         consumer.accept(robot)
@@ -117,28 +109,28 @@ class LetterboxCleanupAdapterTest : ShellTestCase() {
             transaction = mock<Transaction>()
             whenever(transactionSupplier.get()).thenReturn(transaction)
             mixedLetterboxController = mock<MixedLetterboxController>()
-            mLetterboxCleanupAdapter = LetterboxCleanupAdapter(
-                shellInit,
-                shellTaskOrganizer,
-                transactionSupplier,
-                mixedLetterboxController
-            )
+            mLetterboxCleanupAdapter =
+                LetterboxCleanupAdapter(
+                    shellInit,
+                    shellTaskOrganizer,
+                    transactionSupplier,
+                    mixedLetterboxController,
+                )
         }
 
         fun createTaskInfo(
             id: Int = 0,
             taskDisplayId: Int = DEFAULT_DISPLAY,
             windowingMode: Int = WINDOWING_MODE_FREEFORM,
-            windowToken: WindowContainerToken = WindowContainerToken(mock<IWindowContainerToken>())
+            windowToken: WindowContainerToken = WindowContainerToken(mock<IWindowContainerToken>()),
         ) =
             RunningTaskInfo().apply {
                 taskId = id
                 displayId = taskDisplayId
                 configuration.windowConfiguration.windowingMode = windowingMode
                 token = windowToken
-                baseIntent = Intent().apply {
-                    component = ComponentName("package", "component.name")
-                }
+                baseIntent =
+                    Intent().apply { component = ComponentName("package", "component.name") }
             }
 
         fun sendTaskDestroyEvent(taskInfo: RunningTaskInfo) {
@@ -156,11 +148,11 @@ class LetterboxCleanupAdapterTest : ShellTestCase() {
         }
 
         fun checkControllerIsInvoked(expected: Boolean, taskId: Int, displayId: Int) {
-            verify(mixedLetterboxController, expected.asMode()).destroyLetterboxSurface(
-                eq(
-                    LetterboxKey(displayId = displayId, taskId = taskId)
-                ), eq(transaction)
-            )
+            verify(mixedLetterboxController, expected.asMode())
+                .destroyLetterboxSurface(
+                    eq(LetterboxKey(displayId = displayId, taskId = taskId)),
+                    eq(transaction),
+                )
         }
     }
 }

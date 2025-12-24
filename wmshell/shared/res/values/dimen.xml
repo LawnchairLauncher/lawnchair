@@ -49,6 +49,10 @@
     <dimen name="drop_target_expanded_view_padding_horizontal">24dp</dimen>
     <dimen name="drop_target_bubble_bar_padding_horizontal">24dp</dimen>
 
-    <!-- The corner radius of freeform tasks in desktop windowing. -->
+    <!--
+        The corner radius of freeform tasks in desktop windowing.
+        The value should match the corresponding resource in the Launcher:
+        packages/apps/Launcher3/quickstep/res/values/dimens.xml
+     -->
     <dimen name="desktop_windowing_freeform_rounded_corner_radius">16dp</dimen>
 </resources>

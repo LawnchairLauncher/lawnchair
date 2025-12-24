@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.4.0-alpha08" type="baseline" client="" dependencies="true" name="" variant="all" version="8.4.0-alpha08">
+
+    <issue
+        id="UnspecifiedRegisterReceiverFlag"
+        message="`same(underTest)` is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected broadcasts registered for an IntentFilter that cannot be inspected by lint"
+        errorLine1="        verify(context).registerReceiver(same(underTest), intentFilterCaptor.capture())"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/apps/Launcher3/tests/multivalentTests/src/com/android/launcher3/util/SimpleBroadcastReceiverTest.kt"
+            line="66"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedRegisterReceiverFlag"
+        message="`same(underTest)` is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected broadcasts registered for an IntentFilter that cannot be inspected by lint"
+        errorLine1="        verify(context).registerReceiver(same(underTest), intentFilterCaptor.capture())"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/apps/Launcher3/tests/multivalentTests/src/com/android/launcher3/util/SimpleBroadcastReceiverTest.kt"
+            line="78"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedRegisterReceiverFlag"
+        message="`same(underTest)` is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected broadcasts registered for an IntentFilter that cannot be inspected by lint"
+        errorLine1="        verify(context).registerReceiver(same(underTest), intentFilterCaptor.capture())"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/apps/Launcher3/tests/multivalentTests/src/com/android/launcher3/util/SimpleBroadcastReceiverTest.kt"
+            line="104"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="DiscouragedApi"
+        message="Should not restrict activity to fixed orientation. This may not be suitable for different form factors, causing the app to be letterboxed."
+        errorLine1="            android:screenOrientation=&quot;unspecified&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="192"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingVersion"
+        message="Should set `android:versionCode` to specify the application version"
+        errorLine1="&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2=" ~~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="2"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="MissingVersion"
+        message="Should set `android:versionName` to specify the application version"
+        errorLine1="&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2=" ~~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="2"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="ExportedContentProvider"
+        message="Exported content providers can provide access to potentially sensitive data"
+        errorLine1="        &lt;provider"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="62"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ExportedContentProvider"
+        message="Exported content providers can provide access to potentially sensitive data"
+        errorLine1="        &lt;provider"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="177"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="ExportedService"
+        message="Exported service does not require permission"
+        errorLine1="        &lt;service"
+        errorLine2="         ~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="67"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="HardcodedDebugMode"
+        message="Avoid hardcoding the debug mode; leaving it out allows debug and release builds to automatically assign one"
+        errorLine1="        android:debuggable=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="42"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ExpiredTargetSdkVersion"
+        message="Google Play requires that apps target API level 33 or higher."
+        errorLine1="        android:targetSdkVersion=&quot;30&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="7"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="QueryAllPackagesPermission"
+        message="A `&lt;queries>` declaration should generally be used instead of QUERY_ALL_PACKAGES; see https://g.co/dev/packagevisibility for details"
+        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.QUERY_ALL_PACKAGES&quot; />"
+        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="./out/soong/.intermediates/vendor/unbundled_google/packages/NexusLauncher/tests/NexusLauncherTests/android_common/manifest_merger/AndroidManifest.xml"
+            line="24"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="IgnoreWithoutReason"
+        message="Test is ignored without giving any explanation"
+        errorLine1="@Ignore"
+        errorLine2="~~~~~~~">
+        <location
+            file="packages/apps/Launcher3/quickstep/tests/multivalentTests/src/com/android/quickstep/LauncherSwipeHandlerV2TestCase.java"
+            line="42"
+            column="1"/>
+    </issue>
+
+</issues>

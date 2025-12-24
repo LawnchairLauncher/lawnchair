@@ -34,32 +34,22 @@ import org.mockito.kotlin.doReturn
 /**
  * Tests for [LetterboxConfiguration].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:LetterboxConfigurationTest
+ * Build/Install/Run: atest WMShellUnitTests:LetterboxConfigurationTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
 class LetterboxConfigurationTest : ShellTestCase() {
 
     companion object {
-        @JvmStatic
-        val COLOR_WHITE = Color.valueOf(Color.WHITE)
-        @JvmStatic
-        val COLOR_RED = Color.valueOf(Color.RED)
-        @JvmStatic
-        val COLOR_BLACK = Color.valueOf(Color.BLACK)
-        @JvmStatic
-        val COLOR_WHITE_RESOURCE_ID = android.R.color.white
-        @JvmStatic
-        val COLOR_BLACK_RESOURCE_ID = android.R.color.black
-        @JvmStatic
-        val ROUNDED_CORNER_RADIUS_DEFAULT = 32
-        @JvmStatic
-        val ROUNDED_CORNER_RADIUS_VALID = 16
-        @JvmStatic
-        val ROUNDED_CORNER_RADIUS_NONE = 0
-        @JvmStatic
-        val ROUNDED_CORNER_RADIUS_INVALID = -10
+        @JvmStatic val COLOR_WHITE = Color.valueOf(Color.WHITE)
+        @JvmStatic val COLOR_RED = Color.valueOf(Color.RED)
+        @JvmStatic val COLOR_BLACK = Color.valueOf(Color.BLACK)
+        @JvmStatic val COLOR_WHITE_RESOURCE_ID = android.R.color.white
+        @JvmStatic val COLOR_BLACK_RESOURCE_ID = android.R.color.black
+        @JvmStatic val ROUNDED_CORNER_RADIUS_DEFAULT = 32
+        @JvmStatic val ROUNDED_CORNER_RADIUS_VALID = 16
+        @JvmStatic val ROUNDED_CORNER_RADIUS_NONE = 0
+        @JvmStatic val ROUNDED_CORNER_RADIUS_INVALID = -10
     }
 
     @Test
@@ -183,9 +173,7 @@ class LetterboxConfigurationTest : ShellTestCase() {
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<LetterboxConfigurationRobotTest>) {
         val robot = LetterboxConfigurationRobotTest(mContext)
         consumer.accept(robot)
@@ -202,12 +190,14 @@ class LetterboxConfigurationTest : ShellTestCase() {
         }
 
         fun setDefaultBackgroundColorId(@ColorRes colorId: Int) {
-            doReturn(colorId).`when`(resources)
+            doReturn(colorId)
+                .`when`(resources)
                 .getColor(R.color.config_letterboxBackgroundColor, null)
         }
 
         fun setDefaultRoundedCornerRadius(radius: Int) {
-            doReturn(radius).`when`(resources)
+            doReturn(radius)
+                .`when`(resources)
                 .getInteger(R.integer.config_letterboxActivityCornersRadius)
         }
 

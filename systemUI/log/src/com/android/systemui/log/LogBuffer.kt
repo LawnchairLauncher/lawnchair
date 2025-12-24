@@ -243,6 +243,12 @@ constructor(
         }
     }
 
+    /** Clears the data from this buffer and frees its memory. */
+    @Synchronized
+    fun clear() {
+        buffer.clear()
+    }
+
     private fun echoToSystrace(level: LogLevel, tag: String, strMessage: String) {
         return // LC-Ignored
     }

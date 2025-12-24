@@ -17,7 +17,7 @@
 package com.android.wm.shell.flicker.pip.nonmatchparent
 
 import android.platform.test.annotations.Presubmit
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerTest
 import android.tools.traces.component.ComponentNameMatcher
 import com.android.server.wm.flicker.helpers.BottomHalfPipAppHelper
 import com.android.server.wm.flicker.helpers.PipAppHelper
@@ -28,7 +28,7 @@ import org.junit.Test
  * Base test class to verify PIP exit animation with an activity layout to the bottom half of
  * the container.
  */
-abstract class BottomHalfExitPipToAppTransition(flicker: LegacyFlickerTest) :
+abstract class BottomHalfExitPipToAppTransition(flicker: FlickerTest) :
     ExitPipToAppTransition(flicker) {
 
     override val pipApp: PipAppHelper = BottomHalfPipAppHelper(instrumentation)

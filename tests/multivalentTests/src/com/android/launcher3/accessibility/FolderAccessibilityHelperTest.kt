@@ -17,29 +17,29 @@
 package com.android.launcher3.accessibility // Use the original package
 
 // Imports
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.CellLayout
 import com.android.launcher3.folder.FolderPagedView
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.TestActivityContext
 import kotlin.math.min
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class FolderAccessibilityHelperTest {
 
     // Context
-    private lateinit var mContext: Context
+    @get:Rule val mContext = TestActivityContext()
     // Mocks
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
     @Mock private lateinit var mockParent: FolderPagedView
     @Mock private lateinit var mockLayout: CellLayout
 
@@ -52,8 +52,6 @@ class FolderAccessibilityHelperTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        mContext = ActivityContextWrapper(getApplicationContext())
         `when`(mockLayout.parent).thenReturn(mockParent)
         `when`(mockLayout.context).thenReturn(mContext)
 

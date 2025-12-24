@@ -102,12 +102,14 @@ class TaskbarNavLayoutter(
         startContextualContainer.removeAllViews()
 
         if (!context.deviceProfile.deviceProperties.isGestureMode) {
+            val contextualButtonWidth =
+                resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_width)
             val contextualMargin =
                 resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_padding)
             repositionContextualContainer(endContextualContainer, WRAP_CONTENT, 0, 0, Gravity.END)
             repositionContextualContainer(
                 startContextualContainer,
-                WRAP_CONTENT,
+                contextualButtonWidth,
                 contextualMargin,
                 contextualMargin,
                 Gravity.START,

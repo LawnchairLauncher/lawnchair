@@ -42,6 +42,7 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.IconShape;
 import com.android.launcher3.icons.cache.CachedObject;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
@@ -58,7 +59,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,6 +83,8 @@ public class SimpleWidgetsSearchAlgorithmTest {
     private Context mContext;
 
     private SimpleWidgetsSearchAlgorithm mSimpleWidgetsSearchAlgorithm;
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private WidgetsSearchDataProvider mDataProvider;
     @Mock
@@ -88,7 +92,6 @@ public class SimpleWidgetsSearchAlgorithmTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         doAnswer(invocation -> {
             CachedObject componentWithLabel = invocation.getArgument(0);
             return componentWithLabel.getComponent().getShortClassName();
@@ -194,7 +197,8 @@ public class SimpleWidgetsSearchAlgorithmTest {
             UserHandle userHandle) {
         PackageItemInfo pInfo = new PackageItemInfo(packageName, userHandle);
         pInfo.title = appName;
-        pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
+        pInfo.bitmap = BitmapInfo.of(
+                Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0, IconShape.EMPTY);
         return pInfo;
     }
 

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.allapps;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
@@ -25,29 +27,31 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
-import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.util.ActivityContextWrapper;
-import com.android.launcher3.util.ApiWrapper;
+import com.android.launcher3.util.SandboxApplication;
+import com.android.launcher3.util.TestActivityContext;
 import com.android.launcher3.util.UserIconInfo;
+import com.android.launcher3.util.rule.MockUsersRule;
+import com.android.launcher3.util.rule.MockUsersRule.MockUser;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Before;
@@ -55,161 +59,123 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 @RunWith(AndroidJUnit4.class)
+@MockUser(userType = UserIconInfo.TYPE_MAIN)
+@MockUser(userType = UserIconInfo.TYPE_PRIVATE)
 public class PrivateProfileManagerTest {
 
-    @Rule(order = 0)
-    public TestRule testStabilityRule = new TestStabilityRule();
+    @Rule public TestRule testStabilityRule = new TestStabilityRule();
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+    @Rule public SandboxApplication app = spy(new SandboxApplication().withModelDependency());
+    @Rule public MockUsersRule mockUserRule = new MockUsersRule(app);
+    @Rule public TestActivityContext context = new TestActivityContext(app);
 
-    private static final UserHandle MAIN_HANDLE = Process.myUserHandle();
-    private static final UserHandle PRIVATE_HANDLE = new UserHandle(11);
-    private static final UserIconInfo MAIN_ICON_INFO =
-            new UserIconInfo(MAIN_HANDLE, UserIconInfo.TYPE_MAIN);
-    private static final UserIconInfo PRIVATE_ICON_INFO =
-            new UserIconInfo(PRIVATE_HANDLE, UserIconInfo.TYPE_PRIVATE);
+    private UserHandle mPrivateUser;
 
+    private ActivityAllAppsContainerView<?> mActivityAllAppsContainerView;
     private PrivateProfileManager mPrivateProfileManager;
-    @Mock
-    private ActivityAllAppsContainerView mAllApps;
+
     @Mock
     private StatsLogManager mStatsLogManager;
     @Mock
-    private UserCache mUserCache;
-    @Mock
-    private UserManager mUserManager;
-    @Mock
-    private Context mContext;
-    @Mock
-    private AllAppsStore<?> mAllAppsStore;
-    @Mock
-    private PackageManager mPackageManager;
-    @Mock
-    private LauncherApps mLauncherApps;
-    @Mock
     private AllAppsRecyclerView mAllAppsRecyclerView;
-    @Mock
-    private Resources mResources;
+
+    private UserManager mUserManager;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        when(mUserCache.getUserProfiles())
-                .thenReturn(Arrays.asList(MAIN_HANDLE, PRIVATE_HANDLE));
-        when(mUserCache.getUserInfo(Process.myUserHandle())).thenReturn(MAIN_ICON_INFO);
-        when(mUserCache.getUserInfo(PRIVATE_HANDLE)).thenReturn(PRIVATE_ICON_INFO);
-        when(mAllApps.getContext()).thenReturn(mContext);
-        when(mContext.getResources()).thenReturn(mResources);
-        when(mContext.getApplicationContext()).thenReturn(getApplicationContext());
-        when(mAllApps.getAppsStore()).thenReturn(mAllAppsStore);
-        when(mAllApps.getActiveRecyclerView()).thenReturn(mAllAppsRecyclerView);
-        when(mContext.getPackageManager()).thenReturn(mPackageManager);
-        when(mPackageManager.resolveActivity(any(), any())).thenReturn(new ResolveInfo());
-        when(mContext.getSystemService(LauncherApps.class)).thenReturn(mLauncherApps);
-        when(mLauncherApps.getAppMarketActivityIntent(any(), any())).thenReturn(PendingIntent
-                .getActivity(new ActivityContextWrapper(getApplicationContext()), 0,
-                        new Intent(), PendingIntent.FLAG_IMMUTABLE).getIntentSender());
-        when(mContext.getPackageName())
-                .thenReturn("com.android.launcher3.tests.privateProfileManager");
-        when(mLauncherApps.getPreInstalledSystemPackages(any())).thenReturn(new ArrayList<>());
-        mPrivateProfileManager = new PrivateProfileManager(mUserManager,
-                mAllApps, mStatsLogManager, mUserCache);
+        mPrivateUser = mockUserRule.findUser(UserIconInfo::isPrivate);
+        mActivityAllAppsContainerView = new ActivityAllAppsContainerView(context);
+
+        PackageManager pm = app.getPackageManager();
+        doReturn(new ResolveInfo()).when(pm).resolveActivity(any(), any());
+
+        LauncherApps launcherApps = app.spyService(LauncherApps.class);
+        doReturn(PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), FLAG_IMMUTABLE)
+                .getIntentSender()).when(launcherApps).getAppMarketActivityIntent(any(), any());
+
+        mPrivateProfileManager = spy(new PrivateProfileManager(
+                mActivityAllAppsContainerView, mStatsLogManager, UserCache.getInstance(app)));
+        doReturn(mAllAppsRecyclerView).when(mPrivateProfileManager).getMainRecyclerView();
+
+        mUserManager = app.spyService(UserManager.class);
+        doReturn(true).when(mUserManager).requestQuietModeEnabled(anyBoolean(), eq(mPrivateUser));
     }
 
     @Test
     public void lockPrivateProfile_requestsQuietModeAsTrue() throws Exception {
-        when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED)).thenReturn(false);
+        context.getActivityComponent().getAppsStore().setApps(AppInfo.EMPTY_ARRAY, 0, null);
+
 
         mPrivateProfileManager.setQuietMode(true /* lock */);
 
         awaitTasksCompleted();
-        Mockito.verify(mUserManager).requestQuietModeEnabled(true, PRIVATE_HANDLE);
+        Mockito.verify(mUserManager).requestQuietModeEnabled(true, mPrivateUser);
     }
 
     @Test
     public void unlockPrivateProfile_requestsQuietModeAsFalse() throws Exception {
-        when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED)).thenReturn(true);
+        context.getActivityComponent().getAppsStore().setApps(
+                AppInfo.EMPTY_ARRAY, FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED, null);
 
         mPrivateProfileManager.setQuietMode(false /* unlock */);
 
         awaitTasksCompleted();
-        Mockito.verify(mUserManager).requestQuietModeEnabled(false, PRIVATE_HANDLE);
+        Mockito.verify(mUserManager).requestQuietModeEnabled(false, mPrivateUser);
     }
 
     @Test
     public void quietModeFlagPresent_privateSpaceIsResetToDisabled() {
-        PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
-        doNothing().when(privateProfileManager).addPrivateSpaceDecorator();
-        doNothing().when(privateProfileManager).executeLock();
-        doReturn(mAllAppsRecyclerView).when(privateProfileManager).getMainRecyclerView();
-        when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
-                .thenReturn(false, true);
+        doNothing().when(mPrivateProfileManager).addPrivateSpaceDecorator();
+        doNothing().when(mPrivateProfileManager).executeLock();
+        context.getActivityComponent().getAppsStore().setApps(AppInfo.EMPTY_ARRAY, 0, null);
 
         // In first call the state should be disabled.
-        privateProfileManager.reset();
+        mPrivateProfileManager.reset();
         assertEquals("Profile State is not Disabled", STATE_ENABLED,
-                privateProfileManager.getCurrentState());
+                mPrivateProfileManager.getCurrentState());
 
         // In the next call the state should be disabled.
-        privateProfileManager.reset();
+        context.getActivityComponent().getAppsStore().setApps(
+                AppInfo.EMPTY_ARRAY, FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED, null);
+        mPrivateProfileManager.reset();
         assertEquals("Profile State is not Disabled", STATE_DISABLED,
-                privateProfileManager.getCurrentState());
+                mPrivateProfileManager.getCurrentState());
     }
 
     @Test
     public void transitioningToUnlocked_resetCallsPostUnlock() throws Exception {
-        PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
-        doNothing().when(privateProfileManager).addPrivateSpaceDecorator();
-        doReturn(mAllAppsRecyclerView).when(privateProfileManager).getMainRecyclerView();
-        when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
-                .thenReturn(false);
-        doNothing().when(privateProfileManager).expandPrivateSpace();
-        when(privateProfileManager.getCurrentState()).thenReturn(STATE_DISABLED);
+        doNothing().when(mPrivateProfileManager).addPrivateSpaceDecorator();
+        context.getActivityComponent().getAppsStore().setApps(AppInfo.EMPTY_ARRAY, 0, null);
+        doNothing().when(mPrivateProfileManager).expandPrivateSpace();
+        when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_DISABLED);
 
-        privateProfileManager.setQuietMode(false /* unlock */);
-        privateProfileManager.reset();
+        mPrivateProfileManager.setQuietMode(false /* unlock */);
+        mPrivateProfileManager.reset();
 
         awaitTasksCompleted();
-        Mockito.verify(privateProfileManager).postUnlock();
+        Mockito.verify(mPrivateProfileManager).postUnlock();
     }
 
     @Test
     public void transitioningToLocked_resetCallsExecuteLock() throws Exception {
-        PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
-        doNothing().when(privateProfileManager).addPrivateSpaceDecorator();
-        doNothing().when(privateProfileManager).executeLock();
-        doReturn(mAllAppsRecyclerView).when(privateProfileManager).getMainRecyclerView();
-        when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
-                .thenReturn(true);
-        doNothing().when(privateProfileManager).expandPrivateSpace();
-        when(privateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
+        doNothing().when(mPrivateProfileManager).addPrivateSpaceDecorator();
+        doNothing().when(mPrivateProfileManager).executeLock();
+        context.getActivityComponent().getAppsStore().setApps(
+                AppInfo.EMPTY_ARRAY, FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED, null);
+        doNothing().when(mPrivateProfileManager).expandPrivateSpace();
+        when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
 
-        privateProfileManager.setQuietMode(true /* lock */);
-        privateProfileManager.reset();
+        mPrivateProfileManager.setQuietMode(true /* lock */);
+        mPrivateProfileManager.reset();
 
         awaitTasksCompleted();
-        Mockito.verify(privateProfileManager).executeLock();
-    }
-
-    @Test
-    public void openPrivateSpaceSettings_triggersCorrectIntent() {
-        Intent expectedIntent = ApiWrapper.INSTANCE.get(mContext).getPrivateSpaceSettingsIntent();
-        ArgumentCaptor<Intent> acIntent = ArgumentCaptor.forClass(Intent.class);
-        mPrivateProfileManager.setPrivateSpaceSettingsAvailable(true);
-
-        mContext.startActivity(expectedIntent);
-
-        Mockito.verify(mContext).startActivity(acIntent.capture());
-        assertEquals("Intent Action is different",
-                expectedIntent == null ? null : expectedIntent.toUri(0),
-                acIntent.getValue() == null ? null : acIntent.getValue().toUri(0));
+        Mockito.verify(mPrivateProfileManager).executeLock();
     }
 
     private static void awaitTasksCompleted() throws Exception {

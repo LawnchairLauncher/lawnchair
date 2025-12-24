@@ -34,6 +34,7 @@ import com.android.launcher3.util.SandboxApplication
 import com.android.launcher3.util.TestUtil
 import com.android.quickstep.BaseActivityInterface
 import com.android.quickstep.OverviewCommandHelper
+import com.android.quickstep.OverviewCommandHelper.CommandType.TOGGLE_OVERVIEW_PREVIOUS
 import com.android.quickstep.OverviewComponentObserver
 import com.android.quickstep.RecentsModel
 import com.android.quickstep.TopTaskTracker
@@ -44,8 +45,10 @@ import com.android.quickstep.util.SplitTask
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.system.ActivityManagerWrapper
 import com.android.systemui.shared.system.actioncorner.ActionCornerConstants.HOME
+import com.android.systemui.shared.system.actioncorner.ActionCornerConstants.OVERVIEW
 import com.android.wm.shell.Flags.FLAG_ENABLE_SHELL_TOP_TASK_TRACKING
 import com.android.wm.shell.shared.GroupedTaskInfo
+import com.android.wm.shell.shared.desktopmode.DesktopState
 import com.android.wm.shell.shared.split.SplitBounds
 import com.android.wm.shell.shared.split.SplitScreenConstants
 import java.util.function.Consumer
@@ -72,6 +75,7 @@ class ActionCornerHandlerTest {
     @get:Rule val context = SandboxApplication()
     @get:Rule val mSetFlagsRule = SetFlagsRule()
 
+    private val externalDisplayId = 2
     private val overviewCommandHelper: OverviewCommandHelper = mock()
     private val overviewComponentObserver: OverviewComponentObserver = mock()
     private val containerInterface: BaseActivityInterface<LauncherState, QuickstepLauncher> = mock()
@@ -81,6 +85,7 @@ class ActionCornerHandlerTest {
     private val topTaskTracker: TopTaskTracker = mock()
 
     private val recentsModel: RecentsModel = mock()
+    private val desktopState: DesktopState = mock()
     private val activityManagerWrapper: ActivityManagerWrapper = mock()
 
     private val bgExecutor = UI_HELPER_EXECUTOR
@@ -92,6 +97,7 @@ class ActionCornerHandlerTest {
             topTaskTracker,
             recentsModel,
             activityManagerWrapper,
+            desktopState,
             bgExecutor,
             overviewCommandHelper,
         )
@@ -189,6 +195,25 @@ class ActionCornerHandlerTest {
         // action corner
         actionCornerHandler.handleAction(HOME, DEFAULT_DISPLAY)
         verify(activityManagerWrapper, never()).startActivityFromRecents(anyInt(), any())
+    }
+
+    @Test
+    fun inProjectedMode_overviewActionCorner_toggleOverviewForAllDisplaysExceptDefaultDisplay() {
+        whenever(desktopState.isProjectedMode()).thenReturn(true)
+
+        actionCornerHandler.handleAction(OVERVIEW, externalDisplayId)
+
+        verify(overviewCommandHelper)
+            .addCommandsForDisplaysExcept(TOGGLE_OVERVIEW_PREVIOUS, DEFAULT_DISPLAY)
+    }
+
+    @Test
+    fun notInProjectedMode_overviewActionCorner_toggleOverviewForAllDisplays() {
+        whenever(desktopState.isProjectedMode()).thenReturn(false)
+
+        actionCornerHandler.handleAction(OVERVIEW, externalDisplayId)
+
+        verify(overviewCommandHelper).addCommandsForAllDisplays(TOGGLE_OVERVIEW_PREVIOUS)
     }
 
     private fun mockFullScreenTopTask(taskInfo: RecentTaskInfo) {

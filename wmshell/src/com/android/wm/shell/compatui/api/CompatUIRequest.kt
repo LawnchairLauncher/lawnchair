@@ -16,17 +16,12 @@
 
 package com.android.wm.shell.compatui.api
 
-/**
- * Abstraction for all the possible Compat UI Component requests.
- */
+/** Abstraction for all the possible Compat UI Component requests. */
 interface CompatUIRequest {
-    /**
-     * Unique request identifier
-     */
+    /** Unique request identifier */
     val requestId: Int
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T : CompatUIRequest> asType(): T? = this as? T
+    @Suppress("UNCHECKED_CAST") fun <T : CompatUIRequest> asType(): T? = this as? T
 
     fun <T : CompatUIRequest> asType(clazz: Class<T>): T? {
         return if (clazz.isInstance(this)) clazz.cast(this) else null

@@ -15,24 +15,19 @@
  */
 package com.android.launcher3.model
 
-import android.content.ComponentName
 import android.graphics.Rect
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
-import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.ItemInfo
-import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.GridOccupancy
 import com.android.launcher3.util.IntArray
 import com.android.launcher3.util.IntSparseArrayMap
 import com.android.launcher3.util.LauncherLayoutBuilder
 import com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY
 import com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE
-import com.android.launcher3.util.ModelTestExtensions.loadModelSync
+import com.android.launcher3.util.LayoutResource
 import com.android.launcher3.util.SandboxApplication
-import com.android.launcher3.util.rule.LayoutProviderRule
-import java.util.UUID
 import org.junit.Rule
 
 /** Base class for workspace related tests. */
@@ -40,17 +35,15 @@ abstract class AbstractWorkspaceModelTest {
     companion object {
         val emptyScreenSpaces = listOf(Rect(0, 0, 5, 5))
         val fullScreenSpaces = emptyList<Rect>()
-        val nonEmptyScreenSpaces = listOf(Rect(1, 2, 3, 4))
     }
 
     @get:Rule val mTargetContext: SandboxApplication = SandboxApplication().withModelDependency()
-    @get:Rule var mLayoutProvider: LayoutProviderRule = LayoutProviderRule(mTargetContext)
+    @get:Rule var mLayout: LayoutResource = LayoutResource(mTargetContext)
 
     protected lateinit var mLayoutBuilder: LauncherLayoutBuilder
     protected lateinit var mIdp: InvariantDeviceProfile
     protected lateinit var mAppState: LauncherAppState
     protected lateinit var mExistingScreens: IntArray
-    protected lateinit var mNewScreens: IntArray
     protected lateinit var mAddedWorkspaceItems: ArrayList<ItemInfo>
     protected lateinit var mScreenOccupancy: IntSparseArrayMap<GridOccupancy>
 
@@ -65,17 +58,7 @@ abstract class AbstractWorkspaceModelTest {
         mAppState = LauncherAppState.getInstance(mTargetContext)
         mExistingScreens = IntArray()
         mScreenOccupancy = IntSparseArrayMap()
-        mNewScreens = IntArray()
         mAddedWorkspaceItems = ArrayList()
-    }
-
-    /** Sets up workspaces with the given screen IDs with some items and a 2x2 space. */
-    fun setupWorkspaces(screenIdsWithItems: List<Int>) {
-        screenIdsWithItems.forEach { screenId -> setupWorkspace(screenId, nonEmptyScreenSpaces) }
-        mLayoutProvider.setupDefaultLayoutProvider(mLayoutBuilder)
-        mIdp.numRows = 5
-        mIdp.numColumns = mIdp.numRows
-        model.loadModelSync()
     }
 
     /**
@@ -88,10 +71,9 @@ abstract class AbstractWorkspaceModelTest {
         screen3: List<Rect>? = null,
     ) {
         listOf(screen0, screen1, screen2, screen3).let(this::setupWithSpaces)
-        mLayoutProvider.setupDefaultLayoutProvider(mLayoutBuilder)
         mIdp.numRows = 5
         mIdp.numColumns = mIdp.numRows
-        model.loadModelSync()
+        mLayout.set(mLayoutBuilder)
     }
 
     private fun setupWithSpaces(workspaceSpaces: List<List<Rect>?>) {
@@ -115,25 +97,5 @@ abstract class AbstractWorkspaceModelTest {
                 }
             }
         }
-    }
-
-    fun getExistingItem() =
-        WorkspaceItemInfo().apply {
-            intent = AppInfo.makeLaunchIntent(ComponentName(TEST_PACKAGE, TEST_ACTIVITY))
-        }
-
-    fun getNewItem(): WorkspaceItemInfo {
-        val itemPackage = UUID.randomUUID().toString()
-        return WorkspaceItemInfo().apply {
-            intent = AppInfo.makeLaunchIntent(ComponentName(itemPackage, itemPackage))
-        }
-    }
-}
-
-data class NewItemSpace(val screenId: Int, val cellX: Int, val cellY: Int) {
-    fun toIntArray() = intArrayOf(screenId, cellX, cellY)
-
-    companion object {
-        fun fromIntArray(array: kotlin.IntArray) = NewItemSpace(array[0], array[1], array[2])
     }
 }

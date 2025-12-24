@@ -27,9 +27,9 @@ import com.android.wm.shell.TestRunningTaskInfoBuilder
 import com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT
 import com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT
 import com.android.wm.shell.splitscreen.SplitScreenController
-import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mock
 import org.mockito.kotlin.any
@@ -54,7 +54,6 @@ class DesktopMenuPositionUtilityTest : ShellTestCase() {
             calculateMenuPosition(
                 splitScreenController = mockSplitScreenController,
                 taskInfo = task,
-                MARGIN_START,
                 MARGIN_TOP,
                 CAPTION_X,
                 CAPTION_Y,
@@ -77,7 +76,6 @@ class DesktopMenuPositionUtilityTest : ShellTestCase() {
             calculateMenuPosition(
                 splitScreenController = mockSplitScreenController,
                 taskInfo = task,
-                MARGIN_START,
                 MARGIN_TOP,
                 CAPTION_X,
                 CAPTION_Y,
@@ -100,7 +98,6 @@ class DesktopMenuPositionUtilityTest : ShellTestCase() {
             calculateMenuPosition(
                 splitScreenController = mockSplitScreenController,
                 taskInfo = task,
-                MARGIN_START,
                 MARGIN_TOP,
                 CAPTION_X,
                 CAPTION_Y,
@@ -126,7 +123,6 @@ class DesktopMenuPositionUtilityTest : ShellTestCase() {
             calculateMenuPosition(
                 splitScreenController = mockSplitScreenController,
                 taskInfo = task,
-                MARGIN_START,
                 MARGIN_TOP,
                 CAPTION_X,
                 CAPTION_Y,
@@ -149,7 +145,6 @@ class DesktopMenuPositionUtilityTest : ShellTestCase() {
             calculateMenuPosition(
                 splitScreenController = mockSplitScreenController,
                 taskInfo = task,
-                MARGIN_START,
                 MARGIN_TOP,
                 CAPTION_X,
                 CAPTION_Y,
@@ -193,7 +188,6 @@ class DesktopMenuPositionUtilityTest : ShellTestCase() {
         private val SPLIT_BOTTOM_BOUNDS = Rect(0, 800, 2560, 1600)
         private const val CAPTION_X = 800
         private const val CAPTION_Y = 50
-        private const val MARGIN_START = 30
         private const val MARGIN_TOP = 50
         private const val MENU_WIDTH = 500
         private const val CAPTION_WIDTH = 200

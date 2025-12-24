@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Апликација не подржава облачић"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Разделник подељеног екрана"</string>
     <string name="divider_title" msgid="1963391955593749442">"Разделник подељеног екрана"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Режим целог екрана за леви екран"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Леви екран 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Леви екран 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Леви екран 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Режим целог екрана за доњи екран"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Замените горњу апликацију доњом"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Замените леву апликацију десном"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Режим целог екрана за горњи екран"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Горњи екран 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Горњи екран 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Горњи екран 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Режим целог екрана за доњи екран"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Прикажи леву апликацију преко целог екрана"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10% лево, 90% десно"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30% лево, 70% десно"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50% лево, 50% десно"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70% лево, 30% десно"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90% лево, 10% десно"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Прикажи десну апликацију преко целог екрана"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Замени горњу апликацију доњом, задржи актуелну поделу"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Замени леву апликацију десном, задржи актуелну поделу"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Прикажи горњу апликацију преко целог екрана"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10% горњи, 90% доњи"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30% горњи, 70% доњи"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50% горњи, 50% доњи"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70% горњи, 30% доњи"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90% горњи, 10% доњи"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Прикажи доњу апликацију преко целог екрана"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Поделите лево"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Поделите десно"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Поделите у врху"</string>
@@ -131,7 +135,7 @@
     <string name="open_in_browser_text" msgid="9181692926376072904">"Отвори у прегледачу"</string>
     <string name="open_in_app_text" msgid="2874590745116268525">"Отворите у апликацији"</string>
     <string name="new_window_text" msgid="6318648868380652280">"Нови прозор"</string>
-    <string name="manage_windows_text" msgid="5567366688493093920">"Управљајте прозорима"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"Управљај прозорима"</string>
     <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Промени размеру"</string>
     <string name="handle_menu_restart_text" msgid="3907767216238298098">"Оптимизујте приказ"</string>
     <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"Икона грешке"</string>
@@ -168,6 +172,6 @@
     <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Одаберите начин отварања веб-линкова за ову апликацију"</string>
     <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"У апликацији"</string>
     <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"У прегледачу"</string>
-    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"Потврди"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"Важи"</string>
     <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"Овде можете брзо да отварате апликације у прегледачу"</string>
 </resources>

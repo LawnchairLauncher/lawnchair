@@ -47,10 +47,9 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Mapendekezo ya programu yamewekwa kwenye nafasi isiyo na kitu"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Mapendekezo ya programu yamewashwa"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Umezima mapendekezo ya programu"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Programu iliyotabiriwa: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Mafunzo ya Usogezaji kwa Kutumia Miguso"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Mafunzo ya Usogezaji kwa Miguso"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Zungusha kifaa chako"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Tafadhali zungusha kifaa chako ili ukamilishe mafunzo ya usogezaji kwa kutumia miguso"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Tafadhali zungusha kifaa chako ili ukamilishe mafunzo ya usogezaji kwa miguso"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Hakikisha unatelezesha kidole kutoka ukingo wa kulia au kushoto kabisa"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Hakikisha unatelezesha kidole kutoka ukingo wa kulia au kushoto hadi katikati ya skrini na uachilie"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Umejifunza jinsi ya kutelezesha kidole kuanzia kulia ili kurudi nyuma. Sasa jifunze jinsi ya kubadilisha programu."</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Mipangilio ya usogezaji kwenye mfumo"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"<xliff:g id="DEVICE">%1$s</xliff:g> yako iko \ntayari!"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Kifaa chako kiko \ntayari!"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"Uko tayari kuanza!"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"Furahia <xliff:g id="DEVICE">%1$s</xliff:g> yako mpya!"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"Telezesha kidole juu ili uanze kutumia <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"Gusa ili uanze kutumia <xliff:g id="DEVICE">%1$s</xliff:g> yako"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Chagua jinsi ya kusogeza"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"Telezesha kidole juu"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"Gusa kitufe cha ukurasa wa mwanzo"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Arifa"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Mipangilio ya Haraka"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Upauzana"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Upauzana umeonyeshwa"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Upauzana na viputo vinaonyeshwa kushoto"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Upauzana na viputo vinaonyeshwa kulia"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Sehemu ya viungo muhimu"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Onyesha Zana kila wakati"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Badilisha hali ya usogezaji"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Kitenganishi cha Upauzana"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Programu nyingine za hivi majuzi"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"Programu imewekwa kwenye Upauzana"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"Programu imeondolewa kwenye Upauzana"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Sogeza juu/kushoto"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Sogeza chini/kulia"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Fungua programu kama kiputo"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"Aikoni ya programu"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"Kichwa cha programu"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"Kitufe cha kufunga"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"Bandika kwa upauzana"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Bandua kwa upauzana"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"Dokezo"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"Funga"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"Picha ya dokezo"</string>

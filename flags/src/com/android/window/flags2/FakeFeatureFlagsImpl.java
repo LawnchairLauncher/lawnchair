@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 public class FakeFeatureFlagsImpl extends CustomFeatureFlags {
     private final Map<String, Boolean> mFlagMap = new HashMap<>();
     private final FeatureFlags mDefaults;
+    private final boolean IS_EXPORTED = false;
 
     public FakeFeatureFlagsImpl() {
         this(null);
@@ -34,7 +35,7 @@ public class FakeFeatureFlagsImpl extends CustomFeatureFlags {
     }
 
     public void setFlag(String flagName, boolean value) {
-        if (!this.mFlagMap.containsKey(flagName)) {
+        if (!this.mFlagMap.containsKey(flagName) && !IS_EXPORTED) {
             throw new IllegalArgumentException("no such flag " + flagName);
         }
         this.mFlagMap.put(flagName, value);

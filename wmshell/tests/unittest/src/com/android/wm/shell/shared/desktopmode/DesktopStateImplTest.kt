@@ -22,7 +22,10 @@ import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.annotations.Presubmit
 import android.view.Display
+import android.view.IDisplayWindowListener
+import android.view.IWindowManager
 import android.view.WindowManager
+import android.view.WindowManagerGlobal
 import android.window.DesktopExperienceFlags
 import android.window.DesktopModeFlags
 import androidx.test.filters.SmallTest
@@ -31,14 +34,16 @@ import com.android.dx.mockito.inline.extended.ExtendedMockito.doReturn
 import com.android.dx.mockito.inline.extended.StaticMockitoSession
 import com.android.internal.R
 import com.android.server.display.feature.flags.Flags.FLAG_ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.ShellTestCase
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -63,6 +68,7 @@ class DesktopStateImplTest : ShellTestCase() {
             ExtendedMockito.mockitoSession()
                 .strictness(Strictness.LENIENT)
                 .mockStatic(SystemProperties::class.java)
+                .mockStatic(WindowManagerGlobal::class.java)
                 .startMocking()
 
         val resources = mContext.getOrCreateTestableResources()
@@ -370,7 +376,35 @@ class DesktopStateImplTest : ShellTestCase() {
         resources.addOverride(R.bool.config_canInternalDisplayHostDesktops, false)
         whenever(windowManager.isEligibleForDesktopMode(anyInt())).thenReturn(true)
         val desktopState = DesktopStateImpl(context)
+        assertThat(desktopState.isProjectedMode()).isTrue()
+    }
 
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE, FLAG_ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT)
+    @Test
+    fun isProjectedMode_oneDisplay_returnFalse_addAnotherDisplay_onDesktopModeEligibleChanged_returnsTrue() {
+        val mockService: IWindowManager = mock()
+        whenever(WindowManagerGlobal.getWindowManagerService()).thenReturn(mockService)
+        val resources = mContext.getOrCreateTestableResources()
+        resources.addOverride(R.bool.config_isDesktopModeSupported, true)
+        resources.addOverride(R.bool.config_canInternalDisplayHostDesktops, false)
+        whenever(displayManager.displays).thenReturn(arrayOf(defaultDisplay))
+        val desktopState = DesktopStateImpl(context)
+
+        assertThat(desktopState.isProjectedMode()).isFalse()
+
+        val argument = argumentCaptor<IDisplayWindowListener>()
+        verify(mockService)
+            .registerDisplayWindowListener(
+                argument.capture(),
+            )
+       val listener = argument.firstValue
+
+        // Add an extended display
+        whenever(displayManager.displays)
+            .thenReturn(arrayOf(defaultDisplay, extendedDisplay))
+        whenever(windowManager.isEligibleForDesktopMode(anyInt())).thenReturn(true)
+
+        listener.onDesktopModeEligibleChanged(extendedDisplay.displayId)
         assertThat(desktopState.isProjectedMode()).isTrue()
     }
 

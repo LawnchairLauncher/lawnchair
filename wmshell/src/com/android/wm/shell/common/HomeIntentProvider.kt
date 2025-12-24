@@ -23,9 +23,12 @@ import android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN
 import android.content.Context
 import android.content.Intent
 import android.os.UserHandle
+import android.view.Display
 import android.view.Display.DEFAULT_DISPLAY
 import android.window.DesktopExperienceFlags.ENABLE_PER_DISPLAY_DESKTOP_WALLPAPER_ACTIVITY
 import android.window.WindowContainerTransaction
+import com.android.internal.protolog.ProtoLog
+import com.android.wm.shell.protolog.ShellProtoLogGroup
 
 /** Creates home intent **/
 class HomeIntentProvider(
@@ -34,6 +37,13 @@ class HomeIntentProvider(
     fun addLaunchHomePendingIntent(
         wct: WindowContainerTransaction, displayId: Int, userId: Int? = null
     ) {
+        if (displayId == Display.INVALID_DISPLAY) {
+            ProtoLog.w(
+                ShellProtoLogGroup.WM_SHELL,
+                "HomeIntentProvider: attempted to add launch home intent for invalid display",
+            )
+            return
+        }
         val userHandle =
             if (userId != null) UserHandle.of(userId) else UserHandle.of(ActivityManager.getCurrentUser())
 

@@ -20,6 +20,7 @@ import static android.view.PointerIcon.TYPE_HORIZONTAL_DOUBLE_ARROW;
 import static android.view.PointerIcon.TYPE_VERTICAL_DOUBLE_ARROW;
 
 import static com.android.internal.config.sysui.SystemUiDeviceConfigFlags.CURSOR_HOVER_STATES_ENABLED;
+import static com.android.wm.shell.common.split.DividerSnapAlgorithm.SNAP_FLEXIBLE_HYBRID;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.snapPositionToUIString;
 
 import android.animation.Animator;
@@ -74,7 +75,7 @@ import java.util.Objects;
 public class DividerView extends FrameLayout implements View.OnTouchListener {
     public static final long TOUCH_ANIMATION_DURATION = 150;
     public static final long TOUCH_RELEASE_ANIMATION_DURATION = 200;
-    private static final boolean SHOW_DRAG_TOOLTIP = true;
+    private static final boolean SHOW_DRAG_TOOLTIP = false;
 
     private final Paint mPaint = new Paint();
     private final Rect mBackgroundRect = new Rect();
@@ -156,10 +157,23 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
         public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
             super.onInitializeAccessibilityNodeInfo(host, info);
             final DividerSnapAlgorithm snapAlgorithm = mSplitLayout.mDividerSnapAlgorithm;
+            // TODO(b/415827083) remove all this and try to re-land ag/33667759
+            boolean showFlexSnapPoints = snapAlgorithm.areOffscreenRatiosSupported() &&
+                    snapAlgorithm.getSnapMode() == SNAP_FLEXIBLE_HYBRID;
             if (mSplitLayout.isLeftRightSplit()) {
                 info.addAction(new AccessibilityAction(R.id.action_move_tl_full,
                         mContext.getString(R.string.accessibility_action_divider_left_full)));
                 if (snapAlgorithm.isFirstSplitTargetAvailable()) {
+                    info.addAction(new AccessibilityAction(
+                            showFlexSnapPoints ? R.id.action_move_tl_90 : R.id.action_move_tl_70,
+                            showFlexSnapPoints ?
+                                    mContext.getString(
+                                            R.string.accessibility_action_divider_left_90)
+                                    : mContext.getString(
+                                            R.string.accessibility_action_divider_left_70)
+                            ));
+                }
+                if (showFlexSnapPoints && snapAlgorithm.isSecondSplitTargetAvailable()) {
                     info.addAction(new AccessibilityAction(R.id.action_move_tl_70,
                             mContext.getString(R.string.accessibility_action_divider_left_70)));
                 }
@@ -168,9 +182,19 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                     info.addAction(new AccessibilityAction(R.id.action_move_tl_50,
                             mContext.getString(R.string.accessibility_action_divider_left_50)));
                 }
-                if (snapAlgorithm.isLastSplitTargetAvailable()) {
+                if (showFlexSnapPoints && snapAlgorithm.isSecondLastSplitTargetAvailable()) {
                     info.addAction(new AccessibilityAction(R.id.action_move_tl_30,
                             mContext.getString(R.string.accessibility_action_divider_left_30)));
+                }
+                if (snapAlgorithm.isLastSplitTargetAvailable()) {
+                    info.addAction(new AccessibilityAction(
+                            showFlexSnapPoints ? R.id.action_move_tl_10 : R.id.action_move_tl_30,
+                            showFlexSnapPoints ?
+                                    mContext.getString(
+                                            R.string.accessibility_action_divider_left_10)
+                                    : mContext.getString(
+                                            R.string.accessibility_action_divider_left_30)
+                    ));
                 }
                 info.addAction(new AccessibilityAction(R.id.action_move_rb_full,
                         mContext.getString(R.string.accessibility_action_divider_right_full)));
@@ -180,6 +204,18 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                 info.addAction(new AccessibilityAction(R.id.action_move_tl_full,
                         mContext.getString(R.string.accessibility_action_divider_top_full)));
                 if (snapAlgorithm.isFirstSplitTargetAvailable()) {
+                    info.addAction(new AccessibilityAction(
+                            showFlexSnapPoints ? R.id.action_move_tl_90 : R.id.action_move_tl_70,
+                            showFlexSnapPoints ?
+                                    mContext.getString(
+                                            R.string.accessibility_action_divider_top_90)
+                                    : mContext.getString(
+                                            R.string.accessibility_action_divider_top_70)
+                    ));
+                    info.addAction(new AccessibilityAction(R.id.action_move_tl_70,
+                            mContext.getString(R.string.accessibility_action_divider_top_70)));
+                }
+                if (showFlexSnapPoints && snapAlgorithm.isSecondSplitTargetAvailable()) {
                     info.addAction(new AccessibilityAction(R.id.action_move_tl_70,
                             mContext.getString(R.string.accessibility_action_divider_top_70)));
                 }
@@ -188,9 +224,19 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                     info.addAction(new AccessibilityAction(R.id.action_move_tl_50,
                             mContext.getString(R.string.accessibility_action_divider_top_50)));
                 }
-                if (snapAlgorithm.isLastSplitTargetAvailable()) {
+                if (showFlexSnapPoints && snapAlgorithm.isSecondLastSplitTargetAvailable()) {
                     info.addAction(new AccessibilityAction(R.id.action_move_tl_30,
                             mContext.getString(R.string.accessibility_action_divider_top_30)));
+                }
+                if (snapAlgorithm.isLastSplitTargetAvailable()) {
+                    info.addAction(new AccessibilityAction(
+                            showFlexSnapPoints ? R.id.action_move_tl_10 : R.id.action_move_tl_30,
+                            showFlexSnapPoints ?
+                                    mContext.getString(
+                                            R.string.accessibility_action_divider_top_10)
+                                    : mContext.getString(
+                                            R.string.accessibility_action_divider_top_30)
+                    ));
                 }
                 info.addAction(new AccessibilityAction(R.id.action_move_rb_full,
                         mContext.getString(R.string.accessibility_action_divider_bottom_full)));
@@ -209,13 +255,24 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
 
             SnapTarget nextTarget = null;
             DividerSnapAlgorithm snapAlgorithm = mSplitLayout.mDividerSnapAlgorithm;
+            // TODO(b/415827083) remove all this and try to re-land ag/33667759
+            boolean showFlexSnapPoints = snapAlgorithm.areOffscreenRatiosSupported() &&
+                    snapAlgorithm.getSnapMode() == SNAP_FLEXIBLE_HYBRID;
             if (action == R.id.action_move_tl_full) {
                 nextTarget = snapAlgorithm.getDismissEndTarget();
-            } else if (action == R.id.action_move_tl_70) {
+            } else if (action == R.id.action_move_tl_90) {
                 nextTarget = snapAlgorithm.getLastSplitTarget();
+            } else if (action == R.id.action_move_tl_70) {
+                nextTarget = showFlexSnapPoints ?
+                        snapAlgorithm.getSecondLastSplitTarget() :
+                        snapAlgorithm.getLastSplitTarget();
             } else if (action == R.id.action_move_tl_50) {
                 nextTarget = snapAlgorithm.getMiddleTarget();
             } else if (action == R.id.action_move_tl_30) {
+                nextTarget = showFlexSnapPoints ?
+                        snapAlgorithm.getSecondSplitTarget() :
+                        snapAlgorithm.getFirstSplitTarget();
+            } else if (action == R.id.action_move_tl_10) {
                 nextTarget = snapAlgorithm.getFirstSplitTarget();
             } else if (action == R.id.action_move_rb_full) {
                 nextTarget = snapAlgorithm.getDismissStartTarget();
@@ -383,65 +440,14 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                 if (!mMoving && Math.abs(displacement) > mTouchSlop) {
                     mStartPos = touchPos;
                     mMoving = true;
-                    if (Flags.enableMagneticSplitDivider()) {
-                        // Move gesture is confirmed, create framework for magnetic snap
-                        InputDirection direction =
-                                displacement > 0 ? InputDirection.Max : InputDirection.Min;
-                        mDistanceGestureContext = DistanceGestureContext.create(mContext, mStartPos,
-                                direction);
-                        mViewMotionValue = new ViewMotionValue(mStartPos,
-                                mDistanceGestureContext,
-                                mSplitLayout.mDividerSnapAlgorithm.getMotionSpec(),
-                                "dividerView::pos" /* label */);
-                        mLastHoveredOverSnapPosition = mSplitLayout.calculateCurrentSnapPosition();
-                        // Set a "starting region" in which we don't want to show the tooltip yet.
-                        mDragStartingSnapPosition = mSplitLayout.calculateCurrentSnapPosition();
-                        mViewMotionValue.addUpdateCallback(viewMotionValue -> {
-                            int snappedPosition = (int) viewMotionValue.getOutput();
-                            // Whenever MotionValue updates (from user moving the divider):
-                            // - Place divider in its new position
-                            placeDivider(snappedPosition);
-                            // - Play a haptic if entering a magnetic zone
-                            Integer currentlyHoveredOverSnapZone = viewMotionValue.get(
-                                    MagneticDividerUtils.getSNAP_POSITION_KEY());
-
-                            boolean changedSnapPosition = !Objects.equals(
-                                    currentlyHoveredOverSnapZone, mLastHoveredOverSnapPosition);
-                            if (currentlyHoveredOverSnapZone != null && changedSnapPosition) {
-                                playHapticClick();
-                            }
-                            // - Update the last-hovered-over snap zone
-                            mLastHoveredOverSnapPosition = currentlyHoveredOverSnapZone;
-                            // - Update tooltip state if needed
-                            if (SHOW_DRAG_TOOLTIP) {
-                                // - Update internal state for closest snap position (i.e. where the
-                                // user will end up if drag is released)
-                                final float velocity = isLeftRightSplit
-                                        ? mVelocityTracker.getXVelocity()
-                                        : mVelocityTracker.getYVelocity();
-                                int closestSnapPosition = mSplitLayout
-                                        .findSnapTarget(snappedPosition,
-                                                velocity, false /* hardDismiss */)
-                                        .snapPosition;
-                                // If we are still in the starting zone, wait until the user drags
-                                // to a point where the closest snap position is a different one.
-                                if (!mDraggedOutOfStartingRegion
-                                        && closestSnapPosition != mDragStartingSnapPosition) {
-                                    mDraggedOutOfStartingRegion = true;
-                                }
-                                // Afterwards, always show the tooltip, updating to reflect the
-                                // nearest snap point.
-                                if (mDraggedOutOfStartingRegion) {
-                                    showTooltip(snapPositionToUIString(closestSnapPosition));
-                                }
-                            }
-                        });
+                    if (Flags.enableFlexibleTwoAppSplit()) {
+                        initSnapOnMove(displacement, isLeftRightSplit);
                     }
                 }
                 if (mMoving) {
                     final int position = mSplitLayout.getDividerPosition() + touchPos - mStartPos;
                     mLastDraggingPosition = position;
-                    if (Flags.enableMagneticSplitDivider()) {
+                    if (Flags.enableFlexibleTwoAppSplit()) {
                         updateMagneticSnapCalculation(position);
                     } else {
                         placeDivider(position);
@@ -453,7 +459,7 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                 releaseTouching();
                 if (!mMoving) {
                     mSplitLayout.onDraggingCancelled();
-                    if (Flags.enableMagneticSplitDivider()) {
+                    if (Flags.enableFlexibleTwoAppSplit()) {
                         cleanUpMagneticSnapFramework();
                     }
                     break;
@@ -469,7 +475,7 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                         mSplitLayout.findSnapTarget(position, velocity, false /* hardDismiss */);
                 mSplitLayout.snapToTarget(position, snapTarget);
                 mMoving = false;
-                if (Flags.enableMagneticSplitDivider()) {
+                if (Flags.enableFlexibleTwoAppSplit()) {
                     cleanUpMagneticSnapFramework();
                 }
                 break;
@@ -503,6 +509,62 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
     /** Updates the position of the divider. */
     private void placeDivider(int position) {
         mSplitLayout.updateDividerBounds(position, true /* shouldUseParallaxEffect */);
+    }
+
+    /** Performs snapping and haptic clicks based on current divider displacement. */
+    private void initSnapOnMove(int displacement, boolean isLeftRightSplit) {
+        // Move gesture is confirmed, create framework for magnetic snap
+        InputDirection direction =
+                displacement > 0 ? InputDirection.Max : InputDirection.Min;
+        mDistanceGestureContext = DistanceGestureContext.create(mContext, mStartPos,
+                direction);
+        mViewMotionValue = new ViewMotionValue(mStartPos,
+                mDistanceGestureContext,
+                mSplitLayout.mDividerSnapAlgorithm.getMotionSpec(getResources()),
+                "dividerView::pos" /* label */);
+        mLastHoveredOverSnapPosition = mSplitLayout.calculateCurrentSnapPosition();
+        // Set a "starting region" in which we don't want to show the tooltip yet.
+        mDragStartingSnapPosition = mSplitLayout.calculateCurrentSnapPosition();
+        mViewMotionValue.addUpdateCallback(viewMotionValue -> {
+            int snappedPosition = (int) viewMotionValue.getOutput();
+            // Whenever MotionValue updates (from user moving the divider):
+            // - Place divider in its new position
+            placeDivider(snappedPosition);
+            // - Play a haptic if entering a magnetic zone
+            Integer currentlyHoveredOverSnapZone = viewMotionValue.get(
+                    MagneticDividerUtils.getSNAP_POSITION_KEY());
+
+            boolean changedSnapPosition = !Objects.equals(
+                    currentlyHoveredOverSnapZone, mLastHoveredOverSnapPosition);
+            if (currentlyHoveredOverSnapZone != null && changedSnapPosition) {
+                playHapticClick();
+            }
+            // - Update the last-hovered-over snap zone
+            mLastHoveredOverSnapPosition = currentlyHoveredOverSnapZone;
+            // - Update tooltip state if needed
+            if (SHOW_DRAG_TOOLTIP) {
+                // - Update internal state for closest snap position (i.e. where the
+                // user will end up if drag is released)
+                final float velocity = isLeftRightSplit
+                        ? mVelocityTracker.getXVelocity()
+                        : mVelocityTracker.getYVelocity();
+                int closestSnapPosition = mSplitLayout
+                        .findSnapTarget(snappedPosition,
+                                velocity, false /* hardDismiss */)
+                        .snapPosition;
+                // If we are still in the starting zone, wait until the user drags
+                // to a point where the closest snap position is a different one.
+                if (!mDraggedOutOfStartingRegion
+                        && closestSnapPosition != mDragStartingSnapPosition) {
+                    mDraggedOutOfStartingRegion = true;
+                }
+                // Afterwards, always show the tooltip, updating to reflect the
+                // nearest snap point.
+                if (mDraggedOutOfStartingRegion) {
+                    showTooltip(snapPositionToUIString(closestSnapPosition));
+                }
+            }
+        });
     }
 
     /**

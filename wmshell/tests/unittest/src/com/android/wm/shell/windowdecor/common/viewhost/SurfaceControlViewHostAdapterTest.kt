@@ -35,8 +35,7 @@ import org.mockito.kotlin.verify
 /**
  * Tests for [SurfaceControlViewHostAdapter].
  *
- * Build/Install/Run:
- * atest WMShellUnitTests:SurfaceControlViewHostAdapterTest
+ * Build/Install/Run: atest WMShellUnitTests:SurfaceControlViewHostAdapterTest
  */
 @SmallTest
 @TestableLooper.RunWithLooper
@@ -47,13 +46,14 @@ class SurfaceControlViewHostAdapterTest : ShellTestCase() {
 
     @Before
     fun setUp() {
-        adapter = SurfaceControlViewHostAdapter(
-            context,
-            context.display,
-            surfaceControlViewHostFactory = { c, d, wwm, s ->
-                spy(SurfaceControlViewHost(c, d, wwm, s))
-            }
-        )
+        adapter =
+            SurfaceControlViewHostAdapter(
+                context,
+                context.display,
+                surfaceControlViewHostFactory = { c, d, wwm, s ->
+                    spy(SurfaceControlViewHost(c, d, wwm, s))
+                },
+            )
     }
 
     @Test
@@ -79,10 +79,7 @@ class SurfaceControlViewHostAdapterTest : ShellTestCase() {
         val view = View(context)
         adapter.prepareViewHost(context.resources.configuration, touchableRegion = null)
 
-        adapter.updateView(
-            view = view,
-            attrs = WindowManager.LayoutParams(100, 100)
-        )
+        adapter.updateView(view = view, attrs = WindowManager.LayoutParams(100, 100))
 
         assertThat(adapter.isInitialized()).isTrue()
         assertThat(adapter.view()).isEqualTo(view)
@@ -92,16 +89,10 @@ class SurfaceControlViewHostAdapterTest : ShellTestCase() {
     fun updateView_alreadyLaidOut_relayouts() {
         val view = View(context)
         adapter.prepareViewHost(context.resources.configuration, touchableRegion = null)
-        adapter.updateView(
-            view = view,
-            attrs = WindowManager.LayoutParams(100, 100)
-        )
+        adapter.updateView(view = view, attrs = WindowManager.LayoutParams(100, 100))
 
         val otherParams = WindowManager.LayoutParams(200, 200)
-        adapter.updateView(
-            view = view,
-            attrs = otherParams
-        )
+        adapter.updateView(view = view, attrs = otherParams)
 
         assertThat(adapter.view()).isEqualTo(view)
         assertThat(adapter.view()!!.layoutParams.width).isEqualTo(otherParams.width)
@@ -111,27 +102,18 @@ class SurfaceControlViewHostAdapterTest : ShellTestCase() {
     fun updateView_replacingView_throws() {
         val view = View(context)
         adapter.prepareViewHost(context.resources.configuration, touchableRegion = null)
-        adapter.updateView(
-            view = view,
-            attrs = WindowManager.LayoutParams(100, 100)
-        )
+        adapter.updateView(view = view, attrs = WindowManager.LayoutParams(100, 100))
 
         val otherView = View(context)
         assertThrows(Exception::class.java) {
-            adapter.updateView(
-                view = otherView,
-                attrs = WindowManager.LayoutParams(100, 100)
-            )
+            adapter.updateView(view = otherView, attrs = WindowManager.LayoutParams(100, 100))
         }
     }
 
     @Test
     fun release() {
         adapter.prepareViewHost(context.resources.configuration, touchableRegion = null)
-        adapter.updateView(
-            view = View(context),
-            attrs = WindowManager.LayoutParams(100, 100)
-        )
+        adapter.updateView(view = View(context), attrs = WindowManager.LayoutParams(100, 100))
 
         val mockT = mock(SurfaceControl.Transaction::class.java)
         adapter.release(mockT)

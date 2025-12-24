@@ -20,6 +20,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.TouchDelegate
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -34,6 +35,8 @@ class TaskHeaderView @JvmOverloads constructor(context: Context, attrs: Attribut
     private val headerTitleView: TextView by lazy { findViewById(R.id.header_app_title) }
     private val headerIconView: ImageView by lazy { findViewById(R.id.header_app_icon) }
     private val headerCloseButton: ImageButton by lazy { findViewById(R.id.header_close_button) }
+
+    var closeButtonAccessibilityAction: AccessibilityAction? = null
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -63,14 +66,44 @@ class TaskHeaderView @JvmOverloads constructor(context: Context, attrs: Attribut
             is TaskHeaderUiState.ShowHeader -> {
                 setHeader(taskHeaderState.header)
                 isGone = false
+                closeButtonAccessibilityAction =
+                    createCloseButtonAccessibilityAction(context, taskHeaderState.header.title)
             }
-            TaskHeaderUiState.HideHeader -> isGone = true
+            is TaskHeaderUiState.HideHeader -> {
+                isGone = true
+                closeButtonAccessibilityAction = null
+            }
         }
+    }
+
+    fun getSupportedAccessibilityActions(): List<AccessibilityAction> =
+        listOfNotNull(closeButtonAccessibilityAction)
+
+    fun handleAccessibilityAction(action: Int): Boolean {
+        closeButtonAccessibilityAction?.let {
+            if (action == it.id) {
+                return headerCloseButton.callOnClick() ?: false
+            }
+        }
+        return false
     }
 
     private fun setHeader(header: TaskHeaderUiState.ThumbnailHeader) {
         headerTitleView.text = header.title
         headerIconView.setImageDrawable(header.icon)
         headerCloseButton.setOnClickListener(header.clickCloseListener)
+    }
+
+    companion object {
+        const val TAG = "TaskHeaderView"
+
+        private fun createCloseButtonAccessibilityAction(
+            context: Context,
+            taskDescription: String?,
+        ) =
+            AccessibilityAction(
+                R.id.action_close,
+                context.getString(R.string.close_task_accessibility, taskDescription),
+            )
     }
 }

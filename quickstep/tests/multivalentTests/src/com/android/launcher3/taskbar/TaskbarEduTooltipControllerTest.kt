@@ -170,7 +170,9 @@ class TaskbarEduTooltipControllerTest {
     @TaskbarMode(TRANSIENT)
     fun testMaybeShowSearchEdu_whenTaskbarIsTransient_shouldNotShowSearchEdu() {
         assertThat(taskbarEduTooltipController.isTooltipOpen).isFalse()
-        runOnMainSync { taskbarEduTooltipController.init(taskbarContext.controllers) }
+        runOnMainSync {
+            taskbarEduTooltipController.init(taskbarContext.controllers, TaskbarUiState())
+        }
         assertThat(taskbarEduTooltipController.isTooltipOpen).isFalse()
     }
 
@@ -181,7 +183,9 @@ class TaskbarEduTooltipControllerTest {
         assertThat(taskbarEduTooltipController.userHasSeenSearchEdu).isTrue()
         runOnMainSync { taskbarEduTooltipController.hide() }
         assertThat(taskbarEduTooltipController.isTooltipOpen).isFalse()
-        runOnMainSync { taskbarEduTooltipController.init(taskbarContext.controllers) }
+        runOnMainSync {
+            taskbarEduTooltipController.init(taskbarContext.controllers, TaskbarUiState())
+        }
         assertThat(taskbarEduTooltipController.isTooltipOpen).isFalse()
     }
 }

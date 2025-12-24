@@ -52,6 +52,7 @@ import com.android.wm.shell.desktopmode.DesktopBackNavTransitionObserver;
 import com.android.wm.shell.desktopmode.DesktopImeHandler;
 import com.android.wm.shell.desktopmode.DesktopImmersiveController;
 import com.android.wm.shell.desktopmode.DesktopInOrderTransitionObserver;
+import com.android.wm.shell.desktopmode.DesktopModeLoggerTransitionObserver;
 import com.android.wm.shell.desktopmode.multidesks.DesksOrganizer;
 import com.android.wm.shell.desktopmode.multidesks.DesksTransitionObserver;
 import com.android.wm.shell.shared.desktopmode.FakeDesktopState;
@@ -86,6 +87,7 @@ public class FreeformTaskTransitionObserverTest extends ShellTestCase {
     @Mock private DesktopImeHandler mDesktopImeHandler;
     @Mock private DesktopBackNavTransitionObserver mDesktopBackNavTransitionObserver;
     @Mock private DesktopInOrderTransitionObserver mDesktopInOrderTransitionObserver;
+    @Mock private DesktopModeLoggerTransitionObserver mDesktopModeLoggerTransitionObserver;
     private FakeDesktopState mDesktopState;
     private FreeformTaskTransitionObserver mTransitionObserver;
     private AutoCloseable mMocksInits = null;
@@ -116,7 +118,8 @@ public class FreeformTaskTransitionObserverTest extends ShellTestCase {
                         mDesktopState,
                         Optional.of(mDesktopImeHandler),
                         Optional.of(mDesktopBackNavTransitionObserver),
-                        Optional.of(mDesktopInOrderTransitionObserver));
+                        Optional.of(mDesktopInOrderTransitionObserver),
+                        mDesktopModeLoggerTransitionObserver);
 
         final ArgumentCaptor<Runnable> initRunnableCaptor = ArgumentCaptor.forClass(Runnable.class);
         verify(mShellInit).addInitCallback(initRunnableCaptor.capture(), same(mTransitionObserver));
@@ -489,6 +492,33 @@ public class FreeformTaskTransitionObserverTest extends ShellTestCase {
         mTransitionObserver.onTransitionFinished(transition, /* aborted = */ false);
 
         verify(mDesksTransitionObserver).onTransitionFinished(transition);
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_ENABLE_INORDER_TRANSITION_CALLBACKS_FOR_DESKTOP)
+    public void onTransitionReady_forwardsToDesktopModeLoggerTransitionObserver() {
+        final IBinder transition = mock(IBinder.class);
+        final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_CHANGE, /* flags= */ 0)
+                .build();
+        final SurfaceControl.Transaction startT = new StubTransaction();
+        final SurfaceControl.Transaction finishT = new StubTransaction();
+
+
+        mTransitionObserver.onTransitionReady(transition, info, startT, finishT);
+
+        verify(mDesktopModeLoggerTransitionObserver).onTransitionReady(transition, info, startT,
+                finishT);
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_ENABLE_INORDER_TRANSITION_CALLBACKS_FOR_DESKTOP)
+    public void onTransitionFinished_forwardsToDesktopModeLoggerTransitionObserver() {
+        final IBinder transition = mock(IBinder.class);
+        final boolean aborted = false;
+
+        mTransitionObserver.onTransitionFinished(transition, aborted);
+
+        verify(mDesktopModeLoggerTransitionObserver).onTransitionFinished(transition, aborted);
     }
 
     @Test

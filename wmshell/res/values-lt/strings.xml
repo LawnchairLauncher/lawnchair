@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Programa nepalaiko pokalbio debesėlio"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Išskaidyto ekrano režimo daliklis"</string>
     <string name="divider_title" msgid="1963391955593749442">"Išskaidyto ekrano režimo daliklis"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Kairysis ekranas viso ekrano režimu"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Kairysis ekranas 70 %"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Kairysis ekranas 50 %"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Kairysis ekranas 30 %"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Dešinysis ekranas viso ekrano režimu"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Sukeisti viršutiniąją programą su apatiniąja"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Sukeisti kairiąją programą su dešiniąja"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Viršutinis ekranas viso ekrano režimu"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Viršutinis ekranas 70 %"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Viršutinis ekranas 50 %"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Viršutinis ekranas 30 %"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Apatinis ekranas viso ekrano režimu"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Kairėje esančią programą rodyti viso ekrano režimu"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10 % kairėje, 90 % dešinėje"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30 % kairėje, 70 % dešinėje"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50 % kairėje, 50% dešinėje"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70 % kairėje, 30 % dešinėje"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90 % kairėje, 10 % dešinėje"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Dešinėje esančią programą rodyti viso ekrano režimu"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Sukeisti viršuje ir apačioje esančias programas, išlaikyti dabartinį skaidymą"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Sukeisti kairėje ir dešinėje esančias programas, išlaikyti dabartinį skaidymą"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Viršuje esančią programą rodyti viso ekrano režimu"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10 % viršuje, 90 % apačioje"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30 % viršuje, 70 % apačioje"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50 % viršuje, 50 % apačioje"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70 % viršuje, 30 % apačioje"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90 % viršuje, 10 % apačioje"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Apačioje esančią programą rodyti viso ekrano režimu"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Išskaidyti kairėn"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Išskaidyti dešinėn"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Išskaidyti viršuje"</string>

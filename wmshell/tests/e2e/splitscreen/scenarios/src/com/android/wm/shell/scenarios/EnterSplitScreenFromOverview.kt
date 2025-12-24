@@ -55,6 +55,8 @@ constructor(val rotation: Rotation = Rotation.ROTATION_0) {
             .withHomeActivityVisible()
             .waitForAndVerify()
 
+        // TODO: b/349075982 - Remove once launcher rotation and checks are stable.
+        tapl.expectedRotationCheckEnabled = false
         tapl.setEnableRotation(true)
     }
 

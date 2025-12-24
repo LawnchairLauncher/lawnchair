@@ -224,8 +224,7 @@ class CustomCrossActivityBackAnimationTest : ShellTestCase() {
             /* frameTime = */ 0,
             /* progress = */ progress,
             /* triggerBack = */ false,
-            /* swipeEdge = */ BackEvent.EDGE_LEFT,
-            /* departingAnimationTarget = */ null
+            /* swipeEdge = */ BackEvent.EDGE_LEFT
         )
 
     private fun createAnimationTarget(open: Boolean): RemoteAnimationTarget {

@@ -87,7 +87,7 @@ fun HomeScreenGridPreferences(
                 columnsAdapter.onChange(columns.intValue)
                 rowsAdapter.onChange(rows.intValue)
             }
-            LauncherAppState.getIDP(context).onPreferencesChanged(context)
+            LauncherAppState.getIDP(context).onPreferencesChanged()
             navController.popBackStack()
         }
 

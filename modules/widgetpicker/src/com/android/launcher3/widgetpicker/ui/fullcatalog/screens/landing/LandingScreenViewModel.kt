@@ -31,12 +31,15 @@ import com.android.launcher3.widgetpicker.shared.model.WidgetId
 import com.android.launcher3.widgetpicker.shared.model.WidgetPreview
 import com.android.launcher3.widgetpicker.shared.model.WidgetUserProfile
 import com.android.launcher3.widgetpicker.shared.model.WidgetUserProfileType
+import com.android.launcher3.widgetpicker.shared.model.isAppWidget
+import com.android.launcher3.widgetpicker.shared.model.isShortcut
 import com.android.launcher3.widgetpicker.ui.ViewModel
 import com.android.launcher3.widgetpicker.ui.model.DisplayableWidgetApp
 import com.android.launcher3.widgetpicker.ui.model.DisplayableWidgetApp.Companion.getWidgetIdsForApp
 import com.android.launcher3.widgetpicker.ui.model.WidgetSizeGroup
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -45,9 +48,11 @@ import kotlinx.coroutines.launch
  * A view model responsible for providing the data to the landing screen UI within the full catalog
  * of widgets in widget picker.
  */
-class LandingScreenViewModel @AssistedInject constructor(
+class LandingScreenViewModel
+@AssistedInject
+constructor(
     private val widgetsInteractor: WidgetsInteractor,
-    private val widgetAppIconsInteractor: WidgetAppIconsInteractor
+    private val widgetAppIconsInteractor: WidgetAppIconsInteractor,
 ) : ViewModel {
     override suspend fun onInit() {
         coroutineScope {
@@ -60,6 +65,13 @@ class LandingScreenViewModel @AssistedInject constructor(
             awaitCancellation()
         }
     }
+
+    private var uiReady by mutableStateOf(false)
+    private var pendingUpdate = AtomicReference<(() -> Unit)?>(null)
+
+    /** Section within the landing screen that is currently showing. */
+    var selectedSubSection by mutableStateOf(LandingScreenSubSection.FEATURED)
+        private set
 
     /** Data backing the browse section in the landing screen. */
     var browseWidgetsState by mutableStateOf<BrowseWidgetsState>(BrowseWidgetsState.NoData)
@@ -79,10 +91,11 @@ class LandingScreenViewModel @AssistedInject constructor(
 
     /**
      * Id of the app that is currently selected / expanded in personal list of apps. When null,
-     *  implies none of the apps is expanded.
+     * implies none of the apps is expanded.
      */
     var selectedPersonalAppId by mutableStateOf<WidgetAppId?>(null)
         private set
+
     private val _selectedPersonalWidgetAppWidgetIds = snapshotFlow {
         val selectedId = selectedPersonalAppId
         val currentBrowseState = browseWidgetsState
@@ -90,17 +103,17 @@ class LandingScreenViewModel @AssistedInject constructor(
             selectedId != null && currentBrowseState is BrowseWidgetsState.Data ->
                 currentBrowseState.personalWidgetApps.getWidgetIdsForApp(selectedId)
 
-            else ->
-                listOf()
+            else -> listOf()
         }
     }
 
     /**
-     * Id of the app that is currently selected / expanded in work list of apps. When null,
-     *  implies none of the apps is expanded.
+     * Id of the app that is currently selected / expanded in work list of apps. When null, implies
+     * none of the apps is expanded.
      */
     var selectedWorkAppId by mutableStateOf<WidgetAppId?>(null)
         private set
+
     private val _selectedWorkWidgetAppWidgetIds = snapshotFlow {
         val selectedId = selectedWorkAppId
         val currentBrowseState = browseWidgetsState
@@ -108,8 +121,7 @@ class LandingScreenViewModel @AssistedInject constructor(
             selectedId != null && currentBrowseState is BrowseWidgetsState.Data ->
                 currentBrowseState.workWidgetApps.getWidgetIdsForApp(selectedId)
 
-            else ->
-                listOf()
+            else -> listOf()
         }
     }
 
@@ -121,25 +133,39 @@ class LandingScreenViewModel @AssistedInject constructor(
     var featuredWidgetPreviewsState by mutableStateOf(PreviewsState())
         private set
 
+    private fun postUpdateOnUiReady(block: () -> Unit) {
+        if (uiReady) {
+            block()
+        } else {
+            pendingUpdate.set(block)
+        }
+    }
+
+    fun onUiReady() {
+        pendingUpdate.get()?.invoke()
+        pendingUpdate.set(null)
+        uiReady = true
+    }
+
     private suspend fun initBrowseWidgets() {
         widgetsInteractor.getWidgetAppsByProfile().collect { result ->
             val personalEntry =
                 result.entries.find { it.key.type == WidgetUserProfileType.PERSONAL }
             val workEntry = result.entries.find { it.key.type == WidgetUserProfileType.WORK }
-            browseWidgetsState = if (personalEntry == null) {
-                BrowseWidgetsState.NoData
-            } else {
-                BrowseWidgetsState.Data(
-                    personalProfile = personalEntry.key,
-                    personalWidgetApps = personalEntry.value.map {
-                        DisplayableWidgetApp.fromWidgetApp(it)
-                    },
-                    workProfile = workEntry?.key,
-                    workWidgetApps = workEntry?.value?.map {
-                        DisplayableWidgetApp.fromWidgetApp(it)
-                    } ?: emptyList(),
-                )
-            }
+            browseWidgetsState =
+                if (personalEntry == null) {
+                    BrowseWidgetsState.NoData
+                } else {
+                    BrowseWidgetsState.Data(
+                        personalProfile = personalEntry.key,
+                        personalWidgetApps =
+                            personalEntry.value.map { DisplayableWidgetApp.fromWidgetApp(it) },
+                        workProfile = workEntry?.key,
+                        workWidgetApps =
+                            workEntry?.value?.map { DisplayableWidgetApp.fromWidgetApp(it) }
+                                ?: emptyList(),
+                    )
+                }
         }
 
         awaitCancellation()
@@ -149,11 +175,9 @@ class LandingScreenViewModel @AssistedInject constructor(
         _selectedPersonalWidgetAppWidgetIds.collect { ids ->
             personalWidgetsPreviewsState =
                 PreviewsState(
-                    personalWidgetsPreviewsState.previews + ids.associateWith {
-                        widgetsInteractor.getWidgetPreview(
-                            it
-                        )
-                    })
+                    personalWidgetsPreviewsState.previews +
+                        ids.associateWith { widgetsInteractor.getWidgetPreview(it) }
+                )
         }
 
         awaitCancellation()
@@ -162,11 +186,10 @@ class LandingScreenViewModel @AssistedInject constructor(
     private suspend fun initWorkWidgetPreviews() {
         _selectedWorkWidgetAppWidgetIds.collect { ids ->
             workWidgetsPreviewState =
-                PreviewsState(workWidgetsPreviewState.previews + ids.associateWith {
-                    widgetsInteractor.getWidgetPreview(
-                        it
-                    )
-                })
+                PreviewsState(
+                    workWidgetsPreviewState.previews +
+                        ids.associateWith { widgetsInteractor.getWidgetPreview(it) }
+                )
         }
 
         awaitCancellation()
@@ -174,20 +197,35 @@ class LandingScreenViewModel @AssistedInject constructor(
 
     private suspend fun initFeaturedWidgets() {
         widgetsInteractor.getFeaturedWidgets().collect { result ->
-            featuredWidgetsState = FeaturedWidgetsState(result.groupBy {
-                Pair(it.sizeInfo.containerWidthPx, it.sizeInfo.containerHeightPx)
-            }.map { (containerSize, value) ->
-                WidgetSizeGroup(
-                    previewContainerWidthPx = containerSize.first,
-                    previewContainerHeightPx = containerSize.second,
-                    widgets = value
+            val widgetsState =
+                FeaturedWidgetsState(
+                    sizeGroups =
+                        result
+                            .groupBy {
+                                Pair(it.sizeInfo.containerWidthPx, it.sizeInfo.containerHeightPx)
+                            }
+                            .map { (containerSize, value) ->
+                                WidgetSizeGroup(
+                                    previewContainerWidthPx = containerSize.first,
+                                    previewContainerHeightPx = containerSize.second,
+                                    widgets = value,
+                                )
+                            },
+                    widgetsCount = result.count { it.widgetInfo.isAppWidget() },
+                    shortcutsCount = result.count { it.widgetInfo.isShortcut() },
                 )
-            }, result.size)
 
-            featuredWidgetPreviewsState =
-                PreviewsState(result.associate { res ->
-                    res.id to widgetsInteractor.getWidgetPreview(res.id)
-                })
+            val previewsState =
+                PreviewsState(
+                    result.associate { res -> res.id to widgetsInteractor.getWidgetPreview(res.id) }
+                )
+
+            // Since rendering widgets is expensive, bind featured widgets only once the animations
+            // for the landing screen are complete.
+            postUpdateOnUiReady {
+                featuredWidgetsState = widgetsState
+                featuredWidgetPreviewsState = previewsState
+            }
         }
         awaitCancellation()
     }
@@ -199,21 +237,28 @@ class LandingScreenViewModel @AssistedInject constructor(
         awaitCancellation()
     }
 
+    fun resetSelections() {
+        onSelectedPersonalAppToggle(null)
+        onSelectedWorkAppToggle(null)
+        onSelectedSubSectionChange(LandingScreenSubSection.FEATURED)
+    }
+
     /**
      * Callback to handle the toggle of a personal widget app; e.g. when user clicks an app to
      * expand or collapse.
      *
      * @param id id of the widget app that was tapped; if its same as last id that was tapped, the
-     * [selectedPersonalAppId] is reset to null (aka toggled); if its different, then the provided
-     * id is set as the [selectedPersonalAppId]. To clear the [selectedPersonalAppId] invoke this
-     * with `null`
+     *   [selectedPersonalAppId] is reset to null (aka toggled); if its different, then the provided
+     *   id is set as the [selectedPersonalAppId]. To clear the [selectedPersonalAppId] invoke this
+     *   with `null`
      */
     fun onSelectedPersonalAppToggle(id: WidgetAppId?) {
-        selectedPersonalAppId = if (id == selectedPersonalAppId) {
-            null
-        } else {
-            id
-        }
+        selectedPersonalAppId =
+            if (id == selectedPersonalAppId) {
+                null
+            } else {
+                id
+            }
     }
 
     /**
@@ -221,15 +266,21 @@ class LandingScreenViewModel @AssistedInject constructor(
      * collapse.
      *
      * @param id id of the widget app that was tapped; if its same as last id that was tapped, the
-     * [selectedWorkAppId] is reset to null (aka toggled); if its different, then the provided id is
-     * set as the [selectedWorkAppId]. To clear the [selectedWorkAppId] invoke this with `null`
+     *   [selectedWorkAppId] is reset to null (aka toggled); if its different, then the provided id
+     *   is set as the [selectedWorkAppId]. To clear the [selectedWorkAppId] invoke this with `null`
      */
     fun onSelectedWorkAppToggle(id: WidgetAppId?) {
-        selectedWorkAppId = if (id == selectedWorkAppId) {
-            null
-        } else {
-            id
-        }
+        selectedWorkAppId =
+            if (id == selectedWorkAppId) {
+                null
+            } else {
+                id
+            }
+    }
+
+    /** Callback to handle changes to currently showing sub section. */
+    fun onSelectedSubSectionChange(selected: LandingScreenSubSection) {
+        selectedSubSection = selected
     }
 
     /** A factory that should be injected whenever [LandingScreenViewModel] is required. */
@@ -248,9 +299,9 @@ sealed class BrowseWidgetsState {
      * Information that is displayed when user taps browse tab.
      *
      * @param personalProfile data about the personal user profile that is used to display the
-     * personal tab; when there is no work profile, it is referred to as "browse" tab.
+     *   personal tab; when there is no work profile, it is referred to as "browse" tab.
      * @param personalWidgetApps list of apps (with their widgets) belonging to the personal user
-     * profile
+     *   profile
      * @param workProfile data about the work user profile that is used to display the work tab.
      * @param workWidgetApps list of apps (with their widgets) belonging to the work user profile.
      */
@@ -258,7 +309,7 @@ sealed class BrowseWidgetsState {
         val personalProfile: WidgetUserProfile,
         val personalWidgetApps: List<DisplayableWidgetApp>,
         val workProfile: WidgetUserProfile?,
-        val workWidgetApps: List<DisplayableWidgetApp>
+        val workWidgetApps: List<DisplayableWidgetApp>,
     ) : BrowseWidgetsState()
 
     /** No data loaded yet or unavailable for some reason. */
@@ -267,35 +318,44 @@ sealed class BrowseWidgetsState {
 
 /**
  * Represents widgets data to be shown in the "featured" section.
+ *
  * @param sizeGroups groups holding widgets of similar sizes that can be presented in a coherent
- * manner in the featured section.
+ *   manner in the featured section.
  * @param widgetsCount total count of widgets in the size groups (pre-computed so UI doesn't need to
- * count).
+ *   count).
+ * @param shortcutsCount total count of shortcuts in the size groups (pre-computed so UI doesn't
+ *   need to count).
  */
 @Stable
 @Immutable
 data class FeaturedWidgetsState(
     val sizeGroups: List<WidgetSizeGroup> = emptyList(),
-    val widgetsCount: Int = 0
+    val widgetsCount: Int = 0,
+    val shortcutsCount: Int = 0,
 )
 
 /**
  * State class holding preview information about widgets in a specific section (featured, browse,
  * etc)
+ *
  * @param previews previews per widget (keyed by its id)
  */
 @Stable
 @Immutable
-data class PreviewsState(
-    val previews: Map<WidgetId, WidgetPreview> = emptyMap()
-)
+data class PreviewsState(val previews: Map<WidgetId, WidgetPreview> = emptyMap())
 
 /**
  * State class holding app icons shown in a specific section (featured, browse, etc.)
+ *
  * @param icons icons per app (keyed by its app id)
  */
 @Stable
 @Immutable
-data class AppIconsState(
-    val icons: Map<WidgetAppId, WidgetAppIcon> = emptyMap()
-)
+data class AppIconsState(val icons: Map<WidgetAppId, WidgetAppIcon> = emptyMap())
+
+/** Multiple sub-sections within the landing page. */
+enum class LandingScreenSubSection {
+    FEATURED,
+    BROWSE,
+    WORK,
+}

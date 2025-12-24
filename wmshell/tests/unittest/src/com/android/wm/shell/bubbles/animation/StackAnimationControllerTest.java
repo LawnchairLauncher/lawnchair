@@ -44,6 +44,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.IntSupplier;
@@ -261,7 +263,23 @@ public class StackAnimationControllerTest extends PhysicsAnimationLayoutTestCase
             mLayout.removeView(mLayout.getChildAt(0));
         }
 
+        // FloatingContentCoordinator only reacts to onLastBubbleRemoved
+        verify(mFloatingContentCoordinator, never()).onContentRemoved(any());
+
+        mStackController.onLastBubbleRemoved();
         verify(mFloatingContentCoordinator, times(1)).onContentRemoved(any());
+    }
+
+    @Test
+    public void testAnimateReorder_swappedWithNullView_doesNotCrash() {
+        // This test verifies that animateReorder does not crash when the provided list of views
+        // contains null elements and a reorder occurs.
+        List<View> reorderedViews = new ArrayList<>();
+        reorderedViews.add(mViews.get(mViews.size() - 1)); // Move the last view to the front.
+        reorderedViews.add(null);                          // Add a null entry.
+
+        // The test will fail if animateReorder() throws an exception.
+        mStackController.animateReorder(reorderedViews, mock(Runnable.class));
     }
 
     /**

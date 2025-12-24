@@ -201,7 +201,7 @@ public class NavBarToHomeTouchController implements TouchController,
         if (success) {
             RecentsView recentsView = mLauncher.getOverviewPanel();
             recentsView.switchToScreenshot(null,
-                    () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
+                    () -> recentsView.finishRecentsAnimation(true /* toHome */, null));
             if (mStartState.isRecentsViewVisible) {
                 Runnable onReachedHome = () -> {
                     StateManager.StateListener<LauncherState> listener =

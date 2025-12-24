@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Aplikacija ne podpira oblačka"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Razdelilnik zaslonov"</string>
     <string name="divider_title" msgid="1963391955593749442">"Razdelilnik zaslonov"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Levi v celozaslonski način"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Levi 70 %"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Levi 50 %"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Levi 30 %"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Desni v celozaslonski način"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Zamenjava zgornje aplikacije s spodnjo"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Zamenjava leve aplikacije z desno"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Zgornji v celozaslonski način"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Zgornji 70 %"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Zgornji 50 %"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Zgornji 30 %"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Spodnji v celozaslonski način"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Preklop leve aplikacije v celozaslonski način"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10 % levo, 90 % desno"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30 % levo, 70 % desno"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50 % levo, 50 % desno"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70 % levo, 30 % desno"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90 % levo, 10 % desno"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Preklop desne aplikacije v celozaslonski način"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Zamenjava zgornje aplikacije s spodnjo, ohranitev trenutne razdelitve"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Zamenjava leve aplikacije z desno, ohranitev trenutne razdelitve"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Preklop zgornje aplikacije v celozaslonski način"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10 % zgoraj, 90 % spodaj"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30 % zgoraj, 70 % spodaj"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50 % zgoraj, 50 % spodaj"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70 % zgoraj, 30 % spodaj"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90 % zgoraj, 10 % spodaj"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Preklop spodnje aplikacije v celozaslonski način"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Delitev levo"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Delitev desno"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Delitev zgoraj"</string>

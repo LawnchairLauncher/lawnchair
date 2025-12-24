@@ -352,7 +352,10 @@ android {
 
         withQuickstep {
             res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
-            java.srcDirs = ['quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog']
+            java.srcDirs = ['quickstep/src', 'quickstep/dagger',
+                            'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog',
+                            'quickstep/compose/facade/core', 'quickstep/compose/facade/enabled',
+                            'quickstep/compose/features'] // pE-TODO(QPR2): Fix compose/facade/disabled
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
@@ -387,6 +390,7 @@ dependencies {
     withQuickstepImplementation projects.plugincore
     withQuickstepCompileOnly projects.common
     withQuickstepCompileOnly projects.utils
+    withQuickstepCompileOnly projects.pods.internal
 
     // QuickSwitch Compat
     withQuickstepImplementation projects.compatLib
@@ -398,9 +402,10 @@ dependencies {
     withQuickstepImplementation projects.compatLib.compatLibVV
     withQuickstepImplementation projects.compatLib.compatLibVBaklava
     withQuickstepImplementation projects.wmshell
+    withQuickstepImplementation projects.wmshell.shared
     withQuickstepImplementation projects.flags
     withQuickstepImplementation projects.dagger
-    withQuickstepImplementation projects.concurrent
+    withQuickstepImplementation projects.modules.concurrent
 //    withQuickstepImplementation projects.compose
     withQuickstepImplementation projects.modules.widgetpicker
     implementation libs.androidx.dynamicanimation

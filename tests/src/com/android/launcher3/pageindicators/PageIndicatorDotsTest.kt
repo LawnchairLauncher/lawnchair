@@ -16,17 +16,15 @@
 
 package com.android.launcher3.pageindicators
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.TestActivityContext
 import junit.framework.TestCase.assertEquals
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 
 class PageIndicatorDotsTest {
 
-    private val context: Context =
-        ActivityContextWrapper(ApplicationProvider.getApplicationContext())
+    @get:Rule val context = TestActivityContext()
     private val pageIndicatorDots: PageIndicatorDots = Mockito.spy(PageIndicatorDots(context))
 
     @Test

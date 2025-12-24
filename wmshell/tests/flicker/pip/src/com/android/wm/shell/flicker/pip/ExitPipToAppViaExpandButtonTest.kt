@@ -16,11 +16,12 @@
 
 package com.android.wm.shell.flicker.pip
 
-import android.platform.test.annotations.FlakyTest
+import androidx.test.filters.FlakyTest
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import androidx.test.filters.RequiresDevice
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.ExitPipToAppTransition
@@ -47,17 +48,18 @@ import org.junit.runners.Parameterized
  *     1. Some default assertions (e.g., nav bar, status bar and screen covered)
  *        are inherited [PipTransition]
  *     2. Part of the test setup occurs automatically via
- *        [android.tools.flicker.legacy.runner.TransitionRunner],
+ *        [android.tools.flicker.runner.TransitionRunner],
  *        including configuring navigation mode, initial orientation and ensuring no
  *        apps are running before setup
  * ```
  */
 @FlakyTest(bugId = 391734110)
+@RequiresDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
-class ExitPipToAppViaExpandButtonTest(flicker: LegacyFlickerTest) :
+class ExitPipToAppViaExpandButtonTest(flicker: FlickerTest) :
     ExitPipToAppTransition(flicker) {
     override val pipApp: PipAppHelper = PipAppHelper(instrumentation)
 

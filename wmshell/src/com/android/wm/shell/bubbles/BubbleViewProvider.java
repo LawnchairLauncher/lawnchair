@@ -17,11 +17,11 @@
 package com.android.wm.shell.bubbles;
 
 import android.graphics.Bitmap;
-import android.graphics.Path;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.wm.shell.bubbles.bar.BubbleBarExpandedView;
 
 /**
@@ -63,13 +63,10 @@ public interface BubbleViewProvider {
     Bitmap getBubbleIcon();
 
     /** App badge drawable to draw above bubble icon. */
-    @Nullable Bitmap getAppBadge();
+    @Nullable BitmapInfo getAppBadge();
 
     /** Base app badge drawable without any markings. */
-    @Nullable Bitmap getRawAppBadge();
-
-    /** Path of normalized bubble icon to draw dot on. */
-    Path getDotPath();
+    @Nullable BitmapInfo getRawAppBadge();
 
     int getDotColor();
 

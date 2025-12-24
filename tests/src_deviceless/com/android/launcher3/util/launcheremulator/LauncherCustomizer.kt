@@ -51,7 +51,12 @@ object LauncherCustomizer {
     fun applyAll(context: Context, params: EmulationParams) {
         val device = params.device
         val proxy = WindowManagerProxy.INSTANCE.get(context)
-        if (proxy is TestWindowManagerProxy) proxy.setDevice(device)
+        if (proxy is TestWindowManagerProxy) {
+            proxy.setDevice(device)
+            if (params.navigationMode != null) {
+                proxy.setNavigationMode(params.navigationMode)
+            }
+        }
 
         val density = DensityPicker.getDisplayEntries(device)[params.density]!!
         val isLandscape = params.orientation != LauncherOrientation.PORTRAIT

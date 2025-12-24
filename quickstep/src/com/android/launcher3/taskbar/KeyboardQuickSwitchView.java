@@ -37,6 +37,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.ViewTreeObserver;
@@ -60,10 +61,10 @@ import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.util.Themes;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.SingleTask;
 import com.android.quickstep.util.SplitTask;
 import com.android.systemui.shared.recents.model.Task;
@@ -109,8 +110,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     private static final long CONTENT_ALPHA_ANIMATION_DURATION_MS = 83;
     private static final long CONTENT_ALPHA_ANIMATION_START_DELAY_MS = 83;
 
-    private static final int DARK_THEME_STROKE_ALPHA = 51;
-    private static final int LIGHT_THEME_STROKE_ALPHA = 41;
+    private static final int STROKE_ALPHA = 51;
     private static final int DARK_THEME_SHADOW_ALPHA = 51;
     private static final int LIGHT_THEME_SHADOW_ALPHA = 25;
 
@@ -205,8 +205,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
         mBackgroundPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
         mBackgroundPaint.setStyle(Paint.Style.FILL);
-        mBackgroundPaint.setColor(
-                Themes.getAttrColor(getContext(), R.attr.overviewScrimColorFallback));
+        mBackgroundPaint.setColor(resources.getColor(
+                R.color.materialColorSurfaceBright, getContext().getTheme()));
         mBackgroundShadowBlur = resources.getDimension(R.dimen.transient_taskbar_shadow_blur);
         mBackgroundShadowDistance = resources.getDimension(
                 R.dimen.transient_taskbar_key_shadow_distance);
@@ -229,7 +229,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         super.onDraw(canvas);
 
         boolean isDarkTheme = Utilities.isDarkTheme(getContext());
-        mStrokePaint.setAlpha(isDarkTheme ? DARK_THEME_STROKE_ALPHA : LIGHT_THEME_STROKE_ALPHA);
+        mStrokePaint.setAlpha(STROKE_ALPHA);
 
         // Draw shadow.
         mBackgroundPaint.setShadowLayer(
@@ -314,12 +314,12 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
             boolean updateTasks,
             int currentFocusIndexOverride,
             @NonNull KeyboardQuickSwitchViewController.ViewCallbacks viewCallbacks,
-            boolean useDesktopTaskView) {
+            boolean useDesktopTaskView,
+            boolean useAnimationStartDelay) {
         mContent.removeAllViews();
 
         mViewCallbacks = viewCallbacks;
         Resources resources = context.getResources();
-        Resources.Theme theme = context.getTheme();
 
         View previousTaskView = null;
         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -331,9 +331,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                     /* isFinalView= */ i == tasksToDisplay - 1
                             && numHiddenTasks == 0 && !useDesktopTaskView,
                     /* useSmallStartSpacing= */ false,
-                    mViewCallbacks.isAspectRatioSquare()
-                            ? R.layout.keyboard_quick_switch_taskview_square
-                            : R.layout.keyboard_quick_switch_taskview,
+                    getDesktopTaskLayoutRes(groupTask),
                     layoutInflater,
                     previousTaskView);
 
@@ -399,18 +397,72 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         }
         mDisplayingRecentTasks = !groupTasks.isEmpty() || useDesktopTaskView;
 
+
+        // Update scroll view outline to clip its contents with rounded corners. If the KQS view
+        // does not support scroll arrows, use the KQS view corner radii for outline so scroll
+        // view content is clipped to those rounded corners (clipping the parent KQS view to outline
+        // would prevent it from displaying shadow).
+        mScrollView.setClipToOutline(true);
+        mScrollView.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                int spacingWithoutBorder = mSupportsScrollArrows
+                        ? mSpacing - mTaskViewBorderWidth : 0;
+                outline.setRoundRect(spacingWithoutBorder,
+                        spacingWithoutBorder, view.getWidth() - spacingWithoutBorder,
+                        view.getHeight() - spacingWithoutBorder,
+                        mSupportsScrollArrows ? mTaskViewRadius : mOutlineRadius);
+            }
+        });
+
         getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         registerOnBackInvokedCallback();
-                        animateOpen(currentFocusIndexOverride);
+                        animateOpen(currentFocusIndexOverride, useAnimationStartDelay);
 
                         getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
     }
 
+    @LayoutRes
+    private int getDesktopTaskLayoutRes(GroupTask groupTask) {
+        // Before KQS flattening, res ID was decided based on device aspect ratio. This will also
+        // be followed for non-desktop tasks.
+        if (!enableAltTabKqsFlatenning.isTrue() || !(groupTask instanceof DesktopTask)) {
+            return getDefaultLayoutRes();
+        }
+
+        // Check if a task is available to evaluate its aspect ratio. This is a safe guard against
+        // edge case.
+        if (groupTask.getTasks().isEmpty() || groupTask.getTasks().getFirst().appBounds == null) {
+            return getDefaultLayoutRes();
+        }
+
+        // Always use square view if the task bounds are within the square aspect ratio limit.
+        Rect taskBounds = groupTask.getTasks().getFirst().appBounds;
+        if (LayoutUtils.isAspectRatioSquare((float) taskBounds.width() / taskBounds.height())) {
+            return R.layout.keyboard_quick_switch_taskview_square;
+        }
+
+        // Determine if a task is in landscape orientation based on task bounds.
+        boolean isTaskBoundsInLandscape = taskBounds.width() > taskBounds.height();
+
+        // If both device and task's bounds match, that is either both are landscape or both are
+        // portrait, then use the default view otherwise use the square version to differentiate.
+        return (mViewCallbacks.isLandscape() == isTaskBoundsInLandscape)
+                ? R.layout.keyboard_quick_switch_taskview
+                : R.layout.keyboard_quick_switch_taskview_square;
+    }
+
+    @LayoutRes
+    private int getDefaultLayoutRes() {
+        return mViewCallbacks.isAspectRatioSquare()
+                ? R.layout.keyboard_quick_switch_taskview_square
+                : R.layout.keyboard_quick_switch_taskview;
+    }
 
     void enableScrollArrowSupport() {
         if (mSupportsScrollArrows) {
@@ -463,19 +515,6 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX,
                     int oldScrollY) {
                 updateArrowButtonsEnabledState();
-            }
-        });
-
-        // Update scroll view outline to clip its contents with rounded corners.
-        mScrollView.setClipToOutline(true);
-        mScrollView.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                int spacingWithoutBorder = mSpacing - mTaskViewBorderWidth;
-                outline.setRoundRect(spacingWithoutBorder,
-                        spacingWithoutBorder, view.getWidth() - spacingWithoutBorder,
-                        view.getHeight() - spacingWithoutBorder,
-                        mTaskViewRadius);
             }
         });
     }
@@ -531,11 +570,6 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
     protected Animator getCloseAnimation() {
         AnimatorSet closeAnimation = new AnimatorSet();
 
-        Animator outlineAnimation = mOutlineAnimationProgress.animateToValue(0f);
-        outlineAnimation.setDuration(OUTLINE_ANIMATION_DURATION_MS);
-        outlineAnimation.setInterpolator(CLOSE_OUTLINE_INTERPOLATOR);
-        closeAnimation.play(outlineAnimation);
-
         Animator alphaAnimation = ObjectAnimator.ofFloat(this, ALPHA, 1f, 0f);
         alphaAnimation.setStartDelay(ALPHA_ANIMATION_START_DELAY_MS);
         alphaAnimation.setDuration(ALPHA_ANIMATION_DURATION_MS);
@@ -586,7 +620,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         animator.play(contentAlphaAnimation);
     }
 
-    protected void animateOpen(int currentFocusIndexOverride) {
+    protected void animateOpen(int currentFocusIndexOverride, boolean useStartDelay) {
         if (mOpenAnimation != null) {
             // Restart animation since currentFocusIndexOverride can change the initial scroll.
             mOpenAnimation.cancel();
@@ -598,6 +632,11 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         mNoRecentItemsPane.setAlpha(0);
 
         mOpenAnimation = new AnimatorSet();
+
+        if (useStartDelay) {
+            // Use a start delay to make the quick alt-tab case smoother
+            mOpenAnimation.setStartDelay(ViewConfiguration.getLongPressTimeout());
+        }
 
         Animator outlineAnimation = mOutlineAnimationProgress.animateToValue(1f);
         outlineAnimation.setDuration(OUTLINE_ANIMATION_DURATION_MS);
@@ -626,6 +665,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                 InteractionJankMonitorWrapper.begin(
                         KeyboardQuickSwitchView.this, Cuj.CUJ_LAUNCHER_KEYBOARD_QUICK_SWITCH_OPEN);
                 setClipToPadding(false);
+                setClipToOutline(true);
                 setOutlineProvider(new ViewOutlineProvider() {
                     @Override
                     public void getOutline(View view, Outline outline) {
@@ -692,6 +732,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 setClipToPadding(true);
+                setClipToOutline(false);
                 setOutlineProvider(outlineProvider);
                 invalidateOutline();
                 mOpenAnimation = null;
@@ -711,16 +752,20 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         if (!mDisplayingRecentTasks) {
             return;
         }
+        if (mOpenAnimation != null && fromIndex != -1) {
+            // Skip open animation on first tab after starting the animation
+            mOpenAnimation.end();
+        }
         KeyboardQuickSwitchTaskView focusedTask = getTaskAt(toIndex);
         if (focusedTask == null) {
             return;
         }
         AnimatorSet focusAnimation = new AnimatorSet();
-        focusAnimation.play(focusedTask.getFocusAnimator(true));
+        focusedTask.addFocusAnimation(true, focusAnimation);
 
         KeyboardQuickSwitchTaskView previouslyFocusedTask = getTaskAt(fromIndex);
         if (previouslyFocusedTask != null) {
-            focusAnimation.play(previouslyFocusedTask.getFocusAnimator(false));
+            previouslyFocusedTask.addFocusAnimation(false, focusAnimation);
         }
 
         focusAnimation.addListener(new AnimatorListenerAdapter() {

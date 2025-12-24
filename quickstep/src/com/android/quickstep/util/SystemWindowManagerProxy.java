@@ -35,7 +35,7 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.SystemUiProxy;
-import com.android.quickstep.fallback.window.RecentsWindowFlags;
+import com.android.quickstep.window.RecentsWindowFlags;
 import com.android.wm.shell.shared.desktopmode.DesktopModeStatus;
 import com.android.wm.shell.shared.desktopmode.DesktopState;
 
@@ -55,13 +55,17 @@ public class SystemWindowManagerProxy extends WindowManagerProxy {
     private final DesktopVisibilityController mDesktopVisibilityController;
     private final SystemUiProxy mSystemUiProxy;
 
+    private final DesktopState mDesktopState;
+
     @Inject
     public SystemWindowManagerProxy(
             DesktopVisibilityController desktopVisibilityController,
-            SystemUiProxy systemUiProxy) {
+            SystemUiProxy systemUiProxy,
+            DesktopState desktopState) {
         super(true);
         mDesktopVisibilityController = desktopVisibilityController;
         mSystemUiProxy = systemUiProxy;
+        mDesktopState = desktopState;
     }
 
     @Override
@@ -87,7 +91,7 @@ public class SystemWindowManagerProxy extends WindowManagerProxy {
 
     @Override
     public boolean isDisplayDesktopFirst(Context displayInfoContext) {
-        if (!DesktopState.fromContext(displayInfoContext).canEnterDesktopMode()) {
+        if (!mDesktopState.canEnterDesktopMode()) {
             return false;
         }
         return displayInfoContext.getResources().getConfiguration()

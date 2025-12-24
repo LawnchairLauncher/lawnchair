@@ -25,21 +25,27 @@ import android.provider.Settings
 import android.provider.Settings.Global.ANIMATOR_DURATION_SCALE
 import android.provider.Settings.Global.TRANSITION_ANIMATION_SCALE
 import android.provider.Settings.Global.WINDOW_ANIMATION_SCALE
+import com.android.launcher3.concurrent.annotations.LightweightBackground
+import com.android.launcher3.concurrent.annotations.LightweightBackgroundPriority.UI
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.DaggerSingletonTracker
-import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
+import com.android.launcher3.util.Executors
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executor
 import javax.inject.Inject
 
 /** Tracker Class for when user turns on/off remove animation setting. */
 @LauncherAppSingleton
 class RemoveAnimationSettingsTracker
 @Inject
-constructor(@ApplicationContext val context: Context, tracker: DaggerSingletonTracker) :
-    ContentObserver(Handler(Looper.getMainLooper())) {
+constructor(
+    @ApplicationContext val context: Context,
+    tracker: DaggerSingletonTracker,
+    @LightweightBackground(priority = UI) private val uiHelperExecutor: Executor
+) : ContentObserver(Handler(Looper.getMainLooper())) {
 
     private val contentResolver = context.contentResolver
 
@@ -47,15 +53,13 @@ constructor(@ApplicationContext val context: Context, tracker: DaggerSingletonTr
     private val cache: MutableMap<Uri, Float> = ConcurrentHashMap()
 
     init {
-        UI_HELPER_EXECUTOR.execute {
+        uiHelperExecutor.execute {
             contentResolver.registerContentObserver(WINDOW_ANIMATION_SCALE_URI, false, this)
             contentResolver.registerContentObserver(TRANSITION_ANIMATION_SCALE_URI, false, this)
             contentResolver.registerContentObserver(ANIMATOR_DURATION_SCALE_URI, false, this)
         }
 
-        tracker.addCloseable {
-            UI_HELPER_EXECUTOR.execute { contentResolver.unregisterContentObserver(this) }
-        }
+        tracker.addCloseable { uiHelperExecutor.execute { contentResolver.unregisterContentObserver(this) } }
     }
 
     /**

@@ -95,6 +95,8 @@ public class ShellTaskOrganizerTests extends ShellTestCase {
     @Mock
     private ITaskOrganizerController mTaskOrganizerController;
     @Mock
+    private RootTaskDisplayAreaOrganizer mRootTaskDisplayAreaOrganizer;
+    @Mock
     private CompatUIController mCompatUI;
     @Mock
     private ShellExecutor mTestExecutor;
@@ -151,8 +153,8 @@ public class ShellTaskOrganizerTests extends ShellTestCase {
         }
         mShellInit = spy(new ShellInit(mTestExecutor));
         mOrganizer = spy(new ShellTaskOrganizer(mShellInit, mShellCommandHandler,
-                mTaskOrganizerController, mCompatUI, Optional.empty(),
-                Optional.of(mRecentTasksController), mTestExecutor));
+                mRootTaskDisplayAreaOrganizer, mTaskOrganizerController, mCompatUI,
+                Optional.empty(), Optional.of(mRecentTasksController), mTestExecutor));
         mShellInit.init();
     }
 
@@ -368,6 +370,33 @@ public class ShellTaskOrganizerTests extends ShellTestCase {
         mOrganizer.onTaskInfoChanged(task1);
 
         assertTrue(mOrganizer.hasTaskListener(task1.taskId));
+    }
+
+    @Test
+    public void testRemoveListenerBeforeCookieMigration() {
+        // Add a generic listener for MW tasks
+        TrackingTaskListener mwListener = new TrackingTaskListener();
+        mOrganizer.addListenerForType(mwListener, TASK_LISTENER_TYPE_MULTI_WINDOW);
+
+        // Create a new task with a specific launch cookie
+        IBinder cookie = new Binder();
+        RunningTaskInfo task1 = createTaskInfo(/* taskId= */ 1, WINDOWING_MODE_MULTI_WINDOW);
+        task1.addLaunchCookie(cookie);
+
+        // Add a pending listener based on the same launch cookie
+        TrackingTaskListener cookieListener = new TrackingTaskListener();
+        mOrganizer.setPendingLaunchCookieListener(cookie, cookieListener);
+
+        // Remove the listener before the task appears
+        mOrganizer.removeListener(cookieListener);
+
+        // Report the task appearing
+        mOrganizer.onTaskAppeared(task1, /* leash= */ null);
+
+        // Verify that the cookie listener was actually removed and that the generic MW listener
+        // received the task
+        assertTrue(mwListener.appeared.contains(task1));
+        assertFalse(cookieListener.appeared.contains(task1));
     }
 
     @Test

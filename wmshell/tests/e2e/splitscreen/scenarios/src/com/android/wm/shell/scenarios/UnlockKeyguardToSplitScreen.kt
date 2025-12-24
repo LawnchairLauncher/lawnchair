@@ -46,6 +46,8 @@ abstract class UnlockKeyguardToSplitScreen {
 
     @Before
     fun setup() {
+        // TODO: b/349075982 - Remove once launcher rotation and checks are stable.
+        tapl.expectedRotationCheckEnabled = false
         tapl.setEnableRotation(true)
         tapl.setExpectedRotation(Rotation.ROTATION_0.value)
 

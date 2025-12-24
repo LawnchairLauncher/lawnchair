@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="@androidprv:color/materialColorOnSurface"
         android:textAppearance="@*android:style/TextAppearance.DeviceDefault" />
 
 </com.android.wm.shell.bubbles.bar.BubbleBarMenuItemView>

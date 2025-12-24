@@ -16,11 +16,14 @@
 
 package com.android.quickstep.recents.ui.mapper
 
+import android.util.Log
 import android.view.View.OnClickListener
 import com.android.launcher3.Flags.enableDesktopExplodedView
+import com.android.launcher3.Flags.showCloseButtonOnTaskviewHover
 import com.android.launcher3.R
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
 import com.android.quickstep.recents.ui.viewmodel.TaskData
+import com.android.quickstep.task.TaskDismissButtonState
 import com.android.quickstep.task.apptimer.TaskAppTimerUiState
 import com.android.quickstep.task.thumbnail.TaskHeaderUiState
 import com.android.quickstep.task.thumbnail.TaskThumbnailUiState
@@ -49,15 +52,15 @@ object TaskUiStateMapper {
         clickCloseListener: OnClickListener?,
     ): TaskHeaderUiState =
         when {
-            taskData !is TaskData.Data -> TaskHeaderUiState.HideHeader
-            canHeaderBeCreated(taskData, hasHeader, clickCloseListener) -> {
+            taskData is TaskData.Data &&
+                hasHeader &&
+                enableDesktopExplodedView() &&
+                clickCloseListener != null -> {
                 TaskHeaderUiState.ShowHeader(
                     TaskHeaderUiState.ThumbnailHeader(
-                        // TODO(http://b/353965691): figure out what to do when `icon` or
-                        // `titleDescription` is null.
-                        taskData.icon!!,
-                        taskData.titleDescription!!,
-                        clickCloseListener!!,
+                        taskData.icon,
+                        taskData.titleDescription,
+                        clickCloseListener,
                     )
                 )
             }
@@ -65,49 +68,32 @@ object TaskUiStateMapper {
         }
 
     /**
-     * Converts a [TaskData] object into a [TaskThumbnailUiState] for display in the UI.
-     *
-     * This function handles different types of [TaskData] and determines the appropriate UI state
-     * based on the data and provided flags.
+     * Converts a [TaskData] object into the appropriate [TaskThumbnailUiState] for the UI.
      *
      * @param taskData The [TaskData] to convert. Can be null or a specific subclass.
-     * @param isLiveTile A flag indicating whether the task data represents live tile.
      * @return A [TaskThumbnailUiState] representing the UI state for the given task data.
      */
     fun toTaskThumbnailUiState(taskData: TaskData?): TaskThumbnailUiState =
         when {
             taskData !is TaskData.Data -> Uninitialized
             taskData.isLiveTile -> LiveTile
-            isBackgroundOnly(taskData) -> BackgroundOnly(taskData.backgroundColor)
-            isSnapshotSplash(taskData) ->
+            taskData.isLocked || taskData.thumbnailData?.thumbnail == null ->
+                BackgroundOnly(taskData.backgroundColor).also {
+                    Log.d(
+                        "b/417220811",
+                        "Task id: ${taskData.taskId}, thumbnailData: ${taskData.thumbnailData}, isLocked: ${taskData.isLocked}",
+                    )
+                }
+            else ->
                 SnapshotSplash(
                     Snapshot(
-                        taskData.thumbnailData?.thumbnail!!,
+                        taskData.thumbnailData.thumbnail!!,
                         taskData.thumbnailData.rotation,
                         taskData.backgroundColor,
                     ),
                     taskData.icon,
                 )
-
-            else -> Uninitialized
         }
-
-    private fun isBackgroundOnly(taskData: TaskData.Data) =
-        taskData.isLocked || taskData.thumbnailData == null
-
-    private fun isSnapshotSplash(taskData: TaskData.Data) =
-        taskData.thumbnailData?.thumbnail != null && !taskData.isLocked
-
-    private fun canHeaderBeCreated(
-        taskData: TaskData.Data,
-        hasHeader: Boolean,
-        clickCloseListener: OnClickListener?,
-    ) =
-        enableDesktopExplodedView() &&
-            hasHeader &&
-            taskData.icon != null &&
-            taskData.titleDescription != null &&
-            clickCloseListener != null
 
     /**
      * Converts a [TaskData] object into a [TaskAppTimerUiState] for displaying an app timer toast
@@ -141,4 +127,9 @@ object TaskUiStateMapper {
                         },
                 )
         }
+
+    fun toTaskDismissButtonState(isDesktopTaskView: Boolean, clickCloseListener: OnClickListener) =
+        if (showCloseButtonOnTaskviewHover() && !isDesktopTaskView) {
+            TaskDismissButtonState.Enabled(clickCloseListener)
+        } else TaskDismissButtonState.Disabled
 }

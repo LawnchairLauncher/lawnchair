@@ -39,6 +39,7 @@ import com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT
 import com.android.launcher3.util.TestUtil
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -55,8 +56,15 @@ class TaskbarAllAppsViewControllerTest {
     @InjectController lateinit var stashController: TaskbarStashController
 
     private var allAppsVisitedCount by ALL_APPS_VISITED_COUNT.prefItem.asProperty(context)
-    private val searchSessionController =
-        TestUtil.getOnUiThread { TaskbarSearchSessionController.newInstance(context) }
+    lateinit private var searchSessionController: TaskbarSearchSessionController
+
+    @Before
+    fun setUp() {
+        searchSessionController =
+            TestUtil.getOnUiThread {
+                TaskbarSearchSessionController.newInstance(overlayController.requestWindow())
+            }
+    }
 
     @After
     fun cleanUpSearchSessionController() {

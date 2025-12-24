@@ -36,12 +36,12 @@ android_test {
     data: ["trace_config/*"],
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Begin breakdowns for WMShellFlickerTestsAppCompat module
+// Auto generated section, don't update it manually
 
 test_module_config {
     name: "WMShellFlickerTestsAppCompat-CatchAll",
     base: "WMShellFlickerTestsAppCompat",
+    test_suites: ["device-tests"],
     exclude_filters: [
         "com.android.wm.shell.flicker.appcompat.OpenAppInSizeCompatModeTest",
         "com.android.wm.shell.flicker.appcompat.OpenTransparentActivityTest",
@@ -50,50 +50,46 @@ test_module_config {
         "com.android.wm.shell.flicker.appcompat.RestartAppInSizeCompatModeTest",
         "com.android.wm.shell.flicker.appcompat.RotateImmersiveAppInFullscreenTest",
     ],
-    test_suites: ["device-tests"],
 }
 
 test_module_config {
     name: "WMShellFlickerTestsAppCompat-OpenAppInSizeCompatModeTest",
     base: "WMShellFlickerTestsAppCompat",
-    include_filters: ["com.android.wm.shell.flicker.appcompat.OpenAppInSizeCompatModeTest"],
     test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.flicker.appcompat.OpenAppInSizeCompatModeTest"],
 }
 
 test_module_config {
     name: "WMShellFlickerTestsAppCompat-OpenTransparentActivityTest",
     base: "WMShellFlickerTestsAppCompat",
-    include_filters: ["com.android.wm.shell.flicker.appcompat.OpenTransparentActivityTest"],
     test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.flicker.appcompat.OpenTransparentActivityTest"],
 }
 
 test_module_config {
     name: "WMShellFlickerTestsAppCompat-QuickSwitchLauncherToLetterboxAppTest",
     base: "WMShellFlickerTestsAppCompat",
-    include_filters: ["com.android.wm.shell.flicker.appcompat.QuickSwitchLauncherToLetterboxAppTest"],
     test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.flicker.appcompat.QuickSwitchLauncherToLetterboxAppTest"],
 }
 
 test_module_config {
     name: "WMShellFlickerTestsAppCompat-RepositionFixedPortraitAppTest",
     base: "WMShellFlickerTestsAppCompat",
-    include_filters: ["com.android.wm.shell.flicker.appcompat.RepositionFixedPortraitAppTest"],
     test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.flicker.appcompat.RepositionFixedPortraitAppTest"],
 }
 
 test_module_config {
     name: "WMShellFlickerTestsAppCompat-RestartAppInSizeCompatModeTest",
     base: "WMShellFlickerTestsAppCompat",
-    include_filters: ["com.android.wm.shell.flicker.appcompat.RestartAppInSizeCompatModeTest"],
     test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.flicker.appcompat.RestartAppInSizeCompatModeTest"],
 }
 
 test_module_config {
     name: "WMShellFlickerTestsAppCompat-RotateImmersiveAppInFullscreenTest",
     base: "WMShellFlickerTestsAppCompat",
-    include_filters: ["com.android.wm.shell.flicker.appcompat.RotateImmersiveAppInFullscreenTest"],
     test_suites: ["device-tests"],
+    include_filters: ["com.android.wm.shell.flicker.appcompat.RotateImmersiveAppInFullscreenTest"],
 }
-
-// End breakdowns for FlickerTestsRotation module
-////////////////////////////////////////////////////////////////////////////////

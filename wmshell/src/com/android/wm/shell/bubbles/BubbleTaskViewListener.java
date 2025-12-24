@@ -127,7 +127,11 @@ public class BubbleTaskViewListener implements TaskView.Listener {
                     "onInitialized: calling startActivity, bubble=%s hasPreparingTransition=%b",
                     getBubbleKey(), mBubble.getPreparingTransition() != null);
             try {
-                options.setTaskAlwaysOnTop(true /* alwaysOnTop */);
+                final WindowContainerToken rootToken =
+                        mExpandedViewManager.getAppBubbleRootTaskToken();
+                if (rootToken == null) {
+                    options.setTaskAlwaysOnTop(true /* alwaysOnTop */);
+                }
                 options.setPendingIntentBackgroundActivityStartMode(
                         MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS);
                 final boolean isShortcutBubble = (mBubble.hasMetadataShortcutId()
@@ -152,8 +156,6 @@ public class BubbleTaskViewListener implements TaskView.Listener {
                                 PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT,
                                 /* options= */ null);
                     }
-                    final WindowContainerToken rootToken =
-                            mExpandedViewManager.getAppBubbleRootTaskToken();
                     if (rootToken != null) {
                         options.setLaunchRootTask(rootToken);
                     } else {
@@ -165,8 +167,6 @@ public class BubbleTaskViewListener implements TaskView.Listener {
                         options.setLaunchedFromBubble(true);
                         options.setApplyActivityFlagsForBubbles(true);
                     } else {
-                        final WindowContainerToken rootToken =
-                                mExpandedViewManager.getAppBubbleRootTaskToken();
                         if (rootToken != null) {
                             options.setLaunchRootTask(rootToken);
                         } else {
@@ -228,8 +228,11 @@ public class BubbleTaskViewListener implements TaskView.Listener {
 
         final TaskViewTaskController tvc = mTaskView.getController();
         final boolean isAppBubble = mBubble != null && (mBubble.isApp() || mBubble.isShortcut());
+        Rect launchBounds = new Rect();
+        mTaskView.getBoundsOnScreen(launchBounds);
         final WindowContainerTransaction wct = getEnterBubbleTransaction(
-                tvc.getTaskToken(), isAppBubble);
+                tvc.getTaskToken(), mExpandedViewManager.getAppBubbleRootTaskToken(), launchBounds,
+                isAppBubble);
         tvc.getTaskOrganizer().applyTransaction(wct);
 
         // With the task org, the taskAppeared callback will only happen once the task has

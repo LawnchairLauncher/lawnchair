@@ -33,6 +33,8 @@ import com.android.launcher3.taskbar.rules.TaskbarModeRule.TaskbarMode
 import com.android.launcher3.taskbar.rules.TaskbarUnitTestRule
 import com.android.launcher3.taskbar.rules.TaskbarUnitTestRule.InjectController
 import com.android.launcher3.taskbar.rules.TaskbarWindowSandboxContext
+import com.android.launcher3.util.Executors.MAIN_EXECUTOR
+import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
 import com.android.launcher3.util.LauncherMultivalentJUnit
 import com.android.launcher3.util.LauncherMultivalentJUnit.EmulatedDevices
 import com.android.quickstep.SystemUiProxy
@@ -45,6 +47,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.spy
@@ -58,8 +61,12 @@ class TaskbarScrimViewControllerTest {
     val context =
         TaskbarWindowSandboxContext.create(
             SandboxParams({
-                spy(SystemUiProxy(ApplicationProvider.getApplicationContext())) {
-                    doAnswer { backPressed = true }.whenever(it).onBackEvent(anyOrNull())
+                spy(SystemUiProxy(
+                        ApplicationProvider.getApplicationContext(),
+                        MAIN_EXECUTOR,
+                        UI_HELPER_EXECUTOR,
+                    )) {
+                    doAnswer { backPressed = true }.whenever(it).onBackEvent(anyOrNull(), any())
                 }
             })
         )

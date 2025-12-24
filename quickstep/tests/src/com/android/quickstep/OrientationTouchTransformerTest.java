@@ -51,15 +51,20 @@ import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.List;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class OrientationTouchTransformerTest {
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static final Size NORMAL_SCREEN_SIZE = new Size(1080, 2280);
     private static final Size LARGE_SCREEN_SIZE = new Size(1080, 3280);
@@ -72,7 +77,6 @@ public class OrientationTouchTransformerTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         mResources = mock(Resources.class);
         when(mResources.getBoolean(anyInt())).thenReturn(true);
         when(mResources.getDimension(anyInt())).thenReturn(10.0f);

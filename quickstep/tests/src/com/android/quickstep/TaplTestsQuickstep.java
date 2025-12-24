@@ -28,6 +28,7 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,7 @@ import com.android.launcher3.tapl.SelectModeButtons;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
@@ -76,6 +78,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         super.setUp();
         executeOnOverview(recentsView ->
                 recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(true));
+        clearAllRecentTasks();
     }
 
     @After
@@ -207,6 +210,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_ENABLE_ALT_TAB_KQS_FLATENNING)
     public void testOpenOverviewWithActionPlusTabKeys() throws Exception {
         startTestAppsWithCheck();
         startAppFast(CALCULATOR_APP_PACKAGE); // Ensure Calculator is last opened app.
@@ -272,6 +276,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @ScreenRecordRule.ScreenRecord  // b/415877373
     public void testQuickSwitchFromApp() throws Exception {
         startTestActivity(2);
         startTestActivity(3);
@@ -302,7 +307,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @TaskbarModeSwitch
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
         startTestActivity(2);
         startImeTestActivity();
 
@@ -358,11 +364,13 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Debug if we need to goHome to prevent wrong previous state b/315525621
         mLauncher.goHome();
         mLauncher.getWorkspace().switchToAllApps().pressBackToWorkspace();
-        waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
+        waitForLauncherCondition("Launcher internal state didn't switch to Home", launcher ->
+                launcher.getStateManager().getCurrentStableState() == LauncherState.NORMAL);
 
         startAppFast(CALCULATOR_APP_PACKAGE);
         mLauncher.getLaunchedAppState().pressBackToWorkspace();
-        waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
+        waitForLauncherCondition("Launcher internal state didn't switch to Home", launcher ->
+                launcher.getStateManager().getCurrentStableState() == LauncherState.NORMAL);
     }
 
     @Test
@@ -389,7 +397,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     @TaskbarModeSwitch
     public void testTaskbarDeadzonesForTablet() throws Exception {
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
 
         startTestAppsWithCheck();
 
@@ -421,7 +430,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     public void testDisableRotationCheckForPhone() throws Exception {
-        assumeFalse(mLauncher.isTablet());
+        assumeFalse("Ignoring test because device is not a phone",
+            mLauncher.isTablet());
         try {
             mLauncher.setExpectedRotationCheckEnabled(false);
             mLauncher.setEnableRotation(false);
@@ -475,9 +485,10 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     @EnableFlags(value = Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW)
+    @ScreenRecordRule.ScreenRecord // TODO(b/415092715)
     public void testDismissBottomRow() throws Exception {
-        assumeTrue(mLauncher.isTablet());
-        clearAllRecentTasks();
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
         startTestAppsWithCheck();
 
         Overview overview = mLauncher.goHome().switchToOverview();
@@ -498,18 +509,18 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     @EnableFlags(value = Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW)
     public void testDismissLastGridRow() throws Exception {
-        assumeTrue(mLauncher.isTablet());
-        clearAllRecentTasks();
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
         startTestAppsWithCheck();
         startTestActivity(3);
         startTestActivity(4);
+        Overview overview = mLauncher.goHome().switchToOverview();
+        assertIsInState("Launcher internal state didn't switch to Overview",
+                LauncherState.OVERVIEW);
         executeOnOverview(recentsView -> assertNotEquals(
                 "Grid overview should have unequal row counts",
                 recentsView.getTopRowTaskCountForTablet(),
                 recentsView.getBottomRowTaskCountForTablet()));
-        Overview overview = mLauncher.goHome().switchToOverview();
-        assertIsInState("Launcher internal state didn't switch to Overview",
-                LauncherState.OVERVIEW);
 
         overview.flingForwardUntilClearAllVisible();
         assertTrue("Clear All not visible.", overview.isClearAllVisible());
@@ -537,8 +548,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     // When dismissing multiple apps, the apps off screen should "re-balance" i.e. re-arrange
     // themselves evenly across both top and bottom rows.
     public void gridRebalancesOffScreenAfterDismissingMultipleApps() throws Exception {
-        assumeTrue(mLauncher.isTablet());
-        clearAllRecentTasks();
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
         // Launch enough apps so some are offscreen.
         for (int i = 2; i <= 12; i++) {
             startTestActivity(i);
@@ -569,8 +580,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     // 2 apps from the top row, will move the top row along 2 and so it will not be balanced
     // across the bottom row.
     public void gridDoesNotRebalanceOnScreenAfterDismissingMultipleApps() throws Exception {
-        assumeTrue(mLauncher.isTablet());
-        clearAllRecentTasks();
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
         // Launch 6 apps so 3 are in each row.
         int appsInBothRowsCount = 6;
         int appsInEachRowCount = appsInBothRowsCount / 2;
@@ -635,11 +646,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     private void assertIsInState(
             @NonNull String failureMessage, @NonNull LauncherState expectedState) {
         assertTrue(failureMessage, isInState(() -> expectedState));
-    }
-
-    private void waitForState(
-            @NonNull String failureMessage, @NonNull LauncherState expectedState) {
-        waitForState(failureMessage, () -> expectedState);
     }
 
     private void expectLaunchedAppState() {

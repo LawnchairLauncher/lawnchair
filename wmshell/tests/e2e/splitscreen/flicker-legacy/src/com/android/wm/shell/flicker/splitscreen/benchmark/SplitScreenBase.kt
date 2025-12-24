@@ -17,13 +17,13 @@
 package com.android.wm.shell.flicker.splitscreen.benchmark
 
 import android.content.Context
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
 import com.android.server.wm.flicker.helpers.setRotation
 import com.android.wm.shell.flicker.BaseBenchmarkTest
 import com.android.wm.shell.flicker.utils.SplitScreenUtils
 
-abstract class SplitScreenBase(flicker: LegacyFlickerTest) : BaseBenchmarkTest(flicker) {
+abstract class SplitScreenBase(flicker: FlickerTest) : BaseBenchmarkTest(flicker) {
     protected val context: Context = instrumentation.context
     protected open val primaryApp = SplitScreenUtils.getPrimary(instrumentation)
     protected val secondaryApp = SplitScreenUtils.getSecondary(instrumentation)

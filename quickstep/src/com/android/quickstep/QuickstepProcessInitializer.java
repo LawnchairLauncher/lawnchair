@@ -29,13 +29,18 @@ import com.android.quickstep.util.QuickstepProtoLogGroup;
 import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
+import java.util.Set;
+
+import javax.inject.Inject;
+
 @SuppressWarnings("unused")
 public class QuickstepProcessInitializer extends MainProcessInitializer {
 
     private static final String TAG = "QuickstepProcessInitializer";
     private static final int SETUP_DELAY_MILLIS = 5000;
 
-    public QuickstepProcessInitializer(Context context) {
+    @Inject
+    public QuickstepProcessInitializer() {
         // Fake call to create an instance of InteractionJankMonitor to avoid binder calls during
         // its initialization during transitions.
         InteractionJankMonitorWrapper.cancel(-1);
@@ -65,7 +70,38 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
                 ThreadedRenderer.setContextPriority(
                                 ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
         } catch (Exception e) {
-                Log.e(TAG, "init: " + e);
+            Log.e(TAG, "init: " + e);
         }
+
+        // Enable Looper trace points.
+        // This allows us to see Handler callbacks on traces.
+//        Looper.getMainLooper().setTraceTag(Trace.TRACE_TAG_APP);
+
+//        if (BuildConfig.IS_STUDIO_BUILD) {
+//            Set<String> allowedTargets = Set.of(
+//                    "android.view.IWindowManager",
+//                    "android.app.IActivityManager",
+//                    "android.app.IActivityTaskManager",
+//                    "android.app.IActivityClientController",
+//                    "android.hardware.input.IInputManager",
+//                    "android.content.IContentService",
+//                    "android.hardware.display.IDisplayManager",
+//                    "android.app.IUiModeManager",
+//                    "android.app.trust.ITrustManager",
+//                    "android.content.IContentProvider",
+//                    "com.android.internal.appwidget.IAppWidgetService",
+//                    "android.content.pm.IPackageManager",
+//                    " android.view.accessibility.IAccessibilityManager"
+//            );
+//            BinderTracker.startTracking(call -> {
+//                if (!allowedTargets.contains(call.descriptor)) {
+//                    Log.e("BinderCall",
+//                            call.descriptor + " called on main thread under " + call.activeTrace
+//                                    + " stackTrace: " + call.stackTrace);
+//                }
+//            });
+//        }
+
+//        QuickstepProtoLogGroup.initProtoLog();
     }
 }

@@ -86,4 +86,6 @@
     <!-- Keyboard Quick Switch -->
     <dimen name="keyboard_quick_switch_taskview_width">217.6dp</dimen>
 
+    <!-- Overview desktop exploded layout -->
+    <integer name="desktop_layout_max_rows">4</integer>
 </resources>

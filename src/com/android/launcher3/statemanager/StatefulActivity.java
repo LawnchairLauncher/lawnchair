@@ -199,8 +199,7 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     }
 
     /**
-     * Logic for when device configuration changes (rotation, screen size change, multi-window,
-     * etc.)
+     * Logic for when device configuration changes (rotation, screen size change etc.)
      */
     protected abstract void onHandleConfigurationChanged();
 

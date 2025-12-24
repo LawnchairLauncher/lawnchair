@@ -1,27 +1,8 @@
-// Should only contain test files, no utility classes
-filegroup {
-    name: "launcher-e2e-tests-only",
-    srcs: [
-        "allapps/TaplAllAppsIconsWorkingTest.java",
-        "allapps/TaplOpenCloseAllAppsTest.java",
-        "appiconmenu/TaplAppIconMenuTest.java",
-        "dragging/TaplDragTest.java",
-        "dragging/TaplUninstallRemoveTest.java",
-        "tapl/TaplUtilityTest.java",
-        "widget/TaplAddWidgetTest.java",
-        "ui/TaplTestsLauncher3Test.java",
-        "workspace/TaplTwoPanelWorkspaceTest.java",
-        "workspace/TaplWorkspaceTest.java",
-    ],
-}
-
 filegroup {
     name: "launcher-e2e-tests-utils",
     srcs: [
         "testcomponent/TestCommandReceiver.java",
         "testcomponent/BaseTestingActivity.java",
-        "util/TestConstants.java",
-        "util/Wait.kt",
         "util/rule/FailureWatcher.java",
         "util/rule/SkipAfterTimeOutRule.java",
         "util/rule/SamplerRule.java",
@@ -41,19 +22,5 @@ filegroup {
     srcs: [
         ":launcher-e2e-tests-only",
         ":launcher-e2e-tests-utils",
-    ],
-}
-
-// TODO(b/324261526) After the bug is completed this file group should not exists anymore
-filegroup {
-    name: "launcher-oop-tests-only",
-    srcs: [
-        "allapps/TaplAllAppsIconsWorkingTest.java",
-        "allapps/TaplOpenCloseAllAppsTest.java",
-        "appiconmenu/TaplAppIconMenuTest.java",
-        "dragging/TaplDragTest.java",
-        "dragging/TaplUninstallRemoveTest.java",
-        "ui/TaplTestsLauncher3Test.java",
-        "workspace/TaplWorkspaceTest.java",
     ],
 }

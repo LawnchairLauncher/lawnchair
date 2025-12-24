@@ -23,6 +23,7 @@ import android.app.WindowConfiguration.WINDOWING_MODE_PINNED
 import android.view.WindowInsets
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_CAPTION_BARS
 import android.view.WindowInsetsController.APPEARANCE_TRANSPARENT_CAPTION_BAR_BACKGROUND
+import android.window.DesktopModeFlags
 
 val TaskInfo.isTransparentCaptionBarAppearance: Boolean
     get() {
@@ -53,4 +54,15 @@ val TaskInfo.requestingImmersive: Boolean
     get() {
         // Considered to be requesting immersive when requesting to hide the status bar.
         return (requestedVisibleTypes and WindowInsets.Type.statusBars()) == 0
+    }
+
+/** Whether the task can be resized via dragging the edges of the task. */
+fun TaskInfo.isDragResizable(inFullImmersive: Boolean): Boolean =
+    if (inFullImmersive) {
+        // Task cannot be resized in full immersive.
+        false
+    } else if (DesktopModeFlags.ENABLE_WINDOWING_SCALED_RESIZING.isTrue) {
+        isFreeform
+    } else {
+        isFreeform && isResizeable
     }

@@ -55,12 +55,11 @@ For example, you might have:
 Adding an interface to a Shell component may seem like a lot of boiler plate, but is currently
 necessary to maintain proper threading and logic isolation.
 
-## Listening for Configuration changes & other SysUI events
+## Listening for SysUI events
 
 Aside from direct calls into Shell controllers for exposed features, the Shell also receives
 common event callbacks from SysUI via the `ShellController`.  This includes things like:
 
-- Configuration changes
 - Keyguard events
 - Shell init
 - Shell dumps & commands
@@ -68,6 +67,29 @@ common event callbacks from SysUI via the `ShellController`.  This includes thin
 For other events which are specific to the Shell feature, then you can add callback methods on
 the Shell feature interface.  Any such calls should <u>**never**</u> be synchronous calls as
 they will need to post to the Shell main thread to run.
+
+## Listening for configuration changes
+
+It is recommended for Shell features to listen for configuration changes as close to the part of
+the hierarchy that they care about, ie.
+
+- Normal windows - UI within a normal window should respond to configuration changes via callbacks
+  from the view system and not via other callbacks, this ensures that resources and other dependent
+  components are updated prior to your handling of the change
+- Tasks - There are specific changes to tasks that currently come through `ShellTaskOrganizer` in
+  the form of `TaskInfo` changes, if your feature is relevant only for a specific task (ie. caption,
+  overlay, etc), you can use that configuration. Task info changes are not guaranteed to be
+  synchronized with transitions or other configuration change callbacks (ie. display changes can
+  result in both display callbacks & task info changes in different orders)
+- Displays, Display areas, Windowless windows - Even if your logic is not tied to a specific window
+  or task, it likely manages these components within a display. To get notified for display
+  configuration changes, you can register a listener via
+  `DisplayController#addDisplayWindowListener()`
+- Application -- Shell features should never need to use the application configuration as it will be
+  wrong when there are multiple displays
+- Windowless windows - These do not receive configuration changes from WM, so the owner of these
+  windows are responsible for updating its configuration directly. This will usually be the
+  configuration of the container that it is associated with (ie. Task or Display/DisplayArea)
 
 ## Shell commands & Dumps
 

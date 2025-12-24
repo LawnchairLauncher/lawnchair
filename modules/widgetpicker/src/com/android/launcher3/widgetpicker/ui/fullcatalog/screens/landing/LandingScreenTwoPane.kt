@@ -29,12 +29,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Work
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,6 +46,7 @@ import com.android.launcher3.widgetpicker.R
 import com.android.launcher3.widgetpicker.shared.model.WidgetAppId
 import com.android.launcher3.widgetpicker.shared.model.WidgetUserProfile
 import com.android.launcher3.widgetpicker.ui.WidgetInteractionInfo
+import com.android.launcher3.widgetpicker.ui.WidgetInteractionSource
 import com.android.launcher3.widgetpicker.ui.components.AppHeaderDescriptionStyle
 import com.android.launcher3.widgetpicker.ui.components.LeadingIconToolbarTab
 import com.android.launcher3.widgetpicker.ui.components.ScrollableFloatingToolbar
@@ -62,8 +65,11 @@ import com.android.launcher3.widgetpicker.ui.fullcatalog.screens.landing.Landing
 import com.android.launcher3.widgetpicker.ui.fullcatalog.screens.landing.LandingScreenTwoPaneDimens.leftPaneContentBottomEdgeSpacing
 import com.android.launcher3.widgetpicker.ui.fullcatalog.screens.landing.LandingScreenTwoPaneDimens.pagerItemsSpacing
 import com.android.launcher3.widgetpicker.ui.fullcatalog.screens.landing.LandingScreenTwoPaneTestTags.FEATURED_WIDGETS_HEADER_TEST_TAG
+import com.android.launcher3.widgetpicker.ui.fullcatalog.screens.landing.LandingScreenTwoPaneTestTags.PERSONAL_WIDGETS_LIST_TEST_TAG
 import com.android.launcher3.widgetpicker.ui.fullcatalog.screens.landing.LandingScreenTwoPaneTestTags.PERSONAL_WIDGETS_TAB_TEST_TAG
 import com.android.launcher3.widgetpicker.ui.fullcatalog.screens.landing.LandingScreenTwoPaneTestTags.WORK_WIDGETS_TAB_TEST_TAG
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /**
@@ -74,9 +80,11 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun LandingScreenTwoPane(
+    selectedSubSection: LandingScreenSubSection,
     searchBar: @Composable () -> Unit,
     featuredWidgets: @Composable () -> Unit,
     featuredWidgetsCount: Int,
+    featuredShortcutsCount: Int,
     widgetAppIconsState: AppIconsState,
     browseWidgetsState: BrowseWidgetsState.Data,
     personalWidgetPreviewsState: PreviewsState,
@@ -87,9 +95,13 @@ fun LandingScreenTwoPane(
     onWorkWidgetAppToggle: (WidgetAppId?) -> Unit,
     onWidgetInteraction: (WidgetInteractionInfo) -> Unit,
     showDragShadow: Boolean,
+    onSelectedSubSectionChange: (LandingScreenSubSection) -> Unit,
 ) {
     val hasWorkProfile = remember(browseWidgetsState) { browseWidgetsState.workProfile != null }
-    var isFeaturedSectionShowing by rememberSaveable { mutableStateOf(true) }
+    var isFeaturedSectionShowing by
+        rememberSaveable(selectedSubSection) {
+            mutableStateOf(selectedSubSection == LandingScreenSubSection.FEATURED)
+        }
     val pageCount = remember {
         if (hasWorkProfile) {
             TABS_COUNT_WITH_WORK_PROFILE
@@ -99,15 +111,17 @@ fun LandingScreenTwoPane(
     }
 
     val pagerState =
-        rememberPagerState(initialPage = DEFAULT_SELECTED_TAB, pageCount = { pageCount })
+        rememberPagerState(initialPage = selectedSubSection.toPage(), pageCount = { pageCount })
 
     Box(modifier = Modifier.fillMaxSize()) {
         TwoPaneLayout(
             searchBar = searchBar,
+            leftPaneTitle = stringResource(R.string.widget_picker_left_pane_accessibility_label),
             leftContent = {
                 LeftPaneContent(
                     isFeaturedSectionSelected = isFeaturedSectionShowing,
                     featuredWidgetsCount = featuredWidgetsCount,
+                    featuredShortcutsCount = featuredShortcutsCount,
                     pagerState = pagerState,
                     hasWorkProfile = hasWorkProfile,
                     browseWidgetsState = browseWidgetsState,
@@ -156,6 +170,18 @@ fun LandingScreenTwoPane(
                 )
             },
         )
+    }
+
+    LaunchedEffect(isFeaturedSectionShowing, pagerState) {
+        snapshotFlow {
+                if (isFeaturedSectionShowing) {
+                    LandingScreenSubSection.FEATURED
+                } else {
+                    pagerState.settledPage.toSubSection()
+                }
+            }
+            .distinctUntilChanged()
+            .collectLatest { onSelectedSubSectionChange(it) }
     }
 }
 
@@ -226,6 +252,7 @@ private fun RightPaneContent(
                     showAllWidgetDetails = true,
                     widgetSizeGroups = selectedPersonalWidgets,
                     previews = personalWidgetPreviewsState.previews,
+                    widgetInteractionSource = WidgetInteractionSource.BROWSE,
                     onWidgetInteraction = onWidgetInteraction,
                     showDragShadow = showDragShadow,
                 )
@@ -249,6 +276,7 @@ private fun RightPaneContent(
                     widgetSizeGroups = selectedWorkWidgets,
                     previews = workWidgetPreviewsState.previews,
                     onWidgetInteraction = onWidgetInteraction,
+                    widgetInteractionSource = WidgetInteractionSource.BROWSE,
                     showDragShadow = showDragShadow,
                 )
             }
@@ -261,6 +289,7 @@ private fun LeftPaneContent(
     isFeaturedSectionSelected: Boolean,
     onFeaturedHeaderClick: () -> Unit,
     featuredWidgetsCount: Int,
+    featuredShortcutsCount: Int,
     pagerState: PagerState,
     hasWorkProfile: Boolean,
     browseWidgetsState: BrowseWidgetsState.Data,
@@ -282,7 +311,8 @@ private fun LeftPaneContent(
             SelectableSuggestionsHeader(
                 selected = isFeaturedSectionSelected,
                 onSelect = onFeaturedHeaderClick,
-                count = featuredWidgetsCount,
+                widgetsCount = featuredWidgetsCount,
+                shortcutsCount = featuredShortcutsCount,
                 shape = contentShape,
                 modifier =
                     Modifier.fillMaxWidth().widgetPickerTestTag(FEATURED_WIDGETS_HEADER_TEST_TAG),
@@ -347,7 +377,7 @@ private fun PersonalSection(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         WidgetAppsList(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.widgetPickerTestTag(PERSONAL_WIDGETS_LIST_TEST_TAG).fillMaxSize(),
             widgetApps = browseWidgetsState.personalWidgetApps,
             selectedWidgetAppId = selectedPersonalWidgetAppId,
             widgetAppHeaderStyle = WidgetAppHeaderStyle.CLICKABLE,
@@ -357,6 +387,7 @@ private fun PersonalSection(
             onWidgetAppClick = { widgetApp -> onPersonalWidgetAppToggle(widgetApp.id) },
             onWidgetInteraction = onWidgetInteraction,
             showDragShadow = showDragShadow,
+            widgetInteractionSource = WidgetInteractionSource.BROWSE,
             bottomContentSpacing = bottomContentSpacing,
         )
     }
@@ -386,6 +417,7 @@ private fun WorkSection(
             onWidgetInteraction = onWidgetInteraction,
             showDragShadow = showDragShadow,
             bottomContentSpacing = bottomContentSpacing,
+            widgetInteractionSource = WidgetInteractionSource.BROWSE,
             emptyWidgetsErrorMessage =
                 browseWidgetsState.workProfile?.let { workProfile ->
                     workProfile.pausedProfileMessage.takeIf { workProfile.paused }
@@ -408,8 +440,11 @@ private fun PersonalWorkToolbar(
         remember(currentPage, personalUserProfile, workUserProfile) {
             buildList {
                 add {
+                    val tabLabel = personalUserProfile.label
                     LeadingIconToolbarTab(
-                        label = personalUserProfile.label,
+                        label = tabLabel,
+                        contentDescription =
+                            stringResource(R.string.widgets_tab_accessibility_label, tabLabel),
                         leadingIcon = Icons.Filled.Person,
                         selected = currentPage == PERSONAL_TAB_INDEX,
                         onClick = {
@@ -419,8 +454,11 @@ private fun PersonalWorkToolbar(
                     )
                 }
                 add {
+                    val tabLabel = workUserProfile.label
                     LeadingIconToolbarTab(
                         label = workUserProfile.label,
+                        contentDescription =
+                            stringResource(R.string.widgets_tab_accessibility_label, tabLabel),
                         leadingIcon = Icons.Outlined.Work,
                         selected = currentPage == WORK_TAB_INDEX,
                         onClick = {
@@ -434,6 +472,20 @@ private fun PersonalWorkToolbar(
 
     ScrollableFloatingToolbar(modifier = modifier, selectedTabIndex = currentPage, tabs = tabs)
 }
+
+private fun LandingScreenSubSection.toPage() =
+    when (this) {
+        LandingScreenSubSection.BROWSE -> PERSONAL_TAB_INDEX
+        LandingScreenSubSection.WORK -> WORK_TAB_INDEX
+        else -> DEFAULT_SELECTED_TAB
+    }
+
+private fun Int.toSubSection() =
+    when (this) {
+        PERSONAL_TAB_INDEX -> LandingScreenSubSection.BROWSE
+        WORK_TAB_INDEX -> LandingScreenSubSection.WORK
+        else -> throw IllegalStateException("Unknown page index")
+    }
 
 private object LandingScreenTwoPaneDimens {
     val contentShape = RoundedCornerShape(24.dp)
@@ -456,4 +508,5 @@ private object LandingScreenTwoPaneTestTags {
     const val FEATURED_WIDGETS_HEADER_TEST_TAG = "featured_widgets_tab"
     const val PERSONAL_WIDGETS_TAB_TEST_TAG = "personal_widgets_tab"
     const val WORK_WIDGETS_TAB_TEST_TAG = "work_widgets_tab"
+    const val PERSONAL_WIDGETS_LIST_TEST_TAG = "personal_widgets_list"
 }

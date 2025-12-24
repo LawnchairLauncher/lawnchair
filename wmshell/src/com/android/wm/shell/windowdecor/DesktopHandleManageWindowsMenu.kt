@@ -33,8 +33,7 @@ import com.android.wm.shell.windowdecor.common.DecorThemeUtil
 import com.android.wm.shell.windowdecor.common.calculateMenuPosition
 
 /**
- * Implementation of [ManageWindowsViewContainer] meant to be used in desktop header and app
- * handle.
+ * Implementation of [ManageWindowsViewContainer] meant to be used in desktop header and app handle.
  */
 class DesktopHandleManageWindowsMenu(
     private val callerTaskInfo: RunningTaskInfo,
@@ -46,11 +45,12 @@ class DesktopHandleManageWindowsMenu(
     context: Context,
     snapshotList: List<Pair<Int, TaskSnapshot?>>,
     onIconClickListener: ((Int) -> Unit),
-    onOutsideClickListener: (() -> Unit)
-) : ManageWindowsViewContainer(
-    context,
-    DecorThemeUtil(context).getColorScheme(callerTaskInfo).background.toArgb()
-) {
+    onOutsideClickListener: (() -> Unit),
+) :
+    ManageWindowsViewContainer(
+        context,
+        DecorThemeUtil(context).getColorScheme(callerTaskInfo).background.toArgb(),
+    ) {
     private var menuViewContainer: AdditionalViewContainer? = null
 
     init {
@@ -62,32 +62,34 @@ class DesktopHandleManageWindowsMenu(
         return calculateMenuPosition(
             splitScreenController,
             callerTaskInfo,
-            marginStart = 0,
-            marginTop = context.resources.getDimensionPixelSize(
-                R.dimen.desktop_mode_handle_menu_margin_top
-            ),
+            marginTop =
+                context.resources.getDimensionPixelSize(
+                    R.dimen.desktop_mode_handle_menu_margin_top
+                ),
             captionX,
             0,
             captionWidth,
             menuView.menuWidth,
-            context.isRtl()
+            context.isRtl(),
         )
     }
 
     override fun addToContainer(menuView: ManageWindowsView) {
         val menuPosition = calculateMenuPosition()
-        menuViewContainer = AdditionalSystemViewContainer(
-            windowManagerWrapper = windowManagerWrapper,
-            taskId = callerTaskInfo.taskId,
-            x = menuPosition.x,
-            y = menuPosition.y,
-            width = menuView.menuWidth,
-            height = menuView.menuHeight,
-            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-            view = menuView.rootView,
-            ignoreCutouts = desktopState.canEnterDesktopModeOrShowAppHandle,
-        )
+        menuViewContainer =
+            AdditionalSystemViewContainer(
+                windowManagerWrapper = windowManagerWrapper,
+                taskId = callerTaskInfo.taskId,
+                x = menuPosition.x,
+                y = menuPosition.y,
+                width = menuView.menuWidth,
+                height = menuView.scrollableMenuHeight,
+                flags =
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                view = menuView.scrollableMenuView,
+                ignoreCutouts = desktopState.canEnterDesktopModeOrShowAppHandle,
+            )
     }
 
     override fun removeFromContainer() {

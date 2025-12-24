@@ -16,14 +16,12 @@
 
 package com.android.launcher3.folder
 
-import android.content.Context
 import android.graphics.Point
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.Alarm
@@ -50,15 +48,15 @@ import com.android.launcher3.folder.Folder.STATE_ANIMATING
 import com.android.launcher3.folder.Folder.STATE_CLOSED
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.ModelTestExtensions.clearModelDb
-import java.util.ArrayList
+import com.android.launcher3.util.TestActivityContext
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -75,18 +73,16 @@ import org.mockito.kotlin.whenever
 @RunWith(AndroidJUnit4::class)
 class FolderTest {
 
+    @get:Rule val context = spy(TestActivityContext())
+
     private lateinit var dragController: DragController<*>
-    private lateinit var context: Context
     private lateinit var workspaceBuilder: TestWorkspaceBuilder
     private lateinit var folder: Folder
 
     @Before
-    fun setUp() {
+    fun <T : DragController<*>> setUp() {
         dragController = Mockito.mock(DragController::class.java)
-        context =
-            object : ActivityContextWrapper(ApplicationProvider.getApplicationContext()) {
-                override fun <T : DragController<*>> getDragController(): T = dragController as T
-            }
+        doReturn(dragController).whenever(context).getDragController<T>()
 
         workspaceBuilder = TestWorkspaceBuilder(context)
         folder = spy(Folder(context, null))

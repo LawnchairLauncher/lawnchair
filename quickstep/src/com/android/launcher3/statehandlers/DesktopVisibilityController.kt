@@ -16,28 +16,21 @@
 package com.android.launcher3.statehandlers
 
 import android.content.Context
-import android.os.Debug
 import android.util.Log
-import android.util.Slog
 import android.util.SparseArray
+import android.util.SparseBooleanArray
 import android.view.Display.DEFAULT_DISPLAY
-import android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY
-import androidx.core.util.forEach
+import androidx.core.util.set
 import com.android.internal.util.LatencyTracker
 import com.android.launcher3.LauncherState
-//import com.android.launcher3.R
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.statemanager.BaseState
-import com.android.launcher3.statemanager.StatefulActivity
-import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.DaggerSingletonTracker
-import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.window.WindowManagerProxy.DesktopVisibilityListener
-import com.android.quickstep.GestureState.GestureEndTarget
 import com.android.quickstep.SystemUiProxy
 import com.android.quickstep.fallback.RecentsState
 import com.android.wm.shell.desktopmode.DisplayDeskState
@@ -47,8 +40,6 @@ import com.android.wm.shell.shared.desktopmode.DesktopModeStatus.useRoundedCorne
 import java.io.PrintWriter
 import java.lang.ref.WeakReference
 import javax.inject.Inject
-
-import com.android.wm.shell.R as SharedR
 
 /**
  * Controls the visibility of the workspace and the resumed / paused state when desktop mode is
@@ -96,9 +87,6 @@ constructor(
     // This simply indicates that user is currently in desktop mode or not.
     @Deprecated("Does not work with multi-desks") private var isInDesktopModeDeprecated = false
 
-    // to track if any pending notification to be done.
-    var isNotifyingDesktopVisibilityPending = false
-
     // to let launcher hold off on notifying desktop visibility listeners.
     var launcherAnimationRunning = false
 
@@ -135,46 +123,10 @@ constructor(
                 if (visibleDesktopTasksCountDeprecated == 1 && visibleTasksCount == 0) {
                     isInDesktopModeDeprecated = false
                 }
-                val wasVisible = field > 0
-                val isVisible = visibleTasksCount > 0
-                val wereDesktopTasksVisibleBefore = areDesktopTasksVisibleAndNotInOverview()
-                field = visibleTasksCount
-                val areDesktopTasksVisibleNow = areDesktopTasksVisibleAndNotInOverview()
-
-                if (
-                    wereDesktopTasksVisibleBefore != areDesktopTasksVisibleNow ||
-                        wasVisible != isVisible
-                ) {
-                    if (!launcherAnimationRunning) {
-                        notifyIsInDesktopModeChanged(DEFAULT_DISPLAY, areDesktopTasksVisibleNow)
-                    } else {
-                        isNotifyingDesktopVisibilityPending = true
-                    }
-                }
-
-                if (
-                    !ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue && wasVisible != isVisible
-                ) {
-                    // TODO: b/333533253 - Remove after flag rollout
-                    if (field > 0) {
-                        if (!inOverviewState) {
-                            // When desktop tasks are visible & we're not in overview, we want
-                            // launcher
-                            // to appear paused, this ensures that taskbar displays.
-                            markLauncherPaused()
-                        }
-                    } else {
-                        // If desktop tasks aren't visible, ensure that launcher appears resumed to
-                        // behave normally.
-                        markLauncherResumed()
-                    }
-                }
             }
         }
 
-    private var inOverviewState = false
-    private var backgroundStateEnabled = false
-    private var gestureInProgress = false
+    private var inOverviewStateMap = SparseBooleanArray()
 
     private var desktopTaskListener: DesktopTaskListenerImpl?
 
@@ -211,7 +163,7 @@ constructor(
         val activeDeskId = getDisplayDeskConfig(displayId)?.activeDeskId ?: INACTIVE_DESK_ID
         val isInDesktopMode = activeDeskId != INACTIVE_DESK_ID
         if (DEBUG) {
-            Log.d(TAG, "isInDesktopMode: $isInDesktopMode")
+            Log.d(TAG, "isInDesktopMode ($displayId): $isInDesktopMode")
         }
         return isInDesktopMode
     }
@@ -222,25 +174,27 @@ constructor(
      */
     fun isInDesktopModeAndNotInOverview(displayId: Int): Boolean {
         if (!enableMultipleDesktops(context)) {
-            return areDesktopTasksVisibleAndNotInOverview()
+            return areDesktopTasksVisibleAndNotInOverview(displayId)
         }
-
+        val inOverviewState = inOverviewStateMap[displayId]
         if (DEBUG) {
-            Log.d(TAG, "isInDesktopModeAndNotInOverview: overview=$inOverviewState")
+            Log.d(
+                TAG,
+                "isInDesktopModeAndNotInOverview: displayId=$displayId overview=$inOverviewState",
+            )
         }
         return isInDesktopMode(displayId) && !inOverviewState
     }
 
     /** Whether desktop tasks are visible in desktop mode. */
-    private fun areDesktopTasksVisibleAndNotInOverview(): Boolean {
+    private fun areDesktopTasksVisibleAndNotInOverview(displayId: Int): Boolean {
         val desktopTasksVisible: Boolean = visibleDesktopTasksCountDeprecated > 0
+        val inOverviewState = inOverviewStateMap[displayId]
         if (DEBUG) {
             Log.d(
                 TAG,
-                ("areDesktopTasksVisible: desktopVisible=" +
-                    desktopTasksVisible +
-                    " overview=" +
-                    inOverviewState),
+                ("areDesktopTasksVisible: displayId=$displayId desktopVisible=$desktopTasksVisible" +
+                    " overview=$inOverviewState"),
             )
         }
         return desktopTasksVisible && !inOverviewState
@@ -256,11 +210,12 @@ constructor(
         taskbarDesktopModeListeners.remove(listener)
     }
 
-    fun onLauncherStateChanged(state: LauncherState) {
+    fun onLauncherStateChanged(displayId: Int, state: LauncherState) {
         onLauncherStateChanged(
             state,
             state === LauncherState.BACKGROUND_APP,
             state.isRecentsViewVisible,
+            displayId,
         )
     }
 
@@ -269,22 +224,16 @@ constructor(
      * Desktop Windowing Mode. if there is any pending notification please notify desktop visibility
      * listeners.
      */
-    fun onLauncherAnimationFromDesktopEnd() {
+    fun onLauncherAnimationFromDesktopEnd(displayId: Int) {
         launcherAnimationRunning = false
-        if (isNotifyingDesktopVisibilityPending) {
-            isNotifyingDesktopVisibilityPending = false
-            notifyIsInDesktopModeChanged(
-                DEFAULT_DISPLAY,
-                isInDesktopModeAndNotInOverview(DEFAULT_DISPLAY),
-            )
-        }
     }
 
-    fun onLauncherStateChanged(state: RecentsState) {
+    fun onLauncherStateChanged(displayId: Int, state: RecentsState) {
         onLauncherStateChanged(
             state,
             state === RecentsState.BACKGROUND_APP,
-            state.isRecentsViewVisible,
+            state.isRecentsViewVisible(),
+            displayId,
         )
     }
 
@@ -293,16 +242,17 @@ constructor(
         state: BaseState<*>,
         isBackgroundAppState: Boolean,
         isRecentsViewVisible: Boolean,
+        displayId: Int,
     ) {
         if (DEBUG) {
             Log.d(TAG, "onLauncherStateChanged: newState=$state")
         }
-        setBackgroundStateEnabled(isBackgroundAppState)
         // Desktop visibility tracks overview and background state separately
-        setOverviewStateEnabled(!isBackgroundAppState && isRecentsViewVisible)
+        setOverviewStateEnabled(displayId, !isBackgroundAppState && isRecentsViewVisible)
     }
 
-    private fun setOverviewStateEnabled(overviewStateEnabled: Boolean) {
+    private fun setOverviewStateEnabled(displayId: Int, overviewStateEnabled: Boolean) {
+        val inOverviewState = inOverviewStateMap[displayId]
         if (DEBUG) {
             Log.d(
                 TAG,
@@ -313,40 +263,7 @@ constructor(
             )
         }
         if (overviewStateEnabled != inOverviewState) {
-            val wereDesktopTasksVisibleBefore = areDesktopTasksVisibleAndNotInOverview()
-            inOverviewState = overviewStateEnabled
-            val areDesktopTasksVisibleNow = areDesktopTasksVisibleAndNotInOverview()
-
-            if (!enableMultipleDesktops(context)) {
-                if (wereDesktopTasksVisibleBefore != areDesktopTasksVisibleNow) {
-                    notifyIsInDesktopModeChanged(DEFAULT_DISPLAY, areDesktopTasksVisibleNow)
-                }
-            } else {
-                // When overview state changes, it changes together on all displays.
-                displaysDesksConfigsMap.forEach { displayId, deskConfig ->
-                    // Overview affects the state of desks only if desktop mode is active on this
-                    // display.
-                    if (isInDesktopMode(displayId)) {
-                        notifyIsInDesktopModeChanged(
-                            displayId,
-                            isInDesktopModeAndNotInOverview(displayId),
-                        )
-                    }
-                }
-            }
-
-            if (ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue) {
-                return
-            }
-
-            // TODO: b/333533253 - Clean up after flag rollout
-            if (inOverviewState) {
-                markLauncherResumed()
-            } else if (areDesktopTasksVisibleNow && !gestureInProgress) {
-                // Switching out of overview state and gesture finished.
-                // If desktop tasks are still visible, hide launcher again.
-                markLauncherPaused()
-            }
+            inOverviewStateMap[displayId] = overviewStateEnabled
         }
     }
 
@@ -358,22 +275,6 @@ constructor(
     /** Removes a previously registered listener for Taskbar changes in Desktop Mode. */
     fun unregisterDesktopVisibilityListener(listener: DesktopVisibilityListener) {
         desktopVisibilityListeners.remove(listener)
-    }
-
-    private fun notifyIsInDesktopModeChanged(
-        displayId: Int,
-        isInDesktopModeAndNotInOverview: Boolean,
-    ) {
-        if (DEBUG) {
-            Log.d(
-                TAG,
-                "notifyIsInDesktopModeChanged: displayId=$displayId, isInDesktopModeAndNotInOverview=$isInDesktopModeAndNotInOverview",
-            )
-        }
-
-        for (listener in desktopVisibilityListeners) {
-            listener.onIsInDesktopModeChanged(displayId, isInDesktopModeAndNotInOverview)
-        }
     }
 
     private fun notifyTaskbarDesktopModeListeners(doesAnyTaskRequireTaskbarRounding: Boolean) {
@@ -389,24 +290,22 @@ constructor(
         }
     }
 
-    private fun notifyTaskbarDesktopModeListenersForEntry(duration: Int) {
+    private fun notifyTaskbarDesktopModeListenersForEntry(displayId: Int, duration: Int) {
         if (DEBUG) {
             Log.d(TAG, "notifyTaskbarDesktopModeListenersForEntry: duration=" + duration)
         }
         for (listener in taskbarDesktopModeListeners) {
             listener.onEnterDesktopMode(duration)
         }
-        DisplayController.INSTANCE.get(context).notifyConfigChange()
     }
 
-    private fun notifyTaskbarDesktopModeListenersForExit(duration: Int) {
+    private fun notifyTaskbarDesktopModeListenersForExit(displayId: Int, duration: Int) {
         if (DEBUG) {
             Log.d(TAG, "notifyTaskbarDesktopModeListenersForExit: duration=" + duration)
         }
         for (listener in taskbarDesktopModeListeners) {
             listener.onExitDesktopMode(duration)
         }
-        DisplayController.INSTANCE.get(context).notifyConfigChange()
     }
 
     private fun notifyOnDeskAdded(displayId: Int, deskId: Int) {
@@ -442,72 +341,7 @@ constructor(
         }
     }
 
-    /** TODO: b/333533253 - Remove after flag rollout */
-    private fun setBackgroundStateEnabled(backgroundStateEnabled: Boolean) {
-        if (DEBUG) {
-            Log.d(
-                TAG,
-                ("setBackgroundStateEnabled: enabled=" +
-                    backgroundStateEnabled +
-                    " currentValue=" +
-                    this.backgroundStateEnabled),
-            )
-        }
-        if (backgroundStateEnabled != this.backgroundStateEnabled) {
-            this.backgroundStateEnabled = backgroundStateEnabled
-            if (this.backgroundStateEnabled) {
-                markLauncherResumed()
-            } else if (areDesktopTasksVisibleAndNotInOverview() && !gestureInProgress) {
-                // Switching out of background state. If desktop tasks are visible, pause launcher.
-                markLauncherPaused()
-            }
-        }
-    }
-
-    var isRecentsGestureInProgress: Boolean
-        /**
-         * Whether recents gesture is currently in progress.
-         *
-         * TODO: b/333533253 - Remove after flag rollout
-         */
-        get() = gestureInProgress
-        /** TODO: b/333533253 - Remove after flag rollout */
-        private set(gestureInProgress) {
-            if (gestureInProgress != this.gestureInProgress) {
-                this.gestureInProgress = gestureInProgress
-            }
-        }
-
-    /**
-     * Notify controller that recents gesture has started.
-     *
-     * TODO: b/333533253 - Remove after flag rollout
-     */
-    fun setRecentsGestureStart() {
-        if (DEBUG) {
-            Log.d(TAG, "setRecentsGestureStart")
-        }
-        isRecentsGestureInProgress = true
-    }
-
-    /**
-     * Notify controller that recents gesture finished with the given
-     * [com.android.quickstep.GestureState.GestureEndTarget]
-     *
-     * TODO: b/333533253 - Remove after flag rollout
-     */
-    fun setRecentsGestureEnd(endTarget: GestureEndTarget?) {
-        if (DEBUG) {
-            Log.d(TAG, "setRecentsGestureEnd: endTarget=$endTarget")
-        }
-        isRecentsGestureInProgress = false
-
-        if (endTarget == null) {
-            // Gesture did not result in a new end target. Ensure launchers gets paused again.
-            markLauncherPaused()
-        }
-    }
-
+    // Called when the DesktopTaskListener is first connected to WM.
     private fun onListenerConnected(
         displayDeskStates: Array<DisplayDeskState>,
         canCreateDesks: Boolean,
@@ -519,6 +353,9 @@ constructor(
         displaysDesksConfigsMap.clear()
 
         displayDeskStates.forEach { displayDeskState ->
+            if (DEBUG) {
+                Log.d(TAG, "onListenerConnected displayId=${displayDeskState.displayId}")
+            }
             displaysDesksConfigsMap[displayDeskState.displayId] =
                 DisplayDeskConfig(
                     displayId = displayDeskState.displayId,
@@ -528,11 +365,21 @@ constructor(
         }
 
         this.canCreateDesks = canCreateDesks
+
+        notifyOnListenerInitializedFromShell()
     }
 
-    private fun getDisplayDeskConfig(displayId: Int) =
-        displaysDesksConfigsMap[displayId]
-            ?: null.also { Slog.e(TAG, "Expected non-null desk config for display: $displayId") }
+    private fun notifyOnListenerInitializedFromShell() {
+        if (DEBUG) {
+            Log.d(TAG, "notifyOnListenerInitializedFromShell")
+        }
+
+        for (listener in desktopVisibilityListeners) {
+            listener.onListenerInitializedFromShell()
+        }
+    }
+
+    private fun getDisplayDeskConfig(displayId: Int) = displaysDesksConfigsMap[displayId]
 
     private fun onCanCreateDesksChanged(canCreateDesks: Boolean) {
         if (!enableMultipleDesktops(context)) {
@@ -598,53 +445,6 @@ constructor(
         if (newActiveDesk != oldActiveDesk) {
             notifyOnActiveDeskChanged(displayId, newActiveDesk, oldActiveDesk)
         }
-
-        if (
-            (newActiveDesk == INACTIVE_DESK_ID || oldActiveDesk == INACTIVE_DESK_ID) &&
-                !launcherAnimationRunning
-        ) {
-            val duration = context.resources.getInteger(SharedR.integer.to_desktop_animation_duration_ms)
-            if (oldActiveDesk == INACTIVE_DESK_ID && newActiveDesk != INACTIVE_DESK_ID) {
-                notifyTaskbarDesktopModeListenersForEntry(duration)
-            } else if (newActiveDesk == INACTIVE_DESK_ID && oldActiveDesk != INACTIVE_DESK_ID) {
-                notifyTaskbarDesktopModeListenersForExit(duration)
-            } else {
-                // do nothing because user switch between two desktop.
-            }
-        } else {
-            isNotifyingDesktopVisibilityPending = true
-        }
-    }
-
-    /** TODO: b/333533253 - Remove after flag rollout */
-    private fun markLauncherPaused() {
-        if (ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue) {
-            return
-        }
-        if (DEBUG) {
-            Log.d(TAG, "markLauncherPaused " + Debug.getCaller())
-        }
-        val activity: StatefulActivity<LauncherState>? =
-            QuickstepLauncher.ACTIVITY_TRACKER.getCreatedContext()
-        activity?.setPaused()
-    }
-
-    /** TODO: b/333533253 - Remove after flag rollout */
-    private fun markLauncherResumed() {
-        if (ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue) {
-            return
-        }
-        if (DEBUG) {
-            Log.d(TAG, "markLauncherResumed " + Debug.getCaller())
-        }
-        val activity: StatefulActivity<LauncherState>? =
-            QuickstepLauncher.ACTIVITY_TRACKER.getCreatedContext()
-        // Check activity state before calling setResumed(). Launcher may have been actually
-        // paused (eg fullscreen task moved to front).
-        // In this case we should not mark the activity as resumed.
-        if (activity != null && activity.isResumed) {
-            activity.setResumed()
-        }
     }
 
     fun dumpLogs(prefix: String, pw: PrintWriter) {
@@ -652,9 +452,7 @@ constructor(
 
         pw.println("$prefix\tdesktopVisibilityListeners=$desktopVisibilityListeners")
         pw.println("$prefix\tvisibleDesktopTasksCount=$visibleDesktopTasksCountDeprecated")
-        pw.println("$prefix\tinOverviewState=$inOverviewState")
-        pw.println("$prefix\tbackgroundStateEnabled=$backgroundStateEnabled")
-        pw.println("$prefix\tgestureInProgress=$gestureInProgress")
+        pw.println("$prefix\tinOverviewState=$inOverviewStateMap")
         pw.println("$prefix\tdesktopTaskListener=$desktopTaskListener")
         pw.println("$prefix\tcontext=$context")
     }
@@ -668,7 +466,7 @@ constructor(
         @ApplicationContext private val context: Context,
     ) : Stub() {
         private val controller = WeakReference(controller)
-        private val displayId = context.displayId
+        private val displayId = DEFAULT_DISPLAY // pE-TODO(QPR2): context.displayId
 
         override fun onListenerConnected(
             displayDeskStates: Array<DisplayDeskState>,
@@ -724,7 +522,10 @@ constructor(
                 )
                 if (!controller.isInDesktopModeDeprecated) {
                     controller.isInDesktopModeDeprecated = true
-                    controller.notifyTaskbarDesktopModeListenersForEntry(transitionDuration)
+                    controller.notifyTaskbarDesktopModeListenersForEntry(
+                        DEFAULT_DISPLAY,
+                        transitionDuration,
+                    )
                 }
             }
         }
@@ -755,7 +556,10 @@ constructor(
                 }
                 if (controller.isInDesktopModeDeprecated) {
                     controller.isInDesktopModeDeprecated = false
-                    controller.notifyTaskbarDesktopModeListenersForExit(transitionDuration)
+                    controller.notifyTaskbarDesktopModeListenersForExit(
+                        DEFAULT_DISPLAY,
+                        transitionDuration,
+                    )
                 }
             }
         }

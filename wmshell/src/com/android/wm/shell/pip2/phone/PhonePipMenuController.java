@@ -221,7 +221,7 @@ public class PhonePipMenuController implements PipMenuController,
                             @Override
                             public void surfaceCreated(SurfaceControl.Transaction t) {
                                 final SurfaceControl sc = getSurfaceControl();
-                                if (sc != null) {
+                                if (sc != null && mLeash.isValid()) {
                                     t.reparent(sc, mLeash);
                                     // make menu on top of the surface
                                     t.setLayer(sc, Integer.MAX_VALUE);
@@ -559,12 +559,9 @@ public class PhonePipMenuController implements PipMenuController,
             // back and forth in between the IME and PiP menu, and causes flicker.
             final boolean grantFocus = !mIsImeVisible && (menuState != MENU_STATE_NONE);
             if (mIsImeVisible) return;
-            try {
-                WindowManagerGlobal.getWindowSession().grantEmbeddedWindowFocus(null /* window */,
-                        mSystemWindows.getFocusGrantToken(mPipMenuView), grantFocus);
-            } catch (RemoteException e) {
+            if (!mSystemWindows.requestInputFocus(mPipMenuView, grantFocus)) {
                 ProtoLog.e(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
-                        "%s: Unable to update focus as menu appears/disappears, %s", TAG, e);
+                        "%s: Unable to update focus as menu appears/disappears", TAG);
             }
         }
     }

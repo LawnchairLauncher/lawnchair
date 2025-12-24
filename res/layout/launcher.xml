@@ -52,12 +52,41 @@
 
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
-        <com.android.launcher3.pageindicators.PageIndicatorDots
-            android:id="@+id/page_indicator"
+        <LinearLayout
+            android:id="@+id/page_indicator_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/workspace_page_indicator_height"
             android:layout_gravity="bottom|center_horizontal"
-            android:theme="@style/HomeScreenElementTheme" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.android.launcher3.pageindicators.PaginationArrow
+                android:id="@+id/left_indicator_arrow"
+                android:layout_width="@dimen/folder_arrow_touchbox_length"
+                android:layout_height="@dimen/folder_arrow_touchbox_length"
+                android:contentDescription="@string/paginate_left"
+                android:elevation="1dp"
+                android:foreground="@drawable/ic_chevron_left_rounded_700"
+                android:foregroundGravity="center"
+                android:visibility="gone" />
+
+            <com.android.launcher3.pageindicators.PageIndicatorDots
+                android:id="@+id/page_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/HomeScreenElementTheme" />
+
+            <com.android.launcher3.pageindicators.PaginationArrow
+                android:id="@+id/right_indicator_arrow"
+                android:layout_width="@dimen/folder_arrow_touchbox_length"
+                android:layout_height="@dimen/folder_arrow_touchbox_length"
+                android:contentDescription="@string/paginate_right"
+                android:elevation="1dp"
+                android:foreground="@drawable/ic_chevron_left_rounded_700"
+                android:foregroundGravity="center"
+                android:rotation="180"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <include
             android:id="@+id/drop_target_bar"

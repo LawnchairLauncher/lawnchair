@@ -19,9 +19,11 @@ package com.android.launcher3.taskbar
 import android.animation.AnimatorTestRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_BUBBLES
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING
+import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR
 import com.android.launcher3.taskbar.rules.SandboxParams
 import com.android.launcher3.taskbar.rules.TaskbarModeRule
 import com.android.launcher3.taskbar.rules.TaskbarModeRule.Mode.TRANSIENT
@@ -29,6 +31,8 @@ import com.android.launcher3.taskbar.rules.TaskbarModeRule.TaskbarMode
 import com.android.launcher3.taskbar.rules.TaskbarUnitTestRule
 import com.android.launcher3.taskbar.rules.TaskbarUnitTestRule.InjectController
 import com.android.launcher3.taskbar.rules.TaskbarWindowSandboxContext
+import com.android.launcher3.util.Executors.MAIN_EXECUTOR
+import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
 import com.android.launcher3.util.LauncherMultivalentJUnit
 import com.android.launcher3.util.LauncherMultivalentJUnit.EmulatedDevices
 import com.android.quickstep.SystemUiProxy
@@ -49,7 +53,11 @@ class TaskbarAutohideSuspendControllerTest {
     val context =
         TaskbarWindowSandboxContext.create(
             SandboxParams({
-                spy(SystemUiProxy(ApplicationProvider.getApplicationContext())) { proxy ->
+                spy(SystemUiProxy(
+                        ApplicationProvider.getApplicationContext(),
+                        MAIN_EXECUTOR,
+                        UI_HELPER_EXECUTOR,
+                    )) { proxy ->
                     doAnswer { latestSuspendNotification = it.getArgument(0) }
                         .whenever(proxy)
                         .notifyTaskbarAutohideSuspend(anyOrNull())
@@ -105,5 +113,61 @@ class TaskbarAutohideSuspendControllerTest {
             autohideSuspendController.updateFlag(FLAG_AUTOHIDE_SUSPEND_TOUCHING, true)
         }
         assertThat(stashController.timeoutAlarm.alarmPending()).isFalse()
+    }
+
+    @Test
+    fun isSuspended_withBubblesFlag_returnsCorrectValue() {
+        getInstrumentation().runOnMainSync {
+            autohideSuspendController.updateFlag(FLAG_AUTOHIDE_SUSPEND_BUBBLES, true)
+        }
+        assertThat(autohideSuspendController.isSuspended).isTrue()
+
+        getInstrumentation().runOnMainSync {
+            autohideSuspendController.updateFlag(FLAG_AUTOHIDE_SUSPEND_BUBBLES, false)
+        }
+        assertThat(autohideSuspendController.isSuspended).isFalse()
+    }
+
+    @Test
+    @TaskbarMode(TRANSIENT)
+    fun suspendAutoHideForBubbles_doesNotSuspendTransientTaskbarStashing() {
+        // Unstash and verify alarm.
+        getInstrumentation().runOnMainSync {
+            stashController.updateAndAnimateTransientTaskbar(false)
+            animatorTestRule.advanceTimeBy(stashController.stashDuration)
+        }
+        assertThat(stashController.timeoutAlarm.alarmPending()).isTrue()
+
+        getInstrumentation().runOnMainSync {
+            autohideSuspendController.updateFlag(FLAG_AUTOHIDE_SUSPEND_BUBBLES, true)
+        }
+        assertThat(stashController.timeoutAlarm.alarmPending()).isTrue()
+        assertThat(autohideSuspendController.isTransientTaskbarStashingSuspended).isFalse()
+    }
+
+    @Test
+    fun suspendedForBubbles_shouldForceVisible() {
+        getInstrumentation().runOnMainSync {
+            autohideSuspendController.updateFlag(FLAG_AUTOHIDE_SUSPEND_BUBBLES, true)
+        }
+        assertThat(autohideSuspendController.shouldForceVisible()).isTrue()
+
+        getInstrumentation().runOnMainSync {
+            autohideSuspendController.updateFlag(FLAG_AUTOHIDE_SUSPEND_BUBBLES, false)
+        }
+        assertThat(autohideSuspendController.shouldForceVisible()).isFalse()
+    }
+
+    @Test
+    fun suspendedForUnstashedTaskbar_shouldForceVisible() {
+        getInstrumentation().runOnMainSync {
+            autohideSuspendController.updateFlag(FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR, true)
+        }
+        assertThat(autohideSuspendController.shouldForceVisible()).isTrue()
+
+        getInstrumentation().runOnMainSync {
+            autohideSuspendController.updateFlag(FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR, false)
+        }
+        assertThat(autohideSuspendController.shouldForceVisible()).isFalse()
     }
 }

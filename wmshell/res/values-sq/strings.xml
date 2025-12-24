@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Aplikacioni nuk e mbështet flluskën"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Ndarësi i ekranit të ndarë"</string>
     <string name="divider_title" msgid="1963391955593749442">"Ndarësi i ekranit të ndarë"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Ekrani i plotë majtas"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Majtas 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Majtas 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Majtas 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Ekrani i plotë djathtas"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Ndërro aplikacionin lart me atë poshtë"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Ndërro aplikacionin majtas me atë djathtas"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Ekrani i plotë lart"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Lart 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Lart 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Lart 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Ekrani i plotë poshtë"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Shfaqe aplikacionin e majtë në ekran të plotë"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10% majtas, 90% djathtas"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30% majtas, 70% djathtas"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50% majtas, 50% djathtas"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70% majtas, 30% djathtas"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90% majtas, 10% djathtas"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Shfaqe aplikacionin e djathtë në ekran të plotë"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Ndërro aplikacionin e sipërm me atë të poshtëm, mbaj ndarjen aktuale"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Ndërro aplikacionin e majtë me atë djathtas, mbaj ndarjen aktuale"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Shfaq aplikacionin e sipërm në ekran të plotë"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10% sipër, 90% poshtë"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30% sipër, 70% poshtë"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50% sipër, 50% poshtë"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70% sipër, 30% poshtë"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90% sipër, 10% poshtë"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Shfaqe aplikacionin e poshtëm në ekran të plotë"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Ndaj majtas"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Ndaj djathtas"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Ndaj lart"</string>

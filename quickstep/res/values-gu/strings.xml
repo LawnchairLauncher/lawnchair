@@ -23,7 +23,7 @@
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ફ્રિફોર્મ"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"ડેસ્કટૉપ"</string>
     <string name="recent_task_option_external_display" msgid="4533840664313389484">"બાહ્ય ડિસ્પ્લે પર ખસેડો"</string>
-    <string name="recent_task_option_remove_task" msgid="803559928027541555">"સાફ"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"સાફ કરો"</string>
     <string name="recent_task_desktop" msgid="8081113562549637334">"ડેસ્કટૉપ"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"તાજેતરની કોઈ આઇટમ નથી"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ઍપ વપરાશનું સેટિંગ"</string>
@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"ઍપ અંગેના સૂચનો ખાલી જગ્યામાં ઉમેરાયા"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ઍપના સુઝાવો ચાલુ છે"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ઍપના સુઝાવો બંધ છે"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"પૂર્વાનુમાનિત ઍપ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"સંકેતથી નૅવિગેશનનું ટ્યૂટૉરિઅલ"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"તમારા ડિવાઇસને ફેરવો"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"સંકેતથી નૅવિગેશન ટ્યૂટૉરિઅલ પૂર્ણ કરવા માટે કૃપા કરીને તમારા ડિવાઇસને ફેરવો"</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"સિસ્ટમના નૅવિગેશન સેટિંગ"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"તમારો <xliff:g id="DEVICE">%1$s</xliff:g> \nતૈયાર છે!"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"તમારું ડિવાઇસ \nતૈયાર છે!"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"તમે સંપૂર્ણપણે તૈયાર છો!"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"તમારા નવા <xliff:g id="DEVICE">%1$s</xliff:g>નો અનુભવ માણો!"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"તમારા <xliff:g id="DEVICE">%1$s</xliff:g> વડે શરૂઆત કરવા માટે ઉપર સ્વાઇપ કરો"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"તમારા <xliff:g id="DEVICE">%1$s</xliff:g>નો ઉપયોગ કરવાનું શરૂ કરવા માટે ટૅપ કરો"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"નૅવિગેટ કરવાની રીત પસંદ કરો"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"ઉપરની તરફ સ્વાઇપ કરો"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"હોમ બટન પર ટૅપ કરો"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"નોટિફિકેશન"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ઝડપી સેટિંગ"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"ટાસ્કબાર"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ટાસ્કબાર બતાવવામાં આવ્યો"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"ટાસ્કબાર અને બબલ ડાબે બતાવ્યા"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"ટાસ્કબાર અને બબલ જમણે બતાવ્યા"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"નૅવિગેશન બાર"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"હંમેશાં ટાસ્કબાર બતાવો"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"નૅવિગેશન મોડ બદલો"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"ટાસ્કબાર વિભાજક"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"તાજેતરની અન્ય ઍપ"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"ટાસ્કબારમાં ઍપ ઉમેરી"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"ટાસ્કબારમાંથી ઍપ કાઢી નાખી"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"સૌથી ઉપર ડાબી બાજુએ ખસેડો"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"સૌથી નીચે જમણી બાજુએ ખસેડો"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"બબલ તરીકે ઍપ ખોલો"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"ઍપનું આઇકન"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"ઍપનું શીર્ષક"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"\'બંધ કરો\' બટન"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"ટાસ્કબારમાં પિન કરો"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"ટાસ્કબારમાંથી અનપિન કરો"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"નજ"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"બંધ કરો"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"છબી નજ કરો"</string>

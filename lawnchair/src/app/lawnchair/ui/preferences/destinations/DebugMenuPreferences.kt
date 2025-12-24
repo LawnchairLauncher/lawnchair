@@ -145,7 +145,7 @@ fun DebugMenuPreferences(
                 Item {
                     ClickablePreference(
                         label = "Window blurs",
-                        subtitle = BlurUtils.supportsBlursOnWindows().toString(),
+                        subtitle = BlurUtils.supportsBlursOnWindows(context).toString(),
                     ) { }
                 }
                 Item {

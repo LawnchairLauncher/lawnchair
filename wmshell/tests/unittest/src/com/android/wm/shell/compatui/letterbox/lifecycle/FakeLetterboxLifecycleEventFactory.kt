@@ -19,18 +19,15 @@ package com.android.wm.shell.compatui.letterbox.lifecycle
 import android.graphics.Rect
 import android.window.TransitionInfo.Change
 
-/**
- * Fake [LetterboxLifecycleEventFactory] implementation.
- */
+/** Fake [LetterboxLifecycleEventFactory] implementation. */
 class FakeLetterboxLifecycleEventFactory(
     private val canHandleReturn: Boolean = true,
     private val eventToReturn: LetterboxLifecycleEvent? = null,
-    private val eventToReturnFactory: (Change) -> LetterboxLifecycleEvent? = { eventToReturn }
+    private val eventToReturnFactory: (Change) -> LetterboxLifecycleEvent? = { eventToReturn },
 ) : LetterboxLifecycleEventFactory {
 
     companion object {
-        @JvmStatic
-        val FAKE_EVENT = LetterboxLifecycleEvent(taskBounds = Rect())
+        @JvmStatic val FAKE_EVENT = LetterboxLifecycleEvent(taskBounds = Rect())
     }
 
     var canHandleInvokeTimes: Int = 0

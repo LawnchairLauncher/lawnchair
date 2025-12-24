@@ -91,7 +91,7 @@ class DesktopTasksTransitionObserver(
         if (
             DesktopExperienceFlags.ENABLE_DESKTOP_CLOSE_TASK_ANIMATION_IN_DTC_BUGFIX.isTrue &&
                 !desktopMixedTransitionHandler.hasTransition(transition) &&
-                isCloseTransition(info)
+                containsClosingTaskInDesktop(info)
         ) {
             desktopMixedTransitionHandler.addPendingMixedTransition(
                 DesktopMixedTransitionHandler.PendingMixedTransition.Close(transition)
@@ -101,7 +101,7 @@ class DesktopTasksTransitionObserver(
         removeWallpaperOnLastTaskClosingIfNeeded(transition, info)
     }
 
-    private fun isCloseTransition(info: TransitionInfo): Boolean {
+    private fun containsClosingTaskInDesktop(info: TransitionInfo): Boolean {
         for (change in info.changes) {
             val taskInfo = change.taskInfo
             if (taskInfo == null || taskInfo.taskId == -1) {

@@ -19,11 +19,10 @@ package com.android.wm.shell.compatui.impl
 import com.android.wm.shell.compatui.api.CompatUIRepository
 import com.android.wm.shell.compatui.api.CompatUISpec
 
-/**
- * Fake implementation for {@link CompatUIRepository}
- */
+/** Fake implementation for {@link CompatUIRepository} */
 class FakeCompatUIRepository : CompatUIRepository {
     val allSpecs = mutableMapOf<String, CompatUISpec>()
+
     override fun addSpec(spec: CompatUISpec) {
         if (findSpec(spec.name) != null) {
             throw IllegalStateException("Spec with name:${spec.name} already present")
@@ -31,9 +30,7 @@ class FakeCompatUIRepository : CompatUIRepository {
         allSpecs[spec.name] = spec
     }
 
-    override fun iterateOn(fn: (CompatUISpec) -> Unit) =
-        allSpecs.values.forEach(fn)
+    override fun iterateOn(fn: (CompatUISpec) -> Unit) = allSpecs.values.forEach(fn)
 
-    override fun findSpec(name: String): CompatUISpec? =
-        allSpecs[name]
+    override fun findSpec(name: String): CompatUISpec? = allSpecs[name]
 }

@@ -17,11 +17,13 @@
 package com.android.wm.shell.compatui.letterbox
 
 import android.content.Context
+import android.graphics.Rect
 import android.testing.AndroidTestingRunner
 import androidx.test.filters.SmallTest
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.compatui.letterbox.LetterboxControllerStrategy.LetterboxMode.MULTIPLE_SURFACES
 import com.android.wm.shell.compatui.letterbox.LetterboxControllerStrategy.LetterboxMode.SINGLE_SURFACE
+import com.android.wm.shell.compatui.letterbox.lifecycle.LetterboxLifecycleEvent
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 import org.junit.Test
@@ -30,47 +32,74 @@ import org.junit.runner.RunWith
 /**
  * Tests for [LetterboxControllerStrategy].
  *
- * Build/Install/Run:
- *  atest WMShellUnitTests:LetterboxControllerStrategyTest
+ * Build/Install/Run: atest WMShellUnitTests:LetterboxControllerStrategyTest
  */
 @RunWith(AndroidTestingRunner::class)
 @SmallTest
 class LetterboxControllerStrategyTest : ShellTestCase() {
 
     @Test
-    fun `LetterboxMode is MULTIPLE_SURFACES with rounded corners`() {
+    fun `LetterboxMode is SINGLE_SURFACE with rounded corners and Not Translucent`() {
         runTestScenario { r ->
             r.configureRoundedCornerRadius(true)
-            r.configureLetterboxMode()
+            r.configureLetterboxMode(r.SIMPLE_TEST_EVENT.copy(isTranslucent = false))
             r.checkLetterboxModeIsSingle()
         }
     }
 
     @Test
-    fun `LetterboxMode is MULTIPLE_SURFACES with no rounded corners`() {
+    fun `LetterboxMode is MULTI_SURFACE with rounded corners but Translucent`() {
         runTestScenario { r ->
-            r.configureRoundedCornerRadius(false)
-            r.configureLetterboxMode()
+            r.configureRoundedCornerRadius(true)
+            r.configureLetterboxMode(r.SIMPLE_TEST_EVENT.copy(isTranslucent = true))
             r.checkLetterboxModeIsMultiple()
         }
     }
 
-    /**
-     * Runs a test scenario providing a Robot.
-     */
+    @Test
+    fun `LetterboxMode is SINGLE_SURFACE with Bubble Events`() {
+        runTestScenario { r ->
+            r.configureRoundedCornerRadius(true)
+            r.configureLetterboxMode(r.SIMPLE_TEST_EVENT.copy(isBubble = true))
+            r.checkLetterboxModeIsSingle()
+        }
+    }
+
+    @Test
+    fun `shouldSupportInputSurface comes from the Event`() {
+        runTestScenario { r ->
+            r.configureLetterboxMode(r.SIMPLE_TEST_EVENT.copy(supportsInput = true))
+            r.checkShouldSupportInputSurface(expected = true)
+
+            r.configureLetterboxMode(r.SIMPLE_TEST_EVENT.copy(supportsInput = false))
+            r.checkShouldSupportInputSurface(expected = false)
+        }
+    }
+
+    @Test
+    fun `LetterboxMode is SINGLE_SURFACE with no rounded corners`() {
+        runTestScenario { r ->
+            r.configureRoundedCornerRadius(false)
+            r.configureLetterboxMode()
+            r.checkLetterboxModeIsSingle()
+        }
+    }
+
+    /** Runs a test scenario providing a Robot. */
     fun runTestScenario(consumer: Consumer<LetterboxStrategyRobotTest>) {
         val robot = LetterboxStrategyRobotTest(mContext)
         consumer.accept(robot)
     }
 
-    class LetterboxStrategyRobotTest(val ctx: Context) {
+    class LetterboxStrategyRobotTest(ctx: Context) {
 
         companion object {
-            @JvmStatic
-            private val ROUNDED_CORNERS_TRUE = 10
-            @JvmStatic
-            private val ROUNDED_CORNERS_FALSE = 0
+            @JvmStatic private val ROUNDED_CORNERS_TRUE = 10
+
+            @JvmStatic private val ROUNDED_CORNERS_FALSE = 0
         }
+
+        val SIMPLE_TEST_EVENT = LetterboxLifecycleEvent(taskBounds = Rect())
 
         private val letterboxConfiguration: LetterboxConfiguration
         private val letterboxStrategy: LetterboxControllerStrategy
@@ -86,13 +115,17 @@ class LetterboxControllerStrategyTest : ShellTestCase() {
             )
         }
 
-        fun configureLetterboxMode() {
-            letterboxStrategy.configureLetterboxMode()
+        fun configureLetterboxMode(event: LetterboxLifecycleEvent = SIMPLE_TEST_EVENT) {
+            letterboxStrategy.configureLetterboxMode(event)
         }
 
         fun checkLetterboxModeIsSingle(expected: Boolean = true) {
             val expectedMode = if (expected) SINGLE_SURFACE else MULTIPLE_SURFACES
             assertEquals(expectedMode, letterboxStrategy.getLetterboxImplementationMode())
+        }
+
+        fun checkShouldSupportInputSurface(expected: Boolean = true) {
+            assertEquals(expected, letterboxStrategy.shouldSupportInputSurface())
         }
 
         fun checkLetterboxModeIsMultiple(expected: Boolean = true) {

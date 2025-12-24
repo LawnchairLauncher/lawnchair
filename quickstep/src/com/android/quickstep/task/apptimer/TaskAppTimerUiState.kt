@@ -16,6 +16,8 @@
 
 package com.android.quickstep.task.apptimer
 
+import android.app.ActivityOptions
+import android.content.Context
 import androidx.annotation.IdRes
 import java.time.Duration
 
@@ -46,5 +48,6 @@ sealed class TaskAppTimerUiState(open val taskDescription: String?) {
         override val taskDescription: String?,
         val taskPackageName: String,
         @IdRes val accessibilityActionId: Int,
+        val onClick: ((ActivityOptions, Context) -> Unit)? = null,
     ) : TaskAppTimerUiState(taskDescription)
 }

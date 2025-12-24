@@ -22,8 +22,8 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.util.LauncherMultivalentJUnit;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
-import com.android.quickstep.fallback.window.RecentsWindowManager;
-import com.android.quickstep.fallback.window.RecentsWindowSwipeHandler;
+import com.android.quickstep.window.RecentsWindowManager;
+import com.android.quickstep.window.RecentsWindowSwipeHandler;
 
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

@@ -17,12 +17,10 @@
 package com.android.launcher3.widget.picker.model.data
 
 import android.content.ComponentName
-import android.content.Context
 import android.os.UserHandle
 import android.platform.test.rule.AllowedDevices
 import android.platform.test.rule.DeviceProduct
 import android.platform.test.rule.LimitDevicesRule
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
@@ -32,8 +30,8 @@ import com.android.launcher3.icons.cache.CachedObject
 import com.android.launcher3.model.WidgetItem
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.PackageItemInfo
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.PackageUserKey
+import com.android.launcher3.util.TestActivityContext
 import com.android.launcher3.util.WidgetUtils
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.android.launcher3.widget.PendingAddWidgetInfo
@@ -63,13 +61,13 @@ import org.mockito.kotlin.doAnswer
 @RunWith(AndroidJUnit4::class)
 @AllowedDevices(allowed = [DeviceProduct.ROBOLECTRIC])
 class WidgetPickerDataTest {
-    @Rule @JvmField val limitDevicesRule = LimitDevicesRule()
-    @Rule @JvmField val mockitoRule: MockitoRule = MockitoJUnit.rule()
+    @get:Rule val limitDevicesRule = LimitDevicesRule()
+    @get:Rule val mockitoRule: MockitoRule = MockitoJUnit.rule()
+    @get:Rule val context = TestActivityContext()
 
     @Mock private lateinit var iconCache: IconCache
 
     private lateinit var userHandle: UserHandle
-    private lateinit var context: Context
     private lateinit var testInvariantProfile: InvariantDeviceProfile
 
     private lateinit var app1PackageItemInfo: PackageItemInfo
@@ -82,7 +80,6 @@ class WidgetPickerDataTest {
     @Before
     fun setUp() {
         userHandle = UserHandle.CURRENT
-        context = ActivityContextWrapper(ApplicationProvider.getApplicationContext())
         testInvariantProfile = LauncherAppState.getIDP(context)
 
         doAnswer { invocation: InvocationOnMock ->

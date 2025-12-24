@@ -16,9 +16,6 @@
 package com.android.launcher3.icons
 
 import android.content.Context
-import android.graphics.Path
-import android.graphics.Rect
-import android.graphics.drawable.AdaptiveIconDrawable
 import android.os.UserHandle
 import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
@@ -43,14 +40,18 @@ class LauncherIcons
 internal constructor(
     @ApplicationContext context: Context,
     idp: InvariantDeviceProfile,
-    private var themeManager: ThemeManager,
+    themeManager: ThemeManager,
     private var userCache: UserCache,
     @Assisted private val pool: ConcurrentLinkedQueue<LauncherIcons>,
-) : BaseIconFactory(context, idp.fillResIconDpi, idp.iconBitmapSize), AutoCloseable {
-
-    init {
-        mThemeController = themeManager.themeController
-    }
+) :
+    BaseIconFactory(
+        context,
+        idp.fillResIconDpi,
+        idp.iconBitmapSize,
+        /* drawFullBleedIcons */ Flags.enableLauncherIconShapes(),
+        themeManager.themeController,
+    ),
+    AutoCloseable {
 
     /** Recycles a LauncherIcons that may be in-use. */
     fun recycle() {
@@ -60,11 +61,6 @@ internal constructor(
 
     override fun getUserInfo(user: UserHandle): UserIconInfo {
         return userCache.getUserInfo(user)
-    }
-
-    override fun getShapePath(drawable: AdaptiveIconDrawable, iconBounds: Rect): Path {
-        if (!Flags.enableLauncherIconShapes()) return super.getShapePath(drawable, iconBounds)
-        return themeManager.iconShape.getPath(iconBounds)
     }
 
     override fun close() {

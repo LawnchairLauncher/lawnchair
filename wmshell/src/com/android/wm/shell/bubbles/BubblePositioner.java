@@ -25,7 +25,6 @@ import android.graphics.Insets;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.Surface;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -37,6 +36,8 @@ import com.android.wm.shell.R;
 import com.android.wm.shell.shared.bubbles.BubbleBarLocation;
 import com.android.wm.shell.shared.bubbles.BubbleDropTargetBoundsProvider;
 import com.android.wm.shell.shared.bubbles.DeviceConfig;
+
+import java.io.PrintWriter;
 
 /**
  * Keeps track of display size, configuration, and specific bubble sizes. One place for all
@@ -68,7 +69,6 @@ public class BubblePositioner implements BubbleDropTargetBoundsProvider {
     private Context mContext;
     private DeviceConfig mDeviceConfig;
     private Rect mScreenRect;
-    private @Surface.Rotation int mRotation = Surface.ROTATION_0;
     private Insets mInsets;
     private boolean mImeVisible;
     /**
@@ -132,12 +132,12 @@ public class BubblePositioner implements BubbleDropTargetBoundsProvider {
     public void update(DeviceConfig deviceConfig) {
         mDeviceConfig = deviceConfig;
         ProtoLog.d(WM_SHELL_BUBBLES, "update positioner: "
-                        + "rotation=%d insets=%s largeScreen=%b "
+                        + "insets=%s largeScreen=%b "
                         + "smallTablet=%b isBubbleBar=%b bounds=%s",
-                mRotation, deviceConfig.getInsets(), deviceConfig.isLargeScreen(),
+                deviceConfig.getInsets(), deviceConfig.isLargeScreen(),
                 deviceConfig.isSmallTablet(), mShowingInBubbleBar,
                 deviceConfig.getWindowBounds());
-        updateInternal(mRotation, deviceConfig.getInsets(), deviceConfig.getWindowBounds());
+        updateInternal(deviceConfig.getInsets(), deviceConfig.getWindowBounds());
     }
 
     /** Returns the device config being used. */
@@ -146,7 +146,7 @@ public class BubblePositioner implements BubbleDropTargetBoundsProvider {
     }
 
     @VisibleForTesting
-    public void updateInternal(int rotation, Insets insets, Rect bounds) {
+    public void updateInternal(Insets insets, Rect bounds) {
         BubbleStackView.RelativeStackPosition prevStackPosition = null;
         if (mRestingStackPosition != null && mScreenRect != null && !mScreenRect.equals(bounds)) {
             // Save the resting position as a relative position with the previous bounds, at the
@@ -154,7 +154,6 @@ public class BubblePositioner implements BubbleDropTargetBoundsProvider {
             prevStackPosition = new BubbleStackView.RelativeStackPosition(getRestingPosition(),
                     getAllowableStackPositionRegion(1));
         }
-        mRotation = rotation;
         mInsets = insets;
 
         mScreenRect = new Rect(bounds);
@@ -1044,5 +1043,21 @@ public class BubblePositioner implements BubbleDropTargetBoundsProvider {
             bounds.left = bounds.right - mBarDropTargetWidth;
         }
         return bounds;
+    }
+
+    /** Description of current positioner state. */
+    void dump(PrintWriter pw) {
+        pw.println("BubblePositioner state:");
+        pw.println("  mScreenRect= " + mScreenRect);
+        pw.println("  mPositionRect= " + mPositionRect);
+        pw.println("  mInsets= " + mInsets);
+        pw.println("  mImeVisible= " + mImeVisible);
+        pw.println("  mImeHeight= " + mImeHeight);
+        pw.println("  mMaxBubbles= " + mMaxBubbles);
+        pw.println("  mRestingStackPosition= " + mRestingStackPosition);
+        pw.println("  mShowingInBubbleBar= " + mShowingInBubbleBar);
+        pw.println("  mBubbleBarLocation= " + mBubbleBarLocation);
+        pw.println("  mBubbleBarTopOnScreen= " + mBubbleBarTopOnScreen);
+        pw.println();
     }
 }

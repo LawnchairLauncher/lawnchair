@@ -17,31 +17,38 @@
 package com.android.wm.shell.flicker.bubbles.testcase
 
 import android.tools.traces.component.ComponentNameMatcher
+import android.tools.traces.component.ComponentNameMatcher.Companion.BUBBLE
+import android.tools.traces.component.ComponentNameMatcher.Companion.BUBBLE_TASK_VIEW
 import android.tools.traces.component.ComponentNameMatcher.Companion.LAUNCHER
+import android.tools.traces.component.IComponentNameMatcher
+import com.android.server.wm.flicker.helpers.ImeAppHelper
 import com.android.wm.shell.flicker.bubbles.utils.BubbleFlickerSubjects
 import org.junit.Test
 
 /**
  * The test cases to verify [testApp] goes to expanded bubble state, which verifies [testApp]
- * replaces [LAUNCHER] to be top and visible and has rounded corner at the end of transition.
+ * replaces [previousApp] to be top and visible and has rounded corner at the end of transition.
  */
 interface BubbleAppBecomesExpandedTestCases : BubbleFlickerSubjects {
 
+    val previousApp: IComponentNameMatcher
+        get() = LAUNCHER
+
     /**
-     * Verifies the focus changed from launcher to bubble app.
+     * Verifies the focus changed from [previousApp] to bubble app.
      */
     @Test
     fun focusChanges() {
-        eventLogSubject.focusChanges(LAUNCHER.toWindowName(), testApp.toWindowName())
+        eventLogSubject.focusChanges(previousApp.toWindowName(), testApp.toWindowName())
     }
 
     /**
-     * Verifies the bubble app replaces launcher to be the top window.
+     * Verifies the bubble app replaces [previousApp] to be the top window.
      */
     @Test
-    fun appWindowReplacesLauncherAsTopWindow() {
+    fun appWindowReplacesPreviousAppAsTopWindow() {
         wmTraceSubject
-            .isAppWindowOnTop(LAUNCHER)
+            .isAppWindowOnTop(previousApp)
             .then()
             .isAppWindowOnTop(
                 ComponentNameMatcher.SNAPSHOT
@@ -121,5 +128,59 @@ interface BubbleAppBecomesExpandedTestCases : BubbleFlickerSubjects {
     @Test
     fun appLayerHasRoundedCorner() {
         layerTraceEntrySubjectAtEnd.hasRoundedCorners(testApp)
+    }
+
+    /**
+     * Verifies the bubble window covers the bubble app.
+     */
+    @Test
+    fun bubbleWindowCoversBubbleAppWindow() {
+        wmStateSubjectAtEnd.visibleRegion(BUBBLE)
+            .coversAtLeast(wmStateSubjectAtEnd.visibleRegion(testApp).region)
+    }
+
+    /**
+     * Verifies the bubble layer covers the bubble app.
+     */
+    @Test
+    fun bubbleLayerCoversBubbleAppLayer() {
+        layerTraceEntrySubjectAtEnd.visibleRegion(BUBBLE)
+            .coversAtLeast(layerTraceEntrySubjectAtEnd.visibleRegion(testApp).region)
+    }
+
+    /**
+     * Verifies whether the below bounds match:
+     * - Bubble task bounds in WM hierarchy
+     * - Bubble task layer bounds
+     * - Bubble task view layer bounds
+     */
+    @Test
+    fun bubbleTaskBoundsMatchBubbleTaskView() {
+        // Get the WM task bounds of bubble app.
+        val bubbleAppTask = wmStateSubjectAtEnd.wmState.getTaskForActivity(testApp)
+            ?: error("Bubble app task not found")
+        val taskBounds = bubbleAppTask.bounds
+        // Get the task layer bounds of bubble app.
+        val taskLayer = layerTraceEntrySubjectAtEnd
+            .findAncestorLayer(testApp) { it.isTask }
+            ?: error("Bubble app task layer not found")
+        val taskLayerBounds = taskLayer.screenBounds
+        // Get the bounds of bubble task view layer.
+        val bubbleTaskViewLayer = layerTraceEntrySubjectAtEnd
+            .findAncestorLayer(testApp) {
+                BUBBLE_TASK_VIEW.layerMatchesAnyOf(it)
+            } ?: error("Bubble app task view not found")
+        val bubbleTaskViewLayerBounds = bubbleTaskViewLayer.screenBounds
+
+        if (testApp is ImeAppHelper) {
+            // If the IME shows, the task and task view layer may be resized to fit the IME layer,
+            // while WM task bounds remain unchanged.
+            bubbleTaskViewLayerBounds.coversExactly(taskLayerBounds.region)
+            bubbleTaskViewLayerBounds.coversAtMost(taskBounds)
+        } else {
+            // Otherwise, bubble task view bounds must match task bounds.
+            bubbleTaskViewLayerBounds.coversExactly(taskLayerBounds.region)
+            taskLayerBounds.coversExactly(taskBounds)
+        }
     }
 }

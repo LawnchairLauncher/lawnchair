@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Aldatu aspektu-erlazioa"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s aplikazioari buruzko informazioa"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s aplikazioaren erabilera-ezarpenak"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"Itxi %1$s"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"Leiho berria"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Kudeatu leihoak"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"Itxi"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Gorde aplikazio parea"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Aplikazio pare hori ez da gailu honekin bateragarria"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ez iradoki aplikazioa"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Ainguratu iragarpena"</string>
     <string name="bubble" msgid="3072951361014076670">"Burbuila"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"Ezarpenak"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"Ainguratu zereginen barran"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"Kendu aingura zereginen barratik"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Instalatu lasterbideak"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Erabiltzaileak ezer egin gabe lasterbideak gehitzeko baimena ematen die aplikazioei."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"irakurri hasierako pantailako ezarpenak eta lasterbideak"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"Joan hurrengo orrira"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desgaituta dago"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} aplikazioak # jakinarazpen dauka}other{{app_name} aplikazioak # jakinarazpen dauzka}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"Iradokitako aplikazioa: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d/%2$d orria"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d/%2$d orri nagusi"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Orri nagusiaren orri berria"</string>
@@ -128,12 +134,14 @@
     <string name="folder_closed" msgid="4100806530910930934">"Karpeta itxi da"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Karpetari <xliff:g id="NAME">%1$s</xliff:g> izena eman zaio"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu)"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"Karpeta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elementu, jakinarazpenak ditu"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu edo gehiago)"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"Karpeta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elementu edo gehiago, jakinarazpenak ditu"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"Izenik gabeko karpeta"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"Aplikazio parea: <xliff:g id="APP1">%1$s</xliff:g> eta <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Horma-papera eta estiloa"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Editatu orri nagusia"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Orri nagusiaren ezarpenak"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Orri nag. ezarpenak"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratzaileak desgaitu du"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Eman orri nagusia biratzeko baimena"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefonoa biratzean"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Laneko aplikazioen fitxa"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Laneko profila"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Laneko aplikazioek bereizgarriak dituzte, eta IKT saileko administratzaileak ikus ditzake"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ados"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Pausatuta daude laneko aplikazioak"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Ez duzu jasoko laneko aplikazioen jakinarazpenik"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu"</string>

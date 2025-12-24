@@ -20,19 +20,16 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Process
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.Flags.enableRefactorTaskThumbnail
-import com.android.launcher3.dagger.LauncherAppComponent
-import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE
 import com.android.launcher3.model.data.TaskViewItemInfo.Companion.createTaskViewAtom
-import com.android.launcher3.pm.UserCache
-import com.android.launcher3.util.AllModulesForTest
-import com.android.launcher3.util.SandboxContext
+import com.android.launcher3.util.SandboxApplication
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.launcher3.util.TestDispatcherProvider
 import com.android.launcher3.util.TransformingTouchDelegate
 import com.android.launcher3.util.UserIconInfo
+import com.android.launcher3.util.rule.MockUsersRule
+import com.android.launcher3.util.rule.MockUsersRule.MockUser
 import com.android.quickstep.TaskOverlayFactory
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay
 import com.android.quickstep.recents.di.RecentsDependencies
@@ -47,11 +44,10 @@ import com.android.quickstep.views.TaskViewType
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.Task.TaskKey
 import com.google.common.truth.Truth.assertThat
-import dagger.BindsInstance
-import dagger.Component
 import kotlinx.coroutines.test.StandardTestDispatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
@@ -61,12 +57,13 @@ import org.mockito.kotlin.whenever
 /** Test for [TaskViewItemInfo] */
 @RunWith(AndroidJUnit4::class)
 class TaskViewItemInfoTest {
-    private val context = SandboxContext(InstrumentationRegistry.getInstrumentation().targetContext)
+
+    @get:Rule val context = SandboxApplication()
+    @get:Rule val mockUsers = MockUsersRule(context)
+
     private val taskView = mock<TaskView>()
     private val recentsView = mock<RecentsView<*, *>>()
     private val overlayFactory = mock<TaskOverlayFactory>()
-    private val userCache = mock<UserCache>()
-    private val userInfo = mock<UserIconInfo>()
     private val dispatcher = StandardTestDispatcher()
 
     @Before
@@ -75,11 +72,6 @@ class TaskViewItemInfoTest {
         whenever(taskView.context).thenReturn(context)
         whenever(taskView.recentsView).thenReturn(recentsView)
         whenever(recentsView.indexOfChild(taskView)).thenReturn(TASK_VIEW_INDEX)
-        whenever(userInfo.isPrivate).thenReturn(false)
-        whenever(userCache.getUserInfo(any())).thenReturn(userInfo)
-        context.initDaggerComponent(
-            DaggerTaskViewItemInfoTest_TestComponent.builder().bindUserCache(userCache)
-        )
         RecentsDependencies.maybeInitialize(context, TestDispatcherProvider(dispatcher))
     }
 
@@ -154,12 +146,12 @@ class TaskViewItemInfoTest {
         assertThat(taskViewItemInfo.runtimeStatusFlags and FLAG_NOT_PINNABLE).isEqualTo(0)
     }
 
+    @MockUser(userType = UserIconInfo.TYPE_PRIVATE)
     @Test
     fun privateTask() {
         val taskContainers = listOf(createTaskContainer(createTask(1)))
         whenever(taskView.type).thenReturn(TaskViewType.SINGLE)
         whenever(taskView.taskContainers).thenReturn(taskContainers)
-        whenever(userInfo.isPrivate).thenReturn(true)
 
         val taskViewItemInfo = TaskViewItemInfo(taskContainers[0].taskView, taskContainers[0])
 
@@ -212,17 +204,6 @@ class TaskViewItemInfoTest {
             showWindowsView = null,
             overlayFactory,
         )
-    }
-
-    @LauncherAppSingleton
-    @Component(modules = [AllModulesForTest::class])
-    interface TestComponent : LauncherAppComponent {
-        @Component.Builder
-        interface Builder : LauncherAppComponent.Builder {
-            @BindsInstance fun bindUserCache(userCache: UserCache): Builder
-
-            override fun build(): TestComponent
-        }
     }
 
     companion object {

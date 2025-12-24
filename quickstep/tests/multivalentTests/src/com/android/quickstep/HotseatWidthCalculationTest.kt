@@ -135,7 +135,7 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(34)
         assertThat(dp.hotseatColumnSpan).isEqualTo(4)
-        assertThat(dp.hotseatWidthPx).isEqualTo(1179)
+        assertThat(dp.hotseatWidthPx).isEqualTo(1182)
 
         assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(876)
         assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(694)

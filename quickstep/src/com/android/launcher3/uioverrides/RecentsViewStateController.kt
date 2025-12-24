@@ -21,7 +21,6 @@ import com.android.app.animation.Interpolators.FINAL_FRAME
 import com.android.app.animation.Interpolators.INSTANT
 import com.android.app.animation.Interpolators.LINEAR
 import com.android.launcher3.Flags.enableDesktopExplodedView
-import com.android.launcher3.Flags.enableLargeDesktopWindowingTile
 import com.android.launcher3.LauncherState
 import com.android.launcher3.anim.AnimatedFloat
 import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
@@ -84,12 +83,10 @@ class RecentsViewStateController(private val launcher: QuickstepLauncher) :
             recentsView,
             if (state.showTaskThumbnailSplash()) 1f else 0f,
         )
-        if (enableLargeDesktopWindowingTile()) {
-            DESKTOP_CAROUSEL_DETACH_PROGRESS.set(
-                recentsView,
-                if (state.detachDesktopCarousel()) 1f else 0f,
-            )
-        }
+        DESKTOP_CAROUSEL_DETACH_PROGRESS.set(
+            recentsView,
+            if (state.detachDesktopCarousel()) 1f else 0f,
+        )
 
         if (state.isRecentsViewVisible) {
             recentsView.updateEmptyMessage()
@@ -175,14 +172,12 @@ class RecentsViewStateController(private val launcher: QuickstepLauncher) :
             )
         }
 
-        if (enableLargeDesktopWindowingTile()) {
-            builder.setFloat(
-                recentsView,
-                DESKTOP_CAROUSEL_DETACH_PROGRESS,
-                if (toState.detachDesktopCarousel()) 1f else 0f,
-                getOverviewInterpolator(fromState, toState),
-            )
-        }
+        builder.setFloat(
+            recentsView,
+            DESKTOP_CAROUSEL_DETACH_PROGRESS,
+            if (toState.detachDesktopCarousel()) 1f else 0f,
+            getOverviewInterpolator(fromState, toState),
+        )
 
         if (toState.isRecentsViewVisible) {
             // While animating into recents, update the visible task data as needed
@@ -290,8 +285,10 @@ class RecentsViewStateController(private val launcher: QuickstepLauncher) :
         config: StateAnimationConfig,
         state: LauncherState,
     ) {
+        val launcherUiState = launcher.launcherUiState
         val clearAllButtonAlpha =
-            if (state.areElementsVisible(launcher, LauncherState.CLEAR_ALL_BUTTON)) 1f else 0f
+            if (state.areElementsVisible(launcherUiState, LauncherState.CLEAR_ALL_BUTTON)) 1f
+            else 0f
         propertySetter.setFloat(
             recentsView.clearAllButton,
             ClearAllButton.VISIBILITY_ALPHA,
@@ -299,7 +296,8 @@ class RecentsViewStateController(private val launcher: QuickstepLauncher) :
             LINEAR,
         )
         val overviewButtonAlpha =
-            if (state.areElementsVisible(launcher, LauncherState.OVERVIEW_ACTIONS)) 1f else 0f
+            if (state.areElementsVisible(launcherUiState, LauncherState.OVERVIEW_ACTIONS)) 1f
+            else 0f
         propertySetter.setFloat(
             launcher.actionsView.visibilityAlpha,
             AnimatedFloat.VALUE,
@@ -310,7 +308,8 @@ class RecentsViewStateController(private val launcher: QuickstepLauncher) :
             propertySetter.setFloat(
                 it,
                 AddDesktopButton.VISIBILITY_ALPHA,
-                if (state.areElementsVisible(launcher, LauncherState.ADD_DESK_BUTTON)) 1f else 0f,
+                if (state.areElementsVisible(launcherUiState, LauncherState.ADD_DESK_BUTTON)) 1f
+                else 0f,
                 LINEAR,
             )
         }

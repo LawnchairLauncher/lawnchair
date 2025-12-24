@@ -25,14 +25,12 @@ import com.android.wm.shell.compatui.api.CompatUILayout
 import com.android.wm.shell.compatui.api.CompatUISharedState
 import junit.framework.Assert.assertEquals
 
-/**
- * Fake class for {@link CompatUILayout}
- */
+/** Fake class for {@link CompatUILayout} */
 class FakeCompatUILayout(
     private val zOrderReturn: Int = 0,
     private val layoutParamFlagsReturn: Int = 0,
     private val viewBuilderReturn: View,
-    private val positionBuilderReturn: Point = Point(0, 0)
+    private val positionBuilderReturn: Point = Point(0, 0),
 ) {
 
     var viewBuilderInvocation = 0
@@ -52,42 +50,40 @@ class FakeCompatUILayout(
     var lastPositionFactorySharedState: CompatUISharedState? = null
     var lastPositionFactoryCompState: CompatUIComponentState? = null
 
-    fun getLayout() = CompatUILayout(
-        zOrder = zOrderReturn,
-        layoutParamFlags = layoutParamFlagsReturn,
-        viewBuilder = { ctx, info, componentState ->
-            lastViewBuilderContext = ctx
-            lastViewBuilderCompatUIInfo = info
-            lastViewBuilderCompState = componentState
-            viewBuilderInvocation++
-            viewBuilderReturn
-        },
-        viewBinder = { view, info, sharedState, componentState ->
-            lastViewBinderView = view
-            lastViewBinderCompatUIInfo = info
-            lastViewBinderCompState = componentState
-            lastViewBinderSharedState = sharedState
-            viewBinderInvocation++
-        },
-        positionFactory = { view, info, sharedState, componentState ->
-            lastPositionFactoryView = view
-            lastPositionFactoryCompatUIInfo = info
-            lastPositionFactoryCompState = componentState
-            lastPositionFactorySharedState = sharedState
-            positionFactoryInvocation++
-            positionBuilderReturn
-        },
-        viewReleaser = { viewReleaserInvocation++ }
-    )
+    fun getLayout() =
+        CompatUILayout(
+            zOrder = zOrderReturn,
+            layoutParamFlags = layoutParamFlagsReturn,
+            viewBuilder = { ctx, info, componentState ->
+                lastViewBuilderContext = ctx
+                lastViewBuilderCompatUIInfo = info
+                lastViewBuilderCompState = componentState
+                viewBuilderInvocation++
+                viewBuilderReturn
+            },
+            viewBinder = { view, info, sharedState, componentState ->
+                lastViewBinderView = view
+                lastViewBinderCompatUIInfo = info
+                lastViewBinderCompState = componentState
+                lastViewBinderSharedState = sharedState
+                viewBinderInvocation++
+            },
+            positionFactory = { view, info, sharedState, componentState ->
+                lastPositionFactoryView = view
+                lastPositionFactoryCompatUIInfo = info
+                lastPositionFactoryCompState = componentState
+                lastPositionFactorySharedState = sharedState
+                positionFactoryInvocation++
+                positionBuilderReturn
+            },
+            viewReleaser = { viewReleaserInvocation++ },
+        )
 
-    fun assertViewBuilderInvocation(expected: Int) =
-        assertEquals(expected, viewBuilderInvocation)
+    fun assertViewBuilderInvocation(expected: Int) = assertEquals(expected, viewBuilderInvocation)
 
-    fun assertViewBinderInvocation(expected: Int) =
-        assertEquals(expected, viewBinderInvocation)
+    fun assertViewBinderInvocation(expected: Int) = assertEquals(expected, viewBinderInvocation)
 
-    fun assertViewReleaserInvocation(expected: Int) =
-        assertEquals(expected, viewReleaserInvocation)
+    fun assertViewReleaserInvocation(expected: Int) = assertEquals(expected, viewReleaserInvocation)
 
     fun assertPositionFactoryInvocation(expected: Int) =
         assertEquals(expected, positionFactoryInvocation)

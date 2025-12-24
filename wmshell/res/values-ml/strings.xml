@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"ബബിളിനെ ആപ്പ് പിന്തുണയ്ക്കുന്നില്ല"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"സ്‌ക്രീൻ വിഭജന മോഡ് ഡിവൈഡർ"</string>
     <string name="divider_title" msgid="1963391955593749442">"സ്‌ക്രീൻ വിഭജന മോഡ് ഡിവൈഡർ"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ഇടത് പൂർണ്ണ സ്ക്രീൻ"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"ഇടത് 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ഇടത് 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ഇടത് 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"വലത് പൂർണ്ണ സ്ക്രീൻ"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"മുകളിലെയും താഴത്തെയും ആപ്പ് സ്വാപ്പ് ചെയ്യുക"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"ഇടതുവശത്തെയും വലതുവശത്തെയും ആപ്പ് സ്വാപ്പ് ചെയ്യുക"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"മുകളിൽ പൂർണ്ണ സ്ക്രീൻ"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"മുകളിൽ 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"മുകളിൽ 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"മുകളിൽ 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"താഴെ പൂർണ്ണ സ്ക്രീൻ"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"ഇടത് ആപ്പ് പൂർണ്ണ സ്ക്രീൻ ആക്കുക"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"ഇടത്ത് 10%, വലത്ത് 90%"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"ഇടത്ത് 30%, വലത്ത് 70%"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"ഇടത്ത് 50%, വലത്ത് 50%"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"ഇടത്ത് 70%, വലത്ത് 30%"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"ഇടത്ത് 90%, വലത്ത് 10%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"വലത് ആപ്പ് പൂർണ്ണ സ്ക്രീൻ ആക്കുക"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"മുകളിലെ ആപ്പും താഴത്തെ ആപ്പും പരസ്പരം മാറ്റുക, നിലവിലെ വിഭജനം നിലനിർത്തുക"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"ഇടത് ആപ്പും വലത് ആപ്പും പരസ്പരം മാറ്റുക, നിലവിലെ വിഭജനം നിലനിർത്തുക"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"മുകളിലെ ആപ്പ് പൂർണ്ണ സ്ക്രീനാക്കുക"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"മുകളിൽ 10%, താഴെ 90%"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"മുകളിൽ 30%, താഴെ 70%"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"മുകളിൽ 50%, താഴെ 50%"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"മുകളിൽ 70%, താഴെ 30%"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"മുകളിൽ 90%, താഴെ 10%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"താഴെയുള്ള ആപ്പ് പൂർണ്ണ സ്ക്രീൻ ആക്കുക"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"ഇടത് ഭാഗത്തേക്ക് വിഭജിക്കുക"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"വലത് ഭാഗത്തേക്ക് വിഭജിക്കുക"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"മുകളിലേക്ക് വിഭജിക്കുക"</string>

@@ -214,7 +214,7 @@ public class DisplayLayout {
         mRotation = info.rotation;
         mCutout = info.displayCutout;
         mDensityDpi = info.logicalDensityDpi;
-        mGlobalBoundsDp = new RectF(0, 0, pxToDp(mWidth), pxToDp(mHeight));
+        mGlobalBoundsDp = new RectF();
         mHasNavigationBar = hasNavigationBar;
         mHasStatusBar = hasStatusBar;
         mAllowSeamlessRotationDespiteNavBarMoving = res.getBoolean(
@@ -275,6 +275,17 @@ public class DisplayLayout {
         mHeight = displaySize.getHeight();
 
         recalcInsets(res);
+    }
+
+    /**
+     * Apply a rotation to this layout followed up by an update to its dimensions in new rotation.
+     */
+    public void rotateAndResizeTo(Resources res, @Surface.Rotation int toRotation,
+            @NonNull Size displaySize) {
+        // The convention is that if attempting to rotate and resize in one go, the new size should
+        // be in the final rotation; so rotate the layout in place first.
+        rotateTo(res, toRotation);
+        resizeTo(res, displaySize);
     }
 
     /** Update the global bounds of this layout, in DP. */

@@ -18,7 +18,9 @@ package com.android.launcher3.taskbar;
 
 import static android.content.Context.RECEIVER_EXPORTED;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.SimpleBroadcastReceiver.actionsFilter;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -59,11 +61,11 @@ public class NudgeViewController implements TaskbarControllers.LoggableTaskbarCo
         final Resources resources = mActivity.getResources();
         if (Flags.nudgePill() && mNudgeView != null) {
             mNudgeReceiver = new SimpleBroadcastReceiver(
-                    mActivity, UI_HELPER_EXECUTOR, this::shouldChangeNavBar);
-            mNudgeReceiver.register(RECEIVER_EXPORTED, NAV_UPDATE_ACTION);
+                    mActivity, UI_HELPER_EXECUTOR, MAIN_EXECUTOR, this::shouldChangeNavBar);
+            mNudgeReceiver.register(actionsFilter(NAV_UPDATE_ACTION), RECEIVER_EXPORTED);
         }
-        mTranslateIcon = resources.getDrawable(R.drawable.ic_translate);
-        mGameIcon = resources.getDrawable(R.drawable.ic_game);
+        mTranslateIcon = resources.getDrawable(R.drawable.ic_translate, activity.getTheme());
+        mGameIcon = resources.getDrawable(R.drawable.ic_game, activity.getTheme());
     }
 
     private void shouldChangeNavBar(Intent i) {
@@ -86,7 +88,7 @@ public class NudgeViewController implements TaskbarControllers.LoggableTaskbarCo
 
     public void onDestroy() {
         if (mNudgeReceiver != null) {
-            mNudgeReceiver.unregisterReceiverSafely();
+            mNudgeReceiver.close();
         }
         mNudgeReceiver = null;
     }

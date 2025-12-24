@@ -24,8 +24,10 @@ import android.os.Binder
 import android.view.WindowInsets
 import android.window.WindowContainerToken
 import android.window.WindowContainerTransaction
-import com.android.window.flags.Flags
 import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper
+import com.android.wm.shell.splitscreen.SplitScreenController
+import dagger.Lazy
+import java.util.Optional
 
 object BubbleUtils {
 
@@ -35,46 +37,58 @@ object BubbleUtils {
      */
     private fun getBubbleTransaction(
         token: WindowContainerToken,
+        rootToken: WindowContainerToken?,
+        bounds: Rect,
         toBubble: Boolean,
         isAppBubble: Boolean,
         reparentToTda: Boolean,
         captionInsetsOwner: Binder?,
     ): WindowContainerTransaction {
         val wct = WindowContainerTransaction()
-        if (reparentToTda) {
-            // Reparenting must happen before setAlwaysOnTop() below since WCT operations are
-            // applied in order and always-on-top for nested tasks is not supported
-            wct.reparent(token, null, true)
-        }
-        wct.setWindowingMode(
-            token,
-            if (toBubble)
-                WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW
-            else
-                WindowConfiguration.WINDOWING_MODE_UNDEFINED,
-        )
-        wct.setInterceptBackPressedOnTaskRoot(token, toBubble)
-        if (!BubbleAnythingFlagHelper.enableRootTaskForBubble()) {
-            wct.setAlwaysOnTop(token, toBubble /* alwaysOnTop */)
-        }
-        if (!toBubble || isAppBubble) {
-            // We only set launch next to Bubble for App Bubble, since new Task opened from Chat
-            // Bubble should be launched in fullscreen.
-            // Always reset everything when exit bubble.
-            wct.setLaunchNextToBubble(token, toBubble /* launchNextToBubble */)
-        }
-        if (Flags.excludeTaskFromRecents()) {
+        if (BubbleAnythingFlagHelper.enableRootTaskForBubble() && isAppBubble) {
+            if (toBubble && rootToken != null) {
+                wct.reparent(token, rootToken, true /* onTop */)
+                wct.setBounds(rootToken, bounds)
+                wct.setAlwaysOnTop(rootToken, true /* alwaysOnTop */)
+            } else {
+                wct.reparent(token, null, true /* onTop */)
+            }
+        } else {
+            if (reparentToTda) {
+                // Reparenting must happen before setAlwaysOnTop() below since WCT operations are
+                // applied in order and always-on-top for nested tasks is not supported
+                wct.reparent(token, null, true)
+            }
+            wct.setWindowingMode(
+                token,
+                if (toBubble)
+                    WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW
+                else
+                    WindowConfiguration.WINDOWING_MODE_UNDEFINED,
+            )
+            wct.setInterceptBackPressedOnTaskRoot(token, toBubble)
             wct.setTaskForceExcludedFromRecents(token, toBubble /* forceExcluded */)
+            wct.setDisablePip(token, toBubble /* disablePip */)
+            if (!isAppBubble || !BubbleAnythingFlagHelper.enableRootTaskForBubble()) {
+                wct.setAlwaysOnTop(token, toBubble /* alwaysOnTop */)
+            }
+            if (!toBubble || isAppBubble) {
+                // We only set launch next to Bubble for App Bubble, since new Task opened from Chat
+                // Bubble should be launched in fullscreen.
+                // Always reset everything when exit bubble.
+                wct.setLaunchNextToBubble(token, toBubble /* launchNextToBubble */)
+            }
+            if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
+                wct.setDisableLaunchAdjacent(token, toBubble /* disableLaunchAdjacent */)
+            }
         }
-        wct.setDisablePip(token, toBubble /* disablePip */)
         if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
-            wct.setDisableLaunchAdjacent(token, toBubble /* disableLaunchAdjacent */)
             if (!toBubble) {
                 // Clear bounds if moving out of Bubble.
                 wct.setBounds(token, Rect())
             }
         }
-        if (BubbleAnythingFlagHelper.enableCreateAnyBubbleWithAppCompatFixes()) {
+        if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
             if (!toBubble && captionInsetsOwner != null) {
                 wct.removeInsetsSource(
                     token, captionInsetsOwner, 0 /* index */, WindowInsets.Type.captionBar()
@@ -96,11 +110,15 @@ object BubbleUtils {
     @JvmStatic
     fun getEnterBubbleTransaction(
         token: WindowContainerToken,
+        rootToken: WindowContainerToken?,
+        bounds: Rect,
         isAppBubble: Boolean,
         reparentToTda: Boolean = false,
     ): WindowContainerTransaction {
         return getBubbleTransaction(
             token,
+            rootToken,
+            bounds,
             toBubble = true,
             isAppBubble,
             reparentToTda,
@@ -119,6 +137,8 @@ object BubbleUtils {
     ): WindowContainerTransaction {
         return getBubbleTransaction(
             token,
+            rootToken = null,
+            bounds = Rect(),
             toBubble = false,
             // Everything will be reset, so doesn't matter for exit.
             isAppBubble = true,
@@ -129,13 +149,24 @@ object BubbleUtils {
 
     /** Returns true if the task is valid for Bubble. */
     @JvmStatic
-    fun isValidToBubble(taskInfo: ActivityManager.RunningTaskInfo?): Boolean {
-        return taskInfo != null && taskInfo.supportsMultiWindow
+    fun ActivityManager.RunningTaskInfo?.isValidToBubble(): Boolean {
+        return this?.supportsMultiWindow == true
     }
 
     /** Determines if a bubble task is moving to fullscreen based on its windowing mode. */
-    fun isBubbleToFullscreen(task: ActivityManager.RunningTaskInfo?): Boolean {
-        return BubbleAnythingFlagHelper.enableCreateAnyBubbleWithForceExcludedFromRecents()
-                && task?.windowingMode == WINDOWING_MODE_FULLSCREEN
+    @JvmStatic
+    fun ActivityManager.RunningTaskInfo?.isBubbleToFullscreen(): Boolean {
+        return BubbleAnythingFlagHelper.enableCreateAnyBubble()
+                && this?.windowingMode == WINDOWING_MODE_FULLSCREEN
+    }
+
+    /** Determines if a bubble task is moving to split-screen based on its parent task. */
+    @JvmStatic
+    fun ActivityManager.RunningTaskInfo?.isBubbleToSplit(
+        splitScreenController: Lazy<Optional<SplitScreenController>>,
+    ): Boolean {
+        return this?.hasParentTask() == true && splitScreenController.get()
+            .map { it.isTaskRootOrStageRoot(parentTaskId) }
+            .orElse(false)
     }
 }

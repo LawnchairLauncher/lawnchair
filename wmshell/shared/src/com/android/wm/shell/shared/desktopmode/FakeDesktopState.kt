@@ -43,6 +43,8 @@ class FakeDesktopState : DesktopState {
 
     /** Override [canEnterDesktopMode] for a specific display. */
     val overrideDesktopModeSupportPerDisplay = mutableMapOf<Int, Boolean>()
+    /** Overrides [isProjectedMode] */
+    var isProjected: Boolean = false
 
     override fun isMultipleDesktopFrontendEnabledOnDisplay(display: Display): Boolean =
         enableMultipleDesktops && isDesktopModeSupportedOnDisplay(display)
@@ -63,7 +65,7 @@ class FakeDesktopState : DesktopState {
     }
 
     override fun isProjectedMode(): Boolean {
-        return false
+        return isProjected
     }
 
     override var overridesShowAppHandle: Boolean = false

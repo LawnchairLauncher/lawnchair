@@ -1,0 +1,7 @@
+{
+  "imports": [
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/bubble"
+    }
+  ]
+}

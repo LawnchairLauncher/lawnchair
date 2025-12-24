@@ -50,7 +50,6 @@ import android.view.WindowInsets.Type.InsetsType;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 import android.view.inputmethod.ImeTracker;
-import android.view.inputmethod.InputMethodManagerGlobal;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -386,8 +385,7 @@ public class DisplayImeController implements DisplayController.OnDisplaysChanged
             if ((types & WindowInsets.Type.ime()) == 0) {
                 return;
             }
-            ProtoLog.d(WM_SHELL_IME_CONTROLLER, "Ime shown, statsToken=%s",
-                    statsToken != null ? statsToken.getBinder() : "null");
+            ProtoLog.d(WM_SHELL_IME_CONTROLLER, "Ime shown, statsToken=%s", statsToken);
             startAnimation(true /* show */, false /* forceRestart */, statsToken);
         }
 
@@ -396,8 +394,7 @@ public class DisplayImeController implements DisplayController.OnDisplaysChanged
             if ((types & WindowInsets.Type.ime()) == 0) {
                 return;
             }
-            ProtoLog.d(WM_SHELL_IME_CONTROLLER, "Ime hidden, statsToken=%s",
-                    statsToken != null ? statsToken.getBinder() : "null");
+            ProtoLog.d(WM_SHELL_IME_CONTROLLER, "Ime hidden, statsToken=%s", statsToken);
             startAnimation(false /* show */, false /* forceRestart */, statsToken);
         }
 
@@ -412,7 +409,7 @@ public class DisplayImeController implements DisplayController.OnDisplaysChanged
                 @NonNull ImeTracker.Token statsToken) {
             ProtoLog.d(WM_SHELL_IME_CONTROLLER,
                     "Input target requested visibility, visible=%b statsToken=%s",
-                    visible, statsToken != null ? statsToken.getBinder() : "null");
+                    visible, statsToken);
             ImeTracker.forLogging().onProgress(statsToken,
                     ImeTracker.PHASE_WM_DISPLAY_IME_CONTROLLER_SET_IME_REQUESTED_VISIBLE);
             mImeRequestedVisible = visible;
@@ -741,13 +738,6 @@ public class DisplayImeController implements DisplayController.OnDisplaysChanged
         public InsetsSourceControl getImeSourceControl() {
             return mImeSourceControl;
         }
-    }
-
-    void removeImeSurface(int displayId) {
-        // Remove the IME surface to make the insets invisible for
-        // non-client controlled insets.
-        InputMethodManagerGlobal.removeImeSurface(displayId,
-                e -> Slog.e(TAG, "Failed to remove IME surface.", e));
     }
 
     /**

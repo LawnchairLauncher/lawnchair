@@ -99,6 +99,8 @@ import app.lawnchair.LawnchairApp;
  */
 public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, ExclusionListener {
 
+    public static final int RESET_TO_DEFAULT_GESTURAL_HEIGHT = -1;
+
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
 
     // TODO: Move to quickstep contract
@@ -174,7 +176,10 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
 
         // Register for display changes changes
         mDisplayController.addChangeListener(this);
-        onDisplayInfoChanged(context, mDisplayController.getInfoForDisplay(mDisplayId), CHANGE_ALL);
+        Info displayInfo = mDisplayController.getInfoForDisplay(mDisplayId);
+        if (displayInfo != null) {
+            onDisplayInfoChanged(context, displayInfo, CHANGE_ALL);
+        }
         lifeCycle.addCloseable(() -> mDisplayController.removeChangeListener(this));
 
         if (mIsOneHandedModeSupported) {
@@ -198,7 +203,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
                 () -> settingsCache.unregister(swipeBottomNotificationUri, onChangeListener));
 
         Uri setupCompleteUri = Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE);
-        mIsUserSetupComplete = LawnchairApp.isRecentsEnabled() && settingsCache.getValue(setupCompleteUri, 0);
+        mIsUserSetupComplete = LawnchairApp.isRecentsEnabled() && settingsCache.getValue(setupCompleteUri);
         if (!mIsUserSetupComplete) {
             SettingsCache.OnChangeListener userSetupChangeListener = e -> mIsUserSetupComplete = e;
             settingsCache.register(setupCompleteUri, userSetupChangeListener);
@@ -302,7 +307,11 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
         mExclusionListenerRegistered = false;
     }
 
-    public void onOneHandedModeChanged(int newGesturalHeight) {
+    /**
+     * Touches within this number of pixels from the bottom of the screen can get intercepted to
+     * handle gesture navigation. Passing a value less than 0 will revert to a default value.
+     */
+    public void setGesturalHeight(int newGesturalHeight) {
         mRotationTouchHelper.setGesturalHeight(newGesturalHeight);
     }
 
@@ -604,7 +613,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
         if (mIsOneHandedModeEnabled) {
             final Info displayInfo = mDisplayController.getInfoForDisplay(mDisplayId);
             return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
-                    && (displayInfo.currentSize.x < displayInfo.currentSize.y));
+                    && (displayInfo != null
+                    && displayInfo.currentSize.x < displayInfo.currentSize.y));
         }
         return false;
     }

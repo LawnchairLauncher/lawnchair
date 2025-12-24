@@ -15,5 +15,7 @@
 -->
 
 <resources>
+    <dimen name="bottom_sheet_max_width">1040dp</dimen>
+    <dimen name="bottom_sheet_max_height">800dp</dimen>
 </resources>
 

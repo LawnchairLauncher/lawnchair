@@ -272,7 +272,7 @@ public class FloatingRotationButton implements RotationButton {
      * Updates resources that could be changed in runtime, should be called on configuration
      * change with changes diff integer mask
      * @param configurationChanges - configuration changes with flags from ActivityInfo e.g.
-     * {@link android.content.pm.ActivityInfo#CONFIG_DENSITY}
+     * {@link ActivityInfo#CONFIG_DENSITY}
      */
     public void onConfigurationChanged(@Config int configurationChanges) {
         if ((configurationChanges & ActivityInfo.CONFIG_DENSITY) != 0

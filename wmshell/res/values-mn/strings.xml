@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Апп бөмбөлгийг дэмждэггүй"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Дэлгэцийг хуваах хуваагч"</string>
     <string name="divider_title" msgid="1963391955593749442">"Дэлгэцийг хуваах хуваагч"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Зүүн талын бүтэн дэлгэц"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Зүүн 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Зүүн 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Зүүн 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Баруун талын бүтэн дэлгэц"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Дээд талын аппыг доод талынхаар солих"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Зүүн талын аппыг баруун талынхаар солих"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Дээд талын бүтэн дэлгэц"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Дээд 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Дээд 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Дээд 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Доод бүтэн дэлгэц"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Зүүн талын аппыг бүтэн дэлгэцээр харуулах"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"Зүүн тийш 10%, баруун тийш 90%"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"Зүүн тийш 30%, баруун тийш 70%"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"Зүүн тийш 50%, баруун тийш 50%"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"Зүүн тийш 70%, баруун тийш 30%"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"Зүүн тийш 90%, баруун тийш 10%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Баруун талын аппыг бүтэн дэлгэцээр харуулах"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Дээд талын аппыг доод талын аппаар сольж, одоогийн хуваасан байдлыг хадгалах"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Зүүн талын аппыг баруун талын аппаар сольж, одоогийн хуваасан байдлыг хадгалах"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Дээд талын аппыг бүтэн дэлгэцээр харуулах"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"Дээш 10%, доош 90%"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"Дээш 30%, доош 70%"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"Дээш 50%, доош 50%"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"Дээш 70%, доош 30%"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"Дээш 90%, доош 10%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Доод талын аппыг бүтэн дэлгэцээр харуулах"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Зүүн талд хуваах"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Баруун талд хуваах"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Дээд талд хуваах"</string>

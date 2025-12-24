@@ -166,7 +166,8 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
 
     @Test
     public void testPrivateSpaceLockingBehaviour() throws IOException {
-        assumeFalse(mLauncher.isTablet()); // b/367258373
+        assumeFalse("Ignoring test because device is tablet",
+            mLauncher.isTablet()); // b/367258373
         // Scroll to the bottom of All Apps
         executeOnLauncher(launcher -> launcher.getAppsView().resetAndScrollToPrivateSpaceHeader());
         HomeAllApps homeAllApps = mLauncher.getAllApps();

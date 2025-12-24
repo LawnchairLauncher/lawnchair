@@ -33,8 +33,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
-import android.os.UserManager;
-import android.util.ArrayMap;
 import android.view.SurfaceControlViewHost;
 
 import androidx.annotation.NonNull;
@@ -49,10 +47,8 @@ import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.dagger.LauncherAppComponent;
 import com.android.launcher3.dagger.LauncherAppSingleton;
 import com.android.launcher3.icons.BitmapRenderer;
-import com.android.launcher3.util.TouchController;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -93,61 +89,6 @@ public class ApiWrapper {
      */
     public ActivityOptions createFadeOutAnimOptions() {
         return ActivityOptions.makeCustomAnimation(mContext, 0, android.R.anim.fade_out);
-    }
-
-    /**
-     * Returns a map of all users on the device to their corresponding UI properties
-     */
-    public Map<UserHandle, UserIconInfo> queryAllUsers() {
-        UserManager um = mContext.getSystemService(UserManager.class);
-        Map<UserHandle, UserIconInfo> users = new ArrayMap<>();
-        List<UserHandle> usersActual = um.getUserProfiles();
-        if (usersActual != null) {
-            for (UserHandle user : usersActual) {
-                long serial = um.getSerialNumberForUser(user);
-
-                // Simple check to check if the provided user is work profile
-                // TODO: Migrate to a better platform API
-                NoopDrawable d = new NoopDrawable();
-                boolean isWork = (d != mContext.getPackageManager().getUserBadgedIcon(d, user));
-
-                var launcherApps = mContext.getSystemService(LauncherApps.class);
-                UserIconInfo info = new UserIconInfo(
-                        user,
-                        isWork ? UserIconInfo.TYPE_WORK : UserIconInfo.TYPE_MAIN,
-                        serial);
-
-                try {
-                    if (Utilities.ATLEAST_V && launcherApps != null) {
-                        LauncherUserInfo userInfo = launcherApps.getLauncherUserInfo(user);
-                        if (userInfo != null) {
-                            var userType = userInfo.getUserType();
-                            info = new UserIconInfo(
-                                    user,
-                                    userType.equals (UserManager.USER_TYPE_PROFILE_MANAGED) ? UserIconInfo.TYPE_WORK :
-                                            userType.equals (UserManager.USER_TYPE_PROFILE_CLONE) ? UserIconInfo.TYPE_CLONED :
-                                                    userType.equals (UserManager.USER_TYPE_PROFILE_PRIVATE) ? UserIconInfo.TYPE_PRIVATE :
-                                                            UserIconInfo.TYPE_MAIN,
-                                    serial
-                            );
-                        }
-                    }
-                } catch (Throwable t) {
-                    // Ignore
-                }
-
-                users.put(user, info);
-            }
-        }
-        return users;
-    }
-
-    /**
-     * Returns the list of the system packages that are installed at user creation.
-     * An empty list denotes that all system packages are installed for that user at creation.
-     */
-    public List<String> getPreInstalledSystemPackages(UserHandle user) {
-        return Collections.emptyList();
     }
 
     /**

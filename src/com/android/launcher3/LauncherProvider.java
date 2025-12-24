@@ -37,7 +37,6 @@ import android.util.Pair;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.dagger.LauncherComponentProvider;
 import com.android.launcher3.model.ModelDbController;
-import com.android.launcher3.util.LayoutImportExportHelper;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.io.FileDescriptor;
@@ -103,7 +102,7 @@ public class LauncherProvider extends ContentProvider {
 
     // Method API For Provider#call method.
     private static final String METHOD_EXPORT_LAYOUT_XML = "EXPORT_LAYOUT_XML";
-    private static final String METHOD_IMPORT_LAYOUT_XML = "IMPORT_LAYOUT_XML";
+    public static final String METHOD_IMPORT_LAYOUT_XML = "IMPORT_LAYOUT_XML";
     private static final String KEY_RESULT = "KEY_RESULT";
     private static final String KEY_LAYOUT = "KEY_LAYOUT";
     private static final String SUCCESS = "success";
@@ -119,12 +118,7 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
-    }
-
-    public ModelDbController getModelDbController() {
-        return LauncherAppState.getInstance(getContext()).getModel().getModelDbController();
     }
 
     @Override
@@ -154,7 +148,7 @@ public class LauncherProvider extends ContentProvider {
             // 1. Ensure that externally added items have a valid item id. Don't update Folder ids
             // because items inside the folder need to reference the original ID as their container
             // id, or else be deleted.
-            if (Flags.externalDataAccess() && values.containsKey(Favorites._ID)
+            if (values.containsKey(Favorites._ID)
                     && Favorites.ITEM_TYPE_FOLDER != values.getAsInteger(Favorites.ITEM_TYPE)
                     && Favorites.ITEM_TYPE_APP_PAIR != values.getAsInteger(Favorites.ITEM_TYPE)) {
                 int id = controller.generateNewItemId();
@@ -218,13 +212,13 @@ public class LauncherProvider extends ContentProvider {
         // access the "call" method at all. We also enforce the appropriate per-method permissions.
         switch(method) {
             case METHOD_EXPORT_LAYOUT_XML:
-                if (getContext().checkCallingOrSelfPermission(getReadPermission())
-                        != PackageManager.PERMISSION_GRANTED) {
+                if (getReadPermission() != null && getContext().checkCallingOrSelfPermission(
+                        getReadPermission()) != PackageManager.PERMISSION_GRANTED) {
                     throw new SecurityException("Caller doesn't have read permission");
                 }
 
-                CompletableFuture<String> resultFuture = LayoutImportExportHelper.INSTANCE
-                        .exportModelDbAsXmlFuture(getContext());
+                CompletableFuture<String> resultFuture = LauncherComponentProvider
+                        .get(getContext()).getLayoutImportExportHelper().exportModelDbAsXmlFuture();
                 try {
                     b.putString(KEY_LAYOUT, resultFuture.get());
                     b.putString(KEY_RESULT, SUCCESS);
@@ -234,12 +228,13 @@ public class LauncherProvider extends ContentProvider {
                 return b;
 
             case METHOD_IMPORT_LAYOUT_XML:
-                if (getContext().checkCallingOrSelfPermission(getWritePermission())
-                        != PackageManager.PERMISSION_GRANTED) {
+                if (getWritePermission() != null && getContext().checkCallingOrSelfPermission(
+                        getWritePermission()) != PackageManager.PERMISSION_GRANTED) {
                     throw new SecurityException("Caller doesn't have write permission");
                 }
 
-                LayoutImportExportHelper.INSTANCE.importModelFromXml(getContext(), arg);
+                LauncherComponentProvider
+                        .get(getContext()).getLayoutImportExportHelper().importModelFromXml(arg);
                 b.putString(KEY_RESULT, SUCCESS);
                 return b;
             default:

@@ -1,97 +1,160 @@
 {
-  "wm-devices": [
+  "wm": [
     {
-      "name": "WMShellFlickerTestsPip-CatchAll"
+      "name": "WMShellFlickerTestsPip-AutoEnterPipOnGoToHomeTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-AutoEnterPipOnGoToHomeTest"
+      "name": "WMShellFlickerTestsPip-AutoEnterPipWithSourceRectHintTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-AutoEnterPipWithSourceRectHintTest"
+      "name": "WMShellFlickerTestsPip-CatchAll",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-ClosePipBySwipingDownTest"
+      "name": "WMShellFlickerTestsPip-ClosePipBySwipingDownTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-ClosePipWithDismissButtonTest"
+      "name": "WMShellFlickerTestsPip-ClosePipWithDismissButtonTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-EnterPipOnUserLeaveHintTest"
+      "name": "WMShellFlickerTestsPip-EnterPipOnUserLeaveHintTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-EnterPipViaAppUiButtonTest"
+      "name": "WMShellFlickerTestsPip-EnterPipViaAppUiButtonTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-ExitPipToAppViaExpandButtonTest"
+      "name": "WMShellFlickerTestsPip-ExitPipToAppViaExpandButtonTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-ExitPipToAppViaIntentTest"
+      "name": "WMShellFlickerTestsPip-ExitPipToAppViaIntentTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-ExpandPipOnDoubleClickTest"
+      "name": "WMShellFlickerTestsPip-ExpandPipOnDoubleClickTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-ExpandPipOnPinchOpenTest"
+      "name": "WMShellFlickerTestsPip-ExpandPipOnPinchOpenTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-FromSplitScreenAutoEnterPipOnGoToHomeTest"
+      "name": "WMShellFlickerTestsPip-FromSplitScreenAutoEnterPipOnGoToHomeTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-FromSplitScreenEnterPipOnUserLeaveHintTest"
+      "name": "WMShellFlickerTestsPip-FromSplitScreenEnterPipOnUserLeaveHintTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-MovePipDownOnShelfHeightChange"
+      "name": "WMShellFlickerTestsPip-MovePipOnImeVisibilityChangeTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-MovePipOnImeVisibilityChangeTest"
+      "name": "WMShellFlickerTestsPip-MovePipUpOnShelfHeightChangeTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-MovePipUpOnShelfHeightChangeTest"
+      "name": "WMShellFlickerTestsPip-PipAspectRatioChangeTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-PipAspectRatioChangeTest"
+      "name": "WMShellFlickerTestsPip-PipDragTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-PipDragTest"
+      "name": "WMShellFlickerTestsPip-PipDragThenSnapTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-PipDragThenSnapTest"
+      "name": "WMShellFlickerTestsPip-PipPinchInTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-PipPinchInTest"
+      "name": "WMShellFlickerTestsPip-nonmatchparent-BottomHalfAutoEnterPipOnGoToHomeTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-SetRequestedOrientationWhilePinned"
+      "name": "WMShellFlickerTestsPip-nonmatchparent-BottomHalfEnterPipOnUserLeaveHintTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-ShowPipAndRotateDisplay"
+      "name": "WMShellFlickerTestsPip-nonmatchparent-BottomHalfEnterPipViaAppUiButtonTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-BottomHalfExitPipToAppViaExpandButtonTest"
+      "name": "WMShellFlickerTestsPip-nonmatchparent-BottomHalfExitPipToAppViaExpandButtonTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-BottomHalfExitPipToAppViaIntentTest"
+      "name": "WMShellFlickerTestsPip-nonmatchparent-BottomHalfExitPipToAppViaIntentTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-BottomHalfAutoEnterPipOnGoToHomeTest"
+      "name": "WMShellFlickerTestsPip-nonmatchparent-BottomHalfFromSplitScreenAutoEnterPipOnGoToHomeTest",
+      "keywords": [
+        "device"
+      ]
     },
     {
-      "name": "WMShellFlickerTestsPip-BottomHalfEnterPipOnUserLeaveHintTest"
-    },
-    {
-      "name": "WMShellFlickerTestsPip-BottomHalfEnterPipViaAppUiButtonTest"
-    },
-    {
-      "name": "WMShellFlickerTestsPip-BottomHalfEnterPipToOtherOrientation"
-    },
-    {
-      "name": "WMShellFlickerTestsPip-BottomHalfSetRequestedOrientationWhilePinned"
-    },
-    {
-      "name": "WMShellFlickerTestsPip-BottomHalfFromSplitScreenAutoEnterPipOnGoToHomeTest"
-    },
-    {
-      "name": "WMShellFlickerTestsPip-BottomHalfFromSplitScreenEnterPipOnUserLeaveHintTest"
+      "name": "WMShellFlickerTestsPip-nonmatchparent-BottomHalfFromSplitScreenEnterPipOnUserLeaveHintTest",
+      "keywords": [
+        "device"
+      ]
     }
   ]
 }

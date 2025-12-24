@@ -23,6 +23,7 @@ import java.util.function.Consumer
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
@@ -31,12 +32,15 @@ import org.mockito.Mock
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 @RunWith(AndroidJUnit4::class)
 class CachedEventDispatcherTest {
 
     private lateinit var underTest: CachedEventDispatcher
+
+    @get:Rule var mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     @Mock private lateinit var consumer: Consumer<MotionEvent>
     @Captor private lateinit var motionEventCaptor: ArgumentCaptor<MotionEvent>
@@ -45,7 +49,6 @@ class CachedEventDispatcherTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         motionEvent =
             MotionEvent.obtain(
                 0L,

@@ -21,12 +21,20 @@ import android.platform.test.rule.DeviceProduct
 import android.platform.test.rule.LimitDevicesRule
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.widgetpicker.R
@@ -56,9 +64,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-@AllowedDevices(allowed = [DeviceProduct.CF_TABLET])
+@AllowedDevices(allowed = [DeviceProduct.CF_TABLET, DeviceProduct.TANGORPRO])
 class SearchScreenTest {
     @get:Rule val limitDevicesRule = LimitDevicesRule()
+
     @get:Rule val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     @OptIn(ExperimentalCoroutinesApi::class) private val testDispatcher = UnconfinedTestDispatcher()
@@ -139,7 +148,7 @@ class SearchScreenTest {
             runCurrent()
             composeTestRule.waitForIdle()
 
-            // has both apps
+            // has both apps from personal
             composeTestRule.onNode(hasText(PERSONAL_TEST_APPS[0].title!!.toString())).assertExists()
             composeTestRule.onNode(hasText(PERSONAL_TEST_APPS[1].title!!.toString())).assertExists()
 
@@ -151,14 +160,28 @@ class SearchScreenTest {
             composeTestRule.waitForIdle()
 
             // change query
-            val testInputTwo = "PersonalWidget1A"
+            val testInputTwo = "Widget1A"
             composeTestRule.onNodeWithText(searchBarHint).performTextInput(testInputTwo)
 
             runCurrent()
             composeTestRule.waitForIdle()
 
-            // has only app 1
-            composeTestRule.onNode(hasText(PERSONAL_TEST_APPS[0].title!!.toString())).assertExists()
+            // has only app 1 (no app 2) from personal, and show both work and personal matches
+            val matchedPersonalApp1Title = PERSONAL_TEST_APPS[0].title!!.toString()
+            val matchedWorkApp1Title = WORK_TEST_APPS[0].title!!.toString()
+            val workApp1Label = "${TestUtils.widgetUserProfileWork.label} $matchedWorkApp1Title"
+            composeTestRule
+                .onNode(hasText(matchedPersonalApp1Title))
+                .assertExists()
+                .assert(
+                    hasContentDescription(TestUtils.widgetUserProfileWork.label, substring = true)
+                        .not()
+                )
+            composeTestRule
+                .onNode(hasText(matchedWorkApp1Title))
+                .assertExists()
+                .assert(hasContentDescription(workApp1Label)) // with correctly mapped description.
+            // previously matched not shown
             composeTestRule
                 .onNode(hasText(PERSONAL_TEST_APPS[1].title!!.toString()))
                 .assertDoesNotExist()
@@ -197,6 +220,16 @@ class SearchScreenTest {
             runCurrent()
             composeTestRule.waitForIdle()
 
+            // Has left pane
+            val expectedLeftPaneTitle =
+                context.resources.getString(R.string.widget_picker_left_pane_accessibility_label)
+            composeTestRule
+                .onNode(
+                    SemanticsMatcher("Left paneTitle") {
+                        it.config.getOrNull(SemanticsProperties.PaneTitle) == expectedLeftPaneTitle
+                    }
+                )
+                .assertExists()
             // has both apps
             composeTestRule.onNode(hasText(PERSONAL_TEST_APPS[0].title!!.toString())).assertExists()
             composeTestRule.onNode(hasText(PERSONAL_TEST_APPS[1].title!!.toString())).assertExists()
@@ -238,5 +271,44 @@ class SearchScreenTest {
             composeTestRule.waitForIdle()
 
             composeTestRule.onNode(hasText("No widgets or shortcuts found")).assertExists()
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun onQueryChange_selectedAppIsReset() =
+        testScope.runTest {
+            val app1Title = PERSONAL_TEST_APPS[0].title!!.toString()
+            val app2Title = PERSONAL_TEST_APPS[1].title!!.toString()
+            composeTestRule.setContent { TestContent(isCompact = false) }
+
+            runCurrent()
+            composeTestRule.waitForIdle()
+
+            val testInputOne = "PersonalWidget"
+            composeTestRule.onNodeWithText(searchBarHint).performTextInput(testInputOne)
+
+            runCurrent()
+            composeTestRule.waitForIdle()
+
+            // has both apps; let's select second
+            composeTestRule.onNode(hasText(app1Title)).assertExists()
+            composeTestRule.onNode(hasText(app2Title)).assertExists().performClick()
+
+            runCurrent()
+            composeTestRule.waitForIdle()
+            // app2 is selected
+            composeTestRule.onNode(hasText(app2Title)).assertExists().assertIsSelected()
+            composeTestRule.onNode(hasText(app1Title)).assertExists().assertIsNotSelected()
+
+            // change query that still matches both
+            val testInputTwo = "Personal"
+            composeTestRule.onNodeWithText(testInputOne).performTextReplacement(testInputTwo)
+
+            runCurrent()
+            composeTestRule.waitForIdle()
+
+            // result still has both apps; but previously selected app2 is now reset.
+            composeTestRule.onNode(hasText(app1Title)).assertExists().assertIsNotSelected()
+            composeTestRule.onNode(hasText(app2Title)).assertExists().assertIsNotSelected()
         }
 }

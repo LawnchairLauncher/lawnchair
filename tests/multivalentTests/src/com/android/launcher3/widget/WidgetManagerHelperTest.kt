@@ -17,31 +17,30 @@
 package com.android.launcher3.widget
 
 import android.appwidget.AppWidgetManager
-import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Process
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.PackageUserKey
+import com.android.launcher3.util.TestActivityContext
 import com.google.common.truth.Truth
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.whenever
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class WidgetManagerHelperTest {
 
-    private val context: Context
-        get() = ActivityContextWrapper(InstrumentationRegistry.getInstrumentation().targetContext)
+    @get:Rule val context = TestActivityContext()
 
     private val info =
         LauncherAppWidgetProviderInfo().apply {
@@ -50,13 +49,13 @@ class WidgetManagerHelperTest {
                 mock(ActivityInfo::class.java).apply { applicationInfo = context.applicationInfo }
         }
 
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
     @Mock private lateinit var appWidgetManager: AppWidgetManager
 
     private lateinit var underTest: WidgetManagerHelper
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         underTest = WidgetManagerHelper(context, appWidgetManager)
     }
 
@@ -71,7 +70,7 @@ class WidgetManagerHelperTest {
         whenever(
                 appWidgetManager.getInstalledProvidersForPackage(
                     packageUserKey.mPackageName,
-                    packageUserKey.mUser
+                    packageUserKey.mUser,
                 )
             )
             .thenReturn(desiredResult)
@@ -100,7 +99,7 @@ class WidgetManagerHelperTest {
         val info =
             underTest.getLauncherAppWidgetInfo(
                 1,
-                InstrumentationRegistry.getInstrumentation().componentName
+                InstrumentationRegistry.getInstrumentation().componentName,
             )
         Truth.assertThat(info).isNull()
     }

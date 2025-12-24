@@ -177,7 +177,7 @@ public class RestoreDbTask {
              */
             FileLog.d(TAG, "Setting grid from old device as current grid: "
                 + "oldPhoneGridOption:" + oldPhoneGridOption.name);
-            idp.setCurrentGrid(context, oldPhoneGridOption.name);
+            idp.setCurrentGrid(oldPhoneGridOption.name);
         }
     }
 

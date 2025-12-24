@@ -19,8 +19,10 @@ package com.android.wm.shell.compatui.letterbox
 import android.view.SurfaceControl
 import android.view.SurfaceControl.Transaction
 import android.window.WindowContainerToken
+import com.android.window.flags2.Flags
 import com.android.wm.shell.compatui.letterbox.LetterboxControllerStrategy.LetterboxMode.MULTIPLE_SURFACES
 import com.android.wm.shell.compatui.letterbox.LetterboxControllerStrategy.LetterboxMode.SINGLE_SURFACE
+import com.android.wm.shell.compatui.letterbox.roundedcorners.RoundedCornersLetterboxController
 import com.android.wm.shell.dagger.WMSingleton
 import javax.inject.Inject
 
@@ -29,19 +31,26 @@ import javax.inject.Inject
  * implementations.
  */
 @WMSingleton
-class MixedLetterboxController @Inject constructor(
+class MixedLetterboxController
+@Inject
+constructor(
+    private val letterboxConfiguration: LetterboxConfiguration,
     private val singleSurfaceController: SingleSurfaceLetterboxController,
     private val multipleSurfaceController: MultiSurfaceLetterboxController,
     private val controllerStrategy: LetterboxControllerStrategy,
-    private val inputController: LetterboxInputController
-) : LetterboxController by singleSurfaceController.append(multipleSurfaceController)
-    .append(inputController) {
+    private val inputController: LetterboxInputController,
+    private val roundedCornersController: RoundedCornersLetterboxController,
+) :
+    LetterboxController by singleSurfaceController
+        .append(multipleSurfaceController)
+        .append(inputController)
+        .append(roundedCornersController) {
 
     override fun createLetterboxSurface(
         key: LetterboxKey,
         transaction: Transaction,
         parentLeash: SurfaceControl,
-        token: WindowContainerToken?
+        token: WindowContainerToken?,
     ) {
         when (controllerStrategy.getLetterboxImplementationMode()) {
             SINGLE_SURFACE -> {
@@ -55,10 +64,27 @@ class MixedLetterboxController @Inject constructor(
                     key,
                     transaction,
                     parentLeash,
-                    token
+                    token,
                 )
             }
         }
-        inputController.createLetterboxSurface(key, transaction, parentLeash, token)
+        if (controllerStrategy.shouldSupportInputSurface()) {
+            inputController.createLetterboxSurface(key, transaction, parentLeash, token)
+        } else {
+            inputController.destroyLetterboxSurface(key, transaction)
+        }
+        // Handle RoundedCorners Controller.
+        if (Flags.appCompatRefactoringRoundedCorners()) {
+            if (letterboxConfiguration.isLetterboxActivityCornersRounded()) {
+                roundedCornersController.createLetterboxSurface(
+                    key,
+                    transaction,
+                    parentLeash,
+                    token,
+                )
+            } else {
+                roundedCornersController.destroyLetterboxSurface(key, transaction)
+            }
+        }
     }
 }

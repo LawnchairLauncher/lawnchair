@@ -35,10 +35,12 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.util.LauncherMultivalentJUnit;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 @SmallTest
 @UiThreadTest
@@ -48,6 +50,9 @@ public class PreviewBackgroundTest {
     private static final float REST_SCALE = 1f;
     private static final float EPSILON = 0.00001f;
 
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Mock
     CellLayout mCellLayout;
 
@@ -56,7 +61,6 @@ public class PreviewBackgroundTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         mPreviewBackground.mScale = REST_SCALE;
         mPreviewBackground.mIsAccepting = false;
         mPreviewBackground.mIsHovered = false;

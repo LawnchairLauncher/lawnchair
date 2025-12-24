@@ -23,6 +23,8 @@ import android.os.Process
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.appprediction.PredictionRowView
+import com.android.launcher3.dagger.LauncherComponentProvider.appComponent
+import com.android.launcher3.dot.DotInfo
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.notification.NotificationKeyData
@@ -138,10 +140,15 @@ class TaskbarAllAppsControllerTest {
         runOnMainSync {
             allAppsController.setApps(TEST_APPS, 0, emptyMap())
             allAppsController.toggle()
-            taskbarUnitTestRule.activityContext.popupDataProvider.onNotificationPosted(
-                PackageUserKey.fromItemInfo(TEST_APPS[0]),
-                NotificationKeyData("key"),
-            )
+            val key = PackageUserKey.fromItemInfo(TEST_APPS[0])!!
+            context.appComponent.notificationRepository.dispatchUpdate(
+                mapOf(
+                    key to
+                        DotInfo().apply { addOrUpdateNotificationKey(NotificationKeyData("key")) }
+                )
+            ) {
+                it == key
+            }
         }
 
         // Ensure the recycler view fully inflates before trying to grab an icon.
@@ -162,10 +169,15 @@ class TaskbarAllAppsControllerTest {
         runOnMainSync {
             allAppsController.setPredictedApps(TEST_PREDICTED_APPS)
             allAppsController.toggle()
-            taskbarUnitTestRule.activityContext.popupDataProvider.onNotificationPosted(
-                PackageUserKey.fromItemInfo(TEST_PREDICTED_APPS[0]),
-                NotificationKeyData("key"),
-            )
+            val key = PackageUserKey.fromItemInfo(TEST_PREDICTED_APPS[0])!!
+            context.appComponent.notificationRepository.dispatchUpdate(
+                mapOf(
+                    key to
+                        DotInfo().apply { addOrUpdateNotificationKey(NotificationKeyData("key")) }
+                )
+            ) {
+                it == key
+            }
         }
 
         val btv =

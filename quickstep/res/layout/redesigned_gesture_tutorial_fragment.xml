@@ -134,7 +134,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/gesture_tutorial_fragment_action_button"
         android:layout_centerHorizontal="true"
         android:background="@android:color/transparent"
         android:screenReaderFocusable="true"
@@ -160,7 +159,6 @@
             android:layout_marginStart="1dp"
             android:layout_marginTop="24dp"
             android:lineSpacingExtra="4sp"
-            android:textAppearance="@style/TextAppearance.GestureTutorial.MainSubtitle"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_title" />
@@ -169,7 +167,6 @@
             android:id="@+id/checkmark_animation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="28dp"
             android:gravity="center"
             android:scaleType="centerCrop"
             app:lottie_loop="false"
@@ -179,7 +176,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle"
             app:layout_constraintBottom_toBottomOf="parent" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -196,17 +192,14 @@
         android:layout_width="@dimen/gesture_tutorial_done_button_width"
         android:layout_height="wrap_content"
         android:padding="@dimen/gesture_tutorial_done_button_padding"
-        android:layout_marginEnd="@dimen/gesture_tutorial_done_button_end_margin"
-        android:layout_marginBottom="@dimen/gesture_tutorial_done_button_bottom_margin"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_below="@id/gesture_tutorial_fragment_feedback_view"
+        android:layout_centerHorizontal="true"
         android:clickable="true"
         android:accessibilityTraversalAfter="@id/gesture_tutorial_fragment_feedback_subtitle"
         android:contentDescription="@string/gesture_tutorial_action_button_label"
         android:background="@drawable/gesture_tutorial_action_button_background"
         android:stateListAnimator="@null"
         android:text="@string/gesture_tutorial_action_button_label"
-        android:visibility="invisible"
-         />
+        android:visibility="invisible" />
 
 </com.android.quickstep.interaction.RootSandboxLayout>

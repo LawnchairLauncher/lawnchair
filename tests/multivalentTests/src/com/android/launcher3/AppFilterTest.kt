@@ -23,11 +23,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
@@ -38,11 +39,12 @@ class AppFilterTest {
     @Mock // Mock the Resources object as well
     private lateinit var mockResources: Resources
 
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
+
     private lateinit var appFilter: AppFilter
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         `when`(mockContext.resources).thenReturn(mockResources) // Link the context and resources
         `when`(mockResources.getStringArray(R.array.filtered_components))
             .thenReturn(arrayOf("com.example.app1/Activity1"))

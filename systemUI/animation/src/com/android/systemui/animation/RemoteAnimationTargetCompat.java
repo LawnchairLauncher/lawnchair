@@ -74,7 +74,7 @@ public class RemoteAnimationTargetCompat {
             Predicate<Change> filter) {
         final ArrayList<RemoteAnimationTarget> out = new ArrayList<>();
         for (int i = 0; i < info.getChanges().size(); i++) {
-            TransitionInfo.Change change = info.getChanges().get(i);
+            Change change = info.getChanges().get(i);
             if (TransitionUtil.isOrderOnly(change)) continue;
             if (filter.test(change)) {
                 out.add(TransitionUtil.newTarget(

@@ -38,7 +38,9 @@ import android.window.DesktopModeFlags;
 import android.window.SystemPerformanceHinter;
 
 import com.android.internal.logging.UiEventLogger;
+import com.android.internal.policy.DesktopModeCompatPolicy;
 import com.android.launcher3.icons.IconProvider;
+import com.android.systemui.animation.ActivityTransitionAnimator;
 import com.android.window.flags2.Flags;
 import com.android.wm.shell.ProtoLogController;
 import com.android.wm.shell.R;
@@ -121,7 +123,6 @@ import com.android.wm.shell.shared.annotations.ShellMainThread;
 import com.android.wm.shell.shared.annotations.ShellSplashscreenThread;
 import com.android.wm.shell.shared.desktopmode.DesktopConfig;
 import com.android.wm.shell.shared.desktopmode.DesktopConfigImpl;
-import com.android.wm.shell.shared.desktopmode.DesktopModeCompatPolicy;
 import com.android.wm.shell.shared.desktopmode.DesktopState;
 import com.android.wm.shell.shared.desktopmode.DesktopStateImpl;
 import com.android.wm.shell.splitscreen.SplitScreen;
@@ -265,6 +266,7 @@ public abstract class WMShellBaseModule {
             Context context,
             ShellInit shellInit,
             ShellCommandHandler shellCommandHandler,
+            RootTaskDisplayAreaOrganizer rootTaskDisplayAreaOrganizer,
             Optional<CompatUIHandler> compatUI,
             Optional<UnfoldAnimationController> unfoldAnimationController,
             Optional<RecentTasksController> recentTasksOptional,
@@ -276,6 +278,7 @@ public abstract class WMShellBaseModule {
         return new ShellTaskOrganizer(
                 shellInit,
                 shellCommandHandler,
+                rootTaskDisplayAreaOrganizer,
                 compatUI.orElse(null),
                 unfoldAnimationController,
                 recentTasksOptional,
@@ -292,6 +295,14 @@ public abstract class WMShellBaseModule {
         policy.setDefaultHomePackageSupplier(new DefaultHomePackageSupplier(
                 context, shellInit, mainHandler));
         return policy;
+    }
+
+    @WMSingleton
+    @Provides
+    static ActivityTransitionAnimator provideActivityTransitionAnimator(
+            @ShellMainThread ShellExecutor mainExecutor,
+            ShellTransitions shellTransitions) {
+        return new ActivityTransitionAnimator(mainExecutor, shellTransitions);
     }
 
     @WMSingleton
@@ -316,7 +327,9 @@ public abstract class WMShellBaseModule {
             @NonNull CompatUIComponentIdGenerator componentIdGenerator,
             @NonNull CompatUIComponentFactory compatUIComponentFactory,
             CompatUIStatusManager compatUIStatusManager,
-            DesktopState desktopState) {
+            DesktopState desktopState,
+            Lazy<ActivityTransitionAnimator> activityTransitionAnimator,
+            Lazy<StartingWindowController> startingWindowController) {
         if (!context.getResources().getBoolean(R.bool.config_enableCompatUIController)) {
             return Optional.empty();
         }
@@ -342,7 +355,9 @@ public abstract class WMShellBaseModule {
                         accessibilityManager.get(),
                         compatUIStatusManager,
                         desktopUserRepositories,
-                        desktopState));
+                        desktopState,
+                        activityTransitionAnimator,
+                        startingWindowController));
     }
 
     @WMSingleton
@@ -456,7 +471,7 @@ public abstract class WMShellBaseModule {
             ShellCommandHandler shellCommandHandler
     ) {
         return new MultiInstanceHelper(context, context.getPackageManager(),
-                shellInit, shellCommandHandler, Flags.supportsMultiInstanceSystemUi());
+                shellInit, shellCommandHandler);
     }
 
     //
@@ -815,8 +830,10 @@ public abstract class WMShellBaseModule {
 
     @WMSingleton
     @Provides
-    static FocusTransitionObserver provideFocusTransitionObserver() {
-        return new FocusTransitionObserver();
+    static FocusTransitionObserver provideFocusTransitionObserver(
+            ShellInit shellInit,
+            ShellCommandHandler shellCommandHandler) {
+        return new FocusTransitionObserver(shellInit, shellCommandHandler);
     }
 
     @WMSingleton

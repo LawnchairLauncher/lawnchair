@@ -36,15 +36,12 @@ import com.android.launcher3.Utilities;
 public class RootSandboxLayout extends RelativeLayout {
 
     @ColorInt final int mColorSurfaceContainer;
-    @ColorInt final int mColorOnSurfaceHome;
-    @ColorInt final int mColorSurfaceHome;
-    @ColorInt final int mColorSecondaryHome;
-    @ColorInt final int mColorOnSurfaceBack;
-    @ColorInt final int mColorSurfaceBack;
-    @ColorInt final int mColorSecondaryBack;
-    @ColorInt final int mColorOnSurfaceOverview;
-    @ColorInt final int mColorSurfaceOverview;
-    @ColorInt final int mColorSecondaryOverview;
+    @ColorInt final int mColorOnContainerHome;
+    @ColorInt final int mColorContainerHome;
+    @ColorInt final int mColorOnContainerBack;
+    @ColorInt final int mColorContainerBack;
+    @ColorInt final int mColorOnContainerOverview;
+    @ColorInt final int mColorContainerOverview;
 
     public RootSandboxLayout(Context context) {
         this(context, null);
@@ -72,26 +69,21 @@ public class RootSandboxLayout extends RelativeLayout {
         boolean isDarkTheme = Utilities.isDarkTheme(context);
         int colorSurface = isDarkTheme ? Color.BLACK : Color.WHITE;
         int colorOnSurface = isDarkTheme ? Color.WHITE : Color.BLACK;
-        int colorSecondary = Color.GRAY;
 
         mColorSurfaceContainer = ta.getColor(
                 R.styleable.RootSandboxLayout_surfaceContainer, colorSurface);
-        mColorOnSurfaceHome = ta.getColor(
-                R.styleable.RootSandboxLayout_onSurfaceHome, colorOnSurface);
-        mColorSurfaceHome = ta.getColor(R.styleable.RootSandboxLayout_surfaceHome, colorSurface);
-        mColorSecondaryHome = ta.getColor(
-                R.styleable.RootSandboxLayout_secondaryHome, colorSecondary);
-        mColorOnSurfaceBack = ta.getColor(
-                R.styleable.RootSandboxLayout_onSurfaceBack, colorOnSurface);
-        mColorSurfaceBack = ta.getColor(R.styleable.RootSandboxLayout_surfaceBack, colorSurface);
-        mColorSecondaryBack = ta.getColor(
-                R.styleable.RootSandboxLayout_secondaryBack, colorSecondary);
-        mColorOnSurfaceOverview = ta.getColor(
-                R.styleable.RootSandboxLayout_onSurfaceOverview, colorOnSurface);
-        mColorSurfaceOverview = ta.getColor(
-                R.styleable.RootSandboxLayout_surfaceOverview, colorSurface);
-        mColorSecondaryOverview = ta.getColor(
-                R.styleable.RootSandboxLayout_secondaryOverview, colorSecondary);
+        mColorContainerHome = ta.getColor(
+                R.styleable.RootSandboxLayout_containerHome, colorSurface);
+        mColorOnContainerHome = ta.getColor(
+                R.styleable.RootSandboxLayout_onContainerHome, colorOnSurface);
+        mColorContainerBack = ta.getColor(
+                R.styleable.RootSandboxLayout_containerBack, colorSurface);
+        mColorOnContainerBack = ta.getColor(
+                R.styleable.RootSandboxLayout_onContainerBack, colorOnSurface);
+        mColorContainerOverview = ta.getColor(
+                R.styleable.RootSandboxLayout_containerOverview, colorSurface);
+        mColorOnContainerOverview = ta.getColor(
+                R.styleable.RootSandboxLayout_onContainerOverview, colorOnSurface);
 
         ta.recycle();
     }

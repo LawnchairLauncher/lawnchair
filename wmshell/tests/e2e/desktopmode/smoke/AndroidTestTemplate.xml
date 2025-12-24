@@ -40,9 +40,12 @@
         <!-- Increase trace size: 20mb for WM and 80mb for SF -->
         <option name="run-command" value="cmd window tracing size 20480"/>
         <option name="run-command" value="su root service call SurfaceFlinger 1029 i32 81920"/>
+        <!-- Dismiss login screen -->
+        <option name="run-command" value="am switch-user -w 10"/>
     </target_preparer>
     <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
         <option name="test-user-token" value="%TEST_USER%"/>
+        <option name="throw-if-cmd-fail" value="true" />
         <option name="run-command" value="rm -rf /data/user/%TEST_USER%/files/*"/>
         <option name="run-command" value="settings put secure show_ime_with_hard_keyboard 1"/>
         <option name="run-command" value="settings put system show_touches 1"/>

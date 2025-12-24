@@ -61,7 +61,7 @@ fun ExperimentalFeaturesPreferences(
             }
             Item(
                 "material_expressive_warning",
-                enableMaterialExpressiveAdapter.state.value && (!ATLEAST_S || !BlurUtils.supportsBlursOnWindows()),
+                enableMaterialExpressiveAdapter.state.value && (!ATLEAST_S || !BlurUtils.supportsBlursOnWindows(context)),
             ) {
                 WarningPreference(
                     "Expressive Blur will be ignored because blur effect required at " +

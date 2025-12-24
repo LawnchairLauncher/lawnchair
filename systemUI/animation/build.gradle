@@ -36,7 +36,7 @@ compileOnlyCommonJars()
 dependencies {
     implementation libs.androidx.core.animation
     compileOnly projects.animationlib
-    compileOnly projects.wmshell
+    compileOnly projects.wmshell.shared
     compileOnly projects.flags
 
 }

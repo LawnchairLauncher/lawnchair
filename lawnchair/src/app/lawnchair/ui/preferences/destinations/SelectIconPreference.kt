@@ -47,9 +47,12 @@ fun SelectIconPreference(componentKey: ComponentKey) {
         scope.launch {
             repo.setOverride(componentKey, item)
             (context as Activity).let {
+                val updatedPackages = HashSet<String?>()
+                updatedPackages.add(componentKey.componentName.packageName)
+
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
-                model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
+                model.onPackageIconsUpdated(updatedPackages, componentKey.user)
                 model.forceReload()
             }
         }
@@ -67,9 +70,12 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                         scope.launch {
                             repo.deleteOverride(componentKey)
                             (context as Activity).let {
+                                val updatedPackages = HashSet<String?>()
+                                updatedPackages.add(componentKey.componentName.packageName)
+
                                 it.setResult(Activity.RESULT_OK)
                                 it.finish()
-                                model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
+                                model.onPackageIconsUpdated(updatedPackages, componentKey.user)
                                 model.forceReload()
                             }
                         }

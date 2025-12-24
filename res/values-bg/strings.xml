@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Промяна на съотношението"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Информация за приложението за %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Настройки за използването на %1$s"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"Затваряне на %1$s"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"Нов прозорец"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Управление на прозорците"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"Затваряне"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Запазване на двойката приложения"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Тази двойка приложения не се поддържа на устройството"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Без предлагане на приложение"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Фиксиране на предвиждането"</string>
     <string name="bubble" msgid="3072951361014076670">"Балонче"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"Настройки"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"Лент. на зад.: фикс."</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"Освобожд. от лентата на задачите"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"инсталиране на преки пътища"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Разрешава на приложението да добавя преки пътища без намеса на потребителя."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"четене на настройките и преките пътища на началния екран"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"Страниране надясно"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Деактивирахте <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} има # известие}other{{app_name} има # известия}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"Предвидено приложение: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Страница %1$d от %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Начален екран %1$d от %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Нова страница на началния екран"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"Папката бе затворена"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Папката е преименувана на „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Папка: „<xliff:g id="NAME">%1$s</xliff:g>“ – <xliff:g id="SIZE">%2$d</xliff:g> елемента"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"Папка: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> елемента, има известия"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Папка: „<xliff:g id="NAME">%1$s</xliff:g>“ – <xliff:g id="SIZE">%2$d</xliff:g> или повече елементи"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"Папка: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> или повече елемента, има известия"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"Папка без име"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"Двойка приложения: <xliff:g id="APP1">%1$s</xliff:g> и <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Тапет и стил"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Раздел „Служебни приложения“"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Служебен потребителски профил"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Служебните приложения са означени със значка и са видими за системния администратор"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Разбрах"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Служебните приложения са поставени на пауза"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Няма да получавате известия от служебните си приложения"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Служебните ви приложения не могат да ви изпращат известия, да използват батерията или да осъществяват достъп до местоположението ви"</string>

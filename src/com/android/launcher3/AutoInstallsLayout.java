@@ -139,6 +139,7 @@ public class AutoInstallsLayout {
     private static final String TAG_APP_ICON = "appicon";
     public static final String TAG_AUTO_INSTALL = "autoinstall";
     public static final String TAG_FOLDER = "folder";
+    public static final String TAG_APP_PAIR = "apppair";
     public static final String TAG_APPWIDGET = "appwidget";
     protected static final String TAG_SEARCH_WIDGET = "searchwidget";
     public static final String TAG_SHORTCUT = "shortcut";
@@ -365,6 +366,15 @@ public class AutoInstallsLayout {
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_SHORTCUT, new ShortcutParser());
+        parsers.put(TAG_APP_PAIR, new AppPairParser());
+        return parsers;
+    }
+
+    protected ArrayMap<String, TagParser> getAppPairElementsMap() {
+        ArrayMap<String, TagParser> parsers = new ArrayMap<>();
+        parsers.put(TAG_APP_ICON, new AppShortcutParser());
+        parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
+        parsers.put(TAG_SHORTCUT, new ShortcutParser());
         return parsers;
     }
 
@@ -373,6 +383,7 @@ public class AutoInstallsLayout {
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_FOLDER, new FolderParser());
+        parsers.put(TAG_APP_PAIR, new AppPairParser());
         parsers.put(TAG_APPWIDGET, new PendingWidgetParser());
         parsers.put(TAG_SEARCH_WIDGET, new SearchWidgetParser());
         parsers.put(TAG_SHORTCUT, new ShortcutParser());
@@ -590,13 +601,19 @@ public class AutoInstallsLayout {
 
     protected class FolderParser implements TagParser {
         private final ArrayMap<String, TagParser> mFolderElements;
+        private final int mFolderType;
 
         public FolderParser() {
             this(getFolderElementsMap());
         }
 
         public FolderParser(ArrayMap<String, TagParser> elements) {
+            this(elements, Favorites.ITEM_TYPE_FOLDER);
+        }
+
+        protected FolderParser(ArrayMap<String, TagParser> elements, int folderType) {
             mFolderElements = elements;
+            mFolderType = folderType;
         }
 
         @Override
@@ -611,7 +628,7 @@ public class AutoInstallsLayout {
             }
 
             mValues.put(Favorites.TITLE, title);
-            mValues.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_FOLDER);
+            mValues.put(Favorites.ITEM_TYPE, mFolderType);
             mValues.put(Favorites.SPANX, 1);
             mValues.put(Favorites.SPANY, 1);
             mValues.put(Favorites._ID, mCallback.generateNewItemId());
@@ -654,7 +671,7 @@ public class AutoInstallsLayout {
             // We can only have folders with >= 2 items, so we need to remove the
             // folder and clean up if less than 2 items were included, or some
             // failed to add, and less than 2 were actually added
-            if (folderItems.size() < 2) {
+            if (isInvalidSize(folderItems.size())) {
                 // Delete the folder
                 mDb.delete(TABLE_NAME, itemIdMatch(folderId), null);
                 addedId = -1;
@@ -674,6 +691,21 @@ public class AutoInstallsLayout {
                 }
             }
             return addedId;
+        }
+
+        protected boolean isInvalidSize(int size) {
+            return size < 2;
+        }
+    }
+
+    protected class AppPairParser extends FolderParser {
+        public AppPairParser() {
+            super(getAppPairElementsMap(), Favorites.ITEM_TYPE_APP_PAIR);
+        }
+
+        @Override
+        public boolean isInvalidSize(int size) {
+            return size != 2;
         }
     }
 

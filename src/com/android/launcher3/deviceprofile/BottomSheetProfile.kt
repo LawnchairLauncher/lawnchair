@@ -19,7 +19,6 @@ package com.android.launcher3.deviceprofile
 import android.content.res.Resources
 import android.graphics.Rect
 import com.android.app.animation.Interpolators.LINEAR
-import com.android.launcher3.Flags.enableScalingRevealHomeAnimation
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -41,7 +40,7 @@ data class BottomSheetProfile(
             res: Resources,
             edgeMarginPx: Int,
             shouldShowAllAppsOnSheet: Boolean,
-            workspaceContentScale: Float,
+            workspaceProfile: WorkspaceProfile,
         ): BottomSheetProfile {
 
             // In large screens, in portrait mode, a bottom sheet can appear too elongated, so, we
@@ -56,8 +55,7 @@ data class BottomSheetProfile(
                     !shouldShowAllAppsOnSheet -> 0f
                     // TODO(b/259893832): Revert to use maxWallpaperScale to calculate
                     // bottomSheetDepth when screen recorder bug is fixed.
-                    deviceProperties.isMultiDisplay ->
-                        if (enableScalingRevealHomeAnimation()) 0.3f else 1f
+                    deviceProperties.isMultiDisplay -> 0.3f
                     // The goal is to set wallpaper to zoom at workspaceContentScale when in AllApps
                     // When depth is 0, wallpaper zoom is set to maxWallpaperScale.
                     // When depth is 1, wallpaper zoom is set to 1.
@@ -66,7 +64,7 @@ data class BottomSheetProfile(
                     else -> {
                         val maxWallpaperScale = res.getFloat(R.dimen.config_wallpaperMaxScale)
                         Utilities.mapToRange(
-                            maxWallpaperScale * workspaceContentScale,
+                            maxWallpaperScale * workspaceProfile.workspaceContentScale,
                             maxWallpaperScale,
                             1f,
                             0f,
@@ -86,7 +84,7 @@ data class BottomSheetProfile(
                 bottomSheetCloseDuration =
                     res.getInteger(R.integer.config_bottomSheetCloseDuration),
                 bottomSheetWorkspaceScale =
-                    if (shouldShowAllAppsOnSheet) workspaceContentScale else 1f,
+                    if (shouldShowAllAppsOnSheet) workspaceProfile.workspaceContentScale else 1f,
                 bottomSheetDepth = bottomSheetDepth,
             )
         }

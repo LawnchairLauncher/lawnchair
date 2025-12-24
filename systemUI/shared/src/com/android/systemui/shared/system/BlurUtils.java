@@ -19,7 +19,14 @@ package com.android.systemui.shared.system;
 import static android.view.CrossWindowBlurListeners.CROSS_WINDOW_BLUR_SUPPORTED;
 
 import android.app.ActivityManager;
+import android.content.Context;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.SystemProperties;
+import android.view.WindowManager;
+import androidx.core.content.ContextCompat;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+import java.util.Objects;
 
 public abstract class BlurUtils {
 
@@ -28,8 +35,14 @@ public abstract class BlurUtils {
      *
      * @return {@code true} when supported.
      */
-    public static boolean supportsBlursOnWindows() {
-        return CROSS_WINDOW_BLUR_SUPPORTED && ActivityManager.isHighEndGfx()
-                && !SystemProperties.getBoolean("persist.sysui.disableBlur", false);
+    public static boolean supportsBlursOnWindows(Context context) {
+        if (LawnchairQuickstepCompat.ATLEAST_S) {
+            return Objects.requireNonNull(
+                ContextCompat.getSystemService(context, WindowManager.class)).isCrossWindowBlurEnabled() 
+                    && ActivityManager.isHighEndGfx()
+                    && !SystemProperties.getBoolean("persist.sysui.disableBlur", false);
+        } else {
+            return false;
+        }
     }
 }

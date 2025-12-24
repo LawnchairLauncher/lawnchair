@@ -7,8 +7,11 @@ import android.os.Bundle
 import app.lawnchair.FeedBridge
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences2.PreferenceManager2
+import com.android.launcher3.ConstantItem
+import com.android.launcher3.EncryptionType
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherPrefs
+import com.android.launcher3.LauncherPrefs.Companion.nonRestorableItem
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks
@@ -139,12 +142,16 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
         if (newFlags != mFlags) {
             mFlagsChanged = true
             mFlags = newFlags
-            LauncherPrefs.getDevicePrefs(mLauncher).edit().putInt(PREF_PERSIST_FLAGS, newFlags).apply()
+            LauncherPrefs.get(mLauncher).put(PREF_PERSIST_FLAGS, newFlags)
         }
     }
 
     companion object {
-        private const val PREF_PERSIST_FLAGS = "pref_persistent_flags"
+        private val PREF_PERSIST_FLAGS: ConstantItem<Boolean?> = nonRestorableItem<Boolean?>(
+            "pref_persistent_flags",
+            true,
+            EncryptionType.ENCRYPTED,
+        )
 
         fun minusOneAvailable(context: Context): Boolean {
             return FeedBridge.useBridge(context) ||

@@ -66,6 +66,7 @@ open class StartAppMediaProjectionFromSplitScreen {
     fun setup() {
         RemoveAllTasksButHomeRule.removeAllTasksButHome()
 
+        tapl.expectedRotationCheckEnabled = false
         tapl.setEnableRotation(true)
         tapl.setExpectedRotation(initialRotation.value)
         SplitScreenUtils.enterSplit(wmHelper, tapl, device, simpleApp, testApp, initialRotation)

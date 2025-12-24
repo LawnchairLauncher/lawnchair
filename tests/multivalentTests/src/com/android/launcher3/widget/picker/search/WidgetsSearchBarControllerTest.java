@@ -36,10 +36,12 @@ import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 
@@ -50,6 +52,9 @@ public class WidgetsSearchBarControllerTest {
     private WidgetsSearchBarController mController;
     private ExtendedEditText mEditText;
     private ImageButton mCancelButton;
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private SearchModeListener mSearchModeListener;
     @Mock
@@ -57,7 +62,6 @@ public class WidgetsSearchBarControllerTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         Context context = getApplicationContext();
 
         mEditText = new ExtendedEditText(context);

@@ -142,7 +142,7 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler,
     private LauncherAppWidgetHostView findHostViewAncestor(View v) {
         while (v != null) {
             if (v instanceof LauncherAppWidgetHostView) return (LauncherAppWidgetHostView) v;
-            v = (View) v.getParent();
+            v = (v.getParent() instanceof View parentView) ? parentView : null;
         }
         return null;
     }

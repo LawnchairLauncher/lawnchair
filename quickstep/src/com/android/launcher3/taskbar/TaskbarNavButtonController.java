@@ -34,9 +34,8 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
-import static com.android.window.flags2.Flags.predictiveBackThreeButtonNav;
 
-import android.content.Context;
+import android.app.contextualsearch.ContextualSearchConfig;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,7 +44,6 @@ import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.Flags;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -77,9 +75,9 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     static final int SCREEN_PIN_LONG_PRESS_RESET = SCREEN_PIN_LONG_PRESS_THRESHOLD + 100;
     private static final String TAG = "TaskbarNavButtonController";
 
+    private final Rect mTempRect = new Rect();
     private long mLastScreenPinLongPress;
     private boolean mScreenPinned;
-    private boolean mAssistantLongPressEnabled;
     private int mLastSentBackAction = ACTION_UP;
 
     @Override
@@ -117,7 +115,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     private static final int SCREEN_UNPIN_COMBO = BUTTON_BACK | BUTTON_RECENTS;
     private int mLongPressedButtons = 0;
 
-    private final Context mContext;
+    private final int mDisplayId;
     private final TaskbarNavButtonCallbacks mCallbacks;
     private final SystemUiProxy mSystemUiProxy;
     private final Handler mHandler;
@@ -128,12 +126,12 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     private final Runnable mResetLongPress = this::resetScreenUnpin;
 
     public TaskbarNavButtonController(
-            Context context,
+            int displayId,
             TaskbarNavButtonCallbacks callbacks,
             SystemUiProxy systemUiProxy,
             Handler handler,
             ContextualSearchInvoker contextualSearchInvoker) {
-        mContext = context;
+        mDisplayId = displayId;
         mCallbacks = callbacks;
         mSystemUiProxy = systemUiProxy;
         mHandler = handler;
@@ -144,19 +142,14 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         if (buttonType == BUTTON_SPACE) {
             return;
         }
-        boolean predictiveBackThreeButtonNav;
-        try {
-            predictiveBackThreeButtonNav = predictiveBackThreeButtonNav();
-        } catch (Throwable t) {
-            predictiveBackThreeButtonNav = false;
-        }
-        if (predictiveBackThreeButtonNav && mLastSentBackAction == ACTION_DOWN) {
+        if (mLastSentBackAction == ACTION_DOWN) {
             Log.i(TAG, "Button click ignored while back button is pressed");
             // prevent interactions with other buttons while back button is pressed
             return;
         }
         // Provide the same haptic feedback that the system offers for virtual keys.
         view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        // pE-TODO(QPR2): Check if haptic is required
         switch (buttonType) {
             case BUTTON_BACK:
                 executeBack(/* keyEvent */ null);
@@ -197,14 +190,8 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         if (buttonType == BUTTON_SPACE) {
             return false;
         }
-        boolean predictiveBackThreeButtonNav;
-        try {
-            predictiveBackThreeButtonNav = predictiveBackThreeButtonNav();
-        } catch (Throwable t) {
-            predictiveBackThreeButtonNav = false;
-        }
-        if (predictiveBackThreeButtonNav && mLastSentBackAction == ACTION_DOWN
-                && buttonType != BUTTON_BACK && buttonType != BUTTON_RECENTS) {
+        if (mLastSentBackAction == ACTION_DOWN && buttonType != BUTTON_BACK
+                && buttonType != BUTTON_RECENTS) {
             // prevent interactions with other buttons while back button is pressed (except back
             // and recents button for screen-unpin action).
             Log.i(TAG, "Button long click ignored while back button is pressed");
@@ -214,7 +201,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         switch (buttonType) {
             case BUTTON_HOME:
                 logEvent(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
-                onLongPressHome();
+                onLongPressHome(view);
                 view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 return true;
@@ -239,14 +226,11 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
                 }
                 return true;
             case BUTTON_IME_SWITCH:
-                if (Flags.imeSwitcherRevamp()) {
-                    logEvent(LAUNCHER_TASKBAR_IME_SWITCHER_BUTTON_LONGPRESS);
-                    onImeSwitcherLongPress();
-                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    return true;
-                }
-                return false;
+                logEvent(LAUNCHER_TASKBAR_IME_SWITCHER_BUTTON_LONGPRESS);
+                onImeSwitcherLongPress();
+                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                return true;
             default:
                 return false;
         }
@@ -344,10 +328,6 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         mStatsLogManager = null;
     }
 
-    public void setAssistantLongPressEnabled(boolean assistantLongPressEnabled) {
-        mAssistantLongPressEnabled = assistantLongPressEnabled;
-    }
-
     private void logEvent(StatsLogManager.LauncherEvent event) {
         if (mStatsLogManager == null) {
             Log.w(TAG, "No stats log manager to log taskbar button event");
@@ -358,7 +338,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
 
     private void navigateHome() {
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
-        mCallbacks.onNavigateHome(mContext.getDisplayId());
+        mCallbacks.onNavigateHome(mDisplayId);
     }
 
     private void navigateToOverview() {
@@ -367,11 +347,11 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-        mCallbacks.onToggleOverview(mContext.getDisplayId());
+        mCallbacks.onToggleOverview(mDisplayId);
     }
 
     public void hideOverview() {
-        mCallbacks.onHideOverview(mContext.getDisplayId());
+        mCallbacks.onHideOverview(mDisplayId);
     }
 
     void sendBackKeyEvent(int action, boolean cancelled) {
@@ -381,7 +361,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         }
         long time = SystemClock.uptimeMillis();
         KeyEvent keyEvent = new KeyEvent(time, time, action, KeyEvent.KEYCODE_BACK, 0);
-        keyEvent.setDisplayId(mControllers.getTaskbarActivityContext().getDisplayId());
+        keyEvent.setDisplayId(mDisplayId);
         if (cancelled) {
             keyEvent.cancel();
         }
@@ -394,7 +374,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
             mSystemUiProxy.updateContextualEduStats(/* isTrackpadGesture= */ false,
                     GestureType.BACK);
         }
-        mSystemUiProxy.onBackEvent(keyEvent);
+        mSystemUiProxy.onBackEvent(keyEvent, mDisplayId);
         mLastSentBackAction = keyEvent != null ? keyEvent.getAction() : ACTION_UP;
     }
 
@@ -410,17 +390,29 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         if (longClick) {
             mSystemUiProxy.notifyAccessibilityButtonLongClicked();
         } else {
-            mSystemUiProxy.notifyAccessibilityButtonClicked(mContext.getDisplayId());
+            mSystemUiProxy.notifyAccessibilityButtonClicked(mDisplayId);
         }
     }
 
-    private void onLongPressHome() {
-        if (mScreenPinned || !mAssistantLongPressEnabled) {
+    private void onLongPressHome(View view) {
+        if (mControllers == null) {
+            Log.w(TAG, "Contextual Search invocation failed: Controller not initialized");
+            return;
+        }
+        if (mScreenPinned) {
+            Log.w(TAG, "Contextual Search invocation failed: Screen pinned");
+            return;
+        }
+        if (!mControllers.getSharedState().assistantLongPressEnabled) {
+            Log.w(TAG, "Contextual Search invocation failed: LPH disabled");
             return;
         }
         // Attempt to start Contextual Search, otherwise fall back to SysUi's implementation.
+        view.getBoundsOnScreen(mTempRect);
+        ContextualSearchConfig config = new ContextualSearchConfig.Builder()
+                .setSourceBounds(mTempRect).setDisplayId(mDisplayId).build();
         if (!mContextualSearchInvoker.tryStartAssistOverride(
-                INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS)) {
+                INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS, config)) {
             Bundle args = new Bundle();
             args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
             mSystemUiProxy.startAssistant(args);

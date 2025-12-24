@@ -577,21 +577,6 @@ private class AnimatedDialog(
     private var hasInstrumentedJank = false
 
     fun start() {
-        if (!Flags.fixDialogLaunchAnimationJankLogging()) {
-            val cuj = controller.cuj
-            if (cuj != null) {
-                val config = controller.jankConfigurationBuilder()
-                if (config != null) {
-                    if (cuj.tag != null) {
-                        config.setTag(cuj.tag)
-                    }
-
-                    interactionJankMonitor.begin(config)
-                    hasInstrumentedJank = true
-                }
-            }
-        }
-
         // Create the dialog so that its onCreate() method is called, which usually sets the dialog
         // content.
         dialog.create()
@@ -787,14 +772,12 @@ private class AnimatedDialog(
             return
         }
 
-        if (Flags.fixDialogLaunchAnimationJankLogging()) {
-            controller.cuj?.let { cuj ->
-                val config =
-                    InteractionJankMonitor.Configuration.Builder.withView(cuj.cujType, decorView)
-                if (cuj.tag != null) config.setTag(cuj.tag)
-                interactionJankMonitor.begin(config)
-                hasInstrumentedJank = true
-            }
+        controller.cuj?.let { cuj ->
+            val config =
+                InteractionJankMonitor.Configuration.Builder.withView(cuj.cujType, decorView)
+            if (cuj.tag != null) config.setTag(cuj.tag)
+            interactionJankMonitor.begin(config)
+            hasInstrumentedJank = true
         }
 
         // Show the background dim.
@@ -1013,7 +996,11 @@ private class AnimatedDialog(
                 }
             }
 
-        transitionAnimator.startAnimation(controller, endState, originalDialogBackgroundColor)
+        transitionAnimator.startAnimation(
+            controller,
+            { endController.createAnimatorState() },
+            originalDialogBackgroundColor,
+        )
     }
 
     private fun updateTouchInterceptorViewConstraints(state: TransitionAnimator.State) {

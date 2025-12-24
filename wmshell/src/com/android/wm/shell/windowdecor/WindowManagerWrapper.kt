@@ -20,12 +20,10 @@ import android.view.View
 import android.view.WindowManager
 
 /**
- * A wrapper for [WindowManager] to make view manipulation operations related to window
- * decors more testable.
+ * A wrapper for [WindowManager] to make view manipulation operations related to window decors more
+ * testable.
  */
-class WindowManagerWrapper (
-    private var windowManager: WindowManager
-){
+class WindowManagerWrapper(private var windowManager: WindowManager) {
     fun addView(v: View, lp: WindowManager.LayoutParams) {
         windowManager.addView(v, lp)
     }

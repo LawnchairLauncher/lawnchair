@@ -479,10 +479,11 @@ public abstract class ButtonDropTarget extends TextView
      */
     public float resizeTextToFit() {
         float minSize = Utilities.pxToSp(getResources()
-                .getDimensionPixelSize(R.dimen.button_drop_target_min_text_size));
+                .getDimensionPixelSize(R.dimen.button_drop_target_min_text_size), getContext());
         float step = Utilities.pxToSp(getResources()
-                .getDimensionPixelSize(R.dimen.button_drop_target_resize_text_increment));
-        float textSize = Utilities.pxToSp(getTextSize());
+                        .getDimensionPixelSize(R.dimen.button_drop_target_resize_text_increment),
+                getContext());
+        float textSize = Utilities.pxToSp(getTextSize(), getContext());
 
         int availableWidth = getMeasuredWidth();
         int availableHeight = getMeasuredHeight();

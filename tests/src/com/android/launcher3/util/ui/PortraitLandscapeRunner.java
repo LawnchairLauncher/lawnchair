@@ -108,7 +108,7 @@ public class PortraitLandscapeRunner<LAUNCHER_TYPE extends Launcher, OVERVIEW_TY
             private void evaluateInPortrait() throws Throwable {
                 mTest.mDevice.setOrientationNatural();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_0);
-                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher, true);
+                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher);
                 base.evaluate();
                 mTest.getDevice().pressHome();
             }
@@ -118,7 +118,7 @@ public class PortraitLandscapeRunner<LAUNCHER_TYPE extends Launcher, OVERVIEW_TY
                         .put(FIXED_LANDSCAPE_MODE, shouldHaveFixedLandscape(launcher)));
                 mTest.mDevice.setOrientationLeft();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_90);
-                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher, true);
+                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher);
                 base.evaluate();
                 mTest.getDevice().pressHome();
             }

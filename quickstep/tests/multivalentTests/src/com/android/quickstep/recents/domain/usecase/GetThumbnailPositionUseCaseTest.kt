@@ -26,6 +26,8 @@ import com.android.quickstep.recents.data.FakeRecentsRotationStateRepository
 import com.android.systemui.shared.recents.model.ThumbnailData
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper.PreviewPositionHelperFactory
+import com.android.wm.shell.shared.split.SplitBounds
+import com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -59,7 +61,16 @@ class GetThumbnailPositionUseCaseTest {
     @Test
     fun nullThumbnailData_returnsIdentityMatrix() = runTest {
         val expectedResult = ThumbnailPosition(Matrix.IDENTITY_MATRIX, false)
-        val result = systemUnderTest.invoke(null, CANVAS_WIDTH, CANVAS_HEIGHT, isRtl = true)
+        val result =
+            systemUnderTest.invoke(
+                null,
+                CANVAS_WIDTH,
+                CANVAS_HEIGHT,
+                isRtl = true,
+                splitBounds = null,
+                splitPosition = 0,
+                densityDpi = DEFAULT_DISPLAY_DENSITY,
+            )
         assertThat(result).isEqualTo(expectedResult)
     }
 
@@ -67,7 +78,15 @@ class GetThumbnailPositionUseCaseTest {
     fun withoutThumbnail_returnsIdentityMatrix() = runTest {
         val expectedResult = ThumbnailPosition(Matrix.IDENTITY_MATRIX, false)
         val result =
-            systemUnderTest.invoke(ThumbnailData(), CANVAS_WIDTH, CANVAS_HEIGHT, isRtl = true)
+            systemUnderTest.invoke(
+                ThumbnailData(),
+                CANVAS_WIDTH,
+                CANVAS_HEIGHT,
+                isRtl = true,
+                splitBounds = null,
+                splitPosition = 0,
+                densityDpi = DEFAULT_DISPLAY_DENSITY,
+            )
         assertThat(result).isEqualTo(expectedResult)
     }
 
@@ -89,7 +108,16 @@ class GetThumbnailPositionUseCaseTest {
         whenever(previewPositionHelper.matrix).thenReturn(MATRIX)
         whenever(previewPositionHelper.isOrientationChanged).thenReturn(isRotated)
 
-        val result = systemUnderTest.invoke(THUMBNAIL_DATA, CANVAS_WIDTH, CANVAS_HEIGHT, isRtl)
+        val result =
+            systemUnderTest.invoke(
+                THUMBNAIL_DATA,
+                CANVAS_WIDTH,
+                CANVAS_HEIGHT,
+                isRtl,
+                splitBounds = null,
+                splitPosition = 0,
+                densityDpi = DEFAULT_DISPLAY_DENSITY,
+            )
         val expectedResult = ThumbnailPosition(MATRIX, isRotated)
         assertThat(result).isEqualTo(expectedResult)
 
@@ -102,6 +130,7 @@ class GetThumbnailPositionUseCaseTest {
                 isLargeScreen,
                 activityRotation,
                 isRtl,
+                DEFAULT_DISPLAY_DENSITY,
             )
     }
 
@@ -117,11 +146,61 @@ class GetThumbnailPositionUseCaseTest {
             )
         verify(previewPositionHelperFactoryMock, times(0)).create()
 
-        sut.invoke(THUMBNAIL_DATA, CANVAS_WIDTH, CANVAS_HEIGHT, /* isRtl= */ true)
-        sut.invoke(THUMBNAIL_DATA, CANVAS_WIDTH, CANVAS_HEIGHT, /* isRtl= */ false)
+        sut.invoke(
+            THUMBNAIL_DATA,
+            CANVAS_WIDTH,
+            CANVAS_HEIGHT,
+            /* isRtl= */ true,
+            splitBounds = null,
+            splitPosition = 0,
+            densityDpi = DEFAULT_DISPLAY_DENSITY,
+        )
+        sut.invoke(
+            THUMBNAIL_DATA,
+            CANVAS_WIDTH,
+            CANVAS_HEIGHT,
+            /* isRtl= */ false,
+            splitBounds = null,
+            splitPosition = 0,
+            densityDpi = DEFAULT_DISPLAY_DENSITY,
+        )
 
         // Each invocation of use case should use a fresh position helper acquired by the factory.
         verify(previewPositionHelperFactoryMock, times(2)).create()
+    }
+
+    @Test
+    fun withSplitBoundsAndPosition_passesToPreviewPositionHelper() = runTest {
+        val splitBounds = mock<SplitBounds>()
+        val splitPosition = SPLIT_POSITION_TOP_OR_LEFT
+        val isRotated = true
+        whenever(previewPositionHelper.matrix).thenReturn(MATRIX)
+        whenever(previewPositionHelper.isOrientationChanged).thenReturn(isRotated)
+        val result =
+            systemUnderTest.invoke(
+                THUMBNAIL_DATA,
+                CANVAS_WIDTH,
+                CANVAS_HEIGHT,
+                /* isRtl= */ true,
+                splitBounds,
+                splitPosition,
+                DEFAULT_DISPLAY_DENSITY,
+            )
+        val expectedResult = ThumbnailPosition(MATRIX, isRotated)
+        assertThat(result).isEqualTo(expectedResult)
+
+        verify(previewPositionHelper).setSplitBounds(splitBounds, splitPosition)
+        verify(previewPositionHelper)
+            .updateThumbnailMatrix(
+                Rect(0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT),
+                THUMBNAIL_DATA,
+                CANVAS_WIDTH,
+                CANVAS_HEIGHT,
+                false,
+                0,
+                true,
+                DEFAULT_DISPLAY_DENSITY,
+            )
     }
 
     private companion object {
@@ -142,5 +221,7 @@ class GetThumbnailPositionUseCaseTest {
                         whenever(height).thenReturn(THUMBNAIL_HEIGHT)
                     }
             )
+
+        const val DEFAULT_DISPLAY_DENSITY = 320
     }
 }

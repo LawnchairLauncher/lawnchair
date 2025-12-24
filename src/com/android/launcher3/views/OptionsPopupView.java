@@ -160,6 +160,14 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
         }
     }
 
+    public static void showNoReturn(
+            ActivityContext activityContext,
+            RectF targetRect,
+            List<OptionItem> items,
+            boolean shouldAddArrow) {
+        show(activityContext, targetRect, items, shouldAddArrow);
+    }
+
     public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
             ActivityContext activityContext,
             RectF targetRect,

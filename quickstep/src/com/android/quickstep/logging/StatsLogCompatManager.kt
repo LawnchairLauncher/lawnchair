@@ -65,6 +65,10 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIV
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_END
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_BEGIN
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_END
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_PICKER_APP_EXPAND_ANIMATION_BEGIN
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_PICKER_APP_EXPAND_ANIMATION_END
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_PICKER_OPEN_ANIMATION_BEGIN
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_PICKER_OPEN_ANIMATION_END
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_SNAPSHOT
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_UTILITY_VIEW_EXPAND_ANIMATION_BEGIN
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_UTILITY_VIEW_EXPAND_ANIMATION_END
@@ -261,6 +265,22 @@ class StatsLogCompatManager private constructor(context: Context) : StatsLogMana
 
                 LAUNCHER_WORK_UTILITY_VIEW_SHRINK_ANIMATION_END ->
                     InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_WORK_UTILITY_VIEW_SHRINK)
+
+                LAUNCHER_WIDGET_PICKER_OPEN_ANIMATION_BEGIN ->
+                    InteractionJankMonitorWrapper.begin(
+                        view,
+                        Cuj.CUJ_LAUNCHER_WIDGET_PICKER_OPEN,
+                    )
+                LAUNCHER_WIDGET_PICKER_OPEN_ANIMATION_END ->
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_WIDGET_PICKER_OPEN)
+
+                LAUNCHER_WIDGET_PICKER_APP_EXPAND_ANIMATION_BEGIN ->
+                    InteractionJankMonitorWrapper.begin(
+                        view,
+                        Cuj.CUJ_LAUNCHER_WIDGET_PICKER_APP_EXPAND,
+                    )
+                LAUNCHER_WIDGET_PICKER_APP_EXPAND_ANIMATION_END ->
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_WIDGET_PICKER_APP_EXPAND)
 
                 else -> {}
             }

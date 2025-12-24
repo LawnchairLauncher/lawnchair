@@ -16,17 +16,12 @@
 
 package com.android.wm.shell.compatui.api
 
-/**
- * Abstraction for all the possible Compat UI Component events.
- */
+/** Abstraction for all the possible Compat UI Component events. */
 interface CompatUIEvent {
-    /**
-     * Unique event identifier
-     */
+    /** Unique event identifier */
     val eventId: Int
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T : CompatUIEvent> asType(): T? = this as? T
+    @Suppress("UNCHECKED_CAST") fun <T : CompatUIEvent> asType(): T? = this as? T
 
     fun <T : CompatUIEvent> asType(clazz: Class<T>): T? {
         return if (clazz.isInstance(this)) clazz.cast(this) else null

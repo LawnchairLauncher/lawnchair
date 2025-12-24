@@ -20,11 +20,14 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.view.WindowManager.TRANSIT_CHANGE;
 import static android.window.TransitionInfo.FLAG_IS_DISPLAY;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.mockito.kotlin.VerificationKt.clearInvocations;
 import static org.mockito.kotlin.VerificationKt.never;
-import static org.mockito.kotlin.VerificationKt.times;
 import static org.mockito.kotlin.VerificationKt.verify;
 
 import android.app.ActivityManager;
@@ -41,8 +44,6 @@ import androidx.test.filters.SmallTest;
 
 import com.android.wm.shell.common.pip.PipBoundsState;
 import com.android.wm.shell.pip2.phone.PipTransitionState;
-
-import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,82 +80,135 @@ public class PipDisplayChangeObserverTest {
     }
 
     @Test
-    public void onTransitionReady_withPipAndDisplayChange_cachesDisplayChangeTransition() {
-        Assert.assertNull(mPipDisplayChangeObserver.getDisplayChangeTransition());
-
-        final IBinder transitionToken = new Binder();
-        mPipDisplayChangeObserver.onTransitionReady(transitionToken,
-                createPipBoundsChangingWithDisplayInfo(), mStartTx, mFinishTx);
-
-        Assert.assertNotNull(mPipDisplayChangeObserver.getDisplayChangeTransition());
-        Assert.assertSame(transitionToken,
-                mPipDisplayChangeObserver.getDisplayChangeTransition().first);
-    }
-
-    @Test
-    public void onTransitionFinished_withPipAndDisplayChange_updatePipState() {
-        final IBinder transitionToken = new Binder();
+    public void onTransitionReady_withDisplayChange_cachesTransition() {
+        final IBinder transition = new Binder();
         final TransitionInfo info = createPipBoundsChangingWithDisplayInfo();
 
-        mPipDisplayChangeObserver.onTransitionReady(transitionToken, info, mStartTx, mFinishTx);
-        clearInvocations(mMockPipTransitionState);
-        mPipDisplayChangeObserver.onTransitionFinished(transitionToken, false /* aborted */);
+        assertTrue("Map should be empty before test",
+                mPipDisplayChangeObserver.getDisplayChangeTransitions().isEmpty());
 
-        verify(mMockPipTransitionState, times(1)).setIsPipBoundsChangingWithDisplay(eq(false));
-        verify(mMockPipBoundsState, times(1)).setBounds(eq(mPipEndBounds));
-        Assert.assertNull(mPipDisplayChangeObserver.getDisplayChangeTransition());
+        mPipDisplayChangeObserver.onTransitionReady(transition, info, mStartTx, mFinishTx);
+
+        assertNotNull("Display change transition should be cached",
+                mPipDisplayChangeObserver.getDisplayChangeTransitions().get(transition));
     }
 
     @Test
-    public void onTransitionMerged_withPipAndDisplayChange_updatePipState() {
-        final IBinder transitionToken = new Binder();
-        final IBinder playingTransitionToken = new Binder();
+    public void onTransitionReady_withoutDisplayChange_doesNotCacheTransition() {
+        final IBinder transition = new Binder();
+        final TransitionInfo info = new TransitionInfo(TRANSIT_CHANGE, 0); // No FLAG_IS_DISPLAY
+
+        mPipDisplayChangeObserver.onTransitionReady(transition, info, mStartTx, mFinishTx);
+
+        assertTrue("Map should remain empty for non-display-change transitions",
+                mPipDisplayChangeObserver.getDisplayChangeTransitions().isEmpty());
+    }
+
+    @Test
+    public void onTransitionStarting_withPipChange_updatesPipState() {
+        when(mMockPipTransitionState.isPipStateIdle()).thenReturn(true);
+
+        final IBinder transition = new Binder();
         final TransitionInfo info = createPipBoundsChangingWithDisplayInfo();
+        mPipDisplayChangeObserver.onTransitionReady(transition, info, mStartTx, mFinishTx);
 
-        mPipDisplayChangeObserver.onTransitionReady(transitionToken, info, mStartTx, mFinishTx);
-        clearInvocations(mMockPipTransitionState);
-        mPipDisplayChangeObserver.onTransitionMerged(transitionToken, playingTransitionToken);
+        mPipDisplayChangeObserver.onTransitionStarting(transition);
 
-        verify(mMockPipTransitionState, times(1)).setIsPipBoundsChangingWithDisplay(eq(false));
-        verify(mMockPipBoundsState, times(1)).setBounds(eq(mPipEndBounds));
-        Assert.assertNull(mPipDisplayChangeObserver.getDisplayChangeTransition());
+        verify(mMockPipTransitionState).setIsDisplayChangeScheduled(false);
+        verify(mMockPipTransitionState).setState(
+                eq(PipTransitionState.SCHEDULED_BOUNDS_CHANGE), any());
+
+        assertNotNull("Transition should remain cached during animation",
+                mPipDisplayChangeObserver.getDisplayChangeTransitions().get(transition));
     }
 
     @Test
-    public void onTransitionFinished_withDisplayChangeOnly_noPipStateUpdate() {
-        final IBinder transitionToken = new Binder();
-        final TransitionInfo info = new TransitionInfo(TRANSIT_CHANGE, 0 /* flags */);
-        info.addChange(createDisplayChange());
+    public void onTransitionStarting_withNonIdlePipChange_updatesPipState() {
+        when(mMockPipTransitionState.isPipStateIdle()).thenReturn(false);
 
-        mPipDisplayChangeObserver.onTransitionReady(transitionToken, info, mStartTx, mFinishTx);
+        final IBinder transition = new Binder();
+        final TransitionInfo info = createPipBoundsChangingWithDisplayInfo();
+        mPipDisplayChangeObserver.onTransitionReady(transition, info, mStartTx, mFinishTx);
+
+        mPipDisplayChangeObserver.onTransitionStarting(transition);
+
+        verify(mMockPipTransitionState).setIsDisplayChangeScheduled(false);
+
+        // Can't have state advancements when in a non-idle PiP state.
+        verify(mMockPipTransitionState, never()).setState(anyInt(), any());
+
+        assertNotNull("Transition should remain cached during animation",
+                mPipDisplayChangeObserver.getDisplayChangeTransitions().get(transition));
+    }
+
+    @Test
+    public void onTransitionFinished_withPipChange_updatesPipStateAndCleansUp() {
+        when(mMockPipTransitionState.isPipStateIdle()).thenReturn(true);
+        when(mMockPipTransitionState.isInPip()).thenReturn(true);
+
+        final IBinder transition = new Binder();
+        final TransitionInfo info = createPipBoundsChangingWithDisplayInfo();
+        mPipDisplayChangeObserver.onTransitionReady(transition, info, mStartTx, mFinishTx);
+        mPipDisplayChangeObserver.onTransitionStarting(transition);
         clearInvocations(mMockPipTransitionState);
-        mPipDisplayChangeObserver.onTransitionFinished(transitionToken, false /* aborted */);
 
-        verify(mMockPipTransitionState, times(1)).setIsPipBoundsChangingWithDisplay(eq(false));
+        mPipDisplayChangeObserver.onTransitionFinished(transition, false /* aborted */);
+
+        verify(mMockPipBoundsState).setBounds(eq(mPipEndBounds));
+        verify(mMockPipTransitionState).setState(PipTransitionState.CHANGED_PIP_BOUNDS);
+        assertTrue("Transition should be removed from cache after finishing",
+                mPipDisplayChangeObserver.getDisplayChangeTransitions().isEmpty());
+    }
+
+    @Test
+    public void onTransitionMerged_withPipChange_updatesPipStateAndCleansUp() {
+        when(mMockPipTransitionState.isPipStateIdle()).thenReturn(true);
+        when(mMockPipTransitionState.isInPip()).thenReturn(true);
+
+        final IBinder mergedTransition = new Binder();
+        final IBinder playingTransition = new Binder();
+        final TransitionInfo info = createPipBoundsChangingWithDisplayInfo();
+        mPipDisplayChangeObserver.onTransitionReady(mergedTransition, info, mStartTx, mFinishTx);
+        mPipDisplayChangeObserver.onTransitionStarting(mergedTransition);
+        clearInvocations(mMockPipTransitionState);
+
+        mPipDisplayChangeObserver.onTransitionMerged(mergedTransition, playingTransition);
+
+        verify(mMockPipBoundsState).setBounds(eq(mPipEndBounds));
+        verify(mMockPipTransitionState).setState(PipTransitionState.CHANGED_PIP_BOUNDS);
+        assertTrue("Transition should be removed from cache after merging",
+                mPipDisplayChangeObserver.getDisplayChangeTransitions().isEmpty());
+    }
+
+    @Test
+    public void onTransitionFinished_displayChangeOnly_noPipStateUpdateAndCleansUp() {
+        final IBinder transition = new Binder();
+        final TransitionInfo info = createDisplayChangeOnlyInfo();
+        mPipDisplayChangeObserver.onTransitionReady(transition, info, mStartTx, mFinishTx);
+
+        mPipDisplayChangeObserver.onTransitionStarting(transition);
+        verify(mMockPipTransitionState, never()).setState(anyInt());
+
+        clearInvocations(mMockPipTransitionState);
+
+        mPipDisplayChangeObserver.onTransitionFinished(transition, false /* aborted */);
+
         verify(mMockPipBoundsState, never()).setBounds(any());
-        Assert.assertNull(mPipDisplayChangeObserver.getDisplayChangeTransition());
-    }
-
-    @Test
-    public void onTransitionMerged_withDisplayChangeOnly_noPipStateUpdate() {
-        final IBinder transitionToken = new Binder();
-        final IBinder playingTransitionToken = new Binder();
-        final TransitionInfo info = new TransitionInfo(TRANSIT_CHANGE, 0 /* flags */);
-        info.addChange(createDisplayChange());
-
-        mPipDisplayChangeObserver.onTransitionReady(transitionToken, info, mStartTx, mFinishTx);
-        clearInvocations(mMockPipTransitionState);
-        mPipDisplayChangeObserver.onTransitionMerged(transitionToken, playingTransitionToken);
-
-        verify(mMockPipTransitionState, times(1)).setIsPipBoundsChangingWithDisplay(eq(false));
-        verify(mMockPipBoundsState, never()).setBounds(eq(mPipEndBounds));
-        Assert.assertNull(mPipDisplayChangeObserver.getDisplayChangeTransition());
+        verify(mMockPipTransitionState, never()).setState(anyInt());
+        assertTrue("Transition should be removed from cache after finishing",
+                mPipDisplayChangeObserver.getDisplayChangeTransitions().isEmpty());
     }
 
     private TransitionInfo createPipBoundsChangingWithDisplayInfo() {
         final TransitionInfo info = new TransitionInfo(TRANSIT_CHANGE, 0 /* flags */);
         // In this case it doesn't really make a difference, but top children should be added first.
         info.addChange(createPipChange());
+        info.addChange(createDisplayChange());
+        return info;
+    }
+
+    private TransitionInfo createDisplayChangeOnlyInfo() {
+        final TransitionInfo info = new TransitionInfo(TRANSIT_CHANGE, 0 /* flags */);
         info.addChange(createDisplayChange());
         return info;
     }

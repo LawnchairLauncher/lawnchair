@@ -19,7 +19,7 @@ package com.android.quickstep
 import android.content.Context
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.util.DisplayController
+import com.android.launcher3.taskbar.customization.TaskbarFeatureEvaluator
 import com.android.launcher3.util.SafeCloseable
 import com.android.launcher3.views.ActivityContext
 import com.android.quickstep.util.TaskCornerRadius
@@ -67,7 +67,7 @@ constructor(
             val activityContext: ActivityContext? = ActivityContext.lookupContextNoThrow(context)
             return if (
                 activityContext?.deviceProfile?.isTaskbarPresent == true &&
-                    DisplayController.isTransientTaskbar(context)
+                    TaskbarFeatureEvaluator.INSTANCE.get(context).isTransient
             ) {
                 context.resources
                     .getDimensionPixelSize(R.dimen.persistent_taskbar_corner_radius)

@@ -23,7 +23,7 @@ import java.time.Duration
 
 /** A helper class that is responsible for building the digital wellbeing timer text. */
 class TimerTextHelper(private val context: Context, timeLeft: Duration) {
-    val formattedDuration =
+    private val formattedDuration =
         DurationFormatter.format(context, timeLeft, R.string.shorter_duration_less_than_one_minute)
 
     /** Provides the time left as a user friendly text that fits in the [availableWidth]. */

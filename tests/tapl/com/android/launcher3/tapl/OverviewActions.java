@@ -47,9 +47,10 @@ public class OverviewActions {
             mLauncher.clickLauncherObject(screenshot);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "clicked screenshot button")) {
-                UiObject2 closeScreenshot = mLauncher.waitForSystemUiObject(
-                        "screenshot_dismiss_image");
-                closeScreenshot.click();
+                mLauncher.waitForSystemUiObject("screenshot_preview");
+                // dismiss the screenshot; we don't expect to receive the back event because it's
+                // consumed by the screenshot process
+                mLauncher.pressBackImpl(false);
                 try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
                         "dismissed screenshot")) {
                     return new Overview(mLauncher);

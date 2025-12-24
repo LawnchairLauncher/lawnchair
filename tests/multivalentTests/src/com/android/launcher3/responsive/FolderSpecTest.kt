@@ -25,6 +25,7 @@ import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecT
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,7 +58,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                     startPadding = sizeSpec16,
                     endPadding = sizeSpec16,
                     gutter = sizeSpec16,
-                    cellSize = SizeSpec(matchWorkspace = true)
+                    cellSize = SizeSpec(matchWorkspace = true),
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 9999.dpToPx(),
@@ -66,8 +67,8 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                     startPadding = sizeSpec16,
                     endPadding = sizeSpec16,
                     gutter = sizeSpec16,
-                    cellSize = SizeSpec(102f.dpToPx())
-                )
+                    cellSize = SizeSpec(102f.dpToPx()),
+                ),
             )
 
         val heightSpecsExpected =
@@ -78,7 +79,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 startPadding = SizeSpec(24f.dpToPx()),
                 endPadding = SizeSpec(64f.dpToPx()),
                 gutter = sizeSpec16,
-                cellSize = SizeSpec(matchWorkspace = true)
+                cellSize = SizeSpec(matchWorkspace = true),
             )
 
         assertThat(specs.widthSpecs.size).isEqualTo(widthSpecsExpected.size)
@@ -89,31 +90,43 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         assertThat(specs.heightSpecs[0]).isEqualTo(heightSpecsExpected)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_missingTag_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_1".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
+
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_moreThanOneValuePerTag_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_2".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
+
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_valueBiggerThan1_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_3".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
+
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_missingSpecs_throwsError() {
         val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_4".xmlToId())
-        ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
+
+        assertThrows(IllegalStateException::class.java) {
+            ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_missingWidthBreakpoint_throwsError() {
         val availableSpace = 900.dpToPx()
         val cells = 3
@@ -126,23 +139,26 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 startPadding = SizeSpec(fixedSize = 10f),
                 endPadding = SizeSpec(fixedSize = 10f),
                 gutter = SizeSpec(fixedSize = 10f),
-                cellSize = SizeSpec(fixedSize = 10f)
+                cellSize = SizeSpec(fixedSize = 10f),
             )
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
         val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_5".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
-        folderSpecs.getCalculatedSpec(
-            aspectRatio,
-            DimensionType.WIDTH,
-            cells,
-            availableSpace,
-            calculatedWorkspaceSpec
-        )
+
+        assertThrows(IllegalStateException::class.java) {
+            folderSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.WIDTH,
+                cells,
+                availableSpace,
+                calculatedWorkspaceSpec,
+            )
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun parseInvalidFile_missingHeightBreakpoint_throwsError() {
         val availableSpace = 900.dpToPx()
         val cells = 3
@@ -155,20 +171,23 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 startPadding = SizeSpec(fixedSize = 10f),
                 endPadding = SizeSpec(fixedSize = 10f),
                 gutter = SizeSpec(fixedSize = 10f),
-                cellSize = SizeSpec(fixedSize = 10f)
+                cellSize = SizeSpec(fixedSize = 10f),
             )
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
         val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_5".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
-        folderSpecs.getCalculatedSpec(
-            aspectRatio,
-            DimensionType.HEIGHT,
-            cells,
-            availableSpace,
-            calculatedWorkspaceSpec
-        )
+
+        assertThrows(IllegalStateException::class.java) {
+            folderSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.HEIGHT,
+                cells,
+                availableSpace,
+                calculatedWorkspaceSpec,
+            )
+        }
     }
 
     @Test
@@ -184,7 +203,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 startPadding = SizeSpec(fixedSize = 10f),
                 endPadding = SizeSpec(fixedSize = 10f),
                 gutter = SizeSpec(fixedSize = 10f),
-                cellSize = SizeSpec(fixedSize = 10f)
+                cellSize = SizeSpec(fixedSize = 10f),
             )
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
@@ -197,7 +216,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 DimensionType.WIDTH,
                 cells,
                 availableSpace,
-                calculatedWorkspaceSpec
+                calculatedWorkspaceSpec,
             )
 
         assertThat(calculatedWidthSpec.cells).isEqualTo(cells)
@@ -208,33 +227,23 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         assertThat(calculatedWidthSpec.cellSizePx).isEqualTo(calculatedWorkspaceSpec.cellSizePx)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun retrievesCalculatedWidthSpec_invalidCalculatedResponsiveSpecType_throwsError() {
         val availableSpace = 10.dpToPx()
         val cells = 3
 
-        val workspaceSpec =
-            ResponsiveSpec(
-                maxAvailableSize = availableSpace,
-                dimensionType = DimensionType.HEIGHT,
-                specType = ResponsiveSpecType.Folder,
-                startPadding = SizeSpec(fixedSize = 10f),
-                endPadding = SizeSpec(fixedSize = 10f),
-                gutter = SizeSpec(fixedSize = 10f),
-                cellSize = SizeSpec(fixedSize = 10f)
-            )
-        val calculatedWorkspaceSpec =
-            CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
-
-        val resourceHelper = TestResourceHelper(context, "valid_folders_specs".xmlToId())
-        val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
-        folderSpecs.getCalculatedSpec(
-            aspectRatio,
-            DimensionType.WIDTH,
-            cells,
-            availableSpace,
-            calculatedWorkspaceSpec
-        )
+        assertThrows(IllegalStateException::class.java) {
+            val workspaceSpec =
+                ResponsiveSpec(
+                    maxAvailableSize = availableSpace,
+                    dimensionType = DimensionType.HEIGHT,
+                    specType = ResponsiveSpecType.Folder,
+                    startPadding = SizeSpec(fixedSize = 10f),
+                    endPadding = SizeSpec(fixedSize = 10f),
+                    gutter = SizeSpec(fixedSize = 10f),
+                    cellSize = SizeSpec(fixedSize = 10f),
+                )
+        }
     }
 
     @Test
@@ -250,7 +259,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 startPadding = SizeSpec(fixedSize = 10f),
                 endPadding = SizeSpec(fixedSize = 10f),
                 gutter = SizeSpec(fixedSize = 10f),
-                cellSize = SizeSpec(fixedSize = 10f)
+                cellSize = SizeSpec(fixedSize = 10f),
             )
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
@@ -263,7 +272,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 DimensionType.HEIGHT,
                 cells,
                 availableSpace,
-                calculatedWorkspaceSpec
+                calculatedWorkspaceSpec,
             )
 
         assertThat(calculatedHeightSpec.cells).isEqualTo(cells)
@@ -274,32 +283,22 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         assertThat(calculatedHeightSpec.cellSizePx).isEqualTo(calculatedWorkspaceSpec.cellSizePx)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun retrievesCalculatedHeightSpec_invalidCalculatedResponsiveSpecType_throwsError() {
         val availableSpace = 10.dpToPx()
         val cells = 3
 
-        val workspaceSpec =
-            ResponsiveSpec(
-                maxAvailableSize = availableSpace,
-                dimensionType = DimensionType.WIDTH,
-                specType = ResponsiveSpecType.Folder,
-                startPadding = SizeSpec(fixedSize = 10f),
-                endPadding = SizeSpec(fixedSize = 10f),
-                gutter = SizeSpec(fixedSize = 10f),
-                cellSize = SizeSpec(fixedSize = 10f)
-            )
-        val calculatedWorkspaceSpec =
-            CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
-
-        val resourceHelper = TestResourceHelper(context, "valid_folders_specs".xmlToId())
-        val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
-        folderSpecs.getCalculatedSpec(
-            aspectRatio,
-            DimensionType.HEIGHT,
-            cells,
-            availableSpace,
-            calculatedWorkspaceSpec
-        )
+        assertThrows(IllegalStateException::class.java) {
+            val workspaceSpec =
+                ResponsiveSpec(
+                    maxAvailableSize = availableSpace,
+                    dimensionType = DimensionType.WIDTH,
+                    specType = ResponsiveSpecType.Folder,
+                    startPadding = SizeSpec(fixedSize = 10f),
+                    endPadding = SizeSpec(fixedSize = 10f),
+                    gutter = SizeSpec(fixedSize = 10f),
+                    cellSize = SizeSpec(fixedSize = 10f),
+                )
+        }
     }
 }

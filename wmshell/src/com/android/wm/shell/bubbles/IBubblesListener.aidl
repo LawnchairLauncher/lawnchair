@@ -34,9 +34,6 @@ oneway interface IBubblesListener {
      */
     void animateBubbleBarLocation(in BubbleBarLocation location);
 
-    /**
-    * Show the bubble bar pillow view at the provided location.
-    * If the location is null, the pillow view is should be hidden.
-    */
-    void showBubbleBarPillowAt(in BubbleBarLocation location);
+    /** Show bubble bar drop target at provided location or hide if location is null. */
+    void showBubbleBarDropTargetAt(in BubbleBarLocation location);
 }

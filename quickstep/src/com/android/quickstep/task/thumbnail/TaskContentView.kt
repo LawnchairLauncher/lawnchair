@@ -24,20 +24,25 @@ import android.graphics.Canvas
 import android.graphics.Outline
 import android.graphics.Path
 import android.graphics.Rect
+import android.os.Bundle
 import android.provider.Settings
 import android.util.AttributeSet
 import android.util.FloatProperty
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.ViewOutlineProvider
 import android.view.ViewStub
+import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
 import android.widget.TextView
 import androidx.annotation.IdRes
+import androidx.annotation.VisibleForTesting
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import com.android.launcher3.Flags.enableCursorHoverStates
 import com.android.launcher3.Flags.enableRefactorDigitalWellbeingToast
 import com.android.launcher3.R
 import com.android.launcher3.util.KFloatProperty
@@ -45,7 +50,10 @@ import com.android.launcher3.util.MultiPropertyDelegate
 import com.android.launcher3.util.MultiPropertyFactory
 import com.android.launcher3.util.ViewPool
 import com.android.quickstep.DesktopFullscreenDrawParams.Companion.computeCornerRadius
+import com.android.quickstep.compose.QuickstepComposeFacade
 import com.android.quickstep.task.apptimer.TaskAppTimerUiState
+import com.android.quickstep.task.apptimer.TaskAppTimerUiState.Uninitialized
+import com.android.quickstep.task.apptimer.TaskAppTimerViewModel
 import com.android.quickstep.task.apptimer.TimerTextHelper
 import com.android.quickstep.util.BorderAnimator
 import com.android.quickstep.util.BorderAnimator.Companion.DEFAULT_BORDER_COLOR
@@ -65,12 +73,22 @@ import kotlin.math.max
 class TaskContentView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     ConstraintLayout(context, attrs), ViewPool.Reusable {
 
-    private var taskHeaderView: TaskHeaderView? = null
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var taskHeaderView: TaskHeaderView? = null
+        private set
+
     private var taskThumbnailView: TaskThumbnailView? = null
+    private val useComposeTaskAppTimer
+        get() = QuickstepComposeFacade.isComposeAvailable() && enableRefactorDigitalWellbeingToast()
+
+    @Deprecated("This toast is getting replaced by the compose version taskAppTimerToastCompose")
     private var taskAppTimerToast: TextView? = null
 
+    private var taskAppTimerToastCompose: View? = null
+    private val taskAppTimerViewModel by lazy { TaskAppTimerViewModel() }
+
     private var timerTextHelper: TimerTextHelper? = null
-    private var timerUiState: TaskAppTimerUiState = TaskAppTimerUiState.Uninitialized
+    private var timerUiState: TaskAppTimerUiState = Uninitialized
     private var timerUsageAccessibilityAction: AccessibilityAction? = null
     private val timerToastHeight =
         context.resources.getDimensionPixelSize(R.dimen.digital_wellbeing_toast_height)
@@ -85,16 +103,16 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
     private var activeFocusAnimator: AnimatorSet? = null
     private var activeHoverAnimator: AnimatorSet? = null
 
+    private val focusBorderColor: Int
+    private val hoverBorderColor: Int
+
     private val focusBorderAnimator: BorderAnimator by lazy {
         createSimpleBorderAnimator(
             borderRadiusPx = computeCornerRadius(context).toInt(),
             borderWidthPx = borderWidthPx,
             boundsBuilder = { it.set(0, 0, width, height) },
             targetView = this,
-            borderColor =
-                context
-                    .obtainStyledAttributes(attrs, R.styleable.TaskContentView)
-                    .getColor(R.styleable.TaskContentView_focusBorderColor, DEFAULT_BORDER_COLOR),
+            borderColor = focusBorderColor,
         )
     }
 
@@ -104,10 +122,7 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
             borderWidthPx = borderWidthPx,
             boundsBuilder = { it.set(0, 0, width, height) },
             targetView = this,
-            borderColor =
-                context
-                    .obtainStyledAttributes(attrs, R.styleable.TaskContentView)
-                    .getColor(R.styleable.TaskContentView_hoverBorderColor, DEFAULT_BORDER_COLOR),
+            borderColor = hoverBorderColor,
         )
     }
 
@@ -157,10 +172,16 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
     private var outlineExpansionHover by
         MultiPropertyDelegate(outlineExpansionFactory, OutlineExpansion.HOVER)
 
-    var isHoverable: Boolean = false;
+    var isHoverable: Boolean = false
 
     init {
-        setWillNotDraw(!enableCursorHoverStates())
+        setWillNotDraw(false)
+        context.obtainStyledAttributes(attrs, R.styleable.TaskContentView).use {
+            focusBorderColor =
+                it.getColor(R.styleable.TaskContentView_focusBorderColor, DEFAULT_BORDER_COLOR)
+            hoverBorderColor =
+                it.getColor(R.styleable.TaskContentView_hoverBorderColor, DEFAULT_BORDER_COLOR)
+        }
     }
 
     override fun onFinishInflate() {
@@ -211,12 +232,14 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
         alpha = 1.0f
         taskThumbnailView?.onRecycle()
         taskAppTimerToast?.isInvisible = true
-        timerUiState = TaskAppTimerUiState.Uninitialized
+        timerUiState = Uninitialized
+        taskAppTimerViewModel.setState(Uninitialized)
         timerTextHelper = null
         timerUsageAccessibilityAction = null
         outlineExpansionHover = 0f
         outlineExpansionFocus = 0f
         hoverBorderVisible = false
+        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
     }
 
     fun doOnSizeChange(action: (width: Int, height: Int) -> Unit) {
@@ -253,17 +276,21 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     override fun onHoverEvent(event: MotionEvent): Boolean {
-        if (enableCursorHoverStates() && isHoverable) {
-            when (event.action) {
-                MotionEvent.ACTION_HOVER_ENTER -> {
-                    hoverBorderVisible = true
-                }
-                MotionEvent.ACTION_HOVER_EXIT -> {
-                    hoverBorderVisible = false
-                }
+        if (!isHoverable) return false
+        when (event.action) {
+            MotionEvent.ACTION_HOVER_ENTER -> {
+                hoverBorderVisible = true
+            }
+            MotionEvent.ACTION_HOVER_EXIT -> {
+                hoverBorderVisible = false
             }
         }
-        return super.onHoverEvent(event)
+        return true
+    }
+
+    override fun onInitializeAccessibilityNodeInfo(info: AccessibilityNodeInfo) {
+        super.onInitializeAccessibilityNodeInfo(info)
+        with(info) { taskHeaderView?.getSupportedAccessibilityActions()?.forEach(::addAction) }
     }
 
     fun onParentAnimationProgress(progress: Float) {
@@ -281,8 +308,19 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
                 return taskAppTimerToast?.callOnClick() ?: false
             }
         }
-
         return false
+    }
+
+    fun getTaskAppTimerToastHeight() =
+        (if (useComposeTaskAppTimer) taskAppTimerToastCompose else taskAppTimerToast)?.height ?: 0
+
+    override fun performAccessibilityAction(action: Int, arguments: Bundle?): Boolean {
+        taskHeaderView?.let {
+            if (it.handleAccessibilityAction(action)) {
+                return true
+            }
+        }
+        return super.performAccessibilityAction(action, arguments)
     }
 
     private fun createHeaderView(taskHeaderState: TaskHeaderUiState) {
@@ -304,16 +342,37 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     private fun createAppTimerToastView(taskAppTimerUiState: TaskAppTimerUiState) {
-        if (
-            enableRefactorDigitalWellbeingToast() &&
-                taskAppTimerToast == null &&
-                taskAppTimerUiState is TaskAppTimerUiState.Timer
-        ) {
-            taskAppTimerToast =
-                findViewById<ViewStub>(R.id.task_app_timer_toast)
-                    .apply { layoutResource = R.layout.task_app_timer_toast }
-                    .inflate() as TextView
+        if (taskAppTimerUiState is TaskAppTimerUiState.Timer) {
+            when {
+                useComposeTaskAppTimer && taskAppTimerToastCompose == null -> {
+                    taskAppTimerToastCompose =
+                        QuickstepComposeFacade.initComposeView(context).let {
+                            QuickstepComposeFacade.startTaskAppTimerToast(
+                                view = it,
+                                taskAppTimerViewModel,
+                            )
+                        }
+                    addAppTimerToastToLayout()
+                }
+
+                !useComposeTaskAppTimer && taskAppTimerToast == null -> {
+                    taskAppTimerToast =
+                        findViewById<ViewStub>(R.id.task_app_timer_toast)
+                            .apply { layoutResource = R.layout.task_app_timer_toast }
+                            .inflate() as TextView
+                }
+            }
         }
+    }
+
+    private fun addAppTimerToastToLayout() {
+        val params =
+            LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                startToStart = PARENT_ID
+                endToEnd = PARENT_ID
+                bottomToBottom = R.id.snapshot
+            }
+        addView(taskAppTimerToastCompose, params)
     }
 
     fun setState(
@@ -326,6 +385,7 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
         taskHeaderView?.setState(taskHeaderState)
         taskThumbnailView?.setState(taskThumbnailUiState, taskId)
         createAppTimerToastView(taskAppTimerUiState)
+
         if (enableRefactorDigitalWellbeingToast() && timerUiState != taskAppTimerUiState) {
             setAppTimerToastState(taskAppTimerUiState)
             updateContentDescriptionWithTimer(taskAppTimerUiState)
@@ -339,25 +399,31 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
     private fun updateContentDescriptionWithTimer(state: TaskAppTimerUiState) {
         taskThumbnailView?.contentDescription =
             when (state) {
-                is TaskAppTimerUiState.Uninitialized -> return
+                is Uninitialized -> return
                 is TaskAppTimerUiState.NoTimer -> state.taskDescription
                 is TaskAppTimerUiState.Timer ->
-                    timerTextHelper?.let {
+                    context.getString(
+                        R.string.task_contents_description_with_remaining_time,
+                        state.taskDescription,
                         context.getString(
-                            R.string.task_contents_description_with_remaining_time,
-                            state.taskDescription,
-                            context.getString(R.string.time_left_for_app, it.formattedDuration),
-                        )
-                    }
+                            R.string.time_left_for_app,
+                            taskAppTimerViewModel.getFormattedDuration(state.timeRemaining, context),
+                        ),
+                    )
             }
     }
 
     private fun setAppTimerToastState(state: TaskAppTimerUiState) {
+        if (useComposeTaskAppTimer) {
+            taskAppTimerViewModel.setState(state)
+            return
+        }
+
         timerUiState = state
 
         taskAppTimerToast?.apply {
             when (state) {
-                is TaskAppTimerUiState.Uninitialized -> isInvisible = true
+                is Uninitialized -> isInvisible = true
                 is TaskAppTimerUiState.NoTimer -> isInvisible = true
                 is TaskAppTimerUiState.Timer -> {
                     timerTextHelper = TimerTextHelper(context, state.timeRemaining)
@@ -371,7 +437,7 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
                     )
 
                     timerUsageAccessibilityAction =
-                        appUsageSettingsAccessibilityAction(
+                        createAppUsageSettingsAccessibilityAction(
                             context,
                             state.accessibilityActionId,
                             state.taskDescription,
@@ -416,7 +482,7 @@ class TaskContentView @JvmOverloads constructor(context: Context, attrs: Attribu
                 .putExtra(Intent.EXTRA_PACKAGE_NAME, packageName)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
-        private fun appUsageSettingsAccessibilityAction(
+        private fun createAppUsageSettingsAccessibilityAction(
             context: Context,
             @IdRes actionId: Int,
             taskDescription: String?,

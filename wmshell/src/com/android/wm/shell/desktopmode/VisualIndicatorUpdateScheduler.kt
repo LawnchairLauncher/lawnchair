@@ -18,9 +18,9 @@ package com.android.wm.shell.desktopmode
 
 import android.graphics.Rect
 import android.hardware.display.DisplayTopology
-import android.hardware.display.DisplayTopology.TreeNode.POSITION_LEFT
-import android.hardware.display.DisplayTopology.TreeNode.POSITION_RIGHT
-import android.hardware.display.DisplayTopology.TreeNode.POSITION_TOP
+import android.hardware.display.DisplayTopology.POSITION_LEFT
+import android.hardware.display.DisplayTopology.POSITION_RIGHT
+import android.hardware.display.DisplayTopology.POSITION_TOP
 import android.hardware.display.DisplayTopologyGraph
 import com.android.wm.shell.common.DisplayController
 import com.android.wm.shell.desktopmode.DesktopModeVisualIndicator.IndicatorType
@@ -145,13 +145,12 @@ class VisualIndicatorUpdateScheduler(
         inputY: Float,
     ): Boolean {
         val adjacentDisplays =
-            displayTopologyGraph
-                ?.displayNodes
-                ?.find { node -> node.displayId == displayId }
-                ?.adjacentDisplays ?: return false
+            displayTopologyGraph?.displayNodes?.get(displayId)?.adjacentEdges ?: return false
         val adjacentDisplayId =
-            adjacentDisplays.find { adjDisplay -> adjDisplay.position == position }?.displayId
-                ?: return false
+            adjacentDisplays
+                .find { adjDisplay -> adjDisplay.position == position }
+                ?.displayNode
+                ?.displayId ?: return false
 
         val currentDisplayLayout = displayController.getDisplayLayout(displayId) ?: return false
 

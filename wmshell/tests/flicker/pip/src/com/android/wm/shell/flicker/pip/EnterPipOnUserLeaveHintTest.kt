@@ -19,8 +19,9 @@ package com.android.wm.shell.flicker.pip
 import android.platform.test.annotations.Presubmit
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import androidx.test.filters.RequiresDevice
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.EnterPipTransition
@@ -43,11 +44,12 @@ import org.junit.runners.Parameterized
  *     Press Home button or swipe up to go Home and put [pipApp] in pip mode
  * ```
  */
+@RequiresDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
-class EnterPipOnUserLeaveHintTest(flicker: LegacyFlickerTest) : EnterPipTransition(flicker) {
+class EnterPipOnUserLeaveHintTest(flicker: FlickerTest) : EnterPipTransition(flicker) {
     override val pipApp: PipAppHelper = PipAppHelper(instrumentation)
     override val thisTransition: FlickerBuilder.() -> Unit = { transitions { tapl.goHome() } }
 

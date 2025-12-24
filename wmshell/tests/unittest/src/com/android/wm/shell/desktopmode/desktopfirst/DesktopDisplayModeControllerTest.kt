@@ -39,7 +39,7 @@ import android.window.DisplayAreaInfo
 import android.window.WindowContainerTransaction
 import androidx.test.filters.SmallTest
 import com.android.server.display.feature.flags.Flags as DisplayFlags
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.MockToken
 import com.android.wm.shell.RootTaskDisplayAreaOrganizer
 import com.android.wm.shell.ShellTaskOrganizer

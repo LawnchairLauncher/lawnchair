@@ -60,6 +60,13 @@ public interface WorkspaceLayoutManager {
             Log.d(TAG, "addInScreenFromBind: hotseat inflation with x = " + x
                     + " and y = " + y);
         }
+
+        // b/388022685 adding logs to investigate why tag is sometimes null.
+        if (child.getTag() == null) {
+            Log.e(TAG, "child.getTag() is null here for view: " + child + " and itemInfo: "
+                    + info);
+        }
+
         addInScreen(child, info.container, presenterPos.screenId, x, y, info.spanX, info.spanY);
     }
 

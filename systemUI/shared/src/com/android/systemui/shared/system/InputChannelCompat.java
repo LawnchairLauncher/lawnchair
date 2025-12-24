@@ -28,7 +28,7 @@ import android.view.InputEvent;
 import android.view.MotionEvent;
 
 /**
- * @see android.view.InputChannel
+ * @see InputChannel
  */
 public class InputChannelCompat {
 

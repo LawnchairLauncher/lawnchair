@@ -48,7 +48,7 @@ public class TestIsolationRule implements TestRule {
                 // Make sure that Launcher workspace looks correct.
 
                 UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressHome();
-                AbstractLauncherUiTest.checkDetectedLeaks(mLauncher, mRequireOneActiveActivity);
+                AbstractLauncherUiTest.checkDetectedLeaks(mLauncher);
             }
         };
     }

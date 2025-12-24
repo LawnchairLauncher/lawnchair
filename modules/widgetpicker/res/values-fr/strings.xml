@@ -17,8 +17,11 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="widget_picker_collapse_sheet_label" msgid="5179800676332357316">"Fermer la feuille"</string>
     <string name="widgets_list_header_app_name_fallback_label" msgid="5151621916941957989">"Nom de l\'application"</string>
     <string name="widgets_list_header_widgets_count_label" msgid="578128450351893001">"{count,plural, =1{# widget}one{# widget}other{# widgets}}"</string>
+    <string name="widgets_list_header_shortcuts_count_label" msgid="9168853338469361424">"{count,plural, =1{# raccourci}one{# raccourci}other{# raccourcis}}"</string>
+    <string name="widgets_list_header_widgets_and_shortcuts_count_label" msgid="3942871723001789249">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_span_dimensions_format" msgid="4325492869474815131">"%1$d x %2$d"</string>
     <string name="widget_span_dimensions_accessible_format" msgid="6976586776463259811">"%1$d de largeur et %2$d de hauteur"</string>
     <string name="widget_details_accessibility_label" msgid="4525863892199168041">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, %2$d de large par %3$d de haut"</string>
@@ -28,7 +31,9 @@
     <string name="widget_tap_to_add_button_content_description" msgid="3591512565497536699">"Ajoutez un widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="featured_widgets_tab_label" msgid="5911854248145111652">"Sélection"</string>
     <string name="browse_widgets_tab_label" msgid="7179933202350730737">"Parcourir"</string>
+    <string name="widgets_tab_accessibility_label" msgid="559010210491169400">"Widgets <xliff:g id="TAB_NAME">%1$s</xliff:g>"</string>
     <string name="widget_picker_right_pane_accessibility_label" msgid="5095301787174820892">"Widgets <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> à droite, recherche et options à gauche"</string>
+    <string name="widget_picker_left_pane_accessibility_label" msgid="4719054594582596067">"Options de recherche et de widget à gauche, widgets à droite"</string>
     <string name="widgets_search_bar_hint" msgid="5705758627532180867">"Rechercher"</string>
     <string name="widget_search_bar_clear_button_label" msgid="6120140737164336517">"Effacer"</string>
     <string name="widget_search_bar_back_button_label" msgid="7028448831228587743">"Retour"</string>

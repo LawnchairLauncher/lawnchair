@@ -47,7 +47,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.hardware.input.InputManager;
 import android.os.Looper;
 import android.text.InputType;
 import android.text.Selection;
@@ -58,7 +57,6 @@ import android.util.Pair;
 import android.util.TypedValue;
 import android.view.FocusFinder;
 import android.view.Gravity;
-import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -75,9 +73,9 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.annotation.WorkerThread;
 import androidx.core.content.res.ResourcesCompat;
 
+import androidx.core.graphics.ColorUtils;
 import androidx.core.view.WindowInsetsCompat;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
@@ -112,7 +110,6 @@ import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.pageindicators.PaginationArrow;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
@@ -121,7 +118,6 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ClipPathView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
-import com.androidinternal.graphics.ColorUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -321,7 +317,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     protected void onFinishInflate() {
         super.onFinishInflate();
         final DeviceProfile dp = mActivityContext.getDeviceProfile();
-        final int paddingLeftRight = dp.folderContentPaddingLeftRight;
+        final int paddingLeftRight = dp.getFolderProfile().getContentPaddingLeftRight();
 
         mBackground = DrawableTokens.RoundRectFolder.resolve(getContext());
         // pE-TODO: this is interesting, we can customise this.
@@ -329,17 +325,23 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mBackground.setAlpha(alpha);
 
         mContent = findViewById(R.id.folder_content);
-        mContent.setPadding(paddingLeftRight, dp.folderContentPaddingTop, paddingLeftRight, 0);
+        mContent.setPadding(
+                paddingLeftRight,
+                dp.getFolderProfile().getContentPaddingTop(),
+                paddingLeftRight,
+                0
+        );
         mContent.setFolder(this);
 
         mPageIndicator = findViewById(R.id.folder_page_indicator);
         mFooter = findViewById(R.id.folder_footer);
-        mFooterHeight = dp.folderFooterHeightPx;
+        mFooterHeight = dp.getFolderProfile().getFooterHeightPx();
         mFolderName = findViewById(R.id.folder_name);
         if (Flags.enableLauncherVisualRefresh()) {
             mFolderName.setTypeface(Typeface.create("google-sans-flex", Typeface.NORMAL));
         }
-        mFolderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dp.folderLabelTextSizePx);
+        mFolderName.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                dp.getFolderProfile().getLabelTextSizePx());
         mFolderName.setOnBackKeyListener(this);
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
@@ -362,7 +364,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
             setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
         }
-        
+
         if (enableLauncherVisualRefresh()) {
             mLeftArrow = findViewById(R.id.left_indicator_arrow);
             mRightArrow = findViewById(R.id.right_indicator_arrow);
@@ -383,46 +385,28 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * arrows if pointer is enabled and indicator is visible.
      */
     public void onIndicatorVisibilityChanged() {
+        mLeftArrow.setVisibility(mPageIndicator.getVisibility());
+        mRightArrow.setVisibility(mPageIndicator.getVisibility());
+
         if (mPageIndicator.getVisibility() == View.VISIBLE) {
             ((MarginLayoutParams) mFolderName.getLayoutParams()).setMarginEnd(
                     getResources().getDimensionPixelSize(R.dimen.folder_footer_horiz_padding));
-            Context ctx = getContext(); // done here to avoid getting context on bg thread
-            Executors.UI_HELPER_EXECUTOR.execute(() -> {
-                // Only show arrows if a mouse or touchpad is connected to the device
-                int arrowVisibility = isPointerEnabled(ctx) ? View.VISIBLE : View.GONE;
-                if (mLeftArrow != null) mLeftArrow.setVisibility(arrowVisibility);
-                if (mRightArrow != null) mRightArrow.setVisibility(arrowVisibility);
 
-                // If the arrows are visible, then their touch box will slightly overlap with the
-                // footer's padding by 8dp. Update it for proper alignment. PaddingEnd was always
-                // equal to paddingRight in both LTR & RTL mode, so isRtl is manually accounted for
-                int endPadding = getResources().getDimensionPixelSize(
-                        arrowVisibility == View.VISIBLE
-                                ? R.dimen.folder_footer_horiz_padding_minus_arrow_overlap
-                                : R.dimen.folder_footer_horiz_padding);
-                boolean isRtl = Utilities.isRtl(getResources());
-                mFooter.setPadding(
-                        isRtl ? endPadding : mFooter.getPaddingLeft(),
-                        mFooter.getPaddingTop(),
-                        isRtl ? mFooter.getPaddingRight() : endPadding,
-                        mFooter.getPaddingBottom()
-                );
-            });
+            // If the arrows are visible, then their touch box will slightly overlap with the
+            // footer's padding by 8dp. Update it for proper alignment. PaddingEnd was always
+            // equal to paddingRight in both LTR & RTL mode, so isRtl is manually accounted for
+            int endPadding = getResources()
+                    .getDimensionPixelSize(R.dimen.folder_footer_horiz_padding_minus_arrow_overlap);
+            boolean isRtl = Utilities.isRtl(getResources());
+            mFooter.setPadding(
+                    isRtl ? endPadding : mFooter.getPaddingLeft(),
+                    mFooter.getPaddingTop(),
+                    isRtl ? mFooter.getPaddingRight() : endPadding,
+                    mFooter.getPaddingBottom()
+            );
         } else {
             ((MarginLayoutParams) mFolderName.getLayoutParams()).setMarginEnd(0);
-            if (mLeftArrow != null) mLeftArrow.setVisibility(View.GONE);
-            if (mRightArrow != null) mRightArrow.setVisibility(View.GONE);
         }
-    }
-
-    @WorkerThread
-    private boolean isPointerEnabled(Context context) {
-        InputManager im = context.getSystemService(InputManager.class);
-        return Arrays.stream(im.getInputDeviceIds())
-                .mapToObj(im::getInputDevice)
-                .anyMatch(device -> device.isEnabled()
-                        && (device.supportsSource(InputDevice.SOURCE_MOUSE)
-                        || device.supportsSource(InputDevice.SOURCE_TOUCHPAD)));
     }
 
     /**
@@ -579,7 +563,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets windowInsets) {
         this.setTranslationY(0);
-        
+
         // Lawnchair-TODO: Keyboard too close to Folder name edit?
 
         try {
@@ -1391,8 +1375,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @VisibleForTesting
     int getMaxContentAreaHeight() {
         DeviceProfile grid = mActivityContext.getDeviceProfile();
-        return grid.getDeviceProperties().getAvailableHeightPx() - grid.getTotalWorkspacePadding().y
-                - getFooterHeight();
+        return grid.getDeviceProperties().getAvailableHeightPx()
+                - grid.getWorkspaceIconProfile().getTotalWorkspacePadding().y - getFooterHeight();
     }
 
     @VisibleForTesting

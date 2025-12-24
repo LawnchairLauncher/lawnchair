@@ -16,12 +16,14 @@
 
 package com.android.wm.shell.functional
 
-import android.platform.test.annotations.Postsubmit
+import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresDesktopDevice
 import com.android.wm.shell.scenarios.MoveToNextDisplay
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 /* Functional test for [MoveToNextDisplay]. */
 @RunWith(BlockJUnit4ClassRunner::class)
-@Postsubmit
+@RequiresDesktopDevice
+@Presubmit
 class MoveToNextDisplayTest : MoveToNextDisplay()

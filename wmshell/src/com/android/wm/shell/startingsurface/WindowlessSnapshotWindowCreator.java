@@ -63,9 +63,11 @@ class WindowlessSnapshotWindowCreator {
         final ActivityManager.RunningTaskInfo runningTaskInfo = info.taskInfo;
         final int taskId = runningTaskInfo.taskId;
         final String title = "Windowless Snapshot " + taskId;
+        final int format = com.android.window.flags2.Flags.reduceTaskSnapshotMemoryUsage()
+                ? snapshot.getHardwareBufferFormat()
+                : snapshot.getHardwareBuffer().getFormat();
         final WindowManager.LayoutParams lp = SnapshotDrawerUtils.createLayoutParameters(
-                info, title, TYPE_APPLICATION_OVERLAY, snapshot.getHardwareBuffer().getFormat(),
-                null /* token */);
+                info, title, TYPE_APPLICATION_OVERLAY, format, null /* token */);
         if (lp == null) {
             return;
         }

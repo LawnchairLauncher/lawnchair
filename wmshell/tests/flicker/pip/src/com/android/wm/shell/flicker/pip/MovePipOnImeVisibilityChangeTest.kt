@@ -19,13 +19,14 @@ package com.android.wm.shell.flicker.pip
 import android.platform.test.annotations.Presubmit
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.Rotation
-import android.tools.flicker.assertions.FlickerTest
+import android.tools.flicker.assertions.FlickerChecker
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import android.tools.helpers.WindowUtils
 import android.tools.traces.component.ComponentNameMatcher
+import androidx.test.filters.RequiresDevice
 import com.android.server.wm.flicker.helpers.ImeAppHelper
 import com.android.server.wm.flicker.helpers.setRotation
 import com.android.wm.shell.Flags
@@ -40,11 +41,12 @@ import org.junit.runners.Parameterized
  * Test Pip launch. To run this test:
  * `atest WMShellFlickerTestsPip3:MovePipOnImeVisibilityChangeTest`
  */
+@RequiresDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
-class MovePipOnImeVisibilityChangeTest(flicker: LegacyFlickerTest) : PipTransition(flicker) {
+class MovePipOnImeVisibilityChangeTest(flicker: FlickerTest) : PipTransition(flicker) {
     private val imeApp = ImeAppHelper(instrumentation)
 
     override val thisTransition: FlickerBuilder.() -> Unit = {
@@ -85,8 +87,8 @@ class MovePipOnImeVisibilityChangeTest(flicker: LegacyFlickerTest) : PipTransiti
 
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun getParams(): Collection<FlickerTest> {
-            return LegacyFlickerTestFactory.nonRotationTests(
+        fun getParams(): Collection<FlickerChecker> {
+            return FlickerTestFactory.nonRotationTests(
                 supportedRotations = listOf(Rotation.ROTATION_0)
             )
         }

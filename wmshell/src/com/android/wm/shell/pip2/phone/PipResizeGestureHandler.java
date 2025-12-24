@@ -69,6 +69,7 @@ public class PipResizeGestureHandler implements
     private static final String RESIZE_BOUNDS_CHANGE = "resize_bounds_change";
 
     private Context mContext;
+    private final InputManager mInputManager;
     private final PipBoundsAlgorithm mPipBoundsAlgorithm;
     private final PipBoundsState mPipBoundsState;
     private final PipTouchState mPipTouchState;
@@ -133,6 +134,7 @@ public class PipResizeGestureHandler implements
             ShellExecutor mainExecutor,
             @Nullable PipPerfHintController pipPerfHintController) {
         mContext = context;
+        mInputManager = mContext.getSystemService(InputManager.class);
         mSurfaceTransactionHelper = pipSurfaceTransactionHelper;
         mMainExecutor = mainExecutor;
         mPipPerfHintController = pipPerfHintController;
@@ -213,7 +215,7 @@ public class PipResizeGestureHandler implements
 
         if (mIsEnabled) {
             // Register input event receiver
-            mInputMonitor = mContext.getSystemService(InputManager.class).monitorGestureInput(
+            mInputMonitor = mInputManager.monitorGestureInput(
                     "pip-resize", mPipDisplayLayoutState.getDisplayId());
             try {
                 mMainExecutor.executeBlocking(() -> {
@@ -476,7 +478,7 @@ public class PipResizeGestureHandler implements
 
     @VisibleForTesting
     void pilferPointers() {
-        mInputMonitor.pilferPointers();
+        mInputManager.pilferPointers(mInputEventReceiver.getToken());
     }
 
     void setOhmOffset(int offset) {

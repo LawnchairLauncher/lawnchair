@@ -31,18 +31,24 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.systemui.rotation.RotationPolicyWrapper;
 import com.android.systemui.shared.rotation.RotationButton;
 import com.android.systemui.shared.rotation.RotationButtonController;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 /** SysUI equivalent */
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class NavigationBarRotationContextTest {
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
     private static final int DEFAULT_ROTATE = 0;
     private static final int DEFAULT_DISPLAY = 0;
 
@@ -51,12 +57,11 @@ public class NavigationBarRotationContextTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         Context mTargetContext = InstrumentationRegistry.getTargetContext();
         final View view = new View(mTargetContext);
         RotationButton rotationButton = mock(RotationButton.class);
-        mRotationButtonController = new RotationButtonController(mTargetContext, 0, 0, 0, 0, 0, 0,
-                () -> 0);
+        mRotationButtonController = new RotationButtonController(mock(RotationPolicyWrapper.class),
+                mTargetContext, 0, 0, 0, 0, 0, 0, () -> 0);
         mRotationButtonController.setRotationButton(rotationButton, null);
         // Due to a mockito issue, only spy the object after setting the initial state
         mRotationButtonController = spy(mRotationButtonController);

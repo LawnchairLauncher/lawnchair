@@ -47,7 +47,7 @@ fun createPreviewIdp(updateGridOptions: DeviceProfileOverrides.DBGridInfo.() -> 
     val newIdp by remember {
         derivedStateOf {
             val options = DeviceProfileOverrides.DBGridInfo(prefs)
-            InvariantDeviceProfile(context, updateGridOptions(options))
+            InvariantDeviceProfile(context, updateGridOptions(options), null)
         }
     }
     return newIdp

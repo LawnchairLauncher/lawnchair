@@ -17,9 +17,6 @@ package com.android.launcher3.widget;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-
 import android.appwidget.AppWidgetHostView;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -29,6 +26,7 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.deviceprofile.WorkspaceProfile;
 import com.android.launcher3.util.SandboxApplication;
 
 import org.junit.Rule;
@@ -151,7 +149,8 @@ public final class LauncherAppWidgetProviderInfoTest {
         AppWidgetHostView.getDefaultPaddingForWidget(mContext, null, padding);
         int maxPadding = Math.max(Math.max(padding.left, padding.right),
                 Math.max(padding.top, padding.bottom));
-        dp.cellLayoutBorderSpacePx.x = dp.cellLayoutBorderSpacePx.y = maxPadding + 1;
+        dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().x =
+                dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().y = maxPadding + 1;
 
         LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
         info.minWidth = CELL_SIZE * 3;
@@ -173,7 +172,8 @@ public final class LauncherAppWidgetProviderInfoTest {
         AppWidgetHostView.getDefaultPaddingForWidget(mContext, null, padding);
         int maxPadding = Math.max(Math.max(padding.left, padding.right),
                 Math.max(padding.top, padding.bottom));
-        dp.cellLayoutBorderSpacePx.x = dp.cellLayoutBorderSpacePx.y = maxPadding - 1;
+        dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().x =
+                dp.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().y = maxPadding - 1;
         LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
         info.minWidth = CELL_SIZE * 3;
         info.minHeight = CELL_SIZE * 3;
@@ -248,14 +248,12 @@ public final class LauncherAppWidgetProviderInfoTest {
     private InvariantDeviceProfile createIDP() {
         InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(mContext);
 
-        DeviceProfile dp = idp.getDeviceProfile(mContext).copy(mContext);
+        DeviceProfile dp = idp.getDeviceProfile(mContext).copy();
         DeviceProfile profile = Mockito.spy(dp);
-        doAnswer(i -> {
-            ((Point) i.getArgument(0)).set(CELL_SIZE, CELL_SIZE);
-            return null;
-        }).when(profile).getCellSize(any(Point.class));
-        Mockito.when(profile.getCellSize()).thenReturn(new Point(CELL_SIZE, CELL_SIZE));
-        profile.cellLayoutBorderSpacePx = new Point(SPACE_SIZE, SPACE_SIZE);
+        WorkspaceProfile workspaceProfile = Mockito.spy(dp.mWorkspaceProfile);
+        Mockito.when(profile.getWorkspaceIconProfile()).thenReturn(workspaceProfile);
+        Mockito.when(workspaceProfile.getCellSize()).thenReturn(new Point(CELL_SIZE, CELL_SIZE));
+        profile.getWorkspaceIconProfile().getCellLayoutBorderSpacePx().set(SPACE_SIZE, SPACE_SIZE);
         profile.widgetPadding.setEmpty();
 
         idp.supportedProfiles = Collections.singletonList(profile);

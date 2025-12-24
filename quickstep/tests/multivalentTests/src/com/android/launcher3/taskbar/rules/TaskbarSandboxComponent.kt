@@ -29,17 +29,24 @@ import com.android.launcher3.dagger.AppModule
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.BasePerDisplayModule
 import com.android.launcher3.dagger.DisplayContext
+import com.android.launcher3.dagger.HomeScreenFilesModule
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.dagger.LauncherConcurrencyModule
+import com.android.launcher3.dagger.LauncherModelModule
+import com.android.launcher3.dagger.SettingsModule
 import com.android.launcher3.dagger.StaticObjectModule
+import com.android.launcher3.dagger.SystemDragModule
 import com.android.launcher3.dagger.WidgetModule
 import com.android.launcher3.dagger.WindowContext
 import com.android.launcher3.statehandlers.DesktopVisibilityController
+import com.android.launcher3.taskbar.customization.TaskbarFeatureEvaluator
 import com.android.launcher3.util.DaggerSingletonTracker
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.FakePrefsModule
+import com.android.launcher3.util.SandboxWmProxyModule
 import com.android.launcher3.util.SettingsCache
+import com.android.launcher3.util.TaskbarModeUtil
 import com.android.launcher3.util.dagger.LauncherExecutorsModule
 import com.android.launcher3.util.window.WindowManagerProxy
 import com.android.quickstep.FallbackWindowInterface
@@ -47,7 +54,8 @@ import com.android.quickstep.RecentsAnimationDeviceState
 import com.android.quickstep.RotationTouchHelper
 import com.android.quickstep.SystemUiProxy
 import com.android.quickstep.TaskAnimationManager
-import com.android.quickstep.fallback.window.RecentsWindowManager
+import com.android.quickstep.window.RecentsWindowManager
+import com.android.quickstep.window.RecentsWindowTracker
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -83,11 +91,16 @@ interface TaskbarSandboxComponent : LauncherAppComponent {
             ExecutorsModule::class,
             LauncherExecutorsModule::class,
             FakePrefsModule::class,
+            TaskbarModule::class,
             DisplayControllerModule::class,
-            TaskbarSandboxWmProxyModule::class,
+            SandboxWmProxyModule::class,
             TaskbarPerDisplayReposModule::class,
             DesktopVisibilityControllerModule::class,
             NoOpWidgetPickerModule::class,
+            LauncherModelModule::class,
+            HomeScreenFilesModule::class,
+            SettingsModule::class,
+            SystemDragModule::class,
         ]
 )
 interface AllTaskbarSandboxModules
@@ -95,6 +108,40 @@ interface AllTaskbarSandboxModules
 @Module
 abstract class DisplayControllerModule {
     @Binds abstract fun bindDisplayController(controller: DisplayControllerSpy): DisplayController
+}
+
+@Module
+object TaskbarModule {
+    @JvmStatic
+    @Provides
+    @LauncherAppSingleton
+    fun provideTaskbarModeUtil(
+        @ApplicationContext context: Context,
+        displayController: DisplayController,
+        windowManagerProxy: WindowManagerProxy,
+        launcherPrefs: LauncherPrefs,
+    ): TaskbarModeUtil {
+        return spy(TaskbarModeUtil(context, displayController, windowManagerProxy, launcherPrefs))
+    }
+
+    @JvmStatic
+    @Provides
+    @LauncherAppSingleton
+    fun provideTaskbarFeatureEvaluator(
+        @ApplicationContext context: Context,
+        displayController: DisplayController,
+        desktopVisibilityController: DesktopVisibilityController,
+        launcherPrefs: LauncherPrefs,
+    ): TaskbarFeatureEvaluator {
+        return spy(
+            TaskbarFeatureEvaluator(
+                context,
+                displayController,
+                desktopVisibilityController,
+                launcherPrefs,
+            )
+        )
+    }
 }
 
 /** A wrapper over display controller which allows modifying the underlying info */
@@ -201,6 +248,10 @@ object TaskbarPerDisplayReposModule {
     @Provides
     @LauncherAppSingleton
     fun provideRecentsWindowManagerRepo(): PerDisplayRepository<RecentsWindowManager> = mock()
+
+    @Provides
+    @LauncherAppSingleton
+    fun provideRecentsWindowTrackerRepo(): PerDisplayRepository<RecentsWindowTracker> = mock()
 
     @Provides
     @LauncherAppSingleton

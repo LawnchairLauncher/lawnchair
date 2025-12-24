@@ -15,6 +15,10 @@
 package {
     // See: http://go/android-license-faq
     default_applicable_licenses: ["Android-Apache-2.0"],
+    default_visibility: [
+        "//packages/apps/Launcher3:__subpackages__",
+        "//vendor:__subpackages__",
+    ],
 }
 
 android_library {
@@ -95,6 +99,7 @@ android_library {
         "src/com/android/launcher3/widgetpicker/domain/usecase/FilterWidgetsForHostUseCase.kt",
         "src/com/android/launcher3/widgetpicker/domain/interactor/WidgetsInteractor.kt",
         "src/com/android/launcher3/widgetpicker/domain/interactor/WidgetAppIconsInteractor.kt",
+        "src/com/android/launcher3/widgetpicker/domain/model/SearchResult.kt",
     ],
     static_libs: [
         "widget_picker_shared_data_types",
@@ -145,7 +150,6 @@ android_library {
     srcs: [
         "src/com/android/launcher3/widgetpicker/ui/components/ScrollableFloatingToolbar.kt",
         "src/com/android/launcher3/widgetpicker/ui/components/LeadingIconToolbarTab.kt",
-        "src/com/android/launcher3/widgetpicker/ui/components/TitledBottomSheet.kt",
         "src/com/android/launcher3/widgetpicker/ui/components/TwoPaneLayout.kt",
         "src/com/android/launcher3/widgetpicker/ui/components/SinglePaneLayout.kt",
         "src/com/android/launcher3/widgetpicker/ui/components/WidgetsSearchBar.kt",
@@ -160,9 +164,17 @@ android_library {
         "src/com/android/launcher3/widgetpicker/ui/components/WidgetAppsListHeader.kt",
         "src/com/android/launcher3/widgetpicker/ui/components/WidgetAppsList.kt",
         "src/com/android/launcher3/widgetpicker/ui/components/TestTag.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/bottomsheet/BottomSheetDismissModifiers.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/bottomsheet/BottomSheetDismissState.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/bottomsheet/BottomSheetNestedScrollConnection.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/bottomsheet/TitledBottomSheet.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/Animations.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/BorderOnFocus.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/accessibility/AccessibilityState.kt",
     ],
     static_libs: [
         "widget_picker_event_listeners",
+        "widget_picker_cui_reporter",
         "widget_picker_ui_theme",
         "widget_picker_ui_data_types",
         "androidx.compose.foundation_foundation",
@@ -171,10 +183,8 @@ android_library {
         "androidx.compose.ui_ui",
         "androidx.compose.ui_ui-tooling",
         "androidx.compose.material3_material3",
-        "androidx.compose.material3_material3-window-size-class",
         "androidx.compose.material_material-icons-extended",
         "androidx.activity_activity-compose",
-        "widget_picker_window_size_class",
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
     ],
@@ -192,6 +202,18 @@ android_library {
     ],
     static_libs: [
         "widget_picker_shared_data_types",
+    ],
+}
+
+android_library {
+    name: "widget_picker_cui_reporter",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/ui/WidgetPickerCuiReporter.kt",
+    ],
+    static_libs: [
+        "androidx.compose.runtime_runtime",
     ],
 }
 
@@ -215,6 +237,7 @@ android_library {
         "widget_picker_ui_theme",
         "widget_picker_ui_components",
         "widget_picker_event_listeners",
+        "widget_picker_cui_reporter",
         "widget_picker_ui_data_types",
         "widget_picker_domain_layer",
         "dagger2",
@@ -225,25 +248,9 @@ android_library {
         "androidx.compose.ui_ui",
         "androidx.compose.ui_ui-tooling",
         "androidx.compose.material3_material3",
-        "androidx.compose.material3_material3-window-size-class",
         "androidx.compose.material_material-icons-extended",
         "androidx.activity_activity-compose",
-        "widget_picker_window_size_class",
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
-    ],
-}
-
-android_library {
-    name: "widget_picker_window_size_class",
-    sdk_version: "current",
-    min_sdk_version: min_launcher3_sdk_version,
-    srcs: [
-        "src/com/android/launcher3/widgetpicker/ui/windowsizeclass/WindowSizeClass.kt",
-    ],
-    static_libs: [
-        "androidx.compose.runtime_runtime",
-        "androidx.compose.material3_material3-window-size-class",
-        "androidx.window_window",
     ],
 }

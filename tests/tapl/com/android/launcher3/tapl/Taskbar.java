@@ -17,6 +17,9 @@ package com.android.launcher3.tapl;
 
 import static android.view.KeyEvent.KEYCODE_META_RIGHT;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.KEYBOARD_QUICK_SWITCH_RES_ID;
+import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_DIVIDER_CONTENT_DESCRIPTION;
+import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_PINNING_SWITCH_RES_ID;
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
 
 import android.graphics.Point;
@@ -75,7 +78,22 @@ public final class Taskbar {
                 "want to get a taskbar icon")) {
             return new TaskbarAppIcon(mLauncher, mLauncher.waitForObjectInContainer(
                     mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
-                    AppIcon.getAppIconSelector(appName, mLauncher)), mTaskbarLocation);
+                    AppIcon.getAppIconSelector(appName, mLauncher)), mTaskbarLocation, true);
+        }
+    }
+
+    /**
+     * Returns an app icon with the given name. This fails if the icon is not found.
+     * Should be used for app icons which when launched do not create a new activity - for example,
+     * icons that represent running tasks.
+     */
+    @NonNull
+    public TaskbarAppIcon getAppIconForRunningApp(String appName) {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get a taskbar icon")) {
+            return new TaskbarAppIcon(mLauncher, mLauncher.waitForObjectInContainer(
+                    mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
+                    AppIcon.getAppIconSelector(appName, mLauncher)), mTaskbarLocation, false);
         }
     }
 
@@ -126,6 +144,20 @@ public final class Taskbar {
     }
 
     /**
+     * Toggles always show taskbar option
+     */
+    public void toggleAlwaysShowTaskbarOption() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to open taskbar divider menu and toggle always show taskbar option");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.waitForObjectInContainer(
+                    mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
+                    getDividerButtonSelector()).longClick();
+            mLauncher.waitForLauncherObject(TASKBAR_PINNING_SWITCH_RES_ID).click();
+        }
+    }
+
+    /**
      *  Opens the Home all apps page by clicking the taskbar all apps icon. To be used to open all
      *  apps when taskbar is visible on home.
      */
@@ -139,6 +171,41 @@ public final class Taskbar {
                     getAllAppsButtonSelector()));
 
             return mLauncher.getAllApps();
+        }
+    }
+
+    /**
+     * Opens taskbar overflow UI by clicking the taskbar overflow icon, and then opens a task in
+     * overflow UI at the provided index.
+     * Assumes that taskbar is currently visible, and in overflow (i.e. that the taskbar overflow
+     * icon is shown).
+     */
+    public LaunchedAppState launchTaskFromTaskbarOverflowByRecencyIndex(int index) {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "Click on taskbar overflow button");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            UiObject2 taskbarOverflowButton = mLauncher.waitForSystemLauncherObject(
+                    "taskbar_overflow_view");
+            mLauncher.clickLauncherObject(taskbarOverflowButton);
+
+            UiObject2 kqs = mLauncher.waitForSystemLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
+
+            List<UiObject2> overflownApps =
+                    mLauncher.waitForObjectsInContainer(kqs,
+                            mLauncher.getLauncherObjectSelector("thumbnail_1"));
+            mLauncher.assertTrue("Task index out of bounds " + overflownApps.size() + " " + index,
+                    overflownApps.size() > index);
+            UiObject2 task = overflownApps.get(overflownApps.size() - 1 - index);
+
+            if (mLauncher.isLauncherActivityStarted()) {
+                mLauncher.executeAndWaitForLauncherStop(() -> mLauncher.clickLauncherObject(task),
+                        "clicking a task in overflow");
+            } else {
+                mLauncher.clickLauncherObject(task);
+            }
+
+            mLauncher.waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
+            return new LaunchedAppState(mLauncher);
         }
     }
 
@@ -178,6 +245,11 @@ public final class Taskbar {
     private static BySelector getAllAppsButtonSelector() {
         // Look for an icon with no text
         return By.clazz(TextView.class).text("");
+    }
+
+    private static BySelector getDividerButtonSelector() {
+        // Look for an icon with no content description
+        return By.clazz(TextView.class).desc(TASKBAR_DIVIDER_CONTENT_DESCRIPTION);
     }
 
     public Rect getVisibleBounds() {

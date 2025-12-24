@@ -19,9 +19,7 @@ package com.android.wm.shell.compatui.impl
 import com.android.wm.shell.compatui.api.CompatUIRepository
 import com.android.wm.shell.compatui.api.CompatUISpec
 
-/**
- * Default {@link CompatUIRepository} implementation
- */
+/** Default {@link CompatUIRepository} implementation */
 class DefaultCompatUIRepository : CompatUIRepository {
 
     private val allSpecs = mutableMapOf<String, CompatUISpec>()
@@ -33,9 +31,7 @@ class DefaultCompatUIRepository : CompatUIRepository {
         allSpecs[spec.name] = spec
     }
 
-    override fun iterateOn(fn: (CompatUISpec) -> Unit) =
-        allSpecs.values.forEach(fn)
+    override fun iterateOn(fn: (CompatUISpec) -> Unit) = allSpecs.values.forEach(fn)
 
-    override fun findSpec(name: String): CompatUISpec? =
-        allSpecs[name]
+    override fun findSpec(name: String): CompatUISpec? = allSpecs[name]
 }

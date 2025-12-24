@@ -19,12 +19,14 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Rect
+import android.hardware.display.DisplayManager
 import android.platform.test.flag.junit.SetFlagsRule
 import android.platform.test.rule.AllowedDevices
 import android.platform.test.rule.DeviceProduct
 import android.platform.test.rule.IgnoreLimit
 import android.platform.test.rule.LimitDevicesRule
 import android.util.DisplayMetrics
+import android.view.Display.DEFAULT_DISPLAY
 import android.view.Surface
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.platform.app.InstrumentationRegistry
@@ -37,6 +39,7 @@ import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.FakePrefsModule
 import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.SandboxContext
+import com.android.launcher3.util.TaskbarModeUtil
 import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.rule.TestStabilityRule
 import com.android.launcher3.util.rule.setFlags
@@ -71,6 +74,7 @@ abstract class AbstractDeviceProfileTest {
     protected lateinit var context: SandboxContext
     protected open val runningContext: Context = getApplicationContext()
     private val displayController: DisplayController = mock()
+    private val mTaskbarModeUtil: TaskbarModeUtil = mock()
     private val windowManagerProxy: WindowManagerProxy = mock()
     private lateinit var launcherPrefs: LauncherPrefs
 
@@ -317,10 +321,9 @@ abstract class AbstractDeviceProfileTest {
         gridName: String? = GRID_NAME.defaultValue,
     ) {
         setFlagsRule.setFlags(true, Flags.FLAG_ENABLE_TWOLINE_TOGGLE)
-        // TODO: re-enable as part of b/396211437
-        setFlagsRule.setFlags(false, Flags.FLAG_ENABLE_LAUNCHER_ICON_SHAPES)
         val windowsBounds = perDisplayBoundsCache[displayInfo]!!
         val realBounds = windowsBounds[rotation]
+        whenever(mTaskbarModeUtil.isTransient).thenReturn(isGestureMode)
         whenever(windowManagerProxy.getDisplayInfo(any())).thenReturn(displayInfo)
         whenever(windowManagerProxy.getRealBounds(any(), any())).thenReturn(realBounds)
         whenever(windowManagerProxy.getCurrentBounds(any())).thenReturn(realBounds.bounds)
@@ -341,12 +344,18 @@ abstract class AbstractDeviceProfileTest {
                 screenHeightDp = (realBounds.bounds.height() / density).toInt()
                 smallestScreenWidthDp = min(screenWidthDp, screenHeightDp)
             }
-        val configurationContext = runningContext.createConfigurationContext(config)
+        val displayContext =
+            runningContext
+                .getSystemService(DisplayManager::class.java)
+                ?.getDisplay(DEFAULT_DISPLAY)
+                ?.let { runningContext.createDisplayContext(it) } ?: runningContext
+        val configurationContext = displayContext.createConfigurationContext(config)
         context = SandboxContext(configurationContext)
         context.initDaggerComponent(
             DaggerAbsDPTestSandboxComponent.builder()
                 .bindWMProxy(windowManagerProxy)
                 .bindDisplayController(displayController)
+                .bindTaskbarUtil(mTaskbarModeUtil)
         )
         launcherPrefs = context.appComponent.launcherPrefs
         launcherPrefs.put(
@@ -374,7 +383,6 @@ abstract class AbstractDeviceProfileTest {
                 )
             )
         whenever(displayController.info).thenReturn(info)
-        whenever(info.isTransientTaskbar).thenReturn(isGestureMode)
     }
 
     /** Asserts that the given device profile matches a previously dumped device profile state. */
@@ -423,6 +431,8 @@ interface AbsDPTestSandboxComponent : LauncherAppComponent {
         @BindsInstance fun bindWMProxy(proxy: WindowManagerProxy): Builder
 
         @BindsInstance fun bindDisplayController(displayController: DisplayController): Builder
+
+        @BindsInstance fun bindTaskbarUtil(taskabrUtil: TaskbarModeUtil): Builder
 
         override fun build(): AbsDPTestSandboxComponent
     }

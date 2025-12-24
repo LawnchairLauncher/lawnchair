@@ -140,10 +140,10 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         val dp = activity.deviceProfile
         val cellWidth = DeviceProfile.calculateCellWidth(
             requestedWidth,
-            dp.cellLayoutBorderSpacePx.x,
+            dp.mWorkspaceProfile.cellLayoutBorderSpacePx.x,
             dp.numShownHotseatIcons,
         )
-        val iconSize = (dp.iconSizePx * 0.92f).toInt()
+        val iconSize = (dp.mWorkspaceProfile.iconSizePx * 0.92f).toInt()
         val widthReduction = cellWidth - iconSize
         val width = requestedWidth - widthReduction
         setMeasuredDimension(width, height)

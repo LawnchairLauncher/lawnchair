@@ -16,9 +16,6 @@
 
 package com.android.wm.shell.windowdecor
 
-/**
- * Abstract decorator for a [TaskPositioner].
- */
-abstract class AbstractTaskPositionerDecorator(
-    private val taskPositioner: TaskPositioner
-) : TaskPositioner by taskPositioner
+/** Abstract decorator for a [TaskPositioner]. */
+abstract class AbstractTaskPositionerDecorator(private val taskPositioner: TaskPositioner) :
+    TaskPositioner by taskPositioner

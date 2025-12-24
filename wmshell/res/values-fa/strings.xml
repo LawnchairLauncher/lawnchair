@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"این برنامه از حبابک پشتیبانی نمی‌کند"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"تقسیم‌کننده صفحهٔ دونیمه"</string>
     <string name="divider_title" msgid="1963391955593749442">"تقسیم‌کننده صفحهٔ دونیمه"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"تمام‌صفحه چپ"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"٪۷۰ چپ"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"٪۵۰ چپ"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"٪۳۰ چپ"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"تمام‌صفحه راست"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"جابه‌جا کردن برنامه بالا با پایین"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"جابه‌جا کردن برنامه چپ با راست"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"تمام‌صفحه بالا"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"٪۷۰ بالا"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"٪۵۰ بالا"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"٪۳۰ بالا"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"تمام‌صفحه پایین"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"تمام‌صفحه کردن برنامه سمت چپ"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"‏‫‎٪۱۰ چپ، ‎٪۹۰ راست"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"‏‫‎٪۳۰ چپ، ‎٪۷۰ راست"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"‏‫‎٪۵۰ چپ، ‎٪۵۰ راست"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"‏‫‎٪۷۰ چپ، ‎٪۳۰ راست"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"‏‫‎٪۹۰ چپ، ‎٪۱۰ راست"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"تمام‌صفحه کردن برنامه سمت راست"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"جابه‌جا کردن برنامه بالایی با برنامه پایینی، و حفظ کردن تقسیم‌بندی فعلی"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"جابه‌جا کردن برنامه سمت چپ با برنامه سمت راست، و حفظ کردن تقسیم‌بندی فعلی"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"تمام‌صفحه کردن برنامه بالایی"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"‏‫‎٪۱۰ بالا، ‎٪۹۰ پایین"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"‏‫‎٪۳۰ بالا، ‎٪۷۰ پایین"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"‏‫‎٪۵۰ بالا، ‎٪۵۰ پایین"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"‏‫‎٪۷۰ بالا، ‎٪۳۰ پایین"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"‏‫‎٪۹۰ بالا، ‎٪۱۰ پایین"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"تمام‌صفحه کردن برنامه پایینی"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"تقسیم از چپ"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"تقسیم از راست"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"تقسیم از بالا"</string>
@@ -147,9 +151,9 @@
     <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> (کانونی‌شده)"</string>
     <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> (کانونی‌نشده)"</string>
     <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"فراگیر"</string>
-    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"بازیابی"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"بازگرداندن"</string>
     <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"بزرگ کردن"</string>
-    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"بازیابی کردن"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"بازگرداندن"</string>
     <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"کشیدن به‌چپ"</string>
     <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"کشیدن به‌راست"</string>
     <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"تغییر اندازه پنجره برنامه در چپ"</string>

@@ -22,7 +22,7 @@ import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_BACK;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
 
-import static com.android.window.flags.Flags.enableHandlersDebuggingMode;
+import static com.android.window.flags2.Flags.enableHandlersDebuggingMode;
 import static com.android.wm.shell.Flags.FLAG_TASK_VIEW_TRANSITIONS_REFACTOR;
 import static com.android.wm.shell.Flags.taskViewTransitionsRefactor;
 import static com.android.wm.shell.transition.TransitionDispatchState.CAPTURED_UNRELATED_CHANGE;
@@ -57,6 +57,7 @@ import androidx.test.filters.SmallTest;
 
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.ShellTestCase;
+import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.common.SyncTransactionQueue;
 import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper;
 import com.android.wm.shell.transition.TransitionDispatchState;
@@ -345,6 +346,21 @@ public class TaskViewTransitionStartAnimationTest extends ShellTestCase {
     }
 
     @Test
+    public void openTask_onlyAlienChanges_notHandled() {
+        // Builds a transition with ONLY a non-TaskView change.
+        final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_OPEN)
+                .addChange(getTask(TRANSIT_OPEN, false /* registered */))
+                .build();
+
+        final boolean handled = mTaskViewTransitions.startAnimation(
+                mock(IBinder.class), info, mStartTransaction, mFinishTransaction, mFinishCallback);
+
+        assertWithMessage("Handler should not consume alien-only transition")
+                .that(handled).isFalse();
+        verify(mFinishCallback, never()).onTransitionFinished(any());
+    }
+
+    @Test
     public void showTaskViewHandled() {
         TaskViewTransitions.PendingTransition pending =
                 setPendingTransaction(true /* visible*/, false /* opening */);
@@ -361,6 +377,23 @@ public class TaskViewTransitionStartAnimationTest extends ShellTestCase {
         verify(mFinishCallback).onTransitionFinished(wctCaptor.capture());
         WindowContainerTransaction wct = wctCaptor.getValue();
         prepareOpenAnimationAssertions(pending, wct, false /* newTask */, mTokenBinder);
+    }
+
+    @Test
+    public void showTaskView_whenSurfaceDestroyed_notHandled() {
+        assumeTrue(taskViewTransitionsRefactor());
+
+        // Simulate the surface being destroyed (e.g. a collapsed bubble being relaunched).
+        when(mTaskViewTaskController.prepareOpen(any(), any())).thenReturn(null);
+        final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_TO_FRONT)
+                .addChange(getTaskView(TRANSIT_TO_FRONT)).build();
+
+        final boolean handled = mTaskViewTransitions.startAnimation(mock(IBinder.class), info,
+                mStartTransaction, mFinishTransaction, mFinishCallback);
+
+        assertWithMessage("Handler should defer the transition when the surface is not ready")
+                .that(handled).isFalse();
+        verify(mFinishCallback, never()).onTransitionFinished(any());
     }
 
     @Test
@@ -382,6 +415,47 @@ public class TaskViewTransitionStartAnimationTest extends ShellTestCase {
         verify(mFinishCallback).onTransitionFinished(wctCaptor.capture());
         WindowContainerTransaction wct = wctCaptor.getValue();
         prepareOpenAnimationAssertions(pending, wct, true /* newTask */, mUnregisteredTokenBinder);
+    }
+
+    @Test
+    public void testMergeAnimation_dispatchDisplayTransition() {
+        assumeTrue(com.android.wm.shell.Flags.fixTaskViewRotationAnimation());
+
+        final TransitionInfo.Change displayChange = new TransitionInfo.Change(
+                /* container= */ null, new SurfaceControl());
+        displayChange.setStartAbsBounds(new Rect(0, 0, 500, 1000));
+        displayChange.setEndAbsBounds(new Rect(0, 0, 1000, 500));
+        displayChange.setMode(TRANSIT_CHANGE);
+        displayChange.setFlags(TransitionInfo.FLAG_IS_DISPLAY);
+        final TransitionInfo.Change taskViewChange = getTaskView(TRANSIT_CHANGE);
+        final TransitionInfo displayChangeInfo = new TransitionInfoBuilder(TRANSIT_CHANGE)
+                .addChange(taskViewChange).addChange(displayChange).build();
+        when(mTransitions.getMainExecutor()).thenReturn(mock(ShellExecutor.class));
+        final IBinder displayTransition = mock(IBinder.class);
+        final boolean handled = mTaskViewTransitions.startAnimation(displayTransition,
+                displayChangeInfo, mStartTransaction, mFinishTransaction, mFinishCallback);
+
+        assertWithMessage("Handler should have consumed display change transition")
+                .that(handled).isTrue();
+        assertWithMessage("TaskView change should be consumed")
+                .that(displayChangeInfo.getChanges()).doesNotContain(taskViewChange);
+        verify(mFinishCallback, never()).onTransitionFinished(any());
+
+        // Assume that TaskViewTransitions#setTaskBounds starts another transition.
+        final IBinder setTaskBoundsTransition = mock(IBinder.class);
+        final TransitionInfo.Change boundsChange = getTaskView(TRANSIT_CHANGE);
+        final Rect newBounds = new Rect(100, 100, 500, 500);
+        when(boundsChange.getEndAbsBounds()).thenReturn(newBounds);
+        final TransitionInfo mergeTransitionInfo = new TransitionInfoBuilder(TRANSIT_CHANGE)
+                .addChange(boundsChange).build();
+        mTaskViewTransitions.mergeAnimation(displayTransition, mergeTransitionInfo,
+                mStartTransaction, mFinishTransaction, setTaskBoundsTransition, mFinishCallback);
+
+        verify(mStartTransaction).setWindowCrop(eq(boundsChange.getLeash()),
+                eq(newBounds.width()), eq(newBounds.height()));
+        verify(mTransitions).dispatchTransition(eq(displayTransition), eq(displayChangeInfo),
+                eq(mStartTransaction), eq(mFinishTransaction),
+                eq(mFinishCallback), eq(mTaskViewTransitions));
     }
 
     @Test
@@ -416,6 +490,22 @@ public class TaskViewTransitionStartAnimationTest extends ShellTestCase {
         assertWithMessage("Handler should have consumed transition")
                 .that(handled).isTrue();
         verify(mTaskViewTaskController, never()).prepareCloseAnimation();
+    }
+
+    @Test
+    public void closingTask_withMixedChanges_notHandled() {
+        // Builds a transition with both a TaskView change and a non-TaskView change.
+        final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_CLOSE)
+                .addChange(getTaskView(TRANSIT_CLOSE))
+                .addChange(getTask(TRANSIT_TO_FRONT, false /* registered */))
+                .build();
+
+        final boolean handled = mTaskViewTransitions.startAnimation(
+                mock(IBinder.class), info, mStartTransaction, mFinishTransaction, mFinishCallback);
+
+        assertWithMessage("Handler should not consume mixed changes transition")
+                .that(handled).isFalse();
+        verify(mFinishCallback, never()).onTransitionFinished(any());
     }
 
     /**

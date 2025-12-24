@@ -16,8 +16,10 @@
 
 package com.android.quickstep.input
 
+import android.Manifest.permission.MANAGE_KEY_GESTURES
 import android.app.PendingIntent
 import android.content.Context
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.hardware.input.InputManager
 import android.hardware.input.InputManager.KeyGestureEventHandler
 import android.hardware.input.KeyGestureEvent
@@ -25,31 +27,43 @@ import android.hardware.input.KeyGestureEvent.ACTION_GESTURE_COMPLETE
 import android.hardware.input.KeyGestureEvent.KEY_GESTURE_TYPE_ALL_APPS
 import android.hardware.input.KeyGestureEvent.KEY_GESTURE_TYPE_RECENT_APPS
 import android.hardware.input.KeyGestureEvent.KEY_GESTURE_TYPE_RECENT_APPS_SWITCHER
+import android.hardware.input.KeyGestureEvent.KEY_GESTURE_TYPE_REJECT_HOME_ON_EXTERNAL_DISPLAY
 import android.net.Uri
 import android.os.IBinder
 import android.provider.Settings
 import android.provider.Settings.Secure.USER_SETUP_COMPLETE
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import com.android.launcher3.dagger.ApplicationContext
+import com.android.launcher3.dagger.LauncherAppSingleton
+import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SettingsCache
 import com.android.launcher3.util.SettingsCache.OnChangeListener
+import com.android.quickstep.OverviewCommandHelper
+import com.android.quickstep.dagger.QuickstepBaseAppComponent
 import com.android.quickstep.input.QuickstepKeyGestureEventsManager.OverviewGestureHandler.OverviewType.ALT_TAB
 import com.android.quickstep.input.QuickstepKeyGestureEventsManager.OverviewGestureHandler.OverviewType.UNDEFINED
 import com.android.window.flags2.Flags
+import javax.inject.Inject
 
 /**
  * Manages subscription and unsubscription to launcher's key gesture events, e.g. all apps and
  * recents (incl. alt + tab).
  */
-class QuickstepKeyGestureEventsManager(context: Context) {
-    private val settingsCache = SettingsCache.INSTANCE[context]
+@LauncherAppSingleton
+class QuickstepKeyGestureEventsManager
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val settingsCache: SettingsCache,
+) {
     @VisibleForTesting
     val onUserSetupCompleteListener = OnChangeListener { isUserSetupCompleted = it }
     private val inputManager = requireNotNull(context.getSystemService(InputManager::class.java))
     private var allAppsPendingIntent: PendingIntent? = null
     private var overviewGestureHandler: OverviewGestureHandler? = null
-    private var isUserSetupCompleted: Boolean =
-        settingsCache.getValue(USER_SETUP_COMPLETE_URI, /* defaultValue= */ 0)
+    private var overviewCommandHelper: OverviewCommandHelper? = null
+    private var isUserSetupCompleted: Boolean = settingsCache.getValue(USER_SETUP_COMPLETE_URI)
 
     init {
         settingsCache.register(USER_SETUP_COMPLETE_URI, onUserSetupCompleteListener)
@@ -59,7 +73,7 @@ class QuickstepKeyGestureEventsManager(context: Context) {
     val allAppsKeyGestureEventHandler =
         object : KeyGestureEventHandler {
             override fun handleKeyGestureEvent(event: KeyGestureEvent, focusedToken: IBinder?) {
-                if (!Flags.grantManageKeyGesturesToRecents()) {
+                if (!isManageKeyGesturesGrantedToRecents()) {
                     return
                 }
                 if (!isUserSetupCompleted) {
@@ -76,11 +90,12 @@ class QuickstepKeyGestureEventsManager(context: Context) {
                 allAppsPendingIntent?.send()
             }
         }
+
     @VisibleForTesting
     val overviewKeyGestureEventHandler =
         object : KeyGestureEventHandler {
             override fun handleKeyGestureEvent(event: KeyGestureEvent, focusedToken: IBinder?) {
-                if (!Flags.grantManageKeyGesturesToRecents()) {
+                if (!isManageKeyGesturesGrantedToRecents()) {
                     return
                 }
                 if (!isUserSetupCompleted) {
@@ -112,39 +127,117 @@ class QuickstepKeyGestureEventsManager(context: Context) {
             }
         }
 
-    /** Registers the all apps key gesture events. */
+    @VisibleForTesting
+    val homeKeyGestureEventHandler =
+        object : KeyGestureEventHandler {
+            override fun handleKeyGestureEvent(event: KeyGestureEvent, focusedToken: IBinder?) {
+                if (!isManageKeyGesturesGrantedToRecents()) {
+                    return
+                }
+                if (!isUserSetupCompleted) {
+                    return
+                }
+
+                if (event.keyGestureType != KEY_GESTURE_TYPE_REJECT_HOME_ON_EXTERNAL_DISPLAY) {
+                    Log.e(TAG, "Ignore unsupported key gesture event type: ${event.keyGestureType}")
+                    return
+                }
+
+                overviewCommandHelper?.addCommand(
+                    OverviewCommandHelper.CommandType.HOME,
+                    event.displayId,
+                )
+            }
+        }
+
+    /**
+     * Registers the all apps key gesture events.
+     *
+     * Subsequent registrations are ignored until [unregisterAllAppsKeyGestureEvent] is called.
+     */
     fun registerAllAppsKeyGestureEvent(allAppsPendingIntent: PendingIntent) {
-        if (Flags.grantManageKeyGesturesToRecents()) {
-            this.allAppsPendingIntent = allAppsPendingIntent
-            inputManager.registerKeyGestureEventHandler(
-                listOf(KEY_GESTURE_TYPE_ALL_APPS),
-                allAppsKeyGestureEventHandler,
-            )
+        if (isManageKeyGesturesGrantedToRecents()) {
+            synchronized(this) {
+                if (this.allAppsPendingIntent != null) {
+                    Log.w(TAG, "All apps key gesture has already been registered. Ignored.")
+                    return
+                }
+                this.allAppsPendingIntent = allAppsPendingIntent
+                inputManager.registerKeyGestureEventHandler(
+                    listOf(KEY_GESTURE_TYPE_ALL_APPS),
+                    allAppsKeyGestureEventHandler,
+                )
+            }
         }
     }
 
     /** Unregisters the all apps key gesture events. */
     fun unregisterAllAppsKeyGestureEvent() {
-        if (Flags.grantManageKeyGesturesToRecents()) {
-            inputManager.unregisterKeyGestureEventHandler(allAppsKeyGestureEventHandler)
+        if (isManageKeyGesturesGrantedToRecents()) {
+            synchronized(this) {
+                inputManager.unregisterKeyGestureEventHandler(allAppsKeyGestureEventHandler)
+                this.allAppsPendingIntent = null
+            }
         }
     }
 
-    /** Registers the overview key gesture events. */
+    /**
+     * Registers the overview key gesture events.
+     *
+     * Subsequent registrations are ignored until [unregisterOverviewKeyGestureEvent] is called.
+     */
     fun registerOverviewKeyGestureEvent(overviewGestureHandler: OverviewGestureHandler) {
-        if (Flags.grantManageKeyGesturesToRecents()) {
-            this.overviewGestureHandler = overviewGestureHandler
-            inputManager.registerKeyGestureEventHandler(
-                listOf(KEY_GESTURE_TYPE_RECENT_APPS, KEY_GESTURE_TYPE_RECENT_APPS_SWITCHER),
-                overviewKeyGestureEventHandler,
-            )
+        if (isManageKeyGesturesGrantedToRecents()) {
+            synchronized(this) {
+                if (this.overviewGestureHandler != null) {
+                    Log.w(TAG, "Overview key gesture has already been registered. Ignored.")
+                    return
+                }
+                this.overviewGestureHandler = overviewGestureHandler
+                inputManager.registerKeyGestureEventHandler(
+                    listOf(KEY_GESTURE_TYPE_RECENT_APPS, KEY_GESTURE_TYPE_RECENT_APPS_SWITCHER),
+                    overviewKeyGestureEventHandler,
+                )
+            }
         }
     }
 
     /** Unregisters the overview key gesture events. */
     fun unregisterOverviewKeyGestureEvent() {
-        if (Flags.grantManageKeyGesturesToRecents()) {
-            inputManager.unregisterKeyGestureEventHandler(overviewKeyGestureEventHandler)
+        if (isManageKeyGesturesGrantedToRecents()) {
+            synchronized(this) {
+                inputManager.unregisterKeyGestureEventHandler(overviewKeyGestureEventHandler)
+                this.overviewGestureHandler = null
+            }
+        }
+    }
+
+    fun registerHomeKeyGestureEvent(overviewCommandHelper: OverviewCommandHelper) {
+        if (!isManageKeyGesturesGrantedToRecents()) {
+            return
+        }
+        synchronized(this) {
+            if (this.overviewCommandHelper != null) {
+                Log.w(TAG, "Overview command helper has already been registered. Ignored.")
+                return
+            }
+            this.overviewCommandHelper = overviewCommandHelper
+            inputManager.registerKeyGestureEventHandler(
+                listOf(KEY_GESTURE_TYPE_REJECT_HOME_ON_EXTERNAL_DISPLAY),
+                homeKeyGestureEventHandler,
+            )
+        }
+    }
+
+    /** Unregisters the home key gesture events. */
+    @VisibleForTesting
+    fun unregisterHomeKeyGestureEvent() {
+        if (!isManageKeyGesturesGrantedToRecents()) {
+            return
+        }
+        synchronized(this) {
+            inputManager.unregisterKeyGestureEventHandler(homeKeyGestureEventHandler)
+            this.overviewCommandHelper = null
         }
     }
 
@@ -152,7 +245,12 @@ class QuickstepKeyGestureEventsManager(context: Context) {
         settingsCache.unregister(USER_SETUP_COMPLETE_URI, onUserSetupCompleteListener)
         unregisterOverviewKeyGestureEvent()
         unregisterAllAppsKeyGestureEvent()
+        unregisterHomeKeyGestureEvent()
     }
+
+    private fun isManageKeyGesturesGrantedToRecents(): Boolean =
+        Flags.grantManageKeyGesturesToRecents() &&
+            context.checkSelfPermission(MANAGE_KEY_GESTURES) == PERMISSION_GRANTED
 
     /** Callbacks for overview events, including alt + tab. */
     interface OverviewGestureHandler {
@@ -172,5 +270,11 @@ class QuickstepKeyGestureEventsManager(context: Context) {
     private companion object {
         const val TAG = "KeyGestureEventsHandler"
         val USER_SETUP_COMPLETE_URI: Uri = Settings.Secure.getUriFor(USER_SETUP_COMPLETE)
+
+        @JvmStatic
+        val INSTANCE: DaggerSingletonObject<QuickstepKeyGestureEventsManager> =
+            DaggerSingletonObject<QuickstepKeyGestureEventsManager>(
+                QuickstepBaseAppComponent::getQuickstepKeyGestureEventsManager
+            )
     }
 }

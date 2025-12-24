@@ -174,9 +174,22 @@ public class PipTransitionStateTest extends ShellTestCase {
     }
 
     @Test
+    public void testShouldTransitionToState_changingPipBounds_afterScheduling_returnsTrue() {
+        Bundle extra = new Bundle();
+        extra.putParcelable(EXTRA_ENTRY_KEY, mEmptyParcelable);
+        mPipTransitionState.setState(PipTransitionState.ENTERED_PIP);
+        mPipTransitionState.setState(PipTransitionState.SCHEDULED_BOUNDS_CHANGE, extra);
+
+        Assert.assertTrue(mPipTransitionState.shouldTransitionToState(
+                PipTransitionState.CHANGING_PIP_BOUNDS));
+    }
+
+    @Test
     public void shouldTransitionToState_scheduledBoundsChangeWhileChangingBounds_returnsFalse() {
         Bundle extra = new Bundle();
         extra.putParcelable(EXTRA_ENTRY_KEY, mEmptyParcelable);
+        mPipTransitionState.setState(PipTransitionState.ENTERED_PIP);
+        mPipTransitionState.setState(PipTransitionState.SCHEDULED_BOUNDS_CHANGE, extra);
         mPipTransitionState.setState(PipTransitionState.CHANGING_PIP_BOUNDS, extra);
 
         Assert.assertFalse(mPipTransitionState.shouldTransitionToState(
@@ -187,6 +200,7 @@ public class PipTransitionStateTest extends ShellTestCase {
     public void testResetSameState_scheduledBoundsChange_doNotDispatchStateChanged() {
         Bundle extra = new Bundle();
         extra.putParcelable(EXTRA_ENTRY_KEY, mEmptyParcelable);
+        mPipTransitionState.setState(PipTransitionState.ENTERED_PIP);
         mPipTransitionState.setState(PipTransitionState.SCHEDULED_BOUNDS_CHANGE, extra);
 
         mStateChangedListener = mock(PipTransitionState.PipTransitionStateChangedListener.class);
@@ -202,6 +216,8 @@ public class PipTransitionStateTest extends ShellTestCase {
         // Choose an initial state.
         Bundle extra = new Bundle();
         extra.putParcelable(EXTRA_ENTRY_KEY, mEmptyParcelable);
+        mPipTransitionState.setState(PipTransitionState.ENTERED_PIP);
+        mPipTransitionState.setState(PipTransitionState.SCHEDULED_BOUNDS_CHANGE, extra);
         mPipTransitionState.setState(PipTransitionState.CHANGING_PIP_BOUNDS, extra);
 
         // Add the same PiP transition state changed listener twice.
@@ -250,6 +266,8 @@ public class PipTransitionStateTest extends ShellTestCase {
         // pick a non-idle state
         Bundle extra = new Bundle();
         extra.putParcelable(EXTRA_ENTRY_KEY, mEmptyParcelable);
+        mPipTransitionState.setState(PipTransitionState.ENTERED_PIP);
+        mPipTransitionState.setState(PipTransitionState.SCHEDULED_BOUNDS_CHANGE, extra);
         mPipTransitionState.setState(PipTransitionState.CHANGING_PIP_BOUNDS, extra);
 
         final Runnable onIdleRunnable = () -> {};
@@ -268,14 +286,16 @@ public class PipTransitionStateTest extends ShellTestCase {
     }
 
     @Test
-    public void testSetIsPipBoundsChangingWithDisplay_toFalse_thenIdle() {
+    public void testSetIsDisplayChangeScheduled_toFalse_thenIdleWithoutRunnableSent() {
         when(mMainHandler.obtainMessage(anyInt())).thenAnswer(invocation ->
                 new Message().setWhat(invocation.getArgument(0)));
 
         // Pick an initially idle ENTERED_PIP state
         mPipTransitionState.setState(PipTransitionState.ENTERED_PIP);
+
         // Enter an non-idle state as PiP bounds change with the display
-        mPipTransitionState.setIsPipBoundsChangingWithDisplay(true);
+        mPipTransitionState.setIsDisplayChangeScheduled(true);
+        Assert.assertFalse("PiP should not be idle", mPipTransitionState.isPipStateIdle());
 
         final Runnable onIdleRunnable = mock(Runnable.class);
         mPipTransitionState.setOnIdlePipTransitionStateRunnable(onIdleRunnable);
@@ -283,9 +303,10 @@ public class PipTransitionStateTest extends ShellTestCase {
         // We are supposed to be in a non-idle state, so the runnable should not be posted yet.
         verify(mMainHandler, never()).sendMessage(any());
 
-        mPipTransitionState.setIsPipBoundsChangingWithDisplay(false);
-        verify(mMainHandler, times(1))
-                .sendMessage(argThat(msg -> msg.getCallback() == onIdleRunnable));
+        mPipTransitionState.setIsDisplayChangeScheduled(false);
+        // We aren't supposed to post the on-idle runnable upon reset of display change scheduled
+        // flag, as we are expected to be put back into a non-idle state while display change plays.
+        verify(mMainHandler, never()).sendMessage(any());
     }
 
     @Test

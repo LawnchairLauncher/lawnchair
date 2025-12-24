@@ -39,7 +39,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.AppPairInfo;
@@ -123,6 +122,12 @@ public class SplitToWorkspaceController {
             intent = workspaceItemInfo.intent;
             user = workspaceItemInfo.user;
             bitmapInfo = workspaceItemInfo.bitmap;
+            if (workspaceItemInfo.hasStatusFlag(WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON)) {
+                // If the app is still in the middle of installation, prompt the user to select
+                // something else by wiggling the instructions view
+                mController.getSplitInstructionsView().goBoing();
+                return true;
+            }
         } else if (tag instanceof com.android.launcher3.model.data.AppInfo) {
             final com.android.launcher3.model.data.AppInfo appInfo =
                     (com.android.launcher3.model.data.AppInfo) tag;
@@ -140,7 +145,7 @@ public class SplitToWorkspaceController {
         // Check for background task matching this tag; if we find one, set second task
         // via task instead of intent so the bounds and windowing mode will be corrected.
         mController.findLastActiveTasksAndRunCallback(
-                Collections.singletonList(((ItemInfo) tag).getComponentKey()),
+                Collections.singletonList(((ItemInfo) tag).getResolvedTargetInfo()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
                     Task foundTask = foundTasks[0];

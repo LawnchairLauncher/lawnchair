@@ -43,11 +43,14 @@ import android.window.TransitionInfo.Change;
 import android.window.WindowAnimationState;
 
 import com.android.internal.annotations.GuardedBy;
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.util.IndentingPrintWriter;
 import com.android.systemui.animation.shared.IOriginTransitions;
 import com.android.wm.shell.shared.ShellTransitions;
 import com.android.wm.shell.shared.TransitionUtil;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.Predicate;
@@ -80,8 +83,44 @@ public class IOriginTransitionsImpl extends IOriginTransitions.Stub {
         }
         enforceRemoteTransitionPermission();
         synchronized (mLock) {
+            // for compatibility, wrap the single return transition in a map to create the
+            // corresponding record. Since no filters are provided here, default will be provided.
+            final Map<RemoteTransition, TransitionFilter> returnTransitions = new HashMap<>();
+            returnTransitions.put(returnTransition, null);
             OriginTransitionRecord record =
-                    new OriginTransitionRecord(launchTransition, returnTransition);
+                    new OriginTransitionRecord(launchTransition, returnTransitions);
+            mRecords.put(record.getToken(), record);
+            return record.asLaunchableTransition();
+        }
+    }
+
+    @Override
+    public RemoteTransition makeOriginTransitionWithReturnFilters(
+            RemoteTransition launchTransition,
+            List<RemoteTransition> returnTransitions,
+            List<TransitionFilter> filters)
+            throws RemoteException {
+        if (DEBUG) {
+            Log.d(
+                    TAG,
+                    "makeOriginTransitionWithReturnFilters: ("
+                            + launchTransition + ", "
+                            + filters + ", "
+                            + returnTransitions + ")");
+        }
+        enforceRemoteTransitionPermission();
+        if (filters.size() != returnTransitions.size() || returnTransitions.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Lists of return transitions and filters must be the same size (non-empty).");
+        }
+        // Wrap the return transitions and corresponding filters in a map to create the record.
+        final Map<RemoteTransition, TransitionFilter> returnTransitionMap = new HashMap<>();
+        for (int i = 0; i < returnTransitions.size(); i++) {
+            returnTransitionMap.put(returnTransitions.get(i), filters.get(i));
+        }
+        synchronized (mLock) {
+            OriginTransitionRecord record =
+                    new OriginTransitionRecord(launchTransition, returnTransitionMap);
             mRecords.put(record.getToken(), record);
             return record.asLaunchableTransition();
         }
@@ -234,41 +273,84 @@ public class IOriginTransitionsImpl extends IOriginTransitions.Stub {
     /** A data record containing the origin transition pieces. */
     private class OriginTransitionRecord implements IBinder.DeathRecipient {
         private final RemoteTransition mWrappedLaunchTransition;
-        private final RemoteTransition mWrappedReturnTransition;
+        private final Map<RemoteTransition, TransitionFilter> mWrappedReturnTransitionMap;
 
         @GuardedBy("mLock")
         private boolean mDestroyed;
 
-        OriginTransitionRecord(RemoteTransition launchTransition, RemoteTransition returnTransition)
-                throws RemoteException {
-            mWrappedLaunchTransition = wrap(launchTransition, this::onLaunchTransitionStarting);
-            mWrappedReturnTransition = wrap(returnTransition, this::onReturnTransitionStarting);
+        OriginTransitionRecord(
+                RemoteTransition launchTransition,
+                Map<RemoteTransition, TransitionFilter> returnTransitionsMap
+        ) throws RemoteException {
+            mWrappedLaunchTransition =
+                    wrapLaunch(launchTransition, this::onLaunchTransitionStarting);
+            mWrappedReturnTransitionMap =
+                    wrapReturns(returnTransitionsMap, this::onReturnTransitionStarting);
             linkToDeath();
         }
 
         private boolean onLaunchTransitionStarting(TransitionInfo info) {
             synchronized (mLock) {
-                if (mDestroyed) {
+                if (mDestroyed || mWrappedReturnTransitionMap.isEmpty()) {
                     return false;
                 }
-                TransitionFilter filter =
-                        createFilterForReverseTransition(
-                                info, /* forPredictiveBackTakeover= */ false);
-                if (filter != null) {
-                    if (DEBUG) {
-                        Log.d(TAG, "Registering filter " + filter);
+                final TransitionInfoContainer tic = TransitionInfoContainer.extractInfo(info);
+
+                int registeredRemotes = 0;
+                for (Map.Entry<RemoteTransition, TransitionFilter> entry
+                        : mWrappedReturnTransitionMap.entrySet()) {
+                    RemoteTransition t = entry.getKey();
+                    TransitionFilter f = entry.getValue();
+
+                    if (f == null) {
+                        // a single transition with no filters represents a default case so we
+                        // simply construct default filters & register
+                        TransitionFilter filter =
+                                createReturnTransitionFilter(/* forTakeover= */ false);
+                        filter = updateTransitionFilterForInfo(filter, tic);
+                        if (filter != null) {
+                            if (DEBUG) {
+                                Log.d(TAG, "Registering filter " + filter);
+                            }
+                            mShellTransitions.registerRemote(filter, t);
+                            registeredRemotes++;
+                        } else {
+                            Log.w(TAG, "Failed to update default filter:" + filter);
+                        }
+                        TransitionFilter takeoverFilter =
+                                createReturnTransitionFilter(/* forTakeover= */ true);
+                        takeoverFilter = updateTransitionFilterForInfo(takeoverFilter, tic);
+                        if (takeoverFilter != null) {
+                            if (DEBUG) {
+                                Log.d(TAG, "Registering filter for takeover " + takeoverFilter);
+                            }
+                            mShellTransitions.registerRemoteForTakeover(
+                                    takeoverFilter, t);
+                            registeredRemotes++;
+                        } else {
+                            Log.w(TAG, "Failed to update takeover filter: " + takeoverFilter);
+                        }
+                    } else {
+                        // take the provided filters and update them with the required info
+                        TransitionFilter updatedFilter = updateTransitionFilterForInfo(f, tic);
+                        if (updatedFilter != null) {
+                            if (DEBUG) {
+                                Log.d(TAG, "Registering updated filter " + updatedFilter);
+                            }
+                            if (isFilterForTakeover(updatedFilter)) {
+                                mShellTransitions.registerRemoteForTakeover(updatedFilter, t);
+                            } else {
+                                mShellTransitions.registerRemote(updatedFilter, t);
+                            }
+                            registeredRemotes++;
+                        } else {
+                            Log.w(TAG, "Failed to update provided filter: " + f);
+                        }
                     }
-                    mShellTransitions.registerRemote(filter, mWrappedReturnTransition);
                 }
-                TransitionFilter takeoverFilter =
-                        createFilterForReverseTransition(
-                                info, /* forPredictiveBackTakeover= */ true);
-                if (takeoverFilter != null) {
-                    if (DEBUG) {
-                        Log.d(TAG, "Registering filter for takeover " + takeoverFilter);
-                    }
-                    mShellTransitions.registerRemoteForTakeover(
-                            takeoverFilter, mWrappedReturnTransition);
+                if (registeredRemotes == 0) {
+                    // clean up since we don't have anything that needs holding onto
+                    destroy();
                 }
                 return true;
             }
@@ -296,19 +378,26 @@ public class IOriginTransitionsImpl extends IOriginTransitions.Stub {
                 }
                 mDestroyed = true;
                 unlinkToDeath();
-                mShellTransitions.unregisterRemote(mWrappedReturnTransition);
+                // unregister potentially pending returns
+                for (RemoteTransition rt : mWrappedReturnTransitionMap.keySet()) {
+                    mShellTransitions.unregisterRemote(rt);
+                }
                 mRecords.remove(getToken());
             }
         }
 
         private void linkToDeath() throws RemoteException {
             asDelegate(mWrappedLaunchTransition).mTransition.asBinder().linkToDeath(this, 0);
-            asDelegate(mWrappedReturnTransition).mTransition.asBinder().linkToDeath(this, 0);
+            for (RemoteTransition rt : mWrappedReturnTransitionMap.keySet()) {
+                asDelegate(rt).mTransition.asBinder().linkToDeath(this, 0);
+            }
         }
 
         private void unlinkToDeath() {
             asDelegate(mWrappedLaunchTransition).mTransition.asBinder().unlinkToDeath(this, 0);
-            asDelegate(mWrappedReturnTransition).mTransition.asBinder().unlinkToDeath(this, 0);
+            for (RemoteTransition rt : mWrappedReturnTransitionMap.keySet()) {
+                asDelegate(rt).mTransition.asBinder().unlinkToDeath(this, 0);
+            }
         }
 
         public IBinder getToken() {
@@ -327,9 +416,9 @@ public class IOriginTransitionsImpl extends IOriginTransitions.Stub {
         @Override
         public String toString() {
             return "OriginTransitionRecord{launch="
-                    + mWrappedReturnTransition
-                    + ", return="
-                    + mWrappedReturnTransition
+                    + mWrappedLaunchTransition
+                    + ", returns="
+                    + mWrappedReturnTransitionMap.keySet()
                     + "}";
         }
 
@@ -342,9 +431,9 @@ public class IOriginTransitionsImpl extends IOriginTransitions.Stub {
                 ipw.increaseIndent();
                 ipw.println(mWrappedLaunchTransition);
                 ipw.decreaseIndent();
-                ipw.println("Return transition:");
+                ipw.println("Return transitions:");
                 ipw.increaseIndent();
-                ipw.println(mWrappedReturnTransition);
+                ipw.println(mWrappedReturnTransitionMap.keySet());
                 ipw.decreaseIndent();
                 ipw.decreaseIndent();
             }
@@ -354,124 +443,265 @@ public class IOriginTransitionsImpl extends IOriginTransitions.Stub {
             return (RemoteTransitionDelegate) transition.getRemoteTransition();
         }
 
-        private RemoteTransition wrap(
-                RemoteTransition transition, Predicate<TransitionInfo> onStarting) {
+        private RemoteTransition wrapLaunch(
+                RemoteTransition transition, Predicate<TransitionInfo> onLaunchStarting) {
+            if (DEBUG) {
+                Log.d(TAG, "wrapLaunch wrapping transition: " + transition);
+            }
             return new RemoteTransition(
                     new RemoteTransitionDelegate(
                             mContext.getMainExecutor(),
                             transition.getRemoteTransition(),
-                            onStarting),
+                            onLaunchStarting),
                     transition.getDebugName());
         }
 
+        private Map<RemoteTransition, TransitionFilter> wrapReturns(
+                Map<RemoteTransition, TransitionFilter> transitionMap,
+                Predicate<TransitionInfo> onReturnStarting) {
+            Map<RemoteTransition, TransitionFilter> wrappedTransitionMap = new HashMap<>();
+
+            RemoteTransition delegate;
+            for (Map.Entry<RemoteTransition, TransitionFilter> entry : transitionMap.entrySet()) {
+                RemoteTransition t = entry.getKey();
+                TransitionFilter f = entry.getValue();
+                if (DEBUG) {
+                    Log.d(TAG, "wrapReturn wrapping transition: " + t + " with filter: " + f);
+                }
+                delegate = new RemoteTransition(
+                        new RemoteTransitionDelegate(
+                                mContext.getMainExecutor(),
+                                t.getRemoteTransition(),
+                                onReturnStarting),
+                        t.getDebugName());
+
+                wrappedTransitionMap.put(delegate, f);
+            }
+
+            return wrappedTransitionMap;
+        }
+
+        /**
+         * Update the provided transition filter with applicable details from the current transition
+         * info from a given launch. The updated filter will have TopActivity and/or LaunchCookie
+         * details added to specific requirements as appropriate which can be used for matching
+         * app launches with their corresponding returns. If the update fails or is skipped for
+         * whatever reason, it will return null and no return animation will be registered for
+         * the launch.
+         *
+         * @param filter the TransitionFilter to be updated.
+         * @param info the TransitionInfo associated with a given app launch.
+         * @return the updated transition filter or null if the update failed.
+         */
         @Nullable
-        private static TransitionFilter createFilterForReverseTransition(
-                TransitionInfo info, boolean forPredictiveBackTakeover) {
+        private static TransitionFilter updateTransitionFilterForInfo(
+                TransitionFilter filter,
+                TransitionInfoContainer info) {
+
+            if (DEBUG) {
+                Log.d(
+                        TAG,
+                        "updateTransitionFilterForInfo:"
+                                + "\n\tfilter=" + filter
+                                + "\n\tlaunchingTaskInfo=" + info.launchingTaskInfo
+                                + "\n\tlaunchingActivity=" + info.launchingActivity
+                                + "\n\tlaunchedTaskInfo=" + info.launchedTaskInfo
+                                + "\n\tlaunchedActivity=" + info.launchedActivity);
+            }
+            if (info.launchingTaskInfo == null && info.launchingActivity == null) {
+                Log.w(
+                        TAG,
+                        "updateTransitionFilterForInfo: unable to find launching task or"
+                                + " launching activity!");
+                return null;
+            }
+            if (info.launchedTaskInfo == null && info.launchedActivity == null) {
+                Log.w(
+                        TAG,
+                        "updateTransitionFilterForInfo: unable to find launched task or launched"
+                                + " activity!");
+                return null;
+            }
+            if (info.launchedTaskInfo != null && info.launchedTaskInfo.launchCookies.isEmpty()) {
+                Log.w(
+                        TAG,
+                        "updateTransitionFilterForInfo: skipped - launched task has no launch"
+                                + " cookie!");
+                return null;
+            }
+            if (filter.mTypeSet == null || filter.mRequirements == null) {
+                Log.w(
+                        TAG,
+                        "updateTransitionFilterForInfo: skipped - invalid transition filter.");
+                return null;
+            }
+
+            boolean forPredictiveBackTakeover = isFilterForTakeover(filter);
+
+            if (forPredictiveBackTakeover && info.launchedTaskInfo == null) {
+                // Predictive back take over currently only support cross-task transition.
+                Log.d(
+                        TAG,
+                        "updateTransitionFilterForInfo: skipped - unable to find launched task"
+                                + " for predictive back takeover");
+                return null;
+            }
+
+            boolean hasOpeningModeRequirement = false;
+            boolean hasClosingChangeModeRequirement = false;
+            for (int i = 0; i < filter.mRequirements.length; i++) {
+                TransitionFilter.Requirement req = filter.mRequirements[i];
+                if (req.mNot) {
+                    Log.d(TAG, "updateTransitionFilterForInfo skipping exclusion req: " + req);
+                    continue;
+                }
+                if (isFilterModeOpening(req.mModes)) {
+                    req.mTopActivity =
+                            info.launchingActivity == null
+                                    ? info.launchingTaskInfo.topActivity : info.launchingActivity;
+                    Log.d(TAG, "updateTransitionFilterForInfo: "
+                            + "opening change expects topActivity: " + req.mTopActivity);
+                    hasOpeningModeRequirement = true;
+                } else if (isFilterModeClosingOrChange(req.mModes)) {
+                    if (info.launchedTaskInfo != null) {
+                        // For task transitions, the closing task's cookie must match the task we
+                        // just launched.
+                        req.mLaunchCookie = info.launchedTaskInfo.launchCookies.get(0);
+                        Log.d(TAG, "updateTransitionFilterForInfo: "
+                                + "closing change expects launch cookie: " + req.mLaunchCookie);
+                    } else {
+                        // For activity transitions, the closing activity of the return transition
+                        // must match the activity we just launched.
+                        req.mTopActivity = info.launchedActivity;
+                        Log.d(TAG, "updateTransitionFilterForInfo: "
+                                + "closing change expects top activity: " + req.mTopActivity);
+                    }
+                    hasClosingChangeModeRequirement = true;
+                }
+            }
+            if (hasOpeningModeRequirement && hasClosingChangeModeRequirement) {
+                return filter;
+            }
+            Log.w(TAG, "updateTransitionFilterForInfo failed - filter missing required modes");
+            return null;
+        }
+    }
+
+    private static TransitionFilter createReturnTransitionFilter(boolean forTakeover) {
+        TransitionFilter filter = new TransitionFilter();
+        if (forTakeover) {
+            filter.mTypeSet = new int[] {TRANSIT_PREPARE_BACK_NAVIGATION};
+        } else {
+            filter.mTypeSet =
+                    new int[] {TRANSIT_CLOSE, TRANSIT_TO_BACK, TRANSIT_OPEN, TRANSIT_TO_FRONT};
+        }
+
+        // The opening activity of the return transition must match the activity we just closed.
+        TransitionFilter.Requirement req1 = new TransitionFilter.Requirement();
+        req1.mModes = new int[] {TRANSIT_OPEN, TRANSIT_TO_FRONT};
+
+        TransitionFilter.Requirement req2 = new TransitionFilter.Requirement();
+        if (forTakeover) {
+            req2.mModes = new int[] {TRANSIT_CHANGE};
+        } else {
+            req2.mModes = new int[] {TRANSIT_CLOSE, TRANSIT_TO_BACK};
+        }
+
+        filter.mRequirements = new TransitionFilter.Requirement[] {req1, req2};
+        return filter;
+    }
+
+    private static boolean isFilterForTakeover(TransitionFilter filter) {
+        for (int i = 0; i < filter.mTypeSet.length; i++) {
+            if (filter.mTypeSet[i] == TRANSIT_PREPARE_BACK_NAVIGATION) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isFilterModeOpening(int[] modes) {
+        boolean hasOpen = false;
+        boolean hasToFront = false;
+
+        for (int mode : modes) {
+            if (mode == TRANSIT_OPEN) {
+                hasOpen = true;
+            } else if (mode == TRANSIT_TO_FRONT) {
+                hasToFront = true;
+            }
+        }
+        return hasOpen && hasToFront;
+    }
+
+    private static boolean isFilterModeClosingOrChange(int[] modes) {
+        boolean hasClosing = false;
+        boolean hasToBack = false;
+        boolean hasChange = false;
+
+        for (int mode : modes) {
+            if (mode == TRANSIT_CLOSE) {
+                hasClosing = true;
+            } else if (mode == TRANSIT_TO_BACK) {
+                hasToBack = true;
+            } else if (mode == TRANSIT_CHANGE) {
+                hasChange = true;
+            }
+        }
+        return (hasClosing && hasToBack) || hasChange;
+    }
+    /**
+     * A data container to hold the extracted transition information.
+     */
+    public static final class TransitionInfoContainer {
+        public final TaskInfo launchedTaskInfo;
+        public final TaskInfo launchingTaskInfo;
+        public final ComponentName launchedActivity;
+        public final ComponentName launchingActivity;
+
+        @VisibleForTesting
+        TransitionInfoContainer(TaskInfo launchedTaskInfo, TaskInfo launchingTaskInfo,
+                ComponentName launchedActivity, ComponentName launchingActivity) {
+            this.launchedTaskInfo = launchedTaskInfo;
+            this.launchingTaskInfo = launchingTaskInfo;
+            this.launchedActivity = launchedActivity;
+            this.launchingActivity = launchingActivity;
+        }
+
+        /**
+         * Extracts transition information into a container object.
+         *
+         * @param info The TransitionInfo object to process.
+         * @return A TransitionInfoContainer with the extracted data, or null if no data is found.
+         */
+        public static TransitionInfoContainer extractInfo(TransitionInfo info) {
             TaskInfo launchingTaskInfo = null;
             TaskInfo launchedTaskInfo = null;
             ComponentName launchingActivity = null;
             ComponentName launchedActivity = null;
+
             for (Change change : info.getChanges()) {
                 int mode = change.getMode();
                 TaskInfo taskInfo = change.getTaskInfo();
                 ComponentName activity = change.getActivityComponent();
-                if (TransitionUtil.isClosingMode(mode)
-                        && launchingTaskInfo == null
-                        && taskInfo != null) {
-                    // Found the launching task!
+
+                if (launchingTaskInfo == null && taskInfo != null
+                        && TransitionUtil.isClosingMode(mode)) {
                     launchingTaskInfo = taskInfo;
-                } else if (TransitionUtil.isOpeningMode(mode)
-                        && launchedTaskInfo == null
-                        && taskInfo != null) {
-                    // Found the launched task!
+                } else if (launchedTaskInfo == null && taskInfo != null
+                        && TransitionUtil.isOpeningMode(mode)) {
                     launchedTaskInfo = taskInfo;
-                } else if (TransitionUtil.isClosingMode(mode)
-                        && launchingActivity == null
-                        && activity != null) {
-                    // Found the launching activity
+                } else if (launchingActivity == null && activity != null
+                        && TransitionUtil.isClosingMode(mode)) {
                     launchingActivity = activity;
-                } else if (TransitionUtil.isOpeningMode(mode)
-                        && launchedActivity == null
-                        && activity != null) {
-                    // Found the launched activity!
+                } else if (launchedActivity == null && activity != null
+                        && TransitionUtil.isOpeningMode(mode)) {
                     launchedActivity = activity;
                 }
             }
-            if (DEBUG) {
-                Log.d(
-                        TAG,
-                        "createFilterForReverseTransition: forPredictiveBackTakeover="
-                                + forPredictiveBackTakeover
-                                + ", launchingTaskInfo="
-                                + launchingTaskInfo
-                                + ", launchedTaskInfo="
-                                + launchedTaskInfo
-                                + ", launchingActivity="
-                                + launchedActivity
-                                + ", launchedActivity="
-                                + launchedActivity);
-            }
-            if (launchingTaskInfo == null && launchingActivity == null) {
-                Log.w(
-                        TAG,
-                        "createFilterForReverseTransition: unable to find launching task or"
-                                + " launching activity!");
-                return null;
-            }
-            if (launchedTaskInfo == null && launchedActivity == null) {
-                Log.w(
-                        TAG,
-                        "createFilterForReverseTransition: unable to find launched task or launched"
-                                + " activity!");
-                return null;
-            }
-            if (launchedTaskInfo != null && launchedTaskInfo.launchCookies.isEmpty()) {
-                Log.w(
-                        TAG,
-                        "createFilterForReverseTransition: skipped - launched task has no launch"
-                                + " cookie!");
-                return null;
-            }
-            if (forPredictiveBackTakeover && launchedTaskInfo == null) {
-                // Predictive back take over currently only support cross-task transition.
-                Log.d(
-                        TAG,
-                        "createFilterForReverseTransition: skipped - unable to find launched task"
-                                + " for predictive back takeover");
-                return null;
-            }
-            TransitionFilter filter = new TransitionFilter();
-            if (forPredictiveBackTakeover) {
-                filter.mTypeSet = new int[] {TRANSIT_PREPARE_BACK_NAVIGATION};
-            } else {
-                filter.mTypeSet =
-                        new int[] {TRANSIT_CLOSE, TRANSIT_TO_BACK, TRANSIT_OPEN, TRANSIT_TO_FRONT};
-            }
 
-            // The opening activity of the return transition must match the activity we just closed.
-            TransitionFilter.Requirement req1 = new TransitionFilter.Requirement();
-            req1.mModes = new int[] {TRANSIT_OPEN, TRANSIT_TO_FRONT};
-            req1.mTopActivity =
-                    launchingActivity == null ? launchingTaskInfo.topActivity : launchingActivity;
-
-            TransitionFilter.Requirement req2 = new TransitionFilter.Requirement();
-            if (forPredictiveBackTakeover) {
-                req2.mModes = new int[] {TRANSIT_CHANGE};
-            } else {
-                req2.mModes = new int[] {TRANSIT_CLOSE, TRANSIT_TO_BACK};
-            }
-            if (launchedTaskInfo != null) {
-                // For task transitions, the closing task's cookie must match the task we just
-                // launched.
-                req2.mLaunchCookie = launchedTaskInfo.launchCookies.get(0);
-            } else {
-                // For activity transitions, the closing activity of the return transition must
-                // match the activity we just launched.
-                req2.mTopActivity = launchedActivity;
-            }
-
-            filter.mRequirements = new TransitionFilter.Requirement[] {req1, req2};
-            return filter;
+            return new TransitionInfoContainer(
+                    launchedTaskInfo, launchingTaskInfo, launchedActivity, launchingActivity);
         }
     }
 }

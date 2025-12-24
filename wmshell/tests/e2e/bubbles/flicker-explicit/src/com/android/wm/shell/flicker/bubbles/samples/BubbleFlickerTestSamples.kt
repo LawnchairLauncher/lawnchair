@@ -20,42 +20,11 @@ import android.tools.flicker.subject.events.EventLogSubject
 import android.tools.flicker.subject.layers.LayersTraceSubject
 import android.tools.flicker.subject.wm.WindowManagerTraceSubject
 import com.android.wm.shell.flicker.bubbles.utils.RecordTraceWithTransitionRule
-import com.android.wm.shell.flicker.bubbles.utils.runTransitionWithTrace
-
-/**
- * Sample to illustrate how to use [runTransitionWithTrace].
- */
-fun runTransitionWithTraceSample() {
-    val reader = runTransitionWithTrace {
-        // Add transition here
-    }
-
-    // Extract [WindowManagerTraceSubject]
-    val wmTraceSubject = WindowManagerTraceSubject(
-        reader.readWmTrace() ?: error("Failed to read WM trace")
-    )
-
-    // Extract [LayerTraceSubject]
-    val layersTraceSubject = LayersTraceSubject(
-        reader.readLayersTrace() ?: error("Failed to read Layers trace")
-    )
-
-    // Extract [EventLogSubject]
-    val eventLogSubject = EventLogSubject(
-        reader.readEventLogTrace() ?: error("Failed to read event log trace"),
-        reader,
-    )
-
-    // Read CUJ Trace
-    val cujTrace = reader.readCujTrace()
-}
 
 /**
  * Sample to illustrate how to use [RecordTraceWithTransitionRule].
  */
-fun RecordTraceWithTransitionRuleSample() {
-
-    // Set as @ClassRule and make it public static
+fun recordTraceWithTransitionRuleSample() {
     val rule = RecordTraceWithTransitionRule(
         setUpBeforeTransition = { clearAllTasksAndGoToHomeScreen() },
         transition = { launchActivityViaClickIcon() },

@@ -18,7 +18,6 @@ package com.android.wm.shell.bubbles;
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 
 import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
-import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_BUBBLES;
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_BUBBLES_NOISY;
 
 import android.annotation.DimenRes;
@@ -51,6 +50,7 @@ import android.util.Log;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.logging.InstanceId;
 import com.android.internal.protolog.ProtoLog;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BubbleIconFactory;
 import com.android.wm.shell.bubbles.appinfo.BubbleAppInfoProvider;
 import com.android.wm.shell.bubbles.bar.BubbleBarExpandedView;
@@ -60,6 +60,7 @@ import com.android.wm.shell.shared.annotations.ShellBackgroundThread;
 import com.android.wm.shell.shared.annotations.ShellMainThread;
 import com.android.wm.shell.shared.bubbles.BubbleInfo;
 import com.android.wm.shell.shared.bubbles.ParcelableFlyoutMessage;
+import com.android.wm.shell.shared.bubbles.logging.BubbleLog;
 import com.android.wm.shell.taskview.TaskView;
 
 import java.io.PrintWriter;
@@ -156,9 +157,9 @@ public class Bubble implements BubbleViewProvider {
     // The developer provided image for the bubble
     private Bitmap mBubbleBitmap;
     // The app badge for the bubble
-    private Bitmap mBadgeBitmap;
+    private BitmapInfo mBadgeBitmap;
     // App badge without any markings for important conversations
-    private Bitmap mRawBadgeBitmap;
+    private BitmapInfo mRawBadgeBitmap;
     private int mDotColor;
     private Path mDotPath;
     private int mFlags;
@@ -172,6 +173,7 @@ public class Bubble implements BubbleViewProvider {
     @Nullable
     private Icon mIcon;
     private boolean mIsBubble;
+    private boolean mIsTopActivityFixedOrientationLandscape;
     private boolean mIsTextChanged;
     private boolean mIsDismissable;
     private boolean mShouldSuppressNotificationDot;
@@ -494,7 +496,7 @@ public class Bubble implements BubbleViewProvider {
     /** Creates a parcelable flyout message to send to launcher. */
     @Nullable
     private ParcelableFlyoutMessage getParcelableFlyoutMessage() {
-        if (mFlyoutMessage == null) {
+        if (mFlyoutMessage == null || !showFlyout()) {
             return null;
         }
         // the icon is only used in group chats
@@ -542,23 +544,18 @@ public class Bubble implements BubbleViewProvider {
     }
 
     @Override
-    public Bitmap getAppBadge() {
+    public BitmapInfo getAppBadge() {
         return mBadgeBitmap;
     }
 
     @Override
-    public Bitmap getRawAppBadge() {
+    public BitmapInfo getRawAppBadge() {
         return mRawBadgeBitmap;
     }
 
     @Override
     public int getDotColor() {
         return mDotColor;
-    }
-
-    @Override
-    public Path getDotPath() {
-        return mDotPath;
     }
 
     @Nullable
@@ -675,7 +672,6 @@ public class Bubble implements BubbleViewProvider {
      * Call when all the views should be removed/cleaned up.
      */
     public void cleanupViews() {
-        ProtoLog.d(WM_SHELL_BUBBLES, "Bubble#cleanupViews=%s", getKey());
         cleanupViews(true);
     }
 
@@ -686,6 +682,8 @@ public class Bubble implements BubbleViewProvider {
      * {@code cleanupTaskView} to avoid recreating it in the new mode.
      */
     public void cleanupViews(boolean cleanupTaskView) {
+        BubbleLog.d("Bubble.cleanupViews() key=%s cleanupTaskView=%b", getKey(),
+                cleanupTaskView);
         cleanupExpandedView(cleanupTaskView);
         mIconView = null;
     }
@@ -710,7 +708,6 @@ public class Bubble implements BubbleViewProvider {
     /**
      * Sets the current bubble-transition that is coordinating a change in this bubble.
      */
-    @VisibleForTesting
     public void setPreparingTransition(BubbleTransitions.BubbleTransition transit) {
         ProtoLog.d(WM_SHELL_BUBBLES_NOISY, "setPreparingTransition: transit=%s", transit);
         mPreparingTransition = transit;
@@ -720,6 +717,12 @@ public class Bubble implements BubbleViewProvider {
     public boolean isConvertingToBar() {
         return getPreparingTransition() != null
                 && getPreparingTransition().isConvertingBubbleToBar();
+    }
+
+    /** Whether this bubble is currently switching to expanded from another bubble using jumpcut. */
+    public boolean isJumpcutBubbleSwitching() {
+        return getPreparingTransition() != null
+                && getPreparingTransition().isJumpcutBubbleSwitching();
     }
 
     /**
@@ -753,7 +756,7 @@ public class Bubble implements BubbleViewProvider {
             BubbleIconFactory iconFactory,
             BubbleAppInfoProvider appInfoProvider,
             boolean skipInflation) {
-        ProtoLog.v(WM_SHELL_BUBBLES, "Inflate bubble key=%s", getKey());
+        BubbleLog.v("Bubble.inflate() key=%s", getKey());
         if (mInflationTask != null && !mInflationTask.isFinished()) {
             mInflationTask.cancel();
         }
@@ -792,6 +795,8 @@ public class Bubble implements BubbleViewProvider {
         if (!isInflated()) {
             mIconView = info.imageView;
             mExpandedView = info.expandedView;
+            BubbleLog.d("Bubble.setViewInfo() key=%s setting expanded view info to %s",
+                    mKey, info.bubbleBarExpandedView);
             mBubbleBarExpandedView = info.bubbleBarExpandedView;
         }
 
@@ -807,7 +812,6 @@ public class Bubble implements BubbleViewProvider {
         mBubbleBitmap = info.bubbleBitmap;
 
         mDotColor = info.dotColor;
-        mDotPath = info.dotPath;
 
         if (mExpandedView != null) {
             mExpandedView.update(this /* bubble */);
@@ -1047,6 +1051,13 @@ public class Bubble implements BubbleViewProvider {
     }
 
     /**
+     * Sets whether the task's top activity is fixed orientation landscape.
+     */
+    public void setIsTopActivityFixedOrientationLandscape(boolean isLandscape) {
+        mIsTopActivityFixedOrientationLandscape = isLandscape;
+    }
+
+    /**
      * Whether the bubble for this notification should show a dot indicating updated content.
      */
     @Override
@@ -1275,6 +1286,10 @@ public class Bubble implements BubbleViewProvider {
 
     public int getFlags() {
         return mFlags;
+    }
+
+    public boolean isTopActivityFixedOrientationLandscape() {
+        return mIsTopActivityFixedOrientationLandscape;
     }
 
     @Override

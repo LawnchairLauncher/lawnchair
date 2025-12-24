@@ -22,16 +22,14 @@ import com.android.wm.shell.compatui.api.CompatUILifecyclePredicates
 import com.android.wm.shell.compatui.api.CompatUISharedState
 import junit.framework.Assert.assertEquals
 
-/**
- * Fake class for {@link CompatUILifecycle}
- */
+/** Fake class for {@link CompatUILifecycle} */
 class FakeCompatUILifecyclePredicates(
     private val creationReturn: Boolean = false,
     private val removalReturn: Boolean = false,
-    private val initialState: (
-        CompatUIInfo,
-        CompatUISharedState
-    ) -> CompatUIComponentState? = { _, _ -> null }
+    private val initialState: (CompatUIInfo, CompatUISharedState) -> CompatUIComponentState? =
+        { _, _ ->
+            null
+        },
 ) {
     var creationInvocation = 0
     var removalInvocation = 0
@@ -41,29 +39,31 @@ class FakeCompatUILifecyclePredicates(
     var lastRemovalCompatUIInfo: CompatUIInfo? = null
     var lastRemovalSharedState: CompatUISharedState? = null
     var lastRemovalCompState: CompatUIComponentState? = null
-    fun getLifecycle() = CompatUILifecyclePredicates(
-        creationPredicate = { uiInfo, sharedState ->
-            lastCreationCompatUIInfo = uiInfo
-            lastCreationSharedState = sharedState
-            creationInvocation++
-            creationReturn
-        },
-        removalPredicate = { uiInfo, sharedState, compState ->
-            lastRemovalCompatUIInfo = uiInfo
-            lastRemovalSharedState = sharedState
-            lastRemovalCompState = compState
-            removalInvocation++
-            removalReturn
-        },
-        stateBuilder = { a, b -> initialStateInvocation++; initialState(a, b) }
-    )
 
-    fun assertCreationInvocation(expected: Int) =
-        assertEquals(expected, creationInvocation)
+    fun getLifecycle() =
+        CompatUILifecyclePredicates(
+            creationPredicate = { uiInfo, sharedState ->
+                lastCreationCompatUIInfo = uiInfo
+                lastCreationSharedState = sharedState
+                creationInvocation++
+                creationReturn
+            },
+            removalPredicate = { uiInfo, sharedState, compState ->
+                lastRemovalCompatUIInfo = uiInfo
+                lastRemovalSharedState = sharedState
+                lastRemovalCompState = compState
+                removalInvocation++
+                removalReturn
+            },
+            stateBuilder = { a, b ->
+                initialStateInvocation++
+                initialState(a, b)
+            },
+        )
 
-    fun assertRemovalInvocation(expected: Int) =
-        assertEquals(expected, removalInvocation)
+    fun assertCreationInvocation(expected: Int) = assertEquals(expected, creationInvocation)
 
-    fun assertInitialStateInvocation(expected: Int) =
-        assertEquals(expected, initialStateInvocation)
+    fun assertRemovalInvocation(expected: Int) = assertEquals(expected, removalInvocation)
+
+    fun assertInitialStateInvocation(expected: Int) = assertEquals(expected, initialStateInvocation)
 }

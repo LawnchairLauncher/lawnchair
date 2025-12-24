@@ -270,7 +270,7 @@ public class ViewUIComponent implements UIComponent {
     }
 
     private void setVisible(boolean visible) {
-        logD("setVisibility: " + visible);
+        logD("setVisibility: " + visible + " (attached: " + isAttachedToLeash() + ")");
         if (isAttachedToLeash()) {
             mVisibleOverride = visible;
             postDraw();

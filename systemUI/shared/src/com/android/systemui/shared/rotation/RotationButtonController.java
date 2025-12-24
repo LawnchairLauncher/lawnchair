@@ -27,8 +27,10 @@ import static com.android.systemui.shared.system.QuickStepContract.isGesturalMod
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.AnyThread;
 import android.annotation.ColorInt;
 import android.annotation.DrawableRes;
+import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
@@ -64,14 +66,18 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.logging.UiEvent;
 import com.android.internal.logging.UiEventLogger;
 import com.android.internal.logging.UiEventLoggerImpl;
-import com.android.internal.view.RotationPolicy;
+import com.android.systemui.rotation.RotationPolicyWrapper;
 import com.android.systemui.shared.recents.utilities.Utilities;
 import com.android.systemui.shared.recents.utilities.ViewRippler;
 import com.android.systemui.shared.rotation.RotationButton.RotationButtonUpdatesCallback;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
-import com.android.window.flags2.Flags;
+import com.android.window.flags.Flags;
+
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedFactory;
+import dagger.assisted.AssistedInject;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -100,6 +106,7 @@ public class RotationButtonController {
     private final UiEventLogger mUiEventLogger = new UiEventLoggerImpl();
     private final ViewRippler mViewRippler = new ViewRippler();
     private final Supplier<Integer> mWindowRotationProvider;
+    private final RotationPolicyWrapper mRotationPolicyWrapper;
     @Nullable private RotationButton mRotationButton;
 
     private boolean mIsRecentsAnimationRunning;
@@ -150,18 +157,50 @@ public class RotationButtonController {
         }
     };
 
-    private final IRotationWatcher.Stub mRotationWatcher = new IRotationWatcher.Stub() {
+
+    /**
+     * {@link Stub} that wraps {@link RotationButtonController} as host obj and
+     * allow clearing it so that:
+     * 1. Client process (like Launcher) doesn't accumulate expensive {@link #mContext} objects
+     * (in a series of frequent screen rotations) which cannot be GCed until remote process runs GC
+     * to clear the binder objects. This will reduce the high water mark memory usage for client
+     * process.
+     * 2. Leak canary in client process (like Launcher) doesn't raise false positive alarms.
+     */
+    private static class RotationWatcher extends IRotationWatcher.Stub {
+        private @Nullable RotationButtonController mHost;
+
+        private RotationWatcher(@NonNull RotationButtonController host) {
+            mHost = host;
+        }
+
         @WorkerThread
         @Override
         public void onRotationChanged(final int rotation) {
-            @Nullable Boolean rotationLocked = RotationPolicyUtil.isRotationLocked(mContext);
+            RotationButtonController host = mHost;
+            if (host == null) {
+                return;
+            }
+            Boolean rotationLocked = RotationPolicyUtil.isRotationLocked(host.mContext);
             // We need this to be scheduled as early as possible to beat the redrawing of
             // window in response to the orientation change.
-            mMainThreadHandler.postAtFrontOfQueue(() -> {
-                onRotationWatcherChanged(rotation, rotationLocked);
+            host.mMainThreadHandler.postAtFrontOfQueue(() -> {
+                host.onRotationWatcherChanged(rotation, rotationLocked);
             });
         }
-    };
+
+        /**
+         * Since the lifecycle of this binder obj depends on remote process's GC, calling this
+         * method will allow local process GC {@link mHost} earlier, and also avoid false positive
+         * leak signal from leak canary.
+         */
+        @AnyThread
+        private void clearHost() {
+            mHost = null;
+        }
+    }
+
+    private final RotationWatcher mRotationWatcher = new RotationWatcher(this);
 
     /**
      * Determines if rotation suggestions disabled2 flag exists in flag
@@ -173,13 +212,15 @@ public class RotationButtonController {
         return (disable2Flags & StatusBarManager.DISABLE2_ROTATE_SUGGESTIONS) != 0;
     }
 
-    public RotationButtonController(Context context,
-        @ColorInt int lightIconColor, @ColorInt int darkIconColor,
-        @DrawableRes int iconCcwStart0ResId,
-        @DrawableRes int iconCcwStart90ResId,
-        @DrawableRes int iconCwStart0ResId,
-        @DrawableRes int iconCwStart90ResId,
-        Supplier<Integer> windowRotationProvider) {
+    @AssistedInject
+    public RotationButtonController(RotationPolicyWrapper rotationPolicyWrapper, Context context,
+            @Assisted("lightIconColor") @ColorInt int lightIconColor,
+            @Assisted("darkIconColor") @ColorInt int darkIconColor,
+            @Assisted("iconCcwStart0ResId") @DrawableRes int iconCcwStart0ResId,
+            @Assisted("iconCcwStart90ResId") @DrawableRes int iconCcwStart90ResId,
+            @Assisted("iconCwStart0ResId") @DrawableRes int iconCwStart0ResId,
+            @Assisted("iconCwStart90ResId") @DrawableRes int iconCwStart90ResId,
+            Supplier<Integer> windowRotationProvider) {
 
         mContext = context;
         mLightIconColor = lightIconColor;
@@ -194,6 +235,7 @@ public class RotationButtonController {
         mAccessibilityManager = AccessibilityManager.getInstance(context);
         mTaskStackListener = new TaskStackListenerImpl();
         mWindowRotationProvider = windowRotationProvider;
+        mRotationPolicyWrapper = rotationPolicyWrapper;
 
         mBgExecutor = context.getMainExecutor();
     }
@@ -292,6 +334,7 @@ public class RotationButtonController {
                 try {
                     WindowManagerGlobal.getWindowManagerService().removeRotationWatcher(
                             mRotationWatcher);
+                    mRotationWatcher.clearHost();
                 } catch (RemoteException e) {
                     Log.e(TAG, "UnregisterListeners caught a RemoteException", e);
                 }
@@ -302,24 +345,27 @@ public class RotationButtonController {
     }
 
     /**
-     * Sets device rotation to {@code rotationSuggestion} if {@code isLocked} is true and
-     * {@link Flags#enableDeviceStateAutoRotateSettingRefactor()} is disabled.
-     * <p> When {@link Flags#enableDeviceStateAutoRotateSettingRefactor()} is enabled, the rotation
-     * change in system server is conditional on auto-rotate still being OFF.
+     * Sets the device rotation to the specified {@code rotation} if {@code isLocked} is true.
+     *
+     * This method is used to change the device's rotation in scenarios other than a rotation
+     * suggestion button click. For example, if a user is in an app with a rotation value of
+     * {@code ROTATION_270} but then navigates to the home screen where only {@code ROTATION_0}
+     * is allowed, this method will be called to set the rotation to {@code ROTATION_0}. The
+     * rotation is changed without further checks beyond verifying the value of the 'isLocked'
+     * parameter.
+     *
+     * @param rotation The desired rotation.
+     * @param isLocked {@code true} to apply the rotation; {@code false} to do nothing.
      */
     public void setRotationAtAngle(
-            @Nullable Boolean isLocked, int rotationSuggestion, String caller) {
+            @Nullable Boolean isLocked, int rotation, String caller) {
         if (isLocked == null) {
             // Ignore if we can't read the setting for the current user
             return;
         }
-        if (isFoldable() && Flags.enableDeviceStateAutoRotateSettingRefactor()) {
-            RotationPolicy.setRotationAtAngleIfAllowed(rotationSuggestion, caller);
-            return;
-        }
 
-        RotationPolicy.setRotationLockAtAngle(mContext, /* enabled= */ isLocked,
-                /* rotation= */ rotationSuggestion, caller);
+        mRotationPolicyWrapper.setRotationLockAtAngle(/* enabled= */ isLocked,
+                /* rotation= */ rotation, /* caller= */ caller);
     }
 
     public void setRotateSuggestionButtonState(boolean visible) {
@@ -617,11 +663,26 @@ public class RotationButtonController {
     private void onRotateSuggestionClick(View v) {
         mUiEventLogger.log(RotationButtonEvent.ROTATION_SUGGESTION_ACCEPTED);
         incrementNumAcceptedRotationSuggestionsIfNeeded();
-        setRotationAtAngle(
-                RotationPolicyUtil.isRotationLocked(mContext), mLastRotationSuggestion,
-                /* caller= */ "RotationButtonController#onRotateSuggestionClick");
+        setRotationForSuggestionIfAllowed(RotationPolicyUtil.isRotationLocked(mContext),
+                mLastRotationSuggestion);
         Log.i(TAG, "onRotateSuggestionClick() mLastRotationSuggestion=" + mLastRotationSuggestion);
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    }
+
+    private void setRotationForSuggestionIfAllowed(@Nullable Boolean isLocked,
+            int rotationSuggestion) {
+        if (isLocked == null) {
+            // Ignore if we can't read the setting for the current user
+            return;
+        }
+        final String caller = "RotationButtonController#onRotateSuggestionClick";
+
+        if (Flags.enableDeviceStateAutoRotateSettingRefactor()) {
+            mRotationPolicyWrapper.setRotationAtAngleIfAllowed(rotationSuggestion, caller);
+            return;
+        }
+
+        setRotationAtAngle(isLocked, rotationSuggestion, caller);
     }
 
     private boolean onRotateSuggestionHover(View v, MotionEvent event) {
@@ -761,6 +822,21 @@ public class RotationButtonController {
                         });
             });
         }
+    }
+
+    /**
+     * Assisted factory for creating instances of {@link RotationButtonController}.
+     */
+    @AssistedFactory
+    public interface Factory {
+        RotationButtonController create(
+                @Assisted("lightIconColor") @ColorInt int lightIconColor,
+                @Assisted("darkIconColor") @ColorInt int darkIconColor,
+                @Assisted("iconCcwStart0ResId") @DrawableRes int iconCcwStart0ResId,
+                @Assisted("iconCcwStart90ResId") @DrawableRes int iconCcwStart90ResId,
+                @Assisted("iconCwStart0ResId") @DrawableRes int iconCwStart0ResId,
+                @Assisted("iconCwStart90ResId") @DrawableRes int iconCwStart90ResId
+        );
     }
 
     enum RotationButtonEvent implements UiEventLogger.UiEventEnum {

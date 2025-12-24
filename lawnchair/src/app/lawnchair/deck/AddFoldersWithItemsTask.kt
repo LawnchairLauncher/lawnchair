@@ -6,6 +6,7 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.LauncherSettings
+import com.android.launcher3.WorkspaceLayoutManager
 import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.ModelTaskController
@@ -14,6 +15,7 @@ import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.IntArray
+import com.android.launcher3.util.IntSet
 import com.android.launcher3.util.PackageManagerHelper
 
 /**
@@ -41,25 +43,25 @@ class AddFoldersWithItemsTask(
         }
 
         val addedItemsFinal = ArrayList<ItemInfo>()
-        val addedWorkspaceScreensFinal = IntArray()
+        val addedWorkspaceScreensFinal = IntSet()
 
         synchronized(dataModel) {
-            val workspaceScreens = dataModel.itemsIdMap.collectWorkspaceScreens(context)
+            val workspaceScreens = IntSet.wrap(dataModel.itemsIdMap.collectWorkspaceScreens())
             val modelWriter = taskController.getModelWriter()
+
+            // pE-TODO(QPR2): Should we exclude workspaceScreens? Investigate.
 
             folders.forEach { folderInfo ->
                 // Find space for the folder
                 val coords = itemSpaceFinder.findSpaceForItem(
-                    workspaceScreens,
-                    addedWorkspaceScreensFinal,
                     addedItemsFinal,
                     folderInfo.spanX,
                     folderInfo.spanY,
-                    context,
+                    workspaceScreens,
                 )
-                val screenId = coords[0]
-                val cellX = coords[1]
-                val cellY = coords[2]
+                val screenId = coords.screenId
+                val cellX = coords.cellX
+                val cellY = coords.cellY
 
                 // Add folder to database
                 modelWriter.addItemToDatabase(

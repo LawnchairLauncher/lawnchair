@@ -15,20 +15,10 @@
  */
 package com.android.quickstep;
 
-import static com.android.app.animation.Interpolators.ACCELERATE_2;
-import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
-import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
-import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
-
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 
 import androidx.annotation.Nullable;
 
@@ -36,14 +26,14 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.taskbar.TaskbarUIController;
+import com.android.launcher3.taskbar.TaskbarInteractor;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.fallback.RecentsState;
-import com.android.quickstep.fallback.window.RecentsWindowFlags;
-import com.android.quickstep.fallback.window.RecentsWindowManager;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.window.RecentsWindowFlags;
+import com.android.quickstep.window.RecentsWindowManager;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.util.HashMap;
@@ -87,8 +77,8 @@ public abstract class BaseWindowInterface extends
      * Closes any overlays.
      */
     public void closeOverlay() {
-        Optional.ofNullable(getTaskbarController()).ifPresent(
-                TaskbarUIController::hideOverlayWindow);
+        Optional.ofNullable(getTaskbarInteractor()).ifPresent(
+                TaskbarInteractor::hideOverlayWindow);
     }
 
     public void switchRunningTaskViewToScreenshot(HashMap<Integer, ThumbnailData> thumbnailDatas,
@@ -122,7 +112,7 @@ public abstract class BaseWindowInterface extends
      * todo: move new factory into BaseContainerInterface and cleanup.
       */
 
-    class DefaultAnimationFactory implements AnimationFactory {
+    class DefaultAnimationFactory implements AnimationFactory<RecentsState, RecentsWindowManager> {
 
         protected final RecentsWindowManager mRecentsWindowManager;
         private final RecentsState mStartState;
@@ -182,45 +172,16 @@ public abstract class BaseWindowInterface extends
         }
 
         @Override
-        public void setRecentsAttachedToAppWindow(boolean attached, boolean animate,
-                boolean updateRunningTaskAlpha) {
+        public RecentsWindowManager getContainer() {
+            return mRecentsWindowManager;
+        }
 
-            if (mIsAttachedToWindow == attached && animate) {
-                return;
+        @Override
+        public void onAttachedToWindowStateUpdated(boolean isAttachedToWindow) {
+            mIsAttachedToWindow = isAttachedToWindow;
+            if (isAttachedToWindow) {
+                mHasEverAttachedToWindow = true;
             }
-            mRecentsWindowManager.getStateManager()
-                    .cancelStateElementAnimation(INDEX_RECENTS_FADE_ANIM);
-            mRecentsWindowManager.getStateManager()
-                    .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
-
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    mIsAttachedToWindow = attached;
-                    if (attached) {
-                        mHasEverAttachedToWindow = true;
-                    }
-                }});
-
-            long animationDuration = animate ? RECENTS_ATTACH_DURATION : 0;
-            Animator fadeAnim = mRecentsWindowManager.getStateManager()
-                    .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
-            fadeAnim.setInterpolator(attached ? INSTANT : ACCELERATE_2);
-            fadeAnim.setDuration(animationDuration);
-            animatorSet.play(fadeAnim);
-
-            float fromTranslation = ADJACENT_PAGE_HORIZONTAL_OFFSET.get(
-                    mRecentsWindowManager.getOverviewPanel());
-            float toTranslation = attached ? 0 : 1;
-
-            Animator translationAnimator =
-                    mRecentsWindowManager.getStateManager().createStateElementAnimation(
-                            INDEX_RECENTS_TRANSLATE_X_ANIM, fromTranslation, toTranslation);
-            translationAnimator.setDuration(animationDuration);
-            animatorSet.play(translationAnimator);
-            animatorSet.start();
         }
 
         @Override
@@ -245,16 +206,6 @@ public abstract class BaseWindowInterface extends
             pa.addFloat(recentsView, RECENTS_SCALE_PROPERTY,
                     recentsView.getMaxScaleForFullScreen(), 1, LINEAR);
             pa.addFloat(recentsView, FULLSCREEN_PROGRESS, 1, 0, LINEAR);
-
-            pa.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    TaskbarUIController taskbarUIController = getTaskbarController();
-                    if (taskbarUIController != null) {
-                        taskbarUIController.setSystemGestureInProgress(true);
-                    }
-                }
-            });
         }
     }
 }

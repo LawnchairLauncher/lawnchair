@@ -16,21 +16,23 @@
 
 package com.android.launcher3.celllayout
 
+import com.android.launcher3.util.SandboxApplication
+import com.android.launcher3.util.TestActivityContext
 import org.junit.Rule
-import org.junit.Test
 
 // @RunWith(AndroidJUnit4::class) b/353965234
 class CellLayoutMethodsTest {
 
-    @JvmField @Rule var cellLayoutBuilder = UnitTestCellLayoutBuilderRule()
+    @get:Rule val app = SandboxApplication()
+    @get:Rule val uiContext = TestActivityContext(app)
 
-    //@Test
+    // @Test
     fun pointToCellExact() {
         val width = 1000
         val height = 1000
         val columns = 30
         val rows = 30
-        val cl = cellLayoutBuilder.createCellLayout(columns, rows, false, width, height)
+        val cl = uiContext.createCellLayout(columns, rows, false, width, height)
 
         val res = intArrayOf(0, 0)
         for (col in 0..<columns) {
@@ -58,7 +60,7 @@ class CellLayoutMethodsTest {
         width: Int,
         height: Int,
         x: Int,
-        y: Int
+        y: Int,
     ) {
         assert(col == res[0] && row == res[1]) {
             "Cell Layout with values (c= $columns, r= $rows, w= $width, h= $height) didn't mapped correctly the pixels ($x, $y) to the cells ($col, $row) with result (${res[0]}, ${res[1]})"

@@ -25,11 +25,11 @@ import com.android.wm.shell.desktopmode.WindowDecorCaptionRepository
 import com.android.wm.shell.protolog.ShellProtoLogGroup
 import com.android.wm.shell.shared.annotations.ExternalThread
 import com.android.wm.shell.shared.annotations.ShellMainThread
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.util.Objects
 import java.util.concurrent.Executor
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * Implements both the registering of the listeners for those who needs to consume changes related
@@ -53,20 +53,19 @@ class AppHandleNotifier(
     init {
         if (DesktopExperienceFlags.ENABLE_APP_HANDLE_POSITION_REPORTING.isTrue()) {
             mainScope.launch {
-                windowDecorCaptionRepository.captionStateFlow
-                    .collect { captionState ->
-                        when (captionState) {
-                            is CaptionState.NoCaption -> {
-                                removeHandle(captionState.taskId)
-                            }
-                            is CaptionState.AppHeader -> {
-                                removeHandle(captionState.runningTaskInfo.taskId)
-                            }
-                            is CaptionState.AppHandle -> {
-                                addHandle(captionState.appHandleIdentifier)
-                            }
+                windowDecorCaptionRepository.captionStateFlow.collect { captionState ->
+                    when (captionState) {
+                        is CaptionState.NoCaption -> {
+                            removeHandle(captionState.taskId)
+                        }
+                        is CaptionState.AppHeader -> {
+                            removeHandle(captionState.runningTaskInfo.taskId)
+                        }
+                        is CaptionState.AppHandle -> {
+                            addHandle(captionState.appHandleIdentifier)
                         }
                     }
+                }
             }
         }
     }
@@ -80,8 +79,11 @@ class AppHandleNotifier(
         try {
             sysuiExecutor.execute { listener.onAppHandlesUpdated(handlesToNotify) }
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to execute initial notification for " +
-                    "listener on $sysuiExecutor", e)
+            Log.e(
+                TAG,
+                "Failed to execute initial notification for " + "listener on $sysuiExecutor",
+                e,
+            )
         }
     }
 
@@ -90,15 +92,18 @@ class AppHandleNotifier(
     }
 
     /**
-     * Adds or updates a single App Handle using its taskId as the key.
-     * Triggers notification to listeners.
+     * Adds or updates a single App Handle using its taskId as the key. Triggers notification to
+     * listeners.
      *
      * @param handle The AppHandleIdentifier to add or update.
      */
     private fun addHandle(handle: AppHandleIdentifier) {
         val key = handle.taskId
-        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_APP_HANDLES,
-            "Requesting add/update handle for taskId:%s", key)
+        ProtoLog.v(
+            ShellProtoLogGroup.WM_SHELL_APP_HANDLES,
+            "Requesting add/update handle for taskId:%s",
+            key,
+        )
         val existingHandle = currentHandles[key]
         if (existingHandle != null && Objects.equals(existingHandle, handle)) {
             return
@@ -108,14 +113,17 @@ class AppHandleNotifier(
     }
 
     /**
-     * Removes a single App Handle based on its taskId.
-     * Triggers notification to listeners ONLY if a handle was actually removed.
+     * Removes a single App Handle based on its taskId. Triggers notification to listeners ONLY if a
+     * handle was actually removed.
      *
      * @param taskId The Task ID of the handle to remove. // *** Parameter Renamed ***
      */
     private fun removeHandle(taskId: Int) {
-        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_APP_HANDLES,
-            "Requesting remove handle for taskId:%s", taskId)
+        ProtoLog.v(
+            ShellProtoLogGroup.WM_SHELL_APP_HANDLES,
+            "Requesting remove handle for taskId:%s",
+            taskId,
+        )
         // Use taskId to remove from the map
         if (currentHandles.remove(taskId) == null) {
             return
@@ -129,22 +137,20 @@ class AppHandleNotifier(
 
     // --- Central Notification Method  ---
 
-    /**
-     * Notifies all registered listeners with the current state of the handles map.
-     */
+    /** Notifies all registered listeners with the current state of the handles map. */
     private fun notifyListeners() {
         // Create an immutable snapshot of the current state to send to listeners
         val handlesToNotifyMap = currentHandles.toMap()
-        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_APP_HANDLES,
-            "Notifying listeners of handle update")
+        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_APP_HANDLES, "Notifying listeners of handle update")
         listeners.forEach { (callback, executor) ->
             try {
-                executor.execute {
-                    callback.onAppHandlesUpdated(handlesToNotifyMap)
-                }
+                executor.execute { callback.onAppHandlesUpdated(handlesToNotifyMap) }
             } catch (e: Exception) {
-                Log.e("AppHandleManagerImpl", "Failed to dispatch notification to " +
-                        "callback on $executor", e)
+                Log.e(
+                    "AppHandleManagerImpl",
+                    "Failed to dispatch notification to " + "callback on $executor",
+                    e,
+                )
             }
         }
     }

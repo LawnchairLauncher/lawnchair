@@ -18,7 +18,6 @@ package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
 import android.tools.NavBar
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
 import android.tools.Rotation
 import android.tools.traces.parsers.WindowManagerStateHelper
 import androidx.test.platform.app.InstrumentationRegistry
@@ -28,20 +27,18 @@ import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.MailAppHelper
 import com.android.server.wm.flicker.helpers.NonResizeableAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.window.flags.Flags
-import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
+import com.android.window.flags2.Flags
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 @Ignore("Base Test Class")
 abstract class CloseAllAppsWithBackNavigation(
+    val navigationMode: NavBar = NavBar.MODE_GESTURAL,
     val rotation: Rotation = Rotation.ROTATION_0
-) : TestScenarioBase() {
+) : TestScenarioBase(rotation) {
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
     private val tapl = LauncherInstrumentation()
     private val wmHelper = WindowManagerStateHelper(instrumentation)
@@ -50,28 +47,36 @@ abstract class CloseAllAppsWithBackNavigation(
     private val mailApp = DesktopModeAppHelper(MailAppHelper(instrumentation))
     private val nonResizeableApp = DesktopModeAppHelper(NonResizeableAppHelper(instrumentation))
 
-    @Rule @JvmField val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, rotation)
+    val appsInZOrder: ArrayList<DesktopModeAppHelper> = ArrayList()
 
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
         Assume.assumeTrue(Flags.enableDesktopWindowingBackNavigation())
-        tapl.setEnableRotation(true)
-        tapl.setExpectedRotation(rotation.value)
+        Assume.assumeTrue(Flags.enableEmptyDeskOnMinimize())
+
+        // Set up apps
         testApp.enterDesktopMode(wmHelper, device)
+        appsInZOrder.add(testApp)
+
         mailApp.launchViaIntent(wmHelper)
+        appsInZOrder.add( mailApp)
+
         nonResizeableApp.launchViaIntent(wmHelper)
+        appsInZOrder.add(nonResizeableApp)
     }
 
     @Test
     open fun closeAllAppsInDesktop() {
-        nonResizeableApp.closeDesktopApp(wmHelper, device, usingBackNavigation = true)
-        mailApp.closeDesktopApp(wmHelper, device, usingBackNavigation = true)
-        testApp.closeDesktopApp(wmHelper, device, usingBackNavigation = true)
+        repeat(appsInZOrder.size) {
+            useBackNavigation()
+        }
     }
+
+    private fun useBackNavigation() {
+        tapl.pressBack()
+        wmHelper.StateSyncBuilder().withAppTransitionIdle().waitForAndVerify()
+    }
+
 
     @After
     fun teardown() {

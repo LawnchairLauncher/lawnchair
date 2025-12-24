@@ -16,23 +16,25 @@
 package com.android.quickstep
 
 import android.content.Context
+import android.view.InputDevice
 import android.view.MotionEvent
 import androidx.annotation.VisibleForTesting
+import com.android.launcher3.Utilities.shouldEnableMouseInteractionChanges
 import com.android.launcher3.anim.AnimatedFloat
 import com.android.launcher3.statemanager.BaseState
 import com.android.launcher3.statemanager.StatefulContainer
+import com.android.launcher3.taskbar.TaskbarDesktopExperienceFlags.enableAutoStashConnectedDisplayTaskbar
 import com.android.launcher3.taskbar.TaskbarManager
 import com.android.launcher3.util.LockedUserState.Companion.get
-import com.android.quickstep.fallback.window.RecentsWindowManager
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer
 import com.android.quickstep.inputconsumers.AssistantInputConsumer
 import com.android.quickstep.inputconsumers.BubbleBarInputConsumer
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer
+import com.android.quickstep.inputconsumers.LauncherInputConsumer
+import com.android.quickstep.inputconsumers.LauncherWithoutFocusInputConsumer
 import com.android.quickstep.inputconsumers.NavHandleLongPressInputConsumer
 import com.android.quickstep.inputconsumers.OneHandedModeInputConsumer
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer
-import com.android.quickstep.inputconsumers.OverviewInputConsumer
-import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer
 import com.android.quickstep.inputconsumers.ProgressDelegateInputConsumer
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer
@@ -44,6 +46,7 @@ import com.android.quickstep.util.ActiveGestureLog
 import com.android.quickstep.util.ActiveGestureLog.CompoundString
 import com.android.quickstep.util.ActiveGestureProtoLogProxy
 import com.android.quickstep.views.RecentsViewContainer
+import com.android.quickstep.window.RecentsWindowManager
 import com.android.systemui.shared.system.InputChannelCompat
 import com.android.systemui.shared.system.InputMonitorCompat
 import com.android.wm.shell.Flags
@@ -74,8 +77,9 @@ object InputConsumerUtils {
         overviewCommandHelper: OverviewCommandHelper,
         event: MotionEvent,
         rotationTouchHelper: RotationTouchHelper,
+        desktopState: DesktopState,
     ): InputConsumer where T : RecentsViewContainer, T : StatefulContainer<S> {
-        val tac = taskbarManager.getCurrentActivityContext()
+        val tac = taskbarManager.getTaskbarForDisplay(event.displayId)
         val bubbleControllers = tac?.bubbleControllers
         if (bubbleControllers != null && BubbleBarInputConsumer.isEventOnBubbles(tac, event)) {
             val consumer: InputConsumer =
@@ -175,6 +179,7 @@ object InputConsumerUtils {
                     event,
                     reasonString,
                     rotationTouchHelper,
+                    desktopState,
                 )
         } else {
             reasonString =
@@ -194,7 +199,11 @@ object InputConsumerUtils {
         if (deviceState.isGesturalNavMode || gestureState.isTrackpadGesture) {
             handleOrientationSetup(base)
         }
-        if (deviceState.isFullyGesturalNavMode || gestureState.isTrackpadGesture) {
+        if (
+            deviceState.isFullyGesturalNavMode ||
+                gestureState.isTrackpadGesture ||
+                (enableAutoStashConnectedDisplayTaskbar.isTrue && tac?.isPrimaryDisplay == false)
+        ) {
             val reasonPrefix =
                 "device is in gesture navigation mode or 3-button mode with a trackpad gesture"
             if (deviceState.canTriggerAssistantAction(event)) {
@@ -234,7 +243,6 @@ object InputConsumerUtils {
                     )
                     base =
                         TaskbarUnstashInputConsumer(
-                            context,
                             base,
                             inputMonitorCompat,
                             tac,
@@ -503,6 +511,7 @@ object InputConsumerUtils {
         event: MotionEvent,
         reasonString: CompoundString,
         rotationTouchHelper: RotationTouchHelper,
+        desktopState: DesktopState,
     ): InputConsumer where T : RecentsViewContainer, T : StatefulContainer<S> {
         if (deviceState.isKeyguardShowingOccluded) {
             // This handles apps showing over the lockscreen (e.g. camera)
@@ -527,8 +536,8 @@ object InputConsumerUtils {
 
         val runningTask = gestureState.runningTask
         val containerInterface = gestureState.getContainerInterface<S, T>()
-        // Use overview input consumer for sharesheets on top of home.
-        val forceOverviewInputConsumer =
+        // Use launcher input consumer for sharesheets on top of home.
+        val forceLauncherInputConsumer =
             containerInterface.isStarted() &&
                 runningTask != null &&
                 runningTask.isRootChooseActivity
@@ -555,7 +564,7 @@ object InputConsumerUtils {
         val launcherResumedThroughShellTransition =
             containerInterface.isResumed() &&
                 !previousGestureState.isRecentsAnimationRunning &&
-                !DesktopState.fromContext(context).shouldShowHomeBehindDesktop
+                !desktopState.shouldShowHomeBehindDesktop
 
         // If a task fragment within Launcher is resumed
         val launcherChildActivityResumed =
@@ -566,7 +575,7 @@ object InputConsumerUtils {
                 containerInterface.isLauncherOverlayShowing
 
         return if (containerInterface.isInLiveTileMode()) {
-            createOverviewInputConsumer<S, T>(
+            createLauncherInputConsumer<S, T>(
                 userUnlocked,
                 taskAnimationManager,
                 taskbarManager,
@@ -576,7 +585,7 @@ object InputConsumerUtils {
                 gestureState,
                 event,
                 reasonString.append(
-                    "%sis in live tile mode, trying to use overview input consumer",
+                    "%sis in live tile mode, trying to use launcher input consumer",
                     SUBSTRING_PREFIX,
                 ),
             )
@@ -591,9 +600,9 @@ object InputConsumerUtils {
         } else if (
             previousGestureAnimatedToLauncher ||
                 launcherResumedThroughShellTransition ||
-                forceOverviewInputConsumer
+                forceLauncherInputConsumer
         ) {
-            createOverviewInputConsumer<S, T>(
+            createLauncherInputConsumer<S, T>(
                 userUnlocked,
                 taskAnimationManager,
                 taskbarManager,
@@ -610,12 +619,16 @@ object InputConsumerUtils {
                             else "%spredictive back animation is still in progress")
                         else if (launcherResumedThroughShellTransition)
                             "%slauncher resumed through a shell transition"
-                        else "%sforceOverviewInputConsumer == true",
+                        else "%sforceLauncherInputConsumer == true",
                         SUBSTRING_PREFIX,
                     )
-                    .append(", trying to use overview input consumer"),
+                    .append(", trying to use launcher input consumer"),
             )
-        } else if (deviceState.isGestureBlockedTask(runningTask) || launcherChildActivityResumed) {
+        } else if (
+            deviceState.isGestureBlockedTask(runningTask) ||
+                launcherChildActivityResumed ||
+                ignoreNonTrackpadMouseEvent(context, gestureState, event)
+        ) {
             getDefaultInputConsumer(
                 gestureState.displayId,
                 userUnlocked,
@@ -624,7 +637,9 @@ object InputConsumerUtils {
                 reasonString.append(
                     if (launcherChildActivityResumed)
                         "%sis launcher child-task, trying to use default input consumer"
-                    else "%sis gesture-blocked task, trying to use default input consumer",
+                    else if (deviceState.isGestureBlockedTask(runningTask))
+                        "%sis gesture-blocked task, trying to use default input consumer"
+                    else "%sis non trackpad mouse event, trying to use default input consumer",
                     SUBSTRING_PREFIX,
                 ),
             )
@@ -693,7 +708,7 @@ object InputConsumerUtils {
         }
     }
 
-    private fun <S : BaseState<S>, T> createOverviewInputConsumer(
+    private fun <S : BaseState<S>, T> createLauncherInputConsumer(
         userUnlocked: Boolean,
         taskAnimationManager: TaskAnimationManager,
         taskbarManager: TaskbarManager,
@@ -737,10 +752,10 @@ object InputConsumerUtils {
         )
         return if (hasWindowFocus || isPreviousGestureAnimatingToLauncher || isInLiveTileMode) {
             reasonString.append(
-                "%soverview should have focus, using OverviewInputConsumer",
+                "%soverview should have focus, using LauncherInputConsumer",
                 SUBSTRING_PREFIX,
             )
-            OverviewInputConsumer(
+            LauncherInputConsumer(
                 gestureState,
                 container,
                 inputMonitorCompat,
@@ -748,15 +763,16 @@ object InputConsumerUtils {
             )
         } else {
             reasonString.append(
-                "%soverview shouldn't have focus, using OverviewWithoutFocusInputConsumer",
+                "%soverview shouldn't have focus, using LauncherWithoutFocusInputConsumer",
                 SUBSTRING_PREFIX,
             )
             val disableHorizontalSwipe = deviceState.isInExclusionRegion(event)
-            OverviewWithoutFocusInputConsumer(
+            LauncherWithoutFocusInputConsumer(
                 container.asContext(),
                 deviceState,
                 gestureState,
                 inputMonitorCompat,
+                taskAnimationManager,
                 disableHorizontalSwipe,
             )
         }
@@ -851,6 +867,16 @@ object InputConsumerUtils {
     ): Boolean {
         return (com.android.launcher3.Flags.ignoreThreeFingerTrackpadForNavHandleLongPress() &&
             gestureState.isThreeFingerTrackpadGesture)
+    }
+
+    private fun ignoreNonTrackpadMouseEvent(
+        context: Context,
+        gestureState: GestureState,
+        event: MotionEvent,
+    ): Boolean {
+        return shouldEnableMouseInteractionChanges(context) &&
+            !gestureState.isTrackpadGesture() &&
+            event.isFromSource(InputDevice.SOURCE_MOUSE)
     }
 
     private fun handleOrientationSetup(baseInputConsumer: InputConsumer) {

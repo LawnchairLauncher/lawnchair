@@ -548,8 +548,11 @@ abstract class MagnetizedObject<T : Any>(
         // Whether velocity is sufficient, depending on whether we're flinging into a target at the
         // top or the bottom of the screen.
         val velocitySufficient =
-                if (rawY < target.centerOnDisplayY()) velY > flingToTargetMinVelocity
-                else velY < flingToTargetMinVelocity
+            if (rawY < target.centerOnDisplayY()) {
+                velY > flingToTargetMinVelocity
+            } else {
+                velY < -flingToTargetMinVelocity
+            }
 
         if (!velocitySufficient) {
             return false

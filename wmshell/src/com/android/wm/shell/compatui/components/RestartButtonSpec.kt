@@ -26,33 +26,32 @@ import com.android.wm.shell.compatui.api.CompatUILayout
 import com.android.wm.shell.compatui.api.CompatUILifecyclePredicates
 import com.android.wm.shell.compatui.api.CompatUISpec
 
-/**
- * CompatUISpec for the Restart Button
- */
+/** CompatUISpec for the Restart Button */
 @SuppressLint("InflateParams")
-val RestartButtonSpec = CompatUISpec(
-    name = "restartButton",
-    lifecycle = CompatUILifecyclePredicates(
-        creationPredicate = { info, _ ->
-            info.taskInfo.appCompatTaskInfo.isTopActivityInSizeCompat
-        },
-        removalPredicate = { info, _, _ ->
-            !info.taskInfo.appCompatTaskInfo.isTopActivityInSizeCompat
-        }
-    ),
-    layout = CompatUILayout(
-        zOrder = TaskConstants.TASK_CHILD_LAYER_COMPAT_UI + 10,
-        viewBuilder = { ctx, _, _ ->
-            LayoutInflater.from(ctx).inflate(
-                R.layout.compat_ui_restart_button_layout,
-                null
-            )
-        },
-        viewBinder = { view, _, _, _ ->
-            view.visibility = View.VISIBLE
-            view.findViewById<View>(R.id.size_compat_restart_button)?.visibility = View.VISIBLE
-        },
-        // TODO(b/360288344): Calculate right position from stable bounds
-        positionFactory = { _, _, _, _ -> Point(500, 500) }
+val RestartButtonSpec =
+    CompatUISpec(
+        name = "restartButton",
+        lifecycle =
+            CompatUILifecyclePredicates(
+                creationPredicate = { info, _ ->
+                    info.taskInfo.appCompatTaskInfo.isTopActivityInSizeCompat
+                },
+                removalPredicate = { info, _, _ ->
+                    !info.taskInfo.appCompatTaskInfo.isTopActivityInSizeCompat
+                },
+            ),
+        layout =
+            CompatUILayout(
+                zOrder = TaskConstants.TASK_CHILD_LAYER_COMPAT_UI + 10,
+                viewBuilder = { ctx, _, _ ->
+                    LayoutInflater.from(ctx).inflate(R.layout.compat_ui_restart_button_layout, null)
+                },
+                viewBinder = { view, _, _, _ ->
+                    view.visibility = View.VISIBLE
+                    view.findViewById<View>(R.id.size_compat_restart_button)?.visibility =
+                        View.VISIBLE
+                },
+                // TODO(b/360288344): Calculate right position from stable bounds
+                positionFactory = { _, _, _, _ -> Point(500, 500) },
+            ),
     )
-)

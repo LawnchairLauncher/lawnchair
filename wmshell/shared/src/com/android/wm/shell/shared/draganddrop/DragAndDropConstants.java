@@ -29,4 +29,11 @@ public class DragAndDropConstants {
      * An Intent extra that Launcher can use to specify the {@link android.content.pm.ShortcutInfo}
      */
     public static final String EXTRA_SHORTCUT_INFO = "EXTRA_SHORTCUT_INFO";
+
+    //TODO(b/440373358) : remove once we properly handle dragging from notification
+    /**
+     * An Intent extra that Notification can use to specify that the drag was originated from the
+     * notification.
+     */
+    public static final String IS_FROM_NOTIFICATION = "IS_FROM_NOTIFICATION";
 }

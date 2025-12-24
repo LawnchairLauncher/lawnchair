@@ -23,23 +23,20 @@ import android.app.prediction.AppTargetEvent
 import android.app.prediction.AppTargetId
 import android.appwidget.AppWidgetProviderInfo
 import android.content.ComponentName
-import android.content.Context
 import android.os.Process.myUserHandle
 import android.os.UserHandle
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.model.WidgetPredictionsRequester.LAUNCH_LOCATION
 import com.android.launcher3.model.WidgetPredictionsRequester.buildBundleForPredictionSession
 import com.android.launcher3.model.WidgetPredictionsRequester.filterPredictions
 import com.android.launcher3.model.WidgetPredictionsRequester.notOnUiSurfaceFilter
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
+import com.android.launcher3.util.SandboxApplication
 import com.android.launcher3.util.TestUtil
 import com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
@@ -50,19 +47,22 @@ import java.util.concurrent.TimeUnit
 import java.util.function.Predicate
 import junit.framework.Assert.assertNotNull
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
 
 @RunWith(AndroidJUnit4::class)
 class WidgetsPredictionsRequesterTest {
 
+    @get:Rule val context = SandboxApplication()
+
     private lateinit var mUserHandle: UserHandle
-    private lateinit var context: Context
     private lateinit var deviceProfile: DeviceProfile
     private lateinit var testInvariantProfile: InvariantDeviceProfile
 
@@ -76,30 +76,19 @@ class WidgetsPredictionsRequesterTest {
 
     private lateinit var allWidgets: Map<ComponentKey, WidgetItem>
 
+    @get:Rule val mockito = MockitoJUnit.rule()
     @Mock private lateinit var iconCache: IconCache
-
     @Mock private lateinit var apmMock: AppPredictionManager
-
     @Mock private lateinit var predictorMock: AppPredictor
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         mUserHandle = myUserHandle()
+        doReturn(predictorMock).whenever(apmMock).createAppPredictionSession(any())
 
-        whenever(apmMock.createAppPredictionSession(any())).thenReturn(predictorMock)
-
-        context =
-            object : ActivityContextWrapper(ApplicationProvider.getApplicationContext()) {
-                override fun getSystemService(name: String): Any? {
-                    if (name == "app_prediction") {
-                        return apmMock
-                    }
-                    return super.getSystemService(name)
-                }
-            }
-        testInvariantProfile = LauncherAppState.getIDP(context)
-        deviceProfile = testInvariantProfile.getDeviceProfile(context).copy(context)
+        context.spyService(AppPredictionManager::class.java) { apmMock }
+        testInvariantProfile = InvariantDeviceProfile.INSTANCE[context]
+        deviceProfile = testInvariantProfile.getDeviceProfile(context).copy()
 
         widget1aInfo =
             createAppWidgetProviderInfo(

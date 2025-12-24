@@ -22,6 +22,8 @@ import android.testing.AndroidTestingRunner
 import android.view.SurfaceControl
 import androidx.test.annotation.UiThreadTest
 import androidx.test.filters.SmallTest
+import com.android.internal.jank.Cuj.CUJ_DESKTOP_MODE_TILE_RESIZING
+import com.android.internal.jank.InteractionJankMonitor
 import com.android.wm.shell.ShellTestCase
 import java.util.function.Supplier
 import kotlin.test.Test
@@ -53,6 +55,8 @@ class DesktopTilingDividerWindowManagerTest : ShellTestCase() {
 
     private lateinit var desktopTilingWindowManager: DesktopTilingDividerWindowManager
 
+    private val jankMonitor: InteractionJankMonitor = mock()
+
     @Before
     fun setup() {
         config = Configuration()
@@ -74,6 +78,7 @@ class DesktopTilingDividerWindowManagerTest : ShellTestCase() {
                 BOUNDS,
                 mContext,
                 /* isDarkMode= */ true,
+                jankMonitor,
             )
     }
 
@@ -92,11 +97,25 @@ class DesktopTilingDividerWindowManagerTest : ShellTestCase() {
 
     @Test
     @UiThreadTest
+    fun dividerMove_beginsAndEndsJankMonitoring() {
+        desktopTilingWindowManager.generateViewHost(surfaceControl)
+        desktopTilingWindowManager.onDividerMoveStart(-1, mock())
+
+        verify(jankMonitor, times(1)).begin(any())
+
+        desktopTilingWindowManager.onDividerMovedEnd(-1, mock())
+
+        verify(jankMonitor, times(1)).end(CUJ_DESKTOP_MODE_TILE_RESIZING)
+    }
+
+    @Test
+    @UiThreadTest
     fun testWindowManager_accountsForRoundedCornerDimensions() {
         desktopTilingWindowManager.generateViewHost(surfaceControl)
         val cornerRadius =
             mContext.resources.getDimensionPixelSize(
-                com.android.wm.shell.shared.R.dimen.desktop_windowing_freeform_rounded_corner_radius)
+                com.android.wm.shell.shared.R.dimen.desktop_windowing_freeform_rounded_corner_radius
+            )
         // Ensure a surfaceControl transaction runs to show the divider.
         verify(transaction, times(1))
             .setPosition(any(), eq(BOUNDS.left.toFloat() - cornerRadius), any())

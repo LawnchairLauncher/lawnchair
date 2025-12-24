@@ -5,7 +5,7 @@ DeviceProfile:
 	transposeLayoutWithOrientation:true
 	isGestureMode:true
 	isLandscape:false
-	isMultiWindowMode:false
+	isExternalDisplay:false
 	isTwoPanels:false
 	isLeftRightSplit:false
 	windowX: 0.0px (0.0dp)
@@ -67,8 +67,8 @@ DeviceProfile:
 	allAppsBorderSpacePxY: 42.0px (16.0dp)
 	numShownAllAppsColumns: 5
 	allAppsPadding.top: 118.0px (44.95238dp)
-	allAppsPadding.left: 0.0px (0.0dp)
-	allAppsPadding.right: 0.0px (0.0dp)
+	allAppsPadding.left: 21.0px (8.0dp)
+	allAppsPadding.right: 21.0px (8.0dp)
 	allAppsLeftRightMargin: 0.0px (0.0dp)
 	hotseatBarSizePx: 273.0px (104.0dp)
 	mHotseatColumnSpan: 5

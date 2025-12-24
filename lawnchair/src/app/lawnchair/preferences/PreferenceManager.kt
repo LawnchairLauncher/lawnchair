@@ -44,7 +44,7 @@ class PreferenceManager @Inject constructor(
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
     private val mRecentsModel get() = RecentsModel.INSTANCE.get(context)
     private val reloadIcons: () -> Unit = { mRecentsModel.onThemeChanged() }
-    private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }
+    private val reloadGrid: () -> Unit = { idp.onPreferencesChanged() }
 
     private val recreate = {
         LawnchairLauncher.instance?.recreateIfNotScheduled()

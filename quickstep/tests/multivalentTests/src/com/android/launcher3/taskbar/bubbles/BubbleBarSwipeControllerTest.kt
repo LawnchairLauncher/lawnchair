@@ -67,8 +67,6 @@ class BubbleBarSwipeControllerTest {
     @Mock private lateinit var bubbleStashedHandleViewController: BubbleStashedHandleViewController
     @Mock private lateinit var bubbleDragController: BubbleDragController
     @Mock private lateinit var bubbleDismissController: BubbleDismissController
-    @Mock private lateinit var bubbleBarPinController: BubbleBarPinController
-    @Mock private lateinit var bubblePinController: BubblePinController
     @Mock private lateinit var dragToBubbleController: DragToBubbleController
     @Mock private lateinit var bubbleCreator: BubbleCreator
 
@@ -92,8 +90,6 @@ class BubbleBarSwipeControllerTest {
                 Optional.of(bubbleStashedHandleViewController),
                 bubbleDragController,
                 bubbleDismissController,
-                bubbleBarPinController,
-                bubblePinController,
                 Optional.of(bubbleBarSwipeController),
                 dragToBubbleController,
                 bubbleCreator,

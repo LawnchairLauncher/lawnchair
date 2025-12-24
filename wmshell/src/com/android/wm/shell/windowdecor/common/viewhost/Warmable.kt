@@ -15,9 +15,7 @@
  */
 package com.android.wm.shell.windowdecor.common.viewhost
 
-/**
- * An interface for an object that can be warmed up before it's needed.
- */
+/** An interface for an object that can be warmed up before it's needed. */
 interface Warmable {
     fun warmUp()
 }

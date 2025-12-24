@@ -18,6 +18,8 @@ package com.android.quickstep.compose.core
 
 import android.view.View
 import com.android.quickstep.recents.ui.viewmodel.TaskViewModel
+import com.android.quickstep.task.apptimer.TaskAppTimerUiState
+import com.android.quickstep.task.apptimer.ViewModel
 import com.android.quickstep.views.TaskViewIcon
 
 interface QuickstepComposeFeatures {
@@ -28,4 +30,6 @@ interface QuickstepComposeFeatures {
         onClick: () -> Unit = {},
         onLongClick: () -> Unit = {},
     ): View
+
+    fun startTaskAppTimerToast(view: View, viewModel: ViewModel<TaskAppTimerUiState>): View
 }

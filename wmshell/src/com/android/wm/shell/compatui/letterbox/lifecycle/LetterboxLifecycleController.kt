@@ -19,14 +19,16 @@ package com.android.wm.shell.compatui.letterbox.lifecycle
 import android.view.SurfaceControl
 
 /**
- * Abstract a component that handles the lifecycle of the letterbox surfaces given
- * information encapsulated in a [LetterboxLifecycleEvent].
+ * Abstract a component that handles the lifecycle of the letterbox surfaces given information
+ * encapsulated in a [LetterboxLifecycleEvent].
  */
 interface LetterboxLifecycleController {
 
     /**
      * Describes how [LetterboxLifecycleEvent]s interact with the Letterbox surfaces lifecycle.
+     *
      * <p/>
+     *
      * @param event The [LetterboxLifecycleEvent] To handle.
      * @param startTransaction The initial [Transaction].
      * @param finishTransaction The final [Transaction].
@@ -34,6 +36,6 @@ interface LetterboxLifecycleController {
     fun onLetterboxLifecycleEvent(
         event: LetterboxLifecycleEvent,
         startTransaction: SurfaceControl.Transaction,
-        finishTransaction: SurfaceControl.Transaction
+        finishTransaction: SurfaceControl.Transaction,
     )
 }

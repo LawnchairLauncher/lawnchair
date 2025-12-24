@@ -70,10 +70,12 @@ class TransitionInfoBuilder @JvmOverloads constructor(
     ) = addChange(mode, flags, activityTransitionInfo = null, taskInfo = taskInfo)
 
     /** Adds a change to the [TransitionInfo] for task transition. */
+    @JvmOverloads
     fun addChange(
         @WindowManager.TransitionType mode: Int,
         taskInfo: ActivityManager.RunningTaskInfo?,
-    ) = addChange(mode, activityTransitionInfo = null, taskInfo = taskInfo)
+        endDisplayId: Int? = null,
+    ) = addChange(mode, activityTransitionInfo = null, taskInfo = taskInfo, endDisplayId = endDisplayId)
 
     /** Adds a change to the [TransitionInfo] for activity transition. */
     fun addChange(
@@ -113,6 +115,7 @@ class TransitionInfoBuilder @JvmOverloads constructor(
         activityTransitionInfo: ActivityTransitionInfo? = null,
         taskInfo: ActivityManager.RunningTaskInfo? = null,
         taskFragmentToken: IBinder? = null,
+        endDisplayId: Int? = null,
     ): TransitionInfoBuilder {
         val container = taskInfo?.token
         val leash = createMockSurface()
@@ -123,18 +126,20 @@ class TransitionInfoBuilder @JvmOverloads constructor(
             setTaskInfo(taskInfo)
             setTaskFragmentToken(taskFragmentToken)
         }
-        return addChange(change)
+        return addChange(change, endDisplayId)
     }
 
     /**
      * Adds a pre-configured change to the [TransitionInfo].
      *
      * @param change the TransitionInfo.Change object to add.
+     * @param endDisplayId the end display to override the change with
      * @return this TransitionInfoBuilder instance for chaining.
      */
-    fun addChange(change: TransitionInfo.Change): TransitionInfoBuilder {
+    @JvmOverloads
+    fun addChange(change: TransitionInfo.Change, endDisplayId: Int? = null): TransitionInfoBuilder {
         // Set the display ID for the change.
-        change.setDisplayId(displayId /* start */, displayId /* end */)
+        change.setDisplayId(displayId /* start */, endDisplayId ?: displayId /* end */)
         // Add the change to the internal TransitionInfo object.
         info.addChange(change)
         return this // Return this for fluent builder pattern.

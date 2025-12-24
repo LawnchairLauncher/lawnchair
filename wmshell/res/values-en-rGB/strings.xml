@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"App does not support bubble"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Split screen divider"</string>
     <string name="divider_title" msgid="1963391955593749442">"Split screen divider"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Left full screen"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Left 70%"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Left 50%"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Left 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Right full screen"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Swap top app with bottom"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Swap left app with right"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Top full screen"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Top 70%"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Top 50%"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Top 30%"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Bottom full screen"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Make left app full screen"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10% left, 90% right"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30% left, 70% right"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50% left, 50% right"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70% left, 30% right"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90% left, 10% right"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Make right app full screen"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Swap top app with bottom app, keep current split"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Swap left app with right app, keep current split"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Make top app full screen"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10% top, 90% bottom"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30% top, 70% bottom"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50% top, 50% bottom"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70% top, 30% bottom"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90% top, 10% bottom"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Make bottom app full screen"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Split left"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Split right"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Split top"</string>

@@ -29,7 +29,7 @@
     <ImageView
         android:layout_width="@dimen/bubble_popup_icon_size"
         android:layout_height="@dimen/bubble_popup_icon_size"
-        android:tint="?android:attr/textColorSecondary"
+        android:tint="@androidprv:color/materialColorOutline"
         android:contentDescription="@null"
         android:src="@drawable/bubble_ic_settings"/>
 
@@ -42,7 +42,7 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Headline"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="@androidprv:color/materialColorOnSurface"
         android:text="@string/bubble_bar_education_manage_title"/>
 
     <TextView
@@ -53,7 +53,7 @@
         android:paddingBottom="@dimen/bubble_popup_padding_bottom"
         android:maxWidth="@dimen/bubble_popup_content_max_width"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="@androidprv:color/materialColorOnSurfaceVariant"
         android:textAlignment="center"
         android:text="@string/bubble_bar_education_manage_text"/>
 

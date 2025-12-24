@@ -21,7 +21,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center">
-
     <com.android.wm.shell.windowdecor.HandleImageButton
         android:id="@+id/caption_handle"
         android:layout_width="@dimen/desktop_mode_fullscreen_decor_caption_width"

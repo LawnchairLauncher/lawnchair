@@ -15,6 +15,7 @@
 package {
     // See: http://go/android-license-faq
     default_applicable_licenses: ["Android-Apache-2.0"],
+    default_team: "trendy_team_launcher",
 }
 
 // Source code used for test
@@ -25,6 +26,8 @@ filegroup {
         "src/**/*.kt",
         "multivalentTests/src/**/*.java",
         "multivalentTests/src/**/*.kt",
+        "src_e2e/**/*.java",
+        "src_e2e/**/*.kt",
     ],
     exclude_srcs: [
         ":launcher-non-quickstep-tests-src",
@@ -119,6 +122,11 @@ android_test {
         ":launcher-tests-src",
         ":launcher-non-quickstep-tests-src",
     ],
+    exclude_srcs: [
+        // Launcher3 tests setup has an issue with resolving a few resources within transitive
+        // compose dependencies that work fine in actual Launcher3 app.
+        "src_e2e/com/android/launcher3/widget/TaplAddWidgetTest.java",
+    ],
     static_libs: [
         "Launcher3TestLib",
         "com_android_launcher3_flags_lib",
@@ -143,6 +151,9 @@ android_test {
     data: [":Launcher3"],
     plugins: ["dagger2-compiler"],
     test_suites: ["general-tests"],
+    lint: {
+        baseline_filename: "lint-baseline.xml",
+    },
 }
 
 filegroup {

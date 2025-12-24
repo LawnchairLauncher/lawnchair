@@ -152,7 +152,8 @@ public class SplitScreenControllerTests extends ShellTestCase {
                 Optional.of(mWindowDecorViewModel), Optional.of(mDesktopTasksController),
                 Optional.empty(),
                 mStageCoordinator, mMultiInstanceHelper, mSplitState, mMainExecutor, mMainHandler,
-                mRootDisplayAreaOrganizer, mDesktopState, activityTaskManager, mMSDLPlayer));
+                mRootDisplayAreaOrganizer, mDesktopState, activityTaskManager, mMSDLPlayer,
+                Optional.empty()));
     }
 
     @Test
@@ -221,7 +222,7 @@ public class SplitScreenControllerTests extends ShellTestCase {
                 SPLIT_INDEX_0);
 
         verify(mStageCoordinator).startIntent(eq(pendingIntent), mIntentCaptor.capture(),
-                eq(SPLIT_POSITION_TOP_OR_LEFT), isNull(), isNull(), eq(SPLIT_INDEX_0),
+                eq(SPLIT_POSITION_TOP_OR_LEFT), isNull(), isNull(), isNull(), eq(SPLIT_INDEX_0),
                 eq(DEFAULT_DISPLAY));
         assertEquals(FLAG_ACTIVITY_NO_USER_ACTION,
                 mIntentCaptor.getValue().getFlags() & FLAG_ACTIVITY_NO_USER_ACTION);
@@ -243,7 +244,7 @@ public class SplitScreenControllerTests extends ShellTestCase {
                 SPLIT_INDEX_0);
 
         verify(mStageCoordinator).startIntent(eq(pendingIntent), mIntentCaptor.capture(),
-                eq(SPLIT_POSITION_TOP_OR_LEFT), isNull(), isNull(), eq(SPLIT_INDEX_0),
+                eq(SPLIT_POSITION_TOP_OR_LEFT), isNull(), isNull(), isNull(), eq(SPLIT_INDEX_0),
                 eq(DEFAULT_DISPLAY));
         assertEquals(FLAG_ACTIVITY_MULTIPLE_TASK,
                 mIntentCaptor.getValue().getFlags() & FLAG_ACTIVITY_MULTIPLE_TASK);
@@ -263,10 +264,10 @@ public class SplitScreenControllerTests extends ShellTestCase {
         final int secondDisplay = DEFAULT_DISPLAY + 1;
         mSplitScreenController.startIntent(pendingIntent, mContext.getUserId(), null,
                 SPLIT_POSITION_TOP_OR_LEFT, null /* options */, null /* hideTaskToken */,
-                false, SPLIT_INDEX_0, secondDisplay);
+                null /* wct */, false, SPLIT_INDEX_0, secondDisplay);
 
         verify(mStageCoordinator).startIntent(eq(pendingIntent), mIntentCaptor.capture(),
-                eq(SPLIT_POSITION_TOP_OR_LEFT), isNull(), isNull(), eq(SPLIT_INDEX_0),
+                eq(SPLIT_POSITION_TOP_OR_LEFT), isNull(), isNull(), isNull(), eq(SPLIT_INDEX_0),
                 eq(secondDisplay));
     }
 
@@ -346,7 +347,7 @@ public class SplitScreenControllerTests extends ShellTestCase {
                 PendingIntent.getActivity(mContext, 0, startIntent, FLAG_IMMUTABLE);
         mSplitScreenController.startIntent(pendingIntent, mContext.getUserId(), null,
                 SPLIT_POSITION_TOP_OR_LEFT, null /* options */, null /* hideTaskToken */,
-                true /* forceLaunchNewTask */, SPLIT_INDEX_0, DEFAULT_DISPLAY);
+                null /* wct */, true /* forceLaunchNewTask */, SPLIT_INDEX_0, DEFAULT_DISPLAY);
         verify(mRecentTasks, never()).findTaskInBackground(any(), anyInt(), any());
     }
 
@@ -357,7 +358,7 @@ public class SplitScreenControllerTests extends ShellTestCase {
                 PendingIntent.getActivity(mContext, 0, startIntent, FLAG_IMMUTABLE);
         mSplitScreenController.startIntent(pendingIntent, mContext.getUserId(), null,
                 SPLIT_POSITION_TOP_OR_LEFT, null /* options */, null /* hideTaskToken */,
-                false /* forceLaunchNewTask */, SPLIT_INDEX_0, DEFAULT_DISPLAY);
+                null /* wct */, false /* forceLaunchNewTask */, SPLIT_INDEX_0, DEFAULT_DISPLAY);
         verify(mRecentTasks).findTaskInBackground(any(), anyInt(), any());
     }
 

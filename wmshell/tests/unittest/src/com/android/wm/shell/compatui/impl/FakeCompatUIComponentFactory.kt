@@ -26,13 +26,11 @@ import com.android.wm.shell.compatui.api.CompatUISpec
 import com.android.wm.shell.compatui.api.CompatUIState
 import junit.framework.Assert.assertEquals
 
-/**
- * Fake {@link CompatUIComponentFactory} implementation.
- */
+/** Fake {@link CompatUIComponentFactory} implementation. */
 class FakeCompatUIComponentFactory(
     private val context: Context,
     private val syncQueue: SyncTransactionQueue,
-    private val displayController: DisplayController
+    private val displayController: DisplayController,
 ) : CompatUIComponentFactory {
 
     var lastSpec: CompatUISpec? = null
@@ -46,7 +44,7 @@ class FakeCompatUIComponentFactory(
         spec: CompatUISpec,
         compId: String,
         state: CompatUIState,
-        compatUIInfo: CompatUIInfo
+        compatUIInfo: CompatUIInfo,
     ): CompatUIComponent {
         lastSpec = spec
         lastCompId = compId
@@ -60,10 +58,9 @@ class FakeCompatUIComponentFactory(
             state,
             compatUIInfo,
             syncQueue,
-            displayController.getDisplayLayout(compatUIInfo.taskInfo.displayId)
+            displayController.getDisplayLayout(compatUIInfo.taskInfo.displayId),
         )
     }
 
-    fun assertInvocations(expected: Int) =
-        assertEquals(expected, numberInvocations)
+    fun assertInvocations(expected: Int) = assertEquals(expected, numberInvocations)
 }

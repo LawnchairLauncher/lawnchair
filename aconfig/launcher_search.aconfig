@@ -61,3 +61,13 @@ flag {
   description: "Enable Search App's widget on hotseat"
   bug: "405226308"
 }
+
+flag {
+    name: "clear_scrim_on_reset"
+    namespace: "launcher_search"
+    description: "This flag enables the clearing of the scrim upon reset of All apps. "
+    bug: "426397329"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}

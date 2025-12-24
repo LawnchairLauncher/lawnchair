@@ -16,12 +16,12 @@
 
 package com.android.quickstep.logging
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.ALLOW_ROTATION
 import com.android.launcher3.SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY
+import com.android.launcher3.dagger.LauncherAppComponent
+import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.logging.InstanceId
 import com.android.launcher3.logging.StatsLogManager
@@ -34,11 +34,12 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NAVI
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_ENABLED
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_DISABLED
 import com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY
-import com.android.launcher3.util.DaggerSingletonTracker
-import com.android.launcher3.util.DisplayController
-import com.android.launcher3.util.SettingsCache
+import com.android.launcher3.util.AllModulesMinusApiWrapper
+import com.android.launcher3.util.FakePrefsModule
+import com.android.launcher3.util.SandboxApplication
 import com.google.common.truth.Truth.assertThat
-import org.junit.After
+import dagger.BindsInstance
+import dagger.Component
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,68 +59,36 @@ import org.mockito.kotlin.whenever
 class SettingsChangeLoggerTest {
 
     @get:Rule val mockito = MockitoJUnit.rule()
-
-    private val mContext: Context = ApplicationProvider.getApplicationContext()
+    @get:Rule val context = SandboxApplication()
 
     private val mInstanceId = InstanceId.fakeInstanceId(1)
 
-    private lateinit var mSystemUnderTest: SettingsChangeLogger
-
-    @Mock private lateinit var mStatsLogFactory: StatsLogManager.StatsLogManagerFactory
-
-    @Mock private lateinit var mStatsLogManager: StatsLogManager
-
     @Mock(answer = Answers.RETURNS_SELF)
     private lateinit var mMockLogger: StatsLogManager.StatsLogger
-    @Mock private lateinit var mTracker: DaggerSingletonTracker
-    private var displayController: DisplayController = DisplayController.INSTANCE.get(mContext)
-    private var settingsCache: SettingsCache = SettingsCache.INSTANCE.get(mContext)
+
+    @Mock private lateinit var mStatsLogFactory: StatsLogManager.StatsLogManagerFactory
+    @Mock private lateinit var mStatsLogManager: StatsLogManager
 
     @Captor private lateinit var mEventCaptor: ArgumentCaptor<StatsLogManager.EventEnum>
 
-    private var mDefaultThemedIcons = false
-    private var mDefaultAllowRotation = false
-
-    private val themeManager: ThemeManager
-        get() = ThemeManager.INSTANCE.get(mContext)
-
     @Before
     fun setUp() {
-        whenever(mStatsLogFactory.create(mContext)).doReturn(mStatsLogManager)
+        whenever(mStatsLogFactory.create(context)).doReturn(mStatsLogManager)
         whenever(mStatsLogManager.logger()).doReturn(mMockLogger)
-        mDefaultThemedIcons = themeManager.isMonoThemeEnabled
-        mDefaultAllowRotation = LauncherPrefs.get(mContext).get(ALLOW_ROTATION)
+        context.initDaggerComponent(
+            DaggerSettingsChangeLoggerTest_TestComponent.builder()
+                .bindStatsLogManagerFactory(mStatsLogFactory)
+        )
+
         // To match the default value of THEMED_ICONS
-        themeManager.isMonoThemeEnabled = false
+        ThemeManager.INSTANCE.get(context).isMonoThemeEnabled = false
         // To match the default value of ALLOW_ROTATION
-        LauncherPrefs.get(mContext).put(item = ALLOW_ROTATION, value = false)
-
-        mSystemUnderTest =
-            SettingsChangeLogger(
-                mContext,
-                mTracker,
-                displayController,
-                settingsCache,
-                mStatsLogFactory,
-            )
-    }
-
-    @After
-    fun tearDown() {
-        themeManager.isMonoThemeEnabled = mDefaultThemedIcons
-        LauncherPrefs.get(mContext).put(ALLOW_ROTATION, mDefaultAllowRotation)
+        LauncherPrefs.get(context).put(item = ALLOW_ROTATION, value = false)
     }
 
     @Test
     fun loggingPrefs_correctDefaultValue() {
-        val systemUnderTest =
-            SettingsChangeLogger(
-                mContext,
-                mTracker,
-                displayController,
-                settingsCache,
-                mStatsLogFactory,
-            )
+        val systemUnderTest = SettingsChangeLogger.INSTANCE.get(context)
 
         assertThat(systemUnderTest.loggingPrefs[ALLOW_ROTATION_PREFERENCE_KEY]!!.defaultValue)
             .isFalse()
@@ -130,7 +99,7 @@ class SettingsChangeLoggerTest {
 
     @Test
     fun logSnapshot_defaultValue() {
-        mSystemUnderTest.logSnapshot(mInstanceId)
+        SettingsChangeLogger.INSTANCE.get(context).logSnapshot(mInstanceId)
 
         verify(mMockLogger, atLeastOnce()).log(capture(mEventCaptor))
         val capturedEvents = mEventCaptor.allValues
@@ -142,11 +111,10 @@ class SettingsChangeLoggerTest {
 
     @Test
     fun logSnapshot_updateAllowRotation() {
-        LauncherPrefs.get(mContext).put(item = ALLOW_ROTATION, value = true)
+        LauncherPrefs.get(context).put(item = ALLOW_ROTATION, value = true)
 
-        // This a new object so the values of mLoggablePrefs will be different
-        SettingsChangeLogger(mContext, mTracker, displayController, settingsCache, mStatsLogFactory)
-            .logSnapshot(mInstanceId)
+        // Create it after changing the launcher prefs so that mLoggablePrefs will be different
+        SettingsChangeLogger.INSTANCE.get(context).logSnapshot(mInstanceId)
 
         verify(mMockLogger, atLeastOnce()).log(capture(mEventCaptor))
         val capturedEvents = mEventCaptor.allValues
@@ -175,5 +143,18 @@ class SettingsChangeLoggerTest {
         private const val OVERVIEW_SUGGESTED_ACTIONS = "pref_overview_action_suggestions"
 
         private const val LAUNCHER_GOOGLE_APP_SWIPE_LEFT_ENABLED = 617
+    }
+
+    @LauncherAppSingleton
+    @Component(modules = [AllModulesMinusApiWrapper::class, FakePrefsModule::class])
+    interface TestComponent : LauncherAppComponent {
+
+        @Component.Builder
+        interface Builder : LauncherAppComponent.Builder {
+            @BindsInstance
+            fun bindStatsLogManagerFactory(factory: StatsLogManager.StatsLogManagerFactory): Builder
+
+            override fun build(): TestComponent
+        }
     }
 }

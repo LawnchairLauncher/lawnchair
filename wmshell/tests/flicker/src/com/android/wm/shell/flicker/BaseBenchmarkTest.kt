@@ -18,8 +18,8 @@ package com.android.wm.shell.flicker
 
 import android.app.Instrumentation
 import android.tools.flicker.junit.FlickerBuilderProvider
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
 import android.tools.flicker.rules.ClearAppCacheRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.tapl.LauncherInstrumentation
@@ -28,7 +28,7 @@ import org.junit.ClassRule
 abstract class BaseBenchmarkTest
 @JvmOverloads
 constructor(
-    protected open val flicker: LegacyFlickerTest,
+    protected open val flicker: FlickerTest,
     protected val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation(),
     protected val tapl: LauncherInstrumentation = LauncherInstrumentation()
 ) {

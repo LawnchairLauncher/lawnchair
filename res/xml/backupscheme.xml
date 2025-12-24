@@ -15,6 +15,11 @@
     <include domain="database" path="launcher_7_by_4.db" />
     <include domain="database" path="launcher_7_by_7.db" />
     <include domain="database" path="launcher_8_by_3.db" />
+    <include domain="database" path="launcher_10_by_5.db" />
+    <include domain="database" path="launcher_11_by_5.db" />
+    <include domain="database" path="launcher_13_by_6.db" />
+    <include domain="database" path="launcher_16_by_8.db" />
+    <include domain="database" path="launcher_22_by_11.db" />
     <include domain="sharedpref" path="com.android.launcher3.prefs.xml" />
     <include domain="file" path="downgrade_schema.json" />
 

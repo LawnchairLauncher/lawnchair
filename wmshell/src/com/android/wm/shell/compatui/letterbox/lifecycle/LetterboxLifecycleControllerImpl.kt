@@ -20,53 +20,45 @@ import android.view.SurfaceControl
 import com.android.wm.shell.compatui.letterbox.LetterboxController
 import com.android.wm.shell.compatui.letterbox.LetterboxControllerStrategy
 
-/**
- * [LetterboxLifecycleController] default implementation.
- */
+/** [LetterboxLifecycleController] default implementation. */
 class LetterboxLifecycleControllerImpl(
     private val letterboxController: LetterboxController,
-    private val letterboxModeStrategy: LetterboxControllerStrategy
+    private val letterboxModeStrategy: LetterboxControllerStrategy,
 ) : LetterboxLifecycleController {
 
     override fun onLetterboxLifecycleEvent(
         event: LetterboxLifecycleEvent,
         startTransaction: SurfaceControl.Transaction,
-        finishTransaction: SurfaceControl.Transaction
+        finishTransaction: SurfaceControl.Transaction,
     ) {
         val key = event.letterboxKey()
         // Each [LetterboxController] will handle its own Surfaces and will be responsible to
         // avoid the creation happens twice or that some visibility/size change operation
         // happens on missing surfaces.
+        val isLetterboxed = event.letterboxBounds?.isEmpty == false
         with(letterboxController) {
-            if (event.letterboxBounds != null) {
+            if (isLetterboxed) {
                 // In this case the top Activity is letterboxed.
-                letterboxModeStrategy.configureLetterboxMode()
                 event.taskLeash?.let { taskLeash ->
-                    createLetterboxSurface(
-                        key,
-                        startTransaction,
-                        taskLeash,
-                        event.containerToken
-                    )
+                    letterboxModeStrategy.configureLetterboxMode(event)
+                    createLetterboxSurface(key, startTransaction, taskLeash, event.containerToken)
                 }
             }
-            updateLetterboxSurfaceVisibility(
-                key,
-                startTransaction,
-                visible = event.letterboxBounds != null
-            )
+            updateLetterboxSurfaceVisibility(key, startTransaction, visible = isLetterboxed)
             // This happens after the visibility update because it needs to
             // check if the surfaces to show have empty bounds. When that happens
             // the clipAndCrop() doesn't actually work because cropping an empty
             // Rect means "do not crop" with the result of a surface filling the
             // task completely.
-            if (event.letterboxBounds != null) {
-                updateLetterboxSurfaceBounds(
-                    key,
-                    startTransaction,
-                    event.taskBounds,
-                    event.letterboxBounds
-                )
+            if (isLetterboxed) {
+                event.letterboxBounds?.let { activityBounds ->
+                    updateLetterboxSurfaceBounds(
+                        key,
+                        startTransaction,
+                        event.taskBounds,
+                        activityBounds,
+                    )
+                }
             }
         }
     }

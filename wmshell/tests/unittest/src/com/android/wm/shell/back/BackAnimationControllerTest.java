@@ -82,6 +82,7 @@ import android.window.WindowContainerToken;
 import androidx.annotation.Nullable;
 import androidx.test.filters.SmallTest;
 
+import com.android.window.flags2.Flags;
 import com.android.wm.shell.RootTaskDisplayAreaOrganizer;
 import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.TestShellExecutor;
@@ -185,6 +186,7 @@ public class BackAnimationControllerTest extends ShellTestCase {
         mController.mTouchableArea.set(mTouchableRegion);
         mBackTransitionHandler = mController.mBackTransitionHandler;
         spyOn(mBackTransitionHandler);
+        doReturn(true).when(mActivityTaskManager).startPredictiveBackAnimation();
     }
 
     private void createNavigationInfo(int backType,
@@ -275,6 +277,128 @@ public class BackAnimationControllerTest extends ShellTestCase {
                     + BackNavigationInfo.typeToString(type), result.mBackNavigationDone);
             assertTrue("TriggerBack should have been true", result.mTriggerBack);
         }
+    }
+
+    @EnableFlags(Flags.FLAG_PREDICTIVE_BACK_INTERCEPT_TRANSITION)
+    @Test
+    public void noStartInTransition() throws RemoteException {
+        registerAnimation(BackNavigationInfo.TYPE_RETURN_TO_HOME);
+        createNavigationInfo(BackNavigationInfo.TYPE_IN_TRANSITION,
+                /* enableAnimation = */ true,
+                /* isAnimationCallback = */ false);
+
+        doStartEvents(0, 100);
+        verify(mAppCallback, never()).onBackStarted(any());
+        verify(mTransitions).runOnIdle(any());
+    }
+
+    @EnableFlags(Flags.FLAG_PREDICTIVE_BACK_INTERCEPT_TRANSITION)
+    @Test
+    public void testInTransition_retriesWhenIdle() throws RemoteException {
+        // Setup: First call to startBackNavigation returns IN_TRANSITION, second is successful.
+        BackNavigationInfo inTransitionInfo = new BackNavigationInfo.Builder()
+                .setType(BackNavigationInfo.TYPE_IN_TRANSITION)
+                .build();
+        BackNavigationInfo successInfo = new BackNavigationInfo.Builder()
+                .setType(BackNavigationInfo.TYPE_RETURN_TO_HOME)
+                .setOnBackInvokedCallback(mAnimatorCallback)
+                .setPrepareRemoteAnimation(true)
+                .setOnBackNavigationDone(new RemoteCallback(bundle -> {}))
+                .setTouchableRegion(mTouchableRegion)
+                .build();
+        registerAnimation(BackNavigationInfo.TYPE_RETURN_TO_HOME);
+        doReturn(inTransitionInfo)
+                .doReturn(successInfo)
+                .when(mActivityTaskManager).startBackNavigation(any(), any());
+
+        // Action: Start a gesture
+        doStartEvents(0, 100);
+        mShellExecutor.flushAll();
+
+        // Verification (Phase 1): Check that a retry has been scheduled.
+        verify(mActivityTaskManager).startBackNavigation(any(), any());
+        ArgumentCaptor<Runnable> idleRunnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(mTransitions).runOnIdle(idleRunnableCaptor.capture());
+
+        // Action (Phase 2): Trigger the idle callback.
+        idleRunnableCaptor.getValue().run();
+        mShellExecutor.flushAll();
+
+        // Verification (Phase 2): Check that startBackNavigation is called again and succeeds.
+        verify(mActivityTaskManager, times(2)).startBackNavigation(any(), any());
+
+        // Verify that the normal animation flow continues
+        simulateRemoteAnimationStart();
+        mShellExecutor.flushAll();
+        verify(mAnimatorCallback, atLeastOnce()).onBackStarted(any(BackMotionEvent.class));
+    }
+
+    @EnableFlags(Flags.FLAG_PREDICTIVE_BACK_INTERCEPT_TRANSITION)
+    @Test
+    public void testInTransition_retryIsCancelledIfGestureFinished() throws RemoteException {
+        // Setup: startBackNavigation returns IN_TRANSITION
+        createNavigationInfo(BackNavigationInfo.TYPE_IN_TRANSITION, false, false);
+
+        // Action: Start a gesture
+        doStartEvents(0, 100);
+        mShellExecutor.flushAll();
+
+        // Verification (Phase 1): Check that a retry has been scheduled.
+        verify(mActivityTaskManager).startBackNavigation(any(), any());
+        ArgumentCaptor<Runnable> idleRunnableCaptor = ArgumentCaptor.forClass(Runnable.class);
+        verify(mTransitions).runOnIdle(idleRunnableCaptor.capture());
+
+        // Action (Phase 2): Finish the gesture before the idle callback runs.
+        releaseBackGesture();
+        mShellExecutor.flushAll();
+
+        // Action (Phase 3): Trigger the idle callback.
+        idleRunnableCaptor.getValue().run();
+        mShellExecutor.flushAll();
+
+        // Verification (Phase 3): Check that startBackNavigation is NOT called again.
+        verify(mActivityTaskManager, times(1)).startBackNavigation(any(), any());
+    }
+
+    // Delay starting gesture tracking to allow the system to receive onPointerDownOutsideFocus
+    // first. This is critical for interactions in multi-windowing mode.
+    @Test
+    public void noStartBackNavigationWhenActionDown() throws RemoteException {
+        registerAnimation(BackNavigationInfo.TYPE_RETURN_TO_HOME);
+        createNavigationInfo(BackNavigationInfo.TYPE_RETURN_TO_HOME,
+                /* enableAnimation = */ true,
+                /* isAnimationCallback = */ false);
+        doMotionEvent(MotionEvent.ACTION_DOWN, 0);
+        verify(mActivityTaskManager, never()).startBackNavigation(any(), any());
+        doMotionEvent(MotionEvent.ACTION_MOVE, 100);
+        verify(mActivityTaskManager).startBackNavigation(any(), any());
+    }
+
+    @EnableFlags(Flags.FLAG_PREDICTIVE_BACK_DELAY_WM_TRANSITION)
+    @Test
+    public void ensureStartBackAnimation_ThresholdBeforeStartBackNavigation()
+            throws RemoteException {
+        registerAnimation(BackNavigationInfo.TYPE_RETURN_TO_HOME);
+        createNavigationInfo(BackNavigationInfo.TYPE_RETURN_TO_HOME,
+                /* enableAnimation = */ true,
+                /* isAnimationCallback = */ false);
+        doMotionEvent(MotionEvent.ACTION_DOWN, 0);
+        mController.onThresholdCrossed();
+        doMotionEvent(MotionEvent.ACTION_MOVE, 100);
+        mShellExecutor.flushAll();
+        verify(mActivityTaskManager).startPredictiveBackAnimation();
+    }
+
+    @EnableFlags(Flags.FLAG_PREDICTIVE_BACK_DELAY_WM_TRANSITION)
+    @Test
+    public void ensureStarBackAnimation_ThresholdAfterStartBackNavigation() throws RemoteException {
+        registerAnimation(BackNavigationInfo.TYPE_RETURN_TO_HOME);
+        createNavigationInfo(BackNavigationInfo.TYPE_RETURN_TO_HOME,
+                /* enableAnimation = */ true,
+                /* isAnimationCallback = */ false);
+        doStartEvents(0, 100);
+        mShellExecutor.flushAll();
+        verify(mActivityTaskManager).startPredictiveBackAnimation();
     }
 
     @Test
@@ -556,9 +680,6 @@ public class BackAnimationControllerTest extends ShellTestCase {
         verify(mAnimatorCallback, never()).onBackInvoked();
     }
 
-    @EnableFlags({com.android.systemui.shared.Flags.FLAG_RETURN_ANIMATION_FRAMEWORK_LIBRARY,
-            com.android.systemui.shared.Flags.FLAG_RETURN_ANIMATION_FRAMEWORK_LONG_LIVED,
-            com.android.window.flags2.Flags.FLAG_UNIFY_BACK_NAVIGATION_TRANSITION})
     @Test
     public void appCallback_receivesTakeoverHandler_whenAvailable() throws RemoteException {
         registerAnimation(BackNavigationInfo.TYPE_CROSS_TASK);

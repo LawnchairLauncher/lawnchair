@@ -16,6 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.Flags.enableSystemDrag;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
@@ -35,14 +36,14 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.util.ContextTracker.SchedulerCallback;
-import com.android.launcher3.widget.PendingItemDragHelper;
 
 import java.util.UUID;
 
 /**
  * {@link DragSource} for handling drop from a different window.
  */
-public abstract class BaseItemDragListener implements View.OnDragListener, DragSource,
+public abstract class BaseItemDragListener implements DragController.SystemDragHandler,
+        View.OnDragListener, DragSource,
         DragOptions.PreDragCondition, SchedulerCallback<Launcher> {
 
     private static final String TAG = "BaseItemDragListener";
@@ -77,21 +78,30 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
     public boolean init(Launcher launcher, boolean isHomeStarted) {
         AbstractFloatingView.closeAllOpenViews(launcher, /* animate= */ isHomeStarted);
         launcher.getStateManager().goToState(NORMAL, /* animated= */ isHomeStarted);
-        launcher.getDragLayer().setOnDragListener(this);
         launcher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
 
         mLauncher = launcher;
         mDragController = launcher.getDragController();
+
+        if (!enableSystemDrag()) {
+            launcher.getDragLayer().setOnDragListener(this);
+        } else if (mDragController != null) {
+            mDragController.addSystemDragHandler(this);
+        }
+
         return false;
     }
 
     @Override
-    public boolean onDrag(View view, DragEvent event) {
+    public boolean onDrag(DragEvent event) {
         if (mLauncher == null || mDragController == null) {
             postCleanup();
             return false;
         }
-        if (event.getAction() == DragEvent.ACTION_DRAG_STARTED || !mDragController.isDragging()) {
+
+        if (event.getAction() == DragEvent.ACTION_DRAG_STARTED
+                || (!mDragController.isDragging()
+                        && event.getAction() == DragEvent.ACTION_DRAG_ENTERED)) {
             if (onDragStart(event)) {
                 return true;
             } else {
@@ -99,7 +109,12 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
                 return false;
             }
         }
-        return mDragController.onDragEvent(event);
+        return enableSystemDrag() || mDragController.onDragEvent(event);
+    }
+
+    @Override
+    public boolean onDrag(View view, DragEvent event) {
+        return onDrag(event);
     }
 
     protected boolean onDragStart(DragEvent event) {
@@ -123,12 +138,12 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
         // and the absolute position (position relative to the screen) of drag event is same
         // across windows, using drag position here give a good estimate for relative position
         // to source window.
-        createDragHelper().startDrag(new Rect(mPreviewRect),
-                mPreviewBitmapWidth, mPreviewViewWidth, downPos, this, options);
+        startDrag(new Rect(mPreviewRect), mPreviewBitmapWidth, mPreviewViewWidth, downPos, options);
         return true;
     }
 
-    protected abstract PendingItemDragHelper createDragHelper();
+    protected abstract void startDrag(Rect previewRect, int previewBitmapWidth,
+            int previewViewWidth, Point screenPos, DragOptions options);
 
     @Override
     public boolean shouldStartDrag(double distanceDragged) {
@@ -169,9 +184,17 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
     }
 
     public void removeListener() {
+        final boolean enableSystemDrag = enableSystemDrag();
+
         if (mLauncher != null) {
             mLauncher.getRotationHelper().setStateHandlerRequest(REQUEST_NONE);
-            mLauncher.getDragLayer().setOnDragListener(null);
+            if (!enableSystemDrag) {
+                mLauncher.getDragLayer().setOnDragListener(null);
+            }
+        }
+
+        if (enableSystemDrag && mDragController != null) {
+            mDragController.removeSystemDragHandler(this);
         }
     }
 }

@@ -39,6 +39,7 @@ data class LogMessageImpl(
     override var bool2: Boolean,
     override var bool3: Boolean,
     override var bool4: Boolean,
+    override var bool5: Boolean,
 ) : LogMessage {
 
     fun clear() {
@@ -69,6 +70,7 @@ data class LogMessageImpl(
         bool2 = false
         bool3 = false
         bool4 = false
+        bool5 = false
     }
 
     companion object Factory {
@@ -87,6 +89,7 @@ data class LogMessageImpl(
                 0,
                 0,
                 0.0,
+                false,
                 false,
                 false,
                 false,

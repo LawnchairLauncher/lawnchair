@@ -24,8 +24,8 @@ import android.os.IBinder
 import android.os.SystemClock
 import android.os.SystemProperties
 import android.os.UserHandle
-import android.util.Size
 import android.view.Choreographer
+import android.view.Display.DEFAULT_DISPLAY
 import android.view.SurfaceControl
 import android.view.SurfaceControl.Transaction
 import android.view.WindowManager.TRANSIT_CHANGE
@@ -41,6 +41,7 @@ import com.android.internal.annotations.VisibleForTesting
 import com.android.internal.dynamicanimation.animation.SpringForce
 import com.android.internal.jank.Cuj.CUJ_DESKTOP_MODE_ENTER_APP_HANDLE_DRAG_HOLD
 import com.android.internal.jank.Cuj.CUJ_DESKTOP_MODE_ENTER_APP_HANDLE_DRAG_RELEASE
+import com.android.internal.jank.Cuj.CUJ_DESKTOP_MODE_MOVE_FROM_SPLIT_SCREEN
 import com.android.internal.jank.InteractionJankMonitor
 import com.android.internal.protolog.ProtoLog
 import com.android.internal.util.LatencyTracker
@@ -96,7 +97,6 @@ sealed class DragToDesktopTransitionHandler(
 ) : TransitionHandler {
 
     protected val rectEvaluator = RectEvaluator(Rect())
-    private val launchHomeIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
 
     private lateinit var splitScreenController: SplitScreenController
     private var transitionState: TransitionState? = null
@@ -140,6 +140,14 @@ sealed class DragToDesktopTransitionHandler(
             return
         }
 
+        val launchHomeIntent =
+            Intent(Intent.ACTION_MAIN).apply {
+                if (taskInfo.displayId != DEFAULT_DISPLAY) {
+                    addCategory(Intent.CATEGORY_SECONDARY_HOME)
+                } else {
+                    addCategory(Intent.CATEGORY_HOME)
+                }
+            }
         val options =
             ActivityOptions.makeBasic().apply {
                 setTransientLaunch()
@@ -759,6 +767,17 @@ sealed class DragToDesktopTransitionHandler(
             startT.apply()
             finishCallback.onTransitionFinished(/* wct= */ null)
             startTransitionFinishCb.onTransitionFinished(/* wct= */ null)
+            // For splitscreen, dragging upward to "cancel" actually is a signal from the user
+            // that we want to go to fullscreen. We will cancel the desktop transition, let
+            // splitscreen go back to where it was, and then expand to fullscreen.
+            // TODO (b/396438812): Let this be a single transition that actually goes straight
+            // to fullscreen
+            if (state is TransitionState.FromSplit) {
+                splitScreenController.moveTaskToFullscreen(
+                    state.draggedTaskId,
+                    SplitScreenController.EXIT_REASON_DRAG_TO_FULLSCREEN,
+                )
+            }
             clearState()
             return
         }
@@ -1003,6 +1022,7 @@ sealed class DragToDesktopTransitionHandler(
             // This transition being aborted is neither the start, nor the cancel transition, so
             // it must be the finish transition (DRAG_RELEASE); cancel its jank interaction.
             interactionJankMonitor.cancel(CUJ_DESKTOP_MODE_ENTER_APP_HANDLE_DRAG_RELEASE)
+            interactionJankMonitor.cancel(CUJ_DESKTOP_MODE_MOVE_FROM_SPLIT_SCREEN)
         }
     }
 
@@ -1398,11 +1418,7 @@ constructor(
             state.draggedTaskChange ?: error("Expected non-null change of dragged task")
         val draggedTaskLeash = draggedTaskChange.leash
         val freeformTaskChanges = state.freeformTaskChanges
-        val startSize =
-            Size(
-                draggedTaskChange.startAbsBounds.width(),
-                draggedTaskChange.startAbsBounds.height(),
-            )
+        val startBounds = draggedTaskChange.startAbsBounds
         val endBounds = draggedTaskChange.endAbsBounds
         val currentVelocity = state.dragAnimator.computeCurrentVelocity()
 
@@ -1413,18 +1429,13 @@ constructor(
         // end value, animate scale to 1.
         val startScale = state.dragAnimator.scale
         val startPosition = state.dragAnimator.position
-        val startBounds =
-            Rect(
-                startPosition.x.toInt(),
-                startPosition.y.toInt(),
-                startPosition.x.toInt() + startSize.width,
-                startPosition.x.toInt() + startSize.height,
-            )
+        val startBoundsWithOffset =
+            Rect(startBounds).apply { offsetTo(startPosition.x.toInt(), startPosition.y.toInt()) }
 
         logV(
-            "animateEndDragToDesktop: startSize=$startSize, endBounds=$endBounds, " +
+            "animateEndDragToDesktop: startBounds=$startBounds, endBounds=$endBounds, " +
                 "startScale=$startScale, startPosition=$startPosition, " +
-                "startBounds=$startBounds"
+                "startBoundsWithOffset=$startBoundsWithOffset"
         )
 
         dragToDesktopStateListener?.onCommitToDesktopAnimationStart()
@@ -1434,11 +1445,11 @@ constructor(
         onTaskResizeAnimationListener.onAnimationStart(
             state.draggedTaskId,
             startTransaction,
-            startBounds,
+            startBoundsWithOffset,
         )
 
         val tx: SurfaceControl.Transaction = transactionSupplier.get()
-        PhysicsAnimator.getInstance(startBounds)
+        PhysicsAnimator.getInstance(startBoundsWithOffset)
             .spring(
                 FloatProperties.RECT_X,
                 endBounds.left.toFloat(),
@@ -1507,6 +1518,7 @@ constructor(
                 startTransitionFinishCb.onTransitionFinished(/* wct= */ null)
                 clearState()
                 interactionJankMonitor.end(CUJ_DESKTOP_MODE_ENTER_APP_HANDLE_DRAG_RELEASE)
+                interactionJankMonitor.end(CUJ_DESKTOP_MODE_MOVE_FROM_SPLIT_SCREEN)
             })
             .start()
     }

@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
@@ -55,11 +54,7 @@ public class HintState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        if (enableScalingRevealHomeAnimation()) {
-            return DEPTH_5_PERCENT;
-        } else {
-            return 0.15f;
-        }
+        return DEPTH_5_PERCENT;
     }
 
     @Override

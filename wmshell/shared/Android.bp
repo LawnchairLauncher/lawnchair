@@ -57,9 +57,11 @@ android_library {
         "androidx.core_core-animation",
         "androidx.dynamicanimation_dynamicanimation",
         "com_android_wm_shell_flags_lib",
-        "com.android.window.flags.window-aconfig-java",
+        "com.android.window.flags2.window-aconfig-java",
         "jsr330",
+        "kotlin-parcelize-runtime",
     ],
+    kotlin_plugins: ["kotlin-parcelize-compiler-plugin"],
     kotlincflags: ["-Xjvm-default=all"],
     use_resource_processor: true,
 }
@@ -76,7 +78,7 @@ java_library {
     ],
     static_libs: [
         "WindowManager-Shell-shared-AOSP",
-        "com.android.window.flags.window-aconfig-java",
+        "com.android.window.flags2.window-aconfig-java",
         "wm_shell-shared-utils",
     ],
 }
@@ -89,9 +91,12 @@ java_library {
 
     srcs: [
         "src/com/android/wm/shell/shared/bubbles/BubbleAnythingFlagHelper.java",
+        "src/com/android/wm/shell/shared/bubbles/logging/EntryPoint.kt",
     ],
     static_libs: [
         "com_android_wm_shell_flags_lib",
-        "com.android.window.flags.window-aconfig-java",
+        "com.android.window.flags2.window-aconfig-java",
+        "kotlin-parcelize-runtime",
     ],
+    kotlin_plugins: ["kotlin-parcelize-compiler-plugin"],
 }

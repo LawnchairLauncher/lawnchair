@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.PointF;
@@ -67,8 +66,7 @@ public class ExpandedAnimationControllerTest extends PhysicsAnimationLayoutTestC
 
         mPositioner = new BubblePositioner(getContext(),
                 getContext().getSystemService(WindowManager.class));
-        mPositioner.updateInternal(Configuration.ORIENTATION_PORTRAIT,
-                Insets.of(0, 0, 0, 0),
+        mPositioner.updateInternal(Insets.of(0, 0, 0, 0),
                 new Rect(0, 0, 500, 1000));
 
         BubbleStackView stackView = mock(BubbleStackView.class);
@@ -149,6 +147,12 @@ public class ExpandedAnimationControllerTest extends PhysicsAnimationLayoutTestC
     public void testDragBubbleOutDoesntNPE() {
         mExpandedController.onGestureFinished();
         mExpandedController.dragBubbleOut(mViews.get(0), 1, 1);
+    }
+
+    @Test
+    public void snapToExpandedState() {
+        mExpandedController.snapToExpandedState();
+        testBubblesInCorrectExpandedPositions();
     }
 
     /** Expand the stack and wait for animations to finish. */

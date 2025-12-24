@@ -34,6 +34,8 @@ class DesktopInOrderTransitionObserver(
     private val desksTransitionObserver: Optional<DesksTransitionObserver>,
     private val desktopImeHandler: Optional<DesktopImeHandler>,
     private val desktopBackNavTransitionObserver: Optional<DesktopBackNavTransitionObserver>,
+    private val desktopModeLoggerTransitionObserver: DesktopModeLoggerTransitionObserver,
+    private val displayFocusResolver: Optional<DisplayFocusResolver>,
 ) : Transitions.TransitionObserver {
 
     override fun onTransitionReady(
@@ -62,6 +64,8 @@ class DesktopInOrderTransitionObserver(
         // Call after the focus state update to have the correct focused window.
         desktopImeHandler.ifPresent { it.onTransitionReady(transition, info) }
         desktopBackNavTransitionObserver.ifPresent { it.onTransitionReady(transition, info) }
+        desktopModeLoggerTransitionObserver.onTransitionReady(transition, info, startT, finishT)
+        displayFocusResolver.ifPresent { it.onTransitionReady(info) }
     }
 
     override fun onTransitionStarting(transition: IBinder) {
@@ -87,6 +91,7 @@ class DesktopInOrderTransitionObserver(
                 h.onTransitionFinished(transition, aborted)
             }
         }
+        desktopModeLoggerTransitionObserver.onTransitionFinished(transition, aborted)
     }
 
     private fun logD(msg: String, vararg arguments: Any?) {

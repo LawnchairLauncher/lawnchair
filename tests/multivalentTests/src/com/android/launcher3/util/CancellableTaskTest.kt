@@ -18,6 +18,7 @@ package com.android.launcher3.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.launcher3.util.AsyncObjectAllocator.allocationExecutor
 import com.android.launcher3.util.rule.TestStabilityRule
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.locks.ReentrantLock
@@ -56,11 +57,11 @@ class CancellableTaskTest {
                     isTaskExecuted = true
                     1
                 },
-                Executors.VIEW_PREINFLATION_EXECUTOR,
+                allocationExecutor,
                 {
                     isCallbackExecuted = true
                     result = it + 1
-                }
+                },
             )
         Executors.UI_HELPER_EXECUTOR.execute(underTest)
     }
@@ -96,7 +97,7 @@ class CancellableTaskTest {
         awaitAllExecutorCompleted()
         reset()
         lock.lock()
-        Executors.VIEW_PREINFLATION_EXECUTOR.submit { lock.lock() }
+        allocationExecutor.submit { lock.lock() }
         submitJob()
         awaitExecutorCompleted(Executors.UI_HELPER_EXECUTOR)
         assertTrue("task should be executed.", isTaskExecuted)
@@ -104,7 +105,7 @@ class CancellableTaskTest {
         underTest.cancel()
 
         lock.unlock() // unblock callback on VIEW_PREINFLATION_EXECUTOR
-        awaitExecutorCompleted(Executors.VIEW_PREINFLATION_EXECUTOR)
+        awaitExecutorCompleted(allocationExecutor)
         assertFalse("callback should not be executed.", isCallbackExecuted)
         assertEquals(0, result)
     }
@@ -126,7 +127,7 @@ class CancellableTaskTest {
 
     private fun awaitAllExecutorCompleted() {
         awaitExecutorCompleted(Executors.UI_HELPER_EXECUTOR)
-        awaitExecutorCompleted(Executors.VIEW_PREINFLATION_EXECUTOR)
+        awaitExecutorCompleted(allocationExecutor)
     }
 
     private fun reset() {

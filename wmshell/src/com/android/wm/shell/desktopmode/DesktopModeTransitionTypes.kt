@@ -27,7 +27,7 @@ import com.android.wm.shell.transition.Transitions.TRANSIT_DESKTOP_MODE_TYPES
 object DesktopModeTransitionTypes {
 
     const val TRANSIT_ENTER_DESKTOP_FROM_APP_HANDLE_MENU_BUTTON = TRANSIT_DESKTOP_MODE_TYPES + 1
-    const val TRANSIT_ENTER_DESKTOP_FROM_APP_FROM_OVERVIEW = TRANSIT_DESKTOP_MODE_TYPES + 2
+    const val TRANSIT_ENTER_DESKTOP_FROM_OVERVIEW_TASK_MENU = TRANSIT_DESKTOP_MODE_TYPES + 2
     const val TRANSIT_ENTER_DESKTOP_FROM_KEYBOARD_SHORTCUT = TRANSIT_DESKTOP_MODE_TYPES + 3
     const val TRANSIT_ENTER_DESKTOP_FROM_UNKNOWN = TRANSIT_DESKTOP_MODE_TYPES + 4
     const val TRANSIT_EXIT_DESKTOP_MODE_TASK_DRAG = TRANSIT_DESKTOP_MODE_TYPES + 5
@@ -50,13 +50,16 @@ object DesktopModeTransitionTypes {
     /** Transition type to animate the minimization triggered when reaching the task limit. */
     const val TRANSIT_DESKTOP_MODE_TASK_LIMIT_MINIMIZE = TRANSIT_DESKTOP_MODE_TYPES + 13
 
+    /** Transition type to animate desk switches within the same display. */
+    const val TRANSIT_DESKTOP_MODE_DESK_TO_DESK_SWITCH = TRANSIT_DESKTOP_MODE_TYPES + 14
+
     /** Return whether the [TransitionType] corresponds to a transition to enter desktop mode. */
     @JvmStatic
     fun @receiver:TransitionType Int.isEnterDesktopModeTransition(): Boolean {
         return this in
             listOf(
                 TRANSIT_ENTER_DESKTOP_FROM_APP_HANDLE_MENU_BUTTON,
-                TRANSIT_ENTER_DESKTOP_FROM_APP_FROM_OVERVIEW,
+                TRANSIT_ENTER_DESKTOP_FROM_OVERVIEW_TASK_MENU,
                 TRANSIT_ENTER_DESKTOP_FROM_KEYBOARD_SHORTCUT,
                 TRANSIT_ENTER_DESKTOP_FROM_UNKNOWN,
             )
@@ -72,8 +75,8 @@ object DesktopModeTransitionTypes {
         return when (this) {
             DesktopModeTransitionSource.APP_HANDLE_MENU_BUTTON ->
                 TRANSIT_ENTER_DESKTOP_FROM_APP_HANDLE_MENU_BUTTON
-            DesktopModeTransitionSource.APP_FROM_OVERVIEW ->
-                TRANSIT_ENTER_DESKTOP_FROM_APP_FROM_OVERVIEW
+            DesktopModeTransitionSource.OVERVIEW_TASK_MENU ->
+                TRANSIT_ENTER_DESKTOP_FROM_OVERVIEW_TASK_MENU
             DesktopModeTransitionSource.KEYBOARD_SHORTCUT ->
                 TRANSIT_ENTER_DESKTOP_FROM_KEYBOARD_SHORTCUT
             else -> TRANSIT_ENTER_DESKTOP_FROM_UNKNOWN
@@ -113,13 +116,14 @@ object DesktopModeTransitionTypes {
      * string.
      */
     @JvmStatic
-    fun transitTypeToString(transitType: Int): String =
+    fun transitTypeToString(transitType: Int?): String =
         when (transitType) {
             TRANSIT_DESKTOP_MODE_START_DRAG_TO_DESKTOP -> "DESKTOP_MODE_START_DRAG_TO_DESKTOP"
             TRANSIT_DESKTOP_MODE_END_DRAG_TO_DESKTOP -> "DESKTOP_MODE_END_DRAG_TO_DESKTOP"
             TRANSIT_DESKTOP_MODE_CANCEL_DRAG_TO_DESKTOP -> "DESKTOP_MODE_CANCEL_DRAG_TO_DESKTOP"
             TRANSIT_DESKTOP_MODE_TOGGLE_RESIZE -> "DESKTOP_MODE_TOGGLE_RESIZE"
             TRANSIT_DESKTOP_MODE_TASK_LIMIT_MINIMIZE -> "DESKTOP_MODE_TASK_LIMIT_MINIMIZE"
+            TRANSIT_DESKTOP_MODE_DESK_TO_DESK_SWITCH -> "DESKTOP_MODE_DESK_TO_DESK_SWITCH"
             else -> ""
         }
 }

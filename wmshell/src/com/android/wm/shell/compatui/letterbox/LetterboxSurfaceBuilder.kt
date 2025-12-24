@@ -21,31 +21,29 @@ import android.window.TaskConstants
 import com.android.wm.shell.dagger.WMSingleton
 import javax.inject.Inject
 
-/**
- * Component responsible for the actual creation of the Letterbox surfaces.
- */
+/** Component responsible for the actual creation of the Letterbox surfaces. */
 @WMSingleton
-class LetterboxSurfaceBuilder @Inject constructor(
-    private val letterboxConfiguration: LetterboxConfiguration
-) {
+class LetterboxSurfaceBuilder
+@Inject
+constructor(private val letterboxConfiguration: LetterboxConfiguration) {
 
     fun createSurface(
         tx: SurfaceControl.Transaction,
         parentLeash: SurfaceControl,
         surfaceName: String,
         callSite: String,
-        surfaceBuilder: SurfaceControl.Builder = SurfaceControl.Builder()
-    ) = surfaceBuilder
-        .setName(surfaceName)
-        .setHidden(true)
-        .setColorLayer()
-        .setParent(parentLeash)
-        .setCallsite(callSite)
-        .build().apply {
-            tx.setLayer(
-                this,
-                TaskConstants.TASK_CHILD_SHELL_LAYER_LETTERBOX_BACKGROUND
-            ).setColorSpaceAgnostic(this, true)
-                .setColor(this, letterboxConfiguration.getBackgroundColorRgbArray())
-        }
+        surfaceBuilder: SurfaceControl.Builder = SurfaceControl.Builder(),
+    ) =
+        surfaceBuilder
+            .setName(surfaceName)
+            .setHidden(true)
+            .setColorLayer()
+            .setParent(parentLeash)
+            .setCallsite(callSite)
+            .build()
+            .apply {
+                tx.setLayer(this, TaskConstants.TASK_CHILD_SHELL_LAYER_LETTERBOX_BACKGROUND)
+                    .setColorSpaceAgnostic(this, true)
+                    .setColor(this, letterboxConfiguration.getBackgroundColorRgbArray())
+            }
 }

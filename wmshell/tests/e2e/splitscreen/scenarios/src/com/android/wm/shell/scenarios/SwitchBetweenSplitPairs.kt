@@ -48,6 +48,8 @@ constructor(val rotation: Rotation = Rotation.ROTATION_0) {
 
     @Before
     fun setup() {
+        // TODO: b/349075982 - Remove once launcher rotation and checks are stable.
+        tapl.expectedRotationCheckEnabled = false
         tapl.setEnableRotation(true)
         tapl.setExpectedRotation(rotation.value)
 

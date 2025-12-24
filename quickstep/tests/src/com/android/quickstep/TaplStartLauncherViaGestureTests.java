@@ -16,11 +16,16 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
+import static com.android.launcher3.util.rule.TestStabilityRule.Stability;
+
 import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.Before;
@@ -50,6 +55,7 @@ public class TaplStartLauncherViaGestureTests extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = NavigationModeSwitchRule.Mode.THREE_BUTTON)
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/435425092
     public void testStressPressHome() {
         runTest(TestCase.TO_HOME);
     }
@@ -68,6 +74,7 @@ public class TaplStartLauncherViaGestureTests extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = NavigationModeSwitchRule.Mode.ZERO_BUTTON)
+    @ScreenRecordRule.ScreenRecord // b/417727096
     public void testStressSwipeToOverview() {
         runTest(TestCase.TO_OVERVIEW);
     }

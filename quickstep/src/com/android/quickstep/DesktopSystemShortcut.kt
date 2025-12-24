@@ -16,19 +16,17 @@
 
 package com.android.quickstep
 
-import android.view.Display
 import android.view.View
 import com.android.internal.jank.Cuj
+import com.android.internal.policy.DesktopModeCompatPolicy
 import com.android.launcher3.AbstractFloatingViewHelper
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.popup.SystemShortcut
-import com.android.quickstep.fallback.window.RecentsWindowFlags.enableDesktopMenuOnSecondaryDisplay
 import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.RecentsViewContainer
 import com.android.quickstep.views.TaskContainer
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper
-import com.android.wm.shell.shared.desktopmode.DesktopModeCompatPolicy
 import com.android.wm.shell.shared.desktopmode.DesktopModeStatus
 import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource
 
@@ -52,7 +50,7 @@ class DesktopSystemShortcut(
         val recentsView = mTarget.getOverviewPanel<RecentsView<*, *>>()
         recentsView.moveTaskToDesktop(
             taskContainer,
-            DesktopModeTransitionSource.APP_FROM_OVERVIEW,
+            DesktopModeTransitionSource.OVERVIEW_TASK_MENU,
         ) {
             InteractionJankMonitorWrapper.end(Cuj.CUJ_DESKTOP_MODE_ENTER_FROM_OVERVIEW_MENU)
             mTarget.statsLogManager
@@ -77,13 +75,8 @@ class DesktopSystemShortcut(
                     val context = container.asContext()
                     val taskKey = taskContainer.task.key
                     val desktopModeCompatPolicy = DesktopModeCompatPolicy(context)
-                    val isShortcutSupported =
-                        enableDesktopMenuOnSecondaryDisplay ||
-                            context.displayId == Display.DEFAULT_DISPLAY
 
                     return when {
-                        !isShortcutSupported -> null
-
                         !DesktopModeStatus.isDesktopModeSupportedOnDisplay(
                             context,
                             context.display,
@@ -94,6 +87,7 @@ class DesktopSystemShortcut(
                             taskKey.numActivities,
                             taskKey.isTopActivityNoDisplay,
                             taskKey.isActivityStackTransparent,
+                            taskKey.topActivityType,
                         ) -> null
 
                         !taskContainer.task.isDockable -> null

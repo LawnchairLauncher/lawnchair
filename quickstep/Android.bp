@@ -63,7 +63,7 @@ filegroup {
     srcs: [
         "tests/src/com/android/quickstep/TaplTestsPersistentTaskbar.java",
         "tests/src/com/android/quickstep/TaplOverviewIconTest.java",
-        "tests/src/com/android/quickstep/TaplTestsLockedTaskbar.java",
+        "tests/src/com/android/quickstep/TaplTestsDesktopFirstTaskbar.java",
         "tests/src/com/android/quickstep/util/TaplTestsPredictionRow.java",
         "tests/src/com/android/quickstep/TaplTestsTrackpad.java",
         "tests/src/com/android/quickstep/TaplTestsTransientTaskbar.java",

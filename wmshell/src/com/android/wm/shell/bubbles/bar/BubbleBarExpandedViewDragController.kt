@@ -34,14 +34,13 @@ import com.android.wm.shell.shared.magnetictarget.MagnetizedObject
 /** Controller for handling drag interactions with [BubbleBarExpandedView] */
 @SuppressLint("ClickableViewAccessibility")
 class BubbleBarExpandedViewDragController(
-    private val context: Context,
+    val context: Context,
     private val expandedView: BubbleBarExpandedView,
     private val dismissView: DismissView,
     private val animationHelper: BubbleBarAnimationHelper,
     private val bubblePositioner: BubblePositioner,
-    private val pinController: BubbleExpandedViewPinController,
-    private val dropTargetManager: DropTargetManager?,
-    private val dragZoneFactory: DragZoneFactory?,
+    private val dropTargetManager: DropTargetManager,
+    private val dragZoneFactory: DragZoneFactory,
     @get:VisibleForTesting val dragListener: DragListener,
 ) {
 
@@ -111,21 +110,17 @@ class BubbleBarExpandedViewDragController(
             // While animating, don't allow new touch events
             if (expandedView.isAnimating) return false
             expandedView.z = draggedBubbleElevation
-            if (dropTargetManager != null && dragZoneFactory != null) {
-                val draggedObject = DraggedObject.ExpandedView(
-                    if (bubblePositioner.isBubbleBarOnLeft) {
-                        BubbleBarLocation.LEFT
-                    } else {
-                        BubbleBarLocation.RIGHT
-                    }
-                )
-                dropTargetManager.onDragStarted(
-                    draggedObject,
-                    dragZoneFactory.createSortedDragZones(draggedObject)
-                )
-            } else {
-                pinController.onDragStart(bubblePositioner.isBubbleBarOnLeft)
-            }
+            val draggedObject = DraggedObject.ExpandedView(
+                if (bubblePositioner.isBubbleBarOnLeft) {
+                    BubbleBarLocation.LEFT
+                } else {
+                    BubbleBarLocation.RIGHT
+                }
+            )
+            dropTargetManager.onDragStarted(
+                draggedObject,
+                dragZoneFactory.createSortedDragZones(draggedObject)
+            )
             isDragged = true
             return true
         }
@@ -145,11 +140,7 @@ class BubbleBarExpandedViewDragController(
             expandedView.translationX = expandedViewInitialTranslationX + dx
             expandedView.translationY = expandedViewInitialTranslationY + dy
             dismissView.show()
-            if (dropTargetManager != null) {
-                dropTargetManager.onDragUpdated(ev.rawX.toInt(), ev.rawY.toInt())
-            } else {
-                pinController.onDragUpdate(ev.rawX, ev.rawY)
-            }
+            dropTargetManager.onDragUpdated(ev.rawX.toInt(), ev.rawY.toInt())
         }
 
         override fun onUp(
@@ -174,11 +165,7 @@ class BubbleBarExpandedViewDragController(
 
         private fun finishDrag() {
             if (!isStuckToDismiss) {
-                if (dropTargetManager != null) {
-                    dropTargetManager.onDragEnded()
-                } else {
-                    pinController.onDragEnd()
-                }
+                dropTargetManager.onDragEnded()
                 dragListener.onReleased(inDismiss = false)
                 animationHelper.animateToRestPosition()
                 dismissView.hide()
@@ -194,7 +181,6 @@ class BubbleBarExpandedViewDragController(
             draggedObject: MagnetizedObject<*>,
         ) {
             isStuckToDismiss = true
-            pinController.onStuckToDismissTarget()
         }
 
         override fun onUnstuckFromTarget(
@@ -213,11 +199,7 @@ class BubbleBarExpandedViewDragController(
             draggedObject: MagnetizedObject<*>,
         ) {
             dragListener.onReleased(inDismiss = true)
-            if (dropTargetManager != null) {
-                dropTargetManager.onDragEnded()
-            } else {
-                pinController.onDragEnd()
-            }
+            dropTargetManager.onDragEnded()
             dismissView.hide()
         }
     }

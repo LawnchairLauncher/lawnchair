@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.mockito.kotlin.MatchersKt.eq;
 import static org.mockito.kotlin.VerificationKt.times;
@@ -184,13 +185,14 @@ public class PipSchedulerTest {
     public void scheduleExitPipViaExpand_nullTaskToken_noop() {
         setNullPipTaskToken();
 
-        mPipScheduler.scheduleExitPipViaExpand();
+        mPipScheduler.scheduleExitPipViaExpand(true);
 
         verify(mMockMainExecutor, times(1)).execute(mRunnableArgumentCaptor.capture());
         assertNotNull(mRunnableArgumentCaptor.getValue());
         mRunnableArgumentCaptor.getValue().run();
 
-        verify(mMockPipTransitionController, never()).startExpandTransition(any(), anyBoolean());
+        verify(mMockPipTransitionController, never())
+                .startExpandTransition(any(), anyBoolean(), eq(true));
     }
 
     @Test
@@ -203,13 +205,14 @@ public class PipSchedulerTest {
         when(mMockSplitScreenController.isTaskInSplitScreen(
                 ArgumentMatchers.eq(1))).thenReturn(false);
 
-        mPipScheduler.scheduleExitPipViaExpand();
+        mPipScheduler.scheduleExitPipViaExpand(true);
 
         verify(mMockMainExecutor, times(1)).execute(mRunnableArgumentCaptor.capture());
         assertNotNull(mRunnableArgumentCaptor.getValue());
         mRunnableArgumentCaptor.getValue().run();
 
-        verify(mMockPipTransitionController, times(1)).startExpandTransition(any(), anyBoolean());
+        verify(mMockPipTransitionController, times(1))
+                .startExpandTransition(any(), anyBoolean(), eq(true));
     }
 
     @Test
@@ -222,7 +225,7 @@ public class PipSchedulerTest {
         when(mMockSplitScreenController.isTaskInSplitScreen(
                 ArgumentMatchers.eq(1))).thenReturn(true);
 
-        mPipScheduler.scheduleExitPipViaExpand();
+        mPipScheduler.scheduleExitPipViaExpand(true);
 
         verify(mMockMainExecutor, times(1)).execute(mRunnableArgumentCaptor.capture());
         assertNotNull(mRunnableArgumentCaptor.getValue());
@@ -231,7 +234,37 @@ public class PipSchedulerTest {
         // We need to both prepare the split screen with the last parent and start expanding.
         verify(mMockSplitScreenController,
                 times(1)).prepareEnterSplitScreen(any(), any(), anyInt());
-        verify(mMockPipTransitionController, times(1)).startExpandTransition(any(), anyBoolean());
+        verify(mMockPipTransitionController, times(1))
+                .startExpandTransition(any(), anyBoolean(), eq(true));
+    }
+
+    @Test
+    public void scheduleExitPipViaExpand_propagatesPipVisibility() {
+        setMockPipTaskToken();
+        ActivityManager.RunningTaskInfo pipTaskInfo = getTaskInfoWithLastParentBeforePip(1);
+        when(mMockPipTransitionState.getPipTaskInfo()).thenReturn(pipTaskInfo);
+
+        // Visible.
+        mPipScheduler.scheduleExitPipViaExpand(true);
+
+        verify(mMockMainExecutor, times(1)).execute(mRunnableArgumentCaptor.capture());
+        assertNotNull(mRunnableArgumentCaptor.getValue());
+        mRunnableArgumentCaptor.getValue().run();
+
+        verify(mMockPipTransitionController, times(1))
+                .startExpandTransition(any(), anyBoolean(), eq(true));
+
+        reset(mMockMainExecutor);
+
+        // Not visible.
+        mPipScheduler.scheduleExitPipViaExpand(false);
+
+        verify(mMockMainExecutor, times(1)).execute(mRunnableArgumentCaptor.capture());
+        assertNotNull(mRunnableArgumentCaptor.getValue());
+        mRunnableArgumentCaptor.getValue().run();
+
+        verify(mMockPipTransitionController, times(1))
+                .startExpandTransition(any(), anyBoolean(), eq(false));
     }
 
     @Test

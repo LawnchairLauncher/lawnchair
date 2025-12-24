@@ -35,10 +35,6 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
 
     @Before
     fun setUp() {
-        setFlagsRule.setFlags(
-            instance.decoupleDepth,
-            Flags.FLAG_ENABLE_SCALING_REVEAL_HOME_ANIMATION,
-        )
         setFlagsRule.setFlags(false, Flags.FLAG_ONE_GRID_SPECS)
     }
 
@@ -131,12 +127,6 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                 TestCase("phone", gridName = "5_by_5"),
                 TestCase("tablet", gridName = "6_by_5", isTaskbarPresentInApps = true),
                 TestCase("twopanel-tablet", gridName = "4_by_4", isTaskbarPresentInApps = true),
-                TestCase(
-                    "twopanel-tablet",
-                    gridName = "4_by_4",
-                    isTaskbarPresentInApps = true,
-                    decoupleDepth = true,
-                ),
             )
         }
 
@@ -144,7 +134,6 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
             val deviceName: String,
             val gridName: String,
             val isTaskbarPresentInApps: Boolean = false,
-            val decoupleDepth: Boolean = false,
         ) {
             fun filename(testName: String = ""): String {
                 val device =
@@ -154,13 +143,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                         "twopanel-phone" -> "twoPanelFolded"
                         else -> "phone"
                     }
-                val depth =
-                    if (decoupleDepth) {
-                        "_decoupleDepth"
-                    } else {
-                        ""
-                    }
-                return "$device$testName$depth"
+                return "$device$testName"
             }
         }
     }

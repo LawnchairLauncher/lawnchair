@@ -38,54 +38,50 @@ import org.mockito.kotlin.whenever
 /**
  * Tests for [AdditionalSystemViewContainer].
  *
- * Build/Install/Run:
- * atest WMShellUnitTests:AdditionalSystemViewContainerTest
+ * Build/Install/Run: atest WMShellUnitTests:AdditionalSystemViewContainerTest
  */
 @SmallTest
 @TestableLooper.RunWithLooper
 @RunWith(AndroidTestingRunner::class)
 class AdditionalSystemViewContainerTest : ShellTestCase() {
-    @Mock
-    private lateinit var mockView: View
-    @Mock
-    private lateinit var mockLayoutInflater: LayoutInflater
-    @Mock
-    private lateinit var mockContext: Context
-    @Mock
-    private lateinit var mockWindowManager: WindowManager
+    @Mock private lateinit var mockView: View
+    @Mock private lateinit var mockLayoutInflater: LayoutInflater
+    @Mock private lateinit var mockContext: Context
+    @Mock private lateinit var mockWindowManager: WindowManager
     private lateinit var viewContainer: AdditionalSystemViewContainer
 
     @Before
     fun setUp() {
         whenever(mockContext.getSystemService(WindowManager::class.java))
             .thenReturn(mockWindowManager)
-        whenever(mockContext.getSystemService(Context
-            .LAYOUT_INFLATER_SERVICE)).thenReturn(mockLayoutInflater)
-        whenever(mockLayoutInflater.inflate(
-            R.layout.desktop_mode_window_decor_handle_menu, null)).thenReturn(mockView)
+        whenever(mockContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+            .thenReturn(mockLayoutInflater)
+        whenever(mockLayoutInflater.inflate(R.layout.desktop_mode_window_decor_handle_menu, null))
+            .thenReturn(mockView)
     }
 
     @Test
     fun testReleaseView_ViewRemoved() {
-        val flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+        val flags =
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-        viewContainer = AdditionalSystemViewContainer(
-            mockContext,
-            WindowManagerWrapper(mockWindowManager),
-            TASK_ID,
-            X,
-            Y,
-            WIDTH,
-            HEIGHT,
-            flags,
-            R.layout.desktop_mode_window_decor_handle_menu
-        )
-        verify(mockWindowManager).addView(
-            eq(mockView),
-            argThat {
-                lp -> (lp as WindowManager.LayoutParams).flags == flags
-            }
-        )
+        viewContainer =
+            AdditionalSystemViewContainer(
+                mockContext,
+                WindowManagerWrapper(mockWindowManager),
+                TASK_ID,
+                X,
+                Y,
+                WIDTH,
+                HEIGHT,
+                flags,
+                R.layout.desktop_mode_window_decor_handle_menu,
+            )
+        verify(mockWindowManager)
+            .addView(
+                eq(mockView),
+                argThat { lp -> (lp as WindowManager.LayoutParams).flags == flags },
+            )
         viewContainer.releaseView()
         verify(mockWindowManager).removeViewImmediate(mockView)
     }

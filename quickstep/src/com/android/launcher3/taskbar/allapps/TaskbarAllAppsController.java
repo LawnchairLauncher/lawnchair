@@ -16,21 +16,27 @@
 package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
+import static com.android.launcher3.taskbar.TaskbarDesktopExperienceFlags.enableCustomHeightForAllAppsOnCd;
 
+import android.content.res.Resources;
+import android.view.Gravity;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.launcher3.taskbar.TaskbarUiState;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +55,7 @@ import java.util.Map;
 public final class TaskbarAllAppsController {
 
     private TaskbarControllers mControllers;
+    private TaskbarUiState mTaskbarUiState;
     private @Nullable TaskbarOverlayContext mOverlayContext;
     private @Nullable TaskbarAllAppsSlideInView mSlideInView;
     private @Nullable TaskbarAllAppsContainerView mAppsView;
@@ -61,12 +68,21 @@ public final class TaskbarAllAppsController {
     private @Nullable List<ItemInfo> mZeroStateSearchSuggestions;
     private boolean mDisallowGlobalDrag;
     private boolean mDisallowLongClick;
+    private float mTaskbarAllAppsConnectedDisplayCustomHeightMultiple;
+    private float mTaskbarAllAppsConnectedDisplayCustomHeightLimit;
 
     private Map<PackageUserKey, Integer> mPackageUserKeytoUidMap = Collections.emptyMap();
 
     /** Initialize the controller. */
-    public void init(TaskbarControllers controllers, boolean allAppsVisible) {
+    public void init(
+            TaskbarControllers controllers, TaskbarUiState taskbarUiState, boolean allAppsVisible) {
         mControllers = controllers;
+        mTaskbarUiState = taskbarUiState;
+        Resources res = mControllers.taskbarActivityContext.getResources();
+        mTaskbarAllAppsConnectedDisplayCustomHeightMultiple =
+                res.getFloat(R.dimen.taskbar_all_apps_connected_display_custom_height_multiple);
+        mTaskbarAllAppsConnectedDisplayCustomHeightLimit =
+                res.getFloat(R.dimen.taskbar_all_apps_connected_display_custom_height_limit);
 
         /*
          * Recreate All Apps if it was open in the previous Taskbar instance (e.g. the configuration
@@ -88,8 +104,7 @@ public final class TaskbarAllAppsController {
         mAppsModelFlags = flags;
         mPackageUserKeytoUidMap = map;
         if (mAppsView != null) {
-            mAppsView.getAppsStore().setApps(
-                    mApps, mAppsModelFlags, mPackageUserKeytoUidMap, false);
+            mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags, mPackageUserKeytoUidMap);
         }
     }
 
@@ -165,6 +180,28 @@ public final class TaskbarAllAppsController {
 
         mSlideInView = (TaskbarAllAppsSlideInView) mOverlayContext.getLayoutInflater().inflate(
                 R.layout.taskbar_all_apps_sheet, mOverlayContext.getDragLayer(), false);
+
+        if (!mOverlayContext.isPrimaryDisplay()
+                && enableCustomHeightForAllAppsOnCd.isTrue()) {
+            // Not doing these calculations in init because the device properties may change, for
+            // example if there's a display size setting change.
+            DeviceProfile dp = mOverlayContext.getDeviceProfile();
+            int maxAllAppsHeight = (int) Math.ceil(mTaskbarAllAppsConnectedDisplayCustomHeightLimit
+                    * dp.getDeviceProperties().getAvailableHeightPx());
+            int allAppsHeight = (int) Math.ceil(dp.getAllAppsProfile().getCellHeightPx()
+                    * mTaskbarAllAppsConnectedDisplayCustomHeightMultiple
+                    * dp.numShownAllAppsColumns);
+
+            // If the desired height of all apps is greater than the limit then continue with
+            // fullscreen all apps.
+            if (allAppsHeight <= maxAllAppsHeight) {
+                BaseDragLayer.LayoutParams lp =
+                        (BaseDragLayer.LayoutParams) mSlideInView.getLayoutParams();
+                lp.height = allAppsHeight;
+                lp.gravity = Gravity.BOTTOM;
+            }
+        }
+
         // Ensures All Apps gets touch events in case it is not the top floating view. Floating
         // views above it may not be able to intercept the touch, so All Apps should try to.
         mOverlayContext.getDragLayer().addTouchController(mSlideInView);
@@ -178,7 +215,7 @@ public final class TaskbarAllAppsController {
 
         viewController.show(animate);
         mAppsView = mOverlayContext.getAppsView();
-        mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags, mPackageUserKeytoUidMap, false);
+        mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags, mPackageUserKeytoUidMap);
         mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
                 .setPredictedApps(mPredictedApps);
@@ -188,6 +225,7 @@ public final class TaskbarAllAppsController {
         // doesn't also close
         mOverlayContext.getDragController().setDisallowGlobalDrag(mDisallowGlobalDrag);
         mOverlayContext.getDragController().setDisallowLongClick(mDisallowLongClick);
+        mTaskbarUiState.setIsTaskbarAllAppsOpen(true);
     }
 
     private void cleanUpOverlay() {
@@ -209,6 +247,7 @@ public final class TaskbarAllAppsController {
         }
         mSlideInView = null;
         mAppsView = null;
+        mTaskbarUiState.setIsTaskbarAllAppsOpen(false);
     }
 
     @Nullable

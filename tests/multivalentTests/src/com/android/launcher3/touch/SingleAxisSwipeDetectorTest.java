@@ -44,10 +44,12 @@ import com.android.launcher3.testcomponent.TouchEventGenerator;
 import com.google.errorprone.annotations.FormatMethod;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -64,6 +66,9 @@ public class SingleAxisSwipeDetectorTest {
     private int mTouchSlop;
     Context mContext;
 
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Mock
     private SingleAxisSwipeDetector.Listener mMockListener;
 
@@ -72,7 +77,6 @@ public class SingleAxisSwipeDetectorTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         mGenerator = new TouchEventGenerator((ev) -> mDetector.onTouchEvent(ev));
         mContext = InstrumentationRegistry.getTargetContext();
         ViewConfiguration orgConfig = ViewConfiguration.get(mContext);

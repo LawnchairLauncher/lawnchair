@@ -46,11 +46,10 @@ class PackageManagerBubbleAppInfoProvider @Inject constructor() : BubbleAppInfoP
             )
             val appName = if (appInfo != null) pm.getApplicationLabel(appInfo)?.toString() else null
             val appIcon = pm.getApplicationIcon(bubble.packageName)
-            val badgedIcon = pm.getUserBadgedIcon(appIcon, bubble.user)
             return BubbleAppInfo(
                 appName = appName,
                 appIcon = appIcon,
-                badgedIcon = badgedIcon
+                user = bubble.user
             )
         } catch (exception: PackageManager.NameNotFoundException) {
             // If we can't find package... don't think we should show the bubble.

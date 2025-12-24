@@ -16,5 +16,5 @@ package com.android.systemui.plugins
 /** [PluginWrapper] wraps an interface used by a plugin */
 interface PluginWrapper<T> {
     /** Instance that is being wrapped */
-    fun getPlugin(): T
+    val plugin: T
 }

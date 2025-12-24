@@ -21,7 +21,6 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
 
 import static com.android.wm.shell.bubbles.Bubbles.DISMISS_NO_LONGER_BUBBLE;
-import static com.android.wm.shell.shared.bubbles.BubbleBarLocation.UpdateSource.A11Y_ACTION_BUBBLE;
 
 import android.annotation.BinderThread;
 import android.annotation.Nullable;
@@ -97,8 +96,7 @@ public class BubbleMultitaskingDelegate extends IMultitaskingDelegate.Stub {
                             Slog.d(TAG, "Created a collapsed bubble");
                         }
                     } else {
-                        mController.expandStackAndSelectAppBubble(b, null /* bubbleBarLocation */,
-                                A11Y_ACTION_BUBBLE); // Any update source - location doesn't change
+                        mController.expandStackAndSelectAppBubble(b);
                         if (DEBUG) {
                             Slog.d(TAG, "Created an expanded bubble");
                         }
@@ -126,8 +124,7 @@ public class BubbleMultitaskingDelegate extends IMultitaskingDelegate.Stub {
                         }
                     } else {
                         final Bubble bubble = getBubbleWithToken(token);
-                        mController.expandStackAndSelectAppBubble(bubble,
-                                null /* bubbleBarLocation */, A11Y_ACTION_BUBBLE);
+                        mController.expandStackAndSelectAppBubble(bubble);
                         if (DEBUG) {
                             Slog.d(TAG, "Expanded bubbles");
                         }

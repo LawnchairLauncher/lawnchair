@@ -25,6 +25,7 @@ import static android.view.WindowManager.DOCKED_TOP;
 import static com.android.wm.shell.common.split.SplitLayout.PARALLAX_ALIGN_CENTER;
 import static com.android.wm.shell.common.split.SplitLayout.PARALLAX_DISMISSING;
 import static com.android.wm.shell.common.split.SplitLayout.PARALLAX_FLEX;
+import static com.android.wm.shell.common.split.SplitLayout.PARALLAX_FLEX_HYBRID;
 import static com.android.wm.shell.common.split.SplitLayout.PARALLAX_NONE;
 
 import android.graphics.Point;
@@ -36,9 +37,6 @@ import android.view.SurfaceControl;
  * usually when the divider is being moved around by the user (or during an animation).
  */
 class ResizingEffectPolicy {
-    /** The default amount to dim an app that is partially offscreen. */
-    public static float DEFAULT_OFFSCREEN_DIM = 0.32f;
-
     private final SplitLayout mSplitLayout;
     /** The parallax algorithm we are currently using. */
     private final int mParallaxType;
@@ -109,6 +107,9 @@ class ResizingEffectPolicy {
                 break;
             case PARALLAX_FLEX:
                 mParallaxSpec = new FlexParallaxSpec();
+                break;
+            case PARALLAX_FLEX_HYBRID:
+                mParallaxSpec = new FlexHybridParallaxSpec();
                 break;
             case PARALLAX_NONE:
             default:
@@ -188,7 +189,8 @@ class ResizingEffectPolicy {
                     mTempRect2.set(mSplitLayout.getTopLeftBounds());
                     break;
             }
-        } else if (mParallaxType == PARALLAX_ALIGN_CENTER || mParallaxType == PARALLAX_FLEX) {
+        } else if (mParallaxType == PARALLAX_ALIGN_CENTER || mParallaxType == PARALLAX_FLEX
+                || mParallaxType == PARALLAX_FLEX_HYBRID) {
             switch (mShrinkSide) {
                 case DOCKED_TOP:
                 case DOCKED_LEFT:

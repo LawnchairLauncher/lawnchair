@@ -24,7 +24,7 @@ package {
     default_applicable_licenses: ["frameworks_base_license"],
 }
 
-java_library {
+android_library {
     name: "WMShellTestUtils",
     srcs: ["src/**/*.kt"],
     static_libs: ["WMShellFlickerTestsBase"],

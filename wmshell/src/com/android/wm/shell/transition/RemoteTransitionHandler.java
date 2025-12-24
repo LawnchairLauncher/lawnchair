@@ -16,8 +16,6 @@
 
 package com.android.wm.shell.transition;
 
-import static com.android.systemui.shared.Flags.returnAnimationFrameworkLongLived;
-
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.os.IBinder;
@@ -40,6 +38,7 @@ import android.window.WindowContainerTransaction;
 import androidx.annotation.BinderThread;
 
 import com.android.internal.protolog.ProtoLog;
+import com.android.window.flags2.Flags;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 import com.android.wm.shell.shared.TransitionUtil;
@@ -61,7 +60,7 @@ public class RemoteTransitionHandler implements Transitions.TransitionHandler {
     private final ArrayMap<IBinder, RemoteTransition> mRequestedRemotes = new ArrayMap<>();
 
     /** Ordered by specificity. Last filters will be checked first */
-    private final ArrayList<Pair<TransitionFilter, RemoteTransition>> mFilters =
+    final ArrayList<Pair<TransitionFilter, RemoteTransition>> mFilters =
             new ArrayList<>();
     private final ArrayList<Pair<TransitionFilter, RemoteTransition>> mTakeoverFilters =
             new ArrayList<>();
@@ -119,7 +118,13 @@ public class RemoteTransitionHandler implements Transitions.TransitionHandler {
             @NonNull SurfaceControl.Transaction startTransaction,
             @NonNull SurfaceControl.Transaction finishTransaction,
             @NonNull Transitions.TransitionFinishCallback finishCallback) {
-        if (!Transitions.SHELL_TRANSITIONS_ROTATION && TransitionUtil.hasDisplayChange(info)) {
+        // Ignore the remote transition if the display changes size or rotation, since Launcher
+        // doesn't have the necessary permission to deal with such changes.
+        final boolean ignoreTransition = !Transitions.SHELL_TRANSITIONS_ROTATION
+                && (Flags.enableCrossDisplaysAppLaunchTransition()
+                        ? TransitionUtil.hasNonOrderOnlyDisplayChange(info) :
+                        TransitionUtil.hasDisplayChange(info));
+        if (ignoreTransition) {
             // Note that if the remote doesn't have permission ACCESS_SURFACE_FLINGER, some
             // operations of the start transaction may be ignored.
             mRequestedRemotes.remove(transition);
@@ -152,6 +157,9 @@ public class RemoteTransitionHandler implements Transitions.TransitionHandler {
             @Override
             public void onTransitionFinished(WindowContainerTransaction wct,
                     SurfaceControl.Transaction sct) {
+                ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS,
+                        "Received remote transition finished callback for (#%d)",
+                        info.getDebugId());
                 unhandleDeath(remote.asBinder(), finishCallback);
                 if (sct != null) {
                     finishTransaction.merge(sct);
@@ -218,16 +226,17 @@ public class RemoteTransitionHandler implements Transitions.TransitionHandler {
         final RemoteTransition remoteTransition = mRequestedRemotes.get(mergeTarget);
         if (remoteTransition == null) return;
 
-        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS, "   Merge into remote: %s",
-                remoteTransition);
-
         final IRemoteTransition remote = remoteTransition.getRemoteTransition();
         if (remote == null) return;
 
+        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS,
+                "   Requesting merge (#%d) into remote: %s", info.getDebugId(), remoteTransition);
         IRemoteTransitionFinishedCallback cb = new IRemoteTransitionFinishedCallback.Stub() {
             @Override
             public void onTransitionFinished(WindowContainerTransaction wct,
                     SurfaceControl.Transaction sct) {
+                ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS, "Merged (#%d) into remote",
+                        info.getDebugId());
                 // We have merged, since we sent the transaction over binder, the one in this
                 // process won't be cleared if the remote applied it. We don't actually know if the
                 // remote applied the transaction, but applying twice will break surfaceflinger
@@ -259,10 +268,6 @@ public class RemoteTransitionHandler implements Transitions.TransitionHandler {
     @Override
     public Transitions.TransitionHandler getHandlerForTakeover(
             @NonNull IBinder transition, @NonNull TransitionInfo info) {
-        if (!returnAnimationFrameworkLongLived()) {
-            return null;
-        }
-
         for (Pair<TransitionFilter, RemoteTransition> registered : mTakeoverFilters) {
             if (registered.first.matches(info)) {
                 ProtoLog.v(ShellProtoLogGroup.WM_SHELL_RECENTS_TRANSITION,

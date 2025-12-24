@@ -16,7 +16,6 @@
 
 package com.android.launcher3.dagger;
 
-
 import com.android.quickstep.dagger.QuickstepBaseAppComponent;
 
 import dagger.Component;

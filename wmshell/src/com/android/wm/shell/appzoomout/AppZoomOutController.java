@@ -20,7 +20,6 @@ import static android.app.WindowConfiguration.ROTATION_UNDEFINED;
 import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.systemui.Flags.spatialModelAppPushback;
-import static com.android.systemui.Flags.spatialModelPushbackInShader;
 import static com.android.systemui.shared.Flags.enableLppAssistInvocationEffect;
 
 import android.app.ActivityManager;
@@ -131,11 +130,6 @@ public class AppZoomOutController implements RemoteCallable<AppZoomOutController
         return mImpl;
     }
 
-    public void setProgress(float progress) {
-        if (!spatialModelPushbackInShader()) {
-            mAppDisplayAreaOrganizer.setProgress(progress);
-        }
-    }
 
     /**
      * Scales all content on the screen belonging to
@@ -197,10 +191,6 @@ public class AppZoomOutController implements RemoteCallable<AppZoomOutController
 
     @ExternalThread
     private class AppZoomOutImpl implements AppZoomOut {
-        @Override
-        public void setProgress(float progress) {
-            mMainExecutor.execute(() -> AppZoomOutController.this.setProgress(progress));
-        }
 
         @Override
         public void setTopLevelProgress(float progress, long vsyncId, Handler sysuiMainHandler) {

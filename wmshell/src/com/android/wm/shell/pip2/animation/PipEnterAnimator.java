@@ -36,11 +36,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.protolog.ProtoLog;
 import com.android.launcher3.icons.IconProvider;
 import com.android.wm.shell.R;
 import com.android.wm.shell.common.pip.PipUtils;
 import com.android.wm.shell.pip2.PipSurfaceTransactionHelper;
 import com.android.wm.shell.pip2.phone.PipAppIconOverlay;
+import com.android.wm.shell.protolog.ShellProtoLogGroup;
 import com.android.wm.shell.shared.animation.Interpolators;
 import com.android.wm.shell.shared.pip.PipContentOverlay;
 
@@ -48,6 +50,7 @@ import com.android.wm.shell.shared.pip.PipContentOverlay;
  * Animator that handles bounds animations for entering PIP.
  */
 public class PipEnterAnimator extends ValueAnimator {
+    private static final String TAG = PipEnterAnimator.class.getSimpleName();
     @NonNull private final SurfaceControl mLeash;
     private final SurfaceControl.Transaction mStartTransaction;
     private final SurfaceControl.Transaction mFinishTransaction;
@@ -212,7 +215,9 @@ public class PipEnterAnimator extends ValueAnimator {
         }
         mContentOverlay = mPipAppIconOverlaySupplier.get(context, appBounds, destinationBounds,
                 activityInfo, appIconSizePx);
-        mContentOverlay.attach(tx, mLeash);
+        if (mContentOverlay != null) {
+            mContentOverlay.attach(tx, mLeash);
+        }
     }
 
     /**
@@ -228,9 +233,15 @@ public class PipEnterAnimator extends ValueAnimator {
         mContentOverlay = null;
     }
 
+    @Nullable
     private PipAppIconOverlay getAppIconOverlay(
             Context context, Rect appBounds, Rect destinationBounds,
             ActivityInfo activityInfo, int iconSize) {
+        if (activityInfo == null) {
+            ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+                    "%s: activityInfo=null when trying to add app icon overlay", TAG);
+            return null;
+        }
         return new PipAppIconOverlay(context, appBounds, destinationBounds,
                 new IconProvider(context).getIcon(activityInfo), iconSize);
     }

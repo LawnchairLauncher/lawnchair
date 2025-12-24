@@ -628,6 +628,10 @@ public class TvPipController implements PipTransitionController.PipTransitionCal
                 ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
                         "%s: onExpandedAspectRatioChanged: %f", TAG, ratio);
 
+                if (!mTvPipBoundsState.isTvExpandedPipSupported()) {
+                    return;
+                }
+
                 mTvPipBoundsState.setDesiredTvExpandedAspectRatio(ratio, false);
                 updateExpansionState();
 

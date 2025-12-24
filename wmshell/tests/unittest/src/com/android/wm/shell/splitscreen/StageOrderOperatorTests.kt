@@ -63,6 +63,7 @@ class StageOrderOperatorTests : ShellTestCase() {
             mSyncQueue,
             iconProvider,
             windowDecorViewModel,
+            Optional.empty(),
             )
         assert(stageOrderOperator.activeStages.size == 0)
     }

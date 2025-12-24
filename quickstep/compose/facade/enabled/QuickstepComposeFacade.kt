@@ -19,18 +19,26 @@ package com.android.quickstep.compose
 import android.content.Context
 import android.view.View
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
+import app.lawnchair.ui.theme.LawnchairTheme
+//import com.android.compose.theme.PlatformTheme
 import com.android.launcher3.compose.ComposeFacade
 import com.android.launcher3.compose.core.BaseComposeFacade
 import com.android.quickstep.compose.core.QuickstepComposeFeatures
 import com.android.quickstep.recents.ui.composable.TaskAppChip
 import com.android.quickstep.recents.ui.viewmodel.TaskViewModel
+import com.android.quickstep.task.apptimer.TaskAppTimerUiState
+import com.android.quickstep.task.apptimer.ViewModel
+import com.android.quickstep.task.apptimer.ui.composable.AppTimerToast
 import com.android.quickstep.views.TaskViewIcon
 
 object QuickstepComposeFacade : BaseComposeFacade, QuickstepComposeFeatures {
     override fun isComposeAvailable() = ComposeFacade.isComposeAvailable()
 
     override fun initComposeView(appContext: Context) = ComposeFacade.initComposeView(appContext)
+
+    override fun disposeComposition(view: View) = ComposeFacade.disposeComposition(view)
 
     override fun startIconAppChip(
         composeView: TaskViewIcon,
@@ -42,4 +50,16 @@ object QuickstepComposeFacade : BaseComposeFacade, QuickstepComposeFeatures {
         (composeView.asView() as ComposeView).apply {
             setContent { MaterialTheme { TaskAppChip(viewModel, taskId, onClick, onLongClick) } }
         }
+
+    override fun startTaskAppTimerToast(
+        view: View,
+        viewModel: ViewModel<TaskAppTimerUiState>,
+    ): View {
+        return (view as ComposeView).apply {
+            setContent {
+                val timerUiState by viewModel.uiState
+                LawnchairTheme { AppTimerToast(timerUiState, viewModel) }
+            }
+        }
+    }
 }

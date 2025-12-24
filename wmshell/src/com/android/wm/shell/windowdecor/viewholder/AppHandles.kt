@@ -18,11 +18,9 @@ package com.android.wm.shell.windowdecor.viewholder
 
 import java.util.concurrent.Executor
 
-
 /**
- * Manages listeners interested in AppHandleIdentifier updates within SystemUI.
- * Allows components to register/unregister for callbacks using the nested
- * [AppHandlePositionCallback] interface.
+ * Manages listeners interested in AppHandleIdentifier updates within SystemUI. Allows components to
+ * register/unregister for callbacks using the nested [AppHandlePositionCallback] interface.
  */
 interface AppHandles {
 

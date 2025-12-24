@@ -11,7 +11,6 @@ winsonc@google.com
 agvard@google.com
 
 # Launcher workspace eng team
-captaincole@google.com
 sunnygoyal@google.com
 charlander@google.com
 fbaron@google.com
@@ -19,7 +18,6 @@ fengjial@google.com
 fransebas@google.com
 pinyaoting@google.com
 andonian@google.com
-sihua@google.com
 abegovic@google.com
 
 # Multitasking eng team
@@ -32,10 +30,10 @@ hwwang@google.com
 # Overview eng team
 alexchau@google.com
 samcackett@google.com
-silvajordan@google.com
 uwaisashraf@google.com
 vinayjoglekar@google.com
 willosborn@google.com
+jmokut@google.com
 
 # Physical Keyboard & Trackpad eng team
 patmanning@google.com
@@ -68,8 +66,11 @@ davidct@google.com
 iamiam@google.com
 jiuyu@google.com
 
+# Desktop Experiences team
+gsennton@google.com
+
 per-file FeatureFlags.java, globs = set noparent
-per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, captaincole@google.com, abegovic@google.com
+per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, abegovic@google.com
 
 per-file DeviceConfigWrapper.java, globs = set noparent
 per-file DeviceConfigWrapper.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, abegovic@google.com

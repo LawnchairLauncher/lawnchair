@@ -33,11 +33,12 @@ import com.android.launcher3.util.TestUtil
 import com.android.launcher3.views.ActivityContext
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers.RETURNS_SELF
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
@@ -53,6 +54,7 @@ class StartupLatencyLoggerTest {
     @Mock lateinit var ctx: ActivityContext
     @Mock lateinit var timeProvider: () -> Long
     @Mock lateinit var statsLogManager: StatsLogManager
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
 
     private val trackedLoggers = mutableMapOf<LauncherLatencyEvent, StatsLatencyLogger>()
 
@@ -60,7 +62,6 @@ class StartupLatencyLoggerTest {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         doReturn(statsLogManager).whenever(ctx).statsLogManager
         doAnswer {
                 mock<StatsLatencyLogger>(defaultAnswer = RETURNS_SELF).apply {

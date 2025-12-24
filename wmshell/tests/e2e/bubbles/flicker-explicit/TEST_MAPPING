@@ -1,19 +1,108 @@
 {
-  "wm-devices": [
+  "wm": [
     {
-      "name": "WMShellExplicitFlickerTestsBubbles-CatchAll"
+      "name": "WMShellExplicitFlickerTestsBubbles-CatchAll",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellExplicitFlickerTestsBubbles-CollapseBubbleViaBackTest"
+      "name": "WMShellExplicitFlickerTestsBubbles-BubbleBarMovesTest",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellExplicitFlickerTestsBubbles-DismissExpandedBubbleViaBubbleViewTes"
+      "name": "WMShellExplicitFlickerTestsBubbles-BubbleBarVisibilityTest",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleViaBubbleMenuTest"
+      "name": "WMShellExplicitFlickerTestsBubbles-BubbleIconMoveTest",
+      "keywords": ["device"]
     },
     {
-      "name": "WMShellExplicitFlickerTestsBubbles-ExpandBubbleViaBubbleStackTest"
+      "name": "WMShellExplicitFlickerTestsBubbles-CollapseBubbleAppFromOverviewTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-CollapseBubbleAppViaBackTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-CollapseBubbleAppViaTouchOutsideTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-DismissAllCollapsedBubbleAppsTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-DismissExpandedBubbleViaBubbleBarHandleTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-DismissExpandedBubbleViaBubbleBarTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-DismissExpandedBubbleViaBubbleViewTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleFromHomeScreenTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleFromHomeScreenTrampolineTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleViaBubbleMenuTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleViaDragToBubbleBarTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleViaDragToBubbleBarTrampolineTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleViaOverflowMenuTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleWithImeViaBubbleMenuTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-ExpandBubbleViaBubbleStackTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-ExpandBubbleWithImeViaBubbleBarTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-ExpandedBubbleAppMoveTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-LaunchMultipleBubbleTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-ScrollableBubbleAppTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-SwitchBetweenBubblesTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-RelaunchSplitScreenToBubbleTest",
+      "keywords": ["device"]
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-RelaunchBubbleIntoSplitScreenTest",
+      "keywords": ["device"]
     }
   ]
 }

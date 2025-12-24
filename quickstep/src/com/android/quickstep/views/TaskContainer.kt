@@ -20,10 +20,12 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.core.view.isVisible
+
+import com.android.launcher3.Flags.enableRefactorDigitalWellbeingToast
 import com.android.launcher3.Flags.enableRefactorTaskContentView
 import com.android.launcher3.Flags.enableRefactorTaskThumbnail
 import com.android.launcher3.model.data.TaskViewItemInfo
-import com.android.launcher3.util.OverviewReleaseFlags.enableOverviewIconMenu
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.launcher3.util.TransformingTouchDelegate
 import com.android.quickstep.TaskOverlayFactory
@@ -130,10 +132,6 @@ class TaskContainer(
             } else {
                 thumbnailViewDeprecated.setShowSplashForSplitSelection(false)
             }
-
-            if (enableOverviewIconMenu() && taskView.type != TaskViewType.DESKTOP) {
-                (iconView as IconAppChipView).reset()
-            }
         }
 
     fun setOverlayEnabled(enabled: Boolean) {
@@ -237,6 +235,18 @@ class TaskContainer(
 
     fun updateThumbnailMatrix(matrix: Matrix) {
         thumbnailView.setImageMatrix(matrix)
+    }
+
+    fun digitalWellBeingBannerHeight(): Int {
+        if (enableRefactorTaskContentView() && enableRefactorDigitalWellbeingToast()) {
+            return (taskContentView as? TaskContentView)?.getTaskAppTimerToastHeight() ?: 0
+        }
+
+        if (digitalWellBeingToast?.isVisible == true) {
+            return digitalWellBeingToast.height
+        }
+
+        return 0
     }
 
     companion object {

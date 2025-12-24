@@ -29,10 +29,11 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.logger.LauncherAtom;
-import com.android.launcher3.taskbar.TaskbarUIController;
+import com.android.launcher3.taskbar.TaskbarInteractor;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.BaseContainerInterface;
+import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.SplitSelectStateController;
 
 /**
@@ -130,23 +131,6 @@ public interface RecentsViewContainer extends ActivityContext {
     void runOnBindToTouchInteractionService(Runnable r);
 
     /**
-     * @see
-     * BaseActivity#addMultiWindowModeChangedListener(BaseActivity.MultiWindowModeChangedListener)
-     * @param listener {@link BaseActivity.MultiWindowModeChangedListener}
-     */
-    void addMultiWindowModeChangedListener(
-            BaseActivity.MultiWindowModeChangedListener listener);
-
-    /**
-     * @see
-     * BaseActivity#removeMultiWindowModeChangedListener(
-     * BaseActivity.MultiWindowModeChangedListener)
-     * @param listener {@link BaseActivity.MultiWindowModeChangedListener}
-     */
-    void removeMultiWindowModeChangedListener(
-            BaseActivity.MultiWindowModeChangedListener listener);
-
-    /**
      * Begins transition from overview back to homescreen
      */
     void returnToHomescreen();
@@ -158,11 +142,9 @@ public interface RecentsViewContainer extends ActivityContext {
     boolean isRecentsViewVisible();
 
     /**
-     * Begins transition to start home through container
+     * Begins transition to start home through container.
      */
-    default void startHome(){
-        // no op
-    }
+    void startHome(boolean animated, @Nullable Runnable onHomeAnimationComplete);
 
     /**
      * Checks container to see if we can start home transition safely
@@ -202,12 +184,20 @@ public interface RecentsViewContainer extends ActivityContext {
                         .build());
     }
 
-    void setTaskbarUIController(@Nullable TaskbarUIController taskbarUIController);
+    void setTaskbarInteractor(@Nullable TaskbarInteractor taskbarInteractor);
 
-    @Nullable TaskbarUIController getTaskbarUIController();
+    @Nullable TaskbarInteractor getTaskbarInteractor();
 
     /**
      * Returns the Split Select State Controller
      */
     SplitSelectStateController getSplitSelectStateController();
+
+    /**
+     * Changes the state to the provided {@link RecentsState} or equivalent.
+     *
+     * @param animated false if the state should change immediately without any animation,
+     *                true otherwise
+     */
+    void goToRecentsState(RecentsState recentsState, boolean animated);
 }

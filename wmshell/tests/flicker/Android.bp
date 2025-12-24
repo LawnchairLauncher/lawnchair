@@ -28,7 +28,7 @@ filegroup {
     srcs: ["src/com/android/wm/shell/flicker/utils/*.kt"],
 }
 
-java_library {
+android_library {
     name: "wm-shell-flicker-utils",
     optimize: {
         enabled: false,
@@ -69,6 +69,8 @@ java_defaults {
         "launcher-helper-lib",
         "platform-test-annotations",
         "platform-test-rules",
+        "systemui-helper",
+        "systemui-tapl",
         "wm-flicker-common-app-helpers",
         "wm-flicker-common-assertions",
         "wm-shell-flicker-utils",
@@ -78,7 +80,7 @@ java_defaults {
     ],
 }
 
-java_library {
+android_library {
     name: "WMShellFlickerTestsBase",
     defaults: ["WMShellFlickerTestsDefault"],
     srcs: ["src/com/android/wm/shell/flicker/*.kt"],

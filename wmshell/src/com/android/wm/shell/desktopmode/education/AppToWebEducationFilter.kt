@@ -20,8 +20,12 @@ import android.annotation.IntegerRes
 import android.app.ActivityManager.RunningTaskInfo
 import android.content.Context
 import android.os.SystemClock
+import android.os.SystemProperties
 import android.provider.Settings.Secure
+import android.window.DesktopExperienceFlags
 import com.android.wm.shell.R
+import com.android.wm.shell.apptoweb.AppToWebRepository
+import com.android.wm.shell.apptoweb.isBrowserApp
 import com.android.wm.shell.desktopmode.CaptionState
 import com.android.wm.shell.desktopmode.education.data.AppToWebEducationDatastoreRepository
 import com.android.wm.shell.desktopmode.education.data.WindowingEducationProto
@@ -31,29 +35,60 @@ import java.time.Duration
 class AppToWebEducationFilter(
     private val context: Context,
     private val appToWebEducationDatastoreRepository: AppToWebEducationDatastoreRepository,
+    private val appToWebRepository: AppToWebRepository,
 ) {
 
     /** Returns true if conditions to show App-to-web education are met, returns false otherwise. */
     suspend fun shouldShowAppToWebEducation(captionState: CaptionState): Boolean {
-        val (taskInfo: RunningTaskInfo, isCapturedLinkAvailable: Boolean) =
-            when (captionState) {
-                is CaptionState.AppHandle ->
-                    Pair(captionState.runningTaskInfo, captionState.isCapturedLinkAvailable)
-                is CaptionState.AppHeader ->
-                    Pair(captionState.runningTaskInfo, captionState.isCapturedLinkAvailable)
-                else -> return false
-            }
-
+        val taskInfo = getTaskInfo(captionState)
         val focusAppPackageName = taskInfo.topActivityInfo?.packageName ?: return false
         val windowingEducationProto = appToWebEducationDatastoreRepository.windowingEducationProto()
 
-        return !isOtherEducationShowing() &&
+        return if (isAppToWebEducationRequested(taskInfo)) {
             !isEducationViewLimitReached(windowingEducationProto) &&
-            hasSufficientTimeSinceSetup() &&
-            !isFeatureUsedBefore(windowingEducationProto) &&
-            isCapturedLinkAvailable &&
-            isFocusAppInAllowlist(focusAppPackageName)
+                taskInfo.isFocused &&
+                !isOtherEducationShowing() &&
+                !isBrowserApp(taskInfo) &&
+                isBrowserSessionAvailable(taskInfo)
+        } else {
+            !isEducationViewLimitReached(windowingEducationProto) &&
+                taskInfo.isFocused &&
+                !isOtherEducationShowing() &&
+                hasSufficientTimeSinceSetup() &&
+                !isFeatureUsedBefore(windowingEducationProto) &&
+                isFocusAppInAllowlist(focusAppPackageName) &&
+                !isBrowserApp(taskInfo) &&
+                isCapturedLinkAvailable(taskInfo.taskId) &&
+                isBrowserSessionAvailable(taskInfo)
+        }
     }
+
+    private fun isAppToWebEducationRequested(taskInfo: RunningTaskInfo) =
+        if (
+            DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_APP_TO_WEB_EDUCATION_INTEGRATION.isTrue
+        ) {
+            appToWebRepository.updateAppToWebEducationRequestTimestamp(
+                taskInfo.taskId,
+                taskInfo.topActivityRequestOpenInBrowserEducationTimestamp,
+            )
+        } else {
+            false
+        }
+
+    /** Returns [true] if app is not a browser app itself and browser link is available. */
+    private suspend fun isBrowserSessionAvailable(taskInfo: RunningTaskInfo) =
+        appToWebRepository.isBrowserSessionAvailable(taskInfo)
+
+    private fun isBrowserApp(taskInfo: RunningTaskInfo): Boolean {
+        val baseActivity = taskInfo.baseActivity ?: return false
+        return isBrowserApp(context, baseActivity.packageName, taskInfo.userId)
+    }
+
+    private fun isCapturedLinkAvailable(taskId: Int) =
+        appToWebRepository.isCapturedLinkAvailable(taskId)
+
+    private fun getTaskInfo(captionState: CaptionState) =
+        checkNotNull(captionState.getTaskInfo()) { " Expected non-null task info" }
 
     private fun isFocusAppInAllowlist(focusAppPackageName: String): Boolean =
         focusAppPackageName in
@@ -80,8 +115,9 @@ class AppToWebEducationFilter(
 
     /** Returns true if education is viewed maximum amount of times it should be shown. */
     fun isEducationViewLimitReached(windowingEducationProto: WindowingEducationProto): Boolean =
-        windowingEducationProto.getAppToWebEducation().getEducationShownCount() >=
-            MAXIMUM_TIMES_EDUCATION_SHOWN
+        !REMOVE_APP_TO_WEB_EDUCATION_LIMIT &&
+            windowingEducationProto.getAppToWebEducation().educationShownCount >=
+                MAXIMUM_TIMES_EDUCATION_SHOWN
 
     private fun isFeatureUsedBefore(windowingEducationProto: WindowingEducationProto): Boolean =
         windowingEducationProto.hasFeatureUsedTimestampMillis()
@@ -90,6 +126,16 @@ class AppToWebEducationFilter(
         Duration.ofSeconds(context.resources.getInteger(resourceId).toLong())
 
     companion object {
-        private const val MAXIMUM_TIMES_EDUCATION_SHOWN = 100
+        private const val MAXIMUM_TIMES_EDUCATION_SHOWN = 2
+
+        /**
+         * Debug flag to indicate whether to force default display to be in desktop-first mode
+         * regardless of required factors.
+         */
+        private val REMOVE_APP_TO_WEB_EDUCATION_LIMIT =
+            SystemProperties.getBoolean(
+                "persist.wm.debug.remove_app_to_web_education_limit_for_testing",
+                false,
+            )
     }
 }

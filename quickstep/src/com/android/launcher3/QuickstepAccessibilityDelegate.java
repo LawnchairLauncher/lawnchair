@@ -31,8 +31,8 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.SearchRecyclerView;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.views.PredictedAppIcon;
 
 import java.util.List;
 

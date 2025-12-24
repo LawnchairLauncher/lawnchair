@@ -46,6 +46,7 @@
             app:layout_constraintEnd_toStartOf="@id/gesture_tutorial_menu_back_button">
 
             <ImageView
+                android:id="@+id/gesture_tutorial_home_step_shape"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/gesture_tutorial_home_step_shape"
@@ -85,6 +86,7 @@
             app:layout_constraintEnd_toStartOf="@id/gesture_tutorial_menu_overview_button">
 
             <ImageView
+                android:id="@+id/gesture_tutorial_back_step_shape"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/gesture_tutorial_back_step_shape"
@@ -123,6 +125,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
+                android:id="@+id/gesture_tutorial_overview_step_shape"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/gesture_tutorial_overview_step_shape"

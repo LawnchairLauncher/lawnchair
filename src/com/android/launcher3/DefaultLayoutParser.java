@@ -62,6 +62,15 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         ArrayMap<String, TagParser> parsers = new ArrayMap<>();
         parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
         parsers.put(TAG_SHORTCUT, new ShortcutParser());
+        parsers.put(TAG_APP_PAIR, new AppPairParser());
+        return parsers;
+    }
+
+    @Override
+    protected ArrayMap<String, TagParser> getAppPairElementsMap() {
+        ArrayMap<String, TagParser> parsers = new ArrayMap<>();
+        parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
+        parsers.put(TAG_SHORTCUT, new ShortcutParser());
         return parsers;
     }
 
@@ -75,6 +84,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         parsers.put(TAG_RESOLVE, new ResolveParser());
         parsers.put(TAG_FOLDER, new MyFolderParser());
         parsers.put(TAG_PARTNER_FOLDER, new PartnerFolderParser());
+        parsers.put(TAG_APP_PAIR, new AppPairParser());
         return parsers;
     }
 

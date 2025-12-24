@@ -260,10 +260,10 @@
     <dimen name="bubble_popup_elevation">2dp</dimen>
     <!-- The size of the caption bar inset at the top of bubble bar expanded view. -->
     <dimen name="bubble_bar_expanded_view_caption_height">36dp</dimen>
-    <!-- The width of the caption bar at the top of bubble bar expanded view. -->
-    <dimen name="bubble_bar_expanded_view_caption_width">80dp</dimen>
     <!-- The height of the handle shown for the caption menu in the bubble bar expanded view. -->
     <dimen name="bubble_bar_expanded_view_handle_height">4dp</dimen>
+    <!-- The width of the handle shown for the caption menu in the bubble bar expanded view. -->
+    <dimen name="bubble_bar_expanded_view_handle_width">80dp</dimen>
     <!-- Width of the expanded bubble bar view shown when the bubble is expanded. -->
     <dimen name="bubble_bar_expanded_view_width">412dp</dimen>
     <!-- Offset of the expanded view when it starts sliding in as part of the switch animation -->
@@ -443,6 +443,15 @@
     <!-- Height of button (32dp)  + 2 * margin (5dp each). -->
     <dimen name="freeform_decor_caption_height">42dp</dimen>
 
+    <!-- The height of the app handle shown for Foldables / Tablets. -->
+    <dimen name="app_handle_height">4dp</dimen>
+
+    <!-- The width of the app handle shown for Foldables / Tablets. -->
+    <dimen name="app_handle_width">80dp</dimen>
+
+    <!-- The elevation for the individual app handle menu. -->
+    <dimen name="app_menu_elevation">4dp</dimen>
+
     <!-- Height of desktop mode caption for fullscreen tasks. -->
     <dimen name="desktop_mode_fullscreen_decor_caption_height">36dp</dimen>
 
@@ -485,15 +494,9 @@
          end of this area. -->
     <dimen name="desktop_mode_customizable_caption_margin_start">84dp</dimen>
 
-    <!-- When custom headers are requested, this is the width of the right-aligned region that is
-         taken up by caption elements and extra margins. The customizable region ends at the
-         start of this area. -->
-    <dimen name="desktop_mode_customizable_caption_margin_end">152dp</dimen>
-
-    <!-- The width of the right-aligned region that is taken up by caption elements and extra
-         margins when the caption has the minimize button. This will be merged with the above value
-         once the minimize button becomes default. -->
-    <dimen name="desktop_mode_customizable_caption_with_minimize_button_margin_end">204dp</dimen>
+    <!-- The width of the drag-only area of the app header, where apps are not allow to
+         customize. -->
+    <dimen name="desktop_mode_customizable_caption_drag_only_width">48dp</dimen>
 
     <!-- The default minimum allowed window width when resizing a window in desktop mode. -->
     <dimen name="desktop_mode_minimum_window_width">386dp</dimen>
@@ -576,8 +579,8 @@
     <!-- The top margin of the handle menu in desktop mode. -->
     <dimen name="desktop_mode_handle_menu_margin_top">4dp</dimen>
 
-    <!-- The start margin of the handle menu in desktop mode. -->
-    <dimen name="desktop_mode_handle_menu_margin_start">6dp</dimen>
+    <!-- The left, bottom, and right padding of the handle menu in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_padding_left_bottom_right">6dp</dimen>
 
     <!-- The radius of the caption menu corners. -->
     <dimen name="desktop_mode_handle_menu_corner_radius">26dp</dimen>
@@ -630,6 +633,8 @@
     <dimen name="desktop_mode_header_buttons_ripple_radius">16dp</dimen>
     <!-- The vertical inset to apply to the app chip's ripple drawable -->
     <dimen name="desktop_mode_header_app_chip_ripple_inset_vertical">4dp</dimen>
+    <!-- The vertical inset to apply to the app chip's ripple drawable in a large header -->
+    <dimen name="desktop_mode_header_app_chip_ripple_inset_vertical_large">8dp</dimen>
 
      <!-- The corner radius of the windowing actions pill buttons's ripple drawable -->
      <dimen name="desktop_mode_handle_menu_icon_button_ripple_radius">24dp</dimen>
@@ -646,6 +651,8 @@
     <dimen name="desktop_mode_header_minimize_ripple_inset_vertical">4dp</dimen>
     <!-- The horizontal inset to apply to the minimize button's ripple drawable -->
     <dimen name="desktop_mode_header_minimize_ripple_inset_horizontal">6dp</dimen>
+    <!-- The vertical inset to apply to the minimize button's ripple drawable in a large header -->
+    <dimen name="desktop_mode_header_minimize_ripple_inset_large">8dp</dimen>
 
     <!-- The corner radius of the maximize button's ripple drawable -->
     <dimen name="desktop_mode_header_maximize_ripple_radius">18dp</dimen>
@@ -653,6 +660,8 @@
     <dimen name="desktop_mode_header_maximize_ripple_inset_vertical">4dp</dimen>
     <!-- The horizontal inset to apply to the maximize button's ripple drawable -->
     <dimen name="desktop_mode_header_maximize_ripple_inset_horizontal">6dp</dimen>
+    <!-- The horizontal inset to apply to the maximize button's ripple drawable in a large header -->
+    <dimen name="desktop_mode_header_maximize_ripple_inset_large">8dp</dimen>
 
     <!-- The corner radius of the close button's ripple drawable -->
     <dimen name="desktop_mode_header_close_ripple_radius">18dp</dimen>
@@ -660,6 +669,8 @@
     <dimen name="desktop_mode_header_close_ripple_inset_vertical">4dp</dimen>
     <!-- The horizontal inset to apply to the close button's ripple drawable -->
     <dimen name="desktop_mode_header_close_ripple_inset_horizontal">6dp</dimen>
+    <!-- The horizontal inset to apply to the close button's ripple drawable in a large header -->
+    <dimen name="desktop_mode_header_close_ripple_inset_large">8dp</dimen>
 
     <!-- The max width of the app name shown on the app header -->
     <dimen name="desktop_mode_header_app_name_max_width">130dp</dimen>
@@ -667,6 +678,23 @@
     <dimen name="desktop_mode_header_expand_menu_error_image_width">16dp</dimen>
     <!-- The margin added between app name and expand menu error image on the app header -->
     <dimen name="desktop_mode_header_expand_menu_error_image_margin">8dp</dimen>
+
+    <!-- The width of the header's window control buttons. -->
+    <dimen name="desktop_mode_header_window_control_button_width">40dp</dimen>
+    <!-- The height of the header's window control buttons. -->
+    <dimen name="desktop_mode_header_window_control_button_height">40dp</dimen>
+    <!-- The width of the header's window control buttons in a large header. -->
+    <dimen name="desktop_mode_header_window_control_button_width_large">48dp</dimen>
+    <!-- The height of the header's window control buttons in a large header. -->
+    <dimen name="desktop_mode_header_window_control_button_height_large">48dp</dimen>
+    <!-- The horizontal padding of the window control buttons of the app header. -->
+    <dimen name="desktop_mode_header_window_control_button_padding_horizontal">10dp</dimen>
+    <!-- The vertical padding of the window control buttons of the app header. -->
+    <dimen name="desktop_mode_header_window_control_button_padding_vertical">8dp</dimen>
+    <!-- The end padding of the window control buttons of the app header. -->
+    <dimen name="desktop_mode_header_window_control_button_padding_end">8dp</dimen>
+    <!-- The padding of the window control buttons of the large app header. -->
+    <dimen name="desktop_mode_header_window_control_button_padding_large">12dp</dimen>
 
     <!-- The padding added to all sides of windowing education tooltip -->
     <dimen name="desktop_windowing_education_tooltip_padding">8dp</dimen>

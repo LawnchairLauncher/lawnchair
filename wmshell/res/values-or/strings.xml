@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"ଆପ ବବଲକୁ ସପୋର୍ଟ କରେ ନାହିଁ"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"ସ୍ପ୍ଲିଟ ସ୍କ୍ରିନ ଡିଭାଇଡର"</string>
     <string name="divider_title" msgid="1963391955593749442">"ସ୍ପ୍ଲିଟ ସ୍କ୍ରିନ ଡିଭାଇଡର"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ବାମ ପଟକୁ ପୂର୍ଣ୍ଣ ସ୍କ୍ରୀନ୍‍ କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"ବାମ ପଟକୁ 70% କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ବାମ ପଟକୁ 50% କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ବାମ ପଟେ 30%"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"ଡାହାଣ ପଟକୁ ପୂର୍ଣ୍ଣ ସ୍କ୍ରୀନ୍‍ କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"ବଟମ ସହ ଟପକୁ ଆପ ସ୍ବାପ କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"ଡାହାଣ ସହ ବାମକୁ ଆପ ସ୍ବାପ କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"ଉପର ଆଡ଼କୁ ପୂର୍ଣ୍ଣ ସ୍କ୍ରୀନ୍‍ କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ଉପର ଆଡ଼କୁ 70% କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ଉପର ଆଡ଼କୁ 50% କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"ଉପର ଆଡ଼କୁ 30% କରନ୍ତୁ"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"ତଳ ଅଂଶର ପୂର୍ଣ୍ଣ ସ୍କ୍ରୀନ୍‍"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"ବାମପଟେ ଥିବା ଆପକୁ ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନରେ ଖୋଲନ୍ତୁ"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10% ବାମ, 90% ଡାହାଣ"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30% ବାମ, 70% ଡାହାଣ"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50% ବାମ, 50% ଡାହାଣ"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70% ବାମ, 30% ଡାହାଣ"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90% ବାମ, 10% ଡାହାଣ"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"ଡାହାଣପଟେ ଥିବା ଆପକୁ ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନରେ ଖୋଲନ୍ତୁ"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"ନିମ୍ନରେ ଥିବା ଆପ ସହିତ ଶୀର୍ଷରେ ଥିବା ଆପକୁ ସ୍ୱାପ କରନ୍ତୁ, ବର୍ତ୍ତମାନର ସ୍ପ୍ଲିଟ ରଖନ୍ତୁ"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"ଡାହାଣପଟେ ଥିବା ଆପ ସହିତ ବାମପଟେ ଥିବା ଆପକୁ ସ୍ୱାପ କରନ୍ତୁ, ବର୍ତ୍ତମାନର ସ୍ପ୍ଲିଟ ରଖନ୍ତୁ"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"ଶୀର୍ଷରେ ଥିବା ଆପକୁ ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନରେ ଖୋଲନ୍ତୁ"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10% ଶୀର୍ଷ, 90% ନିମ୍ନ"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30% ଶୀର୍ଷ, 70% ନିମ୍ନ"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50% ଶୀର୍ଷ, 50% ନିମ୍ନ"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70% ଶୀର୍ଷ, 30% ନିମ୍ନ"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90% ଶୀର୍ଷ, 10% ନିମ୍ନ"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"ନିମ୍ନରେ ଥିବା ଆପକୁ ପୂର୍ଣ୍ଣ ସ୍କ୍ରିନରେ ଖୋଲନ୍ତୁ"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"ବାମପଟକୁ ସ୍ପ୍ଲିଟ କରନ୍ତୁ"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"ଡାହାଣପଟକୁ ସ୍ପ୍ଲିଟ କରନ୍ତୁ"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"ଶୀର୍ଷକୁ ସ୍ପ୍ଲିଟ କରନ୍ତୁ"</string>

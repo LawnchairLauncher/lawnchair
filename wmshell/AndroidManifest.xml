@@ -23,4 +23,44 @@
     <uses-permission android:name="android.permission.ROTATE_SURFACE_FLINGER" />
     <uses-permission android:name="android.permission.WAKEUP_SURFACE_FLINGER" />
     <uses-permission android:name="android.permission.READ_FRAME_BUFFER" />
+    <uses-permission android:name="android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE" />
+    <uses-permission android:name="android.permission.UPDATE_DOMAIN_VERIFICATION_USER_SELECTION" />
+    <uses-permission android:name="android.permission.MANAGE_KEY_GESTURES" />
+    <uses-permission android:name="android.permission.MANAGE_DISPLAYS" />
+
+    <application>
+        <activity
+            android:name=".desktopmode.DesktopWallpaperActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstancePerTask"
+            android:showForAllUsers="true"
+            android:theme="@style/DesktopWallpaperTheme"
+            android:taskAffinity="com.android.wm.shell.desktop_wallpaper"/>
+
+        <activity
+            android:name=".bubbles.shortcut.CreateBubbleShortcutActivity"
+
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:label="Bubbles"
+            android:icon="@drawable/ic_bubbles_shortcut_widget">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".bubbles.shortcut.ShowBubblesActivity"
+
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.NoDisplay" >
+            <intent-filter>
+                <action android:name="com.android.wm.shell.bubbles.action.SHOW_BUBBLES"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

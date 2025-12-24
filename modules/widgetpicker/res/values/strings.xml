@@ -15,6 +15,8 @@
   -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Accessibility label for the "action" associated with closing the widget picker bottom sheet [CHAR_LIMIT=none] -->
+    <string name="widget_picker_collapse_sheet_label">Close sheet</string>
     <!-- Placeholder text shown when app name is not loaded yet to display in the widget picker [CHAR_LIMIT=25] -->
     <string name="widgets_list_header_app_name_fallback_label">App name</string>
     <!-- Label for showing the number of widgets an app has in the full widgets picker.
@@ -23,6 +25,15 @@
         =1 {# widget}
         other {# widgets}
     }</string>
+    <!-- Label for showing the number of shortcuts an app has in the full widgets picker.
+    [CHAR_LIMIT=25] -->
+    <string name="widgets_list_header_shortcuts_count_label">{count, plural,
+        =1 {# shortcut}
+        other {# shortcuts}
+    }</string>
+    <!-- Label for showing the number of widgets and shortcuts an app has in the full widgets
+     picker. [CHAR_LIMIT=25] -->
+    <string name="widgets_list_header_widgets_and_shortcuts_count_label"><xliff:g example="5 widgets" id="widgets_count">%1$s</xliff:g>, <xliff:g example="1 shortcut" id="shortcuts_count">%2$s</xliff:g></string>
 
     <!-- The format string for the cell dimensions of a widget in the widget picker e.g. 2x2 -->
     <!-- There is a special version of this format string for Farsi (%1$dx%2$d) -->
@@ -50,9 +61,14 @@
     <!-- Tab label. A user can tap this tab to access list of all apps hosting appwidgets.
     [CHAR_LIMIT=25]  -->
     <string name="browse_widgets_tab_label">Browse</string>
+    <!-- Accessibility label for the tabs shown to access different types of widgets.
+    [CHAR_LIMIT=25]  -->
+    <string name="widgets_tab_accessibility_label"><xliff:g id="tab_name" example="Personal">%1$s</xliff:g> widgets</string>
 
     <!-- accessibilityPaneTitle for the right pane when showing widgets selected on left. -->
     <string name="widget_picker_right_pane_accessibility_label"><xliff:g id="selected_header" example="Calendar">%1$s</xliff:g> widgets on right, search and options on left</string>
+    <!-- accessibilityPaneTitle for the left pane that displays list of widget apps and search bar. -->
+    <string name="widget_picker_left_pane_accessibility_label">Search and widget options on left, widgets on right</string>
 
     <!-- Search bar strings -->
     <!-- Placeholder text displayed in the widget's search bar [CHAR_LIMIT=50] -->

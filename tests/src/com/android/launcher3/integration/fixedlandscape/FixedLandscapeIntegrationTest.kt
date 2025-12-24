@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.apps.nexuslauncher.integration.FixedLandscape
+package com.android.launcher3.integration.fixedlandscape
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -25,7 +25,6 @@ import com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.FIXED_LANDSCAPE_MODE
-import com.android.launcher3.LauncherPrefs.Companion.get
 import com.android.launcher3.debug.TestEventEmitter.TestEvent
 import com.android.launcher3.integration.events.EventsRule
 import com.android.launcher3.integration.util.LauncherActivityScenarioRule
@@ -93,15 +92,15 @@ class FixedLandscapeIntegrationTest {
     fun `can switch to fixed landscape and back from non-default grid`() {
         val gridName = "small"
         val fixedLandscapeGridName = "fixed_landscape_mode"
-        idp.setCurrentGrid(targetContext, gridName)
+        idp.setCurrentGrid(gridName)
         switchFixedLandscape(true)
-        var currentGridName = get(targetContext!!).get(LauncherPrefs.GRID_NAME)
+        var currentGridName = LauncherPrefs.get(targetContext).get(LauncherPrefs.GRID_NAME)
         assert(currentGridName.equals(fixedLandscapeGridName)) {
             "When we switch to fixed landscape mode we should go to $fixedLandscapeGridName. " +
                 "Instead, we went to $currentGridName"
         }
         switchFixedLandscape(false)
-        currentGridName = get(targetContext!!).get(LauncherPrefs.GRID_NAME)
+        currentGridName = LauncherPrefs.get(targetContext).get(LauncherPrefs.GRID_NAME)
         assert(currentGridName.equals(gridName)) {
             "The grid that we go back to should be $gridName. Instead, we went to $currentGridName"
         }

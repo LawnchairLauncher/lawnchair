@@ -60,7 +60,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.Map;
 
@@ -92,6 +93,8 @@ public class WidgetRecommendationCategoryProviderTest {
             TEST_PACKAGE).setName(TEST_APP_NAME).build();
 
     @Rule public SandboxApplication mContext = new SandboxApplication();
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private IconCache mIconCache;
 
@@ -102,7 +105,6 @@ public class WidgetRecommendationCategoryProviderTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         mLauncherApps = mContext.spyService(LauncherApps.class);
         mTestAppInfo.flags = FLAG_INSTALLED;
         mTestProfile = InvariantDeviceProfile.INSTANCE.get(mContext);

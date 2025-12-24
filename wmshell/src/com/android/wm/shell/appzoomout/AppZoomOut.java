@@ -27,13 +27,6 @@ import com.android.wm.shell.shared.annotations.ExternalThread;
 public interface AppZoomOut {
 
     /**
-     * Called when the zoom out progress is updated, which is used to scale down the current app
-     * surface from fullscreen to the max pushback level we want to apply. {@param progress} ranges
-     * between [0,1], 0 when fullscreen, 1 when it's at the max pushback level.
-     */
-    void setProgress(float progress);
-
-    /**
      * Sets the squeeze effect progress.
      *
      * <p>The {@code progress} parameter determines the current zoom level and surface crop, ranging

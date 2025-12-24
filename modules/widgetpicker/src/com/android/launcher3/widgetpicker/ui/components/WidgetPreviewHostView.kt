@@ -37,7 +37,10 @@ class WidgetPreviewHostView(context: Context) : AppWidgetHostView(context) {
     init {
         clipToPadding = false
         clipChildren = false
+        // Preview themselves are not focusable.
         importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        focusable = View.NOT_FOCUSABLE
+        descendantFocusability = FOCUS_BLOCK_DESCENDANTS
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
@@ -110,14 +113,14 @@ class WidgetPreviewHostView(context: Context) : AppWidgetHostView(context) {
      * scale of preview.
      */
     fun getDragBoundsForOffset(offset: Offset): Rect {
-        val width: Int = (measuredWidth)
-        val height: Int = (measuredHeight)
+        // Since offset is position related to host view, but visually content is scaled, we apply
+        // the same scale to the host view's measurements and then offset the bounds per the scale.
+        val width: Int = (measuredWidth * contentScale).roundToInt()
+        val height: Int = (measuredHeight * contentScale).roundToInt()
         val bounds = Rect(0, 0, width, height)
 
-        val xOffset: Int =
-            left - (offset.x * contentScale).toInt()
-        val yOffset: Int =
-            top - (offset.y * contentScale).toInt()
+        val xOffset: Int = left - (offset.x * contentScale).toInt()
+        val yOffset: Int = top - (offset.y * contentScale).toInt()
         bounds.offset(xOffset, yOffset)
 
         return bounds

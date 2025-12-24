@@ -29,11 +29,13 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
 import com.android.launcher3.tapl.Workspace;
+import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.util.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,6 +45,10 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
 
     private static final String READ_DEVICE_CONFIG_PERMISSION =
             "android.permission.READ_DEVICE_CONFIG";
+
+    @Rule public ShellCommandRule settingsRule = new ShellCommandRule(
+            "settings put system touchpad_natural_scrolling 1",
+            "settings put system touchpad_natural_scrolling 0");
 
     @Before
     public void setup() {
@@ -59,7 +65,8 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     @PortraitLandscape
     @NavigationModeSwitch
     public void goHome() throws Exception {
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
 
         mLauncher.setTrackpadGestureType(TrackpadGestureType.THREE_FINGER);
         startTestActivity(2);
@@ -73,7 +80,8 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     //  need to figure out a way to emulate that in the test, or bypass the logic altogether.
     @NavigationModeSwitch(mode = ZERO_BUTTON)
     public void pressBack() throws Exception {
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
 
         try {
@@ -92,7 +100,8 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     @PortraitLandscape
     @NavigationModeSwitch
     public void switchToOverview() throws Exception {
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
 
         mLauncher.setTrackpadGestureType(TrackpadGestureType.THREE_FINGER);
         startTestActivity(2);
@@ -103,7 +112,8 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     @PortraitLandscape
     @NavigationModeSwitch
     public void testAllAppsFromHome() throws Exception {
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
 
         mLauncher.setTrackpadGestureType(TrackpadGestureType.TWO_FINGER);
         assertNotNull("switchToAllApps() returned null",
@@ -113,8 +123,25 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     @NavigationModeSwitch
+    public void testQuickSwitchFromApp() throws Exception {
+        assumeTrue("Ignoring test because device is not a tablet",
+                mLauncher.isTablet());
+
+        startTestActivity(2);
+        startTestActivity(3);
+        mLauncher.setTrackpadGestureType(TrackpadGestureType.FOUR_FINGER);
+        mLauncher.getLaunchedAppState().quickSwitchToPreviousApp();
+        assertTestActivityIsRunning(2,
+                "The most recent task is not running after quick switching from app");
+        getAndAssertLaunchedApp();
+    }
+
+    @Test
+    @PortraitLandscape
+    @NavigationModeSwitch
     public void testQuickSwitchFromHome() throws Exception {
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
 
         startTestActivity(2);
         Workspace workspace = mLauncher.goHome();

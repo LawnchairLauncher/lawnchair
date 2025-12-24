@@ -22,20 +22,14 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-/**
- * Utility {@link TestRule} to manage Handlers in Compat UI tests.
- */
+/** Utility {@link TestRule} to manage Handlers in Compat UI tests. */
 class CompatUIHandlerRule : TestRule {
 
     private lateinit var handler: HandlerThread
 
-    /**
-     * Makes the HandlerThread available during the test
-     */
+    /** Makes the HandlerThread available during the test */
     override fun apply(base: Statement?, description: Description?): Statement {
-        handler = HandlerThread("CompatUIHandler").apply {
-            start()
-        }
+        handler = HandlerThread("CompatUIHandler").apply { start() }
         return object : Statement() {
             @Throws(Throwable::class)
             override fun evaluate() {
@@ -50,11 +44,12 @@ class CompatUIHandlerRule : TestRule {
 
     /**
      * Posts a {@link Runnable} for the Handler
+     *
      * @param runnable The Runnable to execute
      */
     fun postBlocking(runnable: Runnable) {
-        val countDown = CountDownLatch(/* count = */ 1)
-        handler.threadHandler.post{
+        val countDown = CountDownLatch(/* count= */ 1)
+        handler.threadHandler.post {
             runnable.run()
             countDown.countDown()
         }

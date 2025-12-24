@@ -20,7 +20,7 @@ import static android.view.WindowManager.DOCKED_INVALID;
 import static android.view.WindowManager.DOCKED_LEFT;
 import static android.view.WindowManager.DOCKED_RIGHT;
 
-import static com.android.wm.shell.common.split.ResizingEffectPolicy.DEFAULT_OFFSCREEN_DIM;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.DEFAULT_OFFSCREEN_DIM;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_50_50;
 
 import static com.google.common.truth.Truth.assertThat;

@@ -18,18 +18,17 @@ package com.android.wm.shell.compatui.impl
 
 import com.android.wm.shell.compatui.api.CompatUISpec
 
-/**
- * Fake implementation for {@link ompatUISpec}
- */
+/** Fake implementation for {@link ompatUISpec} */
 class FakeCompatUISpec(
     val name: String,
     val lifecycle: FakeCompatUILifecyclePredicates = FakeCompatUILifecyclePredicates(),
-    val layout: FakeCompatUILayout
+    val layout: FakeCompatUILayout,
 ) {
-    fun getSpec(): CompatUISpec = CompatUISpec(
-        name = name,
-        log = {str -> android.util.Log.d("COMPAT_UI_TEST", str)},
-        lifecycle = lifecycle.getLifecycle(),
-        layout = layout.getLayout()
-    )
+    fun getSpec(): CompatUISpec =
+        CompatUISpec(
+            name = name,
+            log = { str -> android.util.Log.d("COMPAT_UI_TEST", str) },
+            lifecycle = lifecycle.getLifecycle(),
+            layout = layout.getLayout(),
+        )
 }

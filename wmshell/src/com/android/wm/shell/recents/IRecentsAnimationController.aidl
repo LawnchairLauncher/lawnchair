@@ -31,7 +31,7 @@ import com.android.internal.os.IResultReceiver;
  * runner control certain aspects of the recents animation, and to notify window manager when the
  * animation has completed.
  *
- * {@hide}
+ * @hide
  */
 interface IRecentsAnimationController {
 

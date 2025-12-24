@@ -19,8 +19,12 @@ import android.content.Context
 import android.os.Trace
 import android.util.Pools
 import android.view.Display
+import android.view.Display.DEFAULT_DISPLAY
 import android.view.SurfaceControl
+import android.window.DesktopExperienceFlags
+import com.android.wm.shell.common.DisplayController
 import com.android.wm.shell.shared.annotations.ShellMainThread
+import com.android.wm.shell.shared.desktopmode.DesktopState
 import com.android.wm.shell.sysui.ShellInit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -41,12 +45,16 @@ class PooledWindowDecorViewHostSupplier(
     private val context: Context,
     @ShellMainThread private val mainScope: CoroutineScope,
     shellInit: ShellInit,
-    maxPoolSize: Int,
+    private val desktopState: DesktopState,
+    private val displayController: DisplayController,
+    private val maxPoolSize: Int,
     private val preWarmSize: Int,
 ) : WindowDecorViewHostSupplier<WindowDecorViewHost> {
-
     private val pool: Pools.Pool<WindowDecorViewHost> = Pools.SynchronizedPool(maxPoolSize)
+    private val displayPools: HashMap<Int, Pools.Pool<WindowDecorViewHost>> = HashMap()
     private var nextDecorViewHostId = 0
+    private val enablePerDisplayPool =
+        DesktopExperienceFlags.ENABLE_PER_DISPLAY_WINDOW_DECOR_VIEW_HOST_POOL.isTrue
 
     init {
         require(preWarmSize <= maxPoolSize) { "Pre-warm size should not exceed pool size" }
@@ -54,18 +62,57 @@ class PooledWindowDecorViewHostSupplier(
     }
 
     private fun onShellInit() {
-        if (preWarmSize <= 0) {
+        if (!enablePerDisplayPool) {
+            if (preWarmSize <= 0) {
+                return
+            }
+            preWarmViewHosts(preWarmSize)
             return
         }
-        preWarmViewHosts(preWarmSize)
+
+        displayController.addDisplayWindowListener(
+            object : DisplayController.OnDisplaysChangedListener {
+                override fun onDisplayAdded(displayId: Int) {
+                    if (displayPools.containsKey(displayId)) {
+                        return
+                    }
+                    displayPools[displayId] = Pools.SynchronizedPool(maxPoolSize)
+
+                    if (
+                        preWarmSize > 0 && desktopState.isDesktopModeSupportedOnDisplay(displayId)
+                    ) {
+                        preWarmViewHosts(preWarmSize, displayId)
+                    }
+                }
+
+                override fun onDisplayRemoved(displayId: Int) {
+                    val displayPool = displayPools.remove(displayId)
+                    // Release all the viewHosts in the pool
+                    var pooledViewHost = displayPool?.acquire()
+                    val transaction = SurfaceControl.Transaction()
+                    while (pooledViewHost != null) {
+                        pooledViewHost.release(transaction)
+                        pooledViewHost = displayPool?.acquire()
+                    }
+                    transaction.apply()
+                }
+            }
+        )
     }
 
-    private fun preWarmViewHosts(preWarmSize: Int) {
+    private fun preWarmViewHosts(preWarmSize: Int, displayId: Int = DEFAULT_DISPLAY) {
         mainScope.launch {
             // Applying isn't needed, as the surface was never actually shown.
             val t = SurfaceControl.Transaction()
+            val displayContext =
+                if (enablePerDisplayPool) {
+                    displayController.getDisplayContext(displayId) ?: return@launch
+                } else {
+                    context
+                }
             repeat(preWarmSize) {
-                val warmedViewHost = newInstance(context, context.display).apply { warmUp() }
+                val warmedViewHost =
+                    newInstance(displayContext, displayContext.display).apply { warmUp() }
                 // Put the warmed view host in the pool by releasing it.
                 release(warmedViewHost, t)
             }
@@ -73,7 +120,12 @@ class PooledWindowDecorViewHostSupplier(
     }
 
     override fun acquire(context: Context, display: Display): WindowDecorViewHost {
-        val pooledViewHost = pool.acquire()
+        val pooledViewHost =
+            if (enablePerDisplayPool) {
+                displayPools[display.displayId]?.acquire()
+            } else {
+                pool.acquire()
+            }
         if (pooledViewHost != null) {
             return pooledViewHost
         }
@@ -84,8 +136,16 @@ class PooledWindowDecorViewHostSupplier(
     }
 
     override fun release(viewHost: WindowDecorViewHost, t: SurfaceControl.Transaction) {
-        val pooled = pool.release(viewHost)
-        if (!pooled) {
+        if (DesktopExperienceFlags.ENABLE_CLEAR_REUSABLE_SCVH_ON_RELEASE.isTrue) {
+            viewHost.reset()
+        }
+        val displayPool =
+            if (enablePerDisplayPool) {
+                displayPools[viewHost.displayId]
+            } else {
+                pool
+            }
+        if (displayPool == null || !displayPool.release(viewHost)) {
             viewHost.release(t)
         }
     }

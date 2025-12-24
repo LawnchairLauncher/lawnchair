@@ -81,14 +81,14 @@ public class FallbackTaskbarUIController
     @Override
     protected void init(TaskbarControllers taskbarControllers) {
         super.init(taskbarControllers);
-        mRecentsContainer.setTaskbarUIController(this);
+        mRecentsContainer.setTaskbarInteractor(new TaskbarInteractor(this));
         mRecentsContainer.getStateManager().addStateListener(mStateListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRecentsContainer.setTaskbarUIController(null);
+        mRecentsContainer.setTaskbarInteractor(null);
         mRecentsContainer.getStateManager().removeStateListener(mStateListener);
     }
 
@@ -106,9 +106,12 @@ public class FallbackTaskbarUIController
      */
     private Animator createAnimToRecentsState(RecentsState toState, long duration) {
         // Force stash taskbar (disallow unstashing) when:
+        // - only if we are on primary display.
         // - in a 3P launcher or overview task.
         // - not running in a test harness (unstash is needed for tests)
-        boolean forceStash = isIn3pHomeOrRecents() && !isRunningInTestHarness();
+        boolean forceStash = mControllers.taskbarActivityContext.isPrimaryDisplay()
+                && isIn3pHomeOrRecents()
+                && !isRunningInTestHarness();
         TaskbarStashController stashController = mControllers.taskbarStashController;
         // Set both FLAG_IN_STASHED_LAUNCHER_STATE and FLAG_IN_APP to ensure the state is respected.
         // For all other states, just use the current stashed-in-app setting (e.g. if long clicked).
@@ -145,6 +148,10 @@ public class FallbackTaskbarUIController
                 .get(mControllers.taskbarActivityContext).getCachedTopTask(true,
                         mRecentsContainer.asContext().getDisplayId());
         return topTask.isHomeTask() || topTask.isRecentsTask();
+    }
+
+    protected boolean isInOverviewUi() {
+        return mRecentsContainer.getStateManager().getState().isRecentsViewVisible();
     }
 
     @Override

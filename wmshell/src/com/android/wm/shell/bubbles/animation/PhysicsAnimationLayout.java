@@ -35,6 +35,7 @@ import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.android.wm.shell.Flags;
 import com.android.wm.shell.R;
 
 import java.util.ArrayList;
@@ -339,6 +340,10 @@ public class PhysicsAnimationLayout extends FrameLayout {
     /** Removes the child view immediately. */
     public void removeViewNoAnimation(View view) {
         super.removeView(view);
+        if (Flags.fixBubblesAddSameBubbleBeingRemoved()) {
+            removeTransientView(view);
+            cancelAnimationsOnView(view);
+        }
         view.setTag(R.id.physics_animator_tag, null);
     }
 

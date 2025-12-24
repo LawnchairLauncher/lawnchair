@@ -23,7 +23,7 @@ package {
     default_applicable_licenses: ["frameworks_base_license"],
 }
 
-java_library {
+android_library {
     name: "WMShellScenariosSplitScreen",
     platform_apis: true,
     optimize: {

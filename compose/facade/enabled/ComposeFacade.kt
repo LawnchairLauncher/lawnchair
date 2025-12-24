@@ -25,4 +25,8 @@ object ComposeFacade : BaseComposeFacade {
     override fun isComposeAvailable(): Boolean = true
 
     override fun initComposeView(appContext: Context): View = ComposeView(appContext)
+
+    override fun disposeComposition(view: View) {
+        (view as? ComposeView)?.disposeComposition()
+    }
 }

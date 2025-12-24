@@ -61,6 +61,7 @@ open class StartAppMediaProjectionWithExtraIntent {
 
     @Before
     fun setup() {
+        tapl.expectedRotationCheckEnabled = false
         tapl.setEnableRotation(true)
         testApp.launchViaIntent(wmHelper)
     }

@@ -19,7 +19,6 @@ import android.annotation.ColorInt;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -193,16 +192,17 @@ public class BubbleBarMenuView extends LinearLayout {
      * Menu action details used to create menu items
      */
     static class MenuAction {
-        private Icon mIcon;
+        private DrawableProvider mIcon;
         private @ColorInt int mTint;
         private String mTitle;
         private OnClickListener mOnClick;
 
-        MenuAction(Icon icon, String title, OnClickListener onClick) {
+        MenuAction(DrawableProvider icon, String title, OnClickListener onClick) {
             this(icon, title, Color.TRANSPARENT, onClick);
         }
 
-        MenuAction(Icon icon, String title, @ColorInt int tint, OnClickListener onClick) {
+        MenuAction(DrawableProvider icon, String title, @ColorInt int tint,
+                OnClickListener onClick) {
             this.mIcon = icon;
             this.mTitle = title;
             this.mTint = tint;

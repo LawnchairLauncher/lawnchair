@@ -191,15 +191,18 @@ public class WorkUtilityView extends LinearLayout implements Insettable,
         return super.isEnabled() && getVisibility() == VISIBLE;
     }
 
-    public void animateVisibility(boolean visible) {
+    public void animateVisibility(boolean toVisible) {
         clearAnimation();
-        if (visible) {
+        if (toVisible) {
             addFlag(FLAG_FADE_ONGOING);
+            // Set alpha to 0 so that it always fades in.
+            setAlpha(0);
             setVisibility(VISIBLE);
             extend();
             animate().alpha(1).withEndAction(() -> removeFlag(FLAG_FADE_ONGOING)).start();
         } else if (getVisibility() != GONE) {
             addFlag(FLAG_FADE_ONGOING);
+            setAlpha(1);
             animate().alpha(0).withEndAction(() -> {
                 removeFlag(FLAG_FADE_ONGOING);
                 setVisibility(GONE);
@@ -447,5 +450,14 @@ public class WorkUtilityView extends LinearLayout implements Insettable,
     @VisibleForTesting
     ImageButton getSchedulerButton() {
         return mSchedulerButton;
+    }
+
+    /**
+     * Returns the measured height of this view containing the workFAB and the scheduler button.
+     */
+    int getTotalHeight() {
+        // Measure the parent layout so the child views have a measure height.
+        mWorkUtilityView.measure(0,0);
+        return mWorkFAB.getMeasuredHeight() + mSchedulerButton.getMeasuredHeight();
     }
 }

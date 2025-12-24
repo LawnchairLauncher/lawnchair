@@ -16,18 +16,16 @@
 
 package com.android.launcher3.taskbar.allapps
 
-import android.content.Context
 import android.view.View
-import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsTransitionListener
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition
 import com.android.launcher3.model.data.ItemInfo
-import com.android.launcher3.util.ResourceBasedOverride
-import com.android.launcher3.util.ResourceBasedOverride.Overrides
+import com.android.launcher3.views.ActivityContext
+import javax.inject.Inject
 
 /** Stub for managing the Taskbar search session. */
-open class TaskbarSearchSessionController : ResourceBasedOverride, AllAppsTransitionListener {
+open class TaskbarSearchSessionController @Inject constructor() : AllAppsTransitionListener {
 
     /** Start the search session lifecycle. */
     open fun startLifecycle() = Unit
@@ -60,11 +58,7 @@ open class TaskbarSearchSessionController : ResourceBasedOverride, AllAppsTransi
 
     companion object {
         @JvmStatic
-        fun newInstance(context: Context): TaskbarSearchSessionController =
-            Overrides.getObject(
-                TaskbarSearchSessionController::class.java,
-                context,
-                R.string.taskbar_search_session_controller_class,
-            )
+        fun newInstance(activityContext: ActivityContext): TaskbarSearchSessionController =
+            activityContext.activityComponent.createTaskbarSearchSessionController()
     }
 }

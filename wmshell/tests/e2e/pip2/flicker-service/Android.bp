@@ -32,6 +32,7 @@ android_test {
     static_libs: [
         "WMShellFlickerTestsBase",
         "WMShellTestUtils",
+        "platform-test-annotations",
     ],
     data: ["trace_config/*"],
 }

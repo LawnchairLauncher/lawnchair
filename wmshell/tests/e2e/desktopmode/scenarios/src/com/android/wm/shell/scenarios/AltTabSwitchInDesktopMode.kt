@@ -17,9 +17,6 @@
 package com.android.wm.shell.scenarios
 
 import android.app.Instrumentation
-import android.tools.flicker.rules.ChangeDisplayOrientationRule
-import android.tools.NavBar
-import android.tools.PlatformConsts.DEFAULT_DISPLAY
 import android.tools.Rotation
 import android.tools.traces.parsers.WindowManagerStateHelper
 import androidx.test.platform.app.InstrumentationRegistry
@@ -29,45 +26,34 @@ import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.MailAppHelper
 import com.android.server.wm.flicker.helpers.NewTasksAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.window.flags.Flags
-import com.android.wm.shell.Utils
-import com.android.wm.shell.shared.desktopmode.DesktopState
 import org.junit.After
-import org.junit.Assume
 import org.junit.Before
 import org.junit.Ignore
-import org.junit.Rule
 import org.junit.Test
 
 @Ignore("Test Base Class")
 abstract class AltTabSwitchInDesktopMode(
     val rotation: Rotation = Rotation.ROTATION_0
-) : TestScenarioBase() {
+) : TestScenarioBase(rotation) {
 
     private val instrumentation: Instrumentation = InstrumentationRegistry.getInstrumentation()
     private val tapl = LauncherInstrumentation()
     private val wmHelper = WindowManagerStateHelper(instrumentation)
     private val device = UiDevice.getInstance(instrumentation)
-    private val firstApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
-    private val secondApp = MailAppHelper(instrumentation)
-    private val thirdApp = NewTasksAppHelper(instrumentation)
+    val firstApp = DesktopModeAppHelper(SimpleAppHelper(instrumentation))
+    val secondApp = DesktopModeAppHelper(MailAppHelper(instrumentation))
+    val thirdApp = DesktopModeAppHelper(NewTasksAppHelper(instrumentation))
 
-    @Rule
-    @JvmField val testSetupRule = Utils.testSetupRule(NavBar.MODE_GESTURAL, rotation)
+    val appsInDesktop: ArrayList<DesktopModeAppHelper> = ArrayList()
 
     @Before
     fun setup() {
-        Assume.assumeTrue(
-            DesktopState.fromContext(instrumentation.context)
-                .isDesktopModeSupportedOnDisplay(DEFAULT_DISPLAY)
-        )
-        tapl.setEnableRotation(true)
-        tapl.setExpectedRotation(rotation.value)
-        tapl.enableTransientTaskbar(false)
-        ChangeDisplayOrientationRule.setRotation(rotation)
         firstApp.enterDesktopMode(wmHelper, device)
+        appsInDesktop.add(firstApp)
         secondApp.launchViaIntent(wmHelper)
+        appsInDesktop.add(secondApp)
         thirdApp.launchViaIntent(wmHelper)
+        appsInDesktop.add(thirdApp)
     }
 
     @Test

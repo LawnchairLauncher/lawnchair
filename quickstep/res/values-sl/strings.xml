@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Predlagane aplikacije so bile dodane v prazni prostor"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Predlogi aplikacij so omogočeni."</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Predlogi aplikacij so onemogočeni."</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predvidena aplikacija: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"Vadnica za krmarjenje s potezami"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Zasukajte napravo"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Zasukajte napravo, če si želite ogledati vadnico za krmarjenje s potezami"</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Nastavitve krmarjenja po sistemu"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"Naprava <xliff:g id="DEVICE">%1$s</xliff:g> je \npripravljena"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Naprava je \npripravljena"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"Pripravljeni ste!"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"Uživajte v novi napravi <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"Povlecite navzgor, če želite začeti uporabljati napravo: <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"Dotaknite se, če želite začeti uporabljati napravo: <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Izbira načina pomikanja"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"Povlecite navzgor"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"Dotaknite se gumba za začetni zaslon"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Obvestila"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Hitre nastavitve"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Opravilna vrstica"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Opravilna vrstica je prikazana"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Prikazani so opravilna vrstica in oblački na levi"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Prikazani so opravilna vrstica in oblački na desni"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Vrstica za krmarjenje"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Stalen prikaz oprav. vrstice"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Spreminjanje načina navigacije"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Razdelilnik opravilne vrstice"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Druge nedavne aplikacije"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"Aplikacija je dodana v opravilno vrstico"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"Aplikacija je odstranjena iz opravilne vrstice"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premakni na vrh/levo"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Premakni na dno/desno"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Odpri aplikacijo kot oblaček"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"Ikona aplikacije"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"Ime aplikacije"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"Gumb za zapiranje"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"Pripni v opravilno vrstico"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Odpni iz opravilne vrstice"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"Dreganje"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"Zapri"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"Dregni sliko"</string>

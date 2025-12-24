@@ -32,8 +32,10 @@
     <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"വീക്ഷണ അനുപാതം മാറ്റുക"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s എന്നതിന്റെ ആപ്പ് വിവരങ്ങൾ"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s എന്നതിനുള്ള ഉപയോഗ ക്രമീകരണം"</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"%1$s അടയ്ക്കുക"</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"പുതിയ വിന്‍ഡോ"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"വിൻഡോകൾ മാനേജ് ചെയ്യുക"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"അടയ്ക്കുക"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ആപ്പ് ജോടി സംരക്ഷിക്കുക"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ഈ ഉപകരണത്തിൽ ഈ ആപ്പ് ജോടിക്ക് പിന്തുണയില്ല"</string>
@@ -89,7 +91,7 @@
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"കുറുക്കുവഴി നീക്കാൻ ഡബിൾ ടാപ്പ് ചെയ്യൂ, ഹോൾഡ് ചെയ്യൂ അല്ലെങ്കിൽ ഇഷ്‌ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കൂ."</string>
     <string name="out_of_space" msgid="6455557115204099579">"ഈ ഹോം സ്ക്രീനിൽ ഇടമില്ല"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"പ്രിയപ്പെട്ടവയുടെ ട്രേയിൽ ഒഴിവൊന്നുമില്ല"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"അപ്ലിക്കേഷനുകളുടെ ലിസ്‌റ്റ്"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"ആപ്പുകളുടെ ലിസ്‌റ്റ്"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"തിരയൽ ഫലങ്ങൾ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"വ്യക്തിഗത ആപ്പുകളുടെ ലിസ്റ്റ്"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"ഔദ്യോഗിക ആപ്പുകളുടെ ലിസ്റ്റ്"</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ആപ്പ് നിർദ്ദേശിക്കേണ്ട"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"പ്രവചനം പിൻ ചെയ്യുക"</string>
     <string name="bubble" msgid="3072951361014076670">"ബബിൾ"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"ക്രമീകരണം"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"ടാസ്ക്ബാറിൽ ചേർക്കൂ"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"അൺപിൻ ചെയ്യുക"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"കുറുക്കുവഴികൾ ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ഉപയോക്തൃ ഇടപെടൽ ഇല്ലാതെ കുറുക്കുവഴികൾ ചേർക്കാൻ അപ്ലിക്കേഷനെ അനുവദിക്കുന്നു."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"ഹോം ക്രമീകരണവും കുറുക്കുവഴികളും വായിക്കുക"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"വലത്തേക്ക് പേജിനേറ്റ് ചെയ്യുക"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> പ്രവർത്തനരഹിതമാക്കി"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} ആപ്പിന് # അറിയിപ്പുണ്ട്}other{{app_name} ആപ്പിന് # അറിയിപ്പുകളുണ്ട്}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"പ്രവചിച്ച ആപ്പ്: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"പേജ് %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ഹോം സ്‌ക്രീൻ %1$d / %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"പുതിയ ഹോം സ്ക്രീൻ പേജ്"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"ഫോൾഡർ അടച്ചു"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ഫോൾഡറിന്റെ പേര് <xliff:g id="NAME">%1$s</xliff:g> എന്നായി മാറ്റി"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ഇനങ്ങൾ"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ഇനങ്ങൾക്ക് അറിയിപ്പുകൾ ഉണ്ട്"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> അല്ലെങ്കിൽ അതിലധികം ഇനങ്ങൾ"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> അല്ലെങ്കിൽ അതിലധികം ഇനങ്ങൾക്ക് അറിയിപ്പുകൾ ഉണ്ട്"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"പേരിടാത്ത ഫോൾഡർ"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"ആപ്പ് ജോടി: <xliff:g id="APP1">%1$s</xliff:g>, <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"വാൾപേപ്പറും സ്‌റ്റൈലും"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"ഔദ്യോഗിക ആപ്പുകളുടെ ടാബ്"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ഔദ്യോഗിക പ്രൊഫൈൽ"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ഔദ്യോഗിക ആപ്പുകൾക്ക് ബാഡ്‌ജ് നൽകിയിരിക്കുന്നു, അവ നിങ്ങളുടെ ഐടി അഡ്‌മിന് കാണാനുമാകും"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"മനസ്സിലായി"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"ഔദ്യോഗിക ആപ്പുകൾ തൽക്കാലം നിർത്തിയിരിക്കുന്നു"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"ഔദ്യോഗിക ആപ്പുകളിൽ നിന്ന് നിങ്ങൾക്ക് അറിയിപ്പുകളൊന്നും ലഭിക്കില്ല"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"നിങ്ങൾക്ക് അറിയിപ്പുകൾ അയയ്ക്കാനോ ബാറ്ററി ഉപയോഗിക്കാനോ ലൊക്കേഷൻ ആക്‌സസ് ചെയ്യാനോ നിങ്ങളുടെ ഔദ്യോഗിക ആപ്പുകൾക്ക് കഴിയില്ല"</string>

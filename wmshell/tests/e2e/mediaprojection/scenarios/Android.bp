@@ -23,7 +23,7 @@ package {
     default_applicable_licenses: ["frameworks_base_license"],
 }
 
-java_library {
+android_library {
     name: "WMShellScenariosMediaProjection",
     platform_apis: true,
     optimize: {

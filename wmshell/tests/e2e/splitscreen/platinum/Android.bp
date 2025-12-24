@@ -30,7 +30,7 @@ filegroup {
     ],
 }
 
-java_library {
+android_library {
     name: "wm-shell-flicker-platinum-tests",
     platform_apis: true,
     optimize: {

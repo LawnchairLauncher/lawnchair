@@ -60,6 +60,10 @@ Specifically, to support calling into a controller from an external process (lik
 - Inject `ShellController` and add the instance of the implementation as external interface
 - In Launcher, update `TouchInteractionService` to pass the interface to `SystemUIProxy`, and then
   call the SystemUIProxy method as needed in that code
+- If Launcher needs to register a listener for callbacks, the recommendation is to have a single
+  registered listener, and to internally track and dispatch callbacks through that listener in
+  `SystemUIProxy`. This reduces binder overhead (1 call vs many), and simplifies the re-registration
+  path if SysUI ever restarts (register the tracker vs individual listeners)
 
 ### Component initialization
 To initialize the component:

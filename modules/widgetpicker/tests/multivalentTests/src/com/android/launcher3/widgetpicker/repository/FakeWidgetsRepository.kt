@@ -19,11 +19,14 @@ package com.android.launcher3.widgetpicker.repository
 import com.android.launcher3.widgetpicker.data.repository.WidgetsRepository
 import com.android.launcher3.widgetpicker.shared.model.PickableWidget
 import com.android.launcher3.widgetpicker.shared.model.WidgetApp
+import com.android.launcher3.widgetpicker.shared.model.WidgetAppId
 import com.android.launcher3.widgetpicker.shared.model.WidgetId
 import com.android.launcher3.widgetpicker.shared.model.WidgetPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
 /** A fake implementation of [WidgetsRepository] for testing */
@@ -44,9 +47,12 @@ class FakeWidgetsRepository : WidgetsRepository {
         _featuredWidgetIds.update { widgetIds }
     }
 
-    override fun initialize() {}
+    override fun initialize(options: WidgetsRepository.InitializationOptions) {}
 
     override fun observeWidgets(): Flow<List<WidgetApp>> = _widgetApps
+
+    override fun observeWidgetApp(widgetAppId: WidgetAppId): Flow<WidgetApp?> =
+        _widgetApps.map { apps -> apps.firstOrNull { it.id == widgetAppId } }.distinctUntilChanged()
 
     override suspend fun getWidgetPreview(id: WidgetId): WidgetPreview =
         _widgetPreviews.value[id] ?: WidgetPreview.PlaceholderWidgetPreview
@@ -56,12 +62,18 @@ class FakeWidgetsRepository : WidgetsRepository {
             widgetApps.flatMap { it.widgets }.filter { widgetIds.contains(it.id) }
         }
 
-    override suspend fun searchWidgets(input: String): List<WidgetApp> = _widgetApps.value.map {
-        it.copy(widgets = it.widgets.filter { widget ->
-            val description = widget.description?.toString() ?: ""
-            widget.label.contains(input) || description.contains(input)
-        })
-    }.filter { it.widgets.isNotEmpty() }
+    override suspend fun searchWidgets(query: String): List<WidgetApp> =
+        _widgetApps.value
+            .map {
+                it.copy(
+                    widgets =
+                        it.widgets.filter { widget ->
+                            val description = widget.description?.toString() ?: ""
+                            widget.label.contains(query) || description.contains(query)
+                        }
+                )
+            }
+            .filter { it.widgets.isNotEmpty() }
 
     override fun cleanUp() {
         _widgetApps.update { emptyList() }

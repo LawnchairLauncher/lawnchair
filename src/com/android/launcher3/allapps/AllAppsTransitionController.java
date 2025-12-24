@@ -37,6 +37,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -78,6 +79,7 @@ import com.google.android.msdl.data.model.MSDLToken;
  */
 public class AllAppsTransitionController
         implements StateHandler<LauncherState>, OnDeviceProfileChangeListener {
+    private static final String TAG = "AllAppsTransitionController";
     // This constant should match the second derivative of the animator interpolator.
     public static final float INTERP_COEFF = 1.7f;
     public static final int REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS = 200;
@@ -422,7 +424,7 @@ public class AllAppsTransitionController
      * Updates the property for the provided state
      */
     public void setAlphas(LauncherState state, StateAnimationConfig config, PropertySetter setter) {
-        int visibleElements = state.getVisibleElements(mLauncher);
+        int visibleElements = state.getVisibleElements(mLauncher.getLauncherUiState());
         boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
         Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
@@ -433,6 +435,10 @@ public class AllAppsTransitionController
 
         boolean shouldProtectHeader = !config.hasAnimationFlag(StateAnimationConfig.SKIP_SCRIM)
                 && (ALL_APPS == state || mLauncher.getStateManager().getState() == ALL_APPS);
+        Log.d(TAG, "shouldProtectHeader: " + shouldProtectHeader
+                + " skipScrim: " + config.hasAnimationFlag(StateAnimationConfig.SKIP_SCRIM)
+                + " state: " + state
+                + " stateManager.getState(): " + mLauncher.getStateManager().getState());
         mScrimView.setDrawingController(shouldProtectHeader ? mAppsView : null);
     }
 

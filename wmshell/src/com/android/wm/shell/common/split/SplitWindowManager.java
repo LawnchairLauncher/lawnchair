@@ -91,6 +91,19 @@ public final class SplitWindowManager extends WindowlessWindowManager {
         return super.getSurfaceControl(window);
     }
 
+    /**
+     * Update the display Context if the previous one's display and the new one are different.
+     *
+     * Since changing the display almost certainly means the {@link DividerView} is out of date,
+     * also call on release to teardown the {@link DividerView}.
+     */
+    public void updateDisplayContext(Context displayContext) {
+        if (displayContext.getDisplayId() != mContext.getDisplayId()) {
+            mContext = displayContext;
+            release(null /* Transaction */);
+        }
+    }
+
     @Override
     public void setConfiguration(Configuration configuration) {
         super.setConfiguration(configuration);

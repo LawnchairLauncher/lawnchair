@@ -18,7 +18,7 @@ package com.android.wm.shell.util
 
 import android.util.Log
 import com.android.internal.protolog.common.IProtoLogGroup
-import com.android.internal.protolog.common.ProtoLog
+//import com.android.internal.protolog.common.ProtoLog
 
 /**
  * Log messages using an API similar to [com.android.internal.protolog.common.ProtoLog]. Useful for

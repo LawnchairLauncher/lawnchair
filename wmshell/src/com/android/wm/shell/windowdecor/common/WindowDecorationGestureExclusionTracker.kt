@@ -29,8 +29,8 @@ import com.android.wm.shell.shared.annotations.ShellMainThread
 import com.android.wm.shell.sysui.ShellInit
 
 /**
- * A tracking class that helps listening for display add/removed callbacks, and subsequently
- * starts tracking system gesture exclusion region reported for each display. Used by
+ * A tracking class that helps listening for display add/removed callbacks, and subsequently starts
+ * tracking system gesture exclusion region reported for each display. Used by
  * WindowDecorationViewModel so it can update individual WindowDecorations regarding regions.
  */
 class WindowDecorationGestureExclusionTracker(
@@ -40,41 +40,42 @@ class WindowDecorationGestureExclusionTracker(
     @ShellMainThread private val mainExecutor: ShellExecutor,
     shellInit: ShellInit,
     exclusionRegionChangedCallback: (Int, Region) -> Unit,
-
 ) : DisplayController.OnDisplaysChangedListener {
     private val exclusionRegion = Region()
-    private val exclusionRegions = object : HashMap<Int, Region>() {
-        override operator fun get(displayId: Int): Region {
-            return if (DesktopExperienceFlags.ENABLE_BUG_FIXES_FOR_SECONDARY_DISPLAY.isTrue()) {
-                super.get(displayId) ?: Region()
-            } else {
-                exclusionRegion
+    private val exclusionRegions =
+        object : HashMap<Int, Region>() {
+            override operator fun get(displayId: Int): Region {
+                return if (DesktopExperienceFlags.ENABLE_BUG_FIXES_FOR_SECONDARY_DISPLAY.isTrue()) {
+                    super.get(displayId) ?: Region()
+                } else {
+                    exclusionRegion
+                }
             }
         }
-    }
 
-    private val exclusionListener = object : ISystemGestureExclusionListener.Stub() {
-        override fun onSystemGestureExclusionChanged(
-            displayId: Int,
-            systemGestureExclusion: Region,
-            systemGestureExclusionUnrestricted: Region?
-        ) {
-            if (DesktopExperienceFlags.ENABLE_BUG_FIXES_FOR_SECONDARY_DISPLAY.isTrue()) {
-                mainExecutor.execute {
-                    exclusionRegions[displayId].set(systemGestureExclusion)
-                    exclusionRegionChangedCallback(displayId, exclusionRegions[displayId])
-                }
-            } else {
-                if (context.getDisplayId() != displayId) {
-                    return
-                }
-                mainExecutor.execute {
-                    exclusionRegion.set(systemGestureExclusion)
-                    exclusionRegionChangedCallback(displayId, exclusionRegion)
+    private val exclusionListener =
+        object : ISystemGestureExclusionListener.Stub() {
+            override fun onSystemGestureExclusionChanged(
+                displayId: Int,
+                systemGestureExclusion: Region,
+                systemGestureExclusionUnrestricted: Region?,
+            ) {
+                if (DesktopExperienceFlags.ENABLE_BUG_FIXES_FOR_SECONDARY_DISPLAY.isTrue()) {
+                    mainExecutor.execute {
+                        exclusionRegions[displayId].set(systemGestureExclusion)
+                        exclusionRegionChangedCallback(displayId, exclusionRegions[displayId])
+                    }
+                } else {
+                    if (context.getDisplayId() != displayId) {
+                        return
+                    }
+                    mainExecutor.execute {
+                        exclusionRegion.set(systemGestureExclusion)
+                        exclusionRegionChangedCallback(displayId, exclusionRegion)
+                    }
                 }
             }
         }
-    }
 
     init {
         shellInit.addInitCallback(::onShellInit, this)
@@ -90,26 +91,23 @@ class WindowDecorationGestureExclusionTracker(
                     context.displayId,
                 )
             } catch (ex: RemoteException) {
-                Slog.e(TAG, "Failed to register window manager callbacks for display: "
-                        + context.displayId, ex)
+                Slog.e(
+                    TAG,
+                    "Failed to register window manager callbacks for display: " + context.displayId,
+                    ex,
+                )
             }
         }
     }
 
-
-    /**
-     * Returns the current exclusion region for the given display id.
-     */
+    /** Returns the current exclusion region for the given display id. */
     fun getExclusionRegion(displayId: Int): Region {
         return exclusionRegions[displayId]
     }
 
     override fun onDisplayAdded(displayId: Int) {
         try {
-            windowManager.registerSystemGestureExclusionListener(
-                exclusionListener,
-                displayId
-            )
+            windowManager.registerSystemGestureExclusionListener(exclusionListener, displayId)
             exclusionRegions[displayId] = Region()
         } catch (ex: RemoteException) {
             Slog.e(TAG, "Failed to register window manager callbacks for display: $displayId", ex)
@@ -118,21 +116,21 @@ class WindowDecorationGestureExclusionTracker(
 
     override fun onDisplayRemoved(displayId: Int) {
         try {
-            windowManager.unregisterSystemGestureExclusionListener(
-                exclusionListener,
-                displayId
-            )
+            windowManager.unregisterSystemGestureExclusionListener(exclusionListener, displayId)
         } catch (ex: Exception) {
             when (ex) {
-                is IllegalArgumentException, is RemoteException -> {
+                is IllegalArgumentException,
+                is RemoteException -> {
                     // Catching both IllegalArgumentException and RemoteException with Exception
-                    Slog.e(TAG,
-                        "Failed to unregister window manager callbacks for display: $displayId", ex)
+                    Slog.e(
+                        TAG,
+                        "Failed to unregister window manager callbacks for display: $displayId",
+                    )
                 }
                 else -> throw ex
             }
-            exclusionRegions.remove(displayId)
         }
+        exclusionRegions.remove(displayId)
     }
 
     override fun toString(): String {

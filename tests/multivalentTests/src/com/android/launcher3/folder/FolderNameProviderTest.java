@@ -15,13 +15,10 @@
  */
 package com.android.launcher3.folder;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
 import android.os.UserHandle;
@@ -31,10 +28,11 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.TestActivityContext;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,13 +41,14 @@ import java.util.ArrayList;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public final class FolderNameProviderTest {
-    private Context mContext;
+    @Rule
+    public TestActivityContext mContext = new TestActivityContext();
+
     private WorkspaceItemInfo mItem1;
     private WorkspaceItemInfo mItem2;
 
     @Before
     public void setUp() {
-        mContext = new ActivityContextWrapper(getApplicationContext());
         int workUserId = Process.myUserHandle().hashCode() + 1;
         mItem1 = new WorkspaceItemInfo(new AppInfo(
                 new ComponentName("a.b.c", "a.b.c/a.b.c.d"),

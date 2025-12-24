@@ -16,6 +16,8 @@
 
 package com.android.wm.shell.common;
 
+import static android.view.Display.INVALID_DISPLAY;
+
 import static com.android.server.display.feature.flags.Flags.FLAG_ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT;
 
 import static org.junit.Assert.assertEquals;
@@ -87,6 +89,8 @@ public class DisplayControllerTests extends ShellTestCase {
     private FakeDesktopState mDesktopState;
     private static final int DISPLAY_ID_0 = 0;
     private static final int DISPLAY_ID_1 = 1;
+    private static final String UNIQUE_DISPLAY_ID_0 = "uniqueId0";
+    private static final String UNIQUE_DISPLAY_ID_1 = "uniqueId1";
     private static final RectF DISPLAY_ABS_BOUNDS_0 = new RectF(10, 10, 20, 20);
     private static final RectF DISPLAY_ABS_BOUNDS_1 = new RectF(11, 11, 22, 22);
     private AutoCloseable mMocksInit = null;
@@ -115,6 +119,9 @@ public class DisplayControllerTests extends ShellTestCase {
                 new DisplayAdjustments(new Configuration()));
         when(mMockDisplay1.getDisplayId()).thenReturn(DISPLAY_ID_1);
         when(mDisplayManager.getDisplay(eq(DISPLAY_ID_1))).thenReturn(mMockDisplay1);
+
+        when(mDisplayManager.getDisplays()).thenReturn(
+                new Display[]{mMockDisplay0, mMockDisplay1});
 
         when(mDisplayManager.getDisplayTopology()).thenReturn(mMockTopology);
         doAnswer(invocation -> {
@@ -267,5 +274,21 @@ public class DisplayControllerTests extends ShellTestCase {
         mDisplayContainerListener.onDesktopModeEligibleChanged(DISPLAY_ID_1);
 
         assertNotSame(initialLayout, mController.getDisplayLayout(DISPLAY_ID_1));
+    }
+
+    @Test
+    public void testGetDisplayByUniqueId_validUniqueId_returnsDisplay() {
+        int displayId0 = mController.getDisplayIdByUniqueIdBlocking(UNIQUE_DISPLAY_ID_0);
+        int displayId1 = mController.getDisplayIdByUniqueIdBlocking(UNIQUE_DISPLAY_ID_1);
+
+        assert (displayId0 == DISPLAY_ID_0);
+        assert (displayId1 == DISPLAY_ID_1);
+    }
+
+    @Test
+    public void testGetDisplayByUniqueId_invalidUniqueId_returnsInvalidDisplay() {
+        int displayId = mController.getDisplayIdByUniqueIdBlocking("invalidUniqueId");
+
+        assert (displayId == INVALID_DISPLAY);
     }
 }

@@ -5,7 +5,7 @@ DeviceProfile:
 	transposeLayoutWithOrientation:false
 	isGestureMode:false
 	isLandscape:false
-	isMultiWindowMode:false
+	isExternalDisplay:false
 	isTwoPanels:false
 	isLeftRightSplit:false
 	windowX: 0.0px (0.0dp)

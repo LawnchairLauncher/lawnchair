@@ -24,13 +24,15 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import android.os.LocaleList
+import android.os.Looper
 import android.os.UserHandle
 import android.testing.AndroidTestingRunner
 import android.testing.TestableContext
 import androidx.test.filters.SmallTest
 import com.android.launcher3.icons.BaseIconFactory
-import com.android.launcher3.icons.BaseIconFactory.MODE_DEFAULT
+import com.android.launcher3.icons.BaseIconFactory.Companion.MODE_DEFAULT
 import com.android.launcher3.icons.IconProvider
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.TestRunningTaskInfoBuilder
@@ -39,13 +41,24 @@ import com.android.wm.shell.common.UserProfileContexts
 import com.android.wm.shell.sysui.ShellController
 import com.android.wm.shell.sysui.ShellInit
 import com.android.wm.shell.sysui.UserChangeListener
-import com.android.wm.shell.windowdecor.common.WindowDecorTaskResourceLoader.AppResources
+import com.android.wm.shell.windowdecor.common.WindowDecorTaskResourceLoaderImpl.AppResources
 import com.google.common.truth.Truth.assertThat
 import java.util.Locale
-import org.junit.Assert.assertThrows
+import kotlin.test.assertFailsWith
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.kotlin.any
@@ -60,10 +73,11 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
 /**
- * Tests for [WindowDecorTaskResourceLoader].
+ * Tests for [WindowDecorTaskResourceLoaderImpl].
  *
  * Build/Install/Run: atest WindowDecorTaskResourceLoaderTest
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @SmallTest
 @RunWith(AndroidTestingRunner::class)
 class WindowDecorTaskResourceLoaderTest : ShellTestCase() {
@@ -75,9 +89,13 @@ class WindowDecorTaskResourceLoaderTest : ShellTestCase() {
     private val mockHeaderIconFactory = mock<BaseIconFactory>()
     private val mockVeilIconFactory = mock<BaseIconFactory>()
     private val mMockUserProfileContexts = mock<UserProfileContexts>()
+    private val mockHandler = mock<Handler>()
+    private val mockLooper = mock<Looper>()
+    private val testDispatcher = StandardTestDispatcher()
+    private val testScope = TestScope(testDispatcher)
 
     private lateinit var spyContext: TestableContext
-    private lateinit var loader: WindowDecorTaskResourceLoader
+    private lateinit var loader: WindowDecorTaskResourceLoaderImpl
 
     private val userChangeListenerCaptor = argumentCaptor<UserChangeListener>()
     private val userChangeListener: UserChangeListener by lazy {
@@ -86,16 +104,23 @@ class WindowDecorTaskResourceLoaderTest : ShellTestCase() {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+        whenever(mockHandler.looper).thenReturn(mockLooper)
+        whenever(mockLooper.isCurrentThread).thenReturn(true)
+
         spyContext = spy(mContext)
         spyContext.setMockPackageManager(mockPackageManager)
         doReturn(spyContext).whenever(spyContext).createContextAsUser(any(), anyInt())
-        doReturn(spyContext).whenever(spyContext).createPackageContext(any(), anyInt())
         doReturn(spyContext).whenever(mMockUserProfileContexts)[anyInt()]
         doReturn(spyContext).whenever(mMockUserProfileContexts).getOrCreate(anyInt())
         loader =
-            WindowDecorTaskResourceLoader(
+            WindowDecorTaskResourceLoaderImpl(
                 shellInit = shellInit,
                 shellController = mockShellController,
+                mainHandler = mockHandler,
+                mainScope = testScope,
+                mainDispatcher = testDispatcher,
+                bgDispatcher = testDispatcher,
                 shellCommandHandler = mock(),
                 userProfilesContexts = mMockUserProfileContexts,
                 iconProvider = mockIconProvider,
@@ -107,72 +132,57 @@ class WindowDecorTaskResourceLoaderTest : ShellTestCase() {
         verify(mockShellController).addUserChangeListener(userChangeListenerCaptor.capture())
     }
 
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        testScope.cancel()
+    }
+
     @Test
-    fun testGetName_notCached_loadsResourceAndCaches() {
+    fun testGetNameAndHeaderIcon_notCached_loadsResourceAndCaches() = runTest {
         val task = createTaskInfo(context.userId)
         loader.onWindowDecorCreated(task)
 
-        loader.getName(task)
+        loader.getNameAndHeaderIcon(task)
+        advanceUntilIdle()
 
         verify(mockPackageManager).getApplicationLabel(task.topActivityInfo!!.applicationInfo)
+        verify(mockHeaderIconFactory).createIconBitmap(any(), anyFloat(), anyInt(), anyBoolean())
         assertThat(loader.taskToResourceCache[task.taskId]?.appName).isNotNull()
-    }
-
-    @Test
-    fun testGetName_cached_returnsFromCache() {
-        val task = createTaskInfo(context.userId)
-        task.configuration.setLocales(LocaleList(Locale.US))
-        loader.onWindowDecorCreated(task)
-        loader.taskToResourceCache[task.taskId] = AppResources("App Name", mock(), mock())
-        loader.localeListOnCache[task.taskId] = LocaleList(Locale.US)
-
-        loader.getName(task)
-
-        verifyNoMoreInteractions(
-            mockPackageManager,
-            mockIconProvider,
-            mockHeaderIconFactory,
-            mockVeilIconFactory,
-        )
-    }
-
-    @Test
-    fun testGetName_cached_localesChanged_loadsResourceAndCaches() {
-        val task = createTaskInfo(context.userId)
-        loader.onWindowDecorCreated(task)
-        loader.taskToResourceCache[task.taskId] = AppResources("App Name", mock(), mock())
-        loader.localeListOnCache[task.taskId] = LocaleList(Locale.US, Locale.FRANCE)
-        task.configuration.setLocales(LocaleList(Locale.FRANCE, Locale.US))
-        doReturn("App Name but in French").whenever(mockPackageManager).getApplicationLabel(any())
-
-        assertThat(loader.getName(task)).isEqualTo("App Name but in French")
-        assertThat(loader.taskToResourceCache[task.taskId]?.appName).isEqualTo("App Name but in French")
-    }
-
-    @Test
-    fun testGetHeaderIcon_notCached_loadsResourceAndCaches() {
-        val task = createTaskInfo(context.userId)
-        loader.onWindowDecorCreated(task)
-
-        loader.getHeaderIcon(task)
-
-        verify(mockHeaderIconFactory).createIconBitmap(any(), anyFloat())
         assertThat(loader.taskToResourceCache[task.taskId]?.appIcon).isNotNull()
     }
 
     @Test
-    fun testGetHeaderIcon_cached_returnsFromCache() {
+    fun testGetNameAndHeaderIcon_cached_returnsFromCache() = runTest {
         val task = createTaskInfo(context.userId)
+        task.configuration.setLocales(LocaleList(Locale.US))
         loader.onWindowDecorCreated(task)
-        loader.taskToResourceCache[task.taskId] = AppResources("App Name", mock(), mock())
+        loader.taskToResourceCache[task.taskId] = AppResources("App Name", mock(), mock(), mock())
+        loader.localeListOnCache[task.taskId] = LocaleList(Locale.US)
 
-        loader.getHeaderIcon(task)
+        loader.getNameAndHeaderIcon(task)
 
         verifyNoMoreInteractions(mockPackageManager, mockIconProvider, mockHeaderIconFactory)
     }
 
     @Test
-    fun testGetVeilIcon_notCached_loadsResourceAndCaches() {
+    fun testGetNameAndHeaderIcon_cached_localesChanged_loadsResourceAndCaches() = runTest {
+        val task = createTaskInfo(context.userId)
+        loader.onWindowDecorCreated(task)
+        loader.taskToResourceCache[task.taskId] = AppResources("App Name", mock(), mock(), mock())
+        loader.localeListOnCache[task.taskId] = LocaleList(Locale.US, Locale.FRANCE)
+        task.configuration.setLocales(LocaleList(Locale.FRANCE, Locale.US))
+        doReturn("Le App Name").whenever(mockPackageManager).getApplicationLabel(any())
+
+        val result = loader.getNameAndHeaderIcon(task)
+        advanceUntilIdle()
+
+        assertThat(result.first).isEqualTo("Le App Name")
+        assertThat(loader.taskToResourceCache[task.taskId]?.appName).isEqualTo("Le App Name")
+    }
+
+    @Test
+    fun testGetVeilIcon_notCached_loadsResourceAndCaches() = runTest {
         val task = createTaskInfo(context.userId)
         loader.onWindowDecorCreated(task)
 
@@ -183,10 +193,10 @@ class WindowDecorTaskResourceLoaderTest : ShellTestCase() {
     }
 
     @Test
-    fun testGetVeilIcon_cached_returnsFromCache() {
+    fun testGetVeilIcon_cached_returnsFromCache() = runTest {
         val task = createTaskInfo(context.userId)
         loader.onWindowDecorCreated(task)
-        loader.taskToResourceCache[task.taskId] = AppResources("App Name", mock(), mock())
+        loader.taskToResourceCache[task.taskId] = AppResources("App Name", mock(), mock(), mock())
 
         loader.getVeilIcon(task)
 
@@ -194,40 +204,43 @@ class WindowDecorTaskResourceLoaderTest : ShellTestCase() {
     }
 
     @Test
-    fun testUserChange_clearsCache() {
+    fun testUserChange_clearsCache() = runTest {
         val newUser = 5000
         val newContext = mock<Context>()
         val task = createTaskInfo(context.userId)
         loader.onWindowDecorCreated(task)
-        loader.getName(task)
+        loader.getNameAndHeaderIcon(task)
 
         userChangeListener.onUserChanged(newUser, newContext)
 
         assertThat(loader.taskToResourceCache[task.taskId]?.appName).isNull()
+        assertThat(loader.taskToResourceCache[task.taskId]?.appIcon).isNull()
     }
 
     @Test
-    fun testGet_nonexistentDecor_throws() {
+    fun testGet_nonexistentDecor_throws() = runTest {
         val task = createTaskInfo(context.userId)
 
-        assertThrows(Exception::class.java) { loader.getName(task) }
+        assertFailsWith<Exception> { loader.getNameAndHeaderIcon(task) }
     }
 
     @Test
-    fun testGet_nonexistentPackage_returnsDefaultAndDontCache() {
+    fun testGet_nonexistentPackage_returnsDefaultAndDontCache() = runTest {
         val componentName = ComponentName("com.foo", "BarActivity")
         val appIconDrawable = mock<Drawable>()
-        val task = TestRunningTaskInfoBuilder()
-            .setUserId(context.userId)
-            .setBaseIntent(Intent().apply { component = componentName })
-            .build()
+        val task =
+            TestRunningTaskInfoBuilder()
+                .setUserId(context.userId)
+                .setBaseIntent(Intent().apply { component = componentName })
+                .build()
         loader.onWindowDecorCreated(task)
         doReturn(appIconDrawable).whenever(mockPackageManager).getDefaultActivityIcon()
-        whenever(mockHeaderIconFactory.createIconBitmap(appIconDrawable, 1f))
-            .thenReturn(mock())
+        whenever(mockHeaderIconFactory.createIconBitmap(appIconDrawable, 1f)).thenReturn(mock())
         whenever(mockVeilIconFactory.createScaledBitmap(appIconDrawable, MODE_DEFAULT))
             .thenReturn(mock())
-        doThrow(NameNotFoundException()).whenever(mockPackageManager).getActivityInfo(eq(componentName), anyInt())
+        doThrow(NameNotFoundException())
+            .whenever(mockPackageManager)
+            .getActivityInfo(eq(componentName), anyInt())
 
         loader.getVeilIcon(task)
 

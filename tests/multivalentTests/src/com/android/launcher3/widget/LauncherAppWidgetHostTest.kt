@@ -19,13 +19,14 @@ package com.android.launcher3.widget
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.Executors
+import com.android.launcher3.util.TestActivityContext
 import com.android.launcher3.util.TestUtil
 import java.util.function.IntConsumer
 import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
@@ -35,7 +36,8 @@ import org.mockito.Mockito.verify
 @RunWith(AndroidJUnit4::class)
 class LauncherAppWidgetHostTest {
 
-    private val context = ActivityContextWrapper(getInstrumentation().targetContext)
+    @get:Rule val context = TestActivityContext()
+
     private var underTest = LauncherAppWidgetHost(context, HOST_ID)
 
     @Test

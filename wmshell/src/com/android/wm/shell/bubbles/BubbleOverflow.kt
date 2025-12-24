@@ -19,12 +19,9 @@ package com.android.wm.shell.bubbles
 import android.app.ActivityTaskManager.INVALID_TASK_ID
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Matrix
-import android.graphics.Path
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
-import android.util.PathParser
 import android.view.LayoutInflater
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
@@ -37,7 +34,6 @@ class BubbleOverflow(private val context: Context, private val positioner: Bubbl
     BubbleViewProvider {
 
     private lateinit var bitmap: Bitmap
-    private lateinit var dotPath: Path
 
     private var dotColor = 0
     private var showDot = false
@@ -81,9 +77,6 @@ class BubbleOverflow(private val context: Context, private val positioner: Bubbl
                 /* isOverflow= */ true,
                 /* bubble= */ null,
                 /* bubbleTaskView= */ null,
-                /* mainExecutor= */ null,
-                /* backgroundExecutor= */ null,
-                /* regionSamplingProvider= */ null,
             )
     }
 
@@ -136,24 +129,7 @@ class BubbleOverflow(private val context: Context, private val positioner: Bubbl
         // Update bitmap
         val fg = InsetDrawable(overflowBtn?.iconDrawable, overflowIconInset)
         val drawable = AdaptiveIconDrawable(ColorDrawable(colorAccent), fg)
-        val bubbleBitmapScale = FloatArray(1)
-        bitmap = iconFactory.getBubbleBitmap(drawable, bubbleBitmapScale)
-
-        // Update dot path
-        dotPath =
-            PathParser.createPathFromPathData(
-                res.getString(com.android.internal.R.string.config_icon_mask)
-            )
-        val scale = bubbleBitmapScale[0]
-        val radius = BadgedImageView.DEFAULT_PATH_SIZE / 2f
-        val matrix = Matrix()
-        matrix.setScale(
-            scale /* x scale */,
-            scale /* y scale */,
-            radius /* pivot x */,
-            radius /* pivot y */
-        )
-        dotPath.transform(matrix)
+        bitmap = iconFactory.getBubbleBitmap(drawable)
 
         // Attach BubbleOverflow to BadgedImageView
         overflowBtn?.setRenderedBubble(this)
@@ -213,8 +189,6 @@ class BubbleOverflow(private val context: Context, private val positioner: Bubbl
     override fun getBubbleIcon() = bitmap
 
     override fun showDot() = showDot
-
-    override fun getDotPath() = dotPath
 
     override fun setTaskViewVisibility(visible: Boolean) {
         // Overflow does not have a TaskView.

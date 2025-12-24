@@ -19,8 +19,8 @@ package com.android.launcher3.taskbar.bubbles
 import android.graphics.Rect
 import android.view.View
 import com.android.launcher3.DropTarget
+import com.android.launcher3.DropTarget.DragObject
 import com.android.launcher3.dragndrop.DragOptions
-import com.android.launcher3.model.data.ItemInfo
 import com.android.wm.shell.shared.bubbles.DragZoneFactory
 import com.android.wm.shell.shared.bubbles.DropTargetManager
 
@@ -31,41 +31,45 @@ import com.android.wm.shell.shared.bubbles.DropTargetManager
 class BubbleBarLocationDropTarget(
     private val bubbleBarDropTargetController: BubbleBarDropTargetController,
     dragZoneFactory: DragZoneFactory,
-    private val dropTargetManager: DropTargetManager,
+    private var dropTargetManager: DropTargetManager,
     private val isLeftDropTarget: Boolean,
 ) : DropTarget {
 
+    /** Whether the [DragObject] can be dropped on the bubble bar drop target. */
+    var isDropCanBeAccepted: Boolean = false
+
     interface BubbleBarDropTargetController {
 
-        /** Return whether the item info can be dropped on the bubble bar drop target. */
-        fun acceptDrop(itemInfo: ItemInfo): Boolean
+        /** Called after [DragObject] dropped on the bubble bar drop target. */
+        fun onDrop(dragObject: DragObject, isLeftDropTarget: Boolean)
+    }
 
-        /** Called after dragged item info drop on the bubble bar drop target. */
-        fun onDrop(itemInfo: ItemInfo, isLeftDropTarget: Boolean)
+    /** Sets the drop target manager that drop target will use. */
+    fun setDropTargetManager(dropTargetManager: DropTargetManager) {
+        this.dropTargetManager = dropTargetManager
     }
 
     private val dropRect = dragZoneFactory.getBubbleBarDropRect(isLeftDropTarget)
 
-    override fun isDropEnabled(): Boolean = true
+    override fun isDropEnabled(): Boolean = isDropCanBeAccepted
 
-    override fun onDrop(dragObject: DropTarget.DragObject, options: DragOptions) {
-        bubbleBarDropTargetController.onDrop(dragObject.dragInfo, isLeftDropTarget)
+    override fun onDrop(dragObject: DragObject, options: DragOptions) {
+        bubbleBarDropTargetController.onDrop(dragObject, isLeftDropTarget)
     }
 
-    override fun onDragEnter(dragObject: DropTarget.DragObject) {
+    override fun onDragEnter(dragObject: DragObject) {
         dropTargetManager.onDragUpdated(dragObject.x, dragObject.y)
     }
 
-    override fun onDragOver(dragObject: DropTarget.DragObject) {
+    override fun onDragOver(dragObject: DragObject) {
         dropTargetManager.onDragUpdated(dragObject.x, dragObject.y)
     }
 
-    override fun onDragExit(dragObject: DropTarget.DragObject) {
+    override fun onDragExit(dragObject: DragObject) {
         dropTargetManager.onDragUpdated(dragObject.x, dragObject.y)
     }
 
-    override fun acceptDrop(dragObject: DropTarget.DragObject): Boolean =
-        bubbleBarDropTargetController.acceptDrop(dragObject.dragInfo)
+    override fun acceptDrop(dragObject: DragObject): Boolean = isDropCanBeAccepted
 
     override fun prepareAccessibilityDrop() {}
 

@@ -29,6 +29,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.view.RemoteAnimationTarget;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -40,7 +41,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
-import com.android.launcher3.taskbar.LauncherTaskbarUIController;
+import com.android.launcher3.taskbar.TaskbarInteractor;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
@@ -129,7 +130,7 @@ public final class LauncherActivityInterface extends
         QuickstepLauncher launcher = factory.initBackgroundStateUI();
         // Since all apps is not visible, we can safely reset the scroll position.
         // This ensures then the next swipe up to all-apps starts from scroll 0.
-        launcher.getAppsView().reset(false /* animate */);
+        launcher.getAppsView().reset(false /* animate */, true /* clearScrim */);
         return factory;
     }
 
@@ -166,12 +167,12 @@ public final class LauncherActivityInterface extends
 
     @Nullable
     @Override
-    public LauncherTaskbarUIController getTaskbarController() {
+    public TaskbarInteractor getTaskbarInteractor() {
         QuickstepLauncher launcher = getCreatedContainer();
         if (launcher == null) {
             return null;
         }
-        return launcher.getTaskbarUIController();
+        return launcher.getTaskbarInteractor();
     }
 
     @Nullable
@@ -212,7 +213,7 @@ public final class LauncherActivityInterface extends
         if (launcher == null) {
             return false;
         }
-        if (DesktopState.fromContext(launcher.asContext()).getShouldShowHomeBehindDesktop()
+        if (DesktopState.getInstance(launcher.asContext()).getShouldShowHomeBehindDesktop()
                 && !launcher.hasWindowFocus()) {
             // Home is always shown behind desktop, but it is currently not the top task, so treat
             // it as if it is not visible.
@@ -309,13 +310,13 @@ public final class LauncherActivityInterface extends
     @Override
     public @Nullable Animator getParallelAnimationToGestureEndTarget(GestureEndTarget endTarget,
             long duration, RecentsAnimationCallbacks callbacks) {
-        LauncherTaskbarUIController uiController = getTaskbarController();
+        TaskbarInteractor interactor = getTaskbarInteractor();
         Animator superAnimator = super.getParallelAnimationToGestureEndTarget(
                 endTarget, duration, callbacks);
-        if (uiController == null || callbacks == null) {
+        if (interactor == null || callbacks == null) {
             return superAnimator;
         }
-        Animator taskbarAnimator = uiController.getParallelAnimationToGestureEndTarget(endTarget,
+        Animator taskbarAnimator = interactor.getParallelAnimationToGestureEndTarget(endTarget,
                 duration, callbacks);
         if (superAnimator == null) {
             return taskbarAnimator;
@@ -333,19 +334,13 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public LauncherState stateFromGestureEndTarget(GestureEndTarget endTarget) {
-        switch (endTarget) {
-            case RECENTS:
-                return OVERVIEW;
-            case NEW_TASK:
-            case LAST_TASK:
-                return BACKGROUND_APP;
-            case ALL_APPS:
-                return ALL_APPS;
-            case HOME:
-            default:
-                return NORMAL;
-        }
+    public LauncherState stateFromGestureEndTarget(@NonNull GestureEndTarget endTarget) {
+        return switch (endTarget) {
+            case RECENTS -> OVERVIEW;
+            case NEW_TASK, LAST_TASK -> BACKGROUND_APP;
+            case ALL_APPS -> ALL_APPS;
+            default -> NORMAL;
+        };
     }
 
     @Override

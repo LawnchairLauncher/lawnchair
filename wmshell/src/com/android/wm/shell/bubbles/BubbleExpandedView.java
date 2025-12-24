@@ -16,28 +16,21 @@
 
 package com.android.wm.shell.bubbles;
 
-import static android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS;
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-import static android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
-import static android.content.Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.wm.shell.bubbles.BubbleDebugConfig.TAG_BUBBLES;
 import static com.android.wm.shell.bubbles.BubbleDebugConfig.TAG_WITH_CLASS_NAME;
 import static com.android.wm.shell.bubbles.BubblePositioner.MAX_HEIGHT;
-import static com.android.wm.shell.bubbles.util.BubbleUtils.getEnterBubbleTransaction;
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_BUBBLES;
 import static com.android.wm.shell.shared.TypefaceUtils.setTypeface;
 
 import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.app.ActivityOptions;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -63,9 +56,7 @@ import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.window.ScreenCapture;
-import android.window.WindowContainerToken;
-import android.window.WindowContainerTransaction;
+import android.window.ScreenCaptureInternal;
 
 import androidx.annotation.Nullable;
 
@@ -77,9 +68,7 @@ import com.android.wm.shell.R;
 import com.android.wm.shell.common.AlphaOptimizedButton;
 import com.android.wm.shell.shared.TriangleShape;
 import com.android.wm.shell.shared.TypefaceUtils;
-import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper;
 import com.android.wm.shell.taskview.TaskView;
-import com.android.wm.shell.taskview.TaskViewTaskController;
 
 import java.io.PrintWriter;
 
@@ -204,160 +193,7 @@ public class BubbleExpandedView extends LinearLayout {
      */
     private final FrameLayout mExpandedViewContainer = new FrameLayout(getContext());
 
-    private TaskView.Listener mCurrentTaskViewListener;
-
-    private final TaskView.Listener mTaskViewListener = new TaskView.Listener() {
-        private boolean mInitialized = false;
-        private boolean mDestroyed = false;
-
-        @Override
-        public void onInitialized() {
-            if (mDestroyed || mInitialized) {
-                ProtoLog.d(WM_SHELL_BUBBLES, "onInitialized: destroyed=%b initialized=%b bubble=%s",
-                        mDestroyed, mInitialized, getBubbleKey());
-                return;
-            }
-
-            // Custom options so there is no activity transition animation
-            ActivityOptions options = ActivityOptions.makeCustomAnimation(getContext(),
-                    0 /* enterResId */, 0 /* exitResId */);
-
-            // TODO: I notice inconsistencies in lifecycle
-            // Post to keep the lifecycle normal
-            post(() -> {
-                ProtoLog.d(WM_SHELL_BUBBLES, "onInitialized: calling startActivity, bubble=%s",
-                        getBubbleKey());
-                try {
-                    Rect launchBounds = new Rect();
-                    mTaskView.getBoundsOnScreen(launchBounds);
-
-                    options.setTaskAlwaysOnTop(true /* alwaysOnTop */);
-                    options.setPendingIntentBackgroundActivityStartMode(
-                            MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS);
-
-                    final boolean isShortcutBubble = (mBubble.hasMetadataShortcutId()
-                            || (mBubble.isShortcut()
-                            && BubbleAnythingFlagHelper.enableCreateAnyBubble()));
-
-                    // TODO - currently based on type, really it's what the "launch item" is.
-                    if (mBubble.isApp() || mBubble.isNote()) {
-                        Context context =
-                                mContext.createContextAsUser(
-                                        mBubble.getUser(), Context.CONTEXT_RESTRICTED);
-                        Intent fillInIntent = new Intent();
-                        PendingIntent pi = PendingIntent.getActivity(
-                                context,
-                                /* requestCode= */ 0,
-                                mBubble.getIntent(),
-                                // Needs to be mutable for the fillInIntent
-                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT,
-                                /* options= */ null);
-                        final WindowContainerToken rootToken = mManager.getAppBubbleRootTaskToken();
-                        if (rootToken != null) {
-                            options.setLaunchRootTask(rootToken);
-                        } else {
-                            options.setLaunchNextToBubble(true /* launchNextToBubble */);
-                        }
-                        mTaskView.startActivity(pi, fillInIntent, options, launchBounds);
-                    } else if (!mIsOverflow && isShortcutBubble) {
-                        ProtoLog.v(WM_SHELL_BUBBLES, "startingShortcutBubble=%s", getBubbleKey());
-                        if (mBubble.isChat()) {
-                            options.setLaunchedFromBubble(true);
-                            options.setApplyActivityFlagsForBubbles(true);
-                        } else {
-                            final WindowContainerToken rootToken =
-                                    mManager.getAppBubbleRootTaskToken();
-                            if (rootToken != null) {
-                                options.setLaunchRootTask(rootToken);
-                            } else {
-                                options.setLaunchNextToBubble(true /* launchNextToBubble */);
-                            }
-                            options.setApplyMultipleTaskFlagForShortcut(true);
-                        }
-                        mTaskView.startShortcutActivity(mBubble.getShortcutInfo(),
-                                options, launchBounds);
-                    } else {
-                        options.setLaunchedFromBubble(true);
-                        if (mBubble != null) {
-                            mBubble.setPendingIntentActive();
-                        }
-                        final Intent fillInIntent = new Intent();
-                        // Apply flags to make behaviour match documentLaunchMode=always.
-                        fillInIntent.addFlags(FLAG_ACTIVITY_NEW_DOCUMENT);
-                        fillInIntent.addFlags(FLAG_ACTIVITY_MULTIPLE_TASK);
-                        mTaskView.startActivity(mPendingIntent, fillInIntent, options,
-                                launchBounds);
-                    }
-                } catch (RuntimeException e) {
-                    // If there's a runtime exception here then there's something
-                    // wrong with the intent, we can't really recover / try to populate
-                    // the bubble again so we'll just remove it.
-                    Log.e(TAG, "Exception while displaying bubble: " + getBubbleKey()
-                            + "; removing bubble", e);
-                    mManager.removeBubble(getBubbleKey(), Bubbles.DISMISS_INVALID_INTENT);
-                }
-            });
-            mInitialized = true;
-        }
-
-        @Override
-        public void onReleased() {
-            mDestroyed = true;
-        }
-
-        @Override
-        public void onTaskCreated(int taskId, ComponentName name) {
-            ProtoLog.d(WM_SHELL_BUBBLES, "onTaskCreated: taskId=%d bubble=%s",
-                    taskId, getBubbleKey());
-            // The taskId is saved to use for removeTask, preventing appearance in recent tasks.
-            mTaskId = taskId;
-
-            if (mBubble != null && mBubble.isNote()) {
-                // Let the controller know sooner what the taskId is.
-                mManager.setNoteBubbleTaskId(mBubble.getKey(), mTaskId);
-            }
-
-            final TaskViewTaskController tvc = mTaskView.getController();
-            final boolean isAppBubble = mBubble != null
-                    && (mBubble.isApp() || mBubble.isShortcut());
-            final WindowContainerTransaction wct = getEnterBubbleTransaction(
-                    tvc.getTaskToken(), isAppBubble);
-            tvc.getTaskOrganizer().applyTransaction(wct);
-
-            // With the task org, the taskAppeared callback will only happen once the task has
-            // already drawn
-            setContentVisibility(true);
-        }
-
-        @Override
-        public void onTaskVisibilityChanged(int taskId, boolean visible) {
-            ProtoLog.d(WM_SHELL_BUBBLES, "onTaskVisibilityChanged=%b bubble=%s taskId=%d",
-                    visible, getBubbleKey(), taskId);
-            setContentVisibility(visible);
-        }
-
-        @Override
-        public void onTaskRemovalStarted(int taskId) {
-            ProtoLog.d(WM_SHELL_BUBBLES, "onTaskRemovalStarted: taskId=%d bubble=%s",
-                    taskId, getBubbleKey());
-            if (mBubble != null) {
-                mManager.removeBubble(mBubble.getKey(), Bubbles.DISMISS_TASK_FINISHED);
-            }
-            if (mTaskView != null) {
-                // Release the surface
-                mTaskView.release();
-                removeView(mTaskView);
-                mTaskView = null;
-            }
-        }
-
-        @Override
-        public void onBackPressedOnTaskRoot(int taskId) {
-            if (mTaskId == taskId && mStackView.isExpanded()) {
-                mStackView.onBackPressed();
-            }
-        }
-    };
+    private BubbleTaskViewListener mTaskViewListener;
 
     public BubbleExpandedView(Context context) {
         this(context, null);
@@ -463,7 +299,8 @@ public class BubbleExpandedView extends LinearLayout {
      * Initialize {@link BubbleController} and {@link BubbleStackView} here, this method must need
      * to be called after view inflate.
      */
-    void initialize(BubbleExpandedViewManager expandedViewManager,
+    @VisibleForTesting
+    public void initialize(BubbleExpandedViewManager expandedViewManager,
             BubbleStackView stackView,
             BubblePositioner positioner,
             boolean isOverflow,
@@ -487,47 +324,42 @@ public class BubbleExpandedView extends LinearLayout {
             mTaskView = bubbleTaskView.getTaskView();
             // reset the insets that might left after TaskView is shown in BubbleBarExpandedView
             mTaskView.setCaptionInsets(null);
-            if (Flags.enableBubbleTaskViewListener()) {
-                mCurrentTaskViewListener = new BubbleTaskViewListener(mContext, bubbleTaskView,
-                        /* viewParent= */ this, expandedViewManager,
-                        new BubbleTaskViewListener.Callback() {
-                            @Override
-                            public void onTaskCreated() {
-                                // The taskId is saved to use for removeTask,
-                                // preventing appearance in recent tasks.
-                                BubbleTaskViewListener listener = mCurrentTaskViewListener != null
-                                        ? ((BubbleTaskViewListener) mCurrentTaskViewListener)
-                                        : null;
-                                mTaskId = listener != null
-                                        ? listener.getTaskId()
-                                        : bubbleTaskView.getTaskId();
-                                setContentVisibility(true);
-                            }
+            mTaskViewListener = new BubbleTaskViewListener(mContext, bubbleTaskView,
+                    /* viewParent= */ this, expandedViewManager,
+                    new BubbleTaskViewListener.Callback() {
+                        @Override
+                        public void onTaskCreated() {
+                            // The taskId is saved to use for removeTask,
+                            // preventing appearance in recent tasks.
+                            BubbleTaskViewListener listener = mTaskViewListener != null
+                                    ? mTaskViewListener
+                                    : null;
+                            mTaskId = listener != null
+                                    ? listener.getTaskId()
+                                    : bubbleTaskView.getTaskId();
+                            setContentVisibility(true);
+                        }
 
-                            @Override
-                            public void onContentVisibilityChanged(boolean visible) {
-                                setContentVisibility(visible);
-                            }
+                        @Override
+                        public void onContentVisibilityChanged(boolean visible) {
+                            setContentVisibility(visible);
+                        }
 
-                            @Override
-                            public void onBackPressed() {
-                                mStackView.onBackPressed();
-                            }
+                        @Override
+                        public void onBackPressed() {
+                            mStackView.onBackPressed();
+                        }
 
-                            @Override
-                            public void onTaskRemovalStarted() {
-                                // nothing to do / handled in listener.
-                            }
+                        @Override
+                        public void onTaskRemovalStarted() {
+                            // nothing to do / handled in listener.
+                        }
 
-                            @Override
-                            public void onTaskInfoChanged(RunningTaskInfo taskInfo) {
-                                // nothing to do / handled in listener.
-                            }
-                        });
-            } else {
-                mCurrentTaskViewListener = mTaskViewListener;
-                bubbleTaskView.setDelegateListener(mCurrentTaskViewListener);
-            }
+                        @Override
+                        public void onTaskInfoChanged(RunningTaskInfo taskInfo) {
+                            // nothing to do / handled in listener.
+                        }
+                    });
 
             // set a fixed width so it is not recalculated as part of a rotation. the width will be
             // updated manually after the rotation.
@@ -538,13 +370,6 @@ public class BubbleExpandedView extends LinearLayout {
             }
             mExpandedViewContainer.addView(mTaskView, lp);
             bringChildToFront(mTaskView);
-
-            if (!Flags.enableBubbleTaskViewListener()) {
-                if (bubbleTaskView.isCreated()) {
-                    mCurrentTaskViewListener.onTaskCreated(
-                            bubbleTaskView.getTaskId(), bubbleTaskView.getComponentName());
-                }
-            }
         }
     }
 
@@ -697,7 +522,7 @@ public class BubbleExpandedView extends LinearLayout {
 
     /** Return a GraphicBuffer with the contents of the task view surface. */
     @Nullable
-    ScreenCapture.ScreenshotHardwareBuffer snapshotActivitySurface() {
+    ScreenCaptureInternal.ScreenshotHardwareBuffer snapshotActivitySurface() {
         if (mIsOverflow) {
             // For now, just snapshot the view and return it as a hw buffer so that the animation
             // code for both the tasks and overflow can be the same
@@ -706,7 +531,7 @@ public class BubbleExpandedView extends LinearLayout {
                     p.beginRecording(mOverflowView.getWidth(), mOverflowView.getHeight()));
             p.endRecording();
             Bitmap snapshot = Bitmap.createBitmap(p);
-            return new ScreenCapture.ScreenshotHardwareBuffer(
+            return new ScreenCaptureInternal.ScreenshotHardwareBuffer(
                     snapshot.getHardwareBuffer(),
                     snapshot.getColorSpace(),
                     false /* containsSecureLayers */,
@@ -715,7 +540,7 @@ public class BubbleExpandedView extends LinearLayout {
         if (mTaskView == null || mTaskView.getSurfaceControl() == null) {
             return null;
         }
-        return ScreenCapture.captureLayers(
+        return ScreenCaptureInternal.captureLayers(
                 mTaskView.getSurfaceControl(),
                 new Rect(0, 0, mTaskView.getWidth(), mTaskView.getHeight()),
                 1 /* scale */);
@@ -980,13 +805,8 @@ public class BubbleExpandedView extends LinearLayout {
             Log.w(TAG, "Stack is null for bubble: " + bubble);
             return;
         }
-        boolean isNew;
-        if (mCurrentTaskViewListener instanceof BubbleTaskViewListener) {
-            isNew = ((BubbleTaskViewListener) mCurrentTaskViewListener).setBubble(bubble);
-        } else {
-            isNew = mBubble == null || didBackingContentChange(bubble);
-        }
-        boolean isUpdate = bubble != null && mBubble != null
+        final boolean isNew = mTaskViewListener.setBubble(bubble);
+        final boolean isUpdate = bubble != null && mBubble != null
                 && bubble.getKey().equals(mBubble.getKey());
         ProtoLog.d(WM_SHELL_BUBBLES, "BubbleExpandedView - update bubble=%s; isNew=%b; isUpdate=%b",
                 bubble.getKey(), isNew, isUpdate);
@@ -1020,23 +840,6 @@ public class BubbleExpandedView extends LinearLayout {
             Log.w(TAG, "Trying to update entry with different key, new bubble: "
                     + bubble.getKey() + " old bubble: " + bubble.getKey());
         }
-    }
-
-    /**
-     * Bubbles are backed by a pending intent or a shortcut, once the activity is
-     * started we never change it / restart it on notification updates -- unless the bubbles'
-     * backing data switches.
-     *
-     * This indicates if the new bubble is backed by a different data source than what was
-     * previously shown here (e.g. previously a pending intent & now a shortcut).
-     *
-     * @param newBubble the bubble this view is being updated with.
-     * @return true if the backing content has changed.
-     */
-    private boolean didBackingContentChange(Bubble newBubble) {
-        boolean prevWasIntentBased = mBubble != null && mPendingIntent != null;
-        boolean newIsIntentBased = newBubble.getPendingIntent() != null;
-        return prevWasIntentBased != newIsIntentBased;
     }
 
     /**
@@ -1216,5 +1019,14 @@ public class BubbleExpandedView extends LinearLayout {
         pw.print(prefix); pw.print("  stackView: "); pw.println(mStackView);
         pw.print(prefix); pw.print("  contentVisibility: "); pw.println(mIsContentVisible);
         pw.print(prefix); pw.print("  isAnimating: "); pw.println(mIsAnimating);
+        if (mTaskView != null) {
+            pw.print(prefix); pw.print("  tv-alpha: "); pw.println(mTaskView.getAlpha());
+            pw.print(prefix); pw.print("  tv-viewVis: "); pw.println(mTaskView.getVisibility());
+        }
+        pw.print(prefix); pw.print("  v-alpha: "); pw.println(getAlpha());
+        pw.print(prefix); pw.print("  v-viewVis: "); pw.println(getVisibility());
+        pw.print(prefix); pw.print("  isClipping: "); pw.println(mIsClipping);
+        pw.print(prefix); pw.print("  clipRect: "); pw.println(
+                new Rect(mLeftClip, mTopClip, mRightClip, mBottomClip));
     }
 }

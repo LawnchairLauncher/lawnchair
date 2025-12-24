@@ -17,7 +17,7 @@
 package com.android.wm.shell.flicker.pip.nonmatchparent
 
 import android.platform.test.annotations.Presubmit
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerTest
 import com.android.server.wm.flicker.helpers.BottomHalfPipAppHelper
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.wm.shell.flicker.pip.common.EnterPipTransition
@@ -26,7 +26,7 @@ import org.junit.Test
 /**
  * The base class to test enter PIP animation on bottom half activity.
  */
-abstract class BottomHalfEnterPipTransition(flicker: LegacyFlickerTest) :
+abstract class BottomHalfEnterPipTransition(flicker: FlickerTest) :
     EnterPipTransition(flicker)
 {
     override val pipApp: PipAppHelper = BottomHalfPipAppHelper(

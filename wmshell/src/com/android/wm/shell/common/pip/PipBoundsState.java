@@ -189,6 +189,8 @@ public class PipBoundsState implements PipDisplayLayoutState.DisplayIdListener {
     /** Set the current PIP bounds. */
     public void setBounds(@NonNull Rect bounds) {
         mBounds.set(bounds);
+        ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+                "Update exclusion bounds to %s", bounds);
         for (Consumer<Rect> callback : mOnPipExclusionBoundsChangeCallbacks) {
             callback.accept(bounds);
         }
@@ -595,10 +597,10 @@ public class PipBoundsState implements PipDisplayLayoutState.DisplayIdListener {
      * Back-gesture handler, to avoid conflicting with PiP when it's stashed.
      */
     public void addPipExclusionBoundsChangeCallback(
-            @Nullable Consumer<Rect> onPipExclusionBoundsChangeCallback) {
-        mOnPipExclusionBoundsChangeCallbacks.add(onPipExclusionBoundsChangeCallback);
-        for (Consumer<Rect> callback : mOnPipExclusionBoundsChangeCallbacks) {
-            callback.accept(getBounds());
+            @NonNull Consumer<Rect> onPipExclusionBoundsChangeCallback) {
+        if (onPipExclusionBoundsChangeCallback != null) {
+            mOnPipExclusionBoundsChangeCallbacks.add(onPipExclusionBoundsChangeCallback);
+            onPipExclusionBoundsChangeCallback.accept(getBounds());
         }
     }
 
@@ -606,8 +608,10 @@ public class PipBoundsState implements PipDisplayLayoutState.DisplayIdListener {
      * Remove a callback that was previously added.
      */
     public void removePipExclusionBoundsChangeCallback(
-            @Nullable Consumer<Rect> onPipExclusionBoundsChangeCallback) {
-        mOnPipExclusionBoundsChangeCallbacks.remove(onPipExclusionBoundsChangeCallback);
+            @NonNull Consumer<Rect> onPipExclusionBoundsChangeCallback) {
+        if (onPipExclusionBoundsChangeCallback != null) {
+            mOnPipExclusionBoundsChangeCallbacks.remove(onPipExclusionBoundsChangeCallback);
+        }
     }
 
     /** Adds callback to listen on aspect ratio change. */

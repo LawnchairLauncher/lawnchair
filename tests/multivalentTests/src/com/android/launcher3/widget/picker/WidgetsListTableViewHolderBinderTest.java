@@ -26,7 +26,6 @@ import static java.util.Collections.EMPTY_LIST;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.UserHandle;
 import android.view.ContextThemeWrapper;
@@ -45,11 +44,12 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.IconShape;
 import com.android.launcher3.icons.cache.CachedObject;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.SandboxApplication;
+import com.android.launcher3.util.TestActivityContext;
 import com.android.launcher3.util.WidgetUtils;
 import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -61,7 +61,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +74,12 @@ public final class WidgetsListTableViewHolderBinderTest {
     private static final String APP_NAME = "Test app";
 
     @Rule public SandboxApplication app = new SandboxApplication();
-    private Context mContext;
+    @Rule public TestActivityContext mContext = new TestActivityContext(app);
+
     private WidgetsListTableViewHolderBinder mViewHolderBinder;
     private InvariantDeviceProfile mTestProfile;
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     private OnLongClickListener mOnLongClickListener;
@@ -86,8 +90,6 @@ public final class WidgetsListTableViewHolderBinderTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mContext = new ActivityContextWrapper(app);
         mTestProfile = InvariantDeviceProfile.INSTANCE.get(app);
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
@@ -135,7 +137,8 @@ public final class WidgetsListTableViewHolderBinderTest {
             int numOfWidgets) {
         PackageItemInfo appInfo = new PackageItemInfo(packageName, UserHandle.CURRENT);
         appInfo.title = appName;
-        appInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
+        appInfo.bitmap = BitmapInfo.of(
+                Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0, IconShape.EMPTY);
 
         return new WidgetsListContentEntry(appInfo,
                 /* titleSectionName= */ "",

@@ -116,5 +116,9 @@ interface DesktopState {
         /** Creates a new [DesktopState] from a context. */
         @JvmStatic
         fun fromContext(context: Context): DesktopState = DesktopStateImpl(context)
+
+        /** Get a [DesktopState] singleton. This method should not be used if Dagger is used to inject the singleton. */
+        @JvmStatic
+        fun getInstance(context: Context): DesktopState = DesktopStateImpl.getInstance(context)
     }
 }

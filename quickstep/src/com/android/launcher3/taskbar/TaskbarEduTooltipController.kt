@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -37,6 +36,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.text.HtmlCompat
 import androidx.core.view.updateLayoutParams
 import com.airbnb.lottie.LottieAnimationView
+import com.android.launcher3.Flags.refactorTaskbarUiState
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.R
 import com.android.launcher3.RemoveAnimationSettingsTracker
@@ -46,7 +46,6 @@ import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOH
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_SEARCH_EDU_SEEN
-import com.android.launcher3.util.ResourceBasedOverride
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.util.ContextualSearchInvoker
@@ -54,6 +53,7 @@ import com.android.quickstep.util.LottieAnimationColorUtils
 import com.android.wm.shell.shared.TypefaceUtils
 import com.android.wm.shell.shared.TypefaceUtils.FontFamily
 import java.io.PrintWriter
+import javax.inject.Inject
 
 /** First EDU step for swiping up to show transient Taskbar. */
 const val TOOLTIP_STEP_SWIPE = 0
@@ -79,10 +79,14 @@ private const val TOS_BASE_URL = "https://policies.google.com/terms?hl="
 annotation class TaskbarEduTooltipStep
 
 /** Controls stepping through the Taskbar tooltip EDU. */
-open class TaskbarEduTooltipController(context: Context) :
-    ResourceBasedOverride, LoggableTaskbarController {
+open class TaskbarEduTooltipController
+@Inject
+constructor(
+    activityContext: ActivityContext,
+    private val removeAnimationSettingsTracker: RemoveAnimationSettingsTracker,
+) : LoggableTaskbarController {
 
-    protected val activityContext: TaskbarActivityContext = ActivityContext.lookupContext(context)
+    protected val activityContext = activityContext as TaskbarActivityContext
     open val shouldShowSearchEdu: Boolean
         get() =
             ContextualSearchInvoker(activityContext)
@@ -102,6 +106,7 @@ open class TaskbarEduTooltipController(context: Context) :
         get() = isTooltipEnabled && tooltipStep <= TOOLTIP_STEP_FEATURES
 
     private lateinit var controllers: TaskbarControllers
+    private lateinit var taskbarUIState: TaskbarUiState
 
     // Keep track of whether the user has seen the Search Edu
     @VisibleForTesting
@@ -120,14 +125,31 @@ open class TaskbarEduTooltipController(context: Context) :
         }
         private set(step) {
             TASKBAR_EDU_TOOLTIP_STEP.set(step, activityContext)
+            updateShouldShowEduOnAppLaunch()
         }
 
     private var tooltip: TaskbarEduTooltip? = null
 
-    fun init(controllers: TaskbarControllers) {
+    fun init(controllers: TaskbarControllers, taskbarUiState: TaskbarUiState) {
         this.controllers = controllers
+        this.taskbarUIState = taskbarUiState
+        updateShouldShowEduOnAppLaunch()
         // We want to show the Search Edu right after pinning the taskbar, so we post it here
         activityContext.dragLayer.post { maybeShowSearchEdu() }
+    }
+
+    /**
+     * Should be called whenever [TaskbarUIController], [DeviceProfile] or
+     * "taskbar_edu_tooltip_step" counter is changed.
+     */
+    fun updateShouldShowEduOnAppLaunch() {
+        if (!refactorTaskbarUiState()) {
+            return
+        }
+        val uiController = controllers.uiController
+        if (uiController is LauncherTaskbarUIController) {
+            taskbarUIState.setShouldShowEduOnAppLaunch(uiController.shouldShowEduOnAppLaunch())
+        }
     }
 
     /**
@@ -136,10 +158,7 @@ open class TaskbarEduTooltipController(context: Context) :
      */
     fun handleEduAnimations(animationViews: List<LottieAnimationView>) {
         for (animationView in animationViews) {
-            if (
-                RemoveAnimationSettingsTracker.INSTANCE.get(animationView.context)
-                    .isRemoveAnimationEnabled()
-            ) {
+            if (removeAnimationSettingsTracker.isRemoveAnimationEnabled()) {
                 animationView.pauseAnimation()
             } else {
                 animationView.setOnClickListener {
@@ -500,13 +519,8 @@ open class TaskbarEduTooltipController(context: Context) :
 
     companion object {
         @JvmStatic
-        fun newInstance(context: Context): TaskbarEduTooltipController {
-            return ResourceBasedOverride.Overrides.getObject(
-                TaskbarEduTooltipController::class.java,
-                context,
-                R.string.taskbar_edu_tooltip_controller_class,
-            )
-        }
+        fun newInstance(activityContext: ActivityContext): TaskbarEduTooltipController =
+            activityContext.activityComponent.createTaskbarEduTooltipController()
     }
 }
 

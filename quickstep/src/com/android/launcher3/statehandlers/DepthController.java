@@ -51,17 +51,13 @@ import app.lawnchair.preferences2.PreferenceManager2;
 /**
  * Controls blur and wallpaper zoom, for the Launcher surface only.
  */
-public class DepthController extends BaseDepthController implements StateHandler<LauncherState>,
-        BaseActivity.MultiWindowModeChangedListener {
+public class DepthController extends BaseDepthController implements StateHandler<LauncherState> {
     @VisibleForTesting
     final ViewTreeObserver.OnDrawListener mOnDrawListener = this::onLauncherDraw;
 
     private final Consumer<Boolean> mCrossWindowBlurListener = this::setCrossWindowBlursEnabled;
 
     private final Runnable mOpaquenessListener = this::applyDepthAndBlur;
-
-    // Workaround for animating the depth when multiwindow mode changes.
-    private boolean mIgnoreStateChangesDuringMultiWindowAnimation = false;
 
     private View.OnAttachStateChangeListener mOnAttachListener;
 
@@ -171,10 +167,6 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     @Override
     public void setState(LauncherState toState) {
-        if (mIgnoreStateChangesDuringMultiWindowAnimation) {
-            return;
-        }
-
         stateDepth.setValue(toState.getDepth(mLauncher));
         if (toState == LauncherState.BACKGROUND_APP) {
             addOnDrawListener();
@@ -184,8 +176,7 @@ public class DepthController extends BaseDepthController implements StateHandler
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation animation) {
-        if (config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)
-                || mIgnoreStateChangesDuringMultiWindowAnimation) {
+        if (config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)) {
             return;
         }
 
@@ -230,23 +221,6 @@ public class DepthController extends BaseDepthController implements StateHandler
         mIsOnDrawListenerAdded = false;
     }
 
-    @Override
-    public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
-        mIgnoreStateChangesDuringMultiWindowAnimation = true;
-
-        ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(stateDepth, MULTI_PROPERTY_VALUE,
-                mLauncher.getStateManager().getState().getDepth(mLauncher, isInMultiWindowMode))
-                .setDuration(300);
-        mwAnimation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mIgnoreStateChangesDuringMultiWindowAnimation = false;
-            }
-        });
-        mwAnimation.setAutoCancel(true);
-        mwAnimation.start();
-    }
-
     public void dump(String prefix, PrintWriter writer) {
         writer.println(prefix + "DepthController");
         writer.println(prefix + "\tmMaxBlurRadius=" + mMaxBlurRadius);
@@ -257,8 +231,6 @@ public class DepthController extends BaseDepthController implements StateHandler
         writer.println(prefix + "\tmWidgetDepth=" + widgetDepth.getValue());
         writer.println(prefix + "\tmCurrentBlur=" + mCurrentBlur);
         writer.println(prefix + "\tmInEarlyWakeUp=" + mInEarlyWakeUp);
-        writer.println(prefix + "\tmIgnoreStateChangesDuringMultiWindowAnimation="
-                + mIgnoreStateChangesDuringMultiWindowAnimation);
         writer.println(prefix + "\tmPauseBlurs=" + mPauseBlurs);
         writer.println(prefix + "\tmWaitingOnSurfaceValidity=" + mWaitingOnSurfaceValidity);
     }

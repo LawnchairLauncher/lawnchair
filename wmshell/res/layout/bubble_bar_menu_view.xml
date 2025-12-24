@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="@androidprv:color/materialColorOnSurface"
             android:textAppearance="@*android:style/TextAppearance.DeviceDefault"
             android:textDirection="locale" />
 
@@ -61,7 +61,7 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@null"
             android:src="@drawable/ic_expand_less"
-            app:tint="?android:attr/textColorPrimary" />
+            app:tint="@androidprv:color/materialColorOnSurface" />
 
     </LinearLayout>
 

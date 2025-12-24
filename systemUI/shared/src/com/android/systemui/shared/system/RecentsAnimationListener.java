@@ -32,7 +32,7 @@ public interface RecentsAnimationListener {
      */
     void onAnimationStart(RecentsAnimationControllerCompat controller,
             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-            Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras, TransitionInfo info);
+            Rect homeContentInsets, Bundle extras, TransitionInfo info);
 
     /**
      * Called when the animation into Recents was canceled. This call is made on the binder thread.

@@ -39,18 +39,22 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"A app não é compatível com o balão"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Divisor do ecrã dividido"</string>
     <string name="divider_title" msgid="1963391955593749442">"Divisor do ecrã dividido"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Ecrã esquerdo inteiro"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"70% no ecrã esquerdo"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"50% no ecrã esquerdo"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"30% no ecrã esquerdo"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Ecrã direito inteiro"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Trocar app superior pela inferior"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Trocar app da esquerda pela da direita"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Ecrã superior inteiro"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"70% no ecrã superior"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"50% no ecrã superior"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"30% no ecrã superior"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Ecrã inferior inteiro"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Mudar app do lado esquerdo para ecrã inteiro"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"Lado esquerdo: 10%, lado direito: 90%"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"Lado esquerdo: 30%, lado direito: 70%"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"Lado esquerdo: 50%, lado direito: 50%"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"Lado esquerdo: 70%, lado direito: 30%"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"Lado esquerdo: 90%, lado direito: 10%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Mudar app do lado direito para ecrã inteiro"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Trocar app superior pela app inferior, manter divisão atual"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Trocar app do lado esquerdo pela app do lado direito, manter divisão atual"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Mudar app superior para ecrã inteiro"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"Em cima: 10%, em baixo: 90%"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"Em cima: 300%, em baixo: 70%"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"Em cima: 50%, em baixo: 50%"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"Em cima: 70%, em baixo: 30%"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"Em cima: 90%, em baixo: 10%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Mudar app inferior para ecrã inteiro"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Divisão à esquerda"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Divisão à direita"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Divisão na parte superior"</string>

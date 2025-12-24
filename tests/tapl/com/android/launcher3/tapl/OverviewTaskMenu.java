@@ -54,7 +54,7 @@ public class OverviewTaskMenu {
             final List<Integer> actualEvents = new ArrayList<>();
             mLauncher.executeAndWaitForLauncherEvent(
                     () -> mLauncher.clickLauncherObject(
-                            mLauncher.findObjectInContainer(mMenu, By.textStartsWith("Split"))),
+                            mLauncher.waitForObjectInContainer(mMenu, By.textStartsWith("Split"))),
                     event -> {
                         // Wait for state changed to Split Select.
                         if (!isSplitState[0] && mLauncher.isSwitchToStateEvent(event,
@@ -169,5 +169,11 @@ public class OverviewTaskMenu {
      */
     public void touchOutsideTaskMenuToDismiss() {
         mLauncher.touchOutsideContainer(mMenu, false);
+    }
+
+    /** Taps the Clear item from the overview task menu. */
+    void tapClearMenuItem() {
+        mLauncher.clickLauncherObject(
+                mLauncher.waitForObjectInContainer(mMenu, By.text("Clear")));
     }
 }

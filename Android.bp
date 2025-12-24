@@ -68,17 +68,13 @@ filegroup {
     ],
 }
 
-filegroup {
-    name: "launcher-compose-ui-tests-src",
-    srcs: [], // Placeholder for compose/tests/com/android/launcher3/ui/.. tests.
-}
-
 // Tests for features that are enabled only when compose dependency is enabled & run as part of
 // Launcher3Tests
 filegroup {
     name: "launcher-compose-unit-tests-src",
     srcs: [
         "compose/tests/com/android/launcher3/widget/AddWidgetConfigTest.kt",
+        "compose/tests/com/android/launcher3/widgetpicker/repository/WidgetsRepositoryImplTest.kt",
     ],
 }
 
@@ -323,8 +319,10 @@ quickstep_compose_java_defaults {
             static_libs: [
                 "androidx.compose.runtime_runtime",
                 "androidx.compose.material3_material3",
+                "androidx.compose.material_material-icons-extended",
                 "androidx.compose.ui_ui-tooling-preview",
                 "androidx.compose.ui_ui-tooling",
+                "PlatformComposeCore",
             ],
 
             // By default, Compose is disabled and we compile the ComposeFacade
@@ -534,12 +532,16 @@ android_library {
         "dagger2",
         "protolog-group",
         "displaylib",
+        "com.android.window.flags.window-aconfig-java",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     min_sdk_version: "current",
     lint: {
         disabled_checks: ["MissingClass"],
     },
+    flags_packages: [
+        "com.android.window.flags.window-aconfig",
+    ],
 }
 
 // Library with all the source code and dependencies for building Launcher Go

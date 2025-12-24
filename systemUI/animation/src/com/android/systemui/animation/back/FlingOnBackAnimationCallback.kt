@@ -28,7 +28,6 @@ import com.android.app.animation.Interpolators
 import com.android.internal.dynamicanimation.animation.DynamicAnimation
 import com.android.internal.dynamicanimation.animation.FlingAnimation
 import com.android.internal.dynamicanimation.animation.FloatValueHolder
-import com.android.window.flags2.Flags.predictiveBackTimestampApi
 
 private const val FLING_FRICTION = 6f
 private const val SCALE_FACTOR = 100f
@@ -86,49 +85,37 @@ abstract class FlingOnBackAnimationCallback(
             onBackInvokedCompat()
         }
         reset()
-        if (predictiveBackTimestampApi()) {
-            downTime = backEvent.frameTimeMillis
-        }
+        downTime = backEvent.frameTimeMillis
         onBackStartedCompat(backEvent)
     }
 
     final override fun onBackProgressed(backEvent: BackEvent) {
         val interpolatedProgress = progressInterpolator.getInterpolation(backEvent.progress)
-        if (predictiveBackTimestampApi()) {
-            downTime?.let { downTime ->
-                velocityTracker.addMovement(
-                    MotionEvent.obtain(
-                        /* downTime */ downTime,
-                        /* eventTime */ backEvent.frameTimeMillis,
-                        /* action */ ACTION_MOVE,
-                        /* x */ interpolatedProgress * SCALE_FACTOR,
-                        /* y */ 0f,
-                        /* metaState */ 0,
-                    )
+        downTime?.let { downTime ->
+            velocityTracker.addMovement(
+                MotionEvent.obtain(
+                    /* downTime */ downTime,
+                    /* eventTime */ backEvent.frameTimeMillis,
+                    /* action */ ACTION_MOVE,
+                    /* x */ interpolatedProgress * SCALE_FACTOR,
+                    /* y */ 0f,
+                    /* metaState */ 0,
                 )
-            }
-            lastBackEvent =
-                BackEvent(
+            )
+        }
+        lastBackEvent =
+            BackEvent(
                     backEvent.touchX,
                     backEvent.touchY,
                     interpolatedProgress,
                     backEvent.swipeEdge,
                     backEvent.frameTimeMillis,
                 )
-        } else {
-            lastBackEvent =
-                BackEvent(
-                    backEvent.touchX,
-                    backEvent.touchY,
-                    interpolatedProgress,
-                    backEvent.swipeEdge,
-                )
-        }
-        lastBackEvent?.let { onBackProgressedCompat(it) }
+                .also { onBackProgressedCompat(it) }
     }
 
     final override fun onBackInvoked() {
-        if (predictiveBackTimestampApi() && lastBackEvent != null) {
+        if (lastBackEvent != null) {
             velocityTracker.computeCurrentVelocity(1000)
             backInvokedFlingAnim =
                 FlingAnimation(FloatValueHolder())

@@ -20,6 +20,8 @@ import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.BinderUtils;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import android.os.IRemoteCallback;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
@@ -81,7 +84,8 @@ public class AnimUtils {
     public static void goToNormalStateWithSplitDismissal(@NonNull StateManager stateManager,
             @NonNull RecentsViewContainer container,
             @NonNull StatsLogManager.LauncherEvent exitReason,
-            @NonNull SplitAnimationController animationController) {
+            @NonNull SplitAnimationController animationController,
+            @Nullable Runnable onEndCallback) {
         StateAnimationConfig config = new StateAnimationConfig();
         BaseState startState = stateManager.getState();
         long duration = startState.getTransitionDuration(container, false /*isToState*/);
@@ -92,11 +96,19 @@ public class AnimUtils {
         }
         config.duration = duration;
         AnimatorSet stateAnim = stateManager.createAtomicAnimation(
-                startState, NORMAL, config);
+                startState, stateManager.getRestState(), config);
         AnimatorSet dismissAnim = animationController
                 .createPlaceholderDismissAnim(container, exitReason, duration);
         stateAnim.play(dismissAnim);
-        stateManager.setCurrentAnimation(stateAnim, NORMAL);
+        if (onEndCallback != null) {
+            stateAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    onEndCallback.run();
+                }
+            });
+        }
+        stateManager.setCurrentAnimation(stateAnim, stateManager.getRestState());
         stateAnim.start();
     }
 

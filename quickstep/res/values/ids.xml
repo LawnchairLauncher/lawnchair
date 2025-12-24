@@ -23,4 +23,7 @@
     <item type="id" name="bubble_bar_flyout_view" />
     <!-- TODO(b/409248525): Delete with enableRefactorTaskContentView -->
     <item type="id" name="bottomright_snapshot" />
+
+    <!-- Used to identify taskbar overflow view in tests -->
+    <item type="id" name="taskbar_overflow_view" />
 </resources>

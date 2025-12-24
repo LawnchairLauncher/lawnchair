@@ -40,21 +40,26 @@ import com.android.wm.shell.shared.animation.WindowAnimator
 import com.android.wm.shell.sysui.ShellInit
 import com.android.wm.shell.transition.FocusTransitionObserver
 import com.android.wm.shell.transition.Transitions
+import com.android.wm.shell.windowdecor.DesktopModeWindowDecorViewModel
+import java.util.Optional
 
 /** Handles the interactions between IME and desktop tasks */
 class DesktopImeHandler(
-    private val tasksController: DesktopTasksController,
     private val userRepositories: DesktopUserRepositories,
     private val focusTransitionObserver: FocusTransitionObserver,
     private val shellTaskOrganizer: ShellTaskOrganizer,
     private val displayImeController: DisplayImeController,
+    private val desktopModeWindowDecorViewModel: Optional<DesktopModeWindowDecorViewModel>,
     private val displayController: DisplayController,
     private val transitions: Transitions,
     private val mainExecutor: ShellExecutor,
     private val animExecutor: ShellExecutor,
     private val context: Context,
     shellInit: ShellInit,
-) : DisplayImeController.ImePositionProcessor, Transitions.TransitionHandler {
+) :
+    DisplayImeController.ImePositionProcessor,
+    Transitions.TransitionHandler,
+    DesktopModeWindowDecorViewModel.CaptionTouchStatusListener {
 
     init {
         shellInit.addInitCallback(::onInit, this)
@@ -63,11 +68,16 @@ class DesktopImeHandler(
     private fun onInit() {
         if (DesktopExperienceFlags.ENABLE_DESKTOP_IME_BUGFIX.isTrue()) {
             displayImeController.addPositionProcessor(this)
+            desktopModeWindowDecorViewModel.ifPresent { it ->
+                it.registerCaptionTouchStatusListener(this)
+            }
         }
     }
 
     private val taskToImeTarget = mutableMapOf<Int, ImeTarget>()
     private var imeTriggeredTransition: IBinder? = null
+    /** Responsible for tracking whether app header (not app handle) is pressed. */
+    private var isCaptionPressed: Boolean = false
 
     data class ImeTarget(
         var topTask: ActivityManager.RunningTaskInfo,
@@ -83,13 +93,19 @@ class DesktopImeHandler(
         isFloating: Boolean,
         t: Transaction?,
     ): Int {
-        if (!tasksController.isAnyDeskActive(displayId) || isFloating) {
+        if (!userRepositories.current.isAnyDeskActive(displayId) || isFloating) {
             return IME_ANIMATION_DEFAULT
         }
 
+        // Only get the top task when the IME will be showing. Otherwise just restore
+        // previously manipulated task.
         if (showing) {
-            // Only get the top task when the IME will be showing. Otherwise just restore
-            // previously manipulated task.
+            // If user is still pressing the caption, we shouldn't move the task.
+            if (isCaptionPressed) {
+                logD("Caption is pressed, do not move task with IME")
+                return IME_ANIMATION_DEFAULT
+            }
+
             val currentTopTask = getFocusedTask(displayId) ?: return IME_ANIMATION_DEFAULT
             if (!userRepositories.current.isActiveTask(currentTopTask.taskId))
                 return IME_ANIMATION_DEFAULT
@@ -263,6 +279,14 @@ class DesktopImeHandler(
 
     private fun logD(msg: String, vararg arguments: Any?) {
         ProtoLog.d(WM_SHELL_DESKTOP_MODE, "%s: $msg", TAG, *arguments)
+    }
+
+    override fun onCaptionPressed() {
+        isCaptionPressed = true
+    }
+
+    override fun onCaptionReleased() {
+        isCaptionPressed = false
     }
 
     private companion object {

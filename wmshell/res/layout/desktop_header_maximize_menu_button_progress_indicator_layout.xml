@@ -18,8 +18,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="44dp"
-    android:layout_height="40dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:importantForAccessibility="noHideDescendants">
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -27,8 +27,7 @@
         android:progressDrawable="@drawable/circular_progress"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:layout_gravity="center"
         android:indeterminate="false"
-        android:layout_marginHorizontal="6dp"
-        android:layout_marginVertical="4dp"
         android:visibility="invisible"/>
 </FrameLayout>

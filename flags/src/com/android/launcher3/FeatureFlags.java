@@ -18,7 +18,15 @@ public interface FeatureFlags {
 
 
 
-    boolean enableAddAppWidgetViaConfigActivityV2();
+    boolean avoidDisplayCutoutBubbleBar();
+
+
+
+    boolean blurredHomeAnimation();
+
+
+
+    boolean clearScrimOnReset();
 
 
 
@@ -34,11 +42,15 @@ public interface FeatureFlags {
 
 
 
+    boolean enableAppWidgetPickerRefactor();
+
+
+
+    boolean enableAutoStashConnectedDisplayTaskbar();
+
+
+
     boolean enableCategorizedWidgetSuggestions();
-
-
-
-    boolean enableContainerReturnAnimations();
 
 
 
@@ -46,23 +58,15 @@ public interface FeatureFlags {
 
 
 
-    boolean enableCoroutineThreadingImprovements();
+    boolean enableCursorDrivenWorkflows();
 
 
 
-    boolean enableCursorHoverStates();
+    boolean enableCustomHeightForAllAppsOnCd();
 
 
 
     boolean enableDesktopExplodedView();
-
-
-
-    boolean enableDesktopMenuOnSecondaryDisplayBugfix();
-
-
-
-    boolean enableDismissPredictionUndo();
 
 
 
@@ -90,14 +94,6 @@ public interface FeatureFlags {
 
 
 
-    boolean enableGeneratedPreviews();
-
-
-
-    boolean enableGestureNavHorizontalTouchSlop();
-
-
-
     boolean enableGestureNavOnConnectedDisplays();
 
 
@@ -114,7 +110,7 @@ public interface FeatureFlags {
 
 
 
-    boolean enableLargeDesktopWindowingTile();
+    boolean enableLaterIsLockedCheck();
 
 
 
@@ -134,7 +130,7 @@ public interface FeatureFlags {
 
 
 
-    boolean enableLongPressRemoveShortcut();
+    boolean enableMetaTabToggleInOverview();
 
 
 
@@ -147,6 +143,10 @@ public interface FeatureFlags {
 
 
     boolean enableNarrowGridRestore();
+
+
+
+    boolean enableNewAllSetAnimation();
 
 
 
@@ -166,15 +166,15 @@ public interface FeatureFlags {
 
 
 
-    boolean enablePredictiveBackGesture();
+    boolean enablePredictiveBackInOverview();
+
+
+
+    boolean enablePreventOverviewMouseDrag();
 
 
 
     boolean enablePrivateSpace();
-
-
-
-    boolean enablePrivateSpaceInstallShortcut();
 
 
 
@@ -218,10 +218,6 @@ public interface FeatureFlags {
 
 
 
-    boolean enableScalingRevealHomeAnimation();
-
-
-
     boolean enableSimultaneousOverviewTriggerOnExtendedDesktop();
 
 
@@ -238,6 +234,10 @@ public interface FeatureFlags {
 
 
 
+    boolean enableSystemDrag();
+
+
+
     boolean enableTabletTwoPanePickerV2();
 
 
@@ -250,7 +250,15 @@ public interface FeatureFlags {
 
 
 
+    boolean enableTaskbarDragAndDrop();
+
+
+
     boolean enableTaskbarForDirectBoot();
+
+
+
+    boolean enableTaskbarIconContainer();
 
 
 
@@ -259,6 +267,10 @@ public interface FeatureFlags {
 
 
     boolean enableTaskbarPinning();
+
+
+
+    boolean enableTaskbarRecentsThemedIcons();
 
 
 
@@ -290,23 +302,15 @@ public interface FeatureFlags {
 
 
 
-    boolean enableWidgetTapToAdd();
-
-
-
-    boolean enableWorkspaceInflation();
-
-
-
     boolean enabledFoldersInAllApps();
 
 
 
-    boolean expressiveThemeInTaskbarAndNavigation();
+    boolean expandableLongPressMenu();
 
 
 
-    boolean externalDataAccess();
+    boolean firstPagePinnedWidgetRemovalToggle();
 
 
 
@@ -318,11 +322,7 @@ public interface FeatureFlags {
 
 
 
-    boolean gridMigrationRefactor();
-
-
-
-    boolean gsfRes();
+    boolean forceMonochromeAppIconsAdaptColors();
 
 
 
@@ -331,6 +331,10 @@ public interface FeatureFlags {
 
 
     boolean ignoreThreeFingerTrackpadForNavHandleLongPress();
+
+
+
+    boolean injectableModelItems();
 
 
 
@@ -362,14 +366,6 @@ public interface FeatureFlags {
 
 
 
-    boolean predictiveBackToHomeBlur();
-
-
-
-    boolean predictiveBackToHomePolish();
-
-
-
     boolean privateSpaceAddFloatingMaskView();
 
 
@@ -390,6 +386,10 @@ public interface FeatureFlags {
 
 
 
+    boolean refactorTaskbarUiState();
+
+
+
     boolean removeAppsRefreshOnRightClick();
 
 
@@ -402,7 +402,19 @@ public interface FeatureFlags {
 
 
 
+    boolean showCloseButtonOnTaskviewHover();
+
+
+
+    boolean showFilesOnHomeScreen();
+
+
+
     boolean showTaskbarPinningPopupFromAnywhere();
+
+
+
+    boolean simplifiedLauncherModelBinding();
 
 
 
@@ -411,6 +423,10 @@ public interface FeatureFlags {
 
 
     boolean taskbarQuietModeChangeSupport();
+
+
+
+    boolean unpinFirstPagePinnedWidget();
 
 
 

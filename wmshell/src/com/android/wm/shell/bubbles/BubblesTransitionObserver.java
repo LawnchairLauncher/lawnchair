@@ -18,8 +18,8 @@ package com.android.wm.shell.bubbles;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 
-import static com.android.wm.shell.Flags.enableEnterSplitRemoveBubble;
 import static com.android.wm.shell.bubbles.util.BubbleUtils.getExitBubbleTransaction;
+import static com.android.wm.shell.bubbles.util.BubbleUtils.isBubbleToSplit;
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_BUBBLES_NOISY;
 
 import android.app.ActivityManager;
@@ -74,7 +74,7 @@ public class BubblesTransitionObserver implements Transitions.TransitionObserver
             @NonNull SurfaceControl.Transaction startTransaction,
             @NonNull SurfaceControl.Transaction finishTransaction) {
         collapseBubbleIfNeeded(info);
-        if (enableEnterSplitRemoveBubble() && BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
+        if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
             if (TransitionUtil.isOpeningType(info.getType()) && mBubbleData.hasBubbles()) {
                 removeBubbleIfLaunchingToSplit(info);
             }
@@ -154,34 +154,41 @@ public class BubblesTransitionObserver implements Transitions.TransitionObserver
                     + "task %d is our bubble so skip collapsing", taskId);
             return true;
         }
+
+        // If the opening tasks contains the bubble root task, skip collapsing.
+        if (mBubbleController.isAppBubbleRootTask(taskId)) {
+            ProtoLog.d(WM_SHELL_BUBBLES_NOISY, "BubblesTransitionObserver.onTransitionReady(): "
+                    + "task %d is the root task so skip collapsing", taskId);
+            return true;
+        }
+
         return false;
     }
 
     private void removeBubbleIfLaunchingToSplit(@NonNull TransitionInfo info) {
         if (mSplitScreenController.get().isEmpty()) return;
-        SplitScreenController splitScreenController = mSplitScreenController.get().get();
-        for (TransitionInfo.Change change : info.getChanges()) {
-            ActivityManager.RunningTaskInfo taskInfo = change.getTaskInfo();
+        for (final TransitionInfo.Change change : info.getChanges()) {
+            final ActivityManager.RunningTaskInfo taskInfo = change.getTaskInfo();
             if (taskInfo == null) continue;
-            Bubble bubble = mBubbleData.getBubbleInStackWithTaskId(taskInfo.taskId);
+            final Bubble bubble = mBubbleData.getBubbleInStackWithTaskId(taskInfo.taskId);
             if (bubble == null) continue;
-            if (!splitScreenController.isTaskRootOrStageRoot(taskInfo.parentTaskId)) continue;
+            if (!isBubbleToSplit(taskInfo, mSplitScreenController)) continue;
             // There is a bubble task that is moving to split screen
             ProtoLog.d(WM_SHELL_BUBBLES_NOISY, "BubblesTransitionObserver.onTransitionReady(): "
                     + "removing bubble for task launching into split taskId=%d", taskInfo.taskId);
-            TaskViewTaskController taskViewTaskController = bubble.getTaskView().getController();
-            ShellTaskOrganizer taskOrganizer = taskViewTaskController.getTaskOrganizer();
-            WindowContainerTransaction wct = getExitBubbleTransaction(taskInfo.token,
+            final TaskViewTaskController controller = bubble.getTaskView().getController();
+            final ShellTaskOrganizer taskOrganizer = controller.getTaskOrganizer();
+            final WindowContainerTransaction wct = getExitBubbleTransaction(taskInfo.token,
                     bubble.getTaskView().getCaptionInsetsOwner());
 
             // Notify the task removal, but block all TaskViewTransitions during removal so we can
             // clear them without triggering
             final IBinder gate = new Binder();
-            mTaskViewTransitions.enqueueExternal(taskViewTaskController, () -> gate);
+            mTaskViewTransitions.enqueueRunningExternal(controller, gate);
 
             taskOrganizer.applyTransaction(wct);
-            taskViewTaskController.notifyTaskRemovalStarted(taskInfo);
-            mTaskViewTransitions.removePendingTransitions(taskViewTaskController);
+            controller.notifyTaskRemovalStarted(taskInfo);
+            mTaskViewTransitions.removePendingTransitions(controller);
             mTaskViewTransitions.onExternalDone(gate);
         }
     }

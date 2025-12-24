@@ -55,6 +55,7 @@ import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
@@ -278,7 +279,10 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void finishRecentsAnimationForShell(boolean dismissTask) {
         mCancelWhenRecentsStart = false;
-        mTaskAnimationManager.finishRunningRecentsAnimation(dismissTask /* toHome */);
+        mTaskAnimationManager.finishRunningRecentsAnimation(
+                /* toHome= */ dismissTask,
+                /* reason= */ new ActiveGestureLog.CompoundString(
+                        "DeviceLockedInputConsumer.finishRecentsAnimationForShell"));
         if (dismissTask) {
             mHomeLaunched = true;
         }
@@ -287,7 +291,11 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private void endRemoteAnimation() {
         if (!mHomeLaunched && mRecentsAnimationController != null) {
             mRecentsAnimationController.finishController(
-                    false /* toRecents */, null /* callback */, false /* sendUserLeaveHint */);
+                    /* toHome= */ false,
+                    /* callback= */ null,
+                    /* sendUserLeaveHint= */ false,
+                    /* reason= */ new ActiveGestureLog.CompoundString(
+                            "DeviceLockedInputConsumer.endRemoteAnimation"));
         }
     }
 

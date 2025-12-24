@@ -75,12 +75,7 @@ class PhonePortraitNavLayoutter(
         }
 
         // Ensure order of buttons is correct
-        navButtonContainer.removeAllViews()
-        navButtonContainer.orientation = LinearLayout.HORIZONTAL
-
-        navButtonContainer.addView(backButton)
-        navButtonContainer.addView(homeButton)
-        navButtonContainer.addView(recentsButton)
+        addThreeButtons()
 
         navButtonContainer.layoutParams = navContainerParams
         navButtonContainer.gravity = Gravity.CENTER

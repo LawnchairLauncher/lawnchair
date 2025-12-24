@@ -60,16 +60,12 @@
          view lottie animation colors in XML files.
      -->
     <declare-styleable name="RootSandboxLayout">
-        <attr name="tutorialSubtitle" format="color" />
         <attr name="surfaceContainer" format="color" />
-        <attr name="onSurfaceHome" format="color" />
-        <attr name="surfaceHome" format="color" />
-        <attr name="secondaryHome" format="color" />
-        <attr name="onSurfaceBack" format="color" />
-        <attr name="surfaceBack" format="color" />
-        <attr name="secondaryBack" format="color" />
-        <attr name="onSurfaceOverview" format="color" />
-        <attr name="surfaceOverview" format="color" />
-        <attr name="secondaryOverview" format="color" />
+        <attr name="onContainerHome" format="color" />
+        <attr name="containerHome" format="color" />
+        <attr name="onContainerBack" format="color" />
+        <attr name="containerBack" format="color" />
+        <attr name="onContainerOverview" format="color" />
+        <attr name="containerOverview" format="color" />
     </declare-styleable>
 </resources>

@@ -339,6 +339,23 @@ public class SplitDecorManager extends WindowlessWindowManager {
     /** Stops showing resizing hint. */
     public void onResized(SurfaceControl.Transaction t,
             @Nullable Consumer<Boolean> animFinishedCallback) {
+        // If there is a running animation, place a placeholder callback to avoid calling the end
+        // callback too early when canceling the existed animation before the new animation starts.
+        final Consumer<Boolean> callbackPlaceHolder =
+                animFinishedCallback != null && mRunningAnimationCount > 0 ? status -> {} : null;
+        if (callbackPlaceHolder != null) {
+            mRunningAnimationCount++;
+            mAnimFinishCallbacks.put(callbackPlaceHolder, false);
+        }
+        animateResized(t, animFinishedCallback);
+        if (callbackPlaceHolder != null) {
+            mRunningAnimationCount--;
+            updateCallbackStatus(false /* callbackStatus */, callbackPlaceHolder);
+        }
+    }
+
+    private void animateResized(SurfaceControl.Transaction t,
+            @Nullable Consumer<Boolean> animFinishedCallback) {
         if (mScreenshotAnimator != null && mScreenshotAnimator.isRunning()) {
             mScreenshotAnimator.cancel();
         }
@@ -650,7 +667,7 @@ public class SplitDecorManager extends WindowlessWindowManager {
     }
 
     /** Release or hide decor hint. */
-    private void releaseDecor(SurfaceControl.Transaction t) {
+    public void releaseDecor(SurfaceControl.Transaction t) {
         if (mBackgroundLeash != null) {
             t.remove(mBackgroundLeash);
             mBackgroundLeash = null;

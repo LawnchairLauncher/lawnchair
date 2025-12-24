@@ -23,7 +23,7 @@ import android.testing.AndroidTestingRunner
 import android.testing.TestableContext
 import androidx.test.filters.SmallTest
 import com.android.modules.utils.testing.ExtendedMockitoRule
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.desktopmode.CaptionState
 import com.android.wm.shell.desktopmode.DesktopModeUiEventLogger

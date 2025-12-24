@@ -26,6 +26,7 @@ import android.window.TransitionFilter
 import android.window.TransitionFilter.CONTAINER_ORDER_TOP
 import com.android.internal.jank.Cuj
 import com.android.launcher3.desktop.DesktopAppLaunchTransition.AppLaunchType
+import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.quickstep.SystemUiProxy
 import com.android.wm.shell.shared.desktopmode.DesktopModeStatus
@@ -34,6 +35,7 @@ import com.android.wm.shell.shared.desktopmode.DesktopModeStatus
 class DesktopAppLaunchTransitionManager(
     private val context: Context,
     private val systemUiProxy: SystemUiProxy,
+    private val displayController: DisplayController,
 ) {
     private var remoteWindowLimitUnminimizeTransition: RemoteTransition? = null
 
@@ -49,6 +51,7 @@ class DesktopAppLaunchTransitionManager(
             RemoteTransition(
                 DesktopAppLaunchTransition(
                     context,
+                    displayController,
                     AppLaunchType.UNMINIMIZE,
                     Cuj.CUJ_DESKTOP_MODE_APP_LAUNCH_FROM_INTENT,
                     MAIN_EXECUTOR,

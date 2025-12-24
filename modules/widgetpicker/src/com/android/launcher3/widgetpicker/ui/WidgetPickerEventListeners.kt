@@ -32,8 +32,12 @@ interface WidgetPickerEventListeners {
     fun onWidgetInteraction(widgetInteractionInfo: WidgetInteractionInfo)
 }
 
-/** Information passed in event listener when a widget is dragged or added from picker. */
-sealed class WidgetInteractionInfo {
+/**
+ * Information passed in event listener when a widget is dragged or added from picker.
+ *
+ * @param source the UI section form which the widget was interacted with.
+ */
+sealed class WidgetInteractionInfo(open val source: WidgetInteractionSource) {
     /**
      * Information passed in event listener when a widget is dragged.
      *
@@ -43,6 +47,7 @@ sealed class WidgetInteractionInfo {
      * @param heightPx measured height of the preview.
      * @param previewInfo information necessary to render a preview within host
      * @param mimeType a unique mime type set on clip data for the drag session
+     * @param source the UI section form which the widget was interacted with.
      */
     data class WidgetDragInfo(
         val widgetInfo: WidgetInfo,
@@ -51,12 +56,29 @@ sealed class WidgetInteractionInfo {
         val heightPx: Int,
         val previewInfo: WidgetPreview,
         val mimeType: String,
-    ) : WidgetInteractionInfo()
+        override val source: WidgetInteractionSource,
+    ) : WidgetInteractionInfo(source)
 
     /**
      * Information passed in event listener when a widget is added using tap to add.
      *
      * @param widgetInfo metadata for the provider of the widget being added.
+     * @param source the UI section form which the widget was interacted with.
      */
-    data class WidgetAddInfo(val widgetInfo: WidgetInfo) : WidgetInteractionInfo()
+    data class WidgetAddInfo(
+        val widgetInfo: WidgetInfo,
+        override val source: WidgetInteractionSource,
+    ) : WidgetInteractionInfo(source)
+}
+
+/** Indicates the section from which the widget is being added from. */
+enum class WidgetInteractionSource {
+    /** The UI section that features / recommends widgets to the user. */
+    FEATURED,
+
+    /** The list of all widgets grouped under their apps. */
+    BROWSE,
+
+    /** The section that displays widgets or their apps that match the user query in search bar. */
+    SEARCH,
 }

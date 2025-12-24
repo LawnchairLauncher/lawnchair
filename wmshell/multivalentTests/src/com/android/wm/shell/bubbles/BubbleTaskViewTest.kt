@@ -24,12 +24,13 @@ import android.platform.test.flag.junit.FlagsParameterization
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags.FLAG_EXCLUDE_TASK_FROM_RECENTS
 import com.android.wm.shell.Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE
 import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper
+import com.android.wm.shell.splitscreen.SplitScreenController
 import com.android.wm.shell.taskview.TaskView
 import com.google.common.truth.Truth.assertThat
 import com.google.common.util.concurrent.MoreExecutors.directExecutor
+import java.util.Optional
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,8 +51,17 @@ class BubbleTaskViewTest(flags: FlagsParameterization) {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val componentName = ComponentName(context, "TestClass")
-    private val taskView = mock<TaskView>()
-    private val bubbleTaskView = BubbleTaskView(taskView, directExecutor())
+    private val runningTaskInfo = ActivityManager.RunningTaskInfo()
+    private val splitScreenController = mock<SplitScreenController>()
+    private val taskView = mock<TaskView> {
+        on { taskInfo } doReturn runningTaskInfo
+    }
+    private val bubbleTaskView =
+        BubbleTaskView(
+            taskView,
+            executor = directExecutor(),
+            splitScreenController = { Optional.of(splitScreenController) },
+        )
 
     @Test
     fun onTaskCreated_updatesState() {
@@ -81,22 +91,15 @@ class BubbleTaskViewTest(flags: FlagsParameterization) {
     }
 
     @Test
-    fun cleanup_invalidTaskId_removesTask() {
+    fun cleanup_noTaskCreated_removesTask() {
         bubbleTaskView.cleanup()
+
+        verify(taskView, never()).unregisterTask()
         verify(taskView).removeTask()
     }
 
     @Test
-    fun cleanup_validTaskId_removesTask() {
-        bubbleTaskView.listener.onTaskCreated(123 /* taskId */, componentName)
-
-        bubbleTaskView.cleanup()
-
-        verify(taskView).removeTask()
-    }
-
-    @Test
-    fun cleanup_noneFullscreenTask_removesTask() {
+    fun cleanup_regularBubbleTask_removesTask() {
         bubbleTaskView.listener.onTaskCreated(123 /* taskId */, componentName)
 
         bubbleTaskView.cleanup()
@@ -106,18 +109,32 @@ class BubbleTaskViewTest(flags: FlagsParameterization) {
     }
 
     @Test
-    fun cleanup_fullscreenTask_removesOrUnregistersTask() {
-        val fullScreenTaskInfo = ActivityManager.RunningTaskInfo().apply {
-            configuration.windowConfiguration.windowingMode = WINDOWING_MODE_FULLSCREEN
+    fun cleanup_taskTransitioningToSplitScreen_unregistersTask() {
+        val sideStageRootTask = 5
+        splitScreenController.stub {
+            on { isTaskRootOrStageRoot(sideStageRootTask) } doReturn true
         }
-        taskView.stub {
-            on { taskInfo } doReturn fullScreenTaskInfo
+        runningTaskInfo.apply {
+            parentTaskId = sideStageRootTask // Task is running in split-screen mode.
         }
         bubbleTaskView.listener.onTaskCreated(123 /* taskId */, componentName)
 
         bubbleTaskView.cleanup()
 
-        if (BubbleAnythingFlagHelper.enableCreateAnyBubbleWithForceExcludedFromRecents()) {
+        verify(taskView).unregisterTask()
+        verify(taskView, never()).removeTask()
+    }
+
+    @Test
+    fun cleanup_taskTransitioningToFullscreen_removesOrUnregistersTask() {
+        runningTaskInfo.apply {
+            configuration.windowConfiguration.windowingMode = WINDOWING_MODE_FULLSCREEN
+        }
+        bubbleTaskView.listener.onTaskCreated(123 /* taskId */, componentName)
+
+        bubbleTaskView.cleanup()
+
+        if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
             verify(taskView).unregisterTask()
             verify(taskView, never()).removeTask()
         } else {
@@ -131,7 +148,6 @@ class BubbleTaskViewTest(flags: FlagsParameterization) {
         @Parameters(name = "{0}")
         fun getParams() = FlagsParameterization.allCombinationsOf(
             FLAG_ENABLE_CREATE_ANY_BUBBLE,
-            FLAG_EXCLUDE_TASK_FROM_RECENTS,
         )
     }
 }

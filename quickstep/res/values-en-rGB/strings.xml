@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"App suggestions added to empty space"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App suggestions enabled"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App suggestions are disabled"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predicted app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"Gesture navigation tutorial"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Rotate your device"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Please rotate your device to complete the gesture navigation tutorial"</string>
@@ -64,7 +63,7 @@
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Swipe from the left or right edge to the middle of the screen"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Make sure you swipe up from the bottom edge of the screen"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Make sure you don\'t pause before letting go"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Make sure you swipe straight up"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Make sure that you swipe straight up"</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"You completed the go home gesture. Next up, learn how to go back."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"You completed the go home gesture"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swipe to go home"</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"System navigation settings"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"Your <xliff:g id="DEVICE">%1$s</xliff:g> is \nready!"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Your device is \nready!"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"You\'re ready to roll!"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"Enjoy your new <xliff:g id="DEVICE">%1$s</xliff:g>!"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"Swipe up to get started with your <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"Tap to get started with your <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Choose how to navigate"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"Swipe up"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"Tap the Home button"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notifications"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Quick Settings"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Taskbar"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskbar shown"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Taskbar and bubbles left shown"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Taskbar and bubbles right shown"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigation bar"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Always show Taskbar"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Change navigation mode"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Taskbar divider"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Other recent apps"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"App added to Taskbar"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"App removed from Taskbar"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Move to top/left"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Move to bottom/right"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Open app as a bubble"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"App icon"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"App title"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"Close button"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"Pin to taskbar"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Unpin from taskbar"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"Nudge"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"Close"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"Nudge image"</string>

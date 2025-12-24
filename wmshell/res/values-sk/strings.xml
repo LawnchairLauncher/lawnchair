@@ -39,24 +39,28 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"Aplikácia bublinu nepodporuje"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Rozdeľovač obrazovky"</string>
     <string name="divider_title" msgid="1963391955593749442">"Rozdeľovač obrazovky"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Ľavá – na celú obrazovku"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Ľavá – 70 %"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Ľavá – 50 %"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Ľavá – 30 %"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Pravá– na celú obrazovku"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Vymeniť hornú aplikáciu za dolnú"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Vymeniť ľavú aplikáciu za pravú"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Horná – na celú obrazovku"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Horná – 70 %"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Horná – 50 %"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Horná – 30 %"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Dolná – na celú obrazovku"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"Zobraziť ľavú aplikáciu na celú obrazovku"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"10 % vľavo, 90 % vpravo"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"30 % vľavo, 70 % vpravo"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"50 % vľavo, 50 % vpravo"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"70 % vľavo, 30 % vpravo"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"90 % vľavo, 10 % vpravo"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"Zobraziť pravú aplikáciu na celú obrazovku"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Vymeniť hornú aplikáciu za dolnú, ponechať aktuálne rozdelenie"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Vymeniť ľavú aplikáciu za pravú, ponechať aktuálne rozdelenie"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Zobraziť hornú aplikáciu na celú obrazovku"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10 % hore, 90 % dole"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"30 % hore, 70 % dole"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"50 % hore, 50 % dole"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"70 % hore, 30 % dole"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"90 % hore, 10 % dole"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Zobraziť dolnú aplikáciu na celú obrazovku"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Rozdeliť vľavo"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Rozdeliť vpravo"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"Rozdeliť hore"</string>
     <string name="accessibility_split_bottom" msgid="8694551025220868191">"Rozdeliť dole"</string>
     <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Používanie režimu jednej ruky"</string>
-    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Ukončíte potiahnutím z dolnej časti obrazovky nahor alebo klepnutím kdekoľvek nad aplikáciu"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Režim ukončíte potiahnutím z dolnej časti obrazovky nahor alebo klepnutím kdekoľvek nad aplikáciu"</string>
     <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Spustiť režim jednej ruky"</string>
     <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Ukončiť režim jednej ruky"</string>
     <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Nastavenia bublín aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -165,7 +169,7 @@
     <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"Minimalizovať okno aplikácie"</string>
     <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"Zavrieť okno aplikácie"</string>
     <string name="open_by_default_settings_text" msgid="2526548548598185500">"Otvárať podľa predvolených nastavení"</string>
-    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Vyberte, ako sa majú v tejto aplikácii otvárať webové odkazy"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Vyberte, ako sa majú otvárať webové odkazy pre túto aplikáciu"</string>
     <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"V aplikácii"</string>
     <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"V prehliadači"</string>
     <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"OK"</string>

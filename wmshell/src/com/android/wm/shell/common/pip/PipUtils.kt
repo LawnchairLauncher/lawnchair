@@ -32,6 +32,7 @@ import android.util.Pair
 import android.util.TypedValue
 import android.window.DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP
 import android.window.TaskSnapshot
+import android.window.TaskSnapshotManager
 import android.window.TransitionInfo
 import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.shared.pip.PipFlags
@@ -141,7 +142,12 @@ object PipUtils {
     @JvmStatic
     fun getTaskSnapshot(taskId: Int, isLowResolution: Boolean): TaskSnapshot? {
         return if (taskId <= 0) null else try {
-            ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution)
+            if (com.android.window.flags2.Flags.reduceTaskSnapshotMemoryUsage()) {
+                TaskSnapshotManager.getInstance().getTaskSnapshot(taskId,
+                    TaskSnapshotManager.convertRetrieveFlag(isLowResolution))
+            } else {
+                ActivityTaskManager.getService().getTaskSnapshot(taskId, isLowResolution)
+            }
         } catch (e: RemoteException) {
             Log.e(TAG, "Failed to get task snapshot, taskId=$taskId", e)
             null
@@ -334,6 +340,7 @@ object PipUtils {
         pw.println("${innerPrefix1}isPipUmoExperienceEnabled=${PipFlags.isPipUmoExperienceEnabled}")
         pw.println("${innerPrefix1}isPip2ExperimentEnabled=${PipFlags.isPip2ExperimentEnabled}")
         pw.println("${innerPrefix2}enablePip2=${Flags.enablePip2()}")
+        pw.println("${innerPrefix2}enablePip2OnTv=${Flags.enablePip2OnTv()}")
         pw.println("${innerPrefix2}enableDwPip=${ENABLE_DESKTOP_WINDOWING_PIP.isTrue}")
     }
 }

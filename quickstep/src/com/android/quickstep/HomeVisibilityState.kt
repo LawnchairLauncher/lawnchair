@@ -17,6 +17,7 @@
 package com.android.quickstep
 
 import android.os.RemoteException
+import android.os.UserHandle
 import android.util.Log
 import android.view.InsetsState
 import android.view.WindowInsets
@@ -66,7 +67,8 @@ class HomeVisibilityState {
                                 .bottom
                         navbarInsetPosition = displayFrame.bottom - bottomInset
                     }
-                }
+                },
+                UserHandle.myUserId(),
             )
         } catch (e: RemoteException) {
             Log.w(TAG, "Failed call setHomeTransitionListener", e)

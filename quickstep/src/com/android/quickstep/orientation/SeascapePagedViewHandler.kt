@@ -172,7 +172,7 @@ class SeascapePagedViewHandler : LandscapePagedViewHandler() {
         if (splitBounds == null) {
             translationY = banner.height.toFloat()
         } else {
-            if (desiredTaskId == splitBounds.leftTopTaskId) {
+            if (desiredTaskId == splitBounds.rightBottomTaskId) {
                 val bottomRightTaskPlusDividerPercent =
                     splitBounds.rightBottomTaskPercent + splitBounds.dividerPercent
                 translationY =

@@ -44,3 +44,17 @@ android_test {
         "wm-shell-flicker-utils",
     ],
 }
+
+test_module_config {
+    name: "WMShellSmokeTestsDesktopMode-ProjectedMode",
+    base: "WMShellSmokeTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_annotations: ["com.android.wm.shell.ProjectedOnly"],
+}
+
+test_module_config {
+    name: "WMShellSmokeTestsDesktopMode-ExtendedMode",
+    base: "WMShellSmokeTestsDesktopMode",
+    test_suites: ["device-tests"],
+    include_annotations: ["com.android.wm.shell.ExtendedOnly"],
+}

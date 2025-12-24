@@ -67,36 +67,37 @@ fun insertIntoDb(tableName: String, entry: WorkspaceItem, db: SQLiteDatabase) {
 
 fun readDb(tableName: String, db: SQLiteDatabase): List<WorkspaceItem> {
     val result = mutableListOf<WorkspaceItem>()
-    val cursor = db.query(tableName, null, null, null, null, null, null)
-    val indexCellX: Int = cursor.getColumnIndexOrThrow(Favorites.CELLX)
-    val indexCellY: Int = cursor.getColumnIndexOrThrow(Favorites.CELLY)
-    val indexSpanX: Int = cursor.getColumnIndexOrThrow(Favorites.SPANX)
-    val indexSpanY: Int = cursor.getColumnIndexOrThrow(Favorites.SPANY)
-    val indexId: Int = cursor.getColumnIndexOrThrow(Favorites._ID)
-    val indexScreen: Int = cursor.getColumnIndexOrThrow(Favorites.SCREEN)
-    val indexTitle: Int = cursor.getColumnIndexOrThrow(Favorites.TITLE)
-    val indexAppWidgetId: Int = cursor.getColumnIndexOrThrow(Favorites.APPWIDGET_ID)
-    val indexWidgetProvider: Int = cursor.getColumnIndexOrThrow(Favorites.APPWIDGET_PROVIDER)
-    val indexIntent: Int = cursor.getColumnIndexOrThrow(Favorites.INTENT)
-    val indexItemType: Int = cursor.getColumnIndexOrThrow(Favorites.ITEM_TYPE)
-    val container: Int = cursor.getColumnIndexOrThrow(Favorites.CONTAINER)
-    while (cursor.moveToNext()) {
-        result.add(
-            WorkspaceItem(
-                x = cursor.getInt(indexCellX),
-                y = cursor.getInt(indexCellY),
-                spanX = cursor.getInt(indexSpanX),
-                spanY = cursor.getInt(indexSpanY),
-                id = cursor.getInt(indexId),
-                screenId = cursor.getInt(indexScreen),
-                title = cursor.getString(indexTitle),
-                appWidgetId = cursor.getInt(indexAppWidgetId),
-                appWidgetProvider = cursor.getString(indexWidgetProvider),
-                intent = cursor.getString(indexIntent),
-                type = cursor.getInt(indexItemType),
-                container = cursor.getInt(container),
+    db.query(tableName, null, null, null, null, null, null).use { cursor ->
+        val indexCellX: Int = cursor.getColumnIndexOrThrow(Favorites.CELLX)
+        val indexCellY: Int = cursor.getColumnIndexOrThrow(Favorites.CELLY)
+        val indexSpanX: Int = cursor.getColumnIndexOrThrow(Favorites.SPANX)
+        val indexSpanY: Int = cursor.getColumnIndexOrThrow(Favorites.SPANY)
+        val indexId: Int = cursor.getColumnIndexOrThrow(Favorites._ID)
+        val indexScreen: Int = cursor.getColumnIndexOrThrow(Favorites.SCREEN)
+        val indexTitle: Int = cursor.getColumnIndexOrThrow(Favorites.TITLE)
+        val indexAppWidgetId: Int = cursor.getColumnIndexOrThrow(Favorites.APPWIDGET_ID)
+        val indexWidgetProvider: Int = cursor.getColumnIndexOrThrow(Favorites.APPWIDGET_PROVIDER)
+        val indexIntent: Int = cursor.getColumnIndexOrThrow(Favorites.INTENT)
+        val indexItemType: Int = cursor.getColumnIndexOrThrow(Favorites.ITEM_TYPE)
+        val container: Int = cursor.getColumnIndexOrThrow(Favorites.CONTAINER)
+        while (cursor.moveToNext()) {
+            result.add(
+                WorkspaceItem(
+                    x = cursor.getInt(indexCellX),
+                    y = cursor.getInt(indexCellY),
+                    spanX = cursor.getInt(indexSpanX),
+                    spanY = cursor.getInt(indexSpanY),
+                    id = cursor.getInt(indexId),
+                    screenId = cursor.getInt(indexScreen),
+                    title = cursor.getString(indexTitle),
+                    appWidgetId = cursor.getInt(indexAppWidgetId),
+                    appWidgetProvider = cursor.getString(indexWidgetProvider),
+                    intent = cursor.getString(indexIntent),
+                    type = cursor.getInt(indexItemType),
+                    container = cursor.getInt(container),
+                )
             )
-        )
+        }
     }
     return result
 }

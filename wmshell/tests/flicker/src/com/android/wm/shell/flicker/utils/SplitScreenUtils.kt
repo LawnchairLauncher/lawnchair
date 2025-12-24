@@ -30,7 +30,9 @@ import android.tools.traces.component.ComponentNameMatcher
 import android.tools.traces.component.IComponentMatcher
 import android.tools.traces.component.IComponentNameMatcher
 import android.tools.traces.parsers.WindowManagerStateHelper
+import android.tools.traces.parsers.WindowManagerStateHelper.StateSyncBuilder
 import android.tools.traces.parsers.toFlickerComponent
+import android.view.Display
 import android.view.InputDevice
 import android.view.MotionEvent
 import android.view.ViewConfiguration
@@ -89,16 +91,31 @@ object SplitScreenUtils {
 
     fun getIme(instrumentation: Instrumentation): ImeAppHelper = ImeAppHelper(instrumentation)
 
+    /**
+     * Waits for the split-screen mode to be fully entered and visible.
+     *
+     * @param primaryApp the component for the primary (top or left) app.
+     * @param secondaryApp the component for the secondary (bottom or right) app.
+     * @param displayId of the target display
+     */
+    fun StateSyncBuilder.withSplitScreenComplete(
+        primaryApp: IComponentMatcher,
+        secondaryApp: IComponentMatcher,
+        displayId: Int = Display.DEFAULT_DISPLAY,
+    ) =
+        withAppTransitionIdle(displayId)
+            .withWindowSurfaceAppeared(primaryApp)
+            .withWindowSurfaceAppeared(secondaryApp)
+            .withSplitDividerVisible()
+
+    /** Waits and verifies that the device has entered split-screen with the specified apps. */
     fun waitForSplitComplete(
         wmHelper: WindowManagerStateHelper,
         primaryApp: IComponentMatcher,
         secondaryApp: IComponentMatcher,
     ) {
-        wmHelper
-            .StateSyncBuilder()
-            .withWindowSurfaceAppeared(primaryApp)
-            .withWindowSurfaceAppeared(secondaryApp)
-            .withSplitDividerVisible()
+        wmHelper.StateSyncBuilder()
+            .withSplitScreenComplete(primaryApp, secondaryApp)
             .waitForAndVerify()
     }
 
@@ -108,7 +125,7 @@ object SplitScreenUtils {
         device: UiDevice,
         primaryApp: IStandardAppHelper,
         secondaryApp: IStandardAppHelper,
-        rotation: Rotation
+        rotation: Rotation = Rotation.ROTATION_0,
     ) {
         primaryApp.launchViaIntent(wmHelper)
         secondaryApp.launchViaIntent(wmHelper)

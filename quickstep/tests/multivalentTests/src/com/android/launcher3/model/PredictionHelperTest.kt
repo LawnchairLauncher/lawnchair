@@ -42,7 +42,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
@@ -105,7 +104,7 @@ class PredictionHelperTest {
 
     @Test
     fun getBundleForHotseatPredictions_contains_pin_events() {
-        val dataModel = BgDataModel(mock(), mock(), mock(), mock())
+        val dataModel = context.appComponent.testableModelState.dataModel
         dataModel.initItems(
             createAppInfo("test1"),
             createAppInfo("test2", CONTAINER_HOTSEAT, 2),
@@ -125,7 +124,7 @@ class PredictionHelperTest {
 
     @Test
     fun getBundleForWidgetPredictions_contains_pin_events() {
-        val dataModel = BgDataModel(mock(), mock(), mock(), mock())
+        val dataModel = context.appComponent.testableModelState.dataModel
         dataModel.initItems(
             createAppInfo("test1"),
             createAppInfo("test2", CONTAINER_HOTSEAT, 2),

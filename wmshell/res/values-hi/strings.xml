@@ -39,24 +39,28 @@
     <string name="bubble_not_supported_text" msgid="8843806122229754809">"इस ऐप्लिकेशन पर बबल की सुविधा काम नहीं करती"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"स्प्लिट स्क्रीन डिवाइडर मोड"</string>
     <string name="divider_title" msgid="1963391955593749442">"स्प्लिट स्क्रीन डिवाइडर मोड"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"बाईं स्क्रीन को फ़ुल स्क्रीन बनाएं"</string>
-    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"बाईं स्क्रीन को 70% बनाएं"</string>
-    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"बाईं स्क्रीन को 50% बनाएं"</string>
-    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"बाईं स्क्रीन को 30% बनाएं"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"दाईं स्क्रीन को फ़ुल स्क्रीन बनाएं"</string>
-    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"सबसे ऊपर मौजूद ऐप्लिकेशन को सबसे नीचे मौजूद ऐप्लिकेशन से बदलें"</string>
-    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"बाईं ओर मौजूद ऐप्लिकेशन को दाईं ओर मौजूद ऐप्लिकेशन से बदलें"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"ऊपर की स्क्रीन को फ़ुल स्क्रीन बनाएं"</string>
-    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ऊपर की स्क्रीन को 70% बनाएं"</string>
-    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ऊपर की स्क्रीन को 50% बनाएं"</string>
-    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"ऊपर की स्क्रीन को 30% बनाएं"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"नीचे की स्क्रीन को फ़ुल स्क्रीन बनाएं"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1857937769498651238">"बाईं तरफ़ मौजूद ऐप्लिकेशन को फ़ुल स्क्रीन मोड में खोलें"</string>
+    <string name="accessibility_action_divider_left_10" formatted="false" msgid="8237692006159749086">"बाईं तरफ़ के ऐप्लिकेशन को 10% और दाई तरफ़ के ऐप्लिकेशन को 90% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_left_30" formatted="false" msgid="5033298971212011735">"बाईं तरफ़ के ऐप्लिकेशन को 30% और दाई तरफ़ के ऐप्लिकेशन को 70% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_left_50" formatted="false" msgid="170317638773112190">"बाईं और दाईं, दोनों तरफ़ के ऐप्लिकेशन को 50-50% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_left_70" formatted="false" msgid="3986621081137830158">"बाईं तरफ़ के ऐप्लिकेशन को 70% और दाई तरफ़ के ऐप्लिकेशन को 30% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_left_90" formatted="false" msgid="3525922058426249817">"बाईं तरफ़ के ऐप्लिकेशन को 90% और दाई तरफ़ के ऐप्लिकेशन को 10% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_right_full" msgid="4162106720432709858">"दाईं तरफ़ मौजूद ऐप्लिकेशन को फ़ुल स्क्रीन में खोलें"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"ऊपर मौजूद ऐप्लिकेशन को नीचे मौजूद ऐप्लिकेशन के साथ स्वैप करें. मौजूदा स्प्लिट स्क्रीन को बनाए रखें"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"बाईं तरफ़ मौजूद ऐप्लिकेशन को दाईं तरफ़ मौजूद ऐप्लिकेशन के साथ स्वैप करें. मौजूदा स्प्लिट स्क्रीन को बनाए रखें"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"ऊपर मौजूद ऐप्लिकेशन को फ़ुल स्क्रीन में खोलें"</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"10% ऊपर, 90% नीचे ऊपर के ऐप्लिकेशन को 10% और नीचे के ऐप्लिकेशन को 90% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"ऊपर के ऐप्लिकेशन को 30% और नीचे के ऐप्लिकेशन को 70% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"ऊपर और नीचे, दोनों के ऐप्लिकेशन को 50-50% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"ऊपर के ऐप्लिकेशन को 70% और नीचे के ऐप्लिकेशन को 30% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"ऊपर के ऐप्लिकेशन को 90% और नीचे के ऐप्लिकेशन को 10% हिस्से में खोलें"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"नीचे मौजूद ऐप्लिकेशन को फ़ुल स्क्रीन में खोलें"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"स्क्रीन को बाएं हिस्से में स्प्लिट करें"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"स्क्रीन को दाएं हिस्से में स्प्लिट करें"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"स्क्रीन को ऊपर के हिस्से में स्प्लिट करें"</string>
     <string name="accessibility_split_bottom" msgid="8694551025220868191">"स्क्रीन को सबसे नीचे वाले हिस्से में स्प्लिट करें"</string>
-    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"वन-हैंडेड मोड का इस्तेमाल करना"</string>
-    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"इस मोड से बाहर निकलने के लिए, स्क्रीन के सबसे निचले हिस्से से ऊपर की ओर स्वाइप करें या ऐप्लिकेशन के बाहर कहीं भी टैप करें"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"एक हाथ से इस्तेमाल करने की सुविधा"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"इस मोड से बाहर निकलने के लिए, स्क्रीन के सबसे निचले हिस्से से ऊपर की ओर स्वाइप करें या ऐप्लिकेशन के ऊपर कहीं भी टैप करें"</string>
     <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"वन-हैंडेड मोड चालू करें"</string>
     <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"वन-हैंडेड मोड से बाहर निकलें"</string>
     <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> बबल्स की सेटिंग"</string>

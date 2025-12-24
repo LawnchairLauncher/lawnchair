@@ -69,7 +69,8 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     @Test
     public void testSplitAppFromHomeWithItself() throws Exception {
         // Currently only tablets have Taskbar in Overview, so test is only active on tablets
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
 
         mLauncher.getWorkspace()
                 .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
@@ -119,7 +120,8 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     @Test
     public void testSplitSingleTaskFromTaskbar() {
         // Currently only tablets have Taskbar in Overview, so test is only active on tablets
-        assumeTrue(mLauncher.isTablet());
+        assumeTrue("Ignoring test because device is not a tablet",
+            mLauncher.isTablet());
 
         clearAllRecentTasks();
         startAppFast(getAppPackageName());

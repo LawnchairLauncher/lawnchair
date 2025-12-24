@@ -26,7 +26,7 @@ import android.window.DesktopExperienceFlags
 import android.window.DesktopModeFlags
 import androidx.test.filters.SmallTest
 import com.android.internal.R
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.ShellTestCase
 import com.google.common.truth.Truth.assertThat
 import org.junit.After

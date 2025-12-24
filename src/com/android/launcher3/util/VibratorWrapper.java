@@ -85,7 +85,7 @@ public class VibratorWrapper {
         if (mHasVibrator) {
             MAIN_EXECUTOR.execute(
                     () -> settingsCache.register(HAPTIC_FEEDBACK_URI, mHapticChangeListener));
-            mIsHapticFeedbackEnabled = settingsCache.getValue(HAPTIC_FEEDBACK_URI, 0);
+            mIsHapticFeedbackEnabled = settingsCache.getValue(HAPTIC_FEEDBACK_URI);
             tracker.addCloseable(
                     () -> settingsCache.unregister(HAPTIC_FEEDBACK_URI, mHapticChangeListener));
         } else {

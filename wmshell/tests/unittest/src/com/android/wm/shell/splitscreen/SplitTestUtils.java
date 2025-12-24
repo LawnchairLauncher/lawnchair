@@ -109,7 +109,7 @@ public class SplitTestUtils {
                     launchAdjacentController, windowDecorViewModel, splitState,
                     desktopTasksController, desktopUserRepositories, rootTDAOrganizer,
                     rootDisplayAreaOrganizer,
-                    desktopState, activityTaskManager, msdlPlayer);
+                    desktopState, activityTaskManager, msdlPlayer, Optional.empty());
 
             // Prepare root task for testing.
             mRootLeash = new SurfaceControl.Builder().setName("test").build();

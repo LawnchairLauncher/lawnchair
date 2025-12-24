@@ -39,6 +39,15 @@ interface TaskChangeListener {
      */
     fun onNonTransitionTaskChanging(taskInfo: RunningTaskInfo)
 
+    /**
+     * Notifies a task close event on the given task from [RootTaskDesksOrganizer].
+     *
+     * This is used to propagate task close signals since not all task close events are propagated
+     * from [TransitionObserver] in [onTaskClosing]. It is recommended to use [onTaskClosing]
+     * instead of this method where possible.
+     */
+    fun onNonTransitionTaskClosing(taskInfo: RunningTaskInfo)
+
     /** Notifies a task moving to the front. */
     fun onTaskMovingToFront(taskInfo: RunningTaskInfo)
 

@@ -109,6 +109,8 @@ public class ArrowTipView extends AbstractFloatingView {
         if (!ta.hasValue(R.styleable.ArrowTipView_arrowTipBackground)
                 || !ta.hasValue(R.styleable.ArrowTipView_arrowTipTextColor)) {
             localContext = new ContextThemeWrapper(localContext, R.style.ArrowTipStyle);
+            ta.recycle();
+            ta = localContext.obtainStyledAttributes(R.styleable.ArrowTipView);
         }
         mArrowViewPaintColor = applyArrowPaintColor(ta, localContext);
         init(localContext, layoutId);

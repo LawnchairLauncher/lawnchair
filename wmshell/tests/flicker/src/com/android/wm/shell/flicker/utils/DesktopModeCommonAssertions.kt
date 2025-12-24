@@ -18,13 +18,14 @@
 
 package com.android.wm.shell.flicker.utils
 
-import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.FlickerTest
 import android.tools.helpers.WindowUtils
 import android.tools.traces.component.IComponentMatcher
+import android.tools.traces.wm.WindowManagerState
 
 // Common assertions for Desktop mode features.
 
-fun LegacyFlickerTest.cascadingEffectAppliedAtEnd(component: IComponentMatcher) {
+fun FlickerTest.cascadingEffectAppliedAtEnd(component: IComponentMatcher) {
     assertWmEnd {
         val displayAppBounds = WindowUtils.getInsetDisplayBounds(scenario.startRotation)
         val windowBounds = visibleRegion(component).region.bounds
@@ -39,7 +40,20 @@ fun LegacyFlickerTest.cascadingEffectAppliedAtEnd(component: IComponentMatcher) 
     }
 }
 
-fun LegacyFlickerTest.appLayerHasMaxDisplayHeightAtEnd(component: IComponentMatcher) {
+fun FlickerTest.appLayerPositionedBottomRightAtEnd(component: IComponentMatcher) {
+    assertWmEnd {
+        val displayAppBounds = WindowUtils.getInsetDisplayBounds(scenario.startRotation)
+        val windowBounds = visibleRegion(component).region.bounds
+
+        val onRightSide = windowBounds.right == displayAppBounds.right
+        val onBottomSide = windowBounds.bottom == displayAppBounds.bottom
+
+        check { "window corner must meet display corner" }.that(onRightSide && onBottomSide)
+            .isEqual(true)
+    }
+}
+
+fun FlickerTest.appLayerHasMaxDisplayHeightAtEnd(component: IComponentMatcher) {
     assertLayersEnd {
         val displayBounds = WindowUtils.getInsetDisplayBounds(scenario.startRotation)
         visibleRegion(component)
@@ -48,7 +62,7 @@ fun LegacyFlickerTest.appLayerHasMaxDisplayHeightAtEnd(component: IComponentMatc
     }
 }
 
-fun LegacyFlickerTest.appLayerHasMaxDisplayWidthAtEnd(component: IComponentMatcher) {
+fun FlickerTest.appLayerHasMaxDisplayWidthAtEnd(component: IComponentMatcher) {
     assertLayersEnd {
         val displayBounds = WindowUtils.getInsetDisplayBounds(scenario.startRotation)
         visibleRegion(component)
@@ -57,7 +71,33 @@ fun LegacyFlickerTest.appLayerHasMaxDisplayWidthAtEnd(component: IComponentMatch
     }
 }
 
-fun LegacyFlickerTest.resizeVeilKeepsIncreasingInSize(component: IComponentMatcher) {
+fun FlickerTest.appLayerHasMaxBoundsInOnlyOneDimension(component: IComponentMatcher) {
+    assertWmEnd {
+        val maxDisplayBounds = WindowUtils.getInsetDisplayBounds(scenario.startRotation)
+        val windowBounds = visibleRegion(component).region.bounds
+
+        val hasMaxHeight =
+            windowBounds.top == maxDisplayBounds.top &&
+                windowBounds.bottom == maxDisplayBounds.bottom
+        val hasMaxWidth =
+            windowBounds.left == maxDisplayBounds.left &&
+                windowBounds.right == maxDisplayBounds.right
+        val isMaxInOneDimension = hasMaxHeight.xor(hasMaxWidth)
+
+        check { "only one max bounds" }.that(isMaxInOneDimension).isEqual(true)
+    }
+}
+
+fun FlickerTest.appLayerMaintainsAspectRatioAlways(component: IComponentMatcher) {
+    assertLayers {
+        val desktopWindowLayerList = layers { component.layerMatchesAnyOf(it) && it.isVisible }
+        desktopWindowLayerList.zipWithNext { previous, current ->
+            current.visibleRegion.isSameAspectRatio(previous.visibleRegion)
+        }
+    }
+}
+
+fun FlickerTest.resizeVeilKeepsIncreasingInSize(component: IComponentMatcher) {
     assertLayers {
         val layerList = layers {
             component.layerMatchesAnyOf(it) &&
@@ -71,7 +111,7 @@ fun LegacyFlickerTest.resizeVeilKeepsIncreasingInSize(component: IComponentMatch
     }
 }
 
-fun LegacyFlickerTest.resizeVeilKeepsDecreasingInSize(component: IComponentMatcher) {
+fun FlickerTest.resizeVeilKeepsDecreasingInSize(component: IComponentMatcher) {
     assertLayers {
         val layerList = layers {
             component.layerMatchesAnyOf(it) &&
@@ -85,17 +125,19 @@ fun LegacyFlickerTest.resizeVeilKeepsDecreasingInSize(component: IComponentMatch
     }
 }
 
-fun LegacyFlickerTest.appLayerHasSizeAtEnd(
+fun FlickerTest.appLayerHasSizeAtEnd(
     component: IComponentMatcher,
-    width: Int,
-    height: Int
+    widthDp: Int,
+    heightDp: Int
 ) {
+    val width = WindowManagerState.dpToPx(widthDp.toFloat(), WindowUtils.defaultDisplayDpi)
+    val height = WindowManagerState.dpToPx(heightDp.toFloat(), WindowUtils.defaultDisplayDpi)
     assertLayersEnd {
         visibleRegion(component).hasSameSize(width, height, diffThreshold = 50)
     }
 }
 
-fun LegacyFlickerTest.leftTiledAppLargerThanRightAtEnd(
+fun FlickerTest.leftTiledAppLargerThanRightAtEnd(
     leftComponent: IComponentMatcher,
     rightComponent: IComponentMatcher,
 ) {
@@ -104,8 +146,60 @@ fun LegacyFlickerTest.leftTiledAppLargerThanRightAtEnd(
         visibleRegion(leftComponent).isStrictlyWiderThan(rightRegion.region)
     }
 }
+/**
+ * Verify that app window fills > 95% of either half of the screen, accounting for the difference
+ * due to the divider handle.
+ */
+fun FlickerTest.appWindowCoversHalfScreenAtEnd(
+    component: IComponentMatcher,
+    isLeftHalf: Boolean,
+    coverageDifferenceThresholdRatio: Double = 0.05,
+) {
+    assertLayersEnd {
+        // Build expected bounds of half the display (minus given threshold)
+        val expectedBounds =
+            WindowUtils.getInsetDisplayBounds(scenario.startRotation).apply {
+                if (isLeftHalf) {
+                    right = (centerX() * (1 - coverageDifferenceThresholdRatio)).toInt()
+                } else {
+                    left = (centerX() * (1 + coverageDifferenceThresholdRatio)).toInt()
+                }
+            }
+        visibleRegion(component).coversAtLeast(expectedBounds)
+    }
+}
 
-fun LegacyFlickerTest.tilingDividerBecomesVisibleThenInvisible() {
+fun FlickerTest.appWindowBecomesPinned(component: IComponentMatcher) {
+    assertWm {
+        invoke("appWindowIsNotPinned") { it.isNotPinned(component) }
+            .then()
+            .invoke("appWindowIsPinned") { it.isPinned(component) }
+    }
+}
+
+/**
+ * Assert that the app window launches on the default display.
+ */
+fun FlickerTest.appWindowOnDefaultDisplayAtEnd(component: IComponentMatcher) {
+    assertWmEnd {
+        this.containsAppWindow(component)
+    }
+}
+
+fun FlickerTest.appWindowReturnsToStartBoundsAndPosition(component: IComponentMatcher) {
+    assertLayers {
+        val startRegion = first().visibleRegion(component)
+        val endRegion = last().visibleRegion(component)
+
+        endRegion
+            .hasSameTopPosition(startRegion.region.bounds)
+            .hasSameBottomPosition(startRegion.region.bounds)
+            .hasSameLeftPosition(startRegion.region.bounds)
+            .hasSameRightPosition(startRegion.region.bounds)
+    }
+}
+
+fun FlickerTest.tilingDividerBecomesVisibleThenInvisible() {
     assertLayers {
         this.isInvisible(TILING_SPLIT_DIVIDER)
             .then()
@@ -115,12 +209,34 @@ fun LegacyFlickerTest.tilingDividerBecomesVisibleThenInvisible() {
     }
 }
 
-fun LegacyFlickerTest.tilingDividerBecomesInvisibleThenVisible() {
+fun FlickerTest.tilingDividerBecomesInvisibleThenVisible() {
     assertLayers {
         this.isVisible(TILING_SPLIT_DIVIDER)
             .then()
             .isInvisible(TILING_SPLIT_DIVIDER)
             .then()
             .isVisible(TILING_SPLIT_DIVIDER)
+    }
+}
+
+fun FlickerTest.layerExactlyCoversAnotherAtEnd(
+    coveredLayer: IComponentMatcher,
+    coveringLayer: IComponentMatcher
+) {
+    assertLayersEnd {
+        val coveredLayerBounds = visibleRegion(coveredLayer).region.bounds
+        visibleRegion(coveringLayer).coversExactly(coveredLayerBounds)
+    }
+}
+
+fun FlickerTest.layerContainsAnotherAtEnd(
+    outerLayer: IComponentMatcher,
+    innerLayer: IComponentMatcher
+) {
+    assertWmEnd {
+        val outerBounds = visibleRegion(outerLayer).region.bounds
+        val innerBounds = visibleRegion(innerLayer).region.bounds
+
+        outerBounds.contains(innerBounds)
     }
 }

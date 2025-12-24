@@ -26,6 +26,7 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
@@ -36,11 +37,19 @@ import androidx.annotation.Nullable;
  */
 public class FloatingTaskThumbnailView extends View {
 
+    /** Callback used to draw this view. */
+    public interface DrawCallback {
+        /** Draw onto the given {@code canvas} using the given {@code paint}. */
+        void draw(@NonNull Canvas canvas, @NonNull Paint paint);
+    }
+
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Matrix mMatrix = new Matrix();
 
     private @Nullable BitmapShader mBitmapShader;
     private @Nullable Bitmap mBitmap;
+    private boolean mFitXY = false;
+    private DrawCallback mDrawCallback;
 
     public FloatingTaskThumbnailView(Context context) {
         this(context, null);
@@ -60,14 +69,13 @@ public class FloatingTaskThumbnailView extends View {
             return;
         }
 
-        // Scale down the bitmap to fix x, and crop in y.
-        float scale = 1.0f * getMeasuredWidth() / mBitmap.getWidth();
+        float scaleX = 1.0f * getMeasuredWidth() / mBitmap.getWidth();
+        float scaleY = 1.0f * getMeasuredHeight() / mBitmap.getHeight();
         mMatrix.reset();
-        mMatrix.postScale(scale, scale);
+        // Either scale to fit x and y, or fit x and crop in y.
+        mMatrix.postScale(scaleX, mFitXY ? scaleY : scaleX);
         mBitmapShader.setLocalMatrix(mMatrix);
-
-        FloatingTaskView parent = (FloatingTaskView) getParent();
-        parent.drawRoundedRect(canvas, mPaint);
+        mDrawCallback.draw(canvas, mPaint);
     }
 
     public void setThumbnail(Bitmap bitmap) {
@@ -76,5 +84,15 @@ public class FloatingTaskThumbnailView extends View {
             mBitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
         }
+    }
+
+    /** Sets the callback to use to draw this view. */
+    public void setDrawCallback(DrawCallback callback) {
+        mDrawCallback = callback;
+    }
+
+    /** Scale the thumbnail in both x and y. */
+    public void setFitXY() {
+        mFitXY = true;
     }
 }

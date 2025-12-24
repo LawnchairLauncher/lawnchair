@@ -37,6 +37,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -166,7 +167,8 @@ public class NavHandleLongPressInputConsumerTest {
         // But our handler should be cancelled.
         assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
         verify(mNavHandleLongPressHandler, times(1)).onTouchStarted(any());
-        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(), any());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                eq(NavHandleLongPressInputConsumer.CANCEL_REASON_INTERCEPT_DISALLOWED));
         verifyNoMoreInteractions(mStatsLogger);
         // Because we handled touch down before the child blocked additional events, log abandon.
         verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
@@ -287,7 +289,8 @@ public class NavHandleLongPressInputConsumerTest {
         assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
         assertFalse(mLongPressTriggered.get());
         verify(mNavHandleLongPressHandler, times(1)).onTouchStarted(any());
-        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(), any());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                eq(NavHandleLongPressInputConsumer.CANCEL_REASON_TOUCH_UP));
         verifyNoMoreInteractions(mStatsLogger);
         verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
     }
@@ -307,9 +310,36 @@ public class NavHandleLongPressInputConsumerTest {
         assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
         assertFalse(mLongPressTriggered.get());
         verify(mNavHandleLongPressHandler, times(1)).onTouchStarted(any());
-        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(), any());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                eq(NavHandleLongPressInputConsumer.CANCEL_REASON_TOUCH_CANCEL));
         verifyNoMoreInteractions(mStatsLogger);
         verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
+    }
+
+    @Test
+    public void testLongPressAbortedByConsumerSwitch() {
+        mUnderTest.onMotionEvent(generateCenteredMotionEvent(ACTION_DOWN));
+        // Wait a bit, but not enough to trigger long press.
+        sleep(MIN_TIME_TO_LOG_ABANDON_MS);
+        // Assume a motion event is sent after the abandon time so that the abandon gets logged
+        // (abandon time is based on the last motion event time compared to the touch down time).
+        mUnderTest.onMotionEvent(generateCenteredMotionEvent(ACTION_MOVE));
+
+        assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
+        assertFalse(mLongPressTriggered.get());
+
+        mUnderTest.onConsumerAboutToBeSwitched();
+        // Wait past the long press timeout, to be extra sure it wouldn't have triggered.
+        sleep(DEFAULT_LPNH_TIMEOUT_MS);
+
+        assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
+        assertFalse(mLongPressTriggered.get());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchStarted(any());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                eq(NavHandleLongPressInputConsumer.CANCEL_REASON_INPUT_CONSUMER_SWITCHED));
+        verify(mStatsLogger, never()).log(LAUNCHER_LONG_PRESS_NAVBAR);
+        verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
+        verify(mDelegate).onConsumerAboutToBeSwitched();
     }
 
     @Test
@@ -319,7 +349,8 @@ public class NavHandleLongPressInputConsumerTest {
         assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
         assertFalse(mLongPressTriggered.get());
         verify(mNavHandleLongPressHandler, never()).onTouchStarted(any());
-        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(), any());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                eq(NavHandleLongPressInputConsumer.CANCEL_REASON_TOUCH_CANCEL));
         verifyNoMoreInteractions(mStatsLogger);
         verifyNoMoreInteractions(mStatsLatencyLogger);
     }
@@ -340,7 +371,8 @@ public class NavHandleLongPressInputConsumerTest {
         assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
         assertFalse(mLongPressTriggered.get());
         verify(mNavHandleLongPressHandler, times(1)).onTouchStarted(any());
-        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(), any());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                eq(NavHandleLongPressInputConsumer.CANCEL_REASON_TOUCH_SLOP_PASSED));
         verifyNoMoreInteractions(mStatsLogger);
         verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
     }
@@ -361,7 +393,31 @@ public class NavHandleLongPressInputConsumerTest {
         assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
         assertFalse(mLongPressTriggered.get());
         verify(mNavHandleLongPressHandler, times(1)).onTouchStarted(any());
-        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(), any());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                eq(NavHandleLongPressInputConsumer.CANCEL_REASON_TOUCH_SLOP_PASSED));
+        verifyNoMoreInteractions(mStatsLogger);
+        verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
+    }
+
+    @Test
+    public void testLongPressAbortedByTouchSlopPassedVertically_multipleTouchDowns() {
+        mUnderTest.onMotionEvent(generateCenteredMotionEvent(ACTION_DOWN));
+        mUnderTest.onMotionEvent(generateCenteredMotionEvent(ACTION_DOWN));
+        sleep(MIN_TIME_TO_LOG_ABANDON_MS);
+
+        assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
+        assertFalse(mLongPressTriggered.get());
+
+        mUnderTest.onMotionEvent(generateCenteredMotionEventWithYOffset(ACTION_MOVE,
+                -(TOUCH_SLOP + 1)));
+        // Wait past the long press timeout, to be extra sure it wouldn't have triggered.
+        sleep(DEFAULT_LPNH_TIMEOUT_MS);
+
+        assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
+        assertFalse(mLongPressTriggered.get());
+        verify(mNavHandleLongPressHandler, times(2)).onTouchStarted(any());
+        verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                eq(NavHandleLongPressInputConsumer.CANCEL_REASON_TOUCH_SLOP_PASSED));
         verifyNoMoreInteractions(mStatsLogger);
         verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
     }
@@ -394,8 +450,8 @@ public class NavHandleLongPressInputConsumerTest {
             assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
             assertFalse(mLongPressTriggered.get());
             verify(mNavHandleLongPressHandler, times(1)).onTouchStarted(any());
-            // Touch cancelled.
-            verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(), any());
+            verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                    eq(NavHandleLongPressInputConsumer.CANCEL_REASON_TOUCH_SLOP_PASSED));
             verifyNoMoreInteractions(mStatsLogger);
             verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
         } catch (Exception e) {
@@ -431,8 +487,8 @@ public class NavHandleLongPressInputConsumerTest {
             assertThat(mUnderTest.mState).isEqualTo(DelegateInputConsumer.STATE_INACTIVE);
             assertFalse(mLongPressTriggered.get());
             verify(mNavHandleLongPressHandler, times(1)).onTouchStarted(any());
-            // Touch cancelled.
-            verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(), any());
+            verify(mNavHandleLongPressHandler, times(1)).onTouchFinished(any(),
+                    eq(NavHandleLongPressInputConsumer.CANCEL_REASON_TOUCH_SLOP_PASSED));
             verifyNoMoreInteractions(mStatsLogger);
             verify(mStatsLatencyLogger).log(LAUNCHER_LATENCY_CONTEXTUAL_SEARCH_LPNH_ABANDON);
         } catch (Exception e) {

@@ -41,7 +41,7 @@ class NotificationManager @Inject constructor(
     fun onNotificationFullRefresh() {
         scope.launch(Dispatchers.IO) {
             val tmpMap = runCatching {
-                NotificationListener.getInstanceIfConnected()?.activeNotifications?.associateBy { it.key }
+                NotificationListener().activeNotifications?.associateBy { it.key }
             }.getOrNull()
             withContext(Dispatchers.Main) {
                 notificationsMap.clear()

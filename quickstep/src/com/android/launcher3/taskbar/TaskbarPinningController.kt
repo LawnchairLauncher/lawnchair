@@ -74,6 +74,7 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
                         }
                     statsLogManager.logger().log(logEvent)
                     launcherPrefs.put(TASKBAR_PINNING_IN_DESKTOP_MODE, shouldPinDesktopTaskbar)
+                    taskbarControllers.taskbarStashController.toggleTaskbarStash()
                     return
                 }
 

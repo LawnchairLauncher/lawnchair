@@ -94,8 +94,8 @@ public class RecentsOrientedState implements LauncherPrefChangeListener {
     private static final int FLAG_HOME_ROTATION_ALLOWED_IN_PREFS = 1 << 2;
     // If the user has enabled system rotation
     private static final int FLAG_SYSTEM_ROTATION_ALLOWED = 1 << 3;
-    // Multiple orientation is not supported in multiwindow mode
-    private static final int FLAG_MULTIWINDOW_ROTATION_ALLOWED = 1 << 4;
+    // 1 << 4 is deprecated
+    // private static final int FLAG_MULTIWINDOW_ROTATION_ALLOWED = 1 << 4;
     // Whether to rotation sensor is supported on the device
     private static final int FLAG_ROTATION_WATCHER_SUPPORTED = 1 << 5;
     // Whether to enable rotation watcher when multi-rotation is supported
@@ -200,13 +200,6 @@ public class RecentsOrientedState implements LauncherPrefChangeListener {
     }
 
     /**
-     * Sets if the host is in multi-window mode
-     */
-    public void setMultiWindowMode(boolean isMultiWindow) {
-        setFlag(FLAG_MULTIWINDOW_ROTATION_ALLOWED, isMultiWindow);
-    }
-
-    /**
      * Sets if the swipe up gesture is currently running or not
      */
     public boolean setGestureActive(boolean isGestureActive) {
@@ -302,8 +295,7 @@ public class RecentsOrientedState implements LauncherPrefChangeListener {
     }
 
     private void updateAutoRotateSetting() {
-        setFlag(FLAG_SYSTEM_ROTATION_ALLOWED,
-                mSettingsCache.getValue(ROTATION_SETTING_URI, 1));
+        setFlag(FLAG_SYSTEM_ROTATION_ALLOWED, mSettingsCache.getValue(ROTATION_SETTING_URI));
     }
 
     private void updateFixedLandscapeSetting() {
@@ -415,7 +407,6 @@ public class RecentsOrientedState implements LauncherPrefChangeListener {
                 != MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE)
                 || (mFlags & (FLAG_IGNORE_ALLOW_HOME_ROTATION_PREF
                 | FLAG_HOME_ROTATION_ALLOWED_IN_PREFS
-                | FLAG_MULTIWINDOW_ROTATION_ALLOWED
                 | FLAG_HOME_ROTATION_FORCE_ENABLED_FOR_TESTING)) != 0;
     }
 
@@ -444,7 +435,7 @@ public class RecentsOrientedState implements LauncherPrefChangeListener {
      * Returns the scale and pivot so that the provided taskRect can fit the provided full size
      */
     public float getFullScreenScaleAndPivot(Rect taskView, DeviceProfile dp, PointF outPivot) {
-        getTaskDimension(mContext, dp, outPivot);
+        getTaskDimension(dp, outPivot);
         float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
         if (scale == 1) {
             outPivot.set(taskView.centerX(), taskView.centerY());

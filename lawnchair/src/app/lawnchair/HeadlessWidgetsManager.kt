@@ -33,7 +33,7 @@ class HeadlessWidgetsManager @Inject constructor(
 ) : SafeCloseable {
 
     private val scope = MainScope() + CoroutineName("HeadlessWidgetsManager")
-    private val prefs = LauncherPrefs.getDevicePrefs(context)
+    private val prefs = LauncherPrefs.getPrefs(context)
     private val widgetManager = AppWidgetManager.getInstance(context)
     private val host = HeadlessAppWidgetHost(context)
     private val widgetsMap = mutableMapOf<String, Widget>()

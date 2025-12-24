@@ -32,7 +32,7 @@ class ReloadHelper(private val context: Context) {
     private val tisBinder = TISBindHelper(context) { tis = it }
 
     fun reloadGrid() {
-        idp.onPreferencesChanged(context)
+        idp.onPreferencesChanged()
     }
 
     fun recreate() {

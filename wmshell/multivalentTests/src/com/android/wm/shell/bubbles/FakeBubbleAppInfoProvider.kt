@@ -19,12 +19,13 @@ package com.android.wm.shell.bubbles
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Process
 import com.android.wm.shell.bubbles.appinfo.BubbleAppInfo
 import com.android.wm.shell.bubbles.appinfo.BubbleAppInfoProvider
 
 /** A fake implementation of [BubbleAppInfoProvider]. */
 class FakeBubbleAppInfoProvider : BubbleAppInfoProvider {
     override fun resolveAppInfo(context: Context, bubble: Bubble): BubbleAppInfo {
-        return BubbleAppInfo("app name", ColorDrawable(Color.RED), ColorDrawable(Color.BLUE))
+        return BubbleAppInfo("app name", ColorDrawable(Color.RED), Process.myUserHandle())
     }
 }

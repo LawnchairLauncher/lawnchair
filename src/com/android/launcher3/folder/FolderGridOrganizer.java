@@ -58,7 +58,10 @@ public class FolderGridOrganizer {
      * Creates a FolderGridOrganizer for the given DeviceProfile
      */
     public static FolderGridOrganizer createFolderGridOrganizer(DeviceProfile profile) {
-        return new FolderGridOrganizer(profile.numFolderColumns, profile.numFolderRows);
+        return new FolderGridOrganizer(
+                profile.getFolderProfile().getNumColumns(),
+                profile.getFolderProfile().getNumRows()
+        );
     }
 
     /**

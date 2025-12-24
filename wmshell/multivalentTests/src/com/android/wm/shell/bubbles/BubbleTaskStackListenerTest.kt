@@ -27,9 +27,7 @@ import android.window.WindowContainerTransaction
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.internal.protolog.ProtoLog
-import com.android.window.flags.Flags.FLAG_EXCLUDE_TASK_FROM_RECENTS
 import com.android.wm.shell.Flags.FLAG_ENABLE_BUBBLE_ANYTHING
-import com.android.wm.shell.Flags.FLAG_ENABLE_BUBBLE_APP_COMPAT_FIXES
 import com.android.wm.shell.Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE
 import com.android.wm.shell.MockToken
 import com.android.wm.shell.ShellTaskOrganizer
@@ -135,8 +133,6 @@ class BubbleTaskStackListenerTest {
     @EnableFlags(
         FLAG_ENABLE_CREATE_ANY_BUBBLE,
         FLAG_ENABLE_BUBBLE_ANYTHING,
-        FLAG_EXCLUDE_TASK_FROM_RECENTS,
-        FLAG_ENABLE_BUBBLE_APP_COMPAT_FIXES,
     )
     fun onActivityRestartAttempt_inStackAppBubbleToFullscreen_notifiesTaskRemoval() {
         val captionInsetsOwner = Binder()
@@ -169,7 +165,6 @@ class BubbleTaskStackListenerTest {
     @EnableFlags(
         FLAG_ENABLE_CREATE_ANY_BUBBLE,
         FLAG_ENABLE_BUBBLE_ANYTHING,
-        FLAG_EXCLUDE_TASK_FROM_RECENTS,
     )
     fun onActivityRestartAttempt_inStackAppBubbleToSplit_doesNothing() {
         task.parentTaskId = 456
@@ -194,5 +189,28 @@ class BubbleTaskStackListenerTest {
 
         verifyNoInteractions(taskOrganizer)
         verifyNoInteractions(taskViewTaskController)
+    }
+
+    @Test
+    @EnableFlags(
+        FLAG_ENABLE_CREATE_ANY_BUBBLE,
+        FLAG_ENABLE_BUBBLE_ANYTHING,
+    )
+    fun onTaskMovedToFront_inStackAppBubbleToFullscreen_notifiesTaskRemoval() {
+        task.configuration.windowConfiguration.windowingMode = WINDOWING_MODE_FULLSCREEN
+        bubbleData.stub {
+            on { getBubbleInStackWithTaskId(bubbleTaskId) } doReturn bubble
+        }
+
+        bubbleTaskStackListener.onTaskMovedToFront(task)
+
+        val taskViewTaskController = bubble.taskView.controller
+        val taskOrganizer = taskViewTaskController.taskOrganizer
+        val wct = argumentCaptor<WindowContainerTransaction>().let { wctCaptor ->
+            verify(taskOrganizer).applyTransaction(wctCaptor.capture())
+            wctCaptor.lastValue
+        }
+        verifyExitBubbleTransaction(wct, bubbleTaskToken.asBinder())
+        verify(taskViewTaskController).notifyTaskRemovalStarted(task)
     }
 }

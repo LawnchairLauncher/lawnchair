@@ -17,7 +17,7 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="120dp"
     android:height="120dp"
-    android:tint="@color/material_color_on_surface"
+    android:tint="@color/materialColorOnSurface"
     android:viewportHeight="960"
     android:viewportWidth="960"
     >

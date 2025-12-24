@@ -22,14 +22,15 @@ import android.platform.test.annotations.Postsubmit
 import android.system.helpers.CommandsHelper
 import android.tools.NavBar
 import android.tools.Rotation
-import android.tools.flicker.assertions.FlickerTest
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
+import android.tools.flicker.assertions.FlickerChecker
 import android.tools.helpers.FIND_TIMEOUT
 import android.tools.traces.component.ComponentNameMatcher
 import android.tools.traces.parsers.toFlickerComponent
+import androidx.test.filters.RequiresDevice
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
@@ -61,9 +62,10 @@ import org.junit.runners.Parameterized
  *     This test only works with Cuttlefish devices.
  * ```
  */
+@RequiresDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
-class RotateImmersiveAppInFullscreenTest(flicker: LegacyFlickerTest) : BaseAppCompat(flicker) {
+class RotateImmersiveAppInFullscreenTest(flicker: FlickerTest) : BaseAppCompat(flicker) {
 
     private val immersiveApp =
         LetterboxAppHelper(
@@ -173,13 +175,13 @@ class RotateImmersiveAppInFullscreenTest(flicker: LegacyFlickerTest) : BaseAppCo
         /**
          * Creates the test configurations.
          *
-         * See [LegacyFlickerTestFactory.nonRotationTests] for configuring screen orientation and
+         * See [FlickerTestFactory.nonRotationTests] for configuring screen orientation and
          * navigation modes.
          */
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun getParams(): Collection<FlickerTest> {
-            return LegacyFlickerTestFactory.nonRotationTests(
+        fun getParams(): Collection<FlickerChecker> {
+            return FlickerTestFactory.nonRotationTests(
                 supportedRotations = listOf(Rotation.ROTATION_90),
                 // TODO(b/292403378): 3 button mode not added as rotation button is hidden in
                 // taskbar

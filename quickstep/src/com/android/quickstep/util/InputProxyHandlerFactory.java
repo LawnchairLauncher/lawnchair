@@ -20,7 +20,7 @@ import androidx.annotation.UiThread;
 import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
-import com.android.quickstep.inputconsumers.OverviewInputConsumer;
+import com.android.quickstep.inputconsumers.LauncherInputConsumer;
 import com.android.quickstep.views.RecentsViewContainer;
 
 import java.util.function.Supplier;
@@ -49,6 +49,6 @@ public class InputProxyHandlerFactory implements Supplier<InputConsumer> {
         RecentsViewContainer container = mContainerInterface.getCreatedContainer();
         return container == null
                 ? InputConsumer.createNoOpInputConsumer(mGestureState.getDisplayId())
-                : new OverviewInputConsumer(mGestureState, container, null, true);
+                : new LauncherInputConsumer(mGestureState, container, null, true);
     }
 }

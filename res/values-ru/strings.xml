@@ -29,12 +29,14 @@
     <string name="home_screen" msgid="5629429142036709174">"Главный экран"</string>
     <string name="set_default_home_app" msgid="5808906607627586381">"Установить \"<xliff:g id="LAUNCHER_NAME">%1$s</xliff:g>\" в качестве приложения главного экрана по умолчанию в настройках"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Разделить экран"</string>
-    <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Изменить соотношение сторон"</string>
+    <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Соотношение сторон"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Сведения о приложении \"%1$s\""</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Настройки использования приложения \"%1$s\""</string>
+    <string name="close_task_accessibility" msgid="4765872229211282647">"Закрыть задачу \"%1$s\""</string>
     <string name="new_window_option_taskbar" msgid="6448780542727767211">"Новое окно"</string>
     <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Управление окнами"</string>
-    <string name="save_app_pair" msgid="5647523853662686243">"Сохранить приложения"</string>
+    <string name="close_app_taskbar" msgid="3238979263877091273">"Закрыть"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Сохранить пару"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Одновременно использовать эти два приложения на устройстве нельзя."</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Чтобы одновременно использовать эти два приложения, разложите устройство."</string>
@@ -102,6 +104,9 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Не рекомендовать"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Закрепить рекомендацию"</string>
     <string name="bubble" msgid="3072951361014076670">"Подсказка"</string>
+    <string name="widget_settings" msgid="5280157748464495511">"Настройки"</string>
+    <string name="pin_to_taskbar" msgid="5914002252642242332">"Закрепить на панели"</string>
+    <string name="unpin_from_taskbar" msgid="1025883383457627426">"Открепить от панели"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Создание ярлыков"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Приложение сможет самостоятельно добавлять ярлыки."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"Доступ к данным о настройках и ярлыках на главном экране"</string>
@@ -117,6 +122,7 @@
     <string name="paginate_right" msgid="6701038155201975878">"Перейти на следующую страницу"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> отключено"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{В приложении \"{app_name}\" # уведомление}one{В приложении \"{app_name}\" # уведомление}few{В приложении \"{app_name}\" # уведомления}many{В приложении \"{app_name}\" # уведомлений}other{В приложении \"{app_name}\" # уведомления}}"</string>
+    <string name="hotseat_prediction_content_description" msgid="7680403232742709704">"Рекомендуемое приложение: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Стр. %1$d из %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Главный экран %1$d из %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Новый экран"</string>
@@ -128,7 +134,9 @@
     <string name="folder_closed" msgid="4100806530910930934">"Папка закрыта"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Папка переименована в \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Папка \"<xliff:g id="NAME">%1$s</xliff:g>\" (объектов: <xliff:g id="SIZE">%2$d</xliff:g>)"</string>
+    <string name="folder_name_format_exact_with_dot" msgid="30828041991324911">"Папка \"<xliff:g id="NAME">%1$s</xliff:g>\" (объектов: <xliff:g id="SIZE">%2$d</xliff:g>), есть уведомления"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Папка \"<xliff:g id="NAME">%1$s</xliff:g>\" (объектов: <xliff:g id="SIZE">%2$d</xliff:g> или больше)"</string>
+    <string name="folder_name_format_overflow_with_dot" msgid="9174809519194154156">"Папка \"<xliff:g id="NAME">%1$s</xliff:g>\" (объектов: <xliff:g id="SIZE">%2$d</xliff:g> или больше), есть уведомления"</string>
     <string name="unnamed_folder" msgid="2420192029474044442">"Папка без названия"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"Одновременное использование двух приложений: <xliff:g id="APP1">%1$s</xliff:g> и <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Обои и стиль"</string>
@@ -197,7 +205,6 @@
     <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Вкладка \"Рабочие приложения\""</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Рабочий профиль"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"У рабочих приложений есть специальный значок. Они видны системному администратору."</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ОК"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Рабочие приложения приостановлены"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Вы не будете получать уведомления от рабочих приложений."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Рабочие приложения не могут отправлять уведомления, расходовать заряд батареи и получать доступ к данным о вашем местоположении."</string>

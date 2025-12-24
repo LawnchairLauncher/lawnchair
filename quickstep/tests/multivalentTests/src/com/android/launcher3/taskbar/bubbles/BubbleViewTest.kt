@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar.bubbles
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Path
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import androidx.core.graphics.drawable.toBitmap
@@ -27,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.R
+import com.android.launcher3.icons.BitmapInfo
 import com.android.wm.shell.shared.bubbles.BubbleInfo
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -83,10 +83,9 @@ class BubbleViewTest {
                 BubbleBarBubble(
                     bubbleInfo,
                     bubbleView,
-                    bitmap,
+                    BitmapInfo.of(bitmap, Color.WHITE),
                     bitmap,
                     Color.WHITE,
-                    Path(),
                     "",
                     null,
                 )

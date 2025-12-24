@@ -19,7 +19,8 @@ package com.android.wm.shell.common;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.view.SurfaceControl;
-import android.window.ScreenCapture;
+import android.window.ScreenCapture.ScreenCaptureParams;
+import android.window.ScreenCaptureInternal;
 
 import java.util.function.Consumer;
 
@@ -35,19 +36,24 @@ public class ScreenshotUtils {
      * @param crop the crop to use when capturing the screenshot
      * @param consumer Consumer for the captured buffer
      */
-    public static void captureLayer(SurfaceControl sc, Rect crop,
-            Consumer<ScreenCapture.ScreenshotHardwareBuffer> consumer) {
-        consumer.accept(ScreenCapture.captureLayers(
-                new ScreenCapture.LayerCaptureArgs.Builder(sc)
-                    .setSourceCrop(crop)
-                    .setCaptureSecureLayers(true)
-                    .setAllowProtected(true)
-                    .setHintForSeamlessTransition(true)
-                    .build()));
+    public static void captureLayer(
+            SurfaceControl sc,
+            Rect crop,
+            Consumer<ScreenCaptureInternal.ScreenshotHardwareBuffer> consumer) {
+        consumer.accept(
+                ScreenCaptureInternal.captureLayers(
+                        new ScreenCaptureInternal.LayerCaptureArgs.Builder(sc)
+                                .setSourceCrop(crop)
+                                .setSecureContentPolicy(
+                                        ScreenCaptureParams.SECURE_CONTENT_POLICY_CAPTURE)
+                                .setProtectedContentPolicy(
+                                        ScreenCaptureParams.PROTECTED_CONTENT_POLICY_CAPTURE)
+                                .setPreserveDisplayColors(true)
+                                .build()));
     }
 
-    private static class BufferConsumer implements
-            Consumer<ScreenCapture.ScreenshotHardwareBuffer> {
+    private static class BufferConsumer
+            implements Consumer<ScreenCaptureInternal.ScreenshotHardwareBuffer> {
         SurfaceControl mScreenshot = null;
         SurfaceControl.Transaction mTransaction;
         SurfaceControl mSurfaceControl;
@@ -63,17 +69,18 @@ public class ScreenshotUtils {
         }
 
         @Override
-        public void accept(ScreenCapture.ScreenshotHardwareBuffer buffer) {
+        public void accept(ScreenCaptureInternal.ScreenshotHardwareBuffer buffer) {
             if (buffer == null || buffer.getHardwareBuffer() == null) {
                 return;
             }
-            mScreenshot = new SurfaceControl.Builder()
-                .setName("ScreenshotUtils screenshot")
-                .setFormat(PixelFormat.TRANSLUCENT)
-                .setSecure(buffer.containsSecureLayers())
-                .setCallsite("ScreenshotUtils.takeScreenshot")
-                .setBLASTLayer()
-                .build();
+            mScreenshot =
+                    new SurfaceControl.Builder()
+                            .setName("ScreenshotUtils screenshot")
+                            .setFormat(PixelFormat.TRANSLUCENT)
+                            .setSecure(buffer.containsSecureLayers())
+                            .setCallsite("ScreenshotUtils.takeScreenshot")
+                            .setBLASTLayer()
+                            .build();
 
             mTransaction.setBuffer(mScreenshot, buffer.getHardwareBuffer());
             mTransaction.setColorSpace(mScreenshot, buffer.getColorSpace());
@@ -94,11 +101,10 @@ public class ScreenshotUtils {
      * @param sc the SurfaceControl to take a screenshot of
      * @param crop the crop to use when capturing the screenshot
      * @param layer the layer to place the screenshot
-     *
      * @return A SurfaceControl where the screenshot will be attached, or null if failed.
      */
-    public static SurfaceControl takeScreenshot(SurfaceControl.Transaction t, SurfaceControl sc,
-            Rect crop, int layer) {
+    public static SurfaceControl takeScreenshot(
+            SurfaceControl.Transaction t, SurfaceControl sc, Rect crop, int layer) {
         return takeScreenshot(t, sc, sc /* parentSc */, crop, layer);
     }
 
@@ -107,14 +113,17 @@ public class ScreenshotUtils {
      *
      * @param t the transaction used to set changes on the resulting screenshot.
      * @param sc the SurfaceControl to take a screenshot of
-     * @param parentSc  the SurfaceControl to attach the screenshot to.
+     * @param parentSc the SurfaceControl to attach the screenshot to.
      * @param crop the crop to use when capturing the screenshot
      * @param layer the layer to place the screenshot
-     *
      * @return A SurfaceControl where the screenshot will be attached, or null if failed.
      */
-    public static SurfaceControl takeScreenshot(SurfaceControl.Transaction t, SurfaceControl sc,
-            SurfaceControl parentSc, Rect crop, int layer) {
+    public static SurfaceControl takeScreenshot(
+            SurfaceControl.Transaction t,
+            SurfaceControl sc,
+            SurfaceControl parentSc,
+            Rect crop,
+            int layer) {
         BufferConsumer consumer = new BufferConsumer(t, sc, parentSc, layer);
         captureLayer(sc, crop, consumer);
         return consumer.mScreenshot;

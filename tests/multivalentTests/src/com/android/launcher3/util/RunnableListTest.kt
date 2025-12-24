@@ -19,11 +19,11 @@ package com.android.launcher3.util
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
@@ -32,15 +32,11 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 @RunWith(AndroidJUnit4::class)
 class RunnableListTest {
 
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
     @Mock private lateinit var runnable1: Runnable
     @Mock private lateinit var runnable2: Runnable
 
     private val underTest = RunnableList()
-
-    @Before
-    fun setup() {
-        MockitoAnnotations.initMocks(this)
-    }
 
     @Test
     fun not_destroyedByDefault() {

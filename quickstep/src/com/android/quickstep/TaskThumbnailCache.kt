@@ -18,15 +18,12 @@ package com.android.quickstep
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
-import com.android.launcher3.Flags.enableCoroutineThreadingImprovements
 import com.android.launcher3.R
 import com.android.launcher3.util.CancellableTask
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.OverviewReleaseFlags.enableGridOnlyOverview
 import com.android.launcher3.util.Preconditions
 import com.android.launcher3.util.coroutines.DispatcherProvider
-import com.android.quickstep.recents.di.RecentsDependencies
-import com.android.quickstep.recents.di.inject
 import com.android.quickstep.task.thumbnail.data.TaskThumbnailDataSource
 import com.android.quickstep.util.TaskKeyByLastActiveTimeCache
 import com.android.quickstep.util.TaskKeyCache
@@ -45,22 +42,24 @@ internal constructor(
     private val context: Context,
     private val bgExecutor: Executor,
     private val cache: TaskKeyCache<ThumbnailData>,
+    val dispatcherProvider: DispatcherProvider,
 ) : TaskThumbnailDataSource {
     val highResLoadingState = HighResLoadingState()
     private val enableTaskSnapshotPreloading =
         context.resources.getBoolean(R.bool.config_enableTaskSnapshotPreloading)
-    val dispatcherProvider: DispatcherProvider by RecentsDependencies.inject()
 
     @JvmOverloads
     constructor(
         context: Context,
         bgExecutor: Executor,
         cacheSize: Int = context.resources.getInteger(R.integer.recentsThumbnailCacheSize),
+        dispatcherProvider: DispatcherProvider,
     ) : this(
         context,
         bgExecutor,
         if (enableGridOnlyOverview()) TaskKeyByLastActiveTimeCache(cacheSize)
         else TaskKeyLruCache(cacheSize),
+        dispatcherProvider,
     )
 
     /**
@@ -114,9 +113,6 @@ internal constructor(
             // Get thumbnail from system
             var thumbnailData =
                 ActivityManagerWrapper.getInstance().getTaskThumbnail(task.key.id, lowResolution)
-            if (thumbnailData.thumbnail == null && !enableCoroutineThreadingImprovements()) {
-                thumbnailData = ActivityManagerWrapper.getInstance().takeTaskThumbnail(task.key.id)
-            }
 
             // Avoid an async timing issue that a low res entry replaces an existing high
             // res entry in high res enabled state, so we check before putting it to cache

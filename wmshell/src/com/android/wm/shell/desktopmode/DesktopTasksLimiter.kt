@@ -32,6 +32,7 @@ import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.ShellTaskOrganizer
 import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.MinimizeReason
 import com.android.wm.shell.desktopmode.DesktopModeEventLogger.Companion.UnminimizeReason
+import com.android.wm.shell.desktopmode.data.DesktopRepository
 import com.android.wm.shell.desktopmode.multidesks.DesksOrganizer
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_DESKTOP_MODE
 import com.android.wm.shell.sysui.UserChangeListener
@@ -272,7 +273,18 @@ class DesktopTasksLimiter(
             val taskChange =
                 info.changes.find { change -> change.taskInfo?.taskId == taskDetails.taskId }
             val taskRepository = desktopUserRepositories.current
-            if (taskChange == null) return !taskRepository.isVisibleTask(taskDetails.taskId)
+            if (taskChange == null) {
+                if (!taskRepository.isVisibleTask(taskDetails.taskId)) {
+                    return true
+                }
+                // if the task is expanded on the desk but not wm visible, we can still mark it as
+                // minimized.
+                if (taskRepository.isActiveTask(taskDetails.taskId)) {
+                    val taskInfo = shellTaskOrganizer.getRunningTaskInfo(taskDetails.taskId)
+                    return taskInfo?.isVisible == false
+                }
+                return false
+            }
             return taskChange.mode == TRANSIT_TO_BACK
         }
 

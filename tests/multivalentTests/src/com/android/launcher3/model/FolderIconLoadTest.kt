@@ -27,11 +27,11 @@ import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.LauncherLayoutBuilder
 import com.android.launcher3.util.LauncherModelHelper.*
+import com.android.launcher3.util.LayoutResource
 import com.android.launcher3.util.ModelTestExtensions.bgDataModel
 import com.android.launcher3.util.ModelTestExtensions.loadModelSync
 import com.android.launcher3.util.SandboxApplication
 import com.android.launcher3.util.TestUtil
-import com.android.launcher3.util.rule.LayoutProviderRule
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
@@ -44,8 +44,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FolderIconLoadTest {
 
-    @get:Rule val context = SandboxApplication()
-    @get:Rule val layoutProvider = LayoutProviderRule(context)
+    @get:Rule val context = SandboxApplication().withModelDependency()
+    @get:Rule val layoutResource = LayoutResource(context)
 
     private val uniqueActivities =
         listOf(
@@ -141,9 +141,7 @@ class FolderIconLoadTest {
                     for (i in 0..itemCount - 1) this.addApp(TEST_PACKAGE, uniqueActivities[i])
                 }
                 .build()
-
-        layoutProvider.setupDefaultLayoutProvider(builder)
-        app.model.loadModelSync()
+        layoutResource.set(builder)
 
         // The first load initializes the DB, load again so that icons are now used from the DB
         // Wait for the icon cache to be updated and then reload
@@ -154,7 +152,7 @@ class FolderIconLoadTest {
         app.model.forceReload()
         app.model.loadModelSync()
         val collections =
-            app.model.bgDataModel.itemsIdMap
+            context.bgDataModel.itemsIdMap
                 .filter { it.itemType == ITEM_TYPE_FOLDER }
                 .map { it as FolderInfo }
         assertThat(collections.size).isEqualTo(1)
@@ -165,7 +163,7 @@ class FolderIconLoadTest {
     private fun verifyHighRes(items: ArrayList<WorkspaceItemInfo>, vararg indices: Int) {
         for (index in indices) {
             assertWithMessage("Index $index was not highRes")
-                .that(items[index].bitmap.isNullOrLowRes)
+                .that(items[index].bitmap.isLowRes)
                 .isFalse()
             assertWithMessage("Index $index was the default icon")
                 .that(isDefaultIcon(items[index].bitmap))
@@ -176,7 +174,7 @@ class FolderIconLoadTest {
     private fun verifyLowRes(items: ArrayList<WorkspaceItemInfo>, vararg indices: Int) {
         for (index in indices) {
             assertWithMessage("Index $index was not lowRes")
-                .that(items[index].bitmap.isNullOrLowRes)
+                .that(items[index].bitmap.isLowRes)
                 .isTrue()
             assertWithMessage("Index $index was the default icon")
                 .that(isDefaultIcon(items[index].bitmap))
@@ -189,6 +187,6 @@ class FolderIconLoadTest {
 
     /** Recreate DeviceProfiles after changing InvariantDeviceProfile */
     private fun recreateSupportedDeviceProfiles() {
-        getIdp().supportedProfiles = getIdp().supportedProfiles.map { it.copy(context) }
+        getIdp().supportedProfiles = getIdp().supportedProfiles.map { it.copy() }
     }
 }

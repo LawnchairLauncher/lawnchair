@@ -29,10 +29,7 @@ import android.app.Instrumentation;
 import android.app.blob.BlobHandle;
 import android.app.blob.BlobStoreManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherApps;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.AsyncTask;
@@ -215,13 +212,31 @@ public class TestUtil {
         }
     }
 
-    // Please don't add negative test cases for methods that fail only after a long wait.
-    public static void expectFail(String message, Runnable action) {
+    /**
+     * Executes the provided {@code action} and asserts that it throws an {@link AssertionError}.
+     * <p>
+     * This method is useful for testing scenarios where an action is expected to fail.
+     * It temporarily disables the default failure handling of the {@link LauncherInstrumentation}
+     * (like saving error artifacts) during the execution of the action.
+     *
+     * Please don't add negative test cases for methods that fail only after a long wait.
+     *
+     * @param launcher The {@link LauncherInstrumentation} instance to use.
+     * @param message  The message to display if the action does not fail as expected.
+     * @param action   The {@link Runnable} containing the code that is expected to throw an
+     *                 {@link AssertionError}.
+     */
+    public static void expectFail(LauncherInstrumentation launcher,
+            String message, Runnable action) {
         boolean failed = false;
+        final Runnable savedOnFailure = launcher.getOnFailure();
+        launcher.setOnFailure(null); // Disable failure handling, such as saving error artifacts.
         try {
             action.run();
         } catch (AssertionError e) {
             failed = true;
+        } finally {
+            launcher.setOnFailure(savedOnFailure);
         }
         assertTrue(message, failed);
     }
@@ -232,15 +247,6 @@ public class TestUtil {
     public static void grantWriteSecurePermission() {
         getInstrumentation().getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.WRITE_SECURE_SETTINGS);
-    }
-
-    /**
-     * Returns the activity info corresponding to the system app for the provided category
-     */
-    public static ActivityInfo resolveSystemAppInfo(String category) {
-        return getInstrumentation().getTargetContext().getPackageManager().resolveActivity(
-                new Intent(Intent.ACTION_MAIN).addCategory(category),
-                PackageManager.MATCH_SYSTEM_ONLY).activityInfo;
     }
 
     /** Interface to indicate a runnable which can throw any exception. */

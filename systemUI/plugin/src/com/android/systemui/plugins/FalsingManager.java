@@ -25,6 +25,7 @@ import com.android.systemui.plugins.annotations.ProvidesInterface;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 /**
  * Interface that decides whether a touch on the phone was accidental. i.e. Pocket Dialing.
@@ -132,11 +133,13 @@ public interface FalsingManager {
     void dump(PrintWriter pw, String[] args);
 
     /**
-     *  Don't call this. It's meant for internal use to allow switching between implementations.
+     * Don't call this. It's meant for internal use to allow switching between implementations.
      *
      * Tests may also call it.
+     *
+     * @return existing listeners so they may be reattached
      **/
-    void cleanupInternal();
+    List<FalsingBeliefListener> cleanupInternal();
 
     /** Call to report a ProximityEvent to the FalsingManager. */
     void onProximityEvent(ProximityEvent proximityEvent);

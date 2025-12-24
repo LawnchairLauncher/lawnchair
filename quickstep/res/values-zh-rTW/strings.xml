@@ -47,7 +47,6 @@
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"應用程式建議已新增到空白位置"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"應用程式建議功能已啟用"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"應用程式建議功能已停用"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"預測的應用程式：<xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_title" msgid="2750751261768388354">"手勢操作教學課程"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"旋轉裝置螢幕方向"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"如要完成手勢操作教學課程，請旋轉裝置螢幕方向"</string>
@@ -96,7 +95,10 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"系統操作機制設定"</annotation></string>
     <string name="allset_title_expressive" msgid="474399969304146994">"你的 <xliff:g id="DEVICE">%1$s</xliff:g>\n已準備就緒！"</string>
     <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"你的裝置\n已準備就緒！"</string>
+    <string name="allset_title_expressive_fixed" msgid="3564219469262883526">"可以開始使用了！"</string>
     <string name="allset_subtitle_expressive" msgid="419688197551192358">"盡情享受全新<xliff:g id="DEVICE">%1$s</xliff:g>！"</string>
+    <string name="allset_subtitle_expressive_gesture_navigation" msgid="8931442349501593934">"向上滑動即可開始使用<xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_subtitle_expressive_button_navigation" msgid="5219509605046028014">"輕觸即可開始使用<xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"選擇瀏覽方式"</annotation></string>
     <string name="allset_hint_expressive" msgid="756856423510976261">"向上滑動"</string>
     <string name="allset_button_hint_expressive" msgid="667643693410494225">"輕觸主畫面按鈕"</string>
@@ -139,14 +141,13 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"通知"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"快速設定"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"工作列"</string>
-    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"已顯示工作列"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"工作列和對話框顯示在左側"</string>
-    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"工作列和對話框顯示在右側"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"導覽列"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"一律顯示工作列"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"變更操作模式"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"工作列分隔線"</string>
     <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"最近曾使用的其他應用程式"</string>
+    <string name="app_added_to_taskbar" msgid="1160433791917609063">"已將應用程式新增到工作列"</string>
+    <string name="app_removed_from_taskbar" msgid="7887298201562912487">"已將應用程式從工作列中移除"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"移到上方/左側"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"移到底部/右側"</string>
     <string name="open_app_as_a_bubble" msgid="6642626287247807473">"以泡泡形式開啟應用程式"</string>
@@ -171,8 +172,6 @@
     <string name="header_app_icon_description" msgid="2184625881433608027">"應用程式圖示"</string>
     <string name="header_default_app_title" msgid="8308052350689531566">"應用程式標題"</string>
     <string name="header_close_icon_description" msgid="5400033616675911319">"關閉按鈕"</string>
-    <string name="pin_to_taskbar" msgid="6607778046321626950">"固定到工作列"</string>
-    <string name="unpin_from_taskbar" msgid="2178811773165572676">"從工作列中取消固定"</string>
     <string name="nudge_a11y_title" msgid="2126529303123687912">"提醒"</string>
     <string name="nudge_a11y_close" msgid="4513937143817625570">"關閉"</string>
     <string name="nudge_a11y_image" msgid="117910310515857252">"提醒圖片"</string>

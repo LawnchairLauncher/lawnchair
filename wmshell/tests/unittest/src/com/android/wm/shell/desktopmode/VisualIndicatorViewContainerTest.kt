@@ -32,7 +32,7 @@ import android.view.SurfaceControlViewHost
 import android.view.View
 import android.widget.FrameLayout
 import androidx.test.filters.SmallTest
-import com.android.window.flags.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE
+import com.android.window.flags2.Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE
 import com.android.wm.shell.ShellTestCase
 import com.android.wm.shell.TestRunningTaskInfoBuilder
 import com.android.wm.shell.TestShellExecutor

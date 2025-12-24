@@ -16,14 +16,14 @@
 
 package com.android.wm.shell.flicker.pip
 
-import android.platform.test.annotations.FlakyTest
+import androidx.test.filters.FlakyTest
 import android.platform.test.annotations.Presubmit
-import android.platform.test.annotations.RequiresDevice
+import androidx.test.filters.RequiresDevice
 import android.tools.Rotation
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
-import android.tools.flicker.legacy.FlickerBuilder
-import android.tools.flicker.legacy.LegacyFlickerTest
-import android.tools.flicker.legacy.LegacyFlickerTestFactory
+import android.tools.flicker.FlickerBuilder
+import android.tools.flicker.FlickerTest
+import android.tools.flicker.FlickerTestFactory
 import android.tools.helpers.WindowUtils
 import android.tools.traces.parsers.toFlickerComponent
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
@@ -53,7 +53,7 @@ import org.junit.runners.Parameterized
  * ```
  *     1. All assertions are inherited from [EnterPipTest]
  *     2. Part of the test setup occurs automatically via
- *        [android.tools.flicker.legacy.runner.TransitionRunner],
+ *        [android.tools.flicker.runner.TransitionRunner],
  *        including configuring navigation mode, initial orientation and ensuring no
  *        apps are running before setup
  * ```
@@ -62,7 +62,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-open class FromSplitScreenAutoEnterPipOnGoToHomeTest(flicker: LegacyFlickerTest) :
+open class FromSplitScreenAutoEnterPipOnGoToHomeTest(flicker: FlickerTest) :
     AutoEnterPipOnGoToHomeTest(flicker) {
     private val portraitDisplayBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_0)
     /** Second app used to enter split screen mode */
@@ -152,7 +152,7 @@ open class FromSplitScreenAutoEnterPipOnGoToHomeTest(flicker: LegacyFlickerTest)
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getParams() =
-            LegacyFlickerTestFactory.nonRotationTests(
+            FlickerTestFactory.nonRotationTests(
                 supportedRotations = listOf(Rotation.ROTATION_0)
             )
     }

@@ -15,23 +15,26 @@
  */
 package com.android.launcher3.allapps
 
-import android.content.Context
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ImageView
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.launcher3.util.ActivityContextWrapper
+import com.android.launcher3.util.TestActivityContext
 import com.google.common.truth.Truth
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 
 @RunWith(AndroidJUnit4::class)
 class FloatingMaskViewTest {
+
+    @get:Rule val context = TestActivityContext()
+
+    @get:Rule val mockitoRule = MockitoJUnit.rule()
     @Mock private val mockAllAppsRecyclerView: AllAppsRecyclerView? = null
 
     @Mock private val mockBottomBox: ImageView? = null
@@ -39,8 +42,6 @@ class FloatingMaskViewTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        val context: Context = ActivityContextWrapper(ApplicationProvider.getApplicationContext())
         mVut = FloatingMaskView(context)
         mVut!!.layoutParams =
             MarginLayoutParams(

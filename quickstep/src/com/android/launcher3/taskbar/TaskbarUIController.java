@@ -23,7 +23,6 @@ import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 
 import android.animation.Animator;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.window.RemoteTransition;
@@ -38,6 +37,8 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.taskbar.bubbles.BubbleBarController;
+import com.android.launcher3.taskbar.customization.TaskbarFeatureEvaluator;
+import com.android.launcher3.taskbar.customization.TaskbarSpecsEvaluator;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -51,6 +52,7 @@ import com.android.wm.shell.shared.bubbles.BubbleBarLocation;
 
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -77,6 +79,10 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
             recentsView.setTaskLaunchListener(null);
             recentsView.setTaskLaunchCancelledRunnable(null);
         }
+    }
+
+    protected TaskbarSpecsEvaluator getTaskbarSpecsEvaluator() {
+        return mControllers.taskbarActivityContext.getTaskbarSpecsEvaluator();
     }
 
     protected boolean isTaskbarTouchable() {
@@ -108,14 +114,6 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
 
     public View getRootView() {
         return mControllers.taskbarActivityContext.getDragLayer();
-    }
-
-    /**
-     * Called when swiping from the bottom nav region in fully gestural mode.
-     * @param inProgress True if the animation started, false if we just settled on an end target.
-     */
-    public void setSystemGestureInProgress(boolean inProgress) {
-        mControllers.taskbarStashController.setSystemGestureInProgress(inProgress);
     }
 
     /**
@@ -172,6 +170,10 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
      */
     public boolean shouldAllowTaskbarToAutoStash() {
         return mControllers.taskbarActivityContext.shouldAllowTaskbarToAutoStash();
+    }
+
+    public TaskbarFeatureEvaluator getTaskbarFeatureEvaluator() {
+        return mControllers.taskbarActivityContext.getTaskbarFeatureEvaluator();
     }
 
     /**
@@ -234,6 +236,10 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
         }
     }
 
+    /**
+     * Return true only if drags originating from taskbar window is dragging an item. Drag
+     * originating from all apps using {@link TaskbarOverlayContext} is excluded.
+     */
     public boolean isDraggingItem() {
         boolean bubblesDragging = false;
         if (mControllers.bubbleControllers.isPresent()) {
@@ -267,7 +273,7 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
         }
 
         recentsView.getSplitSelectController().findLastActiveTasksAndRunCallback(
-                Collections.singletonList(splitSelectSource.getItemInfo().getComponentKey()),
+                Collections.singletonList(splitSelectSource.getItemInfo().getResolvedTargetInfo()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks[0];
@@ -278,6 +284,29 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
                     recentsView.initiateSplitSelect(splitSelectSource);
                 }
         );
+    }
+
+    /**
+     * Adds the provided `task` as a second app in splitscreen.
+     */
+    public void moveRunningTaskToSplitSelection(@NonNull Task task, @Nullable ItemInfo itemInfo,
+            View startingView) {
+        // When launching from Taskbar, set FLAG_IN_APP immediately to reduce potential visual noise
+        // during the app open transition.
+        if (mControllers.taskbarStashController != null) {
+            mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, true);
+            mControllers.taskbarStashController.applyState();
+        }
+
+        getRecentsView().confirmSplitSelect(
+                null /* containerTaskView */,
+                task /* task */,
+                task.icon,
+                startingView,
+                task.thumbnail != null ? task.thumbnail.getThumbnail() : null /* thumbnail */,
+                null /* intent */,
+                null /* user */,
+                itemInfo);
     }
 
     /**
@@ -293,7 +322,7 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
 
         RecentsView recents = getRecentsView();
         recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
-                Collections.singletonList(info.getComponentKey()),
+                Collections.singletonList(info.getResolvedTargetInfo()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask = foundTasks[0];
@@ -326,7 +355,7 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
                     recents.confirmSplitSelect(
                             null /* containerTaskView */,
                             null /* task */,
-                            new BitmapDrawable(info.bitmap.icon),
+                            info.newIcon(mControllers.taskbarActivityContext),
                             startingView,
                             null /* thumbnail */,
                             intent,
@@ -351,12 +380,15 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
      * If the overlay or view are closed, or the overview task is focused, then Overview is
      * launched. If the overview task is launched, then the first hidden task is focused.
      *
-     * @return the index of what task should be focused in ; -1 iff Overview shouldn't be launched
+     * @return the set of task ids associated with the task view that should be focused; null iff
+     *         overview shouldn't be launched
      */
-    public int launchFocusedTask() {
-        int focusedTaskIndex = mControllers.keyboardQuickSwitchController.launchFocusedTask();
+    @Nullable
+    public Set<Integer> launchFocusedTask() {
+        Set<Integer> focusedTaskIds =
+                mControllers.keyboardQuickSwitchController.launchFocusedTask();
         mControllers.keyboardQuickSwitchController.closeQuickSwitchView();
-        return focusedTaskIndex;
+        return focusedTaskIds;
     }
 
     /**
@@ -456,6 +488,14 @@ public class TaskbarUIController implements BubbleBarController.BubbleBarLocatio
      */
     public void setSkipLauncherVisibilityChange(boolean skip) {
         mSkipLauncherVisibilityChange = skip;
+    }
+
+    /**
+     * @return whether the context menu option to pin an app to the taskbar is enabled.
+     */
+    public boolean canPinAppWithContextMenu() {
+        return TaskbarPopupController.canPinAppWithContextMenu(
+                mControllers.taskbarActivityContext);
     }
 
     /** Sets whether the hotseat is stashed */

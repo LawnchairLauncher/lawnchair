@@ -73,7 +73,8 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
                 // flicker as the animation restarts partway through, and this is a very rare
                 // edge case anyway.
                 mPopupContainerWithArrow.close(false);
-                PopupContainerWithArrow.showForIcon(mPopupContainerWithArrow.getOriginalIcon());
+                mContext.getPopupControllerForAppIcons()
+                        .show(originalIcon);
             }
         } else if (widgetInfo == null && widgetsView != null) {
             // No widgets exist, but we previously added the shortcut so remove it.
@@ -83,7 +84,8 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
                 mPopupContainerWithArrow.getWidgetContainer().removeView(widgetsView);
             } else {
                 mPopupContainerWithArrow.close(false);
-                PopupContainerWithArrow.showForIcon(mPopupContainerWithArrow.getOriginalIcon());
+                mContext.getPopupControllerForAppIcons()
+                        .show(originalIcon);
             }
         }
     }

@@ -23,7 +23,7 @@ import android.view.Display.DEFAULT_DISPLAY
 import android.view.SurfaceControl
 import android.window.TransitionInfo
 import com.android.internal.protolog.ProtoLog
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.common.split.SplitLayout
 import com.android.wm.shell.protolog.ShellProtoLogGroup
 

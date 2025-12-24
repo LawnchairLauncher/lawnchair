@@ -24,37 +24,37 @@ import com.android.wm.shell.windowdecor.viewholder.WindowDecorationViewHolder.Da
  * children (via findViewById) and updating to the latest data from [RunningTaskInfo].
  */
 abstract class WindowDecorationViewHolder<T : Data> : AutoCloseable {
-  /** The root view of the window decoration. */
-  abstract val rootView: View
+    /** The root view of the window decoration. */
+    abstract val rootView: View
 
-  /**
-   * A signal to the view holder that new data is available and that the views should be updated to
-   * reflect it.
-   */
-  abstract fun bindData(data: T)
+    /**
+     * A signal to the view holder that new data is available and that the views should be updated
+     * to reflect it.
+     */
+    abstract fun bindData(data: T)
 
-  /** Callback when the handle menu is opened. */
-  abstract fun onHandleMenuOpened()
+    /** Callback when the handle menu is opened. */
+    abstract fun onHandleMenuOpened()
 
-  /** Callback when the handle menu is closed. */
-  abstract fun onHandleMenuClosed()
+    /** Callback when the handle menu is closed. */
+    abstract fun onHandleMenuClosed()
 
-  /** Callback when the window decoration is destroyed. */
-  abstract override fun close()
+    /** Callback when the window decoration is destroyed. */
+    abstract override fun close()
 
-  /** Data clas that contains the information needed to update the view holder. */
-  abstract class Data
+    /** Data clas that contains the information needed to update the view holder. */
+    abstract class Data
 
-  /** Sets task focused state. */
-  abstract fun setTaskFocusState(taskFocusState: Boolean)
+    /** Sets task focused state. */
+    abstract fun setTaskFocusState(taskFocusState: Boolean)
 
-  /** Sets the view's top padding. */
-  fun setTopPadding(topPadding: Int) {
-    rootView.setPadding(
-      rootView.paddingLeft,
-      topPadding,
-      rootView.paddingRight,
-      rootView.paddingBottom
-    )
-  }
+    /** Sets the view's top padding. */
+    fun setTopPadding(topPadding: Int) {
+        rootView.setPadding(
+            rootView.paddingLeft,
+            topPadding,
+            rootView.paddingRight,
+            rootView.paddingBottom,
+        )
+    }
 }

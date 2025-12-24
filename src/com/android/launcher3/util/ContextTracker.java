@@ -61,9 +61,11 @@ public abstract class ContextTracker<CONTEXT extends ActivityContext> {
      * @param callback The callback to call init() on when the context is ready.
      */
     public void registerCallback(SchedulerCallback<CONTEXT> callback, String reasonString) {
-        Log.d(TAG, "Registering callback: " + callback + ", reason=" + reasonString);
         CONTEXT context = mCurrentContext.get();
         mCallbacks.add(callback);
+        Log.d(TAG, "Registering callback: callback=" + callback
+                + ", context=" + context
+                + ", reason=" + reasonString);
         if (context != null) {
             if (!callback.init(context, isHomeStarted(context))) {
                 unregisterCallback(callback, "ContextTracker.registerCallback: Intent handled");
@@ -91,7 +93,7 @@ public abstract class ContextTracker<CONTEXT extends ActivityContext> {
     private boolean handleCreate(CONTEXT context, boolean isHomeStarted) {
         boolean handled = false;
         if (!mCallbacks.isEmpty()) {
-            Log.d(TAG, "handleIntent: mCallbacks=" + mCallbacks);
+            Log.d(TAG, "handleCreate: context=" + context + ", mCallbacks=" + mCallbacks);
         }
         for (SchedulerCallback<CONTEXT> cb : mCallbacks) {
             if (!cb.init(context, isHomeStarted)) {

@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 
 import android.app.WindowConfiguration;
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.Log;
 import android.view.RemoteAnimationTarget;
 import android.window.TransitionInfo;
@@ -99,6 +98,13 @@ public class RemoteTargetGluer {
                 DEFAULT_NUM_HANDLES);
     }
 
+    /*
+     * Use this constructor if you have an existing array of RemoteTargetHandles you want to glue.
+     */
+    public RemoteTargetGluer(RemoteTargetHandle[] handles) {
+        mRemoteTargetHandles = handles;
+    }
+
     private RemoteTargetHandle[] createHandles(Context context,
             BaseContainerInterface sizingStrategy, boolean forDesktop, int numHandles) {
         RemoteTargetHandle[] handles = new RemoteTargetHandle[numHandles];
@@ -170,16 +176,18 @@ public class RemoteTargetGluer {
 
             // If we're not in split screen, the splitIds count doesn't really matter since we
             // should always hit this case.
-            setRemoteTargetHandle(targets,
+            setRemoteTargetHandle(mRemoteTargetHandles[0],
+                    targets,
                     targets.apps.length > 0 ? targets.apps[0] : null,
                     /* targetsToExclude = */ null, /* transitionInfo = */ null,
-                    /* splitBounds = */ null, /* taskIndex = */ 0);
+                    /* splitBounds = */ null);
         } else if (!containsSplitTargets) {
             resizeRemoteTargetHandles(targets);
             // Single App + Assistant
             for (int i = 0; i < mRemoteTargetHandles.length; i++) {
-                setRemoteTargetHandle(targets, targets.apps[i], /* targetsToExclude = */ null,
-                        /* transitionInfo = */ null, /* splitBounds = */ null, /* taskIndex = */ i);
+                setRemoteTargetHandle(mRemoteTargetHandles[i],
+                        targets, targets.apps[i], /* targetsToExclude = */ null,
+                        /* transitionInfo = */ null, /* splitBounds = */ null);
             }
         } else if (mSplitBounds != null) {
             setSplitRemoteTargetHandles(targets);
@@ -219,20 +227,20 @@ public class RemoteTargetGluer {
 
         int taskIndex = 0;
         for (final RemoteAnimationTarget target : leftTopTargets) {
-            setRemoteTargetHandle(targets, target, rightBottomTargets, /* transitionInfo = */ null,
-                    mSplitBounds, taskIndex++);
+            setRemoteTargetHandle(mRemoteTargetHandles[taskIndex++], targets, target,
+                    rightBottomTargets, /* transitionInfo = */ null, mSplitBounds);
         }
         for (final RemoteAnimationTarget target : rightBottomTargets) {
-            setRemoteTargetHandle(targets, target, leftTopTargets, /* transitionInfo = */ null,
-                    mSplitBounds, taskIndex++);
+            setRemoteTargetHandle(mRemoteTargetHandles[taskIndex++], targets, target,
+                    leftTopTargets, /* transitionInfo = */ null, mSplitBounds);
         }
         // Set the remaining overlay tasks to be their own TaskViewSimulator as fullscreen tasks
         if (!overlayTargets.isEmpty()) {
             List<RemoteAnimationTarget> targetsToExclude = new ArrayList<>(leftTopTargets);
             targetsToExclude.addAll(rightBottomTargets);
             for (final RemoteAnimationTarget target : overlayTargets) {
-                setRemoteTargetHandle(targets, target, targetsToExclude,
-                        /* transitionInfo = */ null, /* splitBounds = */ null, taskIndex++);
+                setRemoteTargetHandle(mRemoteTargetHandles[taskIndex++], targets, target,
+                        targetsToExclude, /* transitionInfo = */ null, /* splitBounds = */ null);
             }
         }
     }
@@ -246,13 +254,49 @@ public class RemoteTargetGluer {
         resizeRemoteTargetHandles(targets);
 
         for (int i = 0; i < mRemoteTargetHandles.length; i++) {
-            RemoteAnimationTarget primaryTaskTarget = targets.apps[i];
-            List<RemoteAnimationTarget> excludeTargets = Arrays.stream(targets.apps)
-                    .filter(target -> target.taskId != primaryTaskTarget.taskId).collect(toList());
-            setRemoteTargetHandle(targets, primaryTaskTarget, excludeTargets, transitionInfo,
-                    /* splitBounds = */ null, i);
+            assignTargetsToHandleForDesktop(mRemoteTargetHandles[i], i, targets, transitionInfo);
         }
         return mRemoteTargetHandles;
+    }
+
+    /**
+     * Creates a new RemoteTargetHandle for each app in {@code targets}, assigns targets to each
+     * one, then prepends them to mRemoteTargetHandles, similar to
+     * {@link #assignTargetsForDesktop(RemoteAnimationTargets, TransitionInfo)}.
+     */
+    public RemoteTargetHandle[] insertNewHandlesInFrontAndAssignTargetsForDesktop(
+            Context context,
+            BaseContainerInterface sizingStrategy,
+            RemoteAnimationTargets targets,
+            @Nullable TransitionInfo transitionInfo
+    ) {
+        // Create a new array with space for the new handles.
+        RemoteTargetHandle[] tempArray =
+                new RemoteTargetHandle[mRemoteTargetHandles.length + targets.apps.length];
+
+        // Copy the existing handles to the end of the new array.
+        System.arraycopy(mRemoteTargetHandles, 0, tempArray, targets.apps.length,
+                mRemoteTargetHandles.length);
+
+        for (int i = 0; i < targets.apps.length; i++) {
+            tempArray[i] = createHandle(context, sizingStrategy, true, i);
+            assignTargetsToHandleForDesktop(tempArray[i], i, targets, transitionInfo);
+        }
+
+        mRemoteTargetHandles = tempArray;
+        return mRemoteTargetHandles;
+    }
+
+    private void assignTargetsToHandleForDesktop(
+            RemoteTargetHandle handle,
+            int handleIndex,
+            RemoteAnimationTargets targets,
+            @Nullable TransitionInfo transitionInfo) {
+        RemoteAnimationTarget primaryTaskTarget = targets.apps[handleIndex];
+        List<RemoteAnimationTarget> excludeTargets = Arrays.stream(targets.apps)
+                .filter(target -> target.taskId != primaryTaskTarget.taskId).collect(toList());
+        setRemoteTargetHandle(handle, targets, primaryTaskTarget,
+                excludeTargets, transitionInfo, /* splitBounds = */ null);
     }
 
     private boolean isOverlayTarget(@NonNull RemoteAnimationTarget target,
@@ -294,27 +338,25 @@ public class RemoteTargetGluer {
         mRemoteTargetHandles = newHandles;
     }
 
-    private void setRemoteTargetHandle(@NonNull RemoteAnimationTargets targets,
+    private void setRemoteTargetHandle(
+            @NonNull RemoteTargetHandle handle,
+            @NonNull RemoteAnimationTargets targets,
             @Nullable RemoteAnimationTarget target,
             @Nullable List<RemoteAnimationTarget> targetsToExclude,
             @Nullable TransitionInfo transitionInfo,
-            @Nullable SplitBounds splitBounds, int taskIndex) {
+            @Nullable SplitBounds splitBounds) {
         if (targetsToExclude != null) {
-            mRemoteTargetHandles[taskIndex].mTransformParams.setTargetSet(
+            handle.mTransformParams.setTargetSet(
                     createRemoteAnimationTargetsForTarget(targets, targetsToExclude));
         } else {
-            mRemoteTargetHandles[taskIndex].mTransformParams.setTargetSet(targets);
+            handle.mTransformParams.setTargetSet(targets);
         }
         if (transitionInfo != null) {
-            mRemoteTargetHandles[taskIndex].mTransformParams.setTransitionInfo(transitionInfo);
+            handle.mTransformParams.setTransitionInfo(transitionInfo);
         }
         if (target != null) {
-            mRemoteTargetHandles[taskIndex].mTaskViewSimulator.setPreview(target, splitBounds);
+            handle.mTaskViewSimulator.setPreview(target, splitBounds);
         }
-    }
-
-    private Rect getStartBounds(RemoteAnimationTarget target) {
-        return target.startBounds == null ? target.screenSpaceBounds : target.startBounds;
     }
 
     /**

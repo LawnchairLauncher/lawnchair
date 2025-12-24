@@ -21,8 +21,6 @@ import static com.android.quickstep.fallback.RecentsStateUtilsKt.toLauncherState
 
 import static org.junit.Assert.assertTrue;
 
-import android.os.SystemProperties;
-
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Until;
@@ -34,9 +32,10 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.ui.AbstractLauncherUiTest;
-import com.android.quickstep.fallback.window.RecentsWindowFlags;
-import com.android.quickstep.fallback.window.RecentsWindowManager;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.window.RecentsWindowFlags;
+import com.android.quickstep.window.RecentsWindowManager;
+import com.android.quickstep.window.RecentsWindowTracker;
 
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
@@ -50,8 +49,7 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractQuickStepTest
         extends AbstractLauncherUiTest<QuickstepLauncher, RecentsView<?, ?>> {
-    public static final boolean ENABLE_SHELL_TRANSITIONS =
-            SystemProperties.getBoolean("persist.wm.debug.shell_transit", true);
+
     @Override
     protected TestRule getRulesInsideActivityMonitor() {
         return RuleChain.
@@ -63,13 +61,20 @@ public abstract class AbstractQuickStepTest
     @Override
     protected void onLauncherActivityClose(QuickstepLauncher launcher) {
         super.onLauncherActivityClose(launcher);
-        if (RecentsWindowFlags.enableLauncherOverviewInWindow) {
-            executeOnRecentsWindowIfPresent(RecentsWindowManager::cleanupRecentsWindow);
+        if (RecentsWindowFlags.enableLauncherOverviewInWindow.isTrue()) {
+            executeOnRecentsWindowIfPresent(RecentsWindowManager::hideRecentsWindow);
         }
         RecentsView recentsView = launcher.getOverviewPanel();
         if (recentsView != null) {
-            recentsView.finishRecentsAnimation(false /* toRecents */, null);
+            recentsView.finishRecentsAnimation(false /* toHome */, null);
         }
+    }
+
+    @Nullable
+    private RecentsWindowManager getRecentsWindowManager() {
+        RecentsWindowTracker recentsWindowTracker =
+                RecentsWindowTracker.REPOSITORY_INSTANCE.get(mTargetContext).get(mDisplayId);
+        return recentsWindowTracker == null ? null : recentsWindowTracker.getCreatedContext();
     }
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
@@ -96,8 +101,7 @@ public abstract class AbstractQuickStepTest
 
     protected <T> T getFromRecentsWindow(Function<RecentsWindowManager, T> f) {
         if (!TestHelpers.isInLauncherProcess()) return null;
-        return getOnUiThread(() ->
-                f.apply(RecentsWindowManager.getRecentsWindowTracker().getCreatedContext()));
+        return getOnUiThread(() -> f.apply(getRecentsWindowManager()));
     }
 
     protected void executeOnRecentsWindowIfPresent(Consumer<RecentsWindowManager> f) {
@@ -111,7 +115,7 @@ public abstract class AbstractQuickStepTest
     @Override
     protected boolean isInState(Supplier<LauncherState> state) {
         if (!TestHelpers.isInLauncherProcess()) return true;
-        if (!RecentsWindowFlags.enableLauncherOverviewInWindow
+        if (!RecentsWindowFlags.enableLauncherOverviewInWindow.isTrue()
                 || !hasEquivalentRecentsState(state.get())) {
             return super.isInState(state);
         }
@@ -124,10 +128,10 @@ public abstract class AbstractQuickStepTest
     protected void waitForState(
             boolean forInitialization, String message, Supplier<LauncherState> state) {
         if (!TestHelpers.isInLauncherProcess()) return;
-        if (!RecentsWindowFlags.enableLauncherOverviewInWindow
+        if (!RecentsWindowFlags.enableLauncherOverviewInWindow.isTrue()
                 || !hasEquivalentRecentsState(state.get())
                 || (forInitialization
-                && RecentsWindowManager.getRecentsWindowTracker().getCreatedContext() == null)) {
+                && getRecentsWindowManager() == null)) {
             super.waitForState(forInitialization, message, state);
             return;
         }
@@ -140,7 +144,7 @@ public abstract class AbstractQuickStepTest
     @Nullable
     protected RecentsView getOverviewPanel() {
         if (!TestHelpers.isInLauncherProcess()) return null;
-        if (!RecentsWindowFlags.enableLauncherOverviewInWindow) {
+        if (!RecentsWindowFlags.enableLauncherOverviewInWindow.isTrue()) {
             return super.getOverviewPanel();
         }
         return getFromRecentsWindowIfPresent(RecentsWindowManager::getOverviewPanel);
@@ -149,7 +153,7 @@ public abstract class AbstractQuickStepTest
     @Override
     protected boolean useNullOverview() {
         return super.useNullOverview()
-                && !RecentsWindowFlags.enableLauncherOverviewInWindow;
+                && !RecentsWindowFlags.enableLauncherOverviewInWindow.isTrue();
     }
 
     protected void assertTestActivityIsRunning(int activityNumber, String message) {

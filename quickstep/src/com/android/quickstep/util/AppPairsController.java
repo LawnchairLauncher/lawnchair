@@ -44,7 +44,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.app.displaylib.PerDisplayRepository;
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -58,6 +57,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.ResolvedTargetInfo;
 import com.android.launcher3.model.data.TaskViewItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
@@ -65,15 +65,16 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TopTaskTracker;
-import com.android.quickstep.fallback.window.RecentsWindowFlags;
-import com.android.quickstep.fallback.window.RecentsWindowManager;
 import com.android.quickstep.views.GroupedTaskView;
+import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskContainer;
 import com.android.quickstep.views.TaskView;
+import com.android.quickstep.window.RecentsWindowManager;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.wm.shell.shared.desktopmode.DesktopModeStatus;
@@ -234,11 +235,14 @@ public class AppPairsController {
                 if (delegate == null) {
                     return;
                 }
-                if (RecentsWindowFlags.enableLauncherOverviewInWindow) {
-                    PerDisplayRepository<RecentsWindowManager> recentsWindowManagerRepository =
-                            RecentsWindowManager.REPOSITORY_INSTANCE.get(mContext.asContext());
-                    recentsWindowManagerRepository.get(gtv.getDisplayId())
-                            .getStateManager().moveToRestState();
+                BaseContainerInterface<?, ?> containerInterface =
+                        OverviewComponentObserver.INSTANCE.get(
+                                mContext.asContext()).getContainerInterface(gtv.getDisplayId());
+                if (containerInterface != null) {
+                    RecentsViewContainer container = containerInterface.getCreatedContainer();
+                    if (container instanceof RecentsWindowManager recentsWindowManager) {
+                        recentsWindowManager.getStateManager().moveToRestState();
+                    }
                 }
                 delegate.addToWorkspace(newAppPair, true, (success) -> {
                     if (success) {
@@ -264,14 +268,14 @@ public class AppPairsController {
      */
     public void launchAppPair(AppPairIcon appPairIcon, int cuj,
             @Nullable Consumer<Boolean> callback) {
-        WorkspaceItemInfo app1 = appPairIcon.getInfo().getFirstApp();
-        WorkspaceItemInfo app2 = appPairIcon.getInfo().getSecondApp();
-        ComponentKey app1Key = new ComponentKey(app1.getTargetComponent(), app1.user);
-        ComponentKey app2Key = new ComponentKey(app2.getTargetComponent(), app2.user);
+        final WorkspaceItemInfo app1 = appPairIcon.getInfo().getFirstApp();
+        final WorkspaceItemInfo app2 = appPairIcon.getInfo().getSecondApp();
+        final ResolvedTargetInfo resolvedTargetInfo1 = app1.getResolvedTargetInfo();
+        final ResolvedTargetInfo resolvedTargetInfo2 = app2.getResolvedTargetInfo();
         mSplitSelectStateController.setLaunchingCuj(appPairIcon, cuj);
 
         mSplitSelectStateController.findLastActiveTasksAndRunCallback(
-                Arrays.asList(app1Key, app2Key),
+                Arrays.asList(resolvedTargetInfo1, resolvedTargetInfo2),
                 false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable Task foundTask1 = foundTasks[0];
@@ -374,9 +378,9 @@ public class AppPairsController {
     public void handleAppPairLaunchInApp(AppPairIcon launchingIconView,
             List<? extends ItemInfo> itemInfos) {
         TaskbarActivityContext context = (TaskbarActivityContext) launchingIconView.getContext();
-        List<ComponentKey> componentKeys =
-                itemInfos.stream().map(ItemInfo::getComponentKey).toList();
-
+        List<ResolvedTargetInfo> resolvedTargetInfos = itemInfos.stream()
+                        .map(itemInfo -> itemInfo.getResolvedTargetInfo())
+                .toList();
         // Use TopTaskTracker to find the currently running app (or apps)
         TopTaskTracker topTaskTracker = getTopTaskTracker();
 
@@ -389,7 +393,7 @@ public class AppPairsController {
             int runningTaskId2 = runningSplitTasks[1];
 
             mSplitSelectStateController.findLastActiveTasksAndRunCallback(
-                    componentKeys,
+                    resolvedTargetInfos,
                     false /* findExactPairMatch */,
                     foundTasks -> {
                         // If our clicked app pair has already-running Tasks, we grab the
@@ -444,7 +448,7 @@ public class AppPairsController {
                     .getCachedTopTask(false /* filterOnlyVisibleRecents */, context.getDisplayId());
 
             mSplitSelectStateController.findLastActiveTasksAndRunCallback(
-                    componentKeys,
+                    resolvedTargetInfos,
                     false /* findExactPairMatch */,
                     foundTasks -> {
                         Task foundTask1 = foundTasks[0];

@@ -18,7 +18,9 @@ package com.android.quickstep.util;
 import static android.content.Intent.ACTION_TIMEZONE_CHANGED;
 import static android.content.Intent.ACTION_TIME_CHANGED;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.SimpleBroadcastReceiver.actionsFilter;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -76,8 +78,8 @@ public class AsyncClockEventDelegate extends ClockEventDelegate
         mContext = context;
         mSettingsCache = settingsCache;
         mReceiver = new SimpleBroadcastReceiver(
-                context, UI_HELPER_EXECUTOR, this::onClockEventReceived);
-        mReceiver.register(ACTION_TIME_CHANGED, ACTION_TIMEZONE_CHANGED);
+                context, UI_HELPER_EXECUTOR, MAIN_EXECUTOR, this::onClockEventReceived);
+        mReceiver.register(actionsFilter(ACTION_TIME_CHANGED, ACTION_TIMEZONE_CHANGED));
         tracker.addCloseable(this);
     }
 
@@ -139,6 +141,6 @@ public class AsyncClockEventDelegate extends ClockEventDelegate
     public void close() {
         mDestroyed = true;
         mSettingsCache.unregister(mFormatUri, this);
-        mReceiver.unregisterReceiverSafely();
+        mReceiver.close();
     }
 }

@@ -25,7 +25,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.taskbar.TaskbarActivityContext
 
 open class PhoneLandscapeNavLayoutter(
@@ -46,6 +45,8 @@ open class PhoneLandscapeNavLayoutter(
         a11yButton,
         space,
     ) {
+
+    override val orientation = LinearLayout.VERTICAL
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         val totalHeight = context.deviceProfile.deviceProperties.heightPx
@@ -73,9 +74,6 @@ open class PhoneLandscapeNavLayoutter(
         }
 
         // Ensure order of buttons is correct
-        navButtonContainer.removeAllViews()
-        navButtonContainer.orientation = LinearLayout.VERTICAL
-
         addThreeButtons()
 
         navButtonContainer.layoutParams = navContainerParams
@@ -111,17 +109,9 @@ open class PhoneLandscapeNavLayoutter(
         repositionContextualButtons(contextualButtonHeight.toInt())
     }
 
-    open fun addThreeButtons() {
-        // Swap recents and back button
-        if (Utilities.isRtl(resources)) {
-            navButtonContainer.addView(backButton)
-            navButtonContainer.addView(homeButton)
-            navButtonContainer.addView(recentsButton)
-        } else {
-            navButtonContainer.addView(recentsButton)
-            navButtonContainer.addView(homeButton)
-            navButtonContainer.addView(backButton)
-        }
+    /** Landscape flips the default order to account for rotation. */
+    override fun shouldFlipButtonOrder(): Boolean {
+        return !super.shouldFlipButtonOrder()
     }
 
     open fun repositionContextualButtons(buttonSize: Int) {

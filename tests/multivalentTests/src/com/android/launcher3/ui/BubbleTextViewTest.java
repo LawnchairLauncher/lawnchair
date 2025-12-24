@@ -38,7 +38,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -60,16 +59,16 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.graphics.PreloadIconDelegate;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.search.StringMatcherUtility;
-import com.android.launcher3.util.ActivityContextWrapper;
-import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.SandboxApplication;
+import com.android.launcher3.util.TestActivityContext;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -77,7 +76,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 /**
  * Unit tests for testing modifyTitleToSupportMultiLine() in BubbleTextView.java
@@ -119,20 +119,20 @@ public class BubbleTextViewTest {
     private static final float SPACE_EXTRA = 0;
 
     @Rule public SandboxApplication mModelContext = new SandboxApplication();
+    @Rule public TestActivityContext mContext = new TestActivityContext(mModelContext);
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private BubbleTextView mBubbleTextView;
     private ItemInfoWithIcon mItemInfoWithIcon;
-    private Context mContext;
     private int mLimitedWidth;
     private AppInfo mGmailAppInfo;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         Utilities.enableRunningInTestHarnessForTests();
         LauncherPrefs.get(mModelContext).put(ENABLE_TWOLINE_ALLAPPS_TOGGLE, true);
 
-        mContext = new ActivityContextWrapper(mModelContext);
         mBubbleTextView = new BubbleTextView(mContext);
         mBubbleTextView.reset();
 
@@ -408,14 +408,41 @@ public class BubbleTextViewTest {
 
     @Test
     public void applyIconAndLabel_whenDisplay_DISPLAY_SEARCH_RESULT_SMALL_noBadge() {
-        FlagOp op = FlagOp.NO_OP;
         // apply the WORK bitmap flag to show work badge
-        mGmailAppInfo.bitmap.flags = op.apply(WORK_FLAG);
+        mGmailAppInfo.bitmap = mGmailAppInfo.bitmap.withFlags(i -> WORK_FLAG);
         mBubbleTextView.setDisplay(DISPLAY_SEARCH_RESULT_SMALL);
 
         mBubbleTextView.applyIconAndLabel(mGmailAppInfo);
 
         assertThat(mBubbleTextView.getIcon().hasBadge()).isEqualTo(false);
+    }
+
+    @Test
+    public void configureMinimalPopupOnReset_minimalPopupFalse() {
+        BubbleTextView spyTextView = spy(mBubbleTextView);
+
+        spyTextView.reset();
+
+        verify(spyTextView).configureMinimalPopup(false);
+        assertThat(spyTextView.getShowingMinimalPopup()).isEqualTo(false);
+    }
+
+    @Test
+    public void configureMinimalPopupTrue_minimalPopupTrue() {
+        BubbleTextView spyTextView = spy(mBubbleTextView);
+
+        spyTextView.configureMinimalPopup(true);
+
+        assertThat(spyTextView.getShowingMinimalPopup()).isEqualTo(true);
+    }
+
+    @Test
+    public void configureMinimalPopupFalse_minimalPopupFalse() {
+        BubbleTextView spyTextView = spy(mBubbleTextView);
+
+        spyTextView.configureMinimalPopup(false);
+
+        assertThat(spyTextView.getShowingMinimalPopup()).isEqualTo(false);
     }
 
     @EnableFlags({FLAG_ENABLE_SUPPORT_FOR_ARCHIVING, FLAG_USE_NEW_ICON_FOR_ARCHIVED_APPS})
@@ -476,9 +503,8 @@ public class BubbleTextViewTest {
 
     @Test
     public void applyIconAndLabel_whenDisplay_DISPLAY_SEARCH_RESULT_hasBadge() {
-        FlagOp op = FlagOp.NO_OP;
         // apply the WORK bitmap flag to show work badge
-        mGmailAppInfo.bitmap.flags = op.apply(WORK_FLAG);
+        mGmailAppInfo.bitmap = mGmailAppInfo.bitmap.withFlags(i -> WORK_FLAG);
         mBubbleTextView.setDisplay(DISPLAY_SEARCH_RESULT);
 
         mBubbleTextView.applyIconAndLabel(mGmailAppInfo);
@@ -494,9 +520,9 @@ public class BubbleTextViewTest {
 
         TestUtil.runOnExecutorSync(MAIN_EXECUTOR,
                 () -> mBubbleTextView.applyIconAndLabel(mItemInfoWithIcon));
-        assertThat(mBubbleTextView.getIcon()).isInstanceOf(PreloadIconDrawable.class);
+        FastBitmapDrawable oldIcon = mBubbleTextView.getIcon();
+        assertThat(oldIcon.getDelegate()).isInstanceOf(PreloadIconDelegate.class);
         assertThat(mBubbleTextView.getIcon().getLevel()).isEqualTo(30);
-        PreloadIconDrawable oldIcon = (PreloadIconDrawable) mBubbleTextView.getIcon();
 
         // Same icon is used when progress changes
         mItemInfoWithIcon.setProgressLevel(50, PackageInstallInfo.STATUS_INSTALLING);
@@ -511,12 +537,13 @@ public class BubbleTextViewTest {
         TestUtil.runOnExecutorSync(MAIN_EXECUTOR, () -> {
             mBubbleTextView.applyIconAndLabel(mItemInfoWithIcon);
             assertThat(mBubbleTextView.getIcon()).isSameInstanceAs(oldIcon);
-            assertThat(oldIcon.getActiveAnimation()).isNotNull();
-            oldIcon.getActiveAnimation().end();
+            PreloadIconDelegate preloadDelegate = (PreloadIconDelegate) oldIcon.getDelegate();
+            assertThat(preloadDelegate.getActiveAnimation()).isNotNull();
+            preloadDelegate.getActiveAnimation().end();
         });
 
         // Assert that the icon is replaced with a non-pending icon
-        assertThat(mBubbleTextView.getIcon()).isNotInstanceOf(PreloadIconDrawable.class);
+        assertThat(mBubbleTextView.getIcon()).isNotInstanceOf(PreloadIconDelegate.class);
     }
 
 }

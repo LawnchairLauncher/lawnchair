@@ -22,6 +22,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OMNI_GET_LONG_PRESS_RUNNABLE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_OMNI_RUNNABLE;
 
+import android.app.contextualsearch.ContextualSearchConfig;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
@@ -120,8 +121,11 @@ public class NavHandleLongPressHandler {
             mStatsLogManager.latencyLogger().withInstanceId(instanceId).withLatency(
                     SystemClock.elapsedRealtime() - startTimeMillis).log(
                     LAUNCHER_LATENCY_OMNI_RUNNABLE);
+            ContextualSearchConfig config = new ContextualSearchConfig.Builder()
+                    .setSourceBounds(navHandle.getBoundsOnScreen()).setDisplayId(displayId).build();
+
             if (mContextualSearchInvoker.invokeContextualSearchUncheckedWithHaptic(
-                    ENTRYPOINT_LONG_PRESS_NAV_HANDLE)) {
+                    ENTRYPOINT_LONG_PRESS_NAV_HANDLE, config)) {
                 Log.i(TAG, "Contextual Search invocation successful");
 
                 String runningPackage = mTopTaskTracker.getCachedTopTask(

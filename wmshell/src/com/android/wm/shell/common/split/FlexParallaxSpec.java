@@ -22,13 +22,15 @@ import static android.view.WindowManager.DOCKED_LEFT;
 import static android.view.WindowManager.DOCKED_RIGHT;
 import static android.view.WindowManager.DOCKED_TOP;
 
-import static com.android.wm.shell.common.split.ResizingEffectPolicy.DEFAULT_OFFSCREEN_DIM;
 import static com.android.wm.shell.shared.animation.Interpolators.DIM_INTERPOLATOR;
 import static com.android.wm.shell.shared.animation.Interpolators.FAST_DIM_INTERPOLATOR;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.ANIMATING_OFFSCREEN_TAP;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.DEFAULT_OFFSCREEN_DIM;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+
+import com.android.wm.shell.shared.split.SplitScreenConstants;
 
 /**
  * Calculation class, used when {@link com.android.wm.shell.common.split.SplitLayout#PARALLAX_FLEX}
@@ -70,22 +72,25 @@ public class FlexParallaxSpec implements ParallaxSpec {
         int endDismissPos = snapAlgorithm.getDismissEndTarget().getPosition();
         float progress;
 
-        if (startDismissPos <= position && position < firstTargetPos) {
-            // Divider is on the left/top (between 0% and 10% of screen), "fast dim" as it moves
-            // toward the screen edge
+        boolean between0and10 = startDismissPos <= position && position < firstTargetPos;
+        boolean between10and50 = firstTargetPos <= position && position < middleTargetPos;
+        boolean between50and90 = middleTargetPos <= position && position < lastTargetPos;
+        boolean between90and100 = lastTargetPos <= position && position <= endDismissPos;
+
+        if (between0and10) {
+            // "Fast dim" as the divider moves toward the screen edge.
             progress = (float) (firstTargetPos - position) / (firstTargetPos - startDismissPos);
             return fastDim(progress);
-        } else if (firstTargetPos <= position && position < middleTargetPos) {
-            // Divider is between 10% and 50%, "slow dim" as it moves toward the left/top target
+        } else if (between10and50) {
+            // "Slow dim" as the divider moves toward the left/top.
             progress = (float) (middleTargetPos - position) / (middleTargetPos - firstTargetPos);
             return slowDim(progress);
-        } else if (middleTargetPos <= position && position < lastTargetPos) {
-            // Divider is between 50% and 90%, "slow dim" as it moves toward the right/bottom target
+        } else if (between50and90) {
+            // "Slow dim" as the divider moves toward the right/bottom.
             progress = (float) (position - middleTargetPos) / (lastTargetPos - middleTargetPos);
             return slowDim(progress);
-        } else if (lastTargetPos <= position && position <= endDismissPos) {
-            // Divider is on the right/bottom (between 90% and 100% of screen), "fast dim" as it
-            // moves toward screen edge
+        } else if (between90and100) {
+            // "Fast dim" as the divider moves toward the screen edge.
             progress = (float) (position - lastTargetPos) / (endDismissPos - lastTargetPos);
             return fastDim(progress);
         }
@@ -95,7 +100,7 @@ public class FlexParallaxSpec implements ParallaxSpec {
     /**
      * Used by {@link #getDimValue} to determine the amount to dim an app. Starts at zero and ramps
      * up to the default amount of dimming for an offscreen app,
-     * {@link ResizingEffectPolicy#DEFAULT_OFFSCREEN_DIM}.
+     * {@link SplitScreenConstants#DEFAULT_OFFSCREEN_DIM}.
      */
     private float slowDim(float progress) {
         return DIM_INTERPOLATOR.getInterpolation(progress) * DEFAULT_OFFSCREEN_DIM;
@@ -103,7 +108,7 @@ public class FlexParallaxSpec implements ParallaxSpec {
 
     /**
      * Used by {@link #getDimValue} to determine the amount to dim an app. Starts at
-     * {@link ResizingEffectPolicy#DEFAULT_OFFSCREEN_DIM} and ramps up to 100% dim (full black).
+     * {@link SplitScreenConstants#DEFAULT_OFFSCREEN_DIM} and ramps up to 100% dim (full black).
      */
     private float fastDim(float progress) {
         return DEFAULT_OFFSCREEN_DIM + (FAST_DIM_INTERPOLATOR.getInterpolation(progress)

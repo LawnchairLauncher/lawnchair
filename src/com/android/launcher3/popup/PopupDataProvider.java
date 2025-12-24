@@ -17,62 +17,68 @@
 package com.android.launcher3.popup;
 
 import android.content.ComponentName;
-import android.service.notification.StatusBarNotification;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsStore;
+import com.android.launcher3.dagger.ActivityContextSingleton;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.notification.NotificationKeyData;
-import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.notification.NotificationRepository;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.ActivityContext;
 
-import java.io.PrintWriter;
+import kotlin.Unit;
+
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
+
+import javax.inject.Inject;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
  */
-public class PopupDataProvider implements NotificationListener.NotificationsChangedListener {
+@ActivityContextSingleton
+public class PopupDataProvider {
 
-    private static final boolean LOGD = false;
-    private static final String TAG = "PopupDataProvider";
-
+    private final NotificationRepository mNotificationRepo;
     private final ActivityContext mContext;
+    private final AllAppsStore mAppsStore;
+    private final BgDataModel mBgDataModel;
 
-    /** Maps packages to their DotInfo's . */
-    private final Map<PackageUserKey, DotInfo> mPackageUserToDotInfos = new HashMap<>();
-
-    /** Maps launcher activity components to a count of how many shortcuts they have. */
-    private HashMap<ComponentKey, Integer> mDeepShortcutMap = new HashMap<>();
-
-    public PopupDataProvider(ActivityContext context) {
+    @Inject
+    public PopupDataProvider(
+            ActivityContext context,
+            NotificationRepository notificationRepository,
+            AllAppsStore appsStore,
+            BgDataModel dataModel) {
         mContext = context;
+        mNotificationRepo = notificationRepository;
+        mAppsStore = appsStore;
+        mBgDataModel = dataModel;
+
+        mContext.closeOnDestroy(mNotificationRepo.getUpdateStream().forEach(
+                Executors.MAIN_EXECUTOR, this::updateNotificationDots));
     }
 
-    private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
+    private Unit updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
         Predicate<ItemInfo> matcher = info -> !packageUserKey.updateFromItemInfo(info)
                 || updatedDots.test(packageUserKey);
 
         ItemOperator op = (info, v) -> {
-            if (v instanceof BubbleTextView && info != null && matcher.test(info)) {
-                ((BubbleTextView) v).applyDotState(info, true /* animate */);
+            if (v instanceof BubbleTextView btv && info != null && matcher.test(info)) {
+                btv.applyDotState(info, true /* animate */);
             } else if (v instanceof FolderIcon icon
                     && info instanceof FolderInfo fi && fi.anyMatch(matcher)) {
                 icon.updateDotInfo();
@@ -87,77 +93,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         if (folder != null) {
             folder.mapOverItems(op);
         }
-
-        ActivityAllAppsContainerView<?> appsView = mContext.getAppsView();
-        if (appsView != null) {
-            appsView.getAppsStore().updateNotificationDots(updatedDots);
-        }
-    }
-
-    @Override
-    public void onNotificationPosted(PackageUserKey postedPackageUserKey,
-            NotificationKeyData notificationKey) {
-        DotInfo dotInfo = mPackageUserToDotInfos.get(postedPackageUserKey);
-        if (dotInfo == null) {
-            dotInfo = new DotInfo();
-            mPackageUserToDotInfos.put(postedPackageUserKey, dotInfo);
-        }
-        if (dotInfo.addOrUpdateNotificationKey(notificationKey)) {
-            updateNotificationDots(postedPackageUserKey::equals);
-        }
-    }
-
-    @Override
-    public void onNotificationRemoved(PackageUserKey removedPackageUserKey,
-            NotificationKeyData notificationKey) {
-        DotInfo oldDotInfo = mPackageUserToDotInfos.get(removedPackageUserKey);
-        if (oldDotInfo != null && oldDotInfo.removeNotificationKey(notificationKey)) {
-            if (oldDotInfo.getNotificationKeys().size() == 0) {
-                mPackageUserToDotInfos.remove(removedPackageUserKey);
-            }
-            updateNotificationDots(removedPackageUserKey::equals);
-        }
-    }
-
-    @Override
-    public void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications) {
-        if (activeNotifications == null) return;
-        // This will contain the PackageUserKeys which have updated dots.
-        HashMap<PackageUserKey, DotInfo> updatedDots = new HashMap<>(mPackageUserToDotInfos);
-        mPackageUserToDotInfos.clear();
-        for (StatusBarNotification notification : activeNotifications) {
-            PackageUserKey packageUserKey = PackageUserKey.fromNotification(notification);
-            DotInfo dotInfo = mPackageUserToDotInfos.get(packageUserKey);
-            if (dotInfo == null) {
-                dotInfo = new DotInfo();
-                mPackageUserToDotInfos.put(packageUserKey, dotInfo);
-            }
-            dotInfo.addOrUpdateNotificationKey(NotificationKeyData.fromNotification(notification));
-        }
-
-        // Add and remove from updatedDots so it contains the PackageUserKeys of updated dots.
-        for (PackageUserKey packageUserKey : mPackageUserToDotInfos.keySet()) {
-            DotInfo prevDot = updatedDots.get(packageUserKey);
-            DotInfo newDot = mPackageUserToDotInfos.get(packageUserKey);
-            if (prevDot == null
-                    || prevDot.getNotificationCount() != newDot.getNotificationCount()) {
-                updatedDots.put(packageUserKey, newDot);
-            } else {
-                // No need to update the dot if it already existed (no visual change).
-                // Note that if the dot was removed entirely, we wouldn't reach this point because
-                // this loop only includes active notifications added above.
-                updatedDots.remove(packageUserKey);
-            }
-        }
-
-        if (!updatedDots.isEmpty()) {
-            updateNotificationDots(updatedDots::containsKey);
-        }
-    }
-
-    public void setDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
-        mDeepShortcutMap = deepShortcutMapCopy;
-        if (LOGD) Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
+        mAppsStore.updateNotificationDots(updatedDots);
+        return null;
     }
 
     public int getShortcutCountForItem(ItemInfo info) {
@@ -169,15 +106,16 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return 0;
         }
 
-        Integer count = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        return count == null ? 0 : count;
+        return mBgDataModel.getDeepShortcutMap()
+                .getOrDefault(new ComponentKey(component, info.user), 0);
     }
 
     public @Nullable DotInfo getDotInfoForItem(@NonNull ItemInfo info) {
         if (!ShortcutUtil.supportsShortcuts(info)) {
             return null;
         }
-        DotInfo dotInfo = mPackageUserToDotInfos.get(PackageUserKey.fromItemInfo(info));
+        DotInfo dotInfo = mNotificationRepo.getPackageUserToDotInfos()
+                .get(PackageUserKey.fromItemInfo(info));
         if (dotInfo == null) {
             return null;
         }
@@ -198,10 +136,5 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             }
             return false;
         })) ? dotInfo : null;
-    }
-
-    public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + "PopupDataProvider:");
-        writer.println(prefix + "\tmPackageUserToDotInfos:" + mPackageUserToDotInfos);
     }
 }
