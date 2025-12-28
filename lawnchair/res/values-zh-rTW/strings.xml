@@ -55,12 +55,12 @@
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">現在</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_minutes_ago">%d分鐘</string>
+    <string name="time_hours_ago">%d小時</string>
+    <string name="time_days_ago">%d日</string>
+    <string name="time_weeks_ago">%d周</string>
+    <string name="time_months_ago">%d月</string>
+    <string name="time_years_ago">%d年</string>
     <string name="managed_by_lawnchair">由 Lawnchair 管理</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">偏好設定</string>
@@ -102,8 +102,8 @@
     <string name="caddy_beta">罐裝 (測試版)</string>
     <string name="caddy">罐裝</string>
     <string name="app_drawer_folder">應用程式抽屜資料夾</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="selected_apps">己選的應用程式</string>
+    <string name="add_apps">增加應用程式</string>
     <string name="app_drawer_folder_settings">抽屜資料夾</string>
     <string name="add_folder">建立資料夾</string>
     <string name="edit_folder">編輯資料夾</string>
@@ -122,6 +122,11 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">進階</string>
+    <!-- Draggable -->
+    <string name="reorderable_active_items">啟動項目</string>
+    <string name="reorderable_disabled_items">其他項目</string>
+    <string name="reorderable_disabled_hint">已禁用的項目將顯示在此. 將項目拖曳到此處或點擊移除按鈕即可啟用該項目.</string>
+    <string name="reorderable_add_hint_items">Active items will appear here. Drag an item here or tap the add button to make an item active.</string>
     <!--
 
     Preference Dashboard
@@ -150,6 +155,10 @@
     <string name="debug_restart_launcher">重啟 Lawnchair</string>
     <string name="experimental_features_label">實驗性功能</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">自訂字體</string>
     <string name="font_picker_description">部分文字維持原樣</string>
     <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
@@ -158,10 +167,16 @@
     <string name="workspace_increase_max_grid_size_description">提高主畫面網格最多 10 x 10 的限制至 20 x 20</string>
     <string name="always_reload_icons_label">一律重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">滑動圖示手勢</string>
     <string name="icon_swipe_gestures_description">配置於圖示上向左/右滑動時的動作以取代移動主畫面</string>
     <string name="show_deck_layout">平面模式</string>
     <string name="show_deck_layout_description">顯示版面選項以隱藏應用程式抽屜並自動將項目加到主畫面</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">鎖定/解鎖</string>
     <string name="recents_lock_unlock_description">按下 \"全部清除\" 時略過已選取的應用程式</string>
     <!--Overlay-->
@@ -227,7 +242,9 @@
     <string name="icon_shape_square">方形</string>
     <string name="icon_shape_squircle">方圓形</string>
     <string name="icon_shape_teardrop">水滴形</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">陽光充沛</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">四邊形曲奇</string>
     <string name="icon_shape_seven_sided_cookie">七邊形曲奇</string>
     <string name="icon_shape_arch">Arch</string>
@@ -320,8 +337,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">公曆</string>
     <string name="smartspace_calendar_persian">伊朗曆</string>
+    <string name="smartspace_calendar_lunar">農曆</string>
     <string name="generic_smartspace_concatenated_desc">%1$s、%2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">快速充電</string>
+    <string name="smartspace_battery_slow_charging">緩慢充電</string>
     <string name="smartspace_battery_charging">充電中</string>
     <string name="smartspace_battery_full">已完全充飽</string>
     <string name="smartspace_battery_low">低電量</string>
@@ -381,6 +401,8 @@
     <string name="privacy_policy">隱私權政策</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">檢查更新失敗</string>
+    <string name="major_update_label">Breaking change!</string>
+    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -413,6 +435,7 @@
     <string name="gesture_handler_sleep">休眠</string>
     <string name="gesture_handler_recents">開啟最近使用畫面</string>
     <string name="gesture_handler_open_notifications">開啟通知面板</string>
+    <string name="gesture_handler_open_quick_settings">開啟快速設定</string>
     <string name="gesture_handler_open_app_option">開啟應用程式</string>
     <string name="gesture_handler_open_app_config">開啟 %1$s</string>
     <string name="gesture_handler_open_app_drawer">開啟應用程式抽屜</string>
@@ -421,12 +444,15 @@
     <string name="gesture_handler_open_assistant">開啟助理</string>
     <string name="pick_app_for_gesture">選擇應用程式</string>
     <string name="dt2s_admin_hint_title">需要管理員權限</string>
-    <string name="dt2s_admin_hint">如要使用輕觸兩下休眠，請將 Lawnchair 設為裝置管理員應用程式。按下 \"開啟設定\" 然後選擇 \"啟用這個裝置管理員應用程式\"。</string>
-    <string name="dt2s_admin_warning">將會停用輕觸兩下休眠。</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">啟用無障礙服務</string>
-    <string name="dt2s_a11y_hint">如要使用輕觸兩下休眠，請啟用 Lawnchair 無障礙服務。按下 \"開啟設定\" 選擇 \"Lawnchair\"，再開啟 \"使用 Lawnchair\" 控制項。\n\nLawnchair 使用 performGlobalAction 無障礙服務執行這項動作。此為允許監控其他應用程式的敏感權限，然而 Lawnchair 並未配置與接收任何事件。</string>
-    <string name="dt2s_recents_warning_open_settings">開啟設定</string>
-    <string name="recents_a11y_hint">如要開啟最近使用畫面，請啟用 Lawnchair 無障礙服務。按下 \"開啟設定\" 選擇 \"Lawnchair\"，再開啟 \"使用 Lawnchair\" 控制項。\n\nLawnchair 使用 performGlobalAction 無障礙服務執行這項動作。此為允許監控其他應用程式的敏感權限，然而 Lawnchair 並未配置與接收任何事件。</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -471,10 +497,6 @@
     <string name="home_screen_unlock">解鎖主畫面版面</string>
     <string name="home_screen_locked">主畫面版面已鎖定</string>
     <string name="home_screen_lock_description">防止主畫面版面更動</string>
-    <string name="show_dot_pagination_label">顯示圓點頁面指示器</string>
-    <string name="show_dot_pagination_description">以小圓點取代線狀頁面指示器</string>
-    <string name="show_material_u_popup_label">使用新的彈出樣式</string>
-    <string name="show_material_u_popup_description">使用 Material You 輕彈的選單樣式</string>
     <string name="popup_menu">彈出選單</string>
     <string name="popup_menu_items">彈出選單項目</string>
     <string name="edit_menu_items">編輯彈出選單項目</string>
@@ -580,7 +602,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search web and more</string>
+    <string name="all_apps_device_search_hint">搜尋網頁及更多</string>
     <string name="all_apps_search_bar_hint">搜尋應用程式</string>
     <string name="all_apps_no_search_results">找不到與 \"<xliff:g example="Android" id="query">%1$s</xliff:g>\" 相符的應用程式</string>
     <string name="all_apps_search_result_suggestions">網路搜尋結果</string>
@@ -636,7 +658,7 @@
     <string name="search_empty_state_no_history_subtitle">尋找應用程式、聯絡人或更多。你最近的搜尋結果將會顯示在這裏。</string>
     <string name="search_empty_state_history_disabled_subtitle">尋找應用程式,聯絡人或更多</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">搜尋於</string>
     <string name="search_pref_result_files_description">媒體、檔案、更多項目</string>
     <string name="search_pref_result_contacts_description">聯絡人與其他項目</string>
     <string name="search_pref_result_web_provider_description">透過 <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -672,7 +694,7 @@
     <string name="permission_desc_ending_manage_all_files">管理你裝置上的所有文件</string>
     <string name="permission_desc_wallpaper_multiple">需要多項權限</string>
     <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
+    <string name="permission_label_manage_all_files">管理裝置上所有檔案</string>
     <string name="permission_label_read_photos_videos">查閱相片與影片</string>
     <string name="manage_storage_access_denied_title">無法啟用內存管理權限</string>
     <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>

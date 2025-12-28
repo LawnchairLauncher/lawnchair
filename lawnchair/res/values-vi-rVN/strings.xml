@@ -122,6 +122,11 @@
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Nâng cao</string>
+    <!-- Draggable -->
+    <string name="reorderable_active_items">Active items</string>
+    <string name="reorderable_disabled_items">Other items</string>
+    <string name="reorderable_disabled_hint">Disabled items will appear here. Drag an item here or tap the remove button to make an item active.</string>
+    <string name="reorderable_add_hint_items">Active items will appear here. Drag an item here or tap the add button to make an item active.</string>
     <!--
 
     Preference Dashboard
@@ -150,6 +155,10 @@
     <string name="debug_restart_launcher">Khởi chạy lại Lawnchair</string>
     <string name="experimental_features_label">Chức năng thử nghiệm</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Đổi phông chữ</string>
     <string name="font_picker_description">Một số văn bản vẫn không thay đổi</string>
     <string name="smartspace_calendar_label">Tuỳ chỉnh lịch trong Xem nhanh</string>
@@ -158,10 +167,16 @@
     <string name="workspace_increase_max_grid_size_description">Cho phép tăng kích thước từ 10x10 lên 20x20 trên màn hình chính</string>
     <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Cử chỉ vuốt biểu tượng</string>
     <string name="icon_swipe_gestures_description">Thực hiện các hành động khi vuốt sang trái hoặc phải trên các biểu tượng thay vì di chuyển màn hình chính</string>
     <string name="show_deck_layout">Bố cục Cổ điển</string>
     <string name="show_deck_layout_description">Hiện một tùy chọn tắt ngăn chứa ứng dụng và tự động thêm ứng dụng mới vào màn hình chính</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Khóa/mở</string>
     <string name="recents_lock_unlock_description">Ngăn chứa ứng dụng đã chọn đóng khi nhấn \"Đóng tất cả\"</string>
     <!--Overlay-->
@@ -227,7 +242,9 @@
     <string name="icon_shape_square">Vuông</string>
     <string name="icon_shape_squircle">Vuông tròn</string>
     <string name="icon_shape_teardrop">Giọt nước</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Cookie bốn mặt</string>
     <string name="icon_shape_seven_sided_cookie">Cookie bảy mặt</string>
     <string name="icon_shape_arch">Cổng vòm</string>
@@ -320,8 +337,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Lịch tây</string>
     <string name="smartspace_calendar_persian">Lịch Iran</string>
+    <string name="smartspace_calendar_lunar">Lunar</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Đang sạc</string>
     <string name="smartspace_battery_full">Đã sạc đầy</string>
     <string name="smartspace_battery_low">Pin yếu</string>
@@ -381,6 +401,8 @@
     <string name="privacy_policy">Chính sách bảo mật</string>
     <string name="contributor_status_active">Kích hoạt</string>
     <string name="update_check_failed">Không kiểm tra được bản cập nhật</string>
+    <string name="major_update_label">Breaking change!</string>
+    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -413,6 +435,7 @@
     <string name="gesture_handler_sleep">Tắt màn hình</string>
     <string name="gesture_handler_recents">Mở Gần đây</string>
     <string name="gesture_handler_open_notifications">Mở thanh thông báo</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Mở ứng dụng</string>
     <string name="gesture_handler_open_app_config">Mở %1$s</string>
     <string name="gesture_handler_open_app_drawer">Mở ngăn ứng dụng</string>
@@ -421,12 +444,15 @@
     <string name="gesture_handler_open_assistant">Mở trợ lý ảo</string>
     <string name="pick_app_for_gesture">Chọn ứng dụng</string>
     <string name="dt2s_admin_hint_title">Cần quyền Quản trị viên</string>
-    <string name="dt2s_admin_hint">Để sử dụng Chạm Hai Lần để Tắt, hãy đặt Lawnchair làm ứng dụng quản trị thiết bị. Nhấn \"Mở cài đặt\", sau đó nhấn \"Kích hoạt ứng dụng quản trị thiết bị này.\"</string>
-    <string name="dt2s_admin_warning">Nhấp đôi để khoá màn hình sẽ được tắt.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Bật dịch vụ trợ năng</string>
-    <string name="dt2s_a11y_hint">Để sử dụng Chạm Hai Lần, hãy bật dịch vụ trợ năng Lawnchair. Nhấn \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair.\"\n\nLawnchair sử dụng phương thức `performGlobalAction` của Khả năng tiếp cận để thực hiện hành động này. Đây là quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được sử dụng cho mục đích đó.</string>
-    <string name="dt2s_recents_warning_open_settings">Mở Cài đặt</string>
-    <string name="recents_a11y_hint">Để sử dụng màn hình Mở gần đây, hãy bật dịch vụ trợ năng Lawnchair. Nhấn \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair\".\n\nLawnchair sử dụng phương thức `performGlobalAction` của Accessibility để thực hiện hành động này. Đây là quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được sử dụng cho mục đích đó.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -471,10 +497,6 @@
     <string name="home_screen_unlock">Mở khóa trang chủ</string>
     <string name="home_screen_locked">Trang chủ đã bị khóa</string>
     <string name="home_screen_lock_description">Khoá bố cục màn hình chính</string>
-    <string name="show_dot_pagination_label">Hiển thị dấu chấm số trang</string>
-    <string name="show_dot_pagination_description">Sử dụng chấm thay cho số để hiển thị số trang trên trang chủ</string>
-    <string name="show_material_u_popup_label">Sử dụng kiểu pop-up mới</string>
-    <string name="show_material_u_popup_description">Sử dụng phong cách pop-up có độ nảy và hơi cố định Vật liệu của Bạn</string>
     <string name="popup_menu">Menu Pop-up</string>
     <string name="popup_menu_items">Các mục menu Pop-up</string>
     <string name="edit_menu_items">Chỉnh sửa các mục menu Pop-up</string>

@@ -46,11 +46,11 @@
     <string name="download_update">ดาวน์โหลดอัปเดต</string>
     <string name="install_update">ติดตั้งอัปเดต</string>
     <string name="view_changes">ดูการเปลี่ยนแปลง</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="pro_updated">คุณใช้เวอร์ชันล่าสุดแล้ว</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">อัปเดต</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_error">ไม่สามารถโหลดการเปลี่ยนแปลงได้</string>
+    <string name="changes_dialog_no_changes">ไม่พบการเปลี่ยนแปลง</string>
     <string name="changes_dialog_build_format">บิลด์ #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">โดย %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
@@ -91,7 +91,7 @@
     <string name="wallpaper">ภาพพื้นหลัง</string>
     <string name="style">สไตล์</string>
     <string name="background_opacity">ความทึบของพื้นหลัง</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">แยกพื้นหลังแถบค้นหา</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">คัดลอกไปยังคลิปบอร์ดแล้ว</string>
     <string name="calculator_search_result_copied_toast">ผลลัพธ์คัดลอกไปยังคลิปบอร์ดแล้ว</string>
@@ -101,9 +101,9 @@
     <string name="wallpapers">พื้นหลัง</string>
     <string name="caddy_beta">แคดดี้ (เบต้า)</string>
     <string name="caddy">แคดดี้</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="app_drawer_folder">โฟลเดอร์ในรายการแอป</string>
+    <string name="selected_apps">เลือกแอพ</string>
+    <string name="add_apps">เพิ่มแอพ</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
     <string name="add_folder">สร้างโฟลเดอร์</string>
     <string name="edit_folder">แก้ไขโฟลเดอร์</string>
@@ -111,17 +111,22 @@
     <string name="edit_label">แก้ไข</string>
     <string name="apply_label">ใช้งานทันที</string>
     <string name="delete_label">ลบ</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="folder_list_note">ปัดไปทางซ้ายเพื่อแก้ไข ปัดไปทางขวาเพื่อลบ หรือแตะเพื่ออัปเดตรายการ</string>
+    <string name="apps_in_folder_label">ซ่อนแอปโฟลเดอร์</string>
+    <string name="apps_in_folder_description">แอปที่ถูกกำหนดไว้ในโฟลเดอร์จะไม่ปรากฏในรายการแอป</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">โฟลเดอร์ของฉัน</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Lawnchair จำเป็นต้องใช้สิทธิ์การช่วยเหลือพิเศษเพื่อดำเนินการบางอย่าง (เช่น การล็อกโทรศัพท์ของคุณ) เมื่อมีการใช้ท่าทางสัมผัส\n\nLawnchair ไม่ได้ติดตามการกระทำของผู้ใช้แต่อย่างใด แม้ว่าบริการการช่วยเหลือพิเศษทั้งหมดจำเป็นต้องมีสิทธิ์ในการทำเช่นนั้นก็ตาม Lawnchair จะละเลยเหตุการณ์ใด ๆ ที่ระบบส่งมา\n\nเพื่อที่จะล็อกโทรศัพท์ของคุณหรือเปิดหน้าแอปล่าสุด Lawnchair จะใช้บริการ performGlobalAction ของการช่วยเหลือพิเศษ</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">ขึ้นสูง</string>
+    <!-- Draggable -->
+    <string name="reorderable_active_items">รายการที่ใช้งานอยู่</string>
+    <string name="reorderable_disabled_items">รายการอื่น ๆ</string>
+    <string name="reorderable_disabled_hint">Disabled items will appear here. Drag an item here or tap the remove button to make an item active.</string>
+    <string name="reorderable_add_hint_items">Active items will appear here. Drag an item here or tap the add button to make an item active.</string>
     <!--
 
     Preference Dashboard
@@ -143,13 +148,17 @@
     <string name="folders_description">แถวและจำนวนคอลัมน์</string>
     <string name="gestures_label">ท่าทาง</string>
     <string name="gestures_description">การแตะและการปัด</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">แอปล่าสุด</string>
     <string name="quickstep_description">ล้างปุ่มทั้งหมด, รัศมีมุม</string>
     <string name="about_label">เกี่ยวกับ</string>
     <string name="app_info_drop_target_label">ข้อมูลแอป</string>
     <string name="debug_restart_launcher">เริ่มต้น Lawnchair ใหม่</string>
     <string name="experimental_features_label">ฟีเจอร์ทดลอง</string>
     <!-- Experimental features -->
+    <string name="workspace_label">หน้าจอหลัก</string>
+    <string name="smartspace_label">ข้อมูลโดยย่อ</string>
+    <string name="internal_label">ภายใน</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">การปรับแต่งแบบอักษร</string>
     <string name="font_picker_description">ข้อความบางส่วนยังไม่ถูกเปลี่ยนแปลง</string>
     <string name="smartspace_calendar_label">ปรับแต่งปฎิบัติข้อมูลโดยย่อ</string>
@@ -158,17 +167,23 @@
     <string name="workspace_increase_max_grid_size_description">เพิ่มขนาดกริดหน้าจอสูงสุดจาก 10 x 10 เป็น 20 x 20</string>
     <string name="always_reload_icons_label">โหลดไอคอนใหม่เสมอ</string>
     <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
+    <string name="icon_swipe_gestures">ท่าทางการปัดไอคอน</string>
+    <string name="icon_swipe_gestures_description">สั่งงานเมื่อปัดซ้ายหรือขวาบนไอคอนแทนการเลื่อนหน้าจอหลัก</string>
     <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="show_deck_layout_description">แสดงตัวเลือกเค้าโครงเพื่อซ่อนหน้ารวมแอปและเพิ่มแอปใหม่ไปยังหน้าจอหลักโดยอัตโนมัติ</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">เปิดใช้งานดีไซน์ Material 3 Expressive ในหน้าแรก</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">เรนเจอร์แอนิเมชั่นของหน้าหลักโดยไม่ใช้รูท ไม่สามารถใช้ได้กับ AOSP ที่มีการเปลี่ยนแปลงมาก</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract อาจทำให้เกิดแอปแอนิเมชั่นที่ผิดปกติ</string>
     <string name="recents_lock_unlock">ล็อก/ปลดล็อก</string>
     <string name="recents_lock_unlock_description">ป้องกันไม่ให้แอปที่เลือกปิดตัวลงเมื่อกด \"ล้างทั้งหมด\"</string>
     <!--Overlay-->
     <string name="overlay_fade_in">เฟดอิน</string>
-    <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_label">Overlay</string>
+    <string name="overlay_suck_in">ดูดเข้า</string>
+    <string name="app_closing_animation">แอนิเมชันการปิดแอป</string>
+    <string name="overlay_label">หน้าจอซ้อนทับ</string>
     <string name="overlay_none">ไม่มี</string>
     <!--
 
@@ -204,8 +219,8 @@
     <string name="adaptive_icon_background_description">ใช้ความสว่าง 100% สำหรับสีขาว</string>
     <string name="reset_custom_icons">คืนค่าไอคอนที่กำหนดเอง</string>
     <string name="reset_custom_icons_confirmation">ไอคอนที่กำหนดเองทั้งหมดจะถูกคืนเป็นค่าเริ่มต้น, คุณต้องการดำเนินการต่อหรือไม่?</string>
-    <string name="remove_all_views_from_home_screen">Clear home screen</string>
-    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
+    <string name="remove_all_views_from_home_screen">ล้างหน้าจอหลัก</string>
+    <string name="remove_all_views_from_home_screen_desc">หน้าจอหลักจะถูกล้าง คุณต้องการดำเนินการต่อหรือไม่</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">ไอคอน</string>
     <string name="icon_picker_reset_to_default">กลับเป็นค่าเริ่มต้น</string>
@@ -227,10 +242,12 @@
     <string name="icon_shape_square">ทรงสี่เหลี่ยมจัตุรัส</string>
     <string name="icon_shape_squircle">ทรงจตุรัสมีขอบมนมาก</string>
     <string name="icon_shape_teardrop">ทรงหยดน้ำ</string>
-    <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">แดดจ้า</string>
+    <string name="icon_shape_complex_clover">ใบโคลเวอร์ซับซ้อน</string>
+    <string name="icon_shape_four_sided_cookie">คุกกี้ 4 เหลี่ยม</string>
+    <string name="icon_shape_seven_sided_cookie">คุกกี้ 7 เหลี่ยม</string>
+    <string name="icon_shape_arch">ทรงโค้ง</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">กำหนดรูปร่างไอคอน</string>
     <string name="custom_icon_shape_create">สร้างรูปแบบไอคอนที่กำหนดเอง</string>
@@ -320,8 +337,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">เกรกอเรียน</string>
     <string name="smartspace_calendar_persian">เปอร์เซีย</string>
+    <string name="smartspace_calendar_lunar">จันทรคติ</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">กำลังชาร์จอย่างเร็ว</string>
+    <string name="smartspace_battery_slow_charging">กำลังชาร์จอย่างช้า</string>
     <string name="smartspace_battery_charging">กำลังชาร์จ</string>
     <string name="smartspace_battery_full">ชาร์จแล้ว</string>
     <string name="smartspace_battery_low">แบตเตอร์รี่ต่ำ</string>
@@ -379,8 +399,10 @@
     <string name="legal">กฎหมาย</string>
     <string name="acknowledgements">ใบอนุญาตโอเพนซอร์ส</string>
     <string name="privacy_policy">นโยบายความเป็นส่วนตัว</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="contributor_status_active">กำลังทำงาน</string>
+    <string name="update_check_failed">ไม่สามารถตรวจสอบกอัปเดตได้</string>
+    <string name="major_update_label">การเปลี่ยนแปลงใหญ่!</string>
+    <string name="major_update_description">คุณกำลังจะอัปเดตจาก Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> เป็น Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g> โปรดพิจารณาอย่างรอบคอบ เนื่องจากเวอร์ชันหลักใหม่อาจไม่เสถียรเท่าเวอร์ชันปัจจุบัน</string>
     <!--
 
     Backup and restore
@@ -407,26 +429,30 @@
     <string name="gesture_swipe_down">ปัดลง</string>
     <string name="gesture_home_tap">ปุ่มโฮม</string>
     <string name="gesture_back_tap">ปุ่มย้อนกลับ</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_left">ปัดไปทางซ้าย</string>
+    <string name="gesture_swipe_right">ปัดไปทางขวา</string>
     <string name="gesture_handler_no_op">ไม่ทำอะไร</string>
     <string name="gesture_handler_sleep">นอน</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">เปิดแอปล่าสุด</string>
     <string name="gesture_handler_open_notifications">เปิดแผงการแจ้งเตือน</string>
+    <string name="gesture_handler_open_quick_settings">เปิดการตั้งค่าด่วน</string>
     <string name="gesture_handler_open_app_option">เปิดแอป</string>
     <string name="gesture_handler_open_app_config">เปิด %1$s</string>
-    <string name="gesture_handler_open_app_drawer">เปิดรายการแอพ</string>
+    <string name="gesture_handler_open_app_drawer">เปิดรายการแอป</string>
     <string name="gesture_handler_open_app_search">เปิดการค้นหาแอพ</string>
     <string name="gesture_handler_open_search">เปิดการค้นหา</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">เปิดแอปผู้ช่วยดิจิทัล</string>
     <string name="pick_app_for_gesture">เลือกแอป</string>
     <string name="dt2s_admin_hint_title">จำเป็นต้องมีสิทธิ์ผู้ดูแลอุปกรณ์</string>
-    <string name="dt2s_admin_hint">หากต้องการแตะสองครั้งเพี่อปิดจอ ให้ตั้งค่า Lawnchair เป็นแอปผู้ดูแลอุปกรณ์ แตะเปิดการตั้งค่า จากนั้นแตะ “เปิดใช้งานแอปผู้ดูแลระบบอุปกรณ์นี้”</string>
-    <string name="dt2s_admin_warning">แตะสองครั้งเพื่อเข้าสู่โหมดสลีป หน้าจอจะถูกปิด</string>
+    <string name="dt2s_admin_hint">เพื่อปิดหน้าจอ ให้ตั้งค่า Lawnchair เป็นแอปผู้ดูแลระบบอุปกรณ์ แตะ \"เปิดการตั้งค่า\" แล้วแตะ \"เปิดใช้งานแอปผู้ดูแลอุปกรณ์นี้\"</string>
+    <string name="dt2s_admin_warning">ท่าทางสัมผัสเพื่อปิดหน้าจอจะถูกปิด</string>
     <string name="d2ts_recents_a11y_hint_title">เปิดบริการการช่วยการเข้าถึง</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_recents_warning_open_settings">เปิดการตั้งค่า</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">เปิดแผงการแจ้งเตือน</string>
+    <string name="quick_settings_a11y_hint">เปิดแผงการตั้งค่าด่วน</string>
+    <string name="recents_screen_a11y_hint">เปิดแอปล่าสุด</string>
+    <string name="generic_a11y_hint">เพื่อ %1$s ให้เปิดบริการการช่วยเหลือพิเศษของ Lawnchair แตะ \"เปิดการตั้งค่า\" เลือก \"Lawnchair\" และเปิด ใช้ \"Lawnchair\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair ใช้วิธี performGlobalAction ของการช่วยเหลือพิเศษเพื่อดำเนินการนี้ นี่เป็นสิทธิ์ที่ละเอียดอ่อนที่อนุญาตให้ตรวจสอบแอปอื่นได้ อย่างไรก็ตาม Lawnchair ไม่ได้ตั้งค่ามาเพื่อฟังก์ชันดังกล่าวและจะไม่ได้รับข้อมูลเหตุการณ์ใด ๆ</string>
     <!--
 
     Bug reporting
@@ -448,13 +474,13 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="home_screen_rotation_description">อนุญาตให้หมุนหน้าจอหลักเมื่ออุปกรณ์หมุน</string>
     <string name="wallpaper_blur">เบลอพื้นหลัง (อยู่ในการทดลอง)</string>
     <string name="wallpaper_background_blur">ความเข้มของการเบลอ</string>
     <string name="wallpaper_background_blur_factor">เกณฑ์ปัจจัย</string>
     <string name="home_lawn_deck_label">Deck</string>
-    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_label_beta">Deck (เบต้า)</string>
+    <string name="home_lawn_deck_description">เข้าถึงแอปพลิเคชันของคุณได้อย่างง่ายดายด้วย Deck ประสบการณ์แบบไร้หน้ารวมแอปที่สมบูรณ์แบบ ซึ่งออกแบบมาเพื่อความเรียบง่ายและการจัดระเบียบที่ลงตัว</string>
     <string name="auto_add_shortcuts_label">เพิ่มแอปใหม่ในหน้าแรก</string>
     <string name="minus_one_enable">แสดงข่าว</string>
     <string name="minus_one_unavailable">ยังไม่ได้ติดตั้งข่าว</string>
@@ -466,24 +492,20 @@
     <string name="show_sys_ui_scrim">เงาด้านบน</string>
     <string name="infinite_scrolling_label">เลื่อนแบบไม่มีที่สิ้นสุด</string>
     <string name="infinite_scrolling_description">ปัดเพื่อวนซ้ำระหว่างหน้าแรกและหน้าสุดท้าย</string>
-    <string name="home_screen_grid">Home screen grid</string>
+    <string name="home_screen_grid">ตารางหน้าจอหลัก</string>
     <string name="home_screen_lock">ล็อกหน้าแรก</string>
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
     <string name="home_screen_locked">หน้าจอหลักถูกล็อคแล้ว</string>
     <string name="home_screen_lock_description">ป้องกันการเปลี่ยนแปลงของวัตถุบนหน้าจอหลัก</string>
-    <string name="show_dot_pagination_label">ใช้ตัวแบ่งหน้าแบบจุด</string>
-    <string name="show_dot_pagination_description">ใช้จุดแทนเส้นเพื่อแสดงหมายเลขหน้า</string>
-    <string name="show_material_u_popup_label">ใช้ลักษณะป็อปอัพแบบใหม่</string>
-    <string name="show_material_u_popup_description">ใช้ลักษณะป๊อปอัพที่เด้งรวมกับ Material You</string>
     <string name="popup_menu">เมนูป็อปอัพ</string>
-    <string name="popup_menu_items">Pop-up menu items</string>
-    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="popup_menu_items">รายการเมนูป๊อปอัพ</string>
+    <string name="edit_menu_items">แก้ไขรายการเมนูป๊อปอัพ</string>
     <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">แถบสถานะ</string>
     <string name="show_status_bar">แสดงแถบสถานะ</string>
     <string name="dark_status_bar_label">แถบสถานะสีดำ</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
+    <string name="status_bar_clock_label">นาฬิกาแถบสถานะ</string>
+    <string name="status_bar_clock_description">ซ่อนนาฬิกาแถบสถานะในหน้าแรก</string>
     <string name="home_screen_text_color">สีของข้อความ</string>
     <string name="color_light">สว่าง</string>
     <string name="color_dark">มืด</string>
@@ -495,9 +517,9 @@
     <string name="widget_unlimited_size_description">ลบข้อจำกัดขนาดขั้นต่ำและสูงสุดของวิดเจ็ต</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">แสดงแถบรายการโปรด</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
+    <string name="enable_dock_to_access_qsb_settings">การตั้งค่าแถบค้นหาจะใช้งานได้เมื่อแสดงแถบรายการโปรด แตะเพื่อแสดงแถบรายการโปรด</string>
     <string name="search_bar_label">แถบค้นหา</string>
-    <string name="search_bar_settings">Search bar settings</string>
+    <string name="search_bar_settings">การตั้งค่าแถบค้นหา</string>
     <string name="hotseat_mode_label">วิดเจ็ตแถบค้นหา</string>
     <string name="hotseat_mode_disabled">ปิด</string>
     <string name="hotseat_mode_google_search">แถบค้นหาของ Google</string>
@@ -509,21 +531,21 @@
     <string name="search_provider">ผู้ให้บริการค้นหา</string>
     <string name="hotseat_background">แสดงพื้นหลัง</string>
     <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
-    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
-    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
-    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_horizontal_inset_right">เว้นขอบขวา</string>
+    <string name="hotseat_bg_vertical_inset_top">เว้นขอบบน</string>
+    <string name="hotseat_bg_vertical_inset_bottom">เว้นขอบล่าง</string>
+    <string name="hotseat_bg_color_label">สีพื้นหลัง</string>
     <string name="hotseat_bg_alpha">ความทึบของพื้นหลัง</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
-    <string name="pause_apps_dialog_title">Pause %1$s?</string>
+    <string name="pause">พัก</string>
+    <string name="pause_apps_dialog_title">พัก %1$s?</string>
     <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
-    <string name="paused_apps_dialog_title">App paused</string>
+    <string name="paused_apps_dialog_title">พักแอปแล้ว</string>
     <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
-    <string name="paused_apps_drop_target_label">Pause app</string>
-    <string name="dock_icons">Dock icons</string>
+    <string name="paused_apps_drop_target_label">พักแอป</string>
+    <string name="dock_icons">จำนวนไอคอนในรายการโปรด</string>
     <string name="hotseat_bottom_space_label">เว้นขอบล่าง</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">ความสูงของตัวระบุหน้า</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">ค้นหาแอป</string>
     <string name="search_provider_custom">ปรับแต่ง</string>
@@ -542,10 +564,10 @@
     <string name="pref_all_apps_remember_position_title">จดจำตำแหน่ง</string>
     <string name="pref_all_apps_remember_position_description">จดจำตำแหน่งของแอปในลิ้นชักหลังจากออกจากลิ้นชัก</string>
     <string name="pref_all_apps_show_scrollbar_title">แสดงแถบเลื่อน</string>
-    <string name="app_drawer_columns">App drawer columns</string>
+    <string name="app_drawer_columns">จำนวนคอลัมน์ในรายการแอป</string>
     <string name="row_height_label">ความสูงของแถว</string>
     <string name="app_drawer_indent_label">เว้นขอบข้าง</string>
-    <string name="app_drawer_bg_color_label">Background color</string>
+    <string name="app_drawer_bg_color_label">สีพื้นหลัง</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">ซ่อนจากรายการแอป</string>
     <string name="hidden_apps_label_with_count">แอปที่ซ่อนอยู่ (%1$d)</string>
@@ -553,13 +575,13 @@
         <item quantity="other">%1$d แอป</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
-    <string name="folder_bg_opacity_label">Folder background opacity</string>
+    <string name="folder_preview_bg_opacity_label">ความทึบแสงพื้นหลังตัวอย่างไอคอน</string>
+    <string name="folder_bg_opacity_label">ความทึบแสงพื้นหลังโฟลเดอร์</string>
     <string name="folder_preview_bg_color_label">สีพื้นหลังของไอคอน</string>
     <string name="max_folder_columns">จำนวนคอลัมน์สูงสุดของโฟลเดอร์</string>
     <string name="max_folder_rows">จำนวนแถวสูงสุดของโฟลเดอร์</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">การตั้งค่าเหล่านี้จะถูกเพิกเฉยเนื่องจาก Lawnchair ไม่ได้ถูกตั้งค่าเป็นผู้ให้บริการล่าสุด</string>
     <string name="quickstep_incompatible">ระบบไม่สามารถเข้ากันได้</string>
     <string name="quickstep_incompatible_description">อุปกรณ์ของคุณได้รับการกำหนดค่าให้มีรูปแบบลายเส้นของระบบ (เรียกว่า Quickstep) ซึ่งให้บริการโดย %1$s แต่ %1$s เวอร์ชันนี้ไม่สามารถทำงานร่วมกับ Android เวอร์ชันของคุณได้ หากต้องการใช้อุปกรณ์ของคุณต่อไป โปรดถอนการติดตั้งการอัปเดต %1$s หรือปิดใช้งาน %1$s ในการตั้งค่า</string>
     <string name="translucent_background">พื้นหลังโปร่งแสง</string>
@@ -571,7 +593,7 @@
     <string name="task_menu_force_stop">บังคับปิด</string>
     <string name="window_corner_radius_label">ขอบมนของหน้าจอ</string>
     <string name="override_window_corner_radius_label">ปรับแต่งขอบมนของหน้าจอ</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">เมื่อคุณปัดขึ้นเพื่อเปิดแอปล่าสุด แอปปัจจุบันจะตามนิ้วของคุณโดยย่อเป็นการ์ด ใช้แถบเลื่อนนี้เพื่อปรับรัศมีมุมของการ์ดเมื่อเกือบเต็มหน้าจอ เพื่อให้พอดีกับมุมของหน้าจอของคุณ</string>
     <string name="taskbar_label">แถบงาน</string>
     <string name="enable_taskbar_experimental">แสดงแถบงาน (อยู่ในการทดลอง)</string>
     <!--
@@ -580,7 +602,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search web and more</string>
+    <string name="all_apps_device_search_hint">ค้นหาเว็บและอื่น ๆ</string>
     <string name="all_apps_search_bar_hint">ค้นหา</string>
     <string name="all_apps_no_search_results">ไม่เจอแอปที่ตรงกัน \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">จากเว็บไซต์</string>
@@ -590,7 +612,7 @@
     <string name="all_apps_search_market_message">ค้นหาแอปเพิ่มเติม</string>
     <string name="all_apps_search_on_web_message">ค้นหาบน <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">ยังไม่ได้ติดตั้งแอพสโตร์หรือเบราว์เซอร์</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">ค้นหาบนเว็บ</string>
     <string name="clear_history">ล้างประวัติการค้นหา</string>
     <string name="search_input_action_clear_results">ล้างช่องค้นหา</string>
     <!-- Search settings -->
@@ -607,8 +629,8 @@
     <string name="hidden_apps_show_name_typed">แสดงเมื่อพิมพ์ชื่อเต็ม</string>
     <string name="allapps_web_suggestion_provider_label">ผู้ให้บริการคำแนะนำจากเว็บ</string>
     <string name="allapps_use_web_suggestion_icon_label">แสดงโลโก้ของผู้ให้บริการคำแนะนำเว็บในแถบค้นหา</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
-    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
+    <string name="allapps_match_qsb_style_label">ให้แถบค้นหาในแถบรายการโปรดทำงานเหมือนกัน</string>
+    <string name="allapps_match_qsb_style_description">การแตะแถบค้นหาในแถบรายการโปรดจะเปิดหน้าค้นหาในรายการแอป</string>
     <string name="app_search_algorithm">ขั้นตอนวิธีค้นหา</string>
     <string name="search_algorithm_app_search">ค้นหาแอพ</string>
     <string name="search_algorithm_global_search_on_device">การค้นหาทั้งหมด (ในเครื่อง)</string>
@@ -616,27 +638,27 @@
     <string name="custom_search_label">ชื่อเครื่องมือค้นหา</string>
     <string name="custom_search_url">ลิงค์เครื่องมือค้นหา</string>
     <string name="custom_search_suggestions_url">ลิงค์คำแนะนำการค้นหา</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_input_hint">&#37;s จะถูกแทนที่ด้วยคำค้นหา</string>
+    <string name="custom_search_suggestions_hint">&#37;s จะถูกแทนที่ด้วยคำค้นหา ผลลัพธ์ต้องอยู่ในรูปแบบ JSON OpenSearch</string>
     <!-- Labels of each search result types -->
-    <string name="show_search_result_types">Show in search results</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="show_search_result_types">แสดงในผลการค้นหา</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">แอปและทางลัด</string>
     <string name="search_pref_result_shortcuts_title">ทางลัดแอป</string>
     <string name="search_pref_result_people_title">ผู้คน</string>
     <string name="search_pref_result_tips_title">คำแนะนำจากอุปกรณ์ Pixel</string>
     <string name="search_pref_result_settings_title">การตั้งค่า Android</string>
     <string name="search_pref_result_files_title">ไฟล์</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">รูปถ่ายและวิดีโอ</string>
+    <string name="search_pref_result_audio_media_title">ไฟล์เสียง</string>
+    <string name="search_pref_result_all_files_title">ไฟล์ทั้งหมด</string>
     <string name="search_pref_result_web_title">การแนะนำเว็ป</string>
     <string name="search_pref_result_history_title">ประวัติการค้นหา</string>
     <string name="all_apps_search_result_calculator">เครื่องคิดเลข</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">เริ่มค้นหา</string>
+    <string name="search_empty_state_no_history_subtitle">ค้นหาแอป รายชื่อติดต่อ และอื่นๆ ผลการค้นหาล่าสุดของคุณจะปรากฏที่นี่</string>
+    <string name="search_empty_state_history_disabled_subtitle">ค้นหาแอป รายชื่อติดต่อ และอื่นๆ</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">ค้นหาบน</string>
     <string name="search_pref_result_files_description">สื่อ, ไฟล์, และอื่นๆ</string>
     <string name="search_pref_result_contacts_description">รายชื่อและอื่น ๆ</string>
     <string name="search_pref_result_web_provider_description">ผ่าน <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -652,34 +674,34 @@
     <string name="missing_notification_access_label">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
     <string name="missing_notification_access_desc">หากต้องการแสดงจุดแสดงการแจ้งเตือน ให้เปิดการเข้าถึงการแจ้งเตือนสำหรับ <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_content">เพื่อค้นหารายชื่อติดต่อ ให้สิทธิ <xliff:g id="name" example="My App">%1$s</xliff:g> ในการเข้าถึงรายชื่อติดต่อ และการโทร</string>
     <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_music_audio_description">เพื่อค้นหาเพลงและไฟล์เสียงอื่นๆ <xliff:g id="name" example="My App">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงคลังสื่อของคุณ</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_photos_videos_description">เพื่อค้นหารูปภาพและวิดีโอ <xliff:g id="name" example="My App">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงคลังสื่อของคุณ</string>
     <string name="permissions_photos_videos_full">Access your full media library?</string>
     <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos_grant_full">อนุญาตการเข้าถึงสื่ออย่างเต็มรูปแบบ</string>
+    <string name="permissions_photos_videos_manage_selected">จัดการรายการที่เลือก</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
+    <string name="permissions_external_storage">จำเป็นต้องเข้าถึงที่จัดเก็บข้อมูลภายนอก</string>
+    <string name="permissions_external_storage_description">เพื่อค้นหาไฟล์ของคุณ <xliff:g id="name" example="My App">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงพื้นที่จัดเก็บข้อมูลภายนอกของอุปกรณ์</string>
     <string name="permissions_manage_storage">Manage storage access needed</string>
     <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
     <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
+    <string name="permission_desc_ending_read_all_files">เพื่ออ่านไฟล์ทั้งหมดในอุปกรณ์ของคุณ</string>
+    <string name="permission_desc_ending_manage_all_files">เพื่อจัดการไฟล์ทั้งหมดในอุปกรณ์ของคุณ</string>
     <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
     <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
+    <string name="permission_label_manage_all_files">จัดการไฟล์ทั้งหมดในอุปกรณ์</string>
+    <string name="permission_label_read_photos_videos">อ่านรูปภาพและวิดีโอ</string>
     <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
     <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
     <string name="open_permission_settings">เปิดการตั้งค่า</string>
     <string name="grant_requested_permissions">ให้สิทธิ์</string>
     <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="grant_requested_permissions_tap">แตะเพื่ออนุญาตสิทธิ์</string>
     <!-- Message shown when all home screen views are removed -->
-    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
+    <string name="home_screen_all_views_removed_msg">หน้าจอหลักถูกล้างแล้ว</string>
 </resources>
