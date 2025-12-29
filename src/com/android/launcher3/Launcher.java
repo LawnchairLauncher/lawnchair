@@ -177,6 +177,7 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.apppairs.AppPairIcon;
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.celllayout.CellPosMapper.TwoPanelCellPosMapper;
@@ -202,6 +203,7 @@ import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StartupLatencyLogger;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent;
+import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelWriter;
@@ -288,6 +290,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.widget.WidgetStackManager;
+import app.lawnchair.widget.WidgetStackInfo;
+import app.lawnchair.widget.WidgetStackView;
 
 /**
  * Default launcher application.
@@ -944,14 +949,59 @@ public class Launcher extends StatefulActivity<LauncherState>
             // widgets
             final int appWidgetId = data != null ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
             if (resultCode == RESULT_CANCELED) {
+                // Clear pending stack info if permission was denied
+                // Try to clear by widget ID first, then by provider if widget ID is invalid
+                if (appWidgetId > 0) {
+                    WidgetStackManager.clearPendingStackInfo(appWidgetId);
+                }
+                if (requestArgs != null && requestArgs.getWidgetHandler() != null) {
+                    try {
+                        LauncherAppWidgetProviderInfo providerInfo = requestArgs.getWidgetHandler().getProviderInfo(this);
+                        if (providerInfo != null && providerInfo.getComponent() != null) {
+                            WidgetStackManager.clearPendingStackInfoByProvider(providerInfo.getComponent());
+                        }
+                    } catch (Exception e) {
+                        // Ignore errors when clearing
+                    }
+                }
                 completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId, requestArgs);
                 mWorkspace.removeExtraEmptyScreenDelayed(
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false, exitSpringLoaded);
             } else if (resultCode == RESULT_OK) {
-                addAppWidgetImpl(
-                        appWidgetId, requestArgs, null,
-                        requestArgs.getWidgetHandler(),
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY);
+                // Transfer pending stack info from provider-based to widget ID-based storage
+                // This handles the case where widget ID was allocated in addAppWidgetFromDrop
+                if (requestArgs != null && requestArgs.getWidgetHandler() != null) {
+                    try {
+                        LauncherAppWidgetProviderInfo providerInfo = requestArgs.getWidgetHandler().getProviderInfo(this);
+                        if (providerInfo != null && providerInfo.getComponent() != null) {
+                            WidgetStackManager.transferPendingStackInfo(providerInfo.getComponent(), appWidgetId);
+                        }
+                    } catch (Exception e) {
+                        android.util.Log.w("Launcher", "Failed to get provider info for stack transfer", e);
+                    }
+                }
+                
+                // Check if this widget should be added to a stack BEFORE adding it to workspace
+                // This prevents the widget from replacing the existing WidgetStackView
+                WidgetStackInfo pendingStackInfo = WidgetStackManager.getAndRemovePendingStackInfo(appWidgetId);
+                if (pendingStackInfo != null) {
+                    // Widget is being added to an existing stack
+                    // Always add to database only - never add to workspace as a separate view
+                    // The widget will be displayed as part of the WidgetStackView
+                    addAppWidgetToDatabaseOnly(appWidgetId, requestArgs, pendingStackInfo);
+                    
+                    // Then update the stack to include this widget
+                    // Use a delay to ensure the widget is fully added to the model first
+                    MAIN_EXECUTOR.getHandler().postDelayed(() -> {
+                        addWidgetToStackAfterPermission(appWidgetId, pendingStackInfo);
+                    }, 500);
+                } else {
+                    // Normal widget addition - add to workspace
+                    addAppWidgetImpl(
+                            appWidgetId, requestArgs, null,
+                            requestArgs.getWidgetHandler(),
+                            ON_ACTIVITY_RESULT_ANIMATION_DELAY);
+                }
             }
             return;
         }
@@ -1549,6 +1599,22 @@ public class Launcher extends StatefulActivity<LauncherState>
             if (appWidgetInfo.provider == null)
                 return;
         }
+        
+        // Check for pending stack info using provider BEFORE creating launcherInfo
+        // Transfer from provider-based storage to widget ID-based storage
+        app.lawnchair.widget.WidgetStackInfo pendingStackInfo = null;
+        if (appWidgetInfo.provider != null) {
+            // First try to get from provider-based storage (for newly added widgets)
+            pendingStackInfo = app.lawnchair.widget.WidgetStackManager.getAndRemovePendingStackInfoByProvider(appWidgetInfo.provider);
+            if (pendingStackInfo != null) {
+                // Transfer to widget ID-based storage for later retrieval
+                app.lawnchair.widget.WidgetStackManager.storePendingStackInfo(appWidgetId, pendingStackInfo);
+            } else {
+                // Fallback: try widget ID-based storage (for widgets that were already transferred)
+                pendingStackInfo = app.lawnchair.widget.WidgetStackManager.getAndRemovePendingStackInfo(appWidgetId);
+            }
+        }
+        
         LauncherAppWidgetInfo launcherInfo;
         launcherInfo = new LauncherAppWidgetInfo(
                 appWidgetId, appWidgetInfo.provider, appWidgetInfo, hostView);
@@ -1558,6 +1624,11 @@ public class Launcher extends StatefulActivity<LauncherState>
         launcherInfo.minSpanY = itemInfo.minSpanY;
         launcherInfo.user = appWidgetInfo.getProfile();
         CellPos presenterPos = getCellPosMapper().mapModelToPresenter(itemInfo);
+        
+        // If widget is being added to a stack, set the stack ID
+        if (pendingStackInfo != null) {
+            launcherInfo.widgetStackId = pendingStackInfo.getStackId();
+        }
         if (showPendingWidget) {
             launcherInfo.restoreStatus = LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
             PendingAppWidgetHostView pendingAppWidgetHostView = new PendingAppWidgetHostView(
@@ -1590,6 +1661,77 @@ public class Launcher extends StatefulActivity<LauncherState>
         } else if (itemInfo instanceof PendingRequestArgs) {
             launcherInfo.sourceContainer = ((PendingRequestArgs) itemInfo).getWidgetSourceContainer();
         }
+        
+        // If widget is being added to a stack, validate it first before adding to stack
+        // Only add valid widgets to stacks to prevent invalid widgets from being added
+        if (pendingStackInfo != null) {
+            // Validate widget using WidgetInflater before adding to stack
+            com.android.launcher3.widget.WidgetInflater widgetInflater = new com.android.launcher3.widget.WidgetInflater(this);
+            com.android.launcher3.widget.WidgetInflater.InflationResult validationResult = widgetInflater.inflateAppWidget(launcherInfo);
+            
+            // Check if widget is invalid - if so, don't add to stack
+            // Use getter methods to access Kotlin data class properties from Java
+            if (validationResult.getType() == com.android.launcher3.widget.WidgetInflater.TYPE_DELETE) {
+                String reason = validationResult.getReason();
+                android.util.Log.w("Launcher", "Widget " + appWidgetId + " is invalid, not adding to stack. Reason: " + (reason != null ? reason : "unknown"));
+                // Clear pending stack info since we're not adding this widget
+                app.lawnchair.widget.WidgetStackManager.clearPendingStackInfo(appWidgetId);
+                // Don't add to database or stack - widget is invalid
+                return;
+            }
+            
+            // Widget is valid (TYPE_REAL or TYPE_PENDING) - proceed with adding to stack
+            // Add to database only - the WidgetStackView will handle display
+            getModelWriter().addItemToDatabase(launcherInfo,
+                    itemInfo.container, presenterPos.screenId, presenterPos.cellX, presenterPos.cellY);
+            
+            // Update the stack to include this widget
+            java.util.List<Integer> updatedWidgetIds = new java.util.ArrayList<>(pendingStackInfo.getWidgetIds());
+            if (!updatedWidgetIds.contains(appWidgetId)) {
+                updatedWidgetIds.add(appWidgetId);
+            }
+            app.lawnchair.widget.WidgetStackInfo updatedStackInfo = new app.lawnchair.widget.WidgetStackInfo(
+                    pendingStackInfo.getStackId(),
+                    updatedWidgetIds,
+                    0, // currentIndex - start at first widget
+                    pendingStackInfo.getAutoRotate(),
+                    pendingStackInfo.getContainer(),
+                    pendingStackInfo.getScreenId(),
+                    pendingStackInfo.getCellX(),
+                    pendingStackInfo.getCellY(),
+                    pendingStackInfo.getSpanX(),
+                    pendingStackInfo.getSpanY()
+            );
+            getModelWriter().saveWidgetStack(updatedStackInfo);
+            
+            // Update the WidgetStackView if it exists
+            final app.lawnchair.widget.WidgetStackInfo finalPendingStackInfo = pendingStackInfo;
+            final app.lawnchair.widget.WidgetStackInfo finalUpdatedStackInfo = updatedStackInfo;
+            android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+            mainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    CellLayout cellLayout = mWorkspace.getScreenWithId(finalPendingStackInfo.getScreenId());
+                    if (cellLayout != null) {
+                        android.view.ViewGroup container = cellLayout.getShortcutsAndWidgets();
+                        for (int i = 0; i < container.getChildCount(); i++) {
+                            android.view.View child = container.getChildAt(i);
+                            if (child instanceof app.lawnchair.widget.WidgetStackView) {
+                                app.lawnchair.widget.WidgetStackView stackView = (app.lawnchair.widget.WidgetStackView) child;
+                                com.android.launcher3.model.data.LauncherAppWidgetInfo childInfo = (com.android.launcher3.model.data.LauncherAppWidgetInfo) child.getTag();
+                                if (childInfo != null && childInfo.widgetStackId == finalPendingStackInfo.getStackId()) {
+                                    stackView.setStackInfo(finalUpdatedStackInfo);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }, 300);
+            
+            return; // Don't add to workspace - it's part of a stack
+        }
+        
         getModelWriter().addItemToDatabase(launcherInfo,
                 itemInfo.container, presenterPos.screenId, presenterPos.cellX, presenterPos.cellY);
 
@@ -2354,27 +2496,82 @@ public class Launcher extends StatefulActivity<LauncherState>
         int index = 0;
         for (Pair<ItemInfo, View> e : shortcuts) {
             final ItemInfo item = e.first;
+            View view = e.second;
 
-            // Remove colliding items.
-            CellPos presenterPos = getCellPosMapper().mapModelToPresenter(item);
-            if (item.container == CONTAINER_DESKTOP) {
-                CellLayout cl = mWorkspace.getScreenWithId(presenterPos.screenId);
-                if (cl != null && cl.isOccupied(presenterPos.cellX, presenterPos.cellY)) {
-                    Object tag = cl.getChildAt(presenterPos.cellX, presenterPos.cellY).getTag();
-                    String desc = "Collision while binding workspace item: " + item
-                            + ". Collides with " + tag;
-                    if (FeatureFlags.IS_STUDIO_BUILD) {
-                        throw (new RuntimeException(desc));
-                    } else {
-                        getModelWriter().deleteItemFromDatabase(item, desc);
-                        continue;
-                    }
+            // Skip widgets in a stack that don't have a view (non-first widgets)
+            // ItemInflater returns null for these - they're already in the WidgetStackView
+            if (item instanceof LauncherAppWidgetInfo) {
+                LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
+                if (widgetInfo.widgetStackId != null && view == null) {
+                    // This is a widget in a stack that's not the first one - skip it
+                    // The WidgetStackView already contains it
+                    continue;
                 }
             }
 
-            View view = e.second;
             if (view == null) {
                 continue;
+            }
+
+            // Remove colliding items (but skip collision check for widgets in a stack)
+            // Widgets in a stack share the same position and are handled by WidgetStackView
+            boolean isWidgetInStack = false;
+            if (item instanceof LauncherAppWidgetInfo) {
+                LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
+                isWidgetInStack = widgetInfo.widgetStackId != null;
+            }
+
+            // Calculate presenter position for collision checking and animation
+            CellPos presenterPos = getCellPosMapper().mapModelToPresenter(item);
+
+            if (!isWidgetInStack) {
+                if (item.container == CONTAINER_DESKTOP) {
+                    CellLayout cl = mWorkspace.getScreenWithId(presenterPos.screenId);
+                    if (cl != null && cl.isOccupied(presenterPos.cellX, presenterPos.cellY)) {
+                        View existingView = cl.getChildAt(presenterPos.cellX, presenterPos.cellY);
+                        // If existing view is a WidgetStackView, check if this widget belongs to it
+                        if (existingView instanceof app.lawnchair.widget.WidgetStackView && 
+                            item instanceof LauncherAppWidgetInfo) {
+                            LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
+                            app.lawnchair.widget.WidgetStackView stackView = 
+                                (app.lawnchair.widget.WidgetStackView) existingView;
+                            app.lawnchair.widget.WidgetStackInfo stackInfo = stackView.getStackInfo();
+                            if (stackInfo != null && stackInfo.getWidgetIds().contains(widgetInfo.appWidgetId)) {
+                                // This widget is already in the existing WidgetStackView, skip binding
+                                continue;
+                            }
+                        }
+                        
+                        Object tag = existingView != null ? existingView.getTag() : null;
+                        String desc = "Collision while binding workspace item: " + item
+                                + ". Collides with " + tag;
+                        if (FeatureFlags.IS_STUDIO_BUILD) {
+                            throw (new RuntimeException(desc));
+                        } else {
+                            getModelWriter().deleteItemFromDatabase(item, desc);
+                            continue;
+                        }
+                    }
+                }
+            } else {
+                // Widget is in a stack - check if WidgetStackView already exists at this position
+                // If it does and contains this widget, skip binding (already handled)
+                if (item.container == CONTAINER_DESKTOP && item instanceof LauncherAppWidgetInfo) {
+                    LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
+                    CellLayout cl = mWorkspace.getScreenWithId(presenterPos.screenId);
+                    if (cl != null) {
+                        View existingView = cl.getChildAt(presenterPos.cellX, presenterPos.cellY);
+                        if (existingView instanceof app.lawnchair.widget.WidgetStackView) {
+                            app.lawnchair.widget.WidgetStackView stackView = 
+                                (app.lawnchair.widget.WidgetStackView) existingView;
+                            app.lawnchair.widget.WidgetStackInfo stackInfo = stackView.getStackInfo();
+                            if (stackInfo != null && stackInfo.getWidgetIds().contains(widgetInfo.appWidgetId)) {
+                                // WidgetStackView already exists and contains this widget - skip binding
+                                continue;
+                            }
+                        }
+                    }
+                }
             }
             if (enableWorkspaceInflation() && view instanceof LauncherAppWidgetHostView lv) {
                 view = getAppWidgetHolder().attachViewToHostAndGetAttachedView(lv);
@@ -3252,6 +3449,182 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Nullable
     public ArrowPopup<?> getOptionsPopup() {
         return findViewById(R.id.popup_container);
+    }
+
+    /**
+     * Adds a widget to the database only (not to workspace) when it's part of a stack.
+     * This prevents the widget from replacing the existing WidgetStackView.
+     */
+    private void addAppWidgetToDatabaseOnly(int appWidgetId, PendingRequestArgs requestArgs, WidgetStackInfo stackInfo) {
+        if (requestArgs == null || requestArgs.getWidgetHandler() == null) {
+            android.util.Log.e("Launcher", "Cannot add widget to database: invalid request args");
+            return;
+        }
+        
+        LauncherAppWidgetProviderInfo appWidgetInfo = requestArgs.getWidgetHandler().getProviderInfo(this);
+        if (appWidgetInfo == null) {
+            android.util.Log.e("Launcher", "Cannot add widget to database: provider info is null");
+            mAppWidgetHolder.deleteAppWidgetId(appWidgetId);
+            return;
+        }
+        
+        // Create LauncherAppWidgetInfo with stack information
+        LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(
+                appWidgetId, appWidgetInfo.provider, appWidgetInfo, null);
+        launcherInfo.spanX = stackInfo.getSpanX();
+        launcherInfo.spanY = stackInfo.getSpanY();
+        // Get min spans from requestArgs if available, otherwise use span values
+        launcherInfo.minSpanX = requestArgs.minSpanX > 0 ? requestArgs.minSpanX : requestArgs.spanX;
+        launcherInfo.minSpanY = requestArgs.minSpanY > 0 ? requestArgs.minSpanY : requestArgs.spanY;
+        launcherInfo.user = appWidgetInfo.getProfile();
+        launcherInfo.restoreStatus = LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
+        
+        // Set stack information
+        launcherInfo.widgetStackId = stackInfo.getStackId();
+        launcherInfo.container = stackInfo.getContainer();
+        launcherInfo.sourceContainer = stackInfo.getContainer();
+        launcherInfo.screenId = stackInfo.getScreenId();
+        launcherInfo.cellX = stackInfo.getCellX();
+        launcherInfo.cellY = stackInfo.getCellY();
+        
+        // Add to database only (not to workspace)
+        getModelWriter().addItemToDatabase(launcherInfo,
+                stackInfo.getContainer(), stackInfo.getScreenId(), 
+                stackInfo.getCellX(), stackInfo.getCellY());
+    }
+
+    /**
+     * Adds a widget to a stack after permission has been granted.
+     * This is called from onActivityResult when a widget that was requested from WidgetStackDialog
+     * has been granted permission and added to the workspace.
+     */
+    private void addWidgetToStackAfterPermission(int appWidgetId, WidgetStackInfo stackInfo) {
+        // Find the widget info that was just added
+        BgDataModel bgDataModel = getModel().getBgDataModel();
+        LauncherAppWidgetInfo widgetInfo = null;
+        synchronized (bgDataModel) {
+            for (ItemInfo itemInfo : bgDataModel.itemsIdMap) {
+                if (itemInfo instanceof LauncherAppWidgetInfo && 
+                    ((LauncherAppWidgetInfo) itemInfo).appWidgetId == appWidgetId) {
+                    widgetInfo = (LauncherAppWidgetInfo) itemInfo;
+                    break;
+                }
+            }
+        }
+        
+        if (widgetInfo == null) {
+            android.util.Log.w("Launcher", "Widget " + appWidgetId + " not found in model after permission grant");
+            return;
+        }
+        
+        // Update widget info to link it to the stack
+        widgetInfo.widgetStackId = stackInfo.getStackId();
+        widgetInfo.container = stackInfo.getContainer();
+        widgetInfo.sourceContainer = stackInfo.getContainer();
+        widgetInfo.screenId = stackInfo.getScreenId();
+        widgetInfo.cellX = stackInfo.getCellX();
+        widgetInfo.cellY = stackInfo.getCellY();
+        widgetInfo.spanX = stackInfo.getSpanX();
+        widgetInfo.spanY = stackInfo.getSpanY();
+        
+        // Update widget in database
+        getModelWriter().updateItemInDatabase(widgetInfo);
+        
+        // Update stack info to include the new widget
+        List<Integer> newWidgetIds = new ArrayList<>(stackInfo.getWidgetIds());
+        if (!newWidgetIds.contains(appWidgetId)) {
+            newWidgetIds.add(appWidgetId);
+        }
+        // Use helper method for Java interop
+        WidgetStackInfo updatedStackInfo = stackInfo.copyWithWidgetIds(newWidgetIds);
+        
+        // Save updated stack to database
+        WidgetStackManager.saveStack(getModelWriter().getModelDbController().getDb(), updatedStackInfo);
+        
+        // Find and update the WidgetStackView on the workspace
+        // Also remove any widget view that might have been added at this position
+        // (since the widget should only exist as part of the stack)
+        if (mWorkspace != null) {
+            CellLayout cellLayout = mWorkspace.getScreenWithId(stackInfo.getScreenId());
+            if (cellLayout != null) {
+                View viewAtPosition = cellLayout.getChildAt(
+                    stackInfo.getCellX(), stackInfo.getCellY());
+                
+                if (viewAtPosition instanceof WidgetStackView) {
+                    // Update existing WidgetStackView with new stack info
+                    // This will reload all widgets in the stack, including the new one
+                    WidgetStackView stackView = (WidgetStackView) viewAtPosition;
+                    stackView.setStackInfo(updatedStackInfo);
+                } else if (viewAtPosition instanceof LauncherAppWidgetHostView) {
+                    // A widget view was added at this position - this shouldn't happen
+                    // but if it does (e.g., if addAppWidgetImpl was called before we checked),
+                    // we need to remove it and ensure the WidgetStackView is created
+                    LauncherAppWidgetHostView widgetView = (LauncherAppWidgetHostView) viewAtPosition;
+                    LauncherAppWidgetInfo viewInfo = (LauncherAppWidgetInfo) widgetView.getTag();
+                    if (viewInfo != null && viewInfo.appWidgetId == appWidgetId) {
+                        // This is the widget we just added - remove it from workspace
+                        // The WidgetStackView will display it instead
+                        cellLayout.removeView(widgetView);
+                        
+                        // Find the first widget in the stack to use as the base for WidgetStackView
+                        LauncherAppWidgetInfo firstWidgetInfo = null;
+                        synchronized (bgDataModel) {
+                            for (Integer widgetId : updatedStackInfo.getWidgetIds()) {
+                                for (ItemInfo itemInfo : bgDataModel.itemsIdMap) {
+                                    if (itemInfo instanceof LauncherAppWidgetInfo && 
+                                        ((LauncherAppWidgetInfo) itemInfo).appWidgetId == widgetId) {
+                                        firstWidgetInfo = (LauncherAppWidgetInfo) itemInfo;
+                                        break;
+                                    }
+                                }
+                                if (firstWidgetInfo != null) break;
+                            }
+                        }
+                        
+                        if (firstWidgetInfo != null) {
+                            // Create WidgetStackView at this position
+                            WidgetStackView stackView = new WidgetStackView(this);
+                            stackView.setTag(firstWidgetInfo);
+                            mWorkspace.addInScreen(stackView, stackInfo.getContainer(), 
+                                stackInfo.getScreenId(), stackInfo.getCellX(), stackInfo.getCellY(),
+                                stackInfo.getSpanX(), stackInfo.getSpanY());
+                            stackView.setStackInfo(updatedStackInfo);
+                        } else {
+                            android.util.Log.w("Launcher", "Could not find first widget in stack to create WidgetStackView");
+                        }
+                    }
+                } else {
+                    // WidgetStackView not found - might need to be created
+                    // This can happen if the stack was just created
+                    // Find the first widget in the stack and create WidgetStackView
+                    LauncherAppWidgetInfo firstWidgetInfo = null;
+                    synchronized (bgDataModel) {
+                        for (Integer widgetId : updatedStackInfo.getWidgetIds()) {
+                            for (ItemInfo itemInfo : bgDataModel.itemsIdMap) {
+                                if (itemInfo instanceof LauncherAppWidgetInfo && 
+                                    ((LauncherAppWidgetInfo) itemInfo).appWidgetId == widgetId) {
+                                    firstWidgetInfo = (LauncherAppWidgetInfo) itemInfo;
+                                    break;
+                                }
+                            }
+                            if (firstWidgetInfo != null) break;
+                        }
+                    }
+                    
+                    if (firstWidgetInfo != null) {
+                        // Create WidgetStackView at this position
+                        WidgetStackView stackView = new WidgetStackView(this);
+                        stackView.setTag(firstWidgetInfo);
+                        mWorkspace.addInScreen(stackView, stackInfo.getContainer(), 
+                            stackInfo.getScreenId(), stackInfo.getCellX(), stackInfo.getCellY(),
+                            stackInfo.getSpanX(), stackInfo.getSpanY());
+                        stackView.setStackInfo(updatedStackInfo);
+                    } else {
+                        android.util.Log.w("Launcher", "WidgetStackView not found and could not create it - no widgets in stack");
+                    }
+                }
+            }
+        }
     }
 
     // End of Getters and Setters

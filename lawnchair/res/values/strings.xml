@@ -906,4 +906,12 @@
     <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
+
+    <!-- Widget Stacking -->
+    <string name="create_stack">Create stack</string>
+    <string name="edit_stack">Edit stack</string>
+    <string name="add_widget_to_stack">Add widget to stack</string>
+    <string name="auto_rotate_widgets">Automatically rotate between widgets</string>
+    <string name="save_stack">Save</string>
+    <string name="remove_widget">Remove widget</string>
 </resources>

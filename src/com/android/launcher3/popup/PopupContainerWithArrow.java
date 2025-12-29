@@ -48,6 +48,9 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import app.lawnchair.widget.WidgetStackView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
@@ -90,6 +93,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
     private final float mShortcutHeight;
 
     private BubbleTextView mOriginalIcon;
+    private View mOriginalView; // For widgets or other non-icon views
     private int mContainerWidth;
 
     private ViewGroup mWidgetContainer;
@@ -166,7 +170,8 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
 
                 // We let touches on the original icon go through so that users can launch
                 // the app with one tap if they don't find a shortcut they want.
-                return mOriginalIcon == null || !dl.isEventOverView(mOriginalIcon, ev);
+                View targetView = mOriginalIcon != null ? mOriginalIcon : mOriginalView;
+                return targetView == null || !dl.isEventOverView(targetView, ev);
             }
         }
         return false;
@@ -215,6 +220,87 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         return container;
     }
 
+    /**
+     * Shows a popup with system shortcuts for a widget
+     * @param widgetView the widget view to show the popup for
+     * @return the container if shown or null.
+     */
+    public static PopupContainerWithArrow<Launcher> showForWidget(LauncherAppWidgetHostView widgetView) {
+        Launcher launcher = Launcher.getLauncher(widgetView.getContext());
+        if (getOpen(launcher) != null) {
+            // There is already an items container open, so don't open this one.
+            widgetView.clearFocus();
+            return null;
+        }
+        ItemInfo item = (ItemInfo) widgetView.getTag();
+        if (!(item instanceof LauncherAppWidgetInfo)) {
+            return null;
+        }
+
+        // Get system shortcuts for the widget
+        List<SystemShortcut> systemShortcuts = launcher.getSupportedShortcuts()
+                .map(s -> s.getShortcut(launcher, item, widgetView))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        // Only show popup if there are shortcuts available
+        if (systemShortcuts.isEmpty()) {
+            return null;
+        }
+
+        PopupContainerWithArrow<Launcher> container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
+                R.layout.popup_container, launcher.getDragLayer(), false);
+        container.configureForLauncher(launcher, item);
+        // Widgets don't have deep shortcuts, so pass 0
+        container.populateAndShowRowsForWidget(widgetView, systemShortcuts);
+        container.requestFocus();
+        
+        // Ensure widget stays visible after popup is shown
+        // This prevents the widget from disappearing when the popup appears
+        // Use post to ensure this runs after all layout operations
+        widgetView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (widgetView.getParent() != null && widgetView.getVisibility() != View.VISIBLE) {
+                    widgetView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        
+        return container;
+    }
+
+    /**
+     * Shows popup for widget stacks (WidgetStackView)
+     */
+    public static PopupContainerWithArrow<Launcher> showForWidgetStack(
+            Launcher launcher, LauncherAppWidgetInfo widgetInfo, View stackView) {
+        if (getOpen(launcher) != null) {
+            // There is already an items container open, so don't open this one.
+            stackView.clearFocus();
+            return null;
+        }
+
+        // Get system shortcuts for the widget stack
+        List<SystemShortcut> systemShortcuts = launcher.getSupportedShortcuts()
+                .map(s -> s.getShortcut(launcher, widgetInfo, stackView))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        // Only show popup if there are shortcuts available
+        if (systemShortcuts.isEmpty()) {
+            return null;
+        }
+
+        PopupContainerWithArrow<Launcher> container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
+                R.layout.popup_container, launcher.getDragLayer(), false);
+        container.configureForLauncher(launcher, widgetInfo);
+        // Widget stacks don't have deep shortcuts, so pass 0
+        container.populateAndShowRowsForWidget(stackView, systemShortcuts);
+        container.requestFocus();
+        return container;
+    }
+
     private void configureForLauncher(Launcher launcher, ItemInfo itemInfo) {
         addOnAttachStateChangeListener(new LauncherPopupLiveUpdateHandler(
                 launcher, (PopupContainerWithArrow<Launcher>) this));
@@ -249,6 +335,40 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         }
         show();
         loadAppShortcuts((ItemInfo) originalIcon.getTag());
+    }
+
+    /**
+     * Populate and show rows for widgets (which don't have BubbleTextView icons)
+     */
+    public void populateAndShowRowsForWidget(final View widgetView,
+                                             List<SystemShortcut> systemShortcuts) {
+        // For widgets, we store the view separately since it's not a BubbleTextView
+        mOriginalView = widgetView;
+        mOriginalIcon = null;
+        mContainerWidth = getResources().getDimensionPixelSize(R.dimen.bg_popup_item_width);
+
+        // Ensure widget view stays visible when popup is shown
+        // This is especially important during stack creation when the initial widget
+        // must remain visible while its popup is open
+        if (widgetView != null && widgetView.getVisibility() != View.VISIBLE) {
+            widgetView.setVisibility(View.VISIBLE);
+        }
+
+        if (!systemShortcuts.isEmpty()) {
+            addSystemShortcuts(systemShortcuts,
+                    R.layout.system_shortcut_rows_container,
+                    R.layout.system_shortcut);
+        }
+        show();
+        
+        // Double-check widget visibility after show() is called
+        // This ensures the widget stays visible even if show() or other code tries to hide it
+        // This is critical for stack creation where the initial widget must remain visible
+        if (widgetView != null && widgetView.getVisibility() != View.VISIBLE) {
+            widgetView.setVisibility(View.VISIBLE);
+        }
+        
+        // Widgets don't need shortcut loading, so we skip loadAppShortcuts
     }
 
     /**
@@ -424,13 +544,28 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
 
     @Override
     protected void getTargetObjectLocation(Rect outPos) {
-        getPopupContainer().getDescendantRectRelativeToSelf(mOriginalIcon, outPos);
-        outPos.top += mOriginalIcon.getPaddingTop();
-        outPos.left += mOriginalIcon.getPaddingLeft();
-        outPos.right -= mOriginalIcon.getPaddingRight();
-        outPos.bottom = outPos.top + (mOriginalIcon.getIcon() != null
-                ? mOriginalIcon.getIcon().getBounds().height()
-                : mOriginalIcon.getHeight());
+        View targetView = mOriginalIcon != null ? mOriginalIcon : mOriginalView;
+        if (targetView == null) {
+            // Fallback: set empty rect if no target view
+            outPos.setEmpty();
+            return;
+        }
+        getPopupContainer().getDescendantRectRelativeToSelf(targetView, outPos);
+        if (mOriginalIcon != null) {
+            // For icons, adjust for padding and icon bounds
+            outPos.top += mOriginalIcon.getPaddingTop();
+            outPos.left += mOriginalIcon.getPaddingLeft();
+            outPos.right -= mOriginalIcon.getPaddingRight();
+            outPos.bottom = outPos.top + (mOriginalIcon.getIcon() != null
+                    ? mOriginalIcon.getIcon().getBounds().height()
+                    : mOriginalIcon.getHeight());
+        } else {
+            // For widgets, just use the view bounds
+            outPos.top += targetView.getPaddingTop();
+            outPos.left += targetView.getPaddingLeft();
+            outPos.right -= targetView.getPaddingRight();
+            outPos.bottom = outPos.top + targetView.getHeight();
+        }
     }
 
     protected void updateHiddenShortcuts() {
@@ -493,13 +628,22 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                 if (!updateIconUi) {
                     return;
                 }
-                if (mIsAboveIcon) {
-                    // Hide only the icon, keep the text visible.
-                    mOriginalIcon.setIconVisible(false);
-                    mOriginalIcon.setVisibility(VISIBLE);
-                } else {
-                    // Hide both the icon and text.
-                    mOriginalIcon.setVisibility(INVISIBLE);
+                // Only handle icon visibility, NOT widget views
+                // Widget views (mOriginalView) should remain visible until drag actually starts
+                // This prevents single widgets from disappearing when popup opens
+                if (mOriginalIcon != null) {
+                    if (mIsAboveIcon) {
+                        // Hide only the icon, keep the text visible.
+                        mOriginalIcon.setIconVisible(false);
+                        mOriginalIcon.setVisibility(VISIBLE);
+                    } else {
+                        // Hide both the icon and text.
+                        mOriginalIcon.setVisibility(INVISIBLE);
+                    }
+                }
+                // Explicitly ensure widget views stay visible during pre-drag
+                if (mOriginalView != null && mOriginalView.getVisibility() != VISIBLE) {
+                    mOriginalView.setVisibility(VISIBLE);
                 }
             }
 
@@ -534,6 +678,32 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         // Either the original icon or one of the shortcuts was dragged.
         // Hide the container, but don't remove it yet because that interferes with touch events.
         mDeferContainerRemoval = true;
+        
+        // For widgets, ensure they stay visible even when popup closes due to drag
+        // This is especially important during stack creation when the initial widget
+        // must remain visible even if another widget's drag starts
+        // Only hide the widget if THIS popup's widget is the one being dragged
+        if (mOriginalView != null) {
+            // Check if the drag object is for this widget (not another widget)
+            ItemInfo dragInfo = dragObject.dragInfo;
+            ItemInfo originalInfo = mOriginalView.getTag() instanceof ItemInfo 
+                    ? (ItemInfo) mOriginalView.getTag() 
+                    : null;
+            
+            // Only hide if this widget is the one being dragged
+            // If another widget is being dragged (e.g., for stack creation), keep this widget visible
+            if (originalInfo != null && dragInfo != null && originalInfo.id == dragInfo.id) {
+                // This widget is being dragged - it will be handled by Workspace.startDrag
+                // Don't hide it here, let Workspace handle it
+            } else {
+                // Another item is being dragged - ensure this widget stays visible
+                // This is critical for stack creation where the initial widget must remain visible
+                if (mOriginalView.getVisibility() != View.VISIBLE) {
+                    mOriginalView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+        
         animateClose();
     }
 
@@ -554,9 +724,11 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
 
     @Override
     protected void onCreateCloseAnimation(AnimatorSet anim) {
-        // Animate original icon's text back in.
-        anim.play(mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */));
-        mOriginalIcon.setForceHideDot(false);
+        // Animate original icon's text back in (only for icons, not widgets)
+        if (mOriginalIcon != null) {
+            anim.play(mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */));
+            mOriginalIcon.setForceHideDot(false);
+        }
     }
 
     @Override
@@ -565,10 +737,19 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         if (mActivityContext.getDragController() != null) {
             mActivityContext.getDragController().removeDragListener(this);
         }
-        PopupContainerWithArrow openPopup = getOpen(mActivityContext);
-        if (openPopup == null || openPopup.mOriginalIcon != mOriginalIcon) {
-            mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
-            mOriginalIcon.setForceHideDot(false);
+        // Only restore icon state if this was an icon popup
+        if (mOriginalIcon != null) {
+            PopupContainerWithArrow openPopup = getOpen(mActivityContext);
+            if (openPopup == null || openPopup.mOriginalIcon != mOriginalIcon) {
+                mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
+                mOriginalIcon.setForceHideDot(false);
+            }
+        }
+        // Ensure widget views (including WidgetStackView) stay visible when popup closes
+        // This prevents widget stacks from disappearing when popup is dismissed without dragging
+        if (mOriginalView != null && mOriginalView.getVisibility() != VISIBLE) {
+            // View was hidden but popup closed without dragging - restore visibility
+            mOriginalView.setVisibility(VISIBLE);
         }
     }
 
@@ -584,9 +765,19 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      */
     public static void dismissInvalidPopup(BaseDraggingActivity activity) {
         PopupContainerWithArrow popup = getOpen(activity);
-        if (popup != null && (!popup.mOriginalIcon.isAttachedToWindow()
-                || !ShortcutUtil.supportsShortcuts((ItemInfo) popup.mOriginalIcon.getTag()))) {
-            popup.animateClose();
+        if (popup != null) {
+            View targetView = popup.mOriginalIcon != null ? popup.mOriginalIcon : popup.mOriginalView;
+            if (targetView == null || !targetView.isAttachedToWindow()) {
+                popup.animateClose();
+                return;
+            }
+            // For icons, check if shortcuts are still supported
+            if (popup.mOriginalIcon != null) {
+                ItemInfo itemInfo = (ItemInfo) popup.mOriginalIcon.getTag();
+                if (itemInfo != null && !ShortcutUtil.supportsShortcuts(itemInfo)) {
+                    popup.animateClose();
+                }
+            }
         }
     }
 

@@ -72,7 +72,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
      * When increasing the scheme version, ensure that downgrade_schema.json is
      * updated
      */
-    public static final int SCHEMA_VERSION = 32;
+    public static final int SCHEMA_VERSION = 33;
     private static final String TAG = "DatabaseHelper";
     private static final boolean LOGD = false;
 
@@ -279,8 +279,21 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
             case 31: {
                 LauncherDbUtils.migrateLegacyShortcuts(mContext, db);
             }
-            // Fall through
-            case 32: {
+            case 32:
+                // No-op
+            case 33: {
+                // Add widget stack columns
+                try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+                    // Add widget stack ID column (nullable INTEGER)
+                    db.execSQL("ALTER TABLE favorites ADD COLUMN widgetStackId INTEGER;");
+                    // Add widget stack data column (TEXT for JSON)
+                    db.execSQL("ALTER TABLE favorites ADD COLUMN widgetStackData TEXT;");
+                    t.commit();
+                } catch (SQLException ex) {
+                    Log.e(TAG, ex.getMessage(), ex);
+                    // Old version remains, which means we wipe old data
+                    break;
+                }
                 // DB Upgraded successfully
                 return;
             }

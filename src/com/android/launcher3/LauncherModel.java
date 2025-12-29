@@ -147,6 +147,15 @@ public class LauncherModel implements InstallSessionTracker.Callback {
     private final AllAppsList mBgAllAppsList;
 
     /**
+     * Gets the BgDataModel instance. Should be used carefully as it's accessed from background thread.
+     * @return The BgDataModel instance
+     */
+    @NonNull
+    public BgDataModel getBgDataModel() {
+        return mBgDataModel;
+    }
+
+    /**
      * All the static data should be accessed on the background thread, A lock
      * should be acquired
      * on this object when accessing any data from this model.

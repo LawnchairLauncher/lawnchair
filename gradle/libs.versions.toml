@@ -96,6 +96,9 @@ kotlin-parcelizeRuntime = { module = "org.jetbrains.kotlin:kotlin-parcelize-runt
 kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
 
+# Gson
+gson = "com.google.code.gson:gson:2.10.1"
+
 protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
 

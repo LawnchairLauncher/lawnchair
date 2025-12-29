@@ -22,6 +22,7 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -47,6 +48,9 @@ import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.widget.LauncherWidgetHolder;
+
+import app.lawnchair.widget.WidgetStackInfo;
+import app.lawnchair.widget.WidgetStackManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -302,6 +306,13 @@ public class ModelWriter {
     }
 
     /**
+     * Returns the ModelDbController for database operations
+     */
+    public ModelDbController getModelDbController() {
+        return mModel.getModelDbController();
+    }
+
+    /**
      * Removes all the items from the database matching {@param matcher}.
      */
     public void deleteItemsFromDatabase(@NonNull final Predicate<ItemInfo> matcher,
@@ -364,6 +375,53 @@ public class ModelWriter {
             enqueueDeleteRunnable(newModelTask(() -> holder.deleteAppWidgetId(info.appWidgetId)));
         }
         deleteItemFromDatabase(info, reason);
+    }
+
+    /**
+     * Saves a widget stack to the database
+     * IMPORTANT: This should be called AFTER all individual widgets have been updated
+     * to ensure consistency between database and in-memory model
+     */
+    public void saveWidgetStack(final WidgetStackInfo stackInfo) {
+        newModelTask(() -> {
+            final ModelDbController dbController = mModel.getModelDbController();
+            try (SQLiteTransaction t = dbController.newTransaction()) {
+                // Get the database from the transaction
+                SQLiteDatabase db = t.getDb();
+                app.lawnchair.widget.WidgetStackManager.INSTANCE.saveStack(db, stackInfo);
+                
+                // Update in-memory widget info objects to keep them in sync
+                // This ensures widgets have the correct stackId in memory
+                synchronized (mBgDataModel) {
+                    // Access Kotlin data class properties directly (they generate getters automatically)
+                    List<Integer> widgetIdsList = stackInfo.getWidgetIds();
+                    long stackIdValue = stackInfo.getStackId();
+                    for (Integer widgetIdObj : widgetIdsList) {
+                        int widgetId = widgetIdObj;
+                        // Find widget by appWidgetId, not by item id
+                        ItemInfo item = null;
+                        for (ItemInfo info : mBgDataModel.itemsIdMap) {
+                            if (info instanceof LauncherAppWidgetInfo) {
+                                LauncherAppWidgetInfo wInfo = (LauncherAppWidgetInfo) info;
+                                if (wInfo.appWidgetId == widgetId) {
+                                    item = info;
+                                    break;
+                                }
+                            }
+                        }
+                        if (item instanceof LauncherAppWidgetInfo) {
+                            LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
+                            // Only update if different to avoid unnecessary changes
+                            if (widgetInfo.widgetStackId == null || 
+                                !widgetInfo.widgetStackId.equals(stackIdValue)) {
+                                widgetInfo.widgetStackId = stackIdValue;
+                            }
+                        }
+                    }
+                }
+                t.commit();
+            }
+        }).executeOnModelThread();
     }
 
     private void notifyDelete(Collection<? extends ItemInfo> items) {

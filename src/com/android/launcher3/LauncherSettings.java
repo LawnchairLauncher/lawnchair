@@ -353,6 +353,22 @@ public class LauncherSettings {
          */
         public static final String APPWIDGET_SOURCE = "appWidgetSource";
 
+        /**
+         * Stores the widget stack ID that this widget belongs to.
+         * <p>
+         * Type: INTEGER
+         * </p>
+         */
+        public static final String WIDGET_STACK_ID = "widgetStackId";
+
+        /**
+         * Stores widget stack data as JSON.
+         * <p>
+         * Type: TEXT
+         * </p>
+         */
+        public static final String WIDGET_STACK_DATA = "widgetStackData";
+
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
             addTableToDb(db, myProfileId, optional, TABLE_NAME);
         }
@@ -386,6 +402,8 @@ public class LauncherSettings {
             columnsToTypes.put(RANK, "INTEGER NOT NULL DEFAULT 0");
             columnsToTypes.put(OPTIONS, "INTEGER NOT NULL DEFAULT 0");
             columnsToTypes.put(APPWIDGET_SOURCE, "INTEGER NOT NULL DEFAULT -1");
+            columnsToTypes.put(WIDGET_STACK_ID, "INTEGER");
+            columnsToTypes.put(WIDGET_STACK_DATA, "TEXT");
             return columnsToTypes;
         }
 

@@ -51,6 +51,7 @@ import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.android.launcher3.widget.WidgetInflater
 import com.android.launcher3.widget.util.WidgetSizes
+import app.lawnchair.widget.WidgetStackManager
 
 /**
  * This items is used by LoaderTask to process items that have been loaded from the Launcher's DB.
@@ -443,6 +444,7 @@ class WorkspaceItemProcessor(
         appWidgetInfo.user = c.user
         appWidgetInfo.sourceContainer = c.appWidgetSource
         appWidgetInfo.restoreStatus = c.restoreFlag
+        appWidgetInfo.widgetStackId = c.getWidgetStackId()
         if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
             c.markDeleted(
                 "processWidget: Widget has invalid size: ${appWidgetInfo.spanX}x${appWidgetInfo.spanY}" +
@@ -453,7 +455,10 @@ class WorkspaceItemProcessor(
             )
             return
         }
-        if (!c.isOnWorkspaceOrHotseat) {
+
+        // Skip container validation for widgets in a stack - they will be handled by WidgetStackView
+        val isInStack = appWidgetInfo.widgetStackId != null
+        if (!isInStack && !c.isOnWorkspaceOrHotseat) {
             c.markDeleted(
                 "processWidget: invalid Widget container != CONTAINER_DESKTOP nor CONTAINER_HOTSEAT." +
                     " id=${c.id}," +
@@ -478,6 +483,39 @@ class WorkspaceItemProcessor(
         )
         when (inflationResult.type) {
             WidgetInflater.TYPE_DELETE -> {
+                // If widget is in a stack, remove it from the stack before deleting
+                // This prevents invalid widgets from remaining in stack references
+                // This fixes the issue where widgets become invalid on app restart
+                if (isInStack && appWidgetInfo.widgetStackId != null) {
+                    val stackId = appWidgetInfo.widgetStackId!!
+                    try {
+                        val db = app.model.modelDbController.db
+                        val stackInfo = WidgetStackManager.loadStack(db, stackId)
+                        if (stackInfo != null) {
+                            // Remove this widget from the stack
+                            val updatedWidgetIds = stackInfo.widgetIds.filter { it != appWidgetInfo.appWidgetId }
+
+                            if (updatedWidgetIds.isEmpty()) {
+                                // All widgets invalid - delete the entire stack
+                                WidgetStackManager.deleteStack(db, stackId)
+                                Log.w(TAG, "processWidget: All widgets invalid in stack $stackId, deleting stack")
+                            } else {
+                                // Update stack to remove invalid widget
+                                val updatedStackInfo = stackInfo.copy(
+                                    widgetIds = updatedWidgetIds,
+                                    currentIndex = stackInfo.currentIndex.coerceIn(0, (updatedWidgetIds.size - 1).coerceAtLeast(0))
+                                )
+                                WidgetStackManager.saveStack(db, updatedStackInfo)
+                                Log.w(TAG, "processWidget: Removed invalid widget ${appWidgetInfo.appWidgetId} from stack $stackId")
+                            }
+
+                            // Clear widgetStackId from widget before deleting
+                            appWidgetInfo.widgetStackId = null
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "processWidget: Error removing widget from stack", e)
+                    }
+                }
                 c.markDeleted(inflationResult.reason, inflationResult.restoreErrorType)
                 return
             }
@@ -493,6 +531,34 @@ class WorkspaceItemProcessor(
                         !(Flags.enableSupportForArchiving() &&
                             pmHelper.isAppArchived(component.packageName))
                 ) {
+                    // Restore never started - widget is invalid
+                    // If widget is in a stack, remove it from the stack before deleting
+                    if (isInStack && appWidgetInfo.widgetStackId != null) {
+                        val stackId = appWidgetInfo.widgetStackId!!
+                        try {
+                            val db = app.model.modelDbController.db
+                            val stackInfo = WidgetStackManager.loadStack(db, stackId)
+                            if (stackInfo != null) {
+                                val updatedWidgetIds = stackInfo.widgetIds.filter { it != appWidgetInfo.appWidgetId }
+
+                                if (updatedWidgetIds.isEmpty()) {
+                                    WidgetStackManager.deleteStack(db, stackId)
+                                    Log.w(TAG, "processWidget: All widgets invalid in stack $stackId, deleting stack")
+                                } else {
+                                    val updatedStackInfo = stackInfo.copy(
+                                        widgetIds = updatedWidgetIds,
+                                        currentIndex = stackInfo.currentIndex.coerceIn(0, (updatedWidgetIds.size - 1).coerceAtLeast(0))
+                                    )
+                                    WidgetStackManager.saveStack(db, updatedStackInfo)
+                                    Log.w(TAG, "processWidget: Removed invalid pending widget ${appWidgetInfo.appWidgetId} from stack $stackId")
+                                }
+
+                                appWidgetInfo.widgetStackId = null
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "processWidget: Error removing pending widget from stack", e)
+                        }
+                    }
                     // Restore never started
                     c.markDeleted(
                         "processWidget: Unrestored Pending widget removed:" +

@@ -23,6 +23,8 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import app.lawnchair.widget.WidgetStackManager
+import app.lawnchair.widget.WidgetStackView
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.R
@@ -113,6 +115,50 @@ class ItemInflater<T>(
     private fun inflateAppWidget(item: LauncherAppWidgetInfo, writer: ModelWriter): View? {
         TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId)
         try {
+            // Check if this widget is part of a stack
+            val widgetStackId = item.widgetStackId
+            if (widgetStackId != null) {
+                // Load the stack info from database
+                val db = writer.getModelDbController().db
+                val stackInfo = WidgetStackManager.loadStack(db, widgetStackId)
+
+                if (stackInfo != null) {
+                    // Validate stack info - ensure it's not empty or corrupted
+                    if (stackInfo.widgetIds.isEmpty()) {
+                        android.util.Log.w("ItemInflater", "Stack $widgetStackId has no widgets, clearing stack reference for widget ${item.appWidgetId}")
+                        item.widgetStackId = null
+                        writer.updateItemInDatabase(item)
+                        // Fall through to normal widget inflation
+                    } else {
+                        // Only create WidgetStackView for the FIRST widget in the stack
+                        // Check if this widget is the first one in the stack's widgetIds list
+                        // This works regardless of how stackId is set (timestamp or first widget ID)
+                        val isFirstWidget = stackInfo.widgetIds.firstOrNull() == item.appWidgetId
+                        if (isFirstWidget) {
+                            // Create a WidgetStackView
+                            val widgetStackView = WidgetStackView(context)
+                            widgetStackView.setStackInfo(stackInfo)
+                            widgetStackView.tag = item
+                            widgetStackView.isFocusable = true
+                            widgetStackView.onFocusChangeListener = focusListener
+                            android.util.Log.d("ItemInflater", "Created WidgetStackView for stack $widgetStackId with ${stackInfo.widgetIds.size} widgets")
+                            return widgetStackView
+                        } else {
+                            // Skip other widgets in the stack - they're already in the WidgetStackView
+                            android.util.Log.d("ItemInflater", "Skipping widget ${item.appWidgetId} - not first widget in stack $widgetStackId")
+                            return null
+                        }
+                    }
+                } else {
+                    // Stack info not found - might be corrupted or deleted, clear the stack reference
+                    android.util.Log.w("ItemInflater", "Stack $widgetStackId not found in database, clearing stack reference for widget ${item.appWidgetId}")
+                    item.widgetStackId = null
+                    writer.updateItemInDatabase(item)
+                    // Fall through to normal widget inflation
+                }
+            }
+
+            // Normal widget inflation (no stack or stack was invalid)
             val (type, reason, _, isUpdate, widgetInfo) = widgetInflater.inflateAppWidget(item)
             if (type == WidgetInflater.TYPE_DELETE) {
                 writer.deleteItemFromDatabase(item, reason)

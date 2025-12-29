@@ -39,12 +39,14 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PrivateSpaceInstallAppButtonInfo;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
+import app.lawnchair.widget.WidgetStackView;
 import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetImageView;
@@ -75,13 +77,71 @@ public class ItemLongClickListener {
         }
         if (!(v.getTag() instanceof ItemInfo)) return false;
 
+        // For widgets, try to show popup first if there are system shortcuts available
+        com.android.launcher3.popup.PopupContainerWithArrow<Launcher> widgetStackPopup = null;
+        if (v instanceof LauncherAppWidgetHostView) {
+            widgetStackPopup =
+                    com.android.launcher3.popup.PopupContainerWithArrow.showForWidget((LauncherAppWidgetHostView) v);
+        }
+        
+        // For widget stacks, show popup if available
+        // Use PreDragCondition to delay drag start until user moves their finger
+        // This keeps the popup open until drag actually begins
+        if (v instanceof WidgetStackView) {
+            ItemInfo item = (ItemInfo) v.getTag();
+            if (item instanceof LauncherAppWidgetInfo) {
+                widgetStackPopup = com.android.launcher3.popup.PopupContainerWithArrow.showForWidgetStack(
+                        launcher, (LauncherAppWidgetInfo) item, v);
+            }
+        }
+
+        // Create drag options with PreDragCondition to delay onDragStart until user moves
+        // This keeps the popup open until drag actually begins (user moves finger)
+        DragOptions dragOptions = new DragOptions();
+        if (widgetStackPopup != null) {
+            // Use PreDragCondition to delay drag start until user moves their finger
+            // This prevents onDragStart from being called immediately, keeping popup open
+            dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
+                @Override
+                public boolean shouldStartDrag(double distanceDragged) {
+                    // Start drag when user moves their finger (distance > 0)
+                    // This keeps popup open until user actually drags
+                    return distanceDragged > 0;
+                }
+
+                @Override
+                public void onPreDragStart(DropTarget.DragObject dragObject) {
+                    // Pre-drag started, popup stays open
+                }
+
+                @Override
+                public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+                    // Pre-drag ended, popup will close via onDragStart if dragStarted is true
+                }
+            };
+        }
+
+        // Start drag with PreDragCondition - popup stays open until user moves
         launcher.setWaitingForResult(null);
-        beginDrag(v, launcher, (ItemInfo) v.getTag(), new DragOptions());
+        beginDrag(v, launcher, (ItemInfo) v.getTag(), dragOptions);
         return true;
     }
 
     public static void beginDrag(View v, Launcher launcher, ItemInfo info,
             DragOptions dragOptions) {
+        // Ensure widget views stay visible before starting drag
+        // This prevents single widgets from disappearing when popup is shown
+        // Check both view type AND tag - for single widgets, the view might be a placeholder/dummy
+        // but the tag will always be LauncherAppWidgetInfo if it's a widget
+        Object tag = v.getTag();
+        boolean isWidget = (v instanceof com.android.launcher3.widget.LauncherAppWidgetHostView)
+                || (v instanceof app.lawnchair.widget.WidgetStackView)
+                || (tag instanceof com.android.launcher3.model.data.LauncherAppWidgetInfo);
+        
+        if (isWidget && v.getVisibility() != android.view.View.VISIBLE) {
+            v.setVisibility(android.view.View.VISIBLE);
+        }
+        
         if (info.container >= 0) {
             Folder folder = Folder.getOpen(launcher);
             if (folder != null) {

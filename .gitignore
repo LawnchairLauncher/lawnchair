@@ -20,3 +20,4 @@ __pycache__
 .vscode
 .fleet
 lawnWithQuickstep/release
+.cursor
