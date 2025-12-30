@@ -27,11 +27,14 @@ import android.widget.FrameLayout
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import app.lawnchair.smartspace.PageIndicator
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.util.MultiTranslateDelegate
 import com.android.launcher3.widget.LauncherAppWidgetHostView
 import com.android.launcher3.widget.LauncherWidgetHolder
+import com.android.launcher3.widget.NavigableAppWidgetHostView
 import com.android.launcher3.widget.PendingAppWidgetHostView
 import com.android.launcher3.widget.WidgetInflater
 import com.android.launcher3.widget.WidgetManagerHelper
@@ -392,6 +395,12 @@ class WidgetStackContentView @JvmOverloads constructor(
         } else {
             stopAutoRotate()
         }
+
+        // Apply scaling to all widgets after stack info is updated
+        // This ensures widgets scale correctly when stack is resized
+        handler.post {
+            applyWidgetScaling()
+        }
     }
 
     /**
@@ -573,6 +582,13 @@ class WidgetStackContentView @JvmOverloads constructor(
                                         pendingView.isClickable = false
                                         pendingView.isFocusable = false
 
+                                        // Apply scaling after view is created
+                                        if (pendingView is NavigableAppWidgetHostView) {
+                                            pendingView.post {
+                                                applyScalingToWidget(pendingView)
+                                            }
+                                        }
+
                                         // Update position after successful restore
                                         stackInfo?.let { info ->
                                             val needsPositionUpdate = widgetInfo.screenId != info.screenId ||
@@ -646,6 +662,14 @@ class WidgetStackContentView @JvmOverloads constructor(
                                         )
                                         hostView?.isClickable = false
                                         hostView?.isFocusable = false
+
+                                        // Apply scaling after view is created
+                                        if (hostView is NavigableAppWidgetHostView) {
+                                            hostView.post {
+                                                applyScalingToWidget(hostView)
+                                            }
+                                        }
+
                                         return hostView
                                     }
 
@@ -721,6 +745,15 @@ class WidgetStackContentView @JvmOverloads constructor(
                 )
                 pendingView.isClickable = false
                 pendingView.isFocusable = false
+
+                // Apply scaling after view is created
+                if (pendingView is NavigableAppWidgetHostView) {
+                    // Post to apply scaling after layout
+                    pendingView.post {
+                        applyScalingToWidget(pendingView)
+                    }
+                }
+
                 return pendingView as? LauncherAppWidgetHostView
             }
 
@@ -772,6 +805,14 @@ class WidgetStackContentView @JvmOverloads constructor(
                 // Allow the widget to be interactive
                 hostView?.isClickable = false
                 hostView?.isFocusable = false
+
+                // Apply scaling after view is created
+                if (hostView is NavigableAppWidgetHostView) {
+                    // Post to apply scaling after layout
+                    hostView.post {
+                        applyScalingToWidget(hostView)
+                    }
+                }
 
                 return hostView
             }
@@ -833,6 +874,57 @@ class WidgetStackContentView @JvmOverloads constructor(
         // Single refresh attempt - refreshPendingWidgets will handle retries if needed
         handler.post {
             refreshPendingWidgets()
+        }
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        // Apply scaling to all widget views after layout
+        applyWidgetScaling()
+    }
+
+    /**
+     * Applies scaling to all widget views to fit within the stack bounds.
+     * Similar to ShortcutAndWidgetContainer.layoutChild() logic.
+     */
+    private fun applyWidgetScaling() {
+        synchronized(widgetViews) {
+            widgetViews.forEach { widgetView ->
+                if (widgetView is NavigableAppWidgetHostView) {
+                    applyScalingToWidget(widgetView)
+                }
+            }
+        }
+    }
+
+    /**
+     * Applies scaling to a single widget view to fit within the stack bounds.
+     * Similar to ShortcutAndWidgetContainer.layoutChild() logic.
+     */
+    private fun applyScalingToWidget(widgetView: NavigableAppWidgetHostView) {
+        val launcherInstance = launcher ?: return
+        val profile = launcherInstance.deviceProfile
+        val widgetInfo = widgetView.tag as? com.android.launcher3.model.data.ItemInfo
+        if (widgetInfo != null) {
+            // Get the app widget scale from device profile
+            val appWidgetScale = profile.getAppWidgetScale(widgetInfo)
+            val scaleX = appWidgetScale.x
+            val scaleY = appWidgetScale.y
+
+            // Apply scale to fit (use minimum to maintain aspect ratio)
+            widgetView.setScaleToFit(Math.min(scaleX, scaleY))
+
+            // Apply translation for centering (similar to ShortcutAndWidgetContainer)
+            // Use measured dimensions if layout dimensions aren't available yet
+            val width = if (widgetView.width > 0) widgetView.width else widgetView.measuredWidth
+            val height = if (widgetView.height > 0) widgetView.height else widgetView.measuredHeight
+            if (width > 0 && height > 0) {
+                widgetView.getTranslateDelegate().setTranslation(
+                    MultiTranslateDelegate.INDEX_WIDGET_CENTERING,
+                    -(width - (width * scaleX)) / 2.0f,
+                    -(height - (height * scaleY)) / 2.0f,
+                )
+            }
         }
     }
 
@@ -918,6 +1010,14 @@ class WidgetStackContentView @JvmOverloads constructor(
                             } else {
                                 widgetViews.add(view)
                             }
+
+                            // Apply scaling to newly loaded widget
+                            if (view is NavigableAppWidgetHostView) {
+                                view.post {
+                                    applyScalingToWidget(view)
+                                }
+                            }
+
                             needsRefresh = true
                             android.util.Log.d("WidgetStackContentView", "Loaded missing widget $widgetId at position $positionInStack for stack ${currentStackInfo.stackId}")
                         } else {
@@ -1007,6 +1107,13 @@ class WidgetStackContentView @JvmOverloads constructor(
                             realView?.isFocusable = false
 
                             if (realView != null) {
+                                // Apply scaling after view is created
+                                if (realView is NavigableAppWidgetHostView) {
+                                    realView.post {
+                                        applyScalingToWidget(realView)
+                                    }
+                                }
+
                                 // Replace pending view with real widget view
                                 synchronized(widgetViews) {
                                     val actualIndex = widgetViews.indexOfFirst { it.appWidgetId == widgetInfo.appWidgetId }
@@ -1081,6 +1188,13 @@ class WidgetStackContentView @JvmOverloads constructor(
                                                     realView?.isFocusable = false
 
                                                     if (realView != null) {
+                                                        // Apply scaling after view is created
+                                                        if (realView is NavigableAppWidgetHostView) {
+                                                            realView.post {
+                                                                applyScalingToWidget(realView)
+                                                            }
+                                                        }
+
                                                         synchronized(widgetViews) {
                                                             val actualIndex = widgetViews.indexOfFirst { it.appWidgetId == widgetInfo.appWidgetId }
                                                             if (actualIndex != -1 && actualIndex < widgetViews.size) {
@@ -1368,6 +1482,11 @@ class WidgetStackContentView @JvmOverloads constructor(
             // Widgets must be attached to receive live updates from AppWidgetManager
             container.addView(view)
 
+            // Apply scaling to widget after it's added to container
+            if (view is NavigableAppWidgetHostView) {
+                applyScalingToWidget(view)
+            }
+
             // Ensure widget is properly set up for updates
             if (view is LauncherAppWidgetHostView) {
                 val widgetId = view.appWidgetId
@@ -1376,6 +1495,11 @@ class WidgetStackContentView @JvmOverloads constructor(
                     if (view.isAttachedToWindow) {
                         // Widget is now attached and will receive updates automatically
                         android.util.Log.d("WidgetStackContentView", "Widget $widgetId attached at position $position - will receive live updates")
+
+                        // Apply scaling again after layout (in case dimensions changed)
+                        if (view is NavigableAppWidgetHostView) {
+                            applyScalingToWidget(view)
+                        }
 
                         // Request an immediate update to ensure widget is fresh
                         try {

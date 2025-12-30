@@ -56,7 +56,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -2816,12 +2815,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     lp.isLockedToGrid = true;
 
                     if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                            cell instanceof LauncherAppWidgetHostView) {
+                            (cell instanceof LauncherAppWidgetHostView || cell instanceof WidgetStackView)) {
 
                         // We post this call so that the widget has a chance to be placed
                         // in its final location
                         onCompleteRunnable = getWidgetResizeFrameRunnable(options,
-                                (LauncherAppWidgetHostView) cell, dropTargetLayout, forceWidgetResize);
+                                cell, dropTargetLayout, forceWidgetResize);
                     }
                     
                     // If this is a widget stack, update the stack info position
@@ -2906,7 +2905,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
                     if (pageIsVisible) {
                         onCompleteRunnable = getWidgetResizeFrameRunnable(options,
-                                (LauncherAppWidgetHostView) cell, cellLayout, forceWidgetResize);
+                                cell, cellLayout, forceWidgetResize);
                     }
                 }
             }
@@ -2971,15 +2970,28 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     @Nullable
     private Runnable getWidgetResizeFrameRunnable(DragOptions options,
-            LauncherAppWidgetHostView hostView, CellLayout cellLayout, boolean force) {
-        AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
-        boolean shouldResize = (pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) || force;
-        if (pInfo != null && shouldResize && !options.isAccessibleDrag) {
-            return () -> {
-                if (!isPageInTransition()) {
-                    AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
-                }
-            };
+            View widgetView, CellLayout cellLayout, boolean force) {
+        if (widgetView instanceof LauncherAppWidgetHostView) {
+            LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) widgetView;
+            AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
+            boolean shouldResize = (pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) || force;
+            if (pInfo != null && shouldResize && !options.isAccessibleDrag) {
+                return () -> {
+                    if (!isPageInTransition()) {
+                        AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
+                    }
+                };
+            }
+        } else if (widgetView instanceof WidgetStackView) {
+            WidgetStackView stackView = (WidgetStackView) widgetView;
+            // Widget stacks are always resizable
+            if (!options.isAccessibleDrag) {
+                return () -> {
+                    if (!isPageInTransition()) {
+                        AppWidgetResizeFrame.showForWidgetStack(stackView, cellLayout);
+                    }
+                };
+            }
         }
         return null;
     }
