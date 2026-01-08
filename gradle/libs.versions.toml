@@ -117,7 +117,7 @@ rikka-annotation-processor = { module = "dev.rikka.tools.refine:annotation-proce
 rikka-refine-runtime = { group = "dev.rikka.tools.refine", name = "runtime", version.ref = "refine" }
 smartspacer-sdk = "com.kieronquinn.smartspacer:sdk-client:1.1.2"
 xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
-errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.45.0"
+errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.46.0"
 composeRules = "io.nlopez.compose.rules:ktlint:0.5.3"
 
 [bundles]
