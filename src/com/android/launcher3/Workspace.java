@@ -18,6 +18,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
 import static com.android.launcher3.AbstractFloatingView.TYPE_WIDGET_RESIZE_FRAME;
 import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
@@ -1427,7 +1428,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     protected void onPageBeginTransition() {
         // Widget resize frame doesn't receive events to close when talkback is enabled. For that
         // case, close it here.
-        AbstractFloatingView.closeOpenViews(mLauncher, false, TYPE_WIDGET_RESIZE_FRAME);
+        // Open folders are already animated closed on first touch outside. If page is swiped after,
+        // then make sure folder is closed immediately.
+        AbstractFloatingView.closeOpenViews(mLauncher, false, TYPE_WIDGET_RESIZE_FRAME
+            | TYPE_FOLDER);
 
         super.onPageBeginTransition();
         updateChildrenLayersEnabled();
