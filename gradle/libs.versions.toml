@@ -27,7 +27,7 @@ google-ksp = "com.google.devtools.ksp:2.3.4"
 google-protobuf = "com.google.protobuf:0.9.6"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.1.0"
+diffplug-spotless = "com.diffplug.spotless:8.2.0"
 
 [libraries]
 # AndroidX
