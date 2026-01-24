@@ -126,7 +126,7 @@ airbnb-lottie = "com.airbnb.android:lottie:6.7.1"
 
 # Lawnchair-TODO: Migrate it to the latest version once jitpack publishing is fixed
 # LC-Note: This specific commit is needed because of 16kb compatibility
-chickenhook-restrictionbypass = "com.github.ChickenHook:RestrictionBypass:c59bd6a680"
+chickenhook-restrictionbypass = "com.github.ChickenHook:RestrictionBypass:2.0"
 coil-compose = "io.coil-kt:coil-compose:2.7.0"
 google-material = "com.google.android.material:material:1.13.0"
 hoko-blur = "io.github.hokofly:hoko-blur:1.5.5"
