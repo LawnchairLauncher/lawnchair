@@ -33,7 +33,9 @@ import static org.mockito.Mockito.when;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Insets;
+import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.DisplayCutout;
 import android.view.DisplayInfo;
 
@@ -58,6 +60,7 @@ import org.mockito.quality.Strictness;
 @SmallTest
 public class DisplayLayoutTest extends ShellTestCase {
     private MockitoSession mMockitoSession;
+    private static final float DELTA = 0.1f; // Constant for assertion delta
 
     @Before
     public void setup() {
@@ -128,6 +131,39 @@ public class DisplayLayoutTest extends ShellTestCase {
         dl.rotateTo(res, ROTATION_270);
         assertEquals(new Rect(40, 30, 60, 0), dl.stableInsets());
         assertEquals(new Rect(40, 0, 60, 0), dl.nonDecorInsets());
+    }
+
+    @Test
+    public void testDpPxConversion() {
+        int px = 100;
+        float dp = 53.33f;
+        int xPx = 100;
+        int yPx = 200;
+        float xDp = 164.33f;
+        float yDp = 328.66f;
+
+        Resources res = createResources(40, 50, false);
+        DisplayInfo info = createDisplayInfo(1000, 1500, 0, ROTATION_0);
+        DisplayLayout dl = new DisplayLayout(info, res, false, false);
+        dl.setGlobalBoundsDp(new RectF(111f, 222f, 300f, 400f));
+
+        // Test pxToDp
+        float resultDp = dl.pxToDp(px);
+        assertEquals(dp, resultDp, DELTA);
+
+        // Test dpToPx
+        float resultPx = dl.dpToPx(dp);
+        assertEquals(px, resultPx, DELTA);
+
+        // Test localPxToGlobalDp
+        PointF resultGlobalDp = dl.localPxToGlobalDp(xPx, yPx);
+        assertEquals(xDp, resultGlobalDp.x, DELTA);
+        assertEquals(yDp, resultGlobalDp.y, DELTA);
+
+        // Test globalDpToLocalPx
+        PointF resultLocalPx = dl.globalDpToLocalPx(xDp, yDp);
+        assertEquals(xPx, resultLocalPx.x, DELTA);
+        assertEquals(yPx, resultLocalPx.y, DELTA);
     }
 
     private Resources createResources(int navLand, int navPort, boolean navMoves) {

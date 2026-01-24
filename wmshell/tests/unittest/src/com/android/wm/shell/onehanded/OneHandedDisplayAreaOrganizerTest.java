@@ -37,6 +37,7 @@ import static org.mockito.Mockito.when;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Binder;
+import android.os.Handler;
 import android.testing.AndroidTestingRunner;
 import android.testing.TestableLooper;
 import android.view.Display;
@@ -100,6 +101,8 @@ public class OneHandedDisplayAreaOrganizerTest extends OneHandedTestCase {
     OneHandedSettingsUtil mMockSettingsUitl;
     @Mock
     InteractionJankMonitor mJankMonitor;
+    @Mock
+    Handler mMockHandler;
 
     List<DisplayAreaAppearedInfo> mDisplayAreaAppearedInfoList = new ArrayList<>();
 
@@ -142,7 +145,8 @@ public class OneHandedDisplayAreaOrganizerTest extends OneHandedTestCase {
                 mMockAnimationController,
                 mTutorialHandler,
                 mJankMonitor,
-                mMockShellMainExecutor));
+                mMockShellMainExecutor,
+                mMockHandler));
 
         for (int i = 0; i < DISPLAYAREA_INFO_COUNT; i++) {
             mDisplayAreaAppearedInfoList.add(getDummyDisplayAreaInfo());
@@ -429,7 +433,8 @@ public class OneHandedDisplayAreaOrganizerTest extends OneHandedTestCase {
                         mMockAnimationController,
                         mTutorialHandler,
                         mJankMonitor,
-                        mMockShellMainExecutor));
+                        mMockShellMainExecutor,
+                        mMockHandler));
 
         assertThat(testSpiedDisplayAreaOrganizer.isReady()).isFalse();
     }

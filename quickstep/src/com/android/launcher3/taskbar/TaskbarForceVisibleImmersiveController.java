@@ -85,6 +85,9 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
 
     /** Update values tracked via sysui flags. */
     public void updateSysuiFlags(@SystemUiStateFlags long sysuiFlags) {
+        if (mContext.isPhoneMode()) {
+            return;
+        }
         mIsImmersiveMode = (sysuiFlags & SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY) == 0;
         if (mContext.isNavBarForceVisible()) {
             if (mIsImmersiveMode) {
@@ -105,8 +108,10 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
     /** Clean up animations. */
     public void onDestroy() {
         startIconUndimming();
-        mControllers.navbarButtonsViewController.setHomeButtonAccessibilityDelegate(null);
-        mControllers.navbarButtonsViewController.setBackButtonAccessibilityDelegate(null);
+        if (mControllers != null) {
+            mControllers.navbarButtonsViewController.setHomeButtonAccessibilityDelegate(null);
+            mControllers.navbarButtonsViewController.setBackButtonAccessibilityDelegate(null);
+        }
     }
 
     private void startIconUndimming() {

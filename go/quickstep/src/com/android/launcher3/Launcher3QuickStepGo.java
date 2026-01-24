@@ -28,8 +28,8 @@ public class Launcher3QuickStepGo extends QuickstepLauncher {
     private static final String TAG = "Launcher3QuickStepGo";
 
     @Override
-    public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        Stream<SystemShortcut.Factory> shortcuts = super.getSupportedShortcuts();
+    public Stream<SystemShortcut.Factory> getSupportedShortcuts(int container) {
+        Stream<SystemShortcut.Factory> shortcuts = super.getSupportedShortcuts(container);
 
         if (AppSharing.ENABLE_APP_SHARING) {
             shortcuts = Stream.concat(shortcuts, Stream.of(AppSharing.SHORTCUT_FACTORY));

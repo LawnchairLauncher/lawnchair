@@ -57,14 +57,7 @@ filegroup {
     name: "launcher-oop-tests-src",
     srcs: [
         ":launcher-testing-helpers",
-        "src/com/android/launcher3/allapps/TaplOpenCloseAllAppsTest.java",
-        "src/com/android/launcher3/allapps/TaplAllAppsIconsWorkingTest.java",
-        "src/com/android/launcher3/appiconmenu/TaplAppIconMenuTest.java",
-        "src/com/android/launcher3/dragging/TaplDragTest.java",
-        "src/com/android/launcher3/dragging/TaplUninstallRemoveTest.java",
-        "src/com/android/launcher3/ui/TaplTestsLauncher3Test.java",
-        "src/com/android/launcher3/ui/widget/TaplWidgetPickerTest.java",
-        "src/com/android/launcher3/ui/workspace/TaplWorkspaceTest.java",
+        ":launcher-oop-tests-only",
     ],
 }
 
@@ -94,7 +87,11 @@ android_library {
         "testables",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
+        "com_android_systemui_shared_flags_lib",
         "android.appwidget.flags-aconfig-java",
+        "platform-parametric-runner-lib",
+        "kotlin-reflect",
+        "kotlin-test",
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,
@@ -108,10 +105,16 @@ android_library {
     asset_dirs: ["assets"],
     // TODO(b/319712088): re-enable use_resource_processor
     use_resource_processor: false,
+    static_libs: [
+        "kotlin-reflect",
+    ],
 }
 
 android_test {
     name: "Launcher3Tests",
+    defaults: [
+        "launcher_compose_tests_defaults",
+    ],
     srcs: [
         ":launcher-tests-src",
         ":launcher-non-quickstep-tests-src",
@@ -119,11 +122,12 @@ android_test {
     static_libs: [
         "Launcher3TestLib",
         "com_android_launcher3_flags_lib",
+        "com_android_systemui_shared_flags_lib",
     ],
     libs: [
-        "android.test.base",
-        "android.test.runner",
-        "android.test.mock",
+        "android.test.base.stubs.system",
+        "android.test.runner.stubs.system",
+        "android.test.mock.stubs.system",
     ],
     // Libraries used by mockito inline extended
     jni_libs: [
@@ -137,30 +141,19 @@ android_test {
     platform_apis: true,
     test_config: "Launcher3Tests.xml",
     data: [":Launcher3"],
+    plugins: ["dagger2-compiler"],
     test_suites: ["general-tests"],
 }
 
-// Shared between tests and launcher
-android_library {
-    name: "launcher-testing-shared",
-    srcs: [
-        "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.java",
-        "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.kt",
-    ],
-    resource_dirs: [],
-    manifest: "multivalentTests/shared/AndroidManifest.xml",
-    sdk_version: "current",
-    min_sdk_version: min_launcher3_sdk_version,
-}
-
 filegroup {
-    name: "launcher-testing-helpers",
+    name: "launcher-testing-helpers-robo",
     srcs: [
         "src/**/*.java",
         "src/**/*.kt",
         "multivalentTests/src/**/*.java",
         "multivalentTests/src/**/*.kt",
-        "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
+        "src/com/android/launcher3/util/ui/AbstractLauncherUiTest.java",
+        "src/com/android/launcher3/util/ui/BaseLauncherTaplTest.java",
         "tapl/com/android/launcher3/tapl/*.java",
         "tapl/com/android/launcher3/tapl/*.kt",
     ],
@@ -168,8 +161,19 @@ filegroup {
         // Test classes
         "src/**/*Test.java",
         "src/**/*Test.kt",
+        "src/**/RoboApiWrapper.kt",
+        "src/**/EventsRule.kt",
+        "src/**/LauncherCustomizer.kt",
         "multivalentTests/src/**/*Test.java",
         "multivalentTests/src/**/*Test.kt",
+    ],
+}
+
+filegroup {
+    name: "launcher-testing-helpers",
+    srcs: [
+        ":launcher-testing-helpers-robo",
+        "src/**/RoboApiWrapper.kt",
     ],
 }
 
@@ -178,10 +182,7 @@ android_robolectric_test {
     name: "Launcher3RoboTests",
     srcs: [
         ":launcher3-robo-src",
-
-        // Test util classes
-        ":launcher-testing-helpers",
-        ":launcher-testing-shared",
+        ":launcher-testing-helpers-robo",
     ],
     exclude_srcs: [
         //"src/com/android/launcher3/util/CellContentDimensionsTest.kt", // Failing - b/316553889
@@ -195,6 +196,7 @@ android_robolectric_test {
         "flag-junit",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
+        "com_android_systemui_shared_flags_lib",
         "androidx.test.uiautomator_uiautomator",
         "androidx.core_core-animation-testing",
         "androidx.test.ext.junit",
@@ -214,12 +216,12 @@ android_robolectric_test {
         "android.appwidget.flags-aconfig-java",
     ],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "android.test.mock",
+        "android.test.runner.stubs.system",
+        "android.test.base.stubs.system",
+        "android.test.mock.stubs.system",
         "truth",
     ],
     instrumentation_for: "Launcher3",
-    upstream: true,
+    plugins: ["dagger2-compiler"],
     strict_mode: false,
 }

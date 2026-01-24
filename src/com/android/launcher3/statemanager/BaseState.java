@@ -15,15 +15,13 @@
  */
 package com.android.launcher3.statemanager;
 
-import android.content.Context;
-
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.views.ActivityContext;
 
 /**
  * Interface representing a state of a StatefulContainer
  */
-public interface BaseState<T extends BaseState> {
+public interface BaseState<T> {
 
     // Flag to indicate that Launcher is non-interactive in this state
     int FLAG_NON_INTERACTIVE = 1 << 0;
@@ -37,8 +35,7 @@ public interface BaseState<T extends BaseState> {
     /**
      * @return How long the animation to this state should take (or from this state to NORMAL).
      */
-    <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
-    int getTransitionDuration(DEVICE_PROFILE_CONTEXT context, boolean isToState);
+    int getTransitionDuration(ActivityContext context, boolean isToState);
 
     /**
      * Returns the state to go back to from this state
@@ -68,6 +65,20 @@ public interface BaseState<T extends BaseState> {
      * For this state, whether tasks should show the thumbnail splash.
      */
     default boolean showTaskThumbnailSplash() {
+        return false;
+    }
+
+    /**
+     * For this state, whether we should show desktop exploded view in Overview.
+     */
+    default boolean showExplodedDesktopView() {
+        return false;
+    }
+
+    /**
+     * For this state, whether fullscreen and desktop quickswitch carousel are detached.
+     */
+    default boolean detachDesktopCarousel() {
         return false;
     }
 

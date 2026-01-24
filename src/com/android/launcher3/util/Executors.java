@@ -16,8 +16,8 @@
 package com.android.launcher3.util;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+import static android.os.Process.THREAD_PRIORITY_FOREGROUND;
 
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
 
@@ -51,22 +51,27 @@ public class Executors {
     /**
      * An {@link LooperExecutor} to be used with async task where order is important.
      */
-    public static final LooperExecutor ORDERED_BG_EXECUTOR = new LooperExecutor(
-            createAndStartNewLooper("BackgroundExecutor", THREAD_PRIORITY_BACKGROUND));
+    public static final LooperExecutor ORDERED_BG_EXECUTOR =
+            new LooperExecutor("BackgroundExecutor", THREAD_PRIORITY_BACKGROUND);
 
     /**
      * Returns the executor for running tasks on the main thread.
      */
     public static final LooperExecutor MAIN_EXECUTOR =
-            new LooperExecutor(Looper.getMainLooper());
+            new LooperExecutor(Looper.getMainLooper(), THREAD_PRIORITY_FOREGROUND);
 
     /**
      * A background executor for using time sensitive actions where user is waiting for response.
      */
     public static final LooperExecutor UI_HELPER_EXECUTOR =
-            new LooperExecutor(
-                    createAndStartNewLooper("UiThreadHelper", Process.THREAD_PRIORITY_FOREGROUND));
+            new LooperExecutor("UiThreadHelper", Process.THREAD_PRIORITY_FOREGROUND);
 
+    /**
+     * A background executor for running tasks that are not time sensitive, typically for data
+     * transformations.
+     */
+    public static final LooperExecutor DATA_HELPER_EXECUTOR =
+            new LooperExecutor("DataThreadHelper", Process.THREAD_PRIORITY_DEFAULT);
 
     /** A background executor to preinflate views. */
     public static final ExecutorService VIEW_PREINFLATION_EXECUTOR =
@@ -75,26 +80,9 @@ public class Executors {
                             "preinflate-allapps-icons", THREAD_PRIORITY_BACKGROUND));
 
     /**
-     * Utility method to get a started handler thread statically
-     */
-    public static Looper createAndStartNewLooper(String name) {
-        return createAndStartNewLooper(name, Process.THREAD_PRIORITY_DEFAULT);
-    }
-
-    /**
-     * Utility method to get a started handler thread statically with the provided priority
-     */
-    public static Looper createAndStartNewLooper(String name, int priority) {
-        HandlerThread thread = new HandlerThread(name, priority);
-        thread.start();
-        return thread.getLooper();
-    }
-
-    /**
      * Executor used for running Launcher model related tasks (eg loading icons or updated db)
      */
-    public static final LooperExecutor MODEL_EXECUTOR =
-            new LooperExecutor(createAndStartNewLooper("launcher-loader"));
+    public static final LooperExecutor MODEL_EXECUTOR = new LooperExecutor("launcher-loader");
 
     /**
      * Returns and caches a single thread executor for a given package.
@@ -102,9 +90,7 @@ public class Executors {
      * @param packageName Package associated with the executor.
      */
     public static LooperExecutor getPackageExecutor(String packageName) {
-        return PACKAGE_EXECUTORS.computeIfAbsent(
-                packageName, p -> new LooperExecutor(
-                        createAndStartNewLooper(p, Process.THREAD_PRIORITY_DEFAULT)));
+        return PACKAGE_EXECUTORS.computeIfAbsent(packageName, LooperExecutor::new);
     }
 
     /**

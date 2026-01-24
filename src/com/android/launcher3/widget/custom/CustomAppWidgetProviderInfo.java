@@ -18,9 +18,10 @@ package com.android.launcher3.widget.custom;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
@@ -52,6 +53,9 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
         }
     }
 
+    @VisibleForTesting
+    CustomAppWidgetProviderInfo() {}
+
     @Override
     public void initSpans(Context context, InvariantDeviceProfile idp) {
         mIsMinSizeFulfilled = Math.min(spanX, minSpanX) <= idp.numColumns
@@ -59,7 +63,7 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     }
 
     @Override
-    public String getLabel(PackageManager packageManager) {
+    public CharSequence getLabel() {
         return Utilities.trim(label);
     }
 

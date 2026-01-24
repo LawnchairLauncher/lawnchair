@@ -1,0 +1,6 @@
+filegroup {
+    name: "launcher-device-customizer-util",
+    srcs: [
+        "LauncherCustomizer.kt",
+    ],
+}

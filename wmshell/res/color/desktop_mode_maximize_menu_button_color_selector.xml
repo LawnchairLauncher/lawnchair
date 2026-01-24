@@ -22,5 +22,5 @@
         android:color="?androidprv:attr/colorAccentPrimary"/>
     <item android:state_selected="true"
         android:color="?androidprv:attr/colorAccentPrimary"/>
-    <item android:color="?androidprv:attr/materialColorOutlineVariant"/>
+    <item android:color="@androidprv:color/materialColorOutlineVariant"/>
 </selector>

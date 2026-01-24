@@ -36,6 +36,7 @@
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Cette appli ne peut être ouverte que dans 1 fenêtre"</string>
     <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Il est possible que l\'application ne fonctionne pas sur un écran secondaire."</string>
     <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"L\'application ne peut pas être lancée sur des écrans secondaires."</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"L\'appli n\'est pas compatible avec les bulles"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Séparateur d\'écran partagé"</string>
     <string name="divider_title" msgid="1963391955593749442">"Séparateur d\'écran partagé"</string>
     <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Écran de gauche en plein écran"</string>
@@ -43,6 +44,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Écran de gauche à 50 %"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Écran de gauche à 30 %"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Écran de droite en plein écran"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Inverser les applis du haut et du bas"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Inverser les applis de gauche et de droite"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Écran du haut en plein écran"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Écran du haut à 70 %"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Écran du haut à 50 %"</string>
@@ -53,7 +56,7 @@
     <string name="accessibility_split_top" msgid="2789329702027147146">"Affichée en haut"</string>
     <string name="accessibility_split_bottom" msgid="8694551025220868191">"Affichée en haut"</string>
     <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Utilisation du mode une main"</string>
-    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Pour quitter, balayez l\'écran de bas en haut ou appuyez n\'importe où au-dessus de l\'application"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Pour quitter, balayez vers le haut depuis le bas de l\'écran ou appuyez n\'importe où au-dessus de l\'application"</string>
     <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Démarrer le mode une main"</string>
     <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Quitter le mode une main"</string>
     <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Paramètres des bulles de <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -65,10 +68,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Déplacer en haut à droite"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Déplacer en bas à gauche"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Déplacer en bas à droite"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"développer le menu"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"réduire le menu"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"Déplacer vers la gauche"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"Déplacer vers la droite"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"Développer <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"Réduire <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"Paramètres <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"Fermer la bulle"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"Passer en plein écran"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Ne pas afficher la conversation dans une bulle"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"Chatter en utilisant des bulles"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"Les nouvelles conversations s\'affichent sous forme d\'icônes flottantes ou de bulles. Appuyez sur la bulle pour l\'ouvrir. Faites-la glisser pour la déplacer."</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Problèmes d\'appareil photo ?\nAppuyez pour réajuster"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Problème non résolu ?\nAppuyez pour rétablir"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Aucun problème d\'appareil photo ? Appuyez pour ignorer."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"Le menu de l\'application se trouve ici"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"Utiliser le fenêtrage de bureau pour ouvrir plusieurs applications simultanément"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"Revenir en plein écran à tout moment depuis le menu de l\'application"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Voir et interagir plus"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Faites glisser une autre appli pour utiliser l\'écran partagé"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Appuyez deux fois en dehors d\'une appli pour la repositionner"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"Redémarrer"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Ne plus afficher"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Appuyez deux fois\npour déplacer cette appli"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"Agrandir"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"Réduire"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"Fermer"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"Agrandir <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"Restaurer <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"Réduire <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"Fermer <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="back_button_text" msgid="1469718707134137085">"Retour"</string>
-    <string name="handle_text" msgid="1766582106752184456">"Poignée"</string>
+    <string name="handle_text" msgid="4419667835599523257">"Poignée de l\'appli"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"Icône d\'application"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"Plein écran"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"Mode ordinateur"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"Fenêtrage de bureau"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"Écran partagé"</string>
     <string name="more_button_text" msgid="3655388105592893530">"Plus"</string>
     <string name="float_button_text" msgid="9221657008391364581">"Flottante"</string>
     <string name="select_text" msgid="5139083974039906583">"Sélectionner"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"Capture d\'écran"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"Ouvrir dans un navigateur"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"Ouvrir dans l\'appli"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"Nouvelle fenêtre"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"Gérer les fenêtres"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Modifier le format"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"Optimiser l\'affichage"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"Icône Erreur"</string>
     <string name="close_text" msgid="4986518933445178928">"Fermer"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"Fermer le menu"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"Ouvrir le menu"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (fenêtrage de bureau)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Mettre en plein écran"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Fractionner l\'écran"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"Redimensionner"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"Impossible de déplacer l\'appli ici"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"Ouverture d\'une nouvelle fenêtre de l\'application"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"Fermeture de la fenêtre de l\'application"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"Réduction de la fenêtre de l\'application"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (sélectionné)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (non sélectionné)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"Immersif"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"Restaurer"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"Agrandir"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"Restaurer"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"Ancrer à gauche"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"Ancrer à droite"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"Redimensionner la fenêtre de l\'appli vers la gauche"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"Redimensionner la fenêtre de l\'appli vers la droite"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"Agrandir ou restaurer la taille de la fenêtre"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"Ouvrir le menu"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"Saisir l’<xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"Redimensionner la fenêtre vers la gauche"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"Redimensionner la fenêtre vers la droite"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"Agrandir ou restaurer la taille de la fenêtre"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"Agrandir la taille de la fenêtre de l\'application"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"Restaurer la taille de la fenêtre"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"Réduire la fenêtre de l\'application"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"Fermer la fenêtre de l\'application"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"Ouvrir les paramètres par défaut"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Choisir comment ouvrir les liens Web pour cette appli"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"Dans l\'application"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"Dans votre navigateur"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"OK"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"Ouvrez rapidement des applications dans votre navigateur ici"</string>
 </resources>

@@ -28,6 +28,8 @@ develocity {
     }
 }
 
+rootProject.name = "lawnchair"
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -55,6 +57,21 @@ project(':searchuilib').projectDir = new File(rootDir, 'platform_frameworks_libs
 include ':animationlib'
 project(':animationlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/animationlib')
 
+include ':msdllib'
+project(':msdllib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/msdllib')
+
+include ':contextualeducationlib'
+project(':contextualeducationlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/contextualeducationlib')
+
+include ':viewcapturelib'
+project(':viewcapturelib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/viewcapturelib')
+
+include ':displaylib'
+project(':displaylib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/displaylib')
+
+include ':mechanics'
+project(':mechanics').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/mechanics')
+
 include ':hidden-api'
 
 include ':shared'
@@ -72,14 +89,14 @@ project(':common').projectDir = new File(rootDir, 'systemUI/common')
 include ':log'
 project(':log').projectDir = new File(rootDir, 'systemUI/log')
 
-include ':anim'
-project(':anim').projectDir = new File(rootDir, 'systemUI/anim')
+include ':animation'
+project(':animation').projectDir = new File(rootDir, 'systemUI/animation')
 
 include ':unfold'
 project(':unfold').projectDir = new File(rootDir, 'systemUI/unfold')
 
-include ':viewcapture'
-project(':viewcapture').projectDir = new File(rootDir, 'systemUI/viewcapture')
+include ':utils'
+project(':utils').projectDir = new File(rootDir, 'systemUI/utils')
 
 
 include ':compatLib'
@@ -89,9 +106,15 @@ include ':compatLib:compatLibVS'
 include ':compatLib:compatLibVT'
 include ':compatLib:compatLibVU'
 include ':compatLib:compatLibVV'
+include ':compatLib:compatLibVBaklava'
 
 include ':baseline-profile'
 
 include ':androidx-lib'
 include ':flags'
 include ':wmshell'
+include ':dagger'
+include ':concurrent'
+//include ':compose'
+include ':modules:widgetpicker'
+

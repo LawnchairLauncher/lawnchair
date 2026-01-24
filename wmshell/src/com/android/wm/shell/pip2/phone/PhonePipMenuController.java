@@ -18,10 +18,12 @@ package com.android.wm.shell.pip2.phone;
 
 import static android.view.WindowManager.SHELL_ROOT_LAYER_PIP;
 
+import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.RemoteAction;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -32,15 +34,20 @@ import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.WindowManagerGlobal;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
+import com.android.wm.shell.common.DisplayController;
+import com.android.wm.shell.common.DisplayInsetsController;
+import com.android.wm.shell.common.ImeListener;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.common.SystemWindows;
 import com.android.wm.shell.common.pip.PipBoundsState;
+import com.android.wm.shell.common.pip.PipDisplayLayoutState;
 import com.android.wm.shell.common.pip.PipMediaController;
 import com.android.wm.shell.common.pip.PipMediaController.ActionListener;
 import com.android.wm.shell.common.pip.PipMenuController;
 import com.android.wm.shell.common.pip.PipUiEventLogger;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
+import com.android.wm.shell.shared.pip.PipFlags;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -52,7 +59,8 @@ import java.util.List;
  * The current media session provides actions whenever there are no valid actions provided by the
  * current PiP activity. Otherwise, those actions always take precedence.
  */
-public class PhonePipMenuController implements PipMenuController {
+public class PhonePipMenuController implements PipMenuController,
+        PipTransitionState.PipTransitionStateChangedListener {
 
     private static final String TAG = "PhonePipMenuController";
     private static final boolean DEBUG = false;
@@ -113,7 +121,17 @@ public class PhonePipMenuController implements PipMenuController {
 
     private PipMenuView mPipMenuView;
 
+    private final PipTaskListener mPipTaskListener;
+
+    @NonNull
+    private final PipTransitionState mPipTransitionState;
+
+    @NonNull
+    private final PipDisplayLayoutState mPipDisplayLayoutState;
+
     private SurfaceControl mLeash;
+
+    private boolean mIsImeVisible;
 
     private ActionListener mMediaActionListener = new ActionListener() {
         @Override
@@ -125,15 +143,43 @@ public class PhonePipMenuController implements PipMenuController {
 
     public PhonePipMenuController(Context context, PipBoundsState pipBoundsState,
             PipMediaController mediaController, SystemWindows systemWindows,
-            PipUiEventLogger pipUiEventLogger,
-            ShellExecutor mainExecutor, Handler mainHandler) {
+            PipUiEventLogger pipUiEventLogger, PipTaskListener pipTaskListener,
+            @NonNull PipTransitionState pipTransitionState,
+            @NonNull DisplayController displayController,
+            @NonNull DisplayInsetsController displayInsetsController,
+            @NonNull PipDisplayLayoutState pipDisplayLayoutState, ShellExecutor mainExecutor,
+            Handler mainHandler) {
         mContext = context;
         mPipBoundsState = pipBoundsState;
         mMediaController = mediaController;
         mSystemWindows = systemWindows;
+        mPipTaskListener = pipTaskListener;
+        mPipTransitionState = pipTransitionState;
+        mPipDisplayLayoutState = pipDisplayLayoutState;
         mMainExecutor = mainExecutor;
         mMainHandler = mainHandler;
         mPipUiEventLogger = pipUiEventLogger;
+
+        mPipTransitionState.addPipTransitionStateChangedListener(this);
+        // Clear actions after exit PiP. Otherwise, next PiP could accidentally inherit the
+        // actions provided by the previous app in PiP mode.
+        mPipBoundsState.addOnPipComponentChangedListener(((oldPipComponent, newPipComponent) -> {
+            if (mAppActions != null) mAppActions.clear();
+            mCloseAction = null;
+        }));
+        mPipTaskListener.addParamsChangedListener(new PipTaskListener.PipParamsChangedCallback() {
+            @Override
+            public void onActionsChanged(List<RemoteAction> actions, RemoteAction closeAction) {
+                setAppActions(actions, closeAction);
+            }
+        });
+        displayInsetsController.addInsetsChangedListener(mPipDisplayLayoutState.getDisplayId(),
+                new ImeListener(displayController, mPipDisplayLayoutState.getDisplayId()) {
+                    @Override
+                    protected void onImeVisibilityChanged(boolean imeVisible, int imeHeight) {
+                        mIsImeVisible = imeVisible;
+                    }
+                });
     }
 
     public boolean isMenuVisible() {
@@ -164,7 +210,8 @@ public class PhonePipMenuController implements PipMenuController {
         if (mPipMenuView != null) {
             detachPipMenuView();
         }
-        mPipMenuView = new PipMenuView(mContext, this, mMainExecutor, mMainHandler,
+        final Context uiContext = mPipDisplayLayoutState.getCurrentUiContext();
+        mPipMenuView = new PipMenuView(uiContext, this, mMainExecutor, mMainHandler,
                 mPipUiEventLogger);
         mPipMenuView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -197,8 +244,8 @@ public class PhonePipMenuController implements PipMenuController {
         });
 
         mSystemWindows.addView(mPipMenuView,
-                getPipMenuLayoutParams(mContext, MENU_WINDOW_TITLE, 0 /* width */, 0 /* height */),
-                0, SHELL_ROOT_LAYER_PIP);
+                getPipMenuLayoutParams(uiContext, MENU_WINDOW_TITLE, 0 /* width */, 0 /* height */),
+                mPipDisplayLayoutState.getDisplayId(), SHELL_ROOT_LAYER_PIP);
         setShellRootAccessibilityWindow();
 
         // Make sure the initial actions are set
@@ -223,7 +270,6 @@ public class PhonePipMenuController implements PipMenuController {
         mSystemWindows.updateViewLayout(mPipMenuView,
                 getPipMenuLayoutParams(mContext, MENU_WINDOW_TITLE, destinationBounds.width(),
                         destinationBounds.height()));
-        updateMenuLayout(destinationBounds);
     }
 
     /**
@@ -438,8 +484,7 @@ public class PhonePipMenuController implements PipMenuController {
      * Sets the menu actions to the actions provided by the current PiP menu.
      */
     @Override
-    public void setAppActions(List<RemoteAction> appActions,
-            RemoteAction closeAction) {
+    public void setAppActions(List<RemoteAction> appActions, RemoteAction closeAction) {
         mAppActions = appActions;
         mCloseAction = closeAction;
         updateMenuActions();
@@ -457,6 +502,12 @@ public class PhonePipMenuController implements PipMenuController {
      * @return the best set of actions to show in the PiP menu.
      */
     private List<RemoteAction> resolveMenuActions() {
+        // If UMO Experience is enabled, default to MediaSession actions if present.
+        // Note that mMediaActions can be pulled asynchronously, we use the active media session
+        // check here instead.
+        if (PipFlags.isPipUmoExperienceEnabled() && mMediaController.hasActiveMediaSession()) {
+            return mMediaActions;
+        }
         if (isValidActions(mAppActions)) {
             return mAppActions;
         }
@@ -468,8 +519,8 @@ public class PhonePipMenuController implements PipMenuController {
      */
     private void updateMenuActions() {
         if (mPipMenuView != null) {
-            mPipMenuView.setActions(mPipBoundsState.getBounds(),
-                    resolveMenuActions(), mCloseAction);
+            mPipMenuView.setActions(mPipBoundsState.getBounds(), resolveMenuActions(),
+                    mCloseAction);
         }
     }
 
@@ -504,10 +555,13 @@ public class PhonePipMenuController implements PipMenuController {
                 mMediaController.removeActionListener(mMediaActionListener);
             }
 
+            // Do not grant focus if IME is visible, which can cause the focus being granted
+            // back and forth in between the IME and PiP menu, and causes flicker.
+            final boolean grantFocus = !mIsImeVisible && (menuState != MENU_STATE_NONE);
+            if (mIsImeVisible) return;
             try {
                 WindowManagerGlobal.getWindowSession().grantEmbeddedWindowFocus(null /* window */,
-                        mSystemWindows.getFocusGrantToken(mPipMenuView),
-                        menuState != MENU_STATE_NONE /* grantFocus */);
+                        mSystemWindows.getFocusGrantToken(mPipMenuView), grantFocus);
             } catch (RemoteException e) {
                 ProtoLog.e(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
                         "%s: Unable to update focus as menu appears/disappears, %s", TAG, e);
@@ -550,20 +604,25 @@ public class PhonePipMenuController implements PipMenuController {
         }
     }
 
-    /**
-     * Tell the PIP Menu to recalculate its layout given its current position on the display.
-     */
-    public void updateMenuLayout(Rect bounds) {
-        final boolean isMenuVisible = isMenuVisible();
-        if (DEBUG) {
-            ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
-                    "%s: updateMenuLayout() state=%s"
-                            + " isMenuVisible=%s"
-                            + " callers=\n%s", TAG, mMenuState, isMenuVisible,
-                    Debug.getCallers(5, "    "));
-        }
-        if (isMenuVisible) {
-            mPipMenuView.updateMenuLayout(bounds);
+    @Override
+    public void onPipTransitionStateChanged(@PipTransitionState.TransitionState int oldState,
+            @PipTransitionState.TransitionState int newState, Bundle extra) {
+        switch (newState) {
+            case PipTransitionState.ENTERED_PIP:
+                attach(mPipTransitionState.getPinnedTaskLeash());
+                break;
+            case PipTransitionState.EXITED_PIP:
+                detach();
+                break;
+            case PipTransitionState.CHANGED_PIP_BOUNDS:
+                hideMenu();
+                break;
+            case PipTransitionState.CHANGING_PIP_BOUNDS:
+                hideMenu();
+                break;
+            case PipTransitionState.SCHEDULED_BOUNDS_CHANGE:
+                hideMenu();
+                break;
         }
     }
 

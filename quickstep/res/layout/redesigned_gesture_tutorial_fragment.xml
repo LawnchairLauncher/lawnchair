@@ -137,6 +137,7 @@
         android:layout_above="@id/gesture_tutorial_fragment_action_button"
         android:layout_centerHorizontal="true"
         android:background="@android:color/transparent"
+        android:screenReaderFocusable="true"
         android:paddingTop="24dp"
         android:paddingHorizontal="24dp"
         android:layout_marginBottom="16dp">
@@ -146,7 +147,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="104dp"
-            android:accessibilityHeading="true"
             android:gravity="top"
             android:lineSpacingExtra="-1sp"
             android:textAppearance="@style/TextAppearance.GestureTutorial.MainTitle"
@@ -164,31 +164,6 @@
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_title" />
-
-        <com.android.quickstep.interaction.TutorialStepIndicator
-            android:id="@+id/gesture_tutorial_fragment_feedback_tutorial_step"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/gesture_tutorial_fragment_close_button"
-            style="@style/TextAppearance.GestureTutorial.Feedback.Subtext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
-            android:text="@string/gesture_tutorial_action_button_label_skip"
-            android:visibility="gone"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/checkmark_animation"
@@ -218,12 +193,16 @@
 
     <Button
         android:id="@+id/gesture_tutorial_fragment_action_button"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/gesture_tutorial_done_button_width"
         android:layout_height="wrap_content"
+        android:padding="@dimen/gesture_tutorial_done_button_padding"
         android:layout_marginEnd="@dimen/gesture_tutorial_done_button_end_margin"
         android:layout_marginBottom="@dimen/gesture_tutorial_done_button_bottom_margin"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:accessibilityTraversalAfter="@id/gesture_tutorial_fragment_feedback_subtitle"
+        android:contentDescription="@string/gesture_tutorial_action_button_label"
         android:background="@drawable/gesture_tutorial_action_button_background"
         android:stateListAnimator="@null"
         android:text="@string/gesture_tutorial_action_button_label"

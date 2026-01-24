@@ -3,6 +3,7 @@ package app.lawnchair.util
 import android.content.Context
 import app.lawnchair.flowerpot.Flowerpot
 import com.android.launcher3.model.data.AppInfo
+import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.PackageManagerHelper
 
 /**
@@ -27,7 +28,7 @@ fun categorizeAppsWithSystemAndGoogle(
         // Check if it's a Google app first (Google apps can also be system apps)
         when {
             packageName.startsWith("com.google.") -> googleApps.add(app)
-            intent != null && PackageManagerHelper.isSystemApp(context, intent) -> systemApps.add(app)
+            intent != null && ApplicationInfoWrapper(context, intent).isSystem() -> systemApps.add(app)
             else -> otherApps.add(app)
         }
     }

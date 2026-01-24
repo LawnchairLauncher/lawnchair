@@ -28,16 +28,6 @@ import com.android.quickstep.util.RecentsOrientedState;
 public interface TaskViewIcon {
 
     /**
-     * Returns the width of this icon view.
-     */
-    int getWidth();
-
-    /**
-     * Returns the height of this icon view.
-     */
-    int getHeight();
-
-    /**
      * Sets the opacity of the view.
      */
     void setContentAlpha(float alpha);
@@ -48,6 +38,11 @@ public interface TaskViewIcon {
     void setModalAlpha(float alpha);
 
     /**
+     * Sets the opacity of the view for flex split state.
+     */
+    void setFlexSplitAlpha(float alpha);
+
+    /**
      * Returns this icon view's drawable.
      */
     @Nullable Drawable getDrawable();
@@ -56,26 +51,6 @@ public interface TaskViewIcon {
      * Sets a {@link Drawable} to be displayed.
      */
     void setDrawable(@Nullable Drawable icon);
-
-    /**
-     * Register a callback to be invoked when this view is clicked.
-     */
-    void setOnClickListener(@Nullable View.OnClickListener l);
-
-    /**
-     * Register a callback to be invoked when this view is clicked and held.
-     */
-    void setOnLongClickListener(@Nullable View.OnLongClickListener l);
-
-    /**
-     * Returns the LayoutParams associated with this view.
-     */
-    ViewGroup.LayoutParams getLayoutParams();
-
-    /**
-     * Sets the layout parameters associated with this view.
-     */
-    void setLayoutParams(ViewGroup.LayoutParams params);
 
     /**
      * Sets the degrees that the view is rotated around the pivot point.
@@ -93,22 +68,12 @@ public interface TaskViewIcon {
     void setIconOrientation(RecentsOrientedState orientationState, boolean isGridTask);
 
     /**
-     * Sets the visibility state of this view.
-     */
-    void setVisibility(int visibility);
-
-    /**
      * Sets the tint color of the icon, useful for scrimming or dimming.
      *
      * @param color to blend in.
      * @param amount [0,1] 0 no tint, 1 full tint
      */
     void setIconColorTint(int color, float amount);
-
-    /**
-     * Gets the opacity of the view.
-     */
-    float getAlpha();
 
     /**
      * Returns the width of this icon view's drawable.
@@ -119,16 +84,6 @@ public interface TaskViewIcon {
      * Returns the height of this icon view's drawable.
      */
     int getDrawableHeight();
-
-    /**
-     * Directly calls any attached OnClickListener.
-     */
-    boolean callOnClick();
-
-    /**
-     * Calls this view's OnLongClickListener.
-     */
-    boolean performLongClick();
 
     /**
      * Sets the text for this icon view if any text view is associated.

@@ -5,7 +5,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.quickstep.InputConsumer;
-import com.android.quickstep.util.ActiveGestureLog;
+import com.android.quickstep.util.ActiveGestureProtoLogProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 public abstract class DelegateInputConsumer implements InputConsumer {
@@ -17,12 +17,21 @@ public abstract class DelegateInputConsumer implements InputConsumer {
     protected final InputConsumer mDelegate;
     protected final InputMonitorCompat mInputMonitor;
 
+    private final int mDisplayId;
+
     protected int mState;
 
-    public DelegateInputConsumer(InputConsumer delegate, InputMonitorCompat inputMonitor) {
+    public DelegateInputConsumer(
+            int displayId, InputConsumer delegate, InputMonitorCompat inputMonitor) {
+        mDisplayId = displayId;
         mDelegate = delegate;
         mInputMonitor = inputMonitor;
         mState = STATE_INACTIVE;
+    }
+
+    @Override
+    public int getDisplayId() {
+        return mDisplayId;
     }
 
     @Override
@@ -57,8 +66,7 @@ public abstract class DelegateInputConsumer implements InputConsumer {
     }
 
     protected void setActive(MotionEvent ev) {
-        ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(getDelegatorName())
-                .append(" became active"));
+        ActiveGestureProtoLogProxy.logInputConsumerBecameActive(getDelegatorName());
 
         mState = STATE_ACTIVE;
         TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");

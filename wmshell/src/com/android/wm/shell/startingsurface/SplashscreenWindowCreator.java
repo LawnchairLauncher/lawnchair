@@ -53,7 +53,7 @@ import android.window.SplashScreenView;
 import android.window.StartingWindowInfo;
 import android.window.StartingWindowRemovalInfo;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.internal.util.ContrastColorUtil;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
@@ -368,9 +368,14 @@ class SplashscreenWindowCreator extends AbsSplashWindowCreator {
         mStartingWindowRecordManager.addRecord(taskId, tView);
     }
 
-    private void removeWindowInner(@NonNull View decorView, boolean hideView) {
+    private void removeWindowInner(@NonNull View decorView, StartingWindowRemovalInfo info,
+            boolean hideView) {
         requestTopUi(false);
-        if (!decorView.isAttachedToWindow()) {
+        if (info.windowAnimationLeash != null && info.windowAnimationLeash.isValid()) {
+            info.windowAnimationLeash.release();
+        }
+        if (decorView.getParent() == null) {
+            Slog.w(TAG, "This root view has no parent, never been added to a ViewRootImpl?");
             return;
         }
         if (hideView) {
@@ -451,22 +456,22 @@ class SplashscreenWindowCreator extends AbsSplashWindowCreator {
             if (mSplashView == null) {
                 // shouldn't happen, the app window may be drawn earlier than starting window?
                 Slog.e(TAG, "Found empty splash screen, remove!");
-                removeWindowInner(mRootView, false);
+                removeWindowInner(mRootView, info, false);
                 return true;
             }
             if (immediately
                     || mSuggestType == STARTING_WINDOW_TYPE_LEGACY_SPLASH_SCREEN) {
-                removeWindowInner(mRootView, false);
+                removeWindowInner(mRootView, info, false);
             } else {
                 if (info.playRevealAnimation) {
                     mSplashscreenContentDrawer.applyExitAnimation(mSplashView,
                             info.windowAnimationLeash, info.mainFrame,
-                            () -> removeWindowInner(mRootView, true),
+                            () -> removeWindowInner(mRootView, info, true),
                             mCreateTime, info.roundedCornerRadius);
                 } else {
                     // the SplashScreenView has been copied to client, hide the view to skip
                     // default exit animation
-                    removeWindowInner(mRootView, true);
+                    removeWindowInner(mRootView, info, true);
                 }
             }
             return true;

@@ -11,6 +11,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.util.isGoogle
 import com.android.launcher3.R
 
 @SuppressLint("WrongConstant")
@@ -18,26 +19,27 @@ import com.android.launcher3.R
 fun SuggestionsPreference() {
     val context = LocalContext.current
     val intent = Intent("android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS")
-    val usagePerm = context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS)
-    if (usagePerm == PackageManager.PERMISSION_GRANTED &&
-        context.packageManager.resolveActivity(intent, 0) != null
-    ) {
+    val hasPkgUsagePermission = context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
+    val canResolveToSuggestionPreference = context.packageManager.resolveActivity(intent, 0) != null
+    val suggestionSettingsAvailable = hasPkgUsagePermission && canResolveToSuggestionPreference
+
+    if (suggestionSettingsAvailable && isGoogle) {
         ClickablePreference(
             label = stringResource(id = R.string.suggestion_pref_screen_title),
             onClick = {
                 context.startActivity(intent)
             },
         )
-    } else {
-        // On some devices, the Suggestions activity could not be found or PACKAGE_USAGE_STATS is not granted.
+    } else if (suggestionSettingsAvailable || LawnchairApp.isRecentsEnabled) {
+        /* On some devices, the Suggestions activity could not be found or PACKAGE_USAGE_STATS is
+          not granted. And on some devices (non-Google especially), the suggestions preference shows
+          nothing at all */
 
-        if (LawnchairApp.isRecentsEnabled) {
-            val prefs2 = preferenceManager2()
-            val showRecentAppsInDrawer = prefs2.showSuggestedAppsInDrawer.getAdapter()
-            SwitchPreference(
-                label = stringResource(id = R.string.show_suggested_apps_at_drawer_top),
-                adapter = showRecentAppsInDrawer,
-            )
-        }
+        val prefs2 = preferenceManager2()
+        val showRecentAppsInDrawer = prefs2.showSuggestedAppsInDrawer.getAdapter()
+        SwitchPreference(
+            label = stringResource(id = R.string.show_suggested_apps_at_drawer_top),
+            adapter = showRecentAppsInDrawer,
+        )
     }
 }

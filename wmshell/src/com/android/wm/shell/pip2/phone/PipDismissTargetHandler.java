@@ -35,20 +35,25 @@ import androidx.annotation.NonNull;
 import com.android.wm.shell.R;
 import com.android.wm.shell.bubbles.DismissViewUtils;
 import com.android.wm.shell.common.ShellExecutor;
-import com.android.wm.shell.common.bubbles.DismissCircleView;
-import com.android.wm.shell.common.bubbles.DismissView;
-import com.android.wm.shell.common.magnetictarget.MagnetizedObject;
+import com.android.wm.shell.common.pip.PipDisplayLayoutState;
 import com.android.wm.shell.common.pip.PipUiEventLogger;
+import com.android.wm.shell.shared.bubbles.DismissCircleView;
+import com.android.wm.shell.shared.bubbles.DismissView;
+import com.android.wm.shell.shared.magnetictarget.MagnetizedObject;
 
 import kotlin.Unit;
 
 /**
  * Handler of all Magnetized Object related code for PiP.
  */
-public class PipDismissTargetHandler implements ViewTreeObserver.OnPreDrawListener {
+public class PipDismissTargetHandler implements ViewTreeObserver.OnPreDrawListener,
+        PipDisplayLayoutState.DisplayIdListener {
 
     /* The multiplier to apply scale the target size by when applying the magnetic field radius */
     private static final float MAGNETIC_FIELD_RADIUS_MULTIPLIER = 1.25f;
+
+    /* The window type to apply to the display */
+    private static final int WINDOW_TYPE = WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
     /**
      * MagnetizedObject wrapper for PIP. This allows the magnetic target library to locate and move
@@ -81,30 +86,37 @@ public class PipDismissTargetHandler implements ViewTreeObserver.OnPreDrawListen
     private SurfaceControl mTaskLeash;
     private boolean mHasDismissTargetSurface;
 
-    private final Context mContext;
+    private Context mContext;
     private final PipMotionHelper mMotionHelper;
     private final PipUiEventLogger mPipUiEventLogger;
-    private final WindowManager mWindowManager;
+    private WindowManager mWindowManager;
     private final ShellExecutor mMainExecutor;
 
     public PipDismissTargetHandler(Context context, PipUiEventLogger pipUiEventLogger,
-            PipMotionHelper motionHelper, ShellExecutor mainExecutor) {
+            PipMotionHelper motionHelper, PipDisplayLayoutState pipDisplayLayoutState,
+            ShellExecutor mainExecutor) {
         mContext = context;
         mPipUiEventLogger = pipUiEventLogger;
         mMotionHelper = motionHelper;
         mMainExecutor = mainExecutor;
-        mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        mWindowManager = mContext.getSystemService(WindowManager.class);
+
+        pipDisplayLayoutState.addDisplayIdListener(this);
+    }
+
+    private void maybeCleanUpDismissTarget() {
+        if (mTargetViewContainer != null) {
+            // Remove the old view from view hierarchy
+            cleanUpDismissTarget();
+        }
     }
 
     void init() {
+        maybeCleanUpDismissTarget();
+
         Resources res = mContext.getResources();
         mEnableDismissDragToEdge = res.getBoolean(R.bool.config_pipEnableDismissDragToEdge);
         mDismissAreaHeight = res.getDimensionPixelSize(R.dimen.floating_dismiss_gradient_height);
-
-        if (mTargetViewContainer != null) {
-            // init can be called multiple times, remove the old one from view hierarchy first.
-            cleanUpDismissTarget();
-        }
 
         mTargetViewContainer = new DismissView(mContext);
         DismissViewUtils.setup(mTargetViewContainer);
@@ -176,6 +188,16 @@ public class PipDismissTargetHandler implements ViewTreeObserver.OnPreDrawListen
         mHasDismissTargetSurface = true;
         updateDismissTargetLayer();
         return true;
+    }
+
+    @Override
+    public void onDisplayIdChanged(@NonNull Context context) {
+        maybeCleanUpDismissTarget();
+
+        mContext = context;
+        mWindowManager = mContext.getSystemService(WindowManager.class);
+        // If the displayId has changed, reset the UI for the current display
+        init();
     }
 
     /**
@@ -262,7 +284,7 @@ public class PipDismissTargetHandler implements ViewTreeObserver.OnPreDrawListen
                 WindowManager.LayoutParams.MATCH_PARENT,
                 height,
                 0, windowSize.y - height,
-                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                WINDOW_TYPE,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                         | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
@@ -282,6 +304,7 @@ public class PipDismissTargetHandler implements ViewTreeObserver.OnPreDrawListen
             return;
         }
 
+        mMagneticTarget.updateLocationOnScreen();
         createOrUpdateDismissTarget();
 
         if (mTargetViewContainer.getVisibility() != View.VISIBLE) {

@@ -63,10 +63,7 @@ public class AccessibilityActionsView extends View implements StateListener<Laun
     @Override
     public AccessibilityNodeInfo createAccessibilityNodeInfo() {
         AccessibilityNodeInfo info = super.createAccessibilityNodeInfo();
-        Launcher l = Launcher.getLauncher(getContext());
-        info.addAction(new AccessibilityAction(
-                R.string.all_apps_button_label, l.getText(R.string.all_apps_button_label)));
-        for (OptionItem item : OptionsPopupView.getOptions(l)) {
+        for (OptionItem item : OptionsPopupView.getOptions(Launcher.getLauncher(getContext()))) {
             info.addAction(new AccessibilityAction(item.labelRes, item.label));
         }
         return info;

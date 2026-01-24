@@ -18,11 +18,13 @@ package com.android.wm.shell.flicker.pip
 
 import android.platform.test.annotations.Presubmit
 import android.platform.test.annotations.RequiresDevice
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
 import android.tools.flicker.legacy.LegacyFlickerTestFactory
 import com.android.server.wm.flicker.testapp.ActivityOptions
+import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.PipTransition
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -35,6 +37,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
 class PipDragTest(flicker: LegacyFlickerTest) : PipTransition(flicker) {
     private var isDraggedLeft: Boolean = true
 
@@ -46,7 +49,8 @@ class PipDragTest(flicker: LegacyFlickerTest) : PipTransition(flicker) {
         val stringExtras = mapOf(ActivityOptions.Pip.EXTRA_ENTER_PIP to "true")
         setup {
             tapl.setEnableRotation(true)
-            pipApp.launchViaIntentAndWaitForPip(wmHelper, stringExtras = stringExtras)
+            pipApp.launchViaIntent(wmHelper, stringExtras = stringExtras)
+            pipApp.waitForPip(wmHelper)
 
             // determine the direction of dragging to test for
             isDraggedLeft = pipApp.isCloserToRightEdge(wmHelper)

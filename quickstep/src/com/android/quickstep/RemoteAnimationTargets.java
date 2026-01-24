@@ -20,16 +20,20 @@ import static android.app.WindowConfiguration.ACTIVITY_TYPE_RECENTS;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.RemoteAnimationTarget;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Holds a collection of RemoteAnimationTargets, filtered by different properties.
  */
 public class RemoteAnimationTargets {
+
+    private static final String TAG = "RemoteAnimationTargets";
 
     private final CopyOnWriteArrayList<ReleaseCheck> mReleaseChecks = new CopyOnWriteArrayList<>();
 
@@ -79,6 +83,8 @@ public class RemoteAnimationTargets {
                 return target;
             }
         }
+        Log.e(TAG, "taskId: " + taskId + " not found. apps contains: "
+                + Arrays.stream(apps).map(target -> target.taskId).toList());
         return null;
     }
 

@@ -21,12 +21,12 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import app.lawnchair.font.FontCache
 import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.Utilities
+import com.android.launcher3.LauncherPrefs
 import java.util.concurrent.CopyOnWriteArraySet
 import org.json.JSONObject
 
 sealed class BasePreferenceManager(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
-    val sp: SharedPreferences = Utilities.getPrefs(context)
+    val sp: SharedPreferences = LauncherPrefs.getPrefs(context)
     val prefsMap = mutableMapOf<String, BasePref<*>>()
 
     private var changedPrefs: MutableSet<BasePref<*>>? = null

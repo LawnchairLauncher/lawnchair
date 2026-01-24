@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized
 /**
  * Test restarting app in size compat mode.
  *
- * To run this test: `atest WMShellFlickerTestsOther:RestartAppInSizeCompatModeTest`
+ * To run this test: `atest WMShellFlickerTestsAppCompat:RestartAppInSizeCompatModeTest`
  *
  * Actions:
  * ```

@@ -16,12 +16,16 @@
 
 package com.android.launcher3.appprediction;
 
+import static android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE;
+
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -31,7 +35,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Flags;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
@@ -57,7 +60,7 @@ public class PredictionRowView<T extends Context & ActivityContext>
     // Vertical padding of the icon that contributes to the expected cell height.
     private final int mVerticalPadding;
     // Extra padding that is used in the top app rows (prediction and search) that is not used in
-    // the regular A-Z list. This only applies to single line label.
+    // the regular A-Z list.
     private final int mTopRowExtraHeight;
 
     // Helper to drawing the focus indicator.
@@ -88,6 +91,14 @@ public class PredictionRowView<T extends Context & ActivityContext>
         mVerticalPadding = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_predicted_icon_vertical_padding);
         updateVisibility();
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        if (Build.VERSION.SDK_INT >= UPSIDE_DOWN_CAKE) {
+            info.setContainerTitle(mActivityContext.getString(R.string.title_app_suggestions));
+        }
     }
 
     @Override
@@ -132,15 +143,15 @@ public class PredictionRowView<T extends Context & ActivityContext>
     @Override
     public int getExpectedHeight() {
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
-        int iconHeight = deviceProfile.allAppsIconSizePx;
-        int iconPadding = deviceProfile.allAppsIconDrawablePaddingPx;
-        int textHeight = Utilities.calculateTextHeight(deviceProfile.allAppsIconTextSizePx);
+        int iconHeight = deviceProfile.getAllAppsProfile().getIconSizePx();
+        int iconPadding = deviceProfile.getAllAppsProfile().getIconDrawablePaddingPx();
+        int textHeight = Utilities.calculateTextHeight(
+                deviceProfile.getAllAppsProfile().getIconTextSizePx());
         int totalHeight = iconHeight + iconPadding + textHeight + mVerticalPadding * 2;
         // Prediction row height will be 4dp bigger than the regular apps in A-Z list when two line
         // is not enabled. Otherwise, the extra height will increase by just the textHeight.
-        int extraHeight = (Flags.enableTwolineToggle() &&
-                LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(getContext()))
-                ? textHeight : mTopRowExtraHeight;
+        int extraHeight = deviceProfile.inv.enableTwoLinesInAllApps
+                ? (textHeight + mTopRowExtraHeight) : mTopRowExtraHeight;
         totalHeight += extraHeight;
         return getVisibility() == GONE ? 0 : totalHeight + getPaddingTop() + getPaddingBottom();
     }
@@ -225,7 +236,11 @@ public class PredictionRowView<T extends Context & ActivityContext>
                     lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 } else {
                     // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                    lp.height = mActivityContext.getDeviceProfile().allAppsCellHeightPx;
+                    lp.height =
+                            mActivityContext
+                                    .getDeviceProfile()
+                                    .getAllAppsProfile()
+                                    .getCellHeightPx();
                 }
                 lp.width = 0;
                 lp.weight = 1;
@@ -290,6 +305,9 @@ public class PredictionRowView<T extends Context & ActivityContext>
         writer.println(prefix + "\tmPredictionsEnabled: " + mPredictionsEnabled);
         writer.println(prefix + "\tmPredictionUiUpdatePaused: " + mPredictionUiUpdatePaused);
         writer.println(prefix + "\tmNumPredictedAppsPerRow: " + mNumPredictedAppsPerRow);
-        writer.println(prefix + "\tmPredictedApps: " + mPredictedApps);
+        writer.println(prefix + "\tmPredictedApps: " + mPredictedApps.size());
+        for (WorkspaceItemInfo info : mPredictedApps) {
+            writer.println(prefix + "\t\t" + info);
+        }
     }
 }

@@ -16,6 +16,6 @@
 
 package com.android.wm.shell.windowdecor;
 
-interface TaskFocusStateConsumer {
+public interface TaskFocusStateConsumer {
     void setTaskFocusState(boolean focused);
 }

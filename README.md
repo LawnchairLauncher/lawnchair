@@ -1,4 +1,4 @@
-# Lawnchair 15
+# Lawnchair 16
 
 [![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml)
 [![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml)
@@ -9,25 +9,31 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/LawnchairLauncher/lawnchair/total.svg?label=GitHub%20Downloads&logo=github)](https://github.com/LawnchairLauncher/lawnchair/releases)
 [![Play Store Installs](https://img.shields.io/endpoint?color=green&logo=googleplay&logoColor=green&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dapp.lawnchair.play%26l%3DPlay%2520Store%2520Installs%26m%3D%24shortinstalls)](https://play.google.com/store/apps/details?id=app.lawnchair.play)
 
+> [!WARNING]
+> This branch contains major changes from the rebase of Launcher3, including breaking changes and refactors that can cause Lawnchair to break.
+> 
+> If you wish to contribute, read our [contributing guidelines](CONTRIBUTING.md). Note that this branch will undergo many changes as we slowly refactor our codebase, so the `16-dev` branch may be particularly unfriendly to new contributors. It is still possible to submit changes to `15-dev`, but new feature development will be focused on this branch.
+> 
+> For regular users, we recommend staying on `15-dev` for stability purposes.
+
 <picture>
     <!-- Avoid image being clickable with slight workaround -->
-    <!-- ❤️ Credit to Raine for the original mockup on the Lawnchair Discord -->
-    <!-- ❤️ Credit to Lawrence Kayku for the current mockup on Unsplash 
-            https://unsplash.com/photos/photography-of-green-leaves-ZVKr8wADhpc 
+    <!-- ❤️ Credit to simonppt for the current mockup on Unsplash 
+            https://unsplash.com/photos/a-white-flower-with-green-leaves-on-a-white-background-ojBNiaeykwc
     -->
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/device-frame.png" width="250px">
-    <img alt="Google Pixel running Lawnchair Launcher with green wallpaper" src="docs/assets/device-frame.png" width="250px">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/device-frame.webp" width="250px">
+    <img alt="A device running Lawnchair Launcher with green flower wallpaper" src="docs/assets/device-frame.webp" width="250px">
 </picture>
 
 Lawnchair is a free, open-source home app for Android. Taking Launcher3—Android’s default home app—as a starting point, it ports Pixel Launcher features and introduces rich customization options.
 
-This branch houses the codebase of Lawnchair 15, which is currently in beta and is based on Launcher3 from Android 15. For Lawnchair 9 to 14, see the branches with the `9-` to `14-` prefixes, respectively.
+This branch houses the codebase of Lawnchair 16, which is currently in development and is based on Launcher3 from Android 16. For Lawnchair 9 to 15, see the branches with the `9-` to `15-` prefixes, respectively.
 
 ## Features
 
--   **Material You Theming:** Adapts to your wallpaper and system theme.
+-   **Material Expressive Theming:** Adapts to your wallpaper and system theme.
 -   **At a Glance Widget:** Displays information *at a glance* with support for [Smartspacer](https://github.com/KieronQuinn/Smartspacer).
--   **QuickSwitch Support:** Integrates with Android Recents on Android 10 and newer. (requires root)
+-   **QuickSwitch Support:** Integrates with Android Recents on Android 10-15. (requires root)
 -   **Global Search:** Allows quick access to apps, contacts, and web results from the home screen.
 -   **Customization Options:** Provides options to tweak icons, fonts, and colors to your liking.
 -   And more!
@@ -38,26 +44,26 @@ This branch houses the codebase of Lawnchair 15, which is currently in beta and 
   <a href="https://play.google.com/store/apps/details?id=app.lawnchair.play">
     <picture>
       <!-- Avoid image being clickable with slight workaround -->
-      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-google-play.png" height="60">
-      <img alt="Get it on Google Play" src="docs/assets/badge-google-play.png" height="60">
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-google-play.webp" height="60">
+      <img alt="Get it on Google Play" src="docs/assets/badge-google-play.webp" height="60">
     </picture>
   </a>
   <a href="https://apt.izzysoft.de/fdroid/index/apk/app.lawnchair">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-izzyondroid.png" height="60">
-      <img alt="Get it on IzzyOnDroid" src="docs/assets/badge-izzyondroid.png" height="60">
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-izzyondroid.webp" height="60">
+      <img alt="Get it on IzzyOnDroid" src="docs/assets/badge-izzyondroid.webp" height="60">
     </picture>
   </a>
   <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/LawnchairLauncher/lawnchair/">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-obtainium.png" height="60">
-      <img alt="Get it on Obtainium" src="docs/assets/badge-obtainium.png" height="60">
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-obtainium.webp" height="60">
+      <img alt="Get it on Obtainium" src="docs/assets/badge-obtainium.webp" height="60">
     </picture>
   </a>
     <a href="https://github.com/LawnchairLauncher/lawnchair/releases">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-github.png" height="60">
-      <img alt="Get it on GitHub" src="docs/assets/badge-github.png" height="60">
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/badge-github.webp" height="60">
+      <img alt="Get it on GitHub" src="docs/assets/badge-github.webp" height="60">
     </picture>
   </a>
 </p>
@@ -74,21 +80,11 @@ These builds offer the latest features and bug fixes at a cost of being slower a
 
 ### Verification
 
-Verify the integrity of your Lawnchair download using these SHA-256 hashes:
-
-###### Google Play
-```
-47:AC:92:63:1C:60:35:13:CC:8D:26:DD:9C:FF:E0:71:9A:8B:36:55:44:DC:CE:C2:09:58:24:EC:25:61:20:A7
-```
-
-###### Elsewhere
-```
-74:7C:36:45:B3:57:25:8B:2E:23:E8:51:E5:3C:96:74:7F:E0:AD:D0:07:E5:BA:2C:D9:7E:8C:85:57:2E:4D:C5
-```
+Please visit [Lawnchair Verification](VERIFICATION.md) on way to verify Lawnchair.
 
 ## Contributing
 
-Please visit the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
+Please visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
 
 ## Supporting Lawnchair
 

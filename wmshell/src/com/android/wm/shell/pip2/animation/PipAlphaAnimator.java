@@ -17,6 +17,7 @@
 package com.android.wm.shell.pip2.animation;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.IntDef;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.view.SurfaceControl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.wm.shell.R;
 import com.android.wm.shell.pip2.PipSurfaceTransactionHelper;
 
@@ -34,8 +36,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Animator that handles the alpha animation for entering PIP
  */
-public class PipAlphaAnimator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener,
-        ValueAnimator.AnimatorListener {
+public class PipAlphaAnimator extends ValueAnimator {
     @IntDef(prefix = {"FADE_"}, value = {
             FADE_IN,
             FADE_OUT
@@ -47,35 +48,76 @@ public class PipAlphaAnimator extends ValueAnimator implements ValueAnimator.Ani
     public static final int FADE_IN = 0;
     public static final int FADE_OUT = 1;
 
-    private final int mEnterAnimationDuration;
     private final SurfaceControl mLeash;
     private final SurfaceControl.Transaction mStartTransaction;
+    private final SurfaceControl.Transaction mFinishTransaction;
+
+    private final int mDirection;
+    private final Animator.AnimatorListener mAnimatorListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            super.onAnimationStart(animation);
+            if (mAnimationStartCallback != null) {
+                mAnimationStartCallback.run();
+            }
+            if (mStartTransaction != null) {
+                onAlphaAnimationUpdate(getStartAlphaValue(), mStartTransaction);
+                mStartTransaction.apply();
+            }
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+            if (mFinishTransaction != null) {
+                onAlphaAnimationUpdate(getEndAlphaValue(), mFinishTransaction);
+                mFinishTransaction.apply();
+            }
+            if (mAnimationEndCallback != null) {
+                mAnimationEndCallback.run();
+            }
+        }
+    };
+
+    private final ValueAnimator.AnimatorUpdateListener mAnimatorUpdateListener =
+            new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+                    final float alpha = (Float) animation.getAnimatedValue();
+                    final SurfaceControl.Transaction tx =
+                            mSurfaceControlTransactionFactory.getTransaction();
+                    onAlphaAnimationUpdate(alpha, tx);
+                }
+            };
 
     // optional callbacks for tracking animation start and end
     @Nullable private Runnable mAnimationStartCallback;
     @Nullable private Runnable mAnimationEndCallback;
 
-    private final PipSurfaceTransactionHelper.SurfaceControlTransactionFactory
+    @NonNull private PipSurfaceTransactionHelper.SurfaceControlTransactionFactory
             mSurfaceControlTransactionFactory;
+    @NonNull private final PipSurfaceTransactionHelper mSurfaceTransactionHelper;
 
     public PipAlphaAnimator(Context context,
+            @NonNull PipSurfaceTransactionHelper pipSurfaceTransactionHelper,
             SurfaceControl leash,
-            SurfaceControl.Transaction tx,
+            SurfaceControl.Transaction startTransaction,
+            SurfaceControl.Transaction finishTransaction,
             @Fade int direction) {
         mLeash = leash;
-        mStartTransaction = tx;
-        if (direction == FADE_IN) {
-            setFloatValues(0f, 1f);
-        } else { // direction == FADE_OUT
-            setFloatValues(1f, 0f);
-        }
+        mStartTransaction = startTransaction;
+        mFinishTransaction = finishTransaction;
+        mSurfaceTransactionHelper = pipSurfaceTransactionHelper;
+
+        mDirection = direction;
+        setFloatValues(getStartAlphaValue(), getEndAlphaValue());
         mSurfaceControlTransactionFactory =
                 new PipSurfaceTransactionHelper.VsyncSurfaceControlTransactionFactory();
-        mEnterAnimationDuration = context.getResources()
+        final int enterAnimationDuration = context.getResources()
                 .getInteger(R.integer.config_pipEnterAnimationDuration);
-        setDuration(mEnterAnimationDuration);
-        addListener(this);
-        addUpdateListener(this);
+        setDuration(enterAnimationDuration);
+        addListener(mAnimatorListener);
+        addUpdateListener(mAnimatorUpdateListener);
     }
 
     public void setAnimationStartCallback(@NonNull Runnable runnable) {
@@ -86,32 +128,25 @@ public class PipAlphaAnimator extends ValueAnimator implements ValueAnimator.Ani
         mAnimationEndCallback = runnable;
     }
 
-    @Override
-    public void onAnimationStart(@NonNull Animator animation) {
-        if (mAnimationStartCallback != null) {
-            mAnimationStartCallback.run();
-        }
-        if (mStartTransaction != null) {
-            mStartTransaction.apply();
-        }
+    private void onAlphaAnimationUpdate(float alpha, SurfaceControl.Transaction tx) {
+        // only set shadow radius on fade in
+        tx.setAlpha(mLeash, alpha);
+        mSurfaceTransactionHelper.round(tx, mLeash, true /* applyCornerRadius */);
+        mSurfaceTransactionHelper.shadow(tx, mLeash, mDirection == FADE_IN /* applyCornerRadius */);
+        tx.apply();
     }
 
-    @Override
-    public void onAnimationUpdate(@NonNull ValueAnimator animation) {
-        final float alpha = (Float) animation.getAnimatedValue();
-        mSurfaceControlTransactionFactory.getTransaction().setAlpha(mLeash, alpha).apply();
+    private float getStartAlphaValue() {
+        return mDirection == FADE_IN ? 0f : 1f;
     }
 
-    @Override
-    public void onAnimationEnd(@NonNull Animator animation) {
-        if (mAnimationEndCallback != null) {
-            mAnimationEndCallback.run();
-        }
+    private float getEndAlphaValue() {
+        return mDirection == FADE_IN ? 1f : 0f;
     }
 
-    @Override
-    public void onAnimationCancel(@NonNull Animator animation) {}
-
-    @Override
-    public void onAnimationRepeat(@NonNull Animator animation) {}
+    @VisibleForTesting
+    void setSurfaceControlTransactionFactory(
+            @NonNull PipSurfaceTransactionHelper.SurfaceControlTransactionFactory factory) {
+        mSurfaceControlTransactionFactory = factory;
+    }
 }

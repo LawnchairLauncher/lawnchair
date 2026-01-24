@@ -41,9 +41,11 @@ fun WarningPreference(
 private fun WarningPreferencePreview() {
     LawnchairTheme {
         PreferenceGroupPreviewContainer {
-            WarningPreference(
-                text = "Text",
-            )
+            Item {
+                WarningPreference(
+                    text = "Text",
+                )
+            }
         }
     }
 }

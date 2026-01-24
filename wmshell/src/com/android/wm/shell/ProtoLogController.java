@@ -16,10 +16,9 @@
 
 package com.android.wm.shell;
 
-import com.android.internal.protolog.LegacyProtoLogImpl;
+import com.android.internal.protolog.ProtoLog;
 import com.android.internal.protolog.common.ILogger;
 import com.android.internal.protolog.common.IProtoLog;
-import com.android.internal.protolog.common.ProtoLog;
 import com.android.wm.shell.sysui.ShellCommandHandler;
 import com.android.wm.shell.sysui.ShellInit;
 
@@ -29,7 +28,7 @@ import java.util.Arrays;
 /**
  * Controls the {@link ProtoLog} in WMShell via adb shell commands.
  *
- * Use with {@code adb shell dumpsys activity service SystemUIService WMShell protolog ...}.
+ * Use with {@code adb shell wm shell protolog ...}.
  */
 public class ProtoLogController implements ShellCommandHandler.ShellCommandActionHandler {
     private final ShellCommandHandler mShellCommandHandler;
@@ -51,28 +50,16 @@ public class ProtoLogController implements ShellCommandHandler.ShellCommandActio
         final ILogger logger = pw::println;
         switch (args[0]) {
             case "status": {
-                if (android.tracing.Flags.perfettoProtologTracing()) {
-                    pw.println("(Deprecated) legacy command. Use Perfetto commands instead.");
-                    return false;
-                }
-                ((LegacyProtoLogImpl) mShellProtoLog).getStatus();
-                return true;
+                pw.println("(Deprecated) legacy command. Use Perfetto commands instead.");
+                return false;
             }
             case "start": {
-                if (android.tracing.Flags.perfettoProtologTracing()) {
-                    pw.println("(Deprecated) legacy command. Use Perfetto commands instead.");
-                    return false;
-                }
-                ((LegacyProtoLogImpl) mShellProtoLog).startProtoLog(pw);
-                return true;
+                pw.println("(Deprecated) legacy command. Use Perfetto commands instead.");
+                return false;
             }
             case "stop": {
-                if (android.tracing.Flags.perfettoProtologTracing()) {
-                    pw.println("(Deprecated) legacy command. Use Perfetto commands instead.");
-                    return false;
-                }
-                ((LegacyProtoLogImpl) mShellProtoLog).stopProtoLog(pw, true);
-                return true;
+                pw.println("(Deprecated) legacy command. Use Perfetto commands instead.");
+                return false;
             }
             case "enable-text": {
                 String[] groups = Arrays.copyOfRange(args, 1, args.length);
@@ -101,17 +88,8 @@ public class ProtoLogController implements ShellCommandHandler.ShellCommandActio
                 return mShellProtoLog.stopLoggingToLogcat(groups, logger) == 0;
             }
             case "save-for-bugreport": {
-                if (android.tracing.Flags.perfettoProtologTracing()) {
-                    pw.println("(Deprecated) legacy command");
-                    return false;
-                }
-                if (!mShellProtoLog.isProtoEnabled()) {
-                    pw.println("Logging to proto is not enabled for WMShell.");
-                    return false;
-                }
-                ((LegacyProtoLogImpl) mShellProtoLog).stopProtoLog(pw, true /* writeToFile */);
-                ((LegacyProtoLogImpl) mShellProtoLog).startProtoLog(pw);
-                return true;
+                pw.println("(Deprecated) legacy command");
+                return false;
             }
             default: {
                 pw.println("Invalid command: " + args[0]);

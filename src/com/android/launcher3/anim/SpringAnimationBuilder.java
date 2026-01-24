@@ -194,8 +194,14 @@ public class SpringAnimationBuilder {
 
         ValueAnimator animator = ValueAnimator.ofFloat(0, mDuration);
         animator.setDuration(getDuration()).setInterpolator(LINEAR);
-        animator.addUpdateListener(anim ->
-                property.set(target, getInterpolatedValue(anim.getAnimatedFraction())));
+        animator.addUpdateListener(anim -> {
+            float value = getInterpolatedValue(anim.getAnimatedFraction());
+            if (Float.isNaN(value)) {
+                value = 0f;
+            }
+            property.set(target, value);
+        }
+        );
         animator.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animation) {

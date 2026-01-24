@@ -124,6 +124,7 @@ class BubbleDataRepositoryTest : ShellTestCase() {
 
     private val testHandler = Handler(Looper.getMainLooper())
     private val mainExecutor = HandlerExecutor(testHandler)
+    private val bgExecutor = HandlerExecutor(testHandler)
     private val launcherApps = mock<LauncherApps>()
 
     private val persistedBubbles = SparseArray<List<BubbleEntity>>()
@@ -134,7 +135,8 @@ class BubbleDataRepositoryTest : ShellTestCase() {
     @Before
     fun setup() {
         persistentRepository = BubblePersistentRepository(mContext)
-        dataRepository = spy(BubbleDataRepository(launcherApps, mainExecutor, persistentRepository))
+        dataRepository =
+            spy(BubbleDataRepository(launcherApps, mainExecutor, bgExecutor, persistentRepository))
 
         persistedBubbles.put(0, user0BubbleEntities)
         persistedBubbles.put(1, user1BubbleEntities)

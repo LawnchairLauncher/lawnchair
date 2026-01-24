@@ -16,28 +16,30 @@
 
 package com.android.wm.shell.common.split;
 
-import static com.android.wm.shell.common.split.SplitScreenConstants.CONTROLLED_ACTIVITY_TYPES;
-import static com.android.wm.shell.common.split.SplitScreenConstants.CONTROLLED_WINDOWING_MODES;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.CONTROLLED_ACTIVITY_TYPES;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.CONTROLLED_WINDOWING_MODES;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_10_90;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_90_10;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_3_10_45_45;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_3_45_45_10;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
 
 import android.app.ActivityManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Rect;
-
-import androidx.annotation.Nullable;
 
 import com.android.internal.util.ArrayUtils;
 import com.android.wm.shell.Flags;
 import com.android.wm.shell.ShellTaskOrganizer;
+import com.android.wm.shell.shared.split.SplitScreenConstants;
 
 /** Helper utility class for split screen components to use. */
 public class SplitScreenUtils {
+    private static final int LARGE_SCREEN_MIN_EDGE_DP = 600;
+
     /** Reverse the split position. */
     @SplitScreenConstants.SplitPosition
     public static int reverseSplitPosition(@SplitScreenConstants.SplitPosition int position) {
@@ -59,31 +61,6 @@ public class SplitScreenUtils {
                 && ArrayUtils.contains(CONTROLLED_WINDOWING_MODES, taskInfo.getWindowingMode());
     }
 
-    /** Retrieve package name from an intent */
-    @Nullable
-    public static String getPackageName(Intent intent) {
-        if (intent == null || intent.getComponent() == null) {
-            return null;
-        }
-        return intent.getComponent().getPackageName();
-    }
-
-    /** Retrieve package name from a PendingIntent */
-    @Nullable
-    public static String getPackageName(PendingIntent pendingIntent) {
-        if (pendingIntent == null || pendingIntent.getIntent() == null) {
-            return null;
-        }
-        return getPackageName(pendingIntent.getIntent());
-    }
-
-    /** Retrieve package name from a taskId */
-    @Nullable
-    public static String getPackageName(int taskId, ShellTaskOrganizer taskOrganizer) {
-        final ActivityManager.RunningTaskInfo taskInfo = taskOrganizer.getRunningTaskInfo(taskId);
-        return taskInfo != null ? getPackageName(taskInfo.baseIntent) : null;
-    }
-
     /** Retrieve user id from a taskId */
     public static int getUserId(int taskId, ShellTaskOrganizer taskOrganizer) {
         final ActivityManager.RunningTaskInfo taskInfo = taskOrganizer.getRunningTaskInfo(taskId);
@@ -99,8 +76,7 @@ public class SplitScreenUtils {
      * Returns whether left/right split is allowed in portrait.
      */
     public static boolean allowLeftRightSplitInPortrait(Resources res) {
-        return Flags.enableLeftRightSplitInPortrait() && res.getBoolean(
-                com.android.internal.R.bool.config_leftRightSplitInPortrait);
+        return res.getBoolean(com.android.internal.R.bool.config_leftRightSplitInPortrait);
     }
 
     /**
@@ -110,10 +86,9 @@ public class SplitScreenUtils {
             Configuration config) {
         // Compare the max bounds sizes as on near-square devices, the insets may result in a
         // configuration in the other orientation
-        final boolean isLargeScreen = config.smallestScreenWidthDp >= 600;
         final Rect maxBounds = config.windowConfiguration.getMaxBounds();
         final boolean isLandscape = maxBounds.width() >= maxBounds.height();
-        return isLeftRightSplit(allowLeftRightSplitInPortrait, isLargeScreen, isLandscape);
+        return isLeftRightSplit(allowLeftRightSplitInPortrait, isLargeScreen(config), isLandscape);
     }
 
     /**
@@ -129,9 +104,52 @@ public class SplitScreenUtils {
         }
     }
 
-    /** Returns the specified background color that matches a RunningTaskInfo. */
-    public static Color getResizingBackgroundColor(ActivityManager.RunningTaskInfo taskInfo) {
-        final int taskBgColor = taskInfo.taskDescription.getBackgroundColor();
-        return Color.valueOf(taskBgColor == -1 ? Color.WHITE : taskBgColor);
+    /**
+     * Returns whether the current config is a large screen (tablet or unfolded foldable)
+     */
+    public static boolean isLargeScreen(Configuration config) {
+        return config.smallestScreenWidthDp >= LARGE_SCREEN_MIN_EDGE_DP;
+    }
+
+    /**
+     * Convenience function for {@link #isLargeScreen(Configuration)}.
+     */
+    public static boolean isLargeScreen(Resources res) {
+        return isLargeScreen(res.getConfiguration());
+    }
+
+    /**
+     * Returns whether the current device is a foldable
+     */
+    public static boolean isFoldable(Resources res) {
+        return res.getIntArray(com.android.internal.R.array.config_foldedDeviceStates).length != 0;
+    }
+
+    /**
+     * Returns whether we should allow split ratios to go offscreen or not. If the device is a phone
+     * or a foldable (either screen), we allow it.
+     */
+    public static boolean allowOffscreenRatios(Resources res) {
+        return Flags.enableFlexibleTwoAppSplit() && (!isLargeScreen(res) || isFoldable(res));
+    }
+
+    /**
+     * Within a particular split layout, we label the stages numerically: 0, 1, 2... from left to
+     * right (or top to bottom). This function takes in a stage index (0th, 1st, 2nd...) and a
+     * PersistentSnapPosition and returns if that particular stage is offscreen in that layout.
+     */
+    public static boolean isPartiallyOffscreen(int stageIndex,
+            @SplitScreenConstants.PersistentSnapPosition int snapPosition) {
+        switch(snapPosition) {
+            case SNAP_TO_2_10_90:
+            case SNAP_TO_3_10_45_45:
+                return stageIndex == 0;
+            case SNAP_TO_2_90_10:
+                return stageIndex == 1;
+            case SNAP_TO_3_45_45_10:
+                return stageIndex == 2;
+            default:
+                return false;
+        }
     }
 }

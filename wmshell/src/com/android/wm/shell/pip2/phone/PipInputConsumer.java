@@ -16,8 +16,6 @@
 
 package com.android.wm.shell.pip2.phone;
 
-import static android.view.Display.DEFAULT_DISPLAY;
-
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Looper;
@@ -28,8 +26,9 @@ import android.view.IWindowManager;
 import android.view.InputChannel;
 import android.view.InputEvent;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.common.ShellExecutor;
+import com.android.wm.shell.common.pip.PipDisplayLayoutState;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 
 import java.io.PrintWriter;
@@ -84,6 +83,7 @@ public class PipInputConsumer {
     private final IWindowManager mWindowManager;
     private final IBinder mToken;
     private final String mName;
+    private final PipDisplayLayoutState mPipDisplayLayoutState;
     private final ShellExecutor mMainExecutor;
 
     private InputEventReceiver mInputEventReceiver;
@@ -94,10 +94,11 @@ public class PipInputConsumer {
      * @param name the name corresponding to the input consumer that is defined in the system.
      */
     public PipInputConsumer(IWindowManager windowManager, String name,
-            ShellExecutor mainExecutor) {
+            PipDisplayLayoutState pipDisplayLayoutState, ShellExecutor mainExecutor) {
         mWindowManager = windowManager;
         mToken = new Binder();
         mName = name;
+        mPipDisplayLayoutState = pipDisplayLayoutState;
         mMainExecutor = mainExecutor;
     }
 
@@ -138,9 +139,11 @@ public class PipInputConsumer {
         }
         final InputChannel inputChannel = new InputChannel();
         try {
-            // TODO(b/113087003): Support Picture-in-picture in multi-display.
-            mWindowManager.destroyInputConsumer(mToken, DEFAULT_DISPLAY);
-            mWindowManager.createInputConsumer(mToken, mName, DEFAULT_DISPLAY, inputChannel);
+            final int displayId = mPipDisplayLayoutState.getDisplayId();
+            ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+                    "%s: Creating input consumer on displayID: %d", TAG, displayId);
+            mWindowManager.destroyInputConsumer(mToken, displayId);
+            mWindowManager.createInputConsumer(mToken, mName, displayId, inputChannel);
         } catch (RemoteException e) {
             ProtoLog.e(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
                     "%s: Failed to create input consumer, %s", TAG, e);
@@ -162,8 +165,10 @@ public class PipInputConsumer {
             return;
         }
         try {
-            // TODO(b/113087003): Support Picture-in-picture in multi-display.
-            mWindowManager.destroyInputConsumer(mToken, DEFAULT_DISPLAY);
+            final int displayId = mPipDisplayLayoutState.getDisplayId();
+            ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+                    "%s: Destroying input consumer on displayID: %d", TAG, displayId);
+            mWindowManager.destroyInputConsumer(mToken, displayId);
         } catch (RemoteException e) {
             ProtoLog.e(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
                     "%s: Failed to destroy input consumer, %s", TAG, e);

@@ -24,6 +24,7 @@ import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED_
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__CHILD_TASK_ENTER_PIP;
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__DEVICE_FOLDED;
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__DRAG_DIVIDER;
+import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__FULLSCREEN_REQUEST;
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__FULLSCREEN_SHORTCUT;
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__DESKTOP_MODE;
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__RECREATE_SPLIT;
@@ -32,8 +33,9 @@ import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED_
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__SCREEN_LOCKED;
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__SCREEN_LOCKED_SHOW_ON_TOP;
 import static com.android.internal.util.FrameworkStatsLog.SPLITSCREEN_UICHANGED__EXIT_REASON__UNKNOWN_EXIT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
+import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_SPLIT_SCREEN;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
 import static com.android.wm.shell.splitscreen.SplitScreenController.ENTER_REASON_DRAG;
 import static com.android.wm.shell.splitscreen.SplitScreenController.ENTER_REASON_LAUNCHER;
 import static com.android.wm.shell.splitscreen.SplitScreenController.ENTER_REASON_MULTI_INSTANCE;
@@ -44,6 +46,7 @@ import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON
 import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON_DEVICE_FOLDED;
 import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON_DRAG_DIVIDER;
 import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON_DESKTOP_MODE;
+import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON_FULLSCREEN_REQUEST;
 import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON_FULLSCREEN_SHORTCUT;
 import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON_RECREATE_SPLIT;
 import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON_RETURN_HOME;
@@ -57,8 +60,9 @@ import android.util.Slog;
 
 import com.android.internal.logging.InstanceId;
 import com.android.internal.logging.InstanceIdSequence;
+import com.android.internal.protolog.ProtoLog;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.wm.shell.common.split.SplitScreenConstants.SplitPosition;
+import com.android.wm.shell.shared.split.SplitScreenConstants.SplitPosition;
 import com.android.wm.shell.splitscreen.SplitScreenController.ExitReason;
 
 /**
@@ -133,6 +137,11 @@ public class SplitscreenEventLogger {
             @SplitPosition int mainStagePosition, int mainStageUid,
             @SplitPosition int sideStagePosition, int sideStageUid,
             boolean isLandscape) {
+        if (hasStartedSession()) {
+            ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logEnter: no-op, previous session has not ended");
+            return;
+        }
+
         mLoggerSessionId = mIdSequence.newInstanceId();
         int enterReason = getLoggerEnterReason(isLandscape);
         updateMainStageState(getMainStagePositionFromSplitPosition(mainStagePosition, isLandscape),
@@ -140,6 +149,14 @@ public class SplitscreenEventLogger {
         updateSideStageState(getSideStagePositionFromSplitPosition(sideStagePosition, isLandscape),
                 sideStageUid);
         updateSplitRatioState(splitRatio);
+
+        ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logEnter: enterReason=%d splitRatio=%f "
+                        + "mainStagePosition=%d mainStageUid=%d sideStagePosition=%d "
+                        + "sideStageUid=%d isLandscape=%b mEnterSessionId=%d mLoggerSessionId=%d",
+                enterReason, splitRatio, mLastMainStagePosition, mLastMainStageUid,
+                mLastSideStagePosition, mLastSideStageUid, isLandscape,
+                mEnterSessionId != null ? mEnterSessionId.getId() : 0, mLoggerSessionId.getId());
+
         FrameworkStatsLog.write(FrameworkStatsLog.SPLITSCREEN_UI_CHANGED,
                 FrameworkStatsLog.SPLITSCREEN_UICHANGED__ACTION__ENTER,
                 enterReason,
@@ -196,6 +213,8 @@ public class SplitscreenEventLogger {
                 return SPLITSCREEN_UICHANGED__EXIT_REASON__FULLSCREEN_SHORTCUT;
             case EXIT_REASON_DESKTOP_MODE:
                 return SPLITSCREEN_UICHANGED__EXIT_REASON__DESKTOP_MODE;
+            case EXIT_REASON_FULLSCREEN_REQUEST:
+                return SPLITSCREEN_UICHANGED__EXIT_REASON__FULLSCREEN_REQUEST;
             case EXIT_REASON_UNKNOWN:
                 // Fall through
             default:
@@ -212,14 +231,25 @@ public class SplitscreenEventLogger {
             @SplitPosition int mainStagePosition, int mainStageUid,
             @SplitPosition int sideStagePosition, int sideStageUid, boolean isLandscape) {
         if (mLoggerSessionId == null) {
+            ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logExit: no-op, mLoggerSessionId is null");
             // Ignore changes until we've started logging the session
             return;
         }
         if ((mainStagePosition != SPLIT_POSITION_UNDEFINED
                 && sideStagePosition != SPLIT_POSITION_UNDEFINED)
                         || (mainStageUid != 0 && sideStageUid != 0)) {
+            ProtoLog.d(WM_SHELL_SPLIT_SCREEN,
+                    "logExit: no-op, only main or side stage should be set, not both/none");
             throw new IllegalArgumentException("Only main or side stage should be set");
         }
+
+        ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logExit: exitReason=%d mainStagePosition=%d"
+                        + " mainStageUid=%d sideStagePosition=%d sideStageUid=%d isLandscape=%b"
+                        + " mLoggerSessionId=%d", getLoggerExitReason(exitReason),
+                getMainStagePositionFromSplitPosition(mainStagePosition, isLandscape), mainStageUid,
+                getSideStagePositionFromSplitPosition(sideStagePosition, isLandscape), sideStageUid,
+                isLandscape, mLoggerSessionId.getId());
+
         FrameworkStatsLog.write(FrameworkStatsLog.SPLITSCREEN_UI_CHANGED,
                 FrameworkStatsLog.SPLITSCREEN_UICHANGED__ACTION__EXIT,
                 0 /* enterReason */,
@@ -304,25 +334,34 @@ public class SplitscreenEventLogger {
      */
     public void logResize(float splitRatio) {
         if (mLoggerSessionId == null) {
+            ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logResize: no-op, mLoggerSessionId is null");
             // Ignore changes until we've started logging the session
             return;
         }
         if (splitRatio <= 0f || splitRatio >= 1f) {
+            ProtoLog.d(WM_SHELL_SPLIT_SCREEN,
+                    "logResize: no-op, splitRatio indicates that user is dismissing, not resizing");
             // Don't bother reporting resizes that end up dismissing the split, that will be logged
             // via the exit event
             return;
         }
         if (!updateSplitRatioState(splitRatio)) {
+            ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logResize: no-op, split ratio was not changed");
             // Ignore if there are no user perceived changes
             return;
         }
+
+        ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logResize: splitRatio=%f mLoggerSessionId=%d",
+                mLastSplitRatio, mLoggerSessionId.getId());
         FrameworkStatsLog.write(FrameworkStatsLog.SPLITSCREEN_UI_CHANGED,
                 FrameworkStatsLog.SPLITSCREEN_UICHANGED__ACTION__RESIZE,
                 0 /* enterReason */,
                 0 /* exitReason */,
                 mLastSplitRatio,
-                0 /* mainStagePosition */, 0 /* mainStageUid */,
-                0 /* sideStagePosition */, 0 /* sideStageUid */,
+                mLastMainStagePosition,
+                mLastMainStageUid,
+                mLastSideStagePosition,
+                mLastSideStageUid,
                 0 /* dragInstanceId */,
                 mLoggerSessionId.getId());
     }
@@ -333,6 +372,7 @@ public class SplitscreenEventLogger {
     public void logSwap(@SplitPosition int mainStagePosition, int mainStageUid,
             @SplitPosition int sideStagePosition, int sideStageUid, boolean isLandscape) {
         if (mLoggerSessionId == null) {
+            ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logSwap: no-op, mLoggerSessionId is null");
             // Ignore changes until we've started logging the session
             return;
         }
@@ -341,6 +381,11 @@ public class SplitscreenEventLogger {
                 mainStageUid);
         updateSideStageState(getSideStagePositionFromSplitPosition(sideStagePosition, isLandscape),
                 sideStageUid);
+
+        ProtoLog.d(WM_SHELL_SPLIT_SCREEN, "logSwap: mainStagePosition=%d mainStageUid=%d "
+                + "sideStagePosition=%d sideStageUid=%d mLoggerSessionId=%d",
+                mLastMainStagePosition, mLastMainStageUid, mLastSideStagePosition,
+                mLastSideStageUid, mLoggerSessionId.getId());
         FrameworkStatsLog.write(FrameworkStatsLog.SPLITSCREEN_UI_CHANGED,
                 FrameworkStatsLog.SPLITSCREEN_UICHANGED__ACTION__SWAP,
                 0 /* enterReason */,

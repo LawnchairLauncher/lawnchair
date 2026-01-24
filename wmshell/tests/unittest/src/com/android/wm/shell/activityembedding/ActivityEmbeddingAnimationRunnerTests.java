@@ -20,9 +20,13 @@ import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.window.TransitionInfo.FLAG_IN_TASK_WITH_EMBEDDED_ACTIVITY;
 import static android.window.TransitionInfo.FLAG_IS_BEHIND_STARTING_WINDOW;
 
+import static com.android.wm.shell.activityembedding.ActivityEmbeddingAnimationRunner.calculateParentBounds;
+import static com.android.wm.shell.activityembedding.ActivityEmbeddingAnimationRunner.shouldUseJumpCutForAnimation;
 import static com.android.wm.shell.transition.Transitions.TRANSIT_TASK_FRAGMENT_DRAG_RESIZE;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -32,24 +36,27 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import android.animation.Animator;
-import android.platform.test.annotations.DisableFlags;
-import android.platform.test.annotations.EnableFlags;
-import android.platform.test.flag.junit.SetFlagsRule;
+import android.annotation.NonNull;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.window.TransitionInfo;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.android.window.flags.Flags;
 import com.android.wm.shell.transition.TransitionInfoBuilder;
 
+import com.google.testing.junit.testparameterinjector.TestParameter;
+import com.google.testing.junit.testparameterinjector.TestParameterInjector;
+
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Tests for {@link ActivityEmbeddingAnimationRunner}.
@@ -58,11 +65,8 @@ import java.util.ArrayList;
  *  atest WMShellUnitTests:ActivityEmbeddingAnimationRunnerTests
  */
 @SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(TestParameterInjector.class)
 public class ActivityEmbeddingAnimationRunnerTests extends ActivityEmbeddingAnimationTestBase {
-
-    @Rule
-    public SetFlagsRule mRule = new SetFlagsRule();
 
     @Before
     public void setup() {
@@ -70,7 +74,6 @@ public class ActivityEmbeddingAnimationRunnerTests extends ActivityEmbeddingAnim
         doNothing().when(mController).onAnimationFinished(any());
     }
 
-    @EnableFlags(Flags.FLAG_MOVE_ANIMATION_OPTIONS_TO_CHANGE)
     @Test
     public void testStartAnimation() {
         final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_OPEN, 0)
@@ -96,7 +99,6 @@ public class ActivityEmbeddingAnimationRunnerTests extends ActivityEmbeddingAnim
         verify(mController).onAnimationFinished(mTransition);
     }
 
-    @EnableFlags(Flags.FLAG_MOVE_ANIMATION_OPTIONS_TO_CHANGE)
     @Test
     public void testChangesBehindStartingWindow() {
         final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_OPEN, 0)
@@ -111,7 +113,6 @@ public class ActivityEmbeddingAnimationRunnerTests extends ActivityEmbeddingAnim
         assertEquals(0, animator.getDuration());
     }
 
-    @EnableFlags(Flags.FLAG_MOVE_ANIMATION_OPTIONS_TO_CHANGE)
     @Test
     public void testTransitionTypeDragResize() {
         final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_TASK_FRAGMENT_DRAG_RESIZE, 0)
@@ -126,15 +127,14 @@ public class ActivityEmbeddingAnimationRunnerTests extends ActivityEmbeddingAnim
         assertEquals(0, animator.getDuration());
     }
 
-    @DisableFlags(Flags.FLAG_MOVE_ANIMATION_OPTIONS_TO_CHANGE)
     @Test
-    public void testInvalidCustomAnimation_disableAnimationOptionsPerChange() {
+    public void testInvalidCustomAnimation_enableAnimationOptionsPerChange() {
         final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_OPEN, 0)
-                .addChange(createChange(FLAG_IN_TASK_WITH_EMBEDDED_ACTIVITY))
+                .addChange(createChange(FLAG_IN_TASK_WITH_EMBEDDED_ACTIVITY, TRANSIT_OPEN))
                 .build();
-        info.setAnimationOptions(TransitionInfo.AnimationOptions
-                .makeCustomAnimOptions("packageName", 0 /* enterResId */, 0 /* exitResId */,
-                        0 /* backgroundColor */, false /* overrideTaskTransition */));
+        info.getChanges().getFirst().setAnimationOptions(TransitionInfo.AnimationOptions
+                .makeCustomAnimOptions("packageName", 0 /* enterResId */, 0 /* changeResId */,
+                        0 /* exitResId */, false /* overrideTaskTransition */));
         final Animator animator = mAnimRunner.createAnimator(
                 info, mStartTransaction, mFinishTransaction,
                 () -> mFinishCallback.onTransitionFinished(null /* wct */),
@@ -144,21 +144,113 @@ public class ActivityEmbeddingAnimationRunnerTests extends ActivityEmbeddingAnim
         assertEquals(0, animator.getDuration());
     }
 
-    @EnableFlags(Flags.FLAG_MOVE_ANIMATION_OPTIONS_TO_CHANGE)
     @Test
-    public void testInvalidCustomAnimation_enableAnimationOptionsPerChange() {
-        final TransitionInfo info = new TransitionInfoBuilder(TRANSIT_OPEN, 0)
-                .addChange(createChange(FLAG_IN_TASK_WITH_EMBEDDED_ACTIVITY))
-                .build();
-        info.getChanges().getFirst().setAnimationOptions(TransitionInfo.AnimationOptions
-                .makeCustomAnimOptions("packageName", 0 /* enterResId */, 0 /* exitResId */,
-                        0 /* backgroundColor */, false /* overrideTaskTransition */));
-        final Animator animator = mAnimRunner.createAnimator(
-                info, mStartTransaction, mFinishTransaction,
-                () -> mFinishCallback.onTransitionFinished(null /* wct */),
-                new ArrayList<>());
+    public void testCalculateParentBounds_flagEnabled_emptyParentSize() {
+        TransitionInfo.Change change;
+        final Rect actualParentBounds = new Rect();
+        change = prepareChangeForParentBoundsCalculationTest(
+                new Point(0, 0) /* endRelOffset */,
+                new Rect(0, 0, 2000, 2000),
+                new Point() /* endParentSize */
+        );
 
-        // An invalid custom animation is equivalent to jump-cut.
-        assertEquals(0, animator.getDuration());
+        calculateParentBounds(change, actualParentBounds);
+
+        assertTrue("Parent bounds must be empty because end parent size is not set.",
+                actualParentBounds.isEmpty());
+    }
+
+    @Test
+    public void testCalculateParentBounds_flagEnabled(
+            @TestParameter ParentBoundsTestParameters params) {
+        final Rect parentBounds = params.getParentBounds();
+        final Rect endAbsBounds = params.getEndAbsBounds();
+        final TransitionInfo.Change change = prepareChangeForParentBoundsCalculationTest(
+                new Point(endAbsBounds.left - parentBounds.left,
+                        endAbsBounds.top - parentBounds.top),
+                endAbsBounds, new Point(parentBounds.width(), parentBounds.height()));
+        final Rect actualParentBounds = new Rect();
+
+        calculateParentBounds(change, actualParentBounds);
+
+        assertEquals(parentBounds, actualParentBounds);
+    }
+
+    private enum ParentBoundsTestParameters {
+        PARENT_START_WITH_0_0(
+                new int[]{0, 0, 2000, 2000},
+                new int[]{0, 0, 2000, 2000}),
+        CONTAINER_NOT_START_WITH_0_0(
+                new int[] {0, 0, 2000, 2000},
+                new int[] {1000, 500, 1500, 1500}),
+        PARENT_ON_THE_RIGHT(
+                new int[] {1000, 0, 2000, 2000},
+                new int[] {1000, 500, 1500, 1500}),
+        PARENT_ON_THE_BOTTOM(
+                new int[] {0, 1000, 2000, 2000},
+                new int[] {500, 1500, 1500, 2000}),
+        PARENT_IN_THE_MIDDLE(
+                new int[] {500, 500, 1500, 1500},
+                new int[] {1000, 500, 1500, 1000});
+
+        /**
+         * An int array to present {left, top, right, bottom} of the parent {@link Rect bounds}.
+         */
+        @NonNull
+        private final int[] mParentBounds;
+
+        /**
+         * An int array to present {left, top, right, bottom} of the absolute container
+         * {@link Rect bounds} after the transition finishes.
+         */
+        @NonNull
+        private final int[] mEndAbsBounds;
+
+        ParentBoundsTestParameters(
+                @NonNull int[] parentBounds, @NonNull int[] endAbsBounds) {
+            mParentBounds = parentBounds;
+            mEndAbsBounds = endAbsBounds;
+        }
+
+        @NonNull
+        private Rect getParentBounds() {
+            return asRect(mParentBounds);
+        }
+
+        @NonNull
+        private Rect getEndAbsBounds() {
+            return asRect(mEndAbsBounds);
+        }
+
+        @NonNull
+        private static Rect asRect(@NonNull int[] bounds) {
+            if (bounds.length != 4) {
+                throw new IllegalArgumentException("There must be exactly 4 elements in bounds, "
+                        + "but found " + bounds.length + ": " + Arrays.toString(bounds));
+            }
+            return new Rect(bounds[0], bounds[1], bounds[2], bounds[3]);
+        }
+    }
+
+    @Test
+    public void testShouldUseJumpCutForAnimation() {
+        final Animation noopAnimation = new AlphaAnimation(0f, 1f);
+        assertTrue("Animation without duration should use jump cut.",
+                shouldUseJumpCutForAnimation(noopAnimation));
+
+        final Animation alphaAnimation = new AlphaAnimation(0f, 1f);
+        alphaAnimation.setDuration(100);
+        assertFalse("Animation with duration should not use jump cut.",
+                shouldUseJumpCutForAnimation(alphaAnimation));
+    }
+
+    @NonNull
+    private static TransitionInfo.Change prepareChangeForParentBoundsCalculationTest(
+            @NonNull Point endRelOffset, @NonNull Rect endAbsBounds, @NonNull Point endParentSize) {
+        final TransitionInfo.Change change = createChange(0 /* flags */);
+        change.setEndRelOffset(endRelOffset.x, endRelOffset.y);
+        change.setEndAbsBounds(endAbsBounds);
+        change.setEndParentSize(endParentSize.x, endParentSize.y);
+        return change;
     }
 }

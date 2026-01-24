@@ -28,7 +28,7 @@ import android.view.IWindowManager;
 import android.view.InputChannel;
 import android.view.InputEvent;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 

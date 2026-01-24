@@ -24,6 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -41,6 +42,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
  * A utility class to generate preview bitmap for dragging.
  */
 public class DragPreviewProvider {
+    public static final String TAG = "DragPreviewProvider";
     private final Rect mTempRect = new Rect();
 
     protected final View mView;
@@ -111,9 +113,19 @@ public class DragPreviewProvider {
             return new InsetDrawable(drawable, xInset / 2, yInset / 2, xInset / 2, yInset / 2);
         }
 
-        return new FastBitmapDrawable(
+        Bitmap bitmap =
                 BitmapRenderer.createHardwareBitmap(width + blurSizeOutline,
-                        height + blurSizeOutline, (c) -> drawDragView(c, scale)));
+                        height + blurSizeOutline, (c) -> drawDragView(c, scale));
+
+        if (bitmap == null) {
+            Log.e(TAG, "Failed to create bitmap for drag preview with width: "
+                    + width + " height: " + height);
+            bitmap = Bitmap.createBitmap(
+                    width + blurSizeOutline, height + blurSizeOutline,
+                    Bitmap.Config.ARGB_8888);
+        }
+
+        return new FastBitmapDrawable(bitmap);
     }
 
     /**

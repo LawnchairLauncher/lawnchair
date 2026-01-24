@@ -19,8 +19,8 @@ package com.android.wm.shell.splitscreen.tv;
 import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.KEYCODE_BACK;
 
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -31,7 +31,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 import com.android.wm.shell.R;
-import com.android.wm.shell.common.split.SplitScreenConstants;
+import com.android.wm.shell.shared.split.SplitScreenConstants;
 
 /**
  * A View for the Menu Window.

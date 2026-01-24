@@ -15,22 +15,24 @@
  */
 package com.android.launcher3.util;
 
-import static android.util.Base64.NO_PADDING;
-import static android.util.Base64.NO_WRAP;
-
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_KEY;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_LABEL;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_TAG;
+import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_PROVIDER_KEY;
+import static com.android.launcher3.LauncherSettings.Settings.createBlobProviderKey;
 
 import static org.junit.Assert.assertTrue;
 
+import android.Manifest;
 import android.app.Instrumentation;
 import android.app.blob.BlobHandle;
 import android.app.blob.BlobStoreManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.AsyncTask;
@@ -41,7 +43,6 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.system.OsConstants;
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.test.uiautomator.UiDevice;
@@ -168,11 +169,12 @@ public class TestUtil {
             session.commit(AsyncTask.THREAD_POOL_EXECUTOR, i -> wait.countDown());
         }
 
-        String key = Base64.encodeToString(digest, NO_WRAP | NO_PADDING);
-        Settings.Secure.putString(context.getContentResolver(), LAYOUT_DIGEST_KEY, key);
+        grantWriteSecurePermission();
+        Settings.Secure.putString(
+                context.getContentResolver(), LAYOUT_PROVIDER_KEY, createBlobProviderKey(digest));
         wait.await();
         return () ->
-            Settings.Secure.putString(context.getContentResolver(), LAYOUT_DIGEST_KEY, null);
+            Settings.Secure.putString(context.getContentResolver(), LAYOUT_PROVIDER_KEY, null);
     }
 
     /**
@@ -222,6 +224,23 @@ public class TestUtil {
             failed = true;
         }
         assertTrue(message, failed);
+    }
+
+    /**
+     * Grants [WRITE_SECURE_SETTINGS] permission in runtime.
+     */
+    public static void grantWriteSecurePermission() {
+        getInstrumentation().getUiAutomation()
+                .adoptShellPermissionIdentity(Manifest.permission.WRITE_SECURE_SETTINGS);
+    }
+
+    /**
+     * Returns the activity info corresponding to the system app for the provided category
+     */
+    public static ActivityInfo resolveSystemAppInfo(String category) {
+        return getInstrumentation().getTargetContext().getPackageManager().resolveActivity(
+                new Intent(Intent.ACTION_MAIN).addCategory(category),
+                PackageManager.MATCH_SYSTEM_ONLY).activityInfo;
     }
 
     /** Interface to indicate a runnable which can throw any exception. */

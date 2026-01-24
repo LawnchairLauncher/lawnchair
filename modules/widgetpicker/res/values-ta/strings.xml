@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright (C) 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="widgets_list_header_app_name_fallback_label" msgid="5151621916941957989">"ஆப்ஸின் பெயர்"</string>
+    <string name="widgets_list_header_widgets_count_label" msgid="578128450351893001">"{count,plural, =1{# விட்ஜெட்}other{# விட்ஜெட்கள்}}"</string>
+    <string name="widget_span_dimensions_format" msgid="4325492869474815131">"%1$d × %2$d"</string>
+    <string name="widget_span_dimensions_accessible_format" msgid="6976586776463259811">"%1$d அகலம் மற்றும் %2$d உயரம்"</string>
+    <string name="widget_details_accessibility_label" msgid="4525863892199168041">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட், %2$d அகலம் மற்றும் %3$d உயரம்"</string>
+    <string name="widget_tap_to_show_add_button_label" msgid="3358071294981269937">"சேர்ப்பதற்கான பட்டனைக் காட்டும்"</string>
+    <string name="widget_tap_to_hide_add_button_label" msgid="7484536838079871360">"சேர்ப்பதற்கான பட்டனை மறைக்கும்"</string>
+    <string name="widget_tap_to_add_button_label" msgid="3110313936849291769">"சேர்"</string>
+    <string name="widget_tap_to_add_button_content_description" msgid="3591512565497536699">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட்டைச் சேர்க்கும்"</string>
+    <string name="featured_widgets_tab_label" msgid="5911854248145111652">"பிரத்தியேகம்"</string>
+    <string name="browse_widgets_tab_label" msgid="7179933202350730737">"தேடுக"</string>
+    <string name="widget_picker_right_pane_accessibility_label" msgid="5095301787174820892">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> விட்ஜெட்கள் வலதுபுறத்தில் உள்ளன, தேடல் மற்றும் விருப்பங்கள் இடதுபுறத்தில் உள்ளன"</string>
+    <string name="widgets_search_bar_hint" msgid="5705758627532180867">"தேடுங்கள்"</string>
+    <string name="widget_search_bar_clear_button_label" msgid="6120140737164336517">"அழி"</string>
+    <string name="widget_search_bar_back_button_label" msgid="7028448831228587743">"பின்செல்"</string>
+    <string name="widgets_list_no_widgets_available" msgid="6451723564588621540">"விட்ஜெட்களும் ஷார்ட்கட்களும் கிடைக்கவில்லை"</string>
+    <string name="widgets_no_search_results" msgid="4336254967062545985">"விட்ஜெட்கள் அல்லது ஷார்ட்கட்கள் எதுவும் இல்லை"</string>
+</resources>

@@ -17,9 +17,12 @@
 package com.android.wm.shell.bubbles;
 
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
+import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.UserHandle;
 import com.android.wm.shell.bubbles.IBubblesListener;
-import com.android.wm.shell.common.bubbles.BubbleBarLocation;
+import com.android.wm.shell.shared.bubbles.BubbleBarLocation;
 
 /**
  * Interface that is exposed to remote callers (launcher) to manipulate the bubbles feature when
@@ -31,9 +34,9 @@ interface IBubbles {
 
     oneway void unregisterBubbleListener(in IBubblesListener listener) = 2;
 
-    oneway void showBubble(in String key, in int topOnScreen) = 3;
+    oneway void showBubble(in String key, in int bubbleBarTopToScreenBottom) = 3;
 
-    oneway void dragBubbleToDismiss(in String key) = 4;
+    oneway void dragBubbleToDismiss(in String key, in long timestamp) = 4;
 
     oneway void removeAllBubbles() = 5;
 
@@ -43,9 +46,19 @@ interface IBubbles {
 
     oneway void showUserEducation(in int positionX, in int positionY) = 8;
 
-    oneway void setBubbleBarLocation(in BubbleBarLocation location) = 9;
+    oneway void setBubbleBarLocation(in BubbleBarLocation location, in int source) = 9;
 
-    oneway void updateBubbleBarTopOnScreen(in int topOnScreen) = 10;
+    oneway void updateBubbleBarTopToScreenBottom(in int bubbleBarTopToScreenBottom) = 10;
 
-    oneway void stopBubbleDrag(in BubbleBarLocation location, in int topOnScreen) = 11;
+    oneway void stopBubbleDrag(in BubbleBarLocation location, in int bubbleBarTopToScreenBottom) = 11;
+
+    oneway void showShortcutBubble(in ShortcutInfo info, in @nullable BubbleBarLocation location) = 12;
+
+    oneway void showAppBubble(in Intent intent, in UserHandle user, in @nullable BubbleBarLocation location) = 13;
+
+    oneway void showExpandedView() = 14;
+
+    oneway void moveDraggedBubbleToFullscreen(in String key, in Point dropLocation) = 15;
+
+    oneway void setHasBubbleBar(in boolean hasBubbleBar) = 16;
 }

@@ -37,10 +37,10 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.TouchInteractionService.TISBinder;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
+import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.TISBindHelper;
 
 import java.util.ArrayList;
@@ -54,8 +54,6 @@ public class GestureSandboxActivity extends FragmentActivity {
     static final String KEY_TUTORIAL_TYPE = "tutorial_type";
     static final String KEY_GESTURE_COMPLETE = "gesture_complete";
     static final String KEY_USE_TUTORIAL_MENU = "use_tutorial_menu";
-    public static final double SQUARE_ASPECT_RATIO_BOTTOM_BOUND = 0.95;
-    public static final double SQUARE_ASPECT_RATIO_UPPER_BOUND = 1.05;
 
     @Nullable private TutorialType[] mTutorialSteps;
     private GestureSandboxFragment mCurrentFragment;
@@ -80,9 +78,7 @@ public class GestureSandboxActivity extends FragmentActivity {
         Bundle args = savedInstanceState == null ? getIntent().getExtras() : savedInstanceState;
 
         boolean gestureComplete = args != null && args.getBoolean(KEY_GESTURE_COMPLETE, false);
-        if (FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                && args != null
-                && args.getBoolean(KEY_USE_TUTORIAL_MENU, false)) {
+        if (args != null && args.getBoolean(KEY_USE_TUTORIAL_MENU, false)) {
             mTutorialSteps = null;
             TutorialType tutorialTypeOverride = (TutorialType) args.get(KEY_TUTORIAL_TYPE);
             mCurrentFragment = tutorialTypeOverride == null
@@ -102,9 +98,7 @@ public class GestureSandboxActivity extends FragmentActivity {
                 .add(R.id.gesture_tutorial_fragment_container, mCurrentFragment)
                 .commit();
 
-        if (FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            correctUserOrientation();
-        }
+        correctUserOrientation();
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
 
         initWindowInsets();
@@ -116,29 +110,18 @@ public class GestureSandboxActivity extends FragmentActivity {
         super.onConfigurationChanged(newConfig);
 
         // Ensure the prompt to rotate the screen is updated
-        if (FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            correctUserOrientation();
-        }
+        correctUserOrientation();
     }
 
     private void initWindowInsets() {
         View root = findViewById(android.R.id.content);
-        root.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                updateExclusionRects(root);
-            }
-        });
+        root.addOnLayoutChangeListener(
+                (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) ->
+                        updateExclusionRects(root));
 
         // Return CONSUMED if you don't want want the window insets to keep being
         // passed down to descendant views.
-        root.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-                return WindowInsets.CONSUMED;
-            }
-        });
+        root.setOnApplyWindowInsetsListener((v, insets) -> WindowInsets.CONSUMED);
     }
 
     private void updateExclusionRects(View rootView) {
@@ -168,12 +151,9 @@ public class GestureSandboxActivity extends FragmentActivity {
     private void correctUserOrientation() {
         DeviceProfile deviceProfile = InvariantDeviceProfile.INSTANCE.get(
                 getApplicationContext()).getDeviceProfile(this);
-        if (deviceProfile.isTablet) {
+        if (deviceProfile.getDeviceProperties().isTablet()) {
             // The tutorial will work in either orientation if the height and width are similar
-            boolean isAspectRatioSquare =
-                    deviceProfile.aspectRatio > SQUARE_ASPECT_RATIO_BOTTOM_BOUND
-                            && deviceProfile.aspectRatio < SQUARE_ASPECT_RATIO_UPPER_BOUND;
-            boolean showRotationPrompt = !isAspectRatioSquare
+            boolean showRotationPrompt = !LayoutUtils.isAspectRatioSquare(deviceProfile.getDeviceProperties().getAspectRatio())
                     && getResources().getConfiguration().orientation
                     == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 

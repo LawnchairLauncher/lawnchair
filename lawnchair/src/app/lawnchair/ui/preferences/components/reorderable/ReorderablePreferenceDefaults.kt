@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import sh.calvin.reorderable.ReorderableCollectionItemScope
-import sh.calvin.reorderable.ReorderableScope
+import sh.calvin.reorderable.ReorderableListItemScope
 
 @Composable
 fun ReorderablePreferenceItem(
@@ -117,7 +117,7 @@ fun ReorderableDragHandle(
 
 @Composable
 fun ReorderableDragHandle(
-    scope: ReorderableScope,
+    scope: ReorderableListItemScope,
     modifier: Modifier = Modifier,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     isDraggable: Boolean = true,

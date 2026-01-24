@@ -20,7 +20,6 @@ import app.lawnchair.ui.preferences.components.RecentsQuickAction
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
-import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.util.preview.PreviewLawnchair
@@ -73,13 +72,18 @@ fun QuickstepPreferences(
         modifier = modifier,
     ) {
         if (!LawnchairApp.isRecentsEnabled) QuickSwitchIgnoredWarning()
+        val recentsTranslucentBackground by prefs.recentsTranslucentBackground.observeAsState()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
-            SwitchPreference(
-                adapter = prefs.recentsTranslucentBackground.getAdapter(),
-                label = stringResource(id = R.string.translucent_background),
-            )
-            val recentsTranslucentBackground by prefs.recentsTranslucentBackground.observeAsState()
-            ExpandAndShrink(visible = recentsTranslucentBackground) {
+            Item {
+                SwitchPreference(
+                    adapter = prefs.recentsTranslucentBackground.getAdapter(),
+                    label = stringResource(id = R.string.translucent_background),
+                )
+            }
+            Item(
+                key = "recents_translucent_background_alpha",
+                visible = recentsTranslucentBackground,
+            ) {
                 SliderPreference(
                     adapter = prefs.recentsTranslucentBackgroundAlpha.getAdapter(),
                     label = stringResource(id = R.string.translucent_background_alpha),
@@ -101,11 +105,16 @@ fun QuickstepPreferences(
             description = stringResource(id = (R.string.window_corner_radius_description)),
             showDescription = overrideWindowCornerRadius,
         ) {
-            SwitchPreference(
-                adapter = prefs.overrideWindowCornerRadius.getAdapter(),
-                label = stringResource(id = R.string.override_window_corner_radius_label),
-            )
-            ExpandAndShrink(visible = overrideWindowCornerRadius) {
+            Item {
+                SwitchPreference(
+                    adapter = prefs.overrideWindowCornerRadius.getAdapter(),
+                    label = stringResource(id = R.string.override_window_corner_radius_label),
+                )
+            }
+            Item(
+                "window_corner_radius",
+                overrideWindowCornerRadius,
+            ) {
                 SliderPreference(
                     label = stringResource(id = R.string.window_corner_radius_label),
                     adapter = prefs.windowCornerRadius.getAdapter(),
@@ -119,10 +128,12 @@ fun QuickstepPreferences(
             PreferenceGroup(
                 heading = stringResource(id = R.string.taskbar_label),
             ) {
-                SwitchPreference(
-                    adapter = prefs2.enableTaskbarOnPhone.getAdapter(),
-                    label = stringResource(id = R.string.enable_taskbar_experimental),
-                )
+                Item {
+                    SwitchPreference(
+                        adapter = prefs2.enableTaskbarOnPhone.getAdapter(),
+                        label = stringResource(id = R.string.enable_taskbar_experimental),
+                    )
+                }
             }
         }
     }

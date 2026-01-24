@@ -58,7 +58,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     @WorkerThread
     private static void processIntent(Context context, Intent intent) {
         UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
-        if (!isEnabled(context)) {
+        if (!isEnabled(context, user)) {
             // User has decided to not add icons on homescreen.
             return;
         }
@@ -70,18 +70,27 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             return;
         }
 
+        if (info.getSessionId() == -1) {
+            FileLog.d(LOG, "Session id for " + info.getAppPackageName() + " is -1");
+            return;
+        }
+
         InstallSessionHelper packageInstallerCompat = InstallSessionHelper.INSTANCE.get(context);
-        boolean alreadyAddedPromiseIcon = packageInstallerCompat.promiseIconAddedForId(info.getSessionId());
+        boolean alreadyAddedPromiseIcon =
+                packageInstallerCompat.promiseIconAddedForId(info.getSessionId());
         if (TextUtils.isEmpty(info.getAppPackageName())
                 || info.getInstallReason() != PackageManager.INSTALL_REASON_USER
                 || alreadyAddedPromiseIcon) {
             FileLog.d(LOG,
                     String.format(Locale.ENGLISH,
-                            "Removing PromiseIcon for package: %s, install reason: %d,"
+                            "Removing unneeded PromiseIcon for package: %s"
+                                    + ", install reason: %d,"
                                     + " alreadyAddedPromiseIcon: %s",
-                            info.getAppPackageName(),
-                            info.getInstallReason(),
-                            alreadyAddedPromiseIcon));
+                    info.getAppPackageName(),
+                    info.getInstallReason(),
+                    alreadyAddedPromiseIcon
+                )
+            );
             packageInstallerCompat.removePromiseIconId(info.getSessionId());
             return;
         }
@@ -95,9 +104,19 @@ public class SessionCommitReceiver extends BroadcastReceiver {
                 .queueItem(info.getAppPackageName(), user);
     }
 
-    public static boolean isEnabled(Context context) {
-        if (PreferenceExtensionsKt.firstBlocking(PreferenceManager2.getInstance(context).getLockHomeScreen()))
+    /**
+     * Returns whether adding Installed App Icons to home screen is allowed or not.
+     * Not allowed when:
+     * - User belongs to {@link com.android.launcher3.util.UserIconInfo.TYPE_PRIVATE} or
+     * - Home Settings preference to add App Icons on Home Screen is set as disabled
+     */
+    public static boolean isEnabled(Context context, UserHandle user) {
+        if (Flags.privateSpaceRestrictItemDrag() 
+            && PreferenceExtensionsKt.firstBlocking(PreferenceManager2.getInstance(context).getLockHomeScreen())
+            && user != null
+            && UserCache.getInstance(context).getUserInfo(user).isPrivate()) {
             return false;
-        return Utilities.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY, true);
+        }
+        return LauncherPrefs.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY, true);
     }
 }

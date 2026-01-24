@@ -16,13 +16,15 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.launcher3.Flags.enableDesktopExplodedView;
 import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
-import static com.android.wm.shell.Flags.enableSplitContextual;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.SystemProperties;
+
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -30,6 +32,8 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.ScrimColors;
 import com.android.quickstep.util.BaseDepthController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -66,11 +70,10 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Context context, boolean isToState) {
+    public int getTransitionDuration(ActivityContext context, boolean isToState) {
         if (isToState) {
-            // In gesture modes, overview comes in all the way from the side, so give it
-            // more time.
-            return DisplayController.getNavigationMode(context).hasGestures
+            // In gesture modes, overview comes in all the way from the side, so give it more time.
+            return DisplayController.getNavigationMode(context.asContext()).hasGestures
                     ? OVERVIEW_SLIDE_IN_DURATION
                     : OVERVIEW_POP_IN_DURATION;
         } else {
@@ -85,9 +88,8 @@ public class OverviewState extends LauncherState {
         recentsView.getTaskSize(sTempRect);
         float scale;
         DeviceProfile deviceProfile = launcher.getDeviceProfile();
-        if (deviceProfile.isTwoPanels) {
-            // In two panel layout, width does not include both panels or space between
-            // them, so
+        if (deviceProfile.getDeviceProperties().isTwoPanels()) {
+            // In two panel layout, width does not include both panels or space between them, so
             // use height instead. We do not use height for handheld, as cell layout can be
             // shorter than a task and we want the workspace to scale down to task size.
             scale = (float) sTempRect.height() / deviceProfile.getCellLayoutHeight();
@@ -100,7 +102,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return new float[] { NO_SCALE, NO_OFFSET };
+        return new float[] {NO_SCALE, NO_OFFSET};
     }
 
     @Override
@@ -118,12 +120,12 @@ public class OverviewState extends LauncherState {
         if (PreferenceManager.getInstance(launcher).getRecentsActionClearAll().get()) {
             return OVERVIEW_ACTIONS;
         }
-        int elements = CLEAR_ALL_BUTTON | OVERVIEW_ACTIONS;
+        int elements = CLEAR_ALL_BUTTON | OVERVIEW_ACTIONS | ADD_DESK_BUTTON;
         DeviceProfile dp = launcher.getDeviceProfile();
         boolean showFloatingSearch;
-        if (dp.isPhone) {
+        if (dp.getDeviceProperties().isPhone()) {
             // Only show search in phone overview in portrait mode.
-            showFloatingSearch = !dp.isLandscape;
+            showFloatingSearch = !dp.getDeviceProperties().isLandscape();
         } else {
             // Only show search in tablet overview if taskbar is not visible.
             showFloatingSearch = !dp.isTaskbarPresent || isTaskbarStashed(launcher);
@@ -131,15 +133,15 @@ public class OverviewState extends LauncherState {
         if (showFloatingSearch) {
             elements |= FLOATING_SEARCH_BAR;
         }
-        if (enableSplitContextual() && launcher.isSplitSelectionActive()) {
-            elements &= ~CLEAR_ALL_BUTTON;
+        if (launcher.isSplitSelectionActive()) {
+            elements &= ~CLEAR_ALL_BUTTON & ~ADD_DESK_BUTTON;
         }
         return elements;
     }
 
     @Override
     public float getSplitSelectTranslation(Launcher launcher) {
-        if (!enableSplitContextual() || !launcher.isSplitSelectionActive()) {
+        if (!launcher.isSplitSelectionActive()) {
             return 0f;
         }
         RecentsView recentsView = launcher.getOverviewPanel();
@@ -155,7 +157,7 @@ public class OverviewState extends LauncherState {
     @Override
     public boolean shouldFloatingSearchBarUsePillWhenUnfocused(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
-        return dp.isPhone && !dp.isLandscape;
+        return dp.getDeviceProperties().isPhone() && !dp.getDeviceProperties().isLandscape();
     }
 
     @Override
@@ -164,13 +166,24 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getWorkspaceScrimColor(Launcher launcher) {
-        return ColorTokens.OverviewScrim.resolveColor(launcher);
+    public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
+        // Lawnchair-TODO-Colour: Check overviewScrimForegroundPrimary and overviewScrimForegroundSecondary
+        // Lawnchair-TODO-Colour: Move to OverviewScrim
+        return new ScrimColors(
+                /* backgroundColor */ Themes.getAttrColor(launcher, ColorTokens.OverviewScrimOverBlur.resolveColor(launcher)),
+                /* foregroundColor */ ColorUtils.compositeColors(
+                Themes.getAttrColor(launcher, R.attr.overviewScrimForegroundPrimary),
+                Themes.getAttrColor(launcher, R.attr.overviewScrimForegroundSecondary)));
     }
 
     @Override
     public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
-        return deviceProfile.isTablet;
+        return deviceProfile.getDeviceProperties().isTablet();
+    }
+
+    @Override
+    public boolean showExplodedDesktopView() {
+        return enableDesktopExplodedView();
     }
 
     @Override
@@ -215,9 +228,9 @@ public class OverviewState extends LauncherState {
     public void onBackInvoked(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
         TaskView taskView = recentsView.getRunningTaskView();
-        if (taskView != null) {
+        if (taskView != null && !taskView.isBeingDismissed()) {
             if (recentsView.isTaskViewFullyVisible(taskView)) {
-                taskView.launchTasks();
+                taskView.launchWithAnimation();
             } else {
                 recentsView.snapToPage(recentsView.indexOfChild(taskView));
             }
@@ -235,16 +248,14 @@ public class OverviewState extends LauncherState {
     }
 
     /**
-     * New Overview substate that represents the overview in modal mode (one task
-     * shown on its own)
+     *  New Overview substate that represents the overview in modal mode (one task shown on its own)
      */
     public static OverviewState newModalTaskState(int id) {
         return new OverviewModalTaskState(id);
     }
 
     /**
-     * New Overview substate representing state where 1 app for split screen has
-     * been selected and
+     * New Overview substate representing state where 1 app for split screen has been selected and
      * pinned and user is selecting the second one
      */
     public static OverviewState newSplitSelectState(int id) {

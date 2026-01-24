@@ -105,7 +105,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         int widthUsed;
-        if (deviceProfile.isTablet) {
+        if (deviceProfile.getDeviceProperties().isTablet()) {
             int margin = deviceProfile.allAppsLeftRightMargin;
             widthUsed = Math.max(2 * margin, 2 * (mInsets.left + mInsets.right));
         } else if (mInsets.bottom > 0) {
@@ -117,7 +117,8 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
         }
 
         measureChildWithMargins(mContent, widthMeasureSpec,
-                widthUsed, heightMeasureSpec, deviceProfile.bottomSheetTopPadding);
+                widthUsed, heightMeasureSpec,
+                deviceProfile.getBottomSheetProfile().getBottomSheetTopPadding());
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
     }
@@ -168,15 +169,15 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
                 windowInsets.getSystemWindowInsetBottom());
         }
         int contentHorizontalMarginInPx = getResources().getDimensionPixelSize(
-                R.dimen.widget_list_horizontal_margin);
+            R.dimen.widget_list_horizontal_margin);
         if (contentHorizontalMarginInPx != mContentHorizontalMarginInPx) {
             setContentHorizontalMargin(findViewById(R.id.widget_appName),
-                    contentHorizontalMarginInPx);
+                contentHorizontalMarginInPx);
             setContentHorizontalMargin(findViewById(R.id.widget_drag_instruction),
-                    contentHorizontalMarginInPx);
+                contentHorizontalMarginInPx);
             setContentHorizontalMargin(findViewById(R.id.widget_cell), contentHorizontalMarginInPx);
             setContentHorizontalMargin(findViewById(R.id.actions_container),
-                    contentHorizontalMarginInPx);
+                contentHorizontalMarginInPx);
             mContentHorizontalMarginInPx = contentHorizontalMarginInPx;
         }
         return windowInsets;

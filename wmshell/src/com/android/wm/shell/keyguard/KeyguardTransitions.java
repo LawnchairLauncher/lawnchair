@@ -44,4 +44,11 @@ public interface KeyguardTransitions {
      * Notify whether keyguard has created a remote animation runner for next app launch.
      */
     default void setLaunchingActivityOverLockscreen(boolean isLaunchingActivityOverLockscreen) {}
+
+    /**
+     * Notifies Shell to start a keyguard transition directly.
+     * @param keyguardShowing whether keyguard is showing or not.
+     * @param aodShowing whether aod is showing or not.
+     */
+    default void startKeyguardTransition(boolean keyguardShowing, boolean aodShowing) {}
 }

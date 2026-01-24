@@ -29,6 +29,7 @@
         android:importantForAccessibility="no">
 
         <com.android.launcher3.views.AccessibilityActionsView
+            android:id="@+id/accessibility_action_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/home_screen"
@@ -51,7 +52,7 @@
 
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
-        <com.android.launcher3.pageindicators.WorkspacePageIndicator
+        <com.android.launcher3.pageindicators.PageIndicatorDots
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
             android:layout_height="@dimen/workspace_page_indicator_height"

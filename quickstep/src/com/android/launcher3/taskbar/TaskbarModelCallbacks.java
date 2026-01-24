@@ -15,36 +15,35 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.window.flags2.Flags.enableDesktopWindowingMode;
-import static com.android.window.flags2.Flags.enableDesktopWindowingTaskbarRunningApps;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS_PREDICTION;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 
 import android.util.SparseArray;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.celllayout.CellInfo;
 import com.android.launcher3.model.BgDataModel;
-import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.statehandlers.DesktopVisibilityController;
+import com.android.launcher3.model.data.PredictedContainerInfo;
+import com.android.launcher3.model.data.WorkspaceData;
+import com.android.launcher3.taskbar.TaskbarView.TaskbarLayoutParams;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.LauncherActivityInterface;
-import com.android.quickstep.RecentsModel;
+import com.android.quickstep.util.GroupTask;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +53,7 @@ import java.util.function.Predicate;
  * Launcher model Callbacks for rendering taskbar.
  */
 public class TaskbarModelCallbacks implements
-        BgDataModel.Callbacks, LauncherBindableItemsContainer, RecentsModel.RunningTasksListener {
+        BgDataModel.Callbacks, LauncherBindableItemsContainer {
 
     private final SparseArray<ItemInfo> mHotseatItems = new SparseArray<>();
     private List<ItemInfo> mPredictedItems = Collections.emptyList();
@@ -68,8 +67,6 @@ public class TaskbarModelCallbacks implements
     // Used to defer any UI updates during the SUW unstash animation.
     private boolean mDeferUpdatesForSUW;
     private Runnable mDeferredUpdates;
-    private final DesktopVisibilityController.DesktopVisibilityListener mDesktopVisibilityListener =
-            visible -> updateRunningApps();
 
     public TaskbarModelCallbacks(
             TaskbarActivityContext context, TaskbarView container) {
@@ -79,72 +76,28 @@ public class TaskbarModelCallbacks implements
 
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
-        if (mControllers.taskbarRecentAppsController.getCanShowRunningApps()) {
-            RecentsModel.INSTANCE.get(mContext).registerRunningTasksListener(this);
-
-            if (shouldShowRunningAppsInDesktopMode()) {
-                DesktopVisibilityController desktopVisibilityController =
-                        LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
-                if (desktopVisibilityController != null) {
-                    desktopVisibilityController.registerDesktopVisibilityListener(
-                            mDesktopVisibilityListener);
-                }
-            }
-        }
-    }
-
-    /**
-     * Unregisters listeners in this class.
-     */
-    public void unregisterListeners() {
-        RecentsModel.INSTANCE.get(mContext).unregisterRunningTasksListener();
-
-        if (shouldShowRunningAppsInDesktopMode()) {
-            DesktopVisibilityController desktopVisibilityController =
-                    LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
-            if (desktopVisibilityController != null) {
-                desktopVisibilityController.unregisterDesktopVisibilityListener(
-                        mDesktopVisibilityListener);
-            }
-        }
-    }
-
-    private boolean shouldShowRunningAppsInDesktopMode() {
-        // TODO(b/335401172): unify DesktopMode checks in Launcher
-        return enableDesktopWindowingMode() && enableDesktopWindowingTaskbarRunningApps();
     }
 
     @Override
-    public void startBinding() {
-        mContext.setBindingItems(true);
+    public void bindCompleteModel(WorkspaceData itemIdMap, boolean isBindingSync) {
         mHotseatItems.clear();
-        mPredictedItems = Collections.emptyList();
-    }
+        mPredictedItems = itemIdMap.getPredictedContents(CONTAINER_HOTSEAT_PREDICTION);
+        handleItemsAdded(itemIdMap);
 
-    @Override
-    public void finishBindingItems(IntSet pagesBoundFirst) {
-        mContext.setBindingItems(false);
+        if (itemIdMap.get(CONTAINER_ALL_APPS_PREDICTION) instanceof PredictedContainerInfo pci) {
+            mControllers.taskbarAllAppsController.setPredictedApps(pci.getContents());
+        }
         commitItemsToUI();
     }
 
     @Override
-    public void bindAppsAdded(IntArray newScreens, ArrayList<ItemInfo> addNotAnimated,
-            ArrayList<ItemInfo> addAnimated) {
-        boolean add1 = handleItemsAdded(addNotAnimated);
-        boolean add2 = handleItemsAdded(addAnimated);
-        if (add1 || add2) {
+    public void bindItemsAdded(List<ItemInfo> items) {
+        if (handleItemsAdded(items)) {
             commitItemsToUI();
         }
     }
 
-    @Override
-    public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons) {
-        if (handleItemsAdded(shortcuts)) {
-            commitItemsToUI();
-        }
-    }
-
-    private boolean handleItemsAdded(List<ItemInfo> items) {
+    private boolean handleItemsAdded(Iterable<ItemInfo> items) {
         boolean modified = false;
         for (ItemInfo item : items) {
             if (item.container == Favorites.CONTAINER_HOTSEAT) {
@@ -155,26 +108,49 @@ public class TaskbarModelCallbacks implements
         return modified;
     }
 
-
     @Override
-    public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
-        updateWorkspaceItems(updated, mContext);
+    public void bindItemsUpdated(@NonNull Set<ItemInfo> updates) {
+        Set<ItemInfo> itemsToRebind = updateContainerItems(updates, mContext);
+        boolean removed = handleItemsRemoved(ItemInfoMatcher.ofItems(itemsToRebind));
+        boolean added = handleItemsAdded(itemsToRebind);
+
+        boolean predictionsUpdated = false;
+        for (ItemInfo update: updates) {
+            if (update instanceof PredictedContainerInfo pci) {
+                if (pci.id == Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+                    mPredictedItems = pci.getContents();
+                    predictionsUpdated = true;
+                } else if (pci.id == CONTAINER_ALL_APPS_PREDICTION) {
+                    mControllers.taskbarAllAppsController.setPredictedApps(pci.getContents());
+                }
+            }
+        }
+        if (removed || added || predictionsUpdated) {
+            commitItemsToUI();
+        }
+    }
+
+    @Nullable
+    @Override
+    public CellInfo getCellInfoForView(@NonNull View view) {
+        return view.getLayoutParams() instanceof TaskbarLayoutParams tlp ? tlp.bindInfo : null;
     }
 
     @Override
-    public void bindRestoreItemsChange(HashSet<ItemInfo> updates) {
-        updateRestoreItems(updates, mContext);
+    public boolean isContainerSupported(int container) {
+        return container == CONTAINER_HOTSEAT || container == CONTAINER_HOTSEAT_PREDICTION;
     }
 
     @Override
-    public void mapOverItems(ItemOperator op) {
+    public View mapOverItems(@NonNull ItemOperator op) {
         final int itemCount = mContainer.getChildCount();
         for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
             View item = mContainer.getChildAt(itemIdx);
-            if (op.evaluate((ItemInfo) item.getTag(), item)) {
-                return;
+            if (item.getTag() instanceof ItemInfo itemInfo && op.evaluate(itemInfo, item)) {
+                return item;
             }
         }
+        return null;
     }
 
     @Override
@@ -195,30 +171,7 @@ public class TaskbarModelCallbacks implements
         return modified;
     }
 
-    @Override
-    public void bindItemsModified(List<ItemInfo> items) {
-        boolean removed = handleItemsRemoved(ItemInfoMatcher.ofItems(items));
-        boolean added = handleItemsAdded(items);
-        if (removed || added) {
-            commitItemsToUI();
-        }
-    }
-
-    @Override
-    public void bindExtraContainerItems(FixedContainerItems item) {
-        if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION) {
-            mPredictedItems = item.items;
-            commitItemsToUI();
-        } else if (item.containerId == Favorites.CONTAINER_PREDICTION) {
-            mControllers.taskbarAllAppsController.setPredictedApps(item.items);
-        }
-    }
-
     private void commitItemsToUI() {
-        if (mContext.isBindingItems()) {
-            return;
-        }
-
         ItemInfo[] hotseatItemInfos =
                 new ItemInfo[mContext.getDeviceProfile().numShownHotseatIcons];
         int predictionSize = mPredictedItems.size();
@@ -232,26 +185,26 @@ public class TaskbarModelCallbacks implements
                 predictionNextIndex++;
             }
         }
-        hotseatItemInfos = mControllers.taskbarRecentAppsController
-                .updateHotseatItemInfos(hotseatItemInfos);
-        Set<String> runningPackages = mControllers.taskbarRecentAppsController.getRunningApps();
-        Set<String> minimizedPackages = mControllers.taskbarRecentAppsController.getMinimizedApps();
+
+        final TaskbarRecentAppsController recentAppsController =
+                mControllers.taskbarRecentAppsController;
+        hotseatItemInfos = recentAppsController.updateHotseatItemInfos(hotseatItemInfos);
 
         if (mDeferUpdatesForSUW) {
             ItemInfo[] finalHotseatItemInfos = hotseatItemInfos;
             mDeferredUpdates = () ->
-                    commitHotseatItemUpdates(finalHotseatItemInfos, runningPackages,
-                            minimizedPackages);
+                    commitHotseatItemUpdates(finalHotseatItemInfos,
+                            recentAppsController.getShownTasks());
         } else {
-            commitHotseatItemUpdates(hotseatItemInfos, runningPackages, minimizedPackages);
+            commitHotseatItemUpdates(hotseatItemInfos, recentAppsController.getShownTasks());
         }
     }
 
-    private void commitHotseatItemUpdates(ItemInfo[] hotseatItemInfos, Set<String> runningPackages,
-            Set<String> minimizedPackages) {
-        mContainer.updateHotseatItems(hotseatItemInfos);
-        mControllers.taskbarViewController.updateIconViewsRunningStates(runningPackages,
-                minimizedPackages);
+    private void commitHotseatItemUpdates(
+            ItemInfo[] hotseatItemInfos, List<GroupTask> recentTasks) {
+        mContainer.updateItems(hotseatItemInfos, recentTasks);
+        mControllers.taskbarViewController.updateIconViewsRunningStates();
+        mControllers.taskbarPopupController.setHotseatInfosList(mHotseatItems);
     }
 
     /**
@@ -270,19 +223,9 @@ public class TaskbarModelCallbacks implements
         }
     }
 
-    @Override
-    public void onRunningTasksChanged() {
-        updateRunningApps();
-    }
-
     /** Called when there's a change in running apps to update the UI. */
     public void commitRunningAppsToUI() {
         commitItemsToUI();
-    }
-
-    /** Call TaskbarRecentAppsController to update running apps with mHotseatItems. */
-    public void updateRunningApps() {
-        mControllers.taskbarRecentAppsController.updateRunningApps();
     }
 
     @Override
@@ -296,7 +239,7 @@ public class TaskbarModelCallbacks implements
             Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
         Preconditions.assertUIThread();
         mControllers.taskbarAllAppsController.setApps(apps, flags, packageUserKeytoUidMap);
-        mControllers.taskbarRecentAppsController.setApps(apps);
+        mControllers.taskbarPopupController.setApps(apps);
     }
 
     protected void dumpLogs(String prefix, PrintWriter pw) {

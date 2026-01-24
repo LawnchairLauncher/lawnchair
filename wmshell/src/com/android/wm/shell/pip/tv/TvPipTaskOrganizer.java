@@ -21,6 +21,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.android.wm.shell.RootTaskDisplayAreaOrganizer;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.common.DisplayController;
 import com.android.wm.shell.common.ShellExecutor;
@@ -38,6 +39,7 @@ import com.android.wm.shell.pip.PipSurfaceTransactionHelper;
 import com.android.wm.shell.pip.PipTaskOrganizer;
 import com.android.wm.shell.pip.PipTransitionState;
 import com.android.wm.shell.splitscreen.SplitScreenController;
+import com.android.wm.shell.sysui.ShellInit;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -49,6 +51,7 @@ public class TvPipTaskOrganizer extends PipTaskOrganizer {
     private final TvPipTransition mTvPipTransition;
 
     public TvPipTaskOrganizer(Context context,
+            @NonNull ShellInit shellInit,
             @NonNull SyncTransactionQueue syncTransactionQueue,
             @NonNull PipTransitionState pipTransitionState,
             @NonNull PipBoundsState pipBoundsState,
@@ -61,15 +64,17 @@ public class TvPipTaskOrganizer extends PipTaskOrganizer {
             @NonNull PipParamsChangedForwarder pipParamsChangedForwarder,
             Optional<SplitScreenController> splitScreenOptional,
             Optional<PipPerfHintController> pipPerfHintControllerOptional,
+            @NonNull RootTaskDisplayAreaOrganizer rootTaskDisplayAreaOrganizer,
             @NonNull DisplayController displayController,
             @NonNull PipUiEventLogger pipUiEventLogger,
             @NonNull ShellTaskOrganizer shellTaskOrganizer,
             ShellExecutor mainExecutor) {
-        super(context, syncTransactionQueue, pipTransitionState, pipBoundsState,
+        super(context, shellInit, syncTransactionQueue, pipTransitionState, pipBoundsState,
                 pipDisplayLayoutState, boundsHandler, pipMenuController, pipAnimationController,
                 surfaceTransactionHelper, tvPipTransition, pipParamsChangedForwarder,
-                splitScreenOptional, pipPerfHintControllerOptional, displayController,
-                pipUiEventLogger, shellTaskOrganizer, mainExecutor);
+                splitScreenOptional, pipPerfHintControllerOptional, Optional.empty(),
+                rootTaskDisplayAreaOrganizer, displayController, pipUiEventLogger,
+                shellTaskOrganizer, mainExecutor);
         mTvPipTransition = tvPipTransition;
     }
 

@@ -19,10 +19,10 @@ package com.android.launcher3.model.data
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.pm.PackageInstallInfo
-import com.android.launcher3.util.LauncherModelHelper
+import com.android.launcher3.util.SandboxApplication
 import com.google.common.truth.Truth
-import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -30,7 +30,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ItemInfoWithIconTest {
 
-    private var context = LauncherModelHelper.SandboxModelContext()
+    @get:Rule var context = SandboxApplication()
     private lateinit var itemInfoWithIcon: ItemInfoWithIcon
 
     @Before
@@ -41,11 +41,6 @@ class ItemInfoWithIconTest {
                     return null
                 }
             }
-    }
-
-    @After
-    fun tearDown() {
-        context.destroy()
     }
 
     @Test

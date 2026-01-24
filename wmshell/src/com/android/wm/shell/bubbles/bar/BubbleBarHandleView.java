@@ -17,17 +17,18 @@ package com.android.wm.shell.bubbles.bar;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.annotation.Nullable;
 import android.content.Context;
-import android.graphics.Outline;
-import android.graphics.Path;
-import android.graphics.RectF;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewOutlineProvider;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.VisibleForTesting;
+import androidx.core.animation.IntProperty;
 import androidx.core.content.ContextCompat;
 
 import com.android.wm.shell.R;
@@ -37,12 +38,34 @@ import com.android.wm.shell.R;
  */
 public class BubbleBarHandleView extends View {
     private static final long COLOR_CHANGE_DURATION = 120;
-    // Path used to draw the dots
-    private final Path mPath = new Path();
 
+    /** Custom property to set handle color. */
+    private static final IntProperty<BubbleBarHandleView> HANDLE_COLOR = new IntProperty<>(
+            "handleColor") {
+        @Override
+        public void setValue(BubbleBarHandleView bubbleBarHandleView, int color) {
+            bubbleBarHandleView.setHandleColor(color);
+        }
+
+        @Override
+        public Integer get(BubbleBarHandleView bubbleBarHandleView) {
+            return bubbleBarHandleView.getHandleColor();
+        }
+    };
+
+    @VisibleForTesting
+    final Paint mHandlePaint = new Paint();
     private final @ColorInt int mHandleLightColor;
     private final @ColorInt int mHandleDarkColor;
-    private @Nullable ObjectAnimator mColorChangeAnim;
+    private final ArgbEvaluator mArgbEvaluator = ArgbEvaluator.getInstance();
+    private final float mHandleHeight;
+    private final float mHandleWidth;
+    private float mCurrentHandleHeight;
+    private float mCurrentHandleWidth;
+    @Nullable
+    private ObjectAnimator mColorChangeAnim;
+    private @ColorInt int mRegionSamplerColor;
+    private boolean mHasSampledColor;
 
     public BubbleBarHandleView(Context context) {
         this(context, null /* attrs */);
@@ -59,27 +82,64 @@ public class BubbleBarHandleView extends View {
     public BubbleBarHandleView(Context context, AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        final int handleHeight = getResources().getDimensionPixelSize(
+        mHandlePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        mHandlePaint.setStyle(Paint.Style.FILL);
+        mHandlePaint.setColor(0);
+        mHandleHeight = getResources().getDimensionPixelSize(
                 R.dimen.bubble_bar_expanded_view_handle_height);
+        mHandleWidth = getResources().getDimensionPixelSize(
+                R.dimen.bubble_bar_expanded_view_caption_width);
         mHandleLightColor = ContextCompat.getColor(getContext(),
                 R.color.bubble_bar_expanded_view_handle_light);
         mHandleDarkColor = ContextCompat.getColor(getContext(),
                 R.color.bubble_bar_expanded_view_handle_dark);
+        mCurrentHandleHeight = mHandleHeight;
+        mCurrentHandleWidth = mHandleWidth;
+        setContentDescription(getResources().getString(R.string.handle_text));
+    }
 
-        setClipToOutline(true);
-        setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                final int handleCenterY = view.getHeight() / 2;
-                final int handleTop = handleCenterY - handleHeight / 2;
-                final int handleBottom = handleTop + handleHeight;
-                final int radius = handleHeight / 2;
-                RectF handle = new RectF(/* left = */ 0, handleTop, view.getWidth(), handleBottom);
-                mPath.reset();
-                mPath.addRoundRect(handle, radius, radius, Path.Direction.CW);
-                outline.setPath(mPath);
-            }
-        });
+    private void setHandleColor(int color) {
+        mHandlePaint.setColor(color);
+        invalidate();
+    }
+
+    /**
+     * Get current color value for the handle
+     */
+    @ColorInt
+    public int getHandleColor() {
+        return mHandlePaint.getColor();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        float handleLeft = (getWidth() - mCurrentHandleWidth) / 2;
+        float handleRight = handleLeft + mCurrentHandleWidth;
+        float handleCenterY = (float) getHeight() / 2;
+        float handleTop = (int) (handleCenterY - mCurrentHandleHeight / 2);
+        float handleBottom = handleTop + mCurrentHandleHeight;
+        float cornerRadius = mCurrentHandleHeight / 2;
+        canvas.drawRoundRect(handleLeft, handleTop, handleRight, handleBottom, cornerRadius,
+                cornerRadius, mHandlePaint);
+    }
+
+    /** Sets handle width, height and color. Does not change the layout properties */
+    private void setHandleProperties(float width, float height, int color) {
+        mCurrentHandleHeight = height;
+        mCurrentHandleWidth = width;
+        mHandlePaint.setColor(color);
+        invalidate();
+    }
+
+    /**
+     * Set initial color for the handle. Takes effect if the
+     * {@link #updateHandleColor(boolean, boolean)} has not been called.
+     */
+    public void setHandleInitialColor(@ColorInt int color) {
+        if (!mHasSampledColor) {
+            setHandleColor(color);
+        }
     }
 
     /**
@@ -87,15 +147,20 @@ public class BubbleBarHandleView extends View {
      *
      * @param isRegionDark Whether the background behind the handle is dark, and thus the handle
      *                     should be light (and vice versa).
-     * @param animated      Whether to animate the change, or apply it immediately.
+     * @param animated     Whether to animate the change, or apply it immediately.
      */
     public void updateHandleColor(boolean isRegionDark, boolean animated) {
         int newColor = isRegionDark ? mHandleLightColor : mHandleDarkColor;
+        if (newColor == mRegionSamplerColor) {
+            return;
+        }
+        mHasSampledColor = true;
+        mRegionSamplerColor = newColor;
         if (mColorChangeAnim != null) {
             mColorChangeAnim.cancel();
         }
         if (animated) {
-            mColorChangeAnim = ObjectAnimator.ofArgb(this, "backgroundColor", newColor);
+            mColorChangeAnim = ObjectAnimator.ofArgb(this, HANDLE_COLOR, newColor);
             mColorChangeAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -105,7 +170,39 @@ public class BubbleBarHandleView extends View {
             mColorChangeAnim.setDuration(COLOR_CHANGE_DURATION);
             mColorChangeAnim.start();
         } else {
-            setBackgroundColor(newColor);
+            setHandleColor(newColor);
         }
+    }
+
+    /** Returns handle padding top. */
+    public int getHandlePaddingTop() {
+        return (getHeight() - getResources().getDimensionPixelSize(
+                R.dimen.bubble_bar_expanded_view_handle_height)) / 2;
+    }
+
+    /** Animates handle for the bubble menu. */
+    public void animateHandleForMenu(float progress, float widthDelta, float heightDelta,
+            int menuColor) {
+        float currentWidth = mHandleWidth + widthDelta * progress;
+        float currentHeight = mHandleHeight + heightDelta * progress;
+        int color = (int) mArgbEvaluator.evaluate(progress, mRegionSamplerColor, menuColor);
+        setHandleProperties(currentWidth, currentHeight, color);
+        setTranslationY(heightDelta * progress / 2);
+    }
+
+    /** Restores all the properties that were animated to the default values. */
+    public void restoreAnimationDefaults() {
+        setHandleProperties(mHandleWidth, mHandleHeight, mRegionSamplerColor);
+        setTranslationY(0);
+    }
+
+    /** Returns the handle height. */
+    public int getHandleHeight() {
+        return (int) mHandleHeight;
+    }
+
+    /** Returns the handle width. */
+    public int getHandleWidth() {
+        return (int) mHandleWidth;
     }
 }

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!-- Copyright (C) 2020 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2020 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -21,45 +19,46 @@
     android:paddingTop="@dimen/work_edu_card_margin"
     android:paddingBottom="@dimen/work_edu_card_bottom_margin"
     android:gravity="center">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/work_card"
         android:layout_gravity="center_horizontal"
-        android:paddingEnd="@dimen/work_card_margin"
         android:paddingStart="@dimen/work_card_margin"
-        android:paddingTop="@dimen/work_card_margin"
+        android:paddingEnd="@dimen/work_card_margin_end"
+        android:paddingBottom="@dimen/work_card_margin"
         android:id="@+id/wrapper">
         <TextView
             style="@style/PrimaryHeadline"
             android:textColor="?android:attr/textColorPrimary"
             android:id="@+id/work_apps_paused_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/work_card_margin"
-            android:layout_marginEnd="@dimen/work_card_margin"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/work_card_margin"
+            android:paddingEnd="@dimen/work_edu_card_text_end_margin"
             android:text="@string/work_profile_edu_work_apps"
             android:textDirection="locale"
             android:textSize="18sp" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padded_rounded_button_height"
-            android:orientation="horizontal">
-            <FrameLayout
-                android:layout_width="@dimen/rounded_button_width"
-                android:layout_height="@dimen/rounded_button_width"
-                android:layout_alignParentEnd="true"
-                android:padding="@dimen/rounded_button_padding">
-                <ImageView
-                    android:id="@+id/action_btn"
-                    android:layout_width="@dimen/x_icon_size"
-                    android:layout_height="@dimen/x_icon_size"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/accessibility_close"
-                    android:src="@drawable/ic_close" />
-            </FrameLayout>
-        </RelativeLayout>
-    </RelativeLayout>
-
+        <FrameLayout
+            android:id="@+id/action_btn"
+            android:layout_width="@dimen/rounded_button_width"
+            android:layout_height="@dimen/rounded_button_width"
+            android:layout_marginTop="@dimen/work_edu_card_button_margin_top"
+            android:clickable="true"
+            android:contentDescription="@string/accessibility_close"
+            android:gravity="center"
+            android:background="@drawable/inset_rounded_action_button">
+            <ImageButton
+                android:layout_width="@dimen/x_icon_size"
+                android:layout_height="@dimen/x_icon_size"
+                android:clickable="false"
+                android:scaleType="centerInside"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_close_work_edu" />
+        </FrameLayout>
+    </LinearLayout>
 </com.android.launcher3.allapps.WorkEduCard>

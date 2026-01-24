@@ -16,20 +16,24 @@
 
 package com.android.launcher3.anim;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
+import static com.android.launcher3.LauncherAnimUtils.SCRIM_COLORS;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.graphics.drawable.ColorDrawable;
 import android.util.FloatProperty;
 import android.util.IntProperty;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+
+import com.android.launcher3.views.ScrimColors;
+import com.android.launcher3.views.ScrimView;
+import com.android.launcher3.views.ScrimColorsEvaluator;
 
 import java.util.function.Consumer;
 
@@ -62,15 +66,16 @@ public class AnimatedPropertySetter extends PropertySetter {
     }
 
     @Override
-    public Animator setViewBackgroundColor(View view, int color, TimeInterpolator interpolator) {
-        if (view == null || (view.getBackground() instanceof ColorDrawable
-                && ((ColorDrawable) view.getBackground()).getColor() == color)) {
+    public Animator setScrimColors(ScrimView view, ScrimColors scrimColors,
+            TimeInterpolator interpolator) {
+        if (view == null || view.getScrimColors().equals(scrimColors)) {
             return NO_OP;
         }
-        ObjectAnimator anim = ObjectAnimator.ofArgb(view, VIEW_BACKGROUND_COLOR, color);
-        anim.setInterpolator(interpolator);
-        add(anim);
-        return anim;
+        ObjectAnimator animator = ObjectAnimator.ofObject(view, SCRIM_COLORS,
+                ScrimColorsEvaluator.INSTANCE, scrimColors);
+        animator.setInterpolator(interpolator);
+        add(animator);
+        return animator;
     }
 
     @Override
@@ -121,19 +126,31 @@ public class AnimatedPropertySetter extends PropertySetter {
      * Adds a listener to be run on every frame of the animation
      */
     public void addOnFrameListener(ValueAnimator.AnimatorUpdateListener listener) {
-        if (mProgressAnimator == null) {
-            mProgressAnimator = ValueAnimator.ofFloat(0, 1);
-        }
-
-        mProgressAnimator.addUpdateListener(listener);
+        getProgressAnimator().addUpdateListener(listener);
     }
 
     @Override
     public void addEndListener(Consumer<Boolean> listener) {
+        getProgressAnimator().addListener(AnimatorListeners.forEndCallback(listener));
+    }
+
+    /**
+     * Add a callback to run on progress start.
+     */
+    public void addStartListener(Runnable listener) {
+        getProgressAnimator().addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                listener.run();
+            }
+        });
+    }
+
+    private ValueAnimator getProgressAnimator() {
         if (mProgressAnimator == null) {
             mProgressAnimator = ValueAnimator.ofFloat(0, 1);
         }
-        mProgressAnimator.addListener(AnimatorListeners.forEndCallback(listener));
+        return mProgressAnimator;
     }
 
     /**

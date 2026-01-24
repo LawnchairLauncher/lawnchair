@@ -26,7 +26,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.R;
 import com.android.wm.shell.pip.tv.TvPipKeepClearAlgorithm.Placement;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;

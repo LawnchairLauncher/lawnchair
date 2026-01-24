@@ -15,6 +15,7 @@
 //
 
 package {
+    default_team: "trendy_team_multitasking_windowing",
     // See: http://go/android-license-faq
     // A large-scale-change added 'default_applicable_licenses' to import
     // all of the 'license_kinds' from "frameworks_base_license"
@@ -34,3 +35,57 @@ android_test {
     static_libs: ["WMShellFlickerTestsBase"],
     data: ["trace_config/*"],
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Begin breakdowns for WMShellFlickerTestsBubbles module
+
+test_module_config {
+    name: "WMShellFlickerTestsBubbles-CatchAll",
+    base: "WMShellFlickerTestsBubbles",
+    exclude_filters: [
+        "com.android.wm.shell.flicker.bubble.ChangeActiveActivityFromBubbleTest",
+        "com.android.wm.shell.flicker.bubble.DragToDismissBubbleScreenTest",
+        "com.android.wm.shell.flicker.bubble.OpenActivityFromBubbleOnLocksreenTest",
+        "com.android.wm.shell.flicker.bubble.OpenActivityFromBubbleTest",
+        "com.android.wm.shell.flicker.bubble.SendBubbleNotificationTest",
+    ],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsBubbles-ChangeActiveActivityFromBubbleTest",
+    base: "WMShellFlickerTestsBubbles",
+    include_filters: ["com.android.wm.shell.flicker.bubble.ChangeActiveActivityFromBubbleTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsBubbles-DragToDismissBubbleScreenTest",
+    base: "WMShellFlickerTestsBubbles",
+    include_filters: ["com.android.wm.shell.flicker.bubble.DragToDismissBubbleScreenTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsBubbles-OpenActivityFromBubbleOnLocksreenTest",
+    base: "WMShellFlickerTestsBubbles",
+    include_filters: ["com.android.wm.shell.flicker.bubble.OpenActivityFromBubbleOnLocksreenTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsBubbles-OpenActivityFromBubbleTest",
+    base: "WMShellFlickerTestsBubbles",
+    include_filters: ["com.android.wm.shell.flicker.bubble.OpenActivityFromBubbleTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsBubbles-SendBubbleNotificationTest",
+    base: "WMShellFlickerTestsBubbles",
+    include_filters: ["com.android.wm.shell.flicker.bubble.SendBubbleNotificationTest"],
+    test_suites: ["device-tests"],
+}
+
+// End breakdowns for WMShellFlickerTestsBubbles module
+////////////////////////////////////////////////////////////////////////////////

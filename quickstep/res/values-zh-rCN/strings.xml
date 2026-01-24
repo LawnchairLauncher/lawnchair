@@ -22,11 +22,14 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"固定"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"自由窗口"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"桌面"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"移至外接显示屏"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"清除"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"桌面设备"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"近期没有任何内容"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"应用使用设置"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"全部清除"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"添加新桌面"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"最近用过的应用"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"任务已关闭"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>（<xliff:g id="REMAINING_TIME">%2$s</xliff:g>）"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"不到 1 分钟"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"今天还可使用 <xliff:g id="TIME">%1$s</xliff:g>"</string>
@@ -45,28 +48,27 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"已启用应用建议"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"已停用应用建议"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"预测的应用：<xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"手势导航教程"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"请旋转设备"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"请旋转设备，完成手势导航教程"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"确保从最右侧或最左侧边缘开始滑动"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"确保从右侧或左侧边缘滑动到屏幕中间位置后再松开手指"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"您已了解如何使用“从右侧向左滑动”手势返回。接下来学习切换应用吧！"</string>
     <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"您完成了“返回”手势教程。接下来了解如何切换应用。"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"您完成了“返回”手势"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"您已完成“返回”手势教程"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"确保滑动时手的位置不要太靠近屏幕底部"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"如要调节“返回”手势的灵敏度，请转到“设置”"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"滑动即可返回"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"如要返回上一个屏幕，请从屏幕左侧或右侧边缘往屏幕中间滑动。"</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"若要返回上一个屏幕，请用两根手指从屏幕左侧或右侧边缘向中间滑动。"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"返回"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"从屏幕左侧或右侧边缘滑动到中间"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"确保从屏幕底部边缘向上滑动"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"松开手指前，请勿中途停顿"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"确保笔直向上滑动"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"您完成了“转到主屏幕”手势。接下来了解如何返回。"</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"您完成了“转到主屏幕”手势"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"您已完成“前往主屏幕”手势教程。接下来学习如何返回。"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"您已完成“前往主屏幕”手势教程"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"上滑可转到主屏幕"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"从屏幕底部向上滑动，即可随时回到主屏幕。"</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"用两根手指从屏幕底部向上滑动，这个手势会一律使您回到主屏幕。"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"前往主屏幕"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"从屏幕底部向上滑动"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"太棒了！"</string>
@@ -74,10 +76,9 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"尝试按住窗口较长时间，然后再松开手指"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"确保笔直向上滑动，然后停住"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"您已了解如何使用手势了。如要关闭手势，请前往“设置”。"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"您完成了应用切换手势"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"您已完成“切换应用”手势教程"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑动即可切换应用"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"如需在应用之间切换，请从屏幕底部向上滑动，按住，然后松开。"</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"如需在应用之间切换，请从屏幕底部向上滑动，按住，然后松开。"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"切换应用"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"从屏幕底部向上滑动后按住，然后松开"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"恭喜！"</string>
@@ -91,24 +92,33 @@
     <string name="allset_hint" msgid="459504134589971527">"向上滑动可前往主屏幕"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"点按主屏幕按钮即可前往主屏幕"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"您可以开始使用<xliff:g id="DEVICE">%1$s</xliff:g>了"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"设备"</string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"您可以开始使用自己的设备了"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"系统导航设置"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"您的 <xliff:g id="DEVICE">%1$s</xliff:g>\n已设置完毕！"</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"您的设备\n已设置完毕！"</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"尽情享用新的<xliff:g id="DEVICE">%1$s</xliff:g>吧！"</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"选择导航方式"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"向上滑动"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"点按主屏幕按钮"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"平板电脑"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"手机"</string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"屏幕截图"</string>
     <string name="action_split" msgid="2098009717623550676">"分屏"</string>
-    <string name="action_save_app_pair" msgid="5974823919237645229">"保存应用组合"</string>
+    <string name="action_save_app_pair" msgid="5974823919237645229">"保存应用对"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"点按另一个应用即可使用分屏"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"另外选择一个应用才可使用分屏模式"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"取消"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"取消"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"退出分屏选择模式"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"另外选择一个应用才可使用分屏模式"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"该应用或您所在的单位不允许执行此操作"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"目前不支持微件，请选择其他应用"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"要跳过导航教程吗？"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"您之后可以在“<xliff:g id="NAME">%1$s</xliff:g>”应用中找到此教程"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"取消"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"跳过"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"旋转屏幕"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"该动画展示了任务栏如何显示在屏幕底部，以及如何在不使用时自动隐藏"</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"该动画展示了如何使用切换开关固定任务栏，让任务栏始终显示在屏幕底部"</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"该动画展示了如何通过将应用从任务栏拖放到打开的应用的上方，来创建分屏"</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"该动画展示了如何在设备上访问推荐的应用"</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"该动画展示了如何通过轻触并按住快捷操作按键并选择相应内容所在的区域，在界面中搜索相应内容"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"任务栏教程"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"将一个应用拖到一侧，即可同时使用两个应用"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"缓慢上滑即可显示任务栏"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"快捷设置"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"任务栏"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"任务栏已显示"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"任务栏已隐藏"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"已显示任务栏和左侧消息气泡"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"已显示任务栏和右侧消息气泡"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"导航栏"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"始终显示任务栏"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"更改导航模式"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"任务栏分隔线"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"最近用过的其他应用"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"移到顶部/左侧"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"移到底部/右侧"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{显示另外 # 个应用。}other{显示另外 # 个应用。}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{显示 # 款桌面应用。}other{显示 # 款桌面应用。}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"以气泡的形式打开应用"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"最近打开过的应用"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"“最近打开过的应用”列表"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{多个应用}other{多个应用}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"桌面模式"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g>和<xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>，第 <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g> 项（共 <xliff:g id="TOTAL_TASKS">%3$d</xliff:g> 项）"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"向左滚动"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"向右滚动"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"气泡框"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"溢出式气泡框"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"来自“<xliff:g id="APP_NAME">%2$s</xliff:g>”的<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g>以及另外 <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> 个"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"左移"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"右移"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"全部关闭"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"展开“<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>”"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"收起“<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>”"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"圈定即搜"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"应用图标"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"应用名称"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"“关闭”按钮"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"固定到任务栏"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"从任务栏取消固定"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"智能推送"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"关闭"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"智能推送图片"</string>
 </resources>

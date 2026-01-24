@@ -1,18 +1,51 @@
-Hey everyone, and happy holidays from the Lawnchair team! 🎄
+### 🥞 Development 4 Release 1 (Snapshot 10)
 
-We're excited to announce that Lawnchair 15 Beta 2 is now available for download!
+~~Bug fixes only~~ You may see duplicated changelogs in this release because of merged diverged timeline.
 
-This release contains several bug fixes and quality-of-life improvements that make the Lawnchair 15 experience much more stable and enjoyable. Some of the highlights include:
+In this release, the initial 16-dev branch has now merged to QPR1 branch,
+meaning you'll have tons of improvements from upstream Launcher3 source.
 
-- A completely revamped search experience
-- Infinite home screen scrolling
-- The ability to reorder apps inside app drawer folders
-- ...and many more fixes for crashes and visual bugs!
+Build: BD4.2412 (latest), BD4.2112, BD4.2012, BD4.2311, BS10.2111, BS10.2011
 
-A huge thank you to everyone who made this release possible: our code contributors on GitHub, our translators on Crowdin, and our financial supporters on Open Collective. Your support is what keeps this project going.
+Compatibility list:
 
-We'll have a full Lawnstate blog post coming soon with a look back at the year and a deep dive into the ongoing work for Lawnchair 16.
+| 🏗️ Crash   | 🥞 Fully supported |
+|-------------|--------------------|
+| Android 8.1 | Android 12.0       |
+| Android 9   | Android 12.1       |
+| Android 10  | Android 13         |
+| Android 11  | Android 14         |
+|             | Android 15         |
+|             | Android 16         |
 
-For now, enjoy a more stable home screen for the holidays!
 
-Download and changelog: https://github.com/LawnchairLauncher/lawnchair/releases/tag/v15.0.0-beta2
+#### Features
+
+* [Launcher] Move to Google Sans Flex font (TODO)*
+* [Lawnchair] Material 3 Expressive Settings (Phase 2, TODO)*
+* ~~[Lawnchair] Better At-a-Glance perceptive wallpaper colour luminance detection*~~
+    * ~~Big word that means Lawnchair will take system default hint bright/dark theme and fallback to luminosity detection for bright/dark mode detection in At a Glance.*~~
+* ~~[Launcher] Enable Material Expressive Folder Expansion animation flag~~*
+    * Disabled due to rendering bugs*
+* [Launcher/Font] Variable font for Launcher3 (????????)*
+* [Launcher/Popup] Dynamically get app widget popup icon*
+* [Launcher] Foldable support (actually real)*
+* [Launcher] Google Sans Flex font uses almost the exact same configuration as Pixel*
+* [Launcher] Enable bulk loading by default*
+* [Launcher] Tablet support (ish)*
+
+#### Fixes
+* [Launcher] Fix a lot of internal basic functionality*
+* [Lawnchair] Re-added some Lawnchair-specific code*
+* [Launcher] Fix workspace navigation*
+* [Launcher] Fix allapps navigation*
+* [Launcher] Fix folder navigation*
+* [Launcher] Support Android 12.0/12.1/13/14/15*
+* [Lawnchair/Smartspace] At-a-Glance can't launch activity due to background startup restrictions on Android 14 and above*
+* [Launcher] Use Lawnchair theming colour for allapps*
+* [WM-Shell] Fix conflict with prebuilts aidl, make Release build work again*
+* [Launcher/Desktop] Correct deviceHasLargeScreen check for Baklava*
+* [Lawnchair/Search] Make search layout changes work*
+* [Lawnchair/Smartspace] Allow disabling the smartspace feature*
+* [Launcher3] Widget preview crash for no reason at all on compatible Android version*
+* [Launcher3] Correct fallback (blur unsupported) allapps colour

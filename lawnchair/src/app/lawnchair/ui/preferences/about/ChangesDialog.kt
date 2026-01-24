@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -34,7 +36,7 @@ import com.android.launcher3.R
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ChangesDialog(
     changelogState: ChangelogState?,
@@ -100,6 +102,7 @@ fun ChangesDialog(
         ) {
             OutlinedButton(
                 onClick = onDismiss,
+                shapes = ButtonDefaults.shapes(),
             ) {
                 Text(text = stringResource(android.R.string.cancel))
             }
@@ -109,6 +112,7 @@ fun ChangesDialog(
                     onDownload()
                     onDismiss()
                 },
+                shapes = ButtonDefaults.shapes(),
             ) {
                 Text(text = stringResource(R.string.download_update))
             }

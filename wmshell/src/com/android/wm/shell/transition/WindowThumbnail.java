@@ -21,7 +21,6 @@ import android.graphics.GraphicBuffer;
 import android.graphics.PixelFormat;
 import android.hardware.HardwareBuffer;
 import android.view.SurfaceControl;
-import android.view.SurfaceSession;
 
 /**
  * Represents a surface that is displayed over a transition surface.
@@ -33,10 +32,10 @@ class WindowThumbnail {
     private WindowThumbnail() {}
 
     /** Create a thumbnail surface and attach it over a parent surface. */
-    static WindowThumbnail createAndAttach(SurfaceSession surfaceSession, SurfaceControl parent,
+    static WindowThumbnail createAndAttach(SurfaceControl parent,
             HardwareBuffer thumbnailHeader, SurfaceControl.Transaction t) {
         WindowThumbnail windowThumbnail = new WindowThumbnail();
-        windowThumbnail.mSurfaceControl = new SurfaceControl.Builder(surfaceSession)
+        windowThumbnail.mSurfaceControl = new SurfaceControl.Builder()
                 .setParent(parent)
                 .setName("WindowThumanil : " + parent.toString())
                 .setCallsite("WindowThumanil")

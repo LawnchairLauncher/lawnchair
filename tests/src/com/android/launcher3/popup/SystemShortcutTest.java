@@ -19,19 +19,26 @@ package com.android.launcher3.popup;
 import static android.platform.test.flag.junit.SetFlagsRule.DefaultInitValueType.DEVICE_DEFAULT;
 
 import static com.android.dx.mockito.inline.extended.ExtendedMockito.spyOn;
+import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
+import static com.android.launcher3.Flags.FLAG_ENABLE_DISMISS_PREDICTION_UNDO;
 import static com.android.launcher3.Flags.FLAG_ENABLE_PRIVATE_SPACE;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DISMISS_PREDICTION_UNDO;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_SUPPORTS_WEB_UI;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,63 +57,81 @@ import android.view.View;
 
 import androidx.test.annotation.UiThreadTest;
 import androidx.test.filters.SmallTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.PrivateProfileManager;
+import com.android.launcher3.dagger.LauncherAppComponent;
+import com.android.launcher3.dagger.LauncherAppSingleton;
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.util.ApiWrapper;
+import com.android.launcher3.util.AllModulesForTest;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.LauncherModelHelper.SandboxModelContext;
 import com.android.launcher3.util.LauncherMultivalentJUnit;
+import com.android.launcher3.util.SandboxApplication;
 import com.android.launcher3.util.TestSandboxModelContextWrapper;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.UserIconInfo;
-import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.views.Snackbar;
+import com.android.launcher3.widget.picker.model.WidgetPickerDataProvider;
+import com.android.launcher3.widget.picker.model.data.WidgetPickerData;
 
-import org.junit.After;
+import dagger.BindsInstance;
+import dagger.Component;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
 
 @SmallTest
 @RunWith(LauncherMultivalentJUnit.class)
 public class SystemShortcutTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule(DEVICE_DEFAULT);
+    @Rule public final SandboxApplication mSandboxContext = new SandboxApplication();
+
     private static final UserHandle PRIVATE_HANDLE = new UserHandle(11);
     private static final UserHandle MAIN_HANDLE = Process.myUserHandle();
     private View mView;
     private ItemInfo mItemInfo;
     private TestSandboxModelContextWrapper mTestContext;
-    private final SandboxModelContext mSandboxContext = new SandboxModelContext();
     private PrivateProfileManager mPrivateProfileManager;
-    private PopupDataProvider mPopupDataProvider;
+    private WidgetPickerDataProvider mWidgetPickerDataProvider;
     private AppInfo mAppInfo;
+
     @Mock UserCache mUserCache;
-    @Mock ApiWrapper mApiWrapper;
-    @Mock BaseDragLayer mBaseDragLayer;
     @Mock UserIconInfo mUserIconInfo;
     @Mock LauncherActivityInfo mLauncherActivityInfo;
     @Mock ApplicationInfo mApplicationInfo;
     @Mock Intent mIntent;
+    @Mock StatsLogManager mStatsLogManager;
+    @Mock(answer = Answers.RETURNS_SELF) StatsLogger mStatsLogger;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mSandboxContext.putObject(UserCache.INSTANCE, mUserCache);
-        mSandboxContext.putObject(ApiWrapper.INSTANCE, mApiWrapper);
-        mTestContext = new TestSandboxModelContextWrapper(mSandboxContext);
-        mView = new View(mSandboxContext);
-        spyOn(mTestContext);
+        mSandboxContext.initDaggerComponent(
+                DaggerSystemShortcutTest_TestComponent.builder().bindUserCache(mUserCache)
+        );
+        mTestContext = new TestSandboxModelContextWrapper(mSandboxContext) {
+            @Override
+            public StatsLogManager getStatsLogManager() {
+                return mStatsLogManager;
+            }
+        };
         spyOn(mSandboxContext);
-        doReturn(mBaseDragLayer).when(mTestContext).getDragLayer();
+        doReturn(mStatsLogger).when(mStatsLogManager).logger();
 
+        mView = new View(mTestContext);
         mItemInfo = new ItemInfo();
 
         LauncherApps mLauncherApps = mSandboxContext.spyService(LauncherApps.class);
@@ -114,18 +139,12 @@ public class SystemShortcutTest {
         when(mLauncherActivityInfo.getApplicationInfo()).thenReturn(mApplicationInfo);
 
         when(mUserCache.getUserInfo(any())).thenReturn(mUserIconInfo);
-        when(mBaseDragLayer.getChildCount()).thenReturn(0);
         mPrivateProfileManager = mTestContext.getAppsView().getPrivateProfileManager();
         spyOn(mPrivateProfileManager);
         when(mPrivateProfileManager.getProfileUser()).thenReturn(PRIVATE_HANDLE);
 
-        mPopupDataProvider = mTestContext.getPopupDataProvider();
-        spyOn(mPopupDataProvider);
-    }
-
-    @After
-    public void tearDown() {
-        mSandboxContext.onDestroy();
+        mWidgetPickerDataProvider = mTestContext.getWidgetPickerDataProvider();
+        spyOn(mWidgetPickerDataProvider);
     }
 
     @Test
@@ -141,7 +160,7 @@ public class SystemShortcutTest {
         mAppInfo = new AppInfo();
         mAppInfo.componentName = new ComponentName(mTestContext, getClass());
         assertNotNull(mAppInfo.getTargetComponent());
-        doReturn(new ArrayList<>()).when(mPopupDataProvider).getWidgetsForPackageUser(any());
+        doReturn(new WidgetPickerData()).when(mWidgetPickerDataProvider).get();
         spyOn(mAppInfo);
         SystemShortcut systemShortcut = SystemShortcut.WIDGETS
                 .getShortcut(mTestContext, mAppInfo, mView);
@@ -168,6 +187,7 @@ public class SystemShortcutTest {
     }
 
     @Test
+    @DisableFlags(FLAG_ENABLE_DISMISS_PREDICTION_UNDO)
     public void testDontSuggestAppForPredictedItem() {
         mAppInfo = new AppInfo();
         mAppInfo.componentName = new ComponentName(mTestContext, getClass());
@@ -176,7 +196,36 @@ public class SystemShortcutTest {
         SystemShortcut systemShortcut = SystemShortcut.DONT_SUGGEST_APP
                 .getShortcut(mTestContext, mAppInfo, mView);
         assertNotNull(systemShortcut);
-        systemShortcut.onClick(mView);
+
+        TestUtil.runOnExecutorSync(MAIN_EXECUTOR, () -> systemShortcut.onClick(mView));
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+
+        verify(mStatsLogger).log(eq(LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP));
+        assertFalse(AbstractFloatingView.hasOpenView(mTestContext, TYPE_SNACKBAR));
+    }
+
+    @Test
+    @EnableFlags(FLAG_ENABLE_DISMISS_PREDICTION_UNDO)
+    public void testDontSuggestAppForPredictedItemWithUndo() {
+        mAppInfo = new AppInfo();
+        mAppInfo.componentName = new ComponentName(mTestContext, getClass());
+        mAppInfo.container = CONTAINER_HOTSEAT_PREDICTION;
+        assertTrue(mAppInfo.isPredictedItem());
+        SystemShortcut systemShortcut = SystemShortcut.DONT_SUGGEST_APP
+                .getShortcut(mTestContext, mAppInfo, mView);
+        assertNotNull(systemShortcut);
+
+        TestUtil.runOnExecutorSync(MAIN_EXECUTOR, () -> systemShortcut.onClick(mView));
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        verify(mStatsLogger).log(eq(LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP));
+
+        // Undo bar shown
+        Snackbar snackbar = AbstractFloatingView.getOpenView(mTestContext, TYPE_SNACKBAR);
+        assertNotNull(snackbar);
+        reset(mStatsLogger);
+        TestUtil.runOnExecutorSync(MAIN_EXECUTOR, snackbar.findViewById(
+                R.id.action)::performClick);
+        verify(mStatsLogger).log(eq(LAUNCHER_DISMISS_PREDICTION_UNDO));
     }
 
     @Test
@@ -355,5 +404,16 @@ public class SystemShortcutTest {
 
         systemShortcut.onClick(mView);
         verify(mSandboxContext).startActivity(any());
+    }
+
+    @LauncherAppSingleton
+    @Component(modules = { AllModulesForTest.class })
+    interface TestComponent extends LauncherAppComponent {
+        @Component.Builder
+        interface Builder extends LauncherAppComponent.Builder {
+            @BindsInstance
+            SystemShortcutTest.TestComponent.Builder bindUserCache(UserCache userCache);
+            @Override LauncherAppComponent build();
+        }
     }
 }

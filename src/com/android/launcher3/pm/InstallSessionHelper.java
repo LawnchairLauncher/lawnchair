@@ -19,7 +19,6 @@ package com.android.launcher3.pm;
 import static com.android.launcher3.Utilities.ATLEAST_V;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
@@ -35,16 +34,18 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.SessionCommitReceiver;
+import com.android.launcher3.dagger.ApplicationContext;
+import com.android.launcher3.dagger.LauncherAppSingleton;
+import com.android.launcher3.dagger.LauncherBaseAppComponent;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
+import com.android.launcher3.util.ApplicationInfoWrapper;
+import com.android.launcher3.util.DaggerSingletonObject;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
-import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.SafeCloseable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,11 +53,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 /**
  * Utility class to tracking install sessions
  */
 @SuppressWarnings("NewApi")
-public class InstallSessionHelper implements SafeCloseable {
+@LauncherAppSingleton
+public class InstallSessionHelper {
 
     @NonNull
     private static final String LOG = "InstallSessionHelper";
@@ -69,8 +73,8 @@ public class InstallSessionHelper implements SafeCloseable {
     private static final boolean DEBUG = false;
 
     @NonNull
-    public static final MainThreadInitializedObject<InstallSessionHelper> INSTANCE =
-            new MainThreadInitializedObject<>(InstallSessionHelper::new);
+    public static final DaggerSingletonObject<InstallSessionHelper> INSTANCE =
+            new DaggerSingletonObject<>(LauncherBaseAppComponent::getInstallSessionHelper);
 
     @Nullable
     private final LauncherApps mLauncherApps;
@@ -87,14 +91,12 @@ public class InstallSessionHelper implements SafeCloseable {
     @Nullable
     private IntSet mPromiseIconIds;
 
-    public InstallSessionHelper(@NonNull final Context context) {
+    @Inject
+    public InstallSessionHelper(@NonNull @ApplicationContext final Context context) {
         mInstaller = context.getPackageManager().getPackageInstaller();
         mAppContext = context.getApplicationContext();
         mLauncherApps = context.getSystemService(LauncherApps.class);
     }
-
-    @Override
-    public void close() { }
 
     @WorkerThread
     @NonNull
@@ -175,8 +177,7 @@ public class InstallSessionHelper implements SafeCloseable {
         synchronized (mSessionVerifiedMap) {
             if (!mSessionVerifiedMap.containsKey(pkg)) {
                 boolean hasSystemFlag = DEBUG || mAppContext.getPackageName().equals(pkg)
-                        || PackageManagerHelper.INSTANCE.get(mAppContext)
-                                .getApplicationInfo(pkg, user, ApplicationInfo.FLAG_SYSTEM) != null;
+                        || new ApplicationInfoWrapper(mAppContext, pkg, user).isSystem();
                 mSessionVerifiedMap.put(pkg, hasSystemFlag);
             }
         }
@@ -201,7 +202,8 @@ public class InstallSessionHelper implements SafeCloseable {
 
     @WorkerThread
     public boolean promiseIconAddedForId(final int sessionId) {
-        return getPromiseIconIds().contains(sessionId);
+        // Make sure the session id is valid.
+        return sessionId != -1 && getPromiseIconIds().contains(sessionId);
     }
 
     @WorkerThread
@@ -223,15 +225,18 @@ public class InstallSessionHelper implements SafeCloseable {
     @WorkerThread
     void tryQueuePromiseAppIcon(@Nullable final PackageInstaller.SessionInfo sessionInfo) {
         if (sessionInfo != null
-                && SessionCommitReceiver.isEnabled(mAppContext)
+                && SessionCommitReceiver.isEnabled(mAppContext, getUserHandle(sessionInfo))
                 && verifySessionInfo(sessionInfo)
                 && !promiseIconAddedForId(sessionInfo.getSessionId())) {
             // In case of unarchival, we do not want to add a workspace promise icon if one is
             // not already present. For general app installations however, we do support it.
             if (ATLEAST_V && (!Flags.enableSupportForArchiving() || !sessionInfo.isUnarchival())) {
                 FileLog.d(LOG, "Adding package name to install queue: "
-                        + sessionInfo.getAppPackageName());
-
+                        + sessionInfo.getAppPackageName()
+                        + "Package installer: "
+                        + sessionInfo.getInstallerPackageName()
+                        + "Session id: "
+                        + sessionInfo.getSessionId());
                 ItemInstallQueue.INSTANCE.get(mAppContext)
                         .queueItem(sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
             }
@@ -254,8 +259,8 @@ public class InstallSessionHelper implements SafeCloseable {
                 && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
                 && sessionInfo.getAppIcon() != null
                 && !TextUtils.isEmpty(sessionInfo.getAppLabel())
-                && !PackageManagerHelper.INSTANCE.get(mAppContext).isAppInstalled(
-                        sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
+                && !new ApplicationInfoWrapper(mAppContext, sessionInfo.getAppPackageName(),
+                        getUserHandle(sessionInfo)).isInstalled();
     }
 
     public InstallSessionTracker registerInstallTracker(

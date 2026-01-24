@@ -21,7 +21,6 @@ import android.view.View
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsTransitionListener
 import com.android.launcher3.anim.PendingAnimation
-import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ResourceBasedOverride
@@ -61,16 +60,11 @@ open class TaskbarSearchSessionController : ResourceBasedOverride, AllAppsTransi
 
     companion object {
         @JvmStatic
-        fun newInstance(context: Context): TaskbarSearchSessionController {
-            if (!FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
-                return TaskbarSearchSessionController()
-            }
-
-            return Overrides.getObject(
+        fun newInstance(context: Context): TaskbarSearchSessionController =
+            Overrides.getObject(
                 TaskbarSearchSessionController::class.java,
                 context,
                 R.string.taskbar_search_session_controller_class,
             )
-        }
     }
 }

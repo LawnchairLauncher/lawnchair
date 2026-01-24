@@ -19,6 +19,7 @@ package com.android.wm.shell;
 import com.android.wm.shell.common.ShellExecutor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Really basic test executor. It just gathers all events in a blob. The only option is to
@@ -51,5 +52,10 @@ public class TestShellExecutor implements ShellExecutor {
         while (!mRunnables.isEmpty()) {
             mRunnables.remove(0).run();
         }
+    }
+
+    /** Returns the list of callbacks for this executor. */
+    public List<Runnable> getCallbacks() {
+        return mRunnables;
     }
 }

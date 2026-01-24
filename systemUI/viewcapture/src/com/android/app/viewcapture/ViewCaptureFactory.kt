@@ -17,7 +17,6 @@
 package com.android.app.viewcapture
 
 import android.content.Context
-import android.os.Looper
 import android.os.Process
 import android.tracing.Flags
 import android.util.Log
@@ -26,47 +25,46 @@ import android.util.Log
  * Factory to create polymorphic instances of ViewCapture according to build configurations and
  * flags.
  */
-class ViewCaptureFactory {
-    companion object {
-        private val TAG = ViewCaptureFactory::class.java.simpleName
-        private var instance: ViewCapture? = null
+object ViewCaptureFactory {
+    private val TAG = ViewCaptureFactory::class.java.simpleName
+    private val instance: ViewCapture by lazy { createInstance() }
+    private lateinit var appContext: Context
 
-        @JvmStatic
-        fun getInstance(context: Context): ViewCapture {
-            if (Looper.myLooper() != Looper.getMainLooper()) {
-                return ViewCapture.MAIN_EXECUTOR.submit { getInstance(context) }.get()
+    private fun createInstance(): ViewCapture {
+        return when {
+            !false -> {
+                Log.i(TAG, "instantiating ${NoOpViewCapture::class.java.simpleName}")
+                NoOpViewCapture()
             }
-
-            if (instance != null) {
-                return instance!!
+            !Flags.perfettoViewCaptureTracing() -> {
+                Log.i(TAG, "instantiating ${SettingsAwareViewCapture::class.java.simpleName}")
+                SettingsAwareViewCapture(
+                    appContext,
+                    ViewCapture.createAndStartNewLooperExecutor(
+                        "SAViewCapture",
+                        Process.THREAD_PRIORITY_FOREGROUND,
+                    ),
+                )
             }
-
-            return when {
-                !android.os.Build.IS_DEBUGGABLE -> {
-                    Log.i(TAG, "instantiating ${NoOpViewCapture::class.java.simpleName}")
-                    NoOpViewCapture()
-                }
-                !Flags.perfettoViewCaptureTracing() -> {
-                    Log.i(TAG, "instantiating ${SettingsAwareViewCapture::class.java.simpleName}")
-                    SettingsAwareViewCapture(
-                            context.applicationContext,
-                            ViewCapture.createAndStartNewLooperExecutor(
-                                    "SAViewCapture",
-                                    Process.THREAD_PRIORITY_FOREGROUND
-                            )
-                    )
-                }
-                else -> {
-                    Log.i(TAG, "instantiating ${PerfettoViewCapture::class.java.simpleName}")
-                    PerfettoViewCapture(
-                            context.applicationContext,
-                            ViewCapture.createAndStartNewLooperExecutor(
-                                    "PerfettoViewCapture",
-                                    Process.THREAD_PRIORITY_FOREGROUND
-                            )
-                    )
-                }
-            }.also { instance = it }
+            else -> {
+                Log.i(TAG, "instantiating ${PerfettoViewCapture::class.java.simpleName}")
+                PerfettoViewCapture(
+                    appContext,
+                    ViewCapture.createAndStartNewLooperExecutor(
+                        "PerfettoViewCapture",
+                        Process.THREAD_PRIORITY_FOREGROUND,
+                    ),
+                )
+            }
         }
+    }
+
+    /** Returns an instance of [ViewCapture]. */
+    @JvmStatic
+    fun getInstance(context: Context): ViewCapture {
+        if (!this::appContext.isInitialized) {
+            synchronized(this) { appContext = context.applicationContext }
+        }
+        return instance
     }
 }

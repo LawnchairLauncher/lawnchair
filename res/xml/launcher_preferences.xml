@@ -50,4 +50,13 @@
         launcher:logIdOn="615"
         launcher:logIdOff="616" />
 
+    <PreferenceScreen
+        android:persistent="false"
+        android:title="@string/developer_options_title"
+        android:key="pref_developer_options">
+        <com.android.launcher3.uioverrides.flags.DevOptionsUiHelper
+            android:persistent="false"
+            android:key="pref_developer_options"/>
+    </PreferenceScreen>
+
 </androidx.preference.PreferenceScreen>

@@ -1,0 +1,3 @@
+# Bug component: 1157642
+# includes OWNERS from parent directories
+include platform/development:/tools/winscope/OWNERS

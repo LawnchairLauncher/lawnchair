@@ -22,6 +22,7 @@ import android.os.SystemClock;
 
 import androidx.annotation.NonNull;
 
+import com.android.wm.shell.RootTaskDisplayAreaOrganizer;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.WindowManagerShellWrapper;
 import com.android.wm.shell.common.DisplayController;
@@ -202,6 +203,7 @@ public abstract class TvPipModule {
     @WMSingleton
     @Provides
     static PipTaskOrganizer providePipTaskOrganizer(Context context,
+            ShellInit shellInit,
             TvPipMenuController tvPipMenuController,
             SyncTransactionQueue syncTransactionQueue,
             TvPipBoundsState tvPipBoundsState,
@@ -214,28 +216,22 @@ public abstract class TvPipModule {
             PipSurfaceTransactionHelper pipSurfaceTransactionHelper,
             Optional<SplitScreenController> splitScreenControllerOptional,
             Optional<PipPerfHintController> pipPerfHintControllerOptional,
+            RootTaskDisplayAreaOrganizer rootTaskDisplayAreaOrganizer,
             DisplayController displayController,
             PipUiEventLogger pipUiEventLogger, ShellTaskOrganizer shellTaskOrganizer,
             @ShellMainThread ShellExecutor mainExecutor) {
-        return new TvPipTaskOrganizer(context,
+        return new TvPipTaskOrganizer(context, shellInit,
                 syncTransactionQueue, pipTransitionState, tvPipBoundsState, pipDisplayLayoutState,
                 tvPipBoundsAlgorithm, tvPipMenuController, pipAnimationController,
                 pipSurfaceTransactionHelper, tvPipTransition, pipParamsChangedForwarder,
-                splitScreenControllerOptional, pipPerfHintControllerOptional, displayController,
-                pipUiEventLogger, shellTaskOrganizer, mainExecutor);
+                splitScreenControllerOptional, pipPerfHintControllerOptional,
+                rootTaskDisplayAreaOrganizer, displayController, pipUiEventLogger,
+                shellTaskOrganizer, mainExecutor);
     }
 
     @WMSingleton
     @Provides
     static PipParamsChangedForwarder providePipParamsChangedForwarder() {
         return new PipParamsChangedForwarder();
-    }
-
-    @WMSingleton
-    @Provides
-    static PipAppOpsListener providePipAppOpsListener(Context context,
-            PipTaskOrganizer pipTaskOrganizer,
-            @ShellMainThread ShellExecutor mainExecutor) {
-        return new PipAppOpsListener(context, pipTaskOrganizer::removePip, mainExecutor);
     }
 }

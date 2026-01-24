@@ -121,7 +121,7 @@ public class Snackbar extends AbstractFloatingView {
         DeviceProfile deviceProfile = activity.getDeviceProfile();
         params.setMargins(0, 0, 0, marginBottom
                 + (deviceProfile.isTaskbarPresent
-                ? deviceProfile.taskbarHeight + deviceProfile.getTaskbarOffsetY()
+                ? deviceProfile.getTaskbarProfile().getHeight() + deviceProfile.getTaskbarOffsetY()
                 : insets.bottom));
 
         TextView labelView = snackbar.findViewById(R.id.label);

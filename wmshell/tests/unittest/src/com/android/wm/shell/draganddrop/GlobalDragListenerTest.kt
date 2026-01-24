@@ -43,7 +43,7 @@ import org.mockito.kotlin.verify
  */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class UnhandledDragControllerTest : ShellTestCase() {
+class GlobalDragListenerTest : ShellTestCase() {
     private val mIWindowManager = mock<IWindowManager>()
     private val mMainExecutor = mock<ShellExecutor>()
 
@@ -74,7 +74,7 @@ class UnhandledDragControllerTest : ShellTestCase() {
     @Test
     fun onUnhandledDrop_noListener_expectNotifyUnhandled() {
         // Simulate an unhandled drop
-        val dropEvent = DragEvent.obtain(ACTION_DROP, 0f, 0f, 0f, 0f, 0, null, null, null,
+        val dropEvent = DragEvent.obtain(ACTION_DROP, 0f, 0f, 0f, 0f, 0, 0, null, null, null,
             null, null, false)
         val wmCallback = mock<IUnhandledDragCallback>()
         mController.onUnhandledDrop(dropEvent, wmCallback)
@@ -98,7 +98,7 @@ class UnhandledDragControllerTest : ShellTestCase() {
 
         // Simulate an unhandled drop
         val dragSurface = mock<SurfaceControl>()
-        val dropEvent = DragEvent.obtain(ACTION_DROP, 0f, 0f, 0f, 0f, 0, null, null, null,
+        val dropEvent = DragEvent.obtain(ACTION_DROP, 0f, 0f, 0f, 0f, 0, 0, null, null, null,
             dragSurface, null, false)
         val wmCallback = mock<IUnhandledDragCallback>()
         mController.onUnhandledDrop(dropEvent, wmCallback)

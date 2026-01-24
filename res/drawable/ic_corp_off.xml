@@ -16,9 +16,9 @@
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
-    android:viewportHeight="24"
-    android:tint="?android:attr/textColorHint">
+    android:viewportHeight="24">
     <path
-        android:fillColor="@android:color/white"
-        android:pathData="M20,6h-4L16,4c0,-1.11 -0.89,-2 -2,-2h-4c-1.11,0 -2,0.89 -2,2v1.17L10.83,8L20,8v9.17l1.98,1.98c0,-0.05 0.02,-0.1 0.02,-0.16L22,8c0,-1.11 -0.89,-2 -2,-2zM14,6h-4L10,4h4v2zM19,19L8,8 6,6 2.81,2.81 1.39,4.22 3.3,6.13C2.54,6.41 2.01,7.14 2.01,8L2,19c0,1.11 0.89,2 2,2h14.17l1.61,1.61 1.41,-1.41 -0.37,-0.37L19,19zM4,19L4,8h1.17l11,11L4,19z" />
+        android:pathData="M16,6H20C21.11,6 22,6.89 22,8V18.99C22,19.021 21.994,19.05 21.989,19.077C21.984,19.102 21.98,19.126 21.98,19.15L20,17.17V8H10.83L8,5.17V4C8,2.89 8.89,2 10,2H14C15.11,2 16,2.89 16,4V6ZM10,6H14V4H10V6ZM19,19L8,8L6,6L2.81,2.81L1.39,4.22L3.3,6.13C2.54,6.41 2.01,7.14 2.01,8L2,19C2,20.11 2.89,21 4,21H18.17L19.78,22.61L21.19,21.2L20.82,20.83L19,19ZM4,8V19H16.17L5.17,8H4Z"
+        android:fillColor="@color/materialColorOnPrimary"
+        android:fillType="evenOdd"/>
 </vector>

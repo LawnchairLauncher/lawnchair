@@ -19,11 +19,13 @@ package com.android.launcher3.tapl;
 import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+import static com.android.launcher3.tapl.LauncherInstrumentation.log;
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
+import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
@@ -33,11 +35,14 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.tapl.Taskbar.TaskbarLocation;
 import com.android.launcher3.testing.shared.TestProtocol;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -45,7 +50,10 @@ import java.util.stream.Collectors;
  * Common overview panel for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
-    protected static final String TASK_RES_ID = "task";
+    private static final String TAG = "BaseOverview";
+    protected static final BySelector TASK_SELECTOR = By.res(Pattern.compile(
+            getOverviewPackageName()
+                    + ":id/(task_view_single|task_view_grouped|task_view_desktop)"));
     private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
     private static final Pattern EVENT_ENTER_DOWN = Pattern.compile(
@@ -55,10 +63,22 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
     private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
+    private final @Nullable UiObject2 mLiveTileTask;
+
+
     BaseOverview(LauncherInstrumentation launcher) {
+        this(launcher, /*launchedFromApp=*/false);
+    }
+
+    BaseOverview(LauncherInstrumentation launcher, boolean launchedFromApp) {
         super(launcher);
         verifyActiveContainer();
         verifyActionsViewVisibility();
+        if (launchedFromApp) {
+            mLiveTileTask = getCurrentTaskUnchecked();
+        } else {
+            mLiveTileTask = null;
+        }
     }
 
     @Override
@@ -78,7 +98,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     private void flingForwardImpl() {
         try (LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling forward in overview")) {
-            LauncherInstrumentation.log("Overview.flingForward before fling");
+            log("Overview.flingForward before fling");
             final UiObject2 overview = verifyActiveContainer();
             final int leftMargin =
                     mLauncher.getTargetInsets().left + mLauncher.getEdgeSensitivityWidth();
@@ -104,7 +124,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     private void flingBackwardImpl() {
         try (LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling backward in overview")) {
-            LauncherInstrumentation.log("Overview.flingBackward before fling");
+            log("Overview.flingBackward before fling");
             final UiObject2 overview = verifyActiveContainer();
             final int rightMargin =
                     mLauncher.getTargetInsets().right + mLauncher.getEdgeSensitivityWidth();
@@ -132,23 +152,24 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
     /**
      * Dismissed all tasks by scrolling to Clear-all button and pressing it.
+     * <p>
+     * NOTE: Fails if there are already no recent tasks. If a test needs to start with an empty task
+     * list, check {@link #hasTasks} before calling this since the previous test may have already
+     * cleared the task list.
      */
     public void dismissAllTasks() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "dismissing all tasks")) {
             final BySelector clearAllSelector = mLauncher.getOverviewObjectSelector("clear_all");
-            for (int i = 0;
-                    i < FLINGS_FOR_DISMISS_LIMIT
-                            && !verifyActiveContainer().hasObject(clearAllSelector);
-                    ++i) {
-                flingForwardImpl();
-            }
+            flingForwardUntilClearAllVisibleImpl();
 
             final Runnable clickClearAll = () -> mLauncher.clickLauncherObject(
                     mLauncher.waitForObjectInContainer(verifyActiveContainer(),
                             clearAllSelector));
-            if (mLauncher.is3PLauncher()) {
+            // When the recents window is enabled, there is no RecentsActivity to send
+            // LAUNCHER_ACTIVITY_STOPPED_MESSAGE in the 3P launcher case.
+            if (mLauncher.is3PLauncher() && !mLauncher.isRecentsWindowEnabled()) {
                 mLauncher.executeAndWaitForLauncherStop(
                         clickClearAll,
                         "clicking 'Clear All'");
@@ -160,6 +181,26 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             }
 
             mLauncher.waitUntilLauncherObjectGone(clearAllSelector);
+        }
+    }
+
+    /**
+     * Scrolls until Clear-all button is visible.
+     */
+    public void flingForwardUntilClearAllVisible() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            flingForwardUntilClearAllVisibleImpl();
+        }
+    }
+
+    private void flingForwardUntilClearAllVisibleImpl() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "flinging forward to clear all")) {
+            final BySelector clearAllSelector = mLauncher.getOverviewObjectSelector("clear_all");
+            for (int i = 0; i < FLINGS_FOR_DISMISS_LIMIT && !verifyActiveContainer().hasObject(
+                    clearAllSelector); ++i) {
+                flingForwardImpl();
+            }
         }
     }
 
@@ -215,7 +256,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      */
     public void touchTaskbarBottomCorner(boolean tapRight) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            Taskbar taskbar = new Taskbar(mLauncher);
+            Taskbar taskbar = new Taskbar(mLauncher, TaskbarLocation.OVERVIEW);
             if (mLauncher.isTransientTaskbar()) {
                 mLauncher.runToState(
                         () -> taskbar.touchBottomCorner(tapRight),
@@ -259,7 +300,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                     if (mLauncher.isTablet()) {
                         mLauncher.assertTrue("current task is not grid height",
                                 getCurrentTask().getVisibleHeight() == mLauncher
-                                        .getGridTaskRectForTablet().height());
+                                        .getOverviewGridTaskSize().height());
                     }
                     mLauncher.assertTrue("Current task not scrolled off screen",
                             !getCurrentTask().equals(task));
@@ -275,37 +316,56 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      */
     @NonNull
     public OverviewTask getCurrentTask() {
+        UiObject2 currentTask = getCurrentTaskUnchecked();
+        mLauncher.assertNotNull("Unable to find a task", currentTask);
+        return new OverviewTask(mLauncher, currentTask, this);
+    }
+
+    @Nullable
+    private UiObject2 getCurrentTaskUnchecked() {
         final List<UiObject2> taskViews = getTasks();
-        mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
+        if (taskViews.isEmpty()) {
+            return null;
+        }
 
         // The widest, and most top-right task should be the current task
-        UiObject2 currentTask = Collections.max(taskViews,
+        return Collections.max(taskViews,
                 Comparator.comparingInt((UiObject2 t) -> t.getVisibleBounds().width())
                         .thenComparingInt((UiObject2 t) -> t.getVisibleCenter().x)
                         .thenComparing(Comparator.comparing(
                                 (UiObject2 t) -> t.getVisibleCenter().y).reversed()));
-        return new OverviewTask(mLauncher, currentTask, this);
     }
 
-    /** Returns an overview task matching TestActivity {@param activityNumber}. */
+    /**
+     * Returns an overview task that contains the specified test activity in its thumbnails.
+     *
+     * @param activityIndex index of TestActivity to match against
+     */
     @NonNull
-    public OverviewTask getTestActivityTask(int activityNumber) {
+    public OverviewTask getTestActivityTask(int activityIndex) {
+        return getTestActivityTask(Collections.singleton(activityIndex));
+    }
+
+    /**
+     * Returns an overview task that contains all the specified test activities in its thumbnails.
+     *
+     * @param activityNumbers collection of indices of TestActivity to match against
+     */
+    @NonNull
+    public OverviewTask getTestActivityTask(Collection<Integer> activityNumbers) {
         final List<UiObject2> taskViews = getTasks();
         mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
-        final String activityName = "TestActivity" + activityNumber;
-        UiObject2 task = null;
-        for (UiObject2 taskView : taskViews) {
-            // TODO(b/239452415): Use equals instead of descEndsWith
-            if (taskView.getParent().hasObject(By.descEndsWith(activityName))) {
-                task = taskView;
-                break;
-            }
-        }
-        mLauncher.assertNotNull(
-                "Unable to find a task with " + activityName + " from the task list", task);
+        Optional<UiObject2> task = taskViews.stream().filter(
+                taskView -> activityNumbers.stream().allMatch(activityNumber ->
+                    // TODO(b/239452415): Use equals instead of descEndsWith
+                    taskView.hasObject(By.descEndsWith("TestActivity" + activityNumber))
+                )).findFirst();
 
-        return new OverviewTask(mLauncher, task, this);
+        mLauncher.assertTrue("Unable to find a task with test activities " + activityNumbers
+                + " from the task list", task.isPresent());
+
+        return new OverviewTask(mLauncher, task.get(), this);
     }
 
     /**
@@ -316,7 +376,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         final List<UiObject2> taskViews = getTasks();
         mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
-        final int gridTaskWidth = mLauncher.getGridTaskRectForTablet().width();
+        final int gridTaskWidth = mLauncher.getOverviewGridTaskSize().width();
 
         return taskViews.stream().filter(t -> t.getVisibleBounds().width() == gridTaskWidth).map(
                 t -> new OverviewTask(mLauncher, t, this)).collect(Collectors.toList());
@@ -327,11 +387,9 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get overview tasks")) {
             verifyActiveContainer();
-            return mLauncher.getDevice().findObjects(
-                    mLauncher.getOverviewObjectSelector(TASK_RES_ID));
+            return mLauncher.getDevice().findObjects(TASK_SELECTOR);
         }
     }
-
 
     int getTaskCount() {
         return getTasks().size();
@@ -379,44 +437,54 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 "want to get the taskbar")) {
             mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
 
-            return new Taskbar(mLauncher);
+            return new Taskbar(mLauncher, TaskbarLocation.OVERVIEW);
+        }
+    }
+
+    /**
+     * Returns the bubble bar.
+     * The bubble bar must already be visible when calling this method.
+     */
+    public BubbleBar getBubbleBar() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get the bubble bar")) {
+            return new BubbleBar(mLauncher);
         }
     }
 
     protected boolean isActionsViewVisible() {
-        boolean hasTasks = hasTasks();
-        if (!hasTasks || isClearAllVisible()) {
-            LauncherInstrumentation.log("Not expecting an actions bar:"
-                    + (!hasTasks ? "no recent tasks" : "clear all button is visible"));
+        if (!hasTasks() || isClearAllVisible()) {
+            testLogD(TAG, "Not expecting an actions bar: no tasks/'Clear all' is visible");
             return false;
         }
         boolean isTablet = mLauncher.isTablet();
         if (isTablet && mLauncher.isGridOnlyOverviewEnabled()) {
-            LauncherInstrumentation.log("Not expecting an actions bar: "
-                    + "device is tablet with grid-only Overview");
+            testLogD(TAG, "Not expecting an actions bar: device is tablet with grid-only Overview");
             return false;
         }
         OverviewTask task = isTablet ? getFocusedTaskForTablet() : getCurrentTask();
         if (task == null) {
-            LauncherInstrumentation.log("Not expecting an actions bar: no focused task");
+            testLogD(TAG, "Not expecting an actions bar: no current task");
             return false;
         }
-        float centerOffset = Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX());
         // In tablets, if focused task is not in center, overview actions aren't visible.
-        if (isTablet && centerOffset >= 1) {
-            LauncherInstrumentation.log("Not expecting an actions bar: "
-                    + "device is tablet and task is not centered; center offset by "
-                    + centerOffset + "px");
+        if (isTablet && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
+            testLogD(TAG,
+                    "Not expecting an actions bar: device is tablet and task is not centered");
             return false;
         }
-        if (task.isTaskSplit() && (!mLauncher.isAppPairsEnabled() || !isTablet)) {
-            LauncherInstrumentation.log("Not expecting an actions bar: "
-                    + "device is phone and task is split");
+        if (task.isGrouped() && !isTablet) {
+            testLogD(TAG, "Not expecting an actions bar: device is phone and task is split");
             // Overview actions aren't visible for split screen tasks, except for save app pair
             // button on tablets.
             return false;
         }
-        LauncherInstrumentation.log("Expecting an actions bar");
+        if (task.isDesktop() && !isTablet) {
+            testLogD(TAG, "Not expecting an actions bar: device is phone and task is desktop");
+            // Overview actions aren't visible for desktop tasks.
+            return false;
+        }
+        testLogD(TAG, "Expecting an actions bar");
         return true;
     }
 
@@ -473,11 +541,11 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 "want to assert overview actions view visibility="
                         + isActionsViewVisible()
                         + ", focused task is "
-                        + (task == null ? "null" : (task.isTaskSplit() ? "split" : "not split"))
+                        + (task == null ? "null" : (task.isGrouped() ? "split" : "not split"))
                 )) {
 
             if (isActionsViewVisible()) {
-                if (task.isTaskSplit()) {
+                if (task.isGrouped()) {
                     mLauncher.waitForOverviewObject("action_save_app_pair");
                 } else {
                     mLauncher.waitForOverviewObject("action_buttons");
@@ -499,22 +567,27 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             throw new IllegalStateException("Must be run on tablet device.");
         }
         final List<UiObject2> taskViews = getTasks();
-        if (!hasTasks()) {
-            LauncherInstrumentation.log("no recent tasks");
+        if (taskViews.isEmpty()) {
             return null;
         }
-        int focusedTaskHeight = mLauncher.getFocusedTaskHeightForTablet();
+        Rect focusTaskSize = mLauncher.getOverviewTaskSize();
+        int focusedTaskHeight = focusTaskSize.height();
         for (UiObject2 task : taskViews) {
             OverviewTask overviewTask = new OverviewTask(mLauncher, task, this);
-
-            LauncherInstrumentation.log("checking task height ("
-                    + overviewTask.getVisibleHeight()
-                    + ") against defined focused task height ("
-                    + focusedTaskHeight + ")");
+            // Desktop tasks can't be focused tasks, but are the same size.
+            if (overviewTask.isDesktop()) {
+                continue;
+            }
             if (overviewTask.getVisibleHeight() == focusedTaskHeight) {
                 return overviewTask;
             }
         }
         return null;
+    }
+
+    protected boolean isLiveTile(UiObject2 task) {
+        // UiObject2.equals returns false even when mLiveTileTask and task have the same node, hence
+        // compare only hashCode as a workaround.
+        return mLiveTileTask != null && mLiveTileTask.hashCode() == task.hashCode();
     }
 }

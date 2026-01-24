@@ -2,6 +2,9 @@ package app.lawnchair.ui.preferences.components
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,7 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,8 +82,15 @@ fun AnnouncementPreference(
     onDismiss: (Announcement) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // 1. Add animateContentSize with a spring spec to the Column
+    // This makes the list "spring" into place when an item is removed.
     Column(
-        modifier = modifier,
+        modifier = modifier.animateContentSize(
+            animationSpec = spring(
+                stiffness = Spring.StiffnessMediumLow,
+                dampingRatio = Spring.DampingRatioLowBouncy,
+            ),
+        ),
     ) {
         announcements.forEachIndexed { index, announcement ->
             var dismissed by rememberSaveable { mutableStateOf(false) }
@@ -123,10 +135,13 @@ private fun AnnouncementItemContent(
     modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
+    val haptic = LocalHapticFeedback.current
+
     val state = rememberSwipeToDismissBoxState(
         confirmValueChange = {
             when (it) {
                 SwipeToDismissBoxValue.StartToEnd -> {
+                    haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                     onClose()
                 }
 

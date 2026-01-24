@@ -16,7 +16,6 @@
 package com.android.quickstep.interaction;
 
 import static com.android.app.animation.Interpolators.ACCELERATE;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -49,46 +48,33 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
         super(fragment, tutorialType);
 
         // Set the Lottie animation colors specifically for the Overview gesture
-        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            LottieAnimationColorUtils.updateToArgbColors(
-                    mAnimatedGestureDemonstration,
-                    Map.of(".onSurfaceOverview", fragment.mRootView.mColorOnSurfaceOverview,
-                            ".surfaceOverview", fragment.mRootView.mColorSurfaceOverview,
-                            ".secondaryOverview", fragment.mRootView.mColorSecondaryOverview));
+        LottieAnimationColorUtils.updateToArgbColors(
+                mAnimatedGestureDemonstration,
+                Map.of(".onSurfaceOverview", fragment.mRootView.mColorOnSurfaceOverview,
+                        ".surfaceOverview", fragment.mRootView.mColorSurfaceOverview,
+                        ".secondaryOverview", fragment.mRootView.mColorSecondaryOverview));
 
-            LottieAnimationColorUtils.updateToArgbColors(
-                    mCheckmarkAnimation,
-                    Map.of(".checkmark",
-                            Utilities.isDarkTheme(mContext)
-                                    ? fragment.mRootView.mColorOnSurfaceOverview
-                                    : fragment.mRootView.mColorSecondaryOverview,
-                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceOverview));
-        }
+        LottieAnimationColorUtils.updateToArgbColors(
+                mCheckmarkAnimation,
+                Map.of(".checkmark",
+                        Utilities.isDarkTheme(mContext)
+                                ? fragment.mRootView.mColorOnSurfaceOverview
+                                : fragment.mRootView.mColorSecondaryOverview,
+                        ".checkmarkBackground", fragment.mRootView.mColorSurfaceOverview));
     }
     @Override
     public int getIntroductionTitle() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.string.overview_gesture_tutorial_title
-                : R.string.overview_gesture_intro_title;
+        return R.string.overview_gesture_tutorial_title;
     }
 
     @Override
     public int getIntroductionSubtitle() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.string.overview_gesture_tutorial_subtitle
-                : R.string.overview_gesture_intro_subtitle;
-    }
-
-    @Override
-    public int getSpokenIntroductionSubtitle() {
-        return R.string.overview_gesture_spoken_intro_subtitle;
+        return R.string.overview_gesture_tutorial_subtitle;
     }
 
     @Override
     public int getSuccessFeedbackTitle() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.string.overview_gesture_tutorial_success
-                : R.string.gesture_tutorial_nice;
+        return R.string.overview_gesture_tutorial_success;
     }
 
     @Override
@@ -168,15 +154,12 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     @Override
     protected int getMockPreviousAppTaskThumbnailColor() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? mTutorialFragment.mRootView.mColorSurfaceContainer
-                : mContext.getResources().getColor(
-                        R.color.gesture_tutorial_fake_previous_task_view_color);
+        return mTutorialFragment.mRootView.mColorSurfaceContainer;
     }
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
         switch (mTutorialType) {
@@ -203,7 +186,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
         switch (mTutorialType) {
@@ -224,11 +207,8 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                     case OVERVIEW_GESTURE_COMPLETED:
                         setGestureCompleted();
                         mTutorialFragment.releaseFeedbackAnimation();
-                        animateTaskViewToOverview(ENABLE_NEW_GESTURE_NAV_TUTORIAL.get());
+                        animateTaskViewToOverview(true);
                         onMotionPaused(true /*arbitrary value*/);
-                        if (!ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-                            showSuccessFeedback();
-                        }
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:

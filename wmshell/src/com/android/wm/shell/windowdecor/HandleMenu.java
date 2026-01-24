@@ -49,7 +49,7 @@ import android.window.SurfaceSyncGroup;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.window.flags.Flags;
+import com.android.window.flags2.Flags;
 import com.android.wm.shell.R;
 import com.android.wm.shell.common.DisplayController;
 import com.android.wm.shell.common.DisplayLayout;

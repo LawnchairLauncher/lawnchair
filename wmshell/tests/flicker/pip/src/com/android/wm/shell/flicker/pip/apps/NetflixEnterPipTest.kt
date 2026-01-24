@@ -38,7 +38,7 @@ import org.junit.runners.Parameterized
 /**
  * Test entering pip from Netflix app by interacting with the app UI
  *
- * To run this test: `atest WMShellFlickerTests:NetflixEnterPipTest`
+ * To run this test: `atest WMShellFlickerTestsPipAppsCSuite:NetflixEnterPipTest`
  *
  * Actions:
  * ```
@@ -61,7 +61,7 @@ import org.junit.runners.Parameterized
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 open class NetflixEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransition(flicker) {
-    override val standardAppHelper: NetflixAppHelper = NetflixAppHelper(instrumentation)
+    override val pipApp: NetflixAppHelper = NetflixAppHelper(instrumentation)
     private val startingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_90)
     private val endingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_0)
 
@@ -69,17 +69,17 @@ open class NetflixEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransit
 
     override val defaultEnterPip: FlickerBuilder.() -> Unit = {
         setup {
-            standardAppHelper.launchViaIntent(
+            pipApp.launchViaIntent(
                 wmHelper,
                 NetflixAppHelper.getNetflixWatchVideoIntent("81605060"),
                 ComponentNameMatcher(NetflixAppHelper.PACKAGE_NAME, NetflixAppHelper.WATCH_ACTIVITY)
             )
-            standardAppHelper.waitForVideoPlaying()
+            pipApp.waitForVideoPlaying()
         }
     }
 
     override val defaultTeardown: FlickerBuilder.() -> Unit = {
-        teardown { standardAppHelper.exit(wmHelper) }
+        teardown { pipApp.exit(wmHelper) }
     }
 
     override val thisTransition: FlickerBuilder.() -> Unit = {
@@ -103,7 +103,7 @@ open class NetflixEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransit
     @Postsubmit
     @Test
     override fun taskBarLayerIsVisibleAtStartAndEnd() {
-        Assume.assumeTrue(flicker.scenario.isTablet)
+        Assume.assumeTrue(usesTaskbar)
         // Netflix starts in immersive fullscreen mode, so taskbar bar is not visible at start
         flicker.assertLayersStart { this.isInvisible(ComponentNameMatcher.TASK_BAR) }
         flicker.assertLayersEnd { this.isVisible(ComponentNameMatcher.TASK_BAR) }
@@ -143,7 +143,7 @@ open class NetflixEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransit
         // might go outside of bounds as we resize from landscape fullscreen to destination bounds,
         // and once the animation is over we assert that it's fully within the display bounds, at
         // which point the device also performs orientation change from landscape to portrait
-        flicker.assertWmVisibleRegion(standardAppHelper.packageNameMatcher) {
+        flicker.assertWmVisibleRegion(pipApp.packageNameMatcher) {
             regionsCenterPointInside(startingBounds).then().coversAtMost(endingBounds)
         }
     }
@@ -156,7 +156,7 @@ open class NetflixEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransit
         // and once the animation is over we assert that it's fully within the display bounds, at
         // which point the device also performs orientation change from landscape to portrait
         // since Netflix uses source rect hint, there is no PiP overlay present
-        flicker.assertLayersVisibleRegion(standardAppHelper.packageNameMatcher) {
+        flicker.assertLayersVisibleRegion(pipApp.packageNameMatcher) {
             regionsCenterPointInside(startingBounds).then().coversAtMost(endingBounds)
         }
     }

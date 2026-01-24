@@ -83,6 +83,12 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
         mIsWidgetListShown = isWidgetListShown;
     }
 
+    @Override
+    public WidgetsListBaseEntry copy() {
+        return new WidgetsListHeaderEntry(mPkgItem, mTitleSectionName, mWidgets,
+                mVisibleWidgetsCount, mIsSearchEntry, mIsWidgetListShown);
+    }
+
     /** Returns {@code true} if the widgets list associated with this header is shown. */
     public boolean isWidgetListShown() {
         return mIsWidgetListShown;

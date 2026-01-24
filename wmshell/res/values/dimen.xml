@@ -91,12 +91,16 @@
     <!-- Divider handle size for legacy split screen -->
     <dimen name="docked_divider_handle_width">16dp</dimen>
     <dimen name="docked_divider_handle_height">2dp</dimen>
-    <!-- Divider handle size for split screen -->
-    <dimen name="split_divider_handle_region_width">96dp</dimen>
-    <dimen name="split_divider_handle_region_height">48dp</dimen>
 
-    <dimen name="split_divider_handle_width">72dp</dimen>
-    <dimen name="split_divider_handle_height">3dp</dimen>
+    <dimen name="split_divider_handle_region_width">80dp</dimen>
+    <dimen name="split_divider_handle_region_height">48dp</dimen>
+    <!-- The divider touch zone height is intentionally halved in portrait to avoid colliding
+         with the app handle.-->
+    <dimen name="desktop_mode_portrait_split_divider_handle_region_height">24dp</dimen>
+
+    <!-- Divider handle size for split screen -->
+    <dimen name="split_divider_handle_width">40dp</dimen>
+    <dimen name="split_divider_handle_height">4dp</dimen>
 
     <dimen name="split_divider_bar_width">10dp</dimen>
     <dimen name="split_divider_corner_size">42dp</dimen>
@@ -235,9 +239,15 @@
     <!-- Max width for the bubble popup view. -->
     <dimen name="bubble_popup_content_max_width">300dp</dimen>
     <!-- Horizontal margin for the bubble popup view. -->
-    <dimen name="bubble_popup_margin_horizontal">32dp</dimen>
-    <!-- Top margin for the bubble popup view. -->
-    <dimen name="bubble_popup_margin_top">16dp</dimen>
+    <dimen name="bubble_popup_margin_horizontal">24dp</dimen>
+    <!-- Top margin for the bubble bar education views. -->
+    <dimen name="bubble_popup_margin_top">24dp</dimen>
+    <!-- Bottom padding for the bubble bar education views. -->
+    <dimen name="bubble_popup_padding_bottom">8dp</dimen>
+    <!-- Text margin for the bubble bar education views. -->
+    <dimen name="bubble_popup_text_margin">16dp</dimen>
+    <!-- Size of icons in the bubble bar education views. -->
+    <dimen name="bubble_popup_icon_size">32dp</dimen>
     <!-- Width for the bubble popup view arrow. -->
     <dimen name="bubble_popup_arrow_width">12dp</dimen>
     <!-- Height for the bubble popup view arrow. -->
@@ -246,6 +256,8 @@
     <dimen name="bubble_popup_arrow_corner_radius">2dp</dimen>
     <!-- Padding for the bubble popup view contents. -->
     <dimen name="bubble_popup_padding">24dp</dimen>
+    <!-- Elevation of the popup user education views for the bubble bar -->
+    <dimen name="bubble_popup_elevation">2dp</dimen>
     <!-- The size of the caption bar inset at the top of bubble bar expanded view. -->
     <dimen name="bubble_bar_expanded_view_caption_height">36dp</dimen>
     <!-- The width of the caption bar at the top of bubble bar expanded view. -->
@@ -254,8 +266,12 @@
     <dimen name="bubble_bar_expanded_view_handle_height">4dp</dimen>
     <!-- Width of the expanded bubble bar view shown when the bubble is expanded. -->
     <dimen name="bubble_bar_expanded_view_width">412dp</dimen>
+    <!-- Offset of the expanded view when it starts sliding in as part of the switch animation -->
+    <dimen name="bubble_bar_expanded_view_switch_offset">48dp</dimen>
     <!-- Minimum width of the bubble bar manage menu. -->
     <dimen name="bubble_bar_manage_menu_min_width">200dp</dimen>
+    <!-- The Bubble Bar drop zone square size. -->
+    <dimen name="bubble_bar_drop_zone_side_size">200dp</dimen>
     <!-- Size of the dismiss icon in the bubble bar manage menu. -->
     <dimen name="bubble_bar_manage_menu_dismiss_icon_size">16dp</dimen>
     <!-- Padding of the bubble bar manage menu, provides space for menu shadows -->
@@ -275,10 +291,20 @@
     <!-- Corner radius for expanded view drop target -->
     <dimen name="bubble_bar_expanded_view_drop_target_corner">28dp</dimen>
     <dimen name="bubble_bar_expanded_view_drop_target_padding">24dp</dimen>
+    <dimen name="bubble_bar_drop_target_width">84dp</dimen>
+    <dimen name="bubble_bar_drop_target_height">48dp</dimen>
     <!-- Width of the box around bottom center of the screen where drag only leads to dismiss -->
     <dimen name="bubble_bar_dismiss_zone_width">192dp</dimen>
     <!-- Height of the box around bottom center of the screen where drag only leads to dismiss -->
     <dimen name="bubble_bar_dismiss_zone_height">242dp</dimen>
+    <!-- Height of the box at the corner of the screen where drag leads to app moving to bubble -->
+    <dimen name="bubble_transform_area_width">140dp</dimen>
+    <!-- Width of the box at the corner of the screen where drag leads to app moving to bubble -->
+    <dimen name="bubble_transform_area_height">140dp</dimen>
+    <!-- How much elevation a bubble ui needs when dragged, must be above drop target & dismiss. -->
+    <dimen name="dragged_bubble_elevation">3dp</dimen>
+    <!-- Space between the bottom dismiss view and the bottom edge of the screen -->
+    <dimen name="bubble_bar_dismiss_view_bottom_margin">60dp</dimen>
 
     <!-- Bottom and end margin for compat buttons. -->
     <dimen name="compat_button_margin">24dp</dimen>
@@ -296,38 +322,35 @@
     <!-- The width of the compat hint. -->
     <dimen name="compat_hint_width">188dp</dimen>
 
-    <!-- The width of the camera compat hint. -->
-    <dimen name="camera_compat_hint_width">143dp</dimen>
-
     <!-- The corner radius of the letterbox education dialog. -->
     <dimen name="letterbox_education_dialog_corner_radius">28dp</dimen>
 
     <!-- The width of the top icon in the letterbox education dialog. -->
-    <dimen name="letterbox_education_dialog_title_icon_width">45dp</dimen>
+    <dimen name="letterbox_education_dialog_title_icon_width">32dp</dimen>
 
     <!-- The height of the top icon in the letterbox education dialog. -->
-    <dimen name="letterbox_education_dialog_title_icon_height">44dp</dimen>
+    <dimen name="letterbox_education_dialog_title_icon_height">32dp</dimen>
 
     <!-- The width of an icon in the letterbox education dialog. -->
-    <dimen name="letterbox_education_dialog_icon_width">40dp</dimen>
+    <dimen name="letterbox_education_dialog_icon_width">28dp</dimen>
 
     <!-- The height of an icon in the letterbox education dialog. -->
-    <dimen name="letterbox_education_dialog_icon_height">32dp</dimen>
+    <dimen name="letterbox_education_dialog_icon_height">22dp</dimen>
 
     <!-- The fixed width of the dialog if there is enough space in the parent. -->
-    <dimen name="letterbox_education_dialog_width">472dp</dimen>
+    <dimen name="letterbox_education_dialog_width">364dp</dimen>
 
     <!-- The margin between the dialog container and its parent. -->
-    <dimen name="letterbox_education_dialog_margin">16dp</dimen>
+    <dimen name="letterbox_education_dialog_margin">24dp</dimen>
 
     <!-- The width of each action container in the letterbox education dialog -->
-    <dimen name="letterbox_education_dialog_action_width">140dp</dimen>
+    <dimen name="letterbox_education_dialog_action_width">124dp</dimen>
 
     <!-- The space between two actions in the letterbox education dialog -->
-    <dimen name="letterbox_education_dialog_space_between_actions">24dp</dimen>
+    <dimen name="letterbox_education_dialog_space_between_actions">32dp</dimen>
 
     <!-- The corner radius of the buttons in the letterbox education dialog -->
-    <dimen name="letterbox_education_dialog_button_radius">12dp</dimen>
+    <dimen name="letterbox_education_dialog_button_radius">28dp</dimen>
 
     <!-- The horizontal padding for the buttons in the letterbox education dialog -->
     <dimen name="letterbox_education_dialog_horizontal_padding">16dp</dimen>
@@ -366,7 +389,7 @@
     <dimen name="letterbox_restart_dialog_button_width">82dp</dimen>
 
     <!-- The width of the buttons in the restart dialog -->
-    <dimen name="letterbox_restart_dialog_button_height">36dp</dimen>
+    <dimen name="letterbox_restart_dialog_button_height">40dp</dimen>
 
     <!-- The corner radius of the buttons in the restart dialog -->
     <dimen name="letterbox_restart_dialog_button_radius">18dp</dimen>
@@ -420,15 +443,23 @@
     <!-- Height of button (32dp)  + 2 * margin (5dp each). -->
     <dimen name="freeform_decor_caption_height">42dp</dimen>
 
-    <!-- Height of desktop mode caption for freeform tasks. -->
-    <dimen name="desktop_mode_freeform_decor_caption_height">40dp</dimen>
-
     <!-- Height of desktop mode caption for fullscreen tasks. -->
     <dimen name="desktop_mode_fullscreen_decor_caption_height">36dp</dimen>
 
     <!-- Width of desktop mode caption for fullscreen tasks.
         80 dp for handle + 20 dp for room to grow on the sides when hovered. -->
     <dimen name="desktop_mode_fullscreen_decor_caption_width">100dp</dimen>
+
+    <!-- Horizontal padding for desktop mode caption in default unhovered untouched state. -->
+    <dimen name="desktop_mode_fullscreen_decor_caption_horizontal_padding_default">10dp</dimen>
+
+    <!-- Horizontal padding for desktop mode caption when hovered.
+        1/2 * (100 dp of total width - 80 dp for handle * 1.2 scaling factor). -->
+    <dimen name="desktop_mode_fullscreen_decor_caption_horizontal_padding_hovered">2dp</dimen>
+
+    <!-- Horizontal padding for desktop mode caption when touched.
+        1/2 * (100 dp of total width - 80 dp for handle * 0.85 scaling factor). -->
+    <dimen name="desktop_mode_fullscreen_decor_caption_horizontal_padding_touched">16dp</dimen>
 
     <!-- Required empty space to be visible for partially offscreen tasks. -->
     <dimen name="freeform_required_visible_empty_space_in_header">48dp</dimen>
@@ -459,17 +490,16 @@
          start of this area. -->
     <dimen name="desktop_mode_customizable_caption_margin_end">152dp</dimen>
 
+    <!-- The width of the right-aligned region that is taken up by caption elements and extra
+         margins when the caption has the minimize button. This will be merged with the above value
+         once the minimize button becomes default. -->
+    <dimen name="desktop_mode_customizable_caption_with_minimize_button_margin_end">204dp</dimen>
+
     <!-- The default minimum allowed window width when resizing a window in desktop mode. -->
     <dimen name="desktop_mode_minimum_window_width">386dp</dimen>
 
     <!-- The default minimum allowed window height when resizing a window in desktop mode. -->
     <dimen name="desktop_mode_minimum_window_height">352dp</dimen>
-
-    <!-- The width of the maximize menu in desktop mode. -->
-    <dimen name="desktop_mode_maximize_menu_width">228dp</dimen>
-
-    <!-- The height of the maximize menu in desktop mode. -->
-    <dimen name="desktop_mode_maximize_menu_height">114dp</dimen>
 
     <!-- The padding of the maximize menu in desktop mode. -->
     <dimen name="desktop_mode_menu_padding">16dp</dimen>
@@ -486,17 +516,35 @@
     <dimen name="desktop_mode_maximize_menu_buttons_outline_stroke">1dp</dimen>
     <!-- The radius of the inner fill of the maximize menu buttons. -->
     <dimen name="desktop_mode_maximize_menu_buttons_fill_radius">4dp</dimen>
-    <!-- The padding between the outline and fill of the maximize menu buttons. -->
-    <dimen name="desktop_mode_maximize_menu_buttons_fill_padding">4dp</dimen>
+    <!-- The padding between the outline and fill of the maximize menu snap and maximize buttons. -->
+    <dimen name="desktop_mode_maximize_menu_snap_and_maximize_buttons_fill_padding">4dp</dimen>
+    <!-- The vertical padding between the outline and fill of the maximize menu restore button. -->
+    <dimen name="desktop_mode_maximize_menu_restore_button_fill_vertical_padding">13dp</dimen>
+    <!-- The horizontal padding between the outline and fill of the maximize menu restore button. -->
+    <dimen name="desktop_mode_maximize_menu_restore_button_fill_horizontal_padding">15dp</dimen>
+    <!-- The padding between the outline and fill of the maximize menu immersive button. -->
+    <dimen name="desktop_mode_maximize_menu_immersive_button_fill_padding">0dp</dimen>
 
     <!-- The corner radius of the maximize menu. -->
-    <dimen name="desktop_mode_maximize_menu_corner_radius">8dp</dimen>
+    <dimen name="desktop_mode_maximize_menu_corner_radius">16dp</dimen>
 
     <!-- The radius of the Maximize menu shadow. -->
     <dimen name="desktop_mode_maximize_menu_shadow_radius">8dp</dimen>
 
-    <!-- The width of the handle menu in desktop mode. -->
-    <dimen name="desktop_mode_handle_menu_width">216dp</dimen>
+    <!-- The width of the handle menu in desktop mode plus the 2dp added for padding to account for
+         pill elevation. -->
+    <dimen name="desktop_mode_handle_menu_width">218dp</dimen>
+
+    <!-- The maximum height of the handle menu in desktop mode. Three pills at 52dp each,
+         additional actions pill 260dp, plus 2dp spacing between them plus 4dp top padding.
+         52*3 + 52*5 + (5-1)*2 + 4 = 428 -->
+    <dimen name="desktop_mode_handle_menu_height">428dp</dimen>
+
+    <!-- The elevation set on the handle menu pills. -->
+    <dimen name="desktop_mode_handle_menu_pill_elevation">1dp</dimen>
+
+    <!-- The padding added to account for the handle menu's pills' elevation. -->
+    <dimen name="desktop_mode_handle_menu_pill_elevation_padding">2dp</dimen>
 
     <!-- The height of the handle menu's "App Info" pill in desktop mode. -->
     <dimen name="desktop_mode_handle_menu_app_info_pill_height">52dp</dimen>
@@ -504,11 +552,26 @@
     <!-- The height of the handle menu's "Windowing" pill in desktop mode. -->
     <dimen name="desktop_mode_handle_menu_windowing_pill_height">52dp</dimen>
 
-    <!-- The height of the handle menu's "More Actions" pill in desktop mode. -->
-    <dimen name="desktop_mode_handle_menu_more_actions_pill_height">52dp</dimen>
+    <!-- The maximum height of the handle menu's "New Window" button in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_new_window_height">52dp</dimen>
 
-    <!-- The height of the handle menu in desktop mode. -->
-    <dimen name="desktop_mode_handle_menu_height">328dp</dimen>
+    <!-- The maximum height of the handle menu's "Manage Windows" button in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_manage_windows_height">52dp</dimen>
+
+    <!-- The maximum height of the handle menu's "Screenshot" button in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_screenshot_height">52dp</dimen>
+
+    <!-- The height of the handle menu's "Open in browser" pill in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_open_in_browser_pill_height">52dp</dimen>
+
+    <!-- The height of the handle menu's "Change aspect ratio" pill in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_change_aspect_ratio_height">52dp</dimen>
+
+    <!-- The height of the handle menu's "Optimize View" pill in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_restart_button_height">52dp</dimen>
+
+    <!-- The margin between pills of the handle menu in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_pill_spacing_margin">2dp</dimen>
 
     <!-- The top margin of the handle menu in desktop mode. -->
     <dimen name="desktop_mode_handle_menu_margin_top">4dp</dimen>
@@ -516,14 +579,14 @@
     <!-- The start margin of the handle menu in desktop mode. -->
     <dimen name="desktop_mode_handle_menu_margin_start">6dp</dimen>
 
-    <!-- The margin between pills of the handle menu in desktop mode. -->
-    <dimen name="desktop_mode_handle_menu_pill_spacing_margin">2dp</dimen>
-
     <!-- The radius of the caption menu corners. -->
     <dimen name="desktop_mode_handle_menu_corner_radius">26dp</dimen>
 
     <!-- The radius of the caption menu icon. -->
     <dimen name="desktop_mode_caption_icon_radius">24dp</dimen>
+
+    <!-- The radius of the icon in the header menu's app info pill. -->
+    <dimen name="desktop_mode_handle_menu_icon_radius">32dp</dimen>
 
     <!-- The radius of the caption menu shadow. -->
     <dimen name="desktop_mode_handle_menu_shadow_radius">2dp</dimen>
@@ -531,31 +594,29 @@
     <!-- The size of the icon shown in the resize veil. -->
     <dimen name="desktop_mode_resize_veil_icon_size">96dp</dimen>
 
-    <!-- The with of the border around the app task for edge resizing, when
+    <!-- The width of the border outside the app task eligible for edge resizing, when
          enable_windowing_edge_drag_resize is enabled. -->
-    <dimen name="desktop_mode_edge_handle">12dp</dimen>
+    <dimen name="freeform_edge_handle_outset">10dp</dimen>
+
+    <!-- The size of the border inside the app task eligible for edge resizing, when
+         enable_windowing_edge_drag_resize is enabled. -->
+    <dimen name="freeform_edge_handle_inset">2dp</dimen>
 
     <!-- The original width of the border around the app task for edge resizing, when
          enable_windowing_edge_drag_resize is disabled. -->
     <dimen name="freeform_resize_handle">15dp</dimen>
 
     <!-- The size of the corner region for drag resizing with touch, when a larger touch region is
-         appropriate. Applied when enable_windowing_edge_drag_resize is enabled. -->
+         appropriate. -->
     <dimen name="desktop_mode_corner_resize_large">48dp</dimen>
 
-    <!-- The original size of the corner region for darg resizing, when
-         enable_windowing_edge_drag_resize is disabled. -->
+    <!-- The size of the corner region for drag resizing with a cursor or a stylus. -->
     <dimen name="freeform_resize_corner">44dp</dimen>
 
-    <!-- The width of the area at the sides of the screen where a freeform task will transition to
-    split select if dragged until the touch input is within the range. -->
-    <dimen name="desktop_mode_transition_area_width">32dp</dimen>
+    <!-- The thickness in dp for all desktop drag transition regions. -->
+    <dimen name="desktop_mode_transition_region_thickness">44dp</dimen>
 
-    <!-- The width of the area where a desktop task will transition to fullscreen. -->
-    <dimen name="desktop_mode_fullscreen_from_desktop_width">80dp</dimen>
-
-    <!-- The height of the area where a desktop task will transition to fullscreen. -->
-    <dimen name="desktop_mode_fullscreen_from_desktop_height">40dp</dimen>
+    <item type="dimen" format="float" name="desktop_mode_fullscreen_region_scale">0.2</item>
 
     <!-- The height on the screen where drag to the left or right edge will result in a
     desktop task snapping to split size. The empty space between this and the top is to allow
@@ -569,6 +630,22 @@
     <dimen name="desktop_mode_header_buttons_ripple_radius">16dp</dimen>
     <!-- The vertical inset to apply to the app chip's ripple drawable -->
     <dimen name="desktop_mode_header_app_chip_ripple_inset_vertical">4dp</dimen>
+
+     <!-- The corner radius of the windowing actions pill buttons's ripple drawable -->
+     <dimen name="desktop_mode_handle_menu_icon_button_ripple_radius">24dp</dimen>
+     <!-- The horizontal/vertical inset to apply to the ripple drawable effect of windowing
+     actions pill central buttons -->
+     <dimen name="desktop_mode_handle_menu_icon_button_ripple_inset_base">2dp</dimen>
+     <!-- The horizontal/vertical vertical inset to apply to the ripple drawable effect of windowing
+     actions pill edge buttons -->
+     <dimen name="desktop_mode_handle_menu_icon_button_ripple_inset_shift">4dp</dimen>
+
+    <!-- The corner radius of the minimize button's ripple drawable -->
+    <dimen name="desktop_mode_header_minimize_ripple_radius">18dp</dimen>
+    <!-- The vertical inset to apply to the minimize button's ripple drawable -->
+    <dimen name="desktop_mode_header_minimize_ripple_inset_vertical">4dp</dimen>
+    <!-- The horizontal inset to apply to the minimize button's ripple drawable -->
+    <dimen name="desktop_mode_header_minimize_ripple_inset_horizontal">6dp</dimen>
 
     <!-- The corner radius of the maximize button's ripple drawable -->
     <dimen name="desktop_mode_header_maximize_ripple_radius">18dp</dimen>
@@ -584,6 +661,16 @@
     <!-- The horizontal inset to apply to the close button's ripple drawable -->
     <dimen name="desktop_mode_header_close_ripple_inset_horizontal">6dp</dimen>
 
+    <!-- The max width of the app name shown on the app header -->
+    <dimen name="desktop_mode_header_app_name_max_width">130dp</dimen>
+    <!-- The width of the expand menu error image on the app header -->
+    <dimen name="desktop_mode_header_expand_menu_error_image_width">16dp</dimen>
+    <!-- The margin added between app name and expand menu error image on the app header -->
+    <dimen name="desktop_mode_header_expand_menu_error_image_margin">8dp</dimen>
+
+    <!-- The padding added to all sides of windowing education tooltip -->
+    <dimen name="desktop_windowing_education_tooltip_padding">8dp</dimen>
+
     <!-- The acceptable area ratio of fg icon area/bg icon area, i.e. (72 x 72) / (108 x 108) -->
     <item type="dimen" format="float" name="splash_icon_enlarge_foreground_threshold">0.44</item>
     <!-- Scaling factor applied to splash icons without provided background i.e. (192 / 160) -->
@@ -597,4 +684,19 @@
     <!-- The offset from the left edge of the entering page for the cross-activity animation -->
     <dimen name="cross_activity_back_entering_start_offset">96dp</dimen>
 
+    <!-- The open by default settings dialog menu width. -->
+    <dimen name="open_by_default_settings_dialog_width">348dp</dimen>
+    <!-- The open by default settings dialog menu height. -->
+    <dimen name="open_by_default_settings_dialog_height">380dp</dimen>
+    <!-- The height of radio buttons in the open by default settings dialog. -->
+    <dimen name="open_by_default_settings_dialog_radio_button_height">64dp</dimen>
+    <!-- The width of radio buttons in the open by default settings dialog. -->
+    <dimen name="open_by_default_settings_dialog_radio_button_width">316dp</dimen>
+
+    <!-- The width of the desktop windowing education promo. -->
+    <dimen name="desktop_windowing_education_promo_width">412dp</dimen>
+    <!-- The height of the desktop windowing education promo. -->
+    <dimen name="desktop_windowing_education_promo_height">352dp</dimen>
+    <!-- The corner radius of the desktop windowing education promo. -->
+    <dimen name="desktop_windowing_education_promo_corner_radius">28dp</dimen>
 </resources>

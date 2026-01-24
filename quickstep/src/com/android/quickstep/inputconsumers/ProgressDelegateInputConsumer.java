@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.view.MotionEvent;
+import android.window.TransitionInfo;
 
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
@@ -88,9 +89,12 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
     private RecentsAnimationController mRecentsAnimationController;
     private Boolean mFlingEndsOnHome;
 
-    public ProgressDelegateInputConsumer(Context context,
-            TaskAnimationManager taskAnimationManager, GestureState gestureState,
-            InputMonitorCompat inputMonitorCompat, AnimatedFloat progress) {
+    public ProgressDelegateInputConsumer(
+            Context context,
+            TaskAnimationManager taskAnimationManager,
+            GestureState gestureState,
+            InputMonitorCompat inputMonitorCompat,
+            AnimatedFloat progress) {
         mContext = context;
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
@@ -114,6 +118,11 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
     @Override
     public int getType() {
         return TYPE_PROGRESS_DELEGATE;
+    }
+
+    @Override
+    public int getDisplayId() {
+        return mGestureState.getDisplayId();
     }
 
     @Override
@@ -166,13 +175,13 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
             mRecentsAnimationController.finishController(endToRecents /* toRecents */,
                     null /* callback */, false /* sendUserLeaveHint */);
         } else if (endToRecents) {
-            startHomeIntentSafely(mContext, null, TAG);
+            startHomeIntentSafely(mContext, null, TAG, getDisplayId());
         }
     }
 
     @Override
     public void onRecentsAnimationStart(RecentsAnimationController controller,
-            RecentsAnimationTargets targets) {
+            RecentsAnimationTargets targets, TransitionInfo transitionInfo) {
         mRecentsAnimationController = controller;
         mStateCallback.setState(STATE_TARGET_RECEIVED);
     }

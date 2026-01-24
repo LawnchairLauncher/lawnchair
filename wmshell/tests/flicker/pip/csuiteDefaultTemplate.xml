@@ -24,6 +24,10 @@
         <option name="run-command" value="setprop debug.wm.disable_deprecated_target_sdk_dialog 1"/>
         <!-- keeps the screen on during tests -->
         <option name="screen-always-on" value="on"/>
+        <!-- Turns off Wi-fi -->
+        <option name="wifi" value="on"/>
+        <!-- Turns off Bluetooth -->
+        <option name="bluetooth" value="on"/>
         <!-- prevents the phone from restarting -->
         <option name="force-skip-system-props" value="true"/>
         <!-- set WM tracing verbose level to all -->
@@ -44,6 +48,8 @@
     <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
         <option name="test-user-token" value="%TEST_USER%"/>
         <option name="run-command" value="rm -rf /data/user/%TEST_USER%/files/*"/>
+        <!-- Disable AOD -->
+        <option name="run-command" value="settings put secure doze_always_on 0"/>
         <option name="run-command" value="settings put secure show_ime_with_hard_keyboard 1"/>
         <option name="run-command" value="settings put system show_touches 1"/>
         <option name="run-command" value="settings put system pointer_location 1"/>

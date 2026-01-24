@@ -16,6 +16,7 @@
 
 package com.android.wm.shell.freeform;
 
+import android.os.IBinder;
 import android.window.WindowContainerTransaction;
 
 /**
@@ -37,15 +38,29 @@ public interface FreeformTaskTransitionStarter {
      * Starts window minimization transition
      *
      * @param wct the {@link WindowContainerTransaction} that changes the windowing mode
+     * @param taskId the task id of the task being minimized
+     * @param isLastTask true if the task being minimized is the last visible task
      *
+     * @return the started transition
      */
-    void startMinimizedModeTransition(WindowContainerTransaction wct);
+    IBinder startMinimizedModeTransition(
+            WindowContainerTransaction wct, int taskId, boolean isLastTask);
 
     /**
      * Starts close window transition
      *
      * @param wct the {@link WindowContainerTransaction} that closes the task
      *
+     * @return the started transition
      */
-    void startRemoveTransition(WindowContainerTransaction wct);
+    IBinder startRemoveTransition(WindowContainerTransaction wct);
+
+    /**
+     * Starts PiP transition
+     *
+     * @param wct the {@link WindowContainerTransaction} that launches the PiP
+     *
+     * @return the started transition
+     */
+    IBinder startPipTransition(WindowContainerTransaction wct);
 }

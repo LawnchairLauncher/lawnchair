@@ -17,6 +17,7 @@
 package com.android.wm.shell.common;
 
 import android.annotation.Nullable;
+import android.graphics.Rect;
 import android.os.RemoteException;
 import android.os.Trace;
 import android.util.Slog;
@@ -28,6 +29,7 @@ import android.window.WindowContainerTransaction;
 
 import androidx.annotation.BinderThread;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.wm.shell.shared.annotations.ShellMainThread;
 import com.android.wm.shell.sysui.ShellInit;
 
@@ -43,6 +45,7 @@ public class DisplayChangeController {
     private static final String TAG = DisplayChangeController.class.getSimpleName();
     private static final String HANDLE_DISPLAY_CHANGE_TRACE_TAG = "HandleRemoteDisplayChange";
 
+    private final DisplayController mDisplayController;
     private final ShellExecutor mMainExecutor;
     private final IWindowManager mWmService;
     private final IDisplayChangeWindowController mControllerImpl;
@@ -50,8 +53,9 @@ public class DisplayChangeController {
     private final CopyOnWriteArrayList<OnDisplayChangingListener> mDisplayChangeListener =
             new CopyOnWriteArrayList<>();
 
-    public DisplayChangeController(IWindowManager wmService, ShellInit shellInit,
-            ShellExecutor mainExecutor) {
+    public DisplayChangeController(DisplayController displayController, IWindowManager wmService,
+            ShellInit shellInit, ShellExecutor mainExecutor) {
+        mDisplayController = displayController;
         mMainExecutor = mainExecutor;
         mWmService = wmService;
         mControllerImpl = new DisplayChangeWindowControllerImpl();
@@ -94,8 +98,21 @@ public class DisplayChangeController {
         }
     }
 
-    private void onDisplayChange(int displayId, int fromRotation, int toRotation,
+    @VisibleForTesting
+    void onDisplayChange(int displayId, int fromRotation, int toRotation,
             DisplayAreaInfo newDisplayAreaInfo, IDisplayChangeWindowCallback callback) {
+        final DisplayLayout dl = mDisplayController.getDisplayLayout(displayId);
+        if (dl != null && newDisplayAreaInfo != null) {
+            // Note: there is a chance Transitions has triggered
+            // DisplayController#onDisplayChangeRequested first, in which case layout was updated
+            // and startBounds equals endBounds; then DisplayLayout size remains the same.
+            // TODO(b/370721807): Remove DisplayChangeWindowControllerImpl and rely on transitions.
+            final Rect startBounds = new Rect(0, 0, dl.width(), dl.height());
+            final Rect endBounds = newDisplayAreaInfo.configuration.windowConfiguration.getBounds();
+            mDisplayController.updateDisplayLayout(displayId, startBounds, endBounds,
+                    fromRotation, toRotation);
+        }
+
         WindowContainerTransaction t = new WindowContainerTransaction();
         dispatchOnDisplayChange(t, displayId, fromRotation, toRotation, newDisplayAreaInfo);
         try {

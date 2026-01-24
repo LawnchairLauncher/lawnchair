@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.util.TouchUtil;
+import com.android.window.flags2.Flags;
 
 /**
  * Utility class to handle tripper long press or right click on a view with custom timeout and
@@ -140,8 +141,15 @@ public class CheckLongPressHelper {
     }
 
     private void triggerLongPress() {
+        boolean showHomeBehindDesktop;
+        if (Utilities.ATLEAST_BAKLAVA_1) {
+            // LC-Ignored: Lawnchair-TODO: Intentional unless we can find a way to detect QPR1 build or skip to Android 17
+            showHomeBehindDesktop = Flags.showHomeBehindDesktop();
+        } else {
+            showHomeBehindDesktop = false;
+        }
         if ((mView.getParent() != null)
-                && mView.hasWindowFocus()
+                && (showHomeBehindDesktop || mView.hasWindowFocus())
                 && (!mView.isPressed() || mListener != null)
                 && !mHasPerformedLongPress) {
             boolean handled;
@@ -151,6 +159,8 @@ public class CheckLongPressHelper {
                 handled = mView.performLongClick();
             }
             if (handled) {
+                // Cancel any default long-press action on the view
+                mView.cancelLongPress();
                 mView.setPressed(false);
                 mHasPerformedLongPress = true;
             }

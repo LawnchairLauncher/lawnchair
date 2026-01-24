@@ -27,8 +27,7 @@ import javax.inject.Inject;
 /**
  * Handles the shell commands for the CompatUX.
  *
- * <p> Use with {@code adb shell dumpsys activity service SystemUIService WMShell compatui
- * &lt;command&gt;}.
+ * <p> Use with {@code adb shell wm shell compatui &lt;command&gt;}.
  */
 @WMSingleton
 public final class CompatUIShellCommandHandler implements

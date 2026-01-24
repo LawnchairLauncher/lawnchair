@@ -26,10 +26,12 @@ import android.view.View.SCALE_Y
 import android.view.View.TRANSLATION_Y
 import android.view.View.TRANSLATION_Z
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityEvent
+import android.widget.Button
 import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import com.android.wm.shell.R
-import com.android.wm.shell.animation.Interpolators
+import com.android.wm.shell.shared.animation.Interpolators
 
 /** Animates the Handle Menu opening. */
 class HandleMenuAnimator(
@@ -72,6 +74,8 @@ class HandleMenuAnimator(
     private val appInfoPill: ViewGroup = handleMenu.requireViewById(R.id.app_info_pill)
     private val windowingPill: ViewGroup = handleMenu.requireViewById(R.id.windowing_pill)
     private val moreActionsPill: ViewGroup = handleMenu.requireViewById(R.id.more_actions_pill)
+    private val openInAppOrBrowserPill: ViewGroup =
+        handleMenu.requireViewById(R.id.open_in_app_or_browser_pill)
 
     /** Animates the opening of the handle menu. */
     fun animateOpen() {
@@ -80,7 +84,13 @@ class HandleMenuAnimator(
         animateAppInfoPillOpen()
         animateWindowingPillOpen()
         animateMoreActionsPillOpen()
-        runAnimations()
+        animateOpenInAppOrBrowserPill()
+        runAnimations {
+            appInfoPill.post {
+                appInfoPill.requireViewById<View>(R.id.collapse_menu_button).sendAccessibilityEvent(
+                    AccessibilityEvent.TYPE_VIEW_FOCUSED)
+            }
+        }
     }
 
     /**
@@ -94,7 +104,13 @@ class HandleMenuAnimator(
         animateAppInfoPillOpen()
         animateWindowingPillOpen()
         animateMoreActionsPillOpen()
-        runAnimations()
+        animateOpenInAppOrBrowserPill()
+        runAnimations {
+            appInfoPill.post {
+                appInfoPill.requireViewById<View>(R.id.collapse_menu_button).sendAccessibilityEvent(
+                    AccessibilityEvent.TYPE_VIEW_FOCUSED)
+            }
+        }
     }
 
     /**
@@ -104,11 +120,12 @@ class HandleMenuAnimator(
      *
      * @param after runs after the animation finishes.
      */
-    fun animateCollapseIntoHandleClose(after: Runnable) {
+    fun animateCollapseIntoHandleClose(after: () -> Unit) {
         appInfoCollapseToHandle()
         animateAppInfoPillFadeOut()
         windowingPillClose()
         moreActionsPillClose()
+        openInAppOrBrowserPillClose()
         runAnimations(after)
     }
 
@@ -120,11 +137,12 @@ class HandleMenuAnimator(
      * @param after runs after animation finishes.
      *
      */
-    fun animateClose(after: Runnable) {
+    fun animateClose(after: () -> Unit) {
         appInfoPillCollapse()
         animateAppInfoPillFadeOut()
         windowingPillClose()
         moreActionsPillClose()
+        openInAppOrBrowserPillClose()
         runAnimations(after)
     }
 
@@ -137,6 +155,7 @@ class HandleMenuAnimator(
         appInfoPill.children.forEach { it.alpha = 0f }
         windowingPill.alpha = 0f
         moreActionsPill.alpha = 0f
+        openInAppOrBrowserPill.alpha = 0f
 
         // Setup pivots.
         handleMenu.pivotX = menuWidth / 2f
@@ -147,6 +166,9 @@ class HandleMenuAnimator(
 
         moreActionsPill.pivotX = menuWidth / 2f
         moreActionsPill.pivotY = appInfoPill.measuredHeight.toFloat()
+
+        openInAppOrBrowserPill.pivotX = menuWidth / 2f
+        openInAppOrBrowserPill.pivotY = appInfoPill.measuredHeight.toFloat()
     }
 
     private fun animateAppInfoPillOpen() {
@@ -268,12 +290,50 @@ class HandleMenuAnimator(
         // More Actions Content Opacity Animation
         moreActionsPill.children.forEach {
             animators +=
-                ObjectAnimator.ofFloat(it, ALPHA, 1f).apply {
+                    ObjectAnimator.ofFloat(it, ALPHA, 1f).apply {
+                        startDelay = BODY_ALPHA_OPEN_DELAY
+                        duration = BODY_CONTENT_ALPHA_OPEN_DURATION
+                        interpolator = Interpolators.FAST_OUT_SLOW_IN
+                    }
+        }
+    }
+
+    private fun animateOpenInAppOrBrowserPill() {
+        // Open in Browser X & Y Scaling Animation
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_X, HALF_INITIAL_SCALE, 1f).apply {
+                    startDelay = BODY_SCALE_OPEN_DELAY
+                    duration = BODY_SCALE_OPEN_DURATION
+                }
+
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_Y, HALF_INITIAL_SCALE, 1f).apply {
+                    startDelay = BODY_SCALE_OPEN_DELAY
+                    duration = BODY_SCALE_OPEN_DURATION
+                }
+
+        // Open in Browser Opacity Animation
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 1f).apply {
+                    startDelay = BODY_ALPHA_OPEN_DELAY
+                    duration = BODY_ALPHA_OPEN_DURATION
+                }
+
+        // Open in Browser Elevation Animation
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, TRANSLATION_Z, 1f).apply {
+                    startDelay = ELEVATION_OPEN_DELAY
+                    duration = BODY_ELEVATION_OPEN_DURATION
+                }
+
+        // Open in Browser Button Opacity Animation
+        val button = openInAppOrBrowserPill.requireViewById<View>(R.id.open_in_app_or_browser_button)
+        animators +=
+                ObjectAnimator.ofFloat(button, ALPHA, 1f).apply {
                     startDelay = BODY_ALPHA_OPEN_DELAY
                     duration = BODY_CONTENT_ALPHA_OPEN_DURATION
                     interpolator = Interpolators.FAST_OUT_SLOW_IN
                 }
-        }
     }
 
     private fun appInfoPillCollapse() {
@@ -379,14 +439,45 @@ class HandleMenuAnimator(
             }
     }
 
+    private fun openInAppOrBrowserPillClose() {
+        // Open in Browser X & Y Scaling Animation
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_X, HALF_INITIAL_SCALE).apply {
+                    duration = BODY_CLOSE_DURATION
+                }
+
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, SCALE_Y, HALF_INITIAL_SCALE).apply {
+                    duration = BODY_CLOSE_DURATION
+                }
+
+        // Open in Browser Opacity Animation
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 0f).apply {
+                    duration = BODY_CLOSE_DURATION
+                }
+
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, ALPHA, 0f).apply {
+                    duration = BODY_CLOSE_DURATION
+                }
+
+        // Upward Open in Browser y-translation Animation
+        val yStart: Float = -captionHeight / 2
+        animators +=
+                ObjectAnimator.ofFloat(openInAppOrBrowserPill, TRANSLATION_Y, yStart).apply {
+                    duration = BODY_CLOSE_DURATION
+                }
+    }
+
     /**
      * Runs the list of hide animators concurrently.
      *
      * @param after runs after animation finishes.
      */
-    private fun runAnimations(after: Runnable? = null) {
+    private fun runAnimations(after: (() -> Unit)? = null) {
         runningAnimation?.apply {
-            // Remove all listeners, so that after runnable isn't triggered upon cancel.
+            // Remove all listeners, so that the after function isn't triggered upon cancel.
             removeAllListeners()
             // If an animation runs while running animation is triggered, gracefully cancel.
             cancel()
@@ -396,7 +487,7 @@ class HandleMenuAnimator(
             playTogether(animators)
             animators.clear()
             doOnEnd {
-                after?.run()
+                after?.invoke()
                 runningAnimation = null
             }
             start()

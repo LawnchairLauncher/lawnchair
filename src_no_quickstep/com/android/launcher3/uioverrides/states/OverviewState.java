@@ -17,12 +17,13 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 
-import android.content.Context;
-
+import android.graphics.Color;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.ScrimColors;
 
 /**
  * Definition for overview state
@@ -34,7 +35,7 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Context context, boolean isToState) {
+    public int getTransitionDuration(ActivityContext context, boolean isToState) {
         return 250;
     }
 
@@ -61,7 +62,9 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getWorkspaceScrimColor(Launcher launcher) {
-        return Themes.getAttrColor(launcher, R.attr.overviewScrimColor);
+    public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
+        return new ScrimColors(
+                /* backgroundColor */ Themes.getAttrColor(launcher, R.attr.overviewScrimColor),
+                /* foregroundColor */ Color.TRANSPARENT);
     }
 }

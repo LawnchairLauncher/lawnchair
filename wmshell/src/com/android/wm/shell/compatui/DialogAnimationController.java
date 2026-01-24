@@ -18,7 +18,6 @@ package com.android.wm.shell.compatui;
 
 import static com.android.internal.R.styleable.WindowAnimation_windowEnterAnimation;
 import static com.android.internal.R.styleable.WindowAnimation_windowExitAnimation;
-import static com.android.wm.shell.transition.Transitions.ENABLE_SHELL_TRANSITIONS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -48,9 +47,7 @@ public class DialogAnimationController<T extends DialogContainerSupplier> {
     // 204 is simply 255 * 0.8.
     static final int BACKGROUND_DIM_ALPHA = 204;
 
-    // If shell transitions are enabled, startEnterAnimation will be called after all transitions
-    // have finished, and therefore the start delay should be shorter.
-    private static final int ENTER_ANIM_START_DELAY_MILLIS = ENABLE_SHELL_TRANSITIONS ? 300 : 500;
+    private static final int ENTER_ANIM_START_DELAY_MILLIS = 300;
 
     private final TransitionAnimation mTransitionAnimation;
     private final String mPackageName;

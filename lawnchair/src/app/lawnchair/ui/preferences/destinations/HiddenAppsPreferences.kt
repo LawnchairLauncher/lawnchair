@@ -18,11 +18,14 @@ package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,11 +35,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.OverflowMenu
+import app.lawnchair.ui.OverflowMenuGrouped
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
-import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceScaffold
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
@@ -92,7 +94,6 @@ fun HiddenAppsPreferences(
                     preferenceGroupItems(
                         items = apps,
                         isFirstChild = true,
-                        dividerStartIndent = 40.dp,
                     ) { _, app ->
                         AppItem(
                             app = app,
@@ -110,7 +111,6 @@ fun HiddenAppsPreferences(
                     preferenceGroupItems(
                         count = 20,
                         isFirstChild = true,
-                        dividerStartIndent = 40.dp,
                     ) {
                         AppItemPlaceholder {
                             Spacer(Modifier.width(24.dp))
@@ -122,6 +122,7 @@ fun HiddenAppsPreferences(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ListSortingOptions(
     originalList: List<App>,
@@ -129,54 +130,64 @@ private fun ListSortingOptions(
     onUpdateList: (Set<String>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    OverflowMenu(modifier) {
-        DropdownMenuItem(
-            onClick = {
-                val inverseSelection = originalList
-                    .map { it.key.toString() }
-                    .filter { !filteredList.contains(it) }
-                    .toSet()
-                onUpdateList(inverseSelection)
-                hideMenu()
-            },
-            text = {
-                Text(stringResource(R.string.inverse_selection))
-            },
-        )
-        val originalKeys = originalList
-            .map { it.key.toString() }
-            .toSet()
-        val selectedAll = originalKeys == filteredList
-        DropdownMenuItem(
-            onClick = {
-                onUpdateList(
-                    if (selectedAll) {
-                        emptySet()
-                    } else {
-                        originalList
-                            .map { it.key.toString() }
-                            .toSet()
-                    },
-                )
-                hideMenu()
-            },
-            text = {
-                Text(
-                    stringResource(if (selectedAll) R.string.deselect_all else R.string.select_all),
-                )
-            },
-        )
-        PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
-        DropdownMenuItem(
-            onClick = {
-                onUpdateList(
-                    emptySet(),
-                )
-            },
-            text = {
-                Text(stringResource(R.string.action_reset))
-            },
-        )
+    OverflowMenuGrouped(modifier) {
+        DropdownMenuGroup(
+            shapes = MenuDefaults.groupShape(0, 2),
+        ) {
+            DropdownMenuItem(
+                onClick = {
+                    val inverseSelection = originalList
+                        .map { it.key.toString() }
+                        .filter { !filteredList.contains(it) }
+                        .toSet()
+                    onUpdateList(inverseSelection)
+                    hideMenu()
+                },
+                text = {
+                    Text(stringResource(R.string.inverse_selection))
+                },
+            )
+            val originalKeys = originalList
+                .map { it.key.toString() }
+                .toSet()
+            val selectedAll = originalKeys == filteredList
+            DropdownMenuItem(
+                onClick = {
+                    onUpdateList(
+                        if (selectedAll) {
+                            emptySet()
+                        } else {
+                            originalList
+                                .map { it.key.toString() }
+                                .toSet()
+                        },
+                    )
+                    hideMenu()
+                },
+                text = {
+                    Text(
+                        stringResource(if (selectedAll) R.string.deselect_all else R.string.select_all),
+                    )
+                },
+            )
+        }
+
+        Spacer(Modifier.height(MenuDefaults.GroupSpacing))
+
+        DropdownMenuGroup(
+            shapes = MenuDefaults.groupShape(1, 2),
+        ) {
+            DropdownMenuItem(
+                onClick = {
+                    onUpdateList(
+                        emptySet(),
+                    )
+                },
+                text = {
+                    Text(stringResource(R.string.action_reset))
+                },
+            )
+        }
     }
 }
 

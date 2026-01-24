@@ -6,11 +6,8 @@
 
 adamcohen@google.com
 hyunyoungs@google.com
-twickham@google.com
 vadimt@google.com
 winsonc@google.com
-jonmiranda@google.com
-awickham@google.com
 agvard@google.com
 
 # Launcher workspace eng team
@@ -23,19 +20,22 @@ fransebas@google.com
 pinyaoting@google.com
 andonian@google.com
 sihua@google.com
+abegovic@google.com
 
 # Multitasking eng team
 tracyzhou@google.com
 peanutbutter@google.com
 jeremysim@google.com
 atsjenk@google.com
-brianji@google.com
+hwwang@google.com
 
 # Overview eng team
 alexchau@google.com
 samcackett@google.com
 silvajordan@google.com
 uwaisashraf@google.com
+vinayjoglekar@google.com
+willosborn@google.com
 
 # Physical Keyboard & Trackpad eng team
 patmanning@google.com
@@ -45,11 +45,34 @@ helencheuk@google.com
 shamalip@google.com
 zakcohen@google.com
 
+# System Navigation team
+brianji@google.com
+jonmiranda@google.com
+jagrutdesai@google.com
+randypfohl@google.com
+saumyaprakash@google.com
+twickham@google.com
+victortulias@google.com
+
+## Note: some of the below overlap and also work on other integrations like Circle to Search.
+
+# All Apps / QSB team
+awickham@google.com
+brdayauon@google.com
+ganjam@google.com
+kylim@google.com
+
+# Smartspace team
+xilei@google.com
+davidct@google.com
+iamiam@google.com
+jiuyu@google.com
+
 per-file FeatureFlags.java, globs = set noparent
-per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, captaincole@google.com
+per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, captaincole@google.com, abegovic@google.com
 
 per-file DeviceConfigWrapper.java, globs = set noparent
-per-file DeviceConfigWrapper.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com
+per-file DeviceConfigWrapper.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, abegovic@google.com
 
 # Predictive Back
 per-file LauncherBackAnimationController.java = shanh@google.com, gallmann@google.com

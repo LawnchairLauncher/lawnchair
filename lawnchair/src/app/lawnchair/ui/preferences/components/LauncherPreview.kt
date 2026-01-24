@@ -34,7 +34,7 @@ fun DummyLauncherBox(
     val context = LocalContext.current
     val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
     val dp = idp.getDeviceProfile(context)
-    val ratio = dp.widthPx.toFloat() / dp.heightPx.toFloat()
+    val ratio = dp.deviceProperties.widthPx.toFloat() / dp.deviceProperties.heightPx.toFloat()
 
     Box(modifier = modifier.aspectRatio(ratio, matchHeightConstraintsFirst = true)) {
         LawnchairTheme(darkTheme = !darkText) {

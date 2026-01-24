@@ -29,15 +29,20 @@
     <string name="home_screen" msgid="5629429142036709174">"Orri nagusia"</string>
     <string name="set_default_home_app" msgid="5808906607627586381">"Ezarri <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> hasierako aplikazio lehenetsi gisa ezarpenetan"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Pantaila zatitzea"</string>
+    <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Aldatu aspektu-erlazioa"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s aplikazioari buruzko informazioa"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s aplikazioaren erabilera-ezarpenak"</string>
+    <string name="new_window_option_taskbar" msgid="6448780542727767211">"Leiho berria"</string>
+    <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Kudeatu leihoak"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Gorde aplikazio parea"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Aplikazio pare hori ez da onartzen gailu honetan"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Aplikazio pare hori ez da gailu honekin bateragarria"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Zabaldu gailua aplikazio pare hau erabiltzeko"</string>
     <string name="app_pair_not_available" msgid="3556767440808032031">"Aplikazio parea ez dago erabilgarri"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Eduki sakatuta widget bat mugitzeko."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Sakatu birritan eta eduki sakatuta widget bat mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
+    <string name="widget_picker_widget_options_button_description" msgid="4770099264476852363">"Aukera gehiago"</string>
+    <string name="widget_picker_show_all_widgets_menu_item_title" msgid="9023638224586908119">"Erakutsi widget guztiak"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d zabal eta %2$d luze"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> widgeta"</string>
@@ -58,14 +63,19 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgetak"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Bilatu"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Garbitu bilaketa-koadroko testua"</string>
-    <string name="no_widgets_available" msgid="4337693382501046170">"Widgetak eta lasterbideak erabilgarri daude"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Widgetak eta lasterbideak ez daude erabilgarri"</string>
     <string name="no_search_results" msgid="3787956167293097509">"Ez da aurkitu widgetik edo lasterbiderik"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Pertsonalak"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Lanekoak"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Elkarrizketak"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Oharrak idazteko"</string>
+    <string name="widget_cell_tap_to_show_add_button_label" msgid="4354194214317043581">"Erakutsi gehitzeko botoia"</string>
+    <string name="widget_cell_tap_to_hide_add_button_label" msgid="6117805205101555997">"Ezkutatu gehitzeko botoia"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"Gehitu"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"Gehitu <xliff:g id="WIDGET_NAME">%1$s</xliff:g> widgeta"</string>
+    <string name="widgets_list_expand_button_label" msgid="7912016136574932622">"Erakutsi guztiak"</string>
+    <string name="widgets_list_expand_button_content_description" msgid="4600513860973450888">"Erakutsi widget guztiak"</string>
+    <string name="widgets_list_expanded" msgid="7374857868788557730">"Widget guztiak erakusten"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Sakatu hau widgeten ezarpenak aldatzeko"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Aldatu widgeten ezarpenak"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Bilatu aplikazioetan"</string>
@@ -73,6 +83,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Ez da aurkitu \"<xliff:g id="QUERY">%1$s</xliff:g>\" bilaketaren emaitzarik"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplikazioa"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Aplikazio guztiak"</string>
+    <string name="all_apps_list_label" msgid="5106226764073070906">"Aplikazioen zerrenda"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Jakinarazpenak"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Eduki sakatuta lasterbide bat mugitzeko."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Sakatu birritan eta eduki sakatuta lasterbide bat mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
@@ -84,12 +95,13 @@
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Laneko aplikazioen zerrenda"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Kendu"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalatu"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"Aplikazioaren informazioa"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Aplik. buruzko info."</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Instalatu pribatuan"</string>
     <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"Desinstalatu aplikazioa"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instalatu"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ez iradoki aplikazioa"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Ainguratu iragarpena"</string>
+    <string name="bubble" msgid="3072951361014076670">"Burbuila"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Instalatu lasterbideak"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Erabiltzaileak ezer egin gabe lasterbideak gehitzeko baimena ematen die aplikazioei."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"irakurri hasierako pantailako ezarpenak eta lasterbideak"</string>
@@ -101,11 +113,15 @@
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Sakatu konfiguratzen amaitzeko"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Sistema-aplikazioa da hau eta ezin da desinstalatu."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Editatu izena"</string>
+    <string name="paginate_left" msgid="7915437358451360433">"Joan aurreko orrira"</string>
+    <string name="paginate_right" msgid="6701038155201975878">"Joan hurrengo orrira"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desgaituta dago"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} aplikazioak # jakinarazpen dauka}other{{app_name} aplikazioak # jakinarazpen dauzka}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d/%2$d orria"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d/%2$d orri nagusi"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Orri nagusiaren orri berria"</string>
+    <string name="app_running_state_description" msgid="5645053189564740904">"Aktibo"</string>
+    <string name="app_minimized_state_description" msgid="710740620044902509">"Minimizatuta"</string>
     <string name="folder_opened" msgid="94695026776264709">"Karpeta ireki da: <xliff:g id="WIDTH">%1$d</xliff:g> × <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Karpeta ixteko, sakatu hau"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Izen berria gordetzeko, sakatu hau"</string>
@@ -113,13 +129,16 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Karpetari <xliff:g id="NAME">%1$s</xliff:g> izena eman zaio"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu)"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu edo gehiago)"</string>
+    <string name="unnamed_folder" msgid="2420192029474044442">"Izenik gabeko karpeta"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"Aplikazio parea: <xliff:g id="APP1">%1$s</xliff:g> eta <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Horma-papera eta estiloa"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Editatu orri nagusia"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Orri nagusiko ezarpenak"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Orri nagusiaren ezarpenak"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratzaileak desgaitu du"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Eman orri nagusia biratzeko baimena"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefonoa biratzean"</string>
+    <string name="landscape_mode_title" msgid="5138814555934843926">"Ikuspegi horizontala"</string>
+    <string name="landscape_mode_desc" msgid="3085236452297838664">"Ezarri orri nagusia ikuspegi horizontalean"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Jakinarazpen-biribiltxoak"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Aktibatuta"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Desaktibatuta"</string>
@@ -138,7 +157,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> instalatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> deskargatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> instalatzeko zain"</string>
-    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> artxibatuta dago. Sakatu deskargatzeko eta leheneratzeko."</string>
+    <string name="app_archived_title" msgid="4548283110222420708">"<xliff:g id="NAME">%1$s</xliff:g> artxibatuta dago."</string>
+    <string name="app_unarchiving_action" msgid="5736107006413929484">"deskargatu eta leheneratu"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Aplikazioa eguneratu egin behar da"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Ikonoaren aplikazioa ez dago eguneratuta. Lasterbidea berriro gaitzeko, eskuz egunera dezakezu aplikazioa. Bestela, kendu ikonoa."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Eguneratu"</string>
@@ -147,7 +167,6 @@
     <string name="widgets_list_closed" msgid="6141506579418771922">"Itxi da widget-zerrenda"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Gehitu orri nagusian"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Ekarri elementua hona"</string>
-    <string name="item_added_to_workspace" msgid="4211073925752213539">"Gehitu da elementua orri nagusian"</string>
     <string name="item_removed" msgid="851119963877842327">"Kendu da elementua"</string>
     <string name="undo" msgid="4151576204245173321">"Desegin"</string>
     <string name="action_move" msgid="4339390619886385032">"Mugitu elementua"</string>
@@ -167,11 +186,15 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Txikitu zabalera"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Txikitu altuera"</string>
     <string name="widget_resized" msgid="9130327887929620">"Aldatu da widgetaren tamaina. Zabalera: <xliff:g id="NUMBER_0">%1$s</xliff:g>. Altuera: <xliff:g id="NUMBER_1">%2$s</xliff:g>."</string>
-    <string name="action_deep_shortcut" msgid="2864038805849372848">"Lasterbideak"</string>
+    <string name="action_deep_shortcut" msgid="4766835855579976045">"Lasterbideen menua"</string>
+    <string name="widget_frame_name" msgid="8782828448471444270">"<xliff:g id="STRING">%1$s</xliff:g> aplikazioaren widgetaren tamaina aldatzeko markoa"</string>
+    <string name="action_close" msgid="1077760267194136901">"Itxi"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Baztertu"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Itxi"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pertsonalak"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Lanekoak"</string>
+    <string name="all_apps_personal_tab_content_description" msgid="6286808898381807242">"Aplikazio pertsonalen fitxa"</string>
+    <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Laneko aplikazioen fitxa"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Laneko profila"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Laneko aplikazioek bereizgarriak dituzte, eta IKT saileko administratzaileak ikus ditzake"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ados"</string>
@@ -183,6 +206,7 @@
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ados"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausatu laneko aplikazioak"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Aktibatu berriro"</string>
+    <string name="work_scheduler_button_content_description" msgid="917340740986764967">"Laneko aplikazioen programazioa"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Iragazi"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Huts egin du: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Eremu pribatua"</string>
@@ -194,5 +218,12 @@
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Blokeatu"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Eremu pribaturako trantsizioa"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"Instalatu"</string>
+    <string name="ps_app_label_override" msgid="6876160706011676804">"Gehitu"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalatu aplikazioak eremu pribatuan"</string>
+    <string name="ps_app_content_description" msgid="1129133475892816226">"Gehitu fitxategiak eta gauza gehiago eremu pribatuan"</string>
+    <string name="circle_shape_title" msgid="3582075061179674565">"Zirkulua"</string>
+    <string name="square_shape_title" msgid="3085320803149569308">"Karratua"</string>
+    <string name="four_sided_cookie_shape_title" msgid="3275212586290522151">"4 aldeko opila"</string>
+    <string name="seven_sided_cookie_shape_title" msgid="4862560582029671668">"7 aldeko opila"</string>
+    <string name="arch_shape_title" msgid="2213843822192871318">"Arkua"</string>
 </resources>

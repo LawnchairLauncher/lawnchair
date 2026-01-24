@@ -30,7 +30,7 @@ import app.lawnchair.ui.theme.preferenceGroupColor
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import sh.calvin.reorderable.ReorderableColumn
-import sh.calvin.reorderable.ReorderableScope
+import sh.calvin.reorderable.ReorderableListItemScope
 
 @Composable
 fun <T> ReorderablePreferenceGroup(
@@ -40,7 +40,7 @@ fun <T> ReorderablePreferenceGroup(
     onOrderChange: (List<T>) -> Unit,
     modifier: Modifier = Modifier,
     onSettle: ((List<T>) -> Unit)? = null,
-    itemContent: @Composable ReorderableScope.(
+    itemContent: @Composable ReorderableListItemScope.(
         item: T,
         index: Int,
         isDragging: Boolean,
@@ -57,12 +57,18 @@ fun <T> ReorderablePreferenceGroup(
 
     var isAnyDragging by remember { mutableStateOf(false) }
 
+    LaunchedEffect(items) {
+        if (localItems != items) {
+            localItems = items
+        }
+    }
+
+    val view = LocalView.current
+
     val color by animateColorAsState(
         targetValue = if (!isAnyDragging) preferenceGroupColor() else MaterialTheme.colorScheme.surface,
         label = "card background animation",
     )
-
-    val view = LocalView.current
 
     Column(modifier) {
         PreferenceGroupHeading(
@@ -74,7 +80,6 @@ fun <T> ReorderablePreferenceGroup(
             color = color,
         ) {
             ReorderableColumn(
-                modifier = Modifier,
                 list = localItems,
                 onSettle = { fromIndex, toIndex ->
                     val newItems = localItems.toMutableList().apply {
@@ -94,42 +99,43 @@ fun <T> ReorderablePreferenceGroup(
                     }
                 },
             ) { index, item, isDragging ->
-                key(item) {
-                    Column {
-                        ReorderablePreferenceItem(
-                            isDragging = isDragging,
-                            modifier = Modifier
-                                .a11yDrag(
-                                    index = index,
-                                    items = items,
-                                    onMoveUp = {
-                                        localItems = it
-                                        onOrderChange(it)
-                                        if (onSettle != null) {
-                                            onSettle(it)
-                                        }
-                                    },
-                                    onMoveDown = {
-                                        localItems = it
-                                        onOrderChange(it)
-                                        if (onSettle != null) {
-                                            onSettle(it)
-                                        }
-                                    },
-                                ),
-                        ) {
-                            itemContent(
-                                item,
-                                index,
-                                isDragging,
+                key(item.hashCode()) {
+                    ReorderableItem {
+                        Column {
+                            ReorderablePreferenceItem(
+                                isDragging = isDragging,
+                                modifier = Modifier
+                                    .a11yDrag(
+                                        index = index,
+                                        items = items,
+                                        onMoveUp = {
+                                            localItems = it
+                                            onOrderChange(it)
+                                            if (onSettle != null) {
+                                                onSettle(it)
+                                            }
+                                        },
+                                        onMoveDown = {
+                                            localItems = it
+                                            onOrderChange(it)
+                                            if (onSettle != null) {
+                                                onSettle(it)
+                                            }
+                                        },
+                                    ),
                             ) {
-                                isAnyDragging = it
+                                itemContent(
+                                    item,
+                                    index,
+                                    isDragging,
+                                ) { isAnyDragging = it }
                             }
-                        }
-                        AnimatedVisibility(!isAnyDragging && index != localItems.lastIndex) {
-                            HorizontalDivider(
-                                Modifier.padding(start = 50.dp, end = 16.dp),
-                            )
+
+                            AnimatedVisibility(!isAnyDragging && index != localItems.lastIndex) {
+                                HorizontalDivider(
+                                    Modifier.padding(start = 50.dp, end = 16.dp),
+                                )
+                            }
                         }
                     }
                 }
@@ -138,11 +144,13 @@ fun <T> ReorderablePreferenceGroup(
 
         ExpandAndShrink(visible = localItems != defaultList) {
             PreferenceGroup {
-                ClickablePreference(label = stringResource(id = R.string.action_reset)) {
-                    val resetList = defaultList
-                    onOrderChange(resetList)
-                    if (onSettle != null) {
-                        onSettle(resetList)
+                Item {
+                    ClickablePreference(label = stringResource(id = R.string.action_reset)) {
+                        val resetList = defaultList
+                        onOrderChange(resetList)
+                        if (onSettle != null) {
+                            onSettle(resetList)
+                        }
                     }
                 }
             }

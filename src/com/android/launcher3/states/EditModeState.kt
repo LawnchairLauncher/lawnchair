@@ -36,11 +36,7 @@ class EditModeState(id: Int) : LauncherState(id, StatsLogManager.LAUNCHER_STATE_
                 FLAG_WORKSPACE_HAS_BACKGROUNDS)
     }
 
-    override fun <T> getTransitionDuration(context: T, isToState: Boolean): Int where
-    T : Context?,
-    T : ActivityContext? {
-        return 150
-    }
+    override fun getTransitionDuration(context: ActivityContext, isToState: Boolean) = 150
 
     override fun <T> getDepthUnchecked(context: T): Float where T : Context?, T : ActivityContext? {
         if (enableScalingRevealHomeAnimation()) {

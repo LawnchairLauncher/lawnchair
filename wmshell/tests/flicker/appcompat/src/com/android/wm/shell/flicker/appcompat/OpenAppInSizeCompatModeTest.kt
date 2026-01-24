@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized
 /**
  * Test launching app in size compat mode.
  *
- * To run this test: `atest WMShellFlickerTestsOther:OpenAppInSizeCompatModeTest`
+ * To run this test: `atest WMShellFlickerTestsAppCompat:OpenAppInSizeCompatModeTest`
  *
  * Actions:
  * ```

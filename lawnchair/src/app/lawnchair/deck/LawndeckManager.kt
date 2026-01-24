@@ -17,6 +17,7 @@ import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.provider.RestoreDbTask
+import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import java.io.File
@@ -195,7 +196,7 @@ class LawndeckManager(private val context: Context) {
         val category = when {
             packageName.startsWith("com.google.") -> "Google Apps"
 
-            intent != null && PackageManagerHelper.isSystemApp(context, intent) -> "System Apps"
+            intent != null && ApplicationInfoWrapper(context, intent).isSystem() -> "System Apps"
 
             else -> {
                 // Use flowerpot to categorize the app

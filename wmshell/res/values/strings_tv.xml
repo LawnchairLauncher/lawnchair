@@ -59,5 +59,7 @@
     <!-- Accessibility action: done with moving the PiP [CHAR LIMIT=30] -->
     <string name="a11y_action_pip_move_done">Done</string>
 
+    <string name="font_display_medium" translatable="false">sans-serif</string>
+
 </resources>
 

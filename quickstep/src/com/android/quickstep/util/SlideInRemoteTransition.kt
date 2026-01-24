@@ -43,7 +43,7 @@ class SlideInRemoteTransition(
         transition: IBinder,
         info: TransitionInfo,
         startT: Transaction,
-        finishCB: IRemoteTransitionFinishedCallback
+        finishCB: IRemoteTransitionFinishedCallback,
     ) {
         val anim = ValueAnimator.ofFloat(0f, 1f)
         anim.interpolator = interpolator

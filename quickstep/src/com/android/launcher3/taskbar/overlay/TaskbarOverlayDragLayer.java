@@ -34,7 +34,6 @@ import com.android.app.viewcapture.ViewCaptureFactory;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -72,8 +71,9 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public void recreateControllers() {
+        super.recreateControllers();
         List<TouchController> controllers = new ArrayList<>();
-        controllers.add(mActivity.getDragController());
+        controllers.add(mContainer.getDragController());
         controllers.addAll(mTouchControllers);
         mControllers = controllers.toArray(new TouchController[0]);
     }
@@ -87,7 +87,7 @@ public class TaskbarOverlayDragLayer extends
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == ACTION_UP && event.getKeyCode() == KEYCODE_BACK) {
-            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mContainer);
             if (topView != null && topView.canHandleBack()) {
                 topView.onBackInvoked();
                 return true;
@@ -96,7 +96,7 @@ public class TaskbarOverlayDragLayer extends
                 && event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE && event.hasNoModifiers()) {
             // Ignore escape if pressed in conjunction with any modifier keys. Close each
             // floating view one at a time for each key press.
-            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mContainer);
             if (topView != null) {
                 topView.close(/* animate= */ true);
                 return true;
@@ -107,7 +107,7 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public void onComputeInternalInsets(ViewTreeObserver.InternalInsetsInfo inoutInfo) {
-        if (mActivity.isAnySystemDragInProgress()) {
+        if (mContainer.isAnySystemDragInProgress()) {
             inoutInfo.touchableRegion.setEmpty();
             inoutInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
         }
@@ -123,7 +123,7 @@ public class TaskbarOverlayDragLayer extends
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
-        mActivity.getOverlayController().maybeCloseWindow();
+        mContainer.getOverlayController().maybeCloseWindow();
     }
 
     /** Adds a {@link TouchController} to this drag layer. */
@@ -147,14 +147,14 @@ public class TaskbarOverlayDragLayer extends
      * 2) Sets tappableInsets bottom inset to 0.
      */
     private WindowInsets updateInsetsDueToStashing(WindowInsets oldInsets) {
-        if (!DisplayController.isTransientTaskbar(mActivity)) {
+        if (!mContainer.isTransientTaskbar()) {
             return oldInsets;
         }
         WindowInsets.Builder updatedInsetsBuilder = new WindowInsets.Builder(oldInsets);
 
         Insets oldNavInsets = oldInsets.getInsets(WindowInsets.Type.navigationBars());
         Insets newNavInsets = Insets.of(oldNavInsets.left, oldNavInsets.top, oldNavInsets.right,
-                mActivity.getStashedTaskbarHeight());
+                mContainer.getStashedTaskbarHeight());
         updatedInsetsBuilder.setInsets(WindowInsets.Type.navigationBars(), newNavInsets);
 
         Insets oldTappableInsets = oldInsets.getInsets(WindowInsets.Type.tappableElement());

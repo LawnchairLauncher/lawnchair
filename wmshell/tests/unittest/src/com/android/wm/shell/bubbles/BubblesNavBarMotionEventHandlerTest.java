@@ -25,7 +25,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.floatThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 import android.os.SystemClock;
 import android.testing.AndroidTestingRunner;
@@ -84,7 +83,7 @@ public class BubblesNavBarMotionEventHandlerTest extends ShellTestCase {
         verify(mMotionEventListener).onMove(0, -600);
         // Check that velocity up is about 5000
         verify(mMotionEventListener).onUp(eq(0f), floatThat(f -> Math.round(f) == -5000));
-        verifyZeroInteractions(mMotionEventListener);
+        verifyNoMoreInteractions(mMotionEventListener);
         verify(mInterceptTouchRunnable).run();
     }
 
@@ -94,8 +93,8 @@ public class BubblesNavBarMotionEventHandlerTest extends ShellTestCase {
         mMotionEventHandler.onMotionEvent(newEvent(ACTION_MOVE, 0, 100));
         mMotionEventHandler.onMotionEvent(newEvent(ACTION_UP, 0, 100));
 
-        verifyZeroInteractions(mMotionEventListener);
-        verifyZeroInteractions(mInterceptTouchRunnable);
+        verifyNoMoreInteractions(mMotionEventListener);
+        verifyNoMoreInteractions(mInterceptTouchRunnable);
     }
 
     @Test
@@ -107,7 +106,7 @@ public class BubblesNavBarMotionEventHandlerTest extends ShellTestCase {
         verify(mMotionEventListener).onDown(0, 990);
         verify(mMotionEventListener).onMove(100, 0);
         verify(mMotionEventListener).onUp(0, 0);
-        verifyZeroInteractions(mMotionEventListener);
+        verifyNoMoreInteractions(mMotionEventListener);
         verify(mInterceptTouchRunnable).run();
     }
 
@@ -119,7 +118,7 @@ public class BubblesNavBarMotionEventHandlerTest extends ShellTestCase {
 
         verify(mMotionEventListener).onDown(0, 990);
         verifyNoMoreInteractions(mMotionEventListener);
-        verifyZeroInteractions(mInterceptTouchRunnable);
+        verifyNoMoreInteractions(mInterceptTouchRunnable);
     }
 
     @Test
@@ -129,7 +128,7 @@ public class BubblesNavBarMotionEventHandlerTest extends ShellTestCase {
         verify(mMotionEventListener).onDown(0, 990);
         verify(mMotionEventListener).onCancel();
         verifyNoMoreInteractions(mMotionEventListener);
-        verifyZeroInteractions(mInterceptTouchRunnable);
+        verifyNoMoreInteractions(mInterceptTouchRunnable);
     }
 
     private MotionEvent newEvent(int actionDown, float x, float y) {

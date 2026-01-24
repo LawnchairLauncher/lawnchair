@@ -17,18 +17,23 @@
 package com.android.wm.shell.pip;
 
 import static android.util.RotationUtils.rotateBounds;
+import static android.view.Surface.ROTATION_0;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
-import android.animation.AnimationHandler;
+import static com.android.wm.shell.pip.PipTransitionController.ANIM_TYPE_ALPHA;
+import static com.android.wm.shell.pip.PipTransitionController.ANIM_TYPE_BOUNDS;
+
 import android.animation.Animator;
 import android.animation.RectEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.app.AppCompatTaskInfo;
 import android.app.TaskInfo;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.Surface;
@@ -36,12 +41,12 @@ import android.view.SurfaceControl;
 import android.window.TaskSnapshot;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.internal.graphics.SfVsyncFrameCallbackProvider;
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.launcher3.icons.IconProvider;
-import com.android.wm.shell.animation.Interpolators;
 import com.android.wm.shell.common.pip.PipUtils;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
+import com.android.wm.shell.shared.animation.Interpolators;
+import com.android.wm.shell.shared.pip.PipContentOverlay;
 import com.android.wm.shell.transition.Transitions;
 
 import java.lang.annotation.Retention;
@@ -54,16 +59,6 @@ import java.util.Objects;
 public class PipAnimationController {
     static final float FRACTION_START = 0f;
     static final float FRACTION_END = 1f;
-
-    public static final int ANIM_TYPE_BOUNDS = 0;
-    public static final int ANIM_TYPE_ALPHA = 1;
-
-    @IntDef(prefix = { "ANIM_TYPE_" }, value = {
-            ANIM_TYPE_BOUNDS,
-            ANIM_TYPE_ALPHA
-    })
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface AnimationType {}
 
     /**
      * The alpha type is set for swiping to home. But the swiped task may not enter PiP. And if
@@ -113,15 +108,8 @@ public class PipAnimationController {
 
     private final PipSurfaceTransactionHelper mSurfaceTransactionHelper;
 
-    private final ThreadLocal<AnimationHandler> mSfAnimationHandlerThreadLocal =
-            ThreadLocal.withInitial(() -> {
-                AnimationHandler handler = new AnimationHandler();
-                handler.setProvider(new SfVsyncFrameCallbackProvider());
-                return handler;
-            });
-
     private PipTransitionAnimator mCurrentAnimator;
-    @AnimationType
+    @PipTransitionController.AnimationType
     private int mOneShotAnimationType = ANIM_TYPE_BOUNDS;
     private long mLastOneShotAlphaAnimationTime;
 
@@ -150,13 +138,12 @@ public class PipAnimationController {
         return mCurrentAnimator;
     }
 
-    @SuppressWarnings("unchecked")
     /**
      * Construct and return an animator that animates from the {@param startBounds} to the
      * {@param endBounds} with the given {@param direction}. If {@param direction} is type
-     * {@link ANIM_TYPE_BOUNDS}, then {@param sourceHintRect} will be used to animate
-     * in a better, more smooth manner. If the original bound was rotated and a reset needs to
-     * happen, pass in {@param startingAngle}.
+     * {@link PipTransitionController#ANIM_TYPE_BOUNDS}, then {@param sourceHintRect} will be used
+     * to animate in a better, more smooth manner. If the original bound was rotated and a reset
+     * needs to happen, pass in {@param startingAngle}.
      *
      * In the case where one wants to start animation during an intermediate animation (for example,
      * if the user is currently doing a pinch-resize, and upon letting go now PiP needs to animate
@@ -169,16 +156,17 @@ public class PipAnimationController {
      * leaving PiP to fullscreen, and the {@param endBounds} is the fullscreen bounds before the
      * rotation change.
      */
+    @SuppressWarnings("unchecked")
     @VisibleForTesting
     public PipTransitionAnimator getAnimator(TaskInfo taskInfo, SurfaceControl leash,
             Rect baseBounds, Rect startBounds, Rect endBounds, Rect sourceHintRect,
             @PipAnimationController.TransitionDirection int direction, float startingAngle,
-            @Surface.Rotation int rotationDelta) {
+            @Surface.Rotation int rotationDelta, boolean alwaysAnimateTaskBounds) {
         if (mCurrentAnimator == null) {
             mCurrentAnimator = setupPipTransitionAnimator(
                     PipTransitionAnimator.ofBounds(taskInfo, leash, startBounds, startBounds,
                             endBounds, sourceHintRect, direction, 0 /* startingAngle */,
-                            rotationDelta));
+                            rotationDelta, alwaysAnimateTaskBounds));
         } else if (mCurrentAnimator.getAnimationType() == ANIM_TYPE_ALPHA
                 && mCurrentAnimator.isRunning()) {
             // If we are still animating the fade into pip, then just move the surface and ensure
@@ -194,7 +182,8 @@ public class PipAnimationController {
             mCurrentAnimator.cancel();
             mCurrentAnimator = setupPipTransitionAnimator(
                     PipTransitionAnimator.ofBounds(taskInfo, leash, baseBounds, startBounds,
-                            endBounds, sourceHintRect, direction, startingAngle, rotationDelta));
+                            endBounds, sourceHintRect, direction, startingAngle, rotationDelta,
+                            alwaysAnimateTaskBounds));
         }
         return mCurrentAnimator;
     }
@@ -212,7 +201,6 @@ public class PipAnimationController {
         animator.setSurfaceTransactionHelper(mSurfaceTransactionHelper);
         animator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
         animator.setFloatValues(FRACTION_START, FRACTION_END);
-        animator.setAnimationHandler(mSfAnimationHandlerThreadLocal.get());
         return animator;
     }
 
@@ -229,6 +217,7 @@ public class PipAnimationController {
 
     /**
      * Quietly cancel the animator by removing the listeners first.
+     * TODO(b/275003573): deprecate this, cancelling without the proper callbacks is problematic.
      */
     static void quietCancel(@NonNull ValueAnimator animator) {
         animator.removeAllUpdateListeners();
@@ -238,12 +227,13 @@ public class PipAnimationController {
 
     /**
      * Sets the preferred enter animation type for one time. This is typically used to set the
-     * animation type to {@link PipAnimationController#ANIM_TYPE_ALPHA}.
+     * animation type to {@link PipTransitionController#ANIM_TYPE_ALPHA}.
      * <p>
      * For example, gesture navigation would first fade out the PiP activity, and the transition
      * should be responsible to animate in (such as fade in) the PiP.
      */
-    public void setOneShotEnterAnimationType(@AnimationType int animationType) {
+    public void setOneShotEnterAnimationType(
+            @PipTransitionController.AnimationType int animationType) {
         mOneShotAnimationType = animationType;
         if (animationType == ANIM_TYPE_ALPHA) {
             mLastOneShotAlphaAnimationTime = SystemClock.uptimeMillis();
@@ -251,7 +241,7 @@ public class PipAnimationController {
     }
 
     /** Returns the preferred animation type and consumes the one-shot type if needed. */
-    @AnimationType
+    @PipTransitionController.AnimationType
     public int takeOneShotEnterAnimationType() {
         final int type = mOneShotAnimationType;
         if (type == ANIM_TYPE_ALPHA) {
@@ -315,8 +305,10 @@ public class PipAnimationController {
             ValueAnimator.AnimatorListener {
         private final TaskInfo mTaskInfo;
         private final SurfaceControl mLeash;
-        private final @AnimationType int mAnimationType;
+        private final @PipTransitionController.AnimationType int mAnimationType;
         private final Rect mDestinationBounds = new Rect();
+
+        private final Point mLeashOffset = new Point();
 
         private T mBaseValue;
         protected T mCurrentValue;
@@ -332,13 +324,23 @@ public class PipAnimationController {
         // Flag to avoid double-end
         private boolean mHasRequestedEnd;
 
-        private PipTransitionAnimator(TaskInfo taskInfo, SurfaceControl leash,
-                @AnimationType int animationType,
-                Rect destinationBounds, T baseValue, T startValue, T endValue) {
+        private PipTransitionAnimator(@NonNull TaskInfo taskInfo, @NonNull SurfaceControl leash,
+                @PipTransitionController.AnimationType int animationType,
+                @NonNull Rect destinationBounds, @NonNull T baseValue, @NonNull T startValue,
+                @NonNull T endValue) {
+            this(taskInfo, leash, animationType, destinationBounds, new Point(), baseValue,
+                    startValue, endValue);
+        }
+
+        private PipTransitionAnimator(@NonNull TaskInfo taskInfo, @NonNull SurfaceControl leash,
+                @PipTransitionController.AnimationType int animationType,
+                @NonNull Rect destinationBounds, @NonNull Point leashOffset,
+                @NonNull T baseValue, @NonNull T startValue, @NonNull T endValue) {
             mTaskInfo = taskInfo;
             mLeash = leash;
             mAnimationType = animationType;
             mDestinationBounds.set(destinationBounds);
+            mLeashOffset.set(leashOffset);
             mBaseValue = baseValue;
             mStartValue = startValue;
             mEndValue = endValue;
@@ -391,7 +393,8 @@ public class PipAnimationController {
         @Override public void onAnimationRepeat(Animator animation) {}
 
         @VisibleForTesting
-        @AnimationType public int getAnimationType() {
+        @PipTransitionController.AnimationType
+        public int getAnimationType() {
             return mAnimationType;
         }
 
@@ -416,7 +419,7 @@ public class PipAnimationController {
         }
 
         SurfaceControl getContentOverlayLeash() {
-            return mContentOverlay == null ? null : mContentOverlay.mLeash;
+            return mContentOverlay == null ? null : mContentOverlay.getLeash();
         }
 
         void setColorContentOverlay(Context context) {
@@ -490,17 +493,21 @@ public class PipAnimationController {
             }
         }
 
+        /**
+         * Returns the offset of the {@link #mLeash}.
+         */
+        @NonNull
+        Point getLeashOffset() {
+            // Use copy to prevent the leash to be modified unexpectedly.
+            return new Point(mLeashOffset);
+        }
+
         void setCurrentValue(T value) {
             mCurrentValue = value;
         }
 
-        boolean shouldApplyCornerRadius() {
-            return !isOutPipDirection(mTransitionDirection);
-        }
-
         boolean shouldApplyShadowRadius() {
-            return !isOutPipDirection(mTransitionDirection)
-                    && !isRemovePipDirection(mTransitionDirection);
+            return !isRemovePipDirection(mTransitionDirection);
         }
 
         boolean inScaleTransition() {
@@ -553,7 +560,7 @@ public class PipAnimationController {
                     final float alpha = getStartValue() * (1 - fraction) + getEndValue() * fraction;
                     setCurrentValue(alpha);
                     getSurfaceTransactionHelper().alpha(tx, leash, alpha)
-                            .round(tx, leash, shouldApplyCornerRadius())
+                            .round(tx, leash, true /* applyCornerRadius */)
                             .shadow(tx, leash, shouldApplyShadowRadius());
                     if (!handlePipTransaction(leash, tx, destinationBounds, alpha)) {
                         tx.apply();
@@ -568,8 +575,8 @@ public class PipAnimationController {
                     }
                     getSurfaceTransactionHelper()
                             .resetScale(tx, leash, getDestinationBounds())
-                            .crop(tx, leash, getDestinationBounds())
-                            .round(tx, leash, shouldApplyCornerRadius())
+                            .cropAndPosition(tx, leash, getDestinationBounds())
+                            .round(tx, leash, true /* applyCornerRadius */)
                             .shadow(tx, leash, shouldApplyShadowRadius());
                     tx.show(leash);
                     tx.apply();
@@ -586,27 +593,75 @@ public class PipAnimationController {
         static PipTransitionAnimator<Rect> ofBounds(TaskInfo taskInfo, SurfaceControl leash,
                 Rect baseValue, Rect startValue, Rect endValue, Rect sourceRectHint,
                 @PipAnimationController.TransitionDirection int direction, float startingAngle,
-                @Surface.Rotation int rotationDelta) {
+                @Surface.Rotation int rotationDelta, boolean alwaysAnimateTaskBounds) {
             final boolean isOutPipDirection = isOutPipDirection(direction);
             final boolean isInPipDirection = isInPipDirection(direction);
             // Just for simplicity we'll interpolate between the source rect hint insets and empty
             // insets to calculate the window crop
             final Rect initialSourceValue;
+            final Rect mainWindowFrame = taskInfo.topActivityMainWindowFrame;
+            final AppCompatTaskInfo compatInfo = taskInfo.appCompatTaskInfo;
+            final boolean isSizeCompatOrLetterboxed = compatInfo.isTopActivityInSizeCompat()
+                    || compatInfo.isTopActivityLetterboxed();
+            // For the animation to swipe PIP to home or restore a PIP task from home, we don't
+            // override to the main window frame since we should animate the whole task.
+            final boolean shouldUseMainWindowFrame = mainWindowFrame != null
+                    && !alwaysAnimateTaskBounds && !isSizeCompatOrLetterboxed;
+            final boolean changeOrientation =
+                    rotationDelta == ROTATION_90 || rotationDelta == ROTATION_270;
+            final Rect baseBounds = new Rect(baseValue);
+            final Rect startBounds = new Rect(startValue);
+            final Rect endBounds = new Rect(endValue);
             if (isOutPipDirection) {
-                initialSourceValue = new Rect(endValue);
+                if (shouldUseMainWindowFrame && !changeOrientation) {
+                    endBounds.set(mainWindowFrame);
+                }
+                initialSourceValue = new Rect(endBounds);
+            } else if (isInPipDirection) {
+                if (shouldUseMainWindowFrame) {
+                    baseBounds.set(mainWindowFrame);
+                    if (startValue.equals(baseValue)) {
+                        // If the start value is at initial state as in PIP animation, also override
+                        // the start bounds with nonMatchParentBounds.
+                        startBounds.set(mainWindowFrame);
+                    }
+                }
+                initialSourceValue = new Rect(baseBounds);
             } else {
-                initialSourceValue = new Rect(baseValue);
+                // Note that we assume the window bounds always match task bounds in PIP mode.
+                initialSourceValue = new Rect(baseBounds);
+            }
+
+            final Point leashOffset;
+            if (isInPipDirection) {
+                leashOffset = new Point(baseValue.left, baseValue.top);
+            } else if (isOutPipDirection) {
+                leashOffset = new Point(endValue.left, endValue.top);
+            } else {
+                leashOffset = new Point(baseValue.left, baseValue.top);
             }
 
             final Rect rotatedEndRect;
             final Rect lastEndRect;
             final Rect initialContainerRect;
-            if (rotationDelta == ROTATION_90 || rotationDelta == ROTATION_270) {
-                lastEndRect = new Rect(endValue);
-                rotatedEndRect = new Rect(endValue);
-                // Rotate the end bounds according to the rotation delta because the display will
-                // be rotated to the same orientation.
-                rotateBounds(rotatedEndRect, initialSourceValue, rotationDelta);
+            if (changeOrientation) {
+                lastEndRect = new Rect(endBounds);
+                rotatedEndRect = new Rect(endBounds);
+                // TODO(b/375977163): polish the animation to restoring the PIP task back from
+                //  swipe-pip-to-home. Ideally we should send the transitionInfo after reparenting
+                //  the PIP activity back to the original task.
+                if (shouldUseMainWindowFrame && isOutPipDirection) {
+                    // If we should animate the main window frame, set it to the rotatedRect
+                    // instead. The end bounds reported by transitionInfo is the bounds before
+                    // rotation, while main window frame is calculated after the rotation.
+                    // Note that we only override main window frame for leaving pip animation as
+                    // the pip activity should match parent.
+                    rotatedEndRect.set(mainWindowFrame);
+                } else {
+                    // Rotate the end bounds according to the rotation delta because the display
+                    // will be rotated to the same orientation.
+                    rotateBounds(rotatedEndRect, initialSourceValue, rotationDelta);
+                }
                 // Use the rect that has the same orientation as the hint rect.
                 initialContainerRect = isOutPipDirection ? rotatedEndRect : initialSourceValue;
             } else {
@@ -619,12 +674,20 @@ public class PipAnimationController {
                 // Crop a Rect matches the aspect ratio and pivots at the center point.
                 // This is done for entering case only.
                 if (isInPipDirection(direction)) {
-                    final float aspectRatio = endValue.width() / (float) endValue.height();
-                    adjustedSourceRectHint.set(PipUtils.getEnterPipWithOverlaySrcRectHint(
-                            startValue, aspectRatio));
+                    final float aspectRatio = endBounds.width() / (float) endBounds.height();
+                    adjustedSourceRectHint.set(PipUtils.getPseudoSourceRectHint(
+                            startBounds, aspectRatio));
                 }
             } else {
                 adjustedSourceRectHint.set(sourceRectHint);
+                if (isInPipDirection(direction)
+                        && rotationDelta == ROTATION_0
+                        && taskInfo.displayCutoutInsets != null) {
+                    // TODO: this is to special case the issues on Foldable device
+                    // with display cutout. This aligns with what's in SwipePipToHomeAnimator.
+                    adjustedSourceRectHint.offset(taskInfo.displayCutoutInsets.left,
+                            taskInfo.displayCutoutInsets.top);
+                }
             }
             final Rect sourceHintRectInsets = new Rect();
             if (!adjustedSourceRectHint.isEmpty()) {
@@ -637,8 +700,8 @@ public class PipAnimationController {
             final Rect zeroInsets = new Rect(0, 0, 0, 0);
 
             // construct new Rect instances in case they are recycled
-            return new PipTransitionAnimator<Rect>(taskInfo, leash, ANIM_TYPE_BOUNDS,
-                    endValue, new Rect(baseValue), new Rect(startValue), new Rect(endValue)) {
+            return new PipTransitionAnimator<Rect>(taskInfo, leash, ANIM_TYPE_BOUNDS, endBounds,
+                    leashOffset, new Rect(baseBounds), new Rect(startBounds), new Rect(endBounds)) {
                 private final RectEvaluator mRectEvaluator = new RectEvaluator(new Rect());
                 private final RectEvaluator mInsetsEvaluator = new RectEvaluator(new Rect());
 
@@ -662,11 +725,23 @@ public class PipAnimationController {
                     setCurrentValue(bounds);
                     if (inScaleTransition() || adjustedSourceRectHint.isEmpty()) {
                         if (isOutPipDirection) {
-                            getSurfaceTransactionHelper().crop(tx, leash, end)
-                                    .scale(tx, leash, end, bounds);
+                            // Use the bounds relative to the task leash in case the leash does not
+                            // start from (0, 0).
+                            final Rect relativeEndBounds = new Rect(end);
+                            final Point leashOffset = getLeashOffset();
+                            relativeEndBounds.offset(-leashOffset.x, -leashOffset.y);
+                            getSurfaceTransactionHelper()
+                                    .crop(tx, leash, relativeEndBounds)
+                                    .scale(tx, leash, relativeEndBounds, bounds,
+                                            false /* shouldOffset */);
                         } else {
-                            getSurfaceTransactionHelper().crop(tx, leash, base)
-                                    .scale(tx, leash, base, bounds, angle)
+                            // TODO(b/356277166): add support to specify sourceRectHint with
+                            //  non-match parent activity.
+                            // If there's a PIP resize animation, we should offset the bounds to
+                            // (0, 0) since the window bounds should match the leash bounds in PIP
+                            // mode.
+                            getSurfaceTransactionHelper().cropAndPosition(tx, leash, base)
+                                    .scale(tx, leash, base, bounds, angle, inScaleTransition())
                                     .round(tx, leash, base, bounds)
                                     .shadow(tx, leash, shouldApplyShadowRadius());
                         }
@@ -674,14 +749,12 @@ public class PipAnimationController {
                         final Rect insets = computeInsets(fraction);
                         getSurfaceTransactionHelper().scaleAndCrop(tx, leash,
                                 adjustedSourceRectHint, initialSourceValue, bounds, insets,
-                                isInPipDirection, fraction);
-                        if (shouldApplyCornerRadius()) {
-                            final Rect sourceBounds = new Rect(initialContainerRect);
-                            sourceBounds.inset(insets);
-                            getSurfaceTransactionHelper()
-                                    .round(tx, leash, sourceBounds, bounds)
-                                    .shadow(tx, leash, shouldApplyShadowRadius());
-                        }
+                                isInPipDirection, fraction, leashOffset);
+                        final Rect sourceBounds = new Rect(initialContainerRect);
+                        sourceBounds.inset(insets);
+                        getSurfaceTransactionHelper()
+                                .round(tx, leash, sourceBounds, bounds)
+                                .shadow(tx, leash, shouldApplyShadowRadius());
                     }
                     if (!handlePipTransaction(leash, tx, bounds, /* alpha= */ 1f)) {
                         tx.apply();
@@ -725,16 +798,21 @@ public class PipAnimationController {
                         }
                     }
                     final Rect sourceBounds = new Rect(initialContainerRect);
+                    Rect relativeEndWindowFrame = null;
+                    if (isOutPipDirection) {
+                        relativeEndWindowFrame = rotatedEndRect;
+                    }
+                    if (relativeEndWindowFrame != null) {
+                        relativeEndWindowFrame.offset(leashOffset.x, leashOffset.y);
+                    }
                     sourceBounds.inset(insets);
                     getSurfaceTransactionHelper()
                             .rotateAndScaleWithCrop(tx, leash, initialContainerRect, bounds,
                                     insets, degree, x, y, isOutPipDirection,
-                                    rotationDelta == ROTATION_270 /* clockwise */);
-                    if (shouldApplyCornerRadius()) {
-                        getSurfaceTransactionHelper()
-                                .round(tx, leash, sourceBounds, bounds)
-                                .shadow(tx, leash, shouldApplyShadowRadius());
-                    }
+                                    rotationDelta == ROTATION_270 /* clockwise */,
+                                    relativeEndWindowFrame)
+                            .round(tx, leash, sourceBounds, bounds)
+                            .shadow(tx, leash, shouldApplyShadowRadius());
                     if (!handlePipTransaction(leash, tx, bounds, 1f /* alpha */)) {
                         tx.apply();
                     }
@@ -750,7 +828,7 @@ public class PipAnimationController {
                 void onStartTransaction(SurfaceControl leash, SurfaceControl.Transaction tx) {
                     getSurfaceTransactionHelper()
                             .alpha(tx, leash, 1f)
-                            .round(tx, leash, shouldApplyCornerRadius())
+                            .round(tx, leash, true /* applyCornerRadius */)
                             .shadow(tx, leash, shouldApplyShadowRadius());
                     tx.show(leash);
                     tx.apply();
@@ -770,7 +848,7 @@ public class PipAnimationController {
                         tx.setPosition(leash, 0, 0);
                         tx.setWindowCrop(leash, 0, 0);
                     } else {
-                        getSurfaceTransactionHelper().crop(tx, leash, destBounds);
+                        getSurfaceTransactionHelper().cropAndPosition(tx, leash, destBounds);
                     }
                     if (mContentOverlay != null) {
                         clearContentOverlay();

@@ -83,4 +83,4 @@ class BubbleEducationController(private val context: Context) {
 
 /** Convenience extension method to check if the bubble is a conversation bubble */
 private val BubbleViewProvider.isConversationBubble: Boolean
-    get() = if (this is Bubble) isConversation else false
+    get() = if (this is Bubble) isChat else false

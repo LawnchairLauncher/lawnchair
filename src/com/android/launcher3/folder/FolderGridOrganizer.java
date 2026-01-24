@@ -19,6 +19,7 @@ package com.android.launcher3.folder;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
 import android.graphics.Point;
+import android.util.Log;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.model.data.FolderInfo;
@@ -140,11 +141,8 @@ public class FolderGridOrganizer {
      * @return true if there was any change
      */
     public boolean updateRankAndPos(ItemInfo item, int rank) {
-        Point pos = getPosForRank(rank);
-        if (!pos.equals(item.cellX, item.cellY) || rank != item.rank) {
+        if (rank != item.rank) {
             item.rank = rank;
-            item.cellX = pos.x;
-            item.cellY = pos.y;
             return true;
         }
         return false;
@@ -155,8 +153,13 @@ public class FolderGridOrganizer {
      */
     public Point getPosForRank(int rank) {
         int pagePos = rank % mMaxItemsPerPage;
-        mPoint.x = pagePos % mCountX;
-        mPoint.y = pagePos / mCountX;
+        if (mCountX == 0) {
+            mPoint.x = 0;
+            mPoint.y = 0;
+        } else {
+            mPoint.x = pagePos % mCountX;
+            mPoint.y = pagePos / mCountX;
+        }
         return mPoint;
     }
 
@@ -177,6 +180,14 @@ public class FolderGridOrganizer {
             if (result.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
                 break;
             }
+        }
+
+        if (result.isEmpty()) {
+            // Log specifics since we are getting empty result
+            Log.d("b/383526431", "previewItemsForPage: "
+                    + "mCountX = " + mCountX
+                    + ", mCountY = " + mCountY
+                    + ", content size = " + contents.size());
         }
         return result;
     }

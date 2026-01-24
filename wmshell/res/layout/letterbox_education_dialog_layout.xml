@@ -45,19 +45,16 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:padding="24dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingTop="32dp"
-                android:paddingBottom="32dp"
-                android:paddingLeft="56dp"
-                android:paddingRight="56dp">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="@dimen/letterbox_education_dialog_title_icon_width"
                     android:layout_height="@dimen/letterbox_education_dialog_title_icon_height"
-                    android:layout_marginBottom="17dp"
+                    android:layout_marginBottom="16dp"
                     android:src="@drawable/letterbox_education_ic_light_bulb"/>
 
                 <TextView
@@ -68,8 +65,7 @@
                     android:text="@string/letterbox_education_dialog_title"
                     android:textAlignment="center"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:fontFamily="@*android:string/config_bodyFontFamilyMedium"
-                    android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Headline"
+                    android:fontFamily="@*android:string/config_headlineFontFamily"
                     android:textSize="24sp"/>
 
                 <LinearLayout
@@ -77,7 +73,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     android:orientation="horizontal"
-                    android:paddingTop="48dp">
+                    android:layout_marginHorizontal="18dp"
+                    android:layout_marginVertical="@dimen/letterbox_education_dialog_margin">
 
                     <com.android.wm.shell.compatui.LetterboxEduDialogActionLayout
                         android:layout_width="wrap_content"
@@ -101,15 +98,13 @@
                     android:lineHeight="20dp"
                     android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Small"
                     android:id="@+id/letterbox_education_dialog_dismiss_button"
-                    android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:layout_marginTop="40dp"
                     android:textSize="14sp"
                     android:background=
                         "@drawable/letterbox_education_dismiss_button_background_ripple"
                     android:text="@string/letterbox_education_got_it"
-                    android:textColor="?android:attr/textColorPrimaryInverse"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textAlignment="center"
                     android:contentDescription="@string/letterbox_education_got_it"/>
 

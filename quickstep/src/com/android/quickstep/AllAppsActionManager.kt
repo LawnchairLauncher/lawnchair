@@ -21,9 +21,16 @@ import android.app.PendingIntent
 import android.app.RemoteAction
 import android.content.Context
 import android.graphics.drawable.Icon
+import android.provider.Settings
+import android.provider.Settings.Secure.USER_SETUP_COMPLETE
 import android.view.accessibility.AccessibilityManager
 import com.android.launcher3.R
+import com.android.launcher3.util.SettingsCache
+import com.android.launcher3.util.SettingsCache.OnChangeListener
+import com.android.quickstep.input.QuickstepKeyGestureEventsManager
 import java.util.concurrent.Executor
+
+private val USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(USER_SETUP_COMPLETE)
 
 /**
  * Registers a [RemoteAction] for toggling All Apps if needed.
@@ -35,8 +42,15 @@ import java.util.concurrent.Executor
 class AllAppsActionManager(
     private val context: Context,
     private val bgExecutor: Executor,
+    private val quickstepKeyGestureEventsManager: QuickstepKeyGestureEventsManager,
     private val createAllAppsPendingIntent: () -> PendingIntent,
 ) {
+
+    private val onSettingsChangeListener = OnChangeListener { v -> isUserSetupComplete = v }
+
+    init {
+        SettingsCache.INSTANCE[context].register(USER_SETUP_COMPLETE_URI, onSettingsChangeListener)
+    }
 
     /** `true` if home and overview are the same Activity. */
     var isHomeAndOverviewSame = false
@@ -52,12 +66,27 @@ class AllAppsActionManager(
             updateSystemAction()
         }
 
+    /** `true` if the setup UI is visible. */
+    var isSetupUiVisible = false
+        set(value) {
+            field = value
+            updateSystemAction()
+        }
+
+    private var isUserSetupComplete =
+        SettingsCache.INSTANCE[context].getValue(USER_SETUP_COMPLETE_URI, 0)
+        set(value) {
+            field = value
+            updateSystemAction()
+        }
+
     /** `true` if the action should be registered. */
     var isActionRegistered = false
         private set
 
     private fun updateSystemAction() {
-        val shouldRegisterAction = isHomeAndOverviewSame || isTaskbarPresent
+        val isInSetupFlow = isSetupUiVisible || !isUserSetupComplete
+        val shouldRegisterAction = (isHomeAndOverviewSame || isTaskbarPresent) && !isInSetupFlow
         if (isActionRegistered == shouldRegisterAction) return
         isActionRegistered = shouldRegisterAction
 
@@ -65,17 +94,22 @@ class AllAppsActionManager(
             val accessibilityManager =
                 context.getSystemService(AccessibilityManager::class.java) ?: return@execute
             if (shouldRegisterAction) {
+                val allAppsPendingIntent = createAllAppsPendingIntent()
                 accessibilityManager.registerSystemAction(
                     RemoteAction(
                         Icon.createWithResource(context, R.drawable.ic_apps),
                         context.getString(R.string.all_apps_label),
                         context.getString(R.string.all_apps_label),
-                        createAllAppsPendingIntent(),
+                        allAppsPendingIntent,
                     ),
                     GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS,
                 )
+                quickstepKeyGestureEventsManager.registerAllAppsKeyGestureEvent(
+                    allAppsPendingIntent
+                )
             } else {
                 accessibilityManager.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS)
+                quickstepKeyGestureEventsManager.unregisterAllAppsKeyGestureEvent()
             }
         }
     }
@@ -84,8 +118,11 @@ class AllAppsActionManager(
         isActionRegistered = false
         context
             .getSystemService(AccessibilityManager::class.java)
-            ?.unregisterSystemAction(
-                GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS,
-            )
+            ?.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS)
+        quickstepKeyGestureEventsManager.unregisterAllAppsKeyGestureEvent()
+        SettingsCache.INSTANCE[context].unregister(
+            USER_SETUP_COMPLETE_URI,
+            onSettingsChangeListener,
+        )
     }
 }

@@ -117,6 +117,9 @@ class PhysicsAnimator<T> private constructor (target: T) {
     /** End actions to run when all animations have completed.  */
     private val endActions = ArrayList<EndAction>()
 
+    /** End actions to run when all animations have completed or canceled.  */
+    private val endOrCancelActions = ArrayList<EndAction>()
+
     /** SpringConfig to use by default for properties whose springs were not provided. */
     private var defaultSpring: SpringConfig = globalDefaultSpring
 
@@ -384,7 +387,8 @@ class PhysicsAnimator<T> private constructor (target: T) {
      * Adds a listener that will be called when a property stops animating. This is useful if
      * you care about a specific property ending, or want to use the end value/end velocity from a
      * particular property's animation. If you just want to run an action when all property
-     * animations have ended, use [withEndActions].
+     * animations have ended, use [withEndActions]. If you want an action to run when all property
+     * animations have ended or canceled, use [withEndOrCancelActions].
      */
     fun addEndListener(listener: EndListener<T>): PhysicsAnimator<T> {
         endListeners.add(listener)
@@ -393,8 +397,8 @@ class PhysicsAnimator<T> private constructor (target: T) {
 
     /**
      * Adds end actions that will be run sequentially when animations for every property involved in
-     * this specific animation have ended (unless they were explicitly canceled). For example, if
-     * you call:
+     * this specific animation have ended (unless they were explicitly canceled, in which you should
+     * use [withEndOrCancelActions]). For example, if you call:
      *
      * animator
      *   .spring(TRANSLATION_X, ...)
@@ -424,6 +428,9 @@ class PhysicsAnimator<T> private constructor (target: T) {
      * access to the animation's end value/velocity, or you want to run these actions even if the
      * animation is explicitly canceled, use [addEndListener]. End listeners have an allEnded param,
      * which indicates that all relevant animations have ended.
+     *
+     * These actions run after those added via [addEndListener], and before actions added via
+     * [withEndOrCancelActions].
      */
     fun withEndActions(vararg endActions: EndAction?): PhysicsAnimator<T> {
         this.endActions.addAll(endActions.filterNotNull())
@@ -436,6 +443,15 @@ class PhysicsAnimator<T> private constructor (target: T) {
      */
     fun withEndActions(vararg endActions: Runnable?): PhysicsAnimator<T> {
         this.endActions.addAll(endActions.filterNotNull().map { it::run })
+        return this
+    }
+
+    /**
+     * Like [withEndActions], but called if the animator is canceled as well. These actions are
+     * always run after those added via [addEndListener] and [withEndActions].
+     */
+    fun withEndOrCancelActions(vararg endOrCancelActions: Runnable?): PhysicsAnimator<T> {
+        this.endOrCancelActions.addAll(endOrCancelActions.filterNotNull().map { it::run })
         return this
     }
 
@@ -581,7 +597,8 @@ class PhysicsAnimator<T> private constructor (target: T) {
                 getAnimatedProperties(),
                 ArrayList(updateListeners),
                 ArrayList(endListeners),
-                ArrayList(endActions)))
+                ArrayList(endActions),
+                ArrayList(endOrCancelActions)))
 
         // Actually start the DynamicAnimations. This is delayed until after the InternalListener is
         // constructed and added so that we don't miss the end listener firing for any animations
@@ -599,6 +616,7 @@ class PhysicsAnimator<T> private constructor (target: T) {
         updateListeners.clear()
         endListeners.clear()
         endActions.clear()
+        endOrCancelActions.clear()
     }
 
     /** Retrieves a spring animation for the given property, building one if needed. */
@@ -659,7 +677,8 @@ class PhysicsAnimator<T> private constructor (target: T) {
         private var properties: Set<FloatPropertyCompat<in T>>,
         private var updateListeners: List<UpdateListener<T>>,
         private var endListeners: List<EndListener<T>>,
-        private var endActions: List<EndAction>
+        private var endActions: List<EndAction>,
+        private var endOrCancelActions: List<EndAction>
     ) {
 
         /** The number of properties whose animations haven't ended. */
@@ -735,9 +754,12 @@ class PhysicsAnimator<T> private constructor (target: T) {
             }
 
             // If all of the animations that this listener cares about have ended, run the end
-            // actions unless the animation was canceled.
-            if (allEnded && !canceled) {
-                endActions.forEach { it() }
+            // actions
+            if (allEnded) {
+                if (!canceled) {
+                    endActions.forEach { it() }
+                }
+                endOrCancelActions.forEach { it() }
             }
 
             return allEnded
@@ -785,7 +807,8 @@ class PhysicsAnimator<T> private constructor (target: T) {
      * animator is under test.
      */
     internal fun cancelInternal(properties: Set<FloatPropertyCompat<in T>>) {
-        for (property in properties) {
+        val propertiesCopy = properties.toSet()
+        for (property in propertiesCopy) {
             flingAnimations[property]?.cancel()
             springAnimations[property]?.cancel()
         }
@@ -911,8 +934,10 @@ class PhysicsAnimator<T> private constructor (target: T) {
          * to respond to specific property animations concluding (such as hiding a view when ALPHA
          * ends, even if the corresponding TRANSLATION animations have not ended).
          *
-         * If you just want to run an action when all of the property animations have ended, you can
-         * use [PhysicsAnimator.withEndActions].
+         * If you just want to run an action when all of the property animations have ended (but not
+         * canceled), you can use [PhysicsAnimator.withEndActions].  If you need to run an action
+         * regardless of whether the animations were canceled, use
+         * [PhysicsAnimator.withEndOrCancelActions].
          *
          * @param target The animated object itself.
          * @param property The property whose animation has just ended.
@@ -984,6 +1009,11 @@ class PhysicsAnimator<T> private constructor (target: T) {
 
             return animators[target] as PhysicsAnimator<T>
         }
+
+        @JvmStatic
+        @Suppress("UNCHECKED_CAST")
+        fun <T: Any> getInstanceIfExists(target: T): PhysicsAnimator<T>? =
+            animators[target] as PhysicsAnimator<T>?
 
         /**
          * Set whether all physics animators should log a lot of information about animations.

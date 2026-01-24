@@ -18,6 +18,7 @@ package com.android.quickstep.util;
 
 import android.animation.Animator;
 import android.animation.RectEvaluator;
+import android.app.PictureInPictureParams;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -25,6 +26,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
+import android.util.Rational;
 import android.view.Surface;
 import android.view.SurfaceControl;
 import android.view.View;
@@ -39,7 +41,7 @@ import com.android.launcher3.icons.IconProvider;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.systemui.shared.pip.PipSurfaceTransactionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
-import com.android.wm.shell.pip.PipContentOverlay;
+import com.android.wm.shell.shared.pip.PipContentOverlay;
 
 /**
  * Subclass of {@link RectFSpringAnim} that animates an Activity to PiP (picture-in-picture) window
@@ -49,8 +51,6 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
     private static final String TAG = "SwipePipToHomeAnimator";
 
     private static final float END_PROGRESS = 1.0f;
-
-    private static final float PIP_ASPECT_RATIO_MISMATCH_THRESHOLD = 0.01f;
 
     private final int mTaskId;
     private final ActivityInfo mActivityInfo;
@@ -137,8 +137,13 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         mDestinationBoundsTransformed.set(destinationBoundsTransformed);
         mSurfaceTransactionHelper = new PipSurfaceTransactionHelper(cornerRadius, shadowRadius);
 
-        final float aspectRatio = destinationBounds.width() / (float) destinationBounds.height();
+        final Rational aspectRatio = new Rational(
+                destinationBounds.width(), destinationBounds.height());
         String reasonForCreateOverlay = null; // For debugging purpose.
+
+        // Slightly larger app bounds to allow for off by 1 pixel source-rect-hint errors.
+        Rect overflowAppBounds = new Rect(appBounds.left - 1, appBounds.top - 1,
+                        appBounds.right + 1, appBounds.bottom + 1);
         if (sourceRectHint.isEmpty()) {
             reasonForCreateOverlay = "Source rect hint is empty";
         } else if (sourceRectHint.width() < destinationBounds.width()
@@ -149,40 +154,27 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             // animation in this case.
             reasonForCreateOverlay = "Source rect hint is too small " + sourceRectHint;
             sourceRectHint.setEmpty();
-        } else if (!appBounds.contains(sourceRectHint)) {
+        } else if (!overflowAppBounds.contains(sourceRectHint)) {
             // This is a situation in which the source hint rect is outside the app bounds, so it is
             // not a valid rectangle to use for cropping app surface
             reasonForCreateOverlay = "Source rect hint exceeds display bounds " + sourceRectHint;
             sourceRectHint.setEmpty();
-        } else if (Math.abs(
-                aspectRatio - (sourceRectHint.width() / (float) sourceRectHint.height()))
-                > PIP_ASPECT_RATIO_MISMATCH_THRESHOLD) {
-            // The source rect hint does not aspect ratio
-            reasonForCreateOverlay = "Source rect hint does not match aspect ratio "
-                    + sourceRectHint + " aspect ratio " + aspectRatio;
-            sourceRectHint.setEmpty();
+        } else {
+            final Rational srcAspectRatio = new Rational(
+                    sourceRectHint.width(), sourceRectHint.height());
+            if (!PictureInPictureParams.isSameAspectRatio(destinationBounds, srcAspectRatio)) {
+                // The aspect ratio of destination bounds does not match source rect hint.
+                // We use the aspect ratio of source rect hint to check against destination bounds
+                // here to avoid upscaling error.
+                reasonForCreateOverlay = "Source rect hint:" + sourceRectHint
+                        + " does not match destination bounds:" + destinationBounds;
+                sourceRectHint.setEmpty();
+            }
         }
 
         if (sourceRectHint.isEmpty()) {
-            // Crop a Rect matches the aspect ratio and pivots at the center point.
-            // To make the animation path simplified.
-            if ((appBounds.width() / (float) appBounds.height()) > aspectRatio) {
-                // use the full height.
-                mSourceRectHint.set(0, 0,
-                        (int) (appBounds.height() * aspectRatio), appBounds.height());
-                mSourceRectHint.offset(
-                        (appBounds.width() - mSourceRectHint.width()) / 2, 0);
-            } else {
-                // use the full width.
-                mSourceRectHint.set(0, 0,
-                        appBounds.width(), (int) (appBounds.width() / aspectRatio));
-                mSourceRectHint.offset(
-                        0, (appBounds.height() - mSourceRectHint.height()) / 2);
-            }
-
-            // Create a new overlay layer. We do not call detach on this instance, it's propagated
-            // to other classes like PipTaskOrganizer / RecentsAnimationController to complete
-            // the cleanup.
+            mSourceRectHint.set(
+                    getEnterPipWithOverlaySrcRectHint(appBounds, aspectRatio.floatValue()));
             mPipContentOverlay = new PipContentOverlay.PipAppIconOverlay(view.getContext(),
                     mAppBounds, mDestinationBounds,
                     new IconProvider(context).getIcon(mActivityInfo), appIconSizePx);
@@ -223,6 +215,26 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             }
         });
         addOnUpdateListener(this::onAnimationUpdate);
+    }
+
+    /**
+     * Crop a Rect matches the aspect ratio and pivots at the center point.
+     */
+    private Rect getEnterPipWithOverlaySrcRectHint(Rect appBounds, float aspectRatio) {
+        final float appBoundsAspectRatio = appBounds.width() / (float) appBounds.height();
+        final int width, height;
+        int left = appBounds.left;
+        int top = appBounds.top;
+        if (appBoundsAspectRatio < aspectRatio) {
+            width = appBounds.width();
+            height = (int) (width / aspectRatio);
+            top = appBounds.top + (appBounds.height() - height) / 2;
+        } else {
+            height = appBounds.height();
+            width = (int) (height * aspectRatio);
+            left = appBounds.left + (appBounds.width() - width) / 2;
+        }
+        return new Rect(left, top, left + width, top + height);
     }
 
     private void onAnimationUpdate(RectF currentRect, float progress) {
@@ -441,13 +453,22 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             return this;
         }
 
+        public Builder setDisplayCutoutInsets(@NonNull Rect displayCutoutInsets) {
+            mDisplayCutoutInsets = new Rect(displayCutoutInsets);
+            return this;
+        }
+
         public SwipePipToHomeAnimator build() {
             if (mDestinationBoundsTransformed.isEmpty()) {
                 mDestinationBoundsTransformed.set(mDestinationBounds);
             }
             // adjust the mSourceRectHint / mAppBounds by display cutout if applicable.
             if (mSourceRectHint != null && mDisplayCutoutInsets != null) {
-                if (mFromRotation == Surface.ROTATION_90) {
+                if (mFromRotation == Surface.ROTATION_0) {
+                    // TODO: this is to special case the issues on Foldable device
+                    // with display cutout.
+                    mSourceRectHint.offset(mDisplayCutoutInsets.left, mDisplayCutoutInsets.top);
+                } else if (mFromRotation == Surface.ROTATION_90) {
                     mSourceRectHint.offset(mDisplayCutoutInsets.left, mDisplayCutoutInsets.top);
                 } else if (mFromRotation == Surface.ROTATION_270) {
                     mAppBounds.inset(mDisplayCutoutInsets);
@@ -461,15 +482,6 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         }
     }
 
-    private static class RotatedPosition {
-        private final float degree;
-        private final float positionX;
-        private final float positionY;
-
-        private RotatedPosition(float degree, float positionX, float positionY) {
-            this.degree = degree;
-            this.positionX = positionX;
-            this.positionY = positionY;
-        }
+    private record RotatedPosition(float degree, float positionX, float positionY) {
     }
 }

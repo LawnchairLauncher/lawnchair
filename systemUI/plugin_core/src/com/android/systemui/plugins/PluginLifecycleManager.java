@@ -18,8 +18,6 @@ package com.android.systemui.plugins;
 
 import android.content.ComponentName;
 
-import java.util.function.BiConsumer;
-
 /**
  * Provides the ability for consumers to control plugin lifecycle.
  *
@@ -34,9 +32,6 @@ public interface PluginLifecycleManager<T extends Plugin> {
 
     /** Returns the currently loaded plugin instance (if plugin is loaded) */
     T getPlugin();
-
-    /** Log tag and messages will be sent to the provided Consumer */
-    void setLogFunc(BiConsumer<String, String> logConsumer);
 
     /** returns true if the plugin is currently loaded */
     default boolean isLoaded() {

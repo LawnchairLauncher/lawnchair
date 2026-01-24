@@ -38,7 +38,8 @@
         android:textAlignment="center"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        style="@style/WorkPausedBodyTextStyle"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -50,5 +51,6 @@
         android:background="@drawable/bg_work_apps_paused_action_button"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        style="@style/WorkPausedBodyTextStyle"/>
 </com.android.launcher3.allapps.WorkPausedCard>

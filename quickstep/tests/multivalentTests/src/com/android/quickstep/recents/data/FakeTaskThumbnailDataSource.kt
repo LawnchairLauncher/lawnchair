@@ -17,36 +17,46 @@
 package com.android.quickstep.recents.data
 
 import android.graphics.Bitmap
-import com.android.launcher3.util.CancellableTask
 import com.android.quickstep.task.thumbnail.data.TaskThumbnailDataSource
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.ThumbnailData
-import java.util.function.Consumer
+import kotlinx.coroutines.delay
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
 class FakeTaskThumbnailDataSource : TaskThumbnailDataSource {
 
-    val taskIdToBitmap: Map<Int, Bitmap> = (0..10).associateWith { mock() }
-    val taskIdToUpdatingTask: MutableMap<Int, () -> Unit> = mutableMapOf()
-    var shouldLoadSynchronously: Boolean = true
+    val taskIdToBitmap: MutableMap<Int, Bitmap> =
+        (0..10).associateWith { mock<Bitmap>() }.toMutableMap()
+    private val completionPrevented: MutableSet<Int> = mutableSetOf()
+    private val getThumbnailCalls = mutableMapOf<Int, Int>()
+
+    var highResEnabled = true
 
     /** Retrieves and sets a thumbnail on [task] from [taskIdToBitmap]. */
-    override fun updateThumbnailInBackground(
-        task: Task,
-        callback: Consumer<ThumbnailData>
-    ): CancellableTask<ThumbnailData>? {
-        val thumbnailData = mock<ThumbnailData>()
-        whenever(thumbnailData.thumbnail).thenReturn(taskIdToBitmap[task.key.id])
-        val wrappedCallback = {
-            task.thumbnail = thumbnailData
-            callback.accept(thumbnailData)
+    override suspend fun getThumbnail(task: Task): ThumbnailData {
+        getThumbnailCalls[task.key.id] = (getThumbnailCalls[task.key.id] ?: 0) + 1
+
+        while (task.key.id in completionPrevented) {
+            // yield doesn't work here with an UnconfinedTestDispatcher
+            delay(1L)
         }
-        if (shouldLoadSynchronously) {
-            wrappedCallback()
-        } else {
-            taskIdToUpdatingTask[task.key.id] = wrappedCallback
-        }
-        return null
+        return ThumbnailData(
+            thumbnail = taskIdToBitmap[task.key.id],
+            reducedResolution = !highResEnabled,
+        )
+    }
+
+    fun getNumberOfGetThumbnailCalls(taskId: Int): Int = getThumbnailCalls[taskId] ?: 0
+
+    fun preventThumbnailLoad(taskId: Int) {
+        completionPrevented.add(taskId)
+    }
+
+    fun completeLoadingForTask(taskId: Int) {
+        completionPrevented.remove(taskId)
+    }
+
+    fun completeLoading() {
+        completionPrevented.clear()
     }
 }

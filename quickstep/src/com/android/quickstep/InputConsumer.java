@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.view.Display;
 import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -40,45 +41,59 @@ public interface InputConsumer {
     int TYPE_STATUS_BAR = 1 << 13;
     int TYPE_CURSOR_HOVER = 1 << 14;
     int TYPE_NAV_HANDLE_LONG_PRESS = 1 << 15;
+    int TYPE_BUBBLE_BAR = 1 << 16;
 
     String[] NAMES = new String[] {
-            "TYPE_NO_OP", // 0
-            "TYPE_OVERVIEW", // 1
-            "TYPE_OTHER_ACTIVITY", // 2
-            "TYPE_ASSISTANT", // 3
-            "TYPE_DEVICE_LOCKED", // 4
-            "TYPE_ACCESSIBILITY", // 5
-            "TYPE_SCREEN_PINNED", // 6
-            "TYPE_OVERVIEW_WITHOUT_FOCUS", // 7
-            "TYPE_RESET_GESTURE", // 8
-            "TYPE_PROGRESS_DELEGATE", // 9
-            "TYPE_SYSUI_OVERLAY", // 10
-            "TYPE_ONE_HANDED", // 11
-            "TYPE_TASKBAR_STASH", // 12
-            "TYPE_STATUS_BAR", // 13
-            "TYPE_CURSOR_HOVER", // 14
-            "TYPE_NAV_HANDLE_LONG_PRESS", // 15
+           "TYPE_NO_OP",                    // 0
+            "TYPE_OVERVIEW",                // 1
+            "TYPE_OTHER_ACTIVITY",          // 2
+            "TYPE_ASSISTANT",               // 3
+            "TYPE_DEVICE_LOCKED",           // 4
+            "TYPE_ACCESSIBILITY",           // 5
+            "TYPE_SCREEN_PINNED",           // 6
+            "TYPE_OVERVIEW_WITHOUT_FOCUS",  // 7
+            "TYPE_RESET_GESTURE",           // 8
+            "TYPE_PROGRESS_DELEGATE",       // 9
+            "TYPE_SYSUI_OVERLAY",           // 10
+            "TYPE_ONE_HANDED",              // 11
+            "TYPE_TASKBAR_STASH",           // 12
+            "TYPE_STATUS_BAR",              // 13
+            "TYPE_CURSOR_HOVER",            // 14
+            "TYPE_NAV_HANDLE_LONG_PRESS",   // 15
+            "TYPE_BUBBLE_BAR",              // 16
     };
 
-    InputConsumer NO_OP = () -> TYPE_NO_OP;
+    InputConsumer DEFAULT_NO_OP = createNoOpInputConsumer(Display.DEFAULT_DISPLAY);
+
+    static InputConsumer createNoOpInputConsumer(int displayId) {
+        return new InputConsumer() {
+            @Override
+            public int getType() {
+                return TYPE_NO_OP;
+            }
+
+            @Override
+            public int getDisplayId() {
+                return displayId;
+            }
+        };
+    }
 
     int getType();
 
+    int getDisplayId();
+
     /**
-     * Returns true if the user has crossed the threshold for it to be an explicit
-     * action.
+     * Returns true if the user has crossed the threshold for it to be an explicit action.
      */
     default boolean allowInterceptByParent() {
         return true;
     }
 
     /**
-     * Returns true if the lifecycle of this input consumer is detached from the
-     * normal gesture
-     * down/up flow. If so, it is the responsibility of the input consumer to call
-     * back to
-     * {@link TouchInteractionService#onConsumerInactive(InputConsumer)} after the
-     * consumer is
+     * Returns true if the lifecycle of this input consumer is detached from the normal gesture
+     * down/up flow. If so, it is the responsibility of the input consumer to call back to
+     * {@link TouchInteractionService#onConsumerInactive(InputConsumer)} after the consumer is
      * finished.
      */
     default boolean isConsumerDetachedFromGesture() {
@@ -88,8 +103,7 @@ public interface InputConsumer {
     /**
      * Handle and specific setup necessary based on the orientation of the device
      */
-    default void notifyOrientationSetup() {
-    }
+    default void notifyOrientationSetup() {}
 
     /**
      * Returns the active input consumer is in the hierarchy of this input consumer.
@@ -99,23 +113,17 @@ public interface InputConsumer {
     }
 
     /**
-     * Called by the event queue when the consumer is about to be switched to a new
-     * consumer.
-     * Consumers should update the state accordingly here before the state is passed
-     * to the new
+     * Called by the event queue when the consumer is about to be switched to a new consumer.
+     * Consumers should update the state accordingly here before the state is passed to the new
      * consumer.
      */
-    default void onConsumerAboutToBeSwitched() {
-    }
+    default void onConsumerAboutToBeSwitched() { }
 
-    default void onMotionEvent(MotionEvent ev) {
-    }
+    default void onMotionEvent(MotionEvent ev) { }
 
-    default void onHoverEvent(MotionEvent ev) {
-    }
+    default void onHoverEvent(MotionEvent ev) { }
 
-    default void onKeyEvent(KeyEvent ev) {
-    }
+    default void onKeyEvent(KeyEvent ev) { }
 
     default void onInputEvent(InputEvent ev) {
         if (ev instanceof MotionEvent) {

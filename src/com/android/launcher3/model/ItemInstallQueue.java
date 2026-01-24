@@ -18,11 +18,13 @@ package com.android.launcher3.model;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 
+import static com.android.launcher3.LauncherSettings.Favorites.DESKTOP_ICON_FLAG;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.model.data.AppInfo.makeLaunchIntent;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ARCHIVED;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.appwidget.AppWidgetManager;
@@ -38,23 +40,27 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.dagger.ApplicationContext;
+import com.android.launcher3.dagger.LauncherAppSingleton;
+import com.android.launcher3.dagger.LauncherBaseAppComponent;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.DaggerSingletonObject;
 import com.android.launcher3.util.PersistedItemArray;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import java.util.HashSet;
@@ -62,10 +68,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 /**
  * Class to maintain a queue of pending items to be added to the workspace.
  */
-public class ItemInstallQueue implements SafeCloseable {
+@LauncherAppSingleton
+public class ItemInstallQueue {
 
     private static final String LOG = "ItemInstallQueue";
 
@@ -81,12 +91,12 @@ public class ItemInstallQueue implements SafeCloseable {
     public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
     public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
 
-    public static MainThreadInitializedObject<ItemInstallQueue> INSTANCE =
-            new MainThreadInitializedObject<>(ItemInstallQueue::new);
-
+    public static DaggerSingletonObject<ItemInstallQueue> INSTANCE =
+            new DaggerSingletonObject<>(LauncherBaseAppComponent::getItemInstallQueue);
     private final PersistedItemArray<PendingInstallShortcutInfo> mStorage =
             new PersistedItemArray<>(APPS_PENDING_INSTALL);
     private final Context mContext;
+    private final Provider<WorkspaceItemSpaceFinder> mSpaceFinderProvider;
 
     // Determines whether to defer installing shortcuts immediately until
     // processAllPendingInstalls() is called.
@@ -95,12 +105,12 @@ public class ItemInstallQueue implements SafeCloseable {
     // Only accessed on worker thread
     private List<PendingInstallShortcutInfo> mItems;
 
-    private ItemInstallQueue(Context context) {
+    @Inject
+    public ItemInstallQueue(@ApplicationContext Context context,
+            Provider<WorkspaceItemSpaceFinder> spaceFinderProvider) {
         mContext = context;
+        mSpaceFinderProvider = spaceFinderProvider;
     }
-
-    @Override
-    public void close() {}
 
     @WorkerThread
     private void ensureQueueLoaded() {
@@ -121,7 +131,7 @@ public class ItemInstallQueue implements SafeCloseable {
 
     @WorkerThread
     private void flushQueueInBackground() {
-        Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
+        Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedContext();
         if (launcher == null) {
             // Launcher not loaded
             return;
@@ -134,14 +144,28 @@ public class ItemInstallQueue implements SafeCloseable {
         List<Pair<ItemInfo, Object>> installQueue = mItems.stream()
                 .map(info -> info.getItemInfo(mContext))
                 .collect(Collectors.toList());
-
         // Add the items and clear queue
         if (!installQueue.isEmpty()) {
-            // add log
-            launcher.getModel().addAndBindAddedWorkspaceItems(installQueue);
+            MAIN_EXECUTOR.execute(() -> commitInstallQueue(launcher, installQueue));
         }
         mItems.clear();
         mStorage.getFile(mContext).delete();
+    }
+
+    @UiThread
+    private void commitInstallQueue(Launcher launcher, List<Pair<ItemInfo, Object>> itemList) {
+        // If there's an undo snackbar, force it to complete to ensure empty screens are
+        // removed before trying to add new items.
+        launcher.getModelWriter().commitDelete();
+        AbstractFloatingView snackbar = AbstractFloatingView.getOpenView(
+                launcher,
+                AbstractFloatingView.TYPE_SNACKBAR
+        );
+        if (snackbar != null) {
+            snackbar.close(true);
+        }
+        launcher.getModel().enqueueModelUpdateTask(
+                new AddWorkspaceItemsTask(itemList, mSpaceFinderProvider.get()));
     }
 
     /**
@@ -192,22 +216,18 @@ public class ItemInstallQueue implements SafeCloseable {
     }
 
     private void queuePendingShortcutInfo(PendingInstallShortcutInfo info) {
-        final Exception stackTrace = new Exception();
 
         // Queue the item up for adding if launcher has not loaded properly yet
         MODEL_EXECUTOR.post(() -> {
             Pair<ItemInfo, Object> itemInfo = info.getItemInfo(mContext);
             if (itemInfo == null) {
                 FileLog.d(LOG,
-                        "Adding PendingInstallShortcutInfo with no attached info to queue.",
-                        stackTrace);
+                        "Adding PendingInstallShortcutInfo with no attached info to queue.");
             } else {
                 FileLog.d(LOG,
-                        "Adding PendingInstallShortcutInfo to queue. Attached info: "
-                                + itemInfo.first,
-                        stackTrace);
+                        "Adding PendingInstallShortcutInfo to queue."
+                                + " Attached info: " + itemInfo.first);
             }
-
             addToQueue(info);
         });
         flushInstallQueue();
@@ -314,7 +334,8 @@ public class ItemInstallQueue implements SafeCloseable {
                         }
                     }
                     LauncherAppState.getInstance(context).getIconCache()
-                            .getTitleAndIcon(si, () -> lai, usePackageIcon, false);
+                            .getTitleAndIcon(si, () -> lai,
+                                    DESKTOP_ICON_FLAG.withUsePackageIcon(usePackageIcon));
                     return Pair.create(si, null);
                 }
                 case ITEM_TYPE_DEEP_SHORTCUT: {

@@ -17,18 +17,25 @@ package com.android.launcher3.tapl;
 
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.tapl.Taskbar.TaskbarLocation;
+
 import java.util.regex.Pattern;
 
 /**
  * App icon specifically on the Taskbar.
  */
-public final class TaskbarAppIcon extends AppIcon implements SplitscreenDragSource {
+public final class TaskbarAppIcon extends AppIcon implements SplitscreenDragSource,
+        BubbleBarDragSource {
 
     private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onTaskbarItemLongClick");
     private static final Pattern RIGHT_CLICK_EVENT = Pattern.compile("onTaskbarItemRightClick");
 
-    TaskbarAppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
+    private final TaskbarLocation mTaskbarLocation;
+
+    TaskbarAppIcon(LauncherInstrumentation launcher, UiObject2 icon,
+            TaskbarLocation taskbarLocation) {
         super(launcher, icon);
+        this.mTaskbarLocation = taskbarLocation;
     }
 
     @Override
@@ -59,6 +66,11 @@ public final class TaskbarAppIcon extends AppIcon implements SplitscreenDragSour
     @Override
     protected TaskbarAppIconMenu createMenu(UiObject2 menu) {
         return new TaskbarAppIconMenu(mLauncher, menu);
+    }
+
+    @Override
+    public TaskbarLocation getTaskbarLocation() {
+        return mTaskbarLocation;
     }
 
     @Override

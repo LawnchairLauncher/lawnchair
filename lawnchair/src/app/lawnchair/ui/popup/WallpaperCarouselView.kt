@@ -77,7 +77,8 @@ class WallpaperCarouselView @JvmOverloads constructor(
     }
 
     private fun calculateTotalWidth(): Int {
-        return width.takeIf { it > 0 } ?: (deviceProfile.widthPx * if (deviceProfile.isLandscape || deviceProfile.isTablet) 0.5 else 0.8).toInt()
+        return width.takeIf { it > 0 }
+            ?: (deviceProfile.deviceProperties.widthPx * if (deviceProfile.deviceProperties.isLandscape || deviceProfile.deviceProperties.isPhone) 0.5 else 0.8).toInt()
     }
 
     private fun calculateItemWidth(totalWidth: Int, itemCount: Int, firstItemWidth: Double): Double {

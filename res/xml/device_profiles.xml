@@ -207,4 +207,45 @@
 
     </grid-option>
 
+    <grid-option
+        launcher:name="fixed_landscape_mode"
+        launcher:numFolderRows="2"
+        launcher:numFolderColumns="3"
+        launcher:numFolderRowsLandscape="2"
+        launcher:folderStyle="@style/FolderStyleDefault"
+        launcher:numHotseatIcons="4"
+        launcher:numExtendedHotseatIcons="8"
+        launcher:numAllAppsColumns="8"
+        launcher:numExtendedAllAppsColumns="8"
+        launcher:workspaceSpecsId="@xml/spec_handheld_workspace_3_row"
+        launcher:allAppsSpecsId="@xml/spec_handheld_all_apps_3_row"
+        launcher:folderSpecsId="@xml/spec_handheld_folder_3_row"
+        launcher:hotseatSpecsId="@xml/spec_handheld_hotseat_3_row"
+        launcher:workspaceCellSpecsId="@xml/spec_handheld_workspace_cell_3_row"
+        launcher:allAppsCellSpecsId="@xml/spec_all_apps_cell_match_workspace"
+        launcher:isScalable="true"
+        launcher:inlineQsb="landscape"
+        launcher:devicePaddingId="@xml/paddings_3_row"
+        launcher:gridSizeSpecsId="@xml/spec_col_count_3_row"
+        launcher:isFixedLandscape="true"
+        launcher:defaultLayoutId="@xml/default_workspace_8x3"
+        launcher:deviceCategory="phone">
+
+        <display-option
+            launcher:name="Fixed Landscape"
+            launcher:minWidthDps="387"
+            launcher:minHeightDps="750"
+            launcher:minCellHeight="108"
+            launcher:minCellWidth="61"
+            launcher:borderSpace="16"
+            launcher:horizontalMargin="22"
+            launcher:iconImageSize="57"
+            launcher:iconSizeLandscape="59"
+            launcher:iconTextSize="12"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
+            launcher:canBeDefault="true" />
+
+    </grid-option>
+
 </profiles>

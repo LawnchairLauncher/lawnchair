@@ -66,7 +66,7 @@ class NavButtonLayoutFactory {
             isInSetup: Boolean,
             isThreeButtonNav: Boolean,
             phoneMode: Boolean,
-            @Rotation surfaceRotation: Int
+            @Rotation surfaceRotation: Int,
         ): NavButtonLayoutter {
             val navButtonContainer =
                 navButtonsView.requireViewById<LinearLayout>(ID_END_NAV_BUTTONS)
@@ -77,8 +77,20 @@ class NavButtonLayoutFactory {
             val isPhoneNavMode = phoneMode && isThreeButtonNav
             val isPhoneGestureMode = phoneMode && !isThreeButtonNav
             return when {
+                isInSetup -> {
+                    SetupNavLayoutter(
+                        resources,
+                        navButtonsView,
+                        navButtonContainer,
+                        endContextualContainer,
+                        startContextualContainer,
+                        imeSwitcher,
+                        a11yButton,
+                        space,
+                    )
+                }
                 isPhoneNavMode -> {
-                    if (!deviceProfile.isLandscape) {
+                    if (!deviceProfile.deviceProperties.isLandscape) {
                         navButtonsView.setIsVertical(false)
                         PhonePortraitNavLayoutter(
                             resources,
@@ -87,7 +99,7 @@ class NavButtonLayoutFactory {
                             startContextualContainer,
                             imeSwitcher,
                             a11yButton,
-                            space
+                            space,
                         )
                     } else if (surfaceRotation == ROTATION_90) {
                         navButtonsView.setIsVertical(true)
@@ -98,7 +110,7 @@ class NavButtonLayoutFactory {
                             startContextualContainer,
                             imeSwitcher,
                             a11yButton,
-                            space
+                            space,
                         )
                     } else {
                         navButtonsView.setIsVertical(true)
@@ -109,36 +121,23 @@ class NavButtonLayoutFactory {
                             startContextualContainer,
                             imeSwitcher,
                             a11yButton,
-                            space
+                            space,
                         )
                     }
                 }
                 isPhoneGestureMode -> {
                     PhoneGestureLayoutter(
                         resources,
-                        navButtonsView,
                         navButtonContainer,
                         endContextualContainer,
                         startContextualContainer,
                         imeSwitcher,
                         a11yButton,
-                        space
+                        space,
                     )
                 }
                 deviceProfile.isTaskbarPresent -> {
                     return when {
-                        isInSetup -> {
-                            SetupNavLayoutter(
-                                resources,
-                                navButtonsView,
-                                navButtonContainer,
-                                endContextualContainer,
-                                startContextualContainer,
-                                imeSwitcher,
-                                a11yButton,
-                                space
-                            )
-                        }
                         isKidsMode -> {
                             KidsNavLayoutter(
                                 resources,
@@ -147,7 +146,7 @@ class NavButtonLayoutFactory {
                                 startContextualContainer,
                                 imeSwitcher,
                                 a11yButton,
-                                space
+                                space,
                             )
                         }
                         else ->
@@ -158,7 +157,7 @@ class NavButtonLayoutFactory {
                                 startContextualContainer,
                                 imeSwitcher,
                                 a11yButton,
-                                space
+                                space,
                             )
                     }
                 }

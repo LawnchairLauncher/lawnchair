@@ -30,20 +30,15 @@ public class FolderDotInfo extends DotInfo {
 
     private int mNumNotifications;
 
+    public void reset() {
+        mNumNotifications = 0;
+    }
+
     public void addDotInfo(DotInfo dotToAdd) {
         if (dotToAdd == null) {
             return;
         }
         mNumNotifications += dotToAdd.getNotificationKeys().size();
-        mNumNotifications = Utilities.boundToRange(
-                mNumNotifications, MIN_COUNT, DotInfo.MAX_COUNT);
-    }
-
-    public void subtractDotInfo(DotInfo dotToSubtract) {
-        if (dotToSubtract == null) {
-            return;
-        }
-        mNumNotifications -= dotToSubtract.getNotificationKeys().size();
         mNumNotifications = Utilities.boundToRange(
                 mNumNotifications, MIN_COUNT, DotInfo.MAX_COUNT);
     }

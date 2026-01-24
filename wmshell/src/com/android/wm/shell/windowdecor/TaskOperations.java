@@ -23,6 +23,7 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.hardware.input.InputManager;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.InputDevice;
@@ -31,9 +32,7 @@ import android.view.KeyEvent;
 import android.window.WindowContainerToken;
 import android.window.WindowContainerTransaction;
 
-import com.android.wm.shell.common.SyncTransactionQueue;
 import com.android.wm.shell.freeform.FreeformTaskTransitionStarter;
-import com.android.wm.shell.transition.Transitions;
 
 /**
  * Utility class to handle task operations performed on a window decoration.
@@ -43,13 +42,10 @@ class TaskOperations {
 
     private final FreeformTaskTransitionStarter mTransitionStarter;
     private final Context mContext;
-    private final SyncTransactionQueue mSyncQueue;
 
-    TaskOperations(FreeformTaskTransitionStarter transitionStarter, Context context,
-            SyncTransactionQueue syncQueue) {
+    TaskOperations(FreeformTaskTransitionStarter transitionStarter, Context context) {
         mTransitionStarter = transitionStarter;
         mContext = context;
-        mSyncQueue = syncQueue;
     }
 
     void injectBackKey(int displayId) {
@@ -75,23 +71,22 @@ class TaskOperations {
         closeTask(taskToken, new WindowContainerTransaction());
     }
 
-    void closeTask(WindowContainerToken taskToken, WindowContainerTransaction wct) {
+    IBinder closeTask(WindowContainerToken taskToken, WindowContainerTransaction wct) {
         wct.removeTask(taskToken);
-        if (Transitions.ENABLE_SHELL_TRANSITIONS) {
-            mTransitionStarter.startRemoveTransition(wct);
-        } else {
-            mSyncQueue.queue(wct);
-        }
+        return mTransitionStarter.startRemoveTransition(wct);
     }
 
-    void minimizeTask(WindowContainerToken taskToken) {
-        WindowContainerTransaction wct = new WindowContainerTransaction();
+    IBinder minimizeTask(WindowContainerToken taskToken, int taskId, boolean isLastTask) {
+        return minimizeTask(taskToken, taskId, isLastTask, new WindowContainerTransaction());
+    }
+
+    IBinder minimizeTask(
+            WindowContainerToken taskToken,
+            int taskId,
+            boolean isLastTask,
+            WindowContainerTransaction wct) {
         wct.reorder(taskToken, false);
-        if (Transitions.ENABLE_SHELL_TRANSITIONS) {
-            mTransitionStarter.startMinimizedModeTransition(wct);
-        } else {
-            mSyncQueue.queue(wct);
-        }
+        return mTransitionStarter.startMinimizedModeTransition(wct, taskId, isLastTask);
     }
 
     void maximizeTask(RunningTaskInfo taskInfo, int containerWindowingMode) {
@@ -104,10 +99,6 @@ class TaskOperations {
         if (targetWindowingMode == WINDOWING_MODE_FULLSCREEN) {
             wct.setBounds(taskInfo.token, null);
         }
-        if (Transitions.ENABLE_SHELL_TRANSITIONS) {
-            mTransitionStarter.startWindowingModeTransition(targetWindowingMode, wct);
-        } else {
-            mSyncQueue.queue(wct);
-        }
+        mTransitionStarter.startWindowingModeTransition(targetWindowingMode, wct);
     }
 }

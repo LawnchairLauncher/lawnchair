@@ -52,18 +52,23 @@ import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.ui.preferences.data.liveinfo.LiveInformationManager
 import app.lawnchair.util.kotlinxJson
 import app.lawnchair.views.overlay.FullScreenOverlayMode
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.graphics.IconShape as L3IconShape
+import com.android.launcher3.dagger.ApplicationContext
+import com.android.launcher3.dagger.LauncherAppComponent
+import com.android.launcher3.dagger.LauncherAppSingleton
+import com.android.launcher3.graphics.ThemeManager as L3ThemeManager
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.DynamicResource
-import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.PreferenceManager
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.setBlocking
+import javax.inject.Inject
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -72,8 +77,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-class PreferenceManager2 private constructor(private val context: Context) :
-    PreferenceManager,
+@LauncherAppSingleton
+class PreferenceManager2 @Inject constructor(
+    @ApplicationContext private val context: Context,
+) : PreferenceManager,
     SafeCloseable {
 
     private val scope = MainScope()
@@ -119,6 +126,25 @@ class PreferenceManager2 private constructor(private val context: Context) :
                 ?: IconShapeManager.getSystemIconShape(context)
         },
         save = { it.toString() },
+        onSet = {
+            reloadHelper.reloadIcons()
+        },
+    )
+
+    val folderShape = preference(
+        key = stringPreferencesKey(name = "folder_shape"),
+        defaultValue = IconShape.fromString(
+            value = context.getString(R.string.config_default_folder_shape),
+            context = context,
+        ) ?: IconShape.Circle,
+        parse = {
+            IconShape.fromString(value = it, context = context)
+                ?: IconShapeManager.getSystemIconShape(context)
+        },
+        save = { it.toString() },
+        onSet = {
+            reloadHelper.reloadIcons()
+        },
     )
 
     val customIconShape = preference(
@@ -377,9 +403,10 @@ class PreferenceManager2 private constructor(private val context: Context) :
         },
     )
 
-    val enableSmartspaceCalendarSelection = preference(
-        key = booleanPreferencesKey(name = "enable_smartspace_calendar_selection"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace_calendar_selection),
+    val enableFolderIconShapeCustomization = preference(
+        key = booleanPreferencesKey(name = "enable_folder_icon_shape_customization"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_folder_icon_shape_customization),
+        onSet = { reloadHelper.reloadIcons() },
     )
 
     val autoShowKeyboardInDrawer = preference(
@@ -565,18 +592,6 @@ class PreferenceManager2 private constructor(private val context: Context) :
         onSet = { reloadHelper.restart() },
     )
 
-    val enableDotPagination = preference(
-        key = booleanPreferencesKey(name = "enable_dot_pagination"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_dot_pagination),
-        onSet = { reloadHelper.recreate() },
-    )
-
-    val enableMaterialUPopUp = preference(
-        key = booleanPreferencesKey(name = "enable_material_u_popup"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_material_u_popup),
-        onSet = { reloadHelper.recreate() },
-    )
-
     val twoLineAllApps = preference(
         key = booleanPreferencesKey(name = "two_line_all_apps"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_two_line_allapps),
@@ -640,6 +655,11 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     val smartspaceNowPlaying = preference(
         key = booleanPreferencesKey("enable_smartspace_now_playing"),
+        defaultValue = true,
+    )
+
+    val smartspaceOnboarding = preference(
+        key = booleanPreferencesKey("enable_smartspace_onboarding"),
         defaultValue = true,
     )
 
@@ -726,6 +746,15 @@ class PreferenceManager2 private constructor(private val context: Context) :
         defaultValue = GestureHandlerConfig.NoOp,
     )
 
+    val autoUpdaterNightly = preference(
+        key = booleanPreferencesKey(name = "enable_nightly_auto_updater"),
+        defaultValue = if (BuildConfig.APPLICATION_ID.contains("nightly")) {
+            false
+        } else {
+            context.resources.getBoolean(R.bool.config_default_enable_nightly_auto_updater)
+        },
+    )
+
     private inline fun <reified T> serializablePreference(
         key: Preferences.Key<String>,
         defaultValue: T,
@@ -745,8 +774,8 @@ class PreferenceManager2 private constructor(private val context: Context) :
             .distinctUntilChanged()
             .onEach { shape ->
                 initializeIconShape(shape)
-                L3IconShape.INSTANCE.get(context)
-                LauncherAppState.getInstance(context).reloadIcons()
+                L3ThemeManager.INSTANCE.get(context)
+                LauncherAppState.getInstance(context).model.reloadIfActive()
             }
             .launchIn(scope)
     }
@@ -801,7 +830,7 @@ class PreferenceManager2 private constructor(private val context: Context) :
         )
 
         @JvmField
-        val INSTANCE = MainThreadInitializedObject(::PreferenceManager2)
+        val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getPreferenceManager2)
 
         @JvmStatic
         fun getInstance(context: Context) = INSTANCE.get(context)!!

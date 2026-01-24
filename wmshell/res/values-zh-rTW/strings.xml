@@ -36,6 +36,7 @@
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"這個應用程式只能在 1 個視窗中開啟"</string>
     <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"應用程式可能無法在次要顯示器上運作。"</string>
     <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"應用程式無法在次要顯示器上啟動。"</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"應用程式不支援泡泡"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"分割畫面分隔線"</string>
     <string name="divider_title" msgid="1963391955593749442">"分割畫面分隔線"</string>
     <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"以全螢幕顯示左側畫面"</string>
@@ -43,6 +44,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"以 50% 的螢幕空間顯示左側畫面"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"以 30% 的螢幕空間顯示左側畫面"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"以全螢幕顯示右側畫面"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"將頂端與底部的應用程式對調"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"將左側與右側的應用程式對調"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"以全螢幕顯示頂端畫面"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"以 70% 的螢幕空間顯示頂端畫面"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"以 50% 的螢幕空間顯示頂端畫面"</string>
@@ -65,10 +68,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"移至右上方"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"移至左下方"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"移至右下方"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"展開選單"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"收合選單"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"向左移"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"向右移"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"展開「<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>」"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"收合「<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>」"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"「<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>」設定"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"關閉對話框"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"移至全螢幕"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"不要以對話框形式顯示對話"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"透過對話框來聊天"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"新的對話會以浮動圖示或對話框形式顯示。輕觸即可開啟對話框，拖曳則可移動對話框。"</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"相機有問題嗎？\n輕觸即可修正"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"未修正問題嗎？\n輕觸即可還原"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"相機沒問題嗎？輕觸即可關閉。"</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"你可以在這裡查看應用程式選單"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"進入電腦分割視窗模式後，可同時開啟多個應用程式"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"你隨時可以從應用程式選單返回全螢幕模式"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"瀏覽更多內容及執行更多操作"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"拖進另一個應用程式即可使用分割畫面模式"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"在應用程式外輕觸兩下即可調整位置"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"重新啟動"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"不要再顯示"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"輕觸兩下即可\n移動這個應用程式"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"最大化"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"最小化"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"關閉"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"最大化「<xliff:g id="APP_NAME">%1$s</xliff:g>」視窗"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"還原「<xliff:g id="APP_NAME">%1$s</xliff:g>」視窗"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"最小化「<xliff:g id="APP_NAME">%1$s</xliff:g>」視窗"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"關閉「<xliff:g id="APP_NAME">%1$s</xliff:g>」"</string>
     <string name="back_button_text" msgid="1469718707134137085">"返回"</string>
-    <string name="handle_text" msgid="1766582106752184456">"控點"</string>
+    <string name="handle_text" msgid="4419667835599523257">"應用程式控制代碼"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"應用程式圖示"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"全螢幕"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"電腦模式"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"電腦分割視窗"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"分割畫面"</string>
     <string name="more_button_text" msgid="3655388105592893530">"更多"</string>
     <string name="float_button_text" msgid="9221657008391364581">"浮動"</string>
     <string name="select_text" msgid="5139083974039906583">"選取"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"螢幕截圖"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"在瀏覽器中開啟"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"在應用程式中開啟"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"新視窗"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"管理視窗"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"變更顯示比例"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"最佳化檢視畫面"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"錯誤圖示"</string>
     <string name="close_text" msgid="4986518933445178928">"關閉"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"關閉選單"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"開啟選單"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (電腦分割視窗)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"畫面最大化"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"貼齊畫面"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"調整大小"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"應用程式無法移至此處"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"正在開啟新的應用程式視窗"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"正在關閉應用程式視窗"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"正在最小化應用程式視窗"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (前景)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (背景)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"沉浸"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"還原"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"最大化"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"還原"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"靠左對齊"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"靠右對齊"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"調整應用程式視窗大小並向左貼齊"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"調整應用程式視窗大小並向右貼齊"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"將視窗最大化或還原大小"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"開啟選單"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"進入<xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"調整應用程式視窗大小並向左貼齊"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"調整應用程式視窗大小並向右貼齊"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"將視窗最大化或還原大小"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"最大化應用程式視窗"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"還原視窗大小"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"最小化應用程式視窗"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"關閉應用程式視窗"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"開啟連結的預設設定"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"選擇如何開啟這個應用程式的網頁連結"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"使用應用程式"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"使用瀏覽器"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"確定"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"在這個瀏覽器中快速開啟應用程式"</string>
 </resources>

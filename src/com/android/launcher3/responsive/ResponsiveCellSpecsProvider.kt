@@ -18,6 +18,7 @@ package com.android.launcher3.responsive
 
 import android.content.res.TypedArray
 import android.util.Log
+import com.android.launcher3.Flags.enableScalabilityForDesktopExperience
 import com.android.launcher3.R
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
@@ -57,7 +58,7 @@ class ResponsiveCellSpecsProvider(groupOfSpecs: List<ResponsiveSpecGroup<CellSpe
     fun getCalculatedSpec(
         aspectRatio: Float,
         availableHeightSpace: Int,
-        workspaceCellSpec: CalculatedCellSpec
+        workspaceCellSpec: CalculatedCellSpec,
     ): CalculatedCellSpec {
         val specsGroup = getSpecsByAspectRatio(aspectRatio)
         val spec = specsGroup.getSpec(DimensionType.HEIGHT, availableHeightSpace)
@@ -66,6 +67,7 @@ class ResponsiveCellSpecsProvider(groupOfSpecs: List<ResponsiveSpecGroup<CellSpe
 
     companion object {
         private const val LOG_TAG = "ResponsiveCellSpecsProvider"
+
         @JvmStatic
         fun create(resourceHelper: ResourceHelper): ResponsiveCellSpecsProvider {
             val parser = ResponsiveSpecsParser(resourceHelper)
@@ -81,7 +83,9 @@ data class CellSpec(
     override val specType: ResponsiveSpecType,
     val iconSize: SizeSpec,
     val iconTextSize: SizeSpec,
-    val iconDrawablePadding: SizeSpec
+    val iconDrawablePadding: SizeSpec,
+    val iconTextMaxLineCount: Int,
+    val iconTextMaxLineCountMatchesWorkspace: Boolean,
 ) : IResponsiveSpec {
     init {
         check(isValid()) { "Invalid CellSpec found." }
@@ -90,7 +94,7 @@ data class CellSpec(
     constructor(
         responsiveSpecType: ResponsiveSpecType,
         attrs: TypedArray,
-        specs: Map<String, SizeSpec>
+        specs: Map<String, SizeSpec>,
     ) : this(
         maxAvailableSize =
             attrs.getDimensionPixelSize(R.styleable.ResponsiveSpec_maxAvailableSize, 0),
@@ -98,12 +102,19 @@ data class CellSpec(
             DimensionType.entries[
                     attrs.getInt(
                         R.styleable.ResponsiveSpec_dimensionType,
-                        DimensionType.HEIGHT.ordinal
+                        DimensionType.HEIGHT.ordinal,
                     )],
         specType = responsiveSpecType,
         iconSize = specs.getOrError(SizeSpec.XmlTags.ICON_SIZE),
         iconTextSize = specs.getOrError(SizeSpec.XmlTags.ICON_TEXT_SIZE),
-        iconDrawablePadding = specs.getOrError(SizeSpec.XmlTags.ICON_DRAWABLE_PADDING)
+        iconDrawablePadding = specs.getOrError(SizeSpec.XmlTags.ICON_DRAWABLE_PADDING),
+        iconTextMaxLineCount =
+            if (enableScalabilityForDesktopExperience())
+                attrs.getInt(R.styleable.CellSpec_maxLineCount, 1)
+            else 1,
+        iconTextMaxLineCountMatchesWorkspace =
+            enableScalabilityForDesktopExperience() &&
+                attrs.getBoolean(R.styleable.CellSpec_maxLineCountMatchesWorkspace, false),
     )
 
     fun isValid(): Boolean {
@@ -123,11 +134,20 @@ data class CellSpec(
             return false
         }
 
+        if (iconTextMaxLineCount > 2) {
+            logError("Max line count higher than 2 is not supported.")
+            return false
+        }
+
         return true
     }
 
     private fun isValidFixedSize(): Boolean {
-        val totalSize = iconSize.fixedSize + iconTextSize.fixedSize + iconDrawablePadding.fixedSize
+        val textLineCount = if (iconTextMaxLineCount >= 0) iconTextMaxLineCount else 1
+        val totalSize =
+            iconSize.fixedSize +
+                iconTextSize.fixedSize * textLineCount +
+                iconDrawablePadding.fixedSize
         return totalSize <= maxAvailableSize
     }
 
@@ -151,23 +171,27 @@ data class CalculatedCellSpec(
     val spec: CellSpec,
     val iconSize: Int,
     val iconTextSize: Int,
-    val iconDrawablePadding: Int
+    val iconDrawablePadding: Int,
+    val iconTextMaxLineCount: Int,
+    val iconTextMaxLineCountMatchesWorkspace: Boolean,
 ) {
     constructor(
         availableSpace: Int,
-        spec: CellSpec
+        spec: CellSpec,
     ) : this(
         availableSpace = availableSpace,
         spec = spec,
         iconSize = spec.iconSize.getCalculatedValue(availableSpace),
         iconTextSize = spec.iconTextSize.getCalculatedValue(availableSpace),
-        iconDrawablePadding = spec.iconDrawablePadding.getCalculatedValue(availableSpace)
+        iconDrawablePadding = spec.iconDrawablePadding.getCalculatedValue(availableSpace),
+        iconTextMaxLineCount = spec.iconTextMaxLineCount,
+        iconTextMaxLineCountMatchesWorkspace = spec.iconTextMaxLineCountMatchesWorkspace,
     )
 
     constructor(
         availableSpace: Int,
         spec: CellSpec,
-        workspaceCellSpec: CalculatedCellSpec
+        workspaceCellSpec: CalculatedCellSpec,
     ) : this(
         availableSpace = availableSpace,
         spec = spec,
@@ -178,16 +202,21 @@ data class CalculatedCellSpec(
             getCalculatedValue(
                 availableSpace,
                 spec.iconDrawablePadding,
-                workspaceCellSpec.iconDrawablePadding
-            )
+                workspaceCellSpec.iconDrawablePadding,
+            ),
+        iconTextMaxLineCount =
+            if (spec.iconTextMaxLineCountMatchesWorkspace) workspaceCellSpec.iconTextMaxLineCount
+            else spec.iconTextMaxLineCount,
+        iconTextMaxLineCountMatchesWorkspace = spec.iconTextMaxLineCountMatchesWorkspace,
     )
 
     companion object {
         private const val LOG_TAG = "CalculatedCellSpec"
+
         private fun getCalculatedValue(
             availableSpace: Int,
             spec: SizeSpec,
-            workspaceValue: Int
+            workspaceValue: Int,
         ): Int =
             if (spec.matchWorkspace) workspaceValue else spec.getCalculatedValue(availableSpace)
     }

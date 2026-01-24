@@ -82,7 +82,7 @@ public class QuickstepOnboardingPrefs {
                 public void onStateTransitionComplete(LauncherState finalState) {
                     HotseatPredictionController client = launcher.getHotseatPredictionController();
                     if (mFromAllApps && finalState == NORMAL && client.hasPredictions()) {
-                        if (!launcher.getDeviceProfile().isTablet
+                        if (!launcher.getDeviceProfile().getDeviceProperties().isTablet()
                                 && HOTSEAT_DISCOVERY_TIP_COUNT.increment(launcher)) {
                             client.showEdu();
                             stateManager.removeStateListener(this);
@@ -106,7 +106,8 @@ public class QuickstepOnboardingPrefs {
                         return;
                     }
                     mShouldIncreaseCount = toState == HINT_STATE
-                            && launcher.getWorkspace().getNextPage() == Workspace.DEFAULT_PAGE;
+                            && launcher.getWorkspace().getNextPage() == Workspace.DEFAULT_PAGE
+                            && launcher.isCanShowAllAppsEducationView();
                 }
 
                 @Override

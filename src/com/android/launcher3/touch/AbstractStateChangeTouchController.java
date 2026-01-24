@@ -23,6 +23,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadScroll;
+import static com.android.launcher3.Utilities.shouldEnableMouseInteractionChanges;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -33,6 +34,7 @@ import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFram
 
 import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
@@ -107,7 +109,13 @@ public abstract class AbstractStateChangeTouchController
                 ignoreSlopWhenSettling = true;
             } else {
                 directionsToDetectScroll = getSwipeDirection();
-                if (directionsToDetectScroll == 0) {
+                boolean ignoreWhenShownBehindDesktop = !mLauncher.isTopResumedActivity()
+                        && mLauncher.shouldShowHomeBehindDesktop();
+                boolean ignoreMouseScroll = ev.getSource() == InputDevice.SOURCE_MOUSE
+                        && shouldEnableMouseInteractionChanges(
+                        mLauncher.getWorkspace().getContext());
+                if (directionsToDetectScroll == 0 || ignoreMouseScroll
+                        || ignoreWhenShownBehindDesktop) {
                     mNoIntercept = true;
                     return false;
                 }
@@ -307,13 +315,13 @@ public abstract class AbstractStateChangeTouchController
             // snap to top or bottom using the release velocity
         } else {
             float successTransitionProgress = SUCCESS_TRANSITION_PROGRESS;
-            if (mLauncher.getDeviceProfile().isTablet
+            if (mLauncher.getDeviceProfile().getDeviceProperties().isTablet()
                     && (mToState == ALL_APPS || mFromState == ALL_APPS)) {
                 successTransitionProgress = TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS;
-            } else if (!mLauncher.getDeviceProfile().isTablet
+            } else if (!mLauncher.getDeviceProfile().getDeviceProperties().isTablet()
                     && mToState == ALL_APPS && mFromState == NORMAL) {
                 successTransitionProgress = AllAppsSwipeController.ALL_APPS_STATE_TRANSITION_MANUAL;
-            } else if (!mLauncher.getDeviceProfile().isTablet
+            } else if (!mLauncher.getDeviceProfile().getDeviceProperties().isTablet()
                     && mToState == NORMAL && mFromState == ALL_APPS) {
                 successTransitionProgress =
                         1 - AllAppsSwipeController.ALL_APPS_STATE_TRANSITION_MANUAL;

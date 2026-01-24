@@ -20,6 +20,8 @@ import static android.content.ClipDescription.MIMETYPE_APPLICATION_SHORTCUT;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.DragEvent.ACTION_DRAG_STARTED;
 
+import static com.android.wm.shell.draganddrop.DragTestUtils.createAppClipData;
+
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -30,9 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
-import android.content.Intent;
 import android.os.RemoteException;
 import android.view.Display;
 import android.view.DragEvent;
@@ -47,8 +47,10 @@ import com.android.internal.logging.UiEventLogger;
 import com.android.launcher3.icons.IconProvider;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.ShellTestCase;
+import com.android.wm.shell.bubbles.bar.DragToBubbleController;
 import com.android.wm.shell.common.DisplayController;
 import com.android.wm.shell.common.ShellExecutor;
+import com.android.wm.shell.shared.desktopmode.FakeDesktopState;
 import com.android.wm.shell.sysui.ShellCommandHandler;
 import com.android.wm.shell.sysui.ShellController;
 import com.android.wm.shell.sysui.ShellInit;
@@ -76,6 +78,8 @@ public class DragAndDropControllerTest extends ShellTestCase {
     @Mock
     private ShellCommandHandler mShellCommandHandler;
     @Mock
+    private ShellTaskOrganizer mShellTaskOrganizer;
+    @Mock
     private DisplayController mDisplayController;
     @Mock
     private UiEventLogger mUiEventLogger;
@@ -90,14 +94,20 @@ public class DragAndDropControllerTest extends ShellTestCase {
     @Mock
     private GlobalDragListener mGlobalDragListener;
 
+    @Mock
+    private DragToBubbleController mDragToBubbleController;
+    private FakeDesktopState mDesktopState;
+
     private DragAndDropController mController;
 
     @Before
     public void setUp() throws RemoteException {
+        mDesktopState = new FakeDesktopState();
         MockitoAnnotations.initMocks(this);
         mController = new DragAndDropController(mContext, mShellInit, mShellController,
-                mShellCommandHandler, mDisplayController, mUiEventLogger, mIconProvider,
-                mGlobalDragListener, mTransitions, mMainExecutor);
+                mShellCommandHandler, mShellTaskOrganizer, mDisplayController, mUiEventLogger,
+                mIconProvider, mGlobalDragListener, mTransitions, () -> mDragToBubbleController,
+                mMainExecutor, mDesktopState);
         mController.onInit();
     }
 
@@ -126,7 +136,7 @@ public class DragAndDropControllerTest extends ShellTestCase {
         doReturn(display).when(dragLayout).getDisplay();
         doReturn(DEFAULT_DISPLAY).when(display).getDisplayId();
 
-        final ClipData clipData = createClipData();
+        final ClipData clipData = createAppClipData(MIMETYPE_APPLICATION_SHORTCUT);
         final DragEvent event = mock(DragEvent.class);
         doReturn(ACTION_DRAG_STARTED).when(event).getAction();
         doReturn(clipData).when(event).getClipData();
@@ -149,14 +159,23 @@ public class DragAndDropControllerTest extends ShellTestCase {
         verify(mDragAndDropListener, never()).onDragStarted();
     }
 
-    private ClipData createClipData() {
-        ClipDescription clipDescription = new ClipDescription(MIMETYPE_APPLICATION_SHORTCUT,
-                new String[] { MIMETYPE_APPLICATION_SHORTCUT });
-        Intent i = new Intent();
-        i.putExtra(Intent.EXTRA_PACKAGE_NAME, "pkg");
-        i.putExtra(Intent.EXTRA_SHORTCUT_ID, "shortcutId");
-        i.putExtra(Intent.EXTRA_USER, android.os.Process.myUserHandle());
-        ClipData.Item item = new ClipData.Item(i);
-        return new ClipData(clipDescription, item);
+    @Test
+    public void testOnDragStarted_withNoClipDataOrDescription() {
+        final View dragLayout = mock(View.class);
+        final Display display = mock(Display.class);
+        doReturn(display).when(dragLayout).getDisplay();
+        doReturn(DEFAULT_DISPLAY).when(display).getDisplayId();
+
+        final DragEvent event = mock(DragEvent.class);
+        doReturn(ACTION_DRAG_STARTED).when(event).getAction();
+        doReturn(null).when(event).getClipData();
+        doReturn(null).when(event).getClipDescription();
+
+        // Ensure there's a target so that onDrag will execute
+        mController.addDisplayDropTarget(0, mContext, mock(WindowManager.class),
+                mock(FrameLayout.class), mock(DragLayout.class));
+
+        // Verify the listener is called on a valid drag action.
+        mController.onDrag(dragLayout, event);
     }
 }

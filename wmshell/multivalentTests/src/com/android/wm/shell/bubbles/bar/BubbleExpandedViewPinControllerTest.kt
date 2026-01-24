@@ -27,16 +27,16 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.android.internal.protolog.common.ProtoLog
+import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.R
 import com.android.wm.shell.bubbles.BubblePositioner
-import com.android.wm.shell.bubbles.DeviceConfig
-import com.android.wm.shell.common.bubbles.BaseBubblePinController
-import com.android.wm.shell.common.bubbles.BaseBubblePinController.Companion.DROP_TARGET_ALPHA_IN_DURATION
-import com.android.wm.shell.common.bubbles.BaseBubblePinController.Companion.DROP_TARGET_ALPHA_OUT_DURATION
-import com.android.wm.shell.common.bubbles.BubbleBarLocation
-import com.android.wm.shell.common.bubbles.BubbleBarLocation.LEFT
-import com.android.wm.shell.common.bubbles.BubbleBarLocation.RIGHT
+import com.android.wm.shell.shared.bubbles.BaseBubblePinController
+import com.android.wm.shell.shared.bubbles.BaseBubblePinController.Companion.DROP_TARGET_ALPHA_IN_DURATION
+import com.android.wm.shell.shared.bubbles.BaseBubblePinController.Companion.DROP_TARGET_ALPHA_OUT_DURATION
+import com.android.wm.shell.shared.bubbles.BubbleBarLocation
+import com.android.wm.shell.shared.bubbles.BubbleBarLocation.LEFT
+import com.android.wm.shell.shared.bubbles.BubbleBarLocation.RIGHT
+import com.android.wm.shell.shared.bubbles.DeviceConfig
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
@@ -74,6 +74,7 @@ class BubbleExpandedViewPinControllerTest {
     @Before
     fun setUp() {
         ProtoLog.REQUIRE_PROTOLOGTOOL = false
+        ProtoLog.init()
         container = FrameLayout(context)
         val windowManager = context.getSystemService(WindowManager::class.java)
         positioner = BubblePositioner(context, windowManager)
@@ -85,11 +86,10 @@ class BubbleExpandedViewPinControllerTest {
                 isSmallTablet = false,
                 isLandscape = true,
                 isRtl = false,
-                insets = Insets.of(10, 20, 30, 40)
+                insets = Insets.of(10, 20, 30, 40),
             )
         positioner.update(deviceConfig)
-        positioner.bubbleBarTopOnScreen =
-            SCREEN_HEIGHT - deviceConfig.insets.bottom - BUBBLE_BAR_HEIGHT
+        positioner.updateBubbleBarTopOnScreen(BUBBLE_BAR_HEIGHT)
         controller = BubbleExpandedViewPinController(context, container, positioner)
         testListener = TestLocationChangeListener()
         controller.setListener(testListener)
@@ -407,12 +407,26 @@ class BubbleExpandedViewPinControllerTest {
         assertThat(testListener.locationReleases).containsExactly(RIGHT)
     }
 
+    /** Send drag start event when on left */
+    @Test
+    fun start_onLeft_sendStartEventOnLeft() {
+        getInstrumentation().runOnMainSync { controller.onDragStart(initialLocationOnLeft = true) }
+        assertThat(testListener.locationStart).containsExactly(LEFT)
+    }
+
+    /** Send drag start event when on right */
+    @Test
+    fun start_onRight_sendStartEventOnRight() {
+        getInstrumentation().runOnMainSync { controller.onDragStart(initialLocationOnLeft = false) }
+        assertThat(testListener.locationStart).containsExactly(RIGHT)
+    }
+
     private fun getExpectedDropTargetBoundsOnLeft(): Rect =
         Rect().also {
             positioner.getBubbleBarExpandedViewBounds(
                 true /* onLeft */,
                 false /* isOverflowExpanded */,
-                it
+                it,
             )
         }
 
@@ -421,7 +435,7 @@ class BubbleExpandedViewPinControllerTest {
             positioner.getBubbleBarExpandedViewBounds(
                 false /* onLeft */,
                 false /* isOverflowExpanded */,
-                it
+                it,
             )
         }
 
@@ -446,8 +460,14 @@ class BubbleExpandedViewPinControllerTest {
     }
 
     internal class TestLocationChangeListener : BaseBubblePinController.LocationChangeListener {
+        val locationStart = mutableListOf<BubbleBarLocation>()
         val locationChanges = mutableListOf<BubbleBarLocation>()
         val locationReleases = mutableListOf<BubbleBarLocation>()
+
+        override fun onStart(location: BubbleBarLocation) {
+            locationStart.add(location)
+        }
+
         override fun onChange(location: BubbleBarLocation) {
             locationChanges.add(location)
         }

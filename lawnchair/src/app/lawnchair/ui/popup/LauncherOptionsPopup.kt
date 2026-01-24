@@ -8,6 +8,7 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
+import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.views.OptionsPopupView.OptionItem
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.setBlocking
@@ -19,6 +20,7 @@ object LauncherOptionsPopup {
         LauncherOptionPopupItem("edit_mode", false),
         LauncherOptionPopupItem("wallpaper", true),
         LauncherOptionPopupItem("widgets", true),
+        LauncherOptionPopupItem("all_apps", true),
         LauncherOptionPopupItem("home_settings", true),
         LauncherOptionPopupItem("sys_settings", false),
     )
@@ -49,6 +51,7 @@ object LauncherOptionsPopup {
         onLockToggle: (View) -> Boolean,
         onStartSystemSettings: (View) -> Boolean,
         onStartEditMode: (View) -> Boolean,
+        onStartAllApps: (View) -> Boolean,
         onStartWallpaperPicker: (View) -> Boolean,
         onStartWidgetsMenu: (View) -> Boolean,
         onStartHomeSettings: (View) -> Boolean,
@@ -85,6 +88,13 @@ object LauncherOptionsPopup {
                 LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 onStartEditMode,
             ),
+            "all_apps" to OptionItem(
+                launcher,
+                R.string.all_apps_button_label,
+                R.drawable.ic_apps,
+                LauncherEvent.LAUNCHER_ALL_APPS_TAP_OR_LONGPRESS,
+                onStartAllApps,
+            ),
             "wallpaper" to OptionItem(
                 launcher,
                 wallpaperResString,
@@ -95,9 +105,16 @@ object LauncherOptionsPopup {
             "widgets" to OptionItem(
                 launcher,
                 R.string.widget_button_text,
-                R.drawable.ic_widget,
+                SystemShortcut.Widgets.getDrawableId(),
                 LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                 onStartWidgetsMenu,
+            ),
+            "enterAllApps" to OptionItem(
+                launcher,
+                R.string.all_apps_button_label,
+                R.drawable.ic_apps,
+                LauncherEvent.LAUNCHER_ALL_APPS_TAP_OR_LONGPRESS,
+                onStartAllApps,
             ),
             "home_settings" to OptionItem(
                 launcher,
@@ -156,7 +173,12 @@ object LauncherOptionsPopup {
 
             "widgets" -> LauncherOptionMetadata(
                 label = R.string.widget_button_text,
-                icon = R.drawable.ic_widget,
+                icon = SystemShortcut.Widgets.getDrawableId(),
+            )
+
+            "all_apps" -> LauncherOptionMetadata(
+                label = R.string.all_apps_button_label,
+                icon = R.drawable.ic_apps,
             )
 
             "home_settings" -> LauncherOptionMetadata(

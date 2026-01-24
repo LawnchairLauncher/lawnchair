@@ -36,9 +36,12 @@ public class ScreenPinnedInputConsumer implements InputConsumer {
     private final float mMotionPauseMinDisplacement;
     private final MotionPauseDetector mMotionPauseDetector;
 
+    private final int mDisplayId;
+
     private float mTouchDownY;
 
     public ScreenPinnedInputConsumer(Context context, GestureState gestureState) {
+        mDisplayId = gestureState.getDisplayId();
         mMotionPauseMinDisplacement = context.getResources().getDimension(
                 R.dimen.motion_pause_detector_min_displacement_from_app);
         mMotionPauseDetector = new MotionPauseDetector(context, true /* makePauseHarderToTrigger*/);
@@ -58,6 +61,11 @@ public class ScreenPinnedInputConsumer implements InputConsumer {
     @Override
     public int getType() {
         return TYPE_SCREEN_PINNED;
+    }
+
+    @Override
+    public int getDisplayId() {
+        return mDisplayId;
     }
 
     @Override

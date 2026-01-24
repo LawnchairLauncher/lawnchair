@@ -65,9 +65,14 @@
         android:protectionLevel="signatureOrSystem"
         android:label="@string/permlab_write_settings"
         android:description="@string/permdesc_write_settings"/>
+    <permission
+        android:name="${applicationId}.permission.GRID_CONTROL"
+        android:knownCerts="@array/grid_control_known_signers"
+        android:protectionLevel="signature|knownSigner"/>
 
     <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
     <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.GRID_CONTROL" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -137,11 +142,13 @@
             android:readPermission="${applicationId}.permission.READ_SETTINGS" />
 
         <!--
-        The content provider for exposing various launcher grid options.
-        TODO: Add proper permissions
-        -->
+          The content provider for exposing various launcher grid options.
+          The caller should hold one of the following permissions:
+             - android.permission.BIND_WALLPAPER
+             - ${applicationId}.permission.GRID_CONTROL
+         -->
         <provider
-            android:name="com.android.launcher3.graphics.GridCustomizationsProvider"
+            android:name="com.android.launcher3.graphics.LauncherCustomizationProvider"
             android:authorities="${applicationId}.grid_control"
             android:exported="true" />
 

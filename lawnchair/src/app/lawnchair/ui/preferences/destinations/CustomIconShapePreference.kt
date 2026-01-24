@@ -17,6 +17,8 @@ import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +58,7 @@ import app.lawnchair.util.getClipboardContent
 import com.android.launcher3.R
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CustomIconShapePreference(
     modifier: Modifier = Modifier,
@@ -89,6 +92,7 @@ fun CustomIconShapePreference(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 16.dp),
+                    shapes = ButtonDefaults.shapes(),
                 ) {
                     Text(
                         text = if (appliedIconShape != null) {
@@ -133,50 +137,58 @@ private fun IconShapeCornerPreferenceGroup(
         modifier = modifier,
         heading = stringResource(id = R.string.color_sliders),
     ) {
-        IconShapeCornerPreference(
-            title = stringResource(id = R.string.custom_icon_shape_top_left),
-            scale = selectedIconShape.topLeft.scale.x,
-            onScaleChange = {
-                onSelectedIconShapeChange(selectedIconShape.copy(topLeftScale = it))
-            },
-            cornerShape = selectedIconShape.topLeft.shape,
-            onCornerShapeChange = {
-                onSelectedIconShapeChange(selectedIconShape.copy(topLeftShape = it))
-            },
-        )
-        IconShapeCornerPreference(
-            title = stringResource(id = R.string.custom_icon_shape_top_right),
-            scale = selectedIconShape.topRight.scale.x,
-            onScaleChange = {
-                onSelectedIconShapeChange(selectedIconShape.copy(topRightScale = it))
-            },
-            cornerShape = selectedIconShape.topRight.shape,
-            onCornerShapeChange = {
-                onSelectedIconShapeChange(selectedIconShape.copy(topRightShape = it))
-            },
-        )
-        IconShapeCornerPreference(
-            title = stringResource(id = R.string.custom_icon_shape_bottom_left),
-            scale = selectedIconShape.bottomLeft.scale.x,
-            onScaleChange = {
-                onSelectedIconShapeChange(selectedIconShape.copy(bottomLeftScale = it))
-            },
-            cornerShape = selectedIconShape.bottomLeft.shape,
-            onCornerShapeChange = {
-                onSelectedIconShapeChange(selectedIconShape.copy(bottomLeftShape = it))
-            },
-        )
-        IconShapeCornerPreference(
-            title = stringResource(id = R.string.custom_icon_shape_bottom_right),
-            scale = selectedIconShape.bottomRight.scale.x,
-            onScaleChange = {
-                onSelectedIconShapeChange(selectedIconShape.copy(bottomRightScale = it))
-            },
-            cornerShape = selectedIconShape.bottomRight.shape,
-            onCornerShapeChange = {
-                onSelectedIconShapeChange(selectedIconShape.copy(bottomRightShape = it))
-            },
-        )
+        Item {
+            IconShapeCornerPreference(
+                title = stringResource(id = R.string.custom_icon_shape_top_left),
+                scale = selectedIconShape.topLeft.scale.x,
+                onScaleChange = {
+                    onSelectedIconShapeChange(selectedIconShape.copy(topLeftScale = it))
+                },
+                cornerShape = selectedIconShape.topLeft.shape,
+                onCornerShapeChange = {
+                    onSelectedIconShapeChange(selectedIconShape.copy(topLeftShape = it))
+                },
+            )
+        }
+        Item {
+            IconShapeCornerPreference(
+                title = stringResource(id = R.string.custom_icon_shape_top_right),
+                scale = selectedIconShape.topRight.scale.x,
+                onScaleChange = {
+                    onSelectedIconShapeChange(selectedIconShape.copy(topRightScale = it))
+                },
+                cornerShape = selectedIconShape.topRight.shape,
+                onCornerShapeChange = {
+                    onSelectedIconShapeChange(selectedIconShape.copy(topRightShape = it))
+                },
+            )
+        }
+        Item {
+            IconShapeCornerPreference(
+                title = stringResource(id = R.string.custom_icon_shape_bottom_left),
+                scale = selectedIconShape.bottomLeft.scale.x,
+                onScaleChange = {
+                    onSelectedIconShapeChange(selectedIconShape.copy(bottomLeftScale = it))
+                },
+                cornerShape = selectedIconShape.bottomLeft.shape,
+                onCornerShapeChange = {
+                    onSelectedIconShapeChange(selectedIconShape.copy(bottomLeftShape = it))
+                },
+            )
+        }
+        Item {
+            IconShapeCornerPreference(
+                title = stringResource(id = R.string.custom_icon_shape_bottom_right),
+                scale = selectedIconShape.bottomRight.scale.x,
+                onScaleChange = {
+                    onSelectedIconShapeChange(selectedIconShape.copy(bottomRightScale = it))
+                },
+                cornerShape = selectedIconShape.bottomRight.shape,
+                onCornerShapeChange = {
+                    onSelectedIconShapeChange(selectedIconShape.copy(bottomRightShape = it))
+                },
+            )
+        }
     }
 }
 
@@ -192,25 +204,29 @@ private fun IconShapeClipboardPreferenceGroup(
         modifier = modifier,
         heading = stringResource(id = R.string.clipboard),
     ) {
-        ClipboardButton(
-            imageVector = Icons.Rounded.ContentCopy,
-            label = stringResource(id = R.string.export_to_clipboard),
-        ) {
-            copyToClipboard(
-                context = context,
-                text = selectedIconShape.toString(),
-            )
+        Item {
+            ClipboardButton(
+                imageVector = Icons.Rounded.ContentCopy,
+                label = stringResource(id = R.string.export_to_clipboard),
+            ) {
+                copyToClipboard(
+                    context = context,
+                    text = selectedIconShape.toString(),
+                )
+            }
         }
-        ClipboardButton(
-            imageVector = Icons.Rounded.ContentPaste,
-            label = stringResource(id = R.string.import_from_clipboard),
-        ) {
-            getClipboardContent(context)?.let {
-                IconShape.fromString(value = it, context = context)
-            }?.let {
-                onSelectedIconShapeChange(it)
-            } ?: run {
-                Toast.makeText(context, importErrorMessage, Toast.LENGTH_SHORT).show()
+        Item {
+            ClipboardButton(
+                imageVector = Icons.Rounded.ContentPaste,
+                label = stringResource(id = R.string.import_from_clipboard),
+            ) {
+                getClipboardContent(context)?.let {
+                    IconShape.fromString(value = it, context = context)
+                }?.let {
+                    onSelectedIconShapeChange(it)
+                } ?: run {
+                    Toast.makeText(context, importErrorMessage, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -264,6 +280,7 @@ private fun IconShapeCornerPreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CornerSlider(
     label: String,
@@ -337,7 +354,10 @@ private fun CornerSlider(
                             ModalBottomSheetContent(
                                 title = { Text(stringResource(id = R.string.custom_icon_shape_corner)) },
                                 buttons = {
-                                    OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
+                                    OutlinedButton(
+                                        onClick = { bottomSheetHandler.hide() },
+                                        shapes = ButtonDefaults.shapes(),
+                                    ) {
                                         Text(text = stringResource(id = android.R.string.cancel))
                                     }
                                 },

@@ -33,6 +33,7 @@ message ItemInfo {
     FolderIcon folder_icon = 9;
     Slice slice = 10;
     SearchActionItem search_action_item = 11;
+    TaskView task_view = 15;
   }
   // When used for launch event, stores the global predictive rank
   optional int32 rank = 5;
@@ -152,7 +153,7 @@ message TaskBarContainer {
   }
 }
 
-// Next value 54
+// Next value 55
 enum Attribute {
   option allow_alias = true;
 
@@ -228,6 +229,7 @@ enum Attribute {
   WEB_SEARCH_RESULT_CALCULATOR = 37;
   WEB_SEARCH_RESULT_URL = 38;
   WEB_SEARCH_RESULT_RICH_ANSWER = 40;
+  WEB_SEARCH_RESULT_AI_MODE = 54;
 
   WIDGETS_BOTTOM_TRAY = 28;
   WIDGETS_TRAY_PREDICTION = 29;
@@ -260,6 +262,21 @@ message Task {
   optional string package_name = 1;
   optional string component_name = 2;
   optional int32 index = 3;
+}
+
+// TaskView in RecentsView.
+message TaskView {
+  // TaskViewType.
+  optional int32 type = 1;
+
+  // Index of TaskView in RecentsView.
+  optional int32 index = 2;
+
+  // ComponentName of the Task.
+  optional string component_name = 3;
+
+  // Number of tasks in the TaskView.
+  optional int32 cardinality = 4;
 }
 
 // Represents folder in a closed state.

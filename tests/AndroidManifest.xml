@@ -23,12 +23,15 @@
 
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
+        <activity android:name="platform.test.screenshot.ScreenshotActivity" android:exported="true"/>
     </application>
 
     <instrumentation
         android:functionalTest="false"
         android:handleProfiling="false"
         android:name="androidx.test.runner.AndroidJUnitRunner"
-        android:targetPackage="com.android.launcher3" >
+      android:targetPackage="com.android.launcher3" >
+      <meta-data android:name="listener"
+      android:value="com.android.launcher3.util.GlobalTestRunListener"/>
     </instrumentation>
 </manifest>

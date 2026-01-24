@@ -16,6 +16,10 @@
 
 package com.android.wm.shell.bubbles
 
+import android.app.ActivityManager
+import android.window.WindowContainerToken
+import com.android.wm.shell.shared.bubbles.BubbleBarLocation
+
 /** Manager interface for bubble expanded views. */
 interface BubbleExpandedViewManager {
 
@@ -26,10 +30,16 @@ interface BubbleExpandedViewManager {
     fun promoteBubbleFromOverflow(bubble: Bubble)
     fun removeBubble(key: String, reason: Int)
     fun dismissBubble(bubble: Bubble, reason: Int)
-    fun setAppBubbleTaskId(key: String, taskId: Int)
+    fun setNoteBubbleTaskId(key: String, taskId: Int)
     fun isStackExpanded(): Boolean
     fun isShowingAsBubbleBar(): Boolean
     fun hideCurrentInputMethod()
+    fun updateBubbleBarLocation(
+        location: BubbleBarLocation,
+        @BubbleBarLocation.UpdateSource source: Int,
+    )
+    fun getAppBubbleRootTaskToken(): WindowContainerToken?
+    fun shouldBeAppBubble(taskInfo: ActivityManager.RunningTaskInfo): Boolean
 
     companion object {
         /**
@@ -67,8 +77,8 @@ interface BubbleExpandedViewManager {
                     controller.dismissBubble(bubble, reason)
                 }
 
-                override fun setAppBubbleTaskId(key: String, taskId: Int) {
-                    controller.setAppBubbleTaskId(key, taskId)
+                override fun setNoteBubbleTaskId(key: String, taskId: Int) {
+                    controller.setNoteBubbleTaskId(key, taskId)
                 }
 
                 override fun isStackExpanded(): Boolean = controller.isStackExpanded
@@ -76,8 +86,21 @@ interface BubbleExpandedViewManager {
                 override fun isShowingAsBubbleBar(): Boolean = controller.isShowingAsBubbleBar
 
                 override fun hideCurrentInputMethod() {
-                    controller.hideCurrentInputMethod()
+                    controller.hideCurrentInputMethod(null)
                 }
+
+                override fun updateBubbleBarLocation(
+                    location: BubbleBarLocation,
+                    @BubbleBarLocation.UpdateSource source: Int,
+                ) {
+                    controller.setBubbleBarLocation(location, source)
+                }
+
+                override fun getAppBubbleRootTaskToken(): WindowContainerToken? =
+                    controller.appBubbleRootTaskInfo?.token
+
+                override fun shouldBeAppBubble(taskInfo: ActivityManager.RunningTaskInfo): Boolean =
+                    controller.shouldBeAppBubble(taskInfo)
             }
         }
     }

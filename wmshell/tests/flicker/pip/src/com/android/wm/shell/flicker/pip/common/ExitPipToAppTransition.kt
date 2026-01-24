@@ -16,6 +16,7 @@
 
 package com.android.wm.shell.flicker.pip.common
 
+import android.platform.test.annotations.Postsubmit
 import android.platform.test.annotations.Presubmit
 import android.tools.Rotation
 import android.tools.flicker.legacy.LegacyFlickerTest
@@ -121,6 +122,12 @@ abstract class ExitPipToAppTransition(flicker: LegacyFlickerTest) : PipTransitio
                 current.visibleRegion.coversAtLeast(previous.visibleRegion.region)
             }
         }
+    }
+
+    @Postsubmit
+    @Test
+    override fun pipLayerHasCorrectCornersAtEnd() {
+        flicker.assertLayersEnd { hasNoRoundedCorners(pipApp) }
     }
 
     /** {@inheritDoc} */

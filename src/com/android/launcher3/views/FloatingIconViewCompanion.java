@@ -27,7 +27,6 @@ public interface FloatingIconViewCompanion {
     void setIconVisible(boolean visible);
     void setForceHideDot(boolean hide);
     default void setForceHideRing(boolean hide) {}
-    default void resetIconScale(boolean shouldReset) {}
 
     /**
      * Sets the visibility of icon and dot of the view
@@ -37,7 +36,6 @@ public interface FloatingIconViewCompanion {
             ((FloatingIconViewCompanion) view).setIconVisible(visible);
             ((FloatingIconViewCompanion) view).setForceHideDot(!visible);
             ((FloatingIconViewCompanion) view).setForceHideRing(!visible);
-            ((FloatingIconViewCompanion) view).resetIconScale(true);
         } else {
             view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         }

@@ -39,6 +39,7 @@ public class MotionPauseDetector {
     // The percentage of the previous speed that determines whether this is a rapid deceleration.
     // The bigger this number, the easier it is to trigger the first pause.
     private static final float RAPID_DECELERATION_FACTOR = 0.6f;
+    private static final float RAPID_DECELERATION_FACTOR_TRACKPAD = 0.85f;
 
     /** If no motion is added for this amount of time, assume the motion has paused. */
     private static final long FORCE_PAUSE_TIMEOUT = 300;
@@ -57,6 +58,7 @@ public class MotionPauseDetector {
     private final float mSpeedVerySlow;
     private final float mSpeedSlow;
     private final float mSpeedSomewhatFast;
+    private final float mSpeedTrackpadSomewhatFast;
     private final float mSpeedFast;
     private final Alarm mForcePauseTimeout;
     private final boolean mMakePauseHarderToTrigger;
@@ -66,6 +68,7 @@ public class MotionPauseDetector {
     private Float mPreviousVelocity = null;
 
     private OnMotionPauseListener mOnMotionPauseListener;
+    private boolean mIsTrackpadGesture;
     private boolean mIsPaused;
     // Bias more for the first pause to make it feel extra responsive.
     private boolean mHasEverBeenPaused;
@@ -94,13 +97,13 @@ public class MotionPauseDetector {
         mSpeedVerySlow = res.getDimension(R.dimen.motion_pause_detector_speed_very_slow);
         mSpeedSlow = res.getDimension(R.dimen.motion_pause_detector_speed_slow);
         mSpeedSomewhatFast = res.getDimension(R.dimen.motion_pause_detector_speed_somewhat_fast);
+        mSpeedTrackpadSomewhatFast = res.getDimension(
+                R.dimen.motion_pause_detector_speed_trackpad_somewhat_fast);
         mSpeedFast = res.getDimension(R.dimen.motion_pause_detector_speed_fast);
         mForcePauseTimeout = new Alarm();
         mForcePauseTimeout.setOnAlarmListener(alarm -> {
-            ActiveGestureLog.CompoundString log =
-                    new ActiveGestureLog.CompoundString("Force pause timeout after ")
-                            .append(alarm.getLastSetTimeout())
-                            .append("ms");
+            ActiveGestureLog.CompoundString log = new ActiveGestureLog.CompoundString(
+                    "Force pause timeout after %dms", alarm.getLastSetTimeout());
             addLogs(log);
             updatePaused(true /* isPaused */, log);
         });
@@ -115,13 +118,16 @@ public class MotionPauseDetector {
         mOnMotionPauseListener = listener;
     }
 
+    public void setIsTrackpadGesture(boolean isTrackpadGesture) {
+        mIsTrackpadGesture = isTrackpadGesture;
+    }
+
     /**
      * @param disallowPause If true, we will not detect any pauses until this is set to false again.
      */
     public void setDisallowPause(boolean disallowPause) {
-        ActiveGestureLog.CompoundString log =
-                new ActiveGestureLog.CompoundString("Set disallowPause=")
-                        .append(disallowPause);
+        ActiveGestureLog.CompoundString log = new ActiveGestureLog.CompoundString(
+                "Set disallowPause=%b", disallowPause);
         if (mDisallowPause != disallowPause) {
             addLogs(log);
         }
@@ -179,11 +185,14 @@ public class MotionPauseDetector {
                     // We want to be more aggressive about detecting the first pause to ensure it
                     // feels as responsive as possible; getting two very slow speeds back to back
                     // takes too long, so also check for a rapid deceleration.
-                    boolean isRapidDeceleration = speed < previousSpeed * RAPID_DECELERATION_FACTOR;
-                    isPaused = isRapidDeceleration && speed < mSpeedSomewhatFast;
+                    boolean isRapidDeceleration =
+                            speed < previousSpeed * getRapidDecelerationFactor();
+                    boolean notSuperFast = speed < mSpeedSomewhatFast
+                            || (mIsTrackpadGesture && speed < mSpeedTrackpadSomewhatFast);
+                    isPaused = isRapidDeceleration && notSuperFast;
                     isPausedReason = new ActiveGestureLog.CompoundString(
-                            "Didn't have back to back slow speeds, checking for rapid ")
-                            .append(" deceleration on first pause only");
+                            "Didn't have back to back slow speeds, checking for rapid "
+                                    + " deceleration on first pause only");
                 }
                 if (mMakePauseHarderToTrigger) {
                     if (speed < mSpeedSlow) {
@@ -192,8 +201,8 @@ public class MotionPauseDetector {
                         }
                         isPaused = time - mSlowStartTime >= HARDER_TRIGGER_TIMEOUT;
                         isPausedReason = new ActiveGestureLog.CompoundString(
-                                "Maintained slow speed for sufficient duration when making")
-                                .append(" pause harder to trigger");
+                                "Maintained slow speed for sufficient duration when making"
+                                        + " pause harder to trigger");
                     } else {
                         mSlowStartTime = 0;
                         isPaused = false;
@@ -209,17 +218,14 @@ public class MotionPauseDetector {
     private void updatePaused(boolean isPaused, ActiveGestureLog.CompoundString reason) {
         if (mDisallowPause) {
             reason = new ActiveGestureLog.CompoundString(
-                    "Disallow pause; otherwise, would have been ")
-                    .append(isPaused)
-                    .append(" due to reason:")
+                    "Disallow pause; otherwise, would have been %b due to reason: ", isPaused)
                     .append(reason);
             isPaused = false;
         }
         if (mIsPaused != isPaused) {
             mIsPaused = isPaused;
-            addLogs(new ActiveGestureLog.CompoundString("onMotionPauseChanged triggered; paused=")
-                    .append(mIsPaused)
-                    .append(", reason=")
+            addLogs(new ActiveGestureLog.CompoundString(
+                    "onMotionPauseChanged triggered; paused=%b, reason=", mIsPaused)
                     .append(reason));
             boolean isFirstDetectedPause = !mHasEverBeenPaused && mIsPaused;
             if (mIsPaused) {
@@ -239,20 +245,20 @@ public class MotionPauseDetector {
         }
     }
 
-    private void addLogs(ActiveGestureLog.CompoundString compoundString) {
-        ActiveGestureLog.CompoundString logString =
-                new ActiveGestureLog.CompoundString("MotionPauseDetector: ")
-                        .append(compoundString);
+    private void addLogs(ActiveGestureLog.CompoundString event) {
         if (Utilities.isRunningInTestHarness()) {
-            Log.d(TAG, logString.toString());
+            Log.d(TAG, new ActiveGestureLog.CompoundString("MotionPauseDetector: ")
+                    .append(event)
+                    .toString());
         }
-        ActiveGestureLog.INSTANCE.addLog(logString);
+        ActiveGestureProtoLogProxy.logMotionPauseDetectorEvent(event);
     }
 
     public void clear() {
         mVelocityProvider.clear();
         mPreviousVelocity = null;
         setOnMotionPauseListener(null);
+        mIsTrackpadGesture = false;
         mIsPaused = mHasEverBeenPaused = false;
         mSlowStartTime = 0;
         mForcePauseTimeout.cancelAlarm();
@@ -260,6 +266,13 @@ public class MotionPauseDetector {
 
     public boolean isPaused() {
         return mIsPaused;
+    }
+
+    private float getRapidDecelerationFactor() {
+        return mIsTrackpadGesture ? Float.parseFloat(
+                Utilities.getSystemProperty("trackpad_in_app_swipe_up_deceleration_factor",
+                        String.valueOf(RAPID_DECELERATION_FACTOR_TRACKPAD)))
+                : RAPID_DECELERATION_FACTOR;
     }
 
     public interface OnMotionPauseListener {

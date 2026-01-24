@@ -92,6 +92,13 @@ public class MultiScalePropertyFactory<T extends View> {
             float multValue = mMultiplicationOfOthers * newValue;
             mLastAggregatedValue = Utilities.boundToRange(multValue, minValue, maxValue);
             mValue = newValue;
+            if (Float.isNaN(mLastAggregatedValue)) {
+                // pE-TODO(CompatTier2/CompatTier3): Why are you NaN
+                if (DEBUG) {
+                    Log.w(TAG, "Skipping setValue because newValue is NaN");
+                }
+                return;
+            }
             apply(obj, mLastAggregatedValue);
 
             if (DEBUG) {

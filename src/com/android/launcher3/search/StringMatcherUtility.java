@@ -127,17 +127,17 @@ public class StringMatcherUtility {
             if (query == null || target == null) {
                 return false;
             }
-            switch (mCollator.compare(query, target)) {
-                case 0:
-                    return true;
-                case -1:
-                    // The target string can contain a modifier which would make it larger than
-                    // the query string (even though the length is same). If the query becomes
-                    // larger after appending a unicode character, it was originally a prefix of
-                    // the target string and hence should match.
-                    return mCollator.compare(query + MAX_UNICODE, target) > -1;
-                default:
-                    return false;
+            int compare = mCollator.compare(query, target);
+            if (compare == 0) {
+                return true;
+            } else if (compare < 0) {
+                // The target string can contain a modifier which would make it larger than
+                // the query string (even though the length is same). If the query becomes
+                // larger after appending a unicode character, it was originally a prefix of
+                // the target string and hence should match.
+                return mCollator.compare(query + MAX_UNICODE, target) >= 0;
+            } else {
+                return false;
             }
         }
 

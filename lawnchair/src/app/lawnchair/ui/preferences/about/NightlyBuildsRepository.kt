@@ -6,6 +6,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import app.lawnchair.util.getApkVersionComparison
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 import java.io.File
@@ -41,6 +42,15 @@ class NightlyBuildsRepository(
                 val releases = api.getReleases()
                 val nightly = releases.firstOrNull { it.tagName == "nightly" }
                 val asset = nightly?.assets?.firstOrNull()
+
+                val majorVersion = applicationContext.getApkVersionComparison().first[0]
+                val expectedBranch = "$majorVersion-dev"
+
+                if (nightly != null && nightly.targetCommitish != expectedBranch) {
+                    Log.d(TAG, "Skipping update from branch ${nightly.targetCommitish}, expected $expectedBranch")
+                    _updateState.update { UpdateState.Disabled(UpdateDisabledReason.MAJOR_IS_NEWER) }
+                    return@launch
+                }
 
                 // As of now the version string looks like this (CI builds only):
                 // <major>.<branch>.(#<CI build number>)
@@ -112,7 +122,11 @@ class NightlyBuildsRepository(
         }
     }
 
-    fun installUpdate(file: File) {
+    fun installUpdate(file: File, forceInstall: Boolean = false) {
+        if (!forceInstall && applicationContext.isApkMajorVersionNewer(file)) {
+            _updateState.update { UpdateState.MajorUpdate(file) }
+            return
+        }
         if (!applicationContext.hasInstallPermission()) {
             // todo expose proper permission UI instead of requesting immediately on click
             applicationContext.requestInstallPermission()
@@ -130,10 +144,17 @@ class NightlyBuildsRepository(
         applicationContext.startActivity(intent)
     }
 
+    fun resetToDownloaded(file: File) {
+        _updateState.update { UpdateState.Downloaded(file) }
+    }
+
     private suspend fun getCommitsSinceCurrentVersion(): List<GitHubCommit>? {
         return try {
+            val majorVersion = applicationContext.getApkVersionComparison().first[0]
+            val branch = "$majorVersion-dev"
+
             // Get the latest commits (last 100)
-            val commits = api.getRepositoryCommits("LawnchairLauncher", "lawnchair")
+            val commits = api.getRepositoryCommits("LawnchairLauncher", "lawnchair", branch)
 
             // Find the index of current commit
             val currentIndex = commits.indexOfFirst { it.sha.startsWith(currentCommitHash) }
@@ -206,6 +227,21 @@ private fun Context.requestInstallPermission() {
         }
         startActivity(intent)
     }
+}
+
+/**
+ * Checks if the downloaded APK file has a higher Major (AA) version than the currently
+ * installed build.
+ */
+private fun Context.isApkMajorVersionNewer(apkFile: File): Boolean {
+    val (currentParsed, apkParsed) = getApkVersionComparison(apkFile) ?: return false
+
+    val apkMajor = apkParsed[0]
+    val currentMajor = currentParsed[0]
+
+    Log.d("UpdateCheck", "Current Major: $currentMajor, APK Major: $apkMajor")
+
+    return apkMajor > currentMajor
 }
 
 private const val MAX_FALLBACK_COMMITS = 30

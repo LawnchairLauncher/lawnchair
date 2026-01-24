@@ -231,7 +231,8 @@ public class FullscreenUnfoldTaskAnimator implements UnfoldTaskAnimator,
             mStartCropRect.set(mTaskInfo.getConfiguration().windowConfiguration.getBounds());
 
             if (taskBarInsetsSource != null) {
-                mStartCropRect.inset(taskBarInsetsSource.calculateVisibleInsets(mStartCropRect));
+                mStartCropRect.inset(taskBarInsetsSource.calculateVisibleInsets(mStartCropRect,
+                        mStartCropRect));
             }
 
             mEndCropRect.set(mStartCropRect);

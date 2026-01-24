@@ -23,11 +23,12 @@ import android.app.ActivityManager;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.window.RemoteTransition;
+import android.window.WindowContainerTransaction;
 
 import com.android.internal.logging.InstanceId;
-import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
-import com.android.wm.shell.common.split.SplitScreenConstants.SplitPosition;
 import com.android.wm.shell.shared.annotations.ExternalThread;
+import com.android.wm.shell.shared.split.SplitScreenConstants.PersistentSnapPosition;
+import com.android.wm.shell.shared.split.SplitScreenConstants.SplitPosition;
 
 import java.util.concurrent.Executor;
 
@@ -44,20 +45,37 @@ public interface SplitScreen {
     int STAGE_TYPE_UNDEFINED = -1;
     /**
      * The main stage type.
-     * @see MainStage
+     * @see StageTaskListener
      */
     int STAGE_TYPE_MAIN = 0;
 
     /**
      * The side stage type.
-     * @see SideStage
+     * @see StageTaskListener
      */
     int STAGE_TYPE_SIDE = 1;
+
+    /**
+     * Position independent stage identifier for a given Stage
+     */
+    int STAGE_TYPE_A = 2;
+    /**
+     * Position independent stage identifier for a given Stage
+     */
+    int STAGE_TYPE_B = 3;
+    /**
+     * Position independent stage identifier for a given Stage
+     */
+    int STAGE_TYPE_C = 4;
 
     @IntDef(prefix = { "STAGE_TYPE_" }, value = {
             STAGE_TYPE_UNDEFINED,
             STAGE_TYPE_MAIN,
-            STAGE_TYPE_SIDE
+            STAGE_TYPE_SIDE,
+            // Used for flexible split
+            STAGE_TYPE_A,
+            STAGE_TYPE_B,
+            STAGE_TYPE_C
     })
     @interface StageType {}
 
@@ -73,8 +91,12 @@ public interface SplitScreen {
      * Callback interface for listening to requests to enter split select. Used for desktop -> split
      */
     interface SplitSelectListener {
+        /**
+         * Called when split-select is requested.
+         */
         default boolean onRequestEnterSplitSelect(ActivityManager.RunningTaskInfo taskInfo,
-                int splitPosition, Rect taskBounds) {
+                int splitPosition, Rect taskBounds, boolean startRecents,
+                @Nullable WindowContainerTransaction withRecentsWct) {
             return false;
         }
     }
@@ -110,8 +132,11 @@ public interface SplitScreen {
     void registerSplitAnimationListener(@NonNull SplitInvocationListener listener,
             @NonNull Executor executor);
 
-    /** Called when device waking up finished. */
-    void onFinishedWakingUp();
+    /** Called when device starts going to sleep (screen off). */
+    void onStartedGoingToSleep();
+
+    /** Called when device wakes up. */
+    void onStartedWakingUp();
 
     /** Called when requested to go to fullscreen from the current active split app. */
     void goToFullscreenFromSplit();
@@ -125,6 +150,9 @@ public interface SplitScreen {
             case STAGE_TYPE_UNDEFINED: return "UNDEFINED";
             case STAGE_TYPE_MAIN: return "MAIN";
             case STAGE_TYPE_SIDE: return "SIDE";
+            case STAGE_TYPE_A: return "STAGE_A";
+            case STAGE_TYPE_B: return "STAGE_B";
+            case STAGE_TYPE_C: return "STAGE_C";
             default: return "UNKNOWN(" + stage + ")";
         }
     }

@@ -27,7 +27,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.common.TvWindowMenuActionButton;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 

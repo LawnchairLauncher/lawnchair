@@ -49,6 +49,12 @@ public class TaskbarAutohideSuspendController implements
     public static final int FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR = 1 << 5;
     // User has hovered the taskbar.
     public static final int FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS = 1 << 6;
+    // User has multi instance window open.
+    public static final int FLAG_AUTOHIDE_SUSPEND_MULTI_INSTANCE_MENU_OPEN = 1 << 7;
+    // User has taskbar overflow open.
+    public static final int FLAG_AUTOHIDE_SUSPEND_TASKBAR_OVERFLOW = 1 << 8;
+    // Growth Framework nudge overlay is open above the Taskbar.
+    public static final int FLAG_AUTOHIDE_SUSPEND_GROWTH_NUDGE_OPEN = 1 << 9;
 
     @IntDef(flag = true, value = {
             FLAG_AUTOHIDE_SUSPEND_FULLSCREEN,
@@ -58,6 +64,9 @@ public class TaskbarAutohideSuspendController implements
             FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER,
             FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR,
             FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS,
+            FLAG_AUTOHIDE_SUSPEND_MULTI_INSTANCE_MENU_OPEN,
+            FLAG_AUTOHIDE_SUSPEND_TASKBAR_OVERFLOW,
+            FLAG_AUTOHIDE_SUSPEND_GROWTH_NUDGE_OPEN,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AutohideSuspendFlag {
@@ -138,6 +147,12 @@ public class TaskbarAutohideSuspendController implements
                 "FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER");
         appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR,
                 "FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_MULTI_INSTANCE_MENU_OPEN,
+                "FLAG_AUTOHIDE_SUSPEND_MULTI_INSTANCE_MENU_OPEN");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_TASKBAR_OVERFLOW,
+                "FLAG_AUTOHIDE_SUSPEND_TASKBAR_OVERFLOW");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_GROWTH_NUDGE_OPEN,
+                "FLAG_AUTOHIDE_SUSPEND_GROWTH_NUDGE_OPEN");
         return str.toString();
     }
 }

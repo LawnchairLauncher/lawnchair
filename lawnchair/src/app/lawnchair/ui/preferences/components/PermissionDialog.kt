@@ -19,6 +19,8 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -55,6 +57,7 @@ import com.google.accompanist.permissions.shouldShowRationale
  * @param onGoToSettings Called when the user clicks the "Go to settings" button.
  * @param modifier The modifier to be applied to the dialog.
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PermissionDialog(
     title: String,
@@ -76,6 +79,7 @@ fun PermissionDialog(
                     if (isPermanentlyDenied) onGoToSettings() else onConfirm()
                     onDismiss()
                 },
+                shapes = ButtonDefaults.shapes(),
             ) {
                 Text(
                     stringResource(
@@ -85,7 +89,10 @@ fun PermissionDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) }
+            TextButton(
+                onClick = onDismiss,
+                shapes = ButtonDefaults.shapes(),
+            ) { Text(stringResource(android.R.string.cancel)) }
         },
     )
 }
@@ -97,7 +104,7 @@ fun PermissionDialog(
  * @param modifier The modifier to be applied to the dialog.
  * @param onPermissionRequest Called when a permission request is initiated.
  */
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WallpaperAccessPermissionDialog(
     managedFilesChecked: Boolean,
@@ -119,7 +126,10 @@ fun WallpaperAccessPermissionDialog(
                     Text(stringResource(R.string.manage_storage_access_denied_description, stringResource(id = R.string.derived_app_name)))
                 },
                 confirmButton = {
-                    FilledTonalButton(onClick = onDismiss) { Text(stringResource(R.string.dismiss)) }
+                    FilledTonalButton(
+                        onClick = onDismiss,
+                        shapes = ButtonDefaults.shapes(),
+                    ) { Text(stringResource(R.string.dismiss)) }
                 },
             )
         } else {
@@ -164,7 +174,10 @@ fun WallpaperAccessPermissionDialog(
                         }
                     },
                     confirmButton = {
-                        TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) }
+                        TextButton(
+                            onClick = onDismiss,
+                            shapes = ButtonDefaults.shapes(),
+                        ) { Text(stringResource(android.R.string.cancel)) }
                     },
                 )
 

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package {
+    default_team: "trendy_team_system_ui_please_use_a_more_specific_subteam_if_possible_",
     // See: http://go/android-license-faq
     // A large-scale-change added 'default_applicable_licenses' to import
     // all of the 'license_kinds' from "frameworks_base_packages_SystemUI_license"
@@ -21,18 +22,35 @@ package {
     default_applicable_licenses: ["frameworks_base_packages_SystemUI_license"],
 }
 
-android_library {
+java_library {
+    sdk_version: "current",
+    name: "SystemUILogCoreLib",
+    device_supported: true,
+    srcs: [
+        "src/**/core/*.java",
+        "src/**/core/*.kt",
+    ],
+    static_libs: [
+        "error_prone_annotations",
+    ],
+
+    // Enforce compat with PluginCoreLib
+    java_version: "1.8",
+}
+
+java_library {
     name: "SystemUILogLib",
     srcs: [
         "src/**/*.java",
         "src/**/*.kt",
     ],
-    static_libs: [
-        "androidx.core_core-ktx",
-        "androidx.annotation_annotation",
-        "error_prone_annotations",
-        "SystemUICommon",
+    exclude_srcs: [
+        "src/**/core/*.java",
+        "src/**/core/*.kt",
     ],
-    manifest: "AndroidManifest.xml",
+    static_libs: [
+        "SystemUICommon",
+        "SystemUILogCoreLib",
+    ],
     kotlincflags: ["-Xjvm-default=all"],
 }

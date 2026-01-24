@@ -24,7 +24,7 @@ jobs:
         upload_translations: false
         upload_sources: true
         download_translations: true
-        localization_branch_name: 15-dev-localization
+        localization_branch_name: 16-dev-localization
         create_pull_request: true
         base_url: 'https://lawnchair.crowdin.com'
       env:

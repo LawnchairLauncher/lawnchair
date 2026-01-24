@@ -239,7 +239,7 @@ public class FloatingTaskView extends FrameLayout {
         // Position the floating view exactly on top of the original
         lp.topMargin = Math.round(pos.top);
         if (mIsRtl) {
-            lp.setMarginStart(mContainer.getDeviceProfile().widthPx - Math.round(pos.right));
+            lp.setMarginStart(mContainer.getDeviceProfile().getDeviceProperties().getWidthPx() - Math.round(pos.right));
         } else {
             lp.setMarginStart(Math.round(pos.left));
         }
@@ -256,7 +256,7 @@ public class FloatingTaskView extends FrameLayout {
      */
     public void addStagingAnimation(PendingAnimation animation, RectF startingBounds,
             Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
-        boolean isTablet = mContainer.getDeviceProfile().isTablet;
+        boolean isTablet = mContainer.getDeviceProfile().getDeviceProperties().isTablet();
         boolean splittingFromOverview = fadeWithThumbnail;
         SplitAnimationTimings timings;
 
@@ -280,7 +280,7 @@ public class FloatingTaskView extends FrameLayout {
     public void addConfirmAnimation(PendingAnimation animation, RectF startingBounds,
             Rect endBounds, boolean fadeWithThumbnail, boolean isStagedTask) {
         SplitAnimationTimings timings =
-                AnimUtils.getDeviceSplitToConfirmTimings(mContainer.getDeviceProfile().isTablet);
+                AnimUtils.getDeviceSplitToConfirmTimings(mContainer.getDeviceProfile().getDeviceProperties().isTablet());
 
         addAnimation(animation, startingBounds, endBounds, fadeWithThumbnail, isStagedTask,
                 timings);

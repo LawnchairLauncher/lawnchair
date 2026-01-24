@@ -180,6 +180,9 @@ public class NotificationListener extends NotificationListenerService {
                     for (NotificationsChangedListener listener : sNotificationsChangedListeners) {
                         listener.onNotificationPosted(msg.first, msg.second);
                     }
+                    Log.i(TAG, "received notification posted event - " + msg.first);
+                } else {
+                    Log.i(TAG, "received notification posted event, but there are no listeners");
                 }
                 break;
             case MSG_NOTIFICATION_REMOVED:
@@ -188,6 +191,9 @@ public class NotificationListener extends NotificationListenerService {
                     for (NotificationsChangedListener listener : sNotificationsChangedListeners) {
                         listener.onNotificationRemoved(msg.first, msg.second);
                     }
+                    Log.i(TAG, "received notification removed event - " + msg.first);
+                } else {
+                    Log.i(TAG, "received notification removed event, but there are no listeners");
                 }
                 break;
             case MSG_NOTIFICATION_FULL_REFRESH:
@@ -196,6 +202,11 @@ public class NotificationListener extends NotificationListenerService {
                         listener.onNotificationFullRefresh(
                                 (List<StatusBarNotification>) message.obj);
                     }
+                    ((List<StatusBarNotification>) message.obj).forEach(sbn -> Log.i(TAG,
+                            "Handling notification state refresh for " + sbn.getPackageName() + "#"
+                                    + sbn.getUserId()));
+                } else {
+                    Log.i(TAG, "received notification refresh event, but there are no listeners");
                 }
                 break;
         }
@@ -219,6 +230,7 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onListenerConnected() {
         super.onListenerConnected();
+        Log.i(TAG, "onListenerConnected");
         sIsConnected = true;
 
         // Register an observer to rebind the notification listener when dots are re-enabled.
@@ -245,6 +257,7 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
+        Log.i(TAG, "onListenerDisconnected");
         sIsConnected = false;
         mSettingsCache.unregister(NOTIFICATION_BADGING_URI, mNotificationSettingsChangedListener);
         onNotificationFullRefresh();

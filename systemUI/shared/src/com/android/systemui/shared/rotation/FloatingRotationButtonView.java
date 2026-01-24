@@ -37,6 +37,7 @@ public class FloatingRotationButtonView extends ImageView {
     private static final float BACKGROUND_ALPHA = 0.92f;
 
     private KeyButtonRipple mRipple;
+    private int mDiameter;
     private final Paint mOvalBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
     private final Configuration mLastConfiguration;
@@ -93,10 +94,25 @@ public class FloatingRotationButtonView extends ImageView {
         mRipple.setDarkIntensity(darkIntensity);
     }
 
+    /**
+     * Sets the view's diameter.
+     *
+     * @param diameter the diameter value for the view
+     */
+    void setDiameter(int diameter) {
+        mDiameter = diameter;
+    }
+
     @Override
     public void draw(Canvas canvas) {
         int d = Math.min(getWidth(), getHeight());
         canvas.drawOval(0, 0, d, d, mOvalBgPaint);
         super.draw(canvas);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(mDiameter, mDiameter);
     }
 }

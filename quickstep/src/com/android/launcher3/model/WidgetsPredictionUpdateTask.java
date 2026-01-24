@@ -15,8 +15,12 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
+import static com.android.launcher3.Flags.enableTieredWidgetsByDefaultInPicker;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
+import static com.android.launcher3.model.ModelUtils.WIDGET_FILTER;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 import android.app.prediction.AppTarget;
 import android.content.ComponentName;
@@ -26,18 +30,19 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
-import com.android.launcher3.model.BgDataModel.FixedContainerItems;
-import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
+import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PredictedContainerInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.picker.WidgetRecommendationCategoryProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /** Task to update model as a result of predicted widgets update */
@@ -60,50 +65,79 @@ public final class WidgetsPredictionUpdateTask implements ModelUpdateTask {
     @Override
     public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
             @NonNull AllAppsList apps) {
-        Set<ComponentKey> widgetsInWorkspace = dataModel.appWidgets.stream().map(
-                widget -> new ComponentKey(widget.providerName, widget.user)).collect(
-                Collectors.toSet());
-        Predicate<WidgetItem> notOnWorkspace = w -> !widgetsInWorkspace.contains(w);
-        Map<ComponentKey, WidgetItem> allWidgets =
-                dataModel.widgetsModel.getAllWidgetComponentsWithoutShortcuts();
+        Set<ComponentKey> widgetsInWorkspace = dataModel.itemsIdMap
+                .stream()
+                .filter(WIDGET_FILTER)
+                .map(item -> new ComponentKey(item.getTargetComponent(), item.user))
+                .collect(Collectors.toSet());
+
+        // Widgets (excluding shortcuts & already added widgets) that belong to apps eligible for
+        // being in predictions.
+        Map<ComponentKey, WidgetItem> allEligibleWidgets =
+                dataModel.widgetsModel.getWidgetsByComponentKeyForPicker()
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> entry.getValue().widgetInfo != null
+                                && !widgetsInWorkspace.contains(entry.getValue())
+                        ).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Context context = taskController.getContext();
 
         List<WidgetItem> servicePredictedItems = new ArrayList<>();
+        List<String> addedWidgetApps = new ArrayList<>();
 
         for (AppTarget app : mTargets) {
             ComponentKey componentKey = new ComponentKey(
                     new ComponentName(app.getPackageName(), app.getClassName()), app.getUser());
-            WidgetItem widget = allWidgets.get(componentKey);
-            if (widget == null) {
+            WidgetItem widget = allEligibleWidgets.get(componentKey);
+            if (widget == null) { // widget not eligible.
                 continue;
             }
             String className = app.getClassName();
             if (!TextUtils.isEmpty(className)) {
-                if (notOnWorkspace.test(widget)) {
-                    servicePredictedItems.add(widget);
-                }
+                servicePredictedItems.add(widget);
+                addedWidgetApps.add(componentKey.componentName.getPackageName());
             }
         }
 
-        List<ItemInfo> items;
-        if (enableCategorizedWidgetSuggestions()) {
-            Context context = taskController.getApp().getContext();
-            WidgetRecommendationCategoryProvider categoryProvider =
-                    WidgetRecommendationCategoryProvider.newInstance(context);
-            items = servicePredictedItems.stream()
-                    .map(it -> new PendingAddWidgetInfo(it.widgetInfo, CONTAINER_WIDGETS_PREDICTION,
-                            categoryProvider.getWidgetRecommendationCategory(context, it)))
-                    .collect(Collectors.toList());
-        } else {
-            items = servicePredictedItems.stream()
-                    .map(it -> new PendingAddWidgetInfo(it.widgetInfo,
-                            CONTAINER_WIDGETS_PREDICTION)).collect(
-                            Collectors.toList());
-        }
-        FixedContainerItems fixedContainerItems =
-                new FixedContainerItems(mPredictorState.containerId, items);
+        int minPredictionCount = context.getResources().getInteger(
+                R.integer.widget_predictions_min_count);
+        if (enableTieredWidgetsByDefaultInPicker()
+                && servicePredictedItems.size() < minPredictionCount) {
+            // Eligible apps that aren't already part of predictions.
+            Map<String, List<WidgetItem>> eligibleWidgetsByApp =
+                    allEligibleWidgets.values().stream()
+                            .filter(w -> !addedWidgetApps.contains(
+                                    w.componentName.getPackageName()))
+                            .collect(groupingBy(w -> w.componentName.getPackageName()));
 
-        dataModel.extraItems.put(mPredictorState.containerId, fixedContainerItems);
-        taskController.bindExtraContainerItems(fixedContainerItems);
+            // Randomize available apps list
+            List<String> appPackages = new ArrayList<>(eligibleWidgetsByApp.keySet());
+            Collections.shuffle(appPackages);
+
+            int widgetsToAdd = minPredictionCount - servicePredictedItems.size();
+            for (String appPackage : appPackages) {
+                if (widgetsToAdd <= 0) break;
+
+                List<WidgetItem> widgetsForApp = eligibleWidgetsByApp.get(appPackage);
+                int index = new Random().nextInt(widgetsForApp.size());
+                // Add a random widget from the app.
+                servicePredictedItems.add(widgetsForApp.get(index));
+                widgetsToAdd--;
+            }
+        }
+
+        WidgetRecommendationCategoryProvider categoryProvider =
+                new WidgetRecommendationCategoryProvider();
+        List<ItemInfo> items = servicePredictedItems.stream()
+                .map(it -> new PendingAddWidgetInfo(it.widgetInfo, CONTAINER_WIDGETS_PREDICTION,
+                        categoryProvider.getWidgetRecommendationCategory(context, it)))
+                .collect(Collectors.toList());
+        PredictedContainerInfo pci =
+                new PredictedContainerInfo(mPredictorState.containerId, items);
+
+        dataModel.updateAndDispatchItem(pci /* item */, null /* owner */);
+        taskController.bindUpdatedWorkspaceItems(Collections.singleton(pci));
 
         // Don't store widgets prediction to disk because it is not used frequently.
     }

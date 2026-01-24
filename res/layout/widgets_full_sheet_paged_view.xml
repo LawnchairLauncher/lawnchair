@@ -53,6 +53,7 @@
 
         <TextView
             android:id="@+id/title"
+            style="@style/WidgetsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -81,6 +82,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/widgets_surface_background"
+            android:clipToOutline="true"
             android:orientation="vertical"
             android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
             android:visibility="gone">
@@ -103,7 +105,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/widget_tabs_button_horizontal_padding"
-                android:layout_marginVertical="@dimen/widget_apps_tabs_vertical_padding"
                 android:layout_weight="1"
                 android:background="@drawable/widget_picker_tabs_background"
                 android:text="@string/widgets_full_sheet_personal_tab"
@@ -116,7 +117,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/widget_tabs_button_horizontal_padding"
-                android:layout_marginVertical="@dimen/widget_apps_tabs_vertical_padding"
                 android:layout_weight="1"
                 android:background="@drawable/widget_picker_tabs_background"
                 android:text="@string/widgets_full_sheet_work_tab"

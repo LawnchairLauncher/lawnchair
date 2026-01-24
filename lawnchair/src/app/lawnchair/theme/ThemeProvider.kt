@@ -17,7 +17,10 @@ import app.lawnchair.theme.color.SystemColorScheme
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
-import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.dagger.ApplicationContext
+import com.android.launcher3.dagger.LauncherAppComponent
+import com.android.launcher3.dagger.LauncherAppSingleton
+import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import com.android.systemui.monet.Style
 import com.patrykmichalik.opto.core.firstBlocking
@@ -26,10 +29,14 @@ import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.colorkt.conversion.ConversionGraph.convert
 import dev.kdrag0n.colorkt.rgb.Srgb
 import dev.kdrag0n.monet.theme.ColorScheme
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class ThemeProvider(private val context: Context) : SafeCloseable {
+@LauncherAppSingleton
+class ThemeProvider @Inject constructor(
+    @ApplicationContext private val context: Context,
+) : SafeCloseable {
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
     private val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -131,7 +138,7 @@ class ThemeProvider(private val context: Context) : SafeCloseable {
 
     companion object {
         @JvmField
-        val INSTANCE = MainThreadInitializedObject(::ThemeProvider)
+        val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getThemeProvider)
     }
 
     sealed interface ColorSchemeChangeListener {

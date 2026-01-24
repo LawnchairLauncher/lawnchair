@@ -29,4 +29,11 @@
         android:defaultValue="false"
         android:persistent="true" />
 
+    <SwitchPreference
+        android:key="pref_fixed_landscape_mode"
+        android:title="@string/landscape_mode_title"
+        android:summary="@string/landscape_mode_desc"
+        android:defaultValue="false"
+        android:persistent="true" />
+
 </PreferenceScreen>

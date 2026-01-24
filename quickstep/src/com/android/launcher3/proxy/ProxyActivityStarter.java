@@ -61,6 +61,7 @@ public class ProxyActivityStarter extends Activity {
             }
         } catch (NullPointerException | ActivityNotFoundException | SecurityException
                 | SendIntentException e) {
+            Log.w(TAG, "Proxy activity starter could not start activity: ", e);
             mParams.deliverResult(this, RESULT_CANCELED, null);
         }
         finishAndRemoveTask();

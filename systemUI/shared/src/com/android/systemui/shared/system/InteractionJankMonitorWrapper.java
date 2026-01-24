@@ -32,8 +32,8 @@ public final class InteractionJankMonitorWrapper {
      * @param cujType the specific {@link Cuj.CujType}.
      */
     public static void begin(View v, @Cuj.CujType int cujType) {
-        if (true) return;
-        InteractionJankMonitor.getInstance().begin(v, cujType);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
+//        InteractionJankMonitor.getInstance().begin(v, cujType);
     }
 
     /**
@@ -44,11 +44,11 @@ public final class InteractionJankMonitorWrapper {
      * @param timeout duration to cancel the instrumentation in ms
      */
     public static void begin(View v, @Cuj.CujType int cujType, long timeout) {
-        if (true) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
         Configuration.Builder builder =
                 Configuration.Builder.withView(cujType, v)
                         .setTimeout(timeout);
-        InteractionJankMonitor.getInstance().begin(builder);
+//        InteractionJankMonitor.getInstance().begin(builder);
     }
 
     /**
@@ -59,13 +59,13 @@ public final class InteractionJankMonitorWrapper {
      * @param tag the tag to distinguish different flow of same type CUJ.
      */
     public static void begin(View v, @Cuj.CujType int cujType, String tag) {
-        if (true) return;
-        Configuration.Builder builder =
-                Configuration.Builder.withView(cujType, v);
-        if (!TextUtils.isEmpty(tag)) {
-            builder.setTag(tag);
-        }
-        InteractionJankMonitor.getInstance().begin(builder);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
+//        Configuration.Builder builder =
+//                Configuration.Builder.withView(cujType, v);
+//        if (!TextUtils.isEmpty(tag)) {
+//            builder.setTag(tag);
+//        }
+//        InteractionJankMonitor.getInstance().begin(builder);
     }
 
     /**
@@ -74,21 +74,22 @@ public final class InteractionJankMonitorWrapper {
      * @param cujType the specific {@link Cuj.CujType}.
      */
     public static void end(@Cuj.CujType int cujType) {
-        if (true) return;
-        InteractionJankMonitor.getInstance().end(cujType);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
+//        InteractionJankMonitor.getInstance().end(cujType);
     }
 
     /**
      * Cancel the trace session.
      */
     public static void cancel(@Cuj.CujType int cujType) {
-        if (true) return;
-        InteractionJankMonitor.getInstance().cancel(cujType);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
+//        InteractionJankMonitor.getInstance().cancel(cujType);
     }
 
     /** Return true if currently instrumenting a trace session. */
     public static boolean isInstrumenting(@Cuj.CujType int cujType) {
-        if (true) return true;
-        return InteractionJankMonitor.getInstance().isInstrumenting(cujType);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return false;
+//        return InteractionJankMonitor.getInstance().isInstrumenting(cujType);
+        return false;
     }
 }

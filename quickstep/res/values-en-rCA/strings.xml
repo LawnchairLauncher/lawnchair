@@ -22,11 +22,14 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Pin"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Desktop"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"Move to external display"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"Clear"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"Desktop"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"No recent items"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"App usage settings"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Clear all"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"Add new desk"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Recent apps"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"Task Closed"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 minute"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"<xliff:g id="TIME">%1$s</xliff:g> left today"</string>
@@ -45,6 +48,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App suggestions enabled"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App suggestions are disabled"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predicted app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Gesture Navigation Tutorial"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Rotate your device"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Please rotate your device to complete the gesture navigation tutorial"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Make sure you swipe from the far-right or far-left edge"</string>
@@ -56,7 +60,6 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"To change the sensitivity of the back gesture, go to Settings"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Swipe to go back"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"To go back to the last screen, swipe from the left or right edge to the middle of the screen."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"To go back to the last screen, swipe with 2 fingers from the left or right edge to the middle of the screen."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Go back"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Swipe from the left or right edge to the middle of the screen"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Make sure you swipe up from the bottom edge of the screen"</string>
@@ -66,7 +69,6 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"You completed the go home gesture"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swipe to go home"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swipe up from the bottom of your screen. This gesture always takes you to the Home screen."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Swipe up with 2 fingers from the bottom of the screen. This gesture always takes you to the Home screen."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Go home"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Swipe up from the bottom of your screen"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Great job!"</string>
@@ -77,7 +79,6 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"You completed the switch apps gesture"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swipe to switch apps"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"To switch between apps, swipe up from the bottom of your screen, hold, then release."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"To switch between apps, swipe up with 2 fingers from the bottom of your screen, hold, then release."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Switch apps"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Swipe up from the bottom of your screen, hold, then release"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Well done!"</string>
@@ -91,24 +92,33 @@
     <string name="allset_hint" msgid="459504134589971527">"Swipe up to go home"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Tap the home button to go to your home screen"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"You\'re ready to start using your <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"device"</string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"You’re ready to start using your device"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"System navigation settings"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"Your <xliff:g id="DEVICE">%1$s</xliff:g> is \nready!"</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Your device is \nready!"</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"Enjoy your new <xliff:g id="DEVICE">%1$s</xliff:g>!"</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Choose how to navigate"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"Swipe up"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"Tap the home button"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"tablet"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"phone"</string>
     <string name="action_share" msgid="2648470652637092375">"Share"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Split"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"Save app pair"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Tap another app to use split screen"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Choose another app to use split screen"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Cancel"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"Cancel"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Exit split screen selection"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Choose another app to use split screen"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"This action isn\'t allowed by the app or your organization"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"Widgets not currently supported, please select another app"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Skip navigation tutorial?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"You can find this later in the <xliff:g id="NAME">%1$s</xliff:g> app"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Cancel"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Skip"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rotate screen"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"Animation showing how the taskbar comes into view from the bottom of the screen, and automatically hides when not in use"</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"Animation showing how to pin your taskbar using a toggle, so the taskbar remains permanently visible at the bottom of the screen"</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"Animation showing how to create a split screen, by dragging and dropping an app from the taskbar above an open app"</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"Animation showing how to access suggested apps on your device"</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"Animation showing how to search for an item on screen, by touching and holding the action key and selecting the area the item is in"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Taskbar education"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Drag an app to the side to use 2 apps at once"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Slow-swipe up to show the Taskbar"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Quick Settings"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Taskbar"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskbar shown"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taskbar hidden"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Taskbar &amp; bubbles left shown"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Taskbar &amp; bubbles right shown"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigation bar"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Always show Taskbar"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Change navigation mode"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Taskbar Divider"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Other recent apps"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Move to top/left"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Move to bottom/right"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Show # more app.}other{Show # more apps.}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Show # desktop app.}other{Show # desktop apps.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Open app as a bubble"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"Recent apps"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"Recent app list"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{more app}other{more apps}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"Desktop"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> and <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, item <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g> of <xliff:g id="TOTAL_TASKS">%3$d</xliff:g>"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"Scroll left"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"Scroll right"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Bubble"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Overflow"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> from <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> and <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> more"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"Move left"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"Move right"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"Dismiss all"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"expand <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"collapse <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"Circle to Search"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"App icon"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"App title"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"Close button"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"Pin to taskbar"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Unpin from taskbar"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"Nudge"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"Close"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"Nudge image"</string>
 </resources>

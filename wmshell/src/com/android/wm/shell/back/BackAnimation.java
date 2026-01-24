@@ -33,8 +33,6 @@ public interface BackAnimation {
      *
      * @param touchX the X touch position of the {@link MotionEvent}.
      * @param touchY the Y touch position of the {@link MotionEvent}.
-     * @param velocityX the X velocity computed from the {@link MotionEvent}.
-     * @param velocityY the Y velocity computed from the {@link MotionEvent}.
      * @param keyAction the original {@link KeyEvent#getAction()} when the event was dispatched to
      *               the process. This is forwarded separately because the input pipeline may mutate
      *               the {#event} action state later.
@@ -43,10 +41,9 @@ public interface BackAnimation {
     void onBackMotion(
             float touchX,
             float touchY,
-            float velocityX,
-            float velocityY,
             int keyAction,
-            @BackEvent.SwipeEdge int swipeEdge);
+            @BackEvent.SwipeEdge int swipeEdge,
+            int displayId);
 
     /**
      * Called when the back swipe threshold is crossed.
@@ -107,4 +104,24 @@ public interface BackAnimation {
      * @param pilferCallback the callback to pilfer pointers.
      */
     void setPilferPointerCallback(Runnable pilferCallback);
+
+    /**
+     * Set a callback to requestTopUi.
+     * @param topUiRequest the callback to requestTopUi.
+     */
+    void setTopUiRequestCallback(TopUiRequest topUiRequest);
+
+    /**
+     * Callback to request SysUi to call
+     * {@link android.app.IActivityManager#setHasTopUi(boolean)}.
+     */
+    interface TopUiRequest {
+
+        /**
+         * Request {@link android.app.IActivityManager#setHasTopUi(boolean)} to be called.
+         * @param requestTopUi  whether topUi should be requested or not
+         * @param tag           tag of the request-source
+         */
+        void requestTopUi(boolean requestTopUi, String tag);
+    }
 }

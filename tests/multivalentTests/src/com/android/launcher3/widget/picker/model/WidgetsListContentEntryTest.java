@@ -33,14 +33,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.cache.CachedObject;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.util.SandboxApplication;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -64,6 +66,7 @@ public final class WidgetsListContentEntryTest {
     private final ComponentName mWidget3 = ComponentName.createRelative(PACKAGE_NAME, ".mWidget3");
     private final Map<ComponentName, String> mWidgetsToLabels = new HashMap();
 
+    @Rule public SandboxApplication app = new SandboxApplication();
     @Mock private IconCache mIconCache;
 
     private InvariantDeviceProfile mTestProfile;
@@ -76,12 +79,12 @@ public final class WidgetsListContentEntryTest {
         mWidgetsToLabels.put(mWidget2, "Dog");
         mWidgetsToLabels.put(mWidget3, "Bird");
 
-        mTestProfile = new InvariantDeviceProfile();
+        mTestProfile = InvariantDeviceProfile.INSTANCE.get(app);
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
 
         doAnswer(invocation -> {
-            ComponentWithLabel componentWithLabel = (ComponentWithLabel) invocation.getArgument(0);
+            CachedObject componentWithLabel = invocation.getArgument(0);
             return mWidgetsToLabels.get(componentWithLabel.getComponent());
         }).when(mIconCache).getTitleNoCache(any());
     }

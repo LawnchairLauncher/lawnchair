@@ -24,12 +24,10 @@ import android.view.View;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -65,9 +63,8 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
                 mContext.getModelWriter().addItemToDatabase(info,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP,
                         screenId, coordinates[0], coordinates[1]);
-                mContext.bindItems(Collections.singletonList(info), true);
+                mContext.inflateAndBindItemWithAnimation(info);
                 AbstractFloatingView.closeAllOpenViews(mContext);
-                announceConfirmation(R.string.item_added_to_workspace);
             }));
             return true;
         }

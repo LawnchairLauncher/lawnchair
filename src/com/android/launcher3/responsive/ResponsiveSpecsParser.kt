@@ -34,8 +34,8 @@ class ResponsiveSpecsParser(private val resourceHelper: ResourceHelper) {
             (
                 responsiveSpecType: ResponsiveSpecType,
                 attributes: TypedArray,
-                sizeSpecs: Map<String, SizeSpec>
-            ) -> T
+                sizeSpecs: Map<String, SizeSpec>,
+            ) -> T,
     ): List<ResponsiveSpecGroup<T>> {
         val parser: XmlResourceParser = resourceHelper.getXml()
 
@@ -52,7 +52,7 @@ class ResponsiveSpecsParser(private val resourceHelper: ResourceHelper) {
                         groupAttrs =
                             resourceHelper.obtainStyledAttributes(
                                 Xml.asAttributeSet(parser),
-                                R.styleable.ResponsiveSpecGroup
+                                R.styleable.ResponsiveSpecGroup,
                             )
                     }
                     parser ends ResponsiveSpecGroup.XML_GROUP_NAME -> {
@@ -67,7 +67,7 @@ class ResponsiveSpecsParser(private val resourceHelper: ResourceHelper) {
                         val attrs =
                             resourceHelper.obtainStyledAttributes(
                                 Xml.asAttributeSet(parser),
-                                R.styleable.ResponsiveSpec
+                                responsiveSpecType.styleId,
                             )
 
                         val sizeSpecs = parseSizeSpecs(parser)

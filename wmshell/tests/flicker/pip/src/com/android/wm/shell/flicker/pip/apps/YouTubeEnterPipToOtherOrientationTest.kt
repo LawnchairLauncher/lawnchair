@@ -38,7 +38,7 @@ import org.junit.runners.Parameterized
 /**
  * Test entering pip from YouTube app by interacting with the app UI
  *
- * To run this test: `atest WMShellFlickerTests:YouTubeEnterPipTest`
+ * To run this test: `atest WMShellFlickerTestsPipAppsCSuite:YouTubeEnterPipTest`
  *
  * Actions:
  * ```
@@ -63,7 +63,7 @@ import org.junit.runners.Parameterized
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 open class YouTubeEnterPipToOtherOrientationTest(flicker: LegacyFlickerTest) :
     YouTubeEnterPipTest(flicker) {
-    override val standardAppHelper: YouTubeAppHelper = YouTubeAppHelper(instrumentation)
+    override val pipApp: YouTubeAppHelper = YouTubeAppHelper(instrumentation)
     private val startingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_90)
     private val endingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_0)
 
@@ -71,13 +71,13 @@ open class YouTubeEnterPipToOtherOrientationTest(flicker: LegacyFlickerTest) :
 
     override val defaultEnterPip: FlickerBuilder.() -> Unit = {
         setup {
-            standardAppHelper.launchViaIntent(
+            pipApp.launchViaIntent(
                 wmHelper,
-                YouTubeAppHelper.getYoutubeVideoIntent("HPcEAtoXXLA"),
+                YouTubeAppHelper.getYoutubeVideoIntent("3KtWfp0UopM"),
                 ComponentNameMatcher(YouTubeAppHelper.PACKAGE_NAME, "")
             )
-            standardAppHelper.enterFullscreen()
-            standardAppHelper.waitForVideoPlaying()
+            pipApp.enterFullscreen()
+            pipApp.waitForVideoPlaying()
         }
     }
 
@@ -88,7 +88,7 @@ open class YouTubeEnterPipToOtherOrientationTest(flicker: LegacyFlickerTest) :
     @Postsubmit
     @Test
     override fun taskBarLayerIsVisibleAtStartAndEnd() {
-        Assume.assumeTrue(flicker.scenario.isTablet)
+        Assume.assumeTrue(usesTaskbar)
         // YouTube starts in immersive fullscreen mode, so taskbar bar is not visible at start
         flicker.assertLayersStart { this.isInvisible(ComponentNameMatcher.TASK_BAR) }
         flicker.assertLayersEnd { this.isVisible(ComponentNameMatcher.TASK_BAR) }
@@ -101,7 +101,7 @@ open class YouTubeEnterPipToOtherOrientationTest(flicker: LegacyFlickerTest) :
         // might go outside of bounds as we resize from landscape fullscreen to destination bounds,
         // and once the animation is over we assert that it's fully within the display bounds, at
         // which point the device also performs orientation change from landscape to portrait
-        flicker.assertWmVisibleRegion(standardAppHelper.packageNameMatcher) {
+        flicker.assertWmVisibleRegion(pipApp.packageNameMatcher) {
             regionsCenterPointInside(startingBounds).then().coversAtMost(endingBounds)
         }
     }
@@ -114,7 +114,7 @@ open class YouTubeEnterPipToOtherOrientationTest(flicker: LegacyFlickerTest) :
         // and once the animation is over we assert that it's fully within the display bounds, at
         // which point the device also performs orientation change from landscape to portrait
         // since YouTube uses source rect hint, there is no PiP overlay present
-        flicker.assertLayersVisibleRegion(standardAppHelper.packageNameMatcher) {
+        flicker.assertLayersVisibleRegion(pipApp.packageNameMatcher) {
             regionsCenterPointInside(startingBounds).then().coversAtMost(endingBounds)
         }
     }

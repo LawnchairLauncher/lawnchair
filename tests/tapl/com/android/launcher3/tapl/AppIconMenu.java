@@ -63,5 +63,12 @@ public abstract class AppIconMenu {
         return new SplitScreenMenuItem(mLauncher, menuItem);
     }
 
+    /** Returns the Bubble menu item. */
+    public BubbleMenuItem getBubbleMenuItem() {
+        final UiObject2 menuItem = mLauncher.waitForObjectInContainer(mDeepShortcutsContainer,
+                AppIcon.getMenuItemSelector("Bubble", mLauncher));
+        return new BubbleMenuItem(mLauncher, menuItem);
+    }
+
     protected abstract AppIconMenuItem createMenuItem(UiObject2 menuItem);
 }

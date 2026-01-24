@@ -31,10 +31,10 @@ import com.android.launcher3.touch.PagedOrientationHandler
 import com.android.launcher3.touch.PagedOrientationHandler.Float2DAction
 import com.android.launcher3.touch.PagedOrientationHandler.Int2DAction
 import com.android.launcher3.touch.SingleAxisSwipeDetector
-import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition
 import com.android.quickstep.views.IconAppChipView
+import com.android.wm.shell.shared.split.SplitBounds
 
 /**
  * Abstraction layer to separate horizontal and vertical specific implementations for
@@ -49,6 +49,8 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
     fun getPrimarySize(view: View): Int
 
     fun getPrimarySize(rect: RectF): Float
+
+    fun getSecondarySize(rect: RectF): Float
 
     val secondaryTranslationDirectionFactor: Int
 
@@ -82,13 +84,13 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
 
     fun getSplitTranslationDirectionFactor(
         @StagePosition stagePosition: Int,
-        deviceProfile: DeviceProfile
+        deviceProfile: DeviceProfile,
     ): Int
 
     fun <T> getSplitSelectTaskOffset(
         primary: FloatProperty<T>,
         secondary: FloatProperty<T>,
-        deviceProfile: DeviceProfile
+        deviceProfile: DeviceProfile,
     ): Pair<FloatProperty<T>, FloatProperty<T>>
 
     fun getDistanceToBottomOfRect(dp: DeviceProfile, rect: Rect): Int
@@ -101,7 +103,7 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         placeholderInset: Int,
         dp: DeviceProfile,
         @StagePosition stagePosition: Int,
-        out: Rect
+        out: Rect,
     )
 
     /**
@@ -128,7 +130,7 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         drawableWidth: Int,
         drawableHeight: Int,
         dp: DeviceProfile,
-        @StagePosition stagePosition: Int
+        @StagePosition stagePosition: Int,
     )
 
     /**
@@ -143,7 +145,7 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         out: View,
         dp: DeviceProfile,
         splitInstructionsHeight: Int,
-        splitInstructionsWidth: Int
+        splitInstructionsWidth: Int,
     )
 
     /**
@@ -159,7 +161,7 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         dp: DeviceProfile,
         @StagePosition stagePosition: Int,
         out1: Rect,
-        out2: Rect
+        out2: Rect,
     )
 
     fun getDefaultSplitPosition(deviceProfile: DeviceProfile): Int
@@ -173,8 +175,8 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
     fun setSplitTaskSwipeRect(
         dp: DeviceProfile,
         outRect: Rect,
-        splitInfo: SplitConfigurationOptions.SplitBounds,
-        @StagePosition desiredStagePosition: Int
+        splitInfo: SplitBounds,
+        @StagePosition desiredStagePosition: Int,
     )
 
     fun measureGroupedTaskViewThumbnailBounds(
@@ -182,9 +184,10 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         secondarySnapshot: View,
         parentWidth: Int,
         parentHeight: Int,
-        splitBoundsConfig: SplitConfigurationOptions.SplitBounds,
+        splitBoundsConfig: SplitBounds,
         dp: DeviceProfile,
-        isRtl: Boolean
+        isRtl: Boolean,
+        inSplitSelection: Boolean,
     )
 
     /**
@@ -195,10 +198,11 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
      */
     fun getGroupedTaskViewSizes(
         dp: DeviceProfile,
-        splitBoundsConfig: SplitConfigurationOptions.SplitBounds,
+        splitBoundsConfig: SplitBounds,
         parentWidth: Int,
-        parentHeight: Int
+        parentHeight: Int,
     ): Pair<Point, Point>
+
     // Overview TaskMenuView methods
     /** Sets layout params on a task's app icon. Only use this when app chip is disabled. */
     fun setTaskIconParams(
@@ -206,7 +210,7 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         taskIconMargin: Int,
         taskIconHeight: Int,
         thumbnailTopMargin: Int,
-        isRtl: Boolean
+        isRtl: Boolean,
     )
 
     /**
@@ -214,14 +218,14 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
      */
     fun setIconAppChipChildrenParams(
         iconParams: FrameLayout.LayoutParams,
-        chipChildMarginStart: Int
+        chipChildMarginStart: Int,
     )
 
     fun setIconAppChipMenuParams(
         iconAppChipView: IconAppChipView,
         iconMenuParams: FrameLayout.LayoutParams,
         iconMenuMargin: Int,
-        thumbnailTopMargin: Int
+        thumbnailTopMargin: Int,
     )
 
     fun setSplitIconParams(
@@ -234,7 +238,9 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         groupedTaskViewWidth: Int,
         isRtl: Boolean,
         deviceProfile: DeviceProfile,
-        splitConfig: SplitConfigurationOptions.SplitBounds
+        splitConfig: SplitBounds,
+        inSplitSelection: Boolean,
+        oneIconHiddenDueToSmallWidth: Boolean,
     )
 
     /*
@@ -248,7 +254,7 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         thumbnailView: View,
         deviceProfile: DeviceProfile,
         taskInsetMargin: Float,
-        taskViewIcon: View
+        taskViewIcon: View,
     ): Float
 
     fun getTaskMenuY(
@@ -257,20 +263,24 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         stagePosition: Int,
         taskMenuView: View,
         taskInsetMargin: Float,
-        taskViewIcon: View
+        taskViewIcon: View,
     ): Float
+
+    fun getAppChipMenuMarginX(appChipView: IconAppChipView, isRtl: Boolean): Int
+
+    fun getAppChipMenuMarginY(appChipView: IconAppChipView, isRtl: Boolean): Int
 
     fun getTaskMenuWidth(
         thumbnailView: View,
         deviceProfile: DeviceProfile,
-        @StagePosition stagePosition: Int
+        @StagePosition stagePosition: Int,
     ): Int
 
     fun getTaskMenuHeight(
         taskInsetMargin: Float,
         deviceProfile: DeviceProfile,
         taskMenuX: Float,
-        taskMenuY: Float
+        taskMenuY: Float,
     ): Int
 
     /**
@@ -281,7 +291,7 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         deviceProfile: DeviceProfile,
         taskMenuLayout: LinearLayout,
         dividerSpacing: Int,
-        dividerDrawable: ShapeDrawable
+        dividerDrawable: ShapeDrawable,
     )
 
     /**
@@ -291,24 +301,36 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
     fun setLayoutParamsForTaskMenuOptionItem(
         lp: LinearLayout.LayoutParams,
         viewGroup: LinearLayout,
-        deviceProfile: DeviceProfile
+        deviceProfile: DeviceProfile,
+    )
+
+    /** Layout a Digital Wellbeing Banner on its parent. TaskView. */
+    fun updateDwbBannerLayout(
+        taskViewWidth: Int,
+        taskViewHeight: Int,
+        isGroupedTaskView: Boolean,
+        deviceProfile: DeviceProfile,
+        snapshotViewWidth: Int,
+        snapshotViewHeight: Int,
+        banner: View,
     )
 
     /**
-     * Calculates the position where a Digital Wellbeing Banner should be placed on its parent
+     * Calculates the translations where a Digital Wellbeing Banner should be apply on its parent
      * TaskView.
      *
      * @return A Pair of Floats representing the proper x and y translations.
      */
-    fun getDwbLayoutTranslations(
+    fun getDwbBannerTranslations(
         taskViewWidth: Int,
         taskViewHeight: Int,
-        splitBounds: SplitConfigurationOptions.SplitBounds?,
+        splitBounds: SplitBounds?,
         deviceProfile: DeviceProfile,
         thumbnailViews: Array<View>,
         desiredTaskId: Int,
-        banner: View
+        banner: View,
     ): Pair<Float, Float>
+
     // The following are only used by TaskViewTouchHandler.
 
     /** @return Either VERTICAL or HORIZONTAL. */
@@ -317,11 +339,29 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
     /** @return Given [.getUpDownSwipeDirection], whether POSITIVE or NEGATIVE is up. */
     fun getUpDirection(isRtl: Boolean): Int
 
+    /** @return Given [.getUpDownSwipeDirection], whether POSITIVE or NEGATIVE is down. */
+    fun getDownDirection(isRtl: Boolean): Int
+
     /** @return Whether the displacement is going towards the top of the screen. */
     fun isGoingUp(displacement: Float, isRtl: Boolean): Boolean
 
     /** @return Either 1 or -1, a factor to multiply by so the animation goes the correct way. */
     fun getTaskDragDisplacementFactor(isRtl: Boolean): Int
+
+    /** @return Either 1 or -1, the direction sign towards task dismiss. */
+    fun getTaskDismissVerticalDirection(): Int
+
+    /** @return the length to drag a task off screen for dismiss. */
+    fun getTaskDismissLength(secondaryDimension: Int, taskThumbnailBounds: Rect): Int
+
+    /** @return the length to drag a task to full screen for launch. */
+    fun getTaskLaunchLength(secondaryDimension: Int, taskThumbnailBounds: Rect): Int
+
+    /** Extends the provided rect to account for task dismiss primary translation. */
+    fun extendRectForPrimaryTranslation(rect: Rect, translation: Int)
+
+    /** Extends the provided rect to account for task dismiss secondary translation. */
+    fun extendRectForSecondaryTranslation(rect: Rect, translation: Int)
 
     /**
      * Maps the velocity from the coordinate plane of the foreground app to that of Launcher's
@@ -352,7 +392,7 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
         floatingTask: View,
         onScreenRect: RectF,
         @StagePosition stagePosition: Int,
-        dp: DeviceProfile
+        dp: DeviceProfile,
     ): Float
 
     /**

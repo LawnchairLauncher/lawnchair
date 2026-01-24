@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -145,7 +145,7 @@ public class TabletopModeControllerTest extends ShellTestCase {
         mConfiguration.windowConfiguration.setDisplayRotation(Surface.ROTATION_0);
         mPipTabletopController.onDisplayConfigurationChanged(DEFAULT_DISPLAY, mConfiguration);
 
-        verifyZeroInteractions(mOnTabletopModeChangedListener);
+        verifyNoMoreInteractions(mOnTabletopModeChangedListener);
     }
 
     // Test cases starting from folded state (DEVICE_POSTURE_CLOSED)

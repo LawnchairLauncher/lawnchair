@@ -20,9 +20,11 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.SurfaceControl;
+import android.window.DesktopExperienceFlags;
 
 import com.android.internal.graphics.ColorUtils;
 import com.android.internal.view.AppearanceRegion;
@@ -58,7 +60,24 @@ public class BackAnimationBackground {
      * @param statusbarHeight The height of the statusbar (in px).
      */
     public void ensureBackground(Rect startRect, int color,
-            @NonNull SurfaceControl.Transaction transaction, int statusbarHeight) {
+            @NonNull SurfaceControl.Transaction transaction, int statusbarHeight, int displayId) {
+        ensureBackground(startRect, color, transaction, statusbarHeight,
+                null /* cropBounds */, 0 /* cornerRadius */, displayId);
+    }
+
+    /**
+     * Ensures the back animation background color layer is present.
+     *
+     * @param startRect The start bounds of the closing target.
+     * @param color The background color.
+     * @param transaction The animation transaction.
+     * @param statusbarHeight The height of the statusbar (in px).
+     * @param cropBounds The crop bounds of the surface, set to non-empty to show wallpaper.
+     * @param cornerRadius The radius of corner, only work when cropBounds is not empty.
+     */
+    public void ensureBackground(Rect startRect, int color,
+            @NonNull SurfaceControl.Transaction transaction, int statusbarHeight,
+            @Nullable Rect cropBounds, float cornerRadius, int displayId) {
         if (mBackgroundSurface != null) {
             return;
         }
@@ -73,11 +92,19 @@ public class BackAnimationBackground {
                 .setCallsite("BackAnimationBackground")
                 .setColorLayer();
 
-        mRootTaskDisplayAreaOrganizer.attachToDisplayArea(DEFAULT_DISPLAY, colorLayerBuilder);
+        if (DesktopExperienceFlags.ENABLE_MULTIDISPLAY_TRACKPAD_BACK_GESTURE.isTrue()) {
+            mRootTaskDisplayAreaOrganizer.attachToDisplayArea(displayId, colorLayerBuilder);
+        } else {
+            mRootTaskDisplayAreaOrganizer.attachToDisplayArea(DEFAULT_DISPLAY, colorLayerBuilder);
+        }
         mBackgroundSurface = colorLayerBuilder.build();
         transaction.setColor(mBackgroundSurface, colorComponents)
                 .setLayer(mBackgroundSurface, BACKGROUND_LAYER)
                 .show(mBackgroundSurface);
+        if (cropBounds != null && !cropBounds.isEmpty()) {
+            transaction.setCrop(mBackgroundSurface, cropBounds)
+                    .setCornerRadius(mBackgroundSurface, cornerRadius);
+        }
         mStartBounds = startRect;
         mIsRequestingStatusBarAppearance = false;
         mStatusbarHeight = statusbarHeight;

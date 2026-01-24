@@ -31,7 +31,6 @@ import com.android.launcher3.taskbar.TaskbarSharedState;
 import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
-import com.android.launcher3.util.DisplayController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import java.util.Optional;
@@ -90,7 +89,7 @@ final class TaskbarAllAppsViewController {
     }
 
     private void setUpTaskbarStashing() {
-        if (DisplayController.isTransientTaskbar(mContext)) {
+        if (mContext.isTransientTaskbar()) {
             mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, true);
             mTaskbarStashController.applyState();
         }
@@ -103,7 +102,7 @@ final class TaskbarAllAppsViewController {
             AbstractFloatingView.closeOpenContainer(
                     mContext, AbstractFloatingView.TYPE_ACTION_POPUP);
 
-            if (DisplayController.isTransientTaskbar(mContext)) {
+            if (mContext.isTransientTaskbar()) {
                 mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
                 mTaskbarStashController.applyState();
             }

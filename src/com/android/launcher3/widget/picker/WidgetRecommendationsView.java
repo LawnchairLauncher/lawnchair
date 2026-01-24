@@ -16,7 +16,8 @@
 
 package com.android.launcher3.widget.picker;
 
-import static com.android.launcher3.widget.util.WidgetsTableUtils.groupWidgetItemsUsingRowPxWithoutReordering;
+import static com.android.launcher3.widget.picker.WidgetRecommendationCategory.DEFAULT_WIDGET_RECOMMENDATION_CATEGORY;
+import static com.android.launcher3.widget.util.WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering;
 
 import static java.util.stream.Collectors.toList;
 
@@ -40,6 +41,7 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -56,9 +58,16 @@ import java.util.stream.Collectors;
 public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots> {
     private @Px float mAvailableHeight = Float.MAX_VALUE;
     private @Px float mAvailableWidth = 0;
+    private int mLastUiMode = -1;
     private static final String INITIALLY_DISPLAYED_WIDGETS_STATE_KEY =
             "widgetRecommendationsView:mDisplayedWidgets";
     private static final int MAX_CATEGORIES = 3;
+
+    // Whether to show all widgets in a full page without any limitation on height
+    private boolean mShowFullPageViewIfLowDensity = false;
+    // Number of items below which a category is considered low density.
+    private static final int IDEAL_ITEMS_PER_CATEGORY = 2;
+
     private TextView mRecommendationPageTitle;
     private final List<String> mCategoryTitles = new ArrayList<>();
 
@@ -87,6 +96,14 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mRecommendationPageTitle = parent.findViewById(R.id.recommendations_page_title);
+    }
+
+    /**
+     * When there are less than 3 categories or when at least one category has less than 2 widgets,
+     * all widgets will be shown in a single page without being limited by the available height.
+     */
+    public void enableFullPageViewIfLowDensity() {
+        mShowFullPageViewIfLowDensity = true;
     }
 
     /**
@@ -138,38 +155,20 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         mPageSwitchListeners.add(pageChangeListener);
     }
 
-    /**
-     * Displays all the provided recommendations in a single table if they fit.
-     *
-     * @param recommendedWidgets list of widgets to be displayed in recommendation section.
-     * @param deviceProfile      the current {@link DeviceProfile}
-     * @param availableHeight    height in px that can be used to display the recommendations;
-     *                           recommendations that don't fit in this height won't be shown
-     * @param availableWidth     width in px that the recommendations should display in
-     * @param cellPadding        padding in px that should be applied to each widget in the
-     *                           recommendations
-     * @return number of recommendations that could fit in the available space.
-     */
-    public int setRecommendations(
-            List<WidgetItem> recommendedWidgets, DeviceProfile deviceProfile,
-            final @Px float availableHeight, final @Px int availableWidth,
-            final @Px int cellPadding) {
-        this.mAvailableHeight = availableHeight;
-        this.mAvailableWidth = availableWidth;
-        clear();
+    private boolean shouldShowSinglePageView(
+            Map<WidgetRecommendationCategory, List<WidgetItem>> recommendations) {
+        if (mShowFullPageViewIfLowDensity) {
+            boolean hasLessCategories = recommendations.size() < MAX_CATEGORIES;
+            long lowDensityCategoriesCount = recommendations.values()
+                    .stream()
+                    .limit(MAX_CATEGORIES)
+                    .filter(items -> items.size() < IDEAL_ITEMS_PER_CATEGORY).count();
 
-        Set<ComponentName> displayedWidgets = maybeDisplayInTable(recommendedWidgets,
-                deviceProfile,
-                availableWidth, cellPadding);
-
-        if (mDisplayedWidgets.isEmpty()) {
-            // Save the widgets shown for the first time user opened the picker; so that, they can
-            // be maintained across orientation changes.
-            mDisplayedWidgets = displayedWidgets;
+            // If there less number of categories or if there are at least 2 categorizes with less
+            // widgets, prefer showing single page view.
+            return hasLessCategories || lowDensityCategoriesCount > 1;
         }
-
-        updateTitleAndIndicator(/* requestedPage= */ 0);
-        return displayedWidgets.size();
+        return false;
     }
 
     /**
@@ -177,61 +176,89 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
      * <p>In case of a single category, no title is displayed for it.</p>
      *
      * @param recommendations a map of widget items per recommendation category
-     * @param deviceProfile   the current {@link DeviceProfile}
+     * @param deviceProfile   the current {@link deviceprofile}
      * @param availableHeight height in px that can be used to display the recommendations;
      *                        recommendations that don't fit in this height won't be shown
      * @param availableWidth  width in px that the recommendations should display in
      * @param cellPadding     padding in px that should be applied to each widget in the
      *                        recommendations
      * @param requestedPage   page number to display initially.
+     * @param forceUpdate     whether to re-render even if available space didn't change
      * @return number of recommendations that could fit in the available space.
      */
     public int setRecommendations(
             Map<WidgetRecommendationCategory, List<WidgetItem>> recommendations,
             DeviceProfile deviceProfile, final @Px float availableHeight,
-            final @Px int availableWidth, final @Px int cellPadding, final int requestedPage) {
-        this.mAvailableHeight = availableHeight;
-        this.mAvailableWidth = availableWidth;
-        Context context = getContext();
-        // For purpose of recommendations section, we don't want paging dots to be halved in two
-        // pane display, so, we always provide isTwoPanels = "false".
-        mPageIndicator.setPauseScroll(/*pause=*/true, /*isTwoPanels=*/ false);
-        clear();
+            final @Px int availableWidth, final @Px int cellPadding, final int requestedPage,
+            final boolean forceUpdate) {
+        if (forceUpdate || shouldUpdate(availableWidth, availableHeight)) {
+            Context context = getContext();
+            this.mAvailableHeight = availableHeight;
+            this.mAvailableWidth = availableWidth;
+            this.mLastUiMode = context.getResources().getConfiguration().uiMode;
 
-        int displayedCategories = 0;
-        Set<ComponentName> allDisplayedWidgets = new HashSet<>();
-
-        // Render top MAX_CATEGORIES in separate tables. Each table becomes a page.
-        for (Map.Entry<WidgetRecommendationCategory, List<WidgetItem>> entry :
-                new TreeMap<>(recommendations).entrySet()) {
-            // If none of the recommendations for the category could fit in the mAvailableHeight, we
-            // don't want to add that category; and we look for the next one.
-            Set<ComponentName> displayedWidgetsForCategory = maybeDisplayInTable(entry.getValue(),
-                    deviceProfile,
-                    availableWidth, cellPadding);
-            if (!displayedWidgetsForCategory.isEmpty()) {
-                mCategoryTitles.add(
-                        context.getResources().getString(entry.getKey().categoryTitleRes));
-                displayedCategories++;
-                allDisplayedWidgets.addAll(displayedWidgetsForCategory);
+            final Map<WidgetRecommendationCategory, List<WidgetItem>> mappedRecommendations;
+            if (shouldShowSinglePageView(recommendations)) { // map to single category.
+                mappedRecommendations = Map.of(DEFAULT_WIDGET_RECOMMENDATION_CATEGORY,
+                        recommendations.values().stream().flatMap(
+                                Collection::stream).toList());
+            } else {
+                mappedRecommendations = recommendations;
             }
 
-            if (displayedCategories == MAX_CATEGORIES) {
-                break;
+            // For purpose of recommendations section, we don't want paging dots to be halved in two
+            // pane display, so, we always provide isTwoPanels = "false".
+            mPageIndicator.setPauseScroll(/*pause=*/true, /*isTwoPanels=*/ false);
+            clear();
+
+            int displayedCategories = 0;
+            Set<ComponentName> allDisplayedWidgets = new HashSet<>();
+
+            // Render top MAX_CATEGORIES in separate tables. Each table becomes a page.
+            for (Map.Entry<WidgetRecommendationCategory, List<WidgetItem>> entry :
+                    new TreeMap<>(mappedRecommendations).entrySet()) {
+                // If none of the recommendations for the category could fit in the
+                // mAvailableHeight, we don't want to add that category; and we look for the next
+                // one.
+                Set<ComponentName> displayedWidgetsForCategory = maybeDisplayInTable(
+                        entry.getValue(),
+                        deviceProfile,
+                        availableWidth, cellPadding);
+                if (!displayedWidgetsForCategory.isEmpty()) {
+                    mCategoryTitles.add(
+                            context.getResources().getString(entry.getKey().categoryTitleRes));
+                    displayedCategories++;
+                    allDisplayedWidgets.addAll(displayedWidgetsForCategory);
+                }
+
+                if (displayedCategories == MAX_CATEGORIES) {
+                    break;
+                }
             }
-        }
 
-        if (mDisplayedWidgets.isEmpty()) {
-            // Save the widgets shown for the first time user opened the picker; so that, they can
-            // be maintained across orientation changes.
-            mDisplayedWidgets = allDisplayedWidgets;
-        }
+            if (mDisplayedWidgets.isEmpty()) {
+                // Save the widgets shown for the first time user opened the picker; so that,
+                // they can
+                // be maintained across orientation changes.
+                mDisplayedWidgets = allDisplayedWidgets;
+            }
 
-        updateTitleAndIndicator(requestedPage);
-        // For purpose of recommendations section, we don't want paging dots to be halved in two
-        // pane display, so, we always provide isTwoPanels = "false".
-        mPageIndicator.setPauseScroll(/*pause=*/false, /*isTwoPanels=*/false);
-        return allDisplayedWidgets.size();
+            updateTitleAndIndicator(requestedPage);
+            // For purpose of recommendations section, we don't want paging dots to be halved in two
+            // pane display, so, we always provide isTwoPanels = "false".
+            mPageIndicator.setPauseScroll(/*pause=*/false, /*isTwoPanels=*/false);
+            return allDisplayedWidgets.size();
+        } else {
+            return mDisplayedWidgets.size();
+        }
+    }
+
+    /**
+     * Returns if we should re-render the views.
+     */
+    private boolean shouldUpdate(int availableWidth, float availableHeight) {
+        return this.mAvailableWidth != availableWidth || this.mAvailableHeight != availableHeight
+                || getContext().getResources().getConfiguration().uiMode != this.mLastUiMode;
     }
 
     private void clear() {
@@ -253,8 +280,20 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
             }
             setCurrentPage(requestedPage);
             mPageIndicator.setActiveMarker(requestedPage);
-            mRecommendationPageTitle.setText(mCategoryTitles.get(requestedPage));
+            updatePageTitle(requestedPage);
         }
+    }
+
+    @Override
+    protected boolean canAnnouncePageDescription() {
+        // Disable announcement as our page title reads out the needed page description
+        return false;
+    }
+
+    private void updatePageTitle(int requestedPage) {
+        String title = mCategoryTitles.get(requestedPage);
+        mRecommendationPageTitle.setText(title);
+        mRecommendationPageTitle.setContentDescription(title + ", " + getCurrentPageDescription());
     }
 
     @Override
@@ -262,7 +301,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         if (getPageCount() > 1) {
             // Since the title is outside the paging scroll, we update the title on page switch.
             int nextPage = getNextPage();
-            mRecommendationPageTitle.setText(mCategoryTitles.get(nextPage));
+            updatePageTitle(nextPage);
             mPageSwitchListeners.forEach(listener -> listener.accept(nextPage));
             super.notifyPageSwitchListener(prevPage);
         }
@@ -320,14 +359,14 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         // Show only those widgets that were displayed when user first opened the picker.
         if (!mDisplayedWidgets.isEmpty()) {
             filteredRecommendedWidgets = recommendedWidgets.stream().filter(
-                    w -> mDisplayedWidgets.contains(w.componentName)).collect(toList());
+                    w -> mDisplayedWidgets.contains(w.componentName)).collect(Collectors.toList());
         }
         Context context = getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Since we are limited by space, we don't sort recommendations - to show most relevant
         // (if possible).
-        List<ArrayList<WidgetItem>> rows = groupWidgetItemsUsingRowPxWithoutReordering(
+        List<ArrayList<WidgetItem>> rows = groupWidgetItemsUsingRowPxWithReordering(
                 filteredRecommendedWidgets,
                 context,
                 deviceProfile,

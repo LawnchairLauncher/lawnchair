@@ -50,6 +50,6 @@
         app:layout_constraintEnd_toEndOf="@id/right_corner"
         app:layout_constraintTop_toBottomOf="@id/left_corner"
         android:importantForAccessibility="no"
-        android:background="?attr/allAppsScrimColor"/>
+        android:background="@android:color/white"/>
 
 </com.android.launcher3.allapps.FloatingMaskView>

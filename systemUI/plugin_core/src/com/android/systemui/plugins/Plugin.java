@@ -15,6 +15,7 @@ package com.android.systemui.plugins;
 
 import android.content.Context;
 
+import com.android.systemui.plugins.annotations.ProtectedReturn;
 import com.android.systemui.plugins.annotations.Requires;
 
 /**
@@ -116,6 +117,8 @@ public interface Plugin {
      * @deprecated
      * @see Requires
      */
+    @Deprecated
+    @ProtectedReturn(statement = "return -1;")
     default int getVersion() {
         // Default of -1 indicates the plugin supports the new Requires model.
         return -1;

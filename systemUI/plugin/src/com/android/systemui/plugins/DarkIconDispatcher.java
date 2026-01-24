@@ -36,6 +36,9 @@ import java.util.Collection;
 public interface DarkIconDispatcher {
     int VERSION = 2;
 
+    /** Called when work should stop and resources should be cleaned up. */
+    default void stop() {}
+
     /**
      * Sets the dark area so {@link #applyDark} only affects the icons in the specified area.
      *

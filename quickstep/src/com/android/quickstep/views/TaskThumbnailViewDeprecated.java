@@ -28,16 +28,13 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
@@ -45,18 +42,16 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.SystemUiController.SystemUiControllerFlags;
 import com.android.launcher3.util.ViewPool;
+import com.android.quickstep.FullscreenDrawParams;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
-import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
@@ -70,8 +65,6 @@ import java.util.Objects;
  */
 @Deprecated
 public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusable {
-    private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
-            new MainThreadInitializedObject<>(FullscreenDrawParams::new);
 
     public static final Property<TaskThumbnailViewDeprecated, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailViewDeprecated>("dimAlpha") {
@@ -99,36 +92,6 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
                 }
             };
 
-    /** Use to animate thumbnail translationX while first app in split selection is initiated */
-    public static final Property<TaskThumbnailViewDeprecated, Float> SPLIT_SELECT_TRANSLATE_X =
-            new FloatProperty<TaskThumbnailViewDeprecated>("splitSelectTranslateX") {
-                @Override
-                public void setValue(TaskThumbnailViewDeprecated thumbnail,
-                        float splitSelectTranslateX) {
-                    thumbnail.applySplitSelectTranslateX(splitSelectTranslateX);
-                }
-
-                @Override
-                public Float get(TaskThumbnailViewDeprecated thumbnailView) {
-                    return thumbnailView.mSplitSelectTranslateX;
-                }
-            };
-
-    /** Use to animate thumbnail translationY while first app in split selection is initiated */
-    public static final Property<TaskThumbnailViewDeprecated, Float> SPLIT_SELECT_TRANSLATE_Y =
-            new FloatProperty<TaskThumbnailViewDeprecated>("splitSelectTranslateY") {
-                @Override
-                public void setValue(TaskThumbnailViewDeprecated thumbnail,
-                        float splitSelectTranslateY) {
-                    thumbnail.applySplitSelectTranslateY(splitSelectTranslateY);
-                }
-
-                @Override
-                public Float get(TaskThumbnailViewDeprecated thumbnailView) {
-                    return thumbnailView.mSplitSelectTranslateY;
-                }
-            };
-
     private final RecentsViewContainer mContainer;
     private TaskOverlay<?> mOverlay;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -141,9 +104,10 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
     // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
     private final Rect mPreviewRect = new Rect();
     private final PreviewPositionHelper mPreviewPositionHelper = new PreviewPositionHelper();
-    private TaskView.FullscreenDrawParams mFullscreenParams;
+    private FullscreenDrawParams mFullscreenParams;
     private ImageView mSplashView;
     private Drawable mSplashViewDrawable;
+    private TaskView mTaskView;
 
     @Nullable
     private Task mTask;
@@ -160,8 +124,6 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
     private boolean mOverlayEnabled;
     /** Used as a placeholder when the original thumbnail animates out to. */
     private boolean mShowSplashForSplitSelection;
-    private float mSplitSelectTranslateX;
-    private float mSplitSelectTranslateY;
 
     public TaskThumbnailViewDeprecated(Context context) {
         this(context, null);
@@ -180,8 +142,7 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         mContainer = RecentsViewContainer.containerFromContext(context);
         // Initialize with placeholder value. It is overridden later by TaskView
-        mFullscreenParams = TEMP_PARAMS.get(context);
-
+        mFullscreenParams = new FullscreenDrawParams(context, __ -> 0f, __ -> 0f);
         mDimColor = RecentsView.getForegroundScrimDimColor(context);
         mDimmingPaintAfterClearing.setColor(mDimColor);
     }
@@ -189,26 +150,16 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
     /**
      * Updates the thumbnail to draw the provided task
      */
-    public void bind(Task task, TaskOverlay<?> overlay) {
+    public void bind(Task task, TaskOverlay<?> overlay, TaskView taskView) {
         mOverlay = overlay;
         mOverlay.reset();
         mTask = task;
+        mTaskView = taskView;
         int color = task == null ? Color.BLACK : task.colorBackground | 0xFF000000;
         mPaint.setColor(color);
         mBackgroundPaint.setColor(color);
         mSplashBackgroundPaint.setColor(color);
         updateSplashView(mTask.icon);
-    }
-
-    /**
-     * Sets TaskOverlay without binding a task.
-     *
-     * @deprecated Should only be used when using new
-     * {@link com.android.quickstep.task.thumbnail.TaskThumbnailView}.
-     */
-    @Deprecated
-    public void setTaskOverlay(TaskOverlay<?> overlay) {
-        mOverlay = overlay;
     }
 
     /**
@@ -298,40 +249,6 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         return mDimAlpha;
     }
 
-    /**
-     * Get the scaled insets that are being used to draw the task view. This is a subsection of
-     * the full snapshot.
-     *
-     * @return the insets in snapshot bitmap coordinates.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    public Insets getScaledInsets() {
-        if (mThumbnailData == null) {
-            return Insets.NONE;
-        }
-
-        RectF bitmapRect = new RectF(
-                0,
-                0,
-                mThumbnailData.getThumbnail().getWidth(),
-                mThumbnailData.getThumbnail().getHeight());
-        RectF viewRect = new RectF(0, 0, getMeasuredWidth(), getMeasuredHeight());
-
-        // The position helper matrix tells us how to transform the bitmap to fit the view, the
-        // inverse tells us where the view would be in the bitmaps coordinates. The insets are the
-        // difference between the bitmap bounds and the projected view bounds.
-        Matrix boundsToBitmapSpace = new Matrix();
-        mPreviewPositionHelper.getMatrix().invert(boundsToBitmapSpace);
-        RectF boundsInBitmapSpace = new RectF();
-        boundsToBitmapSpace.mapRect(boundsInBitmapSpace, viewRect);
-
-        DeviceProfile dp = mContainer.getDeviceProfile();
-        int bottomInset = dp.isTablet
-                ? Math.round(bitmapRect.bottom - boundsInBitmapSpace.bottom) : 0;
-        return Insets.of(0, 0, 0, bottomInset);
-    }
-
-
     @SystemUiControllerFlags
     public int getSysUiStatusNavFlags() {
         if (mThumbnailData != null) {
@@ -358,7 +275,7 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         canvas.save();
         // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
         drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(),
-                mFullscreenParams.getCurrentDrawnCornerRadius());
+                mFullscreenParams.getCurrentCornerRadius());
         canvas.restore();
     }
 
@@ -366,15 +283,15 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         return mPreviewPositionHelper;
     }
 
-    public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
+    public void setFullscreenParams(FullscreenDrawParams fullscreenParams) {
         mFullscreenParams = fullscreenParams;
         invalidate();
     }
 
     public void drawOnCanvas(Canvas canvas, float x, float y, float width, float height,
             float cornerRadius) {
-        if (mTask != null && getTaskView().isRunningTask()
-                && !getTaskView().getShouldShowScreenshot()) {
+        if (mTask != null && mTaskView.isRunningTask()
+                && !mTaskView.getShouldShowScreenshot()) {
             canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
             canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
                     mDimmingPaintAfterClearing);
@@ -413,35 +330,6 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
                 mSplashView.draw(canvas);
             }
         }
-    }
-
-    /** See {@link #SPLIT_SELECT_TRANSLATE_X} */
-    protected void applySplitSelectTranslateX(float splitSelectTranslateX) {
-        mSplitSelectTranslateX = splitSelectTranslateX;
-        applyTranslateX();
-    }
-
-    /** See {@link #SPLIT_SELECT_TRANSLATE_Y} */
-    protected void applySplitSelectTranslateY(float splitSelectTranslateY) {
-        mSplitSelectTranslateY = splitSelectTranslateY;
-        applyTranslateY();
-    }
-
-    private void applyTranslateX() {
-        setTranslationX(mSplitSelectTranslateX);
-    }
-
-    private void applyTranslateY() {
-        setTranslationY(mSplitSelectTranslateY);
-    }
-
-    protected void resetViewTransforms() {
-        mSplitSelectTranslateX = 0;
-        mSplitSelectTranslateY = 0;
-    }
-
-    public TaskView getTaskView() {
-        return (TaskView) getParent();
     }
 
     public void setOverlayEnabled(boolean overlayEnabled) {
@@ -496,9 +384,9 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         float viewCenterY = viewHeight / 2f;
         float centeredDrawableLeft = (viewWidth - drawableWidth) / 2f;
         float centeredDrawableTop = (viewHeight - drawableHeight) / 2f;
-        float nonGridScale = getTaskView() == null ? 1 : 1 / getTaskView().getNonGridScale();
-        float recentsMaxScale = getTaskView() == null || getTaskView().getRecentsView() == null
-                ? 1 : 1 / getTaskView().getRecentsView().getMaxScaleForFullScreen();
+        float nonGridScale = mTaskView == null ? 1 : 1 / mTaskView.getNonGridScale();
+        float recentsMaxScale = mTaskView == null || mTaskView.getRecentsView() == null
+                ? 1 : 1 / mTaskView.getRecentsView().getMaxScaleForFullScreen();
         float scaleX = nonGridScale * recentsMaxScale * (1 / getScaleX());
         float scaleY = nonGridScale * recentsMaxScale * (1 / getScaleY());
 
@@ -524,8 +412,13 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
                 thumbnailDataAspect, MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT);
     }
 
-    private boolean isThumbnailRotationDifferentFromTask() {
-        RecentsView recents = getTaskView().getRecentsView();
+    /**
+     * Returns whether or not the current thumbnail is a different orientation to the task.
+     * <p>
+     * Used to disable modal state when screenshot doesn't match the device orientation.
+     */
+    public boolean isThumbnailRotationDifferentFromTask() {
+        RecentsView recents = mTaskView.getRecentsView();
         if (recents == null || mThumbnailData == null) {
             return false;
         }
@@ -544,7 +437,9 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
      */
     private void refreshOverlay() {
         if (mOverlayEnabled) {
-            mOverlay.initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.getMatrix(),
+            mOverlay.initOverlay(mTask,
+                    mThumbnailData != null ? mThumbnailData.getThumbnail() : null,
+                    mPreviewPositionHelper.getMatrix(),
                     mPreviewPositionHelper.isOrientationChanged());
         } else {
             mOverlay.reset();
@@ -571,15 +466,15 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         if (mBitmapShader != null && mThumbnailData != null) {
             mPreviewRect.set(0, 0, mThumbnailData.getThumbnail().getWidth(),
                     mThumbnailData.getThumbnail().getHeight());
-            int currentRotation = getTaskView().getOrientedState().getRecentsActivityRotation();
+            int currentRotation = mTaskView.getOrientedState().getRecentsActivityRotation();
             boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
-                    getMeasuredWidth(), getMeasuredHeight(), dp.isTablet, currentRotation, isRtl);
+                    getMeasuredWidth(), getMeasuredHeight(), dp.getDeviceProperties().isTablet(), currentRotation, isRtl);
 
             mBitmapShader.setLocalMatrix(mPreviewPositionHelper.getMatrix());
             mPaint.setShader(mBitmapShader);
         }
-        getTaskView().updateCurrentFullscreenParams();
+        mTaskView.updateFullscreenParams();
         invalidate();
     }
 
@@ -615,6 +510,10 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
             return false;
         }
         return mThumbnailData.isRealSnapshot && !mTask.isLocked;
+    }
+
+    public Matrix getThumbnailMatrix() {
+        return mPreviewPositionHelper.getMatrix();
     }
 
     @Override

@@ -48,9 +48,9 @@ public final class PortraitOverviewStateTouchHelper {
      * @return true if we should intercept the motion event
      */
     boolean canInterceptTouch(MotionEvent ev) {
-        if (mRecentsView.getTaskViewCount() > 0) {
+        if (mRecentsView.hasTaskViews()) {
             // Allow swiping up in the gap between the hotseat and overview.
-            return ev.getY() >= mRecentsView.getTaskViewAt(0).getBottom();
+            return ev.getY() >= mRecentsView.getFirstTaskView().getBottom();
         } else {
             // If there are no tasks, we only intercept if we're below the hotseat height.
             return isTouchOverHotseat(mLauncher, ev);

@@ -33,18 +33,24 @@ public enum ShellProtoLogGroup implements IProtoLogGroup {
     WM_SHELL_INIT(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             Consts.TAG_WM_SHELL),
     WM_SHELL_TASK_ORG(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
-            Consts.TAG_WM_SHELL),
+            "ShellTaskOrganizer"),
     WM_SHELL_TRANSITIONS(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             Consts.TAG_WM_SHELL),
+    WM_SHELL_IME_CONTROLLER(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
+            "ShellIme"),
     WM_SHELL_RECENTS_TRANSITION(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             "ShellRecents"),
     WM_SHELL_DRAG_AND_DROP(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             "ShellDragAndDrop"),
     WM_SHELL_STARTING_WINDOW(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
             Consts.TAG_WM_STARTING_WINDOW),
+    WM_SHELL_REMOVE_STARTING_TRACKER(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
+            Consts.TAG_WM_STARTING_WINDOW),
     WM_SHELL_BACK_PREVIEW(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             "ShellBackPreview"),
     WM_SHELL_RECENT_TASKS(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
+            Consts.TAG_WM_SHELL),
+    WM_SHELL_TASK_OBSERVER(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             Consts.TAG_WM_SHELL),
     // TODO(b/282232877): turn logToLogcat to false.
     WM_SHELL_PICTURE_IN_PICTURE(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
@@ -55,12 +61,22 @@ public enum ShellProtoLogGroup implements IProtoLogGroup {
             Consts.TAG_WM_SHELL),
     WM_SHELL_DESKTOP_MODE(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
             Consts.TAG_WM_DESKTOP_MODE),
+  WM_SHELL_WINDOW_DECORATION(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
+            Consts.TAG_WM_WINDOW_DECORATION),
     WM_SHELL_FLOATING_APPS(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
             Consts.TAG_WM_SHELL),
     WM_SHELL_FOLDABLE(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
             Consts.TAG_WM_SHELL),
-    WM_SHELL_BUBBLES(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
-            "Bubbles"),
+    WM_SHELL_BUBBLES_NOISY(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
+            Consts.TAG_WM_BUBBLES),
+    WM_SHELL_BUBBLES(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, true,
+            Consts.TAG_WM_BUBBLES),
+    WM_SHELL_COMPAT_UI(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
+            Consts.TAG_WM_COMPAT_UI),
+    WM_SHELL_APP_COMPAT(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
+            Consts.TAG_WM_APP_COMPAT),
+    WM_SHELL_APP_HANDLES(Consts.ENABLE_DEBUG, Consts.ENABLE_LOG_TO_PROTO_DEBUG, false,
+            Consts.TAG_WM_APP_HANDLES),
     TEST_GROUP(true, true, false, "WindowManagerShellProtoLogTest");
 
     private final boolean mEnabled;
@@ -128,6 +144,11 @@ public enum ShellProtoLogGroup implements IProtoLogGroup {
         private static final String TAG_WM_STARTING_WINDOW = "ShellStartingWindow";
         private static final String TAG_WM_SPLIT_SCREEN = "ShellSplitScreen";
         private static final String TAG_WM_DESKTOP_MODE = "ShellDesktopMode";
+        private static final String TAG_WM_WINDOW_DECORATION = "ShellWindowDecoration";
+        private static final String TAG_WM_COMPAT_UI = "CompatUi";
+        private static final String TAG_WM_APP_COMPAT = "AppCompat";
+        private static final String TAG_WM_BUBBLES = "Bubbles";
+        private static final String TAG_WM_APP_HANDLES = "AppHandles";
 
         private static final boolean ENABLE_DEBUG = true;
         private static final boolean ENABLE_LOG_TO_PROTO_DEBUG = true;

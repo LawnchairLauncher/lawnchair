@@ -1,5 +1,8 @@
 package app.lawnchair.util
 
+import LawnchairLockedStateController
+import android.app.ActivityManager
+import android.app.ActivityTaskManager
 import android.content.Context
 import android.os.Process
 import android.os.UserHandle
@@ -17,18 +20,18 @@ object RecentHelper {
             val launcher = context.launcher
             val recentsView = launcher.getOverviewPanel<RecentsView<LawnchairLauncher, *>>()
             val taskViewCount = recentsView.getTaskViewCount()
-            val currentUserId = Process.myUserHandle().identifier
+            val currentUserId = Process.myUid()
             for (i in 0..taskViewCount) {
                 try {
-                    val rawTasks = ActivityManagerWrapper.getInstance()
-                        .getRecentTasks(i, currentUserId)
+                    val rawTasks = ActivityTaskManager.getInstance()
+                        .getRecentTasks(i, ActivityManager.RECENT_IGNORE_UNAVAILABLE, currentUserId)
                     for (recentTaskInfo in rawTasks) {
                         var packageName = recentTaskInfo.baseIntent.component?.packageName
                         val taskKey = Task.TaskKey(recentTaskInfo)
                         val taskId = taskKey.id
                         packageName = packageName?.replace("unknown", "")
                         if (!packageName.isNullOrEmpty()) {
-                            packageName += "#" + UserHandle.getUserId(taskId)
+                            packageName += "#" + UserHandle.getUserHandleForUid(taskId)
                             val taskLockState = taskKey.baseIntent.component?.let {
                                 TaskUtilLockState.getTaskLockState(
                                     context,

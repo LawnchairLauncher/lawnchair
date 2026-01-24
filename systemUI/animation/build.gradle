@@ -1,0 +1,40 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+// TODO: Pull out surfaceeffects outside of src and have separate build files there.
+android {
+    buildToolsVersion "36.1.0"
+    namespace "com.android.systemui.animation"
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            kotlin.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+        }
+    }
+    lint {
+        abortOnError false
+    }
+
+    tasks.lint.enabled = false
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}
+
+addFrameworkJar('framework-16.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    implementation libs.androidx.core.animation
+    compileOnly projects.animationlib
+    compileOnly projects.wmshell
+    compileOnly projects.flags
+
+}

@@ -17,6 +17,7 @@
 package com.android.wm.shell.flicker.pip
 
 import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.assertions.FlickerTest
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
 import android.tools.flicker.legacy.FlickerBuilder
@@ -25,6 +26,7 @@ import android.tools.flicker.legacy.LegacyFlickerTestFactory
 import android.tools.helpers.WindowUtils
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
 import com.android.server.wm.flicker.helpers.setRotation
+import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.PipTransition
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -35,7 +37,7 @@ import org.junit.runners.Parameterized
 /**
  * Test Pip Stack in bounds after rotations.
  *
- * To run this test: `atest WMShellFlickerTestsPip1:ShowPipAndRotateDisplay`
+ * To run this test: `atest WMShellFlickerTestsPip:ShowPipAndRotateDisplay`
  *
  * Actions:
  * ```
@@ -58,6 +60,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
 class ShowPipAndRotateDisplay(flicker: LegacyFlickerTest) : PipTransition(flicker) {
     private val testApp = SimpleAppHelper(instrumentation)
     private val screenBoundsStart = WindowUtils.getDisplayBounds(flicker.scenario.startRotation)

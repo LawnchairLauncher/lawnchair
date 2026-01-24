@@ -18,15 +18,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/icon"
     android:layout_width="@dimen/task_thumbnail_icon_menu_expanded_width"
     android:layout_height="@dimen/task_thumbnail_icon_menu_expanded_height"
     android:clipToOutline="true"
-    android:focusable="false"
+    android:focusable="true"
+    android:focusableInTouchMode="false"
     android:importantForAccessibility="no"
     android:autoMirrored="true"
     android:elevation="@dimen/task_thumbnail_icon_menu_elevation"
-    android:background="?attr/materialColorSurfaceBright">
+    android:foreground="@drawable/app_chip_fg"
+    android:background="@color/materialColorSurfaceBright"
+    launcher:focusBorderColor="@color/materialColorSecondary">
 
     <!-- ignoring warning because the user of the anchor is a Rect where RTL is not needed -->
     <!-- This anchor's bounds is in the expected location after rotations and translations are
@@ -49,25 +53,19 @@
         android:importantForAccessibility="no" />
 
     <TextView
-        android:id="@+id/icon_text_collapsed"
-        android:layout_width="@dimen/task_thumbnail_icon_menu_text_collapsed_max_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_app_icon_collapsed_size"
+        android:id="@+id/icon_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
         android:maxLines="1"
-        android:ellipsize="end"
+        android:singleLine="true"
+        android:ellipsize="none"
         android:textAlignment="viewStart"
         android:importantForAccessibility="no"
-        style="@style/IconAppChipMenuTextStyle" />
-
-    <TextView
-        android:id="@+id/icon_text_expanded"
-        android:layout_width="@dimen/task_thumbnail_icon_menu_text_expanded_max_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_app_icon_collapsed_size"
-        android:gravity="start|center_vertical"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textAlignment="viewStart"
-        android:importantForAccessibility="no"
+        android:requiresFadingEdge="horizontal"
+        android:fadingEdgeLength="@dimen/task_thumbnail_icon_menu_text_fading_size"
+        android:marqueeRepeatLimit="1"
+        android:scrollHorizontally="true"
         style="@style/IconAppChipMenuTextStyle" />
 
     <ImageView
@@ -77,4 +75,5 @@
         android:background="@drawable/icon_menu_arrow_background"
         android:src="@drawable/ic_chevron_down"
         android:importantForAccessibility="no" />
+
 </com.android.quickstep.views.IconAppChipView>

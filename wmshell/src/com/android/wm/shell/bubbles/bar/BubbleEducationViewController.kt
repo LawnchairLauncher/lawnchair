@@ -20,6 +20,7 @@ import android.content.Context
 import android.graphics.Point
 import android.graphics.Rect
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +35,10 @@ import com.android.wm.shell.bubbles.BubbleDebugConfig.TAG_WITH_CLASS_NAME
 import com.android.wm.shell.bubbles.BubbleEducationController
 import com.android.wm.shell.bubbles.BubbleViewProvider
 import com.android.wm.shell.bubbles.setup
-import com.android.wm.shell.common.bubbles.BubblePopupDrawable
-import com.android.wm.shell.common.bubbles.BubblePopupView
+import com.android.wm.shell.shared.TypefaceUtils
 import com.android.wm.shell.shared.animation.PhysicsAnimator
+import com.android.wm.shell.shared.bubbles.BubblePopupDrawable
+import com.android.wm.shell.shared.bubbles.BubblePopupView
 import kotlin.math.roundToInt
 
 /** Manages bubble education presentation and animation */
@@ -102,14 +104,21 @@ class BubbleEducationViewController(private val context: Context, private val li
         hideEducation(animated = false)
         log { "showStackEducation at: $position" }
 
+        val rootBounds = Rect()
+        // Get root bounds on screen as position is in screen coordinates
+        root.getBoundsOnScreen(rootBounds)
         educationView =
             createEducationView(R.layout.bubble_bar_stack_education, root).apply {
+                TypefaceUtils.setTypeface(findViewById(R.id.education_title),
+                    TypefaceUtils.FontFamily.GSF_HEADLINE_SMALL_EMPHASIZED)
+                TypefaceUtils.setTypeface(findViewById(R.id.education_text),
+                    TypefaceUtils.FontFamily.GSF_BODY_MEDIUM)
                 setArrowDirection(BubblePopupDrawable.ArrowDirection.DOWN)
-                setArrowPosition(BubblePopupDrawable.ArrowPosition.End)
-                updateEducationPosition(view = this, position, root)
+                updateEducationPosition(view = this, position, rootBounds)
                 val arrowToEdgeOffset = popupDrawable?.config?.cornerRadius ?: 0f
                 doOnLayout {
-                    it.pivotX = it.width - arrowToEdgeOffset
+                    it.pivotX = if (position.x < rootBounds.centerX())
+                        arrowToEdgeOffset else it.width - arrowToEdgeOffset
                     it.pivotY = it.height.toFloat()
                 }
                 setOnClickListener { educationClickHandler() }
@@ -149,6 +158,10 @@ class BubbleEducationViewController(private val context: Context, private val li
 
         educationView =
             createEducationView(R.layout.bubble_bar_manage_education, root).apply {
+                TypefaceUtils.setTypeface(findViewById(R.id.education_manage_title),
+                    TypefaceUtils.FontFamily.GSF_HEADLINE_SMALL_EMPHASIZED)
+                TypefaceUtils.setTypeface(findViewById(R.id.education_manage_text),
+                    TypefaceUtils.FontFamily.GSF_BODY_MEDIUM)
                 pivotY = 0f
                 doOnLayout { it.pivotX = it.width / 2f }
                 setOnClickListener { hideEducation(animated = true) }
@@ -218,12 +231,9 @@ class BubbleEducationViewController(private val context: Context, private val li
      *
      * @param view the user education view to layout
      * @param position the reference position in Screen coordinates
-     * @param root the root view to use for the layout
+     * @param rootBounds bounds of the parent the education view is placed in
      */
-    private fun updateEducationPosition(view: BubblePopupView, position: Point, root: ViewGroup) {
-        val rootBounds = Rect()
-        // Get root bounds on screen as position is in screen coordinates
-        root.getBoundsOnScreen(rootBounds)
+    private fun updateEducationPosition(view: BubblePopupView, position: Point, rootBounds: Rect) {
         // Get the offset to the arrow from the edge of the education view
         val arrowToEdgeOffset =
             view.popupDrawable?.config?.let { it.cornerRadius + it.arrowWidth / 2f }?.roundToInt()
@@ -231,7 +241,15 @@ class BubbleEducationViewController(private val context: Context, private val li
         // Calculate education view margins
         val params = view.layoutParams as FrameLayout.LayoutParams
         params.bottomMargin = rootBounds.bottom - position.y
-        params.rightMargin = rootBounds.right - position.x - arrowToEdgeOffset
+        if (position.x < rootBounds.centerX()) {
+            params.leftMargin = position.x - arrowToEdgeOffset
+            params.gravity = Gravity.LEFT or Gravity.BOTTOM
+            view.setArrowPosition(BubblePopupDrawable.ArrowPosition.Start)
+        } else {
+            params.rightMargin = rootBounds.right - position.x - arrowToEdgeOffset
+            params.gravity = Gravity.RIGHT or Gravity.BOTTOM
+            view.setArrowPosition(BubblePopupDrawable.ArrowPosition.End)
+        }
         view.layoutParams = params
     }
 

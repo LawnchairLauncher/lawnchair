@@ -22,13 +22,11 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
-import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.InstantAppResolver;
 
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -50,11 +48,11 @@ public class PackageInstallStateChangedTask implements ModelUpdateTask {
             try {
                 // For instant apps we do not get package-add. Use setting events to update
                 // any pinned icons.
-                Context context = taskController.getApp().getContext();
+                Context context = taskController.getContext();
                 ApplicationInfo ai = context
                         .getPackageManager().getApplicationInfo(mInstallInfo.packageName, 0);
                 if (InstantAppResolver.newInstance(context).isInstantApp(ai)) {
-                    taskController.getApp().getModel().newModelCallbacks()
+                    taskController.getModel().newModelCallbacks()
                             .onPackageAdded(ai.packageName, mInstallInfo.user);
                 }
             } catch (PackageManager.NameNotFoundException e) {
@@ -65,36 +63,32 @@ public class PackageInstallStateChangedTask implements ModelUpdateTask {
         }
 
         synchronized (apps) {
-            List<AppInfo> updatedAppInfos = apps.updatePromiseInstallInfo(mInstallInfo);
-            if (!updatedAppInfos.isEmpty()) {
-                for (AppInfo appInfo : updatedAppInfos) {
-                    taskController.scheduleCallbackTask(
-                            c -> c.bindIncrementalDownloadProgressUpdated(appInfo));
-                }
-            }
+            taskController.bindIncrementalUpdates(
+                    apps.updatePromiseInstallInfo(mInstallInfo, FlagOp.NO_OP));
             taskController.bindApplicationsIfNeeded();
         }
 
         synchronized (dataModel) {
-            final HashSet<ItemInfo> updates = new HashSet<>();
-            dataModel.forAllWorkspaceItemInfos(mInstallInfo.user, si -> {
-                if (si.hasPromiseIconUi()
-                        && mInstallInfo.packageName.equals(si.getTargetPackage())) {
-                    si.setProgressLevel(mInstallInfo);
-                    updates.add(si);
-                }
-            });
-
-            for (LauncherAppWidgetInfo widget : dataModel.appWidgets) {
-                if (widget.providerName.getPackageName().equals(mInstallInfo.packageName)) {
-                    widget.installProgress = mInstallInfo.progress;
-                    updates.add(widget);
-                }
-            }
-
+            final List<ItemInfo> updates = dataModel.updateAndCollectWorkspaceItemInfos(
+                    mInstallInfo.user,
+                    si -> {
+                        if (si.hasPromiseIconUi()
+                                && mInstallInfo.packageName.equals(si.getTargetPackage())) {
+                            si.setProgressLevel(mInstallInfo);
+                            return true;
+                        }
+                        return false;
+                    },
+                    widget -> {
+                        if (widget.providerName.getPackageName()
+                                .equals(mInstallInfo.packageName)) {
+                            widget.installProgress = mInstallInfo.progress;
+                            return true;
+                        }
+                        return false;
+                    });
             if (!updates.isEmpty()) {
-                taskController.scheduleCallbackTask(
-                        callbacks -> callbacks.bindRestoreItemsChange(updates));
+                taskController.bindUpdatedWorkspaceItems(updates);
             }
         }
     }

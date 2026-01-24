@@ -23,7 +23,7 @@ import android.util.SparseArray;
 import android.view.SurfaceControl;
 
 import com.android.wm.shell.common.ShellExecutor;
-import com.android.wm.shell.common.TransactionPool;
+import com.android.wm.shell.shared.TransactionPool;
 import com.android.wm.shell.sysui.ShellInit;
 import com.android.wm.shell.unfold.ShellUnfoldProgressProvider.UnfoldListener;
 import com.android.wm.shell.unfold.animation.UnfoldTaskAnimator;

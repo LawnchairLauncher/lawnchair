@@ -17,10 +17,10 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         android:width="@dimen/letterbox_education_dialog_icon_width"
         android:height="@dimen/letterbox_education_dialog_icon_height"
-        android:viewportWidth="40"
-        android:viewportHeight="32">
+        android:viewportWidth="28"
+        android:viewportHeight="22">
 
     <path
         android:fillColor="@color/letterbox_education_text_secondary"
-        android:pathData="M40 28L40 4C40 1.8 38.2 -7.86805e-08 36 -1.74846e-07L26 -6.11959e-07C23.8 -7.08124e-07 22 1.8 22 4L22 28C22 30.2 23.8 32 26 32L36 32C38.2 32 40 30.2 40 28ZM14 28L4 28L4 4L14 4L14 28ZM18 28L18 4C18 1.8 16.2 -1.04033e-06 14 -1.1365e-06L4 -1.57361e-06C1.8 -1.66978e-06 -7.86805e-08 1.8 -1.74846e-07 4L-1.22392e-06 28C-1.32008e-06 30.2 1.8 32 4 32L14 32C16.2 32 18 30.2 18 28Z" />
+        android:pathData="M27.333,19L27.333,3C27.333,1.533 26.133,0.333 24.666,0.333L18,0.333C16.533,0.333 15.333,1.533 15.333,3L15.333,19C15.333,20.467 16.533,21.667 18,21.667L24.666,21.667C26.133,21.667 27.333,20.467 27.333,19ZM10,19L3.333,19L3.333,3L10,3L10,19ZM12.666,19L12.666,3C12.666,1.533 11.466,0.333 10,0.333L3.333,0.333C1.866,0.333 0.666,1.533 0.666,3L0.666,19C0.666,20.467 1.866,21.667 3.333,21.667L10,21.667C11.466,21.667 12.666,20.467 12.666,19Z" />
 </vector>

@@ -16,18 +16,15 @@
 
 package com.android.systemui.shared.system;
 
-import android.os.Build;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.IRecentsAnimationController;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.PictureInPictureSurfaceTransaction;
-import android.window.TaskSnapshot;
+import android.window.WindowAnimationState;
 
 import com.android.internal.os.IResultReceiver;
-import com.android.systemui.shared.recents.model.ThumbnailData;
-
-import java.lang.reflect.Method;
+import com.android.wm.shell.recents.IRecentsAnimationController;
 
 public class RecentsAnimationControllerCompat {
 
@@ -41,31 +38,11 @@ public class RecentsAnimationControllerCompat {
         mAnimationController = animationController;
     }
 
-    public ThumbnailData screenshotTask(int taskId) {
-        try {
-            final TaskSnapshot snapshot = mAnimationController.screenshotTask(taskId);
-            if (snapshot != null) {
-                return ThumbnailData.fromSnapshot(snapshot);
-            }
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to screenshot task", e);
-        }
-        return new ThumbnailData();
-    }
-
     public void setInputConsumerEnabled(boolean enabled) {
         try {
             mAnimationController.setInputConsumerEnabled(enabled);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to set input consumer enabled state", e);
-        }
-    }
-
-    public void setAnimationTargetsBehindSystemBars(boolean behindSystemBars) {
-        try {
-            mAnimationController.setAnimationTargetsBehindSystemBars(behindSystemBars);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to set whether animation targets are behind system bars", e);
         }
     }
 
@@ -95,24 +72,7 @@ public class RecentsAnimationControllerCompat {
      */
     public void finish(boolean toHome, boolean sendUserLeaveHint, IResultReceiver finishCb) {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                mAnimationController.finish(toHome, sendUserLeaveHint, finishCb);
-            } else {
-                try {
-                    Method finishMethod = mAnimationController.getClass().getMethod(
-                        "finish", boolean.class, boolean.class);
-                    finishMethod.invoke(mAnimationController, toHome, sendUserLeaveHint);
-
-                    if (finishCb != null) {
-                        finishCb.send(0, null);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to finish recents animation via reflection", e);
-                    if (finishCb != null) {
-                        finishCb.send(0, null);
-                    }
-                }
-            }
+            mAnimationController.finish(toHome, sendUserLeaveHint, finishCb);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to finish recents animation", e);
             try {
@@ -120,22 +80,6 @@ public class RecentsAnimationControllerCompat {
             } catch (Exception ex) {
                 // Local call, can ignore
             }
-        }
-    }
-
-    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
-        try {
-            mAnimationController.setDeferCancelUntilNextTransition(defer, screenshot);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to set deferred cancel with screenshot", e);
-        }
-    }
-
-    public void cleanupScreenshot() {
-        try {
-            mAnimationController.cleanupScreenshot();
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to clean up screenshot of recents animation", e);
         }
     }
 
@@ -151,14 +95,13 @@ public class RecentsAnimationControllerCompat {
     }
 
     /**
-     * @see IRecentsAnimationController#removeTask
+     * @see IRecentsAnimationController#handOffAnimation
      */
-    public boolean removeTask(int taskId) {
+    public void handOffAnimation(RemoteAnimationTarget[] targets, WindowAnimationState[] states) {
         try {
-            return mAnimationController.removeTask(taskId);
+            mAnimationController.handOffAnimation(targets, states);
         } catch (RemoteException e) {
-            Log.e(TAG, "Failed to remove remote animation target", e);
-            return false;
+            Log.e(TAG, "Failed to hand off animation", e);
         }
     }
 
@@ -170,17 +113,6 @@ public class RecentsAnimationControllerCompat {
             mAnimationController.detachNavigationBarFromApp(moveHomeToTop);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to detach the navigation bar from app", e);
-        }
-    }
-
-    /**
-     * @see IRecentsAnimationController#animateNavigationBarToApp(long)
-     */
-    public void animateNavigationBarToApp(long duration) {
-        try {
-            mAnimationController.animateNavigationBarToApp(duration);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to animate the navigation bar to app", e);
         }
     }
 }

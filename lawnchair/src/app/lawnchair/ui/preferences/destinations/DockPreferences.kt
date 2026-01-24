@@ -46,7 +46,6 @@ import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.createPreviewIdp
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
-import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -67,23 +66,28 @@ fun DockPreferences(modifier: Modifier = Modifier) {
         MainSwitchPreference(adapter = prefs2.isHotseatEnabled.getAdapter(), label = stringResource(id = R.string.show_hotseat_title)) {
             DockPreferencesPreview()
             PreferenceGroup(heading = stringResource(id = R.string.style)) {
-                SwitchPreference(
-                    adapter = hotseatBgAdapter,
-                    label = stringResource(id = R.string.hotseat_background),
-                )
-                ExpandAndShrink(visible = hotseatBgAdapter.state.value) {
+                Item {
+                    SwitchPreference(
+                        adapter = hotseatBgAdapter,
+                        label = stringResource(id = R.string.hotseat_background),
+                    )
+                }
+                Item(
+                    key = "feed_pref",
+                    visible = hotseatBgAdapter.state.value,
+                ) {
                     HotseatBackgroundSettings(prefs, prefs2)
                 }
             }
             SearchBarPreference(SearchRoute.DOCK_SEARCH)
-            PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-                GridSettings(prefs, prefs2)
-            }
+            GridSettings(prefs, prefs2)
             PreferenceGroup(heading = stringResource(id = R.string.icons)) {
-                SwitchPreference(
-                    adapter = prefs2.enableLabelInDock.getAdapter(),
-                    label = stringResource(id = R.string.show_labels),
-                )
+                Item {
+                    SwitchPreference(
+                        adapter = prefs2.enableLabelInDock.getAdapter(),
+                        label = stringResource(id = R.string.show_labels),
+                    )
+                }
             }
         }
     }
@@ -91,7 +95,7 @@ fun DockPreferences(modifier: Modifier = Modifier) {
 
 @Composable
 fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
-    DividerColumn {
+    DividerColumn(thickness = 0.dp) {
         ColorPreference(preference = prefs2.hotseatBackgroundColor)
         SliderPreference(
             label = stringResource(id = R.string.hotseat_bg_alpha),
@@ -133,26 +137,34 @@ fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManage
 
 @Composable
 fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
-    SliderPreference(
-        label = stringResource(id = R.string.dock_icons),
-        adapter = prefs.hotseatColumns.getAdapter(),
-        step = 1,
-        valueRange = 3..10,
-    )
-    SliderPreference(
-        adapter = prefs2.hotseatBottomFactor.getAdapter(),
-        label = stringResource(id = R.string.hotseat_bottom_space_label),
-        valueRange = 0.0F..1.7F,
-        step = 0.1F,
-        showAsPercentage = true,
-    )
-    SliderPreference(
-        adapter = prefs2.pageIndicatorHeightFactor.getAdapter(),
-        label = stringResource(id = R.string.page_indicator_height),
-        valueRange = 0.0F..1.0F,
-        step = 0.1F,
-        showAsPercentage = true,
-    )
+    PreferenceGroup(heading = stringResource(id = R.string.grid)) {
+        Item {
+            SliderPreference(
+                label = stringResource(id = R.string.dock_icons),
+                adapter = prefs.hotseatColumns.getAdapter(),
+                step = 1,
+                valueRange = 3..10,
+            )
+        }
+        Item {
+            SliderPreference(
+                adapter = prefs2.hotseatBottomFactor.getAdapter(),
+                label = stringResource(id = R.string.hotseat_bottom_space_label),
+                valueRange = 0.0F..1.7F,
+                step = 0.1F,
+                showAsPercentage = true,
+            )
+        }
+        Item {
+            SliderPreference(
+                adapter = prefs2.pageIndicatorHeightFactor.getAdapter(),
+                label = stringResource(id = R.string.page_indicator_height),
+                valueRange = 0.0F..1.0F,
+                step = 0.1F,
+                showAsPercentage = true,
+            )
+        }
+    }
 }
 
 @Composable

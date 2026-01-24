@@ -14,13 +14,14 @@
 
 package com.android.systemui.plugins;
 
-import android.annotation.IntegerRes;
 import android.content.ComponentName;
 import android.media.AudioManager;
 import android.media.AudioSystem;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.util.SparseArray;
+
+import androidx.annotation.StringRes;
 
 import com.android.systemui.plugins.VolumeDialogController.Callbacks;
 import com.android.systemui.plugins.VolumeDialogController.State;
@@ -40,8 +41,8 @@ import com.android.systemui.plugins.annotations.ProvidesInterface;
 public interface VolumeDialogController {
     int VERSION = 1;
 
-    void setActiveStream(int stream);
-    void setStreamVolume(int stream, int userLevel);
+    void setActiveStream(int stream, boolean sync);
+    void setStreamVolume(int stream, int userLevel, boolean sync);
     void setRingerMode(int ringerModeNormal, boolean external);
 
     boolean hasVibrator();
@@ -90,7 +91,7 @@ public interface VolumeDialogController {
         public int levelMax;
         public boolean muted;
         public boolean muteSupported;
-        public @IntegerRes int name;
+        public @StringRes int name;
         public String remoteLabel;
         public boolean routedToBluetooth;
 

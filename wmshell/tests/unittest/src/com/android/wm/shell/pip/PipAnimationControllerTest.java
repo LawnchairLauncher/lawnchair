@@ -28,8 +28,11 @@ import static com.android.wm.shell.pip.PipAnimationController.TRANSITION_DIRECTI
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import android.app.AppCompatTaskInfo;
 import android.app.TaskInfo;
 import android.graphics.Rect;
 import android.testing.AndroidTestingRunner;
@@ -75,6 +78,7 @@ public class PipAnimationControllerTest extends ShellTestCase {
                 .setContainerLayer()
                 .setName("FakeLeash")
                 .build();
+        mTaskInfo.appCompatTaskInfo = mock(AppCompatTaskInfo.class);
     }
 
     @Test
@@ -83,17 +87,21 @@ public class PipAnimationControllerTest extends ShellTestCase {
                 .getAnimator(mTaskInfo, mLeash, new Rect(), 0f, 1f);
 
         assertEquals("Expect ANIM_TYPE_ALPHA animation",
-                animator.getAnimationType(), PipAnimationController.ANIM_TYPE_ALPHA);
+                animator.getAnimationType(), PipTransitionController.ANIM_TYPE_ALPHA);
     }
 
     @Test
     public void getAnimator_withBounds_returnBoundsAnimator() {
+        final Rect baseValue = new Rect(0, 0, 100, 100);
+        final Rect startValue = new Rect(0, 0, 100, 100);
+        final Rect endValue1 = new Rect(100, 100, 200, 200);
         final PipAnimationController.PipTransitionAnimator animator = mPipAnimationController
-                .getAnimator(mTaskInfo, mLeash, new Rect(), new Rect(), new Rect(), null,
-                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0);
+                .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue1, null,
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
 
         assertEquals("Expect ANIM_TYPE_BOUNDS animation",
-                animator.getAnimationType(), PipAnimationController.ANIM_TYPE_BOUNDS);
+                animator.getAnimationType(), PipTransitionController.ANIM_TYPE_BOUNDS);
     }
 
     @Test
@@ -104,14 +112,16 @@ public class PipAnimationControllerTest extends ShellTestCase {
         final Rect endValue2 = new Rect(200, 200, 300, 300);
         final PipAnimationController.PipTransitionAnimator oldAnimator = mPipAnimationController
                 .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue1, null,
-                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0);
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
         oldAnimator.setSurfaceControlTransactionFactory(
                 MockSurfaceControlHelper::createMockSurfaceControlTransaction);
         oldAnimator.start();
 
         final PipAnimationController.PipTransitionAnimator newAnimator = mPipAnimationController
                 .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue2, null,
-                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0);
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
 
         assertEquals("getAnimator with same type returns same animator",
                 oldAnimator, newAnimator);
@@ -142,7 +152,8 @@ public class PipAnimationControllerTest extends ShellTestCase {
         // Fullscreen to PiP.
         PipAnimationController.PipTransitionAnimator<?> animator = mPipAnimationController
                 .getAnimator(mTaskInfo, mLeash, null, startBounds, endBounds, null,
-                        TRANSITION_DIRECTION_LEAVE_PIP, 0, ROTATION_90);
+                        TRANSITION_DIRECTION_LEAVE_PIP, 0, ROTATION_90,
+                        false /* alwaysAnimateTaskBounds */);
         // Apply fraction 1 to compute the end value.
         animator.applySurfaceControlTransaction(mLeash, tx, 1);
         final Rect rotatedEndBounds = new Rect(endBounds);
@@ -154,12 +165,46 @@ public class PipAnimationControllerTest extends ShellTestCase {
         startBounds.set(0, 0, 1000, 500);
         endBounds.set(200, 100, 400, 500);
         animator = mPipAnimationController.getAnimator(mTaskInfo, mLeash, startBounds, startBounds,
-                endBounds, null, TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_270);
+                endBounds, null, TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_270,
+                false /* alwaysAnimateTaskBounds */);
         animator.applySurfaceControlTransaction(mLeash, tx, 1);
         rotatedEndBounds.set(endBounds);
         rotateBounds(rotatedEndBounds, startBounds, ROTATION_270);
 
         assertEquals("Expect 270 degree rotated bounds", rotatedEndBounds, animator.mCurrentValue);
+    }
+
+    @Test
+    public void pipTransitionAnimator_rotatedEndValue_overrideMainWindowFrame() {
+        final SurfaceControl.Transaction tx = createMockSurfaceControlTransaction();
+        final Rect startBounds = new Rect(200, 700, 400, 800);
+        final Rect endBounds = new Rect(0, 0, 500, 1000);
+        mTaskInfo.topActivityMainWindowFrame = new Rect(0, 250, 1000, 500);
+
+        // Fullscreen task to PiP.
+        PipAnimationController.PipTransitionAnimator<?> animator = mPipAnimationController
+                .getAnimator(mTaskInfo, mLeash, null, startBounds, endBounds, null,
+                        TRANSITION_DIRECTION_LEAVE_PIP, 0, ROTATION_90,
+                        false /* alwaysAnimateTaskBounds */);
+        // Apply fraction 1 to compute the end value.
+        animator.applySurfaceControlTransaction(mLeash, tx, 1);
+
+        assertEquals("Expect main window frame", mTaskInfo.topActivityMainWindowFrame,
+                animator.mCurrentValue);
+
+        // PiP to fullscreen.
+        mTaskInfo.topActivityMainWindowFrame = new Rect(0, 250, 1000, 500);
+        startBounds.set(0, 0, 1000, 500);
+        endBounds.set(200, 100, 400, 500);
+        animator = mPipAnimationController.getAnimator(mTaskInfo, mLeash, startBounds, startBounds,
+                endBounds, null, TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_270,
+                false /* alwaysAnimateTaskBounds */);
+        animator.applySurfaceControlTransaction(mLeash, tx, 1);
+        final Rect rotatedEndBounds = new Rect(endBounds);
+        rotateBounds(rotatedEndBounds, startBounds, ROTATION_270);
+
+        assertEquals("Expect rotated bounds. We only use main window frame for "
+                + "leave-pip animation", rotatedEndBounds, animator.mCurrentValue);
     }
 
     @Test
@@ -171,7 +216,8 @@ public class PipAnimationControllerTest extends ShellTestCase {
         final Rect endValue2 = new Rect(200, 200, 300, 300);
         final PipAnimationController.PipTransitionAnimator animator = mPipAnimationController
                 .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue1, null,
-                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0);
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
 
         animator.updateEndValue(endValue2);
 
@@ -185,7 +231,8 @@ public class PipAnimationControllerTest extends ShellTestCase {
         final Rect endValue = new Rect(100, 100, 200, 200);
         final PipAnimationController.PipTransitionAnimator animator = mPipAnimationController
                 .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue, null,
-                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0);
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
         animator.setSurfaceControlTransactionFactory(
                 MockSurfaceControlHelper::createMockSurfaceControlTransaction);
 
@@ -203,5 +250,127 @@ public class PipAnimationControllerTest extends ShellTestCase {
         animator.onAnimationEnd(animator);
         verify(mPipAnimationCallback).onPipAnimationEnd(eq(mTaskInfo),
                 any(SurfaceControl.Transaction.class), eq(animator));
+    }
+
+    @Test
+    public void pipTransitionAnimator_overrideMainWindowFrame() {
+        final Rect baseValue = new Rect(0, 0, 100, 100);
+        final Rect startValue = new Rect(0, 0, 100, 100);
+        final Rect endValue = new Rect(100, 100, 200, 200);
+        mTaskInfo.topActivityMainWindowFrame = new Rect(0, 50, 100, 100);
+        PipAnimationController.PipTransitionAnimator<?> animator = mPipAnimationController
+                .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue, null,
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
+
+        assertEquals("Expect base value is overridden for in-PIP transition",
+                mTaskInfo.topActivityMainWindowFrame, animator.getBaseValue());
+        assertEquals("Expect start value is overridden for in-PIP transition",
+                mTaskInfo.topActivityMainWindowFrame, animator.getStartValue());
+        assertEquals("Expect end value is not overridden for in-PIP transition",
+                endValue, animator.getEndValue());
+
+        animator = mPipAnimationController.getAnimator(mTaskInfo, mLeash, baseValue, startValue,
+                endValue, null, TRANSITION_DIRECTION_LEAVE_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
+
+        assertEquals("Expect base value is not overridden for leave-PIP transition",
+                baseValue, animator.getBaseValue());
+        assertEquals("Expect start value is not overridden for leave-PIP transition",
+                startValue, animator.getStartValue());
+        assertEquals("Expect end value is overridden for leave-PIP transition",
+                mTaskInfo.topActivityMainWindowFrame, animator.getEndValue());
+    }
+
+    @Test
+    public void pipTransitionAnimator_animateTaskBounds() {
+        final Rect baseValue = new Rect(0, 0, 100, 100);
+        final Rect startValue = new Rect(0, 0, 100, 100);
+        final Rect endValue = new Rect(100, 100, 200, 200);
+        mTaskInfo.topActivityMainWindowFrame = new Rect(0, 50, 100, 100);
+        PipAnimationController.PipTransitionAnimator<?> animator = mPipAnimationController
+                .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue, null,
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        true /* alwaysAnimateTaskBounds */);
+
+        assertEquals("Expect base value is not overridden for in-PIP transition",
+                baseValue, animator.getBaseValue());
+        assertEquals("Expect start value is not overridden for in-PIP transition",
+                startValue, animator.getStartValue());
+        assertEquals("Expect end value is not overridden for in-PIP transition",
+                endValue, animator.getEndValue());
+
+        animator = mPipAnimationController.getAnimator(mTaskInfo, mLeash, baseValue, startValue,
+                endValue, null, TRANSITION_DIRECTION_LEAVE_PIP, 0, ROTATION_0,
+                true /* alwaysAnimateTaskBounds */);
+
+        assertEquals("Expect base value is not overridden for leave-PIP transition",
+                baseValue, animator.getBaseValue());
+        assertEquals("Expect start value is not overridden for leave-PIP transition",
+                startValue, animator.getStartValue());
+        assertEquals("Expect end value is not overridden for leave-PIP transition",
+                endValue, animator.getEndValue());
+    }
+
+    @Test
+    public void pipTransitionAnimator_letterboxed_animateTaskBounds() {
+        final Rect baseValue = new Rect(0, 0, 100, 100);
+        final Rect startValue = new Rect(0, 0, 100, 100);
+        final Rect endValue = new Rect(100, 100, 200, 200);
+        mTaskInfo.topActivityMainWindowFrame = new Rect(0, 50, 100, 100);
+        doReturn(true).when(mTaskInfo.appCompatTaskInfo).isTopActivityLetterboxed();
+        PipAnimationController.PipTransitionAnimator<?> animator = mPipAnimationController
+                .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue, null,
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
+
+        assertEquals("Expect base value is not overridden for in-PIP transition",
+                baseValue, animator.getBaseValue());
+        assertEquals("Expect start value is not overridden for in-PIP transition",
+                startValue, animator.getStartValue());
+        assertEquals("Expect end value is not overridden for in-PIP transition",
+                endValue, animator.getEndValue());
+
+        animator = mPipAnimationController.getAnimator(mTaskInfo, mLeash, baseValue, startValue,
+                endValue, null, TRANSITION_DIRECTION_LEAVE_PIP, 0, ROTATION_0,
+                false /* alwaysAnimateTaskBounds */);
+
+        assertEquals("Expect base value is not overridden for leave-PIP transition",
+                baseValue, animator.getBaseValue());
+        assertEquals("Expect start value is not overridden for leave-PIP transition",
+                startValue, animator.getStartValue());
+        assertEquals("Expect end value is not overridden for leave-PIP transition",
+                endValue, animator.getEndValue());
+    }
+
+    @Test
+    public void pipTransitionAnimator_sizeCompat_animateTaskBounds() {
+        final Rect baseValue = new Rect(0, 0, 100, 100);
+        final Rect startValue = new Rect(0, 0, 100, 100);
+        final Rect endValue = new Rect(100, 100, 200, 200);
+        mTaskInfo.topActivityMainWindowFrame = new Rect(0, 50, 100, 100);
+        doReturn(true).when(mTaskInfo.appCompatTaskInfo).isTopActivityInSizeCompat();
+        PipAnimationController.PipTransitionAnimator<?> animator = mPipAnimationController
+                .getAnimator(mTaskInfo, mLeash, baseValue, startValue, endValue, null,
+                        TRANSITION_DIRECTION_TO_PIP, 0, ROTATION_0,
+                        false /* alwaysAnimateTaskBounds */);
+
+        assertEquals("Expect base value is not overridden for in-PIP transition",
+                baseValue, animator.getBaseValue());
+        assertEquals("Expect start value is not overridden for in-PIP transition",
+                startValue, animator.getStartValue());
+        assertEquals("Expect end value is not overridden for in-PIP transition",
+                endValue, animator.getEndValue());
+
+        animator = mPipAnimationController.getAnimator(mTaskInfo, mLeash, baseValue, startValue,
+                endValue, null, TRANSITION_DIRECTION_LEAVE_PIP, 0, ROTATION_0,
+                false /* alwaysAnimateTaskBounds */);
+
+        assertEquals("Expect base value is not overridden for leave-PIP transition",
+                baseValue, animator.getBaseValue());
+        assertEquals("Expect start value is not overridden for leave-PIP transition",
+                startValue, animator.getStartValue());
+        assertEquals("Expect end value is not overridden for leave-PIP transition",
+                endValue, animator.getEndValue());
     }
 }

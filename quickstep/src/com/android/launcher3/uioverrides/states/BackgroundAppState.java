@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
-import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -25,6 +24,7 @@ import android.graphics.Color;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.views.ScrimColors;
 import com.android.quickstep.util.BaseDepthController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -35,7 +35,8 @@ import com.android.quickstep.views.RecentsView;
 public class BackgroundAppState extends OverviewState {
 
     private static final int STATE_FLAGS = FLAG_DISABLE_RESTORE | FLAG_RECENTS_VIEW_VISIBLE
-            | FLAG_WORKSPACE_INACCESSIBLE | FLAG_NON_INTERACTIVE | FLAG_CLOSE_POPUPS;
+            | FLAG_WORKSPACE_INACCESSIBLE | FLAG_NON_INTERACTIVE | FLAG_CLOSE_POPUPS
+            | FLAG_SKIP_STATE_ANNOUNCEMENT;
 
     public BackgroundAppState(int id) {
         this(id, LAUNCHER_STATE_BACKGROUND);
@@ -51,9 +52,11 @@ public class BackgroundAppState extends OverviewState {
             return super.getVerticalProgress(launcher);
         }
         RecentsView recentsView = launcher.getOverviewPanel();
-        int transitionLength = LayoutUtils.getShelfTrackingDistance(launcher,
+        int transitionLength = LayoutUtils.getShelfTrackingDistance(
+                launcher,
                 launcher.getDeviceProfile(),
-                recentsView.getPagedOrientationHandler());
+                recentsView.getPagedOrientationHandler(),
+                recentsView.getContainerInterface());
         AllAppsTransitionController controller = launcher.getAllAppsController();
         float scrollRange = Math.max(controller.getShiftRange(), 1);
         float progressDelta = (transitionLength / scrollRange);
@@ -75,7 +78,8 @@ public class BackgroundAppState extends OverviewState {
         return super.getVisibleElements(launcher)
                 & ~OVERVIEW_ACTIONS
                 & ~CLEAR_ALL_BUTTON
-                & ~VERTICAL_SWIPE_INDICATOR;
+                & ~VERTICAL_SWIPE_INDICATOR
+                & ~ADD_DESK_BUTTON;
     }
 
     @Override
@@ -86,6 +90,11 @@ public class BackgroundAppState extends OverviewState {
     @Override
     public boolean showTaskThumbnailSplash() {
         return true;
+    }
+
+    @Override
+    public boolean showExplodedDesktopView() {
+        return false;
     }
 
     @Override
@@ -101,14 +110,15 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
-    public int getWorkspaceScrimColor(Launcher launcher) {
-        return Color.TRANSPARENT;
+    public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
+        return new ScrimColors(
+                /* backgroundColor= */ Color.TRANSPARENT,
+                /* foregroundColor= */ Color.TRANSPARENT);
     }
 
     @Override
     public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
-        if (ENABLE_SHELL_TRANSITIONS) return false;
-        return super.isTaskbarAlignedWithHotseat(launcher);
+        return false;
     }
 
     @Override

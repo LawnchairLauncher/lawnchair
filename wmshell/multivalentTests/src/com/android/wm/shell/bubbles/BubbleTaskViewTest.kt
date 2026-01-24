@@ -16,39 +16,45 @@
 
 package com.android.wm.shell.bubbles
 
+import android.app.ActivityManager
+import android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN
 import android.content.ComponentName
 import android.content.Context
+import android.platform.test.flag.junit.FlagsParameterization
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.android.window.flags.Flags.FLAG_EXCLUDE_TASK_FROM_RECENTS
+import com.android.wm.shell.Flags.FLAG_ENABLE_CREATE_ANY_BUBBLE
+import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper
 import com.android.wm.shell.taskview.TaskView
-
 import com.google.common.truth.Truth.assertThat
 import com.google.common.util.concurrent.MoreExecutors.directExecutor
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
+import platform.test.runner.parameterized.ParameterizedAndroidJunit4
+import platform.test.runner.parameterized.Parameters
 
 @SmallTest
-@RunWith(AndroidJUnit4::class)
-class BubbleTaskViewTest {
+@RunWith(ParameterizedAndroidJunit4::class)
+class BubbleTaskViewTest(flags: FlagsParameterization) {
 
-    private lateinit var bubbleTaskView: BubbleTaskView
+    @get:Rule
+    val setFlagsRule = SetFlagsRule(flags)
+
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private lateinit var taskView: TaskView
-
-    @Before
-    fun setUp() {
-        taskView = mock()
-        bubbleTaskView = BubbleTaskView(taskView, directExecutor())
-    }
+    private val componentName = ComponentName(context, "TestClass")
+    private val taskView = mock<TaskView>()
+    private val bubbleTaskView = BubbleTaskView(taskView, directExecutor())
 
     @Test
     fun onTaskCreated_updatesState() {
-        val componentName = ComponentName(context, "TestClass")
         bubbleTaskView.listener.onTaskCreated(123, componentName)
 
         assertThat(bubbleTaskView.taskId).isEqualTo(123)
@@ -68,25 +74,64 @@ class BubbleTaskViewTest {
         }
         bubbleTaskView.delegateListener = delegateListener
 
-        val componentName = ComponentName(context, "TestClass")
-        bubbleTaskView.listener.onTaskCreated(123, componentName)
+        bubbleTaskView.listener.onTaskCreated(123 /* taskId */, componentName)
 
         assertThat(actualTaskId).isEqualTo(123)
         assertThat(actualComponentName).isEqualTo(componentName)
     }
 
     @Test
-    fun cleanup_invalidTaskId_doesNotRemoveTask() {
+    fun cleanup_invalidTaskId_removesTask() {
         bubbleTaskView.cleanup()
-        verify(taskView, never()).removeTask()
+        verify(taskView).removeTask()
     }
 
     @Test
     fun cleanup_validTaskId_removesTask() {
-        val componentName = ComponentName(context, "TestClass")
-        bubbleTaskView.listener.onTaskCreated(123, componentName)
+        bubbleTaskView.listener.onTaskCreated(123 /* taskId */, componentName)
 
         bubbleTaskView.cleanup()
+
         verify(taskView).removeTask()
+    }
+
+    @Test
+    fun cleanup_noneFullscreenTask_removesTask() {
+        bubbleTaskView.listener.onTaskCreated(123 /* taskId */, componentName)
+
+        bubbleTaskView.cleanup()
+
+        verify(taskView, never()).unregisterTask()
+        verify(taskView).removeTask()
+    }
+
+    @Test
+    fun cleanup_fullscreenTask_removesOrUnregistersTask() {
+        val fullScreenTaskInfo = ActivityManager.RunningTaskInfo().apply {
+            configuration.windowConfiguration.windowingMode = WINDOWING_MODE_FULLSCREEN
+        }
+        taskView.stub {
+            on { taskInfo } doReturn fullScreenTaskInfo
+        }
+        bubbleTaskView.listener.onTaskCreated(123 /* taskId */, componentName)
+
+        bubbleTaskView.cleanup()
+
+        if (BubbleAnythingFlagHelper.enableCreateAnyBubbleWithForceExcludedFromRecents()) {
+            verify(taskView).unregisterTask()
+            verify(taskView, never()).removeTask()
+        } else {
+            verify(taskView, never()).unregisterTask()
+            verify(taskView).removeTask()
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        @Parameters(name = "{0}")
+        fun getParams() = FlagsParameterization.allCombinationsOf(
+            FLAG_ENABLE_CREATE_ANY_BUBBLE,
+            FLAG_EXCLUDE_TASK_FROM_RECENTS,
+        )
     }
 }

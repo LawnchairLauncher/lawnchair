@@ -25,18 +25,11 @@ import com.android.launcher3.LauncherModel.ModelUpdateTask;
  */
 public class ReloadStringCacheTask implements ModelUpdateTask {
 
-    @NonNull
-    private ModelDelegate mModelDelegate;
-
-    public ReloadStringCacheTask(@NonNull final ModelDelegate modelDelegate) {
-        mModelDelegate = modelDelegate;
-    }
-
     @Override
     public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
             @NonNull AllAppsList apps) {
         synchronized (dataModel) {
-            mModelDelegate.loadStringCache(dataModel.stringCache);
+            dataModel.stringCache.loadStrings(taskController.getContext());
             StringCache cloneSC = dataModel.stringCache.clone();
             taskController.scheduleCallbackTask(c -> c.bindStringCache(cloneSC));
         }

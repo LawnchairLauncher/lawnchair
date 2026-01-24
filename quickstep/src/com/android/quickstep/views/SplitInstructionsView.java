@@ -16,12 +16,10 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -40,11 +38,11 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
-import com.android.launcher3.states.StateAnimationConfig;
+import com.android.quickstep.util.AnimUtils;
 import com.android.quickstep.util.SplitSelectStateController;
+import com.android.wm.shell.shared.TypefaceUtils;
+import com.android.wm.shell.shared.TypefaceUtils.FontFamily;
 
 /**
  * A rounded rectangular component containing a single TextView.
@@ -56,7 +54,6 @@ import com.android.quickstep.util.SplitSelectStateController;
 public class SplitInstructionsView extends LinearLayout {
     private static final int BOUNCE_DURATION = 250;
     private static final float BOUNCE_HEIGHT = 20;
-    private static final int DURATION_DEFAULT_SPLIT_DISMISS = 350;
 
     private final RecentsViewContainer mContainer;
     public boolean mIsCurrentlyAnimating = false;
@@ -126,36 +123,35 @@ public class SplitInstructionsView extends LinearLayout {
     }
 
     private void init() {
-        TextView cancelTextView = findViewById(R.id.split_instructions_text);
+        TextView cancelTextView = findViewById(R.id.split_instructions_text_cancel);
         TextView instructionTextView = findViewById(R.id.split_instructions_text);
 
-        if (FeatureFlags.enableSplitContextually()) {
-            cancelTextView.setVisibility(VISIBLE);
-            cancelTextView.setOnClickListener((v) -> exitSplitSelection());
-            instructionTextView.setText(R.string.toast_contextual_split_select_app);
+        cancelTextView.setVisibility(VISIBLE);
+        cancelTextView.setOnClickListener((v) -> exitSplitSelection());
+        instructionTextView.setText(R.string.toast_contextual_split_select_app);
+        TypefaceUtils.setTypeface(instructionTextView, FontFamily.GSF_BODY_MEDIUM);
 
-            // After layout, expand touch target of cancel button to meet minimum a11y measurements.
-            post(() -> {
-                int minTouchSize = getResources()
-                        .getDimensionPixelSize(R.dimen.settingslib_preferred_minimum_touch_target);
-                Rect r = new Rect();
-                cancelTextView.getHitRect(r);
+        // After layout, expand touch target of cancel button to meet minimum a11y measurements.
+        post(() -> {
+            int minTouchSize = getResources()
+                    .getDimensionPixelSize(R.dimen.settingslib_preferred_minimum_touch_target);
+            Rect r = new Rect();
+            cancelTextView.getHitRect(r);
 
-                if (r.width() < minTouchSize) {
-                    // add 1 to ensure ceiling on int division
-                    int expandAmount = (minTouchSize + 1 - r.width()) / 2;
-                    r.left -= expandAmount;
-                    r.right += expandAmount;
-                }
-                if (r.height() < minTouchSize) {
-                    int expandAmount = (minTouchSize + 1 - r.height()) / 2;
-                    r.top -= expandAmount;
-                    r.bottom += expandAmount;
-                }
+            if (r.width() < minTouchSize) {
+                // add 1 to ensure ceiling on int division
+                int expandAmount = (minTouchSize + 1 - r.width()) / 2;
+                r.left -= expandAmount;
+                r.right += expandAmount;
+            }
+            if (r.height() < minTouchSize) {
+                int expandAmount = (minTouchSize + 1 - r.height()) / 2;
+                r.top -= expandAmount;
+                r.bottom += expandAmount;
+            }
 
-                setTouchDelegate(new TouchDelegate(r, cancelTextView));
-            });
-        }
+            setTouchDelegate(new TouchDelegate(r, cancelTextView));
+        });
 
         // Set accessibility title, will be announced by a11y tools.
         if (Utilities.ATLEAST_P) {
@@ -166,25 +162,11 @@ public class SplitInstructionsView extends LinearLayout {
     private void exitSplitSelection() {
         RecentsView recentsView = mContainer.getOverviewPanel();
         SplitSelectStateController splitSelectController = recentsView.getSplitSelectController();
-
         StateManager stateManager = recentsView.getStateManager();
-        BaseState startState = stateManager.getState();
-        long duration = startState.getTransitionDuration(mContainer.asContext(), false);
-        if (duration == 0) {
-            // Case where we're in contextual on workspace (NORMAL), which by default has 0
-            // transition duration
-            duration = DURATION_DEFAULT_SPLIT_DISMISS;
-        }
-        StateAnimationConfig config = new StateAnimationConfig();
-        config.duration = duration;
-        AnimatorSet stateAnim = stateManager.createAtomicAnimation(
-                startState, NORMAL, config);
-        AnimatorSet dismissAnim = splitSelectController.getSplitAnimationController()
-                .createPlaceholderDismissAnim(mContainer,
-                        LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON, duration);
-        stateAnim.play(dismissAnim);
-        stateManager.setCurrentAnimation(stateAnim, NORMAL);
-        stateAnim.start();
+
+        AnimUtils.goToNormalStateWithSplitDismissal(stateManager, mContainer,
+                LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON,
+                splitSelectController.getSplitAnimationController());
     }
 
     void ensureProperRotation() {

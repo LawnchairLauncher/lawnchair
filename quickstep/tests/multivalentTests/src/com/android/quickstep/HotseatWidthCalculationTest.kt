@@ -39,7 +39,7 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(510)
+        assertThat(dp.hotseatProfile.barEndOffset).isEqualTo(510)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(70)
         assertThat(dp.hotseatColumnSpan).isEqualTo(6)
@@ -63,7 +63,7 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(510)
+        assertThat(dp.hotseatProfile.barEndOffset).isEqualTo(510)
         assertThat(dp.numShownHotseatIcons).isEqualTo(4)
         assertThat(dp.hotseatBorderSpace).isEqualTo(40)
         assertThat(dp.hotseatColumnSpan).isEqualTo(6)
@@ -86,7 +86,7 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(705)
+        assertThat(dp.hotseatProfile.barEndOffset).isEqualTo(705)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(54)
         assertThat(dp.hotseatColumnSpan).isEqualTo(6)
@@ -110,7 +110,7 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
+        assertThat(dp.hotseatProfile.barEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(100)
         assertThat(dp.hotseatColumnSpan).isEqualTo(6)
@@ -131,7 +131,7 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
+        assertThat(dp.hotseatProfile.barEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(34)
         assertThat(dp.hotseatColumnSpan).isEqualTo(4)
@@ -155,7 +155,7 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(660)
+        assertThat(dp.hotseatProfile.barEndOffset).isEqualTo(660)
         assertThat(dp.numShownHotseatIcons).isEqualTo(5)
         assertThat(dp.hotseatBorderSpace).isEqualTo(36)
         assertThat(dp.hotseatColumnSpan).isEqualTo(4)
@@ -174,7 +174,7 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         val dp = newDP()
         dp.isTaskbarPresentInApps = true
 
-        assertThat(dp.hotseatBarEndOffset).isEqualTo(600)
+        assertThat(dp.hotseatProfile.barEndOffset).isEqualTo(600)
         assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         assertThat(dp.hotseatBorderSpace).isEqualTo(48)
         assertThat(dp.hotseatColumnSpan).isEqualTo(8)

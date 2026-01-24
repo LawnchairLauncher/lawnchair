@@ -18,6 +18,6 @@
     android:inset="4dp">
     <shape android:shape="rectangle">
         <corners android:radius="@dimen/ps_lock_corner_radius" />
-        <solid android:color="?attr/materialColorSurfaceBright" />
+        <solid android:color="?attr/privateSpaceSettingsColor" />
     </shape>
 </inset>

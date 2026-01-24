@@ -18,29 +18,16 @@ package app.lawnchair.gestures.handlers
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
-import android.content.Intent
-import android.provider.Settings
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.lawnchairApp
-import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 
 class RecentsGestureHandler(context: Context) : GestureHandler(context) {
 
     override suspend fun onTrigger(launcher: LawnchairLauncher) {
-        val app = launcher.lawnchairApp
-        if (!app.isAccessibilityServiceBound()) {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            ComposeBottomSheet.show(launcher) {
-                ServiceWarningDialog(
-                    title = R.string.d2ts_recents_a11y_hint_title,
-                    description = R.string.recents_a11y_hint,
-                    settingsIntent = intent,
-                ) { close(true) }
-            }
-            return
-        }
-        app.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+        GestureWithAccessibilityHandler.onTrigger(
+            launcher,
+            R.string.recents_screen_a11y_hint,
+            AccessibilityService.GLOBAL_ACTION_RECENTS,
+        )
     }
 }

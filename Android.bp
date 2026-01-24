@@ -17,7 +17,19 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-min_launcher3_sdk_version = "30"
+min_launcher3_sdk_version = "31"
+
+// Targets that don't inherit framework aconfig libs (i.e., those that don't set
+// `platform_apis: true`) must manually link them.
+java_defaults {
+    name: "launcher-non-platform-apis-defaults",
+    static_libs: [
+        "android.os.flags-aconfig-java",
+        "android.multiuser.flags-aconfig-java",
+        "android.appwidget.flags-aconfig-java",
+        "com.android.window.flags.window-aconfig-java",
+    ],
+}
 
 // Common source files used to build launcher (java and kotlin)
 // All sources are split so they can be reused in many other libraries/apps in other folders
@@ -31,12 +43,156 @@ filegroup {
     ],
 }
 
+// Main Launcher source for compose, excluding the build config
+filegroup {
+    name: "launcher-compose-enabled-src",
+    srcs: [
+        "compose/facade/enabled/**/*.kt",
+        "compose/facade/core/**/*.kt",
+        "compose/features/**/*.kt",
+    ],
+}
+
+filegroup {
+    name: "launcher-compose-disabled-src",
+    srcs: [
+        "compose/facade/core/**/*.kt",
+        "compose/facade/disabled/**/*.kt",
+    ],
+}
+
+filegroup {
+    name: "launcher-compose-test-helpers-src",
+    srcs: [
+        "compose/tests/com/android/launcher3/helper/TestHelper.kt",
+    ],
+}
+
+filegroup {
+    name: "launcher-compose-ui-tests-src",
+    srcs: [], // Placeholder for compose/tests/com/android/launcher3/ui/.. tests.
+}
+
+// Tests for features that are enabled only when compose dependency is enabled & run as part of
+// Launcher3Tests
+filegroup {
+    name: "launcher-compose-unit-tests-src",
+    srcs: [
+        "compose/tests/com/android/launcher3/widget/AddWidgetConfigTest.kt",
+    ],
+}
+
+filegroup {
+    name: "launcher-compose-tests-src",
+    srcs: [
+        "compose/tests/**/*.kt",
+    ],
+}
+
 // Source code for quickstep build, on top of launcher-src
 filegroup {
     name: "launcher-quickstep-src",
     srcs: [
-        "quickstep/src/**/*.java",
         "quickstep/src/**/*.kt",
+        "quickstep/src/**/*.java",
+    ],
+    device_common_srcs: [
+        ":launcher-quickstep-processed-protolog-src",
+    ],
+}
+
+filegroup {
+    name: "quickstep-compose-tests-src",
+    srcs: [
+        "quickstep/compose/tests/**/*.kt",
+    ],
+}
+
+// Launcher ProtoLog support
+filegroup {
+    name: "launcher-quickstep-unprocessed-protolog-src",
+    srcs: [
+        "quickstep/src_protolog/**/*.java",
+    ],
+}
+
+java_library {
+    name: "launcher-quickstep_protolog-groups",
+    srcs: [
+        "quickstep/src_protolog/**/*.java",
+    ],
+    static_libs: [
+        "protolog-group",
+        "androidx.annotation_annotation",
+        "com_android_launcher3_flags_lib",
+    ],
+}
+
+java_genrule {
+    name: "launcher-quickstep-processed-protolog-src",
+    srcs: [
+        ":protolog-impl",
+        ":launcher-quickstep-unprocessed-protolog-src",
+        ":launcher-quickstep_protolog-groups",
+    ],
+    tools: ["protologtool"],
+    cmd: "$(location protologtool) transform-protolog-calls " +
+        "--protolog-class com.android.internal.protolog.common.ProtoLog " +
+        "--loggroups-class com.android.quickstep.util.QuickstepProtoLogGroup " +
+        "--loggroups-jar $(location :launcher-quickstep_protolog-groups) " +
+        "--viewer-config-file-path /system_ext/etc/launcher.quickstep.protolog.pb " +
+        "--output-srcjar $(out) " +
+        "$(locations :launcher-quickstep-unprocessed-protolog-src)",
+    out: ["launcher.quickstep.protolog.srcjar"],
+}
+
+java_genrule {
+    name: "gen-launcher.quickstep.protolog.pb",
+    srcs: [
+        ":launcher-quickstep-unprocessed-protolog-src",
+        ":launcher-quickstep_protolog-groups",
+    ],
+    tools: ["protologtool"],
+    cmd: "$(location protologtool) generate-viewer-config " +
+        "--protolog-class com.android.internal.protolog.common.ProtoLog " +
+        "--loggroups-class com.android.quickstep.util.QuickstepProtoLogGroup " +
+        "--loggroups-jar $(location :launcher-quickstep_protolog-groups) " +
+        "--viewer-config $(out) " +
+        "$(locations :launcher-quickstep-unprocessed-protolog-src)",
+    out: ["launcher.quickstep.protolog.pb"],
+}
+
+prebuilt_etc {
+    name: "launcher.quickstep.protolog.pb",
+    system_ext_specific: true,
+    src: ":gen-launcher.quickstep.protolog.pb",
+    filename_from_src: true,
+}
+
+// Source code for quickstep dagger
+filegroup {
+    name: "launcher-quickstep-dagger",
+    srcs: [
+        "quickstep/dagger/**/*.java",
+        "quickstep/dagger/**/*.kt",
+    ],
+}
+
+// Source code for quickstep build with compose enabled, on top of launcher-src
+filegroup {
+    name: "launcher-quickstep-compose-enabled-src",
+    srcs: [
+        "quickstep/compose/facade/core/*.kt",
+        "quickstep/compose/facade/enabled/*.kt",
+        "quickstep/compose/features/**/*.kt",
+    ],
+}
+
+filegroup {
+    name: "launcher-quickstep-compose-disabled-src",
+    srcs: [
+        "quickstep/compose/facade/core/*.kt",
+        "quickstep/compose/facade/disabled/*.kt",
     ],
 }
 
@@ -63,10 +219,130 @@ filegroup {
     srcs: ["proguard.flags"],
 }
 
+soong_config_bool_variable {
+    name: "release_enable_compose_in_launcher",
+}
+
+// Opt-in configuration for Launcher3 code depending on Jetpack Compose.
+soong_config_module_type {
+    name: "launcher_compose_java_defaults",
+    module_type: "java_defaults",
+    config_namespace: "ANDROID",
+    bool_variables: ["release_enable_compose_in_launcher"],
+    properties: [
+        "srcs",
+        "static_libs",
+    ],
+}
+
+launcher_compose_java_defaults {
+    name: "launcher_compose_defaults",
+    soong_config_variables: {
+        release_enable_compose_in_launcher: {
+            srcs: [
+                ":launcher-compose-enabled-src",
+            ],
+
+            static_libs: [
+                "widget_picker_component",
+                // Compose dependencies
+                "androidx.compose.runtime_runtime",
+                "androidx.compose.material3_material3",
+                "androidx.compose.ui_ui-tooling-preview",
+                "androidx.compose.ui_ui-tooling",
+            ],
+
+            // By default, Compose is disabled and we compile the ComposeFacade
+            // in compose/launcher3/facade/disabled/.
+            conditions_default: {
+                srcs: [
+                    ":launcher-compose-disabled-src",
+                ],
+                static_libs: [],
+            },
+        },
+    },
+}
+
+soong_config_module_type {
+    name: "launcher_compose_tests_java_defaults",
+    module_type: "java_defaults",
+    config_namespace: "ANDROID",
+    bool_variables: ["release_enable_compose_in_launcher"],
+    properties: [
+        "srcs",
+        "static_libs",
+    ],
+}
+
+launcher_compose_tests_java_defaults {
+    name: "launcher_compose_tests_defaults",
+    soong_config_variables: {
+        release_enable_compose_in_launcher: {
+            srcs: [
+                ":launcher-compose-test-helpers-src",
+                ":launcher-compose-unit-tests-src",
+            ],
+            // Compose dependencies
+            static_libs: [
+                "widget_picker_component",
+                "androidx.compose.runtime_runtime",
+                "androidx.compose.ui_ui-test-junit4",
+                "androidx.compose.ui_ui-test-manifest",
+            ],
+
+            conditions_default: {
+                srcs: [],
+                static_libs: [],
+            },
+        },
+    },
+}
+
+// Opt-in configuration for Launcher Quickstep code depending on Jetpack Compose.
+soong_config_module_type {
+    name: "quickstep_compose_java_defaults",
+    module_type: "java_defaults",
+    config_namespace: "ANDROID",
+    bool_variables: ["release_enable_compose_in_launcher"],
+    properties: [
+        "srcs",
+        "static_libs",
+    ],
+}
+
+quickstep_compose_java_defaults {
+    name: "quickstep_compose_defaults",
+    soong_config_variables: {
+        release_enable_compose_in_launcher: {
+            srcs: [
+                ":launcher-quickstep-compose-enabled-src",
+            ],
+
+            // Compose dependencies
+            static_libs: [
+                "androidx.compose.runtime_runtime",
+                "androidx.compose.material3_material3",
+                "androidx.compose.ui_ui-tooling-preview",
+                "androidx.compose.ui_ui-tooling",
+            ],
+
+            // By default, Compose is disabled and we compile the ComposeFacade
+            // in compose/quickstep/facade/disabled/.
+            conditions_default: {
+                srcs: [
+                    ":launcher-quickstep-compose-disabled-src",
+                ],
+                static_libs: [],
+            },
+        },
+    },
+}
+
 android_library {
     name: "launcher-aosp-tapl",
     libs: [
-        "framework-statsd",
+        "framework-statsd.stubs.module_lib",
     ],
     static_libs: [
         "androidx.annotation_annotation",
@@ -76,11 +352,14 @@ android_library {
         "androidx.preference_preference",
         "SystemUISharedLib",
         "//frameworks/libs/systemui:animationlib",
+        "//frameworks/libs/systemui:contextualeducationlib",
         "launcher-testing-shared",
     ],
     srcs: [
         "tests/tapl/**/*.java",
         "tests/tapl/**/*.kt",
+        "tests/src_tapl_build_config/**/*.java",
+        "tests/src_tapl_build_config/**/*.kt",
     ],
     resource_dirs: [],
     manifest: "tests/tapl/AndroidManifest.xml",
@@ -141,7 +420,6 @@ android_library {
     static_libs: [
         "LauncherPluginLib",
         "launcher_quickstep_log_protos_lite",
-        "android.os.flags-aconfig-java",
         "androidx-constraintlayout_constraintlayout",
         "androidx.recyclerview_recyclerview",
         "androidx.dynamicanimation_dynamicanimation",
@@ -154,7 +432,11 @@ android_library {
         "//frameworks/libs/systemui:iconloader_base",
         "//frameworks/libs/systemui:view_capture",
         "//frameworks/libs/systemui:animationlib",
+        "//frameworks/libs/systemui:contextualeducationlib",
+        "//frameworks/libs/systemui:mechanics",
+        "//frameworks/libs/systemui:msdl",
         "SystemUI-statsd",
+        "WindowManager-Shell-shared-AOSP",
         "launcher-testing-shared",
         "androidx.lifecycle_lifecycle-common-java8",
         "androidx.lifecycle_lifecycle-extensions",
@@ -163,8 +445,12 @@ android_library {
         "kotlinx_coroutines",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
-        "android.appwidget.flags-aconfig-java",
-        "com.android.window.flags.window-aconfig-java",
+        "dagger2",
+        "jsr330",
+        "com_android_systemui_shared_flags_lib",
+        "launcher-dagger-qualifiers",
+        "launcher-executor-qualifiers",
+        "launcher-executors-module",
     ],
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
@@ -172,6 +458,9 @@ android_library {
     lint: {
         baseline_filename: "lint-baseline.xml",
     },
+    flags_packages: [
+        "com_android_launcher3_flags",
+    ],
 }
 
 //
@@ -179,6 +468,10 @@ android_library {
 //
 android_app {
     name: "Launcher3",
+    defaults: [
+        "launcher-non-platform-apis-defaults",
+        "launcher_compose_defaults",
+    ],
 
     static_libs: [
         "Launcher3ResLib",
@@ -190,7 +483,7 @@ android_app {
     ],
 
     optimize: {
-        proguard_flags_files: ["proguard.pro"],
+        proguard_flags_files: [":launcher-proguard-rules"],
         // Proguard is disable for testing. Derivarive prjects to keep proguard enabled
         enabled: false,
     },
@@ -198,6 +491,7 @@ android_app {
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
     target_sdk_version: "current",
+    plugins: ["dagger2-compiler"],
     privileged: true,
     system_ext_specific: true,
 
@@ -214,8 +508,12 @@ android_app {
         "AndroidManifest-common.xml",
     ],
     lint: {
+        extra_check_modules: ["Launcher3LintChecker"],
         baseline_filename: "lint-baseline.xml",
     },
+    kotlincflags: [
+        "-Xjvm-default=all",
+    ],
 }
 
 // Library with all the dependencies for building quickstep
@@ -226,24 +524,35 @@ android_library {
         "quickstep/res",
     ],
     libs: [
-        "framework-statsd",
+        "framework-statsd.stubs.module_lib",
     ],
     static_libs: [
         "Launcher3ResLib",
         "lottie",
         "SystemUISharedLib",
         "SettingsLibSettingsTheme",
+        "dagger2",
+        "protolog-group",
+        "displaylib",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     min_sdk_version: "current",
+    lint: {
+        disabled_checks: ["MissingClass"],
+    },
 }
 
 // Library with all the source code and dependencies for building Launcher Go
 android_library {
     name: "Launcher3GoLib",
+    defaults: [
+        "launcher_compose_defaults",
+        "quickstep_compose_defaults",
+    ],
     srcs: [
         ":launcher-src",
         ":launcher-quickstep-src",
+        ":launcher-quickstep-dagger",
         "go/quickstep/src/**/*.java",
         "go/quickstep/src/**/*.kt",
     ],
@@ -258,7 +567,10 @@ android_library {
         "QuickstepResLib",
         "androidx.room_room-runtime",
     ],
-    plugins: ["androidx.room_room-compiler-plugin"],
+    plugins: [
+        "androidx.room_room-compiler-plugin",
+        "dagger2-compiler",
+    ],
     manifest: "quickstep/AndroidManifest.xml",
     additional_manifests: [
         "go/AndroidManifest.xml",
@@ -267,19 +579,27 @@ android_library {
     min_sdk_version: "current",
     // TODO(b/319712088): re-enable use_resource_processor
     use_resource_processor: false,
+    kotlincflags: [
+        "-Xjvm-default=all",
+    ],
 }
 
 // Library with all the source code and dependencies for building Quickstep
 android_library {
     name: "Launcher3QuickStepLib",
+    defaults: [
+        "launcher_compose_defaults",
+        "quickstep_compose_defaults",
+    ],
     srcs: [
         ":launcher-src",
         ":launcher-quickstep-src",
+        ":launcher-quickstep-dagger",
         ":launcher-build-config",
     ],
     resource_dirs: [],
     libs: [
-        "framework-statsd",
+        "framework-statsd.stubs.module_lib",
     ],
     // Note the ordering here is important when it comes to resource
     // overriding. We want the most specific resource overrides defined
@@ -291,18 +611,23 @@ android_library {
     ],
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,
+    plugins: ["dagger2-compiler"],
     min_sdk_version: "current",
     // TODO(b/319712088): re-enable use_resource_processor
     use_resource_processor: false,
+    kotlincflags: [
+        "-Xjvm-default=all",
+    ],
 }
 
 // Build rule for Quickstep app.
 android_app {
     name: "Launcher3QuickStep",
-
     static_libs: ["Launcher3QuickStepLib"],
     optimize: {
-        enabled: false,
+        proguard_flags_files: [":launcher-proguard-rules"],
+        enabled: true,
+        shrink_resources: true,
     },
 
     platform_apis: true,
@@ -316,7 +641,10 @@ android_app {
         "Launcher2",
         "Launcher3",
     ],
-    required: ["privapp_whitelist_com.android.launcher3"],
+    required: [
+        "privapp_whitelist_com.android.launcher3",
+        "launcher.quickstep.protolog.pb",
+    ],
 
     resource_dirs: ["quickstep/res"],
 
@@ -332,13 +660,11 @@ android_app {
 
 }
 
-
 // Build rule for Launcher3 Go app with quickstep for Android Go devices.
 // Note that the following two rules are exactly same, and should
 // eventually be merged into a single target
 android_app {
     name: "Launcher3Go",
-
     static_libs: ["Launcher3GoLib"],
     resource_dirs: [],
 
@@ -349,6 +675,7 @@ android_app {
     optimize: {
         proguard_flags_files: ["proguard.flags"],
         enabled: true,
+        shrink_resources: true,
     },
 
     privileged: true,
@@ -372,9 +699,9 @@ android_app {
         include_filter: ["com.android.launcher3.*"],
     },
 }
+
 android_app {
     name: "Launcher3QuickStepGo",
-
     static_libs: ["Launcher3GoLib"],
     resource_dirs: [],
 
@@ -385,6 +712,7 @@ android_app {
     optimize: {
         proguard_flags_files: ["proguard.flags"],
         enabled: true,
+        shrink_resources: true,
     },
 
     privileged: true,

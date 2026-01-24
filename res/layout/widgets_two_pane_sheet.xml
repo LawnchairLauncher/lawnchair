@@ -23,9 +23,7 @@
     <com.android.launcher3.views.SpringRelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:importantForAccessibility="no">
+        android:layout_height="match_parent">
 
         <View
             android:id="@+id/collapse_handle"
@@ -37,6 +35,7 @@
 
         <TextView
             android:id="@+id/title"
+            style="@style/WidgetsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -48,20 +47,23 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/no_widgets_text"
-            style="@style/PrimaryHeadline"
+            android:id="@+id/widget_picker_description"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="18sp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_below="@id/title"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
+            android:textColor="?attr/widgetPickerDescriptionColor"
             android:visibility="gone"
-            tools:text="@string/no_widgets_available" />
+            android:lineHeight="20sp"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/linear_layout_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/title">
+            android:layout_below="@id/widget_picker_description">
 
             <FrameLayout
                 android:id="@+id/recycler_view_container"
@@ -69,7 +71,7 @@
                 android:layout_height="match_parent"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:paddingBottom="24dp"
+                android:paddingBottom="8dp"
                 android:layout_gravity="start"
                 android:layout_weight="0.33">
                 <TextView
@@ -83,14 +85,6 @@
                     android:layout_width="@dimen/fastscroll_width"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/fastscroll_end_margin" />
-
-                <com.android.launcher3.widget.picker.WidgetsRecyclerView
-                    android:id="@+id/search_widgets_list_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
-                    android:visibility="gone" />
             </FrameLayout>
 
             <FrameLayout
@@ -124,12 +118,23 @@
                             android:background="@drawable/widgets_surface_background"
                             android:importantForAccessibility="yes"
                             android:id="@+id/right_pane">
+                            <TextView
+                                android:id="@+id/no_widgets_text"
+                                style="@style/PrimaryHeadline"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:textSize="18sp"
+                                android:visibility="gone"
+                                tools:text="@string/no_widgets_available" />
+
                             <!-- Shown when there are recommendations to display -->
                             <LinearLayout
                                 android:id="@+id/widget_recommendations_container"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="@drawable/widgets_surface_background"
+                                android:clipToOutline="true"
                                 android:orientation="vertical"
                                 android:visibility="gone">
                                 <include layout="@layout/widget_recommendations" />

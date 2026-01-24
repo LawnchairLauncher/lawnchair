@@ -26,31 +26,43 @@ import android.content.pm.ActivityInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.content.pm.ShortcutInfo
+import android.graphics.Bitmap
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.os.Flags.allowPrivateProfile
 import android.os.IBinder
 import android.os.UserHandle
 import android.os.UserManager
 import android.util.ArrayMap
+import android.view.SurfaceControlViewHost
 import android.widget.Toast
 import android.window.RemoteTransition
+import android.window.ScreenCapture
+import com.android.launcher3.BaseActivity
 import androidx.annotation.RequiresApi
-import app.lawnchair.LawnchairApp
 import com.android.launcher3.Flags.enablePrivateSpace
-import com.android.launcher3.Flags.enablePrivateSpaceInstallShortcut
-import com.android.launcher3.Flags.privateSpaceAppInstallerButton
 import com.android.launcher3.Flags.privateSpaceSysAppsSeparation
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.dagger.ApplicationContext
+import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.proxy.ProxyActivityStarter
+import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController
 import com.android.launcher3.util.ApiWrapper
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.StartActivityParams
 import com.android.launcher3.util.UserIconInfo
 import com.android.quickstep.util.FadeOutRemoteTransition
+import java.util.function.Supplier
+import javax.inject.Inject
+
+import app.lawnchair.LawnchairApp
 
 /** A wrapper for the hidden API calls */
-open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
+@LauncherAppSingleton
+open class SystemApiWrapper @Inject constructor(@ApplicationContext context: Context?) :
+    ApiWrapper(context) {
 
     override fun getPersons(si: ShortcutInfo) = si.persons ?: Utilities.EMPTY_PERSON_ARRAY
 
@@ -65,7 +77,7 @@ open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
     override fun createFadeOutAnimOptions(): ActivityOptions {
         return try {
             ActivityOptions.makeBasic().apply {
-                remoteTransition = RemoteTransition(FadeOutRemoteTransition())
+                remoteTransition = RemoteTransition(FadeOutRemoteTransition(), "FadeOut")
             }
         } catch (t: Throwable) {
             super.createFadeOutAnimOptions()
@@ -115,10 +127,7 @@ open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
 
     override fun getAppMarketActivityIntent(packageName: String, user: UserHandle): Intent {
         return try {
-            if (
-                enablePrivateSpace() &&
-                (privateSpaceAppInstallerButton() || enablePrivateSpaceInstallShortcut())
-            )
+            if (allowPrivateProfile() && enablePrivateSpace())
                 ProxyActivityStarter.getLaunchIntent(
                     mContext,
                     StartActivityParams(null as PendingIntent?, 0).apply {
@@ -133,7 +142,7 @@ open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
                                 )
                                 .toBundle()
                         requireActivityResult = false
-                    }
+                    },
                 )
             else super.getAppMarketActivityIntent(packageName, user)
         } catch (t: Throwable) {
@@ -144,7 +153,7 @@ open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
     /** Returns an intent which can be used to open Private Space Settings. */
     override fun getPrivateSpaceSettingsIntent(): Intent? {
         return try {
-            if (enablePrivateSpace())
+            if (allowPrivateProfile() && enablePrivateSpace())
                 ProxyActivityStarter.getLaunchIntent(
                     mContext,
                     StartActivityParams(null as PendingIntent?, 0).apply {
@@ -175,6 +184,14 @@ open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
         }
     }
 
+    override fun supportsMultiInstance(lai: LauncherActivityInfo): Boolean {
+        return try {
+            super.supportsMultiInstance(lai) || lai.supportsMultiInstance()
+        } catch (t: Throwable) {
+            false
+        }
+    }
+
     /**
      * Starts an Activity which can be used to set this Launcher as the HOME app, via a consent
      * screen. In case the consent screen cannot be shown, or the user does not set current Launcher
@@ -198,7 +215,7 @@ open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
                                 allowlistToken: IBinder?,
                                 finishedReceiver: IIntentReceiver?,
                                 requiredPermission: String?,
-                                options: Bundle?
+                                options: Bundle?,
                             ) {
                                 if (code != -1) {
                                     Executors.MAIN_EXECUTOR.execute {
@@ -206,9 +223,9 @@ open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
                                             context,
                                             context.getString(
                                                 R.string.set_default_home_app,
-                                                context.getString(R.string.derived_app_name)
+                                                context.getString(R.string.derived_app_name),
                                             ),
-                                            Toast.LENGTH_LONG
+                                            Toast.LENGTH_LONG,
                                         )
                                             .show()
                                     }
@@ -224,4 +241,25 @@ open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
             super.assignDefaultHomeRole(context)
         }
     }
+
+    override fun createStatusBarTouchController(
+        launcher: BaseActivity,
+        isEnabledCheck: Supplier<Boolean>,
+    ): StatusBarTouchController? {
+        return StatusBarTouchController(launcher, isEnabledCheck)
+    }
+
+    override fun isFileDrawable(shortcutInfo: ShortcutInfo) =
+        shortcutInfo.hasIconFile() || shortcutInfo.hasIconUri()
+
+    override fun captureSnapshot(host: SurfaceControlViewHost, width: Int, height: Int): Bitmap =
+        ScreenCapture.captureLayers(
+                ScreenCapture.LayerCaptureArgs.Builder(host.surfacePackage!!.surfaceControl)
+                    .setSourceCrop(Rect(0, 0, width, height))
+                    .setAllowProtected(true)
+                    .setHintForSeamlessTransition(true)
+                    .build()
+            )
+            .asBitmap()
+            .copy(Bitmap.Config.ARGB_8888, true)
 }

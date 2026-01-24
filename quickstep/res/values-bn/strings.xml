@@ -22,11 +22,14 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"পিন করুন"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ফ্রি-ফর্ম"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"ডেস্কটপ"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"এক্সটার্নাল ডিসপ্লেতে সরিয়ে নিয়ে যান"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"মুছুন"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"ডেস্কটপ"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"কোনও সাম্প্রতিক আইটেম নেই"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"অ্যাপ ব্যবহারের সেটিংস"</string>
-    <string name="recents_clear_all" msgid="5328176793634888831">"সবকিছু খালি করুন"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"সব মুছে দিন"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"নতুন ডেস্ক যোগ করুন"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"সম্প্রতি ব্যবহৃত অ্যাপ"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"টাস্ক বন্ধ করা হয়েছে"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; ১ মি."</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"আজকে <xliff:g id="TIME">%1$s</xliff:g> বাকি আছে"</string>
@@ -45,28 +48,27 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"অ্যাপ সাজেশন চালু করা আছে"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"অ্যাপ সাজেশন বন্ধ করা আছে"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"আপনার প্রয়োজন হতে পারে এমন অ্যাপ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"জেসচার নেভিগেশন সম্পর্কিত টিউটোরিয়াল"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"আপনার ডিভাইস ঘোরান"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"জেসচার নেভিগেশন টিউটোরিয়াল সম্পূর্ণ করতে আপনার ডিভাইসটি ঘোরান"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"স্ক্রিনের একেবারে ডান বা বাঁদিকের প্রান্ত থেকে সোয়াইপ করেছেন কিনা তা দেখে নিন"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"স্ক্রিনের ডান বা বাঁদিকের প্রান্ত থেকে মাঝখান পর্যন্ত সোয়াইপ করেছেন কিনা দেখে নিয়ে আঙুল তুলে নিন"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ফিরে যেতে, কীভাবে ডানদিক থেকে সোয়াইপ করতে হয় তা আপনি শিখেছেন। এরপর, একটি অ্যাপ থেকে অন্য অ্যাপে কীভাবে যাবেন জেনে নিন।"</string>
     <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"আপনি ফিরে যাওয়ার জেসচার সম্পর্কে জেনেছেন। এরপর, একটি অ্যাপ থেকে অন্য অ্যাপে কীভাবে যাবেন জেনে নিন।"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"আপনি জেনেছেন হাতের জেসচার ব্যবহার করে আগের স্ক্রিনে কীভাবে ফিরে যাওয়া যায়"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"আপনি ফিরে যাওয়ার জেসচার শেখা সম্পূর্ণ করেছেন"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"স্ক্রিনের নিচের প্রান্তের খুব কাছে পর্যন্ত যাতে সোয়াইপ না করেন সেটি ভাল করে দেখে নিন"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ফিরে যাওয়ার জেসচারের সেন্সিটিভিটি পরিবর্তন করতে, সেটিংসে যান"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ফিরে যেতে সোয়াইপ করুন"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"শেষের স্ক্রিনে ফিরে যেতে, ডান বা বাঁ প্রান্ত থেকে স্ক্রিনের মাঝখান পর্যন্ত সোয়াইপ করুন।"</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"শেষ স্ক্রিনে ফিরতে, বাম বা ডান প্রান্ত থেকে স্ক্রিনের মাঝামাঝি পর্যন্ত ২টি আঙুল দিয়ে সোয়াইপ করুন।"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"ফিরে যান"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"স্ক্রিনের বাঁদিক বা ডানদিক থেকে মাঝখানে সোয়াইপ করুন"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"স্ক্রিনের নিচের প্রান্ত থেকে আপনি সোয়াইপ করেছেন কিনা ভাল করে দেখে নিন"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"আঙুল তুলে নেওয়ার আগে আপনি যাতে পজ না করেন সেটি ভাল করে দেখে নিন"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"আপনি উপরের দিকে সোজাসুজি সোয়াইপ করেছেন কিনা ভাল করে দেখে নিন"</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"আপনি জেনেছেন হাতের জেসচার ব্যবহার করে হোম স্ক্রিনে কীভাবে যাওয়া যায়। এরপর, ফিরে কীভাবে যাবেন তা জেনে নিন।"</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"আপনি জেনেছেন হাতের জেসচার ব্যবহার করে হোম স্ক্রিনে কীভাবে যাওয়া যায়"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"জেসচার ব্যবহার করে কীভাবে হোমে ফিরে যাওয়া যায় সেই সম্পর্কে শেখা আপনি সম্পূর্ণ করেছেন"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"হোম স্ক্রিনে যেতে সোয়াইপ করুন"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"স্ক্রিনের নিচের প্রান্ত থেকে উপরের দিকে সোয়াইপ করুন। এটি করলে, আপনি সবসময় হোম স্ক্রিনে যেতে পারবেন।"</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"স্ক্রিনের নিচ থেকে ২টি আঙুল দিয়ে উপরে সোয়াইপ করুন। এই জেসচার সবসময় আপনাকে হোম স্ক্রিনে নিয়ে যায়।"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"হোম স্ক্রিনে যান"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"আপনার স্ক্রিনের একেবারে নিচ থেকে সোয়াইপ করুন"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"অসাধারণ!"</string>
@@ -74,15 +76,14 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"চেষ্টা করুন যাতে আঙুল সরিয়ে নেওয়ার আগে উইন্ডো বেশ কিছুক্ষণ প্রেস করে রাখা যায়"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"আপনি উপরের দিকে সোজাসুজি সোয়াইপ করেছেন কিনা ভাল করে দেখে নিয়ে তারপর পজ করুন"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"জেসচার কীভাবে ব্যবহার করতে হয় আপনি তা শিখে ফেলেছেন। জেসচার বন্ধ করতে, সেটিংসে যান।"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"আপনি জেনেছেন যে হাতের জেসচার ব্যবহার করে একটি অ্যাপ থেকে অন্য অ্যাপে কীভাবে যাওয়া যায়"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"জেসচার ব্যবহার করে একটি অ্যাপ থেকে অন্য অ্যাপে কীভাবে যাওয়া যায় সেটি শেখা আপনি সম্পূর্ণ করেছেন"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"একটি অ্যাপ থেকে অন্য অ্যাপে যেতে সোয়াইপ করুন"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"একটি অ্যাপ থেকে অন্যটিতে পাল্টাতে, স্ক্রিনের নিচ থেকে উপরে সোয়াইপ করে ধরে রাখুন, তারপরে ছেড়ে দিন।"</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"একটি থেকে অন্য অ্যাপে পাল্টাতে, ২টি আঙুল দিয়ে স্ক্রিনের নিচ থেকে উপরে সোয়াইপ করে ধরে রেখে ছেড়ে দিন।"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"অ্যাপ পরিবর্তন করুন"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"স্ক্রিনের নিচের থেকে উপরের দিকে সোয়াইপ করে ধরে থাকুন, তারপরে ছেড়ে দিন"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"শাবাশ!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"সব প্রস্তুত"</string>
-    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"সম্পূর্ণ হয়েছে"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"হয়ে গেছে"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"সেটিংস"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"আবার চেষ্টা করুন"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"সাবাস!"</string>
@@ -91,24 +92,33 @@
     <string name="allset_hint" msgid="459504134589971527">"হোম স্ক্রিনে যেতে উপরের দিকে সোয়াইপ করুন"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"আপনার হোম স্ক্রিনে যাওয়ার জন্য হোম বোতামে ট্যাপ করুন"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> ব্যবহার শুরু করার জন্য আপনি রেডি"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"ডিভাইস"</string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"নিজের ডিভাইস ব্যবহার শুরু করার জন্য আপনি রেডি"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"সিস্টেম নেভিগেশন সেটিংস"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"আপনার <xliff:g id="DEVICE">%1$s</xliff:g> \nপ্রস্তুত!"</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"আপনার ডিভাইস \nপ্রস্তুত!"</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"আপনার নতুন <xliff:g id="DEVICE">%1$s</xliff:g> ব্যবহার করুন!"</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"কীভাবে নেভিগেট করবেন তা বেছে নিন"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"উপরের দিকে সোয়াইপ করুন"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"হোম বোতামে ট্যাপ করুন"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"ট্যাবলেট"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"ফোন"</string>
     <string name="action_share" msgid="2648470652637092375">"শেয়ার করুন"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"স্ক্রিনশট নিন"</string>
     <string name="action_split" msgid="2098009717623550676">"স্প্লিট"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"অ্যাপ পেয়ার সেভ করুন"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"স্প্লিট স্ক্রিন ব্যবহারের জন্য অ্যাপে ট্যাপ করুন"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"স্প্লিট স্ক্রিন ব্যবহার করতে অন্য অ্যাপ বেছে নিন"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"বাতিল করুন"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"বাতিল করুন"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"স্প্লিট স্ক্রিন বেছে নেওয়ার বিকল্প থেকে বেরিয়ে আসুন"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"স্প্লিট স্ক্রিন ব্যবহার করতে অন্য অ্যাপ বেছে নিন"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"এই অ্যাপ বা আপনার প্রতিষ্ঠান এই অ্যাকশনটি পারফর্ম করার অনুমতি দেয়নি"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"উইজেট বর্তমানে ব্যবহার করা যাচ্ছে না, অন্য একটি অ্যাপ বেছে নিন"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"নেভিগেশন টিউটোরিয়াল এড়িয়ে যেতে চান?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"আপনি <xliff:g id="NAME">%1$s</xliff:g> অ্যাপে পরে এটি খুঁজে পাবেন"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"বাতিল করুন"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"এড়িয়ে যান"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"স্ক্রিন ঘোরান"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"অ্যানিমেশন যেখানে দেখানো হচ্ছে, কীভাবে টাস্কবারটি স্ক্রিনের নিচ থেকে দেখা যায় এবং ব্যবহার করা না হলে অটোমেটিক লুকানো হয়"</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"অ্যানিমেশন যেখানে দেখানো হচ্ছে, টগল ব্যবহার করে কীভাবে আপনার টাস্কবার পিন করতে হয়, যাতে স্ক্রিনের নিচে টাস্কবার স্থায়ীভাবে দেখা যায়"</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"অ্যানিমেশন যেখানে দেখানো হচ্ছে, টাস্কবার থেকে একটি অ্যাপকে, খোলা আছে এমন অ্যাপের উপরে টেনে এনে রেখে কীভাবে \'স্প্লিট স্ক্রিন\' তৈরি করতে হয়"</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"অ্যানিমেশন যেখানে দেখানো হচ্ছে, আপনার ডিভাইসে সাজেস্ট করা অ্যাপ কীভাবে অ্যাক্সেস করবেন"</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"অ্যানিমেশন যেখানে দেখানো হচ্ছে, অ্যাকশন \'কী\' টাচ করে ধরে রেখে এবং আইটেমটি যেখানে রয়েছে তা বেছে নিয়ে কীভাবে স্ক্রিনে কোনও আইটেম সার্চ করতে হয়"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"টাস্কবার এডুকেশন"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"একসাথে ২টি অ্যাপ ব্যবহার করতে একটি অ্যাপ পাশে টেনে আনুন"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"\'টাস্কবার\' দেখার জন্য উপরের দিকে ধীরে সোয়াইপ করুন"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"দ্রুত সেটিংস"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"টাস্কবার"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"\'টাস্কবার\' দেখানো হয়েছে"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"\'টাস্কবার\' লুকানো রয়েছে"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"টাস্কবার ও বাবল বাঁদিকে দেখানো হয়েছে"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"টাস্কবার ও বাবল ডানদিকে দেখানো হয়েছে"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"নেভিগেশন বার"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"সবসময় টাস্কবার দেখুন"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"\'নেভিগেশন\' মোড পরিবর্তন করুন"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"টাস্কবার ডিভাইডার"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"অন্যান্য সাম্প্রতিক অ্যাপ"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"উপরে/বাঁদিকে সরান"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"নিচে/ডানদিকে সরান"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{আরও #টি অ্যাপ দেখুন।}one{আরও #টি অ্যাপ দেখুন।}other{আরও #টি অ্যাপ দেখুন।}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{#টি ডেস্কটপ অ্যাপ দেখুন।}one{#টি ডেস্কটপ অ্যাপ দেখুন।}other{#টি ডেস্কটপ অ্যাপ দেখুন।}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"বাবল হিসেবে অ্যাপ খুলুন"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"সম্প্রতি ব্যবহৃত অ্যাপ"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"সাম্প্রতিক অ্যাপের তালিকা"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{আরও অ্যাপ}one{আরও অ্যাপ}other{আরও অ্যাপ}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"ডেস্কটপ"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ও <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="TOTAL_TASKS">%3$d</xliff:g>টি টাস্কের মধ্যে <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g> নম্বর আইটেম"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"বাঁ দিকে স্ক্রল করুন"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"ডান দিকে স্ক্রল করুন"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"বাবল"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"ওভারফ্লো"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="APP_NAME">%2$s</xliff:g> থেকে <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> এবং আরও <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g>টি"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"বাঁদিকে সরান"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"ডানদিকে সরান"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"সব বাতিল করুন"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g> বড় করুন"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g> আড়াল করুন"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"খোঁজার জন্য সার্কেল বানান"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"অ্যাপ আইকন"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"অ্যাপের শিরোনাম"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"বন্ধ করার বোতাম"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"টাস্কবারে পিন করুন"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"টাস্কবার থেকে আনপিন করুন"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"নাজ"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"বন্ধ করুন"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"ছবিটি নাজ করুন"</string>
 </resources>

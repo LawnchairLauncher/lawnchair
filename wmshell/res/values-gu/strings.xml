@@ -36,6 +36,7 @@
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"આ ઍપ માત્ર 1 વિન્ડોમાં ખોલી શકાય છે"</string>
     <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"ઍપ્લિકેશન ગૌણ ડિસ્પ્લે પર કદાચ કામ ન કરે."</string>
     <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"ઍપ્લિકેશન ગૌણ ડિસ્પ્લે પર લૉન્ચનું સમર્થન કરતી નથી."</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"ઍપ બબલને સપોર્ટ કરતી નથી"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"સ્ક્રીનને વિભાજિત કરતું વિભાજક"</string>
     <string name="divider_title" msgid="1963391955593749442">"સ્ક્રીનને વિભાજિત કરતું વિભાજક"</string>
     <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ડાબી પૂર્ણ સ્ક્રીન"</string>
@@ -43,6 +44,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ડાબે 50%"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ડાબે 30%"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"જમણી સ્ક્રીન સ્ક્રીન"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"એકદમ ઉપરની ઍપને એકદમ નીચેની સાથે સ્વૉપ કરો"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"ડાબી ઍપને જમણી સાથે સ્વૉપ કરો"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"શીર્ષ પૂર્ણ સ્ક્રીન"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"શીર્ષ 70%"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"શીર્ષ 50%"</string>
@@ -65,10 +68,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"ઉપર જમણે ખસેડો"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"નીચે ડાબે ખસેડો"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"નીચે જમણે ખસેડો"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"મેનૂ મોટું કરો"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"મેનૂ નાનું કરો"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"ડાબે ખસેડો"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"જમણે ખસેડો"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> મોટું કરો"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> નાનું કરો"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> સેટિંગ"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"બબલને છોડી દો"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"પૂર્ણસ્ક્રીન પર ખસો"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"વાતચીતને બબલ કરશો નહીં"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"બબલનો ઉપયોગ કરીને ચૅટ કરો"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"નવી વાતચીત ફ્લોટિંગ આઇકન અથવા બબલ જેવી દેખાશે. બબલને ખોલવા માટે ટૅપ કરો. તેને ખસેડવા માટે ખેંચો."</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"કૅમેરામાં સમસ્યાઓ છે?\nફરીથી ફિટ કરવા માટે ટૅપ કરો"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"સુધારો નથી થયો?\nપહેલાંના પર પાછું ફેરવવા માટે ટૅપ કરો"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"કૅમેરામાં કોઈ સમસ્યા નથી? છોડી દેવા માટે ટૅપ કરો."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"ઍપ મેનૂ અહીં જોવા મળી શકે છે"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"એકથી વધુ ઍપ એકસાથે ખોલવા માટે ડેસ્કટૉપ વિન્ડોઇંગ દાખલ કરો"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"ઍપ મેનૂમાંથી કોઈપણ સમયે પૂર્ણ સ્ક્રીન પર પાછા ફરો"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"જુઓ અને બીજું ઘણું કરો"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"વિભાજિત સ્ક્રીન માટે કોઈ અન્ય ઍપમાં ખેંચો"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"કોઈ ઍપની જગ્યા બદલવા માટે, તેની બહાર બે વાર ટૅપ કરો"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"ફરી શરૂ કરો"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"ફરીથી બતાવશો નહીં"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"આ ઍપને ખસેડવા માટે\nબે વાર ટૅપ કરો"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"મોટું કરો"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"નાનું કરો"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"બંધ કરો"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"<xliff:g id="APP_NAME">%1$s</xliff:g>નું કદ મહત્તમ કરો"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"<xliff:g id="APP_NAME">%1$s</xliff:g>ને રિસ્ટોર કરો"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"<xliff:g id="APP_NAME">%1$s</xliff:g>નું કદ ન્યૂનતમ કરો"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"<xliff:g id="APP_NAME">%1$s</xliff:g> બંધ કરો"</string>
     <string name="back_button_text" msgid="1469718707134137085">"પાછળ"</string>
-    <string name="handle_text" msgid="1766582106752184456">"હૅન્ડલ"</string>
+    <string name="handle_text" msgid="4419667835599523257">"ઍપનું હૅન્ડલ"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"ઍપનું આઇકન"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"પૂર્ણસ્ક્રીન"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"ડેસ્કટૉપ મોડ"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"ડેસ્કટૉપ વિન્ડોઇંગ"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"સ્ક્રીનને વિભાજિત કરો"</string>
     <string name="more_button_text" msgid="3655388105592893530">"વધુ"</string>
     <string name="float_button_text" msgid="9221657008391364581">"ફ્લોટિંગ વિન્ડો"</string>
     <string name="select_text" msgid="5139083974039906583">"પસંદ કરો"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"સ્ક્રીનશૉટ"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"બ્રાઉઝરમાં ખોલો"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"ઍપમાં ખોલો"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"નવી વિન્ડો"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"વિન્ડો મેનેજ કરો"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"સાપેક્ષ ગુણોત્તર બદલો"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"વ્યૂ ઑપ્ટિમાઇઝ કરો"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"ભૂલનું આઇકન"</string>
     <string name="close_text" msgid="4986518933445178928">"બંધ કરો"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"મેનૂ બંધ કરો"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"મેનૂ ખોલો"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ડેસ્કટૉપ વિન્ડોઇંગ)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"સ્ક્રીન કરો મોટી કરો"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"સ્ક્રીન સ્નૅપ કરો"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"કદ બદલો"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"ઍપ અહીં ખસેડી શકાતી નથી"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"નવી વિન્ડો ખોલવી"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"ઍપની વિન્ડો બંધ કરી રહ્યાં છીએ"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"ઍપ વિન્ડો ન્યૂનતમ કરવી"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ફોકસ કરેલ)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ફોકસ ન કરેલી)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"ઇમર્સિવ"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"રિસ્ટોર કરો"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"મોટું કરો"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"રિસ્ટોર કરો"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"ડાબે સ્નૅપ કરો"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"જમણે સ્નૅપ કરો"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"ડાબી બાજુથી ઍપની વિન્ડોનું કદ બદલો"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"જમણી બાજુથી ઍપની વિન્ડોનું કદ બદલો"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"વિન્ડોનું કદ મહત્તમ કરો અથવા રિસ્ટોર કરો"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"મેનૂ ખોલો"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"<xliff:g id="WINDOWING_MODE">%1$s</xliff:g> દાખલ કરો"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"ડાબી બાજુ વિન્ડોનું કદ બદલો"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"જમણી બાજુ વિન્ડોનું કદ બદલો"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"વિન્ડોનું કદ મહત્તમ કરો અથવા રિસ્ટોર કરો"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"ઍપની વિન્ડોનું કદ મહત્તમ કરો"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"વિન્ડોનું કદ રિસ્ટોર કરો"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"ઍપની વિન્ડોનું કદ ન્યૂનતમ કરો"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"ઍપની વિન્ડો બંધ કરો"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"\'ડિફૉલ્ટ તરીકે ખોલો\' સેટિંગ"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"આ ઍપ માટે વેબ લિંક ખોલવાની રીત પસંદ કરો"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"ઍપમાં"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"તમારા બ્રાઉઝરમાં"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"ઓકે"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"તમારા બ્રાઉઝરમાં અહીં ઝડપથી ઍપ ખોલો"</string>
 </resources>

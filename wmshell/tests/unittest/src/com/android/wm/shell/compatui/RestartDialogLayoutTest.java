@@ -16,6 +16,8 @@
 
 package com.android.wm.shell.compatui;
 
+import static com.android.window.flags2.Flags.FLAG_APP_COMPAT_UI_FRAMEWORK;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +25,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import android.platform.test.annotations.RequiresFlagsDisabled;
 import android.testing.AndroidTestingRunner;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +52,7 @@ import java.util.function.Consumer;
  */
 @RunWith(AndroidTestingRunner.class)
 @SmallTest
-public class RestartDialogLayoutTest extends ShellTestCase  {
+public class RestartDialogLayoutTest extends ShellTestCase {
 
     @Mock private Runnable mDismissCallback;
     @Mock private Consumer<Boolean> mRestartCallback;
@@ -76,6 +79,7 @@ public class RestartDialogLayoutTest extends ShellTestCase  {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnFinishInflate() {
         assertEquals(mLayout.getDialogContainerView(),
                 mLayout.findViewById(R.id.letterbox_restart_dialog_container));
@@ -86,6 +90,7 @@ public class RestartDialogLayoutTest extends ShellTestCase  {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnDismissButtonClicked() {
         assertTrue(mDismissButton.performClick());
 
@@ -93,6 +98,7 @@ public class RestartDialogLayoutTest extends ShellTestCase  {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnRestartButtonClickedWithoutCheckbox() {
         mDontRepeatCheckBox.setChecked(false);
         assertTrue(mRestartButton.performClick());
@@ -101,6 +107,7 @@ public class RestartDialogLayoutTest extends ShellTestCase  {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnRestartButtonClickedWithCheckbox() {
         mDontRepeatCheckBox.setChecked(true);
         assertTrue(mRestartButton.performClick());
@@ -109,6 +116,7 @@ public class RestartDialogLayoutTest extends ShellTestCase  {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnBackgroundClickedDoesntDismiss() {
         assertFalse(mLayout.performClick());
 
@@ -116,6 +124,7 @@ public class RestartDialogLayoutTest extends ShellTestCase  {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnDialogContainerClicked() {
         assertTrue(mDialogContainer.performClick());
 
@@ -124,6 +133,7 @@ public class RestartDialogLayoutTest extends ShellTestCase  {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testSetDismissOnClickListenerNull() {
         mLayout.setDismissOnClickListener(null);
 
@@ -135,6 +145,7 @@ public class RestartDialogLayoutTest extends ShellTestCase  {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testSetRestartOnClickListenerNull() {
         mLayout.setRestartOnClickListener(null);
 

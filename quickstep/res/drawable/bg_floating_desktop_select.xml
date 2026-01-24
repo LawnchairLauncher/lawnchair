@@ -19,5 +19,5 @@
     android:shape="rectangle">
 
     <corners android:radius="@dimen/rounded_button_radius" />
-    <solid android:color="?attr/materialColorPrimaryContainer" />
+    <solid android:color="@color/materialColorPrimaryContainer" />
 </shape>

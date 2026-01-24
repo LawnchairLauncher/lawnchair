@@ -20,39 +20,51 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.app.ActivityManager.RunningTaskInfo
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.PointF
 import android.graphics.Rect
 import android.os.Trace
+import android.view.Choreographer
 import android.view.Display
 import android.view.LayoutInflater
 import android.view.SurfaceControl
 import android.view.SurfaceControlViewHost
-import android.view.SurfaceSession
 import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.INPUT_FEATURE_NO_INPUT_CHANNEL
 import android.view.WindowlessWindowManager
 import android.widget.ImageView
 import android.window.TaskConstants
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.ui.graphics.toArgb
+import com.android.internal.annotations.VisibleForTesting
 import com.android.wm.shell.R
 import com.android.wm.shell.common.DisplayController
 import com.android.wm.shell.common.DisplayController.OnDisplaysChangedListener
+import com.android.wm.shell.shared.annotations.ShellBackgroundThread
+import com.android.wm.shell.shared.annotations.ShellMainThread
 import com.android.wm.shell.windowdecor.WindowDecoration.SurfaceControlViewHostFactory
+import com.android.wm.shell.windowdecor.common.WindowDecorTaskResourceLoader
 import com.android.wm.shell.windowdecor.common.DecorThemeUtil
 import com.android.wm.shell.windowdecor.common.Theme
 import java.util.function.Supplier
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Creates and updates a veil that covers task contents on resize.
  */
-class ResizeVeil @JvmOverloads constructor(
+public class ResizeVeil @JvmOverloads constructor(
         private val context: Context,
         private val displayController: DisplayController,
-        private val appIcon: Bitmap,
+        private val taskResourceLoader: WindowDecorTaskResourceLoader,
+        @ShellMainThread private val mainDispatcher: CoroutineDispatcher,
+        @ShellBackgroundThread private val bgScope: CoroutineScope,
         private var parentSurface: SurfaceControl,
         private val surfaceControlTransactionSupplier: Supplier<SurfaceControl.Transaction>,
         private val surfaceControlBuilderFactory: SurfaceControlBuilderFactory =
@@ -65,8 +77,8 @@ class ResizeVeil @JvmOverloads constructor(
     private val lightColors = dynamicLightColorScheme(context)
     private val darkColors = dynamicDarkColorScheme(context)
 
-    private val surfaceSession = SurfaceSession()
-    private lateinit var iconView: ImageView
+    @VisibleForTesting
+    lateinit var iconView: ImageView
     private var iconSize = 0
 
     /** A container surface to host the veil background and icon child surfaces.  */
@@ -78,6 +90,8 @@ class ResizeVeil @JvmOverloads constructor(
     private var viewHost: SurfaceControlViewHost? = null
     private var display: Display? = null
     private var veilAnimator: ValueAnimator? = null
+    private var iconAnimator: ValueAnimator? = null
+    private var loadAppInfoJob: Job? = null
 
     /**
      * Whether the resize veil is currently visible.
@@ -125,7 +139,7 @@ class ResizeVeil @JvmOverloads constructor(
                 .setCallsite("ResizeVeil#setupResizeVeil")
                 .build()
         backgroundSurface = surfaceControlBuilderFactory
-                .create("Resize veil background of Task=" + taskInfo.taskId, surfaceSession)
+                .create("Resize veil background of Task=" + taskInfo.taskId)
                 .setColorLayer()
                 .setHidden(true)
                 .setParent(veilSurface)
@@ -143,7 +157,6 @@ class ResizeVeil @JvmOverloads constructor(
         val root = LayoutInflater.from(context)
                 .inflate(R.layout.desktop_mode_resize_veil, null /* root */)
         iconView = root.requireViewById(R.id.veil_application_icon)
-        iconView.setImageBitmap(appIcon)
         val lp = WindowManager.LayoutParams(
                 iconSize,
                 iconSize,
@@ -151,11 +164,20 @@ class ResizeVeil @JvmOverloads constructor(
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSPARENT)
         lp.title = "Resize veil icon window of Task=" + taskInfo.taskId
+        lp.inputFeatures = INPUT_FEATURE_NO_INPUT_CHANNEL
         lp.setTrustedOverlay()
         val wwm = WindowlessWindowManager(taskInfo.configuration,
                 iconSurface, null /* hostInputToken */)
         viewHost = surfaceControlViewHostFactory.create(context, display, wwm, "ResizeVeil")
         viewHost?.setView(root, lp)
+        loadAppInfoJob = bgScope.launch {
+            if (!isActive) return@launch
+            val icon = taskResourceLoader.getVeilIcon(taskInfo)
+            withContext(mainDispatcher) {
+                if (!isActive) return@withContext
+                iconView.setImageBitmap(icon)
+            }
+        }
         Trace.endSection()
     }
 
@@ -188,34 +210,22 @@ class ResizeVeil @JvmOverloads constructor(
             t.apply()
             return
         }
-        isVisible = true
         val background = backgroundSurface
         val icon = iconSurface
-        val veil = veilSurface
-        if (background == null || icon == null || veil == null) return
-
-        // Parent surface can change, ensure it is up to date.
-        if (parent != parentSurface) {
-            t.reparent(veil, parent)
-            parentSurface = parent
-        }
-
-        val backgroundColor = when (decorThemeUtil.getAppTheme(taskInfo)) {
-            Theme.LIGHT -> lightColors.surfaceContainer
-            Theme.DARK -> darkColors.surfaceContainer
-        }
-        t.show(veil)
-                .setLayer(veil, VEIL_CONTAINER_LAYER)
-                .setLayer(icon, VEIL_ICON_LAYER)
-                .setLayer(background, VEIL_BACKGROUND_LAYER)
-                .setColor(background, Color.valueOf(backgroundColor.toArgb()).components)
-        relayout(taskBounds, t)
+        if (background == null || icon == null) return
+        updateTransactionWithShowVeil(
+            t,
+            parent,
+            taskBounds,
+            taskInfo,
+            fadeIn,
+        )
         if (fadeIn) {
             cancelAnimation()
             val veilAnimT = surfaceControlTransactionSupplier.get()
             val iconAnimT = surfaceControlTransactionSupplier.get()
             veilAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-                duration = RESIZE_ALPHA_DURATION
+                duration = VEIL_ENTRY_ALPHA_ANIMATION_DURATION
                 addUpdateListener {
                     veilAnimT.setAlpha(background, animatedValue as Float)
                             .apply()
@@ -232,8 +242,9 @@ class ResizeVeil @JvmOverloads constructor(
                     }
                 })
             }
-            val iconAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-                duration = RESIZE_ALPHA_DURATION
+            iconAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+                duration = ICON_ALPHA_ANIMATION_DURATION
+                startDelay = ICON_ENTRY_DELAY
                 addUpdateListener {
                     iconAnimT.setAlpha(icon, animatedValue as Float)
                             .apply()
@@ -256,14 +267,46 @@ class ResizeVeil @JvmOverloads constructor(
                     .hide(background)
                     .apply()
             veilAnimator?.start()
-            iconAnimator.start()
+            iconAnimator?.start()
         } else {
             // Show the veil immediately.
+            t.apply()
+        }
+    }
+
+    fun updateTransactionWithShowVeil(
+        t: SurfaceControl.Transaction,
+        parent: SurfaceControl,
+        taskBounds: Rect,
+        taskInfo: RunningTaskInfo,
+        fadeIn: Boolean = false,
+    ) {
+        if (!isReady || isVisible) return
+        isVisible = true
+        val background = backgroundSurface
+        val icon = iconSurface
+        val veil = veilSurface
+        if (background == null || icon == null || veil == null) return
+        // Parent surface can change, ensure it is up to date.
+        if (parent != parentSurface) {
+            t.reparent(veil, parent)
+            parentSurface = parent
+        }
+        val backgroundColor = when (decorThemeUtil.getAppTheme(taskInfo)) {
+            Theme.LIGHT -> lightColors.surfaceContainer
+            Theme.DARK -> darkColors.surfaceContainer
+        }
+        t.show(veil)
+            .setLayer(veil, VEIL_CONTAINER_LAYER)
+            .setLayer(icon, VEIL_ICON_LAYER)
+            .setLayer(background, VEIL_BACKGROUND_LAYER)
+            .setColor(background, Color.valueOf(backgroundColor.toArgb()).components)
+        relayout(taskBounds, t)
+        if (!fadeIn) {
             t.show(icon)
-                    .show(background)
-                    .setAlpha(icon, 1f)
-                    .setAlpha(background, 1f)
-                    .apply()
+                .show(background)
+                .setAlpha(icon, 1f)
+                .setAlpha(background, 1f)
         }
     }
 
@@ -291,6 +334,7 @@ class ResizeVeil @JvmOverloads constructor(
                 .setPosition(icon, iconPosition.x, iconPosition.y)
                 .setPosition(parentSurface, newBounds.left.toFloat(), newBounds.top.toFloat())
                 .setWindowCrop(parentSurface, newBounds.width(), newBounds.height())
+                .setFrameTimeline(Choreographer.getInstance().vsyncId)
     }
 
     /**
@@ -314,8 +358,12 @@ class ResizeVeil @JvmOverloads constructor(
      * @param newBounds bounds to update veil to.
      */
     fun updateResizeVeil(t: SurfaceControl.Transaction, newBounds: Rect) {
+        updateTransactionWithResizeVeil(t, newBounds)
+        t.apply()
+    }
+
+    fun updateTransactionWithResizeVeil(t: SurfaceControl.Transaction, newBounds: Rect) {
         if (!isVisible) {
-            t.apply()
             return
         }
         veilAnimator?.let { animator ->
@@ -325,7 +373,6 @@ class ResizeVeil @JvmOverloads constructor(
             }
         }
         relayout(newBounds, t)
-        t.apply()
     }
 
     /**
@@ -341,23 +388,38 @@ class ResizeVeil @JvmOverloads constructor(
         if (background == null || icon == null) return
 
         veilAnimator = ValueAnimator.ofFloat(1f, 0f).apply {
-            duration = RESIZE_ALPHA_DURATION
+            duration = VEIL_EXIT_ALPHA_ANIMATION_DURATION
+            startDelay = VEIL_EXIT_DELAY
             addUpdateListener {
                 surfaceControlTransactionSupplier.get()
                         .setAlpha(background, animatedValue as Float)
-                        .setAlpha(icon, animatedValue as Float)
                         .apply()
             }
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     surfaceControlTransactionSupplier.get()
                             .hide(background)
-                            .hide(icon)
                             .apply()
                 }
             })
         }
+        iconAnimator = ValueAnimator.ofFloat(1f, 0f).apply {
+            duration = ICON_ALPHA_ANIMATION_DURATION
+            addUpdateListener {
+                surfaceControlTransactionSupplier.get()
+                    .setAlpha(icon, animatedValue as Float)
+                    .apply()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    surfaceControlTransactionSupplier.get()
+                        .hide(icon)
+                        .apply()
+                }
+            })
+        }
         veilAnimator?.start()
+        iconAnimator?.start()
         isVisible = false
     }
 
@@ -369,6 +431,10 @@ class ResizeVeil @JvmOverloads constructor(
     private fun cancelAnimation() {
         veilAnimator?.removeAllUpdateListeners()
         veilAnimator?.cancel()
+        veilAnimator = null
+        iconAnimator?.removeAllUpdateListeners()
+        iconAnimator?.cancel()
+        iconAnimator = null
     }
 
     /**
@@ -376,8 +442,8 @@ class ResizeVeil @JvmOverloads constructor(
      */
     fun dispose() {
         cancelAnimation()
-        veilAnimator = null
         isVisible = false
+        loadAppInfoJob?.cancel()
 
         viewHost?.release()
         viewHost = null
@@ -397,15 +463,15 @@ class ResizeVeil @JvmOverloads constructor(
         fun create(name: String): SurfaceControl.Builder {
             return SurfaceControl.Builder().setName(name)
         }
-
-        fun create(name: String, surfaceSession: SurfaceSession): SurfaceControl.Builder {
-            return SurfaceControl.Builder(surfaceSession).setName(name)
-        }
     }
 
     companion object {
         private const val TAG = "ResizeVeil"
-        private const val RESIZE_ALPHA_DURATION = 100L
+        private const val ICON_ALPHA_ANIMATION_DURATION = 50L
+        private const val VEIL_ENTRY_ALPHA_ANIMATION_DURATION = 50L
+        private const val VEIL_EXIT_ALPHA_ANIMATION_DURATION = 200L
+        private const val ICON_ENTRY_DELAY = 33L
+        private const val VEIL_EXIT_DELAY = 33L
         private const val VEIL_CONTAINER_LAYER = TaskConstants.TASK_CHILD_LAYER_RESIZE_VEIL
 
         /** The background is a child of the veil container layer and goes at the bottom.  */

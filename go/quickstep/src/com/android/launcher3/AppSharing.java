@@ -37,12 +37,13 @@ import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.android.internal.annotations.VisibleForTesting;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.AppShareabilityChecker;
 import com.android.launcher3.model.AppShareabilityJobService;
 import com.android.launcher3.model.AppShareabilityManager;
 import com.android.launcher3.model.AppShareabilityManager.ShareabilityStatus;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.views.ActivityContext;
 
@@ -114,17 +115,17 @@ public final class AppSharing {
      * The Share App system shortcut, used to initiate p2p sharing of a given app
      */
     public final class Share extends SystemShortcut<Launcher> {
-        private final PopupDataProvider mPopupDataProvider;
         private final boolean mSharingEnabledForUser;
 
         private final Set<View> mBoundViews = Collections.newSetFromMap(new WeakHashMap<>());
         private boolean mIsEnabled = true;
+        private StatsLogManager mStatsLogManager;
 
         public Share(Launcher target, ItemInfo itemInfo, View originalView) {
             super(R.drawable.ic_share, R.string.app_share_drop_target_label, target, itemInfo,
                     originalView);
-            mPopupDataProvider = target.getPopupDataProvider();
-
+            mStatsLogManager = ActivityContext.lookupContext(originalView.getContext())
+                    .getStatsLogManager();
             mSharingEnabledForUser = bluetoothSharingEnabled(target);
             if (!mSharingEnabledForUser) {
                 setEnabled(false);
@@ -150,8 +151,7 @@ public final class AppSharing {
 
         @Override
         public void onClick(View view) {
-            ActivityContext.lookupContext(view.getContext())
-                    .getStatsLogManager().logger().log(LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP);
+            mStatsLogManager.logger().log(LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP);
             if (!mIsEnabled) {
                 showCannotShareToast(view.getContext());
                 return;
@@ -239,6 +239,11 @@ public final class AppSharing {
 
         public boolean isEnabled() {
             return mIsEnabled;
+        }
+
+        @VisibleForTesting
+        void setStatsLogManager(StatsLogManager statsLogManager) {
+            mStatsLogManager = statsLogManager;
         }
     }
 

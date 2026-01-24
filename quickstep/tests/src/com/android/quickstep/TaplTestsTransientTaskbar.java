@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
+import static com.android.systemui.shared.Flags.cursorHotCorner;
 
 import static org.junit.Assume.assumeTrue;
 
@@ -43,14 +44,6 @@ public class TaplTestsTransientTaskbar extends AbstractTaplTestsTaskbar {
 
     @Test
     @TaskbarModeSwitch(mode = TRANSIENT)
-    public void testUnstashTaskbarOnScreenBottomEdgeHover() {
-        assumeTrue(enableCursorHoverStates());
-        getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
-        mLauncher.getLaunchedAppState().hoverScreenBottomEdgeToUnstashTaskbar();
-    }
-
-    @Test
-    @TaskbarModeSwitch(mode = TRANSIENT)
     public void testHoverBelowHintedTaskbarToUnstash() {
         assumeTrue(enableCursorHoverStates());
         getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
@@ -70,5 +63,32 @@ public class TaplTestsTransientTaskbar extends AbstractTaplTestsTaskbar {
     public void testSwipeToStashAndUnstash() {
         getTaskbar().swipeDownToStash();
         mLauncher.getLaunchedAppState().swipeUpToUnstashTaskbar();
+    }
+
+    @Test
+    @TaskbarModeSwitch(mode = TRANSIENT)
+    public void testUnstashTaskbarOnScreenBottomEdgeHover() {
+        assumeTrue(enableCursorHoverStates());
+        getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
+        mLauncher.getLaunchedAppState().hoverScreenBottomEdgeToUnstashTaskbar();
+        mLauncher.getLaunchedAppState().assertTaskbarVisible();
+    }
+
+    @Test
+    @TaskbarModeSwitch(mode = TRANSIENT)
+    public void testUnstashTaskbarOnScreenBottomEdgeOutsideActionCornerHover() {
+        assumeTrue(cursorHotCorner());
+        getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
+        mLauncher.getLaunchedAppState().hoverScreenBottomEdgeOutsideActionCornerToUnstashTaskbar();
+        mLauncher.getLaunchedAppState().assertTaskbarVisible();
+    }
+
+    @Test
+    @TaskbarModeSwitch(mode = TRANSIENT)
+    public void testNotShowTaskbarOnActionCornerPaddingHover() {
+        assumeTrue(cursorHotCorner());
+        getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
+        mLauncher.getLaunchedAppState().hoverScreenBottomCornerToTryUnstashTaskbar();
+        mLauncher.getLaunchedAppState().assertTaskbarHidden();
     }
 }

@@ -19,8 +19,8 @@ package com.android.wm.shell.unfold.animation;
 import static android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW;
 import static android.view.Display.DEFAULT_DISPLAY;
 
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
 import static com.android.wm.shell.splitscreen.SplitScreen.STAGE_TYPE_MAIN;
 import static com.android.wm.shell.splitscreen.SplitScreen.STAGE_TYPE_UNDEFINED;
 
@@ -41,7 +41,7 @@ import android.view.WindowInsets;
 
 import com.android.internal.policy.ScreenDecorationsUtils;
 import com.android.wm.shell.common.DisplayInsetsController;
-import com.android.wm.shell.common.split.SplitScreenConstants.SplitPosition;
+import com.android.wm.shell.shared.split.SplitScreenConstants.SplitPosition;
 import com.android.wm.shell.splitscreen.SplitScreen;
 import com.android.wm.shell.splitscreen.SplitScreen.SplitScreenListener;
 import com.android.wm.shell.splitscreen.SplitScreenController;
@@ -321,7 +321,7 @@ public class SplitTaskUnfoldAnimator implements UnfoldTaskAnimator,
             if (taskbarExpanded) {
                 // Only insets the cropping window with taskbar when taskbar is expanded
                 mStartCropRect.inset(mExpandedTaskbarInsetsSource.calculateVisibleInsets(
-                        mStartCropRect));
+                        mStartCropRect, mStartCropRect));
             }
 
             // Offset to surface coordinates as layout bounds are in screen coordinates
@@ -334,8 +334,8 @@ public class SplitTaskUnfoldAnimator implements UnfoldTaskAnimator,
 
             // Sides adjacent to split bar or task bar are not be animated.
             Insets margins;
-            final boolean isLandscape = mRootStageBounds.width() > mRootStageBounds.height();
-            if (isLandscape) { // Left and right splits.
+            final boolean isLeftRightSplit = mSplitScreenController.get().get().isLeftRightSplit();
+            if (isLeftRightSplit) {
                 margins = getLandscapeMargins(margin, taskbarExpanded);
             } else { // Top and bottom splits.
                 margins = getPortraitMargins(margin, taskbarExpanded);

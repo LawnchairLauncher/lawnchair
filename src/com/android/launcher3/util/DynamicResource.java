@@ -22,35 +22,39 @@ import androidx.annotation.DimenRes;
 import androidx.annotation.FractionRes;
 import androidx.annotation.IntegerRes;
 
+import com.android.launcher3.dagger.ApplicationContext;
+import com.android.launcher3.dagger.LauncherAppSingleton;
+import com.android.launcher3.dagger.LauncherBaseAppComponent;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.ResourceProvider;
+
+import javax.inject.Inject;
 
 /**
  * Utility class to support customizing resource values using plugins
  *
  * To load resources, call
- *    DynamicResource.provider(context).getInt(resId) or any other supported methods
+ * DynamicResource.provider(context).getInt(resId) or any other supported methods
  *
  * To allow customization for a particular resource, add them to dynamic_resources.xml
  */
+@LauncherAppSingleton
 public class DynamicResource implements
-        ResourceProvider, PluginListener<ResourceProvider>, SafeCloseable {
+        ResourceProvider, PluginListener<ResourceProvider> {
 
-    private static final MainThreadInitializedObject<DynamicResource> INSTANCE =
-            new MainThreadInitializedObject<>(DynamicResource::new);
+    private static final DaggerSingletonObject<DynamicResource> INSTANCE =
+            new DaggerSingletonObject<>(LauncherBaseAppComponent::getDynamicResource);
 
     private final Context mContext;
     private ResourceProvider mPlugin;
 
-    private DynamicResource(Context context) {
+    @Inject
+    public DynamicResource(@ApplicationContext Context context,
+            PluginManagerWrapper pluginManagerWrapper, DaggerSingletonTracker tracker) {
         mContext = context;
-        PluginManagerWrapper.INSTANCE.get(context).addPluginListener(this,
+        pluginManagerWrapper.addPluginListener(this,
                 ResourceProvider.class, false /* allowedMultiple */);
-    }
-
-    @Override
-    public void close() {
-        PluginManagerWrapper.INSTANCE.get(mContext).removePluginListener(this);
+        tracker.addCloseable(() -> pluginManagerWrapper.removePluginListener(this));
     }
 
     @Override

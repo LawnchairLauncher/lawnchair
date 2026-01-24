@@ -34,19 +34,20 @@ class UserBadgeDrawableTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val canvas = mock<Canvas>()
     private val systemUnderTest =
-        UserBadgeDrawable(context, R.drawable.ic_work_app_badge, R.color.badge_tint_work, false)
+        UserBadgeDrawable(
+            context,
+            R.drawable.ic_work_app_badge,
+            R.color.badge_tint_work,
+            false /* isThemed */,
+            null, /* shape */
+        )
 
     @Test
     fun draw_opaque() {
         val colorList = mutableListOf<Int>()
-        whenever(
-            canvas.drawCircle(
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        ).then { colorList.add(it.getArgument<Paint>(3).color) }
+        whenever(canvas.drawCircle(any(), any(), any(), any())).then {
+            colorList.add(it.getArgument<Paint>(3).color)
+        }
 
         systemUnderTest.alpha = 255
         systemUnderTest.draw(canvas)
@@ -57,14 +58,9 @@ class UserBadgeDrawableTest {
     @Test
     fun draw_transparent() {
         val colorList = mutableListOf<Int>()
-        whenever(
-            canvas.drawCircle(
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        ).then { colorList.add(it.getArgument<Paint>(3).color) }
+        whenever(canvas.drawCircle(any(), any(), any(), any())).then {
+            colorList.add(it.getArgument<Paint>(3).color)
+        }
 
         systemUnderTest.alpha = 0
         systemUnderTest.draw(canvas)

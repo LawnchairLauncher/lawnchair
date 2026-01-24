@@ -1,4 +1,4 @@
-package app.lawnchair.ui.preferences.destinations
+﻿package app.lawnchair.ui.preferences.destinations
 
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -131,7 +131,6 @@ fun SelectAppsForDrawerFolder(
                     preferenceGroupItems(
                         count = 20,
                         isFirstChild = true,
-                        dividerStartIndent = 40.dp,
                     ) {
                         AppItemPlaceholder {
                             Spacer(Modifier.width(24.dp))

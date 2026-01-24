@@ -18,6 +18,7 @@ package com.android.wm.shell.back
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.RectF
+import android.os.Handler
 import android.util.MathUtils
 import android.view.SurfaceControl
 import android.view.animation.Animation
@@ -27,9 +28,10 @@ import android.window.BackMotionEvent
 import android.window.BackNavigationInfo
 import com.android.internal.R
 import com.android.internal.policy.TransitionAnimation
-import com.android.internal.protolog.common.ProtoLog
+import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.RootTaskDisplayAreaOrganizer
 import com.android.wm.shell.protolog.ShellProtoLogGroup
+import com.android.wm.shell.shared.annotations.ShellMainThread
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -40,13 +42,15 @@ class CustomCrossActivityBackAnimation(
     background: BackAnimationBackground,
     rootTaskDisplayAreaOrganizer: RootTaskDisplayAreaOrganizer,
     transaction: SurfaceControl.Transaction,
-    private val customAnimationLoader: CustomAnimationLoader
+    private val customAnimationLoader: CustomAnimationLoader,
+    @ShellMainThread handler: Handler,
 ) :
     CrossActivityBackAnimation(
         context,
         background,
         rootTaskDisplayAreaOrganizer,
-        transaction
+        transaction,
+        handler
     ) {
 
     private var enterAnimation: Animation? = null
@@ -59,7 +63,8 @@ class CustomCrossActivityBackAnimation(
     constructor(
         context: Context,
         background: BackAnimationBackground,
-        rootTaskDisplayAreaOrganizer: RootTaskDisplayAreaOrganizer
+        rootTaskDisplayAreaOrganizer: RootTaskDisplayAreaOrganizer,
+        @ShellMainThread handler: Handler,
     ) : this(
         context,
         background,
@@ -67,7 +72,8 @@ class CustomCrossActivityBackAnimation(
         SurfaceControl.Transaction(),
         CustomAnimationLoader(
             TransitionAnimation(context, false /* debug */, "CustomCrossActivityBackAnimation")
-        )
+        ),
+        handler,
     )
 
     override fun preparePreCommitClosingRectMovement(swipeEdge: Int) {

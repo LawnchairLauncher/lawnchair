@@ -22,11 +22,14 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fest"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Fritt format"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Skrivebord"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"Flytt til ekstern skjerm"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"Tøm"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"Skrivebord"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Ingen nylige elementer"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Innstillinger for appbruk"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Fjern alt"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"Legg til nytt skrivebord"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Nylige apper"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"Oppgaven er lukket"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 minutt"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"<xliff:g id="TIME">%1$s</xliff:g> gjenstår i dag"</string>
@@ -45,6 +48,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Appforslag er på"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Appforslag er slått av"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Foreslått app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Veiledning for navigasjon med bevegelser"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Roter enheten"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Roter enheten for å fullføre veiledningen for navigasjon med bevegelser"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Sørg for at du sveiper fra kanten helt til høyre eller venstre"</string>
@@ -56,7 +60,6 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Gå til Innstillinger for å endre tilbakebevegelsefølsomheten"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Sveip for å gå tilbake"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"For å gå tilbake til forrige skjerm, sveip fra venstre eller høyre kant til midten av skjermen."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"For å gå tilbake til den forrige skjermen, sveip med to fingre fra den venstre eller høyre kanten til midten av skjermen."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Gå tilbake"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Sveip fra venstre eller høyre kant til midten av skjermen"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Sørg for at du sveiper opp fra den nederste kanten av skjermen"</string>
@@ -66,7 +69,6 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Du har fullført bevegelsen for å gå til startskjermen"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Sveip for å gå til startskjermen"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Sveip opp fra bunnen av skjermen. Denne bevegelsen tar deg alltid til startskjermen."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Sveip opp med to fingre fra bunnen av skjermen. Denne bevegelsen tar deg alltid til startskjermen."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Gå til startskjermen"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Sveip opp fra bunnen av skjermen"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Bra jobbet!"</string>
@@ -77,7 +79,6 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Du har fullført bevegelsen for å bytte app"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Sveip for å bytte app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"For å bytte mellom apper, sveip opp fra bunnen av skjermen, hold, og slipp"</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"For å bytte mellom apper, sveip opp med to fingre fra bunnen av skjermen, hold, og slipp."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Bytt app"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Sveip opp fra bunnen av skjermen, hold, og slipp"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Bra!"</string>
@@ -91,28 +92,37 @@
     <string name="allset_hint" msgid="459504134589971527">"Sveip opp for å gå til startskjermen"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Trykk på hjemknappen for å gå til startskjermen"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Nå kan du bruke <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"enheten"</string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"Nå kan du bruke enheten"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Innstillinger for systemnavigasjon"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"<xliff:g id="DEVICE">%1$s</xliff:g> er \nklar!"</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Enheten er \nklar!"</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"Kos deg med den nye <xliff:g id="DEVICE">%1$s</xliff:g>-enheten din!"</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Velg hvordan du vil navigere"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"Sveip opp"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"Trykk på hjemknappen"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"nettbrett"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"telefon"</string>
     <string name="action_share" msgid="2648470652637092375">"Del"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skjermbilde"</string>
     <string name="action_split" msgid="2098009717623550676">"Del opp"</string>
-    <string name="action_save_app_pair" msgid="5974823919237645229">"Lagre apptilkobling"</string>
+    <string name="action_save_app_pair" msgid="5974823919237645229">"Lagre app-paret"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Trykk på en annen app for å bruke delt skjerm"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Velg en annen app for å bruke delt skjerm"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Avbryt"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"Avbryt"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Avslutt valg av delt skjerm"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Velg en annen app for å bruke delt skjerm"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Appen eller organisasjonen din tillater ikke denne handlingen"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"Moduler støttes ikke for øyeblikket – velg en annen app"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vil du hoppe over navigeringsveiledningen?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du kan finne dette i <xliff:g id="NAME">%1$s</xliff:g>-appen senere"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Avbryt"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Hopp over"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rotér skjermen"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"Animasjon som viser hvordan oppgavelinjen kommer til syne fra bunnen av skjermen og skjules automatisk når den ikke er i bruk"</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"Animasjon som viser hvordan du fester oppgavelinjen med en bryter, slik at oppgavelinjen alltid er synlig nederst på skjermen"</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"Animasjon som viser hvordan du aktiverer delt skjerm, ved å dra og slippe en app fra oppgavelinjen over en åpen app"</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"Animasjon som viser hvordan du åpner foreslåtte apper på enheten"</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"Animasjon som viser hvordan du søker etter et element på skjermen, ved å trykke og holde på handlingstasten og velge området der elementet er"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Veiledning for oppgavelinjen"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Dra en app til siden for å bruke 2 apper samtidig"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Sveip langsomt opp for å vise oppgavelinjen"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Få appforslag som er basert på rutinene dine"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Få appforslag basert på rutinene dine"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Trykk lenge på skillelinjen for å feste oppgavelinjen"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Gjør mer med oppgavelinjen"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Vis alltid oppgavelinjen"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Hurtiginnst."</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Oppgavelinje"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Oppgavelinjen vises"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Oppgavelinjen er skjult"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Venstre oppgavelinje/boble vises"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Høyre oppgavelinje/bobler vises"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigasjonsrad"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Vis alltid oppgavelinjen"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Endre navigasjonsmodus"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Skille for oppgavelinjen"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Andre nylige apper"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flytt til øverst/venstre"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flytt til nederst/høyre"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Vis # app til.}other{Vis # apper til.}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Vis # datamaskinprogram.}other{Vis # datamaskinprogrammer.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Åpne appen som en boble"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"Nylige apper"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"Liste over nylige apper"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{app til}other{apper til}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"Skrivebord"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> og <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, element <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g> av <xliff:g id="TOTAL_TASKS">%3$d</xliff:g>"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"Rull til venstre"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"Rull til høyre"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Boble"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Overflyt"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> fra <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> og <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> andre"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"Flytt til venstre"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"Flytt til høyre"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"Lukk alle"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"vis <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"skjul <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"Circle to Search"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"Appikon"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"Apptittel"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"Lukkeknapp"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"Fest i oppgavelinjen"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Løsne i oppgavelinje"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"Dytt"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"Lukk"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"Dytt bildet"</string>
 </resources>

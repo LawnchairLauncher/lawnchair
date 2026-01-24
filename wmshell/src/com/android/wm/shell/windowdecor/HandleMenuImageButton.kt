@@ -16,13 +16,12 @@
 package com.android.wm.shell.windowdecor
 
 import android.app.ActivityManager.RunningTaskInfo
-import com.android.window.flags.Flags
-import com.android.wm.shell.windowdecor.additionalviewcontainer.AdditionalSystemViewContainer
-
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.ImageButton
+import android.window.DesktopModeFlags
+import com.android.wm.shell.windowdecor.additionalviewcontainer.AdditionalSystemViewContainer
 
 /**
  * A custom [ImageButton] for buttons inside handle menu that intentionally doesn't handle hovers.
@@ -39,7 +38,7 @@ class HandleMenuImageButton(
     lateinit var taskInfo: RunningTaskInfo
 
     override fun onHoverEvent(motionEvent: MotionEvent): Boolean {
-        if (Flags.enableAdditionalWindowsAboveStatusBar() || taskInfo.isFreeform) {
+        if (DesktopModeFlags.ENABLE_HANDLE_INPUT_FIX.isTrue() || taskInfo.isFreeform) {
             return super.onHoverEvent(motionEvent)
         } else {
             return false

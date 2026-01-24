@@ -1,10 +1,11 @@
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.Utilities.ATLEAST_S;
+import static com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -12,12 +13,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.cache.BaseIconCache;
+import com.android.launcher3.icons.cache.CachedObject;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 
 /**
@@ -26,8 +31,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
  * (who's implementation is owned by the launcher). This object represents a widget type / class,
  * as opposed to a widget instance, and so should not be confused with {@link LauncherAppWidgetInfo}
  */
-public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
-        implements ComponentWithLabelAndIcon {
+public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo implements CachedObject {
 
     public static final String CLS_CUSTOM_WIDGET_PREFIX = "#custom-widget-";
 
@@ -69,6 +73,8 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
 
     protected boolean mIsMinSizeFulfilled;
 
+    private PackageManager mPM;
+
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {
         final LauncherAppWidgetProviderInfo launcherInfo;
@@ -97,6 +103,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
     }
 
     public void initSpans(Context context, InvariantDeviceProfile idp) {
+        mPM = context.getApplicationContext().getPackageManager();
         int minSpanX = 0;
         int minSpanY = 0;
         int maxSpanX = idp.numColumns;
@@ -104,9 +111,15 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
         int spanX = 0;
         int spanY = 0;
 
-
         Point cellSize = new Point();
         for (DeviceProfile dp : idp.supportedProfiles) {
+            // On phones we no longer support regular landscape, only fixed landscape for this
+            // reason we don't need to take regular landscape into account in phones
+            if (Flags.oneGridSpecs() && dp.inv.deviceType == TYPE_PHONE
+                    && dp.inv.isFixedLandscape != dp.getDeviceProperties().isLandscape()) {
+                continue;
+            }
+
             dp.getCellSize(cellSize);
             Rect widgetPadding = dp.widgetPadding;
 
@@ -117,14 +130,14 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
                     getSpanY(widgetPadding, minResizeHeight, dp.cellLayoutBorderSpacePx.y,
                             cellSize.y));
 
-            if (ATLEAST_S) {
+            if (Utilities.ATLEAST_S) {
                 if (maxResizeWidth > 0) {
                     maxSpanX = Math.min(maxSpanX, getSpanX(widgetPadding, maxResizeWidth,
-                            dp.cellLayoutBorderSpacePx.x, cellSize.x));
+                        dp.cellLayoutBorderSpacePx.x, cellSize.x));
                 }
                 if (maxResizeHeight > 0) {
                     maxSpanY = Math.min(maxSpanY, getSpanY(widgetPadding, maxResizeHeight,
-                            dp.cellLayoutBorderSpacePx.y, cellSize.y));
+                        dp.cellLayoutBorderSpacePx.y, cellSize.y));
                 }
             }
 
@@ -136,7 +149,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
                             cellSize.y));
         }
 
-        if (ATLEAST_S) {
+        if (Utilities.ATLEAST_S) {
             // Ensures maxSpan >= minSpan
             maxSpanX = Math.max(maxSpanX, minSpanX);
             maxSpanY = Math.max(maxSpanY, minSpanY);
@@ -192,8 +205,9 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
                 (widgetSize + widgetPadding + cellSpacing) / (cellSize + cellSpacing)));
     }
 
-    public String getLabel(PackageManager packageManager) {
-        return super.loadLabel(packageManager);
+    @Override
+    public CharSequence getLabel() {
+        return super.loadLabel(mPM);
     }
 
     public Point getMinSpans() {
@@ -211,12 +225,11 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
     }
 
     public boolean isReconfigurable() {
-        return configure != null && (getWidgetFeatures() & WIDGET_FEATURE_RECONFIGURABLE) != 0;
+        return Utilities.ATLEAST_P && configure != null && (getWidgetFeatures() & WIDGET_FEATURE_RECONFIGURABLE) != 0;
     }
 
     public boolean isConfigurationOptional() {
-        return ATLEAST_S
-                && isReconfigurable()
+        return Utilities.ATLEAST_S && isReconfigurable()
                 && (getWidgetFeatures() & WIDGET_FEATURE_CONFIGURATION_OPTIONAL) != 0;
     }
 
@@ -231,7 +244,24 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
     }
 
     @Override
-    public Drawable getFullResIcon(IconCache cache) {
-        return cache.getFullResIcon(provider.getPackageName(), icon);
+    public Drawable getFullResIcon(BaseIconCache cache) {
+        if (Utilities.ATLEAST_S) {
+            return cache.getFullResIcon(getActivityInfo());
+        } else {
+            return cache.getFullResIcon(provider.getPackageName());
+        }
+    }
+
+    @Nullable
+    @Override
+    public ApplicationInfo getApplicationInfo() {
+        if (Utilities.ATLEAST_S) {
+            return getActivityInfo().applicationInfo;
+        }
+        try {
+            return mPM.getApplicationInfo(provider.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
     }
 }

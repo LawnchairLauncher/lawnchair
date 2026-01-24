@@ -21,37 +21,43 @@ import javax.inject.Singleton
 @Singleton
 class ResourceUnfoldTransitionConfig @Inject constructor() : UnfoldTransitionConfig {
 
-    private fun getBooleanResource(resourceName: String): Boolean {
-        val id = Resources.getSystem().getIdentifier(resourceName, "bool", "android")
-        return if (id != 0) {
+    override val isEnabled: Boolean by lazy {
+        try {
+            val id = Resources.getSystem()
+                .getIdentifier("config_unfoldTransitionEnabled", "bool", "android")
             Resources.getSystem().getBoolean(id)
-        } else {
+        } catch (_: Resources.NotFoundException) {
             false
         }
     }
 
-    private fun getIntResource(resourceName: String): Int {
-        val id = Resources.getSystem().getIdentifier(resourceName, "integer", "android")
-        return if (id != 0) {
-            Resources.getSystem().getInteger(id)
-        } else {
-            0
+    override val isHingeAngleEnabled: Boolean by lazy {
+        try {
+            val id = Resources.getSystem()
+                .getIdentifier("config_unfoldTransitionHingeAngle", "bool", "android")
+            Resources.getSystem().getBoolean(id)
+        } catch (_: Resources.NotFoundException) {
+            false
         }
     }
 
-    override val isEnabled: Boolean by lazy {
-        getBooleanResource("config_unfoldTransitionEnabled")
-    }
-
-    override val isHingeAngleEnabled: Boolean by lazy {
-        getBooleanResource("config_unfoldTransitionHingeAngle")
-    }
-
     override val isHapticsEnabled: Boolean by lazy {
-        getBooleanResource("config_unfoldTransitionHapticsEnabled")
+        try {
+            val id = Resources.getSystem()
+                .getIdentifier("config_unfoldTransitionHapticsEnabled", "bool", "android")
+            Resources.getSystem().getBoolean(id)
+        } catch (_: Resources.NotFoundException) {
+            false
+        }
     }
 
     override val halfFoldedTimeoutMillis: Int by lazy {
-        getIntResource("config_unfoldTransitionHalfFoldedTimeout")
+        try {
+            val id = Resources.getSystem()
+                .getIdentifier("config_unfoldTransitionHalfFoldedTimeout", "integer", "android")
+            Resources.getSystem().getInteger(id)
+        } catch (_: Resources.NotFoundException) {
+            1000
+        }
     }
 }

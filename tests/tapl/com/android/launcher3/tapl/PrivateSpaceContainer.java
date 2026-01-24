@@ -17,6 +17,7 @@
 package com.android.launcher3.tapl;
 
 import android.graphics.Point;
+import android.multiuser.Flags;
 
 import androidx.test.uiautomator.UiObject2;
 
@@ -26,6 +27,7 @@ import androidx.test.uiautomator.UiObject2;
 public class PrivateSpaceContainer {
     private static final String PS_HEADER_RES_ID = "ps_header_layout";
     private static final String INSTALL_APP_TITLE = "Install";
+    private static final String ADD_APP_TITLE = "Add";
     private static final String DIVIDER_RES_ID = "private_space_divider";
 
     private final LauncherInstrumentation mLauncher;
@@ -62,7 +64,8 @@ public class PrivateSpaceContainer {
 
     // Assert Install App Item is present in view.
     private void verifyInstallAppButtonIsPresent() {
-        mAppList.getAppIcon(INSTALL_APP_TITLE);
+        mAppList.getAppIcon(Flags.enableMovingContentIntoPrivateSpace() ? ADD_APP_TITLE :
+                INSTALL_APP_TITLE);
     }
 
     // Assert Install App Item is not present in view.

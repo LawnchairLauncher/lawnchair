@@ -16,20 +16,19 @@
 
 package com.android.wm.shell.compatui;
 
-import static android.provider.Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING;
 import static android.window.TaskConstants.TASK_CHILD_LAYER_COMPAT_UI;
 
 import android.annotation.Nullable;
 import android.app.TaskInfo;
 import android.content.Context;
 import android.graphics.Rect;
-import android.provider.Settings;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.ImageView;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.wm.shell.R;
@@ -119,7 +118,7 @@ class RestartDialogWindowManager extends CompatUIWindowManagerAbstract {
     @Override
     protected boolean eligibleToShowLayout() {
         // We don't show this dialog if the user has explicitly selected so clicking on a checkbox.
-        return mRequestRestartDialog && !isTaskbarEduShowing() && (mLayout != null
+        return mRequestRestartDialog && (mLayout != null
                 || mCompatUIConfiguration.shouldShowRestartDialogAgain(getLastTaskInfo()));
     }
 
@@ -156,8 +155,16 @@ class RestartDialogWindowManager extends CompatUIWindowManagerAbstract {
     }
 
     private RestartDialogLayout inflateLayout() {
-        return (RestartDialogLayout) LayoutInflater.from(mContext).inflate(
+        final RestartDialogLayout layout =
+                (RestartDialogLayout) LayoutInflater.from(mContext).inflate(
                 R.layout.letterbox_restart_dialog_layout, null);
+        if (getLastTaskInfo().appCompatTaskInfo.isRestartMenuEnabledForDisplayMove()) {
+            ImageView imageView = layout.findViewById(R.id.letterbox_restart_dialog_title_icon);
+            // Replace the "size compat" icon with something more general when requested from the
+            // restart handle menu.
+            imageView.setImageResource(R.drawable.desktop_mode_ic_handle_menu_restart);
+        }
+        return layout;
     }
 
     private void startEnterAnimation() {
@@ -233,11 +240,5 @@ class RestartDialogWindowManager extends CompatUIWindowManagerAbstract {
         final Rect taskBounds = getTaskBounds();
         return getWindowLayoutParams(/* width= */ taskBounds.width(), /* height= */
                 taskBounds.height());
-    }
-
-    @VisibleForTesting
-    boolean isTaskbarEduShowing() {
-        return Settings.Secure.getInt(mContext.getContentResolver(),
-                LAUNCHER_TASKBAR_EDUCATION_SHOWING, /* def= */ 0) == 1;
     }
 }

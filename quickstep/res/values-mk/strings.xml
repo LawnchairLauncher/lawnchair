@@ -21,12 +21,15 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Закачи"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
-    <string name="recent_task_option_desktop" msgid="8280879717125435668">"Компјутер"</string>
+    <string name="recent_task_option_desktop" msgid="8280879717125435668">"Работна површина"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"Префрлете се на надворешниот екран"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"Избришете"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"За компјутер"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Нема неодамнешни ставки"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Поставки за користење на апликациите"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Избриши ги сите"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"Додајте нова работна површина"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Неодамнешни апликации"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"Задачата е затворена"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 минута"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Уште <xliff:g id="TIME">%1$s</xliff:g> за денес"</string>
@@ -45,18 +48,18 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Предлозите за апликации се овозможени"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Предлозите за апликации се оневозможени"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Предвидена апликација: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Упатство за навигација со движења"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Ротирајте го уредот"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Ротирајте го уредот за да го завршите упатството за навигација со движење"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Повлечете од крајниот десен или крајниот лев раб"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Повлечете од десниот или левиот раб кон средината на екранот и пуштете"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Научивте како да повлекувате оддесно за враќање назад. Научете и како да се префрлате помеѓу апликациите."</string>
     <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Го научивте движењето за враќање назад. Научете го и движењето за префрлање помеѓу апликациите."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Завршивте со упатството за враќање назад"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Го научивте движењето за враќање назад"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не повлекувајте преблиску до дното на екранот"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"За да ја промените чувствителноста, одете во „Поставки“"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Повлечете за да се вратите назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се вратите на последниот екран, повлечете од левиот или десниот раб кон средината на екранот."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"За да се вратите на последниот екран на кој бевте, повлечете со два прста од левиот или десниот раб кон средината на екранот."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Враќање назад"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Повлечете од левиот или десниот раб кон средината на екранот"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Повлечете нагоре од долниот раб на екранот"</string>
@@ -66,7 +69,6 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Го научивте движењето за враќање на почетниот екран"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Повлечете за да одите на почетниот екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Повлечете нагоре од долниот раб на екранот. Ова движење секогаш ќе ве одведе на почетниот екран."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Повлечете нагоре со два прста од долниот раб на екранот. Движењево секогаш ве носи на почетниот екран."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Отворање на почетниот екран"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Повлечете нагоре од дното на екранот"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Одлично сторено!"</string>
@@ -77,8 +79,7 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Го научивте движењето за префрлање помеѓу апликации"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Повлечете за префрлање помеѓу апликации"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За да смените апликација, повлечете нагоре од дното на екранот и задржете, па пуштете."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"За да се префрлате помеѓу апликации, повлечете нагоре со два прста од долниот раб на екранот, задржете и потоа отпуштете."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Променете ја апликацијата"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Префрлање помеѓу апликации"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Повлечете нагоре од дното на екранот и задржете, па пуштете"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Браво!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
@@ -91,24 +92,33 @@
     <string name="allset_hint" msgid="459504134589971527">"Повлечете нагоре за да го отворите почетниот екран"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Допрете го копчето за почетен екран за да одите на почетниот екран"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Подготвени сте да почнете да го користите вашиот <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"уред"</string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"Подготвени сте да започнете да го користите вашиот уред"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Поставки за системска навигација"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"Вашиот <xliff:g id="DEVICE">%1$s</xliff:g> е \nподготвен!"</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Вашиот уред е \nподготвен!"</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"Уживајте во новиот <xliff:g id="DEVICE">%1$s</xliff:g>!"</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Изберете поставки за навигација"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"Повлечете нагоре"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"Допрете го копчето за почетен екран"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"таблет"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"телефон"</string>
     <string name="action_share" msgid="2648470652637092375">"Сподели"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Слика од екранот"</string>
     <string name="action_split" msgid="2098009717623550676">"Раздели"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"Зачувај го паров"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Допрете друга аплик. за да користите поделен екран"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Изберете друга апликација за да користите поделен екран"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Откажи"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"Откажи"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Излези од изборот на поделен екран"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Изберете друга апликација за да користите поделен екран"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Апликацијата или вашата организација не го дозволува дејствово"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"Виџетите не се поддржани во моментов, изберете друга апликација"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Да се прескокне упатството за навигација?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Ова може да го најдете подоцна во апликацијата <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Откажи"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Прескокни"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ротирајте го екранот"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"Анимација што прикажува како „Лентата со задачи“ се појавува од дното на екранот и автоматски се крие кога не се користи"</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"Анимација што прикажува како да ја закачите „Лентата со задачи“ со прекинувач за да може „Лентата со задачи“ да остане трајно видлива на дното на екранот"</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"Анимација што прикажува како да создадете поделен екран, со влечење и спуштање апликација од „Лентата со задачи“ над отворена апликација"</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"Анимација што прикажува како да пристапите до предложените апликации на вашиот уред"</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"Анимација што прикажува како да пребарате ставка на екранот, со допирање и задржување на копчето за дејство и избирање на областа во која се наоѓа ставката"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Обука за лентата со задачи"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Повлечете апликација настрана за да користите 2 апликации одеднаш"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже „Лентата со задачи“"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Брзи поставки"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Лента со задачи"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Лентата со задачи е прикажана"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата со задачи е скриена"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Лен. со зад. и бал. се лево"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Лен. со зад. и бал. се десно"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Лента за навигација"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Секогаш прикажувај „Лента“"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Променете режим на навигација"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Разделник на „Лента со задачи“"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Други неодамнешни апликации"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Премести горе лево"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести долу десно"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Прикажи уште # апликација.}one{Прикажи уште # апликација.}other{Прикажи уште # апликации.}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Прикажи # апликација за компјутер.}one{Прикажи # апликација за компјутер.}other{Прикажи # апликации за компјутер.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Отвори апликација како балонче"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"Неодамнешни апликации"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"Список со неодамнешни апликации"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{дополнителна апликација}one{дополнителна апликација}other{дополнителни апликации}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"Режим за компјутер"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, ставка <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g> од <xliff:g id="TOTAL_TASKS">%3$d</xliff:g>"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"Лизгај налево"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"Лизгај надесно"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Балонче"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Проширено балонче"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> од <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> и уште <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g>"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"Премести налево"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"Премести надесно"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"Отфрли ги сите"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"прошири <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"собери <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"Пребарување со заокружување"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"Икона за апликацијата"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"Наслов на апликацијата"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"Копче за затворање"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"Закачи на лентата"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Откачи од лентата"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"Потсетување"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"Затвори"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"Слика на потсетување"</string>
 </resources>

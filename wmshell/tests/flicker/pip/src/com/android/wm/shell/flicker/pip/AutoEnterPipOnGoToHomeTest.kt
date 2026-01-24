@@ -16,13 +16,18 @@
 
 package com.android.wm.shell.flicker.pip
 
+import android.platform.test.annotations.FlakyTest
+import android.platform.test.annotations.Postsubmit
 import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresDevice
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
-import androidx.test.filters.FlakyTest
-import androidx.test.filters.RequiresDevice
+import com.android.server.wm.flicker.helpers.PipAppHelper
+import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.EnterPipTransition
+import com.android.wm.shell.flicker.pip.common.widthNotSmallerThan
 import org.junit.Assume
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -33,7 +38,7 @@ import org.junit.runners.Parameterized
 /**
  * Test entering pip from an app via auto-enter property when navigating to home.
  *
- * To run this test: `atest WMShellFlickerTestsPip1:AutoEnterPipOnGoToHomeTest`
+ * To run this test: `atest WMShellFlickerTestsPip:AutoEnterPipOnGoToHomeTest`
  *
  * Actions:
  * ```
@@ -55,7 +60,10 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
 open class AutoEnterPipOnGoToHomeTest(flicker: LegacyFlickerTest) : EnterPipTransition(flicker) {
+    override val pipApp: PipAppHelper = PipAppHelper(instrumentation)
+
     override val thisTransition: FlickerBuilder.() -> Unit = { transitions { tapl.goHome() } }
 
     override val defaultEnterPip: FlickerBuilder.() -> Unit = {
@@ -65,11 +73,10 @@ open class AutoEnterPipOnGoToHomeTest(flicker: LegacyFlickerTest) : EnterPipTran
         }
     }
 
-    override val defaultTeardown: FlickerBuilder.() -> Unit = { teardown { pipApp.exit(wmHelper) } }
-
-    @FlakyTest(bugId = 293133362)
+    @Postsubmit
     @Test
     override fun pipLayerReduces() {
+        Assume.assumeFalse(flicker.scenario.isGesturalNavigation)
         flicker.assertLayers {
             val pipLayerList = this.layers { pipApp.layerMatchesAnyOf(it) && it.isVisible }
             pipLayerList.zipWithNext { previous, current ->
@@ -78,10 +85,36 @@ open class AutoEnterPipOnGoToHomeTest(flicker: LegacyFlickerTest) : EnterPipTran
         }
     }
 
+    /** Checks that [pipApp] window's width is first decreasing then increasing. */
+    @Postsubmit
+    @Test
+    fun pipLayerWidthDecreasesThenIncreases() {
+        Assume.assumeTrue(flicker.scenario.isGesturalNavigation)
+        flicker.assertLayers {
+            val pipLayerList = this.layers { pipApp.layerMatchesAnyOf(it) && it.isVisible }
+            var previousLayer = pipLayerList[0]
+            var currentLayer = previousLayer
+            var i = 0
+            invoke("layer area is decreasing") {
+                if (i < pipLayerList.size - 1) {
+                    previousLayer = currentLayer
+                    currentLayer = pipLayerList[++i]
+                    previousLayer.widthNotSmallerThan(currentLayer)
+                }
+            }.then().invoke("layer are is increasing", true /* isOptional */) {
+                if (i < pipLayerList.size - 1) {
+                    previousLayer = currentLayer
+                    currentLayer = pipLayerList[++i]
+                    currentLayer.widthNotSmallerThan(previousLayer)
+                }
+            }
+        }
+    }
+
     /** Checks that [pipApp] window is animated towards default position in right bottom corner */
     @FlakyTest(bugId = 255578530)
     @Test
-    fun pipLayerMovesTowardsRightBottomCorner() {
+    open fun pipLayerMovesTowardsRightBottomCorner() {
         // in gestural nav the swipe makes PiP first go upwards
         Assume.assumeFalse(flicker.scenario.isGesturalNavigation)
         flicker.assertLayers {

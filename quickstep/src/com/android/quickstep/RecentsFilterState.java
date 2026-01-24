@@ -16,9 +16,14 @@
 
 package com.android.quickstep;
 
+import static com.android.quickstep.fallback.window.RecentsWindowFlags.enableOverviewOnConnectedDisplays;
+
 import androidx.annotation.Nullable;
 
+import com.android.quickstep.util.DesksUtils;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.views.TaskViewType;
+import com.android.systemui.shared.recents.model.Task;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +42,7 @@ public class RecentsFilterState {
     public static final int MIN_FILTERING_TASK_COUNT = 2;
 
     // default filter that returns true for any input
-    public static final Predicate<GroupTask> DEFAULT_FILTER = (groupTask -> true);
+    public static final Predicate<GroupTask> EMPTY_FILTER = (groupTask -> true);
 
     // the package name to filter recent tasks by
     @Nullable
@@ -115,16 +120,46 @@ public class RecentsFilterState {
      * Returns a predicate for filtering out GroupTasks by package name.
      *
      * @param packageName package name to filter GroupTasks by
-     *                    if null, Predicate always returns true.
+     *                    if null, Predicate filters out desktop tasks with no non-minimized tasks,
+     *                    unless the multiple desks feature is enabled, which allows empty desks.
+     * @param displayId filter out tasks not on this display
      */
-    public static Predicate<GroupTask> getFilter(@Nullable String packageName) {
-        if (packageName == null) {
-            return DEFAULT_FILTER;
+    public static Predicate<GroupTask> getFilter(@Nullable String packageName, int displayId) {
+        Predicate<GroupTask> filter = getDesktopTaskFilter();
+        if (packageName != null) {
+            filter = filter.and(groupTask -> groupTask.containsPackage(packageName));
+        }
+        if (enableOverviewOnConnectedDisplays()) {
+            filter = filter.and(groupTask -> groupTask.matchesDisplayId(displayId));
+        }
+        return filter;
+    }
+
+    /**
+     * Returns a predicate that filters out desk tasks that contain no non-minimized desktop tasks,
+     * unless the multiple desks feature is enabled, which allows empty desks.
+     */
+    public static Predicate<GroupTask> getDesktopTaskFilter() {
+        return RecentsFilterState::shouldKeepGroupTask;
+    }
+
+    /**
+     * Returns true if the given `groupTask` should be kept, and false if it should be filtered out.
+     * Desks will be filtered out if they are empty unless the multiple desks feature is enabled.
+     *
+     * @param groupTask The group task to check.
+     */
+    private static boolean shouldKeepGroupTask(GroupTask groupTask) {
+        if (groupTask.taskViewType != TaskViewType.DESKTOP) {
+            return true;
         }
 
-        return (groupTask) -> (groupTask.task2 != null
-                && groupTask.task2.key.getPackageName().equals(packageName))
-                || groupTask.task1.key.getPackageName().equals(packageName);
+        if (DesksUtils.areMultiDesksFlagsEnabled()) {
+            return true;
+        }
+
+        return groupTask.getTasks().stream()
+                .anyMatch(task -> !task.isMinimized);
     }
 
     /**
@@ -136,17 +171,9 @@ public class RecentsFilterState {
         Map<String, Integer> instanceCountMap = new HashMap<>();
 
         for (GroupTask groupTask : groupTasks) {
-            final String firstTaskPkgName = groupTask.task1.key.getPackageName();
-            final String secondTaskPkgName =
-                    groupTask.task2 == null ? null : groupTask.task2.key.getPackageName();
-
-            // increment the instance count for the first task's base activity package name
-            incrementOrAddIfNotExists(instanceCountMap, firstTaskPkgName);
-
-            // check if second task is non existent
-            if (secondTaskPkgName != null) {
-                // increment the instance count for the second task's base activity package name
-                incrementOrAddIfNotExists(instanceCountMap, secondTaskPkgName);
+            for (Task t : groupTask.getTasks()) {
+                final String taskPkgName = t.key.getPackageName();
+                incrementOrAddIfNotExists(instanceCountMap, taskPkgName);
             }
         }
 

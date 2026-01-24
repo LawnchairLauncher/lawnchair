@@ -1,0 +1,16 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace "com.android.launcher3.dagger"
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+        }
+    }
+}
+
+dependencies {
+    implementation libs.javax.inject
+}

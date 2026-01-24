@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,24 @@ package com.android.launcher3.ui;
 
 import static org.junit.Assert.assertNotNull;
 
+import android.view.View;
+
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.util.ui.AbstractLauncherUiTest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+// TODO(415813575) - Remove this test.
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TaplTestsLauncher3Test extends AbstractLauncherUiTest<Launcher> {
+public class TaplTestsLauncher3Test extends AbstractLauncherUiTest<Launcher, View> {
 
-    @ScreenRecord // b/322823478
     @Test
-    public void testDevicePressMenu() throws Exception {
+    public void testDevicePressMenu() {
         mDevice.pressMenu();
         mDevice.waitForIdle();
         executeOnLauncher(

@@ -16,17 +16,17 @@
 
 package com.android.launcher3.widget;
 
-import static android.appwidget.AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN;
+import static android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK;
 
-import static com.android.launcher3.Flags.enableWidgetTapToAdd;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
-import static com.android.launcher3.widget.LauncherAppWidgetProviderInfo.fromProviderInfo;
+import static com.android.launcher3.icons.cache.CacheLookupFlag.DEFAULT_LOOKUP_FLAG;
 import static com.android.launcher3.widget.util.WidgetSizes.getWidgetItemSizePx;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -47,16 +47,12 @@ import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.CheckLongPressHelper;
-import com.android.launcher3.Flags;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedPropertySetter;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
@@ -65,6 +61,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.widget.DatabaseWidgetPreviewLoader.WidgetPreviewInfo;
 import com.android.launcher3.widget.picker.util.WidgetPreviewContainerSize;
 import com.android.launcher3.widget.util.WidgetSizes;
 
@@ -73,21 +70,21 @@ import java.util.function.Consumer;
 import app.lawnchair.LawnchairAppWidgetHostView;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.drawable.DrawableTokens;
+import app.lawnchair.preferences2.PreferenceManager2;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 /**
- * Represents the individual cell of the widget inside the widget tray. The
- * preview is drawn
+ * Represents the individual cell of the widget inside the widget tray. The preview is drawn
  * horizontally centered, and scaled down if needed.
  *
- * This view does not support padding. Since the image is scaled down to fit the
- * view, padding will
- * further decrease the scaling factor. Drag-n-drop uses the view bounds for
- * showing a smooth
- * transition from the view to drag view, so when adding padding support, DnD
- * would need to
+ * This view does not support padding. Since the image is scaled down to fit the view, padding will
+ * further decrease the scaling factor. Drag-n-drop uses the view bounds for showing a smooth
+ * transition from the view to drag view, so when adding padding support, DnD would need to
  * consider the appropriate scaling factor.
  */
 public class WidgetCell extends LinearLayout {
+
+    PreferenceManager2 prefs2 = PreferenceManager2.INSTANCE.get(getContext());
 
     private static final String TAG = "WidgetCell";
     private static final boolean DEBUG = false;
@@ -96,8 +93,7 @@ public class WidgetCell extends LinearLayout {
     private static final int ADD_BUTTON_FADE_DURATION_MS = 100;
 
     /**
-     * The requested scale of the preview container. It can be lower than this as
-     * well.
+     * The requested scale of the preview container. It can be lower than this as well.
      */
     private float mPreviewContainerScale = 1f;
     private Size mPreviewContainerSize = new Size(0, 0);
@@ -132,7 +128,6 @@ public class WidgetCell extends LinearLayout {
     private boolean mIsShowingAddButton = false;
     // Height enforced by the parent to align all widget cells displayed by it.
     private int mParentAlignedPreviewHeight;
-
     public WidgetCell(Context context) {
         this(context, null);
     }
@@ -145,7 +140,8 @@ public class WidgetCell extends LinearLayout {
         super(context, attrs, defStyle);
 
         mActivity = ActivityContext.lookupContext(context);
-        mWidgetPreviewLoader = new DatabaseWidgetPreviewLoader(context);
+        mWidgetPreviewLoader = new DatabaseWidgetPreviewLoader(context,
+                mActivity.getDeviceProfile());
         mLongPressHelper = new CheckLongPressHelper(this);
         mLongPressHelper.setLongPressTimeoutFactor(1);
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
@@ -164,8 +160,8 @@ public class WidgetCell extends LinearLayout {
         mWidgetName = findViewById(R.id.widget_name);
         mWidgetDims = findViewById(R.id.widget_dims);
         mWidgetDescription = findViewById(R.id.widget_description);
-        mWidgetAddButton = findViewById(R.id.widget_add_button);
         mWidgetTextContainer = findViewById(R.id.widget_text_container);
+        mWidgetAddButton = findViewById(R.id.widget_add_button);
 
         FontManager fontManager = FontManager.INSTANCE.get(getContext());
         fontManager.setCustomFont(mWidgetName, R.id.font_body_medium);
@@ -174,6 +170,23 @@ public class WidgetCell extends LinearLayout {
         // LC: Allow customisability to the Add Button, Test: Press on any Widget on the Widget sheet.
         mWidgetAddButton.setBackground(DrawableTokens.WidgetAddButtonBackground.resolve(getContext()));
         fontManager.setCustomFont(mWidgetAddButton, R.id.font_body_medium);
+
+        setAccessibilityDelegate(new AccessibilityDelegate() {
+            @Override
+            public void onInitializeAccessibilityNodeInfo(View host,
+                    AccessibilityNodeInfo info) {
+                super.onInitializeAccessibilityNodeInfo(host, info);
+                if (hasOnClickListeners()) {
+                    String accessibilityLabel = getResources().getString(
+                            mWidgetAddButton.isShown()
+                                    ? R.string.widget_cell_tap_to_hide_add_button_label
+                                    : R.string.widget_cell_tap_to_show_add_button_label);
+                    info.addAction(new AccessibilityNodeInfo.AccessibilityAction(ACTION_CLICK,
+                            accessibilityLabel));
+                }
+            }
+        });
+        mWidgetAddButton.setVisibility(INVISIBLE);
     }
 
     public void setRemoteViewsPreview(RemoteViews view) {
@@ -185,9 +198,7 @@ public class WidgetCell extends LinearLayout {
         return mRemoteViewsPreview;
     }
 
-    /**
-     * Returns the app widget host view scale, which is a value between [0f, 1f].
-     */
+    /** Returns the app widget host view scale, which is a value between [0f, 1f]. */
     public float getAppWidgetHostViewScale() {
         return mAppWidgetHostViewScale;
     }
@@ -216,9 +227,7 @@ public class WidgetCell extends LinearLayout {
         showDescription(true);
         showDimensions(true);
 
-        if (enableWidgetTapToAdd()) {
-            hideAddButton(/* animate= */ false);
-        }
+        hideAddButton(/* animate= */ false);
 
         if (mActiveRequest != null) {
             mActiveRequest.cancel();
@@ -245,19 +254,6 @@ public class WidgetCell extends LinearLayout {
      * Applies the item to this view
      */
     public void applyFromCellItem(WidgetItem item) {
-        applyFromCellItem(item, this::applyPreview, /* cachedPreview= */null);
-    }
-
-    /**
-     * Applies the item to this view
-     * 
-     * @param item          item to apply
-     * @param callback      callback when preview is loaded in case the preview is
-     *                      being loaded or cached
-     * @param cachedPreview previously cached preview bitmap is present
-     */
-    public void applyFromCellItem(WidgetItem item, @NonNull Consumer<Bitmap> callback,
-            @Nullable Bitmap cachedPreview) {
         Context context = getContext();
         mItem = item;
         mWidgetSize = getWidgetItemSizePx(getContext(), mActivity.getDeviceProfile(), mItem);
@@ -273,10 +269,8 @@ public class WidgetCell extends LinearLayout {
             mWidgetDescription.setVisibility(GONE);
         }
 
-        // Setting the content description on the WidgetCell itself ensures that it
-        // remains
-        // screen reader focusable when the add button is showing and the text is
-        // hidden.
+        // Setting the content description on the WidgetCell itself ensures that it remains
+        // screen reader focusable when the add button is showing and the text is hidden.
         setContentDescription(createContentDescription(context));
         if (mWidgetAddButton != null) {
             mWidgetAddButton.setContentDescription(context.getString(
@@ -290,37 +284,25 @@ public class WidgetCell extends LinearLayout {
         }
 
         if (mRemoteViewsPreview != null) {
-            mAppWidgetHostViewPreview = createAppWidgetHostView(context);
-            setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, item.widgetInfo,
-                    mRemoteViewsPreview);
-        } else if (Utilities.ATLEAST_V
-                && item.hasGeneratedPreview(WIDGET_CATEGORY_HOME_SCREEN)) {
-            mAppWidgetHostViewPreview = createAppWidgetHostView(context);
-            setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, item.widgetInfo,
-                    item.generatedPreviews.get(WIDGET_CATEGORY_HOME_SCREEN));
-        } else if (item.hasPreviewLayout()) {
-            // If the context is a Launcher activity, DragView will show
-            // mAppWidgetHostViewPreview
-            // as a preview during drag & drop. And thus, we should use
-            // LauncherAppWidgetHostView,
-            // which supports applying local color extraction during drag & drop.
-            mAppWidgetHostViewPreview = isLauncherContext(context)
-                    ? new LawnchairAppWidgetHostView(context)
-                    : createAppWidgetHostView(context);
-            LauncherAppWidgetProviderInfo providerInfo = fromProviderInfo(context, item.widgetInfo.clone());
-            // A hack to force the initial layout to be the preview layout since there is no
-            // API for
-            // rendering a preview layout for work profile apps yet. For non-work profile
-            // layout, a
-            // proper solution is to use RemoteViews(PackageName, LayoutId).
-            providerInfo.initialLayout = item.widgetInfo.previewLayout;
-            setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, providerInfo, null);
-        } else if (cachedPreview != null) {
-            applyPreview(cachedPreview);
+            WidgetPreviewInfo previewInfo = new WidgetPreviewInfo();
+            previewInfo.providerInfo = item.widgetInfo;
+            previewInfo.remoteViews = mRemoteViewsPreview;
+            applyPreview(previewInfo);
         } else {
             if (mActiveRequest == null) {
-                mActiveRequest = mWidgetPreviewLoader.loadPreview(mItem, mWidgetSize, callback);
+                mActiveRequest = mWidgetPreviewLoader.loadPreview(
+                        mItem, mWidgetSize, this::applyPreview);
             }
+        }
+    }
+
+    private void applyPreview(WidgetPreviewInfo previewInfo) {
+        if (previewInfo.providerInfo != null) {
+            mAppWidgetHostViewPreview = createAppWidgetHostView(getContext());
+            setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, previewInfo.providerInfo,
+                    previewInfo.remoteViews);
+        } else {
+            applyBitmapPreview(previewInfo.previewBitmap);
         }
     }
 
@@ -336,8 +318,9 @@ public class WidgetCell extends LinearLayout {
     }
 
     private String createContentDescription(Context context) {
-        String contentDescription = context.getString(R.string.widget_preview_name_and_dims_content_description,
-                mItem.label, mItem.spanX, mItem.spanY);
+        String contentDescription =
+                context.getString(R.string.widget_preview_name_and_dims_content_description,
+                        mItem.label, mItem.spanX, mItem.spanY);
         if (!TextUtils.isEmpty(mItem.description)) {
             contentDescription += " " + mItem.description;
         }
@@ -346,7 +329,7 @@ public class WidgetCell extends LinearLayout {
 
     private void setAppWidgetHostViewPreview(
             NavigableAppWidgetHostView appWidgetHostViewPreview,
-            LauncherAppWidgetProviderInfo providerInfo,
+            AppWidgetProviderInfo providerInfo,
             @Nullable RemoteViews remoteViews) {
         appWidgetHostViewPreview.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         appWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1, providerInfo);
@@ -358,10 +341,11 @@ public class WidgetCell extends LinearLayout {
                 mWidgetSize.getWidth(), mWidgetSize.getHeight(), Gravity.CENTER);
         mWidgetImageContainer.addView(appWidgetHostViewPreview, /* index= */ 0, widgetHostLP);
         mWidgetImage.setVisibility(View.GONE);
-        applyPreview(null);
+        applyBitmapPreview(null);
 
         appWidgetHostViewPreview.addOnLayoutChangeListener(
-                (v, l, t, r, b, ol, ot, or, ob) -> updateAppWidgetHostScale(appWidgetHostViewPreview));
+                (v, l, t, r, b, ol, ot, or, ob) ->
+                        updateAppWidgetHostScale(appWidgetHostViewPreview));
     }
 
     private void updateAppWidgetHostScale(NavigableAppWidgetHostView view) {
@@ -371,8 +355,7 @@ public class WidgetCell extends LinearLayout {
 
         if (view.getChildCount() == 1) {
             View content = view.getChildAt(0);
-            // Take the content width based on the edge furthest from the center, so that
-            // when
+            // Take the content width based on the edge furthest from the center, so that when
             // scaling the hostView, the farthest edge is still visible.
             contentWidth = 2 * Math.max(contentWidth / 2 - content.getLeft(),
                     content.getRight() - contentWidth / 2);
@@ -389,8 +372,7 @@ public class WidgetCell extends LinearLayout {
         }
         view.setScaleToFit(mAppWidgetHostViewScale);
 
-        // layout based previews maybe ready at this point to inspect their inner
-        // height.
+        // layout based previews maybe ready at this point to inspect their inner height.
         if (mPreviewReadyListener != null) {
             mPreviewReadyListener.onPreviewAvailable();
             mPreviewReadyListener = null;
@@ -417,7 +399,7 @@ public class WidgetCell extends LinearLayout {
         mAnimatePreview = shouldAnimate;
     }
 
-    private void applyPreview(Bitmap bitmap) {
+    private void applyBitmapPreview(Bitmap bitmap) {
         if (bitmap != null) {
             Drawable drawable = new RoundDrawableWrapper(
                     new FastBitmapDrawable(bitmap), mEnforcedCornerRadius);
@@ -451,8 +433,7 @@ public class WidgetCell extends LinearLayout {
     /**
      * Shows or hides the long description displayed below each widget.
      *
-     * @param show a flag that shows the long description of the widget if
-     *             {@code true}, hides it if
+     * @param show a flag that shows the long description of the widget if {@code true}, hides it if
      *             {@code false}.
      */
     public void showDescription(boolean show) {
@@ -462,8 +443,7 @@ public class WidgetCell extends LinearLayout {
     /**
      * Shows or hides the dimensions displayed below each widget.
      *
-     * @param show a flag that shows the dimensions of the widget if {@code true},
-     *             hides it if
+     * @param show a flag that shows the dimensions of the widget if {@code true}, hides it if
      *             {@code false}.
      */
     public void showDimensions(boolean show) {
@@ -471,12 +451,10 @@ public class WidgetCell extends LinearLayout {
     }
 
     /**
-     * Set whether the app icon, for the app that provides the widget, should be
-     * shown next to the
+     * Set whether the app icon, for the app that provides the widget, should be shown next to the
      * title text of the widget.
      *
-     * @param show true if the app icon should be shown in the title text of the
-     *             cell, false hides
+     * @param show true if the app icon should be shown in the title text of the cell, false hides
      *             it.
      */
     public void showAppIconInWidgetTitle(boolean show) {
@@ -510,17 +488,13 @@ public class WidgetCell extends LinearLayout {
         mLongPressHelper.cancelLongPress();
     }
 
-    private static NavigableAppWidgetHostView createAppWidgetHostView(Context context) {
-        return new NavigableAppWidgetHostView(context) {
+    private static LauncherAppWidgetHostView createAppWidgetHostView(Context context) {
+        return new LauncherAppWidgetHostView(context) {
             @Override
             protected boolean shouldAllowDirectClick() {
                 return false;
             }
         };
-    }
-
-    private static boolean isLauncherContext(Context context) {
-        return ActivityContext.lookupContext(context) instanceof Launcher;
     }
 
     @Override
@@ -529,18 +503,11 @@ public class WidgetCell extends LinearLayout {
     }
 
     @Override
-    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfo(info);
-        info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
-    }
-
-    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         ViewGroup.LayoutParams containerLp = mWidgetImageContainer.getLayoutParams();
         int maxWidth = MeasureSpec.getSize(widthMeasureSpec);
 
-        // mPreviewContainerScale ensures the needed scaling with respect to original
-        // widget size.
+        // mPreviewContainerScale ensures the needed scaling with respect to original widget size.
         mAppWidgetHostViewScale = mPreviewContainerScale;
         containerLp.width = mPreviewContainerSize.getWidth();
         int height = mPreviewContainerSize.getHeight();
@@ -559,8 +526,7 @@ public class WidgetCell extends LinearLayout {
             containerLp.height = height;
         }
 
-        // No need to call mWidgetImageContainer.setLayoutParams as we are in measure
-        // pass
+        // No need to call mWidgetImageContainer.setLayoutParams as we are in measure pass
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -574,8 +540,7 @@ public class WidgetCell extends LinearLayout {
     }
 
     /**
-     * Sets the height of the preview as adjusted by the parent to have this cell's
-     * content aligned
+     * Sets the height of the preview as adjusted by the parent to have this cell's content aligned
      * with other cells displayed by the parent.
      */
     public void setParentAlignedPreviewHeight(int previewHeight) {
@@ -584,10 +549,8 @@ public class WidgetCell extends LinearLayout {
 
     /**
      * Returns the height of the preview without any empty space.
-     * In case of appwidget host views, it returns the height of first child. This
-     * way, if preview
-     * view provided by an app doesn't fill bounds, this will return actual height
-     * without white
+     * In case of appwidget host views, it returns the height of first child. This way, if preview
+     * view provided by an app doesn't fill bounds, this will return actual height without white
      * space.
      */
     public int getPreviewContentHeight() {
@@ -618,23 +581,19 @@ public class WidgetCell extends LinearLayout {
     public void loadHighResPackageIcon() {
         cancelIconLoadRequest();
         if (mItem.bitmap.isLowRes()) {
-            // We use the package icon instead of the receiver one so that the overall
-            // package that
-            // the widget came from can be identified in the recommended widgets. This
-            // matches with
+            // We use the package icon instead of the receiver one so that the overall package that
+            // the widget came from can be identified in the recommended widgets. This matches with
             // the package icon headings in the all widgets list.
             PackageItemInfo tmpPackageItem = new PackageItemInfo(
                     mItem.componentName.getPackageName(),
                     mItem.user);
             mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
-                    .updateIconInBackground(this::reapplyIconInfo, tmpPackageItem);
+                    .updateIconInBackground(this::reapplyIconInfo, tmpPackageItem,
+                            DEFAULT_LOOKUP_FLAG);
         }
     }
 
-    /**
-     * Can be called to update the package icon shown in the label of recommended
-     * widgets.
-     */
+    /** Can be called to update the package icon shown in the label of recommended widgets. */
     private void reapplyIconInfo(ItemInfoWithIcon info) {
         if (mItem == null || info.bitmap.isNullOrLowRes()) {
             showAppIconInWidgetTitle(false);
@@ -653,12 +612,11 @@ public class WidgetCell extends LinearLayout {
 
     /**
      * Show tap to add button.
-     * 
      * @param callback Callback to be set on the button.
      */
     public void showAddButton(View.OnClickListener callback) {
-        if (mIsShowingAddButton)
-            return;
+        if (PreferenceExtensionsKt.firstBlocking(prefs2.getLockHomeScreen())) return;
+        if (mIsShowingAddButton) return;
         mIsShowingAddButton = true;
 
         setupIconOrTextButton();
@@ -668,8 +626,7 @@ public class WidgetCell extends LinearLayout {
     }
 
     /**
-     * Depending on the width of the cell, set up the add button to be icon-only or
-     * icon+text.
+     * Depending on the width of the cell, set up the add button to be icon-only or icon+text.
      */
     private void setupIconOrTextButton() {
         String addText = getResources().getString(R.string.widget_add_button_label);
@@ -706,8 +663,7 @@ public class WidgetCell extends LinearLayout {
      * Hide tap to add button.
      */
     public void hideAddButton(boolean animate) {
-        if (!mIsShowingAddButton)
-            return;
+        if (!mIsShowingAddButton) return;
         mIsShowingAddButton = false;
 
         mWidgetAddButton.setOnClickListener(null);
@@ -750,8 +706,7 @@ public class WidgetCell extends LinearLayout {
      * Returns true if this WidgetCell is displaying the same item as info.
      */
     public boolean matchesItem(WidgetItem info) {
-        if (info == null || mItem == null)
-            return false;
+        if (info == null || mItem == null) return false;
         if (info.widgetInfo != null && mItem.widgetInfo != null) {
             return info.widgetInfo.getUser().equals(mItem.widgetInfo.getUser())
                     && info.widgetInfo.getComponent().equals(mItem.widgetInfo.getComponent());

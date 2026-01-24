@@ -23,6 +23,11 @@
     <dimen name="dynamic_grid_left_right_margin">8dp</dimen>
     <!-- Minimum amount of next page visible in spring loaded mode -->
     <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">48dp</dimen>
+    <item name="aspect_ratio_portrait" format="float" type="dimen">1.0</item>
+    <!-- 1.05 was the constant we found to validate square-ish devices
+    to load portrait orientation specs for responsive grids -->
+    <item name="aspect_ratio_portrait_and_square" format="float" type="dimen">1.05</item>
+    <item name="aspect_ratio_landscape" format="float" type="dimen">10</item>
 
     <dimen name="dynamic_grid_cell_border_spacing">16dp</dimen>
     <dimen name="cell_layout_padding">10.77dp</dimen>
@@ -81,6 +86,11 @@
     <dimen name="fastscroll_popup_text_size">32dp</dimen>
     <dimen name="fastscroll_popup_margin">19dp</dimen>
 
+    <dimen name="fastscroll_list_letter_size">5dp</dimen>
+    <dimen name="fastscroll_list_letter_text_size">14sp</dimen>
+    <dimen name="fastscroll_list_letter_end_margin">-10dp</dimen>
+    <dimen name="bg_letter_list_text_size">20sp</dimen>
+
     <!--
       Fast scroller draws the content horizontally centered. The end of the track should be
       aligned at the end of the container.
@@ -120,7 +130,10 @@
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_bottom_padding">20dp</dimen>
     <dimen name="all_apps_tabs_button_horizontal_padding">4dp</dimen>
-    <dimen name="all_apps_tabs_vertical_padding">6dp</dimen>
+    <dimen name="all_apps_tabs_focus_horizontal_inset">5dp</dimen>
+    <dimen name="all_apps_tabs_focus_vertical_inset">6dp</dimen>
+    <dimen name="all_apps_tabs_focus_border">3dp</dimen>
+    <dimen name="all_apps_tabs_focus_padding">2dp</dimen>
     <dimen name="all_apps_tabs_margin_top">8dp</dimen>
     <dimen name="all_apps_divider_height">2dp</dimen>
     <dimen name="all_apps_divider_width">128dp</dimen>
@@ -146,38 +159,44 @@
     <!-- Floating action button inside work tab to toggle work profile -->
     <dimen name="work_fab_height">56dp</dimen>
     <dimen name="work_fab_radius">16dp</dimen>
+    <dimen name="work_fab_elevation">6dp</dimen>
     <dimen name="work_fab_icon_size">24dp</dimen>
-    <dimen name="work_fab_icon_end_margin">12dp</dimen>
-    <dimen name="work_fab_text_end_margin">16dp</dimen>
+    <dimen name="work_fab_icon_vertical_margin">16dp</dimen>
+    <dimen name="work_fab_icon_start_margin_expanded">4dp</dimen>
+    <dimen name="work_fab_text_start_margin">8dp</dimen>
+    <dimen name="work_fab_text_end_margin">10dp</dimen>
     <dimen name="work_card_padding_horizontal">10dp</dimen>
     <dimen name="work_fab_width">214dp</dimen>
     <dimen name="work_card_button_height">52dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
     <dimen name="work_fab_margin_bottom">20dp</dimen>
-    <dimen name="work_mode_fab_background_start_padding">16dp</dimen>
-    <dimen name="work_mode_fab_background_end_padding">4dp</dimen>
+    <dimen name="work_mode_fab_background_horizontal_padding">16dp</dimen>
+    <dimen name="work_scheduler_background_padding">16dp</dimen>
+    <dimen name="work_scheduler_bottom_margin">8dp</dimen>
+    <dimen name="work_scheduler_size">56dp</dimen>
     <dimen name="work_profile_footer_padding">20dp</dimen>
     <dimen name="work_edu_card_margin">16dp</dimen>
     <dimen name="work_edu_card_radius">16dp</dimen>
     <dimen name="work_edu_card_bottom_margin">26dp</dimen>
-    <dimen name="work_edu_card_text_end_margin">32dp</dimen>
+    <dimen name="work_edu_card_text_end_margin">12dp</dimen>
     <dimen name="work_apps_paused_button_stroke">1dp</dimen>
+    <dimen name="work_edu_card_button_margin_top">12dp</dimen>
 
     <dimen name="work_card_margin">24dp</dimen>
+    <dimen name="work_card_margin_end">12dp</dimen>
     <!-- (x) icon button inside work edu card -->
-    <dimen name="rounded_button_width">24dp</dimen>
+    <dimen name="rounded_button_width">48dp</dimen>
     <dimen name="x_icon_size">16dp</dimen>
+    <dimen name="inset_rounded_action_button">12dp</dimen>
 
     <!-- rounded button shown inside card views, and snack bars  -->
     <dimen name="padded_rounded_button_height">48dp</dimen>
     <dimen name="rounded_button_height">48dp</dimen>
     <dimen name="rounded_button_radius">200dp</dimen>
-    <dimen name="rounded_button_padding">8dp</dimen>
-
 
     <!-- Widget tray -->
     <dimen name="widget_cell_vertical_padding">8dp</dimen>
-    <dimen name="widget_cell_horizontal_padding">8dp</dimen>
+    <dimen name="widget_cell_horizontal_padding">4dp</dimen>
     <dimen name="widget_cell_title_font_size">14sp</dimen>
     <integer name="widget_cell_title_font_weight">500</integer>
     <dimen name="widget_cell_title_line_height">20sp</dimen>
@@ -207,9 +226,11 @@
     <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
     <dimen name="widget_picker_header_app_title_font_size">16sp</dimen>
     <integer name="widget_picker_header_app_title_font_weight">500</integer>
+    <integer name="widget_picker_header_selected_app_title_font_weight">600</integer>
     <dimen name="widget_picker_header_app_title_line_height">24sp</dimen>
     <dimen name="widget_picker_header_app_subtitle_font_size">14sp</dimen>
     <integer name="widget_picker_header_app_subtitle_font_weight">400</integer>
+    <integer name="widget_picker_header_selected_app_subtitle_font_weight">600</integer>
     <dimen name="widget_picker_header_app_subtitle_line_height">20sp</dimen>
     <dimen name="widget_recommendations_table_vertical_padding">8dp</dimen>
     <!-- Bottom margin for the search and recommended widgets container without work profile -->
@@ -217,8 +238,18 @@
     <!-- Bottom margin for the search and recommended widgets container with work profile -->
     <dimen name="search_and_recommended_widgets_container_small_bottom_margin">10dp</dimen>
 
+    <dimen name="widget_header_focus_ring_width">3dp</dimen>
+    <dimen name="widget_focus_ring_corner_radius">28dp</dimen>
+    <dimen name="widget_header_background_border">5dp</dimen>
+
     <dimen name="widget_list_top_bottom_corner_radius">28dp</dimen>
     <dimen name="widget_list_content_corner_radius">4dp</dimen>
+    <!-- Button that expands the widget apps list in the widget picker. -->
+    <dimen name="widgets_list_expand_button_drawable_padding">8dp</dimen>
+    <dimen name="widgets_list_expand_button_start_padding">16dp</dimen>
+    <dimen name="widgets_list_expand_button_end_padding">24dp</dimen>
+    <dimen name="widgets_list_expand_button_vertical_padding">16dp</dimen>
+    <dimen name="widgets_list_expand_button_top_margin">14dp</dimen>
 
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_spacing">2dp</dimen>
@@ -276,10 +307,6 @@
     <!-- the distance an icon must be dragged before button drop targets accept it -->
     <dimen name="drag_distanceThreshold">30dp</dimen>
 
-    <!-- Elevation for the drag view. It should be larger than elevation of all other drag sources
-         and drop targets like all-apps and folders -->
-    <dimen name="drag_elevation">30dp</dimen>
-
     <dimen name="drag_flingToDeleteMinVelocity">-1500dp</dimen>
 
     <dimen name="spring_loaded_panel_border">2dp</dimen>
@@ -287,14 +314,17 @@
 
     <!-- Folders -->
     <dimen name="page_indicator_dot_size">6dp</dimen>
+    <dimen name="page_indicator_gap_width">4dp</dimen>
     <dimen name="page_indicator_size">10dp</dimen>
 
-
+    <dimen name="folder_title_min_width">100dp</dimen>
     <dimen name="folder_cell_x_padding">9dp</dimen>
     <dimen name="folder_cell_y_padding">6dp</dimen>
     <!-- label text size = workspace text size multiplied by this scale -->
     <dimen name="folder_label_text_scale">1.14</dimen>
     <dimen name="folder_footer_height_default">56dp</dimen>
+    <dimen name="folder_arrow_gap_width">8dp</dimen>
+    <dimen name="folder_arrow_icon_length">24dp</dimen>
 
     <dimen name="folder_content_padding_left_right">8dp</dimen>
     <dimen name="folder_content_padding_top">16dp</dimen>
@@ -308,6 +338,7 @@
     <dimen name="blur_size_medium_outline">2dp</dimen>
     <dimen name="blur_size_click_shadow">4dp</dimen>
     <dimen name="click_shadow_high_shift">2dp</dimen>
+    <dimen name="app_title_icon_shadow_inset">0.5dp</dimen>
 
     <!-- Pending widget -->
     <dimen name="pending_widget_min_padding">8dp</dimen>
@@ -373,7 +404,7 @@
     <dimen name="notification_icon_padding_start">10dp</dimen>
     <!-- notification_icon_padding + notification_icon_size + notification_icon_padding -->
     <dimen name="notification_main_text_padding_start">54dp</dimen>
-    <dimen name="horizontal_ellipsis_size">18dp</dimen>
+    <dimen name="horizontal_ellipsis_size">24dp</dimen>
 
     <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>
@@ -418,9 +449,9 @@
     <dimen name="taskbar_running_app_indicator_height">0dp</dimen>
     <dimen name="taskbar_running_app_indicator_width">0dp</dimen>
     <dimen name="taskbar_running_app_indicator_top_margin">0dp</dimen>
-    <dimen name="taskbar_minimized_app_indicator_height">0dp</dimen>
     <dimen name="taskbar_minimized_app_indicator_width">0dp</dimen>
-    <dimen name="taskbar_minimized_app_indicator_top_margin">0dp</dimen>
+    <dimen name="taskbar_line_indicator_width_spring">0dp</dimen>
+    <dimen name="taskbar_app_translate_y_spring">0dp</dimen>
 
     <!-- Transient taskbar (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="transient_taskbar_padding">0dp</dimen>
@@ -457,19 +488,18 @@
     <!-- Overview placeholder to compile in Launcher3 without Quickstep -->
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
+    <dimen name="task_thumbnail_splash_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
     <dimen name="task_thumbnail_icon_menu_drawable_touch_size">0dp</dimen>
     <dimen name="task_menu_edge_padding">0dp</dimen>
+    <dimen name="task_dismiss_max_undershoot">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
     <dimen name="overview_actions_height">0dp</dimen>
-    <dimen name="overview_actions_button_spacing">0dp</dimen>
     <dimen name="overview_actions_margin_gesture">0dp</dimen>
     <dimen name="overview_actions_top_margin">0dp</dimen>
     <dimen name="overview_grid_side_margin">0dp</dimen>
     <dimen name="overview_grid_row_spacing">0dp</dimen>
     <dimen name="overview_page_spacing">0dp</dimen>
-    <dimen name="overview_top_margin_grid_only">0dp</dimen>
-    <dimen name="overview_bottom_margin_grid_only">0dp</dimen>
 
     <dimen name="split_placeholder_size">72dp</dimen>
     <dimen name="split_placeholder_inset">16dp</dimen>
@@ -483,8 +513,6 @@
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
     <dimen name="split_instructions_start_margin_cancel">8dp</dimen>
-    <dimen name="split_divider_handle_region_width">96dp</dimen>
-    <dimen name="split_divider_handle_region_height">48dp</dimen>
 
     <dimen name="focus_outline_radius">16dp</dimen>
     <dimen name="focus_inner_outline_radius">14dp</dimen>
@@ -517,13 +545,14 @@
     <!--  Folder spaces  -->
     <dimen name="folder_top_padding_default">24dp</dimen>
     <dimen name="folder_footer_horiz_padding">20dp</dimen>
+    <dimen name="folder_footer_horiz_padding_minus_arrow_overlap">12dp</dimen> <!-- 20 - 8 -->
+    <dimen name="folder_arrow_touchbox_length">32dp</dimen>
 
     <!-- Default Ime height. Used only for logging purposes.
     Assume this is default keyboard height in EN locale in case the keyboard height is not known when queried.-->
     <dimen name="default_ime_height">300dp</dimen>
 
     <!-- Private Space parameters -->
-    <dimen name="ps_container_corner_radius">28dp</dimen>
     <dimen name="ps_header_height">72dp</dimen>
     <dimen name="ps_header_relative_layout_height">48dp</dimen>
     <dimen name="ps_header_image_height">48dp</dimen>
@@ -549,4 +578,8 @@
 
     <!-- WindowManagerProxy -->
     <dimen name="max_width_and_height_of_small_display_cutout">136px</dimen>
+
+    <!-- App Title Pill -->
+    <dimen name="app_title_pill_horizontal_padding">4dp</dimen>
+    <dimen name="app_title_pill_round_rect_padding">2dp</dimen>
 </resources>

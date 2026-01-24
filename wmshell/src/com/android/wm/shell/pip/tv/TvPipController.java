@@ -39,7 +39,7 @@ import android.view.Gravity;
 
 import androidx.annotation.NonNull;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.R;
 import com.android.wm.shell.WindowManagerShellWrapper;
 import com.android.wm.shell.common.DisplayController;
@@ -257,7 +257,7 @@ public class TvPipController implements PipTransitionController.PipTransitionCal
     }
 
     private void onInit() {
-        mPipTransitionController.registerPipTransitionCallback(this);
+        mPipTransitionController.registerPipTransitionCallback(this, mMainExecutor);
 
         reloadResources();
 
@@ -269,6 +269,8 @@ public class TvPipController implements PipTransitionController.PipTransitionCal
 
         mShellController.addConfigurationChangeListener(this);
         mShellController.addUserChangeListener(this);
+
+        mAppOpsListener.setCallback(mPipTaskOrganizer::removePip);
     }
 
     @Override
@@ -476,6 +478,7 @@ public class TvPipController implements PipTransitionController.PipTransitionCal
         }
         mPipTaskOrganizer.removePip();
         mTvPipMenuController.closeMenu();
+        mPipNotificationController.dismiss();
     }
 
     @Override

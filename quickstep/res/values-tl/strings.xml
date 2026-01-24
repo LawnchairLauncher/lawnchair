@@ -22,11 +22,14 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"I-pin"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Desktop"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"Ilipat sa external na display"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"I-clear"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"Desktop"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Walang kamakailang item"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Mga setting ng paggamit ng app"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"I-clear lahat"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"Magdagdag ng bagong desk"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Mga kamakailang app"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"Isinara ang Gawain"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 min"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"<xliff:g id="TIME">%1$s</xliff:g> na lang ngayon"</string>
@@ -45,6 +48,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Naka-enable ang mga iminumungkahing app"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Naka-disable ang mga iminumungkahing app"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Hinulaang app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Tutorial sa Navigation gamit ang Galaw"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"I-rotate ang iyong device"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Paki-rotate ang iyong device para tapusin ang tutorial sa navigation gamit ang galaw"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Tiyaking magsa-swipe ka mula sa dulong kanan o dulong kaliwang gilid"</string>
@@ -56,7 +60,6 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Pumunta sa Settings para baguhin ang sensitivity ng pagbalik"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Mag-swipe para bumalik"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para bumalik sa nakaraang screen, mag-swipe mula sa kaliwa o kanang gilid patungo sa gitna ng screen."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para bumalik sa huling screen, mag-swipe gamit ang 2 daliri mula sa kaliwa o kanang gilid hanggang sa gitna ng screen."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Bumalik"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Mag-swipe mula sa kaliwa o kanang gilid papunta sa gitna ng screen"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Tiyaking magsa-swipe ka pataas mula sa pinakaibaba ng screen"</string>
@@ -66,7 +69,6 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Nakumpleto mo na ang galaw para pumunta sa home"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Mag-swipe para pumunta sa home"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Mag-swipe pataas mula sa ibaba ng iyong screen. Dadalhin ka palagi ng galaw na ito sa Home screen."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Mag-swipe pataas gamit ang 2 daliri mula sa ibaba ng screen. Dadalhin ka palagi nito sa Home screen."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Pumunta sa home"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Mag-swipe pataas mula sa ibabang bahagi ng iyong screen"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Magaling!"</string>
@@ -77,7 +79,6 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Nakumpleto mo na ang galaw para magpalipat-lipat sa mga app"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Mag-swipe para lumipat ng app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para lumipat ng app, mag-swipe pataas mula sa ibaba ng iyong screen, mag-hold, at iangat ang daliri."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para lumipat ng app, mag-swipe pataas gamit ang 2 daliri mula sa ibaba, mag-hold, at bumitaw."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Lumipat ng app"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Mag-swipe pataas mula sa ibaba ng iyong screen, i-hold ito saka bitawan"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Magaling!"</string>
@@ -91,24 +92,33 @@
     <string name="allset_hint" msgid="459504134589971527">"Mag-swipe pataas para pumunta sa home"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"I-tap ang button ng home para pumunta sa iyong home screen"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Handa mo nang simulan ang paggamit sa iyong <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"device"</string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"Handa ka nang simulang gamitin ang iyong device"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Mga setting ng navigation ng system"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"Handa na \nang iyong <xliff:g id="DEVICE">%1$s</xliff:g>!"</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Handa na \nang iyong device!"</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"I-enjoy ang iyong bagong <xliff:g id="DEVICE">%1$s</xliff:g>!"</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Piliin kung paano mag-navigate"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"Mag-swipe pataas"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"I-tap ang button ng home"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"tablet"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"telepono"</string>
     <string name="action_share" msgid="2648470652637092375">"Ibahagi"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Split"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"I-save ang app pair"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Mag-tap ng ibang app para gamitin ang split screen"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Pumili ng ibang app para gamitin ang split screen"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Kanselahin"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"Kanselahin"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Lumabas sa pagpili ng split screen"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Pumili ng ibang app para gamitin ang split screen"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Hindi pinapayagan ng app o ng iyong organisasyon ang pagkilos na ito"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"Kasalukuyang hindi sinusuportahan ang mga widget, pumili ng ibang app"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Laktawan ang tutorial sa pag-navigate?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Makikita mo ito sa <xliff:g id="NAME">%1$s</xliff:g> app sa ibang pagkakataon"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Kanselahin"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Laktawan"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"I-rotate ang screen"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"Animation na nagpapakita kung paano nakikita ang taskbar mula sa ibaba ng screen, at awtomatikong nakatago kapag hindi ginagamit"</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"Animation na nagpapakita kung paano i-pin ang iyong taskbar gamit ang isang toggle, para mananatiling permanenteng nakikita sa ibaba ng screen ang taskbar"</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"Animation na nagpapakita kung paano gumawa ng split screen, sa pamamagitan ng pag-drag at pag-drop ng app mula sa taskbar sa itaas ng nakabukas na app"</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"Animation na nagpapakita kung paano i-access ang mga iminumungkahing app sa iyong device"</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"Animation na nagpapakita kung paano maghanap ng isang item sa screen, sa pamamagitan ng pagpindot nang matagal sa action key at pagpili sa lugar kung saan naroroon ang item."</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Impormasyon sa taskbar"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Mag-drag ng app sa gilid para makagamit ng 2 app nang sabay"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Mag-swipe nang mabagal pataas para ipakita ang Taskbar"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Quick Settings"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Taskbar"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Ipinapakita ang taskbar"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Nakatago ang taskbar"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Taskbar at bubble sa kaliwa"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Taskbar at bubble sa kanan"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigation bar"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Ipakita lagi ang Taskbar"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Magpalit ng navigation mode"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Divider ng Taskbar"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Iba pang kamakailang app"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Ilipat sa itaas/kaliwa"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Ilipat sa ibaba/kanan"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Magpakita ng # pang app.}one{Magpakita ng # pang app.}other{Magpakita ng # pang app.}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Ipakita ang # desktop app.}one{Ipakita ang # desktop app.}other{Ipakita ang # na desktop app.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Buksan ang app bilang bubble"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"Mga kamakailang app"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"Kamakailang listahan ng app"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{pang app}one{pang app}other{pang app}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"Desktop"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> at <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, item <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g> ng <xliff:g id="TOTAL_TASKS">%3$d</xliff:g>"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"Mag-scroll pakaliwa"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"Mag-scroll pakanan"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Bubble"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Overflow"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> mula sa <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> at <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> pa"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"Ilipat pakaliwa"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"Ilipat pakanan"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"I-dismiss lahat"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"i-expand ang <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"i-collapse ang <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"Circle to Search"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"Icon ng app"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"Pamagat ng app"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"Button na isara"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"I-pin sa taskbar"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"I-unpin sa taskbar"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"Pag-nudge"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"Isara"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"I-nudge ang larawan"</string>
 </resources>

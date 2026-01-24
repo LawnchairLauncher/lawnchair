@@ -16,29 +16,54 @@
 
 package com.android.launcher3.taskbar.customization
 
+import com.android.launcher3.Flags.enableRecentsInTaskbar
 import com.android.launcher3.config.FeatureFlags.enableTaskbarPinning
 import com.android.launcher3.taskbar.TaskbarActivityContext
-import com.android.launcher3.taskbar.TaskbarControllers
-import com.android.launcher3.taskbar.TaskbarRecentAppsController
-import com.android.launcher3.util.DisplayController
 
 /** Evaluates all the features taskbar can have. */
-class TaskbarFeatureEvaluator(
-    private val taskbarActivityContext: TaskbarActivityContext,
-    private val taskbarControllers: TaskbarControllers,
-) {
-
+class TaskbarFeatureEvaluator
+private constructor(private val taskbarActivityContext: TaskbarActivityContext) {
     val hasAllApps = true
     val hasAppIcons = true
     val hasBubbles = false
     val hasNavButtons = taskbarActivityContext.isThreeButtonNav
 
-    val hasRecents: Boolean
-        get() = taskbarControllers.taskbarRecentAppsController.isEnabled
+    val isRecentsEnabled: Boolean
+        get() = enableRecentsInTaskbar()
 
     val hasDivider: Boolean
-        get() = enableTaskbarPinning() || hasRecents
+        get() = enableTaskbarPinning() || isRecentsEnabled
 
     val isTransient: Boolean
-        get() = DisplayController.isTransientTaskbar(taskbarActivityContext)
+        get() = taskbarActivityContext.isTransientTaskbar
+
+    val isLandscape: Boolean
+        get() = taskbarActivityContext.deviceProfile.deviceProperties.isLandscape
+
+    val isTnMinimalState: Boolean
+        get() = taskbarActivityContext.isTaskbarInMinimalState
+
+    val supportsPinningPopup: Boolean
+        get() = !hasNavButtons
+
+    val supportsTransitionToTransientTaskbar: Boolean
+        get() = !hasNavButtons && !taskbarActivityContext.showDesktopTaskbarForFreeformDisplay()
+
+    fun onDestroy() {
+        taskbarFeatureEvaluator = null
+    }
+
+    companion object {
+        @Volatile private var taskbarFeatureEvaluator: TaskbarFeatureEvaluator? = null
+
+        @JvmStatic
+        fun getInstance(taskbarActivityContext: TaskbarActivityContext): TaskbarFeatureEvaluator {
+            synchronized(this) {
+                if (taskbarFeatureEvaluator == null) {
+                    taskbarFeatureEvaluator = TaskbarFeatureEvaluator(taskbarActivityContext)
+                }
+                return taskbarFeatureEvaluator!!
+            }
+        }
+    }
 }

@@ -19,10 +19,9 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKG
 
 import android.graphics.Color;
 
+import app.lawnchair.theme.color.tokens.ColorTokens;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.util.Themes;
 
 /**
  * State to indicate we are about to launch a recent task. Note that this state is only used when
@@ -44,19 +43,6 @@ public class QuickSwitchState extends BackgroundAppState {
     }
 
     @Override
-    public int getWorkspaceScrimColor(Launcher launcher) {
-        if (launcher.areDesktopTasksVisible()) {
-            // No scrim while desktop tasks are visible
-            return Color.TRANSPARENT;
-        }
-        DeviceProfile dp = launcher.getDeviceProfile();
-        if (dp.isTaskbarPresentInApps) {
-            return launcher.getColor(R.color.taskbar_background);
-        }
-        return Themes.getAttrColor(launcher, R.attr.overviewScrimColor);
-    }
-
-    @Override
     public float getVerticalProgress(Launcher launcher) {
         // Don't move all apps shelf while quick-switching (just let it fade).
         return 1f;
@@ -75,5 +61,10 @@ public class QuickSwitchState extends BackgroundAppState {
     @Override
     public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
         return false;
+    }
+
+    @Override
+    public boolean detachDesktopCarousel() {
+        return true;
     }
 }

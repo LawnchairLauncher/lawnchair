@@ -267,8 +267,8 @@ public class AllAppsEduView extends AbstractFloatingView {
         DeviceProfile grid = launcher.getDeviceProfile();
         DragLayer.LayoutParams lp = new DragLayer.LayoutParams(mWidthPx, mMaxHeightPx);
         lp.ignoreInsets = true;
-        lp.leftMargin = (grid.widthPx - mWidthPx) / 2;
-        lp.topMargin = grid.heightPx - grid.hotseatBarSizePx - mMaxHeightPx;
+        lp.leftMargin = (grid.getDeviceProperties().getWidthPx() - mWidthPx) / 2;
+        lp.topMargin = grid.getDeviceProperties().getHeightPx() - grid.hotseatBarSizePx - mMaxHeightPx;
         setLayoutParams(lp);
     }
 

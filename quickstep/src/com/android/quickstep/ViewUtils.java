@@ -23,6 +23,7 @@ import android.view.ViewRootImpl;
 
 import com.android.launcher3.Utilities;
 
+import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 
 import app.lawnchair.compat.LawnchairQuickstepCompat;
@@ -132,6 +133,20 @@ public class ViewUtils {
                 mViewRoot.removeSurfaceChangedCallback(this);
                 mSurfaceCallbackRegistered = false;
             }
+        }
+    }
+
+    /**
+     * Adds the view to the list of accessible children.
+     *
+     * @param view The view to add.
+     * @param outChildren The list of accessible children.
+     */
+    public static void addAccessibleChildToList(View view, ArrayList<View> outChildren) {
+        if (view.includeForAccessibility()) {
+            outChildren.add(view);
+        } else {
+            view.addChildrenForAccessibility(outChildren);
         }
     }
 

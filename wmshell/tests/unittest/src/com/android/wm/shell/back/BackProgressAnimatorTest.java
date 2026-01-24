@@ -32,6 +32,8 @@ import android.window.BackProgressAnimator;
 import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.wm.shell.ShellTestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 @SmallTest
 @TestableLooper.RunWithLooper
 @RunWith(AndroidTestingRunner.class)
-public class BackProgressAnimatorTest {
+public class BackProgressAnimatorTest extends ShellTestCase {
     private BackProgressAnimator mProgressAnimator;
     private BackEvent mReceivedBackEvent;
     private float mTargetProgress = 0.5f;
@@ -53,9 +55,8 @@ public class BackProgressAnimatorTest {
         return new BackMotionEvent(
                 /* touchX = */ touchX,
                 /* touchY = */ 0,
+                /* frameTime = */ 0,
                 /* progress = */ progress,
-                /* velocityX = */ 0,
-                /* velocityY = */ 0,
                 /* triggerBack = */ false,
                 /* swipeEdge = */ BackEvent.EDGE_LEFT,
                 /* departingAnimationTarget = */ null);
@@ -63,6 +64,8 @@ public class BackProgressAnimatorTest {
 
     @Before
     public void setUp() throws Exception {
+        mTargetProgressCalled = new CountDownLatch(1);
+        mTargetProgress = 0.5f;
         mMainThreadHandler = new Handler(Looper.getMainLooper());
         final BackMotionEvent backEvent = backMotionEventFrom(0, 0);
         mMainThreadHandler.post(
@@ -169,6 +172,31 @@ public class BackProgressAnimatorTest {
         // remove onBackCancelled finishCallback (while progress is still animating to 0)
         InstrumentationRegistry.getInstrumentation().runOnMainSync(
                 () -> mProgressAnimator.removeOnBackCancelledFinishCallback());
+
+        // call reset (which triggers the finishCallback invocation, if one is present)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> mProgressAnimator.reset());
+
+        // verify that finishCallback is not invoked
+        assertEquals(1, finishCallbackCalled.getCount());
+    }
+
+    @Test
+    public void testOnBackInvokedFinishCallbackNotInvokedWhenRemoved() throws InterruptedException {
+        // Give the animator some progress.
+        final BackMotionEvent backEvent = backMotionEventFrom(100, mTargetProgress);
+        mMainThreadHandler.post(
+                () -> mProgressAnimator.onBackProgressed(backEvent));
+        mTargetProgressCalled.await(1, TimeUnit.SECONDS);
+        assertNotNull(mReceivedBackEvent);
+
+        CountDownLatch finishCallbackCalled = new CountDownLatch(1);
+        // Trigger back invoked animation and remove onBackInvoked finishCallback (while progress
+        // is still animating to 1)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+                    mProgressAnimator.onBackInvoked(finishCallbackCalled::countDown);
+                    mProgressAnimator.removeOnBackInvokedFinishCallback();
+                }
+        );
 
         // call reset (which triggers the finishCallback invocation, if one is present)
         InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> mProgressAnimator.reset());

@@ -55,9 +55,11 @@ fun DockSearchPreference(
         if (hotseatEnabled) {
             Column {
                 PreferenceGroup {
-                    HotseatModePreference(
-                        adapter = hotseatModeAdapter,
-                    )
+                    Item {
+                        HotseatModePreference(
+                            adapter = hotseatModeAdapter,
+                        )
+                    }
                 }
                 ExpandAndShrink(visible = hotseatModeAdapter.state.value != DisabledHotseat) {
                     Column {
@@ -70,47 +72,56 @@ fun DockSearchPreference(
                         PreferenceGroup(
                             heading = stringResource(R.string.search_bar_settings),
                         ) {
-                            NavigationActionPreference(
-                                label = stringResource(R.string.search_provider),
-                                destination = DockSearchProvider,
-                                subtitle = stringResource(
-                                    id = QsbSearchProvider.values()
-                                        .first { it == hotseatQsbProviderAdapter }
-                                        .name,
-                                ),
-                            )
+                            Item {
+                                NavigationActionPreference(
+                                    label = stringResource(R.string.search_provider),
+                                    destination = DockSearchProvider,
+                                    subtitle = stringResource(
+                                        id = QsbSearchProvider.values()
+                                            .first { it == hotseatQsbProviderAdapter }
+                                            .name,
+                                    ),
+                                )
+                            }
                         }
                         PreferenceGroup(
                             heading = stringResource(R.string.style),
                         ) {
-                            SwitchPreference(
-                                adapter = themeQsbAdapter,
-                                label = stringResource(id = R.string.apply_accent_color_label),
-                            )
-                            SliderPreference(
-                                label = stringResource(id = R.string.corner_radius_label),
-                                adapter = qsbCornerAdapter,
-                                step = 0.05F,
-                                valueRange = 0F..1F,
-                                showAsPercentage = true,
-                            )
-                            SliderPreference(
-                                label = stringResource(id = R.string.qsb_hotseat_background_transparency),
-                                adapter = qsbAlphaAdapter,
-                                step = 5,
-                                valueRange = 0..100,
-                                showUnit = "%",
-                            )
-
-                            SliderPreference(
-                                label = stringResource(id = R.string.qsb_hotseat_stroke_width),
-                                adapter = qsbHotseatStrokeWidth,
-                                step = 1f,
-                                valueRange = 0f..10f,
-                                showUnit = "vw",
-                            )
-                            ExpandAndShrink(visible = qsbHotseatStrokeWidth.state.value > 0f) {
-                                ColorPreference(preference = prefs2.strokeColorStyle)
+                            Item {
+                                SwitchPreference(
+                                    adapter = themeQsbAdapter,
+                                    label = stringResource(id = R.string.apply_accent_color_label),
+                                )
+                            }
+                            Item {
+                                SliderPreference(
+                                    label = stringResource(id = R.string.corner_radius_label),
+                                    adapter = qsbCornerAdapter,
+                                    step = 0.05F,
+                                    valueRange = 0F..1F,
+                                    showAsPercentage = true,
+                                )
+                            }
+                            Item {
+                                SliderPreference(
+                                    label = stringResource(id = R.string.qsb_hotseat_background_transparency),
+                                    adapter = qsbAlphaAdapter,
+                                    step = 5,
+                                    valueRange = 0..100,
+                                    showUnit = "%",
+                                )
+                            }
+                            Item {
+                                SliderPreference(
+                                    label = stringResource(id = R.string.qsb_hotseat_stroke_width),
+                                    adapter = qsbHotseatStrokeWidth,
+                                    step = 1f,
+                                    valueRange = 0f..10f,
+                                    showUnit = "vw",
+                                )
+                            }
+                            if (qsbHotseatStrokeWidth.state.value > 0f) {
+                                Item { ColorPreference(preference = prefs2.strokeColorStyle) }
                             }
                         }
                     }

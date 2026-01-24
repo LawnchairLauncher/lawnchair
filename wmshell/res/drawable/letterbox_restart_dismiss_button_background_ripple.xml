@@ -32,9 +32,9 @@
         </item>
         <item>
             <shape android:shape="rectangle">
-                <stroke android:color="?androidprv:attr/colorAccentPrimaryVariant"
+                <stroke android:color="@androidprv:color/materialColorOutlineVariant"
                         android:width="1dp"/>
-                <solid android:color="?androidprv:attr/colorSurface"/>
+                <solid android:color="@androidprv:color/materialColorSurfaceContainerHigh"/>
                 <corners android:radius="@dimen/letterbox_restart_dialog_button_radius"/>
                 <padding android:left="@dimen/letterbox_restart_dialog_horizontal_padding"
                          android:top="@dimen/letterbox_restart_dialog_vertical_padding"

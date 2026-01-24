@@ -27,7 +27,6 @@ import android.widget.Space
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter
 
 /**
@@ -48,7 +47,7 @@ abstract class AbstractNavButtonLayoutter(
     protected val startContextualContainer: ViewGroup,
     protected val imeSwitcher: ImageView?,
     protected val a11yButton: ImageView?,
-    protected val space: Space?
+    protected val space: Space?,
 ) : NavButtonLayoutter {
     protected val homeButton: ImageView? = navButtonContainer.findViewById(R.id.home)
     protected val recentsButton: ImageView? = navButtonContainer.findViewById(R.id.recent_apps)
@@ -69,26 +68,34 @@ abstract class AbstractNavButtonLayoutter(
         val params =
             FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
             )
         params.gravity = Gravity.CENTER
         return params
     }
 
+    /**
+     * Adjusts the layout parameters of the nav bar container for setup in phone mode.
+     *
+     * @param nearestTouchFrameLayoutParams The layout parameters of the navButtonsView, which is
+     *   the ViewGroup that contains start, end, nav button ViewGroups
+     * @param deviceProfile The device profile containing information about the device's
+     *   configuration.
+     */
     fun adjustForSetupInPhoneMode(
-        navButtonsLayoutParams: FrameLayout.LayoutParams,
-        navButtonsViewLayoutParams: FrameLayout.LayoutParams,
-        deviceProfile: DeviceProfile
+        nearestTouchFrameLayoutParams: FrameLayout.LayoutParams,
+        deviceProfile: DeviceProfile,
     ) {
         val phoneOrPortraitSetupMargin =
             resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_margin)
-        navButtonsLayoutParams.marginStart = phoneOrPortraitSetupMargin
-        navButtonsLayoutParams.bottomMargin =
-            if (!deviceProfile.isLandscape) 0
+        nearestTouchFrameLayoutParams.marginStart = phoneOrPortraitSetupMargin
+        nearestTouchFrameLayoutParams.bottomMargin =
+            if (!deviceProfile.deviceProperties.isLandscape) 0
             else
                 phoneOrPortraitSetupMargin -
-                        resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size) / 2
-        navButtonsViewLayoutParams.height =
+                    resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size) / 2
+
+        nearestTouchFrameLayoutParams.height =
             resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_suw_height)
     }
 
@@ -97,7 +104,7 @@ abstract class AbstractNavButtonLayoutter(
         buttonSize: Int,
         barAxisMarginStart: Int,
         barAxisMarginEnd: Int,
-        gravity: Int
+        gravity: Int,
     ) {
         val contextualContainerParams =
             FrameLayout.LayoutParams(buttonSize, ViewGroup.LayoutParams.MATCH_PARENT)

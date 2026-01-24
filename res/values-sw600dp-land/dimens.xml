@@ -21,6 +21,7 @@
 
 <!-- Hotseat -->
     <dimen name="spring_loaded_hotseat_top_margin">44dp</dimen>
+    <dimen name="min_hotseat_qsb_width">240dp</dimen>
 
 <!-- Dragging -->
     <dimen name="drop_target_top_margin">0dp</dimen>

@@ -25,9 +25,8 @@
         android:orientation="horizontal"
         android:background="@drawable/work_card"
         android:layout_gravity="center_horizontal"
-        android:paddingEnd="@dimen/work_card_margin"
         android:paddingStart="@dimen/work_card_margin"
-        android:paddingTop="@dimen/work_card_margin"
+        android:paddingEnd="@dimen/work_card_margin_end"
         android:paddingBottom="@dimen/work_card_margin"
         android:id="@+id/wrapper">
         <TextView
@@ -37,24 +36,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginTop="@dimen/work_card_margin"
             android:paddingEnd="@dimen/work_edu_card_text_end_margin"
             android:text="@string/work_profile_edu_work_apps"
             android:textDirection="locale"
             android:textSize="18sp" />
         <FrameLayout
+            android:id="@+id/action_btn"
             android:layout_width="@dimen/rounded_button_width"
             android:layout_height="@dimen/rounded_button_width"
-            android:background="@drawable/rounded_action_button"
-            android:padding="@dimen/rounded_button_padding">
+            android:layout_marginTop="@dimen/work_edu_card_button_margin_top"
+            android:clickable="true"
+            android:contentDescription="@string/accessibility_close"
+            android:gravity="center"
+            android:background="@drawable/inset_rounded_action_button">
             <ImageButton
-                android:id="@+id/action_btn"
                 android:layout_width="@dimen/x_icon_size"
                 android:layout_height="@dimen/x_icon_size"
+                android:clickable="false"
                 android:scaleType="centerInside"
                 android:layout_gravity="center"
-                android:contentDescription="@string/accessibility_close"
+                android:importantForAccessibility="no"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_remove_no_shadow" />
+                android:src="@drawable/ic_close_work_edu" />
         </FrameLayout>
     </LinearLayout>
 </com.android.launcher3.allapps.WorkEduCard>

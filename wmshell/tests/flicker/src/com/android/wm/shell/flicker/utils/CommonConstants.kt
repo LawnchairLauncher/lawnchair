@@ -25,6 +25,7 @@ const val LAUNCHER_UI_PACKAGE_NAME = "com.google.android.apps.nexuslauncher"
 val APP_PAIR_SPLIT_DIVIDER_COMPONENT = ComponentNameMatcher("", "AppPairSplitDivider#")
 val DOCKED_STACK_DIVIDER_COMPONENT = ComponentNameMatcher("", "DockedStackDivider#")
 val SPLIT_SCREEN_DIVIDER_COMPONENT = ComponentNameMatcher("", "StageCoordinatorSplitDivider#")
+val TILING_SPLIT_DIVIDER = ComponentNameMatcher("", "DesktopTilingWindowDecoration#")
 val SPLIT_DECOR_MANAGER = ComponentNameMatcher("", "SplitDecorManager#")
 
 enum class Direction {

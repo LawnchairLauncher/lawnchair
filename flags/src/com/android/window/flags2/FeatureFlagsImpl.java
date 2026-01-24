@@ -1,1638 +1,2126 @@
 package com.android.window.flags2;
-// TODO(b/303773055): Remove the annotation after access issue is resolved.
 
-import com.android.quickstep.util.DeviceConfigHelper;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 /** @hide */
 public final class FeatureFlagsImpl implements FeatureFlags {
-    private static final boolean isReadFromNew = Files.exists(Paths.get("/metadata/aconfig/boot/enable_only_new_storage"));
-    private static volatile boolean isCached = false;
-    private static volatile boolean accessibility_is_cached = false;
-    private static volatile boolean large_screen_experiences_app_compat_is_cached = false;
-    private static volatile boolean lse_desktop_experience_is_cached = false;
-    private static volatile boolean multitasking_is_cached = false;
-    private static volatile boolean responsible_apis_is_cached = false;
-    private static volatile boolean systemui_is_cached = false;
-    private static volatile boolean wear_frameworks_is_cached = false;
-    private static volatile boolean window_surfaces_is_cached = false;
-    private static volatile boolean windowing_frontend_is_cached = false;
-    private static volatile boolean windowing_sdk_is_cached = false;
-    private static boolean activityEmbeddingAnimationCustomizationFlag = false;
-    private static boolean activityEmbeddingInteractiveDividerFlag = true;
-    private static boolean activityEmbeddingOverlayPresentationFlag = true;
-    private static boolean allowHideScmButton = true;
-    private static boolean alwaysDeferTransitionWhenApplyWct = true;
-    private static boolean alwaysDrawMagnificationFullscreenBorder = true;
-    private static boolean alwaysUpdateWallpaperPermission = true;
-    private static boolean balDontBringExistingBackgroundTaskStackToFg = true;
-    private static boolean balImproveRealCallerVisibilityCheck = true;
-    private static boolean balImprovedMetrics = true;
-    private static boolean balRequireOptInByPendingIntentCreator = true;
-    private static boolean balRequireOptInSameUid = false;
-    private static boolean balRespectAppSwitchStateWhenCheckBoundByForegroundUid = true;
-    private static boolean balShowToasts = false;
-    private static boolean balShowToastsBlocked = true;
-    private static boolean blastSyncNotificationShadeOnDisplaySwitch = true;
-    private static boolean closeToSquareConfigIncludesStatusBar = false;
-    private static boolean delayNotificationToMagnificationWhenRecentsWindowToFrontTransition = true;
-    private static boolean disableThinLetterboxingPolicy = true;
-    private static boolean doNotCheckIntersectionWhenNonMagnifiableWindowTransitions = true;
-    private static boolean edgeToEdgeByDefault = false;
-    private static boolean embeddedActivityBackNavFlag = true;
-    private static boolean enableAdditionalWindowsAboveStatusBar = false;
-    private static boolean enableAppHeaderWithTaskDensity = true;
-    private static boolean enableCameraCompatForDesktopWindowing = true;
-    private static boolean enableCompatuiSysuiLauncher = false;
-    private static boolean enableDesktopWindowingImmersiveHandleHiding = false;
-    private static boolean enableDesktopWindowingModalsPolicy = true;
-    private static boolean enableDesktopWindowingMode = false;
-    private static boolean enableDesktopWindowingQuickSwitch = false;
-    private static boolean enableDesktopWindowingScvhCache = false;
-    private static boolean enableDesktopWindowingSizeConstraints = false;
-    private static boolean enableDesktopWindowingTaskLimit = true;
-    private static boolean enableDesktopWindowingTaskbarRunningApps = true;
-    private static boolean enableDesktopWindowingWallpaperActivity = false;
-    private static boolean enableTaskStackObserverInShell = true;
-    private static boolean enableThemedAppHeaders = true;
-    private static boolean enableWindowingDynamicInitialBounds = false;
-    private static boolean enableWindowingEdgeDragResize = false;
-    private static boolean ensureWallpaperInTransitions = false;
-    private static boolean fixPipRestoreToOverlay = true;
-    private static boolean fullscreenDimFlag = true;
-    private static boolean immersiveAppRepositioning = true;
-    private static boolean insetsControlChangedItem = false;
-    private static boolean letterboxBackgroundWallpaper = false;
-    private static boolean moveAnimationOptionsToChange = true;
-    private static boolean multiCrop = true;
-    private static boolean navBarTransparentByDefault = true;
-    private static boolean noConsecutiveVisibilityEvents = true;
-    private static boolean noVisibilityEventOnDisplayStateChange = true;
-    private static boolean offloadColorExtraction = false;
-    private static boolean predictiveBackSystemAnims = true;
-    private static boolean taskFragmentSystemOrganizerFlag = true;
-    private static boolean transitReadyTracking = false;
-    private static boolean useWindowOriginalTouchableRegionWhenMagnificationRecomputeBounds = true;
-    private static boolean userMinAspectRatioAppDefault = true;
-    private static boolean waitForTransitionOnDisplaySwitch = true;
-    private static boolean windowTokenConfigThreadSafe = true;
+    @Override
 
 
-    private void init() {
-        isCached = true;
-    }
-
-
-
-
-    private void load_overrides_accessibility() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            alwaysDrawMagnificationFullscreenBorder =
-                    properties.getBoolean(Flags.FLAG_ALWAYS_DRAW_MAGNIFICATION_FULLSCREEN_BORDER, true);
-            delayNotificationToMagnificationWhenRecentsWindowToFrontTransition =
-                    properties.getBoolean(Flags.FLAG_DELAY_NOTIFICATION_TO_MAGNIFICATION_WHEN_RECENTS_WINDOW_TO_FRONT_TRANSITION, true);
-            doNotCheckIntersectionWhenNonMagnifiableWindowTransitions =
-                    properties.getBoolean(Flags.FLAG_DO_NOT_CHECK_INTERSECTION_WHEN_NON_MAGNIFIABLE_WINDOW_TRANSITIONS, true);
-            useWindowOriginalTouchableRegionWhenMagnificationRecomputeBounds =
-                    properties.getBoolean(Flags.FLAG_USE_WINDOW_ORIGINAL_TOUCHABLE_REGION_WHEN_MAGNIFICATION_RECOMPUTE_BOUNDS, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace accessibility "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        accessibility_is_cached = true;
-    }
-
-    private void load_overrides_large_screen_experiences_app_compat() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            allowHideScmButton =
-                    properties.getBoolean(Flags.FLAG_ALLOW_HIDE_SCM_BUTTON, true);
-            disableThinLetterboxingPolicy =
-                    properties.getBoolean(Flags.FLAG_DISABLE_THIN_LETTERBOXING_POLICY, true);
-            enableCompatuiSysuiLauncher =
-                    properties.getBoolean(Flags.FLAG_ENABLE_COMPATUI_SYSUI_LAUNCHER, false);
-            immersiveAppRepositioning =
-                    properties.getBoolean(Flags.FLAG_IMMERSIVE_APP_REPOSITIONING, true);
-            letterboxBackgroundWallpaper =
-                    properties.getBoolean(Flags.FLAG_LETTERBOX_BACKGROUND_WALLPAPER, false);
-            userMinAspectRatioAppDefault =
-                    properties.getBoolean(Flags.FLAG_USER_MIN_ASPECT_RATIO_APP_DEFAULT, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace large_screen_experiences_app_compat "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        large_screen_experiences_app_compat_is_cached = true;
-    }
-
-    private void load_overrides_lse_desktop_experience() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            enableAdditionalWindowsAboveStatusBar =
-                    properties.getBoolean(Flags.FLAG_ENABLE_ADDITIONAL_WINDOWS_ABOVE_STATUS_BAR, false);
-            enableAppHeaderWithTaskDensity =
-                    properties.getBoolean(Flags.FLAG_ENABLE_APP_HEADER_WITH_TASK_DENSITY, true);
-            enableCameraCompatForDesktopWindowing =
-                    properties.getBoolean(Flags.FLAG_ENABLE_CAMERA_COMPAT_FOR_DESKTOP_WINDOWING, true);
-            enableDesktopWindowingImmersiveHandleHiding =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_IMMERSIVE_HANDLE_HIDING, false);
-            enableDesktopWindowingModalsPolicy =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODALS_POLICY, true);
-            enableDesktopWindowingMode =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE, true);
-            enableDesktopWindowingQuickSwitch =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_QUICK_SWITCH, false);
-            enableDesktopWindowingScvhCache =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_SCVH_CACHE, false);
-            enableDesktopWindowingSizeConstraints =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_SIZE_CONSTRAINTS, false);
-            enableDesktopWindowingTaskLimit =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_TASK_LIMIT, true);
-            enableDesktopWindowingTaskbarRunningApps =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS, true);
-            enableDesktopWindowingWallpaperActivity =
-                    properties.getBoolean(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY, false);
-            enableTaskStackObserverInShell =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TASK_STACK_OBSERVER_IN_SHELL, true);
-            enableThemedAppHeaders =
-                    properties.getBoolean(Flags.FLAG_ENABLE_THEMED_APP_HEADERS, true);
-            enableWindowingDynamicInitialBounds =
-                    properties.getBoolean(Flags.FLAG_ENABLE_WINDOWING_DYNAMIC_INITIAL_BOUNDS, false);
-            enableWindowingEdgeDragResize =
-                    properties.getBoolean(Flags.FLAG_ENABLE_WINDOWING_EDGE_DRAG_RESIZE, false);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace lse_desktop_experience "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        lse_desktop_experience_is_cached = true;
-    }
-
-    private void load_overrides_multitasking() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace multitasking "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        multitasking_is_cached = true;
-    }
-
-    private void load_overrides_responsible_apis() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            balDontBringExistingBackgroundTaskStackToFg =
-                    properties.getBoolean(Flags.FLAG_BAL_DONT_BRING_EXISTING_BACKGROUND_TASK_STACK_TO_FG, true);
-            balImproveRealCallerVisibilityCheck =
-                    properties.getBoolean(Flags.FLAG_BAL_IMPROVE_REAL_CALLER_VISIBILITY_CHECK, true);
-            balImprovedMetrics =
-                    properties.getBoolean(Flags.FLAG_BAL_IMPROVED_METRICS, true);
-            balRequireOptInByPendingIntentCreator =
-                    properties.getBoolean(Flags.FLAG_BAL_REQUIRE_OPT_IN_BY_PENDING_INTENT_CREATOR, true);
-            balRequireOptInSameUid =
-                    properties.getBoolean(Flags.FLAG_BAL_REQUIRE_OPT_IN_SAME_UID, false);
-            balRespectAppSwitchStateWhenCheckBoundByForegroundUid =
-                    properties.getBoolean(Flags.FLAG_BAL_RESPECT_APP_SWITCH_STATE_WHEN_CHECK_BOUND_BY_FOREGROUND_UID, true);
-            balShowToasts =
-                    properties.getBoolean(Flags.FLAG_BAL_SHOW_TOASTS, false);
-            balShowToastsBlocked =
-                    properties.getBoolean(Flags.FLAG_BAL_SHOW_TOASTS_BLOCKED, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace responsible_apis "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        responsible_apis_is_cached = true;
-    }
-
-    private void load_overrides_systemui() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            multiCrop =
-                    properties.getBoolean(Flags.FLAG_MULTI_CROP, true);
-            noConsecutiveVisibilityEvents =
-                    properties.getBoolean(Flags.FLAG_NO_CONSECUTIVE_VISIBILITY_EVENTS, true);
-            offloadColorExtraction =
-                    properties.getBoolean(Flags.FLAG_OFFLOAD_COLOR_EXTRACTION, false);
-            predictiveBackSystemAnims =
-                    properties.getBoolean(Flags.FLAG_PREDICTIVE_BACK_SYSTEM_ANIMS, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace systemui "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        systemui_is_cached = true;
-    }
-
-    private void load_overrides_wear_frameworks() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            alwaysUpdateWallpaperPermission =
-                    properties.getBoolean(Flags.FLAG_ALWAYS_UPDATE_WALLPAPER_PERMISSION, true);
-            noVisibilityEventOnDisplayStateChange =
-                    properties.getBoolean(Flags.FLAG_NO_VISIBILITY_EVENT_ON_DISPLAY_STATE_CHANGE, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace wear_frameworks "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        wear_frameworks_is_cached = true;
-    }
-
-    private void load_overrides_window_surfaces() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace window_surfaces "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        window_surfaces_is_cached = true;
-    }
-
-    private void load_overrides_windowing_frontend() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            blastSyncNotificationShadeOnDisplaySwitch =
-                    properties.getBoolean(Flags.FLAG_BLAST_SYNC_NOTIFICATION_SHADE_ON_DISPLAY_SWITCH, true);
-            closeToSquareConfigIncludesStatusBar =
-                    properties.getBoolean(Flags.FLAG_CLOSE_TO_SQUARE_CONFIG_INCLUDES_STATUS_BAR, false);
-            edgeToEdgeByDefault =
-                    properties.getBoolean(Flags.FLAG_EDGE_TO_EDGE_BY_DEFAULT, false);
-            ensureWallpaperInTransitions =
-                    properties.getBoolean(Flags.FLAG_ENSURE_WALLPAPER_IN_TRANSITIONS, false);
-            navBarTransparentByDefault =
-                    properties.getBoolean(Flags.FLAG_NAV_BAR_TRANSPARENT_BY_DEFAULT, true);
-            transitReadyTracking =
-                    properties.getBoolean(Flags.FLAG_TRANSIT_READY_TRACKING, false);
-            waitForTransitionOnDisplaySwitch =
-                    properties.getBoolean(Flags.FLAG_WAIT_FOR_TRANSITION_ON_DISPLAY_SWITCH, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace windowing_frontend "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        windowing_frontend_is_cached = true;
-    }
-
-    private void load_overrides_windowing_sdk() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            activityEmbeddingAnimationCustomizationFlag =
-                    properties.getBoolean(Flags.FLAG_ACTIVITY_EMBEDDING_ANIMATION_CUSTOMIZATION_FLAG, false);
-            activityEmbeddingInteractiveDividerFlag =
-                    properties.getBoolean(Flags.FLAG_ACTIVITY_EMBEDDING_INTERACTIVE_DIVIDER_FLAG, true);
-            activityEmbeddingOverlayPresentationFlag =
-                    properties.getBoolean(Flags.FLAG_ACTIVITY_EMBEDDING_OVERLAY_PRESENTATION_FLAG, true);
-            alwaysDeferTransitionWhenApplyWct =
-                    properties.getBoolean(Flags.FLAG_ALWAYS_DEFER_TRANSITION_WHEN_APPLY_WCT, true);
-            embeddedActivityBackNavFlag =
-                    properties.getBoolean(Flags.FLAG_EMBEDDED_ACTIVITY_BACK_NAV_FLAG, true);
-            fixPipRestoreToOverlay =
-                    properties.getBoolean(Flags.FLAG_FIX_PIP_RESTORE_TO_OVERLAY, true);
-            fullscreenDimFlag =
-                    properties.getBoolean(Flags.FLAG_FULLSCREEN_DIM_FLAG, true);
-            insetsControlChangedItem =
-                    properties.getBoolean(Flags.FLAG_INSETS_CONTROL_CHANGED_ITEM, false);
-            moveAnimationOptionsToChange =
-                    properties.getBoolean(Flags.FLAG_MOVE_ANIMATION_OPTIONS_TO_CHANGE, true);
-            taskFragmentSystemOrganizerFlag =
-                    properties.getBoolean(Flags.FLAG_TASK_FRAGMENT_SYSTEM_ORGANIZER_FLAG, true);
-            windowTokenConfigThreadSafe =
-                    properties.getBoolean(Flags.FLAG_WINDOW_TOKEN_CONFIG_THREAD_SAFE, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace windowing_sdk "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        } catch (SecurityException e) {
-            // for isolated process case, skip loading flag value from the storage, use the default
-        }
-        windowing_sdk_is_cached = true;
+    public boolean actionModeEdgeToEdge() {
+        return true;
     }
 
     @Override
-   
-    public boolean activityEmbeddingAnimationCustomizationFlag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return activityEmbeddingAnimationCustomizationFlag;
 
+
+    public boolean activityEmbeddingDelayTaskFragmentFinishForActivityLaunch() {
+        return false;
     }
 
     @Override
-   
+
+
     public boolean activityEmbeddingInteractiveDividerFlag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return activityEmbeddingInteractiveDividerFlag;
-
-    }
-
-    @Override
-   
-    public boolean activityEmbeddingOverlayPresentationFlag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return activityEmbeddingOverlayPresentationFlag;
-
-    }
-
-    @Override
-   
-    public boolean activitySnapshotByDefault() {
         return true;
-
     }
 
     @Override
-   
-    public boolean activityWindowInfoFlag() {
-        return true;
 
+
+    public boolean activityEmbeddingMetrics() {
+        return false;
     }
 
     @Override
-   
+
+
+    public boolean activityEmbeddingSupportForConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean allowDisableActivityRecordInputSink() {
         return true;
-
     }
 
     @Override
-   
-    public boolean allowHideScmButton() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!large_screen_experiences_app_compat_is_cached) {
-                load_overrides_large_screen_experiences_app_compat();
-            }
-        }
-        return allowHideScmButton;
 
-    }
 
-    @Override
-   
     public boolean allowsScreenSizeDecoupledFromStatusBarAndCutout() {
         return true;
-
     }
 
     @Override
-   
-    public boolean alwaysDeferTransitionWhenApplyWct() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return alwaysDeferTransitionWhenApplyWct;
 
-    }
 
-    @Override
-   
     public boolean alwaysDrawMagnificationFullscreenBorder() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return alwaysDrawMagnificationFullscreenBorder;
-
+        return true;
     }
 
     @Override
-   
+
+
+    public boolean alwaysSeqIdLayout() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean alwaysUpdateWallpaperPermission() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!wear_frameworks_is_cached) {
-                load_overrides_wear_frameworks();
-            }
-        }
-        return alwaysUpdateWallpaperPermission;
-
+        return true;
     }
 
     @Override
-   
+
+
+    public boolean aodTransition() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean appCompatAsyncRelayout() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean appCompatPropertiesApi() {
         return true;
-
     }
 
     @Override
-   
+
+
     public boolean appCompatRefactoring() {
         return false;
-
     }
 
     @Override
-   
+
+
+    public boolean appCompatRefactoringRoundedCorners() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean appCompatUiFramework() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean appHandleNoRelayoutOnExclusionChange() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean applyLifecycleOnPipChange() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean avoidRebindingIntentionallyDisconnectedWallpaper() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean backupAndRestoreForUserAspectRatioSettings() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean balAdditionalLogging() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean balAdditionalStartModes() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean balClearAllowlistDuration() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean balCoverIntentSender() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean balDontBringExistingBackgroundTaskStackToFg() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!responsible_apis_is_cached) {
-                load_overrides_responsible_apis();
-            }
-        }
-        return balDontBringExistingBackgroundTaskStackToFg;
-
+        return true;
     }
 
     @Override
-   
-    public boolean balImproveRealCallerVisibilityCheck() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!responsible_apis_is_cached) {
-                load_overrides_responsible_apis();
-            }
-        }
-        return balImproveRealCallerVisibilityCheck;
 
+
+    public boolean balReduceGracePeriod() {
+        return false;
     }
 
     @Override
-   
-    public boolean balImprovedMetrics() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!responsible_apis_is_cached) {
-                load_overrides_responsible_apis();
-            }
-        }
-        return balImprovedMetrics;
 
-    }
 
-    @Override
-   
-    public boolean balRequireOptInByPendingIntentCreator() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!responsible_apis_is_cached) {
-                load_overrides_responsible_apis();
-            }
-        }
-        return balRequireOptInByPendingIntentCreator;
-
-    }
-
-    @Override
-   
-    public boolean balRequireOptInSameUid() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!responsible_apis_is_cached) {
-                load_overrides_responsible_apis();
-            }
-        }
-        return balRequireOptInSameUid;
-
-    }
-
-    @Override
-   
     public boolean balRespectAppSwitchStateWhenCheckBoundByForegroundUid() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!responsible_apis_is_cached) {
-                load_overrides_responsible_apis();
-            }
-        }
-        return balRespectAppSwitchStateWhenCheckBoundByForegroundUid;
-
+        return true;
     }
 
     @Override
-   
-    public boolean balShowToasts() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!responsible_apis_is_cached) {
-                load_overrides_responsible_apis();
-            }
-        }
-        return balShowToasts;
 
+
+    public boolean balSendIntentWithOptions() {
+        return true;
     }
 
     @Override
-   
+
+
     public boolean balShowToastsBlocked() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!responsible_apis_is_cached) {
-                load_overrides_responsible_apis();
-            }
-        }
-        return balShowToastsBlocked;
-
+        return false;
     }
 
     @Override
-   
-    public boolean blastSyncNotificationShadeOnDisplaySwitch() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_frontend_is_cached) {
-                load_overrides_windowing_frontend();
-            }
-        }
-        return blastSyncNotificationShadeOnDisplaySwitch;
 
-    }
 
-    @Override
-   
-    public boolean bundleClientTransactionFlag() {
+    public boolean balStrictModeGracePeriod() {
         return true;
-
     }
 
     @Override
-   
+
+
+    public boolean balStrictModeRo() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean betterSupportNonMatchParentActivity() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean cameraCompatForFreeform() {
-        return true;
-
+        return false;
     }
 
     @Override
-   
+
+
+    public boolean cameraCompatFullscreenPickSameTaskActivity() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean closeToSquareConfigIncludesStatusBar() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_frontend_is_cached) {
-                load_overrides_windowing_frontend();
-            }
-        }
-        return closeToSquareConfigIncludesStatusBar;
-
+        return false;
     }
 
     @Override
-   
-    public boolean configurableFontScaleDefault() {
-        return true;
 
-    }
 
-    @Override
-   
     public boolean coverDisplayOptIn() {
         return true;
-
     }
 
     @Override
-   
-    public boolean deferDisplayUpdates() {
-        return true;
 
+
+    public boolean currentAnimatorScaleUsesSharedMemory() {
+        return false;
     }
 
     @Override
-   
-    public boolean delayNotificationToMagnificationWhenRecentsWindowToFrontTransition() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return delayNotificationToMagnificationWhenRecentsWindowToFrontTransition;
 
+
+    public boolean defaultDeskWithoutWarmupMigration() {
+        return false;
     }
 
     @Override
-   
+
+
     public boolean delegateUnhandledDrags() {
         return true;
-
     }
 
     @Override
-   
-    public boolean deleteCaptureDisplay() {
-        return true;
 
-    }
 
-    @Override
-   
     public boolean density390Api() {
         return true;
-
     }
 
     @Override
-   
-    public boolean disableObjectPool() {
+
+
+    public boolean disableDesktopLaunchParamsOutsideDesktopBugFix() {
         return true;
-
     }
 
     @Override
-   
-    public boolean disableThinLetterboxingPolicy() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!large_screen_experiences_app_compat_is_cached) {
-                load_overrides_large_screen_experiences_app_compat();
-            }
-        }
-        return disableThinLetterboxingPolicy;
 
+
+    public boolean disableNonResizableAppSnapResizing() {
+        return true;
     }
 
     @Override
-   
-    public boolean doNotCheckIntersectionWhenNonMagnifiableWindowTransitions() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return doNotCheckIntersectionWhenNonMagnifiableWindowTransitions;
 
+
+    public boolean disableOptOutEdgeToEdge() {
+        return true;
     }
 
     @Override
-   
-    public boolean drawSnapshotAspectRatioMatch() {
+
+
+    public boolean dispatchFirstKeyguardLockedState() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableAccessibleCustomHeaders() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableActivityEmbeddingSupportForConnectedDisplays() {
         return false;
-
     }
 
     @Override
-   
-    public boolean edgeToEdgeByDefault() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_frontend_is_cached) {
-                load_overrides_windowing_frontend();
-            }
-        }
-        return edgeToEdgeByDefault;
 
+
+    public boolean enableAppHandlePositionReporting() {
+        return false;
     }
 
     @Override
-   
-    public boolean embeddedActivityBackNavFlag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return embeddedActivityBackNavFlag;
 
-    }
 
-    @Override
-   
-    public boolean enableAdditionalWindowsAboveStatusBar() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableAdditionalWindowsAboveStatusBar;
-
-    }
-
-    @Override
-   
     public boolean enableAppHeaderWithTaskDensity() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableAppHeaderWithTaskDensity;
-
-    }
-
-    @Override
-   
-    public boolean enableBufferTransformHintFromDisplay() {
         return true;
-
     }
 
     @Override
-   
-    public boolean enableCameraCompatForDesktopWindowing() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableCameraCompatForDesktopWindowing;
 
-    }
 
-    @Override
-   
-    public boolean enableCompatuiSysuiLauncher() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!large_screen_experiences_app_compat_is_cached) {
-                load_overrides_large_screen_experiences_app_compat();
-            }
-        }
-        return enableCompatuiSysuiLauncher;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingImmersiveHandleHiding() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingImmersiveHandleHiding;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingModalsPolicy() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingModalsPolicy;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingMode() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingMode;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingQuickSwitch() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingQuickSwitch;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingScvhCache() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingScvhCache;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingSizeConstraints() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingSizeConstraints;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingTaskLimit() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingTaskLimit;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingTaskbarRunningApps() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingTaskbarRunningApps;
-
-    }
-
-    @Override
-   
-    public boolean enableDesktopWindowingWallpaperActivity() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableDesktopWindowingWallpaperActivity;
-
-    }
-
-    @Override
-   
-    public boolean enableScaledResizing() {
+    public boolean enableBlockNonDesktopDisplayWindowDragBugfix() {
         return false;
-
     }
 
     @Override
-   
-    public boolean enableTaskStackObserverInShell() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableTaskStackObserverInShell;
 
+
+    public boolean enableBorderSettings() {
+        return false;
     }
 
     @Override
-   
-    public boolean enableThemedAppHeaders() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableThemedAppHeaders;
 
+
+    public boolean enableBoxShadowSettings() {
+        return false;
     }
 
     @Override
-   
-    public boolean enableWindowingDynamicInitialBounds() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableWindowingDynamicInitialBounds;
 
+
+    public boolean enableBugFixesForSecondaryDisplay() {
+        return false;
     }
 
     @Override
-   
-    public boolean enableWindowingEdgeDragResize() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!lse_desktop_experience_is_cached) {
-                load_overrides_lse_desktop_experience();
-            }
-        }
-        return enableWindowingEdgeDragResize;
 
+
+    public boolean enableCameraCompatCheckDeviceRotationBugfix() {
+        return false;
     }
 
     @Override
-   
-    public boolean enableWmExtensionsForAllFlag() {
+
+
+    public boolean enableCameraCompatForDesktopWindowing() {
         return true;
-
     }
 
     @Override
-   
+
+
+    public boolean enableCameraCompatForDesktopWindowingOptOut() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableCameraCompatForDesktopWindowingOptOutApi() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableCameraCompatTrackTaskAndAppBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableCaptionCompatInsetConversion() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableCaptionCompatInsetForceConsumption() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableCaptionCompatInsetForceConsumptionAlways() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableCascadingWindows() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableCloseLidInteraction() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableCompatUiVisibilityStatus() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableCompatuiSysuiLauncher() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableConnectedDisplaysDnd() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableConnectedDisplaysPip() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableConnectedDisplaysWindowDrag() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopAppHandleAnimation() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopAppHeaderStateChangeAnnouncements() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopAppLaunchAlttabTransitions() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopAppLaunchAlttabTransitionsBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopAppLaunchBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopAppLaunchTransitions() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopAppLaunchTransitionsBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopCloseShortcutBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopCloseTaskAnimationInDtcBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopFirstBasedDefaultToDesktopBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopFirstBasedDragToMaximize() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopFirstFullscreenRefocusBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopFirstListener() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopImeBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopImmersiveDragBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopIndicatorInSeparateThreadBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopModeThroughDevOption() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopOpeningDeeplinkMinimizeAnimationBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopRecentsTransitionsCornersBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopSplitscreenTransitionBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopSystemDialogsTransitions() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopTabTearingLaunchAnimation() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopTabTearingMinimizeAnimationBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopTaskLimitSeparateTransition() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopTaskbarOnFreeformDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopTrampolineCloseAnimationBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWallpaperActivityForSystemUser() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingAppHandleEducation() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingAppToWeb() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingAppToWebEducation() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingAppToWebEducationIntegration() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingBackNavigation() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingEnterTransitionBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingEnterTransitions() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingExitByMinimizeTransitionBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingExitTransitions() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingExitTransitionsBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingHsum() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingImmersiveHandleHiding() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingModalsPolicy() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingMode() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingMultiInstanceFeatures() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingPersistence() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingPip() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingPipInOverviewBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingQuickSwitch() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingScvhCacheBugFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingSizeConstraints() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingTaskLimit() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingTaskbarRunningApps() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingTransitions() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopWindowingWallpaperActivity() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDeviceStateAutoRotateSettingLogging() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDeviceStateAutoRotateSettingRefactor() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDisplayCompatMode() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDisplayDisconnectInteraction() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDisplayFocusInShellTransitions() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDisplayReconnectInteraction() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDisplayWindowingModeSwitching() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDragResizeSetUpInBgThread() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDragToDesktopIncomingTransitionsBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableDragToMaximize() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDraggingPipAcrossDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDynamicRadiusComputationBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableEmptyDeskOnMinimize() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableExperimentalBubblesController() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableFreeformBoxShadows() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableFreeformDisplayLaunchParams() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableFullScreenWindowOnRemovingSplitScreenStageBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableFullscreenWindowControls() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableFullyImmersiveInDesktop() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableHandleInputFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableHandlersDebuggingMode() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableHoldToDragAppHandle() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableIndependentBackInProjected() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableInorderTransitionCallbacksForDesktop() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableInputLayerTransitionFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableKeyGestureHandlerForSysui() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableMinimizeButton() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableModalsFullscreenWithPermission() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableModalsFullscreenWithPlatformSignature() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableMoveToNextDisplayShortcut() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableMultiDisplaySplit() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableMultidisplayTrackpadBackGesture() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableMultipleDesktopsBackend() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableMultipleDesktopsDefaultActivationInDesktopFirstDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableMultipleDesktopsFrontend() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableNoWindowDecorationForDesks() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableNonDefaultDisplaySplit() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableOmitAccelerometerRotationRestore() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableOpaqueBackgroundForTransparentWindows() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableOverflowButtonForTaskbarPinnedItems() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enablePerDisplayDesktopWallpaperActivity() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enablePerDisplayPackageContextCacheInStatusbarNotif() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enablePersistingDisplaySizeForConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enablePinningAppWithContextMenu() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enablePresentationForConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableProjectedDisplayDesktopMode() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableQuickswitchDesktopSplitBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableRejectHomeTransition() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableRequestFullscreenBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableRequestFullscreenRefactor() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableResizingMetrics() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableRestartMenuForConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableRestoreToPreviousSizeFromDesktopImmersive() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableSeeThroughTaskFragments() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableShellInitialBoundsRegressionBugFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableSizeCompatModeImprovementsForConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableStartLaunchTransitionFromTaskbarBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableSysDecorsCallbacksViaWm() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableTallAppHeaders() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableTaskResizingKeyboardShortcuts() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableTaskStackObserverInShell() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableTaskbarConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableTaskbarOverflow() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableTaskbarRecentTasksThrottleBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableTaskbarRecentsLayoutTransition() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableThemedAppHeaders() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableTileResizing() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableTopVisibleRootTaskPerUserTracking() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableTransitionOnActivitySetRequestedOrientation() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableVisualIndicatorInTransitionBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableWindowContextOverrideType() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableWindowContextResourcesUpdateOnConfigChange() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableWindowDecorationRefactor() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableWindowRepositioningApi() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableWindowingDynamicInitialBounds() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableWindowingEdgeDragResize() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableWindowingScaledResizing() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableWindowingTaskStackOrderBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableWindowingTransitionHandlersObservers() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enforceEdgeToEdge() {
         return true;
-
     }
 
     @Override
-   
-    public boolean ensureWallpaperInTransitions() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_frontend_is_cached) {
-                load_overrides_windowing_frontend();
-            }
-        }
-        return ensureWallpaperInTransitions;
 
+
+    public boolean ensureKeyguardDoesTransitionStarting() {
+        return false;
     }
 
     @Override
-   
-    public boolean explicitRefreshRateHints() {
+
+
+    public boolean enterDesktopByDefaultOnFreeformDisplays() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean excludeCaptionFromAppBounds() {
         return true;
-
     }
 
     @Override
-   
+
+
+    public boolean excludeDeskRootsFromDesktopTasks() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean excludeNonMainWindowFromSnapshot() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean excludeTaskFromRecents() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean extendingPersistenceSnapshotQueueDepth() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean fallbackToFocusedDisplay() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean fifoPriorityForMajorUiProcesses() {
         return false;
-
     }
 
     @Override
-   
-    public boolean fixNoContainerUpdateWithoutResize() {
+
+
+    public boolean fixFullscreenInMultiWindow() {
         return false;
-
     }
 
     @Override
-   
-    public boolean fixPipRestoreToOverlay() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return fixPipRestoreToOverlay;
 
+
+    public boolean fixHideOverlayApi() {
+        return true;
     }
 
     @Override
-   
-    public boolean fullscreenDimFlag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return fullscreenDimFlag;
 
+
+    public boolean fixLayoutRestoredTask() {
+        return false;
     }
 
     @Override
-   
+
+
+    public boolean fixMovingUnfocusedTask() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean fixSetAdjacentTaskFragmentsWithParams() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean fixShowWhenLockedSyncTimeout() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean forceCloseTopTransparentFullscreenTask() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean forceShowSystemBarForBubble() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean formFactorBasedDesktopFirstSwitch() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean getDimmerOnClosing() {
         return true;
-
     }
 
     @Override
-   
-    public boolean immersiveAppRepositioning() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!large_screen_experiences_app_compat_is_cached) {
-                load_overrides_large_screen_experiences_app_compat();
-            }
-        }
-        return immersiveAppRepositioning;
 
-    }
 
-    @Override
-   
-    public boolean insetsControlChangedItem() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return insetsControlChangedItem;
-
-    }
-
-    @Override
-   
-    public boolean insetsControlSeq() {
+    public boolean grantManageKeyGesturesToRecents() {
         return false;
-
     }
 
     @Override
-   
+
+
+    public boolean ignoreAspectRatioRestrictionsForResizeableFreeformActivities() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean ignoreCornerRadiusAndShadows() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean includeTopTransparentFullscreenTaskInDesktopHeuristic() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean inheritTaskBoundsForTrampolineTaskLaunches() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean insetsDecoupledConfiguration() {
         return true;
-
     }
 
     @Override
-   
-    public boolean introduceSmootherDimmer() {
+
+
+    public boolean interceptMotionFromMoveToCancel() {
         return true;
-
     }
 
     @Override
-   
-    public boolean keyguardAppearTransition() {
+
+
+    public boolean jankApi() {
         return true;
-
     }
 
     @Override
-   
+
+
+    public boolean keyboardShortcutsToSwitchDesks() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean letterboxBackgroundWallpaper() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!large_screen_experiences_app_compat_is_cached) {
-                load_overrides_large_screen_experiences_app_compat();
-            }
-        }
-        return letterboxBackgroundWallpaper;
-
+        return false;
     }
 
     @Override
-   
+
+
     public boolean movableCutoutConfiguration() {
         return true;
-
     }
 
     @Override
-   
-    public boolean moveAnimationOptionsToChange() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return moveAnimationOptionsToChange;
 
+
+    public boolean moveToExternalDisplayShortcut() {
+        return false;
     }
 
     @Override
-   
+
+
     public boolean multiCrop() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return multiCrop;
-
+        return true;
     }
 
     @Override
-   
+
+
     public boolean navBarTransparentByDefault() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_frontend_is_cached) {
-                load_overrides_windowing_frontend();
-            }
-        }
-        return navBarTransparentByDefault;
-
+        return false;
     }
 
     @Override
-   
-    public boolean noConsecutiveVisibilityEvents() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return noConsecutiveVisibilityEvents;
 
+
+    public boolean nestedTasksWithIndependentBoundsBugfix() {
+        return true;
     }
 
     @Override
-   
-    public boolean noVisibilityEventOnDisplayStateChange() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!wear_frameworks_is_cached) {
-                load_overrides_wear_frameworks();
-            }
-        }
-        return noVisibilityEventOnDisplayStateChange;
 
-    }
 
-    @Override
-   
     public boolean offloadColorExtraction() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return offloadColorExtraction;
-
+        return true;
     }
 
     @Override
-   
-    public boolean predictiveBackSystemAnims() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return predictiveBackSystemAnims;
 
+
+    public boolean parallelCdTransitionsDuringRecents() {
+        return false;
     }
 
     @Override
-   
+
+
+    public boolean portWindowSizeAnimation() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean predictiveBackDefaultEnableSdk36() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean predictiveBackPrioritySystemNavigationObserver() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean predictiveBackSwipeEdgeNoneApi() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean predictiveBackSystemOverrideCallback() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean predictiveBackThreeButtonNav() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean predictiveBackTimestampApi() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean preserveRecentsTaskConfigurationOnRelaunch() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean rearDisplayDisableForceDesktopSystemDecorations() {
         return true;
-
     }
 
     @Override
-   
-    public boolean releaseSnapshotAggressively() {
+
+
+    public boolean reduceChangedExclusionRectsMsgs() {
         return false;
-
     }
 
     @Override
-   
-    public boolean removePrepareSurfaceInPlacement() {
+
+
+    public boolean reduceTaskSnapshotMemoryUsage() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean relativeInsets() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean releaseSnapshotAggressively() {
         return true;
-
     }
 
     @Override
-   
+
+
+    public boolean releaseSurfaceOnTransitionFinish() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean removeActivityStarterDreamCallback() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean removeDepartTargetFromMotion() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean removeStartingInTransition() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean reparentToDefaultWithDisplayRemoval() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean reparentWindowTokenApi() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean respectFullscreenActivityOptionInDesktopLaunchParams() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean respectHierarchySurfaceVisibility() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean respectLeafTaskBounds() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean respectOrientationChangeForUnresizeable() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean restoreUserAspectRatioSettingsUsingService() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean restrictFreeformHiddenSystemBarsToFillingTasks() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean rootTaskForBubble() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean safeRegionLetterboxing() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean safeReleaseSnapshotAggressively() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean schedulingForNotificationShade() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean scrambleSnapshotFileName() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean screenBrightnessDimOnEmulator() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean screenRecordingCallbacks() {
         return true;
-
     }
 
     @Override
-   
+
+
+    public boolean scrollingFromLetterbox() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean scvhSurfaceControlLifetimeFix() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean sdkDesiredPresentTime() {
         return true;
-
     }
 
     @Override
-   
-    public boolean secureWindowState() {
-        return true;
 
-    }
 
-    @Override
-   
     public boolean setScPropertiesInClient() {
         return false;
-
     }
 
     @Override
-   
-    public boolean skipSleepingWhenSwitchingDisplay() {
+
+
+    public boolean showAppHandleLargeScreens() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean showDesktopExperienceDevOption() {
         return true;
-
     }
 
     @Override
-   
+
+
+    public boolean showDesktopWindowingDevOption() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean showHomeBehindDesktop() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean skipCompatUiEducationInDesktopMode() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean skipDeactivationOfDeskWithNothingInFront() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean skipDecorViewRelayoutWhenClosingBugfix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean splashScreenViewSyncTransaction() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean supportsDragAssistantToMultiwindow() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean supportsMultiInstanceSystemUi() {
         return true;
-
     }
 
     @Override
-   
+
+
     public boolean surfaceControlInputReceiver() {
         return true;
-
     }
 
     @Override
-   
+
+
     public boolean surfaceTrustedOverlay() {
         return true;
-
     }
 
     @Override
-   
+
+
     public boolean syncScreenCapture() {
         return true;
-
     }
 
     @Override
-   
-    public boolean taskFragmentSystemOrganizerFlag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return taskFragmentSystemOrganizerFlag;
 
+
+    public boolean systemUiPostAnimationEnd() {
+        return true;
     }
 
     @Override
-   
+
+
+    public boolean touchPassThroughOptIn() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean transitReadyTracking() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_frontend_is_cached) {
-                load_overrides_windowing_frontend();
-            }
-        }
-        return transitReadyTracking;
-
+        return false;
     }
 
     @Override
-   
+
+
+    public boolean transitTrackerPlumbing() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean transitionHandlerCujTags() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean trustedPresentationListenerForWindow() {
         return true;
-
     }
 
     @Override
-   
-    public boolean untrustedEmbeddingAnyAppPermission() {
+
+
+    public boolean unifyBackNavigationTransition() {
         return true;
-
     }
 
     @Override
-   
+
+
+    public boolean unifyShellBinders() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean universalResizableByDefault() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean untrustedEmbeddingAnyAppPermission() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean untrustedEmbeddingStateSharing() {
         return true;
-
     }
 
     @Override
-   
-    public boolean useWindowOriginalTouchableRegionWhenMagnificationRecomputeBounds() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return useWindowOriginalTouchableRegionWhenMagnificationRecomputeBounds;
 
+
+    public boolean updateDimsWhenWindowShown() {
+        return false;
     }
 
     @Override
-   
-    public boolean userMinAspectRatioAppDefault() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!large_screen_experiences_app_compat_is_cached) {
-                load_overrides_large_screen_experiences_app_compat();
-            }
-        }
-        return userMinAspectRatioAppDefault;
 
+
+    public boolean updateHostInputTransferToken() {
+        return true;
     }
 
     @Override
-   
-    public boolean waitForTransitionOnDisplaySwitch() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_frontend_is_cached) {
-                load_overrides_windowing_frontend();
-            }
-        }
-        return waitForTransitionOnDisplaySwitch;
 
+
+    public boolean updateTaskMinDimensionsWithRootActivity() {
+        return false;
     }
 
     @Override
-   
+
+
+    public boolean useCachedInsetsForDisplaySwitch() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean useTasksDimOnly() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean vdmForceAppUniversalResizableApi() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean wallpaperOffsetAsync() {
         return true;
-
     }
 
     @Override
-   
-    public boolean windowSessionRelayoutInfo() {
+
+
+    public boolean wlinfoOncreate() {
         return true;
-
-    }
-
-    @Override
-   
-    public boolean windowTokenConfigThreadSafe() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!windowing_sdk_is_cached) {
-                load_overrides_windowing_sdk();
-            }
-        }
-        return windowTokenConfigThreadSafe;
-
     }
 
 }
-
-
-

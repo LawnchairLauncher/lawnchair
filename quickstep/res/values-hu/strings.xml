@@ -22,11 +22,14 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Kitűzés"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Szabad forma"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Asztali"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"Áthelyezés külső kijelzőre"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"Törlés"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"Asztali"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Nincsenek mostanában használt elemek"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Alkalmazáshasználati beállítások"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Összes törlése"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"Új asztal hozzáadása"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Legutóbbi alkalmazások"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"A feladat bezárult"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 perc"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Ma még <xliff:g id="TIME">%1$s</xliff:g> van hátra"</string>
@@ -45,6 +48,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Alkalmazásjavaslatok engedélyezve"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Alkalmazásjavaslatok letiltva"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Várható alkalmazás: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Kézmozdulatokkal való navigáció útmutatója"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Forgassa el eszközét"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Forgassa el eszközét a kézmozdulatokkal való navigáció útmutatójának befejezéséhez"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Csúsztasson a képernyő jobb vagy bal széléről."</string>
@@ -56,28 +60,25 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"A vissza mozdulat érzékenysége a Beállításokban módosítható"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Csúsztasson a visszalépéshez"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ha visszatérne a legutóbbi képernyőre, csúsztasson a képernyő közepére a bal vagy a jobb széléről."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Ha vissza szeretne térni a legutóbbi képernyőre, csúsztasson gyorsan két ujjal a képernyő bal vagy jobb széléről a közepe felé."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Vissza"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Csúsztasson bal vagy jobb szélről a képernyő közepe felé."</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Csúsztasson felfelé a képernyő aljától."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Csúsztasson felfelé a képernyő alsó szélétől."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Ne álljon meg, mielőtt elengedi a képernyőt."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Csúsztasson egyenesen felfelé."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Teljesítette a kezdőképernyőre lépés kézmozdulatát. Most megtanulhatja, hogyan léphet vissza."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Teljesítette a kezdőképernyőre lépés kézmozdulatát."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Megtanulta a kezdőképernyőre lépés kézmozdulatát."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Csúsztatás a kezdőképernyőre lépéshez"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Csúsztassa ujját felfelé a képernyő aljától. Ez a mozdulat mindig a kezdőképernyőre visz."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Csúsztasson felfelé két ujjal a képernyő aljáról. Ez a kézmozdulat mindig a kezdőképernyőre viszi."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ugrás a kezdőképernyőre"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Húzza ujját felfelé a képernyő aljától."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Csúsztasson felfelé a képernyő aljától."</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Kiváló!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Csúsztasson felfelé a képernyő aljától."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Csúsztasson felfelé a képernyő alsó szélétől."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Próbálja tovább lenyomva tartani az ablakot, mielőtt elengedi a képernyőt."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Csúsztasson egyenesen felfelé, majd várjon egy kicsit"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Eddig megismerhette a kézmozdulatok használatát. A kézmozdulatokat a Beállításokban kapcsolhatja ki."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Teljesítette az alkalmazásváltás kézmozdulatát."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Megtanulta az alkalmazásváltás kézmozdulatát."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Alkalmazásváltás csúsztatással"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Appok közti váltáshoz csúsztasson felfelé a kép aljáról, tartsa lenyomva az ujját, majd emelje fel."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Appváltáshoz csúsztasson fel két ujjal a kép aljáról, tartsa lenyomva ujjait, majd emelje fel őket."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Váltás az alkalmazások között"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Csúsztasson felfelé a képernyő aljáról, tartsa lenyomva ujját, majd emelje fel"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Szép munka!"</string>
@@ -91,24 +92,33 @@
     <string name="allset_hint" msgid="459504134589971527">"Felfelé csúsztatva megjelenik a kezdőképernyő"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"A kezdőképernyőre való lépéshez koppintson a kezdőképernyő gombra"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Készen áll az <xliff:g id="DEVICE">%1$s</xliff:g> használatára"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"eszköz"</string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"Készen áll az eszköz használatára"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Rendszer-navigációs beállítások"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"<xliff:g id="DEVICE">%1$s</xliff:g> eszköze \nkészen áll!"</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Eszköze \nkészen áll!"</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"Élvezze új <xliff:g id="DEVICE">%1$s</xliff:g> eszközét!"</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Válassza ki a navigálás módját"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"Csúsztatás gyorsan felfelé"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"Koppintson a Kezdőképernyő gombra"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"táblagép"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"telefon"</string>
     <string name="action_share" msgid="2648470652637092375">"Megosztás"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Képernyőkép"</string>
     <string name="action_split" msgid="2098009717623550676">"Felosztás"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"App-pár mentése"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Koppintson másik appra az osztott képernyőhöz"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Válasszon másik appot a képernyő felosztásához"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Mégse"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"Mégse"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Kilépés az osztott képernyő elemeinek kiválasztásából"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Válasszon másik appot a képernyő felosztásához"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Az alkalmazás vagy az Ön szervezete nem engedélyezi ezt a műveletet"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"A modulok jelenleg nem támogatottak; válasszon másik alkalmazást"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Kihagyja a navigáció bemutatóját?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Ezt később megtalálhatja a(z) <xliff:g id="NAME">%1$s</xliff:g> alkalmazásban"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Mégse"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Kihagyás"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Képernyő elforgatása"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"Animáció, amely bemutatja, hogy a feladatsáv hogyan jelenik meg a képernyő alján, majd tűnik el automatikusan, amikor éppen nincs használatban."</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"Animáció, amely bemutatja, hogyan lehet kitűzni a feladatsávot egy kapcsolóval, hogy állandóan látható legyen a képernyő alján."</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"Animáció, amely bemutatja, hogyan lehet létrehozni osztott képernyőt úgy, hogy egy alkalmazást a feladatsávról egy megnyitott alkalmazás fölé húz."</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"Animáció, amely bemutatja, hogyan lehet hozzáférni a javasolt alkalmazásokhoz az eszközön."</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"Animáció, amely bemutatja, hogyan lehet megkeresni egy elemet a képernyőn úgy, hogy lenyomva tartja a műveletbillentyűt, majd kiválasztja az elemet tartalmazó területet."</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Tálca használatának ismertetése"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Húzzon egy appot oldalra, ha kettőt használna egyidejűleg"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Lassan csúsztassa fel az ujját a Feladatsáv megjelenítéséhez"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Gyorsbeállítások"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Tálca"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Feladatsáv megjelenítve"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Feladatsáv elrejtve"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Feladatsáv és buborék balra"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Feladatsáv és buborék jobbra"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigációs sáv"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Mindig megjelenő Feladatsáv"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Navigációs mód módosítása"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Feladatsáv-elválasztó"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"További legutóbbi alkalmazások"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mozgatás felülre vagy a bal oldalra"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mozgatás alulra vagy a jobb oldalra"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# további alkalmazás megjelenítése.}other{# további alkalmazás megjelenítése.}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# asztali alkalmazás megjelenítése.}other{# asztali alkalmazás megjelenítése.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Alkalmazás megnyitása buborékként"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"Legutóbbi alkalmazások"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"Legutóbbi alkalmazások listája"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{további alkalmazás}other{további alkalmazás}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"Asztali"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> és <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g>. elem, összesen ennyiből: <xliff:g id="TOTAL_TASKS">%3$d</xliff:g>"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"Görgetés balra"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"Görgetés jobbra"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Buborék"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Túlcsordulás"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>, forrás: <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> és <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> további"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"Mozgatás balra"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"Mozgatás jobbra"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"Az összes elvetése"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g> kibontása"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g> összecsukása"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"Bekarikázással keresés"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"Alkalmazásikon"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"Alkalmazás neve"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"Bezárás gomb"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"Kitűzés a feladatsávon"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Kitűzés feloldása"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"Bökés"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"Bezárás"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"Kép megbökése"</string>
 </resources>

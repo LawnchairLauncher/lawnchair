@@ -20,7 +20,7 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.util.ui.AbstractLauncherUiTest;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

@@ -38,12 +38,12 @@ import android.util.Log;
 import android.view.IWindow;
 import android.view.SurfaceControl;
 import android.view.SurfaceControlViewHost;
-import android.view.SurfaceSession;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.WindowlessWindowManager;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.window.flags2.Flags;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.common.DisplayLayout;
 import com.android.wm.shell.common.SyncTransactionQueue;
@@ -173,7 +173,7 @@ public abstract class CompatUIWindowManagerAbstract extends WindowlessWindowMana
     @Override
     protected SurfaceControl getParentSurface(IWindow window, WindowManager.LayoutParams attrs) {
         String className = getClass().getSimpleName();
-        final SurfaceControl.Builder builder = new SurfaceControl.Builder(new SurfaceSession())
+        final SurfaceControl.Builder builder = new SurfaceControl.Builder()
                 .setContainerLayer()
                 .setName(className + "Leash")
                 .setHidden(false)
@@ -328,8 +328,15 @@ public abstract class CompatUIWindowManagerAbstract extends WindowlessWindowMana
         if (mViewHost == null) {
             return;
         }
-        mViewHost.relayout(windowLayoutParams);
-        updateSurfacePosition();
+        if (Flags.appCompatAsyncRelayout()) {
+            mViewHost.relayout(windowLayoutParams, tx -> {
+                updateSurfacePosition(tx);
+                tx.apply();
+            });
+        } else {
+            mViewHost.relayout(windowLayoutParams);
+            updateSurfacePosition();
+        }
     }
 
     @NonNull
@@ -350,6 +357,10 @@ public abstract class CompatUIWindowManagerAbstract extends WindowlessWindowMana
      */
     protected abstract void updateSurfacePosition();
 
+    protected void updateSurfacePosition(@NonNull SurfaceControl.Transaction tx) {
+
+    }
+
     /**
      * Updates the position of the surface with respect to the given {@code positionX} and {@code
      * positionY}.
@@ -365,6 +376,15 @@ public abstract class CompatUIWindowManagerAbstract extends WindowlessWindowMana
             }
             t.setPosition(mLeash, positionX, positionY);
         });
+    }
+
+    protected void updateSurfaceBounds(@NonNull SurfaceControl.Transaction tx,
+            @NonNull Rect bounds) {
+        if (mLeash == null) {
+            return;
+        }
+        tx.setPosition(mLeash, bounds.left, bounds.top)
+                .setWindowCrop(mLeash, bounds.width(), bounds.height());
     }
 
     protected int getLayoutDirection() {

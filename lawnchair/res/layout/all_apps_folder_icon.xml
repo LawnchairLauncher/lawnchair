@@ -25,8 +25,8 @@
     android:paddingLeft="@dimen/dynamic_grid_cell_padding_x"
     android:paddingRight="@dimen/dynamic_grid_cell_padding_x"
     android:focusable="true" >
-    <com.android.launcher3.BubbleTextView
-        style="@style/BaseIcon"
+    <com.android.launcher3.views.DoubleShadowBubbleTextView
+        style="@style/BaseIcon.AllApps"
         android:id="@+id/folder_icon_name"
         android:focusable="false"
         android:layout_gravity="top"

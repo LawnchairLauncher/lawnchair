@@ -27,17 +27,19 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.RemoteAnimationTarget;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.taskbar.FallbackTaskbarUIController;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.views.ScrimColors;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
-import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
+import com.android.quickstep.util.ContextInitListener;
 import com.android.quickstep.views.RecentsView;
 
 import java.util.function.Consumer;
@@ -63,9 +65,9 @@ public final class FallbackActivityInterface extends
             RecentsPagedOrientationHandler orientationHandler) {
         calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout() && DisplayController.getNavigationMode(context) != NO_BUTTON) {
-            return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
+            return dp.isSeascape() ? outRect.left : (dp.getDeviceProperties().getWidthPx() - outRect.right);
         } else {
-            return dp.heightPx - outRect.bottom;
+            return dp.getDeviceProperties().getHeightPx() - outRect.bottom;
         }
     }
 
@@ -79,25 +81,25 @@ public final class FallbackActivityInterface extends
 
     /** 6 */
     @Override
-    public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
+    public AnimationFactory prepareRecentsUI(
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback) {
-        notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
+        notifyRecentsOfOrientation();
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback);
         factory.initBackgroundStateUI();
         return factory;
     }
 
     @Override
-    public ActivityInitListener createActivityInitListener(
+    public ContextInitListener<RecentsActivity> createActivityInitListener(
             Predicate<Boolean> onInitListener) {
-        return new ActivityInitListener<>((activity, alreadyOnHome) ->
+        return new ContextInitListener<>((activity, alreadyOnHome) ->
                 onInitListener.test(alreadyOnHome), RecentsActivity.ACTIVITY_TRACKER);
     }
 
     @Nullable
     @Override
     public RecentsActivity getCreatedContainer() {
-        return RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
+        return RecentsActivity.ACTIVITY_TRACKER.getCreatedContext();
     }
 
     @Override
@@ -133,18 +135,8 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public boolean allowMinimizeSplitScreen() {
-        // TODO: Remove this once b/77875376 is fixed
-        return false;
-    }
-
-    @Override
-    public boolean allowAllAppsFromOverview() {
-        return false;
-    }
-
-    @Override
-    public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
+    public boolean deferStartingActivity(
+            @NonNull RecentsAnimationDeviceState deviceState, MotionEvent ev) {
         // In non-gesture mode, user might be clicking on the home button which would directly
         // start the home activity instead of going through recents. In that case, defer starting
         // recents until we are sure it is a gesture.
@@ -153,12 +145,12 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
+    public void onExitOverview(Runnable exitRunnable) {
         final StateManager<RecentsState, RecentsActivity> stateManager =
                 getCreatedContainer().getStateManager();
         if (stateManager.getState() == HOME) {
             exitRunnable.run();
-            notifyRecentsOfOrientation(deviceState);
+            notifyRecentsOfOrientation();
             return;
         }
 
@@ -169,7 +161,7 @@ public final class FallbackActivityInterface extends
                         // Are we going from Recents to Workspace?
                         if (toState == HOME) {
                             exitRunnable.run();
-                            notifyRecentsOfOrientation(deviceState);
+                            notifyRecentsOfOrientation();
                             stateManager.removeStateListener(this);
                         }
                     }
@@ -208,24 +200,22 @@ public final class FallbackActivityInterface extends
         }
     }
 
-    private void notifyRecentsOfOrientation(RotationTouchHelper rotationTouchHelper) {
+    private void notifyRecentsOfOrientation() {
         // reset layout on swipe to home
-        RecentsView recentsView = getCreatedContainer().getOverviewPanel();
-        recentsView.setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
-                rotationTouchHelper.getDisplayRotation());
+        getCreatedContainer().getOverviewPanel().reapplyActiveRotation();
     }
 
     @Override
-    public @Nullable Animator getParallelAnimationToLauncher(GestureEndTarget endTarget,
+    public @Nullable Animator getParallelAnimationToGestureEndTarget(GestureEndTarget endTarget,
             long duration, RecentsAnimationCallbacks callbacks) {
         FallbackTaskbarUIController uiController = getTaskbarController();
-        Animator superAnimator = super.getParallelAnimationToLauncher(
+        Animator superAnimator = super.getParallelAnimationToGestureEndTarget(
                 endTarget, duration, callbacks);
         if (uiController == null) {
             return superAnimator;
         }
-        RecentsState toState = stateFromGestureEndTarget(endTarget);
-        Animator taskbarAnimator = uiController.createAnimToRecentsState(toState, duration);
+        Animator taskbarAnimator = uiController.getParallelAnimationToGestureEndTarget(
+                endTarget, duration, callbacks);
         if (taskbarAnimator == null) {
             return superAnimator;
         }
@@ -238,7 +228,8 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    protected int getOverviewScrimColorForState(RecentsActivity activity, RecentsState state) {
+    protected ScrimColors getOverviewScrimColorForState(RecentsActivity activity,
+            RecentsState state) {
         return state.getScrimColor(activity);
     }
 }

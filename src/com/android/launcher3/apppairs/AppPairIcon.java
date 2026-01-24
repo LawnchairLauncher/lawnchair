@@ -18,10 +18,12 @@ package com.android.launcher3.apppairs;
 
 import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -53,6 +55,26 @@ import java.util.function.Predicate;
  */
 public class AppPairIcon extends FrameLayout implements DraggableView, Reorderable {
     private static final String TAG = "AppPairIcon";
+
+    // The duration of the scaling animation on hover enter/exit.
+    private static final int HOVER_SCALE_DURATION = 150;
+    // The default scale of the icon when not hovered.
+    private static final Float HOVER_SCALE_DEFAULT = 1f;
+    // The max scale of the icon when hovered.
+    private static final Float HOVER_SCALE_MAX = 1.1f;
+    // Animates the scale of the icon background on hover.
+    private static final FloatProperty<AppPairIcon> HOVER_SCALE_PROPERTY =
+            new FloatProperty<>("hoverScale") {
+                @Override
+                public void setValue(AppPairIcon view, float scale) {
+                    view.mIconGraphic.setHoverScale(scale);
+                }
+
+                @Override
+                public Float get(AppPairIcon view) {
+                    return view.mIconGraphic.getHoverScale();
+                }
+            };
 
     // A view that holds the app pair icon graphic.
     private AppPairIconGraphic mIconGraphic;
@@ -249,5 +271,15 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
                     getPaddingBottom());
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    public void onHoverChanged(boolean hovered) {
+        super.onHoverChanged(hovered);
+        ObjectAnimator
+                .ofFloat(this, HOVER_SCALE_PROPERTY,
+                        hovered ? HOVER_SCALE_MAX : HOVER_SCALE_DEFAULT)
+                .setDuration(HOVER_SCALE_DURATION)
+                .start();
     }
 }

@@ -25,7 +25,7 @@ import android.view.IWindowManager
 import android.window.IGlobalDragListener
 import android.window.IUnhandledDragCallback
 import androidx.annotation.VisibleForTesting
-import com.android.internal.protolog.common.ProtoLog
+import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.common.ShellExecutor
 import com.android.wm.shell.protolog.ShellProtoLogGroup
 import java.util.function.Consumer

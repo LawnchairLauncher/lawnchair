@@ -26,17 +26,38 @@ import com.android.launcher3.util.CellAndSpan
 // 2. When long clicking on an empty cell in a CellLayout, we save information about the
 //    cellX and cellY coordinates and which page was clicked. We then set this as a tag on
 //    the CellLayout that was long clicked
-class CellInfo(v: View?, info: ItemInfo, cellPos: CellPos) :
-    CellAndSpan(cellPos.cellX, cellPos.cellY, info.spanX, info.spanY) {
-    @JvmField val cell: View?
-    @JvmField val screenId: Int
-    @JvmField val container: Int
+class CellInfo(
+    @JvmField val cell: View?,
+    @JvmField val screenId: Int,
+    @JvmField val container: Int,
+    cellX: Int,
+    cellY: Int,
+    spanX: Int,
+    spanY: Int,
+) : CellAndSpan(cellX, cellY, spanX, spanY) {
 
-    init {
-        cell = v
-        screenId = cellPos.screenId
-        container = info.container
-    }
+    constructor(
+        cell: View?,
+        info: ItemInfo,
+        cellPos: CellPos,
+    ) : this(
+        cell,
+        cellPos.screenId,
+        info.container,
+        cellPos.cellX,
+        cellPos.cellY,
+        info.spanX,
+        info.spanY,
+    )
+
+    /** Returns if the provided [item] represents the same position info as itself */
+    fun isSameAs(item: ItemInfo) =
+        item.container == container &&
+            item.screenId == screenId &&
+            item.cellX == cellX &&
+            item.cellY == cellY &&
+            item.spanX == spanX &&
+            item.spanY == spanY
 
     override fun toString(): String {
         return "CellInfo(cell=$cell, screenId=$screenId, container=$container)"

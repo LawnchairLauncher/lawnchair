@@ -105,7 +105,7 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
         } else {
             // Manually controlled animation: Set translation to keyboard height.
             int translationY = -windowInsets.getInsets(WindowInsets.Type.ime()).bottom;
-            if (mView.getParent() instanceof View) {
+            if (translationY < 0 && mView.getParent() instanceof View) {
                 // Offset any translation of the parent (e.g. All Apps parallax).
                 translationY -= ((View) mView.getParent()).getTranslationY();
             }

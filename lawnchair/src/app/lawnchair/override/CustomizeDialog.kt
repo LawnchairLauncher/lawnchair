@@ -1,10 +1,7 @@
 package app.lawnchair.override
 
-import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -150,17 +147,14 @@ fun CustomizeAppDialog(
     }
     val launcherAppState = LauncherAppState.getInstance(context)
 
-    val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
-        onClose()
-    }
-
     val route = SelectIcon(componentKey.toString())
 
-    Log.d("TEST", route.toString())
+    Log.d("CustomizeDialog", route.toString())
 
     val openIconPicker = {
-        request.launch(PreferenceActivity.createIntent(context, route))
+        val intent = PreferenceActivity.createIntent(context, route)
+            .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 
     DisposableEffect(Unit) {
@@ -187,15 +181,17 @@ fun CustomizeAppDialog(
             showDescription = showComponentNames,
         ) {
             val stringKey = componentKey.toString()
-            SwitchPreference(
-                checked = hiddenApps.contains(stringKey),
-                label = stringResource(id = R.string.hide_from_drawer),
-                onCheckedChange = { newValue ->
-                    val newSet = hiddenApps.toMutableSet()
-                    if (newValue) newSet.add(stringKey) else newSet.remove(stringKey)
-                    adapter.onChange(newSet)
-                },
-            )
+            Item {
+                SwitchPreference(
+                    checked = hiddenApps.contains(stringKey),
+                    label = stringResource(id = R.string.hide_from_drawer),
+                    onCheckedChange = { newValue ->
+                        val newSet = hiddenApps.toMutableSet()
+                        if (newValue) newSet.add(stringKey) else newSet.remove(stringKey)
+                        adapter.onChange(newSet)
+                    },
+                )
+            }
         }
 
         if (preferenceManager2.iconSwipeGestures.asState().value && context.launcher.stateManager.state != LauncherState.ALL_APPS) {
@@ -204,11 +200,13 @@ fun CustomizeAppDialog(
                     GestureType.SWIPE_LEFT,
                     GestureType.SWIPE_RIGHT,
                 ).map { gestureType ->
-                    AppGesturePreference(
-                        componentKey,
-                        gestureType,
-                        stringResource(id = gestureType.labelResId),
-                    )
+                    Item {
+                        AppGesturePreference(
+                            componentKey,
+                            gestureType,
+                            stringResource(id = gestureType.labelResId),
+                        )
+                    }
                 }
             }
         }

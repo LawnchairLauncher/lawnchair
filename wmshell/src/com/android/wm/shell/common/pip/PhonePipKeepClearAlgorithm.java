@@ -23,6 +23,8 @@ import android.os.SystemProperties;
 import android.util.ArraySet;
 import android.view.Gravity;
 
+import androidx.annotation.NonNull;
+
 import com.android.wm.shell.R;
 
 import java.util.Set;
@@ -30,7 +32,8 @@ import java.util.Set;
 /**
  * Calculates the adjusted position that does not occlude keep clear areas.
  */
-public class PhonePipKeepClearAlgorithm implements PipKeepClearAlgorithmInterface {
+public class PhonePipKeepClearAlgorithm implements PipKeepClearAlgorithmInterface,
+        PipDisplayLayoutState.DisplayIdListener {
 
     private boolean mKeepClearAreaGravityEnabled =
             SystemProperties.getBoolean(
@@ -39,14 +42,21 @@ public class PhonePipKeepClearAlgorithm implements PipKeepClearAlgorithmInterfac
     protected int mKeepClearAreasPadding;
     private int mImeOffset;
 
-    public PhonePipKeepClearAlgorithm(Context context) {
+    public PhonePipKeepClearAlgorithm(Context context,
+            PipDisplayLayoutState pipDisplayLayoutState) {
         reloadResources(context);
+        pipDisplayLayoutState.addDisplayIdListener(this);
     }
 
     private void reloadResources(Context context) {
         final Resources res = context.getResources();
         mKeepClearAreasPadding = res.getDimensionPixelSize(R.dimen.pip_keep_clear_areas_padding);
         mImeOffset = res.getDimensionPixelSize(R.dimen.pip_ime_offset);
+    }
+
+    @Override
+    public void onDisplayIdChanged(@NonNull Context context) {
+        reloadResources(context);
     }
 
     /**
@@ -57,6 +67,12 @@ public class PhonePipKeepClearAlgorithm implements PipKeepClearAlgorithmInterfac
         Rect startingBounds = pipBoundsState.getBounds().isEmpty()
                 ? pipBoundsAlgorithm.getEntryDestinationBoundsIgnoringKeepClearAreas()
                 : pipBoundsState.getBounds();
+        // If IME is not showing and restore bounds (pre-IME bounds) is not empty, we should set PiP
+        // bounds to the restore bounds.
+        if (!pipBoundsState.isImeShowing() && !pipBoundsState.getRestoreBounds().isEmpty()) {
+            startingBounds.set(pipBoundsState.getRestoreBounds());
+            pipBoundsState.clearRestoreBounds();
+        }
         Rect insets = new Rect();
         pipBoundsAlgorithm.getInsetBounds(insets);
         if (pipBoundsState.isImeShowing()) {

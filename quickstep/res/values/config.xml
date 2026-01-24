@@ -21,25 +21,10 @@
         <item>com.android.launcher3/com.android.quickstep.interaction.GestureSandboxActivity</item>
     </string-array>
 
-    <string name="stats_log_manager_class" translatable="false">com.android.quickstep.logging.StatsLogCompatManager</string>
     <string name="test_information_handler_class" translatable="false">com.android.quickstep.QuickstepTestInformationHandler</string>
-    <string name="window_manager_proxy_class" translatable="false">com.android.quickstep.util.SystemWindowManagerProxy</string>
-    <string name="widget_holder_factory_class" translatable="false">com.android.launcher3.uioverrides.QuickstepWidgetHolder$QuickstepHolderFactory</string>
-    <string name="instant_app_resolver_class" translatable="false">com.android.quickstep.InstantAppResolverImpl</string>
-    <string name="app_launch_tracker_class" translatable="false">com.android.launcher3.appprediction.PredictionAppTracker</string>
     <string name="main_process_initializer_class" translatable="false">com.android.quickstep.QuickstepProcessInitializer</string>
-    <string name="model_delegate_class" translatable="false">com.android.launcher3.model.QuickstepModelDelegate</string>
-    <string name="secondary_display_predictions_class" translatable="false">com.android.launcher3.secondarydisplay.SecondaryDisplayPredictionsImpl</string>
-    <string name="taskbar_model_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarModelCallbacksFactory</string>
-    <string name="taskbar_view_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarViewCallbacksFactory</string>
-    <string name="launcher_restore_event_logger_class" translatable="false">com.android.quickstep.LauncherRestoreEventLoggerImpl</string>
-    <string name="plugin_manager_wrapper_class" translatable="false">com.android.launcher3.uioverrides.plugins.PluginManagerWrapperImpl</string>
+    <string name="secondary_display_quickstep_delegate_class" translatable="false">com.android.launcher3.secondarydisplay.SecondaryDisplayQuickstepDelegateImpl</string>
     <string name="taskbar_edu_tooltip_controller_class" translatable="false">com.android.launcher3.taskbar.TaskbarEduTooltipController</string>
-
-    <string name="nav_handle_long_press_handler_class" translatable="false"></string>
-    <string name="assist_utils_class" translatable="false"></string>
-    <string name="assist_state_manager_class" translatable="false"></string>
-    <string name="api_wrapper_class" translatable="false">com.android.launcher3.uioverrides.SystemApiWrapper</string>
 
     <!-- The number of thumbnails and icons to keep in the cache. The thumbnail cache size also
          determines how many thumbnails will be fetched in the background. -->
@@ -54,10 +39,17 @@
     <string name="wellbeing_provider_pkg" translatable="false"/>
 
     <integer name="max_depth_blur_radius">23</integer>
+    <dimen name="max_depth_blur_radius_enhanced">30dp</dimen>
+
+    <!-- If predicted widgets from prediction service are less than this number, additional
+    eligible widgets may be added locally by launcher. When set to 0, no widgets will be added
+    locally. -->
+    <integer name="widget_predictions_min_count">6</integer>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_move_to_top_or_left" />
     <item type="id" name="action_move_to_bottom_or_right" />
+    <item type="id" name="action_create_application_bubble" />
 
     <!-- The max scale for the wallpaper when it's zoomed in -->
     <item name="config_wallpaperMaxScale" format="float" type="dimen">
@@ -68,4 +60,12 @@
 
     <!-- This is a float because it is converted to dp later in DeviceProfile -->
     <item name="taskbar_icon_size" type="dimen" format="float">44</item>
+
+    <!-- Expressive Dismiss -->
+    <item name="expressive_dismiss_task_trans_y_damping_ratio" type="dimen" format="float">0.65</item>
+    <item name="expressive_dismiss_task_trans_y_stiffness" type="dimen" format="float">850</item>
+    <item name="expressive_dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.8</item>
+    <item name="expressive_dismiss_task_trans_x_stiffness" type="dimen" format="float">2800</item>
+    <item name="expressive_dismiss_effects_damping_ratio" type="dimen" format="float">1</item>
+    <item name="expressive_dismiss_effects_stiffness" type="dimen" format="float">1600</item>
 </resources>

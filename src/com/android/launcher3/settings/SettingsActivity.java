@@ -22,10 +22,14 @@ import static androidx.preference.PreferenceFragmentCompat.ARG_PREFERENCE_ROOT;
 
 import static com.android.launcher3.BuildConfigs.IS_DEBUG_DEVICE;
 import static com.android.launcher3.BuildConfigs.IS_STUDIO_BUILD;
+import static com.android.launcher3.BuildConfigs.NOTIFICATION_DOTS_ENABLED;
+import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
+import static com.android.launcher3.InvariantDeviceProfile.TYPE_TABLET;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -44,12 +48,14 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartScreenCallback;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceGroup.PreferencePositionCallback;
 import androidx.preference.PreferenceScreen;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BuildConfig;
-import com.android.launcher3.BuildConfigs;
+import com.android.launcher3.Flags;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.states.RotationHelper;
@@ -57,25 +63,23 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
 
 /**
- * Settings activity for Launcher. Currently implements the following setting:
- * Allow rotation
+ * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
 public class SettingsActivity extends FragmentActivity
         implements OnPreferenceStartFragmentCallback, OnPreferenceStartScreenCallback {
 
     @VisibleForTesting
-    static final String DEVELOPER_OPTIONS_KEY = "pref_developer_options";
+    public static final String DEVELOPER_OPTIONS_KEY = "pref_developer_options";
+
+    public static final String FIXED_LANDSCAPE_MODE = "pref_fixed_landscape_mode";
 
     private static final String NOTIFICATION_DOTS_PREFERENCE_KEY = "pref_icon_badging";
 
     public static final String EXTRA_FRAGMENT_ARGS = ":settings:fragment_args";
-    public static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
 
-    // Intent extra to indicate the pref-key to highlighted when opening the
-    // settings activity
+    // Intent extra to indicate the pref-key to highlighted when opening the settings activity
     public static final String EXTRA_FRAGMENT_HIGHLIGHT_KEY = ":settings:fragment_args_key";
-    // Intent extra to indicate the pref-key of the root screen when opening the
-    // settings activity
+    // Intent extra to indicate the pref-key of the root screen when opening the settings activity
     public static final String EXTRA_FRAGMENT_ROOT_KEY = ARG_PREFERENCE_ROOT;
 
     private static final int DELAY_HIGHLIGHT_DURATION_MILLIS = 600;
@@ -121,8 +125,7 @@ public class SettingsActivity extends FragmentActivity
 
     private boolean startPreference(String fragment, Bundle args, String key) {
         if (getSupportFragmentManager().isStateSaved()) {
-            // Sometimes onClick can come after onPause because of being posted on the
-            // handler.
+            // Sometimes onClick can come after onPause because of being posted on the handler.
             // Skip starting new preferences in that case.
             return false;
         }
@@ -166,16 +169,17 @@ public class SettingsActivity extends FragmentActivity
     public static class LauncherSettingsFragment extends PreferenceFragmentCompat implements
             SettingsCache.OnChangeListener {
 
-        protected boolean mDeveloperOptionsEnabled = false;
+        protected boolean mDeveloperOptionsEnabled = true;
 
         private boolean mRestartOnResume = false;
 
         private String mHighLightKey;
+
         private boolean mPreferenceHighlighted = false;
 
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
-            if (BuildConfigs.IS_DEBUG_DEVICE) {
+            if (false) {
                 Uri devUri = Settings.Global.getUriFor(DEVELOPMENT_SETTINGS_ENABLED);
                 SettingsCache settingsCache = SettingsCache.INSTANCE.get(getContext());
                 mDeveloperOptionsEnabled = settingsCache.getValue(devUri);
@@ -204,9 +208,59 @@ public class SettingsActivity extends FragmentActivity
                 }
             }
 
+            // If the target preference is not in the current preference screen, find the parent
+            // preference screen that contains the target preference and set it as the preference
+            // screen.
+            if (mHighLightKey != null
+                    && !isKeyInPreferenceGroup(mHighLightKey, screen)) {
+                final PreferenceScreen parentPreferenceScreen =
+                        findParentPreference(screen, mHighLightKey);
+                if (parentPreferenceScreen != null && getActivity() != null) {
+                    if (!TextUtils.isEmpty(parentPreferenceScreen.getTitle())) {
+                        getActivity().setTitle(parentPreferenceScreen.getTitle());
+                    }
+                    setPreferenceScreen(parentPreferenceScreen);
+                    return;
+                }
+            }
+
             if (getActivity() != null && !TextUtils.isEmpty(getPreferenceScreen().getTitle())) {
                 getActivity().setTitle(getPreferenceScreen().getTitle());
             }
+        }
+
+        private boolean isKeyInPreferenceGroup(String targetKey, PreferenceGroup parent) {
+            for (int i = 0; i < parent.getPreferenceCount(); i++) {
+                Preference pref = parent.getPreference(i);
+                if (pref.getKey() != null && pref.getKey().equals(targetKey)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Finds the parent preference screen for the given target key.
+         *
+         * @param parent    the parent preference screen
+         * @param targetKey the key of the preference to find
+         * @return the parent preference screen that contains the target preference
+         */
+        @Nullable
+        private PreferenceScreen findParentPreference(PreferenceScreen parent, String targetKey) {
+            for (int i = 0; i < parent.getPreferenceCount(); i++) {
+                Preference pref = parent.getPreference(i);
+                if (pref instanceof PreferenceScreen) {
+                    PreferenceScreen foundKey = findParentPreference((PreferenceScreen) pref,
+                            targetKey);
+                    if (foundKey != null) {
+                        return foundKey;
+                    }
+                } else if (pref.getKey() != null && pref.getKey().equals(targetKey)) {
+                    return parent;
+                }
+            }
+            return null;
         }
 
         @Override
@@ -234,17 +288,18 @@ public class SettingsActivity extends FragmentActivity
         }
 
         /**
-         * Initializes a preference. This is called for every preference. Returning
-         * false here
+         * Initializes a preference. This is called for every preference. Returning false here
          * will remove that preference from the list.
          */
         protected boolean initPreference(Preference preference) {
+            DisplayController.Info info = DisplayController.INSTANCE.get(getContext()).getInfo();
             switch (preference.getKey()) {
                 case NOTIFICATION_DOTS_PREFERENCE_KEY:
-                    return BuildConfigs.NOTIFICATION_DOTS_ENABLED;
-
+                    return NOTIFICATION_DOTS_ENABLED;
                 case ALLOW_ROTATION_PREFERENCE_KEY:
-                    DisplayController.Info info = DisplayController.INSTANCE.get(getContext()).getInfo();
+                    if (Flags.oneGridSpecs()) {
+                        return false;
+                    }
                     if (info.isTablet(info.realBounds)) {
                         // Launcher supports rotation by default. No need to show this setting.
                         return false;
@@ -252,14 +307,34 @@ public class SettingsActivity extends FragmentActivity
                     // Initialize the UI once
                     preference.setDefaultValue(RotationHelper.getAllowRotationDefaultValue(info));
                     return true;
-
                 case DEVELOPER_OPTIONS_KEY:
                     if (IS_STUDIO_BUILD) {
                         preference.setOrder(0);
                     }
                     return mDeveloperOptionsEnabled;
+                case FIXED_LANDSCAPE_MODE:
+                    if (!Flags.oneGridSpecs()
+                            // adding this condition until fixing b/378972567
+                            || InvariantDeviceProfile.INSTANCE.get(getContext()).deviceType
+                            == TYPE_MULTI_DISPLAY
+                            || InvariantDeviceProfile.INSTANCE.get(getContext()).deviceType
+                            == TYPE_TABLET) {
+                        return false;
+                    }
+                    // When the setting changes rotate the screen accordingly to showcase the result
+                    // of the setting
+                    preference.setOnPreferenceChangeListener(
+                            (pref, newValue) -> {
+                                getActivity().setRequestedOrientation(
+                                        (boolean) newValue
+                                                ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                                : ActivityInfo.SCREEN_ORIENTATION_USER
+                                );
+                                return true;
+                            }
+                    );
+                    return !info.isTablet(info.realBounds);
             }
-
             return true;
         }
 

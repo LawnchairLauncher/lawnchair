@@ -99,6 +99,27 @@ fun LegacyFlickerTest.splitScreenDividerIsInvisibleAtStart() {
     assertLayersStart { this.isInvisible(SPLIT_SCREEN_DIVIDER_COMPONENT) }
 }
 
+fun LegacyFlickerTest.tilingDividerIsVisibleAtStart() {
+    assertLayersStart { this.isVisible(TILING_SPLIT_DIVIDER) }
+}
+
+fun LegacyFlickerTest.tilingDividerIsVisibleAtEnd() {
+    assertLayersEnd { this.isVisible(TILING_SPLIT_DIVIDER) }
+}
+
+fun LegacyFlickerTest.tilingDividerIsInvisibleAtEnd() {
+    assertLayersEnd { this.isInvisible(TILING_SPLIT_DIVIDER) }
+}
+
+fun LegacyFlickerTest.tilingDividerIsInvisibleAtStart() {
+    assertLayersStart { this.isInvisible(TILING_SPLIT_DIVIDER) }
+}
+
+
+fun LegacyFlickerTest.tilingScreenDividerIsInvisibleAtEnd() {
+    assertLayersEnd { this.isInvisible(TILING_SPLIT_DIVIDER) }
+}
+
 fun LegacyFlickerTest.splitScreenDividerIsInvisibleAtEnd() {
     assertLayersEnd { this.isInvisible(SPLIT_SCREEN_DIVIDER_COMPONENT) }
 }
@@ -254,6 +275,16 @@ fun LayersTraceSubject.splitAppLayerBoundsSnapToDivider(
     }
 }
 
+/**
+ * Checks that surfaces are still within the expected region after snapping to a snap point.
+ *
+ * @param component The component we are checking (should be one of the two split apps)
+ * @param landscapePosLeft If [true], and device is in left/right split, app is on the left side of
+ * the screen. Has no meaning if device is in top/bottom split.
+ * @param portraitPosTop If [true], and device is in top/bottom split, app is on the top side of
+ * the screen. Has no meaning if device is in left/right split.
+ * @param rotation The rotation state of the display.
+ */
 fun LayerTraceEntrySubject.splitAppLayerBoundsSnapToDivider(
     component: IComponentMatcher,
     landscapePosLeft: Boolean,
@@ -268,10 +299,12 @@ fun LayerTraceEntrySubject.splitAppLayerBoundsSnapToDivider(
         visibleRegion(component).isNotEmpty()
         visibleRegion(component)
             .coversAtMost(
+                // TODO (b/403082705): Should use the new method for determining left/right split.
                 if (displayBounds.width() > displayBounds.height()) {
                     if (landscapePosLeft) {
                         Region(
-                            0,
+                            // TODO (b/403304310): Check if we're in an offscreen-enabled mode.
+                            -displayBounds.right, // the receding app can go offscreen
                             0,
                             (dividerRegion.left + dividerRegion.right) / 2,
                             displayBounds.bottom
@@ -280,7 +313,7 @@ fun LayerTraceEntrySubject.splitAppLayerBoundsSnapToDivider(
                         Region(
                             (dividerRegion.left + dividerRegion.right) / 2,
                             0,
-                            displayBounds.right,
+                            displayBounds.right * 2, // the receding app can go offscreen
                             displayBounds.bottom
                         )
                     }
@@ -288,7 +321,7 @@ fun LayerTraceEntrySubject.splitAppLayerBoundsSnapToDivider(
                     if (portraitPosTop) {
                         Region(
                             0,
-                            0,
+                            -displayBounds.bottom, // the receding app can go offscreen
                             displayBounds.right,
                             (dividerRegion.top + dividerRegion.bottom) / 2
                         )
@@ -297,7 +330,7 @@ fun LayerTraceEntrySubject.splitAppLayerBoundsSnapToDivider(
                             0,
                             (dividerRegion.top + dividerRegion.bottom) / 2,
                             displayBounds.right,
-                            displayBounds.bottom
+                            displayBounds.bottom * 2 // the receding app can go offscreen
                         )
                     }
                 }
@@ -335,6 +368,21 @@ fun LegacyFlickerTest.appWindowIsInvisibleAtStart(component: IComponentMatcher) 
 
 fun LegacyFlickerTest.appWindowIsInvisibleAtEnd(component: IComponentMatcher) {
     assertWmEnd { this.isAppWindowInvisible(component) }
+}
+
+fun LegacyFlickerTest.appWindowOnTopAtStart(component: IComponentMatcher) {
+    assertWmStart { this.isAppWindowOnTop(component) }
+}
+
+fun LegacyFlickerTest.appWindowOnTopAtEnd(component: IComponentMatcher) {
+    assertWmEnd { this.isAppWindowOnTop(component) }
+}
+
+fun LegacyFlickerTest.appWindowInsideDisplayBoundsAtEnd(component: IComponentMatcher) {
+    assertWmEnd {
+        val displayBounds = WindowUtils.getDisplayBounds(scenario.endRotation)
+        visibleRegion(component).coversAtMost(displayBounds)
+    }
 }
 
 fun LegacyFlickerTest.appWindowIsNotContainAtStart(component: IComponentMatcher) {

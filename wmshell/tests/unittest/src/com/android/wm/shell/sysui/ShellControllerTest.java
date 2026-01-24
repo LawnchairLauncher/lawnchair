@@ -16,10 +16,13 @@
 
 package com.android.wm.shell.sysui;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.UserInfo;
 import android.content.res.Configuration;
@@ -27,6 +30,9 @@ import android.graphics.Rect;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.UserManager;
+import android.platform.test.annotations.DisableFlags;
+import android.platform.test.annotations.EnableFlags;
 import android.testing.AndroidTestingRunner;
 import android.testing.TestableLooper;
 
@@ -34,6 +40,7 @@ import androidx.annotation.NonNull;
 import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.wm.shell.Flags;
 import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.TestShellExecutor;
 import com.android.wm.shell.common.DisplayInsetsController;
@@ -56,17 +63,21 @@ import java.util.Locale;
 public class ShellControllerTest extends ShellTestCase {
 
     private static final int TEST_USER_ID = 100;
+    private static final int TEST_SECOND_USER_ID = 101;
     private static final String EXTRA_TEST_BINDER = "test_binder";
 
-    @Mock
-    private ShellInit mShellInit;
     @Mock
     private ShellCommandHandler mShellCommandHandler;
     @Mock
     private Context mTestUserContext;
     @Mock
+    private Context mTestSecondUserContext;
+    @Mock
     private DisplayInsetsController mDisplayInsetsController;
+    @Mock
+    private UserManager mUserManager;
 
+    private ShellInit mShellInit;
     private TestShellExecutor mExecutor;
     private ShellController mController;
     private TestConfigurationChangeListener mConfigChangeListener;
@@ -78,19 +89,40 @@ public class ShellControllerTest extends ShellTestCase {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        when(mTestUserContext.getUserId()).thenReturn(TEST_USER_ID);
+        when(mTestSecondUserContext.getUserId()).thenReturn(TEST_SECOND_USER_ID);
         mKeyguardChangeListener = new TestKeyguardChangeListener();
         mConfigChangeListener = new TestConfigurationChangeListener();
         mUserChangeListener = new TestUserChangeListener();
         mDisplayImeChangeListener = new TestDisplayImeChangeListener();
         mExecutor = new TestShellExecutor();
+        mShellInit = new ShellInit(mExecutor);
         mController = new ShellController(mContext, mShellInit, mShellCommandHandler,
-                mDisplayInsetsController, mExecutor);
+                mDisplayInsetsController, mUserManager, mExecutor);
         mController.onConfigurationChanged(getConfigurationCopy());
     }
 
     @After
     public void tearDown() {
         // Do nothing
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
+    public void testOnInit_updatesCurrentUser() {
+        mController.onUserChanged(TEST_SECOND_USER_ID, mTestSecondUserContext);
+        final List<UserInfo> profiles = new ArrayList<>();
+        profiles.add(mock(UserInfo.class));
+        mController.onUserProfilesChanged(profiles);
+
+        final int newUserId = ActivityManager.getCurrentUser();
+        final List<UserInfo> newProfiles = new ArrayList<>();
+        newProfiles.add(mock(UserInfo.class));
+        when(mUserManager.getProfiles(newUserId)).thenReturn(newProfiles);
+        mShellInit.init();
+
+        assertEquals(mController.getCurrentUserId(), newUserId);
+        assertEquals(mController.getCurrentUserProfiles(), newProfiles);
     }
 
     @Test
@@ -175,6 +207,7 @@ public class ShellControllerTest extends ShellTestCase {
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
     public void testAddUserChangeListener_ensureCallback() {
         mController.addUserChangeListener(mUserChangeListener);
 
@@ -184,9 +217,31 @@ public class ShellControllerTest extends ShellTestCase {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
+    public void testAddUserChangeListener_changed_ensureCallback() {
+        mController.addUserChangeListener(mUserChangeListener);
+
+        mController.onUserChanged(TEST_SECOND_USER_ID, mTestSecondUserContext);
+
+        assertTrue(mUserChangeListener.lastUserId == TEST_SECOND_USER_ID);
+        assertTrue(mUserChangeListener.lastUserContext == mTestSecondUserContext);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
+    public void testAddUserChangeListener_ensureCallbacksWithCurrentUser() {
+        mController.addUserChangeListener(mUserChangeListener);
+
+        assertTrue(mUserChangeListener.userChanged == 1);
+        assertTrue(mUserChangeListener.lastUserContext != null);
+        assertTrue(mUserChangeListener.userProfilesChanged == 1);
+    }
+
+    @Test
     public void testDoubleAddUserChangeListener_ensureSingleCallback() {
         mController.addUserChangeListener(mUserChangeListener);
         mController.addUserChangeListener(mUserChangeListener);
+        mUserChangeListener.reset();
 
         mController.onUserChanged(TEST_USER_ID, mTestUserContext);
         assertTrue(mUserChangeListener.userChanged == 1);
@@ -197,10 +252,23 @@ public class ShellControllerTest extends ShellTestCase {
     public void testAddRemoveUserChangeListener_ensureNoCallback() {
         mController.addUserChangeListener(mUserChangeListener);
         mController.removeUserChangeListener(mUserChangeListener);
+        mUserChangeListener.reset();
 
         mController.onUserChanged(TEST_USER_ID, mTestUserContext);
         assertTrue(mUserChangeListener.userChanged == 0);
         assertTrue(mUserChangeListener.lastUserContext == null);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
+    public void testUserChanged_noChange_ensureNoCallback() {
+        mController.addUserChangeListener(mUserChangeListener);
+        mController.onUserChanged(TEST_SECOND_USER_ID, mTestSecondUserContext);
+        mUserChangeListener.reset();
+
+        mController.onUserChanged(TEST_SECOND_USER_ID, mTestSecondUserContext);
+
+        assertTrue(mUserChangeListener.userChanged == 0);
     }
 
     @Test
@@ -212,6 +280,21 @@ public class ShellControllerTest extends ShellTestCase {
         profiles.add(mock(UserInfo.class));
         mController.onUserProfilesChanged(profiles);
         assertTrue(mUserChangeListener.lastUserProfiles.equals(profiles));
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS)
+    public void testUserProfilesChanged_noChange_ensureNoCallback() {
+        ArrayList<UserInfo> profiles = new ArrayList<>();
+        profiles.add(mock(UserInfo.class));
+        profiles.add(mock(UserInfo.class));
+        mController.addUserChangeListener(mUserChangeListener);
+        mController.onUserProfilesChanged(profiles);
+        mUserChangeListener.reset();
+
+        mController.onUserProfilesChanged(profiles);
+
+        assertTrue(mUserChangeListener.lastUserProfiles == null);
     }
 
     @Test
@@ -500,6 +583,14 @@ public class ShellControllerTest extends ShellTestCase {
         public void onUserProfilesChanged(@NonNull List<UserInfo> profiles) {
             userProfilesChanged++;
             lastUserProfiles = profiles;
+        }
+
+        void reset() {
+            userChanged = 0;
+            lastUserId = 0;
+            lastUserContext = null;
+            userProfilesChanged = 0;
+            lastUserProfiles = null;
         }
     }
 

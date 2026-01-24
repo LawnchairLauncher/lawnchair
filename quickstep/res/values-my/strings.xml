@@ -22,11 +22,14 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ပင်ထိုးရန်"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"အလွတ်ပုံစံ"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"ဒက်စ်တော့"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"ပြင်ပဖန်သားပြင်သို့ ရွှေ့ရန်"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"ရှင်းထုတ်ရန်"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"ဒက်စ်တော့"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"မကြာမီကဖွင့်ထားသည်များ မရှိပါ"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"အက်ပ်အသုံးပြုမှု ဆက်တင်များ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"အားလုံးရှင်းရန်"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"မျက်နှာပြင်အသစ် ထည့်ရန်"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"မကြာသေးမီက အက်ပ်များ"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"လုပ်ဆောင်စရာ ပိတ်ထားသည်"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>၊ <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; ၁ မိနစ်"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"ယနေ့ <xliff:g id="TIME">%1$s</xliff:g> ခု ကျန်သည်"</string>
@@ -45,9 +48,10 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"အက်ပ်အကြံပြုချက်များ ဖွင့်ထားသည်"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"အက်ပ်အကြံပြုချက်များကို ပိတ်ထားသည်"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"ကြိုတင်မှန်းဆထားသော အက်ပ်− <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"လက်ဟန်ဖြင့် လမ်းညွှန်ခြင်း အသုံးပြုနည်း"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"သင့်စက်ကို လှည့်ပါ"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"လက်ဟန်ဖြင့် လမ်းညွှန်ခြင်း ရှင်းလင်းပို့ချချက်အား အပြီးသတ်ရန် သင့်စက်ကို လှည့်ပါ"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ညာ (သို့) ဘယ်အစွန်း၏ ခပ်လှမ်းလှမ်းမှ ပွတ်ဆွဲကြောင်း သေချာပါစေ"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ညာ (သို့) ဘယ်ဘက်အစွန်ဆုံးမှ ပွတ်ဆွဲကြောင်း သေချာပါစေ"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ဖန်သားပြင်၏ ညာ (သို့) ဘယ်အစွန်းမှ အလယ်သို့ ပွတ်ဆွဲပြီး လွှတ်လိုက်ကြောင်း သေချာပါစေ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"နောက်ပြန်သွားရန် ညာဘက်မှပွတ်ဆွဲနည်းကို သိသွားပါပြီ။ နောက်အဆင့်တွင် အက်ပ်များပြောင်းနည်းကို လေ့လာပါ။"</string>
     <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"နောက်ဆုတ်လက်ဟန် ရှင်းလင်းပို့ချချက် ပြီးပါပြီ။ နောက်အဆင့်တွင် အက်ပ်များပြောင်းနည်းကို လေ့လာပါ။"</string>
@@ -56,7 +60,6 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"နောက်ဆုတ်လက်ဟန်၏ အာရုံခံစွမ်းကိုပြောင်းရန် ‘ဆက်တင်များ’ သို့ သွားပါ"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"နောက်ပြန်သွားရန် ပွတ်ဆွဲပါ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"နောက်ဆုံးဖန်သားပြင်သို့ ပြန်သွားရန် ဘယ်ဘက် (သို့) ညာဘက်အစွန်မှ ဖန်သားပြင်အလယ်သို့ ပွတ်ဆွဲပါ။"</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ပြီးခဲ့သည့်ဖန်သားပြင်သို့သွားရန် ဘယ်ဘက် (သို့) ညာဘက်အစွန်းမှ ဖန်သားပြင်အလယ်သို့ လက် ၂ ချောင်းဖြင့် ပွတ်ဆွဲပါ။"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"နောက်သို့"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"ဖန်သားပြင်၏ ဘယ် (သို့) ညာအစွန်းမှ အလယ်သို့ ပွတ်ဆွဲပါ"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"ဖန်သားပြင် အောက်ခြေအစွန်းမှ အပေါ်သို့ ပွတ်ဆွဲကြောင်း သေချာပါစေ"</string>
@@ -66,7 +69,6 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"ပင်မစာမျက်နှာသို့သွားသည့် လက်ဟန် အပြီးသတ်လိုက်ပါပြီ"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ပင်မစာမျက်နှာသို့သွားရန် ပွတ်ဆွဲပါ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"သင့်ဖန်သားပြင် အောက်ခြေမှ အပေါ်သို့ပွတ်ဆွဲပါ။ ဤလက်ဟန်ဖြင့် ပင်မစာမျက်နှာသို့ အမြဲပြန်သွားနိုင်သည်။"</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ဖန်သားပြင်အောက်မှ အပေါ်သို့ လက် ၂ ချောင်းဖြင့် ပွတ်ဆွဲပါ။ ဤလက်ဟန်က ပင်မစာမျက်နှာသို့ အမြဲပို့ပေးမည်။"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ပင်မစာမျက်နှာသွားရန်"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"သင့်ဖန်သားပြင် အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲပါ"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"တော်ပါပေသည်။"</string>
@@ -77,7 +79,6 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"အက်ပ်များပြောင်းသည့် လက်ဟန် အပြီးသတ်လိုက်ပါပြီ"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"အက်ပ်များပြောင်းရန် ပွတ်ဆွဲပါ"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"အက်ပ်တစ်ခုမှတစ်ခုသို့ ပြောင်းရန် စခရင်အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲ၍ ဖိထားပြီးနောက် လွှတ်ပါ။"</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"အက်ပ်များကြားပြောင်းရန် ဖန်သားပြင်အောက်မှ အပေါ်သို့ လက် ၂ ချောင်းဖြင့်ဆွဲ၍ ထိန်းထားပြီး လွှတ်ပါ။"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"အက်ပ်များ ကူးပြောင်းရန်"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"သင့်ဖန်သားပြင် အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲ၍ ဖိထားပြီးလွှတ်လိုက်ပါ"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"အလွန်ကောင်းပါသည်။"</string>
@@ -90,25 +91,34 @@
     <string name="allset_title" msgid="5021126669778966707">"အားလုံး အဆင်သင့်ပါ။"</string>
     <string name="allset_hint" msgid="459504134589971527">"ပင်မစာမျက်နှာသို့သွားရန် အပေါ်သို့ ပွတ်ဆွဲပါ"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ပင်မစာမျက်နှာသို့ သွားရန် ပင်မခလုတ်ကို တို့ပါ"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> ကို စသုံးရန် အသင့်ဖြစ်ပါပြီ"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"စက်"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> စသုံးရန် အသင့်ဖြစ်ပါပြီ"</string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"သင့်စက်ကို စသုံးရန် အသင့်ဖြစ်ပါပြီ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"စနစ် လမ်းညွှန် ဆက်တင်များ"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"သင်၏ <xliff:g id="DEVICE">%1$s</xliff:g> \nအသင့်ဖြစ်ပါပြီ။"</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"သင်၏စက် \nအသင့်ဖြစ်ပါပြီ။"</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"သင်၏ <xliff:g id="DEVICE">%1$s</xliff:g> အသစ်ကို အသုံးပြုလိုက်ပါ။"</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"ရွှေ့ကြည့်နည်း ရွေးရန်"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"အပေါ်သို့ ပွတ်ဆွဲရန်"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"ပင်မခလုတ်ကို တို့ရန်"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"တက်ဘလက်"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"ဖုန်း"</string>
     <string name="action_share" msgid="2648470652637092375">"မျှဝေရန်"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ဖန်သားပြင်ဓာတ်ပုံ"</string>
     <string name="action_split" msgid="2098009717623550676">"ခွဲရန်"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"အက်ပ်အတွဲ သိမ်းရန်"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"မျက်နှာပြင် ခွဲ၍ပြသရန် အက်ပ်နောက်တစ်ခုကို တို့ပါ"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"မျက်နှာပြင် ခွဲ၍ပြသခြင်းသုံးရန် နောက်အက်ပ်တစ်ခုရွေးပါ"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"မလုပ်တော့"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"မလုပ်တော့"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"မျက်နှာပြင် ခွဲ၍ပြသခြင်း ရွေးချယ်မှုမှ ထွက်ရန်"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"မျက်နှာပြင်ခွဲ၍ပြသခြင်းသုံးရန် နောက်အက်ပ်တစ်ခုရွေးပါ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ဤလုပ်ဆောင်ချက်ကို အက်ပ် သို့မဟုတ် သင်၏အဖွဲ့အစည်းက ခွင့်မပြုပါ"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"ဝိဂျက်များကို လောလောဆယ် ပံ့ပိုးမထားပါ။ အခြားအက်ပ်ရွေးပါ"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"လမ်းညွှန်ခြင်း ရှင်းလင်းပို့ချချက်ကို ကျော်မလား။"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"၎င်းကို နောက်မှ <xliff:g id="NAME">%1$s</xliff:g> အက်ပ်တွင် ရှာနိုင်သည်"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"မလုပ်တော့"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ကျော်ရန်"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ဖန်သားပြင်လှည့်ရန်"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"Taskbar သည် စခရင်အောက်ခြေမှ ပေါ်လာပုံနှင့် အသုံးမပြုချိန်တွင် အလိုအလျောက်ပျောက်သွားပုံကို ပြသော လှုပ်ရှားသက်ဝင်ပုံ"</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"စခရင်အောက်ခြေတွင် Taskbar အမြဲမြင်ရရန်အတွက် ခလုတ်ဖြင့် သင့် Taskbar ပင်ထိုးနည်းကို ပြသော လှုပ်ရှားသက်ဝင်ပုံ"</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"အက်ပ်တစ်ခုကို Taskbar မှ ဖွင့်ထားသည့် အက်ပ်ပေါ်သို့ ဆွဲထည့်ခြင်းဖြင့် မျက်နှာပြင် ခွဲ၍ပြသခြင်း ပြုလုပ်နည်းကို ပြသော လှုပ်ရှားသက်ဝင်ပုံ"</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"သင့်စက်တွင် အကြံပြုထားသော အက်ပ်များသုံးနည်းကို ပြသော လှုပ်ရှားသက်ဝင်ပုံ"</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"လုပ်ဆောင်ချက်ကီးကို ထိပြီးဖိထားကာ ဖိုင်ရှိသောနေရာကို ရွေးခြင်းဖြင့် စခရင်ပေါ်ရှိဖိုင်ရှာနည်းကို ပြသော လှုပ်ရှားသက်ဝင်ပုံ"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"လုပ်ဆောင်စရာဘား ပညာပေး"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"အက်ပ် ၂ ခု တစ်ပြိုင်တည်းသုံးရန် အက်ပ်တစ်ခုကို ဘေးသို့ဖိဆွဲပါ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Taskbar ပြရန် အပေါ်သို့ ဖြည်းဖြည်းပွတ်ဆွဲပါ"</string>
@@ -116,7 +126,7 @@
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Taskbar ပင်ထိုးရန် ခွဲခြားမျဉ်းကို နှိပ်ထားပါ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Taskbar ဖြင့် ပိုမိုလုပ်ဆောင်နိုင်ခြင်း"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Taskbar ကို အမြဲပြပါ"</string>
-    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Taskbar ကို စခရင်အောက်ခြေတွင် အမြဲပြရန် ခွဲခြားမျဉ်းကို တို့ထိ၍ ဖိထားပါ"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Taskbar ကို စခရင်အောက်ခြေတွင် အမြဲပြရန် ခွဲခြားမျဉ်းကို ထိထားပါ"</string>
     <string name="taskbar_search_edu_title" msgid="5569194922234364530">"သင့်စခရင်ပေါ်ရှိအရာကို ရှာရန် လုပ်ဆောင်ချက်ကီးကို ထိ၍ဖိထားပါ"</string>
     <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"ဤကုန်ပစ္စည်းသည် သင့်စခရင်၌ ရွေးထားသောအပိုင်းကိုသုံး၍ ရှာဖွေသည်။ Google ၏ <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>ကိုယ်ရေးအချက်အလက်လုံခြုံမှုဆိုင်ရာ မူဝါဒ<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> နှင့် <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>ဝန်ဆောင်မှုစည်းမျဉ်းများ<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> အကျုံးဝင်သည်။"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ပိတ်ရန်"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"အမြန်ဆက်တင်များ"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"လုပ်ဆောင်စရာဘား"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskbar ပြထားသည်"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taskbar ဖျောက်ထားသည်"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"ဘယ်ဘက်၌ Taskbar နှင့် ပူဖောင်းကွက် ပြထားသည်"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"ညာဘက်၌ Taskbar နှင့် ပူဖောင်းကွက် ပြထားသည်"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"လမ်းညွှန်ဘား"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Taskbar အမြဲပြရန်"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"ရွှေ့ကြည့်သည့်မုဒ် ပြောင်းရန်"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"လုပ်ဆောင်စရာဘား ပိုင်းခြားစနစ်"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"လတ်တလော အခြားအက်ပ်များ"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"အပေါ်/ဘယ်ဘက်သို့ ရွှေ့ရန်"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"အောက်ခြေ/ညာဘက်သို့ ရွှေ့ရန်"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{နောက်ထပ်အက်ပ် # ခု ပြပါ။}other{နောက်ထပ်အက်ပ် # ခု ပြပါ။}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{ဒက်စတော့ အက်ပ် # ခု ပြပါ။}other{ဒက်စတော့ အက်ပ် # ခု ပြပါ။}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"အက်ပ်ကို ပူဖောင်းကွက်အဖြစ် ဖွင့်ရန်"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"မကြာသေးမီက အက်ပ်များ"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"မကြာသေးမီက အက်ပ်စာရင်း"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{နောက်ထပ်အက်ပ်}other{နောက်ထပ်အက်ပ်များ}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"ဒက်စ်တော့"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> နှင့် <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>၊ <xliff:g id="TOTAL_TASKS">%3$d</xliff:g> ခုအနက် <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g>"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"ဘယ်သို့လှိမ့်ရန်"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"ညာသို့လှိမ့်ရန်"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"ပူဖောင်းကွက်"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"မီနူးအပို"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="APP_NAME">%2$s</xliff:g> မှ <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> နှင့် နောက်ထပ် <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> ခု"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"ဘယ်သို့ရွှေ့ရန်"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"ညာသို့ရွှေ့ရန်"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"အားလုံးကို ပယ်ရန်"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g> ကို ပိုပြပါ"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g> ကို လျှော့ပြပါ"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"ရှာရန် ကွက်၍ဝိုင်းလိုက်ပါ"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"အက်ပ်သင်္ကေတ"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"အက်ပ်ခေါင်းစဉ်"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"အပိတ် ခလုတ်"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"Taskbar ၌ ပင်ထိုးရန်"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Taskbar မှ ဖြုတ်ရန်"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"အနည်းငယ်ရွှေ့ရန်"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"ပိတ်ရန်"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"ပုံကို အနည်းငယ်ရွှေ့ရန်"</string>
 </resources>

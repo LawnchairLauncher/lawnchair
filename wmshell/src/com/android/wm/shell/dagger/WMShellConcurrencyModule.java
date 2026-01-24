@@ -18,6 +18,7 @@ package com.android.wm.shell.dagger;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 import static android.os.Process.THREAD_PRIORITY_DISPLAY;
+import static android.os.Process.THREAD_PRIORITY_FOREGROUND;
 import static android.os.Process.THREAD_PRIORITY_TOP_APP_BOOST;
 
 import android.content.Context;
@@ -36,6 +37,7 @@ import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.shared.annotations.ExternalMainThread;
 import com.android.wm.shell.shared.annotations.ShellAnimationThread;
 import com.android.wm.shell.shared.annotations.ShellBackgroundThread;
+import com.android.wm.shell.shared.annotations.ShellDesktopThread;
 import com.android.wm.shell.shared.annotations.ShellMainThread;
 import com.android.wm.shell.shared.annotations.ShellSplashscreenThread;
 
@@ -160,22 +162,31 @@ public abstract class WMShellConcurrencyModule {
         }
     }
 
+    /** Provide a Shell animation-thread Handler. */
+    @WMSingleton
+    @Provides
+    @ShellAnimationThread
+    public static Handler provideShellAnimationHandler() {
+        HandlerThread animThread = new HandlerThread("wmshell.anim", THREAD_PRIORITY_DISPLAY);
+        animThread.start();
+        if (Build.IS_DEBUGGABLE) {
+            animThread.getLooper().setTraceTag(Trace.TRACE_TAG_WINDOW_MANAGER);
+            animThread.getLooper().setSlowLogThresholdMs(MSGQ_SLOW_DISPATCH_THRESHOLD_MS,
+                    MSGQ_SLOW_DELIVERY_THRESHOLD_MS);
+        }
+        return Handler.createAsync(animThread.getLooper());
+    }
+
     /**
      * Provide a Shell animation-thread Executor.
      */
     @WMSingleton
     @Provides
     @ShellAnimationThread
-    public static ShellExecutor provideShellAnimationExecutor() {
-         HandlerThread shellAnimationThread = new HandlerThread("wmshell.anim",
-                 THREAD_PRIORITY_DISPLAY);
-         shellAnimationThread.start();
-        if (Build.IS_DEBUGGABLE) {
-            shellAnimationThread.getLooper().setTraceTag(Trace.TRACE_TAG_WINDOW_MANAGER);
-            shellAnimationThread.getLooper().setSlowLogThresholdMs(MSGQ_SLOW_DISPATCH_THRESHOLD_MS,
-                    MSGQ_SLOW_DELIVERY_THRESHOLD_MS);
-        }
-         return new HandlerExecutor(Handler.createAsync(shellAnimationThread.getLooper()));
+    public static ShellExecutor provideShellAnimationExecutor(
+            @ShellAnimationThread Handler animHandler
+    ) {
+        return new HandlerExecutor(animHandler);
     }
 
     /**
@@ -192,26 +203,51 @@ public abstract class WMShellConcurrencyModule {
     }
 
     /**
+     * Provides a Shell desktop thread Handler for desktop mode related tasks.
+     */
+    @WMSingleton
+    @Provides
+    @ShellDesktopThread
+    public static Handler provideDesktopModeMiscHandler() {
+        HandlerThread shellDesktopThread = new HandlerThread("wmshell.desktop",
+                THREAD_PRIORITY_TOP_APP_BOOST);
+        shellDesktopThread.start();
+        return shellDesktopThread.getThreadHandler();
+    }
+
+    /**
+     * Provides a Shell desktop thread Executor for desktop mode related tasks.
+     */
+    @WMSingleton
+    @Provides
+    @ShellDesktopThread
+    public static ShellExecutor provideDesktopModeMiscExecutor(
+            @ShellDesktopThread Handler handler) {
+        return new HandlerExecutor(handler);
+    }
+
+    /**
      * Provides a Shell background thread Handler for low priority background tasks.
      */
     @WMSingleton
     @Provides
     @ShellBackgroundThread
     public static Handler provideSharedBackgroundHandler() {
-        HandlerThread shellBackgroundThread = new HandlerThread("wmshell.background",
+        final HandlerThread shellBackgroundThread = new HandlerThread("wmshell.background",
                 THREAD_PRIORITY_BACKGROUND);
         shellBackgroundThread.start();
         return shellBackgroundThread.getThreadHandler();
     }
 
     /**
-     * Provides a Shell background thread Executor for low priority background tasks.
+     * Provides a Shell background thread Executor for low priority background tasks.  The thread
+     * may also be boosted to THREAD_PRIORITY_FOREGROUND if necessary.
      */
     @WMSingleton
     @Provides
     @ShellBackgroundThread
     public static ShellExecutor provideSharedBackgroundExecutor(
             @ShellBackgroundThread Handler handler) {
-        return new HandlerExecutor(handler);
+        return new HandlerExecutor(handler, THREAD_PRIORITY_BACKGROUND, THREAD_PRIORITY_FOREGROUND);
     }
 }

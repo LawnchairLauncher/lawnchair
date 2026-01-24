@@ -42,8 +42,14 @@
     <!-- Options for recent tasks -->
     <!-- Title for an option to enter split screen mode for a given app -->
     <string name="recent_task_option_split_screen">Split screen</string>
+    <string name="recent_task_option_aspect_ratio">Change aspect ratio</string>
     <string name="split_app_info_accessibility">App info for %1$s</string>
     <string name="split_app_usage_settings">Usage settings for %1$s</string>
+
+    <!-- Title for an option to open a new window for a given app   -->
+    <string name="new_window_option_taskbar">New Window</string>
+    <!-- Title for an option to manage open windows for a given app   -->
+    <string name="manage_windows_option_taskbar">Manage Windows</string>
 
     <!-- App pairs -->
     <string name="save_app_pair">Save app pair</string>
@@ -61,6 +67,12 @@
     <string name="long_press_widget_to_add">Touch &amp; hold to move a widget.</string>
     <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
     <string name="long_accessible_way_to_add">Double-tap &amp; hold to move a widget or use custom actions.</string>
+    <!-- Accessibility label for the icon button shown in the widget picker that opens a overflow
+         menu with widgets viewing options. [CHAR_LIMIT=25] -->
+    <string name="widget_picker_widget_options_button_description">More options</string>
+    <!-- Label for the checkbox shown in the widget picker toggles whether to show all widgets or
+     the default set. [CHAR_LIMIT=25] -->
+    <string name="widget_picker_show_all_widgets_menu_item_title">Show all widgets</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
@@ -143,11 +155,21 @@
     <!-- A widget category label for grouping widgets related to note taking. [CHAR_LIMIT=30] -->
     <string name="widget_category_note_taking">Note-taking</string>
 
+    <!-- Accessibility label on the widget preview that on click (if add button is hidden) shows the button to add widget to the home screen. [CHAR_LIMIT=none] -->
+    <string name="widget_cell_tap_to_show_add_button_label">Show add button</string>
+    <!-- Accessibility label on the widget preview that on click (if add button is showing) hides the button to add widget to the home screen. [CHAR_LIMIT=none] -->
+    <string name="widget_cell_tap_to_hide_add_button_label">Hide add button</string>
     <!-- Text on the button that adds a widget to the home screen. [CHAR_LIMIT=15] -->
     <string name="widget_add_button_label">Add</string>
     <!-- Accessibility content description for the button that adds a widget to the home screen. The
          placeholder text is the widget name. [CHAR_LIMIT=none] -->
     <string name="widget_add_button_content_description">Add <xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget</string>
+    <!-- Text on the button that enables users to expand the widgets list to see all widget apps besides the default ones displayed. [CHAR_LIMIT=15] -->
+    <string name="widgets_list_expand_button_label">Show all</string>
+    <!-- Accessibility content description for the button that enables users to expand the widgets list to see all widget apps besides the default ones displayed. [CHAR_LIMIT=none]  -->
+    <string name="widgets_list_expand_button_content_description">Show all widgets</string>
+    <!-- Accessibility announcement to indicate to the users that widgets list is now expanded -->
+    <string name="widgets_list_expanded">Showing all widgets</string>
 
     <!-- Text on an educational tip on widget informing users that they can change widget settings.
          [CHAR_LIMIT=NONE] -->
@@ -168,6 +190,8 @@
     <string name="label_application">App</string>
     <!-- Label for the header text of the All Apps section in All Apps view, used to separate Predicted Apps and Actions section from All Apps section. [CHAR_LIMIT=50] -->
     <string name="all_apps_label">All apps</string>
+
+    <string name="all_apps_list_label">Apps list</string>
 
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
@@ -191,6 +215,7 @@
     <string name="all_apps_button_personal_label">Personal apps list</string>
     <string name="all_apps_button_work_label">Work apps list</string>
 
+    <!-- System shortcuts -->
     <!-- Label for remove drop target (from the homescreen only).
          May appear next to uninstall_drop_target_label [CHAR_LIMIT=20] -->
     <string name="remove_drop_target_label">Remove</string>
@@ -209,7 +234,8 @@
     <string name="dismiss_prediction_label">Don\'t suggest app</string>
     <!-- Label for pinning predicted app. -->
     <string name="pin_prediction">Pin Prediction</string>
-
+    <!-- Label for bubbling a launcher item. [CHAR_LIMIT=20] -->
+    <string name="bubble">Bubble</string>
 
     <!-- Permissions: -->
     <skip />
@@ -246,6 +272,8 @@
 
     <!-- Default folder title -->
     <string name="folder_hint_text">Edit Name</string>
+    <string name="paginate_left">Paginate left</string>
+    <string name="paginate_right">Paginate right</string>
 
     <!-- Accessibility -->
     <!-- The format string for when an app is temporarily disabled. -->
@@ -266,6 +294,9 @@
     <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
     <string name="workspace_new_page">New home screen page</string>
 
+    <string name="app_running_state_description">Active</string>
+    <string name="app_minimized_state_description">Minimized</string>
+
     <!-- Folder accessibility -->
     <!-- The format string for when a folder is opened, speaks the dimensions -->
     <string name="folder_opened">Folder opened, <xliff:g id="width" example="5">%1$d</xliff:g> by <xliff:g id="height" example="3">%2$d</xliff:g></string>
@@ -281,6 +312,8 @@
     <string name="folder_name_format_exact">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g>, <xliff:g id="size" example="2">%2$d</xliff:g> items</string>
     <!-- Folder name format when folder has 4 or more items shown in preview-->
     <string name="folder_name_format_overflow">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g>, <xliff:g id="size" example="2">%2$d</xliff:g> or more items</string>
+    <!-- Accessibility announement for unnamed folders -->
+    <string name="unnamed_folder">Unnamed folder</string>
 
     <!-- App pair accessibility -->
     <!-- App pair name -->
@@ -301,6 +334,13 @@
     <string name="allow_rotation_title">Allow home screen rotation</string>
     <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
     <string name="allow_rotation_desc">When phone is rotated</string>
+
+    <!-- Title for Landscape Mode setting. [CHAR LIMIT=50] -->
+    <string name="landscape_mode_title">Landscape mode</string>
+
+    <!--  [CHAR LIMIT=100] -->
+    <string name="landscape_mode_desc">Set home screen into landscape mode</string>
+
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
     <string name="notification_dots_title">Notification dots</string>
     <!-- Text to indicate that the system notification dots setting is on [CHAR LIMIT=100] -->
@@ -345,8 +385,9 @@
     <!-- Title for an app whose download has been started. -->
     <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
     <!-- Title for an app which is archived. -->
-    <string name="app_archived_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> is archived. Tap to download and restore.</string>
-
+    <string name="app_archived_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> is archived.</string>
+    <!-- Accessibility Action for an app which is archived. -->
+    <string name="app_unarchiving_action">download and restore</string>
 
     <!-- Title shown on the alert dialog prompting the user to update the application in market
      in order to re-enable the disabled shortcuts -->
@@ -371,9 +412,6 @@
 
     <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
     <string name="action_move_here">Move item here</string>
-
-    <!-- Accessibility confirmation for item added to workspace. -->
-    <string name="item_added_to_workspace">Item added to home screen</string>
 
     <!-- Accessibility confirmation for item removed. [CHAR_LIMIT=50]-->
     <string name="item_removed">Item removed</string>
@@ -433,7 +471,13 @@
     <string name="widget_resized">Widget resized to width <xliff:g id="number" example="2">%1$s</xliff:g> height <xliff:g id="number" example="1">%2$s</xliff:g></string>
 
     <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
-    <string name="action_deep_shortcut">Shortcuts</string>
+    <string name="action_deep_shortcut">Shortcut Menu</string>
+
+    <!-- Accessibility name for the app widget resize frame. -->
+    <string name="widget_frame_name">Widget Resize Frame for <xliff:g id="string" example="Clock">%1$s</xliff:g></string>
+
+    <!-- Accessibility action to close the widget resize frame. [CHAR_LIMIT=30] -->
+    <string name="action_close">Close</string>
 
     <!-- Accessibility action to dismiss a notification in the shortcuts menu for an icon. [CHAR_LIMIT=30] -->
     <string name="action_dismiss_notification">Dismiss</string>
@@ -443,9 +487,12 @@
 
     <!-- Label of tab to indicate personal apps -->
     <string name="all_apps_personal_tab">Personal</string>
-
     <!-- Label of tab to indicate work apps -->
     <string name="all_apps_work_tab">Work</string>
+    <!-- Content description of personal tab to indicate personal apps -->
+    <string name="all_apps_personal_tab_content_description">Personal apps tab</string>
+    <!-- Content description of work tab to indicate work apps -->
+    <string name="all_apps_work_tab_content_description">Work apps tab</string>
 
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
     <string name="work_profile_toggle_label">Work profile</string>
@@ -455,6 +502,8 @@
     <string name="work_profile_edu_accept">Got it</string>
     <!-- Info icon unicode for alpha scroller when work edu card is present -->
     <string name="work_profile_edu_section" translatable="false">\u24D8</string>
+    <!-- Intent for work profiler scheduler -->
+    <string name="work_profile_scheduler_intent" translatable="false"/>
 
     <!--- heading shown when user opens work apps tab while work apps are paused -->
     <string name="work_apps_paused_title">Work apps are paused</string>
@@ -473,6 +522,8 @@
     <string name="work_apps_pause_btn_text">Pause work apps</string>
     <!-- button string shown enable work profile -->
     <string name="work_apps_enable_btn_text">Unpause</string>
+    <!-- Label for the work profile scheduler button in the work profile screen. [CHAR_LIMIT=40] -->
+    <string name="work_scheduler_button_content_description">Work apps schedule</string>
 
     <!-- A hint shown in launcher settings develop options filter box -->
     <string name="developer_options_filter_hint">Filter</string>
@@ -498,6 +549,21 @@
     <string name="ps_container_transition">Private Space Transitioning</string>
     <!-- Title for Private Space install app icon -->
     <string name="ps_add_button_label">Install</string>
+    <!-- Title for Private Space app icon to add files and more to Private Space -->
+    <string name="ps_app_label_override">Add</string>
     <!-- Content description for install app icon -->
     <string name="ps_add_button_content_description">Install apps to Private Space</string>
+    <string name="ps_app_content_description">Add files and more to Private Space</string>
+
+    <!-- Strings for icon shapes -->
+    <!-- label for circle shape option in customization picker -->
+    <string name="circle_shape_title">Circle</string>
+    <!-- label for square shape option in customization picker -->
+    <string name="square_shape_title">Square</string>
+    <!-- label for 4-sided cookie option shape in customization picker -->
+    <string name="four_sided_cookie_shape_title">4-sided cookie</string>
+    <!-- label for 7-sided cookie option shape in customization picker -->
+    <string name="seven_sided_cookie_shape_title">7-sided cookie</string>
+    <!-- label for arch shape option in customization picker -->
+    <string name="arch_shape_title">Arch</string>
 </resources>

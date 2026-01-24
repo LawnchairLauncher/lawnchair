@@ -16,31 +16,40 @@
 package com.android.wm.shell.common.pip
 
 import android.app.ActivityTaskManager
-import android.app.AppGlobals
 import android.app.RemoteAction
+import android.app.TaskInfo
 import android.app.WindowConfiguration
 import android.content.ComponentName
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_MASK
+import android.graphics.PointF
 import android.graphics.Rect
 import android.os.RemoteException
-import android.os.SystemProperties
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
+import android.window.DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP
 import android.window.TaskSnapshot
-import com.android.internal.protolog.common.ProtoLog
+import android.window.TransitionInfo
+import com.android.internal.protolog.ProtoLog
+import com.android.wm.shell.shared.pip.PipFlags
 import com.android.wm.shell.Flags
 import com.android.wm.shell.protolog.ShellProtoLogGroup
+import java.io.PrintWriter
 import kotlin.math.abs
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.roundToInt
 
 /** A class that includes convenience methods.  */
 object PipUtils {
     private const val TAG = "PipUtils"
 
     // Minimum difference between two floats (e.g. aspect ratios) to consider them not equal.
-    private const val EPSILON = 1e-7
+    // TODO b/377530560: Restore epsilon once a long term fix is merged for non-config-at-end issue.
+    private const val EPSILON = 0.05f
 
     /**
      * @return the ComponentName and user id of the top non-SystemUI activity in the pinned stack.
@@ -141,46 +150,190 @@ object PipUtils {
 
 
     /**
-     * Returns a fake source rect hint for animation purposes when app-provided one is invalid.
+     * Returns a pseudo source rect hint for animation purposes when app-provided one is invalid.
      * Resulting adjusted source rect hint lets the app icon in the content overlay to stay visible.
      */
     @JvmStatic
-    fun getEnterPipWithOverlaySrcRectHint(appBounds: Rect, aspectRatio: Float): Rect {
+    fun getPseudoSourceRectHint(appBounds: Rect, aspectRatio: Float): Rect {
         val appBoundsAspRatio = appBounds.width().toFloat() / appBounds.height()
         val width: Int
         val height: Int
-        var left = 0
-        var top = 0
+        var left = appBounds.left
+        var top = appBounds.top
         if (appBoundsAspRatio < aspectRatio) {
             width = appBounds.width()
-            height = Math.round(width / aspectRatio)
-            top = (appBounds.height() - height) / 2
+            height = (width / aspectRatio).roundToInt()
+            top = appBounds.top + (appBounds.height() - height) / 2
         } else {
             height = appBounds.height()
-            width = Math.round(height * aspectRatio)
-            left = (appBounds.width() - width) / 2
+            width = (height * aspectRatio).roundToInt()
+            left = appBounds.left + (appBounds.width() - width) / 2
         }
         return Rect(left, top, left + width, top + height)
     }
 
-    private var isPip2ExperimentEnabled: Boolean? = null
+    /**
+     * Temporary rounding "outward" (ie. -1.2 -> -2) used for crop since it is an int. We lean
+     * outward since, usually, child surfaces are, themselves, cropped, so we'd prefer to avoid
+     * inadvertently cutting out content that would otherwise be visible.
+     */
+    private fun roundOut(`val`: Float): Int {
+        return (if (`val` >= 0f) ceil(`val`) else floor(`val`)).toInt()
+    }
 
     /**
-     * Returns true if PiP2 implementation should be used. Besides the trunk stable flag,
-     * system property can be used to override this read only flag during development.
-     * It's currently limited to phone form factor, i.e., not enabled on ARC / TV.
+     * Calculates the transform to apply on a UNTRANSFORMED (config-at-end) Activity surface in
+     * order for it's hint-rect to occupy the same task-relative position/dimensions as it would
+     * have at the end of the transition (post-configuration).
+     *
+     * This is intended to be used in tandem with [calcStartTransform] below applied to the parent
+     * task. Applying both transforms simultaneously should result in the appearance of nothing
+     * having happened yet.
+     *
+     * Only the task should be animated (into it's identity state) and then WMCore will reset the
+     * activity transform in sync with its new configuration upon finish.
+     *
+     * Usage example:
+     *     calcEndTransform(pipActivity, pipTask, scale, pos);
+     *     t.setScale(pipActivity.getLeash(), scale.x, scale.y);
+     *     t.setPosition(pipActivity.getLeash(), pos.x, pos.y);
+     *
+     * @see calcStartTransform
      */
     @JvmStatic
-    fun isPip2ExperimentEnabled(): Boolean {
-        if (isPip2ExperimentEnabled == null) {
-            val isArc = AppGlobals.getPackageManager().hasSystemFeature(
-                "org.chromium.arc", 0)
-            val isTv = AppGlobals.getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_LEANBACK, 0)
-            isPip2ExperimentEnabled = SystemProperties.getBoolean(
-                    "persist.wm_shell.pip2", false) ||
-                    (Flags.enablePip2Implementation() && !isArc && !isTv)
+    fun calcEndTransform(pipActivity: TransitionInfo.Change, pipTask: TransitionInfo.Change,
+        outScale: PointF, outPos: PointF) {
+        val actStartBounds = pipActivity.startAbsBounds
+        val actEndBounds = pipActivity.endAbsBounds
+        val taskEndBounds = pipTask.endAbsBounds
+
+        var hintRect = pipTask.taskInfo?.pictureInPictureParams?.sourceRectHint
+        if (hintRect == null) {
+            hintRect = Rect(actStartBounds)
+            hintRect.offsetTo(0, 0)
         }
-        return isPip2ExperimentEnabled as Boolean
+
+        // FA = final activity bounds (absolute)
+        // FT = final task bounds (absolute)
+        // SA = start activity bounds (absolute)
+        // H = source hint (relative to start activity bounds)
+        // We want to transform the activity so that when the task is at FT, H overlaps with FA
+
+        // This scales the activity such that the hint rect has the same dimensions
+        // as the final activity bounds.
+        val hintToEndScaleX = (actEndBounds.width().toFloat()) / (hintRect.width().toFloat())
+        val hintToEndScaleY = (actEndBounds.height().toFloat()) / (hintRect.height().toFloat())
+        // top-left needs to be (FA.tl - FT.tl) - H.tl * hintToEnd . H is relative to the
+        // activity; so, for example, if shrinking H to FA (hintToEnd < 1), then the tl of the
+        // shrunk SA is closer to H than expected, so we need to reduce how much we offset SA
+        // to get H.tl to match.
+        val startActPosInTaskEndX =
+            (actEndBounds.left - taskEndBounds.left) - hintRect.left * hintToEndScaleX
+        val startActPosInTaskEndY =
+            (actEndBounds.top - taskEndBounds.top) - hintRect.top * hintToEndScaleY
+        outScale.set(hintToEndScaleX, hintToEndScaleY)
+        outPos.set(startActPosInTaskEndX, startActPosInTaskEndY)
+    }
+
+    @JvmStatic
+    fun isContentPip(pipTaskInfo: TaskInfo?): Boolean {
+        if (pipTaskInfo == null) return false
+        return pipTaskInfo.launchIntoPipHostTaskId != -1
+    }
+
+    /**
+     * Calculates the transform and crop to apply on a Task surface in order for the config-at-end
+     * activity inside it (original-size activity transformed to match it's hint rect to the final
+     * Task bounds) to occupy the same world-space position/dimensions as it had before the
+     * transition.
+     *
+     * Intended to be used in tandem with [calcEndTransform].
+     *
+     * Usage example:
+     *     calcStartTransform(pipTask, scale, pos, crop);
+     *     t.setScale(pipTask.getLeash(), scale.x, scale.y);
+     *     t.setPosition(pipTask.getLeash(), pos.x, pos.y);
+     *     t.setCrop(pipTask.getLeash(), crop);
+     *
+     * @see calcEndTransform
+     */
+    @JvmStatic
+    fun calcStartTransform(pipTask: TransitionInfo.Change, outScale: PointF,
+        outPos: PointF, outCrop: Rect) {
+        val startBounds = pipTask.startAbsBounds
+        val taskEndBounds = pipTask.endAbsBounds
+        // For now, pip activity bounds always matches task bounds. If this ever changes, we'll
+        // need to get the activity offset.
+        val endBounds = taskEndBounds
+        var hintRect = pipTask.taskInfo?.pictureInPictureParams?.sourceRectHint
+        if (hintRect == null) {
+            hintRect = Rect(startBounds)
+            hintRect.offsetTo(0, 0)
+        }
+
+        // FA = final activity bounds (absolute)
+        // FT = final task bounds (absolute)
+        // SA = start activity bounds (absolute)
+        // H = source hint (relative to start activity bounds)
+        // We want to transform the activity so that when the task is at FT, H overlaps with FA
+
+        // The scaling which takes the hint rect (H) in SA and matches it to FA
+        val hintToEndScaleX = (endBounds.width().toFloat()) / (hintRect.width().toFloat())
+        val hintToEndScaleY = (endBounds.height().toFloat()) / (hintRect.height().toFloat())
+
+        // We want to set the transform on the END TASK surface to put the start activity
+        // back to where it was.
+        // First do backwards scale (which takes FA back to H)
+        val endToHintScaleX = 1f / hintToEndScaleX
+        val endToHintScaleY = 1f / hintToEndScaleY
+        // Then top-left needs to place FA (relative to the FT) at H (relative to SA):
+        //   so -(FA.tl - FT.tl) + SA.tl + H.tl
+        //  but we have scaled up the task, so anything that was "within" the task needs to
+        //  be scaled:
+        //   so -(FA.tl - FT.tl)*endToHint + SA.tl + H.tl
+        val endTaskPosForStartX = (-(endBounds.left - taskEndBounds.left) * endToHintScaleX
+                + startBounds.left + hintRect.left)
+        val endTaskPosForStartY = (-(endBounds.top - taskEndBounds.top) * endToHintScaleY
+                + startBounds.top + hintRect.top)
+        outScale.set(endToHintScaleX, endToHintScaleY)
+        outPos.set(endTaskPosForStartX, endTaskPosForStartY)
+
+        // now need to set crop to reveal the non-hint stuff. Again, hintrect is relative, so
+        // we must apply outsets to reveal the *activity* content which is *inside* the task
+        // and thus is scaled (ie. if activity is scaled down, each task-level pixel exposes
+        // >1 activity-level pixels)
+        // For example, the topleft crop would be:
+        //   (FA.tl - FT.tl) - H.tl * hintToEnd
+        //    ^ activity within task
+        // bottomright can just use scaled activity size
+        //   tl + scale(SA.size, hintToEnd)
+        outCrop.left = roundOut((endBounds.left - taskEndBounds.left)
+                - hintRect.left * hintToEndScaleX)
+        outCrop.top = roundOut((endBounds.top - taskEndBounds.top) - hintRect.top * hintToEndScaleY)
+        outCrop.right = roundOut(outCrop.left + startBounds.width() * hintToEndScaleX)
+        outCrop.bottom = roundOut(outCrop.top + startBounds.height() * hintToEndScaleY)
+    }
+
+    /**
+     * Returns true if the system theme is the dark theme.
+     */
+    @JvmStatic
+    fun Context.isDarkSystemTheme(): Boolean {
+        return (resources.configuration.uiMode and UI_MODE_NIGHT_MASK) ==
+                Configuration.UI_MODE_NIGHT_YES
+    }
+
+    /**
+     * Dumps information held by this class.
+     */
+    @JvmStatic
+    fun dump(pw: PrintWriter, prefix: String) {
+        pw.println("$prefix$TAG")
+        val innerPrefix1 = "$prefix  "
+        val innerPrefix2 = "$innerPrefix1  "
+        pw.println("${innerPrefix1}isPipUmoExperienceEnabled=${PipFlags.isPipUmoExperienceEnabled}")
+        pw.println("${innerPrefix1}isPip2ExperimentEnabled=${PipFlags.isPip2ExperimentEnabled}")
+        pw.println("${innerPrefix2}enablePip2=${Flags.enablePip2()}")
+        pw.println("${innerPrefix2}enableDwPip=${ENABLE_DESKTOP_WINDOWING_PIP.isTrue}")
     }
 }

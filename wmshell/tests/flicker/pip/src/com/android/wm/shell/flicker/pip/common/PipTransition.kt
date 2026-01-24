@@ -18,22 +18,29 @@ package com.android.wm.shell.flicker.pip.common
 
 import android.app.Instrumentation
 import android.content.Intent
+import android.platform.test.annotations.Postsubmit
 import android.platform.test.annotations.Presubmit
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.tools.Rotation
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
 import android.tools.flicker.rules.RemoveAllTasksButHomeRule.Companion.removeAllTasksButHome
 import android.tools.helpers.WindowUtils
 import android.tools.traces.component.ComponentNameMatcher
+import android.tools.device.apphelpers.PipApp
 import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.server.wm.flicker.helpers.setRotation
 import com.android.server.wm.flicker.testapp.ActivityOptions
 import com.android.wm.shell.flicker.BaseTest
 import com.google.common.truth.Truth
+import org.junit.Rule
 import org.junit.Test
 
 abstract class PipTransition(flicker: LegacyFlickerTest) : BaseTest(flicker) {
-    protected val pipApp = PipAppHelper(instrumentation)
+    @JvmField
+    @Rule
+    val checkFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+
     protected val displayBounds = WindowUtils.getDisplayBounds(flicker.scenario.startRotation)
     protected val broadcastActionTrigger = BroadcastActionTrigger(instrumentation)
 
@@ -55,6 +62,11 @@ abstract class PipTransition(flicker: LegacyFlickerTest) : BaseTest(flicker) {
             @JvmStatic val ORIENTATION_PORTRAIT = 1
         }
     }
+
+    /**
+     * Defines the test app to run PIP flicker test.
+     */
+    protected open val pipApp: PipApp = PipAppHelper(instrumentation)
 
     /** Defines the transition used to run the test */
     protected open val thisTransition: FlickerBuilder.() -> Unit = {}
@@ -78,10 +90,11 @@ abstract class PipTransition(flicker: LegacyFlickerTest) : BaseTest(flicker) {
     /** Defines the default method of entering PiP */
     protected open val defaultEnterPip: FlickerBuilder.() -> Unit = {
         setup {
-            pipApp.launchViaIntentAndWaitForPip(
+            pipApp.launchViaIntent(
                 wmHelper,
                 stringExtras = mapOf(ActivityOptions.Pip.EXTRA_ENTER_PIP to "true")
             )
+            pipApp.waitForPip(wmHelper)
         }
     }
 
@@ -104,5 +117,11 @@ abstract class PipTransition(flicker: LegacyFlickerTest) : BaseTest(flicker) {
                 .that(overlaysPerState)
                 .doesNotContain(false)
         }
+    }
+
+    @Postsubmit
+    @Test
+    open fun pipLayerHasCorrectCornersAtEnd() {
+        flicker.assertLayersEnd { hasRoundedCorners(pipApp) }
     }
 }

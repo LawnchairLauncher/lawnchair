@@ -22,6 +22,7 @@ import android.app.WindowConfiguration
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Handler
 import android.os.RemoteException
 import android.testing.AndroidTestingRunner
 import android.testing.TestableLooper
@@ -66,6 +67,7 @@ class CustomCrossActivityBackAnimationTest : ShellTestCase() {
     @Mock private lateinit var transitionAnimation: TransitionAnimation
     @Mock private lateinit var appCompatTaskInfo: AppCompatTaskInfo
     @Mock private lateinit var transaction: Transaction
+    @Mock private lateinit var handler: Handler
 
     private lateinit var customCrossActivityBackAnimation: CustomCrossActivityBackAnimation
     private lateinit var customAnimationLoader: CustomAnimationLoader
@@ -80,7 +82,8 @@ class CustomCrossActivityBackAnimationTest : ShellTestCase() {
                 backAnimationBackground,
                 rootTaskDisplayAreaOrganizer,
                 transaction,
-                customAnimationLoader
+                customAnimationLoader,
+                handler,
             )
 
         whenever(transitionAnimation.loadAppTransitionAnimation(eq(PACKAGE_NAME), eq(OPEN_RES_ID)))
@@ -218,9 +221,8 @@ class CustomCrossActivityBackAnimationTest : ShellTestCase() {
         BackMotionEvent(
             /* touchX = */ touchX,
             /* touchY = */ 0f,
+            /* frameTime = */ 0,
             /* progress = */ progress,
-            /* velocityX = */ 0f,
-            /* velocityY = */ 0f,
             /* triggerBack = */ false,
             /* swipeEdge = */ BackEvent.EDGE_LEFT,
             /* departingAnimationTarget = */ null

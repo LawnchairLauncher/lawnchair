@@ -25,16 +25,14 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
-import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
-import static com.android.launcher3.testing.shared.TestProtocol.UIOBJECT_STALE_ELEMENT;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -47,9 +45,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.testing.shared.HotseatCellCenterRequest;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.testing.shared.WorkspaceCellCenterRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -62,7 +58,7 @@ import java.util.stream.Collectors;
  */
 public final class Workspace extends Home {
     private static final int FLING_STEPS = 10;
-    private static final int DEFAULT_DRAG_STEPS = 10;
+    private static final int DEFAULT_DRAG_STEPS = 20;
     private static final String DROP_BAR_RES_ID = "drop_target_bar";
     private static final String DELETE_TARGET_TEXT_ID = "delete_target_text";
     private static final String UNINSTALL_TARGET_TEXT_ID = "uninstall_target_text";
@@ -345,23 +341,35 @@ public final class Workspace extends Home {
      * @return map of text -> center of the view. In case of icons with the same name, the one with
      * lower x coordinate is selected.
      */
-    public Map<String, Point> getWorkspaceIconsPositions() {
+    public Map<String, Point> getAllWorkspaceIconsPositions() {
         final UiObject2 workspace = verifyActiveContainer();
-        mLauncher.waitForLauncherInitialized(); // b/319501259
         List<UiObject2> workspaceIcons =
                 mLauncher.waitForObjectsInContainer(workspace, AppIcon.getAnyAppIconSelector());
-        return workspaceIcons.stream()
+        return getIconPositionMap(workspaceIcons);
+    }
+
+    /**
+     * @return point where icon is found for given the app name,
+     * point is visible center of the icon.
+     */
+    @NonNull
+    public Point getWorkspaceIconPosition(String appName) {
+        final UiObject2 workspace = verifyActiveContainer();
+
+        UiObject2 workspaceIcon =
+                mLauncher.waitForObjectInContainer(workspace,
+                        AppIcon.getAppIconSelector(appName, mLauncher));
+        return workspaceIcon.getVisibleCenter();
+    }
+
+    private Map<String, Point> getIconPositionMap(List<UiObject2> icons) {
+        return icons.stream()
                 .collect(
                         Collectors.toMap(
                                 /* keyMapper= */ uiObject21 -> {
-                                    Log.d(UIOBJECT_STALE_ELEMENT, "keyText: " +
-                                            uiObject21.getText());
                                     return uiObject21.getText();
                                 },
                                 /* valueMapper= */ uiObject2 -> {
-                                    Log.d(UIOBJECT_STALE_ELEMENT, uiObject2.getText() +
-                                            " dispId" + uiObject2.getDisplayId() +
-                                            " parent" + uiObject2.getParent());
                                     return uiObject2.getVisibleCenter();
                                 },
                                 /* mergeFunction= */ (p1, p2) -> p1.x < p2.x ? p1 : p2));
@@ -457,16 +465,17 @@ public final class Workspace extends Home {
             launcher.waitUntilLauncherObjectGone(DROP_BAR_RES_ID);
 
             final BySelector installerAlert = By.text(Pattern.compile(
-                    "Do you want to uninstall this app\\?",
-                    Pattern.DOTALL | Pattern.MULTILINE));
+                    ".*uninstall this app\\?",
+                    Pattern.DOTALL | Pattern.MULTILINE | Pattern.CASE_INSENSITIVE));
             final UiDevice device = launcher.getDevice();
             assertTrue("uninstall alert is not shown", device.wait(
                     Until.hasObject(installerAlert), LauncherInstrumentation.WAIT_TIME_MS));
-            final UiObject2 ok = device.findObject(By.text("OK"));
-            assertNotNull("OK button is not shown", ok);
-            launcher.clickObject(ok);
-            assertTrue("Uninstall alert is not dismissed after clicking OK", device.wait(
-                    Until.gone(installerAlert), LauncherInstrumentation.WAIT_TIME_MS));
+            final UiObject2 confirm = device.findObject(By.text(Pattern.compile(
+                    "OK|Uninstall", Pattern.CASE_INSENSITIVE)));
+            assertNotNull("Confirm button is not shown", confirm);
+            launcher.clickObject(confirm);
+            assertTrue("Uninstall alert is not dismissed after clicking confirm button",
+                    device.wait(Until.gone(installerAlert), LauncherInstrumentation.WAIT_TIME_MS));
 
             try (LauncherInstrumentation.Closable c1 = launcher.addContextLayer(
                     "uninstalled app by dragging to the drop bar")) {
@@ -490,20 +499,23 @@ public final class Workspace extends Home {
     }
 
     static Point getCellCenter(LauncherInstrumentation launcher, int cellX, int cellY) {
-        return launcher.getTestInfo(WorkspaceCellCenterRequest.builder().setCellX(cellX).setCellY(
-                cellY).build()).getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        return getCellCenter(launcher, cellX, cellY, 1, 1);
     }
 
     static Point getCellCenter(LauncherInstrumentation launcher, int cellX, int cellY, int spanX,
             int spanY) {
-        return launcher.getTestInfo(WorkspaceCellCenterRequest.builder().setCellX(cellX)
-                .setCellY(cellY).setSpanX(spanX).setSpanY(spanY).build())
+        return launcher.getTestInfo(
+                new Intent(TestProtocol.REQUEST_WORKSPACE_CELL_CENTER)
+                        .putExtra(TestProtocol.TEST_INFO_PARAM_CELL_SPAN,
+                                new Rect(cellX, cellY, cellX + spanX, cellY + spanY)))
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    static Point getHotseatCellCenter(LauncherInstrumentation launcher, int cellInd) {
-        return launcher.getTestInfo(HotseatCellCenterRequest.builder()
-                .setCellInd(cellInd).build()).getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    static Point getHotseatCellCenter(LauncherInstrumentation launcher, int cellIndex) {
+        return launcher.getTestInfo(
+                new Intent(TestProtocol.REQUEST_HOTSEAT_CELL_CENTER)
+                        .putExtra(TestProtocol.TEST_INFO_PARAM_INDEX, cellIndex))
+                .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     /** Returns the number of rows and columns in the workspace */
@@ -598,7 +610,7 @@ public final class Workspace extends Home {
                 launcher,
                 launchable,
                 destSupplier,
-                /* isDecelerating= */ false,
+                /* isDecelerating= */ !isDraggingToFolder,
                 () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
                 /* expectDropEvents= */ null,
                 /* startsActivity = */ false,
@@ -629,8 +641,6 @@ public final class Workspace extends Home {
         try (LauncherInstrumentation.Closable ignored = launcher.addContextLayer(
                 "want to drag icon to workspace")) {
             final long downTime = SystemClock.uptimeMillis();
-            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
-                    "Workspace.dragIconToWorkspace: starting drag | downtime: " + downTime);
             Point dragStart = launchable.startDrag(
                     downTime,
                     expectLongClickEvents,
@@ -673,7 +683,7 @@ public final class Workspace extends Home {
 
             launcher.movePointer(dragStart, targetDest,
                     DEFAULT_DRAG_STEPS, isDecelerating, downTime, SystemClock.uptimeMillis(),
-                    false, LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+                    !isDraggingToFolder, LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
 
             dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents, startsActivity);
         }
@@ -834,7 +844,9 @@ public final class Workspace extends Home {
 
     @Override
     protected String getSwipeHeightRequestName() {
-        return TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT;
+        return mLauncher.isRecentsWindowEnabled()
+                ? super.getSwipeHeightRequestName()
+                : TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT;
     }
 
     @Override

@@ -1,21 +1,10 @@
 # proto-file: build/make/tools/aconfig/aconfig_protos/protos/aconfig.proto
+# proto-message: flag_declarations
+# Project link: http://gantry/projects/android_platform_multitasking
 
 package: "com.android.wm.shell"
 container: "system"
 
-flag {
-    name: "enable_app_pairs"
-    namespace: "multitasking"
-    description: "Enables the ability to create and save app pairs to the Home screen"
-    bug: "274835596"
-}
-
-flag {
-    name: "enable_split_contextual"
-    namespace: "multitasking"
-    description: "Enables invoking split contextually"
-    bug: "276361926"
-}
 
 flag {
     name: "enable_taskbar_navbar_unification"
@@ -25,18 +14,10 @@ flag {
 }
 
 flag {
-    name: "enable_pip2_implementation"
+    name: "enable_pip2"
     namespace: "multitasking"
     description: "Enables the new implementation of PiP (PiP2)"
-    bug: "290220798"
-    is_fixed_read_only: true
-}
-
-flag {
-    name: "enable_left_right_split_in_portrait"
-    namespace: "multitasking"
-    description: "Enables left/right split in portrait"
-    bug: "291018646"
+    bug: "311462191"
 }
 
 flag {
@@ -103,6 +84,13 @@ flag {
 }
 
 flag {
+    name: "enable_create_any_bubble"
+    namespace: "multitasking"
+    description: "Enable UI affordances to create bubbles via launcher app icons"
+    bug: "385220199"
+}
+
+flag {
     name: "only_reuse_bubbled_task_when_launched_from_bubble"
     namespace: "multitasking"
     description: "Allow reusing bubbled tasks for new activities only when launching from bubbles"
@@ -113,10 +101,156 @@ flag {
 }
 
 flag {
-    name: "animate_bubble_size_change"
+    name: "enable_bubble_app_compat_fixes"
     namespace: "multitasking"
-    description: "Turns on the animation for bubble bar icons size change"
-    bug: "335575529"
+    description: "Enable fixes for app compat (e.g. insets and layout issues) for bubbles"
+    bug: "384610402"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_taskbar_on_phones"
+    namespace: "multitasking"
+    description: "Enables taskbar on phones"
+    bug: "348007377"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_shell_top_task_tracking"
+    namespace: "multitasking"
+    description: "Enables tracking top tasks from the shell"
+    bug: "346588978"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_recents_bookend_transition"
+    namespace: "multitasking"
+    description: "Use a finish-transition to clean up recents instead of the finish-WCT"
+    bug: "346588978"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+   name: "enable_bubble_to_fullscreen"
+   namespace: "multitasking"
+   description: "Enable an option to move bubbles to fullscreen"
+   bug: "363326492"
+}
+
+flag {
+    name: "enable_flexible_two_app_split"
+    namespace: "multitasking"
+    description: "Enables only 2 app 90:10 split"
+    bug: "349828130"
+}
+
+flag {
+    name: "enable_flexible_split"
+    namespace: "multitasking"
+    description: "Enables flexibile split feature for split screen"
+    bug: "349828130"
+}
+
+flag {
+    name: "task_view_repository"
+    namespace: "multitasking"
+    description: "Factor task-view state tracking out of taskviewtransitions"
+    bug: "384976265"
+}
+
+flag {
+    name: "fix_missing_user_change_callbacks"
+    namespace: "multitasking"
+    description: "Fix a race condition that could make Shell miss a user change callback."
+    bug: "404251029"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_bubble_bar_on_phones"
+    namespace: "multitasking"
+    description: "Try out bubble bar on phones"
+    bug: "394869612"
+}
+
+flag {
+    name: "enable_bubble_task_view_listener"
+    namespace: "multitasking"
+    description: "Use the same taskview listener for bubble bar and floating"
+    bug: "272102927"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_gsf"
+    namespace: "multitasking"
+    description: "Applies GSF font styles to multitasking."
+    bug: "400534660"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_magnetic_split_divider"
+    namespace: "multitasking"
+    description: "Makes the split divider snap 'magnetically' to available snap points during drag"
+    bug: "383631946"
+}
+
+flag {
+    name: "enable_dynamic_insets_for_app_launch"
+    namespace: "multitasking"
+    description: "Enables dynamic insets for app launch so the window is properly cropped"
+    bug: "336511494"
+}
+
+flag {
+    name: "task_view_transitions_refactor"
+    namespace: "windowing_frontend"
+    description: "Refactor TaskViewTransitions.startAnimation"
+    bug: "402454136"
+}
+
+flag {
+    name: "enable_pip_box_shadows"
+    namespace: "multitasking"
+    description: "Enables box shadows for PiP"
+    bug: "367464660"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_bubble_swipe_up_cleanup"
+    namespace: "multitasking"
+    description: "Enable clean up of bubbles swipe gesture handling"
+    bug: "391909607"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_enter_split_remove_bubble"
+    namespace: "multitasking"
+    description: "Enable removing a task from bubbles when it is entering split screen"
+    bug: "396315875"
     metadata {
         purpose: PURPOSE_BUGFIX
     }

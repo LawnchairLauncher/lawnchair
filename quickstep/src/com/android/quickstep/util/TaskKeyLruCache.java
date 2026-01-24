@@ -17,6 +17,8 @@ package com.android.quickstep.util;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 
 import java.util.LinkedHashMap;
@@ -59,6 +61,7 @@ public class TaskKeyLruCache<V> implements TaskKeyCache<V> {
     /**
      * Gets the entry if it is still valid
      */
+    @Nullable
     public synchronized V getAndInvalidateIfModified(TaskKey key) {
         Entry<V> entry = mMap.get(key.id);
 

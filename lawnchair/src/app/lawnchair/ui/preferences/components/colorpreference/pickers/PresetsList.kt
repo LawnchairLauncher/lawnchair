@@ -5,14 +5,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.components.colorpreference.ColorDot
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
-import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import com.android.launcher3.R
@@ -27,13 +25,9 @@ fun PresetsList(
     PreferenceGroup(
         heading = stringResource(id = R.string.dynamic),
         modifier = modifier.padding(top = 12.dp),
-        showDividers = false,
     ) {
-        dynamicEntries.mapIndexed { index, entry ->
-            key(entry) {
-                if (index > 0) {
-                    PreferenceDivider(startIndent = 40.dp)
-                }
+        dynamicEntries.forEach { entry ->
+            Item(key = entry) {
                 PreferenceTemplate(
                     title = { Text(text = entry.label()) },
                     verticalPadding = 12.dp,

@@ -23,7 +23,7 @@ import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.TRANSIENT;
 
 import androidx.test.filters.LargeTest;
 
-import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
+import com.android.launcher3.util.ui.PortraitLandscapeRunner.PortraitLandscape;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

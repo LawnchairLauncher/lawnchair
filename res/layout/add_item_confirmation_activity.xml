@@ -42,7 +42,7 @@
             android:orientation="vertical" >
 
             <TextView
-                style="@style/TextHeadline"
+                style="@style/WidgetsTitle"
                 android:id="@+id/widget_appName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,7 +71,8 @@
                 android:id="@+id/widget_preview_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginVertical="16dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/widgets_surface_background"
                 android:layout_weight="1">
 
                 <include

@@ -15,7 +15,14 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.BuildConfigs.WIDGETS_ENABLED;
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
+import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALL_APPS_TAP_OR_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,24 +43,21 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.widget.picker.WidgetsFullSheet;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.ui.popup.LauncherOptionsPopup;
 
@@ -69,7 +73,8 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
     private static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
     private static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
     // An intent extra to indicate the launch source by launcher.
-    private static final String EXTRA_WALLPAPER_LAUNCH_SOURCE = "com.android.wallpaper.LAUNCH_SOURCE";
+    private static final String EXTRA_WALLPAPER_LAUNCH_SOURCE =
+            "com.android.wallpaper.LAUNCH_SOURCE";
 
     public final ArrayMap<View, OptionItem> mItemMap = new ArrayMap<>();
     private RectF mTargetRect;
@@ -145,11 +150,13 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
 
     @Override
     public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
-        if (FeatureFlags.showMaterialUPopup(getContext())) {
-            assignMarginsAndBackgrounds(viewGroup,
-                    mColors[0]);
-        } else {
-            assignMarginsAndBackgrounds(viewGroup, Color.TRANSPARENT);
+        assignMarginsAndBackgrounds(viewGroup, mColors[0]);
+        // last shortcut doesn't need bottom margin
+        final int count = viewGroup.getChildCount() - 1;
+        for (int i = 0; i < count; i++) {
+            // These are shortcuts and not shortcut containers, but they still need bottom margin
+            MarginLayoutParams mlp = (MarginLayoutParams) viewGroup.getChildAt(i).getLayoutParams();
+            mlp.bottomMargin = mChildContainerMargin;
         }
     }
 
@@ -171,7 +178,6 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
         if (activityContext == null) {
             return null;
         }
-                 
         OptionsPopupView<T> popup = (OptionsPopupView<T>) activityContext.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, activityContext.getDragLayer(), false);
         popup.mTargetRect = targetRect;
@@ -202,10 +208,21 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
             OptionsPopupView::toggleHomeScreenLock,
             OptionsPopupView::startSystemSettings,
             OptionsPopupView::enterHomeGardening,
+            OptionsPopupView::enterAllApps,
             OptionsPopupView::startWallpaperPicker,
             OptionsPopupView::onWidgetsClicked,
             OptionsPopupView::startSettings
         );
+    }
+
+    /**
+     * Used by the options to open All Apps.
+     */
+    public static boolean enterAllApps(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
+        launcher.getStatsLogManager().keyboardStateManager().setLaunchedFromA11y(true);
+        launcher.getStateManager().goToState(ALL_APPS);
+        return true;
     }
 
     private static boolean enterHomeGardening(View view) {
@@ -215,23 +232,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
     }
 
     private static boolean onWidgetsClicked(View view) {
-        return openWidgets(Launcher.getLauncher(view.getContext())) != null;
-    }
-
-    /** Returns WidgetsFullSheet that was opened, or null if nothing was opened. */
-    @Nullable
-    public static WidgetsFullSheet openWidgets(Launcher launcher) {
-        if (launcher.getPackageManager().isSafeMode()) {
-            Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
-            return null;
-        } else {
-            AbstractFloatingView floatingView = AbstractFloatingView.getTopOpenViewWithType(
-                    launcher, TYPE_WIDGETS_FULL_SHEET);
-            if (floatingView != null) {
-                return (WidgetsFullSheet) floatingView;
-            }
-            return WidgetsFullSheet.show(launcher, true /* animated */);
-        }
+        return Launcher.getLauncher(view.getContext()).openWidgetPicker();
     }
 
     private static boolean startSettings(View view) {

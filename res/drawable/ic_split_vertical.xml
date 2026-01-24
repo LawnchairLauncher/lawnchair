@@ -1,9 +1,25 @@
+<!--
+  ~ Copyright (C) 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-  <path
-      android:pathData="M18,4V9H6V4H18ZM18,2H6C4.9,2 4,2.9 4,4V9C4,10.1 4.9,11 6,11H18C19.1,11 20,10.1 20,9V4C20,2.9 19.1,2 18,2ZM18,15V20H6V15H18ZM18,13H6C4.9,13 4,13.9 4,15V20C4,21.1 4.9,22 6,22H18C19.1,22 20,21.1 20,20V15C20,13.9 19.1,13 18,13Z"
-      android:fillColor="#000000"/>
+    android:width="20dp"
+    android:height="20dp"
+    android:tint="?attr/colorControlNormal"
+    android:viewportHeight="960"
+    android:viewportWidth="960">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M371.96,720L587.72,720Q603,720 613.5,709.65Q624,699.3 624,684L624,552Q624,536.7 613.66,526.35Q603.32,516 588.04,516L372.28,516Q357,516 346.5,526.35Q336,536.7 336,552L336,684Q336,699.3 346.34,709.65Q356.68,720 371.96,720ZM371.96,444L587.72,444Q603,444 613.5,433.65Q624,423.3 624,408L624,276Q624,260.7 613.66,250.35Q603.32,240 588.04,240L372.28,240Q357,240 346.5,250.35Q336,260.7 336,276L336,408Q336,423.3 346.34,433.65Q356.68,444 371.96,444ZM768,792Q768,821.7 746.84,842.85Q725.68,864 695.96,864L263.72,864Q234,864 213,842.85Q192,821.7 192,792L192,168Q192,138.3 213.16,117.15Q234.32,96 264.04,96L696.28,96Q726,96 747,117.15Q768,138.3 768,168L768,792ZM696,792L696,168Q696,168 696,168Q696,168 696,168L264,168Q264,168 264,168Q264,168 264,168L264,792Q264,792 264,792Q264,792 264,792L696,792Q696,792 696,792Q696,792 696,792ZM696,168Q696,168 696,168Q696,168 696,168L264,168Q264,168 264,168Q264,168 264,168L264,168Q264,168 264,168Q264,168 264,168L696,168Q696,168 696,168Q696,168 696,168Z" />
 </vector>

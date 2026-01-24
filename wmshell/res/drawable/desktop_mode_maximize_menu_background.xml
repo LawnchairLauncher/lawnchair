@@ -17,6 +17,6 @@
 <shape android:shape="rectangle"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
-    <solid android:color="?androidprv:attr/materialColorSurfaceContainerLow" />
+    <solid android:color="@androidprv:color/materialColorSurfaceContainerLow" />
     <corners android:radius="@dimen/desktop_mode_maximize_menu_corner_radius" />
 </shape>

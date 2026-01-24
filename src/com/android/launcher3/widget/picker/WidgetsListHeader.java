@@ -17,6 +17,8 @@ package com.android.launcher3.widget.picker;
 
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
+import static com.android.launcher3.icons.cache.CacheLookupFlag.DEFAULT_LOOKUP_FLAG;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -143,6 +145,14 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     public void setExpanded(boolean isExpanded) {
         this.mIsExpanded = isExpanded;
         refreshDrawableState();
+        refreshTextAppearance(isExpanded);
+    }
+
+    private void refreshTextAppearance(boolean isExpanded) {
+        mTitle.setTextAppearance(isExpanded ? R.style.WidgetListHeader_Title_Selected
+                : R.style.WidgetListHeader_Title);
+        mSubtitle.setTextAppearance(isExpanded ? R.style.WidgetListHeader_SubTitle_Selected
+                : R.style.WidgetListHeader_SubTitle);
     }
 
     /** @return true if this header is expanded. */
@@ -246,12 +256,9 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
         }
-        if (getTag() instanceof ItemInfoWithIcon) {
-            ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
-            if (info.usingLowResIcon()) {
-                mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
-                        .updateIconInBackground(this, info);
-            }
+        if (getTag() instanceof ItemInfoWithIcon info && info.getMatchingLookupFlag().useLowRes()) {
+            mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
+                    .updateIconInBackground(this, info, DEFAULT_LOOKUP_FLAG);
         }
     }
 }

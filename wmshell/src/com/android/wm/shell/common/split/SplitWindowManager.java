@@ -18,8 +18,6 @@ package com.android.wm.shell.common.split;
 
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-import static android.view.WindowManager.LayoutParams.FLAG_SLIPPERY;
-import static android.view.WindowManager.LayoutParams.FLAG_SPLIT_TOUCH;
 import static android.view.WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_TRUSTED_OVERLAY;
@@ -36,8 +34,6 @@ import android.view.InsetsState;
 import android.view.LayoutInflater;
 import android.view.SurfaceControl;
 import android.view.SurfaceControlViewHost;
-import android.view.SurfaceSession;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.WindowlessWindowManager;
 
@@ -45,6 +41,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.wm.shell.R;
+import com.android.wm.shell.shared.desktopmode.DesktopState;
 
 /**
  * Holds view hierarchy of a root surface and helps to inflate {@link DividerView} for a split.
@@ -69,6 +66,10 @@ public final class SplitWindowManager extends WindowlessWindowManager {
     public interface ParentContainerCallbacks {
         void attachToParentSurface(SurfaceControl.Builder b);
         void onLeashReady(SurfaceControl leash);
+        /** Inflates the given touch zone on the appropriate stage root. */
+        void inflateOnStageRoot(OffscreenTouchZone touchZone);
+        /** Called when any visual animations w/ split layout are happening. */
+        void onSplitLayoutAnimating(boolean animating);
     }
 
     public SplitWindowManager(String windowName, Context context, Configuration config,
@@ -99,7 +100,7 @@ public final class SplitWindowManager extends WindowlessWindowManager {
     @Override
     protected SurfaceControl getParentSurface(IWindow window, WindowManager.LayoutParams attrs) {
         // Can't set position for the ViewRootImpl SC directly. Create a leash to manipulate later.
-        final SurfaceControl.Builder builder = new SurfaceControl.Builder(new SurfaceSession())
+        final SurfaceControl.Builder builder = new SurfaceControl.Builder()
                 .setContainerLayer()
                 .setName(TAG)
                 .setHidden(true)
@@ -111,7 +112,8 @@ public final class SplitWindowManager extends WindowlessWindowManager {
     }
 
     /** Inflates {@link DividerView} on to the root surface. */
-    void init(SplitLayout splitLayout, InsetsState insetsState, boolean isRestoring) {
+    void init(SplitLayout splitLayout, InsetsState insetsState, boolean isRestoring,
+            DesktopState desktopState) {
         if (mDividerView != null || mViewHost != null) {
             throw new UnsupportedOperationException(
                     "Try to inflate divider view again without release first");
@@ -125,15 +127,14 @@ public final class SplitWindowManager extends WindowlessWindowManager {
         final Rect dividerBounds = splitLayout.getDividerBounds();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 dividerBounds.width(), dividerBounds.height(), TYPE_DOCK_DIVIDER,
-                FLAG_NOT_FOCUSABLE | FLAG_NOT_TOUCH_MODAL | FLAG_WATCH_OUTSIDE_TOUCH
-                        | FLAG_SPLIT_TOUCH | FLAG_SLIPPERY,
+                FLAG_NOT_FOCUSABLE | FLAG_NOT_TOUCH_MODAL | FLAG_WATCH_OUTSIDE_TOUCH,
                 PixelFormat.TRANSLUCENT);
         lp.token = new Binder();
         lp.setTitle(mWindowName);
         lp.privateFlags |= PRIVATE_FLAG_NO_MOVE_ANIMATION | PRIVATE_FLAG_TRUSTED_OVERLAY;
         lp.accessibilityTitle = mContext.getResources().getString(R.string.accessibility_divider);
         mViewHost.setView(mDividerView, lp);
-        mDividerView.setup(splitLayout, this, mViewHost, insetsState);
+        mDividerView.setup(splitLayout, this, mViewHost, insetsState, desktopState);
         if (isRestoring) {
             mDividerView.setInteractive(mLastDividerInteractive, mLastDividerHandleHidden,
                     "restore_setup");
@@ -192,7 +193,7 @@ public final class SplitWindowManager extends WindowlessWindowManager {
         mDividerView.setInteractive(interactive, hideHandle, from);
     }
 
-    View getDividerView() {
+    DividerView getDividerView() {
         return mDividerView;
     }
 

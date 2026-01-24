@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class ViewCaptureDataSource
-extends DataSource<DataSourceInstance, Void, ViewCaptureDataSource.IncrementalState> {
+        extends DataSource<DataSourceInstance, Void, ViewCaptureDataSource.IncrementalState> {
     public static String DATA_SOURCE_NAME = "android.viewcapture";
 
     private final Runnable mOnStartStaticCallback;
@@ -44,7 +44,7 @@ extends DataSource<DataSourceInstance, Void, ViewCaptureDataSource.IncrementalSt
 
     @Override
     public IncrementalState createIncrementalState(
-        CreateIncrementalStateArgs<DataSourceInstance> args) {
+            CreateIncrementalStateArgs<DataSourceInstance> args) {
         return new IncrementalState();
     }
 
@@ -59,20 +59,20 @@ extends DataSource<DataSourceInstance, Void, ViewCaptureDataSource.IncrementalSt
     @Override
     public DataSourceInstance createInstance(ProtoInputStream configStream, int instanceIndex) {
         return new DataSourceInstance(this, instanceIndex) {
-        @Override
-        protected void onStart(StartCallbackArguments args) {
-            mOnStartStaticCallback.run();
-        }
+            @Override
+            protected void onStart(StartCallbackArguments args) {
+                mOnStartStaticCallback.run();
+            }
 
-        @Override
-        protected void onFlush(FlushCallbackArguments args) {
-            mOnFlushStaticCallback.run();
-        }
+            @Override
+            protected void onFlush(FlushCallbackArguments args) {
+                mOnFlushStaticCallback.run();
+            }
 
-        @Override
-        protected void onStop(StopCallbackArguments args) {
-            mOnStopStaticCallback.run();
-        }
-    };
+            @Override
+            protected void onStop(StopCallbackArguments args) {
+                mOnStopStaticCallback.run();
+            }
+        };
     }
 }

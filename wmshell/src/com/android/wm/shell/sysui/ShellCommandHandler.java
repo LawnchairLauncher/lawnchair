@@ -18,7 +18,7 @@ package com.android.wm.shell.sysui;
 
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_INIT;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import java.util.function.BiConsumer;
 /**
  * An entry point into the shell for dumping shell internal state and running adb commands.
  *
- * Use with {@code adb shell dumpsys activity service SystemUIService WMShell ...}.
+ * Use with {@code adb shell wm shell <args>}.
  */
 public final class ShellCommandHandler {
     private static final String TAG = ShellCommandHandler.class.getSimpleName();
@@ -121,8 +121,6 @@ public final class ShellCommandHandler {
         }
         pw.println("  help");
         pw.println("      Print this help text.");
-        pw.println("  <no arguments provided>");
-        pw.println("    Dump all Window Manager Shell internal state");
         return true;
     }
 }

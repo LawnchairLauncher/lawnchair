@@ -17,7 +17,7 @@
 package com.android.wm.shell.bubbles;
 
 import android.os.Bundle;
-import com.android.wm.shell.common.bubbles.BubbleBarLocation;
+import com.android.wm.shell.shared.bubbles.BubbleBarLocation;
 /**
  * Listener interface that Launcher attaches to SystemUI to get bubbles callbacks.
  */
@@ -33,4 +33,10 @@ oneway interface IBubblesListener {
      * Does not result in a state change.
      */
     void animateBubbleBarLocation(in BubbleBarLocation location);
+
+    /**
+    * Show the bubble bar pillow view at the provided location.
+    * If the location is null, the pillow view is should be hidden.
+    */
+    void showBubbleBarPillowAt(in BubbleBarLocation location);
 }

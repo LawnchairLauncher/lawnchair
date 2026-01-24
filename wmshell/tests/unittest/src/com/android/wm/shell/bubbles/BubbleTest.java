@@ -16,24 +16,30 @@
 
 package com.android.wm.shell.bubbles;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.TaskInfo;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.testing.AndroidTestingRunner;
 import android.testing.TestableLooper;
@@ -43,7 +49,7 @@ import androidx.test.filters.SmallTest;
 import com.android.wm.shell.R;
 import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.common.ShellExecutor;
-import com.android.wm.shell.common.bubbles.BubbleInfo;
+import com.android.wm.shell.shared.bubbles.BubbleInfo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,11 +66,17 @@ public class BubbleTest extends ShellTestCase {
     @Mock
     private StatusBarNotification mSbn;
     @Mock
+    private NotificationListenerService.Ranking mRanking;
+    @Mock
     private ShellExecutor mMainExecutor;
+    @Mock
+    private ShellExecutor mBgExecutor;
 
-    private BubbleEntry mBubbleEntry;
     private Bundle mExtras;
-    private Bubble mBubble;
+
+    // This entry / bubble are set up with PendingIntent / Icon API for chat
+    private BubbleEntry mBubbleEntry;
+    private Bubble mChatBubble;
 
     @Mock
     private Bubbles.BubbleMetadataFlagListener mBubbleMetadataFlagListener;
@@ -81,11 +93,17 @@ public class BubbleTest extends ShellTestCase {
                 PendingIntent.getActivity(mContext, 0, target, PendingIntent.FLAG_MUTABLE),
                 Icon.createWithResource(mContext, R.drawable.bubble_ic_create_bubble))
                 .build();
+        ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(mContext)
+                .setId("shortcutId")
+                .build();
         when(mSbn.getNotification()).thenReturn(mNotif);
         when(mNotif.getBubbleMetadata()).thenReturn(metadata);
         when(mSbn.getKey()).thenReturn("mock");
-        mBubbleEntry = new BubbleEntry(mSbn, null, true, false, false, false);
-        mBubble = new Bubble(mBubbleEntry, mBubbleMetadataFlagListener, null, mMainExecutor);
+        when(mRanking.getConversationShortcutInfo()).thenReturn(shortcutInfo);
+
+        mBubbleEntry = new BubbleEntry(mSbn, mRanking, true, false, false, false);
+        mChatBubble = new Bubble(mBubbleEntry, mBubbleMetadataFlagListener, null, mMainExecutor,
+                mBgExecutor);
     }
 
     @Test
@@ -149,41 +167,115 @@ public class BubbleTest extends ShellTestCase {
 
     @Test
     public void testBubbleMetadataFlagListener_change_notified() {
-        assertThat(mBubble.showInShade()).isTrue();
+        assertThat(mChatBubble.showInShade()).isTrue();
 
-        mBubble.setSuppressNotification(true);
+        mChatBubble.setSuppressNotification(true);
 
-        assertThat(mBubble.showInShade()).isFalse();
+        assertThat(mChatBubble.showInShade()).isFalse();
 
-        verify(mBubbleMetadataFlagListener).onBubbleMetadataFlagChanged(mBubble);
+        verify(mBubbleMetadataFlagListener).onBubbleMetadataFlagChanged(mChatBubble);
     }
 
     @Test
     public void testBubbleMetadataFlagListener_noChange_doesntNotify() {
-        assertThat(mBubble.showInShade()).isTrue();
+        assertThat(mChatBubble.showInShade()).isTrue();
 
-        mBubble.setSuppressNotification(false);
+        mChatBubble.setSuppressNotification(false);
 
         verify(mBubbleMetadataFlagListener, never()).onBubbleMetadataFlagChanged(any());
     }
 
     @Test
-    public void testBubbleIsConversation_hasConversationShortcut() {
-        Bubble bubble = createBubbleWithShortcut();
-        assertThat(bubble.getShortcutInfo()).isNotNull();
-        assertThat(bubble.isConversation()).isTrue();
+    public void testBubbleType_conversationShortcut() {
+        Bubble bubble = createChatBubble(true /* useShortcut */);
+        assertThat(bubble.isChat()).isTrue();
     }
 
     @Test
-    public void testBubbleIsConversation_hasNoShortcut() {
-        Bubble bubble = new Bubble(mBubbleEntry, mBubbleMetadataFlagListener, null, mMainExecutor);
-        assertThat(bubble.getShortcutInfo()).isNull();
-        assertThat(bubble.isConversation()).isFalse();
+    public void testBubbleType_conversationPendingIntent() {
+        Bubble bubble = createChatBubble(false /* useShortcut */);
+        assertThat(bubble.isChat()).isTrue();
+    }
+
+    @Test
+    public void testBubbleType_note() {
+        Bubble bubble = Bubble.createNotesBubble(createIntent(), UserHandle.of(0),
+                mock(Icon.class),
+                mMainExecutor, mBgExecutor);
+        assertThat(bubble.isNote()).isTrue();
+    }
+
+    @Test
+    public void testBubbleType_shortcut() {
+        ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(mContext)
+                .setId("mockShortcutId")
+                .build();
+        Bubble bubble = Bubble.createShortcutBubble(shortcutInfo, mMainExecutor, mBgExecutor);
+        assertThat(bubble.isShortcut()).isTrue();
+    }
+
+    @Test
+    public void testBubbleType_intent() {
+        Bubble bubble = Bubble.createAppBubble(createIntent(), UserHandle.of(0),
+                mock(Icon.class),
+                mMainExecutor, mBgExecutor);
+        assertThat(bubble.isApp()).isTrue();
+    }
+
+    @Test
+    public void testBubbleType_taskId() {
+        TaskInfo info = mock(TaskInfo.class);
+        ComponentName componentName = mock(ComponentName.class);
+        when(componentName.getPackageName()).thenReturn(mContext.getPackageName());
+        info.taskId = 1;
+        info.baseActivity = componentName;
+        info.baseIntent = createIntent();
+        Bubble bubble = Bubble.createTaskBubble(info, UserHandle.of(0),
+                mock(Icon.class),
+                mMainExecutor, mBgExecutor);
+        assertThat(bubble.isApp()).isTrue();
+        assertThat(bubble.getIntent()).isNotNull();
+    }
+
+    @Test
+    public void testShowAppBadge_chat() {
+        Bubble bubble = createChatBubble(true /* useShortcut */);
+        assertThat(bubble.isChat()).isTrue();
+        assertThat(bubble.showAppBadge()).isTrue();
+    }
+
+    @Test
+    public void testShowAppBadge_note() {
+        Bubble bubble = Bubble.createNotesBubble(createIntent(), UserHandle.of(0),
+                mock(Icon.class),
+                mMainExecutor, mBgExecutor);
+        assertThat(bubble.isNote()).isTrue();
+        assertThat(bubble.showAppBadge()).isTrue();
+    }
+
+    @Test
+    public void testShowAppBadge_app() {
+        Bubble bubble = Bubble.createAppBubble(createIntent(), UserHandle.of(0),
+                mock(Icon.class),
+                mMainExecutor, mBgExecutor);
+        assertThat(bubble.isApp()).isTrue();
+        assertThat(bubble.showAppBadge()).isFalse();
+    }
+
+    @Test
+    public void testShowAppBadge_shortcut() {
+        ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(mContext)
+                .setId("mockShortcutId")
+                .build();
+        Bubble bubble = Bubble.createShortcutBubble(shortcutInfo,
+                mMainExecutor, mBgExecutor);
+        assertThat(bubble.isShortcut()).isTrue();
+        assertThat(bubble.showAppBadge()).isTrue();
     }
 
     @Test
     public void testBubbleAsBubbleBarBubble_withShortcut() {
-        Bubble bubble = createBubbleWithShortcut();
+        Bubble bubble = createChatBubble(true /* useShortcut */);
         BubbleInfo bubbleInfo = bubble.asBubbleBarBubble();
 
         assertThat(bubble.getShortcutInfo()).isNotNull();
@@ -195,11 +287,11 @@ public class BubbleTest extends ShellTestCase {
     }
 
     @Test
-    public void testBubbleAsBubbleBarBubble_withoutShortcut() {
+    public void testBubbleAsBubbleBarBubble_withIntent() {
         Intent intent = new Intent(mContext, BubblesTestActivity.class);
         intent.setPackage(mContext.getPackageName());
         Bubble bubble = Bubble.createAppBubble(intent, new UserHandle(1 /* userId */),
-                null /* icon */, mMainExecutor);
+                null /* icon */, mMainExecutor, mBgExecutor);
         BubbleInfo bubbleInfo = bubble.asBubbleBarBubble();
 
         assertThat(bubble.getShortcutInfo()).isNull();
@@ -209,12 +301,37 @@ public class BubbleTest extends ShellTestCase {
         assertThat(bubbleInfo.getPackageName()).isEqualTo(bubble.getPackageName());
     }
 
-    private Bubble createBubbleWithShortcut() {
-        ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(mContext)
-                .setId("mockShortcutId")
-                .build();
-        return new Bubble("mockKey", shortcutInfo, 10, Resources.ID_NULL,
-                "mockTitle", 0 /* taskId */, "mockLocus", true /* isDismissible */,
-                mMainExecutor, mBubbleMetadataFlagListener);
+    @Test
+    public void testCleanupTaskView() {
+        // Create a bubble with a task id
+        TaskInfo info = mock(TaskInfo.class);
+        info.taskId = 123;
+        info.baseActivity = new ComponentName(mContext, "SomeActivity");
+        Bubble bubble = Bubble.createTaskBubble(info, new UserHandle(1),
+                null /* icon */, mMainExecutor, mBgExecutor);
+        assertThat(bubble.getTaskId()).isEqualTo(123);
+
+        bubble.cleanupTaskView();
+        assertThat(bubble.getTaskId()).isEqualTo(INVALID_TASK_ID);
+    }
+
+    private Intent createIntent() {
+        Intent intent = new Intent(mContext, BubblesTestActivity.class);
+        intent.setPackage(mContext.getPackageName());
+        return intent;
+    }
+
+    private Bubble createChatBubble(boolean useShortcut) {
+        if (useShortcut) {
+            ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(mContext)
+                    .setId("mockShortcutId")
+                    .build();
+            return new Bubble("mockKey", shortcutInfo, 10, Resources.ID_NULL,
+                    "mockTitle", 0 /* taskId */, "mockLocus", true /* isDismissible */,
+                    mMainExecutor, mBgExecutor, mBubbleMetadataFlagListener);
+        } else {
+            return new Bubble(mBubbleEntry, mBubbleMetadataFlagListener, null, mMainExecutor,
+                    mBgExecutor);
+        }
     }
 }

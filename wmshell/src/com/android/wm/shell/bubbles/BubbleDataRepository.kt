@@ -31,6 +31,9 @@ import com.android.wm.shell.bubbles.storage.BubbleEntity
 import com.android.wm.shell.bubbles.storage.BubblePersistentRepository
 import com.android.wm.shell.bubbles.storage.BubbleVolatileRepository
 import com.android.wm.shell.common.ShellExecutor
+import com.android.wm.shell.shared.annotations.ShellBackgroundThread
+import com.android.wm.shell.shared.annotations.ShellMainThread
+import java.util.concurrent.Executor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -41,7 +44,8 @@ import kotlinx.coroutines.yield
 
 class BubbleDataRepository(
     private val launcherApps: LauncherApps,
-    private val mainExecutor: ShellExecutor,
+    @ShellMainThread private val mainExecutor: ShellExecutor,
+    @ShellBackgroundThread private val bgExecutor: Executor,
     private val persistentRepository: BubblePersistentRepository,
 ) {
     private val volatileRepository = BubbleVolatileRepository(launcherApps)
@@ -259,8 +263,8 @@ class BubbleDataRepository(
                                 entity.locus,
                                 entity.isDismissable,
                                 mainExecutor,
-                                bubbleMetadataFlagListener
-                        )
+                                bgExecutor,
+                                bubbleMetadataFlagListener)
                     }
         }
         mainExecutor.execute { cb(bubbles) }

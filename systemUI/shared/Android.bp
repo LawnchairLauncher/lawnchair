@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package {
+    default_team: "trendy_team_system_ui_please_use_a_more_specific_subteam_if_possible_",
     // See: http://go/android-license-faq
     // A large-scale-change added 'default_applicable_licenses' to import
     // all of the 'license_kinds' from "frameworks_base_packages_SystemUI_license"
@@ -34,22 +35,31 @@ java_library {
     srcs: [
         ":statslog-SystemUI-java-gen",
     ],
+    libs: [
+        "androidx.annotation_annotation",
+    ],
 }
 
 android_library {
     name: "SystemUISharedLib",
+    use_resource_processor: true,
     srcs: [
         "src/**/*.java",
         "src/**/*.kt",
         "src/**/*.aidl",
         ":wm_shell-aidls",
-        ":wm_shell_util-sources",
+        ":wm_shell-shared-aidls",
     ],
     static_libs: [
+        "com.android.systemui.dagger-api",
+        "BiometricsSharedLib",
+        "PlatformAnimationLib",
         "PluginCoreLib",
-        "SystemUIAnimationLib",
         "SystemUIPluginLib",
         "SystemUIUnfoldLib",
+        "SystemUISharedLib-Keyguard",
+        "WindowManager-Shell-shared",
+        "//frameworks/libs/systemui:tracinglib-platform",
         "androidx.dynamicanimation_dynamicanimation",
         "androidx.concurrent_concurrent-futures",
         "androidx.lifecycle_lifecycle-runtime-ktx",
@@ -59,6 +69,10 @@ android_library {
         "kotlinx_coroutines",
         "dagger2",
         "jsr330",
+        "//frameworks/libs/systemui:com_android_systemui_shared_flags_lib",
+        "//frameworks/libs/systemui:msdl",
+        "//frameworks/libs/systemui:view_capture",
+        "am_flags_lib",
     ],
     resource_dirs: [
         "res",

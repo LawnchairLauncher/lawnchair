@@ -42,10 +42,14 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.MSDLPlayerWrapper;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ActivityContext;
+
+import com.google.android.msdl.data.model.MSDLToken;
+
 import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
-import com.android.launcher3.views.ActivityContext;
 
 /**
  * Implements a DropTarget.
@@ -66,15 +70,13 @@ public abstract class ButtonDropTarget extends TextView
     protected final ActivityContext mActivityContext;
     protected final DropTargetHandler mDropTargetHandler;
     protected DropTargetBar mDropTargetBar;
+    private MSDLPlayerWrapper mMSDLPlayerWrapper;
 
     /** Whether this drop target is active for the current drag */
     protected boolean mActive;
     /** Whether an accessible drag is in progress */
     private boolean mAccessibleDrag;
-    /**
-     * An item must be dragged at least this many pixels before this drop target is
-     * enabled.
-     */
+    /** An item must be dragged at least this many pixels before this drop target is enabled. */
     private final int mDragDistanceThreshold;
     /** The size of the drawable shown in the drop target. */
     private final int mDrawableSize;
@@ -93,7 +95,6 @@ public abstract class ButtonDropTarget extends TextView
     public ButtonDropTarget(Context context) {
         this(context, null, 0);
     }
-
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -102,6 +103,7 @@ public abstract class ButtonDropTarget extends TextView
         super(context, attrs, defStyle);
         mActivityContext = ActivityContext.lookupContext(context);
         mDropTargetHandler = mActivityContext.getDropTargetHandler();
+        mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context);
 
         Resources resources = getResources();
         mDragDistanceThreshold = resources.getDimensionPixelSize(R.dimen.drag_distanceThreshold);
@@ -141,8 +143,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     protected void setDrawable(int resId) {
-        // We do not set the drawable in the xml as that inflates two drawables
-        // corresponding to
+        // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
         mDrawable = getContext().getDrawable(resId).mutate();
         mDrawable.setTintList(getTextColors());
@@ -162,6 +163,10 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public final void onDragEnter(DragObject d) {
+        // Perform Haptic feedback
+        if (Flags.msdlFeedback()) {
+            mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR);
+        }
         if (!mAccessibleDrag && !mTextVisible) {
             // Show tooltip
             hideTooltip();
@@ -235,12 +240,16 @@ public abstract class ButtonDropTarget extends TextView
 
     protected abstract boolean supportsDrop(ItemInfo info);
 
-    public abstract boolean supportsAccessibilityDrop(ItemInfo info, View view);
+    /**
+     * Returns the accessibility action that {@link ButtonDropTarget} supports for the itemInfo.
+     */
+    public abstract int getSupportedAccessibilityAction(ItemInfo info, View view);
 
     @Override
     public boolean isDropEnabled() {
         return mActive && (mAccessibleDrag ||
-                mActivityContext.getDragController().getDistanceDragged() >= mDragDistanceThreshold);
+                mActivityContext.getDragController().getDistanceDragged()
+                        >= mDragDistanceThreshold);
     }
 
     @Override
@@ -284,17 +293,18 @@ public abstract class ButtonDropTarget extends TextView
     public abstract int getAccessibilityAction();
 
     @Override
-    public void prepareAccessibilityDrop() {
-    }
+    public void prepareAccessibilityDrop() { }
 
-    public abstract void onAccessibilityDrop(View view, ItemInfo item);
+    /** Performs a drop in case of accessibility services with the provided action for the item. */
+    public abstract void onAccessibilityDrop(View view, ItemInfo item, int action);
 
     public abstract void completeDrop(DragObject d);
 
     @Override
     public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
         super.getHitRect(outRect);
-        outRect.bottom += mActivityContext.getDeviceProfile().dropTargetDragPaddingPx;
+        outRect.bottom +=
+                mActivityContext.getDeviceProfile().getDropTargetProfile().getDragPaddingPx();
 
         sTempCords[0] = sTempCords[1] = 0;
         mActivityContext.getDragLayer().getDescendantCoordRelativeToSelf(this, sTempCords);
@@ -360,8 +370,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     /**
-     * Display button text over multiple lines when isMultiLine is true, single line
-     * otherwise.
+     * Display button text over multiple lines when isMultiLine is true, single line otherwise.
      */
     public void setTextMultiLine(boolean isMultiLine) {
         if (mTextMultiLine != isMultiLine) {
@@ -427,20 +436,19 @@ public abstract class ButtonDropTarget extends TextView
             return !TextUtils.equals(mText, firstLine);
         }
         if (TextUtils.equals(mText, firstLine)) {
-            // When multi-line is active, if it can display as one line, then text is not
-            // truncated.
+            // When multi-line is active, if it can display as one line, then text is not truncated.
             return false;
         }
-        CharSequence secondLine = TextUtils.ellipsize(mText.subSequence(firstLine.length(), mText.length()),
-                getPaint(), availableWidth, TextUtils.TruncateAt.END);
+        CharSequence secondLine =
+                TextUtils.ellipsize(mText.subSequence(firstLine.length(), mText.length()),
+                        getPaint(), availableWidth, TextUtils.TruncateAt.END);
         return !(TextUtils.equals(mText.subSequence(0, firstLine.length()), firstLine)
                 && TextUtils.equals(mText.subSequence(firstLine.length(), secondLine.length()),
-                        secondLine));
+                secondLine));
     }
 
     /**
-     * Returns if the text will be clipped vertically within the provided
-     * availableHeight.
+     * Returns if the text will be clipped vertically within the provided availableHeight.
      */
     @VisibleForTesting
     protected boolean isTextClippedVertically(int availableHeight) {
@@ -451,21 +459,22 @@ public abstract class ButtonDropTarget extends TextView
         return textHeight + getPaddingTop() + getPaddingBottom() >= availableHeight;
     }
 
+    @VisibleForTesting
+    public void setMSDLPlayerWrapper(MSDLPlayerWrapper wrapper) {
+        mMSDLPlayerWrapper = wrapper;
+    }
+
     /**
-     * Reduce the size of the text until it fits the measured width or reaches a
-     * minimum.
+     * Reduce the size of the text until it fits the measured width or reaches a minimum.
      *
-     * The minimum size is defined by
-     * {@code R.dimen.button_drop_target_min_text_size} and
+     * The minimum size is defined by {@code R.dimen.button_drop_target_min_text_size} and
      * it diminishes by intervals defined by
      * {@code R.dimen.button_drop_target_resize_text_increment}
      * This functionality is very similar to the option
-     * {@link TextView#setAutoSizeTextTypeWithDefaults(int)} but can't be used in
-     * this view because
+     * {@link TextView#setAutoSizeTextTypeWithDefaults(int)} but can't be used in this view because
      * the layout width is {@code WRAP_CONTENT}.
      *
-     * @return The biggest text size in SP that makes the text fit or if the text
-     *         can't fit returns
+     * @return The biggest text size in SP that makes the text fit or if the text can't fit returns
      *         the min available value
      */
     public float resizeTextToFit() {

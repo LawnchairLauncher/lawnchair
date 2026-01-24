@@ -16,6 +16,7 @@
   -->
 <com.android.wm.shell.bubbles.bar.BubbleBarMenuItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/bubble_bar_manage_menu_item_height"

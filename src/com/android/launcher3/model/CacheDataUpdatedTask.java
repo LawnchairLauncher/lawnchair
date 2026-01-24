@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.icons.cache.CacheLookupFlag.DEFAULT_LOOKUP_FLAG;
+
 import android.content.ComponentName;
 import android.os.UserHandle;
 
@@ -23,10 +25,11 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Handles changes due to cache updates.
@@ -54,22 +57,35 @@ public class CacheDataUpdatedTask implements ModelUpdateTask {
     @Override
     public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
             @NonNull AllAppsList apps) {
-        IconCache iconCache = taskController.getApp().getIconCache();
-        ArrayList<WorkspaceItemInfo> updatedShortcuts = new ArrayList<>();
+        IconCache iconCache = taskController.getIconCache();
+        List<ItemInfo> updatedItems;
 
         synchronized (dataModel) {
-            dataModel.forAllWorkspaceItemInfos(mUser, si -> {
-                ComponentName cn = si.getTargetComponent();
-                if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                        && isValidShortcut(si) && cn != null
-                        && mPackages.contains(cn.getPackageName())) {
-                    iconCache.getTitleAndIcon(si, si.usingLowResIcon());
-                    updatedShortcuts.add(si);
-                }
-            });
+            updatedItems = dataModel.updateAndCollectWorkspaceItemInfos(
+                    mUser,
+                    si -> {
+                        ComponentName cn = si.getTargetComponent();
+                        if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                                && isValidShortcut(si) && cn != null
+                                && mPackages.contains(cn.getPackageName())) {
+                            iconCache.getTitleAndIcon(si, si.getMatchingLookupFlag());
+                            return true;
+                        }
+                        return false;
+                    },
+                    widget -> {
+                        if (mPackages.contains(widget.providerName.getPackageName())
+                                && widget.pendingItemInfo != null) {
+                            iconCache.getTitleAndIconForApp(
+                                    widget.pendingItemInfo, DEFAULT_LOOKUP_FLAG);
+                            return true;
+                        }
+                        return false;
+                    });
+
             apps.updateIconsAndLabels(mPackages, mUser);
         }
-        taskController.bindUpdatedWorkspaceItems(updatedShortcuts);
+        taskController.bindUpdatedWorkspaceItems(updatedItems);
         taskController.bindApplicationsIfNeeded();
     }
 

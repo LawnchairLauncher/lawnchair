@@ -24,7 +24,7 @@
             <path
                 android:pathData="M0 28H28C24.3228 28 20.6821 27.2759 17.2847 25.8687C13.8877 24.4614 10.8013 22.3989 8.20117 19.7988C5.60107 17.1987 3.53857 14.1123 2.13135 10.7153C0.724121 7.31787 0 3.67725 0 0V28Z"
                 android:fillType="evenOdd"
-                android:fillColor="?attr/allAppsScrimColor" />
+                android:fillColor="@android:color/white" />
         </vector>
     </item>
 </layer-list>

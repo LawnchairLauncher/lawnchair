@@ -39,7 +39,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.R;
 
 import java.util.Arrays;

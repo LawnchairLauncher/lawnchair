@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APP
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -37,6 +36,7 @@ import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ApiWrapper;
+import com.android.launcher3.util.ApplicationInfoWrapper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.UserIconInfo;
 
@@ -71,8 +71,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
 
     /**
      * The uid of the application.
-     * The kernel user-ID that has been assigned to this application. Currently this
-     * is not a unique
+     * The kernel user-ID that has been assigned to this application. Currently this is not a unique
      * ID (multiple applications can have the same uid).
      */
     public int uid = -1;
@@ -130,10 +129,10 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
     public AppInfo(@NonNull PackageInstallInfo installInfo) {
         componentName = installInfo.componentName;
         intent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(componentName)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            .addCategory(Intent.CATEGORY_LAUNCHER)
+            .setComponent(componentName)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         setProgressLevel(installInfo);
         user = installInfo.user;
     }
@@ -154,8 +153,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         if ((runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0) {
             // We need to update the component name when the apk is installed
             workspaceItemInfo.status |= WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
-            // Since the user is manually placing it on homescreen, it should not be
-            // auto-removed
+            // Since the user is manually placing it on homescreen, it should not be auto-removed
             // later
             workspaceItemInfo.status |= WorkspaceItemInfo.FLAG_RESTORE_STARTED;
             workspaceItemInfo.status |= FLAG_INSTALL_SESSION_ACTIVE;
@@ -186,8 +184,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
     }
 
     /**
-     * Updates the runtime status flags for the given info based on the state of the
-     * specified
+     * Updates the runtime status flags for the given info based on the state of the specified
      * activity.
      */
     public static boolean updateRuntimeFlagsForActivityTarget(
@@ -195,8 +192,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
             ApiWrapper apiWrapper, PackageManagerHelper pmHelper) {
         final int oldProgressLevel = info.getProgressLevel();
         final int oldRuntimeStatusFlags = info.runtimeStatusFlags;
-        ApplicationInfo appInfo = lai.getApplicationInfo();
-        if (PackageManagerHelper.isAppSuspended(appInfo)) {
+        ApplicationInfoWrapper appInfo = new ApplicationInfoWrapper(lai.getApplicationInfo());
+        if (appInfo.isSuspended()) {
             info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
         } else {
             info.runtimeStatusFlags &= ~FLAG_DISABLED_SUSPENDED;
@@ -209,12 +206,10 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
                     info.runtimeStatusFlags &= ~FLAG_ARCHIVED;
                 }
             } catch (Throwable t) {
-                // Ignore
+                // LC-Ignored
             }
         }
-        info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
-                ? FLAG_SYSTEM_NO
-                : FLAG_SYSTEM_YES;
+        info.runtimeStatusFlags |= appInfo.isSystem() ? FLAG_SYSTEM_YES : FLAG_SYSTEM_NO;
 
         if (Flags.privateSpaceRestrictAccessibilityDrag()) {
             if (userIconInfo.isPrivate()) {
@@ -229,8 +224,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
                 PackageManagerHelper.getLoadingProgress(lai),
                 PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
         info.setNonResizeable(apiWrapper.isNonResizeableActivity(lai));
-        info.setSupportsMultiInstance(
-                pmHelper.supportsMultiInstance(lai.getComponentName()));
+        info.setSupportsMultiInstance(apiWrapper.supportsMultiInstance(lai));
         return (oldProgressLevel != info.getProgressLevel())
                 || (oldRuntimeStatusFlags != info.runtimeStatusFlags);
     }

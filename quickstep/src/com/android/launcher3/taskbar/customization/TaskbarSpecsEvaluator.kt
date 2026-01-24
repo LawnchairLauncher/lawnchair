@@ -16,13 +16,43 @@
 
 package com.android.launcher3.taskbar.customization
 
-/** Evaluates the taskbar specs based on the taskbar grid size and the taskbar icon size. */
-class TaskbarSpecsEvaluator(private val taskbarFeatureEvaluator: TaskbarFeatureEvaluator) {
+import com.android.launcher3.taskbar.TaskbarActivityContext
 
-    fun getIconSizeByGrid(row: Int, column: Int): TaskbarIconSize {
+/** Evaluates the taskbar specs based on the taskbar grid size and the taskbar icon size. */
+class TaskbarSpecsEvaluator(
+    private val taskbarActivityContext: TaskbarActivityContext,
+    private val taskbarFeatureEvaluator: TaskbarFeatureEvaluator,
+    numRows: Int = taskbarActivityContext.deviceProfile.inv.numRows,
+    numColumns: Int = taskbarActivityContext.deviceProfile.inv.numColumns,
+) {
+    var taskbarIconSize: TaskbarIconSize = getIconSizeByGrid(numColumns, numRows)
+    val numShownHotseatIcons
+        get() = taskbarActivityContext.deviceProfile.numShownHotseatIcons
+
+    // TODO(b/341146605) : initialize it to taskbar container in later cl.
+    private var taskbarContainer: List<TaskbarContainer> = emptyList()
+
+    val taskbarIconPadding: Int =
+        if (
+            TaskbarIconSpecs.transientOrPinnedTaskbarIconPaddingSize.size > taskbarIconSize.size &&
+                taskbarFeatureEvaluator.supportsTransitionToTransientTaskbar
+        ) {
+            (TaskbarIconSpecs.iconSize52dp.size - taskbarIconSize.size) / 2
+        } else {
+            0
+        }
+
+    val taskbarIconMargin: TaskbarIconMarginSize =
+        if (taskbarFeatureEvaluator.isTransient) {
+            TaskbarIconSpecs.defaultTransientIconMargin
+        } else {
+            TaskbarIconSpecs.defaultPersistentIconMargin
+        }
+
+    fun getIconSizeByGrid(columns: Int, rows: Int): TaskbarIconSize {
         return if (taskbarFeatureEvaluator.isTransient) {
             TaskbarIconSpecs.transientTaskbarIconSizeByGridSize.getOrDefault(
-                Pair(row, column),
+                TransientTaskbarIconSizeKey(columns, rows, taskbarFeatureEvaluator.isLandscape),
                 TaskbarIconSpecs.defaultTransientIconSize,
             )
         } else {
@@ -36,8 +66,11 @@ class TaskbarSpecsEvaluator(private val taskbarFeatureEvaluator: TaskbarFeatureE
         val currentIconSizeIndex = TaskbarIconSpecs.transientTaskbarIconSizes.indexOf(iconSize)
         // return the current icon size if supplied icon size is unknown or we have reached the
         // min icon size.
-        return if (currentIconSizeIndex == -1 || currentIconSizeIndex == 0) iconSize
-        else TaskbarIconSpecs.transientTaskbarIconSizes[currentIconSizeIndex - 1]
+        return if (currentIconSizeIndex == -1 || currentIconSizeIndex == 0) {
+            iconSize
+        } else {
+            TaskbarIconSpecs.transientTaskbarIconSizes[currentIconSizeIndex - 1]
+        }
     }
 
     fun getIconSizeStepUp(iconSize: TaskbarIconSize): TaskbarIconSize {
@@ -52,9 +85,28 @@ class TaskbarSpecsEvaluator(private val taskbarFeatureEvaluator: TaskbarFeatureE
         ) {
             iconSize
         } else {
-            TaskbarIconSpecs.transientTaskbarIconSizes.get(currentIconSizeIndex + 1)
+            TaskbarIconSpecs.transientTaskbarIconSizes[currentIconSizeIndex + 1]
         }
+    }
+
+    // TODO(jagrutdesai) : Call this in init once the containers are ready.
+    private fun calculateTaskbarIconSize() {
+        while (
+            taskbarIconSize != TaskbarIconSpecs.minimumIconSize &&
+                taskbarActivityContext.transientTaskbarBounds.width() <
+                    calculateSpaceNeeded(taskbarContainer)
+        ) {
+            taskbarIconSize = getIconSizeStepDown(taskbarIconSize)
+        }
+    }
+
+    private fun calculateSpaceNeeded(containers: List<TaskbarContainer>): Int {
+        return containers.sumOf { it.spaceNeeded }
     }
 }
 
 data class TaskbarIconSize(val size: Int)
+
+data class TransientTaskbarIconSizeKey(val columns: Int, val rows: Int, val isLandscape: Boolean)
+
+data class TaskbarIconMarginSize(val size: Int)

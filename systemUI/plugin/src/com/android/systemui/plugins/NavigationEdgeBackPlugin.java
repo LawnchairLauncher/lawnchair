@@ -36,9 +36,6 @@ public interface NavigationEdgeBackPlugin extends Plugin {
     /** Specifies if the UI should be rendered on the left side of the screen. */
     void setIsLeftPanel(boolean isLeftPanel);
 
-    /** Sets the insets for the gesture handling area. */
-    void setInsets(int leftInset, int rightInset);
-
     /** Sets the display size. */
     void setDisplaySize(Point displaySize);
 
@@ -52,7 +49,7 @@ public interface NavigationEdgeBackPlugin extends Plugin {
     void onMotionEvent(MotionEvent motionEvent);
 
     /** Dumps info about the back gesture plugin. */
-    void dump(PrintWriter pw);
+    void dump(String prefix, PrintWriter pw);
 
     /** Callback to let the system react to the detected back gestures. */
     interface BackCallback {

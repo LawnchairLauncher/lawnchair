@@ -16,12 +16,15 @@
 
 package com.android.wm.shell.compatui;
 
+import static com.android.window.flags2.Flags.FLAG_APP_COMPAT_UI_FRAMEWORK;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import android.platform.test.annotations.RequiresFlagsDisabled;
 import android.testing.AndroidTestingRunner;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +69,7 @@ public class LetterboxEduDialogLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnFinishInflate() {
         assertEquals(mLayout.getDialogContainerView(),
                 mLayout.findViewById(R.id.letterbox_education_dialog_container));
@@ -76,6 +80,7 @@ public class LetterboxEduDialogLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnDismissButtonClicked() {
         assertTrue(mDismissButton.performClick());
 
@@ -83,6 +88,7 @@ public class LetterboxEduDialogLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnBackgroundClicked() {
         assertTrue(mLayout.performClick());
 
@@ -90,6 +96,7 @@ public class LetterboxEduDialogLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnDialogContainerClicked() {
         assertTrue(mDialogContainer.performClick());
 
@@ -97,6 +104,7 @@ public class LetterboxEduDialogLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testSetDismissOnClickListenerNull() {
         mLayout.setDismissOnClickListener(null);
 

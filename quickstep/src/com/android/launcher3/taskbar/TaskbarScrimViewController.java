@@ -20,15 +20,17 @@ import static android.view.View.VISIBLE;
 import static com.android.launcher3.taskbar.bubbles.BubbleBarController.isBubbleBarEnabled;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED;
-import static com.android.wm.shell.common.bubbles.BubbleConstants.BUBBLE_EXPANDED_SCRIM_ALPHA;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
+import static com.android.wm.shell.shared.bubbles.BubbleConstants.BUBBLE_EXPANDED_SCRIM_ALPHA;
 
 import android.animation.ObjectAnimator;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.taskbar.bubbles.BubbleControllers;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 
@@ -65,6 +67,7 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
      */
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
+        onTaskbarVisibilityChanged(mControllers.taskbarViewController.getTaskbarVisibility());
     }
 
     /**
@@ -75,7 +78,7 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     public void onTaskbarVisibilityChanged(int visibility) {
         mTaskbarVisible = visibility == VISIBLE;
         if (shouldShowScrim()) {
-            showScrim(true, getScrimAlpha(), false /* skipAnim */);
+            showScrim(true, computeScrimAlpha(), false /* skipAnim */);
         } else if (mScrimView.getScrimAlpha() > 0f) {
             showScrim(false, 0, false /* skipAnim */);
         }
@@ -85,26 +88,42 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
      * Updates the scrim state based on the flags.
      */
     public void updateStateForSysuiFlags(@SystemUiStateFlags long stateFlags, boolean skipAnim) {
-        if (isBubbleBarEnabled() && DisplayController.isTransientTaskbar(mActivity)) {
+        if (mActivity.isPhoneMode()) {
+            // There is no scrim for the bar in the phone mode.
+            return;
+        }
+        boolean isTransient = mActivity.isTransientTaskbar();
+        if (isBubbleBarEnabled() && isTransient) {
             // These scrims aren't used if bubble bar & transient taskbar are active.
             return;
         }
         mSysUiStateFlags = stateFlags;
-        showScrim(shouldShowScrim(), getScrimAlpha(), skipAnim);
+        showScrim(shouldShowScrim(), computeScrimAlpha(), skipAnim);
     }
 
     private boolean shouldShowScrim() {
         final boolean bubblesExpanded = (mSysUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
         boolean isShadeVisible = (mSysUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE) != 0;
+        BubbleControllers bubbleControllers = mActivity.getBubbleControllers();
+        boolean isBubbleControllersPresented = bubbleControllers != null;
+        // when the taskbar is in persistent mode, we hide the task bar icons on bubble bar expand,
+        // which makes the taskbar invisible, so need to check if the bubble bar is not on home
+        // to show the scrim view
+        boolean showScrimForBubbles = bubblesExpanded
+                && !mTaskbarVisible
+                && isBubbleControllersPresented
+                && !mActivity.isTransientTaskbar()
+                && !bubbleControllers.bubbleStashController.isBubblesShowingOnHome();
         return bubblesExpanded && !mControllers.navbarButtonsViewController.isImeVisible()
                 && !isShadeVisible
                 && !mControllers.taskbarStashController.isStashed()
-                && mTaskbarVisible;
+                && (mTaskbarVisible || showScrimForBubbles)
+                && !mControllers.taskbarStashController.isHiddenForBubbles();
     }
 
-    private float getScrimAlpha() {
-        final boolean isPersistentTaskBarVisible =
-                mTaskbarVisible && !DisplayController.isTransientTaskbar(mScrimView.getContext());
+    private float computeScrimAlpha() {
+        boolean isTransient = mActivity.isTransientTaskbar();
+        final boolean isPersistentTaskBarVisible = mTaskbarVisible && !isTransient;
         final boolean manageMenuExpanded =
                 (mSysUiStateFlags & SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED) != 0;
         if (isPersistentTaskBarVisible && manageMenuExpanded) {
@@ -123,7 +142,7 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
         mScrimView.setOnClickListener(showScrim ? (view) -> onClick() : null);
         mScrimView.setClickable(showScrim);
         if (skipAnim) {
-            mScrimView.setScrimAlpha(alpha);
+            mScrimAlpha.updateValue(alpha);
         } else {
             ObjectAnimator anim = mScrimAlpha.animateToValue(showScrim ? alpha : 0);
             anim.setInterpolator(showScrim ? SCRIM_ALPHA_IN : SCRIM_ALPHA_OUT);
@@ -136,7 +155,7 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     }
 
     private void onClick() {
-        SystemUiProxy.INSTANCE.get(mActivity).onBackPressed();
+        SystemUiProxy.INSTANCE.get(mActivity).onBackEvent(null);
     }
 
     @Override
@@ -149,5 +168,15 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
         pw.println(prefix + "TaskbarScrimViewController:");
 
         pw.println(prefix + "\tmScrimAlpha.value=" + mScrimAlpha.value);
+    }
+
+    @VisibleForTesting
+    TaskbarScrimView getScrimView() {
+        return mScrimView;
+    }
+
+    @VisibleForTesting
+    float getScrimAlpha() {
+        return mScrimAlpha.value;
     }
 }

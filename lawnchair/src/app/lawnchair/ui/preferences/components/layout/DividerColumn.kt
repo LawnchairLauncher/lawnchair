@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.components.layout
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,14 +15,13 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.theme.dividerColor
 import kotlin.math.roundToInt
 
 @Composable
 fun DividerColumn(
     modifier: Modifier = Modifier,
-    color: Color = dividerColor(),
-    thickness: Dp = 1.dp,
+    color: Color = MaterialTheme.colorScheme.surface,
+    thickness: Dp = 3.dp,
     startIndent: Dp = 0.dp,
     endIndent: Dp = 0.dp,
     dividersToSkip: Int = 0,
@@ -30,8 +30,8 @@ fun DividerColumn(
     val state = remember { DividersState() }
     val density = LocalDensity.current
     val thicknessPx = with(density) { thickness.toPx() }
-    val startIndentPx = with(density) { (startIndent + 16.dp).toPx() }
-    val endIndentPx = with(density) { (endIndent + 16.dp).toPx() }
+    val startIndentPx = with(density) { (startIndent).toPx() }
+    val endIndentPx = with(density) { (endIndent).toPx() }
     Layout(
         modifier = modifier
             .drawDividers(state, color, thicknessPx, startIndentPx, endIndentPx),

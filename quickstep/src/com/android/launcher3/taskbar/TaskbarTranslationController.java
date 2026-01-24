@@ -29,7 +29,6 @@ import androidx.dynamicanimation.animation.SpringForce;
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.SpringAnimationBuilder;
-import com.android.launcher3.util.DisplayController;
 
 import java.io.PrintWriter;
 
@@ -63,7 +62,7 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
 
     public TaskbarTranslationController(TaskbarActivityContext context) {
         mContext = context;
-        mIsTransientTaskbar = DisplayController.isTransientTaskbar(mContext);
+        mIsTransientTaskbar = mContext.isTransientTaskbar();
         mCallback = new TransitionCallback();
     }
 
@@ -95,7 +94,8 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
         mControllers.taskbarDragLayerController.setTranslationYForSwipe(transY);
         mControllers.bubbleControllers.ifPresent(controllers -> {
             controllers.bubbleBarViewController.setTranslationYForSwipe(transY);
-            controllers.bubbleStashedHandleViewController.setTranslationYForSwipe(transY);
+            controllers.bubbleStashedHandleViewController.ifPresent(
+                    controller -> controller.setTranslationYForSwipe(transY));
         });
     }
 

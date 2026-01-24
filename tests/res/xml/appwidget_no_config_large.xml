@@ -6,7 +6,7 @@
     android:minResizeWidth="1dp"
     android:maxResizeWidth="3000dp"
     android:targetCellHeight="1"
-    android:targetCellWidth="5"
+    android:targetCellWidth="4"
     android:updatePeriodMillis="86400000"
     android:initialLayout="@layout/test_layout_appwidget_red"
     android:previewLayout="@layout/test_layout_appwidget_red"

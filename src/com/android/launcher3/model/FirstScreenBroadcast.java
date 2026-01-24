@@ -45,9 +45,9 @@ import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,9 +76,9 @@ public class FirstScreenBroadcast {
 
     private static final String VERIFICATION_TOKEN_EXTRA = "verificationToken";
 
-    private final HashMap<PackageUserKey, SessionInfo> mSessionInfoForPackage;
+    private final Map<PackageUserKey, SessionInfo> mSessionInfoForPackage;
 
-    public FirstScreenBroadcast(HashMap<PackageUserKey, SessionInfo> sessionInfoForPackage) {
+    public FirstScreenBroadcast(Map<PackageUserKey, SessionInfo> sessionInfoForPackage) {
         mSessionInfoForPackage = sessionInfoForPackage;
     }
 
@@ -185,7 +185,7 @@ public class FirstScreenBroadcast {
      * is always modified on UI thread.
      */
     @AnyThread
-    private static List<WorkspaceItemInfo> cloneOnMainThread(ArrayList<WorkspaceItemInfo> list) {
+    private static List<WorkspaceItemInfo> cloneOnMainThread(List<WorkspaceItemInfo> list) {
         try {
             return MAIN_EXECUTOR.submit(() -> new ArrayList(list)).get();
         } catch (Exception e) {

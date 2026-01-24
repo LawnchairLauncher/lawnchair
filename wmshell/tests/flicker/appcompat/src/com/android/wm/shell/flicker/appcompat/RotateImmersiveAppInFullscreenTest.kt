@@ -45,7 +45,7 @@ import org.junit.runners.Parameterized
 /**
  * Test rotating an immersive app in fullscreen.
  *
- * To run this test: `atest WMShellFlickerTestsOther:RotateImmersiveAppInFullscreenTest`
+ * To run this test: `atest WMShellFlickerTestsAppCompat:RotateImmersiveAppInFullscreenTest`
  *
  * Actions:
  * ```
