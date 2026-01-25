@@ -122,6 +122,11 @@
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s et %2$s</string>
     <string name="advanced">Avancé</string>
+    <!-- Draggable -->
+    <string name="reorderable_active_items">Éléments actifs</string>
+    <string name="reorderable_disabled_items">Autres éléments</string>
+    <string name="reorderable_disabled_hint">Les éléments désactivés apparaîtront ici. Faites glisser un élément ici ou appuyez sur le bouton Retirer pour activer un élément.</string>
+    <string name="reorderable_add_hint_items">Les éléments actifs apparaîtront ici. Faites glisser un élément ici ou appuyez sur le bouton Ajouter pour activer un élément.</string>
     <!--
 
     Preference Dashboard
@@ -132,7 +137,7 @@
     <string name="general_description">Couleurs, packs d\'icônes, pastilles de notification</string>
     <string name="home_screen_label">Écran d\'accueil</string>
     <string name="home_screen_description">Flux, grille, icônes</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">Actions de l\'écran d\'accueil</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Barre de recherche, nombre d\'icônes</string>
     <string name="app_drawer_label">Tiroir des applis</string>
@@ -150,6 +155,10 @@
     <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
     <string name="experimental_features_label">Fonctionnalités expérimentales</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Espace de travail</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Interne</string>
+    <string name="internal_description">Le groupe Interne peut être plus instable que les autres groupes de test</string>
     <string name="font_picker_label">Personnalisation de la police</string>
     <string name="font_picker_description">Certains textes restent inchangés</string>
     <string name="smartspace_calendar_label">Personnalisation du calendrier dans Aperçu</string>
@@ -158,10 +167,19 @@
     <string name="workspace_increase_max_grid_size_description">Augmenter la taille maximale autorisée de la grille de 10 x 10 à 20 x 20</string>
     <string name="always_reload_icons_label">Toujours recharger les icônes</string>
     <string name="always_reload_icons_description">Éviter d\'utiliser les icônes en cache provenant des packs d\'icônes</string>
+    <string name="always_reload_icons_warning">Entraînera le rechargement régulier des icônes, l\'activation n\'est pas nécessaire si le pack d\'icônes n\'est pas mis à jour régulièrement</string>
     <string name="icon_swipe_gestures">Gestes de balayage des icônes</string>
     <string name="icon_swipe_gestures_description">Effectuez des actions en balayant les icônes vers la gauche ou vers la droite</string>
     <string name="show_deck_layout">Disposition Deck</string>
     <string name="show_deck_layout_description">Affichez une option de disposition permettant de masquer le tiroir des applis et d\'ajouter automatiquement les nouvelles applis à l\'écran d\'accueil</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Activez les modifications Material 3 Expressive dans l\'espace de travail</string>
+    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
+    <string name="folder_shape_label">Folder</string>
+    <string name="app_icon_shape_label">Application</string>
+    <string name="gesturenavcontract_label">API GestureNavContract</string>
+    <string name="gesturenavcontract_description">Effectuer le rendu des animations du lanceur d\'applications sans accès root, ne fonctionne pas avec une version d\'Android déviant fortement d\'AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract peut entraîner la présence d\'artéfacts pendant les animations</string>
     <string name="recents_lock_unlock">Verrouiller/déverrouiller</string>
     <string name="recents_lock_unlock_description">Empêcher l\'appli sélectionnée d\'être fermée lors d\'un appui sur « Tout effacer »</string>
     <!--Overlay-->
@@ -204,8 +222,8 @@
     <string name="adaptive_icon_background_description">Définissez la luminosité à 100 % pour obtenir un arrière-plan blanc</string>
     <string name="reset_custom_icons">Réinitialiser les icônes personnalisées</string>
     <string name="reset_custom_icons_confirmation">Toutes les icônes personnalisées seront réinitialisées. Voulez-vous continuer ?</string>
-    <string name="remove_all_views_from_home_screen">Clear home screen</string>
-    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
+    <string name="remove_all_views_from_home_screen">Nettoyer l\'écran d\'accueil</string>
+    <string name="remove_all_views_from_home_screen_desc">Les éléments de l\'écran d\'accueil seront effacés. Voulez-vous continuer ?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Icônes</string>
     <string name="icon_picker_reset_to_default">Réinitialiser</string>
@@ -227,7 +245,9 @@
     <string name="icon_shape_square">Carré</string>
     <string name="icon_shape_squircle">Carré rond</string>
     <string name="icon_shape_teardrop">Goutte</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Très ensoleillé</string>
+    <string name="icon_shape_complex_clover">Trèfle complexe</string>
     <string name="icon_shape_four_sided_cookie">Biscuit à quatre côtés</string>
     <string name="icon_shape_seven_sided_cookie">Biscuit à sept côtés</string>
     <string name="icon_shape_arch">Arche</string>
@@ -320,8 +340,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Grégorien</string>
     <string name="smartspace_calendar_persian">Persan</string>
+    <string name="smartspace_calendar_lunar">Lunaire</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Recharge rapide</string>
+    <string name="smartspace_battery_slow_charging">Charge lente</string>
     <string name="smartspace_battery_charging">Recharge en cours</string>
     <string name="smartspace_battery_full">Chargé</string>
     <string name="smartspace_battery_low">Batterie faible</string>
@@ -341,6 +364,14 @@
     <string name="smartspace_weather">Météo</string>
     <string name="smartspace_battery_status">État de la batterie</string>
     <string name="smartspace_now_playing">En écoute</string>
+    <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Onboarding strings -->
+    <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
+    <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
+    <string name="onboarding_major_upgrade_subtitle">See what\'s new!</string>
+    <string name="onboarding_welcome">Welcome to Lawnchair!</string>
+    <string name="onboarding_swipe_up">Swipe up to open the App Drawer</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Nombre maximal de cibles</string>
     <string name="open_smartspacer_settings">Ouvrir les paramètres Smartspacer</string>
@@ -381,6 +412,11 @@
     <string name="privacy_policy">Règles de confidentialité</string>
     <string name="contributor_status_active">En activité</string>
     <string name="update_check_failed">Échec de la recherche des mises à jour</string>
+    <string name="major_update_label">Changement majeur !</string>
+    <string name="major_update_description">Vous êtes sur le point de mettre à jour Lawnchair de la version <xliff:g example="15" id="current_major_version">%1$s</xliff:g> à la version <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, réfléchissez bien avant de faire la mise à jour car les nouvelles versions sont susceptibles d\'être plus instables que la version actuelle.</string>
+    <string name="pro_disabled_by_unknown">Cannot update!</string>
+    <string name="pro_disabled_by_major_is_newer">Cannot update, This build is way too new!</string>
+    <string name="updater">Updater</string>
     <!--
 
     Backup and restore
@@ -413,6 +449,7 @@
     <string name="gesture_handler_sleep">Mettre en veille</string>
     <string name="gesture_handler_recents">Ouvrir l\'écran Récents</string>
     <string name="gesture_handler_open_notifications">Ouvrir le panneau des notifications</string>
+    <string name="gesture_handler_open_quick_settings">Ouvrir les Réglages rapides</string>
     <string name="gesture_handler_open_app_option">Ouvrir une appli</string>
     <string name="gesture_handler_open_app_config">Ouvrir %1$s</string>
     <string name="gesture_handler_open_app_drawer">Ouvrir le tiroir des applis</string>
@@ -421,12 +458,15 @@
     <string name="gesture_handler_open_assistant">Ouvrir l\'assistant</string>
     <string name="pick_app_for_gesture">Sélectionnez une appli</string>
     <string name="dt2s_admin_hint_title">Autorisations d\'administration requises</string>
-    <string name="dt2s_admin_hint">Pour mettre en veille votre appareil à l\'aide d\'un double appui, définissez Lawnchair comme appli d\'administration de l\'appareil. Appuyez sur « Ouvrir les paramètres » puis appuyez sur « Activer l\'appli d\'administration de cet appareil. »</string>
-    <string name="dt2s_admin_warning">Vous ne pourrez plus mettre en veille votre appareil à l\'aide d\'un double appui.</string>
+    <string name="dt2s_admin_hint">Pour mettre l\'appareil en veille, définissez Lawnchair comme appli d\'administration de l\'appareil. Appuyez sur « Ouvrir les paramètres » puis appuyez sur « Activer l\'appli d\'administration de cet appareil. »</string>
+    <string name="dt2s_admin_warning">Les gestes qui mettent l\'appareil en veille seront désactivés.</string>
     <string name="d2ts_recents_a11y_hint_title">Activez le service d\'accessibilité</string>
-    <string name="dt2s_a11y_hint">Pour mettre en veille votre appareil avec un double appui, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » et activez « Utiliser Lawnchair ».\n\nLawnchair utilise la méthode d\'accessibilité `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applis, mais Lawnchair n\'est pas configuré de manière à utiliser ces fonctionnalités et ne reçoit donc aucun événement.</string>
-    <string name="dt2s_recents_warning_open_settings">Ouvrir les paramètres</string>
-    <string name="recents_a11y_hint">Pour utiliser Ouvrir l\'écran Récents, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » et activez « Utiliser Lawnchair ».\n\nLawnchair utilise la méthode d\'accessibilité `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applis, mais Lawnchair n\'est pas configuré de manière à utiliser ces fonctionnalités et ne reçoit donc aucun événement.</string>
+    <string name="sleep_a11y_hint">mettre l\'appareil en veille</string>
+    <string name="notifications_fallback_a11y_hint">ouvrir le panneau de notifications</string>
+    <string name="quick_settings_a11y_hint">ouvrir le panneau Réglages rapides</string>
+    <string name="recents_screen_a11y_hint">ouvrir l\'écran Récents</string>
+    <string name="generic_a11y_hint">Pour %1$s, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » puis activez « Utiliser Lawnchair. »</string>
+    <string name="generic_a11y_disclaimer">Lawnchair utilise la méthode d\'accessibilité `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applis, mais Lawnchair n\'est pas configuré de manière à utiliser ces fonctionnalités et ne reçoit donc aucun événement.</string>
     <!--
 
     Bug reporting
@@ -449,6 +489,8 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
     <string name="home_screen_rotation_description">Autoriser la rotation de l\'écran d\'accueil lorsque l\'appareil est tourné</string>
+    <string name="auto_updater_label">Auto updater</string>
+    <string name="auto_updater_description">Automatically check for Nightly update when going to About section</string>
     <string name="wallpaper_blur">Flouter le fond d\'écran (expérimental)</string>
     <string name="wallpaper_background_blur">Intensité du flou</string>
     <string name="wallpaper_background_blur_factor">Seuil factoriel</string>
@@ -471,10 +513,6 @@
     <string name="home_screen_unlock">Déverrouiller l\'écran d\'accueil</string>
     <string name="home_screen_locked">L\'écran d\'accueil est verrouillé</string>
     <string name="home_screen_lock_description">Empêcher les changements d\'agencement de l\'écran d\'accueil</string>
-    <string name="show_dot_pagination_label">Afficher des points représentant les pages</string>
-    <string name="show_dot_pagination_description">Utiliser des points plutôt que des lignes pour afficher le numéro de page</string>
-    <string name="show_material_u_popup_label">Utiliser le nouveau style de pop-up</string>
-    <string name="show_material_u_popup_description">Utiliser le style de pop-up Material You</string>
     <string name="popup_menu">Menu pop-up</string>
     <string name="popup_menu_items">Éléments du menu pop-up</string>
     <string name="edit_menu_items">Modifier les éléments du menu pop-up</string>
@@ -581,7 +619,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search web and more</string>
+    <string name="all_apps_device_search_hint">Recherche Web/autres</string>
     <string name="all_apps_search_bar_hint">Rechercher des applis</string>
     <string name="all_apps_no_search_results">Aucune application correspondant à « <xliff:g example="Android" id="query">%1$s</xliff:g> » n\'a pu être trouvée</string>
     <string name="all_apps_search_result_suggestions">Depuis le Web</string>
@@ -682,5 +720,5 @@
     <string name="permissions_needed">Autorisations nécessaires</string>
     <string name="grant_requested_permissions_tap">Appuyez pour accorder les autorisations</string>
     <!-- Message shown when all home screen views are removed -->
-    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
+    <string name="home_screen_all_views_removed_msg">Écran d\'accueil nettoyé</string>
 </resources>
