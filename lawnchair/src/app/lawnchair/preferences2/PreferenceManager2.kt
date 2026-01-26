@@ -56,6 +56,8 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherPrefs
+import com.android.launcher3.LauncherPrefs.Companion.ENABLE_TWOLINE_ALLAPPS_TOGGLE
 import com.android.launcher3.R
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
@@ -595,7 +597,10 @@ class PreferenceManager2 @Inject constructor(
     val twoLineAllApps = preference(
         key = booleanPreferencesKey(name = "two_line_all_apps"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_two_line_allapps),
-        onSet = { reloadHelper.recreate() },
+        onSet = { value ->
+            LauncherPrefs.get(context).put(ENABLE_TWOLINE_ALLAPPS_TOGGLE, value)
+            reloadHelper.recreate()
+        },
     )
 
     val enableFeed = preference(
