@@ -123,10 +123,10 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Tingkat lanjut</string>
     <!-- Draggable -->
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here. Drag an item here or tap the remove button to make an item active.</string>
-    <string name="reorderable_add_hint_items">Active items will appear here. Drag an item here or tap the add button to make an item active.</string>
+    <string name="reorderable_active_items">Item Aktif</string>
+    <string name="reorderable_disabled_items">Item Lainnya</string>
+    <string name="reorderable_disabled_hint">Item nonaktif akan muncul di sini. Tarik item ke sini atau sentuh tombol \"hapus\" untuk menjadikan item aktif.</string>
+    <string name="reorderable_add_hint_items">Item aktif akan muncul di sini. Tarik item atau sentuh tombol \"tambah\" untuk menjadika item aktif.</string>
     <!--
 
     Preference Dashboard
@@ -174,7 +174,7 @@
     <string name="show_deck_layout_description">Tampilkan opsi tata letak untuk menyembunyikan laci aplikasi dan secara otomatis menambahkan aplikasi baru ke layar beranda</string>
     <string name="material_expressive_label">Material 3 Ekspresif</string>
     <string name="material_expressive_description">Aktifkan perubahan Material 3 Ekspresif pada ruang kerja</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
+    <string name="experimental_folder_shape_modify_label">Bentuk folder kustom</string>
     <string name="folder_shape_label">Folder</string>
     <string name="app_icon_shape_label">Aplikasi</string>
     <string name="gesturenavcontract_label">API GestureNavContract</string>
@@ -340,7 +340,7 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persia</string>
-    <string name="smartspace_calendar_lunar">Lunar</string>
+    <string name="smartspace_calendar_lunar">Hijriyah</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
     <string name="smartspace_battery_fast_charging">Pengisian daya cepat</string>
@@ -367,11 +367,11 @@
     <string name="smartspace_onboarding">Onboarding</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
-    <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new!</string>
-    <string name="onboarding_welcome">Welcome to Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the App Drawer</string>
+    <string name="onboarding_open_settings_subtitle">Tekan lama pada beranda untuk membuka pengaturan</string>
+    <string name="onboarding_major_upgrade_title">Selamat datang di Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
+    <string name="onboarding_major_upgrade_subtitle">Lihat apa yang baru!</string>
+    <string name="onboarding_welcome">Selamat datang di Lawnchair!</string>
+    <string name="onboarding_swipe_up">Usap ke atas untuk membuka laci aplikasi</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Jumlah target maksimum</string>
     <string name="open_smartspacer_settings">Buka pengaturan Smartspacer</string>
@@ -413,7 +413,7 @@
     <string name="contributor_status_active">Aktif</string>
     <string name="update_check_failed">Gagal untuk cek pembaruan</string>
     <string name="major_update_label">Breaking change!</string>
-    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
+    <string name="major_update_description">Anda akan memperbarui dari Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> ke Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, mohon pertimbangkan bahwa versi baru mungkin tidak se-stabil versi saat ini.</string>
     <string name="pro_disabled_by_unknown">Cannot update!</string>
     <string name="pro_disabled_by_major_is_newer">Cannot update, This build is way too new!</string>
     <string name="updater">Updater</string>
@@ -489,7 +489,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotasi layar beranda</string>
     <string name="home_screen_rotation_description">Izinkan rotasi layar beranda ketika perangkat diputar</string>
-    <string name="auto_updater_label">Auto updater</string>
+    <string name="auto_updater_label">Pembaruan otomatis</string>
     <string name="auto_updater_description">Automatically check for Nightly update when going to About section</string>
     <string name="wallpaper_blur">Wallpaper samar (eksperimental)</string>
     <string name="wallpaper_background_blur">Intensitas blur</string>

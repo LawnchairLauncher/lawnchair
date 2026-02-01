@@ -174,8 +174,8 @@
     <string name="show_deck_layout_description">显示一个外观选项，开启时隐藏抽屉，并将 App 显示到桌面上</string>
     <string name="material_expressive_label">Material 3 表现力</string>
     <string name="material_expressive_description">在工作区中启用 Material 3 的表达性更改</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="experimental_folder_shape_modify_label">可自定义文件夹形状</string>
+    <string name="folder_shape_label">文件夹</string>
     <string name="app_icon_shape_label">应用</string>
     <string name="gesturenavcontract_label">手势导航合约 API</string>
     <string name="gesturenavcontract_description">无需root权限即可渲染启动器动画，但不适用于深度修改的AOSP</string>
@@ -364,14 +364,14 @@
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
     <string name="smartspace_now_playing">正在播放</string>
-    <string name="smartspace_onboarding">Onboarding</string>
+    <string name="smartspace_onboarding">入职</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
-    <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new!</string>
-    <string name="onboarding_welcome">Welcome to Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the App Drawer</string>
+    <string name="onboarding_open_settings_title">设置你的 Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">长按主屏幕打开设置</string>
+    <string name="onboarding_major_upgrade_title">欢迎来到 Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>！</string>
+    <string name="onboarding_major_upgrade_subtitle">查看什么是新的！</string>
+    <string name="onboarding_welcome">欢迎来到 Lawnchair！</string>
+    <string name="onboarding_swipe_up">上滑用来打开应用抽屉</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">目标数量上限</string>
     <string name="open_smartspacer_settings">打开 Smartspacer 设置</string>
@@ -414,9 +414,9 @@
     <string name="update_check_failed">检查更新失败</string>
     <string name="major_update_label">颠覆性变革！</string>
     <string name="major_update_description">您即将从 Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> 更新到 Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>，请谨慎考虑，因为较新的主版本可能比当前版本不稳定。</string>
-    <string name="pro_disabled_by_unknown">Cannot update!</string>
-    <string name="pro_disabled_by_major_is_newer">Cannot update, This build is way too new!</string>
-    <string name="updater">Updater</string>
+    <string name="pro_disabled_by_unknown">无法更新！</string>
+    <string name="pro_disabled_by_major_is_newer">无法更新，此构建太新！</string>
+    <string name="updater">更新器</string>
     <!--
 
     Backup and restore
@@ -489,8 +489,8 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotation_description">允许在设备旋转时旋转主屏幕</string>
-    <string name="auto_updater_label">Auto updater</string>
-    <string name="auto_updater_description">Automatically check for Nightly update when going to About section</string>
+    <string name="auto_updater_label">自动更新器</string>
+    <string name="auto_updater_description">进入关于部分时自动检查每日更新</string>
     <string name="wallpaper_blur">壁纸模糊 (实验性)</string>
     <string name="wallpaper_background_blur">模糊强度</string>
     <string name="wallpaper_background_blur_factor">因素阈值</string>
