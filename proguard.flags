@@ -1,18 +1,16 @@
+# Improves inlining by allowing ProGuard to make fields/methods accessed
+# by the inlined method visible.
+-allowaccessmodification
 
--keep,allowshrinking,allowoptimization class com.android.launcher3.** {*;}
--keepclasseswithmembernames class com.android.launcher3.** {*;}
-
+# Selectively disable obfuscation for key Launcher subpackages, making
+# unretraced stack frames slightly more actionable.
+-keep,allowshrinking,allowoptimization,allowaccessmodification class com.android.** {*;}
 -keep,allowshrinking,allowoptimization class com.android.systemui.shared.** {*;}
 -keepclasseswithmembernames class com.android.systemui.shared.** {*;}
-
 -keep,allowshrinking,allowoptimization class com.android.quickstep.** {*;}
 -keepclasseswithmembernames class com.android.quickstep.** {*;}
-
-# The support library contains references to newer platform versions.
-# Don't warn about those in case this app is linking against an older
-# platform version.  We know about them, and they are safe.
--dontwarn android.support.**
-
+-keep class android.gui.BoxShadowSettings
+-keep class android.gui.BorderSettings
 # Proguard will strip methods required for talkback to properly scroll to
 # next row when focus is on the last item of last row when using a RecyclerView
 # Keep optimized and shrunk proguard to prevent issues like this when using
@@ -27,35 +25,30 @@
     public <init>(...);
 }
 
-## Prevent obfuscating various overridable objects
--keep class ** implements com.android.launcher3.util.ResourceBasedOverride {
-    public <init>(...);
-}
+# Rules for internal proto classes
+# Prevent optimization or access modification of any referenced code that may
+# conflict with code in the bootclasspath.
+# TODO(b/222468116): Resolve such collisions in the build system.
+-keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {*;}
+-keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {*;}
+-keep interface com.android.internal.protolog.common.IProtoLogGroup { *; }
 
--keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
-  *;
-}
--keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
-  *;
-}
-
-# Discovery bounce animation
+# Do not optimize animation methods that are using reflection
 -keep class com.android.launcher3.allapps.DiscoveryBounce$VerticalProgressWrapper {
-  public void setProgress(float);
-  public float getProgress();
+    public void setProgress(float);
+    public float getProgress();
 }
 
 # BUG(70852369): Surpress additional warnings after changing from Proguard to R8
 -dontwarn android.app.**
 -dontwarn android.graphics.**
+-dontwarn android.net.**
 -dontwarn android.os.**
 -dontwarn android.view.**
 -dontwarn android.window.**
 
-# Ignore warnings for hidden utility classes referenced from the shared lib
--dontwarn com.android.internal.util.**
-
-
--keep class com.android.internal.protolog.** {
-  *;
-}
+# The support library contains references to newer platform versions.
+# Don't warn about those in case this app is linking against an older
+# platform version.  We know about them, and they are safe.
+-dontwarn android.support.**
+-dontwarn org.apache.http.**
