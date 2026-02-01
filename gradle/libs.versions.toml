@@ -38,7 +38,7 @@ diffplug-spotless = "com.diffplug.spotless:8.2.1"
 
 [libraries]
 # AndroidX
-androidx-activity-compose = "androidx.activity:activity-compose:1.12.2"
+androidx-activity-compose = "androidx.activity:activity-compose:1.12.3"
 androidx-benchmark-macro-junit4 = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 androidx-concurrent-futures = "androidx.concurrent:concurrent-futures:1.3.0"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.2.1"
