@@ -260,7 +260,8 @@ android {
             minifyEnabled true
             shrinkResources true
             pseudoLocalesEnabled false
-            proguardFiles proguardFilesFromAosp + "proguard.pro"
+            proguardFiles(proguardFilesFromAosp)
+            proguardFiles(file("proguard.pro"), getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
 
