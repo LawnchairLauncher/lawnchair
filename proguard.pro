@@ -9,8 +9,6 @@
 # Remove some Kotlin overhead
 -processkotlinnullchecks remove
 
--keep,allowshrinking,allowoptimization class com.android.launcher3.** {*;}
-
 # Lawnchair specific rules.
 -keep class app.lawnchair.LawnchairProto$* { *; }
 -keep class app.lawnchair.LawnchairApp { *; }
