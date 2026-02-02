@@ -9,6 +9,11 @@
 # Remove some Kotlin overhead
 -processkotlinnullchecks remove
 
+# Keep all public functions in classes annotated with ProvidesInterface
+-keep,allowoptimization @com.android.systemui.plugins.annotations.ProvidesInterface class * {
+    public *;
+}
+
 # Lawnchair specific rules.
 -keep class app.lawnchair.LawnchairProto$* { *; }
 -keep class app.lawnchair.LawnchairApp { *; }
