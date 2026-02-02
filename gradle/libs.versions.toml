@@ -7,7 +7,7 @@ androidx-room = "2.8.4"
 androidx-lifecycle = "2.10.0"
 accompanist = "0.37.3"
 opto = "1.0.18"
-protobuf = "4.33.4"
+protobuf = "4.33.5"
 retrofit = "3.0.0"
 dagger = "2.59"
 libsu = "6.0.0"
@@ -16,7 +16,7 @@ refine = "4.4.0"
 guava = "33.5.0-android"
 junitVersion = "4.13.2"
 mockito = "5.21.0"
-mockitoKotlin = "5.4.0"
+mockitoKotlin = "6.2.3"
 truth = "1.4.5"
 testRules = "1.7.0"
 testRunner = "1.7.0"
@@ -38,7 +38,7 @@ diffplug-spotless = "com.diffplug.spotless:8.2.1"
 
 [libraries]
 # AndroidX
-androidx-activity-compose = "androidx.activity:activity-compose:1.12.2"
+androidx-activity-compose = "androidx.activity:activity-compose:1.12.3"
 androidx-benchmark-macro-junit4 = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 androidx-concurrent-futures = "androidx.concurrent:concurrent-futures:1.3.0"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.2.1"
@@ -53,7 +53,7 @@ androidx-graphics-shapes = "androidx.graphics:graphics-shapes:1.1.0"
 androidx-junit = "androidx.test.ext:junit:1.3.0"
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
-androidx-navigation-compose = "androidx.navigation:navigation-compose:2.9.6"
+androidx-navigation-compose = "androidx.navigation:navigation-compose:2.9.7"
 androidx-palette-ktx = "androidx.palette:palette-ktx:1.0.0"
 androidx-preference-ktx = "androidx.preference:preference-ktx:1.2.1"
 androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.4.1"
@@ -65,11 +65,11 @@ androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
-compose-bom = "androidx.compose:compose-bom:2026.01.00"
+compose-bom = "androidx.compose:compose-bom:2026.01.01"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha12"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha13"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
@@ -108,10 +108,6 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
 
-# Kotlin
-kotlin-androidExtensionRuntime = { module = "org.jetbrains.kotlin:kotlin-android-extensions-runtime", version.ref = "kotlin" }
-kotlin-parcelizeRuntime = { module = "org.jetbrains.kotlin:kotlin-parcelize-runtime", version.ref = "kotlin" }
-kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin" }
 # KotlinX
 kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
 kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2"
@@ -143,6 +139,8 @@ rikka-refine-runtime = { group = "dev.rikka.tools.refine", name = "runtime", ver
 smartspacer-sdk = "com.kieronquinn.smartspacer:sdk-client:1.1.2"
 xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
 errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.46.0"
+# Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
+ktlint = "com.pinterest.ktlint:ktlint-cli:1.8.0"
 composeRules = "io.nlopez.compose.rules:ktlint:0.5.3"
 google-guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 
@@ -152,7 +150,7 @@ junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 mockito-robolectric = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.4"
-mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.15.11"
+mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.4"
 
 [bundles]
 accompanist = ["accompanist-adaptive", "accompanist-drawablepainter", "accompanist-permissions"]

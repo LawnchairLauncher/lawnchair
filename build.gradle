@@ -57,7 +57,6 @@ allprojects {
             generateProtoTasks {
                 all().configureEach { task ->
                     task.builtins {
-                        remove java
                         java {
                             option "lite"
                         }
@@ -81,15 +80,6 @@ allprojects {
         compilerOptions {
             jvmDefault = JvmDefaultMode.ENABLE
             jvmTarget = JvmTarget.fromTarget(libs.versions.jdkRelease.get())
-        }
-    }
-
-    configurations.configureEach {
-        resolutionStrategy.eachDependency {
-            // Fix duplicate class kotlinx.android.parcel.* found in these 2 dependencies.
-            if (requested.module == libs.kotlin.androidExtensionRuntime.get().module) {
-                useTarget(libs.kotlin.parcelizeRuntime)
-            }
         }
     }
 
@@ -314,7 +304,7 @@ android {
 
             // Lawnchair-TODO: Don't include Compose Disabled, but there's has to be another way of making this NOT long
             java.srcDirs = ['src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features']
-            kotlin.srcDirs = ['src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features']
+            kotlin.directories.addAll('src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features')
 
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
@@ -324,7 +314,7 @@ android {
 
         lawn {
             java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
-            kotlin.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
+            kotlin.directories.addAll('src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared')
             aidl.srcDirs = ['lawnchair/aidl']
             res.srcDirs = ['lawnchair/res', 'platform_frameworks_libs_systemui/animationlib/res']
             manifest.srcFile "lawnchair/AndroidManifest.xml"
@@ -359,7 +349,7 @@ android {
         withQuickstep {
             res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
             java.srcDirs = ['quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog']
-            kotlin.srcDirs = ['quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog']
+            kotlin.directories.addAll('quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog')
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
@@ -508,7 +498,7 @@ spotless {
     }
     kotlin {
         target("lawnchair/src/**/*.kt")
-        ktlint("1.8.0").customRuleSets([
+        ktlint(libs.ktlint.get().version).customRuleSets([
             libs.composeRules.get().toString()
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",

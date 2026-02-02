@@ -12,7 +12,7 @@
 > [!WARNING]
 > This branch contains major changes from the rebase of Launcher3, including breaking changes and refactors that can cause Lawnchair to break.
 > 
-> If you wish to contribute, read our [contributing guidelines](CONTRIBUTING.md). Note that this branch will undergo many changes as we slowly refactor our codebase, so the `16-dev` branch may be particularly unfriendly to new contributors. It is still possible to submit changes to `15-dev`, but new feature development will be focused on this branch.
+> If you wish to contribute, read our [contributing guidelines](CONTRIBUTING.md). Note that this branch will undergo many changes as we slowly refactor our codebase, so the `16-dev` branch may be particularly unfriendly to new contributors. **It is now not possible to submit changes to `15-dev`, new feature development will be focused on this branch.**
 > 
 > For regular users, we recommend staying on `15-dev` for stability purposes.
 
