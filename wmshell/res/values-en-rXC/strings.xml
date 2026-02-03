@@ -65,10 +65,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‎‏‎‎‎‎‎‎‎‏‎‎‎‏‏‎‎‏‎‎‎‎‎‎‏‏‏‏‏‏‏‎‏‎‎‏‎‎‏‎‏‎‏‎Move top right‎‏‎‎‏‎"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‎‏‎‏‏‏‏‎‎‏‏‎‎‏‏‎‎‎‏‎‎‏‏‏‏‏‎‎‎‏‏‎‏‏‎‏‏‎‎‏‎‎‏‎‎‏‏‏‎‏‏‏‏‏‏‏‎‎‎‏‎‎Move bottom left‎‏‎‎‏‎"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‏‏‎‏‎‎‏‏‏‏‏‏‏‏‎‎‏‎‏‎‏‏‏‏‏‏‏‎‏‎‏‏‏‏‏‏‎‎‎‏‎‏‏‏‏‏‏‏‏‏‏‏‎‏‎‏‎‎‎‎‎Move bottom right‎‏‎‎‏‎"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‏‎‏‏‏‏‏‎‏‏‏‎‏‏‎‎‏‏‏‏‎‎‎‏‎‎‎‎‏‎‎‏‏‏‏‎‎‏‎‎‎‎‏‎‏‎‎‎‎‎‎‏‏‎‏‎‏‏‏‎‏‎expand menu‎‏‎‎‏‎"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‏‎‎‏‎‏‎‎‏‎‏‎‎‏‏‎‏‏‎‏‎‏‏‏‏‎‎‎‏‏‏‏‎‏‏‏‎‏‏‎‏‏‎‎‏‎‏‎‏‏‎‎‏‎‏‎‎‏‏‏‎collapse menu‎‏‎‎‏‎"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‎‎‎‏‎‏‎‏‎‏‎‎‏‏‎‎‏‎‏‎‏‏‎‏‏‏‏‎‏‏‏‏‎‎‎‏‎‏‏‎‎‏‎‏‏‏‏‏‎‏‎‏‎‎‎‎‏‎‏‏‏‎Move left‎‏‎‎‏‎"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‎‏‎‏‎‏‎‏‎‏‏‎‎‎‎‎‏‎‏‎‏‏‎‏‏‎‏‎‏‎‎‏‎‏‏‎‏‏‏‎‏‏‏‏‏‏‏‏‏‎‏‏‏‎‎‎‏‎‏‎‏‎Move right‎‏‎‎‏‎"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‎‏‎‏‎‏‏‎‎‏‎‎‎‏‏‎‏‎‏‎‏‏‏‎‏‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‎‏‎‎‏‎‎‎‎‎‎‏‎‎‎‎‎‎‎‎‎‎expand ‎‏‎‎‏‏‎<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>‎‏‎‎‏‏‏‎‎‏‎‎‏‎"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‏‏‎‎‎‎‎‏‏‏‎‏‎‏‏‎‎‎‏‏‎‏‏‎‏‎‏‏‎‏‎‎‏‏‎‎‏‏‎‎‏‏‎‎‎‎‏‎‏‎‎‏‏‎‎‎‏‎‎‏‎collapse ‎‏‎‎‏‏‎<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>‎‏‎‎‏‏‏‎‎‏‎‎‏‎"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‏‎‎‏‎‎‎‏‏‎‎‏‎‏‏‏‏‎‏‏‎‏‏‏‎‏‎‏‎‏‎‏‏‎‏‏‏‏‏‏‏‏‏‎‏‏‎‏‏‎‎‎‏‏‏‎‏‎‎‎‎‎‎‏‎‎‏‏‎<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>‎‏‎‎‏‏‏‎ settings‎‏‎‎‏‎"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‏‏‎‏‎‎‏‎‏‏‎‏‎‏‎‏‏‎‏‎‎‏‏‎‏‎‏‎‏‏‎‏‏‏‏‏‏‎‎‏‎‏‎‏‏‎‎‏‎‏‎‏‎‏‎‎‎‏‏‏‎‎Dismiss bubble‎‏‎‎‏‎"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‎‏‏‎‏‏‏‏‏‏‎‎‎‏‎‏‏‏‎‎‏‎‎‏‎‏‎‎‏‎‎‏‎‏‏‎‏‎‎‎‎‏‏‏‏‎‏‏‎‎‎‎‏‎‏‎‏‎‏‏‏‎Move to fullscreen‎‏‎‎‏‎"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‎‏‏‏‎‎‎‏‎‎‏‏‎‏‎‏‎‏‎‏‏‏‏‎‏‎‎‏‎‏‏‎‎‎‏‎‏‏‏‏‎‏‎‏‏‎‎‎‎‎‏‎‎‏‎‎‏‏‎‏‎‏‎Don’t bubble conversation‎‏‎‎‏‎"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‏‏‎‏‎‏‎‏‎‎‎‎‎‏‏‏‎‏‏‎‏‏‏‏‏‏‎‎‏‏‏‎‎‎‏‎‎‎‎‎‎‏‏‎‏‎‏‏‏‏‏‏‏‎‏‏‏‎‏‏‎Chat using bubbles‎‏‎‎‏‎"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‏‏‎‏‎‏‎‎‎‎‎‎‏‏‏‎‎‎‎‎‎‏‎‏‎‏‎‏‎‎‎‎‏‏‏‎‎‏‎‏‏‎‏‏‎‎‏‎‎‎‏‎‎‏‎‏‎‏‏‏‏‎New conversations appear as floating icons, or bubbles. Tap to open bubble. Drag to move it.‎‏‎‎‏‎"</string>
@@ -92,6 +97,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‏‎‎‎‎‎‏‏‏‎‏‏‎‏‏‏‎‎‏‎‏‏‎‎‎‏‏‎‎‎‎‎‎‎‎‏‏‏‏‏‏‎‎‎‎‏‎‏‏‏‎‏‏‏‏‎‏‏‏‏‏‎Camera issues?‎‏‎‎‏‏‎\n‎‏‎‎‏‏‏‎Tap to refit‎‏‎‎‏‎"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‏‎‎‎‏‏‎‏‏‎‏‏‏‎‏‏‏‏‏‏‎‏‎‎‏‎‏‏‏‎‏‏‎‏‏‏‎‎‎‎‎‏‎‎‎‎‎‏‏‏‏‎‎‎‎‏‏‎‎‏‎Didn’t fix it?‎‏‎‎‏‏‎\n‎‏‎‎‏‏‏‎Tap to revert‎‏‎‎‏‎"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‎‏‏‎‏‏‎‎‏‎‏‏‎‎‏‎‎‎‎‏‎‎‏‎‎‏‎‎‎‏‎‎‏‏‎‎‏‏‎‎‎‎‎‏‏‎‎‎‏‏‏‏‎‎‏‎‎‏‏‏‎No camera issues? Tap to dismiss.‎‏‎‎‏‎"</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="6398482412956375783">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‏‏‎‎‎‏‏‎‎‏‎‏‏‏‏‏‏‏‎‎‏‏‏‎‏‏‎‏‎‏‎‎‏‏‏‎‏‏‏‎‏‏‎‎‏‎‏‎‏‏‎‏‎‏‏‏‎‎‏‏‏‎Tap to open the app menu‎‏‎‎‏‎"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="6285279585554484957">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‏‎‏‏‏‎‎‏‏‏‎‎‏‏‏‎‎‏‏‎‎‎‏‏‏‏‎‏‏‎‏‏‏‎‎‏‎‏‏‏‏‏‏‎‏‎‏‎‎‏‏‏‎‏‏‎‏‏‏‎‏‎Tap to show multiple apps together‎‏‎‎‏‎"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="6685429075790085337">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‏‏‏‎‎‏‏‎‎‎‏‏‏‎‏‏‎‏‎‏‎‎‏‎‏‎‎‏‎‏‏‎‏‎‎‎‏‏‎‎‎‏‎‎‏‎‎‏‏‏‏‎‎‏‏‎‏‏‎‎‏‎Return to fullscreen from the app menu‎‏‎‎‏‎"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‎‏‎‏‏‎‏‏‎‏‎‎‏‏‎‏‎‎‎‎‏‏‏‎‏‎‎‎‏‎‎‎‏‏‏‏‎‎‏‏‎‏‎‎‎‎‏‎‎‎‏‏‏‎‏‏‏‏‏‏‎‎See and do more‎‏‎‎‏‎"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‎‏‏‏‏‎‎‎‏‏‏‎‏‏‏‏‏‏‏‏‏‏‎‎‎‏‏‎‎‏‎‎‎‎‎‏‏‎‏‎‏‎‏‎‏‏‎‏‏‎‏‎‎‏‏‏‎‎‎‎‏‏‎Drag in another app for split screen‎‏‎‎‏‎"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‏‏‏‏‏‏‎‏‏‎‎‏‎‏‏‎‎‏‏‎‏‏‏‎‏‏‎‎‎‎‏‏‏‎‏‎‏‏‎‎‏‎‏‎‎‎‎‎‎‎‎‎‏‎‎‏‏‎‏‎‏‎Double-tap outside an app to reposition it‎‏‎‎‏‎"</string>
@@ -107,7 +115,7 @@
     <string name="minimize_button_text" msgid="271592547935841753">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‎‏‎‏‏‏‏‎‎‎‏‎‎‏‏‏‎‎‎‏‏‏‏‏‏‏‎‏‏‏‎‏‏‏‏‏‏‎‏‎‏‏‎‏‏‏‏‏‎‏‏‎‏‏‏‎‏‏‎‎‏‎Minimize‎‏‎‎‏‎"</string>
     <string name="close_button_text" msgid="2913281996024033299">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‏‎‎‎‎‏‏‎‏‏‏‎‎‎‎‎‏‏‏‎‏‎‎‎‏‎‏‎‎‏‎‎‎‏‏‏‏‎‎‎‏‏‎‏‏‎‏‏‎‎‎‎‎‎‎‏‎‎‏‏‎Close‎‏‎‎‏‎"</string>
     <string name="back_button_text" msgid="1469718707134137085">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‎‏‎‎‎‏‏‎‎‏‎‏‎‏‏‏‏‏‎‏‎‏‏‎‎‎‎‎‏‎‎‏‎‎‏‎‎‏‏‏‏‎‏‎‎‎‎‎‎‎‏‎‏‏‏‏‏‏‎‏‎Back‎‏‎‎‏‎"</string>
-    <string name="handle_text" msgid="1766582106752184456">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‏‎‎‎‏‎‎‎‎‏‎‎‎‎‏‎‏‎‎‏‎‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‏‎‎‎‎‏‏‎‎‏‏‏‎‎‎‎‏‎‎‎‏‎‎‎‎Handle‎‏‎‎‏‎"</string>
+    <string name="handle_text" msgid="4419667835599523257">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‏‏‏‎‏‎‏‎‏‎‏‎‏‏‏‎‏‎‎‎‎‎‏‏‏‏‎‏‎‏‏‏‎‎‏‏‎‎‎‏‎‎‎‎‏‎‎‎‎‏‏‎‏‏‎‏‏‏‎‎‏‎App handle‎‏‎‎‏‎"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‎‏‏‏‎‎‏‎‏‏‏‎‎‏‎‎‎‎‏‏‎‏‎‎‏‏‏‏‎‎‏‏‏‎‎‎‎‎‏‎‏‏‎‎‏‎‏‏‎‏‏‏‏‎‏‎‎‎‏‏‎App Icon‎‏‎‎‏‎"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‎‎‎‎‎‎‏‎‎‎‎‏‎‏‏‎‎‎‎‎‏‏‎‏‏‏‎‏‏‏‏‏‎‎‏‎‏‏‏‎‏‎‎‎‏‎‏‏‏‎‏‏‎‎‏‎‏‏‏‏‎Fullscreen‎‏‎‎‏‎"</string>
     <string name="desktop_text" msgid="1077633567027630454">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‎‏‏‏‎‏‏‏‏‎‏‎‎‏‎‎‎‎‏‏‎‎‎‎‎‎‏‎‏‎‎‎‎‏‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‎‏‏‏‎‏‏‎‎Desktop Mode‎‏‎‎‏‎"</string>
@@ -116,9 +124,21 @@
     <string name="float_button_text" msgid="9221657008391364581">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‏‏‏‏‏‏‏‏‏‏‎‎‏‏‏‏‎‏‎‎‎‎‎‏‏‎‎‎‎‏‏‎‏‎‎‎‏‏‎‏‎‏‎‎‎‏‎‎‏‏‏‏‏‏‏‏‎‎‏‎‏‎Float‎‏‎‎‏‎"</string>
     <string name="select_text" msgid="5139083974039906583">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‎‎‏‏‏‎‏‎‏‎‎‎‏‏‎‏‏‎‎‎‏‏‎‏‎‎‏‎‏‎‏‏‏‎‏‏‏‏‎‎‎‏‏‎‏‎‎‏‎‏‎‎‏‎‎‎‏‎‏‏‏‎Select‎‏‎‎‏‎"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‎‏‎‎‏‎‎‎‎‎‎‏‏‏‎‏‏‎‏‏‏‏‏‏‎‏‏‏‏‏‎‎‏‏‎‎‎‏‏‏‎‎‏‏‏‏‏‎‏‎‎‎‏‎‏‎‏‏‏‏‎Screenshot‎‏‎‎‏‎"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‏‏‏‏‏‎‏‏‎‏‎‏‏‏‏‏‎‏‏‎‏‎‎‎‏‎‎‎‏‏‏‏‎‎‎‎‏‎‏‎‏‏‏‎‎‏‏‎‏‎‏‏‎‏‏‎‎‏‎‎‎‎Open in browser‎‏‎‎‏‎"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‏‎‏‏‏‏‎‏‏‎‎‎‎‎‏‎‏‏‎‎‏‏‎‏‎‏‎‏‏‎‎‎‎‏‏‎‎‎‏‎‎‎‎‎‎‏‎‏‏‎‎‏‎‏‏‏‏‏‎‎‎‎New Window‎‏‎‎‏‎"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‎‏‏‎‏‎‏‎‎‎‎‏‏‎‏‎‎‎‎‏‎‏‎‎‎‎‎‎‏‏‎‎‎‏‎‎‏‏‏‏‏‏‎‎‏‎‏‎‎‎‏‎‎‎‎‏‎‎‎‎‎‎Manage Windows‎‏‎‎‏‎"</string>
     <string name="close_text" msgid="4986518933445178928">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‎‎‏‎‏‎‎‏‏‎‎‏‏‏‎‏‎‏‏‎‎‏‎‎‎‏‏‎‎‏‏‎‏‏‏‎‏‏‏‎‎‎‎‏‎‎‏‏‏‎‏‏‎‎‎‏‏‎‎‎‎‎Close‎‏‎‎‏‎"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‎‏‎‎‎‎‏‎‎‏‎‏‎‏‎‏‎‏‏‎‎‎‎‎‏‎‎‏‎‎‎‏‏‎‏‏‎‏‏‎‏‎‎‏‏‏‏‏‏‎‎‎‎‏‎‎‎‏‏‎‏‎Close Menu‎‏‎‎‏‎"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‏‎‏‎‏‎‏‏‎‎‏‎‏‏‏‏‎‎‏‏‏‏‎‏‎‎‏‏‏‏‏‎‎‏‎‏‎‎‎‎‏‏‎‎‏‏‎‎‎‎‎‏‏‎‎‏‏‎‎‎‎‎Open Menu‎‏‎‎‏‎"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="6366422614991687237">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‎‏‏‎‎‎‎‏‎‏‏‎‏‎‎‎‎‏‎‎‏‏‏‎‏‎‎‎‏‏‎‎‏‏‏‎‎‎‏‎‎‏‎‏‏‏‏‏‎‎‏‏‏‎‎‏‎‎‎‏‎‏‎Open Menu‎‏‎‎‏‎"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‏‏‎‏‎‏‏‏‎‏‎‏‏‎‏‎‏‏‏‏‏‎‎‎‎‎‎‏‏‏‎‏‎‏‏‎‏‏‎‎‏‎‏‎‎‎‎‏‎‏‏‏‏‎‏‎‏‎‏‏‎Maximize Screen‎‏‎‎‏‎"</string>
     <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‏‏‎‎‏‎‏‎‏‎‎‏‎‎‏‏‏‏‏‎‏‏‎‏‏‏‎‎‏‏‏‏‎‎‎‏‎‎‎‎‏‎‏‏‏‎‎‏‏‎‏‏‏‏‎‏‏‎‏‎‎Snap Screen‎‏‎‎‏‎"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‏‎‏‎‎‎‏‎‏‏‎‎‎‎‎‎‎‏‎‏‎‏‎‏‎‏‏‎‎‎‎‏‏‏‎‏‎‎‏‎‎‏‎‏‎‎‏‎‎‎‎‎‎‏‏‏‎‎‏‏‎‎App can\'t be moved here‎‏‎‎‏‎"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‏‎‏‎‏‏‏‎‎‎‏‎‏‎‎‏‎‏‏‏‏‏‎‎‎‏‏‏‎‎‎‏‎‎‎‎‏‎‏‏‎‏‎‏‎‎‏‎‏‎‎‏‏‏‏‎‎‏‎‏‎Maximize‎‏‎‎‏‎"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‏‎‎‎‎‎‎‎‏‏‎‎‎‏‏‎‏‏‏‏‏‏‏‏‏‏‎‏‏‎‎‎‏‎‏‎‏‏‎‎‎‎‏‏‎‎‏‎‎‏‏‏‎‏‎‏‏‎‎‎‎‎Snap left‎‏‎‎‏‎"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‏‎‏‎‏‎‏‎‎‏‏‏‎‎‎‏‎‏‏‎‎‎‎‎‎‎‎‏‎‏‎‎‏‏‎‏‎‏‏‎‏‏‏‎‏‏‎‎‎‎Snap right‎‏‎‎‏‎"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‎‎‎‏‏‎‎‎‏‎‎‎‎‎‎‎‏‏‎‏‎‏‎‎‎‎‏‎‎‏‏‎‎‏‎‏‎‏‏‏‏‏‎‎‏‎‎‏‏‏‏‏‎‎‎‎‏‏‏‎‎‎Open by default settings‎‏‎‎‏‎"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‎‏‏‏‎‎‎‎‎‎‎‎‎‎‎‏‏‎‎‎‏‎‏‏‏‎‎‏‎‏‎‏‎‎‎‏‏‎‏‏‏‎‏‎‏‏‏‏‏‎‎‎‎‏‏‏‎‎‎‏‎‎‏‎Choose how to open web links for this app‎‏‎‎‏‎"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‎‎‎‎‎‏‏‎‏‎‏‏‎‏‏‏‎‏‎‏‎‎‏‏‎‏‎‏‏‎‏‏‎‎‏‎‏‎‎‎‎‎‎‏‎‎‎‎‏‏‏‎‎‏‏‏‏‏‏‏‎‎In the app‎‏‎‎‏‎"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‏‏‏‎‏‏‏‏‏‎‎‏‏‏‎‏‏‎‏‎‏‎‎‎‎‎‏‏‎‏‏‏‏‎‎‎‎‏‎‎‏‏‎‏‎‎‎‎‎‏‏‏‏‎‏‏‎‎‏‏‏‎‎‏‎In your browser‎‏‎‎‏‎"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‏‏‏‎‏‏‎‎‎‎‎‏‏‎‎‏‎‏‎‎‏‎‏‎‎‏‎‎‏‏‎‏‎‏‎‏‎‏‎‏‏‎‏‏‎‎‏‏‎‎‏‏‎‎‎‎‏‎‎‎‎‏‎‎‏‏‎OK‎‏‎‎‏‎"</string>
 </resources>

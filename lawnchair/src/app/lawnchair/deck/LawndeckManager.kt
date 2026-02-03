@@ -6,6 +6,7 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
+import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
@@ -16,7 +17,9 @@ import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.provider.RestoreDbTask
+import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.PackageManagerHelper
 import java.io.File
 import java.util.Locale
 import kotlinx.coroutines.CompletableDeferred
@@ -101,9 +104,8 @@ class LawndeckManager(private val context: Context) {
 
         onProgress?.invoke("Categorizing apps...")
 
-        // Use flowerpot to categorize apps
-        val potsManager = Flowerpot.Manager.getInstance(context)
-        val categorizedApps = potsManager.categorizeApps(apps.map { it as? AppInfo })
+        val validApps = apps.mapNotNull { it as? AppInfo }
+        val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
 
         onProgress?.invoke("Adding apps to workspace...")
 
@@ -115,7 +117,7 @@ class LawndeckManager(private val context: Context) {
         var singleAppCount = 0
 
         // Process each category
-        categorizedApps.forEach { (category, categoryApps) ->
+        finalCategorizedApps.forEach { (category, categoryApps) ->
             if (categoryApps.isEmpty()) return@forEach
 
             if (categoryApps.size == 1) {
@@ -188,22 +190,32 @@ class LawndeckManager(private val context: Context) {
         val activityInfo = activities[0]
         val appInfo = AppInfo(context, activityInfo, user)
 
-        // Use flowerpot to categorize the app
-        val potsManager = Flowerpot.Manager.getInstance(context)
-        val categorizedApps = potsManager.categorizeApps(listOf(appInfo))
+        val intent = appInfo.intent
 
-        if (categorizedApps.isEmpty()) {
-            // No category found, add directly to workspace
-            ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
-            return
-        }
+        // Determine category: Google Apps > System Apps > Flowerpot categories
+        val category = when {
+            packageName.startsWith("com.google.") -> "Google Apps"
 
-        // Get the category for this app (categorizedApps is a Map<String, List<AppInfo>>)
-        val categoryEntry = categorizedApps.entries.firstOrNull() ?: run {
-            ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
-            return
+            intent != null && ApplicationInfoWrapper(context, intent).isSystem() -> "System Apps"
+
+            else -> {
+                // Use flowerpot to categorize the app
+                val potsManager = Flowerpot.Manager.getInstance(context)
+                val categorizedApps = potsManager.categorizeApps(listOf(appInfo))
+
+                if (categorizedApps.isEmpty()) {
+                    // No category found, add directly to workspace
+                    ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
+                    return
+                }
+
+                // Get the category from flowerpot
+                categorizedApps.entries.firstOrNull()?.key ?: run {
+                    ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
+                    return
+                }
+            }
         }
-        val category = categoryEntry.key
 
         // Check if there's already a folder for this category on workspace
         val existingFolder = findFolderByCategory(category, dataModel)

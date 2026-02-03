@@ -49,7 +49,12 @@ class CellContentDimensionsTest {
     fun dimensionsFitTheCell() {
         val cellSize = Pair(80, 104)
         val cellContentDimensions =
-            CellContentDimensions(iconSizePx = 66, iconDrawablePaddingPx = 8, iconTextSizePx = 14)
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 14,
+                maxLineCount = 1,
+            )
 
         val contentHeight =
             cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
@@ -59,6 +64,76 @@ class CellContentDimensionsTest {
             assertThat(iconSizePx).isEqualTo(66)
             assertThat(iconDrawablePaddingPx).isEqualTo(8)
             assertThat(iconTextSizePx).isEqualTo(14)
+            assertThat(maxLineCount).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun dimensionsFitTheCellWithDoubleLines() {
+        val cellSize = Pair(80, 108)
+        val cellContentDimensions =
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 12,
+                maxLineCount = 2,
+            )
+
+        val contentHeight =
+            cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
+
+        assertThat(contentHeight).isEqualTo(106)
+        cellContentDimensions.run {
+            assertThat(iconSizePx).isEqualTo(66)
+            assertThat(iconDrawablePaddingPx).isEqualTo(8)
+            assertThat(iconTextSizePx).isEqualTo(12)
+            assertThat(maxLineCount).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun decreaseMaxLineCount() {
+        val cellSize = Pair(80, 104)
+        val cellContentDimensions =
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 12,
+                maxLineCount = 2,
+            )
+
+        val contentHeight =
+            cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
+
+        assertThat(contentHeight).isEqualTo(90)
+        cellContentDimensions.run {
+            assertThat(iconSizePx).isEqualTo(66)
+            assertThat(iconDrawablePaddingPx).isEqualTo(8)
+            assertThat(iconTextSizePx).isEqualTo(12)
+            assertThat(maxLineCount).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun decreaseMaxLineCountAndPadding() {
+        val cellSize = Pair(80, 82)
+        val cellContentDimensions =
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 12,
+                maxLineCount = 2,
+            )
+
+        val contentHeight =
+            cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
+
+        assertThat(contentHeight).isEqualTo(82)
+        cellContentDimensions.run {
+            assertThat(iconSizePx).isEqualTo(66)
+            assertThat(iconDrawablePaddingPx).isEqualTo(0)
+            assertThat(iconTextSizePx).isEqualTo(12)
+            assertThat(maxLineCount).isEqualTo(1)
         }
     }
 
@@ -66,7 +141,12 @@ class CellContentDimensionsTest {
     fun decreasePadding() {
         val cellSize = Pair(67, 87)
         val cellContentDimensions =
-            CellContentDimensions(iconSizePx = 66, iconDrawablePaddingPx = 8, iconTextSizePx = 14)
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 14,
+                maxLineCount = 1,
+            )
 
         val contentHeight =
             cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
@@ -76,6 +156,7 @@ class CellContentDimensionsTest {
             assertThat(iconSizePx).isEqualTo(66)
             assertThat(iconDrawablePaddingPx).isEqualTo(2)
             assertThat(iconTextSizePx).isEqualTo(14)
+            assertThat(maxLineCount).isEqualTo(1)
         }
     }
 
@@ -83,7 +164,12 @@ class CellContentDimensionsTest {
     fun decreaseIcon() {
         val cellSize = Pair(65, 84)
         val cellContentDimensions =
-            CellContentDimensions(iconSizePx = 66, iconDrawablePaddingPx = 8, iconTextSizePx = 14)
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 14,
+                maxLineCount = 1,
+            )
 
         val contentHeight =
             cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
@@ -93,6 +179,7 @@ class CellContentDimensionsTest {
             assertThat(iconSizePx).isEqualTo(63)
             assertThat(iconDrawablePaddingPx).isEqualTo(0)
             assertThat(iconTextSizePx).isEqualTo(14)
+            assertThat(maxLineCount).isEqualTo(1)
         }
     }
 
@@ -100,7 +187,12 @@ class CellContentDimensionsTest {
     fun decreaseText() {
         val cellSize = Pair(63, 81)
         val cellContentDimensions =
-            CellContentDimensions(iconSizePx = 66, iconDrawablePaddingPx = 8, iconTextSizePx = 14)
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 14,
+                maxLineCount = 1,
+            )
 
         val contentHeight =
             cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
@@ -110,6 +202,7 @@ class CellContentDimensionsTest {
             assertThat(iconSizePx).isEqualTo(63)
             assertThat(iconDrawablePaddingPx).isEqualTo(0)
             assertThat(iconTextSizePx).isEqualTo(13)
+            assertThat(maxLineCount).isEqualTo(1)
         }
     }
 
@@ -117,7 +210,12 @@ class CellContentDimensionsTest {
     fun decreaseIconAndTextTwoSteps() {
         val cellSize = Pair(60, 78)
         val cellContentDimensions =
-            CellContentDimensions(iconSizePx = 66, iconDrawablePaddingPx = 8, iconTextSizePx = 14)
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 14,
+                maxLineCount = 1,
+            )
 
         val contentHeight =
             cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
@@ -127,6 +225,7 @@ class CellContentDimensionsTest {
             assertThat(iconSizePx).isEqualTo(61)
             assertThat(iconDrawablePaddingPx).isEqualTo(0)
             assertThat(iconTextSizePx).isEqualTo(12)
+            assertThat(maxLineCount).isEqualTo(1)
         }
     }
 
@@ -134,7 +233,12 @@ class CellContentDimensionsTest {
     fun decreaseIconAndTextToMinimum() {
         val cellSize = Pair(52, 63)
         val cellContentDimensions =
-            CellContentDimensions(iconSizePx = 66, iconDrawablePaddingPx = 8, iconTextSizePx = 14)
+            CellContentDimensions(
+                iconSizePx = 66,
+                iconDrawablePaddingPx = 8,
+                iconTextSizePx = 14,
+                maxLineCount = 2,
+            )
 
         val contentHeight =
             cellContentDimensions.resizeToFitCellHeight(cellSize.second, iconSizeSteps)
@@ -144,6 +248,7 @@ class CellContentDimensionsTest {
             assertThat(iconSizePx).isEqualTo(52)
             assertThat(iconDrawablePaddingPx).isEqualTo(0)
             assertThat(iconTextSizePx).isEqualTo(8)
+            assertThat(maxLineCount).isEqualTo(1)
         }
     }
 }

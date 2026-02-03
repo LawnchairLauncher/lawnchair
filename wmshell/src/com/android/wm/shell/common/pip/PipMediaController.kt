@@ -303,6 +303,13 @@ class PipMediaController(private val mContext: Context, private val mMainHandler
     }
 
     /**
+     * Returns {@code true} if the pinned Activity has an active associated MediaSession.
+     */
+    fun hasActiveMediaSession(): Boolean {
+        return mMediaController != null
+    }
+
+    /**
      * Sets the active media controller for the top PiP activity.
      */
     private fun setActiveMediaController(controller: MediaController?) {

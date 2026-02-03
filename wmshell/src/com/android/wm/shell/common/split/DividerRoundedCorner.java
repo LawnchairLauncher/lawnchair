@@ -30,6 +30,7 @@ import android.util.AttributeSet;
 import android.view.RoundedCorner;
 import android.view.View;
 
+import androidx.annotation.DimenRes;
 import androidx.annotation.Nullable;
 
 import com.android.wm.shell.R;
@@ -47,13 +48,14 @@ public class DividerRoundedCorner extends View {
     private InvertedRoundedCornerDrawInfo mBottomLeftCorner;
     private InvertedRoundedCornerDrawInfo mBottomRightCorner;
     private boolean mIsLeftRightSplit;
+    @DimenRes private int mRadiusResourceId = 0;
 
     public DividerRoundedCorner(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         mDividerWidth = getResources().getDimensionPixelSize(R.dimen.split_divider_bar_width);
         mDividerBarBackground = new Paint();
         mDividerBarBackground.setColor(
-                getResources().getColor(R.color.split_divider_background, null));
+                getResources().getColor(R.color.split_divider_background, null /* theme */));
         mDividerBarBackground.setFlags(Paint.ANTI_ALIAS_FLAG);
         mDividerBarBackground.setStyle(Paint.Style.FILL);
     }
@@ -98,7 +100,39 @@ public class DividerRoundedCorner extends View {
         return false;
     }
 
-    void setIsLeftRightSplit(boolean isLeftRightSplit) {
+    /**
+     * Sets the resource ID for the radius. This resource ID can be used to retrieve
+     * dimension values for the radius from the application's resources.
+     * If {@code radiusResId} is 0, the display's default round corner will be used.
+     *
+     * @param radiusResId The resource ID of the radius dimension.
+     */
+    public void setRadiusResource(@DimenRes int radiusResId) {
+        mRadiusResourceId = radiusResId;
+    }
+
+    /**
+     * Sets the color for the rounded corners of the divider bar background.
+     * Optionally invalidates the view to trigger a redraw if the change should be
+     * reflected immediately.
+     *
+     * @param cornerColor The ARGB color to set for the rounded corners.
+     * @param invalidateView True if the view should be invalidated
+     *                       to redraw with the new color, false otherwise.
+     */
+    public void setRoundCornerColor(int cornerColor, boolean invalidateView) {
+        mDividerBarBackground.setColor(cornerColor);
+        if (invalidateView) {
+            invalidate();
+        }
+    }
+
+    /**
+     * Set whether the rounded corner is for a left/right split.
+     *
+     * @param isLeftRightSplit whether it's a left/right split or top/bottom split.
+     */
+    public void setIsLeftRightSplit(boolean isLeftRightSplit) {
         mIsLeftRightSplit = isLeftRightSplit;
     }
 
@@ -118,8 +152,12 @@ public class DividerRoundedCorner extends View {
         InvertedRoundedCornerDrawInfo(@RoundedCorner.Position int cornerPosition) {
             mCornerPosition = cornerPosition;
 
-            final RoundedCorner roundedCorner = getDisplay().getRoundedCorner(cornerPosition);
-            mRadius = roundedCorner == null ? 0 : roundedCorner.getRadius();
+            if (mRadiusResourceId == 0) {
+                final RoundedCorner roundedCorner = getDisplay().getRoundedCorner(cornerPosition);
+                mRadius = roundedCorner == null ? 0 : roundedCorner.getRadius();
+            } else {
+                mRadius = mContext.getResources().getDimensionPixelSize(mRadiusResourceId);
+            }
 
             // Starts with a filled square, and then subtracting out a circle from the appropriate
             // corner.

@@ -17,6 +17,7 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="@color/surface" />
+    <solid android:color="?attr/allAppsSurfaceHighest" />
     <corners android:radius="@dimen/work_edu_card_radius" />
 </shape>
+

@@ -18,9 +18,9 @@ package com.android.wm.shell.common.split;
 
 import static android.view.PointerIcon.TYPE_HORIZONTAL_DOUBLE_ARROW;
 import static android.view.PointerIcon.TYPE_VERTICAL_DOUBLE_ARROW;
-import static android.view.WindowManager.LayoutParams.FLAG_SLIPPERY;
 
 import static com.android.internal.config.sysui.SystemUiDeviceConfigFlags.CURSOR_HOVER_STATES_ENABLED;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.snapPositionToUIString;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -45,7 +45,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import android.widget.FrameLayout;
@@ -54,10 +53,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
+import com.android.mechanics.spec.InputDirection;
+import com.android.mechanics.view.DistanceGestureContext;
+import com.android.mechanics.view.ViewMotionValue;
+import com.android.wm.shell.Flags;
 import com.android.wm.shell.R;
-import com.android.wm.shell.animation.Interpolators;
+import com.android.wm.shell.common.split.DividerSnapAlgorithm.SnapTarget;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
+import com.android.wm.shell.shared.animation.Interpolators;
+import com.android.wm.shell.shared.desktopmode.DesktopState;
+
+import com.google.android.msdl.data.model.MSDLToken;
+
+import java.util.Objects;
 
 /**
  * Divider for multi window splits.
@@ -65,6 +74,7 @@ import com.android.wm.shell.protolog.ShellProtoLogGroup;
 public class DividerView extends FrameLayout implements View.OnTouchListener {
     public static final long TOUCH_ANIMATION_DURATION = 150;
     public static final long TOUCH_RELEASE_ANIMATION_DURATION = 200;
+    private static final boolean SHOW_DRAG_TOOLTIP = true;
 
     private final Paint mPaint = new Paint();
     private final Rect mBackgroundRect = new Rect();
@@ -75,6 +85,8 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
     private SurfaceControlViewHost mViewHost;
     private DividerHandleView mHandle;
     private DividerRoundedCorner mCorners;
+    /** A tooltip view that appears to educate users about split screen breakpoints. */
+    private DividerTooltip mTooltip;
     private int mTouchElevation;
 
     private VelocityTracker mVelocityTracker;
@@ -88,9 +100,24 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
     private int mHandleRegionWidth;
     private int mHandleRegionHeight;
 
+    // Calculation classes for "magnetic snap" user-controlled movement
+    private DistanceGestureContext mDistanceGestureContext;
+    private ViewMotionValue mViewMotionValue;
     /**
-     * Tracks divider bar visible bounds in screen-based coordination. Used to calculate with
-     * insets.
+     * The @SnapPosition where the user started dragging from. Assigned at the beginning of a drag
+     * and set back to null once the drag ends.
+     */
+    @Nullable private Integer mDragStartingSnapPosition;
+    /**
+     * When the divider is dragged out of the starting region {@link #mDragStartingSnapPosition}
+     * for the first time, this is flipped to true. Used for tooltip logic.
+     */
+    private boolean mDraggedOutOfStartingRegion = false;
+    @Nullable private Integer mLastHoveredOverSnapPosition;
+
+    /**
+     * This is not the visible bounds you see on screen, but the actual behind-the-scenes window
+     * bounds, which is larger.
      */
     private final Rect mDividerBounds = new Rect();
     private final Rect mTempRect = new Rect();
@@ -124,7 +151,7 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
         }
     };
 
-    private final AccessibilityDelegate mHandleDelegate = new AccessibilityDelegate() {
+    final AccessibilityDelegate mHandleDelegate = new AccessibilityDelegate() {
         @Override
         public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
             super.onInitializeAccessibilityNodeInfo(host, info);
@@ -147,6 +174,8 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                 }
                 info.addAction(new AccessibilityAction(R.id.action_move_rb_full,
                         mContext.getString(R.string.accessibility_action_divider_right_full)));
+                info.addAction(new AccessibilityAction(R.id.action_swap_apps,
+                        mContext.getString(R.string.accessibility_action_divider_swap_horizontal)));
             } else {
                 info.addAction(new AccessibilityAction(R.id.action_move_tl_full,
                         mContext.getString(R.string.accessibility_action_divider_top_full)));
@@ -165,13 +194,20 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                 }
                 info.addAction(new AccessibilityAction(R.id.action_move_rb_full,
                         mContext.getString(R.string.accessibility_action_divider_bottom_full)));
+                info.addAction(new AccessibilityAction(R.id.action_swap_apps,
+                        mContext.getString(R.string.accessibility_action_divider_swap_vertical)));
             }
         }
 
         @Override
         public boolean performAccessibilityAction(@NonNull View host, int action,
                 @Nullable Bundle args) {
-            DividerSnapAlgorithm.SnapTarget nextTarget = null;
+            if (action == R.id.action_swap_apps) {
+                mSplitLayout.onDoubleTappedDivider();
+                return true;
+            }
+
+            SnapTarget nextTarget = null;
             DividerSnapAlgorithm snapAlgorithm = mSplitLayout.mDividerSnapAlgorithm;
             if (action == R.id.action_move_tl_full) {
                 nextTarget = snapAlgorithm.getDismissEndTarget();
@@ -212,7 +248,8 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
 
     /** Sets up essential dependencies of the divider bar. */
     public void setup(SplitLayout layout, SplitWindowManager splitWindowManager,
-            SurfaceControlViewHost viewHost, InsetsState insetsState) {
+            SurfaceControlViewHost viewHost, InsetsState insetsState,
+            DesktopState desktopState) {
         mSplitLayout = layout;
         mSplitWindowManager = splitWindowManager;
         mViewHost = viewHost;
@@ -222,13 +259,16 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
         final boolean isLeftRightSplit = mSplitLayout.isLeftRightSplit();
         mHandle.setIsLeftRightSplit(isLeftRightSplit);
         mCorners.setIsLeftRightSplit(isLeftRightSplit);
+        mTooltip.setIsLeftRightSplit(isLeftRightSplit);
 
         mHandleRegionWidth = getResources().getDimensionPixelSize(isLeftRightSplit
                 ? R.dimen.split_divider_handle_region_height
                 : R.dimen.split_divider_handle_region_width);
         mHandleRegionHeight = getResources().getDimensionPixelSize(isLeftRightSplit
                 ? R.dimen.split_divider_handle_region_width
-                : R.dimen.split_divider_handle_region_height);
+                : desktopState.canEnterDesktopMode()
+                        ? R.dimen.desktop_mode_portrait_split_divider_handle_region_height
+                        : R.dimen.split_divider_handle_region_height);
     }
 
     void onInsetsChanged(InsetsState insetsState, boolean animate) {
@@ -243,7 +283,7 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                 final InsetsSource source = insetsState.sourceAt(i);
                 if (source.getType() == WindowInsets.Type.navigationBars()
                         && source.hasFlags(InsetsSource.FLAG_INSETS_ROUNDED_CORNER)) {
-                    mTempRect.inset(source.calculateVisibleInsets(mTempRect));
+                    mTempRect.inset(source.calculateVisibleInsets(mTempRect, mTempRect));
                 }
             }
         }
@@ -270,6 +310,7 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
         mDividerBar = findViewById(R.id.divider_bar);
         mHandle = findViewById(R.id.docked_divider_handle);
         mCorners = findViewById(R.id.docked_divider_rounded_corner);
+        mTooltip = findViewById(R.id.docked_divider_tooltip);
         mTouchElevation = getResources().getDimensionPixelSize(
                 R.dimen.docked_stack_divider_lift_elevation);
         mDoubleTapDetector = new GestureDetector(getContext(), new DoubleTapListener());
@@ -319,9 +360,7 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
             return false;
         }
 
-        if (mDoubleTapDetector.onTouchEvent(event)) {
-            return true;
-        }
+        mDoubleTapDetector.onTouchEvent(event);
 
         // Convert to use screen-based coordinates to prevent lost track of motion events while
         // moving divider bar and calculating dragging velocity.
@@ -336,23 +375,77 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                 setTouching();
                 mStartPos = touchPos;
                 mMoving = false;
-                // This triggers initialization of things like the resize veil in preparation for
-                // showing it when the user moves the divider past the slop, and has to be done
-                // before onStartDragging() which starts the jank interaction tracing
-                mSplitLayout.updateDividerBounds(mSplitLayout.getDividerPosition(),
-                        false /* shouldUseParallaxEffect */);
                 mSplitLayout.onStartDragging();
                 break;
             case MotionEvent.ACTION_MOVE:
                 mVelocityTracker.addMovement(event);
-                if (!mMoving && Math.abs(touchPos - mStartPos) > mTouchSlop) {
+                int displacement = touchPos - mStartPos;
+                if (!mMoving && Math.abs(displacement) > mTouchSlop) {
                     mStartPos = touchPos;
                     mMoving = true;
+                    if (Flags.enableMagneticSplitDivider()) {
+                        // Move gesture is confirmed, create framework for magnetic snap
+                        InputDirection direction =
+                                displacement > 0 ? InputDirection.Max : InputDirection.Min;
+                        mDistanceGestureContext = DistanceGestureContext.create(mContext, mStartPos,
+                                direction);
+                        mViewMotionValue = new ViewMotionValue(mStartPos,
+                                mDistanceGestureContext,
+                                mSplitLayout.mDividerSnapAlgorithm.getMotionSpec(),
+                                "dividerView::pos" /* label */);
+                        mLastHoveredOverSnapPosition = mSplitLayout.calculateCurrentSnapPosition();
+                        // Set a "starting region" in which we don't want to show the tooltip yet.
+                        mDragStartingSnapPosition = mSplitLayout.calculateCurrentSnapPosition();
+                        mViewMotionValue.addUpdateCallback(viewMotionValue -> {
+                            int snappedPosition = (int) viewMotionValue.getOutput();
+                            // Whenever MotionValue updates (from user moving the divider):
+                            // - Place divider in its new position
+                            placeDivider(snappedPosition);
+                            // - Play a haptic if entering a magnetic zone
+                            Integer currentlyHoveredOverSnapZone = viewMotionValue.get(
+                                    MagneticDividerUtils.getSNAP_POSITION_KEY());
+
+                            boolean changedSnapPosition = !Objects.equals(
+                                    currentlyHoveredOverSnapZone, mLastHoveredOverSnapPosition);
+                            if (currentlyHoveredOverSnapZone != null && changedSnapPosition) {
+                                playHapticClick();
+                            }
+                            // - Update the last-hovered-over snap zone
+                            mLastHoveredOverSnapPosition = currentlyHoveredOverSnapZone;
+                            // - Update tooltip state if needed
+                            if (SHOW_DRAG_TOOLTIP) {
+                                // - Update internal state for closest snap position (i.e. where the
+                                // user will end up if drag is released)
+                                final float velocity = isLeftRightSplit
+                                        ? mVelocityTracker.getXVelocity()
+                                        : mVelocityTracker.getYVelocity();
+                                int closestSnapPosition = mSplitLayout
+                                        .findSnapTarget(snappedPosition,
+                                                velocity, false /* hardDismiss */)
+                                        .snapPosition;
+                                // If we are still in the starting zone, wait until the user drags
+                                // to a point where the closest snap position is a different one.
+                                if (!mDraggedOutOfStartingRegion
+                                        && closestSnapPosition != mDragStartingSnapPosition) {
+                                    mDraggedOutOfStartingRegion = true;
+                                }
+                                // Afterwards, always show the tooltip, updating to reflect the
+                                // nearest snap point.
+                                if (mDraggedOutOfStartingRegion) {
+                                    showTooltip(snapPositionToUIString(closestSnapPosition));
+                                }
+                            }
+                        });
+                    }
                 }
                 if (mMoving) {
                     final int position = mSplitLayout.getDividerPosition() + touchPos - mStartPos;
                     mLastDraggingPosition = position;
-                    mSplitLayout.updateDividerBounds(position, true /* shouldUseParallaxEffect */);
+                    if (Flags.enableMagneticSplitDivider()) {
+                        updateMagneticSnapCalculation(position);
+                    } else {
+                        placeDivider(position);
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -360,6 +453,9 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                 releaseTouching();
                 if (!mMoving) {
                     mSplitLayout.onDraggingCancelled();
+                    if (Flags.enableMagneticSplitDivider()) {
+                        cleanUpMagneticSnapFramework();
+                    }
                     break;
                 }
 
@@ -369,18 +465,74 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                         ? mVelocityTracker.getXVelocity()
                         : mVelocityTracker.getYVelocity();
                 final int position = mSplitLayout.getDividerPosition() + touchPos - mStartPos;
-                final DividerSnapAlgorithm.SnapTarget snapTarget =
+                final SnapTarget snapTarget =
                         mSplitLayout.findSnapTarget(position, velocity, false /* hardDismiss */);
                 mSplitLayout.snapToTarget(position, snapTarget);
                 mMoving = false;
+                if (Flags.enableMagneticSplitDivider()) {
+                    cleanUpMagneticSnapFramework();
+                }
                 break;
         }
 
         return true;
     }
 
+    /** Plays a short haptic to indicate attaching or detaching from a divider snap point. */
+    private void playHapticClick() {
+        mSplitLayout.getHapticPlayer().playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR, null);
+    }
+
+    private void showTooltip(String tooltipText) {
+        mTooltip.setText(tooltipText);
+        if (mTooltip.getVisibility() == VISIBLE) {
+            return;
+        }
+        mTooltip.setVisibility(VISIBLE);
+        mTooltip.setAlpha(1f);
+    }
+
+    private void hideTooltip() {
+        if (mTooltip.getVisibility() == GONE) {
+            return;
+        }
+        mTooltip.setAlpha(0f);
+        mTooltip.setVisibility(GONE);
+    }
+
+    /** Updates the position of the divider. */
+    private void placeDivider(int position) {
+        mSplitLayout.updateDividerBounds(position, true /* shouldUseParallaxEffect */);
+    }
+
+    /**
+     * Sends a position update to the magnetic snap framework, allowing a calculation to occur. The
+     * position of the divider will be updated.
+     * @param position The current position of the user's finger.
+     */
+    private void updateMagneticSnapCalculation(int position) {
+        if (mDistanceGestureContext != null) {
+            mDistanceGestureContext.setDragOffset(position);
+        }
+        if (mViewMotionValue != null) {
+            mViewMotionValue.setInput(position);
+        }
+    }
+
+    /** Cleans up the magnetic snap framework after the drag gesture completes. */
+    private void cleanUpMagneticSnapFramework() {
+        if (mViewMotionValue != null) {
+            mViewMotionValue.dispose();
+        }
+        mDistanceGestureContext = null;
+        mViewMotionValue = null;
+        mLastHoveredOverSnapPosition = null;
+        mDragStartingSnapPosition = null;
+        mDraggedOutOfStartingRegion = false;
+        hideTooltip();
+    }
+
     private void setTouching() {
-        setSlippery(false);
         mHandle.setTouching(true, true);
         // Lift handle as well so it doesn't get behind the background, even though it doesn't
         // cast shadow.
@@ -392,32 +544,12 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
     }
 
     private void releaseTouching() {
-        setSlippery(true);
         mHandle.setTouching(false, true);
         mHandle.animate()
                 .setInterpolator(Interpolators.FAST_OUT_SLOW_IN)
                 .setDuration(TOUCH_RELEASE_ANIMATION_DURATION)
                 .translationZ(0)
                 .start();
-    }
-
-    private void setSlippery(boolean slippery) {
-        if (mViewHost == null) {
-            return;
-        }
-
-        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) getLayoutParams();
-        final boolean isSlippery = (lp.flags & FLAG_SLIPPERY) != 0;
-        if (isSlippery == slippery) {
-            return;
-        }
-
-        if (slippery) {
-            lp.flags |= FLAG_SLIPPERY;
-        } else {
-            lp.flags &= ~FLAG_SLIPPERY;
-        }
-        mViewHost.relayout(lp);
     }
 
     @Override
@@ -482,6 +614,7 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
                     mLastDraggingPosition,
                     position,
                     mSplitLayout.FLING_RESIZE_DURATION,
+                    Interpolators.FAST_OUT_SLOW_IN,
                     () -> mSplitLayout.setDividerPosition(position, true /* applyLayoutChange */));
             mMoving = false;
         }
@@ -497,18 +630,24 @@ public class DividerView extends FrameLayout implements View.OnTouchListener {
         return mHideHandle;
     }
 
+    /** Returns true if the divider is currently being physically controlled by the user. */
+    boolean isMoving() {
+        return mMoving;
+    }
+
     private class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            if (mSplitLayout != null) {
-                mSplitLayout.onDoubleTappedDivider();
-            }
-            return true;
-        }
 
         @Override
         public boolean onDoubleTapEvent(@NonNull MotionEvent e) {
-            return true;
+            // User could have started double tap and then dragged before letting go. Skip the
+            // swap if so
+            if (!mMoving && e.getAction() == MotionEvent.ACTION_UP) {
+                if (mSplitLayout != null) {
+                    mSplitLayout.onDoubleTappedDivider();
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

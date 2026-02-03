@@ -201,7 +201,6 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
                 // Sometimes the user has to click the input bar one more time
                 // for the keyboard to show.
-                input.showKeyboard()
             } else {
                 setBackgroundVisibility(true, 1f)
                 animateHintVisibility(false)

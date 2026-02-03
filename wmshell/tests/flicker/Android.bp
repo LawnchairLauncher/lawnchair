@@ -30,7 +30,6 @@ filegroup {
 
 java_library {
     name: "wm-shell-flicker-utils",
-    platform_apis: true,
     optimize: {
         enabled: false,
     },
@@ -39,15 +38,15 @@ java_library {
     ],
     static_libs: [
         "androidx.test.ext.junit",
-        "flickertestapplib",
+        "com_android_wm_shell_flags_lib",
         "flickerlib",
         "flickerlib-helpers",
+        "flickertestapplib",
+        "launcher-aosp-tapl",
+        "launcher-helper-lib",
         "platform-test-annotations",
         "wm-flicker-common-app-helpers",
         "wm-flicker-common-assertions",
-        "launcher-helper-lib",
-        "launcher-aosp-tapl",
-        "com_android_wm_shell_flags_lib",
     ],
 }
 
@@ -59,19 +58,20 @@ java_defaults {
         enabled: false,
     },
     test_suites: ["device-tests"],
-    libs: ["android.test.runner"],
+    libs: ["android.test.runner.stubs.system"],
     static_libs: [
-        "wm-shell-flicker-utils",
         "androidx.test.ext.junit",
-        "flickertestapplib",
         "flickerlib",
         "flickerlib-helpers",
         "flickerlib-trace_processor_shell",
+        "flickertestapplib",
+        "launcher-aosp-tapl",
+        "launcher-helper-lib",
         "platform-test-annotations",
+        "platform-test-rules",
         "wm-flicker-common-app-helpers",
         "wm-flicker-common-assertions",
-        "launcher-helper-lib",
-        "launcher-aosp-tapl",
+        "wm-shell-flicker-utils",
     ],
     data: [
         ":FlickerTestApp",

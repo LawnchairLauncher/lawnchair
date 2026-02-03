@@ -16,7 +16,7 @@
 -->
 <resources>
     <!-- App themes -->
-    <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
+    <style name="LauncherTheme" parent="@style/DynamicColorsBaseLauncherTheme">
         <item name="overviewButtonTextColor">@color/go_overview_text_color</item>
         <item name="overviewButtonIconColor">@color/go_overview_text_color</item>
         <item name="overviewButtonBackgroundColor">@color/go_overview_button_color</item>

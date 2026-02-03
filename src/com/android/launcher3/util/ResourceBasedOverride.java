@@ -24,13 +24,16 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * An interface to indicate that a class is dynamically loaded using resource overlay, hence its
  * class name and constructor should be preserved by proguard
+ * @deprecated Override the specific targets directly using dagger.
  */
+@Deprecated
 public interface ResourceBasedOverride {
 
     class Overrides {
 
         private static final String TAG = "Overrides";
 
+        @Deprecated
         public static <T extends ResourceBasedOverride> T getObject(
                 Class<T> clazz, Context context, int resId) {
             String className = context.getString(resId);

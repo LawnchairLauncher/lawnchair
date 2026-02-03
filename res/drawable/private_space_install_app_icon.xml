@@ -13,19 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="60dp"
-    android:height="60dp"
-    android:viewportWidth="60"
-    android:viewportHeight="60">
-    <group>
-        <clip-path
-            android:pathData="M30 0H30A30 30 0 0 1 60 30V30A30 30 0 0 1 30 60H30A30 30 0 0 1 0 30V30A30 30 0 0 1 30 0Z" />
-        <path
-            android:pathData="M30 0H30A30 30 0 0 1 60 30V30A30 30 0 0 1 30 60H30A30 30 0 0 1 0 30V30A30 30 0 0 1 30 0Z"
-            android:fillColor="@color/material_color_surface_container_lowest" />
-        <path
-            android:pathData="M29 31h-6v-2h6v-6h2v6h6v2h-6v6h-2v-6Z"
-            android:fillColor="@color/material_color_on_surface" />
-    </group>
-</vector>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/material_color_surface_container_lowest"/>
+    <foreground android:drawable="@drawable/private_space_install_app_icon_foreground" />
+</adaptive-icon>

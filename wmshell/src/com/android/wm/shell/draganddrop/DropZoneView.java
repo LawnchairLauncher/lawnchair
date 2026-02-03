@@ -16,16 +16,18 @@
 
 package com.android.wm.shell.draganddrop;
 
-import static com.android.wm.shell.animation.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.wm.shell.shared.animation.Interpolators.FAST_OUT_SLOW_IN;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.Gravity;
@@ -33,17 +35,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.android.internal.policy.ScreenDecorationsUtils;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.R;
+import com.android.wm.shell.protolog.ShellProtoLogGroup;
 
 /**
  * Renders a drop zone area for items being dragged.
  */
 public class DropZoneView extends FrameLayout {
 
+    private static final boolean DEBUG_LAYOUT = false;
     private static final float SPLASHSCREEN_ALPHA = 0.90f;
     private static final float HIGHLIGHT_ALPHA = 1f;
     private static final int MARGIN_ANIMATION_ENTER_DURATION = 400;
@@ -77,8 +83,10 @@ public class DropZoneView extends FrameLayout {
     private int mHighlightColor;
 
     private ObjectAnimator mBackgroundAnimator;
+    private int mTargetBackgroundColor;
     private ObjectAnimator mMarginAnimator;
     private float mMarginPercent;
+    private TextView mDebugIndex;
 
     // Renders a highlight or neutral transparent color
     private ColorDrawable mColorDrawable;
@@ -121,6 +129,22 @@ public class DropZoneView extends FrameLayout {
         mMarginView = new MarginView(context);
         addView(mMarginView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
+
+        if (DEBUG_LAYOUT) {
+            mDebugIndex = new TextView(context);
+            mDebugIndex.setVisibility(GONE);
+            mDebugIndex.setTextColor(Color.YELLOW);
+            addView(mDebugIndex, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.START | Gravity.TOP));
+
+            View borderView = new View(context);
+            addView(borderView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            GradientDrawable border = new GradientDrawable();
+            border.setShape(GradientDrawable.RECTANGLE);
+            border.setStroke(5, Color.RED);
+            borderView.setBackground(border);
+        }
     }
 
     public void onThemeChange() {
@@ -146,6 +170,10 @@ public class DropZoneView extends FrameLayout {
 
     /** Ignores the bottom margin provided by the insets. */
     public void setForceIgnoreBottomMargin(boolean ignoreBottomMargin) {
+        if (DEBUG_LAYOUT) {
+            ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP,
+                    "setForceIgnoreBottomMargin: ignore=%b", ignoreBottomMargin);
+        }
         mIgnoreBottomMargin = ignoreBottomMargin;
         if (mMarginPercent > 0) {
             mMarginView.invalidate();
@@ -154,8 +182,14 @@ public class DropZoneView extends FrameLayout {
 
     /** Sets the bottom inset so the drop zones are above bottom navigation. */
     public void setBottomInset(float bottom) {
+        if (DEBUG_LAYOUT) {
+            ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP, "setBottomInset: inset=%f",
+                    bottom);
+        }
         mBottomInset = bottom;
-        ((LayoutParams) mSplashScreenView.getLayoutParams()).bottomMargin = (int) bottom;
+        final LayoutParams lp = (LayoutParams) mSplashScreenView.getLayoutParams();
+        lp.bottomMargin = (int) bottom;
+        mSplashScreenView.setLayoutParams(lp);
         if (mMarginPercent > 0) {
             mMarginView.invalidate();
         }
@@ -181,6 +215,9 @@ public class DropZoneView extends FrameLayout {
 
     /** Animates between highlight and splashscreen depending on current state. */
     public void animateSwitch() {
+        if (DEBUG_LAYOUT) {
+            ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP, "animateSwitch");
+        }
         mShowingHighlight = !mShowingHighlight;
         mShowingSplash = !mShowingHighlight;
         final int newColor = mShowingHighlight ? mHighlightColor : mSplashScreenColor;
@@ -190,6 +227,10 @@ public class DropZoneView extends FrameLayout {
 
     /** Animates the highlight indicating the zone is hovered on or not. */
     public void setShowingHighlight(boolean showingHighlight) {
+        if (DEBUG_LAYOUT) {
+            ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP, "setShowingHighlight: showing=%b",
+                    showingHighlight);
+        }
         mShowingHighlight = showingHighlight;
         mShowingSplash = !mShowingHighlight;
         final int newColor = mShowingHighlight ? mHighlightColor : mSplashScreenColor;
@@ -199,6 +240,10 @@ public class DropZoneView extends FrameLayout {
 
     /** Animates the margins around the drop zone to show or hide. */
     public void setShowingMargin(boolean visible) {
+        if (DEBUG_LAYOUT) {
+            ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP, "setShowingMargin: visible=%b",
+                    visible);
+        }
         if (mShowingMargin != visible) {
             mShowingMargin = visible;
             animateMarginToState();
@@ -211,7 +256,26 @@ public class DropZoneView extends FrameLayout {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    public void setDebugIndex(int index) {
+        if (!DEBUG_LAYOUT) {
+            return;
+        }
+
+        mDebugIndex.setText("Index:\n" + index);
+        mDebugIndex.setVisibility(VISIBLE);
+    }
+
     private void animateBackground(int startColor, int endColor) {
+        if (DEBUG_LAYOUT) {
+            ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP,
+                    "animateBackground: start=%s end=%s",
+                    Integer.toHexString(startColor), Integer.toHexString(endColor));
+        }
+        if (endColor == mTargetBackgroundColor) {
+            // Already at, or animating to, that background color
+            return;
+        }
         if (mBackgroundAnimator != null) {
             mBackgroundAnimator.cancel();
         }
@@ -223,6 +287,7 @@ public class DropZoneView extends FrameLayout {
             mBackgroundAnimator.setInterpolator(FAST_OUT_SLOW_IN);
         }
         mBackgroundAnimator.start();
+        mTargetBackgroundColor = endColor;
     }
 
     private void animateSplashScreenIcon() {

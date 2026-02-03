@@ -61,31 +61,15 @@
     <integer name="config_caretAnimationDuration">200</integer>
 
     <!-- Various classes overriden by projects/build flavors. -->
-    <string name="folder_name_provider_class" translatable="false"></string>
-    <string name="stats_log_manager_class" translatable="false"></string>
-    <string name="instant_app_resolver_class" translatable="false"></string>
     <string name="main_process_initializer_class" translatable="false"></string>
-    <string name="app_launch_tracker_class" translatable="false"></string>
     <string name="test_information_handler_class" translatable="false"></string>
-    <string name="launcher_activity_logic_class" translatable="false"></string>
-    <string name="model_delegate_class" translatable="false"></string>
-    <string name="window_manager_proxy_class" translatable="false"></string>
-    <string name="secondary_display_predictions_class" translatable="false"></string>
-    <string name="widget_holder_factory_class" translatable="false"></string>
+    <string name="secondary_display_quickstep_delegate_class" translatable="false"></string>
     <string name="taskbar_search_session_controller_class" translatable="false"></string>
-    <string name="taskbar_model_callbacks_factory_class" translatable="false"></string>
-    <string name="taskbar_view_callbacks_factory_class" translatable="false"></string>
-    <string name="launcher_restore_event_logger_class" translatable="false"></string>
     <string name="taskbar_edu_tooltip_controller_class" translatable="false"></string>
-    <!--  Used for determining category of a widget presented in widget recommendations. -->
-    <string name="widget_recommendation_category_provider_class" translatable="false"></string>
-    <string name="api_wrapper_class" translatable="false"></string>
 
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
     <string name="local_colors_extraction_class" translatable="false"></string>
-    <string name="search_session_manager_class" translatable="false"></string>
-    <string name="plugin_manager_wrapper_class" translatable="false"></string>
 
     <!-- Scalable Grid configuration -->
     <!-- This is a float because it is converted to dp later in DeviceProfile -->
@@ -154,6 +138,8 @@
     </array>
 
     <string-array name="filtered_components" ></string-array>
+    <string-array name="default_featured_widget_apps" translatable="false">
+    </string-array>
 
     <!-- Swipe back to home related -->
     <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
@@ -207,9 +193,6 @@
 
     <dimen name="minimum_icon_label_size">8sp</dimen>
 
-    <!--  Used for custom widgets  -->
-    <array name="custom_widget_providers"/>
-
     <!-- Embed parameters -->
     <dimen name="activity_split_ratio"  format="float">0.5</dimen>
     <integer name="min_width_split">720</integer>
@@ -225,4 +208,9 @@
          of the same name in SystemUI. -->
     <string-array name="config_appsSupportMultiInstancesSplit">
     </string-array>
+
+    <!-- Used to differentiate between desktop and non-desktop devices. -->
+    <bool name="desktop_form_factor">false</bool>
+
+    <string-array name="grid_control_known_signers" translatable="false" />
 </resources>

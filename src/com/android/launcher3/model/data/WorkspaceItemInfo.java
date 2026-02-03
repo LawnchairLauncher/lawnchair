@@ -21,10 +21,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherSettings;
@@ -35,6 +38,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ContentWriter;
+import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper;
 
 import java.util.Arrays;
 
@@ -46,21 +50,17 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public static final int DEFAULT = 0;
 
     /**
-     * The shortcut was restored from a backup and it not ready to be used. This is
-     * automatically
+     * The shortcut was restored from a backup and it not ready to be used. This is automatically
      * set during backup/restore
      */
     public static final int FLAG_RESTORED_ICON = 1;
 
     /**
-     * The icon was added as an auto-install app, and is not ready to be used. This
-     * flag can't
-     * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default
-     * layout
+     * The icon was added as an auto-install app, and is not ready to be used. This flag can't
+     * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default layout
      * parsing.
      *
-     * OR this icon was added due to it being an active install session created by
-     * the user.
+     * OR this icon was added due to it being an active install session created by the user.
      */
     public static final int FLAG_AUTOINSTALL_ICON = 1 << 1;
 
@@ -94,14 +94,15 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public int status;
 
     /**
-     * A set of person's Id associated with the WorkspaceItemInfo, this is only used
-     * if the item
+     * A set of person's Id associated with the WorkspaceItemInfo, this is only used if the item
      * represents a deep shortcut.
      */
-    @NonNull
-    private String[] personKeys = Utilities.EMPTY_STRING_ARRAY;
+    @NonNull private String[] personKeys = Utilities.EMPTY_STRING_ARRAY;
 
     public int options;
+
+    @Nullable
+    private ShortcutInfo mShortcutInfo = null;
 
     public WorkspaceItemInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
@@ -115,7 +116,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         personKeys = info.personKeys.clone();
     }
 
-    /** TODO: Remove this. It's only called by ApplicationInfo.makeWorkspaceItem. */
+    /** TODO: Remove this.  It's only called by ApplicationInfo.makeWorkspaceItem. */
     public WorkspaceItemInfo(AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
@@ -144,7 +145,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
                 .put(Favorites.OPTIONS, options)
                 .put(Favorites.RESTORED, status);
 
-        if (!usingLowResIcon()) {
+        if (!getMatchingLookupFlag().useLowRes()) {
             writer.putIcon(bitmap, user);
         }
     }
@@ -159,6 +160,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         return (status & flag) != 0;
     }
 
+
     public final boolean isPromise() {
         return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)
                 // For archived apps, promise icons are always ready to be displayed.
@@ -166,8 +168,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     /**
-     * Returns true if the workspace item supports promise icon UI. There are a few
-     * cases where they
+     * Returns true if the workspace item supports promise icon UI. There are a few cases where they
      * are supported:
      * 1. Icons to be restored via backup/restore.
      * 2. Icons added as an auto-install app.
@@ -180,8 +181,10 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
     public void updateFromDeepShortcutInfo(@NonNull final ShortcutInfo shortcutInfo,
             @NonNull final Context context) {
-        // {@link ShortcutInfo#getActivity} can change during an update. Recreate the
-        // intent
+        if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
+            mShortcutInfo = shortcutInfo;
+        }
+        // {@link ShortcutInfo#getActivity} can change during an update. Recreate the intent
         intent = ShortcutKey.makeIntent(shortcutInfo);
         title = shortcutInfo.getShortLabel();
 
@@ -189,7 +192,13 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         if (TextUtils.isEmpty(label)) {
             label = shortcutInfo.getShortLabel();
         }
-        contentDescription = context.getPackageManager().getUserBadgedLabel(label, user);
+        try {
+            contentDescription = context.getPackageManager().getUserBadgedLabel(label, user);
+        } catch (SecurityException e) {
+            contentDescription = null;
+            Log.e(TAG, "Failed to get content description", e);
+        }
+
         if (shortcutInfo.isEnabled()) {
             runtimeStatusFlags &= ~FLAG_DISABLED_BY_PUBLISHER;
         } else {
@@ -218,9 +227,13 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         }
     }
 
+    @Nullable
+    public ShortcutInfo getDeepShortcutInfo() {
+        return mShortcutInfo;
+    }
+
     /**
-     * {@code true} if the shortcut is disabled due to its app being a lower
-     * version.
+     * {@code true} if the shortcut is disabled due to its app being a lower version.
      */
     public boolean isDisabledVersionLower() {
         return (runtimeStatusFlags & FLAG_DISABLED_VERSION_LOWER) != 0;
@@ -229,8 +242,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                ? getIntent().getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID)
-                : null;
+                ? getIntent().getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) : null;
     }
 
     @NonNull
@@ -243,10 +255,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         ComponentName cn = super.getTargetComponent();
         if (cn == null && hasStatusFlag(
                 FLAG_SUPPORTS_WEB_UI | FLAG_AUTOINSTALL_ICON | FLAG_RESTORED_ICON)) {
-            // Legacy shortcuts and promise icons with web UI may not have a componentName
-            // but just
-            // a packageName. In that case create a empty componentName instead of adding
-            // additional
+            // Legacy shortcuts and promise icons with web UI may not have a componentName but just
+            // a packageName. In that case create a empty componentName instead of adding additional
             // check everywhere.
             String pkg = intent.getPackage();
             return pkg == null ? null : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);

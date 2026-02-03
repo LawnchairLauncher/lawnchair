@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.navigation
 
 import app.lawnchair.ui.preferences.components.search.SearchProviderId
 import app.lawnchair.ui.preferences.destinations.SearchRoute
+import app.lawnchair.ui.preferences.destinations.ShapeRoute
 import kotlinx.serialization.Serializable
 
 /**
@@ -79,7 +80,7 @@ data class GeneralFontSelection(val prefKey: String) : PreferenceRoute
 data object GeneralIconPack : PreferenceRoute
 
 @Serializable
-data object GeneralIconShape : PreferenceRoute
+data class GeneralIconShape(val selectedId: ShapeRoute = ShapeRoute.APP_SHAPE) : PreferenceRoute
 
 @Serializable
 data object GeneralCustomIconShapeCreator : PreferenceRoute

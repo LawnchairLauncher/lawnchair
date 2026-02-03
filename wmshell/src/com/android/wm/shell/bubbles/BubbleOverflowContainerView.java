@@ -42,10 +42,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.internal.util.ContrastColorUtil;
 import com.android.wm.shell.Flags;
 import com.android.wm.shell.R;
+import com.android.wm.shell.shared.TypefaceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -226,16 +227,18 @@ public class BubbleOverflowContainerView extends LinearLayout {
                         ? res.getColor(R.color.bubbles_dark)
                         : res.getColor(R.color.bubbles_light));
 
-        final TypedArray typedArray = getContext().obtainStyledAttributes(new int[] {
-                com.android.internal.R.attr.materialColorSurfaceBright,
-                com.android.internal.R.attr.materialColorOnSurface});
-        int bgColor = typedArray.getColor(0, isNightMode ? Color.BLACK : Color.WHITE);
-        int textColor = typedArray.getColor(1, isNightMode ? Color.WHITE : Color.BLACK);
-        textColor = ContrastColorUtil.ensureTextContrast(textColor, bgColor, isNightMode);
-        typedArray.recycle();
+
+        int bgColor = getContext().getColor(
+                com.android.internal.R.color.materialColorSurfaceBright);
+        int textColor = getContext().getColor(com.android.internal.R.color.materialColorOnSurface);
+
         setBackgroundColor(bgColor);
         mEmptyStateTitle.setTextColor(textColor);
         mEmptyStateSubtitle.setTextColor(textColor);
+        TypefaceUtils.setTypeface(mEmptyStateTitle,
+                TypefaceUtils.FontFamily.GSF_BODY_MEDIUM_EMPHASIZED);
+        TypefaceUtils.setTypeface(mEmptyStateSubtitle, TypefaceUtils.FontFamily.GSF_BODY_MEDIUM);
+
     }
 
     public void updateFontSize() {
@@ -324,6 +327,7 @@ class BubbleOverflowAdapter extends RecyclerView.Adapter<BubbleOverflowAdapter.V
 
         TextView viewName = overflowView.findViewById(R.id.bubble_view_name);
         viewName.setTextColor(textColor);
+        TypefaceUtils.setTypeface(viewName, TypefaceUtils.FontFamily.GSF_LABEL_LARGE);
 
         return new ViewHolder(overflowView, mPositioner);
     }

@@ -15,12 +15,15 @@
  */
 package com.android.launcher3.util;
 
+import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.os.Process;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -82,13 +85,30 @@ public class WidgetUtils {
 
     /**
      * Creates a {@link AppWidgetProviderInfo} for the provided component name
+     *
+     * @param cn component name of the appwidget provider
+     * @param hideFromPicker indicates if the widget should appear in widget picker
      */
-    public static AppWidgetProviderInfo createAppWidgetProviderInfo(ComponentName cn) {
+    public static AppWidgetProviderInfo createAppWidgetProviderInfo(ComponentName cn,
+            boolean hideFromPicker) {
         ActivityInfo activityInfo = new ActivityInfo();
         activityInfo.applicationInfo = new ApplicationInfo();
+        activityInfo.applicationInfo.uid = Process.myUid();
         AppWidgetProviderInfo info = new AppWidgetProviderInfo();
+        if (hideFromPicker) {
+            info.widgetFeatures = WIDGET_FEATURE_HIDE_FROM_PICKER;
+        }
         info.providerInfo = activityInfo;
         info.provider = cn;
         return info;
+    }
+
+    /**
+     * Creates a {@link AppWidgetProviderInfo} for the provided component name
+     *
+     * @param cn component name of the appwidget provider
+     */
+    public static AppWidgetProviderInfo createAppWidgetProviderInfo(ComponentName cn) {
+        return createAppWidgetProviderInfo(cn, /*hideFromPicker=*/ false);
     }
 }

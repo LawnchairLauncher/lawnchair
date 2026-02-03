@@ -29,7 +29,8 @@ import android.window.SplashScreenView;
 
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.wm.shell.R;
-import com.android.wm.shell.common.TransactionPool;
+import com.android.wm.shell.shared.TransactionPool;
+import com.android.wm.shell.shared.startingsurface.SplashScreenExitAnimationUtils;
 
 /**
  * Default animation for exiting the splash screen window.

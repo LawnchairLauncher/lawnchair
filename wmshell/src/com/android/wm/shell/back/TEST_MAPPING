@@ -1,32 +1,10 @@
 {
   "presubmit": [
     {
-      "name": "WMShellUnitTests",
-      "options": [
-        {
-          "exclude-annotation": "androidx.test.filters.FlakyTest"
-        },
-        {
-          "include-filter": "com.android.wm.shell.back"
-        }
-      ]
+      "name": "WMShellUnitTests_shell_back"
     },
     {
-      "name": "CtsWindowManagerDeviceBackNavigation",
-      "options": [
-        {
-          "exclude-annotation": "androidx.test.filters.FlakyTest"
-        },
-        {
-          "include-filter": "android.server.wm.backnavigation.BackGestureInvokedTest"
-        },
-        {
-          "include-filter": "android.server.wm.backnavigation.BackNavigationTests"
-        },
-        {
-          "include-filter": "android.server.wm.backnavigation.OnBackInvokedCallbackGestureTest"
-        }
-      ]
+      "name": "CtsWindowManagerDeviceBackNavigation_com_android_wm_shell_back"
     }
   ]
 }

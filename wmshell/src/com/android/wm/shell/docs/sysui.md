@@ -1,4 +1,5 @@
 # Shell & SystemUI
+[Back to home](README.md)
 
 ---
 
@@ -71,15 +72,6 @@ they will need to post to the Shell main thread to run.
 ## Shell commands & Dumps
 
 Since the Shell library is a part of the SysUI process, it relies on SysUI to trigger commands
-on individual Shell components, or to dump individual shell components.
+on individual Shell components.
 
-```shell
-# Dump everything
-adb shell dumpsys activity service SystemUIService WMShell
-
-# Run a specific command
-adb shell dumpsys activity service SystemUIService WMShell help
-adb shell dumpsys activity service SystemUIService WMShell <cmd> <args> ...
-```
-
-More detail can be found in [Debugging in the Shell](debugging.md) section.
+More detail can be found in [Debugging in the Shell](debugging.md#shell-commands) section.

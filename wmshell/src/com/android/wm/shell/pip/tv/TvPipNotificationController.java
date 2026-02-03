@@ -33,7 +33,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.android.internal.messages.nano.SystemMessageProto.SystemMessage;
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.internal.util.ImageUtils;
 import com.android.wm.shell.R;
 import com.android.wm.shell.common.pip.PipMediaController;

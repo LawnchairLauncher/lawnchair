@@ -39,6 +39,6 @@ public class TransposedQuickSwitchTouchController extends QuickSwitchTouchContro
 
     @Override
     protected float getShiftRange() {
-        return mLauncher.getDeviceProfile().heightPx / 2f;
+        return mLauncher.getDeviceProfile().getDeviceProperties().getHeightPx() / 2f;
     }
 }

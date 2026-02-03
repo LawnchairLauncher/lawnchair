@@ -70,6 +70,11 @@ abstract class ClosePipTransition(flicker: LegacyFlickerTest) : PipTransition(fl
         }
     }
 
+    @Test
+    override fun pipLayerHasCorrectCornersAtEnd() {
+        // PiP might have completely faded out by this point, so corner radii not applicable.
+    }
+
     companion object {
         /**
          * Creates the test configurations.

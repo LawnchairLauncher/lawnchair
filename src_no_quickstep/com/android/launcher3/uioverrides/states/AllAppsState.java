@@ -18,20 +18,18 @@ package com.android.launcher3.uioverrides.states;
 import static com.android.app.animation.Interpolators.DECELERATE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 
-import android.content.Context;
-
+import android.graphics.Color;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.ScrimColors;
 
 /**
  * Definition for AllApps state
  */
 public class AllAppsState extends LauncherState {
-
-    private static final float PARALLAX_COEFFICIENT = .125f;
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE;
 
@@ -40,8 +38,7 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
-    int getTransitionDuration(DEVICE_PROFILE_CONTEXT context, boolean isToState) {
+    public int getTransitionDuration(ActivityContext context, boolean isToState) {
         return isToState
                 ? context.getDeviceProfile().allAppsOpenDuration
                 : context.getDeviceProfile().allAppsCloseDuration;
@@ -70,7 +67,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
-        if (launcher.getDeviceProfile().isTablet) {
+        if (launcher.getDeviceProfile().getDeviceProperties().isTablet()) {
             return getWorkspaceScaleAndTranslation(launcher);
         } else {
             ScaleAndTranslation overviewScaleAndTranslation = LauncherState.OVERVIEW
@@ -88,7 +85,7 @@ public class AllAppsState extends LauncherState {
         return new PageAlphaProvider(DECELERATE) {
             @Override
             public float getPageAlpha(int pageIndex) {
-                return launcher.getDeviceProfile().isTablet
+                return launcher.getDeviceProfile().getDeviceProperties().isTablet()
                         ? superPageAlphaProvider.getPageAlpha(pageIndex)
                         : 0;
             }
@@ -101,9 +98,11 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public int getWorkspaceScrimColor(Launcher launcher) {
-        return launcher.getDeviceProfile().isTablet
+    public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
+        return new ScrimColors(
+                /* backgroundColor */ launcher.getDeviceProfile().getDeviceProperties().isTablet()
                 ? launcher.getResources().getColor(R.color.widgets_picker_scrim)
-                : Themes.getAttrColor(launcher, R.attr.allAppsScrimColor);
+                : Themes.getAttrColor(launcher, R.attr.allAppsScrimColor),
+                /* foregroundColor */ Color.TRANSPARENT);
     }
 }

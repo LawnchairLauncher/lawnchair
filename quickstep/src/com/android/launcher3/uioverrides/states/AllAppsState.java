@@ -20,15 +20,18 @@ import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 
 import android.content.Context;
+import android.graphics.Color;
 
+import app.lawnchair.theme.color.tokens.ColorTokens;
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.ScrimColors;
 import com.android.quickstep.util.BaseDepthController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
@@ -52,8 +55,7 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext> int getTransitionDuration(
-            DEVICE_PROFILE_CONTEXT context, boolean isToState) {
+    public int getTransitionDuration(ActivityContext context, boolean isToState) {
         return isToState
                 ? context.getDeviceProfile().allAppsOpenDuration
                 : context.getDeviceProfile().allAppsCloseDuration;
@@ -106,7 +108,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public int getTitle() {
-        return R.string.all_apps_label;
+        return R.string.all_apps_list_label;
     }
 
     @Override
@@ -122,7 +124,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
-        if (launcher.getDeviceProfile().isTablet) {
+        if (launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
             return getWorkspaceScaleAndTranslation(launcher);
         } else {
             ScaleAndTranslation overviewScaleAndTranslation = LauncherState.OVERVIEW
@@ -135,10 +137,10 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    protected <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext> float getDepthUnchecked(
-            DEVICE_PROFILE_CONTEXT context) {
-        if (context.getDeviceProfile().isTablet) {
-            return context.getDeviceProfile().bottomSheetDepth;
+    protected <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
+            float getDepthUnchecked(DEVICE_PROFILE_CONTEXT context) {
+        if (context.getDeviceProfile().shouldShowAllAppsOnSheet()) {
+            return context.getDeviceProfile().getBottomSheetProfile().getBottomSheetDepth();
         } else {
             // The scrim fades in at approximately 50% of the swipe gesture.
             if (enableScalingRevealHomeAnimation()) {
@@ -153,12 +155,17 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
+    public boolean shouldBlurWorkspace(LauncherState targetState) {
+        return targetState == ALL_APPS || targetState == NORMAL;
+    }
+
+    @Override
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
         PageAlphaProvider superPageAlphaProvider = super.getWorkspacePageAlphaProvider(launcher);
         return new PageAlphaProvider(DECELERATE_2) {
             @Override
             public float getPageAlpha(int pageIndex) {
-                return launcher.getDeviceProfile().isTablet
+                return isWorkspaceVisible(launcher.getDeviceProfile())
                         ? superPageAlphaProvider.getPageAlpha(pageIndex)
                         : 0;
             }
@@ -168,11 +175,14 @@ public class AllAppsState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         int elements = ALL_APPS_CONTENT | FLOATING_SEARCH_BAR;
-        // Only add HOTSEAT_ICONS for tablets in ALL_APPS state.
-        if (launcher.getDeviceProfile().isTablet) {
+        if (isWorkspaceVisible(launcher.getDeviceProfile())) {
             elements |= HOTSEAT_ICONS;
         }
         return elements;
+    }
+
+    private static boolean isWorkspaceVisible(DeviceProfile deviceProfile) {
+        return deviceProfile.getDeviceProperties().isTablet() || (Flags.allAppsSheetForHandheld() && Flags.allAppsBlur());
     }
 
     @Override
@@ -195,30 +205,22 @@ public class AllAppsState extends LauncherState {
     @Override
     public boolean shouldFloatingSearchBarUsePillWhenUnfocused(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
-        return dp.isPhone && !dp.isLandscape;
+        return dp.getDeviceProperties().isPhone() && !dp.getDeviceProperties().isLandscape();
     }
 
     @Override
-    public LauncherState getHistoryForState(LauncherState previousState) {
-        return previousState == BACKGROUND_APP ? QUICK_SWITCH_FROM_HOME
-                : previousState == OVERVIEW ? OVERVIEW : NORMAL;
-    }
-
-    @Override
-    public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        if (!FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()) {
-            return super.getOverviewScaleAndOffset(launcher);
+    public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
+        int backgroundColor;
+        if (!launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
+            // Always use an opaque scrim if there's no sheet.
+            // Lawnchair-TODO-Colour: Check R.color.materialColorSurfaceDim
+            backgroundColor = launcher.getResources().getColor(R.color.materialColorSurfaceDim);
+        } else if (!Flags.allAppsBlur()) {
+            // If there's a sheet but no blur, use the old scrim color.
+            backgroundColor = ColorTokens.WidgetsPickerScrim.resolveColor(launcher);
+        } else {
+            backgroundColor = LawnchairUtilsKt.getAllAppsScrimColor(launcher);
         }
-        // This handles the case of returning to the previous app from Overview -> All Apps gesture.
-        // This is the start scale/offset of overview that will be used for that transition.
-        // TODO (b/283336332): Translate in Y direction (ideally with overview resistance).
-        return new float[] {0.5f /* scale */, NO_OFFSET};
-    }
-
-    @Override
-    public int getWorkspaceScrimColor(Launcher launcher) {
-        return launcher.getDeviceProfile().isTablet 
-            ? launcher.getResources().getColor(android.R.color.transparent) 
-            : LawnchairUtilsKt.getAllAppsScrimColor(launcher);
+        return new ScrimColors(backgroundColor, /* foregroundColor */ Color.TRANSPARENT);
     }
 }

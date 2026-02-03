@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
+import static com.android.quickstep.views.RecentsView.RUNNING_TASK_ATTACH_ALPHA;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -33,8 +34,10 @@ public class RecentsAtomicAnimationFactory<CONTAINER extends Context & RecentsVi
 
     public static final int INDEX_RECENTS_FADE_ANIM = AtomicAnimationFactory.NEXT_INDEX + 0;
     public static final int INDEX_RECENTS_TRANSLATE_X_ANIM = AtomicAnimationFactory.NEXT_INDEX + 1;
+    public static final int INDEX_RECENTS_ATTACHED_ALPHA_ANIM =
+            AtomicAnimationFactory.NEXT_INDEX + 2;
 
-    private static final int MY_ANIM_COUNT = 2;
+    private static final int MY_ANIM_COUNT = 3;
 
     protected final CONTAINER mContainer;
 
@@ -50,6 +53,7 @@ public class RecentsAtomicAnimationFactory<CONTAINER extends Context & RecentsVi
                 ObjectAnimator alpha = ObjectAnimator.ofFloat(mContainer.getOverviewPanel(),
                         RecentsView.CONTENT_ALPHA, values);
                 return alpha;
+            case INDEX_RECENTS_ATTACHED_ALPHA_ANIM:
             case INDEX_RECENTS_TRANSLATE_X_ANIM: {
                 RecentsView rv = mContainer.getOverviewPanel();
                 return new SpringAnimationBuilder(mContainer)
@@ -57,7 +61,8 @@ public class RecentsAtomicAnimationFactory<CONTAINER extends Context & RecentsVi
                         .setDampingRatio(0.8f)
                         .setStiffness(250)
                         .setValues(values)
-                        .build(rv, ADJACENT_PAGE_HORIZONTAL_OFFSET);
+                        .build(rv, index == INDEX_RECENTS_ATTACHED_ALPHA_ANIM
+                                ? RUNNING_TASK_ATTACH_ALPHA : ADJACENT_PAGE_HORIZONTAL_OFFSET);
             }
             default:
                 return super.createStateElementAnimation(index, values);

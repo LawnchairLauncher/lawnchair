@@ -15,17 +15,40 @@
  */
 package com.android.quickstep.fallback;
 
+import static com.android.launcher3.Flags.enableExpressiveDismissTaskMotion;
+import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
+
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.android.launcher3.statemanager.StatefulContainer;
+import com.android.launcher3.uioverrides.touchcontrollers.TaskViewDismissTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.TaskViewLaunchTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.TaskViewRecentsTouchContext;
+import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchControllerDeprecated;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.RecentsActivity;
+import com.android.quickstep.views.RecentsViewContainer;
 
 /**
  * Drag layer for fallback recents activity
  */
-public class RecentsDragLayer extends BaseDragLayer<RecentsActivity> {
+public class RecentsDragLayer<T extends Context & RecentsViewContainer
+        & StatefulContainer<RecentsState>> extends BaseDragLayer<T> {
+
+    private final TaskViewRecentsTouchContext mTaskViewRecentsTouchContext =
+            new TaskViewRecentsTouchContext() {
+                @Override
+                public boolean isRecentsInteractive() {
+                    return mContainer.getRootView().hasWindowFocus()
+                            || mContainer.getStateManager().getState().hasLiveTile();
+                }
+
+                @Override
+                public boolean isRecentsModal() {
+                    return mContainer.isInState(MODAL_TASK);
+                }
+            };
 
     public RecentsDragLayer(Context context, AttributeSet attrs) {
         super(context, attrs, 1 /* alphaChannelCount */);
@@ -33,9 +56,19 @@ public class RecentsDragLayer extends BaseDragLayer<RecentsActivity> {
 
     @Override
     public void recreateControllers() {
-        mControllers = new TouchController[] {
-                new RecentsTaskController(mActivity),
-                new FallbackNavBarTouchController(mActivity),
-        };
+        super.recreateControllers();
+        mControllers = enableExpressiveDismissTaskMotion()
+                ? new TouchController[]{
+                        new TaskViewLaunchTouchController<>(mContainer,
+                                mTaskViewRecentsTouchContext),
+                        new TaskViewDismissTouchController<>(mContainer,
+                                mTaskViewRecentsTouchContext),
+                        new FallbackNavBarTouchController(mContainer)
+                }
+                : new TouchController[]{
+                        new TaskViewTouchControllerDeprecated<>(mContainer,
+                                mTaskViewRecentsTouchContext),
+                        new FallbackNavBarTouchController(mContainer)
+                };
     }
 }

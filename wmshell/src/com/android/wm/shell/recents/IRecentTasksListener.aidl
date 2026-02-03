@@ -18,6 +18,8 @@ package com.android.wm.shell.recents;
 
 import android.app.ActivityManager.RunningTaskInfo;
 
+import com.android.wm.shell.shared.GroupedTaskInfo;
+
 /**
  * Listener interface that Launcher attaches to SystemUI to get split-screen callbacks.
  */
@@ -43,6 +45,15 @@ oneway interface IRecentTasksListener {
      */
     void onRunningTaskChanged(in RunningTaskInfo taskInfo);
 
-    /** A task has moved to front. */
-    oneway void onTaskMovedToFront(in RunningTaskInfo taskInfo);
+    /** A task has moved to front. Only used if enableShellTopTaskTracking() is disabled. */
+    void onTaskMovedToFront(in GroupedTaskInfo taskToFront);
+
+    /** A task info has changed. Only used if enableShellTopTaskTracking() is disabled. */
+    void onTaskInfoChanged(in RunningTaskInfo taskInfo);
+
+    /**
+     * If enableShellTopTaskTracking() is enabled, this reports the set of all visible tasks.
+     * Otherwise, this reports only the new top most visible task.
+     */
+    void onVisibleTasksChanged(in GroupedTaskInfo[] visibleTasks);
 }

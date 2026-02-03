@@ -59,6 +59,7 @@ public class TaskStackListenerImpl extends TaskStackListener implements Handler.
     private static final int ON_TASK_LIST_FROZEN_UNFROZEN = 18;
     private static final int ON_TASK_DESCRIPTION_CHANGED = 19;
     private static final int ON_ACTIVITY_ROTATION = 20;
+    private static final int ON_RECENT_TASK_REMOVED_FOR_ADD_TASK = 21;
 
     /**
      * List of {@link TaskStackListenerCallback} registered from {@link #addListener}.
@@ -129,6 +130,11 @@ public class TaskStackListenerImpl extends TaskStackListener implements Handler.
     public void onRecentTaskListFrozenChanged(boolean frozen) {
         mMainHandler.obtainMessage(ON_TASK_LIST_FROZEN_UNFROZEN, frozen ? 1 : 0,
                 0 /* unused */).sendToTarget();
+    }
+
+    @Override
+    public void onRecentTaskRemovedForAddTask(int taskId) {
+        mMainHandler.obtainMessage(ON_RECENT_TASK_REMOVED_FOR_ADD_TASK, taskId).sendToTarget();
     }
 
     @Override
@@ -405,6 +411,13 @@ public class TaskStackListenerImpl extends TaskStackListener implements Handler.
                     for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
                         mTaskStackListeners.get(i).onRecentTaskListFrozenChanged(
                                 msg.arg1 != 0);
+                    }
+                    break;
+                }
+                case ON_RECENT_TASK_REMOVED_FOR_ADD_TASK: {
+                    final int taskId = (int) msg.obj;
+                    for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
+                        mTaskStackListeners.get(i).onRecentTaskRemovedForAddTask(taskId);
                     }
                     break;
                 }

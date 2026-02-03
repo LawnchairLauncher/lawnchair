@@ -21,27 +21,28 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
 import static android.util.RotationUtils.deltaRotation;
 import static android.util.RotationUtils.rotateBounds;
+import static android.view.Surface.ROTATION_0;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 import static android.view.WindowManager.TRANSIT_CHANGE;
+import static android.view.WindowManager.TRANSIT_CLOSE;
 import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_PIP;
 import static android.view.WindowManager.TRANSIT_TO_BACK;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
-import static android.view.WindowManager.transitTypeToString;
 import static android.window.TransitionInfo.FLAG_IS_DISPLAY;
 
-import static com.android.wm.shell.pip.PipAnimationController.ANIM_TYPE_ALPHA;
-import static com.android.wm.shell.pip.PipAnimationController.ANIM_TYPE_BOUNDS;
 import static com.android.wm.shell.pip.PipAnimationController.TRANSITION_DIRECTION_LEAVE_PIP;
 import static com.android.wm.shell.pip.PipAnimationController.TRANSITION_DIRECTION_SAME;
 import static com.android.wm.shell.pip.PipAnimationController.TRANSITION_DIRECTION_TO_PIP;
 import static com.android.wm.shell.pip.PipAnimationController.isInPipDirection;
 import static com.android.wm.shell.pip.PipAnimationController.isOutPipDirection;
 import static com.android.wm.shell.pip.PipTransitionState.ENTERED_PIP;
+import static com.android.wm.shell.transition.Transitions.TRANSIT_CLEANUP_PIP_EXIT;
 import static com.android.wm.shell.transition.Transitions.TRANSIT_EXIT_PIP;
 import static com.android.wm.shell.transition.Transitions.TRANSIT_EXIT_PIP_TO_SPLIT;
 import static com.android.wm.shell.transition.Transitions.TRANSIT_REMOVE_PIP;
+import static com.android.wm.shell.transition.Transitions.transitTypeToString;
 
 import android.annotation.IntDef;
 import android.app.ActivityManager;
@@ -62,9 +63,10 @@ import android.window.WindowContainerTransaction;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.R;
 import com.android.wm.shell.ShellTaskOrganizer;
+import com.android.wm.shell.common.ComponentUtils;
 import com.android.wm.shell.common.pip.PipBoundsAlgorithm;
 import com.android.wm.shell.common.pip.PipBoundsState;
 import com.android.wm.shell.common.pip.PipDisplayLayoutState;
@@ -72,6 +74,8 @@ import com.android.wm.shell.common.pip.PipMenuController;
 import com.android.wm.shell.common.pip.PipUtils;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 import com.android.wm.shell.shared.TransitionUtil;
+import com.android.wm.shell.shared.pip.PipContentOverlay;
+import com.android.wm.shell.shared.pip.PipFlags;
 import com.android.wm.shell.splitscreen.SplitScreenController;
 import com.android.wm.shell.sysui.ShellInit;
 import com.android.wm.shell.transition.CounterRotatorHelper;
@@ -111,7 +115,7 @@ public class PipTransition extends PipTransitionController {
     private final HomeTransitionObserver mHomeTransitionObserver;
     private final Optional<SplitScreenController> mSplitScreenOptional;
     private final PipAnimationController mPipAnimationController;
-    private @PipAnimationController.AnimationType int mEnterAnimationType = ANIM_TYPE_BOUNDS;
+    private @AnimationType int mEnterAnimationType = ANIM_TYPE_BOUNDS;
     private Transitions.TransitionFinishCallback mFinishCallback;
     private SurfaceControl.Transaction mFinishTransaction;
     private final Rect mExitDestinationBounds = new Rect();
@@ -120,6 +124,8 @@ public class PipTransition extends PipTransitionController {
     @Nullable
     private IBinder mMoveToBackTransition;
     private IBinder mRequestedEnterTransition;
+    private IBinder mCleanupTransition;
+
     private WindowContainerToken mRequestedEnterTask;
     /** The Task window that is currently in PIP windowing mode. */
     @Nullable
@@ -183,9 +189,14 @@ public class PipTransition extends PipTransitionController {
 
     @Override
     protected void onInit() {
-        if (!PipUtils.isPip2ExperimentEnabled()) {
+        if (!PipFlags.isPip2ExperimentEnabled()) {
             mTransitions.addHandler(this);
         }
+    }
+
+    @Override
+    protected boolean isInSwipePipToHomeTransition() {
+        return mPipTransitionState.getInSwipePipToHomeTransition();
     }
 
     @Override
@@ -225,10 +236,12 @@ public class PipTransition extends PipTransitionController {
 
         // Exiting PIP.
         final int type = info.getType();
-        if (transition.equals(mExitTransition) || transition.equals(mMoveToBackTransition)) {
+        if (transition.equals(mExitTransition) || transition.equals(mMoveToBackTransition)
+                || transition.equals(mCleanupTransition)) {
             mExitDestinationBounds.setEmpty();
             mExitTransition = null;
             mMoveToBackTransition = null;
+            mCleanupTransition = null;
             mHasFadeOut = false;
             if (mFinishCallback != null) {
                 callFinishCallback(null /* wct */);
@@ -262,6 +275,9 @@ public class PipTransition extends PipTransitionController {
                     removePipImmediately(info, startTransaction, finishTransaction, finishCallback,
                             pipTaskInfo);
                     break;
+                case TRANSIT_CLEANUP_PIP_EXIT:
+                    cleanupPipExitTransition(startTransaction, finishCallback);
+                    break;
                 default:
                     throw new IllegalStateException("mExitTransition with unexpected transit type="
                             + transitTypeToString(type));
@@ -283,6 +299,20 @@ public class PipTransition extends PipTransitionController {
 
         // Entering PIP.
         if (isEnteringPip(info)) {
+            if (!mPipTransitionState.isInPip() && TransitionUtil.hasDisplayChange(info)) {
+                final TransitionInfo.Change pipChange = getPipChange(info);
+                if (pipChange != null) {
+                    // Clear old crop.
+                    updatePipForUnhandledTransition(pipChange, startTransaction, finishTransaction);
+                }
+                ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+                        "%s: ignore exited PiP with display change", TAG);
+                // This should be an exited pip. E.g. a display change transition happens when
+                // the exiting pip is animating, then mergeAnimation -> end -> onFinishResize ->
+                // onExitPipFinished was called, i.e. pip state is UNDEFINED. So do not handle
+                // the incoming transition as entering pip.
+                return false;
+            }
             if (handleEnteringPipWithDisplayChange(transition, info, startTransaction,
                     finishTransaction, finishCallback)) {
                 // The destination position is applied directly and let default transition handler
@@ -298,6 +328,10 @@ public class PipTransition extends PipTransitionController {
         if (currentPipTaskChange != null) {
             updatePipForUnhandledTransition(currentPipTaskChange, startTransaction,
                     finishTransaction);
+        }
+
+        if (isCurrentPipActivityClosed(info)) {
+            mPipBoundsState.setLastPipComponentName(null /* componentName */);
         }
 
         return false;
@@ -322,9 +356,26 @@ public class PipTransition extends PipTransitionController {
         return true;
     }
 
+    private boolean isCurrentPipActivityClosed(TransitionInfo info) {
+        for (int i = info.getChanges().size() - 1; i >= 0; --i) {
+            TransitionInfo.Change change = info.getChanges().get(i);
+            boolean isTaskChange = change.getTaskInfo() != null;
+            boolean hasComponentNameOfPip = change.getActivityComponent() != null
+                    && change.getActivityComponent().equals(
+                            mPipBoundsState.getLastPipComponentName());
+            if (!isTaskChange && change.getMode() == TRANSIT_CLOSE && hasComponentNameOfPip) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @Override
     public void mergeAnimation(@NonNull IBinder transition, @NonNull TransitionInfo info,
-            @NonNull SurfaceControl.Transaction t, @NonNull IBinder mergeTarget,
+            @NonNull SurfaceControl.Transaction startT,
+            @NonNull SurfaceControl.Transaction finishT,
+            @NonNull IBinder mergeTarget,
             @NonNull Transitions.TransitionFinishCallback finishCallback) {
         end();
     }
@@ -390,6 +441,15 @@ public class PipTransition extends PipTransitionController {
     }
 
     @Override
+    public void cleanUpState() {
+        ActivityManager.RunningTaskInfo taskInfo = mPipOrganizer.getTaskInfo();
+        if (taskInfo != null) {
+            mPipOrganizer.onExitPipFinished(taskInfo);
+            mPipBoundsState.setLastPipComponentName(null);
+        }
+    }
+
+    @Override
     public boolean handleRotateDisplay(int startRotation, int endRotation,
             WindowContainerTransaction wct) {
         if (mRequestedEnterTransition != null && mEnterAnimationType == ANIM_TYPE_ALPHA) {
@@ -414,7 +474,7 @@ public class PipTransition extends PipTransitionController {
         // so update fixed rotation state to default.
         mFixedRotationState = FIXED_ROTATION_UNDEFINED;
 
-        if (transition != mExitTransition) {
+        if (transition != mExitTransition && transition != mMoveToBackTransition) {
             return;
         }
         // This means an expand happened before enter-pip finished and we are now "merging" a
@@ -428,8 +488,10 @@ public class PipTransition extends PipTransitionController {
             cancelled = true;
         }
 
-        // Unset exitTransition AFTER cancel so that finishResize knows we are merging.
+        // Unset both exitTransition and moveToBackTransition AFTER cancel so that
+        // finishResize knows we are merging.
         mExitTransition = null;
+        mMoveToBackTransition = null;
         if (!cancelled) return;
         final ActivityManager.RunningTaskInfo taskInfo = mPipOrganizer.getTaskInfo();
         if (taskInfo != null) {
@@ -455,8 +517,8 @@ public class PipTransition extends PipTransitionController {
     }
 
     @Override
-    public void onFinishResize(TaskInfo taskInfo, Rect destinationBounds,
-            @PipAnimationController.TransitionDirection int direction,
+    public void onFinishResize(@NonNull TaskInfo taskInfo, @NonNull Rect destinationBounds,
+            @NonNull Point leashOffset, @PipAnimationController.TransitionDirection int direction,
             @NonNull SurfaceControl.Transaction tx) {
         final boolean enteringPip = isInPipDirection(direction);
         if (enteringPip) {
@@ -466,7 +528,8 @@ public class PipTransition extends PipTransitionController {
         // means we're expecting the exit transition will be "merged" into another transition
         // (likely a remote like launcher), so don't fire the finish-callback here -- wait until
         // the exit transition is merged.
-        if ((mExitTransition == null || isAnimatingLocally()) && mFinishCallback != null) {
+        if ((mExitTransition == null || mMoveToBackTransition == null || isAnimatingLocally())
+                && mFinishCallback != null) {
             final SurfaceControl leash = mPipOrganizer.getSurfaceControl();
             final boolean hasValidLeash = leash != null && leash.isValid();
             WindowContainerTransaction wct = null;
@@ -478,6 +541,17 @@ public class PipTransition extends PipTransitionController {
                 if (mFixedRotationState != FIXED_ROTATION_TRANSITION
                         && mFinishTransaction != null) {
                     mFinishTransaction.merge(tx);
+                    // Set crop and position to destination bounds to avoid flickering.
+                    if (hasValidLeash) {
+                        final Rect relativeDestinationBounds = new Rect(destinationBounds);
+                        relativeDestinationBounds.offset(-leashOffset.x, -leashOffset.y);
+                        mFinishTransaction
+                                .setCrop(leash, relativeDestinationBounds)
+                                // Note that we should set the position to the start position of
+                                // leash then the visible region will be at the same place even if
+                                // the crop region doesn't start at (0, 0).
+                                .setPosition(leash, leashOffset.x, leashOffset.y);
+                    }
                 }
             } else {
                 wct = new WindowContainerTransaction();
@@ -499,7 +573,7 @@ public class PipTransition extends PipTransitionController {
                 }
                 // Reset the scale with bounds change synchronously.
                 if (hasValidLeash) {
-                    mSurfaceTransactionHelper.crop(tx, leash, destinationBounds)
+                    mSurfaceTransactionHelper.cropAndPosition(tx, leash, destinationBounds)
                             .resetScale(tx, leash, destinationBounds)
                             .round(tx, leash, true /* applyCornerRadius */);
                     final Rect appBounds = mPipOrganizer.mAppBounds;
@@ -536,7 +610,8 @@ public class PipTransition extends PipTransitionController {
                     ProtoLog.w(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
                             "%s: Destination bounds were changed during animation", TAG);
                     rotateBounds(finishBounds, displayBounds, mEndFixedRotation, displayRotation);
-                    mSurfaceTransactionHelper.crop(mFinishTransaction, leash, finishBounds);
+                    mSurfaceTransactionHelper.cropAndPosition(mFinishTransaction, leash,
+                            finishBounds);
                 }
             }
             mFinishTransaction = null;
@@ -610,17 +685,6 @@ public class PipTransition extends PipTransitionController {
         for (int i = info.getChanges().size() - 1; i >= 0; --i) {
             final TransitionInfo.Change change = info.getChanges().get(i);
             if (mCurrentPipTaskToken.equals(change.getContainer())) {
-                return change;
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    private TransitionInfo.Change findFixedRotationChange(@NonNull TransitionInfo info) {
-        for (int i = info.getChanges().size() - 1; i >= 0; --i) {
-            final TransitionInfo.Change change = info.getChanges().get(i);
-            if (change.getEndFixedRotation() != ROTATION_UNDEFINED) {
                 return change;
             }
         }
@@ -728,7 +792,19 @@ public class PipTransition extends PipTransitionController {
                 mPipAnimationController.resetAnimatorState();
                 finishTransaction.remove(pipLeash);
             }
-            finishCallback.onTransitionFinished(wct);
+
+            if (mFixedRotationState == FIXED_ROTATION_TRANSITION) {
+                // TODO(b/358226697): start a new transition with the WCT instead of applying it in
+                //  the {@link finishCallback}, to ensure shell creates a transition for it.
+                finishCallback.onTransitionFinished(wct);
+            } else {
+                // Apply wct in separate transition so that it can be correctly handled by the
+                // {@link FreeformTaskTransitionObserver} when desktop windowing (which does not
+                // utilize fixed rotation transitions for exiting pip) is enabled (See b/288910069).
+                mCleanupTransition = mTransitions.startTransition(
+                        TRANSIT_CLEANUP_PIP_EXIT, wct, this);
+                finishCallback.onTransitionFinished(null);
+            }
         };
         mFinishTransaction = finishTransaction;
 
@@ -778,7 +854,8 @@ public class PipTransition extends PipTransitionController {
             }
             mSurfaceTransactionHelper.rotateAndScaleWithCrop(finishTransaction,
                     pipLeash, endBounds, endBounds, new Rect(), degree, x, y,
-                    true /* isExpanding */, rotationDelta == ROTATION_270 /* clockwise */);
+                    true /* isExpanding */, rotationDelta == ROTATION_270 /* clockwise */,
+                    null /* relativeEndWindowFrame */);
         } else {
             rotationDelta = Surface.ROTATION_0;
         }
@@ -802,7 +879,9 @@ public class PipTransition extends PipTransitionController {
         // Get the start bounds in new orientation.
         final Rect startBounds = new Rect(pipChange.getStartAbsBounds());
         rotateBounds(startBounds, displayRotationChange.getStartAbsBounds(), rotateDelta);
-        final Rect endBounds = new Rect(pipChange.getEndAbsBounds());
+        final Rect windowFrame = taskInfo.topActivityMainWindowFrame;
+        final Rect endBounds = new Rect(windowFrame != null
+                ? windowFrame : pipChange.getEndAbsBounds());
         startBounds.offset(-offset.x, -offset.y);
         endBounds.offset(-offset.x, -offset.y);
 
@@ -822,7 +901,7 @@ public class PipTransition extends PipTransitionController {
         }
         mSurfaceTransactionHelper.rotateAndScaleWithCrop(startTransaction, pipChange.getLeash(),
                 endBounds, startBounds, new Rect(), degree, x, y, true /* isExpanding */,
-                pipRotateDelta == ROTATION_270 /* clockwise */);
+                pipRotateDelta == ROTATION_270 /* clockwise */, null /* relativeEndWindowFrame */);
         startTransaction.apply();
         rotator.cleanUp(finishTransaction);
 
@@ -830,7 +909,8 @@ public class PipTransition extends PipTransitionController {
         final PipAnimationController.PipTransitionAnimator animator =
                 mPipAnimationController.getAnimator(taskInfo, pipChange.getLeash(),
                         startBounds, startBounds, endBounds, null, TRANSITION_DIRECTION_LEAVE_PIP,
-                        0 /* startingAngle */, pipRotateDelta);
+                        0 /* startingAngle */, pipRotateDelta,
+                        false /* alwaysAnimateTaskBounds */);
         animator.setTransitionDirection(TRANSITION_DIRECTION_LEAVE_PIP)
                 .setPipAnimationCallback(mPipAnimationCallback)
                 .setDuration(mEnterExitAnimationDuration)
@@ -845,7 +925,7 @@ public class PipTransition extends PipTransitionController {
         final PipAnimationController.PipTransitionAnimator animator =
                 mPipAnimationController.getAnimator(taskInfo, leash, baseBounds, startBounds,
                         endBounds, sourceHintRect, TRANSITION_DIRECTION_LEAVE_PIP,
-                        0 /* startingAngle */, rotationDelta);
+                        0 /* startingAngle */, rotationDelta, false /* alwaysAnimateTaskBounds */);
         animator.setTransitionDirection(TRANSITION_DIRECTION_LEAVE_PIP)
                 .setDuration(mEnterExitAnimationDuration);
         if (startTransaction != null) {
@@ -871,6 +951,16 @@ public class PipTransition extends PipTransitionController {
                     "removePipImmediately is called without pip change");
         }
         mPipOrganizer.onExitPipFinished(taskInfo);
+        finishCallback.onTransitionFinished(null);
+    }
+
+    /**
+     * For {@link Transitions#TRANSIT_CLEANUP_PIP_EXIT} which applies final config changes needed
+     * after the exit from pip transition animation finishes.
+     */
+    private void cleanupPipExitTransition(@NonNull SurfaceControl.Transaction startTransaction,
+            @NonNull Transitions.TransitionFinishCallback finishCallback) {
+        startTransaction.apply();
         finishCallback.onTransitionFinished(null);
     }
 
@@ -912,7 +1002,7 @@ public class PipTransition extends PipTransitionController {
     }
 
     @Override
-    public void setEnterAnimationType(@PipAnimationController.AnimationType int type) {
+    public void setEnterAnimationType(@AnimationType int type) {
         mEnterAnimationType = type;
     }
 
@@ -1000,8 +1090,16 @@ public class PipTransition extends PipTransitionController {
             mPipMenuController.attach(leash);
         }
 
+        // Make sure we have the launcher shelf into destination bounds calculation
+        // before the animator starts.
+        mPipBoundsState.mayUseCachedLauncherShelfHeight();
         final Rect destinationBounds = mPipBoundsAlgorithm.getEntryDestinationBounds();
         final Rect currentBounds = pipChange.getStartAbsBounds();
+        // The app bounds should offset relative to the task leash to make the center calculation
+        // correctly.
+        final Rect relativeAppBounds = new Rect(taskInfo.topActivityMainWindowFrame != null
+                ? taskInfo.topActivityMainWindowFrame : currentBounds);
+        relativeAppBounds.offset(-currentBounds.left, -currentBounds.top);
 
         int rotationDelta = deltaRotation(startRotation, endRotation);
         Rect sourceHintRect = mPipOrganizer.takeSwipeSourceRectHint();
@@ -1028,6 +1126,8 @@ public class PipTransition extends PipTransitionController {
             return;
         }
 
+        // NOTE(b/365300020): Legacy enter PiP path, clear the swipe state.
+        mPipTransitionState.setInSwipePipToHomeTransition(false);
         final int enterAnimationType = mEnterAnimationType;
         if (enterAnimationType == ANIM_TYPE_ALPHA) {
             startTransaction.setAlpha(leash, 0f);
@@ -1042,7 +1142,7 @@ public class PipTransition extends PipTransitionController {
         if (enterAnimationType == ANIM_TYPE_BOUNDS) {
             animator = mPipAnimationController.getAnimator(taskInfo, leash, currentBounds,
                     currentBounds, destinationBounds, sourceHintRect, TRANSITION_DIRECTION_TO_PIP,
-                    0 /* startingAngle */, rotationDelta);
+                    0 /* startingAngle */, rotationDelta, false /* alwaysAnimateTaskBounds */);
             if (sourceHintRect == null) {
                 // We use content overlay when there is no source rect hint to enter PiP use bounds
                 // animation. We also temporarily disallow app icon overlay and use color overlay
@@ -1051,8 +1151,8 @@ public class PipTransition extends PipTransitionController {
                 // TODO(b/272819817): cleanup the null-check and extra logging.
                 final boolean hasTopActivityInfo = taskInfo.topActivityInfo != null;
                 if (hasTopActivityInfo && mFixedRotationState != FIXED_ROTATION_TRANSITION) {
-                    animator.setAppIconContentOverlay(
-                            mContext, currentBounds, destinationBounds, taskInfo.topActivityInfo,
+                    animator.setAppIconContentOverlay(mContext, relativeAppBounds,
+                            destinationBounds, taskInfo.topActivityInfo,
                             mPipBoundsState.getLauncherState().getAppIconSizePx());
                 } else {
                     ProtoLog.w(ShellProtoLogGroup.WM_SHELL_TRANSITIONS,
@@ -1081,14 +1181,14 @@ public class PipTransition extends PipTransitionController {
                 animationDuration = 0;
             }
             mSurfaceTransactionHelper
-                    .crop(finishTransaction, leash, destinationBounds)
+                    .cropAndPosition(finishTransaction, leash, destinationBounds)
                     .round(finishTransaction, leash, true /* applyCornerRadius */);
             // Always reset to bounds animation type afterwards.
             setEnterAnimationType(ANIM_TYPE_BOUNDS);
         } else {
             throw new RuntimeException("Unrecognized animation type: " + enterAnimationType);
         }
-        mPipOrganizer.setContentOverlay(animator.getContentOverlayLeash(), currentBounds);
+        mPipOrganizer.setContentOverlay(animator.getContentOverlayLeash(), relativeAppBounds);
         animator.setTransitionDirection(TRANSITION_DIRECTION_TO_PIP)
                 .setPipAnimationCallback(mPipAnimationCallback)
                 .setDuration(animationDuration);
@@ -1153,11 +1253,26 @@ public class PipTransition extends PipTransitionController {
                     .setLayer(swipePipToHomeOverlay, Integer.MAX_VALUE);
         }
 
-        final Rect sourceBounds = pipTaskInfo.configuration.windowConfiguration.getBounds();
+        sendOnPipTransitionStarted(TRANSITION_DIRECTION_TO_PIP);
+        // Both Shell and Launcher calculate their own "adjusted" source-rect-hint values based on
+        // appBounds being source bounds when entering PiP.
+        final Rect sourceBounds = swipePipToHomeOverlay == null
+                ? pipTaskInfo.configuration.windowConfiguration.getBounds()
+                : mPipOrganizer.mAppBounds;
+
+        // Populate the final surface control transactions from PipTransitionAnimator,
+        // display cutout insets is handled in the swipe pip to home animator, empty it out here
+        // to avoid flicker.
+        final Rect savedDisplayCutoutInsets = new Rect(pipTaskInfo.displayCutoutInsets);
+        pipTaskInfo.displayCutoutInsets.setEmpty();
+        // Always use the task bounds even if the PIP activity doesn't match parent because the app
+        // and the whole task will move behind. We should animate the whole task bounds in this
+        // case.
         final PipAnimationController.PipTransitionAnimator animator =
                 mPipAnimationController.getAnimator(pipTaskInfo, leash, sourceBounds, sourceBounds,
                         destinationBounds, sourceHintRect, TRANSITION_DIRECTION_TO_PIP,
-                        0 /* startingAngle */, 0 /* rotationDelta */)
+                        0 /* startingAngle */, ROTATION_0 /* rotationDelta */,
+                        true /* alwaysAnimateTaskBounds */)
                         .setPipTransactionHandler(mTransactionConsumer)
                         .setTransitionDirection(TRANSITION_DIRECTION_TO_PIP);
         // The start state is the end state for swipe-auto-pip.
@@ -1165,10 +1280,12 @@ public class PipTransition extends PipTransitionController {
         animator.applySurfaceControlTransaction(leash, startTransaction,
                 PipAnimationController.FRACTION_END);
         startTransaction.apply();
+        pipTaskInfo.displayCutoutInsets.set(savedDisplayCutoutInsets);
 
         mPipBoundsState.setBounds(destinationBounds);
         final SurfaceControl.Transaction tx = new SurfaceControl.Transaction();
-        onFinishResize(pipTaskInfo, destinationBounds, TRANSITION_DIRECTION_TO_PIP, tx);
+        onFinishResize(pipTaskInfo, destinationBounds, animator.getLeashOffset(),
+                TRANSITION_DIRECTION_TO_PIP, tx);
         sendOnPipTransitionFinished(TRANSITION_DIRECTION_TO_PIP);
         if (swipePipToHomeOverlay != null) {
             mPipOrganizer.fadeOutAndRemoveOverlay(swipePipToHomeOverlay,
@@ -1248,6 +1365,19 @@ public class PipTransition extends PipTransitionController {
         return true;
     }
 
+    @Override
+    public boolean isPackageActiveInPip(@Nullable String packageName) {
+        final TaskInfo inPipTask = mPipOrganizer.getTaskInfo();
+        return packageName != null && inPipTask != null && mPipOrganizer.isInPip()
+                && packageName.equals(ComponentUtils.getPackageName(inPipTask.baseIntent));
+    }
+
+    @Override
+    public boolean isTaskActiveInPip(int taskId) {
+        final TaskInfo inPipTask = mPipOrganizer.getTaskInfo();
+        return inPipTask != null && mPipOrganizer.isInPip() && taskId == inPipTask.taskId;
+    }
+
     private void updatePipForUnhandledTransition(@NonNull TransitionInfo.Change pipChange,
             @NonNull SurfaceControl.Transaction startTransaction,
             @NonNull SurfaceControl.Transaction finishTransaction) {
@@ -1256,12 +1386,15 @@ public class PipTransition extends PipTransitionController {
         final SurfaceControl leash = pipChange.getLeash();
         final Rect destBounds = mPipOrganizer.getCurrentOrAnimatingBounds();
         final boolean isInPip = mPipTransitionState.isInPip();
+        ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+                "%s: Update pip for unhandled transition, change=%s, destBounds=%s, isInPip=%b",
+                TAG, pipChange, destBounds, isInPip);
         mSurfaceTransactionHelper
-                .crop(startTransaction, leash, destBounds)
+                .cropAndPosition(startTransaction, leash, destBounds)
                 .round(startTransaction, leash, isInPip)
                 .shadow(startTransaction, leash, isInPip);
         mSurfaceTransactionHelper
-                .crop(finishTransaction, leash, destBounds)
+                .cropAndPosition(finishTransaction, leash, destBounds)
                 .round(finishTransaction, leash, isInPip)
                 .shadow(finishTransaction, leash, isInPip);
         // Make sure the PiP keeps invisible if it was faded out. If it needs to fade in, that will

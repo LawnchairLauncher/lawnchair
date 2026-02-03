@@ -25,7 +25,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
-/** Test Pip Menu on TV. To run this test: `atest WMShellFlickerTests:TvPipBasicTest` */
+/** Test Pip Menu on TV. To run this test: `atest WMShellFlickerTestsPip:TvPipBasicTest` */
 @RequiresDevice
 @RunWith(Parameterized::class)
 class TvPipBasicTest(private val radioButtonId: String, private val pipWindowRatio: Rational?) :

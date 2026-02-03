@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
 }
 
 android {
+    buildToolsVersion "36.1.0"
     namespace "com.android.systemui.plugins"
     buildFeatures {
         aidl true
@@ -11,6 +11,7 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src']
+            kotlin.directories.add('src')
             aidl.srcDirs = ['src']
             manifest.srcFile 'AndroidManifest.xml'
             res.srcDirs = ['res']
@@ -18,11 +19,12 @@ android {
     }
 }
 
-addFrameworkJar('framework-15.jar')
+addFrameworkJar('framework-16.jar')
 compileOnlyCommonJars()
 
 dependencies {
+    implementation libs.androidx.constraintlayout
     compileOnly projects.plugincore
     compileOnly projects.log
-    compileOnly projects.anim
+    compileOnly projects.animation
 }

@@ -16,10 +16,13 @@
 
 package com.android.wm.shell.splitscreen.tv;
 
+import android.app.IActivityTaskManager;
 import android.content.Context;
 import android.os.Handler;
 
 import com.android.launcher3.icons.IconProvider;
+import com.android.wm.shell.RootDisplayAreaOrganizer;
+import com.android.wm.shell.RootTaskDisplayAreaOrganizer;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.common.DisplayController;
 import com.android.wm.shell.common.DisplayImeController;
@@ -28,11 +31,15 @@ import com.android.wm.shell.common.LaunchAdjacentController;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.common.SyncTransactionQueue;
 import com.android.wm.shell.common.SystemWindows;
-import com.android.wm.shell.common.TransactionPool;
-import com.android.wm.shell.common.split.SplitScreenConstants;
+import com.android.wm.shell.common.split.SplitState;
 import com.android.wm.shell.recents.RecentTasksController;
+import com.android.wm.shell.shared.TransactionPool;
+import com.android.wm.shell.shared.desktopmode.DesktopState;
+import com.android.wm.shell.shared.split.SplitScreenConstants;
 import com.android.wm.shell.splitscreen.StageCoordinator;
 import com.android.wm.shell.transition.Transitions;
+
+import com.google.android.msdl.domain.MSDLPlayer;
 
 import java.util.Optional;
 
@@ -53,10 +60,15 @@ public class TvStageCoordinator extends StageCoordinator
             Handler mainHandler,
             Optional<RecentTasksController> recentTasks,
             LaunchAdjacentController launchAdjacentController,
-            SystemWindows systemWindows) {
+            SplitState splitState,
+            SystemWindows systemWindows, RootTaskDisplayAreaOrganizer rootTDAOrganizer,
+            RootDisplayAreaOrganizer rootDisplayAreaOrganizer, DesktopState desktopState,
+            IActivityTaskManager activityTaskManager, MSDLPlayer msdlPlayer) {
         super(context, displayId, syncQueue, taskOrganizer, displayController, displayImeController,
                 displayInsetsController, transitions, transactionPool, iconProvider,
-                mainExecutor, recentTasks, launchAdjacentController, Optional.empty());
+                mainExecutor, mainHandler, recentTasks, launchAdjacentController,
+                Optional.empty(), splitState, Optional.empty(), Optional.empty(), rootTDAOrganizer,
+                rootDisplayAreaOrganizer, desktopState, activityTaskManager, msdlPlayer);
 
         mTvSplitMenuController = new TvSplitMenuController(context, this,
                 systemWindows, mainHandler);

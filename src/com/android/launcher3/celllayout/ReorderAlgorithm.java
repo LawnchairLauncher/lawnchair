@@ -22,13 +22,14 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 /**
  * Contains the logic of a reorder.
@@ -132,6 +133,7 @@ public class ReorderAlgorithm {
         ArrayList<View> intersectingViews = new ArrayList<>();
         Rect occupiedRect = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
 
+        // Lawnchair: Widget overlap
         if (PreferenceExtensionsKt.firstBlocking(mCellLayout.pref.getAllowWidgetOverlap())) {
             solution.intersectingViews = new ArrayList<>(intersectingViews);
             return true;
@@ -151,16 +153,14 @@ public class ReorderAlgorithm {
         // and not by the views hash which is "random".
         // The views are sorted twice, once for the X position and a second time for the Y position
         // to ensure same order everytime.
-        Comparator comparator = Comparator.comparing(
-                view -> ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellX()
+        Comparator<View> comparator = Comparator.comparing(
+                (View view) -> ((CellLayoutLayoutParams) view.getLayoutParams()).getCellX()
         ).thenComparing(
-                view -> ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellY()
+                (View view) -> ((CellLayoutLayoutParams) view.getLayoutParams()).getCellY()
         );
         List<View> views = solution.map.keySet().stream()
-                .filter(View.class::isInstance)
-                .map(View.class::cast)
+                .sorted(comparator)
                 .collect(Collectors.toList());
-        views.sort(comparator);
         for (View child : views) {
             if (child == ignoreView) continue;
             CellAndSpan c = solution.map.get(child);

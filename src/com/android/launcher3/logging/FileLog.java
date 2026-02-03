@@ -1,6 +1,6 @@
 package com.android.launcher3.logging;
 
-import static com.android.launcher3.util.Executors.createAndStartNewLooper;
+import static com.android.launcher3.util.LooperExecutor.createAndStartNewLooper;
 
 import android.os.Handler;
 import android.os.HandlerThread;

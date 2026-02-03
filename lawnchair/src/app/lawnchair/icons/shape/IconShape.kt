@@ -25,8 +25,8 @@ import android.graphics.Path
 import android.graphics.PointF
 import android.util.Log
 import android.util.PathParser
-import app.lawnchair.util.unsafeLazy
 import com.android.launcher3.Utilities
+import com.android.launcher3.shapes.ShapesProvider
 
 open class IconShape(
     val topLeft: Corner,
@@ -82,6 +82,17 @@ open class IconShape(
 
     private val tmpPoint = PointF()
     open val windowTransitionRadius = 1f
+
+    /** The icon scale used by Launcher3 */
+    open val iconScale = 1f
+
+    /**
+     * The SVG path string for this shape, if available.
+     * Used for proper morph animations in folder reveal.
+     * Path-based shapes should override this to provide the path string.
+     * Returns null for corner-based shapes (which use addToPath interpolation instead).
+     */
+    open val svgPathString: String? = null
 
     open fun getMaskPath(): Path {
         return Path().also { addToPath(it, 0f, 0f, 100f, 100f, 50f) }
@@ -258,6 +269,8 @@ open class IconShape(
         1f,
     ) {
 
+        override val svgPathString: String = ShapesProvider.CIRCLE_PATH
+
         override fun toString(): String {
             return "circle"
         }
@@ -273,6 +286,8 @@ open class IconShape(
         .16f,
         .16f,
     ) {
+
+        override val svgPathString: String = ShapesProvider.SQUARE_PATH
 
         override val windowTransitionRadius = .16f
 
@@ -470,22 +485,17 @@ open class IconShape(
     /**
      * Material 3 Expressive Shape
      */
-    object FourSidedCookie : IconShape(
+    object VerySunny : IconShape(
         // Placeholder
         Corner.fullArc,
         Corner.fullArc,
         Corner.fullArc,
         Corner.fullArc,
     ) {
-        /**
-         * From AOSP Android 16.0.0_r2 ShapesProvider
-         */
-        private const val FOUR_SIDED_COOKIE_PATH =
-            "M39.888,4.517C46.338 7.319 53.662 7.319 60.112 4.517L63.605 3C84.733 -6.176 106.176 15.268 97 36.395L95.483 39.888C92.681 46.338 92.681 53.662 95.483 60.112L97 63.605C106.176 84.732 84.733 106.176 63.605 97L60.112 95.483C53.662 92.681 46.338 92.681 39.888 95.483L36.395 97C15.267 106.176 -6.176 84.732 3 63.605L4.517 60.112C7.319 53.662 7.319 46.338 4.517 39.888L3 36.395C -6.176 15.268 15.267 -6.176 36.395 3Z"
+        private const val VERY_SUNNY_PATH = "M42.3337 4.6379C45.5777 -0.914451 53.4223 -0.914461 56.6663 4.6379L60.3144 10.882C62.2063 14.12 65.9414 15.7068 69.5115 14.7892L76.396 13.0198C82.5178 11.4463 88.0648 17.1355 86.5307 23.4143L84.8055 30.4753C83.9108 34.137 85.4579 37.9679 88.615 39.9082L94.703 43.6499C100.117 46.977 100.117 55.0228 94.703 58.35L88.615 62.0917C85.4579 64.032 83.9108 67.8629 84.8055 71.5246L86.5307 78.5856C88.0648 84.8644 82.5178 90.5536 76.396 88.9801L69.5115 87.2107C65.9414 86.2931 62.2063 87.8798 60.3144 91.1179L56.6663 97.362C53.4223 102.914 45.5777 102.914 42.3337 97.362L38.6856 91.1179C36.7937 87.8798 33.0586 86.2931 29.4884 87.2107L22.604 88.9801C16.4822 90.5536 10.9352 84.8644 12.4693 78.5856L14.1945 71.5246C15.0892 67.8629 13.5421 64.032 10.3849 62.0917L4.29698 58.35C-1.11657 55.0229 -1.11658 46.9771 4.29697 43.6499L10.3849 39.9082C13.5421 37.9679 15.0892 34.137 14.1945 30.4753L12.4693 23.4143C10.9352 17.1355 16.4822 11.4463 22.604 13.0197L29.4884 14.7892C33.0586 15.7068 36.7937 14.12 38.6856 10.882L42.3337 4.6379Z"
+        private val parsedPath: Path = PathParser.createPathFromPathData(VERY_SUNNY_PATH)
 
-        private val parsedPath by unsafeLazy {
-            PathParser.createPathFromPathData(FOUR_SIDED_COOKIE_PATH)
-        }
+        override val svgPathString: String = VERY_SUNNY_PATH
 
         private val matrix = Matrix()
 
@@ -513,6 +523,101 @@ open class IconShape(
             tempPath.transform(matrix)
             path.addPath(tempPath)
         }
+
+        override fun toString(): String {
+            return "verysunny"
+        }
+    }
+
+    /**
+     * Material 3 Expressive Shape
+     */
+    object ComplexClover : IconShape(
+        // Placeholder
+        Corner.fullArc,
+        Corner.fullArc,
+        Corner.fullArc,
+        Corner.fullArc,
+    ) {
+        private const val COMPLEX_CLOVER_PATH = "M 49.85 6.764 L 50.013 6.971 L 50.175 6.764 C 53.422 2.635 58.309 0.207 63.538 0.207 C 65.872 0.207 68.175 0.692 70.381 1.648 L 71.79 2.264 L 71.792 2.265 A 3.46 3.46 0 0 0 74.515 2.265 L 74.517 2.264 L 75.926 1.652 A 17.1 17.1 0 0 1 82.769 0.207 C 88.495 0.207 93.824 3.117 97.022 7.989 C 100.21 12.848 100.697 18.712 98.36 24.087 L 97.749 25.496 V 25.497 A 3.45 3.45 0 0 0 97.749 28.222 V 28.223 L 98.36 29.632 C 100.697 35.007 100.207 40.871 97.022 45.73 A 17.5 17.5 0 0 1 93.264 49.838 L 93.06 50 L 93.264 50.162 A 17.5 17.5 0 0 1 97.022 54.27 C 100.21 59.129 100.697 64.993 98.36 70.368 V 71.778 A 3.45 3.45 0 0 0 97.749 74.503 V 74.504 L 98.36 75.913 C 100.697 81.288 100.207 87.152 97.022 92.011 C 93.824 96.883 88.495 99.793 82.769 99.793 C 80.435 99.793 78.132 99.308 75.926 98.348 L 74.517 97.736 H 74.515 A 3.5 3.5 0 0 0 73.153 97.455 C 72.682 97.455 72.225 97.552 71.792 97.736 H 71.79 L 70.381 98.348 A 17.1 17.1 0 0 1 63.538 99.793 C 58.309 99.793 53.422 97.365 50.175 93.236 L 50.013 93.029 L 49.85 93.236 C 46.603 97.365 41.717 99.793 36.488 99.793 C 34.154 99.793 31.851 99.308 29.645 98.348 L 28.236 97.736 H 28.234 A 3.5 3.5 0 0 0 26.872 97.455 C 26.401 97.455 25.944 97.552 25.511 97.736 H 25.509 L 24.1 98.348 A 17.1 17.1 0 0 1 17.257 99.793 C 11.53 99.793 6.202 96.883 3.004 92.011 C -0.181 87.152 -0.671 81.288 1.661 75.913 L 2.277 74.504 V 74.503 A 3.45 3.45 0 0 0 2.277 71.778 V 71.777 L 1.665 70.368 C -0.671 64.993 -0.181 59.129 3.004 54.274 A 17.5 17.5 0 0 1 6.761 50.162 L 6.965 50 L 6.761 49.838 A 17.5 17.5 0 0 1 3.004 45.73 C -0.181 40.871 -0.671 35.007 1.665 29.632 L 2.277 28.223 V 28.222 A 3.45 3.45 0 0 0 2.277 25.497 V 25.496 L 1.665 24.087 C -0.671 18.712 -0.181 12.848 3.004 7.994 V 7.993 C 6.202 3.117 11.53 0.207 17.257 0.207 C 19.591 0.207 21.894 0.692 24.1 1.652 L 25.509 2.264 L 25.511 2.265 A 3.46 3.46 0 0 0 28.234 2.265 L 28.236 2.264 L 29.645 1.652 A 17.1 17.1 0 0 1 36.488 0.207 C 41.717 0.207 46.603 2.635 49.85 6.764 Z"
+        private val parsedPath: Path = PathParser.createPathFromPathData(COMPLEX_CLOVER_PATH)
+
+        override val svgPathString: String = COMPLEX_CLOVER_PATH
+
+        private val matrix = Matrix()
+
+        override fun getMaskPath(): Path {
+            return Path().also { addToPath(it, 0f, 0f, 100f, 100f) }
+        }
+
+        override fun addToPath(
+            path: Path,
+            left: Float,
+            top: Float,
+            right: Float,
+            bottom: Float,
+            size: Float,
+            endSize: Float,
+            progress: Float,
+        ) {
+            matrix.reset()
+            val width = right - left
+            val height = bottom - top
+            matrix.setScale(width / 100f, height / 100f)
+            matrix.postTranslate(left, top)
+
+            val tempPath = Path(parsedPath)
+            tempPath.transform(matrix)
+            path.addPath(tempPath)
+        }
+
+        override fun toString(): String {
+            return "complexclover"
+        }
+    }
+
+    /**
+     * Material 3 Expressive Shape
+     */
+    object FourSidedCookie : IconShape(
+        // Placeholder
+        Corner.fullArc,
+        Corner.fullArc,
+        Corner.fullArc,
+        Corner.fullArc,
+    ) {
+        private val parsedPath: Path = PathParser.createPathFromPathData(ShapesProvider.FOUR_SIDED_COOKIE_PATH)
+
+        override val svgPathString: String = ShapesProvider.FOUR_SIDED_COOKIE_PATH
+
+        private val matrix = Matrix()
+
+        override fun getMaskPath(): Path {
+            return Path().also { addToPath(it, 0f, 0f, 100f, 100f) }
+        }
+
+        override fun addToPath(
+            path: Path,
+            left: Float,
+            top: Float,
+            right: Float,
+            bottom: Float,
+            size: Float,
+            endSize: Float,
+            progress: Float,
+        ) {
+            matrix.reset()
+            val width = right - left
+            val height = bottom - top
+            matrix.setScale(width / 100f, height / 100f)
+            matrix.postTranslate(left, top)
+
+            val tempPath = Path(parsedPath)
+            tempPath.transform(matrix)
+            path.addPath(tempPath)
+        }
+
+        override val iconScale = 72f / 83.4f
 
         override fun toString(): String {
             return "foursidedcookie"
@@ -526,15 +631,9 @@ open class IconShape(
         Corner.fullArc,
         Corner.fullArc,
     ) {
-        /**
-         * From AOSP Android 16.0.0_r2 ShapesProvider
-         */
-        private const val SEVEN_SIDED_COOKIE_PATH =
-            "M35.209 4.878C36.326 3.895 36.884 3.404 37.397 3.006 44.82 -2.742 55.18 -2.742 62.603 3.006 63.116 3.404 63.674 3.895 64.791 4.878 65.164 5.207 65.351 5.371 65.539 5.529 68.167 7.734 71.303 9.248 74.663 9.932 74.902 9.981 75.147 10.025 75.637 10.113 77.1 10.375 77.831 10.506 78.461 10.66 87.573 12.893 94.032 21.011 94.176 30.412 94.186 31.062 94.151 31.805 94.08 33.293 94.057 33.791 94.045 34.04 94.039 34.285 93.958 37.72 94.732 41.121 96.293 44.18 96.404 44.399 96.522 44.618 96.759 45.056 97.467 46.366 97.821 47.021 98.093 47.611 102.032 56.143 99.727 66.266 92.484 72.24 91.983 72.653 91.381 73.089 90.177 73.961 89.774 74.254 89.572 74.4 89.377 74.548 86.647 76.626 84.477 79.353 83.063 82.483 82.962 82.707 82.865 82.936 82.671 83.395 82.091 84.766 81.8 85.451 81.51 86.033 77.31 94.44 67.977 98.945 58.801 96.994 58.166 96.859 57.451 96.659 56.019 96.259 55.54 96.125 55.3 96.058 55.063 95.998 51.74 95.154 48.26 95.154 44.937 95.998 44.699 96.058 44.46 96.125 43.981 96.259 42.549 96.659 41.834 96.859 41.199 96.994 32.023 98.945 22.69 94.44 18.49 86.033 18.2 85.451 17.909 84.766 17.329 83.395 17.135 82.936 17.038 82.707 16.937 82.483 15.523 79.353 13.353 76.626 10.623 74.548 10.428 74.4 10.226 74.254 9.823 73.961 8.619 73.089 8.017 72.653 7.516 72.24 .273 66.266 -2.032 56.143 1.907 47.611 2.179 47.021 2.533 46.366 3.241 45.056 3.478 44.618 3.596 44.399 3.707 44.18 5.268 41.121 6.042 37.72 5.961 34.285 5.955 34.04 5.943 33.791 5.92 33.293 5.849 31.805 5.814 31.062 5.824 30.412 5.968 21.011 12.427 12.893 21.539 10.66 22.169 10.506 22.9 10.375 24.363 10.113 24.853 10.025 25.098 9.981 25.337 9.932 28.697 9.248 31.833 7.734 34.461 5.529 34.649 5.371 34.836 5.207 35.209 4.878Z"
+        private val parsedPath: Path = PathParser.createPathFromPathData(ShapesProvider.SEVEN_SIDED_COOKIE_PATH)
 
-        private val parsedPath by unsafeLazy {
-            PathParser.createPathFromPathData(SEVEN_SIDED_COOKIE_PATH)
-        }
+        override val svgPathString: String = ShapesProvider.SEVEN_SIDED_COOKIE_PATH
 
         private val matrix = Matrix()
 
@@ -563,6 +662,8 @@ open class IconShape(
             path.addPath(tempPath)
         }
 
+        override val iconScale = 72f / 80f
+
         override fun toString(): String {
             return "sevensidedcookie"
         }
@@ -575,15 +676,9 @@ open class IconShape(
         Corner.fullArc,
         Corner.fullArc,
     ) {
-        /**
-         * From AOSP Android 16.0.0_r2 ShapesProvider
-         */
-        private const val ARCH_PATH =
-            "M50 0C77.614 0 100 22.386 100 50C100 85.471 100 86.476 99.9 87.321 99.116 93.916 93.916 99.116 87.321 99.9 86.476 100 85.471 100 83.46 100H16.54C14.529 100 13.524 100 12.679 99.9 6.084 99.116 .884 93.916 .1 87.321 0 86.476 0 85.471 0 83.46L0 50C0 22.386 22.386 0 50 0Z"
+        private val parsedPath: Path = PathParser.createPathFromPathData(ShapesProvider.ARCH_PATH)
 
-        private val parsedPath by unsafeLazy {
-            PathParser.createPathFromPathData(ARCH_PATH)
-        }
+        override val svgPathString: String = ShapesProvider.ARCH_PATH
 
         private val matrix = Matrix()
 
@@ -644,6 +739,8 @@ open class IconShape(
             "hexagon" -> Hexagon
             "diamond" -> Diamond
             "egg" -> Egg
+            "verysunny" -> VerySunny
+            "complexclover" -> ComplexClover
             "foursidedcookie" -> FourSidedCookie
             "sevensidedcookie" -> SevenSidedCookie
             "arch" -> Arch

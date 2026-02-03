@@ -30,7 +30,6 @@ import static com.android.wm.shell.startingsurface.SplashscreenContentDrawer.MIN
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
@@ -56,12 +55,10 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.UserHandle;
 import android.testing.TestableContext;
-import android.view.IWindowSession;
-import android.view.InsetsState;
 import android.view.Surface;
 import android.view.WindowManager;
-import android.view.WindowManagerGlobal;
 import android.view.WindowMetrics;
+import android.window.SnapshotDrawerUtils;
 import android.window.StartingWindowInfo;
 import android.window.StartingWindowRemovalInfo;
 import android.window.TaskSnapshot;
@@ -74,7 +71,7 @@ import com.android.launcher3.icons.IconProvider;
 import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.common.HandlerExecutor;
 import com.android.wm.shell.common.ShellExecutor;
-import com.android.wm.shell.common.TransactionPool;
+import com.android.wm.shell.shared.TransactionPool;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -220,18 +217,10 @@ public class StartingSurfaceDrawerTests extends ShellTestCase {
                 createWindowInfo(taskId, android.R.style.Theme, mBinder);
         TaskSnapshot snapshot = createTaskSnapshot(100, 100, new Point(100, 100),
                 new Rect(0, 0, 0, 50), true /* hasImeSurface */);
-        final IWindowSession session = WindowManagerGlobal.getWindowSession();
-        spyOn(session);
-        doReturn(WindowManagerGlobal.ADD_OKAY).when(session).addToDisplay(
-                any() /* window */, any() /* attrs */,
-                anyInt() /* viewVisibility */, anyInt() /* displayId */,
-                anyInt() /* requestedVisibleTypes */, any() /* outInputChannel */,
-                any() /* outInsetsState */, any() /* outActiveControls */,
-                any() /* outAttachedFrame */, any() /* outSizeCompatScale */);
-        TaskSnapshotWindow mockSnapshotWindow = TaskSnapshotWindow.create(windowInfo,
-                mBinder,
-                snapshot, mTestExecutor, () -> {
-                });
+        final TaskSnapshotWindow mockSnapshotWindow = new TaskSnapshotWindow(
+                snapshot, SnapshotDrawerUtils.getOrCreateTaskDescription(windowInfo.taskInfo),
+                snapshot.getOrientation(),
+                () -> {}, mTestExecutor);
         spyOn(mockSnapshotWindow);
         try (AutoCloseable mockTaskSnapshotSession = new AutoCloseable() {
             MockitoSession mockSession = mockitoSession()
@@ -245,12 +234,12 @@ public class StartingSurfaceDrawerTests extends ShellTestCase {
         }) {
             when(TaskSnapshotWindow.create(eq(windowInfo), eq(mBinder), eq(snapshot), any(),
                     any())).thenReturn(mockSnapshotWindow);
-            // Simulate a task snapshot window created with IME snapshot shown.
+            // Simulate a task snapshot window created with hasImeSurface.
             mStartingSurfaceDrawer.makeTaskSnapshotWindow(windowInfo, snapshot);
             waitHandlerIdle(mTestHandler);
 
-            // Verify the task snapshot with IME snapshot will be removed when received the real IME
-            // drawn callback.
+            // Verify the task snapshot with hasImeSurface will be removed when receiving the
+            // callback that the real IME was drawn.
             // makeTaskSnapshotWindow shall call removeWindowSynced before there add a new
             // StartingWindowRecord for the task.
             mStartingSurfaceDrawer.onImeDrawnOnTask(1);
@@ -348,9 +337,7 @@ public class StartingSurfaceDrawerTests extends ShellTestCase {
         windowInfo.appToken = appToken;
         windowInfo.targetActivityInfo = info;
         windowInfo.taskInfo = taskInfo;
-        windowInfo.topOpaqueWindowInsetsState = new InsetsState();
         windowInfo.mainWindowLayoutParams = new WindowManager.LayoutParams();
-        windowInfo.topOpaqueWindowLayoutParams = new WindowManager.LayoutParams();
         return windowInfo;
     }
 
@@ -370,6 +357,6 @@ public class StartingSurfaceDrawerTests extends ShellTestCase {
                 Surface.ROTATION_0, taskSize, contentInsets, new Rect() /* letterboxInsets */,
                 false, true /* isRealSnapshot */, WINDOWING_MODE_FULLSCREEN,
                 0 /* systemUiVisibility */, false /* isTranslucent */,
-                hasImeSurface /* hasImeSurface */);
+                hasImeSurface /* hasImeSurface */, 0 /* uiMode */);
     }
 }

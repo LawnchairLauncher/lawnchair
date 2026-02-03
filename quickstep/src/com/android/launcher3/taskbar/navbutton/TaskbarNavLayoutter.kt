@@ -35,7 +35,7 @@ class TaskbarNavLayoutter(
     startContextualContainer: ViewGroup,
     imeSwitcher: ImageView?,
     a11yButton: ImageView?,
-    space: Space?
+    space: Space?,
 ) :
     AbstractNavButtonLayoutter(
         resources,
@@ -44,7 +44,7 @@ class TaskbarNavLayoutter(
         startContextualContainer,
         imeSwitcher,
         a11yButton,
-        space
+        space,
     ) {
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
@@ -69,7 +69,7 @@ class TaskbarNavLayoutter(
         val navButtonParams =
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
             )
         navButtonParams.apply {
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
@@ -101,7 +101,7 @@ class TaskbarNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
-        if (!context.deviceProfile.isGestureMode) {
+        if (!context.deviceProfile.deviceProperties.isGestureMode) {
             val contextualMargin =
                 resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_padding)
             repositionContextualContainer(endContextualContainer, WRAP_CONTENT, 0, 0, Gravity.END)
@@ -110,7 +110,7 @@ class TaskbarNavLayoutter(
                 WRAP_CONTENT,
                 contextualMargin,
                 contextualMargin,
-                Gravity.START
+                Gravity.START,
             )
 
             if (imeSwitcher != null) {
@@ -122,7 +122,7 @@ class TaskbarNavLayoutter(
                 val imeSwitcherButtonParams =
                     FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
+                        ViewGroup.LayoutParams.MATCH_PARENT,
                     )
                 imeSwitcherButtonParams.apply {
                     marginStart = imeStartMargin

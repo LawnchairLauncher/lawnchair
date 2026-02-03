@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2025 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportHeight="152"
+    android:viewportWidth="152">
+  <group>
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M76.12,99.86C83.56,99.86 89.84,97.3 94.97,92.17C100.2,86.93 102.82,80.6 102.82,73.17C102.82,65.74 100.2,59.45 94.97,54.33C89.84,49.09 83.56,46.47 76.12,46.47C68.69,46.47 62.36,49.09 57.12,54.33C51.99,59.45 49.43,65.74 49.43,73.17C49.43,80.6 51.99,86.93 57.12,92.17C62.36,97.3 68.69,99.86 76.12,99.86ZM76.12,90.75C71.2,90.75 67.02,89.08 63.56,85.73C60.21,82.27 58.54,78.09 58.54,73.17C58.54,68.25 60.21,64.11 63.56,60.76C67.02,57.31 71.2,55.58 76.12,55.58C81.04,55.58 85.18,57.31 88.53,60.76C91.98,64.11 93.71,68.25 93.71,73.17C93.71,78.09 91.98,82.27 88.53,85.73C85.18,89.08 81.04,90.75 76.12,90.75ZM76.12,120.27C61.99,120.27 49.12,116.3 37.5,108.34C25.98,100.38 16.72,90.23 9.7,77.88C9.28,77.15 8.97,76.41 8.76,75.68C8.55,74.84 8.45,74 8.45,73.17C8.45,72.33 8.55,71.54 8.76,70.81C8.97,69.97 9.28,69.19 9.7,68.46C16.72,56.1 25.98,45.95 37.5,37.99C49.12,30.04 61.99,26.06 76.12,26.06C90.26,26.06 103.08,30.04 114.59,37.99C126.21,45.95 135.53,56.1 142.54,68.46C142.96,69.19 143.28,69.97 143.49,70.81C143.69,71.54 143.8,72.33 143.8,73.17C143.8,74 143.69,74.84 143.49,75.68C143.28,76.41 142.96,77.15 142.54,77.88C135.53,90.23 126.21,100.38 114.59,108.34C103.08,116.3 90.26,120.27 76.12,120.27Z" />
+  </group>
+</vector>

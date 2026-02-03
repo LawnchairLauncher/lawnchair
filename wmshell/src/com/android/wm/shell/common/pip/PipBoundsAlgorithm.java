@@ -24,11 +24,13 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Rational;
 import android.util.Size;
 import android.view.Gravity;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.R;
+import com.android.wm.shell.common.DisplayLayout;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 
 import java.io.PrintWriter;
@@ -36,13 +38,10 @@ import java.io.PrintWriter;
 /**
  * Calculates the default, normal, entry, inset and movement bounds of the PIP.
  */
-public class PipBoundsAlgorithm {
+public class PipBoundsAlgorithm implements PipDisplayLayoutState.DisplayIdListener {
 
     private static final String TAG = PipBoundsAlgorithm.class.getSimpleName();
     private static final float INVALID_SNAP_FRACTION = -1f;
-
-    // The same value (with the same name) is used in Launcher.
-    private static final float PIP_ASPECT_RATIO_MISMATCH_THRESHOLD = 0.01f;
 
     @NonNull private final PipBoundsState mPipBoundsState;
     @NonNull protected final PipDisplayLayoutState mPipDisplayLayoutState;
@@ -64,6 +63,7 @@ public class PipBoundsAlgorithm {
         mSnapAlgorithm = pipSnapAlgorithm;
         mPipKeepClearAlgorithm = pipKeepClearAlgorithm;
         mPipDisplayLayoutState = pipDisplayLayoutState;
+        mPipDisplayLayoutState.addDisplayIdListener(this);
         mSizeSpecSource = sizeSpecSource;
         reloadResources(context);
         // Initialize the aspect ratio to the default aspect ratio.  Don't do this in reload
@@ -97,6 +97,11 @@ public class PipBoundsAlgorithm {
 
     /** Responds to configuration change. */
     public void onConfigurationChanged(Context context) {
+        reloadResources(context);
+    }
+
+    @Override
+    public void onDisplayIdChanged(@NonNull Context context) {
         reloadResources(context);
     }
 
@@ -223,9 +228,11 @@ public class PipBoundsAlgorithm {
                             + " than destination(%s)", sourceRectHint, destinationBounds);
             return false;
         }
-        final float reportedRatio = destinationBounds.width() / (float) destinationBounds.height();
-        final float inferredRatio = sourceRectHint.width() / (float) sourceRectHint.height();
-        if (Math.abs(reportedRatio - inferredRatio) > PIP_ASPECT_RATIO_MISMATCH_THRESHOLD) {
+        // We use the aspect ratio of source rect hint to check against destination bounds
+        // here to avoid upscaling error.
+        final Rational srcAspectRatio = new Rational(
+                sourceRectHint.width(), sourceRectHint.height());
+        if (!PictureInPictureParams.isSameAspectRatio(destinationBounds, srcAspectRatio)) {
             ProtoLog.d(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
                     "isSourceRectHintValidForEnterPip=false, hint(%s) does not match"
                             + " destination(%s) aspect ratio", sourceRectHint, destinationBounds);
@@ -337,6 +344,14 @@ public class PipBoundsAlgorithm {
         outRect.set(mPipDisplayLayoutState.getInsetBounds());
     }
 
+    /**
+     * Populates the bounds on the screen that the PIP can be visible on a given
+     * {@param displayLayout}.
+     */
+    public void getInsetBounds(Rect outRect, DisplayLayout displayLayout) {
+        outRect.set(mPipDisplayLayoutState.getInsetBounds(displayLayout));
+    }
+
     private int getOverrideMinEdgeSize() {
         return mSizeSpecSource.getOverrideMinEdgeSize();
     }
@@ -346,16 +361,18 @@ public class PipBoundsAlgorithm {
      *         controller.
      */
     public Rect getMovementBounds(Rect stackBounds) {
-        return getMovementBounds(stackBounds, true /* adjustForIme */);
+        return getMovementBounds(stackBounds, true /* adjustForIme */,
+                mPipDisplayLayoutState.getDisplayLayout() /* displayLayout */);
     }
 
     /**
-     * @return the movement bounds for the given stackBounds and the current state of the
-     *         controller.
+     * @return the movement bounds for the given stackBounds on a given displayLayout and the
+     *         current state of the controller.
      */
-    public Rect getMovementBounds(Rect stackBounds, boolean adjustForIme) {
+    public Rect getMovementBounds(Rect stackBounds, boolean adjustForIme,
+            DisplayLayout displayLayout) {
         final Rect movementBounds = new Rect();
-        getInsetBounds(movementBounds);
+        getInsetBounds(movementBounds, displayLayout);
 
         // Apply the movement bounds adjustments based on the current state.
         getMovementBounds(stackBounds, movementBounds, movementBounds,
@@ -460,6 +477,35 @@ public class PipBoundsAlgorithm {
         return adjustedNormalBounds;
     }
 
+    /**
+     * Snaps PiP bounds to its movement bounds.
+     */
+    public void snapToMovementBoundsEdge(Rect bounds) {
+        snapToMovementBoundsEdge(bounds, mPipDisplayLayoutState.getDisplayLayout());
+    }
+
+    /**
+     * Snaps PiP bounds to its movement bounds on a given {@param displayLayout}.
+     */
+    public void snapToMovementBoundsEdge(Rect bounds, DisplayLayout displayLayout) {
+        // Get the movement bounds of the display
+        final Rect movementBounds = getMovementBounds(bounds, true /* adjustForIme */,
+                displayLayout);
+        final int leftEdge = bounds.left;
+
+        final int fromLeft = Math.abs(leftEdge - movementBounds.left);
+        final int fromRight = Math.abs(movementBounds.right - leftEdge);
+
+        // The PIP will be snapped to either the right or left edge, so calculate which one
+        // is closest to the current position.
+        final int newLeft = fromLeft < fromRight
+                ? movementBounds.left : movementBounds.right;
+        // Make sure that the PiP window vertically stays within the movement bounds
+        final int newTop = Math.max(movementBounds.top,
+                Math.min(bounds.top, movementBounds.bottom));
+
+        bounds.offsetTo(newLeft, newTop);
+    }
     /**
      * Dumps internal states.
      */

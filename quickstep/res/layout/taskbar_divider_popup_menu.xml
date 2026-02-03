@@ -57,7 +57,7 @@
             android:paddingStart="12dp"
             android:switchPadding="12dp"
             android:layout_weight="1"
-            android:fontFamily="@*android:string/config_bodyFontFamilyMedium"
+            android:fontFamily="*@android:string/config_bodyFontFamilyMedium"
             android:lines="1"
             android:textSize="14sp"
             android:textColor="?android:attr/textColorPrimary"

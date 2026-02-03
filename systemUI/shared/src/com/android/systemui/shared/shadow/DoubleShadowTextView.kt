@@ -16,6 +16,7 @@
 package com.android.systemui.shared.shadow
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -31,19 +32,23 @@ constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    defStyleRes: Int = 0
+    defStyleRes: Int = 0,
 ) : TextView(context, attrs, defStyleAttr, defStyleRes) {
-    private val mKeyShadowInfo: ShadowInfo
-    private val mAmbientShadowInfo: ShadowInfo
+    private lateinit var mKeyShadowInfo: ShadowInfo
+    private lateinit var mAmbientShadowInfo: ShadowInfo
 
     init {
-        val attributes =
+        updateShadowDrawables(
             context.obtainStyledAttributes(
                 attrs,
                 R.styleable.DoubleShadowTextView,
                 defStyleAttr,
-                defStyleRes
+                defStyleRes,
             )
+        )
+    }
+
+    private fun updateShadowDrawables(attributes: TypedArray) {
         val drawableSize: Int
         val drawableInsetSize: Int
         try {
@@ -70,17 +75,17 @@ constructor(
                     ambientShadowBlur,
                     ambientShadowOffsetX,
                     ambientShadowOffsetY,
-                    ambientShadowAlpha
+                    ambientShadowAlpha,
                 )
             drawableSize =
                 attributes.getDimensionPixelSize(
                     R.styleable.DoubleShadowTextView_drawableIconSize,
-                    0
+                    0,
                 )
             drawableInsetSize =
                 attributes.getDimensionPixelSize(
                     R.styleable.DoubleShadowTextView_drawableIconInsetSize,
-                    0
+                    0,
                 )
         } finally {
             attributes.recycle()
@@ -95,10 +100,17 @@ constructor(
                     mAmbientShadowInfo,
                     drawable,
                     drawableSize,
-                    drawableInsetSize
+                    drawableInsetSize,
                 )
         }
         setCompoundDrawablesRelative(drawables[0], drawables[1], drawables[2], drawables[3])
+    }
+
+    override fun setTextAppearance(resId: Int) {
+        super.setTextAppearance(resId)
+        updateShadowDrawables(
+            context.obtainStyledAttributes(resId, R.styleable.DoubleShadowTextView)
+        )
     }
 
     public override fun onDraw(canvas: Canvas) {

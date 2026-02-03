@@ -36,6 +36,7 @@
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"এই অ্যাপটি শুধুমাত্র ১টি উইন্ডোতে খোলা যেতে পারে"</string>
     <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"সেকেন্ডারি ডিসপ্লেতে অ্যাপটি কাজ নাও করতে পারে।"</string>
     <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"সেকেন্ডারি ডিসপ্লেতে অ্যাপ লঞ্চ করা যাবে না।"</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"অ্যাপে বাবল কাজ করে না"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"স্প্লিট স্ক্রিন বিভাজক"</string>
     <string name="divider_title" msgid="1963391955593749442">"স্প্লিট স্ক্রিন বিভাজক"</string>
     <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"বাঁ দিকের অংশ নিয়ে পূর্ণ স্ক্রিন"</string>
@@ -43,6 +44,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"৫০% বাকি আছে"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"৩০% বাকি আছে"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"ডান দিকের অংশ নিয়ে পূর্ণ স্ক্রিন"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"নিচেরটির মাধ্যমে উপরের অ্যাপ অদল বদল করে নিন"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"ডানদিকের মাধ্যমে বাঁদিকের অ্যাপ অদল বদল করে নিন"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"উপর দিকের অংশ নিয়ে পূর্ণ স্ক্রিন"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"শীর্ষ ৭০%"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"শীর্ষ ৫০%"</string>
@@ -65,10 +68,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"উপরে ডানদিকে সরান"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"নিচে বাঁদিকে সরান"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"নিচে ডান দিকে সরান"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"মেনু বড় করে দেখুন"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"মেনু আড়াল করুন"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"বাঁদিকে সরান"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"ডানদিকে সরান"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> বড় করুন"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> আড়াল করুন"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> সেটিংস"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"বাবল খারিজ করুন"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"ফুল-স্ক্রিন ব্যবহার করুন"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"কথোপকথন বাবল হিসেবে দেখাবে না"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"বাবল ব্যবহার করে চ্যাট করুন"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"নতুন কথোপকথন ভেসে থাকা আইকন বা বাবল হিসেবে দেখানো হয়। বাবল খুলতে ট্যাপ করুন। সেটি সরাতে ধরে টেনে আনুন।"</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"ক্যামেরা সংক্রান্ত সমস্যা?\nরিফিট করতে ট্যাপ করুন"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"এখনও সমাধান হয়নি?\nরিভার্ট করার জন্য ট্যাপ করুন"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"ক্যামেরা সংক্রান্ত সমস্যা নেই? বাতিল করতে ট্যাপ করুন।"</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"অ্যাপ মেনু এখানে খুঁজে পাওয়া যাবে"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"একসাথে একাধিক অ্যাপ খোলার জন্য ডেস্কটপ উইন্ডোইংয়ে এন্টার করুন"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"অ্যাপ মেনু থেকে ফুল-স্ক্রিন মোডে যেকোনও সময়ে ফিরে আসুন"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"দেখুন ও আরও অনেক কিছু করুন"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"স্প্লিট স্ক্রিনের ক্ষেত্রে অন্য কোনও অ্যাপ টেনে আনুন"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"কোনও অ্যাপের স্থান পরিবর্তন করতে তার বাইরে ডবল ট্যাপ করুন"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"রিস্টার্ট করুন"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"আর দেখতে চাই না"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"এই অ্যাপ সরাতে\nডবল ট্যাপ করুন"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"বড় করুন"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"ছোট করুন"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"বন্ধ করুন"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"<xliff:g id="APP_NAME">%1$s</xliff:g> বড় করুন"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"<xliff:g id="APP_NAME">%1$s</xliff:g> আবার ফিরিয়ে আনুন"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"<xliff:g id="APP_NAME">%1$s</xliff:g> ছোট করুন"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"<xliff:g id="APP_NAME">%1$s</xliff:g> বন্ধ করুন"</string>
     <string name="back_button_text" msgid="1469718707134137085">"ফিরে যান"</string>
-    <string name="handle_text" msgid="1766582106752184456">"হাতল"</string>
+    <string name="handle_text" msgid="4419667835599523257">"অ্যাপের হ্যান্ডেল"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"অ্যাপ আইকন"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"ফুলস্ক্রিন"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"ডেস্কটপ মোড"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"ডেস্কটপ উইন্ডোইং"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"স্প্লিট স্ক্রিন"</string>
     <string name="more_button_text" msgid="3655388105592893530">"আরও"</string>
     <string name="float_button_text" msgid="9221657008391364581">"ফ্লোট"</string>
     <string name="select_text" msgid="5139083974039906583">"বেছে নিন"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"স্ক্রিনশট"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"ব্রাউজারে খুলুন"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"অ্যাপে খুলুন"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"নতুন উইন্ডো"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"উইন্ডো ম্যানেজ করুন"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"অ্যাস্পেক্ট রেশিও পরিবর্তন করুন"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"ভিউ অপ্টিমাইজ করুন"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"সমস্যার আইকন"</string>
     <string name="close_text" msgid="4986518933445178928">"বন্ধ করুন"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"\'মেনু\' বন্ধ করুন"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"মেনু খুলুন"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ডেস্কটপ উইন্ডোইং)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"স্ক্রিন বড় করুন"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"স্ক্রিনে অ্যাপ মানানসই হিসেবে ছোট বড় করুন"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"ছোট বড় করুন"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"অ্যাপটি এখানে সরানো যাবে না"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"নতুন অ্যাপ উইন্ডো খোলা হচ্ছে"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"অ্যাপের উইন্ডো বন্ধ করা হচ্ছে"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"অ্যাপ উইন্ডো ছোট করা হয়েছে"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ফোকাস করা হয়েছে)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ফোকাস করা নেই)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"ইমারসিভ"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"ফিরিয়ে আনুন"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"বড় করুন"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"ফিরিয়ে আনুন"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"বাঁদিকে স্ন্যাপ করুন"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"ডানদিকে স্ন্যাপ করুন"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"বাঁদিকে অ্যাপ উইন্ডো রিসাইজ করুন"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"ডানদিকে অ্যাপ উইন্ডো রিসাইজ করুন"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"উইন্ডো সাইজ বড় বা রিস্টোর করুন"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"মেনু খুলুন"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"<xliff:g id="WINDOWING_MODE">%1$s</xliff:g>-এ খুলুন"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"বাঁদিকে উইন্ডো রিসাইজ করুন"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"ডানদিকে উইন্ডো রিসাইজ করুন"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"উইন্ডো সাইজ বড় বা রিস্টোর করুন"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"অ্যাপ উইন্ডোর সাইজ বাড়ান"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"উইন্ডোর সাইজ ফিরিয়ে আনুন"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"অ্যাপ উইন্ডো ছোট করুন"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"অ্যাপ উইন্ডো বন্ধ করুন"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"ডিফল্ট হিসেবে থাকা সেটিংস খুলুন"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"এই অ্যাপের জন্য কীভাবে ওয়েব লিঙ্ক খুলবেন তা বেছে নিন"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"অ্যাপের মধ্যে"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"আপনার ব্রাউজারে"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"ঠিক আছে"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"এখানে আপনার ব্রাউজারে দ্রুত অ্যাপ খুলুন"</string>
 </resources>

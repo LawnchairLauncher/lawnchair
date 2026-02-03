@@ -27,5 +27,7 @@
         <option name="package" value="com.android.wm.shell.tests" />
         <option name="runner" value="androidx.test.runner.AndroidJUnitRunner" />
         <option name="hidden-api-checks" value="false"/>
+        <!-- Ignores tests introduced by guava-android-testlib -->
+        <option name="exclude-annotation" value="org.junit.Ignore"/>
     </test>
 </configuration>

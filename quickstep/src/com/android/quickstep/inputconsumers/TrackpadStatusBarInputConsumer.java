@@ -35,9 +35,12 @@ public class TrackpadStatusBarInputConsumer extends DelegateInputConsumer {
     private final PointF mDown = new PointF();
     private boolean mHasPassedTouchSlop;
 
-    public TrackpadStatusBarInputConsumer(Context context, InputConsumer delegate,
+    public TrackpadStatusBarInputConsumer(
+            Context context,
+            int displayId,
+            InputConsumer delegate,
             InputMonitorCompat inputMonitor) {
-        super(delegate, inputMonitor);
+        super(displayId, delegate, inputMonitor);
 
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(context);
         mTouchSlop = 2 * ViewConfiguration.get(context).getScaledTouchSlop();

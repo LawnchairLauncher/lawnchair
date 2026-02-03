@@ -64,11 +64,21 @@ class UnitTestCellLayoutBuilderRule : TestWatcher() {
         dp.inv.numRows = prevNumRows
     }
 
-    fun createCellLayout(width: Int, height: Int, isMulti: Boolean): CellLayout {
+    fun createCellLayoutDefaultSize(columns: Int, rows: Int, isMulti: Boolean): CellLayout {
+        return createCellLayout(columns, rows, isMulti)
+    }
+
+    fun createCellLayout(
+        columns: Int,
+        rows: Int,
+        isMulti: Boolean,
+        width: Int = 1000,
+        height: Int = 1000
+    ): CellLayout {
         val dp = getDeviceProfile()
         // modify the device profile.
-        dp.inv.numColumns = if (isMulti) width / 2 else width
-        dp.inv.numRows = height
+        dp.inv.numColumns = if (isMulti) columns / 2 else columns
+        dp.inv.numRows = rows
         dp.cellLayoutBorderSpacePx = Point(0, 0)
         val cl =
             if (isMulti) MultipageCellLayout(getWrappedContext(applicationContext, dp))
@@ -76,8 +86,8 @@ class UnitTestCellLayoutBuilderRule : TestWatcher() {
         // I put a very large number for width and height so that all the items can fit, it doesn't
         // need to be exact, just bigger than the sum of cell border
         cl.measure(
-            View.MeasureSpec.makeMeasureSpec(10000, View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec(10000, View.MeasureSpec.EXACTLY)
+            View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
         )
         return cl
     }

@@ -1,0 +1,42 @@
+/*
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto2";
+
+package com.google.android.desktop.growth.proto;
+
+option java_package = "com.google.android.desktop.growth.proto";
+option java_outer_classname = "Nudge";
+option java_multiple_files = true;
+
+// Nudge payload used for passing data from Growth Framework to the UI
+// Component.
+message NudgePayload {
+    // Required. Contains the title text of the nudge.
+    string title_text = 1;
+
+    // Required. Contains the body text of the nudge.
+    string body_text = 2;
+
+    // Optional. Contains the image of the nudge.
+    ImagePayload image = 3;
+
+    // Optional. The primary button of the nudge.
+    ButtonPayload primary_button = 4;
+
+    // Optional. The secondary button of the nudge. Typically for the
+    // "Dismiss" button.
+    ButtonPayload secondary_button = 5;
+}

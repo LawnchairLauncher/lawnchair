@@ -1,0 +1,57 @@
+/*
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto2";
+
+package com.google.android.desktop.growth.proto;
+
+import "google/protobuf/duration.proto";
+
+option java_package = "com.google.android.desktop.growth.proto";
+option java_outer_classname = "Nudge";
+option java_multiple_files = true;
+
+message DismissParam {
+    // Optional. Whether to report the action as dismissed.
+    optional bool mark_as_dismissed = 1 [default = true];
+
+    // Optional. The duration specifies how long to wait before showing the nudge
+    // again after it was auto dismissed without user interaction. Will be ignored
+    // if mark_as_dismissed is false.
+    optional google.protobuf.Duration duration = 2;
+}
+
+message OpenUrlParam {
+    // Required. The URL to open.
+    required string url = 1;
+}
+
+// Action to be performed when the button is clicked.
+message Action {
+    oneof param {
+        DismissParam dismiss_param = 1;
+        OpenUrlParam open_url_param = 2;
+    }
+}
+
+// Payload for a nudge button.
+message ButtonPayload {
+    // Required. Contains the label of the button.
+    required string label = 1;
+
+    // Optional. Contains the actions of the button. If not specified, the default
+    // action is to dismiss the nudge.
+    repeated Action actions = 2;
+}

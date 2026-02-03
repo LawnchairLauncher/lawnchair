@@ -18,6 +18,7 @@ package com.android.launcher3.tapl;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.tapl.Taskbar.TaskbarLocation;
 import com.android.launcher3.testing.shared.TestProtocol;
 
 /**
@@ -25,8 +26,11 @@ import com.android.launcher3.testing.shared.TestProtocol;
  */
 public class TaskbarAllApps extends AllApps {
 
-    TaskbarAllApps(LauncherInstrumentation launcher) {
+    private final TaskbarLocation mTaskbarLocation;
+
+    TaskbarAllApps(LauncherInstrumentation launcher, TaskbarLocation taskbarLocation) {
         super(launcher);
+        mTaskbarLocation = taskbarLocation;
     }
 
     @Override
@@ -43,7 +47,7 @@ public class TaskbarAllApps extends AllApps {
     @NonNull
     @Override
     protected TaskbarAppIcon createAppIcon(UiObject2 icon) {
-        return new TaskbarAppIcon(mLauncher, icon);
+        return new TaskbarAppIcon(mLauncher, icon, mTaskbarLocation);
     }
 
     @Override
@@ -66,7 +70,7 @@ public class TaskbarAllApps extends AllApps {
     @NonNull
     @Override
     public TaskbarAllAppsQsb getQsb() {
-        return new TaskbarAllAppsQsb(mLauncher, verifyActiveContainer());
+        return new TaskbarAllAppsQsb(mLauncher, verifyActiveContainer(), mTaskbarLocation);
     }
 
     @Override

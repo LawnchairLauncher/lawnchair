@@ -34,20 +34,23 @@
     <string name="dock_forced_resizable" msgid="7429086980048964687">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ಆ್ಯಪ್ ಕೆಲಸ ಮಾಡದೇ ಇರಬಹುದು"</string>
     <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್‌ ಅನ್ನು ಆ್ಯಪ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"</string>
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"ಈ ಆ್ಯಪ್ ಅನ್ನು 1 ವಿಂಡೋದಲ್ಲಿ ಮಾತ್ರ ತೆರೆಯಬಹುದು"</string>
-    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"ಸೆಕೆಂಡರಿ ಡಿಸ್‌ಪ್ಲೇಗಳಲ್ಲಿ ಅಪ್ಲಿಕೇಶನ್‌ ಕಾರ್ಯ ನಿರ್ವಹಿಸದೇ ಇರಬಹುದು."</string>
-    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"ಸೆಕೆಂಡರಿ ಡಿಸ್‌ಪ್ಲೇಗಳಲ್ಲಿ ಪ್ರಾರಂಭಿಸುವಿಕೆಯನ್ನು ಅಪ್ಲಿಕೇಶನ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"ಸೆಕೆಂಡರಿ ಡಿಸ್‌ಪ್ಲೇಗಳಲ್ಲಿ ಆ್ಯಪ್ ಕಾರ್ಯ ನಿರ್ವಹಿಸದೇ ಇರಬಹುದು."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"ಸೆಕೆಂಡರಿ ಡಿಸ್‌ಪ್ಲೇಗಳಲ್ಲಿ ಪ್ರಾರಂಭಿಸುವಿಕೆಯನ್ನು ಆ್ಯಪ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"ಬಬಲ್ ಅನ್ನು ಆ್ಯಪ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್ ಡಿವೈಡರ್"</string>
     <string name="divider_title" msgid="1963391955593749442">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್ ಡಿವೈಡರ್"</string>
-    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ಎಡ ಪೂರ್ಣ ಪರದೆ"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ಎಡ ಫುಲ್ ಸ್ಕ್ರೀನ್"</string>
     <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"70% ಎಡಕ್ಕೆ"</string>
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"50% ಎಡಕ್ಕೆ"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"30% ಎಡಕ್ಕೆ"</string>
-    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"ಬಲ ಪೂರ್ಣ ಪರದೆ"</string>
-    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"ಮೇಲಿನ ಪೂರ್ಣ ಪರದೆ"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"ಬಲ ಫುಲ್ ಸ್ಕ್ರೀನ್"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"ಮೇಲಿನ ಮತ್ತು ಕೆಳಗಿನ ಆ್ಯಪ್‌ಗಳನ್ನು ಅದಲು-ಬದಲು ಮಾಡಿ"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"ಎಡ ಮತ್ತು ಬಲದ ಆ್ಯಪ್‌ಗಳನ್ನು ಅದಲು-ಬದಲು ಮಾಡಿ"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"ಮೇಲಿನ ಫುಲ್ ಸ್ಕ್ರೀನ್"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"70% ಮೇಲಕ್ಕೆ"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"50% ಮೇಲಕ್ಕೆ"</string>
     <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"30% ಮೇಲಕ್ಕೆ"</string>
-    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"ಕೆಳಗಿನ ಪೂರ್ಣ ಪರದೆ"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"ಕೆಳಗಿನ ಫುಲ್ ಸ್ಕ್ರೀನ್"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"ಎಡಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"ಬಲಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
     <string name="accessibility_split_top" msgid="2789329702027147146">"ಮೇಲಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
@@ -65,10 +68,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"ಬಲ ಮೇಲ್ಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"ಸ್ಕ್ರೀನ್‌ನ ಎಡ ಕೆಳಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"ಕೆಳಗಿನ ಬಲಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"ಮೆನು ವಿಸ್ತರಿಸಿ"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"ಮೆನು ಸಂಕುಚಿಸಿ"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"ಎಡಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"ಬಲಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> ಅನ್ನು ವಿಸ್ತೃತಗೊಳಿಸಿ"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> ಅನ್ನು ಕುಗ್ಗಿಸಿ"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"ಬಬಲ್ ವಜಾಗೊಳಿಸಿ"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"ಫುಲ್‌ಸ್ಕ್ರೀನ್‌ಗೆ ಸರಿಸಿ"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"ಸಂಭಾಷಣೆಯನ್ನು ಬಬಲ್ ಮಾಡಬೇಡಿ"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"ಬಬಲ್ಸ್ ಬಳಸಿ ಚಾಟ್ ಮಾಡಿ"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"ಹೊಸ ಸಂಭಾಷಣೆಗಳು ತೇಲುವ ಐಕಾನ್‌ಗಳು ಅಥವಾ ಬಬಲ್ಸ್ ಆಗಿ ಗೋಚರಿಸುತ್ತವೆ. ಬಬಲ್ ತೆರೆಯಲು ಟ್ಯಾಪ್ ಮಾಡಿ. ಅದನ್ನು ಡ್ರ್ಯಾಗ್ ಮಾಡಲು ಎಳೆಯಿರಿ."</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"ಕ್ಯಾಮರಾ ಸಮಸ್ಯೆಗಳಿವೆಯೇ?\nಮರುಹೊಂದಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"ಅದನ್ನು ಸರಿಪಡಿಸಲಿಲ್ಲವೇ?\nಹಿಂತಿರುಗಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"ಕ್ಯಾಮರಾ ಸಮಸ್ಯೆಗಳಿಲ್ಲವೇ? ವಜಾಗೊಳಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"ಆ್ಯಪ್ ಮೆನುವನ್ನು ಇಲ್ಲಿ ಕಾಣಬಹುದು"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"ಹಲವು ಆ್ಯಪ್‌ಗಳನ್ನು ಒಟ್ಟಿಗೆ ತೆರೆಯಲು ಡೆಸ್ಕ್‌ಟಾಪ್ ವಿಂಡೋಯಿಂಗ್ ಅನ್ನು ನಮೂದಿಸಿ"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"ಆ್ಯಪ್ ಮೆನುವಿನಿಂದ ಯಾವಾಗ ಬೇಕಾದರೂ ಫುಲ್‌ಸ್ಕ್ರೀನ್‌ಗೆ ಹಿಂತಿರುಗಿ"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"ನೋಡಿ ಮತ್ತು ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಿ"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್‌ಗಾಗಿ ಮತ್ತೊಂದು ಆ್ಯಪ್‌ನಲ್ಲಿ ಡ್ರ್ಯಾಗ್ ಮಾಡಿ"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"ಆ್ಯಪ್ ಒಂದರ ಸ್ಥಾನವನ್ನು ಬದಲಾಯಿಸಲು ಅದರ ಹೊರಗೆ ಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"ಮರುಪ್ರಾರಂಭಿಸಿ"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"ಮತ್ತೊಮ್ಮೆ ತೋರಿಸಬೇಡಿ"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"ಈ ಆ್ಯಪ್ ಅನ್ನು ಸರಿಸಲು\nಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"ಹಿಗ್ಗಿಸಿ"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"ಕುಗ್ಗಿಸಿ"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"ಮುಚ್ಚಿರಿ"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಅನ್ನು ಮ್ಯಾಕ್ಸಿಮೈಸ್ ಮಾಡಿ"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಅನ್ನು ಮಿನಿಮೈಸ್ ಮಾಡಿ"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಅನ್ನು ಮುಚ್ಚಿ"</string>
     <string name="back_button_text" msgid="1469718707134137085">"ಹಿಂದಕ್ಕೆ"</string>
-    <string name="handle_text" msgid="1766582106752184456">"ಹ್ಯಾಂಡಲ್"</string>
+    <string name="handle_text" msgid="4419667835599523257">"ಆ್ಯಪ್ ಹ್ಯಾಂಡಲ್"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"ಆ್ಯಪ್ ಐಕಾನ್"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"ಫುಲ್‌ಸ್ಕ್ರೀನ್"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"ಡೆಸ್ಕ್‌ಟಾಪ್ ಮೋಡ್"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"ಡೆಸ್ಕ್‌ಟಾಪ್ ವಿಂಡೋಯಿಂಗ್"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್"</string>
     <string name="more_button_text" msgid="3655388105592893530">"ಇನ್ನಷ್ಟು"</string>
     <string name="float_button_text" msgid="9221657008391364581">"ಫ್ಲೋಟ್"</string>
     <string name="select_text" msgid="5139083974039906583">"ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"ಸ್ಕ್ರೀನ್‌ಶಾಟ್"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"ಬ್ರೌಸರ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"ಆ್ಯಪ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"ಹೊಸ ವಿಂಡೋ"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"ವಿಂಡೋಗಳನ್ನು ನಿರ್ವಹಿಸಿ"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"ದೃಶ್ಯಾನುಪಾತವನ್ನು ಬದಲಾಯಿಸಿ"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"ವೀಕ್ಷಣೆಯನ್ನು ಆಪ್ಟಿಮೈಸ್ ಮಾಡಿ"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"ದೋಷದ ಐಕಾನ್"</string>
     <string name="close_text" msgid="4986518933445178928">"ಮುಚ್ಚಿ"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"ಮೆನು ಮುಚ್ಚಿ"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"ಮೆನು ತೆರೆಯಿರಿ"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ಡೆಸ್ಕ್‌ಟಾಪ್ ವಿಂಡೋಯಿಂಗ್)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"ಸ್ಕ್ರೀನ್ ಅನ್ನು ಮ್ಯಾಕ್ಸಿಮೈಸ್ ಮಾಡಿ"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"ಸ್ನ್ಯಾಪ್ ಸ್ಕ್ರೀನ್"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"ಮರುಗಾತ್ರಗೊಳಿಸಿ"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"ಆ್ಯಪ್ ಅನ್ನು ಇಲ್ಲಿಗೆ ಸರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"ಹೊಸ ಆ್ಯಪ್ ವಿಂಡೋವನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"ಆ್ಯಪ್ ವಿಂಡೋವನ್ನು ಮುಚ್ಚಲಾಗುತ್ತಿದೆ"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"ಆ್ಯಪ್ ವಿಂಡೋವನ್ನು ಮಿನಿಮೈಸ್ ಮಾಡಲಾಗುತ್ತಿದೆ"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ಫೋಕಸ್ ಮಾಡಲಾಗಿದೆ)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ಫೋಕಸ್ ಮಾಡಲಾಗಿಲ್ಲ)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"ಇಮ್ಮರ್ಸಿವ್"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"ಮ್ಯಾಕ್ಸಿಮೈಸ್ ಮಾಡಿ"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"ಎಡಕ್ಕೆ ಸ್ನ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"ಬಲಕ್ಕೆ ಸ್ನ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"ಮರುಗಾತ್ರಗೊಳಿಸಿ ಆ್ಯಪ್ ವಿಂಡೋ ಎಡ"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"ಮರುಗಾತ್ರಗೊಳಿಸಿ ಆ್ಯಪ್ ವಿಂಡೋ ಬಲ"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"ವಿಂಡೋ ಗಾತ್ರವನ್ನು ಗರಿಷ್ಠಗೊಳಿಸಿ ಅಥವಾ ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"ಮೆನು ತೆರೆಯಿರಿ"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"<xliff:g id="WINDOWING_MODE">%1$s</xliff:g> ಅನ್ನು ನಮೂದಿಸಿ"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"ಮರುಗಾತ್ರಗೊಳಿಸಿ ವಿಂಡೋವನ್ನು ಎಡಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"ಮರುಗಾತ್ರಗೊಳಿಸಿ ವಿಂಡೋವನ್ನು ಬಲಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"ವಿಂಡೋ ಗಾತ್ರವನ್ನು ಗರಿಷ್ಠಗೊಳಿಸಿ ಅಥವಾ ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"ಆ್ಯಪ್ ವಿಂಡೋದ ಗಾತ್ರವನ್ನು ಮ್ಯಾಕ್ಸಿಮೈಸ್ ಮಾಡಿ"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"ವಿಂಡೋ ಗಾತ್ರವನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"ಆ್ಯಪ್ ವಿಂಡೋವನ್ನು ಮಿನಿಮೈಸ್ ಮಾಡಿ"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"ಆ್ಯಪ್ ವಿಂಡೋವನ್ನು ಮುಚ್ಚಿರಿ"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"ಡೀಫಾಲ್ಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಂದ ತೆರೆಯಿರಿ"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"ಈ ಆ್ಯಪ್‌ಗೆ ವೆಬ್ ಲಿಂಕ್‌ಗಳನ್ನು ಹೇಗೆ ತೆರೆಯಬೇಕು ಎಂಬುದನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"ಆ್ಯಪ್‌ನಲ್ಲಿ"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"ಸರಿ"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"ಇಲ್ಲಿಂದ ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಆ್ಯಪ್‌ಗಳನ್ನು ತ್ವರಿತವಾಗಿ ತೆರೆಯಿರಿ"</string>
 </resources>

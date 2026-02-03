@@ -78,14 +78,12 @@ public class QuickstepAtomicAnimationFactory extends
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
     // Scale workspace takes before animating in
     private static final float WORKSPACE_PREPARE_SCALE = 0.92f;
-    // Constants to specify how to scroll RecentsView to the default page if it's
-    // not already there.
+    // Constants to specify how to scroll RecentsView to the default page if it's not already there.
     private static final int DEFAULT_PAGE = 0;
     private static final int PER_PAGE_SCROLL_DURATION = 150;
     private static final int MAX_PAGE_SCROLL_DURATION = 750;
 
-    // Due to use of physics, duration may differ between devices so we need to
-    // calculate and
+    // Due to use of physics, duration may differ between devices so we need to calculate and
     // cache the value.
     private int mHintToNormalDuration = -1;
 
@@ -97,8 +95,10 @@ public class QuickstepAtomicAnimationFactory extends
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             StateAnimationConfig config) {
         RecentsView overview = mContainer.getOverviewPanel();
+        boolean isPinnedTaskbar = DisplayController.isPinnedTaskbar(mContainer);
         if ((fromState == OVERVIEW || fromState == OVERVIEW_SPLIT_SELECT) && toState == NORMAL) {
-            overview.switchToScreenshot(() -> overview.finishRecentsAnimation(true /* toRecents */, null));
+            overview.switchToScreenshot(() ->
+                    overview.finishRecentsAnimation(true /* toRecents */, null));
 
             if (fromState == OVERVIEW_SPLIT_SELECT) {
                 config.setInterpolator(ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
@@ -107,11 +107,15 @@ public class QuickstepAtomicAnimationFactory extends
                         clampToProgress(LINEAR, 0, 0.33f));
             }
 
-            // We sync the scrim fade with the taskbar animation duration to avoid any
-            // flickers for
+            // We sync the scrim fade with the taskbar animation duration to avoid any flickers for
             // taskbar icons disappearing before hotseat icons show up.
-            float scrimUpperBoundFromSplit = QuickstepTransitionManager.getTaskbarToHomeDuration()
-                    / (float) config.duration;
+            boolean isPinnedTaskbarAndNotInDesktopMode =
+                    isPinnedTaskbar && !DisplayController.isInDesktopMode(mContainer);
+            float scrimUpperBoundFromSplit =
+                    QuickstepTransitionManager.getTaskbarToHomeDuration(
+                            isPinnedTaskbarAndNotInDesktopMode)
+                            / (float) config.duration;
+            scrimUpperBoundFromSplit = Math.min(scrimUpperBoundFromSplit, 1f);
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR, 0, 0.25f));
             config.setInterpolator(ANIM_SCRIM_FADE,
                     fromState == OVERVIEW_SPLIT_SELECT
@@ -121,7 +125,7 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCELERATE);
 
             if (DisplayController.getNavigationMode(mContainer).hasGestures
-                    && overview.getTaskViewCount() > 0) {
+                    && overview.hasTaskViews()) {
                 // Overview is going offscreen, so keep it at its current scale and opacity.
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
                 config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
@@ -137,11 +141,12 @@ public class QuickstepAtomicAnimationFactory extends
                         numPagesToScroll * PER_PAGE_SCROLL_DURATION);
                 config.duration = Math.max(config.duration, scrollDuration);
 
-                // Sync scroll so that it ends before or at the same time as the taskbar
-                // animation.
+                // Sync scroll so that it ends before or at the same time as the taskbar animation.
                 if (mContainer.getDeviceProfile().isTaskbarPresent) {
                     config.duration = Math.min(
-                            config.duration, QuickstepTransitionManager.getTaskbarToHomeDuration());
+                            config.duration,
+                            QuickstepTransitionManager.getTaskbarToHomeDuration(
+                                    isPinnedTaskbarAndNotInDesktopMode));
                 }
                 overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
             } else {
@@ -151,8 +156,7 @@ public class QuickstepAtomicAnimationFactory extends
             }
 
             Workspace<?> workspace = mContainer.getWorkspace();
-            // Start from a higher workspace scale, but only if we're invisible so we don't
-            // jump.
+            // Start from a higher workspace scale, but only if we're invisible so we don't jump.
             boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
             if (isWorkspaceVisible) {
                 CellLayout currentChild = (CellLayout) workspace.getChildAt(
@@ -178,7 +182,7 @@ public class QuickstepAtomicAnimationFactory extends
                 config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCELERATE);
 
                 // Scrolling in tasks, so show straight away
-                if (overview.getTaskViewCount() > 0) {
+                if (overview.hasTaskViews()) {
                     config.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
                 } else {
                     config.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
@@ -216,7 +220,7 @@ public class QuickstepAtomicAnimationFactory extends
         } else if (fromState == NORMAL && toState == ALL_APPS) {
             AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mContainer, config);
         } else if (fromState == OVERVIEW && toState == OVERVIEW_SPLIT_SELECT) {
-            SplitAnimationTimings timings = mContainer.getDeviceProfile().isTablet
+            SplitAnimationTimings timings = mContainer.getDeviceProfile().getDeviceProperties().isTablet()
                     ? SplitAnimationTimings.TABLET_OVERVIEW_TO_SPLIT
                     : SplitAnimationTimings.PHONE_OVERVIEW_TO_SPLIT;
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR,

@@ -25,9 +25,9 @@ data class StableViewInfo(val itemId: Int, val containerId: Int, val stableId: A
 
     fun matches(info: ItemInfo?) =
         info != null &&
-                itemId == info.id &&
-                containerId == info.container &&
-                stableId == info.stableId
+            itemId == info.id &&
+            containerId == info.container &&
+            stableId == info.stableId
 
     companion object {
 

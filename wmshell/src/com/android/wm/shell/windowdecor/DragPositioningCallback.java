@@ -41,25 +41,30 @@ public interface DragPositioningCallback {
      *
      * @param ctrlType {@link CtrlType} indicating the direction of resizing, use
      *                 {@code 0} to indicate it's a move
+     * @param displayId the ID of the display where the drag starts
      * @param x x coordinate in window decoration coordinate system where the drag starts
      * @param y y coordinate in window decoration coordinate system where the drag starts
      * @return the starting task bounds
      */
-    Rect onDragPositioningStart(@CtrlType int ctrlType, float x, float y);
+    Rect onDragPositioningStart(@CtrlType int ctrlType, int displayId, float x, float y);
 
     /**
      * Called when the pointer moves during a drag-resize or drag-move.
+     *
+     * @param displayId the ID of the display where the pointer is currently located
      * @param x x coordinate in window decoration coordinate system of the new pointer location
      * @param y y coordinate in window decoration coordinate system of the new pointer location
      * @return the updated task bounds
      */
-    Rect onDragPositioningMove(float x, float y);
+    Rect onDragPositioningMove(int displayId, float x, float y);
 
     /**
      * Called when a drag-resize or drag-move stops.
+     *
+     * @param displayId the ID of the display where the pointer is located when drag stops
      * @param x x coordinate in window decoration coordinate system where the drag resize stops
      * @param y y coordinate in window decoration coordinate system where the drag resize stops
      * @return the final bounds for the dragged task
      */
-    Rect onDragPositioningEnd(float x, float y);
+    Rect onDragPositioningEnd(int displayId, float x, float y);
 }

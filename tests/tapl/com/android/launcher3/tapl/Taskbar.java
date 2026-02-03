@@ -41,10 +41,20 @@ import java.util.stream.Collectors;
  */
 public final class Taskbar {
 
-    private final LauncherInstrumentation mLauncher;
+    /** The TaskbarLocation */
+    enum TaskbarLocation {
+        /** Launched application. */
+        LAUNCHED_APP,
+        /** Overview screen with recent apps. */
+        OVERVIEW,
+    }
 
-    Taskbar(LauncherInstrumentation launcher) {
+    private final LauncherInstrumentation mLauncher;
+    private final TaskbarLocation mTaskbarLocation;
+
+    Taskbar(LauncherInstrumentation launcher, TaskbarLocation taskbarLocation) {
         mLauncher = launcher;
+        mTaskbarLocation = taskbarLocation;
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "expect new taskbar to be visible")) {
             mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
@@ -52,7 +62,7 @@ public final class Taskbar {
 
         if (!mLauncher.isTransientTaskbar()) {
             Assert.assertEquals("Persistent taskbar should fill screen width",
-                    getVisibleBounds().width(), mLauncher.getRealDisplaySize().x);
+                    mLauncher.getRealDisplaySize().x, getVisibleBounds().width());
         }
     }
 
@@ -65,7 +75,7 @@ public final class Taskbar {
                 "want to get a taskbar icon")) {
             return new TaskbarAppIcon(mLauncher, mLauncher.waitForObjectInContainer(
                     mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
-                    AppIcon.getAppIconSelector(appName, mLauncher)));
+                    AppIcon.getAppIconSelector(appName, mLauncher)), mTaskbarLocation);
         }
     }
 
@@ -115,6 +125,23 @@ public final class Taskbar {
         }
     }
 
+    /**
+     *  Opens the Home all apps page by clicking the taskbar all apps icon. To be used to open all
+     *  apps when taskbar is visible on home.
+     */
+    public HomeAllApps openAllAppsOnHome() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to open home all apps from taskbar");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+
+            mLauncher.clickLauncherObject(mLauncher.waitForObjectInContainer(
+                    mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
+                    getAllAppsButtonSelector()));
+
+            return mLauncher.getAllApps();
+        }
+    }
+
     /** Opens the Taskbar all apps page with the meta keyboard shortcut. */
     public TaskbarAllApps openAllAppsFromKeyboardShortcut() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
@@ -130,7 +157,7 @@ public final class Taskbar {
     public TaskbarAllApps getAllApps() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get taskbar all apps object")) {
-            return new TaskbarAllApps(mLauncher);
+            return new TaskbarAllApps(mLauncher, mTaskbarLocation);
         }
     }
 

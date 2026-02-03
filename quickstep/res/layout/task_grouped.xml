@@ -22,20 +22,26 @@
 
 <com.android.quickstep.views.GroupedTaskView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/task"
+    android:id="@+id/task_view_grouped"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:defaultFocusHighlightEnabled="false"
     android:focusable="true"
-    launcher:focusBorderColor="?attr/materialColorOutline"
-    launcher:hoverBorderColor="?attr/materialColorPrimary">
+    launcher:focusBorderColor="@color/materialColorOutline"
+    launcher:hoverBorderColor="@color/materialColorPrimary">
 
-    <include layout="@layout/task_thumbnail"/>
+    <ViewStub
+        android:id="@+id/task_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <include layout="@layout/task_thumbnail"
-        android:id="@+id/bottomright_snapshot" />
+    <ViewStub
+        android:id="@+id/bottomright_task_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <!-- Filtering affects only alpha instead of the visibility since visibility can be altered
          separately through RecentsView#resetFromSplitSelectionState() -->
@@ -72,4 +78,16 @@
         android:inflatedId="@id/bottomRight_icon"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
+
+    <ViewStub
+        android:id="@+id/digital_wellbeing_toast"
+        android:inflatedId="@id/digital_wellbeing_toast"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/digital_wellbeing_toast_height" />
+
+    <ViewStub
+        android:id="@+id/bottomRight_digital_wellbeing_toast"
+        android:inflatedId="@id/bottomRight_digital_wellbeing_toast"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/digital_wellbeing_toast_height" />
 </com.android.quickstep.views.GroupedTaskView>

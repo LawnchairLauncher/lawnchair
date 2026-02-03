@@ -17,10 +17,13 @@
 package com.android.wm.shell.flicker.pip
 
 import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
 import android.tools.traces.component.ComponentNameMatcher
+import com.android.server.wm.flicker.helpers.PipAppHelper
+import com.android.wm.shell.Flags
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +33,7 @@ import org.junit.runners.Parameterized
 /**
  * Test auto entering pip using a source rect hint.
  *
- * To run this test: `atest WMShellFlickerTestsPip1:AutoEnterPipWithSourceRectHintTest`
+ * To run this test: `atest WMShellFlickerTestsPip:AutoEnterPipWithSourceRectHintTest`
  *
  * Actions:
  * ```
@@ -52,8 +55,11 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
 class AutoEnterPipWithSourceRectHintTest(flicker: LegacyFlickerTest) :
     AutoEnterPipOnGoToHomeTest(flicker) {
+    override val pipApp: PipAppHelper = PipAppHelper(instrumentation)
+
     override val defaultEnterPip: FlickerBuilder.() -> Unit = {
         setup {
             pipApp.launchViaIntent(wmHelper)

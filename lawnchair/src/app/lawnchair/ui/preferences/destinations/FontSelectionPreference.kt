@@ -22,8 +22,10 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -74,12 +76,12 @@ fun FontSelection(
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif")))
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif-medium")))
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif-condensed")))
-        val interVariants = HashMap<String, FontCache.Font>()
-        interVariants["regular"] = FontCache.ResourceFont(context, R.font.inter_regular, "Inter v3 " + context.getString(R.string.font_weight_regular))
-        interVariants["500"] = FontCache.ResourceFont(context, R.font.inter_medium, "Inter v3 " + context.getString(R.string.font_weight_medium))
-        interVariants["600"] = FontCache.ResourceFont(context, R.font.inter_semi_bold, "Inter v3 " + context.getString(R.string.font_weight_semi_bold))
-        interVariants["700"] = FontCache.ResourceFont(context, R.font.inter_bold, "Inter v3 " + context.getString(R.string.font_weight_bold))
-        list.add(FontCache.Family("Inter v3", interVariants))
+        val googleSansFlexVariants = HashMap<String, FontCache.Font>()
+        googleSansFlexVariants["regular"] = FontCache.ResourceFont(context, R.font.googlesansflex_variable, "Google Sans Flex " + context.getString(R.string.font_weight_regular))
+        googleSansFlexVariants["500"] = FontCache.ResourceFont(context, R.font.googlesansflex_variable, "Google Sans Flex " + context.getString(R.string.font_weight_medium))
+        googleSansFlexVariants["600"] = FontCache.ResourceFont(context, R.font.googlesansflex_variable, "Google Sans Flex " + context.getString(R.string.font_weight_semi_bold))
+        googleSansFlexVariants["700"] = FontCache.ResourceFont(context, R.font.googlesansflex_variable, "Google Sans Flex " + context.getString(R.string.font_weight_bold))
+        list.add(FontCache.Family("Google Sans Flex", googleSansFlexVariants))
         GoogleFontsListing.INSTANCE.get(context).getFonts().mapTo(list) { font ->
             val variantsMap = HashMap<String, FontCache.Font>()
             val variants = font.variants.toTypedArray()
@@ -191,7 +193,6 @@ fun FontSelection(
                 isFirstChild = false,
                 key = { _, family -> family.toString() },
                 contentType = { ContentType.FONT },
-                dividerStartIndent = 40.dp,
             ) { _, family ->
                 FontSelectionItem(
                     adapter = adapter,
@@ -202,6 +203,7 @@ fun FontSelection(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun FontSelectionItem(
     adapter: PreferenceAdapter<FontCache.Font>,
@@ -244,6 +246,7 @@ private fun FontSelectionItem(
                     IconButton(
                         onClick = onDelete,
                         modifier = Modifier.padding(end = 8.dp),
+                        shapes = IconButtonDefaults.shapes(),
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Delete,
@@ -275,6 +278,7 @@ private fun removeFamilyPrefix(
     return fontName.removePrefix(familyName).trim().toString()
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun VariantDropdown(
     adapter: PreferenceAdapter<FontCache.Font>,
@@ -302,6 +306,7 @@ private fun VariantDropdown(
             onClick = { showVariants = true },
             colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
             contentPadding = VariantButtonContentPadding,
+            shapes = ButtonDefaults.shapes(),
         ) {
             AndroidText(
                 modifier = Modifier.wrapContentWidth(),

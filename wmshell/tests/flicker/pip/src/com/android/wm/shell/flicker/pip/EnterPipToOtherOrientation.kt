@@ -16,9 +16,9 @@
 
 package com.android.wm.shell.flicker.pip
 
-import android.app.Activity
 import android.platform.test.annotations.Postsubmit
 import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.Rotation
 import android.tools.flicker.assertions.FlickerTest
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
@@ -27,26 +27,29 @@ import android.tools.flicker.legacy.LegacyFlickerTest
 import android.tools.flicker.legacy.LegacyFlickerTestFactory
 import android.tools.helpers.WindowUtils
 import android.tools.traces.component.ComponentNameMatcher
+import android.view.WindowManagerGlobal
 import androidx.test.filters.FlakyTest
 import com.android.server.wm.flicker.entireScreenCovered
 import com.android.server.wm.flicker.helpers.FixedOrientationAppHelper
+import com.android.server.wm.flicker.helpers.PipAppHelper
 import com.android.server.wm.flicker.testapp.ActivityOptions.Pip.ACTION_ENTER_PIP
 import com.android.server.wm.flicker.testapp.ActivityOptions.PortraitOnlyActivity.EXTRA_FIXED_ORIENTATION
+import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.PipTransition
 import com.android.wm.shell.flicker.pip.common.PipTransition.BroadcastActionTrigger.Companion.ORIENTATION_LANDSCAPE
 import com.android.wm.shell.flicker.pip.common.PipTransition.BroadcastActionTrigger.Companion.ORIENTATION_PORTRAIT
-import org.junit.Assume
-import org.junit.Before
+import org.junit.Assume.assumeFalse
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.junit.runners.Parameterized
+import java.lang.AssertionError
 
 /**
  * Test entering pip while changing orientation (from app in landscape to pip window in portrait)
  *
- * To run this test: `atest WMShellFlickerTestsPip2:EnterPipToOtherOrientation`
+ * To run this test: `atest WMShellFlickerTestsPip:EnterPipToOtherOrientation`
  *
  * Actions:
  * ```
@@ -68,9 +71,19 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(flicker) {
-    private val testApp = FixedOrientationAppHelper(instrumentation)
-    private val startingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_90)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
+open class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(flicker) {
+    override val pipApp: PipAppHelper = PipAppHelper(instrumentation)
+    internal val testApp = FixedOrientationAppHelper(instrumentation)
+    internal val ignoreOrientationRequest = WindowManagerGlobal.getWindowManagerService()
+        ?.getIgnoreOrientationRequest(WindowUtils.defaultDisplayId)
+        ?: throw AssertionError("WMS must not be null.")
+    internal val startingBounds = if (ignoreOrientationRequest) {
+        // If the device chooses to ignore orientation request, use the current display bounds.
+        WindowUtils.getDisplayBounds(Rotation.ROTATION_0)
+    } else {
+        WindowUtils.getDisplayBounds(Rotation.ROTATION_90)
+    }
     private val endingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_0)
 
     override val thisTransition: FlickerBuilder.() -> Unit = {
@@ -107,34 +120,27 @@ class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(fli
     }
 
     /**
-     * This test is not compatible with Tablets. When using [Activity.setRequestedOrientation] to
-     * fix a orientation, Tablets instead keep the same orientation and add letterboxes
-     */
-    @Before
-    fun setup() {
-        Assume.assumeFalse(tapl.isTablet)
-    }
-
-    /**
      * Checks that all parts of the screen are covered at the start and end of the transition
-     *
-     * TODO b/197726599 Prevents all states from being checked
      */
     @Presubmit
     @Test
-    fun entireScreenCoveredAtStartAndEnd() = flicker.entireScreenCovered(allStates = false)
+    fun entireScreenCoveredAtStartAndEnd() {
+        assumeFalse(tapl.isTablet)
+        flicker.entireScreenCovered()
+    }
 
     /** Checks [pipApp] window remains visible and on top throughout the transition */
     @Presubmit
     @Test
     fun pipAppWindowIsAlwaysOnTop() {
+        assumeFalse(tapl.isTablet)
         flicker.assertWm { isAppWindowOnTop(pipApp) }
     }
 
     /** Checks that [testApp] window is not visible at the start */
     @Presubmit
     @Test
-    fun testAppWindowInvisibleOnStart() {
+    open fun testAppWindowInvisibleOnStart() {
         flicker.assertWmStart { isAppWindowInvisible(testApp) }
     }
 
@@ -142,13 +148,15 @@ class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(fli
     @Presubmit
     @Test
     fun testAppWindowVisibleOnEnd() {
+        assumeFalse(tapl.isTablet)
         flicker.assertWmEnd { isAppWindowVisible(testApp) }
     }
 
     /** Checks that [testApp] layer is not visible at the start */
     @Presubmit
     @Test
-    fun testAppLayerInvisibleOnStart() {
+    open fun testAppLayerInvisibleOnStart() {
+        assumeFalse(tapl.isTablet)
         flicker.assertLayersStart { isInvisible(testApp) }
     }
 
@@ -156,6 +164,7 @@ class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(fli
     @Presubmit
     @Test
     fun testAppLayerVisibleOnEnd() {
+        assumeFalse(tapl.isTablet)
         flicker.assertLayersEnd { isVisible(testApp) }
     }
 
@@ -165,21 +174,15 @@ class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(fli
      */
     @Presubmit
     @Test
-    fun pipAppLayerCoversFullScreenOnStart() {
-        Assume.assumeFalse(tapl.isTablet)
-        flicker.assertLayersStart { visibleRegion(pipApp).coversExactly(startingBounds) }
-    }
-
-    /**
-     * Checks that the visible region of [pipApp] covers the full display area at the start of the
-     * transition
-     */
-    @Postsubmit
-    @Test
-    fun pipAppLayerPlusLetterboxCoversFullScreenOnStartTablet() {
-        Assume.assumeFalse(tapl.isTablet)
+    open fun pipAppLayerCoversFullScreenOnStart() {
         flicker.assertLayersStart {
-            visibleRegion(pipApp.or(ComponentNameMatcher.LETTERBOX)).coversExactly(startingBounds)
+            visibleRegion(
+                if (ignoreOrientationRequest) {
+                    pipApp.or(ComponentNameMatcher.LETTERBOX)
+                } else {
+                    pipApp
+                }
+            ).coversExactly(startingBounds)
         }
     }
 
@@ -190,6 +193,7 @@ class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(fli
     @Presubmit
     @Test
     fun testAppPlusPipLayerCoversFullScreenOnEnd() {
+        assumeFalse(tapl.isTablet)
         flicker.assertLayersEnd {
             val pipRegion = visibleRegion(pipApp).region
             visibleRegion(testApp).plus(pipRegion).coversExactly(endingBounds)
@@ -199,6 +203,7 @@ class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(fli
     @Postsubmit
     @Test
     fun menuOverlayMatchesTaskSurface() {
+        assumeFalse(tapl.isTablet)
         flicker.assertLayersEnd {
             val pipAppRegion = visibleRegion(pipApp)
             val pipMenuRegion = visibleRegion(ComponentNameMatcher.PIP_MENU_OVERLAY)
@@ -209,6 +214,7 @@ class EnterPipToOtherOrientation(flicker: LegacyFlickerTest) : PipTransition(fli
     @Presubmit
     @Test
     fun pipLayerRemainInsideVisibleBounds() {
+        assumeFalse(tapl.isTablet)
         // during the transition we assert the center point is within the display bounds, since it
         // might go outside of bounds as we resize from landscape fullscreen to destination bounds,
         // and once the animation is over we assert that it's fully within the display bounds, at

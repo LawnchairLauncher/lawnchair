@@ -40,10 +40,11 @@
             android:tint="@color/bubbles_icon_tint"/>
 
         <TextView
+            android:id="@+id/manage_dismiss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textColor="?androidprv:attr/materialColorOnSurface"
+            android:textColor="?android:attr/textColorPrimary"
             android:textAppearance="@*android:style/TextAppearance.DeviceDefault"
             android:text="@string/bubble_dismiss_text" />
 
@@ -67,10 +68,11 @@
             android:tint="@color/bubbles_icon_tint"/>
 
         <TextView
+            android:id="@+id/manage_dont_bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textColor="?androidprv:attr/materialColorOnSurface"
+            android:textColor="?android:attr/textColorPrimary"
             android:textAppearance="@*android:style/TextAppearance.DeviceDefault"
             android:text="@string/bubbles_dont_bubble_conversation" />
 
@@ -98,7 +100,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textColor="?androidprv:attr/materialColorOnSurface"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textAppearance="@*android:style/TextAppearance.DeviceDefault" />
+
+    </LinearLayout>
+
+    <!-- Menu option to move a bubble to fullscreen; only visible if bubble anything is enabled. -->
+    <LinearLayout
+        android:id="@+id/bubble_manage_menu_fullscreen_container"
+        android:background="@drawable/bubble_manage_menu_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:minHeight="@dimen/bubble_menu_item_height"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/bubble_menu_padding"
+        android:paddingEnd="@dimen/bubble_menu_padding"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/bubble_manage_menu_fullscreen_icon"
+            android:layout_width="@dimen/bubble_menu_icon_size"
+            android:layout_height="@dimen/bubble_menu_icon_size"
+            android:src="@drawable/desktop_mode_ic_handle_menu_fullscreen"
+            android:tint="@color/bubbles_icon_tint"/>
+
+        <TextView
+            android:id="@+id/bubble_manage_menu_fullscreen_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/bubble_fullscreen_text"
+            android:textColor="?android:attr/textColorPrimary"
             android:textAppearance="@*android:style/TextAppearance.DeviceDefault" />
 
     </LinearLayout>

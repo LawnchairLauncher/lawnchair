@@ -63,27 +63,26 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Extension of {@link AbstractFloatingView} with common methods for sliding in
- * from bottom.
+ * Extension of {@link AbstractFloatingView} with common methods for sliding in from bottom.
  *
  * @param <T> Type of ActivityContext inflating this view.
  */
 public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         extends AbstractFloatingView implements SingleAxisSwipeDetector.Listener {
 
-    protected static final FloatProperty<AbstractSlideInView<?>> TRANSLATION_SHIFT = new FloatProperty<>(
-            "translationShift") {
+    protected static final FloatProperty<AbstractSlideInView<?>> TRANSLATION_SHIFT =
+            new FloatProperty<>("translationShift") {
 
-        @Override
-        public Float get(AbstractSlideInView view) {
-            return view.mTranslationShift;
-        }
+                @Override
+                public Float get(AbstractSlideInView view) {
+                    return view.mTranslationShift;
+                }
 
-        @Override
-        public void setValue(AbstractSlideInView view, float value) {
-            view.setTranslationShift(value);
-        }
-    };
+                @Override
+                public void setValue(AbstractSlideInView view, float value) {
+                    view.setTranslationShift(value);
+                }
+            };
     protected static final float TRANSLATION_SHIFT_CLOSED = 1f;
     protected static final float TRANSLATION_SHIFT_OPENED = 0f;
     private static final int DEFAULT_DURATION = 300;
@@ -97,32 +96,26 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected final @Nullable View mColorScrim;
 
     /**
-     * Interpolator for {@link #mOpenCloseAnimation} when we are closing due to
-     * dragging downwards.
+     * Interpolator for {@link #mOpenCloseAnimation} when we are closing due to dragging downwards.
      */
     private Interpolator mScrollInterpolator;
     private long mScrollDuration;
     /**
-     * End progress for {@link #mOpenCloseAnimation} when we are closing due to
-     * dragging downloads.
+     * End progress for {@link #mOpenCloseAnimation} when we are closing due to dragging downloads.
      * <p>
      * There are two cases that determine this value:
      * <ol>
-     * <li>
-     * If the drag interrupts the opening transition (i.e.
-     * {@link #mToTranslationShift}
-     * is {@link #TRANSLATION_SHIFT_OPENED}), we need to animate back to {@code 0}
-     * to
-     * reverse the animation that was paused at
-     * {@link #onDragStart(boolean, float)}.
-     * </li>
-     * <li>
-     * If the drag started after the view is fully opened (i.e.
-     * {@link #mToTranslationShift} is {@link #TRANSLATION_SHIFT_CLOSED}), the
-     * animation
-     * that was set up at {@link #onDragStart(boolean, float)} for closing the view
-     * should go forward to {@code 1}.
-     * </li>
+     *     <li>
+     *         If the drag interrupts the opening transition (i.e. {@link #mToTranslationShift}
+     *         is {@link #TRANSLATION_SHIFT_OPENED}), we need to animate back to {@code 0} to
+     *         reverse the animation that was paused at {@link #onDragStart(boolean, float)}.
+     *     </li>
+     *     <li>
+     *         If the drag started after the view is fully opened (i.e.
+     *         {@link #mToTranslationShift} is {@link #TRANSLATION_SHIFT_CLOSED}), the animation
+     *         that was set up at {@link #onDragStart(boolean, float)} for closing the view
+     *         should go forward to {@code 1}.
+     *     </li>
      * </ol>
      */
     private float mScrollEndProgress;
@@ -131,10 +124,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected float mTranslationShift = TRANSLATION_SHIFT_CLOSED;
     protected float mFromTranslationShift;
     protected float mToTranslationShift;
-    /**
-     * {@link #mOpenCloseAnimation} progress at
-     * {@link #onDragStart(boolean, float)}.
-     */
+    /** {@link #mOpenCloseAnimation} progress at {@link #onDragStart(boolean, float)}. */
     private float mDragStartProgress;
 
     protected boolean mNoIntercept;
@@ -142,12 +132,11 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected List<OnCloseListener> mOnCloseListeners = new ArrayList<>();
 
     /**
-     * How far through a "user initiated dismissal" the UI is. e.g. Predictive back,
-     * swipe to home,
+     * How far through a "user initiated dismissal" the UI is. e.g. Predictive back, swipe to home,
      * 0 is regular state, 1 is fully dismissed.
      */
-    protected final AnimatedFloat mSwipeToDismissProgress = new AnimatedFloat(this::onUserSwipeToDismissProgressChanged,
-            0f);
+    protected final AnimatedFloat mSwipeToDismissProgress =
+            new AnimatedFloat(this::onUserSwipeToDismissProgressChanged, 0f);
     protected boolean mIsDismissInProgress;
     private View mViewToAnimateInSwipeToDismiss = this;
     private @Nullable Drawable mContentBackground;
@@ -160,7 +149,8 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
                     0,
                     0,
                     view.getMeasuredWidth(),
-                    view.getMeasuredHeight() + getBottomOffsetPx());
+                    view.getMeasuredHeight() + getBottomOffsetPx()
+            );
         }
     };
 
@@ -239,12 +229,10 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     /**
      * Invoked when a {@link #mOpenCloseAnimation} is being set up.
      * <p>
-     * Subclasses can override this method to modify the animation before it's used
-     * to create a
+     * Subclasses can override this method to modify the animation before it's used to create a
      * {@link AnimatorPlaybackController}.
      */
-    protected void onOpenCloseAnimationPending(PendingAnimation animation) {
-    }
+    protected void onOpenCloseAnimationPending(PendingAnimation animation) {}
 
     protected void attachToContainer() {
         if (mColorScrim != null) {
@@ -254,8 +242,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     /**
-     * Returns a scrim color for a sliding view. if returned value is -1, no scrim
-     * is added.
+     * Returns a scrim color for a sliding view. if returned value is -1, no scrim is added.
      */
     protected int getScrimColor(Context context) {
         return -1;
@@ -281,8 +268,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         }
 
         int directionsToDetectScroll = mSwipeDetector.isIdleState()
-                ? SingleAxisSwipeDetector.DIRECTION_NEGATIVE
-                : 0;
+                ? SingleAxisSwipeDetector.DIRECTION_NEGATIVE : 0;
         mSwipeDetector.setDetectableScrollConditions(
                 directionsToDetectScroll, false);
         mSwipeDetector.onTouchEvent(ev);
@@ -302,32 +288,27 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         return true;
     }
 
-//    @Override
+    @Override
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public void onBackStarted(BackEvent backEvent) {
-        super.onBackStarted();
+        super.onBackStarted(backEvent);
         mViewToAnimateInSwipeToDismiss = shouldAnimateContentViewInBackSwipe() ? mContent : this;
     }
 
-//    @Override
+    @Override
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public void onBackProgressed(BackEvent backEvent) {
         final float progress = backEvent.getProgress();
-        float deceleratedProgress = Interpolators.BACK_GESTURE.getInterpolation(progress);
-        mSwipeToDismissProgress.updateValue(deceleratedProgress);
+        mSwipeToDismissProgress.updateValue(progress);
     }
 
     /**
-     * During predictive back swipe, the default behavior is to scale
-     * {@link AbstractSlideInView}
-     * during back swipe. This method allow subclass to scale {@link #mContent},
-     * typically to exit
+     * During predictive back swipe, the default behavior is to scale {@link AbstractSlideInView}
+     * during back swipe. This method allow subclass to scale {@link #mContent}, typically to exit
      * search mode.
      *
-     * <p>
-     * Note that this method can be expensive, and should only be called from
-     * {@link #onBackStarted(BackEvent)}, not from
-     * {@link #onBackProgressed(BackEvent)}.
+     * <p>Note that this method can be expensive, and should only be called from
+     * {@link #onBackStarted(BackEvent)}, not from {@link #onBackProgressed(BackEvent)}.
      */
     protected boolean shouldAnimateContentViewInBackSwipe() {
         return false;
@@ -356,8 +337,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         ObjectAnimator objectAnimator = mSwipeToDismissProgress.animateToValue(0f)
                 .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS);
 
-        // If we are animating a different view, we should reset the animating view back
-        // to
+        // If we are animating a different view, we should reset the animating view back to
         // AbstractSlideInView as it is the default view to animate.
         if (this != mViewToAnimateInSwipeToDismiss) {
             objectAnimator.addListener(new Animator.AnimatorListener() {
@@ -372,12 +352,10 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
                 }
 
                 @Override
-                public void onAnimationRepeat(Animator animator) {
-                }
+                public void onAnimationRepeat(Animator animator) {}
 
                 @Override
-                public void onAnimationStart(Animator animator) {
-                }
+                public void onAnimationStart(Animator animator) {}
             });
         }
 
@@ -391,8 +369,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     /**
-     * Set slide in view's background {@link Drawable} which will be draw onto a
-     * parent view in
+     * Set slide in view's background {@link Drawable} which will be draw onto a parent view in
      * {@link #dispatchDraw(Canvas)}
      */
     protected void setContentBackgroundWithParent(
@@ -422,13 +399,10 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     /**
-     * Returns {@code true} if the touch event is over the visible area of the
-     * bottom sheet.
+     * Returns {@code true} if the touch event is over the visible area of the bottom sheet.
      *
-     * By default will check if the touch event is over {@code mContent}, subclasses
-     * should override
-     * this method if the visible area of the bottom sheet is different from
-     * {@code mContent}.
+     * By default will check if the touch event is over {@code mContent}, subclasses should override
+     * this method if the visible area of the bottom sheet is different from {@code mContent}.
      */
     protected boolean isEventOverContent(MotionEvent ev) {
         return getPopupContainer().isEventOverView(mContent, ev);
@@ -455,16 +429,15 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     public boolean onDrag(float displacement) {
         float progress = mDragStartProgress
                 + Math.signum(mToTranslationShift - mFromTranslationShift)
-                        * (displacement / getShiftRange());
+                * (displacement / getShiftRange());
         mOpenCloseAnimation.setPlayFraction(Utilities.boundToRange(progress, 0, 1));
         return true;
     }
 
     @Override
     public void onDragEnd(float velocity) {
-        float successfulShiftThreshold = mActivityContext.getDeviceProfile().isTablet
-                ? TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS
-                : SUCCESS_TRANSITION_PROGRESS;
+        float successfulShiftThreshold = mActivityContext.getDeviceProfile().getDeviceProperties().isTablet()
+                ? TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS : SUCCESS_TRANSITION_PROGRESS;
         if ((mSwipeDetector.isFling(velocity) && velocity > 0)
                 || mTranslationShift > successfulShiftThreshold) {
             mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
@@ -483,10 +456,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         }
     }
 
-    /**
-     * Callback invoked when the view is beginning to close (e.g. close animation is
-     * started).
-     */
+    /** Callback invoked when the view is beginning to close (e.g. close animation is started). */
     public void setOnCloseBeginListener(@Nullable OnCloseListener onCloseBeginListener) {
         mOnCloseBeginListener = onCloseBeginListener;
     }

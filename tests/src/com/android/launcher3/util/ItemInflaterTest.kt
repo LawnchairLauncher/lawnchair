@@ -42,10 +42,10 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
 import com.android.launcher3.model.data.LauncherAppWidgetInfo.FLAG_UI_NOT_READY
 import com.android.launcher3.model.data.LauncherAppWidgetInfo.RESTORE_COMPLETED
-import com.android.launcher3.ui.TestViewHelpers
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.VIEW_PREINFLATION_EXECUTOR
 import com.android.launcher3.util.rule.ShellCommandRule
+import com.android.launcher3.util.ui.TestViewHelpers
 import com.android.launcher3.widget.LauncherAppWidgetHostView
 import com.android.launcher3.widget.LauncherWidgetHolder
 import com.android.launcher3.widget.PendingAppWidgetHostView
@@ -78,7 +78,7 @@ class ItemInflaterTest {
     private val clickListener = OnClickListener {}
     private val focusListener = OnFocusChangeListener { _, _ -> }
 
-    @Mock private lateinit var modelWriter: ModelWriter
+    @Mock private lateinit var modelWriterMock: ModelWriter
 
     private lateinit var testContext: Context
     private lateinit var uiContext: ActivityContextWrapper
@@ -91,7 +91,10 @@ class ItemInflaterTest {
         MockitoAnnotations.initMocks(this)
         testContext = InstrumentationRegistry.getInstrumentation().context
 
-        uiContext = ActivityContextWrapper(getApplicationContext())
+        uiContext =
+            object : ActivityContextWrapper(getApplicationContext()) {
+                override fun getModelWriter() = modelWriterMock
+            }
         uiContext.setTheme(Themes.getActivityThemeRes(uiContext, 0))
 
         widgetHolder = LauncherWidgetHolder.newInstance(uiContext)
@@ -102,7 +105,7 @@ class ItemInflaterTest {
                 widgetHolder,
                 clickListener,
                 focusListener,
-                FrameLayout(uiContext)
+                FrameLayout(uiContext),
             )
     }
 
@@ -114,8 +117,7 @@ class ItemInflaterTest {
     @Test
     fun test_workspace_item_inflated_on_UI() {
         val itemInfo = workspaceItemInfo()
-        val view =
-            MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
+        val view = MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         assertTrue(view is BubbleTextView)
         assertEquals(itemInfo, view!!.tag)
@@ -127,10 +129,7 @@ class ItemInflaterTest {
 
         val itemInfo = workspaceItemInfo()
         val view =
-            VIEW_PREINFLATION_EXECUTOR.submit(
-                    Callable { underTest.inflateItem(itemInfo, modelWriter) }
-                )
-                .get()
+            VIEW_PREINFLATION_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         assertTrue(view is BubbleTextView)
         assertEquals(itemInfo, view!!.tag)
@@ -143,8 +142,7 @@ class ItemInflaterTest {
         itemInfo.add(workspaceItemInfo())
         itemInfo.add(workspaceItemInfo())
 
-        val view =
-            MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
+        val view = MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         assertTrue(view is FolderIcon)
         assertEquals(itemInfo, view!!.tag)
@@ -160,10 +158,7 @@ class ItemInflaterTest {
         itemInfo.add(workspaceItemInfo())
 
         val view =
-            VIEW_PREINFLATION_EXECUTOR.submit(
-                    Callable { underTest.inflateItem(itemInfo, modelWriter) }
-                )
-                .get()
+            VIEW_PREINFLATION_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         assertTrue(view is FolderIcon)
         assertEquals(itemInfo, view!!.tag)
@@ -176,8 +171,7 @@ class ItemInflaterTest {
         itemInfo.add(workspaceItemInfo())
         itemInfo.add(workspaceItemInfo())
 
-        val view =
-            MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
+        val view = MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         assertTrue(view is AppPairIcon)
         assertEquals(itemInfo, view!!.tag)
@@ -193,10 +187,7 @@ class ItemInflaterTest {
         itemInfo.add(workspaceItemInfo())
 
         val view =
-            VIEW_PREINFLATION_EXECUTOR.submit(
-                    Callable { underTest.inflateItem(itemInfo, modelWriter) }
-                )
-                .get()
+            VIEW_PREINFLATION_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         assertTrue(view is AppPairIcon)
         assertEquals(itemInfo, view!!.tag)
@@ -206,8 +197,7 @@ class ItemInflaterTest {
     fun test_pending_widget_inflated_on_UI() {
         val itemInfo = widgetItemInfo(true)
 
-        val view =
-            MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
+        val view = MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         assertTrue(view is PendingAppWidgetHostView)
         assertEquals(itemInfo, view!!.tag)
@@ -219,10 +209,7 @@ class ItemInflaterTest {
 
         val itemInfo = widgetItemInfo(true)
         val view =
-            VIEW_PREINFLATION_EXECUTOR.submit(
-                    Callable { underTest.inflateItem(itemInfo, modelWriter) }
-                )
-                .get()
+            VIEW_PREINFLATION_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         assertTrue(view is PendingAppWidgetHostView)
         assertEquals(itemInfo, view!!.tag)
@@ -232,15 +219,14 @@ class ItemInflaterTest {
     fun test_widget_restored_and_inflated_on_UI() {
         val itemInfo = widgetItemInfo(false)
 
-        val view =
-            MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
+        val view = MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         // Verify that the widget is automatically restored and a final widget is returned
         assertTrue(view is LauncherAppWidgetHostView)
         assertFalse(view is PendingAppWidgetHostView)
         assertEquals(itemInfo, view!!.tag)
         assertEquals(RESTORE_COMPLETED, itemInfo.restoreStatus)
-        verify(modelWriter).updateItemInDatabase(same(itemInfo))
+        verify(modelWriterMock).updateItemInDatabase(same(itemInfo))
     }
 
     @Test
@@ -249,17 +235,14 @@ class ItemInflaterTest {
         val itemInfo = widgetItemInfo(false)
 
         val view =
-            VIEW_PREINFLATION_EXECUTOR.submit(
-                    Callable { underTest.inflateItem(itemInfo, modelWriter) }
-                )
-                .get()
+            VIEW_PREINFLATION_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         // Verify that the widget is automatically restored and a final widget is returned
         assertTrue(view is LauncherAppWidgetHostView)
         assertFalse(view is PendingAppWidgetHostView)
         assertEquals(itemInfo, view!!.tag)
         assertEquals(RESTORE_COMPLETED, itemInfo.restoreStatus)
-        verify(modelWriter).updateItemInDatabase(same(itemInfo))
+        verify(modelWriterMock).updateItemInDatabase(same(itemInfo))
     }
 
     @Test
@@ -268,10 +251,9 @@ class ItemInflaterTest {
             widgetItemInfo(false).apply {
                 providerName = ComponentName(providerName.packageName, "invalid_provider_name")
             }
-        val view =
-            MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
+        val view = MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
         assertNull(view)
-        verify(modelWriter).deleteItemFromDatabase(same(itemInfo), any())
+        verify(modelWriterMock).deleteItemFromDatabase(same(itemInfo), any())
     }
 
     @Test
@@ -285,14 +267,13 @@ class ItemInflaterTest {
         itemInfo.spanX = 2
         itemInfo.spanY = 2
 
-        val view =
-            MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo, modelWriter) }).get()
+        val view = MAIN_EXECUTOR.submit(Callable { underTest.inflateItem(itemInfo) }).get()
 
         // Verify that the widget is automatically restored and a final widget is returned
         assertTrue(view is LauncherAppWidgetHostView)
         assertFalse(view is PendingAppWidgetHostView)
         assertEquals(itemInfo, view!!.tag)
-        verifyNoMoreInteractions(modelWriter)
+        verifyNoMoreInteractions(modelWriterMock)
     }
 
     private fun workspaceItemInfo() =
@@ -301,7 +282,7 @@ class ItemInflaterTest {
                 uiContext
                     .getSystemService(LauncherApps::class.java)!!
                     .getActivityList(testContext.packageName, Process.myUserHandle())[0],
-                Process.myUserHandle()
+                Process.myUserHandle(),
             )
             .makeWorkspaceItem(uiContext)
 

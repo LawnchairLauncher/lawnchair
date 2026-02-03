@@ -1,3 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.wm.shell.multivalenttests">
+    <application>
+        <activity android:name="com.android.wm.shell.bubbles.bar.BubbleBarAnimationHelperTest$TestActivity"
+            android:exported="true"/>
+        <activity android:name="com.android.wm.shell.bubbles.bar.BubbleBarMenuViewControllerTest$TestActivity"
+            android:exported="true"/>
+    </application>
 </manifest>
+

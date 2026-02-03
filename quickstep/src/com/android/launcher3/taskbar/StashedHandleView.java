@@ -47,6 +47,7 @@ public class StashedHandleView extends View {
     private final int[] mTmpArr = new int[2];
 
     private @Nullable ObjectAnimator mColorChangeAnim;
+    private Boolean mIsRegionDark;
 
     public StashedHandleView(Context context) {
         this(context, null);
@@ -95,7 +96,11 @@ public class StashedHandleView extends View {
      * @param animate Whether to animate the change, or apply it immediately.
      */
     public void updateHandleColor(boolean isRegionDark, boolean animate) {
+        if (mIsRegionDark != null && mIsRegionDark == isRegionDark) {
+            return;
+        }
         int newColor = isRegionDark ? mStashedHandleLightColor : mStashedHandleDarkColor;
+        mIsRegionDark = isRegionDark;
         if (mColorChangeAnim != null) {
             mColorChangeAnim.cancel();
         }

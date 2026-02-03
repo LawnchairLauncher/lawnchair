@@ -97,12 +97,12 @@ public class DockedDividerUtils {
         }
     }
 
-    public static int calculateMiddlePosition(boolean isHorizontalDivision, Rect insets,
+    public static int calculateMiddlePosition(boolean isLeftRightSplit, Rect insets,
             int displayWidth, int displayHeight, int dividerSize) {
-        int start = isHorizontalDivision ? insets.top : insets.left;
-        int end = isHorizontalDivision
-                ? displayHeight - insets.bottom
-                : displayWidth - insets.right;
+        int start = isLeftRightSplit ? insets.left : insets.top;
+        int end = isLeftRightSplit
+                ? displayWidth - insets.right
+                : displayHeight - insets.bottom;
         return start + (end - start) / 2 - dividerSize / 2;
     }
 

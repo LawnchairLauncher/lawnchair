@@ -16,7 +16,7 @@
 
 package com.android.wm.shell.bubbles;
 
-import static android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED;
+import static android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS;
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
@@ -26,10 +26,13 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.android.wm.shell.bubbles.BubbleDebugConfig.TAG_BUBBLES;
 import static com.android.wm.shell.bubbles.BubbleDebugConfig.TAG_WITH_CLASS_NAME;
 import static com.android.wm.shell.bubbles.BubblePositioner.MAX_HEIGHT;
+import static com.android.wm.shell.bubbles.util.BubbleUtils.getEnterBubbleTransaction;
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_BUBBLES;
+import static com.android.wm.shell.shared.TypefaceUtils.setTypeface;
 
 import android.annotation.NonNull;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -38,7 +41,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.Outline;
 import android.graphics.Paint;
@@ -62,17 +64,22 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.window.ScreenCapture;
+import android.window.WindowContainerToken;
+import android.window.WindowContainerTransaction;
 
 import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.policy.ScreenDecorationsUtils;
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.Flags;
 import com.android.wm.shell.R;
 import com.android.wm.shell.common.AlphaOptimizedButton;
-import com.android.wm.shell.common.TriangleShape;
+import com.android.wm.shell.shared.TriangleShape;
+import com.android.wm.shell.shared.TypefaceUtils;
+import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper;
 import com.android.wm.shell.taskview.TaskView;
+import com.android.wm.shell.taskview.TaskViewTaskController;
 
 import java.io.PrintWriter;
 
@@ -197,6 +204,8 @@ public class BubbleExpandedView extends LinearLayout {
      */
     private final FrameLayout mExpandedViewContainer = new FrameLayout(getContext());
 
+    private TaskView.Listener mCurrentTaskViewListener;
+
     private final TaskView.Listener mTaskViewListener = new TaskView.Listener() {
         private boolean mInitialized = false;
         private boolean mDestroyed = false;
@@ -222,39 +231,60 @@ public class BubbleExpandedView extends LinearLayout {
                     Rect launchBounds = new Rect();
                     mTaskView.getBoundsOnScreen(launchBounds);
 
-                    options.setTaskAlwaysOnTop(true);
-                    options.setLaunchedFromBubble(true);
+                    options.setTaskAlwaysOnTop(true /* alwaysOnTop */);
                     options.setPendingIntentBackgroundActivityStartMode(
-                            MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
-                    options.setPendingIntentBackgroundActivityLaunchAllowedByPermission(true);
+                            MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS);
 
-                    Intent fillInIntent = new Intent();
-                    // Apply flags to make behaviour match documentLaunchMode=always.
-                    fillInIntent.addFlags(FLAG_ACTIVITY_NEW_DOCUMENT);
-                    fillInIntent.addFlags(FLAG_ACTIVITY_MULTIPLE_TASK);
+                    final boolean isShortcutBubble = (mBubble.hasMetadataShortcutId()
+                            || (mBubble.isShortcut()
+                            && BubbleAnythingFlagHelper.enableCreateAnyBubble()));
 
-                    if (mBubble.isAppBubble()) {
+                    // TODO - currently based on type, really it's what the "launch item" is.
+                    if (mBubble.isApp() || mBubble.isNote()) {
                         Context context =
                                 mContext.createContextAsUser(
                                         mBubble.getUser(), Context.CONTEXT_RESTRICTED);
+                        Intent fillInIntent = new Intent();
                         PendingIntent pi = PendingIntent.getActivity(
                                 context,
                                 /* requestCode= */ 0,
-                                mBubble.getAppBubbleIntent()
-                                        .addFlags(FLAG_ACTIVITY_NEW_DOCUMENT)
-                                        .addFlags(FLAG_ACTIVITY_MULTIPLE_TASK),
-                                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT,
+                                mBubble.getIntent(),
+                                // Needs to be mutable for the fillInIntent
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT,
                                 /* options= */ null);
-                        mTaskView.startActivity(pi, /* fillInIntent= */ null, options,
-                                launchBounds);
-                    } else if (!mIsOverflow && mBubble.hasMetadataShortcutId()) {
-                        options.setApplyActivityFlagsForBubbles(true);
+                        final WindowContainerToken rootToken = mManager.getAppBubbleRootTaskToken();
+                        if (rootToken != null) {
+                            options.setLaunchRootTask(rootToken);
+                        } else {
+                            options.setLaunchNextToBubble(true /* launchNextToBubble */);
+                        }
+                        mTaskView.startActivity(pi, fillInIntent, options, launchBounds);
+                    } else if (!mIsOverflow && isShortcutBubble) {
+                        ProtoLog.v(WM_SHELL_BUBBLES, "startingShortcutBubble=%s", getBubbleKey());
+                        if (mBubble.isChat()) {
+                            options.setLaunchedFromBubble(true);
+                            options.setApplyActivityFlagsForBubbles(true);
+                        } else {
+                            final WindowContainerToken rootToken =
+                                    mManager.getAppBubbleRootTaskToken();
+                            if (rootToken != null) {
+                                options.setLaunchRootTask(rootToken);
+                            } else {
+                                options.setLaunchNextToBubble(true /* launchNextToBubble */);
+                            }
+                            options.setApplyMultipleTaskFlagForShortcut(true);
+                        }
                         mTaskView.startShortcutActivity(mBubble.getShortcutInfo(),
                                 options, launchBounds);
                     } else {
+                        options.setLaunchedFromBubble(true);
                         if (mBubble != null) {
-                            mBubble.setIntentActive();
+                            mBubble.setPendingIntentActive();
                         }
+                        final Intent fillInIntent = new Intent();
+                        // Apply flags to make behaviour match documentLaunchMode=always.
+                        fillInIntent.addFlags(FLAG_ACTIVITY_NEW_DOCUMENT);
+                        fillInIntent.addFlags(FLAG_ACTIVITY_MULTIPLE_TASK);
                         mTaskView.startActivity(mPendingIntent, fillInIntent, options,
                                 launchBounds);
                     }
@@ -262,8 +292,8 @@ public class BubbleExpandedView extends LinearLayout {
                     // If there's a runtime exception here then there's something
                     // wrong with the intent, we can't really recover / try to populate
                     // the bubble again so we'll just remove it.
-                    Log.w(TAG, "Exception while displaying bubble: " + getBubbleKey()
-                            + ", " + e.getMessage() + "; removing bubble");
+                    Log.e(TAG, "Exception while displaying bubble: " + getBubbleKey()
+                            + "; removing bubble", e);
                     mManager.removeBubble(getBubbleKey(), Bubbles.DISMISS_INVALID_INTENT);
                 }
             });
@@ -282,10 +312,17 @@ public class BubbleExpandedView extends LinearLayout {
             // The taskId is saved to use for removeTask, preventing appearance in recent tasks.
             mTaskId = taskId;
 
-            if (mBubble != null && mBubble.isAppBubble()) {
+            if (mBubble != null && mBubble.isNote()) {
                 // Let the controller know sooner what the taskId is.
-                mManager.setAppBubbleTaskId(mBubble.getKey(), mTaskId);
+                mManager.setNoteBubbleTaskId(mBubble.getKey(), mTaskId);
             }
+
+            final TaskViewTaskController tvc = mTaskView.getController();
+            final boolean isAppBubble = mBubble != null
+                    && (mBubble.isApp() || mBubble.isShortcut());
+            final WindowContainerTransaction wct = getEnterBubbleTransaction(
+                    tvc.getTaskToken(), isAppBubble);
+            tvc.getTaskOrganizer().applyTransaction(wct);
 
             // With the task org, the taskAppeared callback will only happen once the task has
             // already drawn
@@ -373,6 +410,7 @@ public class BubbleExpandedView extends LinearLayout {
         //   ==> activity view
         //   ==> manage button
         bringChildToFront(mManageButton);
+        setManageClickListener();
 
         applyThemeAttrs();
 
@@ -449,7 +487,47 @@ public class BubbleExpandedView extends LinearLayout {
             mTaskView = bubbleTaskView.getTaskView();
             // reset the insets that might left after TaskView is shown in BubbleBarExpandedView
             mTaskView.setCaptionInsets(null);
-            bubbleTaskView.setDelegateListener(mTaskViewListener);
+            if (Flags.enableBubbleTaskViewListener()) {
+                mCurrentTaskViewListener = new BubbleTaskViewListener(mContext, bubbleTaskView,
+                        /* viewParent= */ this, expandedViewManager,
+                        new BubbleTaskViewListener.Callback() {
+                            @Override
+                            public void onTaskCreated() {
+                                // The taskId is saved to use for removeTask,
+                                // preventing appearance in recent tasks.
+                                BubbleTaskViewListener listener = mCurrentTaskViewListener != null
+                                        ? ((BubbleTaskViewListener) mCurrentTaskViewListener)
+                                        : null;
+                                mTaskId = listener != null
+                                        ? listener.getTaskId()
+                                        : bubbleTaskView.getTaskId();
+                                setContentVisibility(true);
+                            }
+
+                            @Override
+                            public void onContentVisibilityChanged(boolean visible) {
+                                setContentVisibility(visible);
+                            }
+
+                            @Override
+                            public void onBackPressed() {
+                                mStackView.onBackPressed();
+                            }
+
+                            @Override
+                            public void onTaskRemovalStarted() {
+                                // nothing to do / handled in listener.
+                            }
+
+                            @Override
+                            public void onTaskInfoChanged(RunningTaskInfo taskInfo) {
+                                // nothing to do / handled in listener.
+                            }
+                        });
+            } else {
+                mCurrentTaskViewListener = mTaskViewListener;
+                bubbleTaskView.setDelegateListener(mCurrentTaskViewListener);
+            }
 
             // set a fixed width so it is not recalculated as part of a rotation. the width will be
             // updated manually after the rotation.
@@ -460,9 +538,12 @@ public class BubbleExpandedView extends LinearLayout {
             }
             mExpandedViewContainer.addView(mTaskView, lp);
             bringChildToFront(mTaskView);
-            if (bubbleTaskView.isCreated()) {
-                mTaskViewListener.onTaskCreated(
-                        bubbleTaskView.getTaskId(), bubbleTaskView.getComponentName());
+
+            if (!Flags.enableBubbleTaskViewListener()) {
+                if (bubbleTaskView.isCreated()) {
+                    mCurrentTaskViewListener.onTaskCreated(
+                            bubbleTaskView.getTaskId(), bubbleTaskView.getComponentName());
+                }
             }
         }
     }
@@ -502,7 +583,9 @@ public class BubbleExpandedView extends LinearLayout {
         mManageButton = (AlphaOptimizedButton) LayoutInflater.from(ctw).inflate(
                 R.layout.bubble_manage_button, this /* parent */, false /* attach */);
         addView(mManageButton);
+        setTypeface(mManageButton, TypefaceUtils.FontFamily.GSF_LABEL_LARGE);
         mManageButton.setVisibility(visibility);
+        setManageClickListener();
         post(() -> {
             int touchAreaHeight =
                     getResources().getDimensionPixelSize(
@@ -538,15 +621,15 @@ public class BubbleExpandedView extends LinearLayout {
 
     void applyThemeAttrs() {
         final TypedArray ta = mContext.obtainStyledAttributes(new int[]{
-                android.R.attr.dialogCornerRadius,
-                com.android.internal.R.attr.materialColorSurfaceBright,
-                com.android.internal.R.attr.materialColorSurfaceContainerHigh});
+                android.R.attr.dialogCornerRadius});
         boolean supportsRoundedCorners = ScreenDecorationsUtils.supportsRoundedCornersOnWindows(
                 mContext.getResources());
         mCornerRadius = supportsRoundedCorners ? ta.getDimensionPixelSize(0, 0) : 0;
-        mBackgroundColorFloating = ta.getColor(1, Color.WHITE);
+        mBackgroundColorFloating = mContext.getColor(
+                com.android.internal.R.color.materialColorSurfaceBright);
         mExpandedViewContainer.setBackgroundColor(mBackgroundColorFloating);
-        final int manageMenuBg = ta.getColor(2, Color.WHITE);
+        final int manageMenuBg = mContext.getColor(
+                com.android.internal.R.color.materialColorSurfaceContainerHigh);
         ta.recycle();
         if (mManageButton != null) {
             mManageButton.getBackground().setColorFilter(manageMenuBg, PorterDuff.Mode.SRC_IN);
@@ -557,6 +640,10 @@ public class BubbleExpandedView extends LinearLayout {
         }
         updatePointerViewIfExists();
         updateManageButtonIfExists();
+    }
+
+    public float getCornerRadius() {
+        return mCornerRadius;
     }
 
     /**
@@ -647,9 +734,8 @@ public class BubbleExpandedView extends LinearLayout {
         }
     }
 
-    // TODO: Could listener be passed when we pass StackView / can we avoid setting this like this
-    void setManageClickListener(OnClickListener manageClickListener) {
-        mManageButton.setOnClickListener(manageClickListener);
+    private void setManageClickListener() {
+        mManageButton.setOnClickListener(v -> mStackView.onManageBubbleClicked());
     }
 
     /**
@@ -683,11 +769,6 @@ public class BubbleExpandedView extends LinearLayout {
         if (!animating) {
             setContentVisibility(mIsContentVisible);
         }
-    }
-
-    /** Sets the alpha for the pointer. */
-    public void setPointerAlpha(float alpha) {
-        mPointerView.setAlpha(alpha);
     }
 
     /**
@@ -792,25 +873,8 @@ public class BubbleExpandedView extends LinearLayout {
         onContainerClipUpdate();
     }
 
-    /**
-     * Sets the clipping for the view.
-     */
-    public void setTaskViewClip(Rect rect) {
-        mLeftClip = rect.left;
-        mTopClip = rect.top;
-        mRightClip = rect.right;
-        mBottomClip = rect.bottom;
-        onContainerClipUpdate();
-    }
-
-    /**
-     * Returns a rect representing the clipping for the view.
-     */
-    public Rect getTaskViewClip() {
-        return new Rect(mLeftClip, mTopClip, mRightClip, mBottom);
-    }
-
-    private void onContainerClipUpdate() {
+    /** Updates the clip bounds. */
+    public void onContainerClipUpdate() {
         if (mTopClip == 0 && mBottomClip == 0 && mRightClip == 0 && mLeftClip == 0) {
             if (mIsClipping) {
                 mIsClipping = false;
@@ -916,8 +980,17 @@ public class BubbleExpandedView extends LinearLayout {
             Log.w(TAG, "Stack is null for bubble: " + bubble);
             return;
         }
-        boolean isNew = mBubble == null || didBackingContentChange(bubble);
-        if (isNew || bubble.getKey().equals(mBubble.getKey())) {
+        boolean isNew;
+        if (mCurrentTaskViewListener instanceof BubbleTaskViewListener) {
+            isNew = ((BubbleTaskViewListener) mCurrentTaskViewListener).setBubble(bubble);
+        } else {
+            isNew = mBubble == null || didBackingContentChange(bubble);
+        }
+        boolean isUpdate = bubble != null && mBubble != null
+                && bubble.getKey().equals(mBubble.getKey());
+        ProtoLog.d(WM_SHELL_BUBBLES, "BubbleExpandedView - update bubble=%s; isNew=%b; isUpdate=%b",
+                bubble.getKey(), isNew, isUpdate);
+        if (isNew || isUpdate) {
             mBubble = bubble;
             mManageButton.setContentDescription(getResources().getString(
                     R.string.bubbles_settings_button_description, bubble.getAppName()));
@@ -935,7 +1008,7 @@ public class BubbleExpandedView extends LinearLayout {
                     });
 
             if (isNew) {
-                mPendingIntent = mBubble.getBubbleIntent();
+                mPendingIntent = mBubble.getPendingIntent();
                 if ((mPendingIntent != null || mBubble.hasMetadataShortcutId())
                         && mTaskView != null) {
                     setContentVisibility(false);
@@ -962,7 +1035,7 @@ public class BubbleExpandedView extends LinearLayout {
      */
     private boolean didBackingContentChange(Bubble newBubble) {
         boolean prevWasIntentBased = mBubble != null && mPendingIntent != null;
-        boolean newIsIntentBased = newBubble.getBubbleIntent() != null;
+        boolean newIsIntentBased = newBubble.getPendingIntent() != null;
         return prevWasIntentBased != newIsIntentBased;
     }
 
@@ -1116,13 +1189,6 @@ public class BubbleExpandedView extends LinearLayout {
     }
 
     /**
-     * Return width of the current pointer
-     */
-    public int getPointerWidth() {
-        return mPointerWidth;
-    }
-
-    /**
      * Position of the manage button displayed in the expanded view. Used for placing user
      * education about the manage button.
      */
@@ -1148,5 +1214,7 @@ public class BubbleExpandedView extends LinearLayout {
         pw.print(prefix); pw.println("BubbleExpandedView:");
         pw.print(prefix); pw.print("  taskId: "); pw.println(mTaskId);
         pw.print(prefix); pw.print("  stackView: "); pw.println(mStackView);
+        pw.print(prefix); pw.print("  contentVisibility: "); pw.println(mIsContentVisible);
+        pw.print(prefix); pw.print("  isAnimating: "); pw.println(mIsAnimating);
     }
 }

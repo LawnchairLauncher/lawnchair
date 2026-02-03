@@ -17,10 +17,12 @@
 package com.android.wm.shell.flicker.pip
 
 import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresDevice
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
-import androidx.test.filters.RequiresDevice
+import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.MovePipShelfHeightTransition
 import com.android.wm.shell.flicker.utils.Direction
 import org.junit.FixMethodOrder
@@ -32,7 +34,7 @@ import org.junit.runners.Parameterized
 /**
  * Test Pip movement with Launcher shelf height change (increase).
  *
- * To run this test: `atest WMShellFlickerTestsPip3:MovePipDownOnShelfHeightChange`
+ * To run this test: `atest WMShellFlickerTestsPip:MovePipDownOnShelfHeightChange`
  *
  * Actions:
  * ```
@@ -56,6 +58,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
 class MovePipDownOnShelfHeightChange(flicker: LegacyFlickerTest) :
     MovePipShelfHeightTransition(flicker) {
     override val thisTransition: FlickerBuilder.() -> Unit = {

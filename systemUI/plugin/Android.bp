@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package {
+    default_team: "trendy_team_system_ui_please_use_a_more_specific_subteam_if_possible_",
     // See: http://go/android-license-faq
     // A large-scale-change added 'default_applicable_licenses' to import
     // all of the 'license_kinds' from "frameworks_base_packages_SystemUI_license"
@@ -22,15 +23,25 @@ package {
 }
 
 java_library {
-
     name: "SystemUIPluginLib",
-
     srcs: [
-        "src/**/*.java",
-        "src/**/*.kt",
         "bcsmartspace/src/**/*.java",
         "bcsmartspace/src/**/*.kt",
+        "src/**/*.java",
+        "src/**/*.kt",
     ],
+    exclude_srcs: [
+        "src/**/PluginProtectorStub.kt",
+    ],
+
+    optimize: {
+        proguard_flags_files: [
+            "proguard_plugins.flags",
+        ],
+        export_proguard_flags_files: true,
+    },
+
+    plugins: ["PluginAnnotationProcessor"],
 
     // If you add a static lib here, you may need to also add the package to the ClassLoaderFilter
     // in PluginInstance. That will ensure that loaded plugins have access to the related classes.
@@ -38,18 +49,23 @@ java_library {
     // of the library which are used by the plugins but not by systemui itself.
     static_libs: [
         "androidx.annotation_annotation",
+        "androidx-constraintlayout_constraintlayout",
+        "PlatformAnimationLib",
         "PluginCoreLib",
-        "SystemUIAnimationLib",
         "SystemUICommon",
         "SystemUILogLib",
+        "androidx.annotation_annotation",
+        "androidx.compose.ui_ui",
+        "androidx.compose.runtime_runtime",
+        "monet",
     ],
-
 }
 
 android_app {
 
     // Dummy to generate .toc files.
     name: "PluginDummyLib",
+    use_resource_processor: true,
     platform_apis: true,
     srcs: ["src/**/*.java"],
 

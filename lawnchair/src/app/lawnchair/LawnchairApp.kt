@@ -30,6 +30,9 @@ import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
@@ -233,6 +236,7 @@ class LawnchairApp : Application() {
         @JvmStatic
         val isAtleastT: Boolean get() = instance.isAtleastT
 
+        @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
         fun Launcher.showQuickstepWarningIfNecessary() {
             val launcher = this
             if (!lawnchairApp.isRecentsComponent || isRecentsEnabled) return
@@ -253,12 +257,14 @@ class LawnchairApp : Application() {
                                 openAppInfo(launcher)
                                 close(true)
                             },
+                            shapes = ButtonDefaults.shapes(),
                         ) {
                             Text(text = stringResource(id = R.string.app_info_drop_target_label))
                         }
                         Spacer(modifier = Modifier.requiredWidth(8.dp))
                         Button(
                             onClick = { close(true) },
+                            shapes = ButtonDefaults.shapes(),
                         ) {
                             Text(text = stringResource(id = android.R.string.ok))
                         }

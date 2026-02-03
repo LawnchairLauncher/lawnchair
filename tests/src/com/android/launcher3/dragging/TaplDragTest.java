@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.dragging;
 
-import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
 import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.PHOTOS_APP_NAME;
@@ -30,6 +29,7 @@ import android.graphics.Point;
 import android.os.SystemClock;
 import android.platform.test.annotations.PlatinumTest;
 import android.util.Log;
+import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.tapl.Folder;
@@ -38,10 +38,10 @@ import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
 import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.tapl.Workspace;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.ScreenRecordRule;
+import com.android.launcher3.util.ui.AbstractLauncherUiTest;
+import com.android.launcher3.util.ui.PortraitLandscapeRunner.PortraitLandscape;
 
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ import org.junit.Test;
  *    * Can drag an icon from AllApps into the workspace
  *    * Can drag an icon on the Workspace to other positions of the Workspace.
  */
-public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
+public class TaplDragTest extends AbstractLauncherUiTest<Launcher, View> {
 
     /**
      * Adds two icons to the Workspace and combines them into a folder, then makes sure the icons
@@ -65,6 +65,7 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
+    @ScreenRecordRule.ScreenRecord // b/383917141
     public void testDragToFolder() {
         // TODO: add the use case to drag an icon to an existing folder. Currently it either fails
         // on tablets or phones due to difference in resolution.
@@ -174,13 +175,13 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
     public void testDragAndCancelAppIcon() {
         final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(GMAIL_APP_NAME);
         Point positionBeforeDrag =
-                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
+                mLauncher.getWorkspace().getWorkspaceIconPosition(GMAIL_APP_NAME);
         assertNotNull("App not found in Workspace before dragging.", positionBeforeDrag);
 
         mLauncher.getWorkspace().dragAndCancelAppIcon(homeAppIcon);
 
         Point positionAfterDrag =
-                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
+                mLauncher.getWorkspace().getWorkspaceIconPosition(GMAIL_APP_NAME);
         assertNotNull("App not found in Workspace after dragging.", positionAfterDrag);
         assertEquals("App not returned to same position in Workspace after drag & cancel",
                 positionBeforeDrag, positionAfterDrag);
@@ -195,7 +196,6 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
     @PlatinumTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
-    @ScreenRecordRule.ScreenRecord // b/343953783
     public void testDragAppIcon() {
 
         final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
@@ -228,11 +228,6 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
         final HomeAppIcon launcherTestAppIcon = createShortcutInCenterIfNotExist(TEST_APP_NAME);
         for (Point target : targets) {
             startTime = SystemClock.uptimeMillis();
-            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
-                    "TaplDragTest.java.testDragAppIconToMultipleWorkspaceCells: shortcut name: "
-                            + launcherTestAppIcon.getIconName()
-                            + " | target cell coordinates: (" + target.x + ", " + target.y
-                            + ") | start time: " + startTime);
             launcherTestAppIcon.dragToWorkspace(target.x, target.y);
             endTime = SystemClock.uptimeMillis();
             elapsedTime = endTime - startTime;

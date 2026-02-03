@@ -52,6 +52,60 @@ filegroup {
         "tests/src/com/android/quickstep/TaplOverviewIconTest.java",
         "tests/src/com/android/quickstep/TaplTestsQuickstep.java",
         "tests/src/com/android/quickstep/TaplTestsSplitscreen.java",
-        "tests/src/com/android/launcher3/testcomponent/ExcludeFromRecentsTestActivity.java"
+        "tests/src/com/android/quickstep/util/SplitScreenTestUtils.kt",
+        "tests/src/com/android/launcher3/testcomponent/ExcludeFromRecentsTestActivity.java",
+    ],
+}
+
+filegroup {
+    name: "launcher3-quickstep-e2e-tests-only",
+    path: "tests",
+    srcs: [
+        "tests/src/com/android/quickstep/TaplTestsPersistentTaskbar.java",
+        "tests/src/com/android/quickstep/TaplOverviewIconTest.java",
+        "tests/src/com/android/quickstep/TaplTestsLockedTaskbar.java",
+        "tests/src/com/android/quickstep/util/TaplTestsPredictionRow.java",
+        "tests/src/com/android/quickstep/TaplTestsTrackpad.java",
+        "tests/src/com/android/quickstep/TaplTestsTransientTaskbar.java",
+        "tests/src/com/android/quickstep/TaplStartLauncherViaGestureTests.java",
+        "tests/src/com/android/quickstep/TaplTestsKeyboardQuickSwitch.java",
+        "tests/src/com/android/quickstep/TaplPrivateSpaceTest.java",
+        "tests/src/com/android/quickstep/TaplTestsQuickstep.java",
+        "tests/src/com/android/quickstep/TaplTestsTaskbar.java",
+        "tests/src/com/android/quickstep/TaplTestsOverviewDesktop.kt",
+        "tests/src/com/android/quickstep/TaplTestsSplitscreen.java",
+        "tests/src/com/android/quickstep/TaplTestTaskbarIconDrag.kt",
+    ],
+}
+
+// TODO(b/324261526) when switching to libraries, this library depends on launcher-e2e-tests-utils
+filegroup {
+    name: "launcher3-quickstep-e2e-tests-utils",
+    path: "tests",
+    srcs: [
+        "tests/src/com/android/quickstep/TaskbarModeSwitchRule.java",
+        "tests/src/com/android/quickstep/NavigationModeSwitchRule.java",
+        "tests/src/com/android/quickstep/AbstractQuickStepTest.java",
+        "tests/src/com/android/quickstep/util/SplitScreenTestUtils.kt",
+        "tests/src/com/android/quickstep/AbstractTaplTestsTaskbar.java",
+        // TODO Remove launcher3 folder from quickstep
+        "tests/src/com/android/launcher3/testcomponent/ExcludeFromRecentsTestActivity.java",
+    ],
+}
+
+filegroup {
+    name: "launcher3-quickstep-e2e",
+    path: "tests",
+    srcs: [
+        ":launcher3-quickstep-e2e-tests-only",
+        ":launcher3-quickstep-e2e-tests-utils",
+    ],
+}
+
+filegroup {
+    name: "launcher3-quickstep-screenshot-tests-src",
+    path: "tests/multivalentScreenshotTests",
+    srcs: [
+        "tests/multivalentScreenshotTests/src/**/*.kt",
     ],
 }

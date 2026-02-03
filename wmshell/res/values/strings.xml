@@ -74,6 +74,8 @@
     <string name="forced_resizable_secondary_display">App may not work on a secondary display.</string>
     <!-- Warning message when we try to launch a non-resizeable activity on a secondary display and launch it on the primary instead. -->
     <string name="activity_launch_on_secondary_display_failed_text">App does not support launch on secondary displays.</string>
+    <!-- Warning message when we try to bubble a task in an unsupported environment [CHAR LIMIT=NONE] -->
+    <string name="bubble_not_supported_text">App does not support bubble</string>
 
     <!-- Accessibility label and window tile for the divider that separates the windows in split screen mode [CHAR LIMIT=NONE] -->
     <string name="accessibility_divider">Split screen divider</string>
@@ -90,6 +92,9 @@
     <string name="accessibility_action_divider_left_30">Left 30%</string>
     <!-- Accessibility action for moving docked stack divider to make the right screen full screen [CHAR LIMIT=NONE] -->
     <string name="accessibility_action_divider_right_full">Right full screen</string>
+    <!-- Accessibility action for swapping the apps around the divider (double tap action) [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_swap_vertical">Swap top app with bottom</string>
+    <string name="accessibility_action_divider_swap_horizontal">Swap left app with right</string>
 
     <!-- Accessibility action for moving docked stack divider to make the top screen full screen [CHAR LIMIT=NONE] -->
     <string name="accessibility_action_divider_top_full">Top full screen</string>
@@ -139,6 +144,14 @@
     <string name="bubble_accessibility_action_move_bottom_left">Move bottom left</string>
     <!-- Action in accessibility menu to move the stack of bubbles to the bottom right of the screen. [CHAR LIMIT=30]-->
     <string name="bubble_accessibility_action_move_bottom_right">Move bottom right</string>
+    <!-- Click action label for bubbles to expand menu. [CHAR LIMIT=30]-->
+    <string name="bubble_accessibility_action_expand_menu">expand menu</string>
+    <!-- Click action label for bubbles to collapse menu. [CHAR LIMIT=30]-->
+    <string name="bubble_accessibility_action_collapse_menu">collapse menu</string>
+    <!-- Action in accessibility menu to move the bubble bar to the left side of the screen. [CHAR_LIMIT=30] -->
+    <string name="bubble_accessibility_action_move_bar_left">Move left</string>
+    <!-- Action in accessibility menu to move the bubble bar to the right side of the screen. [CHAR_LIMIT=30] -->
+    <string name="bubble_accessibility_action_move_bar_right">Move right</string>
     <!-- Accessibility announcement when the stack of bubbles expands. [CHAR LIMIT=NONE]-->
     <string name="bubble_accessibility_announce_expand">expand <xliff:g id="bubble_title" example="Messages">%1$s</xliff:g></string>
     <!-- Accessibility announcement when the stack of bubbles collapses. [CHAR LIMIT=NONE]-->
@@ -147,6 +160,8 @@
     <string name="bubbles_app_settings"><xliff:g id="notification_title" example="Android Messages">%1$s</xliff:g> settings</string>
     <!-- Text used for the bubble dismiss area. Bubbles dragged to, or flung towards, this area will go away. [CHAR LIMIT=30] -->
     <string name="bubble_dismiss_text">Dismiss bubble</string>
+    <!-- Text used to move the bubble to fullscreen. [CHAR LIMIT=30] -->
+    <string name="bubble_fullscreen_text">Move to fullscreen</string>
     <!-- Button text to stop a conversation from bubbling [CHAR LIMIT=60]-->
     <string name="bubbles_dont_bubble_conversation">Don\u2019t bubble conversation</string>
     <!-- Title text for the bubbles feature education cling shown when a bubble is on screen for the first time. [CHAR LIMIT=60]-->
@@ -209,6 +224,15 @@
          compatibility control. [CHAR LIMIT=NONE] -->
     <string name="camera_compat_dismiss_button_description">No camera issues? Tap to dismiss.</string>
 
+    <!-- App handle education tooltip text for tooltip pointing to app handle -->
+    <string name="windowing_app_handle_education_tooltip">The app menu can be found here</string>
+
+    <!-- App handle education tooltip text for tooltip pointing to windowing image button -->
+    <string name="windowing_desktop_mode_image_button_education_tooltip">Enter desktop windowing to open multiple apps together</string>
+
+    <!-- App handle education tooltip text for tooltip pointing to app chip -->
+    <string name="windowing_desktop_mode_exit_education_tooltip">Return to full screen anytime from the app menu</string>
+
     <!-- The title of the letterbox education dialog. [CHAR LIMIT=NONE] -->
     <string name="letterbox_education_dialog_title">See and do more</string>
 
@@ -255,21 +279,23 @@
 
     <!-- Freeform window caption strings -->
     <!-- Accessibility text for the maximize window button [CHAR LIMIT=NONE] -->
-    <string name="maximize_button_text">Maximize</string>
+    <string name="maximize_button_text">Maximize <xliff:g id="app_name" example="Chrome">%1$s</xliff:g></string>
+    <!-- Accessibility text for the restore window button [CHAR LIMIT=NONE] -->
+    <string name="restore_button_text">Restore <xliff:g id="app_name" example="Chrome">%1$s</xliff:g></string>
      <!-- Accessibility text for the minimize window button [CHAR LIMIT=NONE] -->
-     <string name="minimize_button_text">Minimize</string>
+     <string name="minimize_button_text">Minimize <xliff:g id="app_name" example="Chrome">%1$s</xliff:g></string>
     <!-- Accessibility text for the close window button [CHAR LIMIT=NONE] -->
-    <string name="close_button_text">Close</string>
+    <string name="close_button_text">Close <xliff:g id="app_name" example="Chrome">%1$s</xliff:g></string>
     <!-- Accessibility text for the caption back button [CHAR LIMIT=NONE] -->
     <string name="back_button_text">Back</string>
     <!-- Accessibility text for the caption handle [CHAR LIMIT=NONE] -->
-    <string name="handle_text">Handle</string>
+    <string name="handle_text">App handle</string>
     <!-- Accessibility text for the handle menu app icon [CHAR LIMIT=NONE] -->
     <string name="app_icon_text">App Icon</string>
     <!-- Accessibility text for the handle fullscreen button [CHAR LIMIT=NONE] -->
     <string name="fullscreen_text">Fullscreen</string>
     <!-- Accessibility text for the handle desktop button [CHAR LIMIT=NONE] -->
-    <string name="desktop_text">Desktop Mode</string>
+    <string name="desktop_text">Desktop windowing</string>
     <!-- Accessibility text for the handle split screen button [CHAR LIMIT=NONE] -->
     <string name="split_screen_text">Split Screen</string>
     <!-- Accessibility text for the handle more options button [CHAR LIMIT=NONE] -->
@@ -280,14 +306,93 @@
     <string name="select_text">Select</string>
     <!-- Accessibility text for the handle menu screenshot button [CHAR LIMIT=NONE] -->
     <string name="screenshot_text">Screenshot</string>
+    <!-- Accessibility text for the handle menu open in browser button [CHAR LIMIT=NONE] -->
+    <string name="open_in_browser_text">Open in browser</string>
+    <!-- Accessibility text for the handle menu open in app button [CHAR LIMIT=NONE] -->
+    <string name="open_in_app_text">Open in App</string>
+    <!-- Accessibility text for the handle menu new window button [CHAR LIMIT=NONE] -->
+    <string name="new_window_text">New Window</string>
+    <!-- Accessibility text for the handle menu new window button [CHAR LIMIT=NONE] -->
+    <string name="manage_windows_text">Manage Windows</string>
+    <!-- Accessibility text for the handle menu change aspect ratio button [CHAR LIMIT=NONE] -->
+    <string name="change_aspect_ratio_text">Change aspect ratio</string>
+    <!-- Accessibility text for the handle menu restart button [CHAR LIMIT=NONE] -->
+    <string name="handle_menu_restart_text">Optimize View</string>
+    <!-- Accessibility text for the handle menu error icon [CHAR LIMIT=NONE] -->
+    <string name="handle_menu_error_icon_text">Error Icon</string>
     <!-- Accessibility text for the handle menu close button [CHAR LIMIT=NONE] -->
     <string name="close_text">Close</string>
     <!-- Accessibility text for the handle menu close menu button [CHAR LIMIT=NONE] -->
     <string name="collapse_menu_text">Close Menu</string>
-    <!-- Accessibility text for the handle menu open menu button [CHAR LIMIT=NONE] -->
-    <string name="expand_menu_text">Open Menu</string>
+    <!-- Accessibility text for the App Header's App Chip [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_app_header_chip_text"><xliff:g id="app_name" example="Chrome">%1$s</xliff:g> (Desktop windowing)</string>
     <!-- Maximize menu maximize button string. -->
     <string name="desktop_mode_maximize_menu_maximize_text">Maximize Screen</string>
     <!-- Maximize menu snap buttons string. -->
-    <string name="desktop_mode_maximize_menu_snap_text">Snap Screen</string>
+    <string name="desktop_mode_maximize_menu_snap_text">Resize</string>
+    <!-- Snap resizing non-resizable string. -->
+    <string name="desktop_mode_non_resizable_snap_text">App can\'t be moved here</string>
+
+    <!-- State description for app window opening. -->
+    <string name="desktop_mode_talkback_state_opening">Opening new app window</string>
+    <!-- State description for app window closing. -->
+    <string name="desktop_mode_talkback_state_closing">Closing app window</string>
+    <!-- State description for app window minimizing. -->
+    <string name="desktop_mode_talkback_state_minimizing">Minimizing app window</string>
+    <!-- State description for app window gaining focus. -->
+    <string name="desktop_mode_talkback_state_focused"><xliff:g id="app_name" example="Chrome">%1$s</xliff:g> (Focused)</string>
+    <!-- State description for app window losing focus. -->
+    <string name="desktop_mode_talkback_state_not_focused"><xliff:g id="app_name" example="Chrome">%1$s</xliff:g> (Not Focused)</string>
+
+    <!-- Accessibility text for the Maximize Menu's immersive button [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_maximize_menu_immersive_button_text">Immersive</string>
+    <!-- Accessibility text for the Maximize Menu's immersive restore button [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text">Restore</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text">Maximize</string>
+    <!-- Accessibility text for the Maximize Menu's restore button [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_maximize_menu_restore_button_text">Restore</string>
+    <!-- Accessibility text for the Maximize Menu's snap left button [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_maximize_menu_snap_left_button_text">Snap left</string>
+    <!-- Accessibility text for the Maximize Menu's snap right button [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_maximize_menu_snap_right_button_text">Snap right</string>
+
+    <!-- Accessibility text for the Maximize Menu's snap left button [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_a11y_action_snap_left">Resize app window left</string>
+    <!-- Accessibility text for the Maximize Menu's snap right button [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_a11y_action_snap_right">Resize app window right</string>
+    <!-- Accessibility text for the Maximize Menu's snap maximize/restore [CHAR LIMIT=NONE] -->
+    <string name="desktop_mode_a11y_action_maximize_restore">Maximize or restore window size</string>
+
+    <!-- Accessibility action replacement for caption handle app chip buttons [CHAR LIMIT=NONE] -->
+    <string name="app_handle_chip_accessibility_announce">Open Menu</string>
+    <!-- Accessibility action replacement for caption handle menu buttons [CHAR LIMIT=NONE] -->
+    <string name="app_handle_menu_accessibility_announce">Enter <xliff:g id="windowing_mode" example="Desktop windowing">%1$s</xliff:g></string>
+    <!-- Accessibility action replacement for maximize menu enter snap left button [CHAR LIMIT=NONE] -->
+    <string name="maximize_menu_talkback_action_snap_left_text">Resize window to left</string>
+    <!-- Accessibility action replacement for maximize menu enter snap right button [CHAR LIMIT=NONE] -->
+    <string name="maximize_menu_talkback_action_snap_right_text">Resize window to right</string>
+    <!-- Accessibility action replacement for maximize menu enter maximize/restore button [CHAR LIMIT=NONE] -->
+    <string name="maximize_menu_talkback_action_maximize_restore_text">Maximize or restore window size</string>
+    <!-- Accessibility action replacement for app header maximize button [CHAR LIMIT=NONE] -->
+    <string name="app_header_talkback_action_maximize_button_text">Maximize app window size</string>
+    <!-- Accessibility action replacement for app header restore button [CHAR LIMIT=NONE] -->
+    <string name="app_header_talkback_action_restore_button_text">Restore window size</string>
+    <!-- Accessibility action replacement for app header minimize button [CHAR LIMIT=NONE] -->
+    <string name="app_header_talkback_action_minimize_button_text">Minimize app window</string>
+    <!-- Accessibility action replacement for app header close button [CHAR LIMIT=NONE] -->
+    <string name="app_header_talkback_action_close_button_text">Close app window</string>
+
+    <!-- Accessibility text for open by default settings button [CHAR LIMIT=NONE] -->
+    <string name="open_by_default_settings_text">Open by default settings</string>
+    <!-- Subheader for open by default menu string. -->
+    <string name="open_by_default_dialog_subheader_text">Choose how to open web links for this app</string>
+    <!-- Text for open by default settings dialog option. -->
+    <string name="open_by_default_dialog_in_app_text">In the app</string>
+    <!-- Text for open by default settings dialog option. -->
+    <string name="open_by_default_dialog_in_browser_text">In your browser</string>
+    <!-- Text for open by default settings dialog dismiss button. -->
+    <string name="open_by_default_dialog_dismiss_button_text">OK</string>
+
+    <!-- Text for the App-to-Web education promo. -->
+    <string name="desktop_windowing_app_to_web_education_text">Quickly open apps in your browser here</string>
 </resources>

@@ -21,16 +21,19 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="work_folder_name" msgid="3753320833950115786">"Werk"</string>
-    <string name="activity_not_found" msgid="8071924732094499514">"Program is nie geïnstalleer nie."</string>
-    <string name="activity_not_available" msgid="7456344436509528827">"Program is nie beskikbaar nie"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Afgelaaide program in veiligmodus gedeaktiveer"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"App is nie geïnstalleer nie."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"App is nie beskikbaar nie"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Afgelaaide app in veiligmodus gedeaktiveer"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Legstukke gedeaktiveer in Veiligmodus"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Kortpad is nie beskikbaar nie"</string>
     <string name="home_screen" msgid="5629429142036709174">"Tuis"</string>
     <string name="set_default_home_app" msgid="5808906607627586381">"Stel <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> as verstektuisskermapp in Instellings"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Verdeelde skerm"</string>
+    <string name="recent_task_option_aspect_ratio" msgid="7008605516391096989">"Verander aspekverhouding"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Programinligting vir %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Gebruikinstellings vir %1$s"</string>
+    <string name="new_window_option_taskbar" msgid="6448780542727767211">"Nuwe venster"</string>
+    <string name="manage_windows_option_taskbar" msgid="2294109489960654212">"Bestuur vensters"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Stoor apppaar"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Hierdie apppaar word nie op hierdie toestel gesteun nie"</string>
@@ -38,6 +41,8 @@
     <string name="app_pair_not_available" msgid="3556767440808032031">"Apppaar is nie beskikbaar nie"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Raak en hou om \'n legstuk te skuif."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dubbeltik en hou om \'n legstuk te skuif of gebruik gepasmaakte handelinge."</string>
+    <string name="widget_picker_widget_options_button_description" msgid="4770099264476852363">"Meer opsies"</string>
+    <string name="widget_picker_show_all_widgets_menu_item_title" msgid="9023638224586908119">"Wys alle legstukke"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d breed by %2$d hoog"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>-legstuk"</string>
@@ -64,15 +69,21 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Werk"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Gesprekke"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Neem notas"</string>
+    <string name="widget_cell_tap_to_show_add_button_label" msgid="4354194214317043581">"Wys Voeg By-knoppie"</string>
+    <string name="widget_cell_tap_to_hide_add_button_label" msgid="6117805205101555997">"Versteek Voeg By-knoppie"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"Voeg by"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"Voeg <xliff:g id="WIDGET_NAME">%1$s</xliff:g>-legstuk by"</string>
+    <string name="widgets_list_expand_button_label" msgid="7912016136574932622">"Wys almal"</string>
+    <string name="widgets_list_expand_button_content_description" msgid="4600513860973450888">"Wys alle legstukke"</string>
+    <string name="widgets_list_expanded" msgid="7374857868788557730">"Wys tans alle legstukke"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tik om legstukinstellings te verander"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Verander legstukinstellings"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Deursoek programme"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Laai tans programme …"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Kon geen programme kry wat by \"<xliff:g id="QUERY">%1$s</xliff:g>\" pas nie"</string>
-    <string name="label_application" msgid="8531721983832654978">"Program"</string>
+    <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Alle apps"</string>
+    <string name="all_apps_list_label" msgid="5106226764073070906">"Applys"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Kennisgewings"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Raak en hou om \'n kortpad te skuif."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Dubbeltik en hou om \'n kortpad te skuif of gebruik gepasmaakte handelinge."</string>
@@ -90,22 +101,27 @@
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installeer"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Moenie voorstel nie"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Vasspeldvoorspelling"</string>
+    <string name="bubble" msgid="3072951361014076670">"Borrel"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installeer kortpaaie"</string>
-    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Laat \'n program toe om kortpaaie by te voeg sonder gebruikerinmenging."</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Laat \'n app toe om kortpaaie by te voeg sonder gebruikerinmenging."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"lees tuis-instellings en -kortpaaie"</string>
-    <string name="permdesc_read_settings" msgid="4208061150510996676">"Laat die program toe om die instellings en kortpaaie op tuisskerm te lees."</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Laat die app toe om die instellings en kortpaaie op tuisskerm te lees."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"skryf tuis-instellings en -kortpaaie"</string>
-    <string name="permdesc_write_settings" msgid="726859348127868466">"Laat die program toe om die instellings en kortpaaie op tuisskerm te verander."</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Laat die app toe om die instellings en kortpaaie op tuisskerm te verander."</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Kan nie legstuk laai nie"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Legstukinstellings"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Tik om opstelling te voltooi"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dit is \'n stelselprogram en kan nie gedeïnstalleer word nie."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Wysig naam"</string>
+    <string name="paginate_left" msgid="7915437358451360433">"Pagineer links"</string>
+    <string name="paginate_right" msgid="6701038155201975878">"Pagineer regs"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Het <xliff:g id="APP_NAME">%1$s</xliff:g> gedeaktiveer"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} het # kennisgewing}other{{app_name} het # kennisgewings}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Bladsy %1$d van %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Tuisskerm %1$d van %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nuwe tuisskermbladsy"</string>
+    <string name="app_running_state_description" msgid="5645053189564740904">"Aktief"</string>
+    <string name="app_minimized_state_description" msgid="710740620044902509">"Geminimeer"</string>
     <string name="folder_opened" msgid="94695026776264709">"Vouer oopgemaak, <xliff:g id="WIDTH">%1$d</xliff:g> by <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Tik om die vouer toe te maak"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Tik om nuwe naam te stoor"</string>
@@ -113,6 +129,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Vouer hernoem na <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Vouer: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> items"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Vouer: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> of meer items"</string>
+    <string name="unnamed_folder" msgid="2420192029474044442">"Naamlose vouer"</string>
     <string name="app_pair_name_format" msgid="8134106404716224054">"Apppaar: <xliff:g id="APP1">%1$s</xliff:g> en <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Muurpapier en styl"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Wysig tuisskerm"</string>
@@ -120,6 +137,8 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Gedeaktiveer deur jou administrateur"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Laat toe dat tuisskerm gedraai word"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Wanneer foon gedraai word"</string>
+    <string name="landscape_mode_title" msgid="5138814555934843926">"Landskapmodus"</string>
+    <string name="landscape_mode_desc" msgid="3085236452297838664">"Stel tuisskerm na landskapmodus"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Kennisgewingkolle"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Aan"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Af"</string>
@@ -133,21 +152,21 @@
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwyder"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Soek"</string>
-    <string name="abandoned_promises_title" msgid="7096178467971716750">"Hierdie program is nie geïnstalleer nie"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Die program vir hierdie ikoon is nie geïnstalleer nie. Jy kan dit verwyder of die program soek en dit self installeer."</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"Hierdie app is nie geïnstalleer nie"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Die app vir hierdie ikoon is nie geïnstalleer nie. Jy kan dit verwyder of die app soek en dit self installeer."</string>
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> installeer tans; <xliff:g id="PROGRESS">%2$s</xliff:g> voltooi"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> laai tans af, <xliff:g id="PROGRESS">%2$s</xliff:g> voltooid"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> wag tans om te installeer"</string>
-    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> is geargiveer. Tik om af te laai en terug te stel."</string>
+    <string name="app_archived_title" msgid="4548283110222420708">"<xliff:g id="NAME">%1$s</xliff:g> is geargiveer."</string>
+    <string name="app_unarchiving_action" msgid="5736107006413929484">"laai af en stel terug"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Programopdatering word vereis"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"Die program vir hierdie ikoon is nie opgedateer nie. Jy kan dit handmatig opdateer om hierdie kortpad weer te aktiveer, of die ikoon verwyder."</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Die app vir hierdie ikoon is nie opgedateer nie. Jy kan dit handmatig opdateer om hierdie kortpad weer te aktiveer, of die ikoon verwyder."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Dateer op"</string>
     <string name="dialog_remove" msgid="6510806469849709407">"Verwyder"</string>
     <string name="widgets_list" msgid="796804551140113767">"Legstukkelys"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Legstukkelys is toegemaak"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Voeg by tuisskerm"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Skuif item hierheen"</string>
-    <string name="item_added_to_workspace" msgid="4211073925752213539">"Item is by tuisskerm gevoeg"</string>
     <string name="item_removed" msgid="851119963877842327">"Item is verwyder"</string>
     <string name="undo" msgid="4151576204245173321">"Ontdoen"</string>
     <string name="action_move" msgid="4339390619886385032">"Skuif item"</string>
@@ -167,11 +186,15 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Verminder breedte"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Verminder hoogte"</string>
     <string name="widget_resized" msgid="9130327887929620">"Legstukgrootte is verander na breedte <xliff:g id="NUMBER_0">%1$s</xliff:g> hoogte <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
-    <string name="action_deep_shortcut" msgid="2864038805849372848">"Kortpaaie"</string>
+    <string name="action_deep_shortcut" msgid="4766835855579976045">"Kortpadkieslys"</string>
+    <string name="widget_frame_name" msgid="8782828448471444270">"Verander grootte van legstukraam vir <xliff:g id="STRING">%1$s</xliff:g>"</string>
+    <string name="action_close" msgid="1077760267194136901">"Maak toe"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Maak toe"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Maak toe"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Persoonlik"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Werk"</string>
+    <string name="all_apps_personal_tab_content_description" msgid="6286808898381807242">"Persoonlike Apps-oortjie"</string>
+    <string name="all_apps_work_tab_content_description" msgid="3835637212347968316">"Werkapps-oortjie"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Werkprofiel"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Werkprogramme het \'n kenteken en is sigbaar vir jou IT-administrateur"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Het dit"</string>
@@ -183,6 +206,7 @@
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Het dit"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Onderbreek werkprogramme"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Hervat"</string>
+    <string name="work_scheduler_button_content_description" msgid="917340740986764967">"Skedule van werkapps"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Misluk: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Privaat ruimte"</string>
@@ -194,5 +218,12 @@
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Sluit"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Privaat Ruimte-oorgang"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"Installeer"</string>
+    <string name="ps_app_label_override" msgid="6876160706011676804">"Voeg by"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Installeer apps in privaat ruimte"</string>
+    <string name="ps_app_content_description" msgid="1129133475892816226">"Voeg lêers en meer by privaat ruimte"</string>
+    <string name="circle_shape_title" msgid="3582075061179674565">"Sirkel"</string>
+    <string name="square_shape_title" msgid="3085320803149569308">"Vierkant"</string>
+    <string name="four_sided_cookie_shape_title" msgid="3275212586290522151">"4-kantige koekie"</string>
+    <string name="seven_sided_cookie_shape_title" msgid="4862560582029671668">"7-kantige koekie"</string>
+    <string name="arch_shape_title" msgid="2213843822192871318">"Boog"</string>
 </resources>

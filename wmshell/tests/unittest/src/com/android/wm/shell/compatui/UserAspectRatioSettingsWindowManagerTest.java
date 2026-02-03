@@ -22,6 +22,7 @@ import static android.hardware.usb.UsbManager.ACTION_USB_STATE;
 import static android.view.WindowInsets.Type.navigationBars;
 
 import static com.android.dx.mockito.inline.extended.ExtendedMockito.spyOn;
+import static com.android.window.flags.Flags.FLAG_APP_COMPAT_UI_FRAMEWORK;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -39,6 +40,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.platform.test.annotations.RequiresFlagsDisabled;
 import android.testing.AndroidTestingRunner;
 import android.testing.TestableLooper.RunWithLooper;
 import android.util.Pair;
@@ -138,6 +140,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testCreateUserAspectRatioButton() {
         // Doesn't create layout if show is false.
         mWindowManager.mHasUserAspectRatioSettingsButton = true;
@@ -178,6 +181,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testRelease() {
         mWindowManager.mHasUserAspectRatioSettingsButton = true;
         mWindowManager.createLayout(/* canShow= */ true);
@@ -190,6 +194,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testUpdateCompatInfo() {
         mWindowManager.mHasUserAspectRatioSettingsButton = true;
         mWindowManager.createLayout(/* canShow= */ true);
@@ -242,6 +247,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testUpdateCompatInfoLayoutNotInflatedYet() {
         mWindowManager.mHasUserAspectRatioSettingsButton = true;
         mWindowManager.createLayout(/* canShow= */ false);
@@ -267,6 +273,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testEligibleButtonHiddenIfLetterboxBoundsEqualToStableBounds() {
         TaskInfo taskInfo = createTaskInfo(/* eligibleForUserAspectRatioButton= */
                 true, /* topActivityBoundsLetterboxed */ true, ACTION_MAIN, CATEGORY_LAUNCHER);
@@ -292,6 +299,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testUserFullscreenOverrideEnabled_buttonAlwaysShown() {
         TaskInfo taskInfo = createTaskInfo(/* eligibleForUserAspectRatioButton= */
                 true, /* topActivityBoundsLetterboxed */ true, ACTION_MAIN, CATEGORY_LAUNCHER);
@@ -302,7 +310,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
         // layout should be inflated
         taskInfo.appCompatTaskInfo.topActivityLetterboxHeight = stableBounds.height();
         taskInfo.appCompatTaskInfo.topActivityLetterboxWidth = stableBounds.width();
-        taskInfo.appCompatTaskInfo.isUserFullscreenOverrideEnabled = true;
+        taskInfo.appCompatTaskInfo.setUserFullscreenOverrideEnabled(true);
 
         mWindowManager.updateCompatInfo(taskInfo, mTaskListener, /* canShow= */ true);
 
@@ -310,6 +318,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testUpdateDisplayLayout() {
         final DisplayInfo displayInfo = new DisplayInfo();
         displayInfo.logicalWidth = 1000;
@@ -329,6 +338,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testUpdateDisplayLayoutInsets() {
         final DisplayInfo displayInfo = new DisplayInfo();
         displayInfo.logicalWidth = 1000;
@@ -353,6 +363,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testUpdateVisibility() {
         // Create button if it is not created.
         mWindowManager.removeLayout();
@@ -378,6 +389,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testLayoutHasUserAspectRatioSettingsButton() {
         clearInvocations(mWindowManager);
         spyOn(mWindowManager);
@@ -411,6 +423,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testAttachToParentSurface() {
         final SurfaceControl.Builder b = new SurfaceControl.Builder();
         mWindowManager.attachToParentSurface(b);
@@ -419,6 +432,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnUserAspectRatioButtonClicked() {
         mWindowManager.onUserAspectRatioSettingsButtonClicked();
 
@@ -433,6 +447,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnUserAspectRatioButtonLongClicked_showHint() {
        // Not create hint popup.
         mWindowManager.mHasUserAspectRatioSettingsButton = true;
@@ -448,6 +463,7 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testWhenDockedStateHasChanged_needsToBeRecreated() {
         ActivityManager.RunningTaskInfo newTaskInfo = new ActivityManager.RunningTaskInfo();
         newTaskInfo.configuration.uiMode |= Configuration.UI_MODE_TYPE_DESK;
@@ -459,9 +475,9 @@ public class UserAspectRatioSettingsWindowManagerTest extends ShellTestCase {
             boolean topActivityBoundsLetterboxed, String action, String category) {
         ActivityManager.RunningTaskInfo taskInfo = new ActivityManager.RunningTaskInfo();
         taskInfo.taskId = TASK_ID;
-        taskInfo.appCompatTaskInfo.topActivityEligibleForUserAspectRatioButton =
-                eligibleForUserAspectRatioButton;
-        taskInfo.appCompatTaskInfo.topActivityBoundsLetterboxed = topActivityBoundsLetterboxed;
+        taskInfo.appCompatTaskInfo.setEligibleForUserAspectRatioButton(
+                eligibleForUserAspectRatioButton);
+        taskInfo.appCompatTaskInfo.setTopActivityLetterboxed(topActivityBoundsLetterboxed);
         taskInfo.configuration.uiMode &= ~Configuration.UI_MODE_TYPE_DESK;
         taskInfo.realActivity = new ComponentName("com.mypackage.test", "TestActivity");
         taskInfo.baseIntent = new Intent(action).addCategory(category);

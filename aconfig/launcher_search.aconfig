@@ -23,13 +23,6 @@ flag {
 }
 
 flag {
-    name: "private_space_app_installer_button"
-    namespace: "launcher_search"
-    description: "This flag enables addition of App Installer button in Private Space container."
-    bug: "308064949"
-}
-
-flag {
     name: "private_space_restrict_accessibility_drag"
     namespace: "launcher_search"
     description: "This flag disables accessibility drag for Private Space Apps."
@@ -43,6 +36,15 @@ flag {
     bug: "289223923"
 }
 
+flag {
+    name: "nudge_pill"
+    namespace: "launcher_search"
+    description: "This flag enables change the nav or 3 button to nudge related edu (pill or icon) for CtS."
+    bug: "409121556"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
 
 flag {
     name: "private_space_add_floating_mask_view"
@@ -52,4 +54,10 @@ flag {
     metadata {
         purpose: PURPOSE_BUGFIX
     }
+}
+flag {
+  name: "enable_qsb_on_hotseat"
+  namespace: "launcher_search"
+  description: "Enable Search App's widget on hotseat"
+  bug: "405226308"
 }

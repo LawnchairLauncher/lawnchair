@@ -31,7 +31,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Px;
 import androidx.core.graphics.ColorUtils;
 
-import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.util.SystemUiController;
 
@@ -57,8 +56,7 @@ public class ScrimView extends View implements Insettable {
     }
 
     @Override
-    public void setInsets(Rect insets) {
-    }
+    public void setInsets(Rect insets) {}
 
     @Override
     public boolean hasOverlappingRendering() {
@@ -145,7 +143,8 @@ public class ScrimView extends View implements Insettable {
 
     protected SystemUiController getSystemUiController() {
         if (mSystemUiController == null) {
-            mSystemUiController = BaseActivity.fromContext(getContext()).getSystemUiController();
+            mSystemUiController =
+                    ActivityContext.lookupContext(getContext()).getSystemUiController();
         }
         return mSystemUiController;
     }
@@ -184,6 +183,35 @@ public class ScrimView extends View implements Insettable {
      */
     public void removeOpaquenessListener(@NonNull Runnable listener) {
         mOpaquenessListeners.remove(listener);
+    }
+
+    /**
+     * Set foreground and background color to this ScrimView
+     */
+    public void setScrimColors(ScrimColors scrimColors) {
+        this.setBackgroundColor(scrimColors.getBackgroundColor());
+        setForeground(new ColorDrawable(scrimColors.getForegroundColor()));
+    }
+
+    /**
+     * returns foreground and background color of this ScrimView
+     */
+    public ScrimColors getScrimColors() {
+        int backgroundColor;
+        if (getBackground() instanceof ColorDrawable colorDrawable) {
+            backgroundColor = colorDrawable.getColor();
+        } else {
+            backgroundColor = Color.TRANSPARENT;
+        }
+
+        int foregroundColor;
+        if (getForeground() instanceof ColorDrawable colorDrawable) {
+            foregroundColor = colorDrawable.getColor();
+        } else {
+            foregroundColor = Color.TRANSPARENT;
+        }
+
+        return new ScrimColors(backgroundColor, foregroundColor);
     }
 
     /**

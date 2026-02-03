@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.Streaming
 import retrofit2.http.Url
 
@@ -32,6 +33,7 @@ interface GitHubService {
     suspend fun getRepositoryCommits(
         @Path("owner") owner: String,
         @Path("repo") repo: String,
+        @Query("sha") sha: String? = null,
     ): List<GitHubCommit>
 
     @GET("repos/{owner}/{repo}/compare/{base}...{head}")
@@ -57,6 +59,8 @@ interface GitHubService {
 data class GitHubRelease(
     @SerialName("tag_name")
     val tagName: String,
+    @SerialName("target_commitish")
+    val targetCommitish: String,
     val assets: List<GitHubAsset>,
 ) {
     /**

@@ -16,6 +16,7 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.icons.cache.CacheLookupFlag.DEFAULT_LOOKUP_FLAG;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.Animator;
@@ -48,7 +49,10 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
+
+import java.util.Collections;
 
 /** Handles when the stage split lands on the home screen. */
 public class SplitToWorkspaceController {
@@ -86,7 +90,7 @@ public class SplitToWorkspaceController {
         MODEL_EXECUTOR.execute(() -> {
             PackageItemInfo infoInOut = new PackageItemInfo(pendingIntent.getCreatorPackage(),
                     pendingIntent.getCreatorUserHandle());
-            mIconCache.getTitleAndIconForApp(infoInOut, false);
+            mIconCache.getTitleAndIconForApp(infoInOut, DEFAULT_LOOKUP_FLAG);
             Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
             view.post(() -> {
@@ -133,17 +137,27 @@ public class SplitToWorkspaceController {
             // Use Launcher's default click handler
             return false;
         }
-
-        mController.setSecondTask(intent, user, (ItemInfo) tag);
-
-        startWorkspaceAnimation(view, null /*bitmap*/, bitmapInfo.newIcon(mLauncher));
+        // Check for background task matching this tag; if we find one, set second task
+        // via task instead of intent so the bounds and windowing mode will be corrected.
+        mController.findLastActiveTasksAndRunCallback(
+                Collections.singletonList(((ItemInfo) tag).getComponentKey()),
+                false /* findExactPairMatch */,
+                foundTasks -> {
+                    Task foundTask = foundTasks[0];
+                    if (foundTask != null) {
+                        mController.setSecondTask(foundTask, (ItemInfo) tag);
+                    } else {
+                        mController.setSecondTask(intent, user, (ItemInfo) tag);
+                    }
+                    startWorkspaceAnimation(view, null /*bitmap*/, bitmapInfo.newIcon(mLauncher));
+                });
         return true;
     }
 
     private void startWorkspaceAnimation(@NonNull View view, @Nullable Bitmap bitmap,
             @Nullable Drawable icon) {
         DeviceProfile dp = mLauncher.getDeviceProfile();
-        boolean isTablet = dp.isTablet;
+        boolean isTablet = dp.getDeviceProperties().isTablet();
         SplitAnimationTimings timings = AnimUtils.getDeviceSplitToConfirmTimings(isTablet);
         PendingAnimation pendingAnimation = new PendingAnimation(timings.getDuration());
 
@@ -205,6 +219,6 @@ public class SplitToWorkspaceController {
     }
 
     private boolean shouldIgnoreSecondSplitLaunch() {
-        return !FeatureFlags.enableSplitContextually() || !mController.isSplitSelectActive();
+        return !mController.isSplitSelectActive();
     }
 }

@@ -38,18 +38,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <com.android.launcher3.taskbar.bubbles.BubbleBarView
-        android:id="@+id/taskbar_bubbles"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/bubblebar_size_with_pointer"
-        android:layout_gravity="bottom|end"
-        android:layout_marginHorizontal="@dimen/transient_taskbar_bottom_margin"
-        android:paddingTop="@dimen/bubblebar_pointer_visible_size"
-        android:visibility="gone"
-        android:gravity="center"
-        android:clipChildren="false"
-        android:elevation="@dimen/bubblebar_elevation"
-        />
+    <FrameLayout
+        android:id="@+id/taskbar_bubbles_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false">
+
+        <com.android.launcher3.taskbar.bubbles.BubbleBarView
+            android:id="@+id/taskbar_bubbles"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/bubblebar_size_with_pointer"
+            android:layout_gravity="bottom|end"
+            android:layout_marginHorizontal="@dimen/transient_taskbar_bottom_margin"
+            android:paddingTop="@dimen/bubblebar_pointer_visible_size"
+            android:visibility="gone"
+            android:gravity="center"
+            android:clipChildren="false"
+            android:elevation="@dimen/bubblebar_elevation" />
+    </FrameLayout>
 
     <com.android.launcher3.taskbar.navbutton.NearestTouchFrame
         android:id="@+id/navbuttons_view"

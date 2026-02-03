@@ -2,12 +2,13 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.preferences.PreferenceAdapter
+import app.lawnchair.ui.preferences.components.reorderable.ReorderableDragHandle
+import app.lawnchair.ui.preferences.components.reorderable.ReorderablePreferenceGroup
+import app.lawnchair.ui.preferences.components.reorderable.ReorderableSwitchPreference
 import com.android.launcher3.R
 
 data class RecentsQuickAction(
@@ -48,7 +49,7 @@ fun QuickActionsPreferences(
     val orderedItems = sortListByIdOrder(items, order)
 
     // TODO migrate from index-based to item (class)-based list sorting
-    DraggablePreferenceGroup(
+    ReorderablePreferenceGroup(
         label = stringResource(id = R.string.recents_actions_label),
         items = orderedItems,
         defaultList = sortListByIdOrder(items, DEFAULT_ORDER),
@@ -62,14 +63,14 @@ fun QuickActionsPreferences(
         val interactionSource = remember { MutableInteractionSource() }
         val scope = this
 
-        DraggableSwitchPreference(
+        ReorderableSwitchPreference(
             checked = item.adapter.state.value,
             onCheckedChange = item.adapter::onChange,
             label = item.label,
             description = item.description,
             interactionSource = interactionSource,
-            dragIndicator = {
-                DragHandle(
+            dragHandle = {
+                ReorderableDragHandle(
                     interactionSource = interactionSource,
                     scope = scope,
                     onDragStop = {

@@ -17,6 +17,7 @@
 package com.android.wm.shell.startingsurface;
 
 import static android.content.Context.CONTEXT_RESTRICTED;
+import static android.content.res.Configuration.UI_MODE_NIGHT_MASK;
 import static android.os.Process.THREAD_PRIORITY_TOP_APP_BOOST;
 import static android.os.Trace.TRACE_TAG_WINDOW_MANAGER;
 import static android.view.Display.DEFAULT_DISPLAY;
@@ -74,11 +75,11 @@ import com.android.internal.graphics.palette.Palette;
 import com.android.internal.graphics.palette.Quantizer;
 import com.android.internal.graphics.palette.VariationalKMeansQuantizer;
 import com.android.internal.policy.PhoneWindow;
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.IconProvider;
-import com.android.wm.shell.common.TransactionPool;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
+import com.android.wm.shell.shared.TransactionPool;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -191,31 +192,15 @@ public class SplashscreenContentDrawer {
         }
 
         final Configuration taskConfig = taskInfo.getConfiguration();
-        if (taskConfig.diffPublicOnly(context.getResources().getConfiguration()) != 0) {
+        final Configuration contextConfig = context.getResources().getConfiguration();
+        if ((taskConfig.uiMode & UI_MODE_NIGHT_MASK)
+                != (contextConfig.uiMode & UI_MODE_NIGHT_MASK)) {
             ProtoLog.v(ShellProtoLogGroup.WM_SHELL_STARTING_WINDOW,
                     "addSplashScreen: creating context based on task Configuration %s",
                     taskConfig);
             final Context overrideContext = context.createConfigurationContext(taskConfig);
             overrideContext.setTheme(theme);
-            final TypedArray typedArray = overrideContext.obtainStyledAttributes(
-                    com.android.internal.R.styleable.Window);
-            final int resId = typedArray.getResourceId(R.styleable.Window_windowBackground, 0);
-            try {
-                if (resId != 0 && overrideContext.getDrawable(resId) != null) {
-                    // We want to use the windowBackground for the override context if it is
-                    // available, otherwise we use the default one to make sure a themed starting
-                    // window is displayed for the app.
-                    ProtoLog.v(ShellProtoLogGroup.WM_SHELL_STARTING_WINDOW,
-                            "addSplashScreen: apply overrideConfig %s",
-                            taskConfig);
-                    context = overrideContext;
-                }
-            } catch (Resources.NotFoundException e) {
-                Slog.w(TAG, "failed creating starting window for overrideConfig at taskId: "
-                        + taskId, e);
-                return null;
-            }
-            typedArray.recycle();
+            context = overrideContext;
         }
         return context;
     }
@@ -367,12 +352,17 @@ public class SplashscreenContentDrawer {
     /** Extract the window background color from {@code attrs}. */
     private static int peekWindowBGColor(Context context, SplashScreenWindowAttrs attrs) {
         Trace.traceBegin(TRACE_TAG_WINDOW_MANAGER, "peekWindowBGColor");
-        final Drawable themeBGDrawable;
+        Drawable themeBGDrawable = null;
         if (attrs.mWindowBgColor != 0) {
             themeBGDrawable = new ColorDrawable(attrs.mWindowBgColor);
         } else if (attrs.mWindowBgResId != 0) {
-            themeBGDrawable = context.getDrawable(attrs.mWindowBgResId);
-        } else {
+            try {
+                themeBGDrawable = context.getDrawable(attrs.mWindowBgResId);
+            } catch (Resources.NotFoundException e) {
+                Slog.w(TAG, "Unable get drawable from resource", e);
+            }
+        }
+        if (themeBGDrawable == null) {
             themeBGDrawable = createDefaultBackgroundDrawable();
             Slog.w(TAG, "Window background does not exist, using " + themeBGDrawable);
         }
@@ -643,7 +633,7 @@ public class SplashscreenContentDrawer {
 
         private class ShapeIconFactory extends BaseIconFactory {
             protected ShapeIconFactory(Context context, int fillResIconDpi, int iconBitmapSize) {
-                super(context, fillResIconDpi, iconBitmapSize, true /* shapeDetection */);
+                super(context, fillResIconDpi, iconBitmapSize);
             }
         }
 
@@ -691,7 +681,8 @@ public class SplashscreenContentDrawer {
             // C. The background of the adaptive icon is grayscale, and the foreground of the
             // adaptive icon forms a certain contrast with the theme color.
             // D. Didn't specify icon background color.
-            if (!iconColor.mIsBgComplex && mTmpAttrs.mIconBgColor == Color.TRANSPARENT
+            if (iconForeground != null
+                    && !iconColor.mIsBgComplex && mTmpAttrs.mIconBgColor == Color.TRANSPARENT
                     && (isRgbSimilarInHsv(mThemeColor, iconColor.mBgColor)
                             || (iconColor.mIsBgGrayscale
                                     && !isRgbSimilarInHsv(mThemeColor, iconColor.mFgColor)))) {

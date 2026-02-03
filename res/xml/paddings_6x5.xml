@@ -30,13 +30,24 @@
             launcher:b="0"/>
     </device-padding>
 
-    <device-padding
-        launcher:maxEmptySpace="9999dp">
+    <device-padding launcher:maxEmptySpace="160dp">
         <workspaceTopPadding
-            launcher:a="0.48"
+            launcher:a="0.25"
             launcher:b="0"/>
         <workspaceBottomPadding
-            launcher:a="0.52"
+            launcher:a="0.75"
+            launcher:b="0"/>
+        <hotseatBottomPadding
+            launcher:a="0"
+            launcher:b="0"/>
+    </device-padding>
+
+    <device-padding launcher:maxEmptySpace="9999dp">
+        <workspaceTopPadding
+            launcher:a="0.44"
+            launcher:b="0"/>
+        <workspaceBottomPadding
+            launcher:a="0.56"
             launcher:b="0"/>
         <hotseatBottomPadding
             launcher:a="0"

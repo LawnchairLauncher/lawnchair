@@ -27,7 +27,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.statemanager.StatefulActivity
+import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
 
 /**
@@ -38,11 +38,11 @@ class FloatingAppPairView @JvmOverloads constructor(context: Context, attrs: Att
     FrameLayout(context, attrs) {
     companion object {
         fun getFloatingAppPairView(
-            launcher: StatefulActivity<*>,
+            launcher: ActivityContext,
             originalView: View,
             appIcon1: Drawable?,
             appIcon2: Drawable?,
-            dividerPos: Int
+            dividerPos: Int,
         ): FloatingAppPairView {
             val dragLayer: ViewGroup = launcher.getDragLayer()
             val floatingView =
@@ -62,11 +62,11 @@ class FloatingAppPairView @JvmOverloads constructor(context: Context, attrs: Att
 
     /** Initializes the view, copying the bounds and location of the original icon view. */
     fun init(
-        launcher: StatefulActivity<*>,
+        launcher: ActivityContext,
         originalView: View,
         appIcon1: Drawable?,
         appIcon2: Drawable?,
-        dividerPos: Int
+        dividerPos: Int,
     ) {
         val viewBounds = Rect(0, 0, originalView.width, originalView.height)
         Utilities.getBoundsForViewInDragLayer(
@@ -75,12 +75,12 @@ class FloatingAppPairView @JvmOverloads constructor(context: Context, attrs: Att
             viewBounds,
             false /* ignoreTransform */,
             null /* recycle */,
-            startingPosition
+            startingPosition,
         )
         val lp =
             BaseDragLayer.LayoutParams(
                 Math.round(startingPosition.width()),
-                Math.round(startingPosition.height())
+                Math.round(startingPosition.height()),
             )
         lp.ignoreInsets = true
 
@@ -92,14 +92,14 @@ class FloatingAppPairView @JvmOverloads constructor(context: Context, attrs: Att
         layoutParams = lp
 
         // Prepare to draw app pair icon background
-        background = if (appIcon1 == null || appIcon2 == null) {
-            val iconToAnimate = appIcon1 ?: appIcon2
-            checkNotNull(iconToAnimate)
-            FloatingFullscreenAppPairBackground(context, this, iconToAnimate,
-                    dividerPos)
-        } else {
-            FloatingAppPairBackground(context, this, appIcon1, appIcon2, dividerPos)
-        }
+        background =
+            if (appIcon1 == null || appIcon2 == null) {
+                val iconToAnimate = appIcon1 ?: appIcon2
+                checkNotNull(iconToAnimate)
+                FloatingFullscreenAppPairBackground(context, this, iconToAnimate, dividerPos)
+            } else {
+                FloatingAppPairBackground(context, this, appIcon1, appIcon2, dividerPos)
+            }
         background.setBounds(0, 0, lp.width, lp.height)
     }
 

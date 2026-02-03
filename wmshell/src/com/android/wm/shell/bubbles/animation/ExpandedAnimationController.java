@@ -33,13 +33,13 @@ import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.wm.shell.R;
-import com.android.wm.shell.animation.Interpolators;
 import com.android.wm.shell.bubbles.BadgedImageView;
 import com.android.wm.shell.bubbles.BubbleOverflow;
 import com.android.wm.shell.bubbles.BubblePositioner;
 import com.android.wm.shell.bubbles.BubbleStackView;
-import com.android.wm.shell.common.magnetictarget.MagnetizedObject;
+import com.android.wm.shell.shared.animation.Interpolators;
 import com.android.wm.shell.shared.animation.PhysicsAnimator;
+import com.android.wm.shell.shared.magnetictarget.MagnetizedObject;
 
 import com.google.android.collect.Sets;
 
@@ -354,6 +354,7 @@ public class ExpandedAnimationController
             View bubble,
             MagnetizedObject.MagneticTarget target,
             MagnetizedObject.MagnetListener listener) {
+        if (mLayout == null) return;
         mLayout.cancelAnimationsOnView(bubble);
 
         mMagnetizedBubbleDraggingOut = new MagnetizedObject<View>(

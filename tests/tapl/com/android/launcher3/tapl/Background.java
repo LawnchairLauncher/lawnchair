@@ -16,7 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.tapl.BaseOverview.TASK_RES_ID;
+import static com.android.launcher3.tapl.BaseOverview.TASK_SELECTOR;
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
@@ -29,6 +29,7 @@ import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
+import com.android.launcher3.tapl.OverviewTask.TaskViewType;
 import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.List;
@@ -117,16 +118,35 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                         // non-tablet overview, snapshots can be on either side of the swiped
                         // task, but we still check that they become visible after swiping and
                         // pausing.
-                        mLauncher.waitForOverviewObject(TASK_RES_ID);
+                        mLauncher.waitForObjectBySelector(TASK_SELECTOR);
                         if (mLauncher.isTablet()) {
                             List<UiObject2> tasks = mLauncher.getDevice().findObjects(
-                                    mLauncher.getOverviewObjectSelector(TASK_RES_ID));
+                                    TASK_SELECTOR);
+
                             final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
-                            mLauncher.assertTrue(
-                                    "All tasks not to the left of the swiped task",
-                                    tasks.stream()
-                                            .allMatch(
-                                                    t -> t.getVisibleBounds().right < centerX));
+                            UiObject2 centerTask = tasks.stream()
+                                    .filter(t -> t.getVisibleCenter().x == centerX)
+                                    .findFirst()
+                                    .orElse(null);
+
+                            if (centerTask != null) {
+                                mLauncher.assertTrue(
+                                        "Task(s) found to the right of the swiped task",
+                                        tasks.stream()
+                                                .filter(t -> t != centerTask
+                                                        && OverviewTask.getType(t)
+                                                        != TaskViewType.DESKTOP)
+                                                .allMatch(t -> t.getVisibleBounds().right
+                                                        < centerTask.getVisibleBounds().left));
+                                mLauncher.assertTrue(
+                                        "DesktopTask(s) found to the left of the swiped task",
+                                        tasks.stream()
+                                                .filter(t -> t != centerTask
+                                                        && OverviewTask.getType(t)
+                                                        == TaskViewType.DESKTOP)
+                                                .allMatch(t -> t.getVisibleBounds().left
+                                                        > centerTask.getVisibleBounds().right));
+                            }
                         }
 
                     }

@@ -1,20 +1,20 @@
-package app.lawnchair.ui.preferences.destinations
+﻿package app.lawnchair.ui.preferences.destinations
 
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,15 +28,16 @@ import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
-import app.lawnchair.ui.preferences.components.DragHandle
-import app.lawnchair.ui.preferences.components.DraggablePreferenceGroup
-import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
+import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
+import app.lawnchair.ui.preferences.components.layout.PreferenceScaffold
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
+import app.lawnchair.ui.preferences.components.reorderable.PositionalListItem
+import app.lawnchair.ui.preferences.components.reorderable.PositionalMapper
+import app.lawnchair.ui.preferences.components.reorderable.PositionalOrderMenu
+import app.lawnchair.ui.preferences.components.reorderable.PositionalReorderer
 import app.lawnchair.util.App
 import app.lawnchair.util.appsState
 import com.android.launcher3.R
-import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
 
 @Composable
@@ -52,131 +53,148 @@ fun SelectAppsForDrawerFolder(
     }
 
     val context = LocalContext.current
-
+    val apps by appsState()
     val folders by viewModel.folders.collectAsStateWithLifecycle()
     val folderInfo by viewModel.folderInfo.collectAsStateWithLifecycle()
-    val selectedAppsInFolder = remember { mutableStateListOf<App>() }
+
+    var allFolderPackages by remember { mutableStateOf(emptySet<String>()) }
+    var filterNonUniqueItems by remember { mutableStateOf(true) }
+
+    val activeIds = remember(folderInfo) {
+        folderInfo?.getContents()?.map { ComponentKey(it.targetComponent, it.user).toString() } ?: emptyList()
+    }
+
+    val (positionalItems, activeCount) = remember(apps, activeIds, filterNonUniqueItems, allFolderPackages) {
+        val filtered = apps.filter { app ->
+            if (filterNonUniqueItems) {
+                !allFolderPackages.contains(app.key.componentName.packageName) ||
+                    activeIds.contains(app.key.toString())
+            } else {
+                true
+            }
+        }
+        PositionalMapper.prepareCategorizedItems(
+            allItems = filtered,
+            enabledIds = activeIds,
+            idSelector = { it.key.toString() },
+        )
+    }
+
+    LaunchedEffect(folders) {
+        allFolderPackages = folders.flatMap { it.getContents() }
+            .mapNotNull { it.targetPackage }
+            .toSet()
+    }
 
     LaunchedEffect(folderInfoId) {
         viewModel.setFolderInfo(folderInfoId, false)
     }
 
-    val apps by appsState()
-    var isInitialLoad by remember { mutableStateOf(true) }
-
-    LaunchedEffect(folderInfo, apps) {
-        if (isInitialLoad && folderInfo != null && apps.isNotEmpty()) {
-            val currentContent = folderInfo!!.getContents()
-            val orderedApps = currentContent.sortedBy { it.rank }.mapNotNull { item ->
-                val key = ComponentKey(item.targetComponent, item.user)
-                apps.find { it.key == key }
-            }
-            selectedAppsInFolder.clear()
-            selectedAppsInFolder.addAll(orderedApps)
-            isInitialLoad = false
-        }
-    }
-
     val loading = folderInfo == null && apps.isEmpty()
 
-    PreferenceLayoutLazyColumn(
+    PreferenceScaffold(
         label = if (loading) {
             stringResource(R.string.loading)
         } else {
-            stringResource(R.string.x_with_y_count, folderInfo?.title.toString(), selectedAppsInFolder.size)
+            stringResource(R.string.x_with_y_count, folderInfo?.title.toString(), activeCount)
         },
         modifier = modifier,
+        actions = {
+            if (!loading) {
+                PositionalOrderMenu(
+                    items = positionalItems,
+                    activeCount = activeCount,
+                    onUpdate = { newList, newCount ->
+                        val sorted = PositionalMapper.sortInactiveItems(newList, newCount) { it.label }
+                        updateViewModel(sorted, newCount, apps, context, viewModel, folderInfoId, folderInfo?.title.toString())
+                    },
+                    additionalContent = { hideMenu ->
+                        DropdownMenuItem(
+                            onClick = {
+                                filterNonUniqueItems = !filterNonUniqueItems
+                                hideMenu()
+                            },
+                            trailingIcon = {
+                                if (filterNonUniqueItems) Icon(Icons.Rounded.Check, null)
+                            },
+                            text = { Text(stringResource(R.string.folders_filter_duplicates)) },
+                        )
+                    },
+                )
+            }
+        },
         isExpandedScreen = LocalIsExpandedScreen.current,
     ) {
-        if (loading) {
-            preferenceGroupItems(
-                count = 20,
-                isFirstChild = true,
-                dividerStartIndent = 40.dp,
-            ) {
-                AppItemPlaceholder()
-            }
-        } else {
-            item {
-                if (selectedAppsInFolder.isNotEmpty()) {
-                    DraggablePreferenceGroup<App>(
-                        label = stringResource(R.string.selected_apps),
-                        items = selectedAppsInFolder,
-                        defaultList = selectedAppsInFolder,
-                        onOrderChange = { newOrder ->
-                            selectedAppsInFolder.clear()
-                            selectedAppsInFolder.addAll(newOrder)
-                        },
-                        onSettle = { newOrder ->
-                            // Update the database when drag settles
-                            viewModel.updateFolderItems(
-                                folderInfoId,
-                                folderInfo?.title.toString(),
-                                newOrder.map { it.toAppInfo(context) },
-                            )
-                        },
-                    ) { app, _, _, onDraggingChange ->
-                        val interactionSource = remember { MutableInteractionSource() }
-                        AppItem(
-                            app = app,
-                            onClick = { },
-                            widget = {
-                                DragHandle(
-                                    scope = this,
-                                    interactionSource = interactionSource,
-                                    onDragStop = {
-                                        onDraggingChange(false)
-                                    },
-                                )
-                            },
-                            endWidget = {
-                                IconButton(onClick = {
-                                    val newList = selectedAppsInFolder.toMutableList()
-                                    newList.remove(app)
-                                    selectedAppsInFolder.clear()
-                                    selectedAppsInFolder.addAll(newList)
-
-                                    viewModel.updateFolderItems(
-                                        folderInfoId,
-                                        folderInfo?.title.toString(),
-                                        newList.map { it.toAppInfo(context) },
-                                    )
-                                }) {
-                                    Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.delete_label))
-                                }
-                            },
-                        )
+        Crossfade(targetState = loading, label = "") { isLoading ->
+            if (isLoading) {
+                PreferenceLazyColumn(it, enabled = false, state = rememberLazyListState()) {
+                    preferenceGroupItems(
+                        count = 20,
+                        isFirstChild = true,
+                    ) {
+                        AppItemPlaceholder {
+                            Spacer(Modifier.width(24.dp))
+                        }
                     }
                 }
-            }
-
-            val unselectedApps = apps.filter { !selectedAppsInFolder.contains(it) }
-
-            preferenceGroupItems(
-                items = unselectedApps,
-                heading = if (selectedAppsInFolder.isNotEmpty()) {
-                    { stringResource(R.string.add_apps) }
-                } else {
-                    null
-                },
-                isFirstChild = selectedAppsInFolder.isEmpty(),
-                dividerStartIndent = 40.dp,
-            ) { _, app ->
-                AppItem(
-                    app = app,
-                    onClick = {
-                        selectedAppsInFolder.add(app)
-                        viewModel.updateFolderItems(
-                            folderInfoId,
-                            folderInfo?.title.toString(),
-                            selectedAppsInFolder.map { it.toAppInfo(context) },
-                        )
+            } else {
+                PositionalAppListPreference(
+                    items = positionalItems,
+                    activeCount = activeCount,
+                    onOrderChange = { newList, newCount ->
+                        val sorted = PositionalMapper.sortInactiveItems(newList, newCount) { it.label }
+                        updateViewModel(sorted, newCount, apps, context, viewModel, folderInfoId, folderInfo?.title.toString())
                     },
-                    widget = {
-                        Icon(Icons.Rounded.Add, contentDescription = null)
-                    },
+                    contentPadding = it,
                 )
             }
         }
     }
+}
+
+@Composable
+private fun PositionalAppListPreference(
+    items: List<PositionalListItem<App>>,
+    activeCount: Int,
+    onOrderChange: (newList: List<PositionalListItem<App>>, newEnabledCount: Int) -> Unit,
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    PositionalReorderer(
+        items = items,
+        activeCount = activeCount,
+        onOrderChange = onOrderChange,
+        itemContent = { app, dragHandle, toggle ->
+            AppItem(
+                app = app,
+                onClick = {},
+                widget = dragHandle,
+                endWidget = toggle,
+            )
+        },
+        labelSelector = { it.label },
+        contentPadding = contentPadding,
+        modifier = modifier,
+    )
+}
+
+private fun updateViewModel(
+    newList: List<PositionalListItem<App>>,
+    newCount: Int,
+    apps: List<App>,
+    context: Context,
+    viewModel: FolderViewModel,
+    folderId: Int,
+    title: String,
+) {
+    val activePackageNames = PositionalMapper.getEnabledKeys(newList, newCount).toSet()
+
+    val newSelection = activePackageNames.mapNotNull { keyString ->
+        val app = apps.find { it.key.toString() == keyString }
+        app?.toAppInfo(context)?.apply {
+            rank = activePackageNames.indexOf(keyString)
+        }
+    }
+
+    viewModel.updateFolderItems(folderId, title, newSelection)
 }

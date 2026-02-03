@@ -1,880 +1,740 @@
 package com.android.launcher3;
-// TODO(b/303773055): Remove the annotation after access issue is resolved.
-import androidx.core.os.BuildCompat;
 
-import com.android.quickstep.util.DeviceConfigHelper;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 /** @hide */
 public final class FeatureFlagsImpl implements FeatureFlags {
-    private static final boolean isReadFromNew = Files.exists(Paths.get("/metadata/aconfig/boot/enable_only_new_storage"));
-    private static volatile boolean isCached = false;
-    private static volatile boolean launcher_is_cached = false;
-    private static volatile boolean launcher_search_is_cached = false;
-    private static boolean enableAddAppWidgetViaConfigActivityV2 = true;
-    private static boolean enableAdditionalHomeAnimations = true;
-    private static boolean enableCategorizedWidgetSuggestions = true;
-    private static boolean enableCursorHoverStates = true;
-    private static boolean enableExpandingPauseWorkButton = true;
-    private static boolean enableFallbackOverviewInWindow = false;
-    private static boolean enableFocusOutline = true;
-    private static boolean enableGeneratedPreviews = true;
-    private static boolean enableGridOnlyOverview = false;
-    private static boolean enableHandleDelayedGestureCallbacks = true;
-    private static boolean enableHomeTransitionListener = true;
-    private static boolean enableOverviewIconMenu = false;
-    private static boolean enablePredictiveBackGesture = true;
-    private static boolean enablePrivateSpace = true;
-    private static boolean enablePrivateSpaceInstallShortcut = true;
-    private static boolean enableRebootUnlockAnimation = false;
-    private static boolean enableRecentsInTaskbar = false;
-    private static boolean enableRefactorTaskThumbnail = false;
-    private static boolean enableResponsiveWorkspace = true;
-    private static boolean enableScalingRevealHomeAnimation = true;
-    private static boolean enableShortcutDontSuggestApp = true;
-    private static boolean enableSmartspaceAsAWidget = false;
-    private static boolean enableSmartspaceRemovalToggle = false;
-    private static boolean enableSupportForArchiving = false;
-    private static boolean enableTabletTwoPanePickerV2 = false;
-    private static boolean enableTaskbarCustomization = false;
-    private static boolean enableTaskbarNoRecreate = false;
-    private static boolean enableTaskbarPinning = true;
-    private static boolean enableTwoPaneLauncherSettings = false;
-    private static boolean enableTwolineAllapps = false;
-    private static boolean enableTwolineToggle = true;
-    private static boolean enableUnfoldStateAnimation = false;
-    private static boolean enableUnfoldedTwoPanePicker = true;
-    private static boolean enableWidgetTapToAdd = true;
-    private static boolean enableWorkspaceInflation = true;
-    private static boolean enabledFoldersInAllApps = false;
-    private static boolean floatingSearchBar = false;
-    private static boolean forceMonochromeAppIcons = false;
-    private static boolean privateSpaceAddFloatingMaskView = false;
-    private static boolean privateSpaceAnimation = true;
-    private static boolean privateSpaceAppInstallerButton = true;
-    private static boolean privateSpaceRestrictAccessibilityDrag = true;
-    private static boolean privateSpaceRestrictItemDrag = true;
-    private static boolean privateSpaceSysAppsSeparation = true;
-    private static boolean useActivityOverlay = true;
+    @Override
 
 
-    private void init() {
-        isCached = true;
-    }
-
-    private void load_overrides_launcher() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            enableAddAppWidgetViaConfigActivityV2 =
-                    properties.getBoolean(Flags.FLAG_ENABLE_ADD_APP_WIDGET_VIA_CONFIG_ACTIVITY_V2, true);
-            enableAdditionalHomeAnimations =
-                    properties.getBoolean(Flags.FLAG_ENABLE_ADDITIONAL_HOME_ANIMATIONS, true);
-            enableCategorizedWidgetSuggestions =
-                    properties.getBoolean(Flags.FLAG_ENABLE_CATEGORIZED_WIDGET_SUGGESTIONS, true);
-            enableCursorHoverStates =
-                    properties.getBoolean(Flags.FLAG_ENABLE_CURSOR_HOVER_STATES, true);
-            enableExpandingPauseWorkButton =
-                    properties.getBoolean(Flags.FLAG_ENABLE_EXPANDING_PAUSE_WORK_BUTTON, true);
-            enableFallbackOverviewInWindow =
-                    properties.getBoolean(Flags.FLAG_ENABLE_FALLBACK_OVERVIEW_IN_WINDOW, false);
-            enableFocusOutline =
-                    properties.getBoolean(Flags.FLAG_ENABLE_FOCUS_OUTLINE, true);
-            enableGeneratedPreviews =
-                    properties.getBoolean(Flags.FLAG_ENABLE_GENERATED_PREVIEWS, true);
-            enableGridOnlyOverview =
-                    properties.getBoolean(Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW, false);
-            enableHandleDelayedGestureCallbacks =
-                    properties.getBoolean(Flags.FLAG_ENABLE_HANDLE_DELAYED_GESTURE_CALLBACKS, true);
-            enableHomeTransitionListener =
-                    properties.getBoolean(Flags.FLAG_ENABLE_HOME_TRANSITION_LISTENER, true);
-            enableOverviewIconMenu =
-                    properties.getBoolean(Flags.FLAG_ENABLE_OVERVIEW_ICON_MENU, false);
-            enablePredictiveBackGesture =
-                    properties.getBoolean(Flags.FLAG_ENABLE_PREDICTIVE_BACK_GESTURE, true);
-            enablePrivateSpaceInstallShortcut =
-                    properties.getBoolean(Flags.FLAG_ENABLE_PRIVATE_SPACE_INSTALL_SHORTCUT, true);
-            enableRebootUnlockAnimation =
-                    properties.getBoolean(Flags.FLAG_ENABLE_REBOOT_UNLOCK_ANIMATION, false);
-            enableRecentsInTaskbar =
-                    properties.getBoolean(Flags.FLAG_ENABLE_RECENTS_IN_TASKBAR, false);
-            enableRefactorTaskThumbnail =
-                    properties.getBoolean(Flags.FLAG_ENABLE_REFACTOR_TASK_THUMBNAIL, false);
-            enableResponsiveWorkspace =
-                    properties.getBoolean(Flags.FLAG_ENABLE_RESPONSIVE_WORKSPACE, true);
-            enableScalingRevealHomeAnimation =
-                    properties.getBoolean(Flags.FLAG_ENABLE_SCALING_REVEAL_HOME_ANIMATION, true);
-            enableShortcutDontSuggestApp =
-                    properties.getBoolean(Flags.FLAG_ENABLE_SHORTCUT_DONT_SUGGEST_APP, true);
-            enableSmartspaceAsAWidget =
-                    properties.getBoolean(Flags.FLAG_ENABLE_SMARTSPACE_AS_A_WIDGET, false);
-            enableSmartspaceRemovalToggle =
-                    properties.getBoolean(Flags.FLAG_ENABLE_SMARTSPACE_REMOVAL_TOGGLE, true);
-            enableSupportForArchiving =
-                    properties.getBoolean(Flags.FLAG_ENABLE_SUPPORT_FOR_ARCHIVING, BuildCompat.isAtLeastU());
-            enableTabletTwoPanePickerV2 =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TABLET_TWO_PANE_PICKER_V2, false);
-            enableTaskbarCustomization =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TASKBAR_CUSTOMIZATION, false);
-            enableTaskbarNoRecreate =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TASKBAR_NO_RECREATE, false);
-            enableTaskbarPinning =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TASKBAR_PINNING, true);
-            enableTwoPaneLauncherSettings =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TWO_PANE_LAUNCHER_SETTINGS, true);
-            enableTwolineAllapps =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS, false);
-            enableTwolineToggle =
-                    properties.getBoolean(Flags.FLAG_ENABLE_TWOLINE_TOGGLE, true);
-            enableUnfoldStateAnimation =
-                    properties.getBoolean(Flags.FLAG_ENABLE_UNFOLD_STATE_ANIMATION, false);
-            enableUnfoldedTwoPanePicker =
-                    properties.getBoolean(Flags.FLAG_ENABLE_UNFOLDED_TWO_PANE_PICKER, true);
-            enableWidgetTapToAdd =
-                    properties.getBoolean(Flags.FLAG_ENABLE_WIDGET_TAP_TO_ADD, true);
-            enableWorkspaceInflation =
-                    properties.getBoolean(Flags.FLAG_ENABLE_WORKSPACE_INFLATION, true);
-            enabledFoldersInAllApps =
-                    properties.getBoolean(Flags.FLAG_ENABLED_FOLDERS_IN_ALL_APPS, false);
-            floatingSearchBar =
-                    properties.getBoolean(Flags.FLAG_FLOATING_SEARCH_BAR, false);
-            forceMonochromeAppIcons =
-                    properties.getBoolean(Flags.FLAG_FORCE_MONOCHROME_APP_ICONS, true);
-            useActivityOverlay =
-                    properties.getBoolean(Flags.FLAG_USE_ACTIVITY_OVERLAY, true);
-        } catch (NullPointerException e) {
-            // Ignored
-        }
-        launcher_is_cached = true;
-    }
-
-    private void load_overrides_launcher_search() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            enablePrivateSpace =
-                    properties.getBoolean(Flags.FLAG_ENABLE_PRIVATE_SPACE, BuildCompat.isAtLeastU());
-            privateSpaceAddFloatingMaskView =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_ADD_FLOATING_MASK_VIEW, BuildCompat.isAtLeastU());
-            privateSpaceAnimation =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_ANIMATION, BuildCompat.isAtLeastU());
-            privateSpaceAppInstallerButton =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_APP_INSTALLER_BUTTON, BuildCompat.isAtLeastU());
-            privateSpaceRestrictAccessibilityDrag =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_RESTRICT_ACCESSIBILITY_DRAG, BuildCompat.isAtLeastU());
-            privateSpaceRestrictItemDrag =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_RESTRICT_ITEM_DRAG, BuildCompat.isAtLeastU());
-            privateSpaceSysAppsSeparation =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_SYS_APPS_SEPARATION, BuildCompat.isAtLeastU());
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace launcher_search "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        }
-        launcher_search_is_cached = true;
+    public boolean accessibilityScrollOnAllapps() {
+        return true;
     }
 
     @Override
+
+
+    public boolean allAppsBlur() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean allAppsSheetForHandheld() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean enableAddAppWidgetViaConfigActivityV2() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableAddAppWidgetViaConfigActivityV2;
-
-    }
-
-    public boolean enableAdditionalHomeAnimations() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableAdditionalHomeAnimations;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableAllAppsButtonInHotseat() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableAltTabKqsFlatenning() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableAltTabKqsOnConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableCategorizedWidgetSuggestions() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableCategorizedWidgetSuggestions;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableContainerReturnAnimations() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableContrastTiles() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableCoroutineThreadingImprovements() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean enableCursorHoverStates() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableCursorHoverStates;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableDesktopExplodedView() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDesktopMenuOnSecondaryDisplayBugfix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableDismissPredictionUndo() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean enableExpandingPauseWorkButton() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableExpandingPauseWorkButton;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableExpressiveDismissTaskMotion() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableExpressiveFolderExpansion() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean enableFallbackOverviewInWindow() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableFallbackOverviewInWindow;
-
+        return false;
     }
 
     @Override
+
+
     public boolean enableFirstScreenBroadcastArchivingExtras() {
-        return false;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enableFocusOutline() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableFocusOutline;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enableGeneratedPreviews() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableGeneratedPreviews;
-
+        return true;
     }
 
     @Override
-    public boolean enableGridMigrationFix() {
+
+
+    public boolean enableGestureNavHorizontalTouchSlop() {
         return false;
-
     }
 
     @Override
+
+
+    public boolean enableGestureNavOnConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableGridOnlyOverview() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableGridOnlyOverview;
-
+        return true;
     }
 
     @Override
-    public boolean enableHandleDelayedGestureCallbacks() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableHandleDelayedGestureCallbacks;
 
+
+    public boolean enableGrowthNudge() {
+        return false;
     }
 
     @Override
+
+
     public boolean enableHomeTransitionListener() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableHomeTransitionListener;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableLargeDesktopWindowingTile() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean enableLauncherBrMetricsFixed() {
         return true;
-
     }
 
     @Override
-    public boolean enableNarrowGridRestore() {
+
+
+    public boolean enableLauncherIconShapes() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableLauncherOverviewInWindow() {
         return false;
-
     }
 
     @Override
+
+
+    public boolean enableLauncherVisualRefresh() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableLongPressRemoveShortcut() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableMouseInteractionChanges() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableMultiInstanceMenuTaskbar() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableNarrowGridRestore() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableOverviewBackgroundWallpaperBlur() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean enableOverviewDesktopTileWallpaperBackground() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableOverviewIconMenu() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableOverviewIconMenu;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableOverviewOnConnectedDisplays() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enablePredictiveBackGesture() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enablePredictiveBackGesture;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enablePrivateSpace() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_search_is_cached) {
-                load_overrides_launcher_search();
-            }
-        }
-        return enablePrivateSpace;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enablePrivateSpaceInstallShortcut() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enablePrivateSpaceInstallShortcut;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableQsbOnHotseat() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableRebootUnlockAnimation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableRebootUnlockAnimation;
-
+        return false;
     }
 
     @Override
+
+
     public boolean enableRecentsInTaskbar() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableRecentsInTaskbar;
-
+        return false;
     }
 
     @Override
+
+
+    public boolean enableRecentsWindowProtoLog() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableRefactorDigitalWellbeingToast() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableRefactorTaskContentView() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableRefactorTaskThumbnail() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableRefactorTaskThumbnail;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enableResponsiveWorkspace() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableResponsiveWorkspace;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableReversibleHomeActionCorner() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableScalabilityForDesktopExperience() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableScalingRevealHomeAnimation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableScalingRevealHomeAnimation;
-
+        return true;
     }
 
     @Override
-    public boolean enableShortcutDontSuggestApp() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableShortcutDontSuggestApp;
 
+
+    public boolean enableSimultaneousOverviewTriggerOnExtendedDesktop() {
+        return false;
     }
 
     @Override
-    public boolean enableSmartspaceAsAWidget() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableSmartspaceAsAWidget;
 
+
+    public boolean enableStateManagerProtoLog() {
+        return false;
     }
 
     @Override
-    public boolean enableSmartspaceRemovalToggle() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableSmartspaceRemovalToggle;
 
+
+    public boolean enableStrictMode() {
+        return false;
     }
 
     @Override
+
+
     public boolean enableSupportForArchiving() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableSupportForArchiving;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enableTabletTwoPanePickerV2() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableTabletTwoPanePickerV2;
-
+        return false;
     }
 
     @Override
+
+
+    public boolean enableTaskbarBehindShade() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableTaskbarCustomization() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableTaskbarCustomization;
-
+        return false;
     }
 
     @Override
+
+
+    public boolean enableTaskbarForDirectBoot() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableTaskbarNoRecreate() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableTaskbarNoRecreate;
-
+        return false;
     }
 
     @Override
+
+
     public boolean enableTaskbarPinning() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableTaskbarPinning;
-
+        return true;
     }
 
     @Override
+
+
+    public boolean enableTaskbarUiThread() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean enableTieredWidgetsByDefaultInPicker() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean enableTwoPaneLauncherSettings() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableTwoPaneLauncherSettings;
-
+        return false;
     }
 
     @Override
+
+
     public boolean enableTwolineAllapps() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableTwolineAllapps;
-
+        return false;
     }
 
     @Override
+
+
     public boolean enableTwolineToggle() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableTwolineToggle;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enableUnfoldStateAnimation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableUnfoldStateAnimation;
-
+        return false;
     }
 
     @Override
-    public boolean enableUnfoldedTwoPanePicker() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableUnfoldedTwoPanePicker;
 
+
+    public boolean enableWidgetPickerRefactor() {
+        return false;
     }
 
     @Override
+
+
     public boolean enableWidgetTapToAdd() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableWidgetTapToAdd;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enableWorkspaceInflation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enableWorkspaceInflation;
-
+        return true;
     }
 
     @Override
+
+
     public boolean enabledFoldersInAllApps() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return enabledFoldersInAllApps;
-
+        return false;
     }
 
     @Override
+
+
+    public boolean expressiveThemeInTaskbarAndNavigation() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean externalDataAccess() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean floatingSearchBar() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return floatingSearchBar;
-
+        return false;
     }
 
     @Override
+
+
     public boolean forceMonochromeAppIcons() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return forceMonochromeAppIcons;
-
+        return false;
     }
 
     @Override
+
+
+    public boolean gridMigrationRefactor() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean gsfRes() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean homeScreenEditImprovements() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean ignoreThreeFingerTrackpadForNavHandleLongPress() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean letterFastScroller() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean modelRepository() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean msdlFeedback() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean nudgePill() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean oneGridMountedMode() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean oneGridRotationHandling() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean oneGridSpecs() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean predictiveBackToHomeBlur() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean predictiveBackToHomePolish() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean privateSpaceAddFloatingMaskView() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_search_is_cached) {
-                load_overrides_launcher_search();
-            }
-        }
-        return privateSpaceAddFloatingMaskView;
-
+        return true;
     }
 
     @Override
+
+
     public boolean privateSpaceAnimation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_search_is_cached) {
-                load_overrides_launcher_search();
-            }
-        }
-        return privateSpaceAnimation;
-
+        return true;
     }
 
     @Override
-    public boolean privateSpaceAppInstallerButton() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_search_is_cached) {
-                load_overrides_launcher_search();
-            }
-        }
-        return privateSpaceAppInstallerButton;
 
-    }
 
-    @Override
     public boolean privateSpaceRestrictAccessibilityDrag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_search_is_cached) {
-                load_overrides_launcher_search();
-            }
-        }
-        return privateSpaceRestrictAccessibilityDrag;
-
+        return true;
     }
 
     @Override
+
+
     public boolean privateSpaceRestrictItemDrag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_search_is_cached) {
-                load_overrides_launcher_search();
-            }
-        }
-        return privateSpaceRestrictItemDrag;
-
+        return true;
     }
 
     @Override
+
+
     public boolean privateSpaceSysAppsSeparation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_search_is_cached) {
-                load_overrides_launcher_search();
-            }
-        }
-        return privateSpaceSysAppsSeparation;
-
+        return true;
     }
 
     @Override
-    public boolean useActivityOverlay() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!launcher_is_cached) {
-                load_overrides_launcher();
-            }
-        }
-        return useActivityOverlay;
 
+
+    public boolean removeAppsRefreshOnRightClick() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean restoreArchivedAppIconsFromDb() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean restoreArchivedShortcuts() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean showTaskbarPinningPopupFromAnywhere() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean syncAppLaunchWithTaskbarStash() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean taskbarQuietModeChangeSupport() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean useNewIconForArchivedApps() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean useSystemRadiusForAppWidgets() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean workSchedulerInWorkProfile() {
+        return true;
     }
 
 }
-

@@ -16,10 +16,7 @@
 
 package com.android.wm.shell.compatui;
 
-import static android.app.CameraCompatTaskInfo.CAMERA_COMPAT_CONTROL_TREATMENT_SUGGESTED;
-
 import android.annotation.IdRes;
-import android.app.CameraCompatTaskInfo.CameraCompatControlState;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -57,26 +54,8 @@ class CompatUILayout extends LinearLayout {
         mWindowManager = windowManager;
     }
 
-    void updateCameraTreatmentButton(@CameraCompatControlState int newState) {
-        int buttonBkgId = newState == CAMERA_COMPAT_CONTROL_TREATMENT_SUGGESTED
-                ? R.drawable.camera_compat_treatment_suggested_ripple
-                : R.drawable.camera_compat_treatment_applied_ripple;
-        int hintStringId = newState == CAMERA_COMPAT_CONTROL_TREATMENT_SUGGESTED
-                ? R.string.camera_compat_treatment_suggested_button_description
-                : R.string.camera_compat_treatment_applied_button_description;
-        final ImageButton button = findViewById(R.id.camera_compat_treatment_button);
-        button.setImageResource(buttonBkgId);
-        button.setContentDescription(getResources().getString(hintStringId));
-        final LinearLayout hint = findViewById(R.id.camera_compat_hint);
-        ((TextView) hint.findViewById(R.id.compat_mode_hint_text)).setText(hintStringId);
-    }
-
     void setSizeCompatHintVisibility(boolean show) {
         setViewVisibility(R.id.size_compat_hint, show);
-    }
-
-    void setCameraCompatHintVisibility(boolean show) {
-        setViewVisibility(R.id.camera_compat_hint, show);
     }
 
     void setRestartButtonVisibility(boolean show) {
@@ -84,14 +63,6 @@ class CompatUILayout extends LinearLayout {
         // Hint should never be visible without button.
         if (!show) {
             setSizeCompatHintVisibility(/* show= */ false);
-        }
-    }
-
-    void setCameraControlVisibility(boolean show) {
-        setViewVisibility(R.id.camera_compat_control, show);
-        // Hint should never be visible without button.
-        if (!show) {
-            setCameraCompatHintVisibility(/* show= */ false);
         }
     }
 
@@ -127,26 +98,5 @@ class CompatUILayout extends LinearLayout {
         ((TextView) sizeCompatHint.findViewById(R.id.compat_mode_hint_text))
                 .setText(R.string.restart_button_description);
         sizeCompatHint.setOnClickListener(view -> setSizeCompatHintVisibility(/* show= */ false));
-
-        final ImageButton cameraTreatmentButton =
-                findViewById(R.id.camera_compat_treatment_button);
-        cameraTreatmentButton.setOnClickListener(
-                view -> mWindowManager.onCameraTreatmentButtonClicked());
-        cameraTreatmentButton.setOnLongClickListener(view -> {
-            mWindowManager.onCameraButtonLongClicked();
-            return true;
-        });
-
-        final ImageButton cameraDismissButton = findViewById(R.id.camera_compat_dismiss_button);
-        cameraDismissButton.setOnClickListener(
-                view -> mWindowManager.onCameraDismissButtonClicked());
-        cameraDismissButton.setOnLongClickListener(view -> {
-            mWindowManager.onCameraButtonLongClicked();
-            return true;
-        });
-
-        final LinearLayout cameraCompatHint = findViewById(R.id.camera_compat_hint);
-        cameraCompatHint.setOnClickListener(
-                view -> setCameraCompatHintVisibility(/* show= */ false));
     }
 }

@@ -17,12 +17,12 @@
 # Test 4x4
 board: 4x4
 xxxx
-bbmm
+bbaa
 iimm
-iiaa
+iimm
 arguments: 0 2
 board: 4x4
 xxxx
-bbii
+bbaa
 mmii
-mmaa
+mmii

@@ -38,7 +38,7 @@ import android.window.SystemPerformanceHinter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.sysui.ShellInit;
 
 import java.io.PrintWriter;
@@ -102,6 +102,14 @@ public class RootTaskDisplayAreaOrganizer extends DisplayAreaOrganizer {
         }
     }
 
+    /** Unregisters the given listener associated to the given display. */
+    public void unregisterListener(int displayId, RootTaskDisplayAreaListener listener) {
+        final ArrayList<RootTaskDisplayAreaListener> listeners = mListeners.get(displayId);
+        if (listeners != null) {
+            listeners.remove(listener);
+        }
+    }
+
     public void unregisterListener(RootTaskDisplayAreaListener listener) {
         for (int i = mListeners.size() - 1; i >= 0; --i) {
             final List<RootTaskDisplayAreaListener> listeners = mListeners.valueAt(i);
@@ -113,6 +121,14 @@ public class RootTaskDisplayAreaOrganizer extends DisplayAreaOrganizer {
     public void attachToDisplayArea(int displayId, SurfaceControl.Builder b) {
         final SurfaceControl sc = mLeashes.get(displayId);
         b.setParent(sc);
+    }
+
+    /**
+     * Sets the layer of {@param sc} to be relative to the TDA on {@param displayId}.
+     */
+    public void relZToDisplayArea(int displayId, SurfaceControl sc, SurfaceControl.Transaction t,
+            int z) {
+        t.setRelativeLayer(sc, mLeashes.get(displayId), z);
     }
 
     /**
@@ -228,6 +244,11 @@ public class RootTaskDisplayAreaOrganizer extends DisplayAreaOrganizer {
     @Nullable
     public DisplayAreaInfo getDisplayAreaInfo(int displayId) {
         return mDisplayAreasInfo.get(displayId);
+    }
+
+    @Nullable
+    public SurfaceControl getDisplayAreaLeash(int displayId) {
+        return mLeashes.get(displayId);
     }
 
     /**

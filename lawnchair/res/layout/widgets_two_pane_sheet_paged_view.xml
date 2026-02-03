@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2023 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -35,45 +36,75 @@
                 android:id="@+id/primary_widgets_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
                 android:clipToPadding="false" />
 
             <com.android.launcher3.widget.picker.WidgetsRecyclerView
                 android:id="@+id/work_widgets_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
                 android:clipToPadding="false" />
 
         </com.android.launcher3.widget.picker.WidgetPagedView>
-
-        <!-- SearchAndRecommendationsView without the tab layout as well -->
+        <!-- SearchAndRecommendationsView contains the tab layout as well -->
         <com.android.launcher3.views.StickyHeaderLayout
             android:id="@+id/search_and_recommendations_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/collapse_handle"
+            android:paddingBottom="0dp"
             android:clipToOutline="true"
             android:orientation="vertical">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="24sp"
+                android:layout_marginTop="24dp"
+                android:textColor="?attr/widgetPickerTitleColor"
+                android:text="@string/widget_button_text"/>
 
             <FrameLayout
                 android:id="@+id/search_bar_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/widgetPickerPrimarySurfaceColor"
-                android:clipToPadding="false"
                 android:elevation="0.1dp"
+                android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
+                android:background="?attr/widgetPickerPrimarySurfaceColor"
                 android:paddingBottom="8dp"
                 launcher:layout_sticky="true">
-
                 <include layout="@layout/widgets_search_bar" />
+
+                <ImageButton
+                    android:id="@+id/widget_picker_widget_options_menu"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/full_rounded_transparent_ripple"
+                    android:contentDescription="@string/widget_picker_widget_options_button_description"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_more_vert_dots"
+                    android:visibility="gone"
+                    android:tint="?attr/widgetPickerWidgetOptionsMenuColor" />
             </FrameLayout>
 
+            <!-- Shown when there are recommendations to display -->
             <LinearLayout
+                android:id="@+id/widget_recommendations_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/suggestions_header"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                android:background="?attr/widgetPickerPrimarySurfaceColor"
-                launcher:layout_sticky="true">
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/widgets_surface_background"
+                android:clipToOutline="true"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+                android:visibility="gone">
+                <include layout="@layout/widget_recommendations" />
             </LinearLayout>
 
             <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
@@ -82,8 +113,8 @@
                 android:layout_height="64dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:paddingVertical="8dp"
-                android:background="?attr/widgetPickerPrimarySurfaceColor"
+                android:paddingBottom="8dp"
+                android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
                 style="@style/TextHeadline"
                 launcher:layout_sticky="true">
 
@@ -112,7 +143,6 @@
                     android:textColor="@color/widget_picker_tab_text"
                     android:textSize="14sp"
                     style="?android:attr/borderlessButtonStyle" />
-
             </com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>
         </com.android.launcher3.views.StickyHeaderLayout>
     </FrameLayout>

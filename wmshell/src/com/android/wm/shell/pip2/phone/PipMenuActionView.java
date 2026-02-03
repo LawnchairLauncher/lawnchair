@@ -53,4 +53,9 @@ public class PipMenuActionView extends FrameLayout {
     public void setCustomCloseBackgroundVisibility(@Visibility int visibility) {
         mCustomCloseBackground.setVisibility(visibility);
     }
+
+    @Override
+    public CharSequence getAccessibilityClassName() {
+        return android.widget.Button.class.getName();
+    }
 }

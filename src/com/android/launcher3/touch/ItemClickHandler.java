@@ -15,8 +15,13 @@
  */
 package com.android.launcher3.touch;
 
+import static android.multiuser.Flags.enableMovingContentIntoPrivateSpace;
+
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_RECONFIGURE_APPWIDGET;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.Utilities.ATLEAST_BAKLAVA;
+import static com.android.launcher3.allapps.AlphabeticalAppsList.PRIVATE_SPACE_PACKAGE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_INSTALL_APP_BUTTON_TAP;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
@@ -46,7 +51,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -67,15 +71,13 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.views.FloatingIconView;
-import com.android.launcher3.views.Snackbar;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.widget.PendingAddShortcutInfo;
-import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -127,15 +129,6 @@ public class ItemClickHandler {
             }
         } else if (tag instanceof ItemClickProxy) {
             ((ItemClickProxy) tag).onItemClicked(v);
-        } else if (tag instanceof PendingAddWidgetInfo) {
-            if (DEBUG) {
-                String targetPackage = ((PendingAddWidgetInfo) tag).getTargetPackage();
-                Log.d(TAG, "onClick: PendingAddWidgetInfo clicked for package=" + targetPackage);
-            }
-            CharSequence msg = Utilities.wrapForTts(
-                    launcher.getText(R.string.long_press_widget_to_add),
-                    launcher.getString(R.string.long_accessible_way_to_add));
-            Snackbar.show(launcher, msg, null);
         }
     }
 
@@ -168,7 +161,7 @@ public class ItemClickHandler {
         if (!isApp1Launchable || !isApp2Launchable) {
             // App pair is unlaunchable due to screen size.
             boolean isFoldable = InvariantDeviceProfile.INSTANCE.get(launcher)
-                    .supportedProfiles.stream().anyMatch(dp -> dp.isTwoPanels);
+                    .supportedProfiles.stream().anyMatch(dp -> dp.getDeviceProperties().isTwoPanels());
             Toast.makeText(launcher, isFoldable
                             ? R.string.app_pair_needs_unfold
                             : R.string.app_pair_unlaunchable_at_screen_size,
@@ -241,10 +234,9 @@ public class ItemClickHandler {
     private static void onClickPendingAppItem(View v, Launcher launcher, String packageName,
             boolean downloadStarted) {
         ItemInfo item = (ItemInfo) v.getTag();
-        CompletableFuture<SessionInfo> siFuture;
-        siFuture = CompletableFuture.supplyAsync(() ->
-                        InstallSessionHelper.INSTANCE.get(launcher)
-                                .getActiveSessionInfo(item.user, packageName),
+        CompletableFuture<SessionInfo> siFuture = CompletableFuture.supplyAsync(() ->
+                InstallSessionHelper.INSTANCE.get(launcher)
+                        .getActiveSessionInfo(item.user, packageName),
                 UI_HELPER_EXECUTOR);
         Consumer<SessionInfo> marketLaunchAction = sessionInfo -> {
             if (sessionInfo != null) {
@@ -258,8 +250,8 @@ public class ItemClickHandler {
                 }
             }
             // Fallback to using custom market intent.
-            Intent intent = ApiWrapper.INSTANCE.get(launcher).getAppMarketActivityIntent(
-                    packageName, Process.myUserHandle());
+            Intent intent = ApiWrapper.INSTANCE.get(launcher).getMarketSearchIntent(
+                    packageName, item.user);
             launcher.startActivitySafely(v, intent, item);
         };
 
@@ -371,9 +363,7 @@ public class ItemClickHandler {
         // Check for abandoned promise
         if ((v instanceof BubbleTextView) && shortcut.hasPromiseIconUi()
                 && (!Flags.enableSupportForArchiving() || !shortcut.isArchived())) {
-            String packageName = shortcut.getIntent().getComponent() != null
-                    ? shortcut.getIntent().getComponent().getPackageName()
-                    : shortcut.getIntent().getPackage();
+            String packageName = shortcut.getTargetPackage();
             if (!TextUtils.isEmpty(packageName)) {
                 onClickPendingAppItem(
                         v,
@@ -406,6 +396,28 @@ public class ItemClickHandler {
                         launcher.getAppsView().getPrivateProfileManager().getProfileUser());
                 launcher.getStatsLogManager().logger().log(
                         LAUNCHER_PRIVATE_SPACE_INSTALL_APP_BUTTON_TAP);
+            }
+        }
+
+        boolean enableMovingContentIntoPrivateSpace = false;
+        if (ATLEAST_BAKLAVA) {
+            try {
+                /* LC-Note: Some devices (Android 16 QPR) doesn't have or expose this flag to user.
+                 * Let's assume no, because (the flags) enableMovingContentIntoPrivateSpace seems
+                 * to be False for R8 by default.
+                 * */
+                enableMovingContentIntoPrivateSpace = enableMovingContentIntoPrivateSpace();
+            } catch (NoClassDefFoundError | NoSuchMethodError e) {
+                enableMovingContentIntoPrivateSpace = false;
+            }
+        }
+        if (enableMovingContentIntoPrivateSpace &&
+                Objects.equals(item.getTargetPackage(), PRIVATE_SPACE_PACKAGE)
+                && item.itemType != ITEM_TYPE_DEEP_SHORTCUT) {
+            // Only show the popup menu when clicking on the icon itself.
+            if (v instanceof BubbleTextView btv) {
+                btv.startLongPressAction();
+                return;
             }
         }
         if (intent == null) {

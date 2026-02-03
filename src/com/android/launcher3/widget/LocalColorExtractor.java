@@ -68,4 +68,9 @@ public class LocalColorExtractor implements ResourceBasedOverride {
     public SparseIntArray generateColorsOverride(WallpaperColors colors) {
         return null;
     }
+
+    /**
+     * Updates the base context to contain the colors override
+     */
+    public void applyColorsOverride(Context base, SparseIntArray override) { }
 }

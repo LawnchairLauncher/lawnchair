@@ -21,7 +21,7 @@
         <inset android:inset="4dp">
             <shape android:shape="rectangle">
                 <corners android:radius="@dimen/ps_lock_corner_radius" />
-                <solid android:color="?attr/materialColorPrimaryFixedDim" />
+                <solid android:color="@color/materialColorPrimaryFixedDim" />
                 <padding
                     android:left="@dimen/ps_lock_button_background_padding"
                     android:right="@dimen/ps_lock_button_background_padding" />

@@ -73,7 +73,27 @@ public final class SplitConfigurationOptions {
      */
     public static final int STAGE_TYPE_SIDE = 1;
 
-    @IntDef({STAGE_TYPE_UNDEFINED, STAGE_TYPE_MAIN, STAGE_TYPE_SIDE})
+    /**
+     * Position independent stage identifier for a given Stage
+     */
+    public static final int STAGE_TYPE_A = 2;
+    /**
+     * Position independent stage identifier for a given Stage
+     */
+    public static final int STAGE_TYPE_B = 3;
+    /**
+     * Position independent stage identifier for a given Stage
+     */
+    public static final int STAGE_TYPE_C = 4;
+
+    @IntDef({
+            STAGE_TYPE_UNDEFINED,
+            STAGE_TYPE_MAIN,
+            STAGE_TYPE_SIDE,
+            STAGE_TYPE_A,
+            STAGE_TYPE_B,
+            STAGE_TYPE_C
+    })
     public @interface StageType {}
     ///////////////////////////////////
 
@@ -94,104 +114,12 @@ public final class SplitConfigurationOptions {
         }
     }
 
-    /**
-     * NOTE: Engineers complained about too little ambiguity in the last survey, so there is a class
-     * with the same name/functionality in wm.shell.util (which launcher3 cannot be built against)
-     *
-     * If you make changes here, consider making the same changes there
-     * TODO(b/254378592): We really need to consolidate this
-     */
-    public static class SplitBounds {
-        public final Rect leftTopBounds;
-        public final Rect rightBottomBounds;
-        /** This rect represents the actual gap between the two apps */
-        public final Rect visualDividerBounds;
-        // This class is orientation-agnostic, so we compute both for later use
-        public final float topTaskPercent;
-        public final float leftTaskPercent;
-        public final float dividerWidthPercent;
-        public final float dividerHeightPercent;
-        public final int snapPosition;
-
-        /**
-         * If {@code true}, that means at the time of creation of this object, the
-         * split-screened apps were vertically stacked. This is useful in scenarios like
-         * rotation where the bounds won't change, but this variable can indicate what orientation
-         * the bounds were originally in
-         */
-        public final boolean appsStackedVertically;
-        /**
-         * If {@code true}, that means at the time of creation of this object, the phone was in
-         * seascape orientation. This is important on devices with insets, because they do not split
-         * evenly -- one of the insets must be slightly larger to account for the inset.
-         * From landscape, it is the leftTop task that expands slightly.
-         * From seascape, it is the rightBottom task that expands slightly.
-         */
-        public final boolean initiatedFromSeascape;
-        public final int leftTopTaskId;
-        public final int rightBottomTaskId;
-
-        public SplitBounds(Rect leftTopBounds, Rect rightBottomBounds, int leftTopTaskId,
-                int rightBottomTaskId, int snapPosition) {
-            this.leftTopBounds = leftTopBounds;
-            this.rightBottomBounds = rightBottomBounds;
-            this.leftTopTaskId = leftTopTaskId;
-            this.rightBottomTaskId = rightBottomTaskId;
-            this.snapPosition = snapPosition;
-
-            if (rightBottomBounds.top > leftTopBounds.top) {
-                // vertical apps, horizontal divider
-                this.visualDividerBounds = new Rect(leftTopBounds.left, leftTopBounds.bottom,
-                        leftTopBounds.right, rightBottomBounds.top);
-                appsStackedVertically = true;
-                initiatedFromSeascape = false;
-            } else {
-                // horizontal apps, vertical divider
-                this.visualDividerBounds = new Rect(leftTopBounds.right, leftTopBounds.top,
-                        rightBottomBounds.left, leftTopBounds.bottom);
-                appsStackedVertically = false;
-                // The following check is unreliable on devices without insets
-                // (initiatedFromSeascape will always be set to false.) This happens to be OK for
-                // all our current uses, but should be refactored.
-                // TODO: Create a more reliable check, or refactor how splitting works on devices
-                //  with insets.
-                if (rightBottomBounds.width() > leftTopBounds.width()) {
-                    initiatedFromSeascape = true;
-                } else {
-                    initiatedFromSeascape = false;
-                }
-            }
-
-            float totalWidth = rightBottomBounds.right - leftTopBounds.left;
-            float totalHeight = rightBottomBounds.bottom - leftTopBounds.top;
-            leftTaskPercent = leftTopBounds.width() / totalWidth;
-            topTaskPercent = leftTopBounds.height() / totalHeight;
-            dividerWidthPercent = visualDividerBounds.width() / totalWidth;
-            dividerHeightPercent = visualDividerBounds.height() / totalHeight;
-        }
-
-        @Override
-        public String toString() {
-            return "LeftTop: " + leftTopBounds + ", taskId: " + leftTopTaskId + "\n"
-                    + "RightBottom: " + rightBottomBounds + ", taskId: " + rightBottomTaskId +  "\n"
-                    + "Divider: " + visualDividerBounds + "\n"
-                    + "AppsVertical? " + appsStackedVertically + "\n"
-                    + "snapPosition: " + snapPosition;
-        }
-    }
-
     public static class SplitStageInfo {
         public int taskId = -1;
         @StagePosition
         public int stagePosition = STAGE_POSITION_UNDEFINED;
         @StageType
         public int stageType = STAGE_TYPE_UNDEFINED;
-
-        @Override
-        public String toString() {
-            return "SplitStageInfo { taskId=" + taskId
-                    + ", stagePosition=" + stagePosition + ", stageType=" + stageType + " }";
-        }
     }
 
     public static StatsLogManager.EventEnum getLogEventForPosition(@StagePosition int position) {
@@ -217,7 +145,7 @@ public final class SplitConfigurationOptions {
         private Drawable drawable;
         public final Intent intent;
         public final SplitPositionOption position;
-        public final ItemInfo itemInfo;
+        private ItemInfo itemInfo;
         public final StatsLogManager.EventEnum splitEvent;
         /** Represents the taskId of the first app to start in split screen */
         public int alreadyRunningTaskId = INVALID_TASK_ID;
@@ -244,6 +172,10 @@ public final class SplitConfigurationOptions {
 
         public View getView() {
             return view;
+        }
+
+        public ItemInfo getItemInfo() {
+            return itemInfo;
         }
     }
 }

@@ -18,6 +18,8 @@ package com.android.wm.shell.activityembedding;
 
 
 import static android.app.ActivityOptions.ANIM_CUSTOM;
+import static android.view.WindowManager.TRANSIT_CHANGE;
+import static android.window.TransitionInfo.AnimationOptions.DEFAULT_ANIMATION_RESOURCES_ID;
 
 import static com.android.internal.policy.TransitionAnimation.WALLPAPER_TRANSITION_NONE;
 import static com.android.wm.shell.transition.TransitionAnimationHelper.loadAttributeAnimation;
@@ -27,6 +29,8 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.graphics.Rect;
+import android.util.Log;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -38,11 +42,9 @@ import android.view.animation.TranslateAnimation;
 import android.window.TransitionInfo;
 
 import com.android.internal.policy.TransitionAnimation;
-import com.android.window.flags.Flags;
 import com.android.wm.shell.shared.TransitionUtil;
 
 /** Animation spec for ActivityEmbedding transition. */
-// TODO(b/206557124): provide an easier way to customize animation
 class ActivityEmbeddingAnimationSpec {
 
     private static final String TAG = "ActivityEmbeddingAnimSpec";
@@ -93,6 +95,11 @@ class ActivityEmbeddingAnimationSpec {
     @NonNull
     Animation createChangeBoundsOpenAnimation(@NonNull TransitionInfo.Change change,
             @NonNull Rect parentBounds) {
+        final Animation customAnimation =
+                loadCustomAnimation(change.getAnimationOptions(), TRANSIT_CHANGE);
+        if (customAnimation != null) {
+            return customAnimation;
+        }
         // Use end bounds for opening.
         final Rect bounds = change.getEndAbsBounds();
         final int startLeft;
@@ -121,6 +128,11 @@ class ActivityEmbeddingAnimationSpec {
     @NonNull
     Animation createChangeBoundsCloseAnimation(@NonNull TransitionInfo.Change change,
             @NonNull Rect parentBounds) {
+        final Animation customAnimation =
+                loadCustomAnimation(change.getAnimationOptions(), TRANSIT_CHANGE);
+        if (customAnimation != null) {
+            return customAnimation;
+        }
         // Use start bounds for closing.
         final Rect bounds = change.getStartAbsBounds();
         final int endTop;
@@ -153,6 +165,14 @@ class ActivityEmbeddingAnimationSpec {
     @NonNull
     Animation[] createChangeBoundsChangeAnimations(@NonNull TransitionInfo.Change change,
             @NonNull Rect parentBounds) {
+        // TODO(b/293658614): Support more complicated animations that may need more than a noop
+        // animation as the start leash.
+        final Animation noopAnimation = createNoopAnimation(change);
+        final Animation customAnimation =
+                loadCustomAnimation(change.getAnimationOptions(), TRANSIT_CHANGE);
+        if (customAnimation != null) {
+            return new Animation[]{noopAnimation, customAnimation};
+        }
         // Both start bounds and end bounds are in screen coordinates. We will post translate
         // to the local coordinates in ActivityEmbeddingAnimationAdapter#onAnimationUpdate
         final Rect startBounds = change.getStartAbsBounds();
@@ -203,7 +223,8 @@ class ActivityEmbeddingAnimationSpec {
     Animation loadOpenAnimation(@NonNull TransitionInfo info,
             @NonNull TransitionInfo.Change change, @NonNull Rect wholeAnimationBounds) {
         final boolean isEnter = TransitionUtil.isOpeningType(change.getMode());
-        final Animation customAnimation = loadCustomAnimation(info, change, isEnter);
+        final Animation customAnimation =
+                loadCustomAnimation(change.getAnimationOptions(), change.getMode());
         final Animation animation;
         if (customAnimation != null) {
             animation = customAnimation;
@@ -230,7 +251,8 @@ class ActivityEmbeddingAnimationSpec {
     Animation loadCloseAnimation(@NonNull TransitionInfo info,
             @NonNull TransitionInfo.Change change, @NonNull Rect wholeAnimationBounds) {
         final boolean isEnter = TransitionUtil.isOpeningType(change.getMode());
-        final Animation customAnimation = loadCustomAnimation(info, change, isEnter);
+        final Animation customAnimation =
+                loadCustomAnimation(change.getAnimationOptions(), change.getMode());
         final Animation animation;
         if (customAnimation != null) {
             animation = customAnimation;
@@ -262,19 +284,31 @@ class ActivityEmbeddingAnimationSpec {
     }
 
     @Nullable
-    private Animation loadCustomAnimation(@NonNull TransitionInfo info,
-            @NonNull TransitionInfo.Change change, boolean isEnter) {
-        final TransitionInfo.AnimationOptions options;
-        if (Flags.moveAnimationOptionsToChange()) {
-            options = change.getAnimationOptions();
-        } else {
-            options = info.getAnimationOptions();
-        }
+    Animation loadCustomAnimation(@Nullable TransitionInfo.AnimationOptions options,
+            @WindowManager.TransitionType int mode) {
         if (options == null || options.getType() != ANIM_CUSTOM) {
             return null;
         }
-        final Animation anim = mTransitionAnimation.loadAnimationRes(options.getPackageName(),
-                isEnter ? options.getEnterResId() : options.getExitResId());
+        final int resId;
+        if (TransitionUtil.isOpeningType(mode)) {
+            resId = options.getEnterResId();
+        } else if (TransitionUtil.isClosingType(mode)) {
+            resId = options.getExitResId();
+        } else if (mode == TRANSIT_CHANGE) {
+            resId = options.getChangeResId();
+        } else {
+            Log.w(TAG, "Unknown transit type:" + mode);
+            resId = DEFAULT_ANIMATION_RESOURCES_ID;
+        }
+        // Use the default animation if the resources ID is not specified.
+        if (resId == DEFAULT_ANIMATION_RESOURCES_ID) {
+            return null;
+        }
+
+        final Animation anim;
+        // TODO(b/293658614): Consider allowing custom animations from non-default packages.
+        // Enforce limiting to animations from the default "android" package for now.
+        anim = mTransitionAnimation.loadDefaultAnimationRes(resId);
         if (anim != null) {
             return anim;
         }

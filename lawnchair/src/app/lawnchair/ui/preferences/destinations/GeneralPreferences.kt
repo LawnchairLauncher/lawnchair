@@ -43,7 +43,6 @@ import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
-import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -51,8 +50,10 @@ import app.lawnchair.ui.preferences.components.notificationDotsEnabled
 import app.lawnchair.ui.preferences.components.notificationServiceEnabled
 import app.lawnchair.ui.preferences.navigation.GeneralIconPack
 import app.lawnchair.ui.preferences.navigation.GeneralIconShape
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.patrykmichalik.opto.core.firstBlocking
 
 @Composable
 fun GeneralPreferences() {
@@ -90,34 +91,57 @@ fun GeneralPreferences() {
         label = stringResource(id = R.string.general_label),
     ) {
         PreferenceGroup {
-            SwitchPreference(
-                adapter = prefs.allowRotation.getAdapter(),
-                label = stringResource(id = R.string.home_screen_rotation_label),
-                description = stringResource(id = R.string.home_screen_rotation_description),
-            )
+            Item {
+                SwitchPreference(
+                    adapter = prefs.allowRotation.getAdapter(),
+                    label = stringResource(id = R.string.home_screen_rotation_label),
+                    description = stringResource(id = R.string.home_screen_rotation_description),
+                )
+            }
+        }
+        if (BuildConfig.APPLICATION_ID.contains("nightly")) {
+            PreferenceGroup(heading = stringResource(id = R.string.updater)) {
+                Item {
+                    SwitchPreference(
+                        adapter = prefs2.autoUpdaterNightly.getAdapter(),
+                        label = stringResource(id = R.string.auto_updater_label),
+                        description = stringResource(id = R.string.auto_updater_description),
+                    )
+                }
+            }
         }
         ExpandAndShrink(visible = prefs2.enableFontSelection.asState().value) {
             PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
-                FontPreference(
-                    fontPref = prefs.fontWorkspace,
-                    label = stringResource(R.string.fontWorkspace),
-                )
-                FontPreference(
-                    fontPref = prefs.fontHeading,
-                    label = stringResource(R.string.fontHeading),
-                )
-                FontPreference(
-                    fontPref = prefs.fontHeadingMedium,
-                    label = stringResource(R.string.fontHeadingMedium),
-                )
-                FontPreference(
-                    fontPref = prefs.fontBody,
-                    label = stringResource(R.string.fontBody),
-                )
-                FontPreference(
-                    fontPref = prefs.fontBodyMedium,
-                    label = stringResource(R.string.fontBodyMedium),
-                )
+                Item {
+                    FontPreference(
+                        fontPref = prefs.fontWorkspace,
+                        label = stringResource(R.string.fontWorkspace),
+                    )
+                }
+                Item {
+                    FontPreference(
+                        fontPref = prefs.fontHeading,
+                        label = stringResource(R.string.fontHeading),
+                    )
+                }
+                Item {
+                    FontPreference(
+                        fontPref = prefs.fontHeadingMedium,
+                        label = stringResource(R.string.fontHeadingMedium),
+                    )
+                }
+                Item {
+                    FontPreference(
+                        fontPref = prefs.fontBody,
+                        label = stringResource(R.string.fontBody),
+                    )
+                }
+                Item {
+                    FontPreference(
+                        fontPref = prefs.fontBodyMedium,
+                        label = stringResource(R.string.fontBodyMedium),
+                    )
+                }
             }
         }
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
@@ -127,37 +151,50 @@ fun GeneralPreferences() {
             description = stringResource(id = (R.string.adaptive_icon_background_description)),
             showDescription = wrapAdaptiveIcons.state.value,
         ) {
-            NavigationActionPreference(
-                label = stringResource(id = R.string.icon_style_label),
-                destination = GeneralIconPack,
-                subtitle = iconStyleSubtitle,
-            )
-            ExpandAndShrink(visible = themedIconsEnabled) {
+            Item {
+                NavigationActionPreference(
+                    label = stringResource(id = R.string.icon_style_label),
+                    destination = GeneralIconPack,
+                    subtitle = iconStyleSubtitle,
+                )
+            }
+            Item(
+                "themed_icon",
+                themedIconsEnabled,
+            ) {
                 SwitchPreference(
                     adapter = prefs.transparentIconBackground.getAdapter(),
                     label = stringResource(id = R.string.transparent_background_icons_label),
                     description = stringResource(id = R.string.transparent_background_icons_description),
                 )
             }
-            NavigationActionPreference(
-                label = stringResource(id = R.string.icon_shape_label),
-                destination = GeneralIconShape,
-                subtitle = iconShapeSubtitle,
-                endWidget = {
-                    IconShapePreview(iconShape = iconShapeAdapter.state.value)
-                },
-            )
-            SwitchPreference(
-                adapter = wrapAdaptiveIcons,
-                label = stringResource(id = R.string.auto_adaptive_icons_label),
-                description = stringResource(id = R.string.auto_adaptive_icons_description),
-            )
-            SwitchPreference(
-                adapter = prefs.shadowBGIcons.getAdapter(),
-                label = stringResource(id = R.string.shadow_bg_icons_label),
-            )
-
-            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
+            Item {
+                NavigationActionPreference(
+                    label = stringResource(id = R.string.icon_shape_label),
+                    destination = GeneralIconShape(ShapeRoute.APP_SHAPE),
+                    subtitle = iconShapeSubtitle,
+                    endWidget = {
+                        IconShapePreview(iconShape = iconShapeAdapter.state.value)
+                    },
+                )
+            }
+            Item {
+                SwitchPreference(
+                    adapter = wrapAdaptiveIcons,
+                    label = stringResource(id = R.string.auto_adaptive_icons_label),
+                    description = stringResource(id = R.string.auto_adaptive_icons_description),
+                )
+            }
+            Item {
+                SwitchPreference(
+                    adapter = prefs.shadowBGIcons.getAdapter(),
+                    label = stringResource(id = R.string.shadow_bg_icons_label),
+                )
+            }
+            Item(
+                "wrap_adaptive_icons",
+                wrapAdaptiveIcons.state.value,
+            ) {
                 SliderPreference(
                     label = stringResource(id = R.string.background_lightness_label),
                     adapter = prefs.coloredBackgroundLightness.getAdapter(),
@@ -168,38 +205,54 @@ fun GeneralPreferences() {
             }
         }
 
+        val accentColorAdapter = prefs2.accentColor.getAdapter()
+        val showColorStyle = !(Utilities.ATLEAST_S && accentColorAdapter.state.value == ColorOption.SystemAccent) ||
+            !Utilities.ATLEAST_S
+
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
-            ThemePreference()
-            ColorPreference(preference = prefs2.accentColor)
-            if (Utilities.ATLEAST_S && prefs2.accentColor.getAdapter().state.value == ColorOption.SystemAccent) {
-                if (!Utilities.ATLEAST_S) {
-                    ColorStylePreference(prefs2.colorStyle.getAdapter())
-                }
-            } else {
-                ColorStylePreference(prefs2.colorStyle.getAdapter())
-            }
+            Item { ThemePreference() }
+            Item { ColorPreference(preference = prefs2.accentColor) }
+            Item(
+                "color_style",
+                showColorStyle,
+            ) { ColorStylePreference(prefs2.colorStyle.getAdapter()) }
         }
 
+        val notificationEnabled by remember { notificationDotsEnabled(context) }.collectAsStateWithLifecycle(initialValue = false)
+        val serviceEnabled = notificationServiceEnabled()
+        val showNotificationCountAdapter = prefs2.showNotificationCount.getAdapter()
+        val showNotificationCount = showNotificationCountAdapter.state.value
+        val dotColor = prefs2.notificationDotColor.asState().value
+        val dotTextColor = prefs2.notificationDotTextColor.asState().value
+
         PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
-            val enabled by remember { notificationDotsEnabled(context) }.collectAsStateWithLifecycle(initialValue = false)
-            val serviceEnabled = notificationServiceEnabled()
-            NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
-            if (enabled && serviceEnabled) {
-                val showNotificationCountAdapter = prefs2.showNotificationCount.getAdapter()
-                ColorPreference(preference = prefs2.notificationDotColor)
+            Item { NotificationDotsPreference(enabled = notificationEnabled, serviceEnabled = serviceEnabled) }
+            val canDisplayNotificationDot = notificationEnabled && serviceEnabled
+            Item(
+                "notification_dot_color",
+                canDisplayNotificationDot,
+            ) { ColorPreference(preference = prefs2.notificationDotColor) }
+            Item(
+                "notification_dot_counter_toggle",
+                canDisplayNotificationDot,
+            ) {
                 SwitchPreference(
                     adapter = showNotificationCountAdapter,
                     label = stringResource(id = R.string.show_notification_count),
                 )
-                ExpandAndShrink(visible = showNotificationCountAdapter.state.value) {
-                    DividerColumn {
-                        ColorPreference(preference = prefs2.notificationDotTextColor)
-                        NotificationDotColorContrastWarnings(
-                            dotColor = prefs2.notificationDotColor.asState().value,
-                            dotTextColor = prefs2.notificationDotTextColor.asState().value,
-                        )
-                    }
-                }
+            }
+            Item(
+                "notification_dot_text_color",
+                canDisplayNotificationDot && showNotificationCount,
+            ) { ColorPreference(preference = prefs2.notificationDotTextColor) }
+            Item(
+                "notification_dot_color_contrast_warning",
+                canDisplayNotificationDot && showNotificationCount,
+            ) {
+                NotificationDotColorContrastWarnings(
+                    dotColor = dotColor,
+                    dotTextColor = dotTextColor,
+                )
             }
         }
     }

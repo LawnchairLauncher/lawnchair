@@ -16,12 +16,18 @@
 
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.Utilities.dpToPx;
+
+import com.android.launcher3.graphics.ThemeManager;
+import com.android.launcher3.taskbar.customization.TaskbarIconSpecs;
+
 /**
  * Various utilities shared amongst the Taskbar's classes.
  */
 public final class Utilities {
 
-    private Utilities() {}
+    private Utilities() {
+    }
 
     /**
      * Sets drag, long-click, and split selection behavior on 1P and 3P launchers with Taskbar
@@ -35,5 +41,23 @@ public final class Utilities {
         controllers.taskbarAllAppsController.setDisallowLongClick(disallowLongClick);
         controllers.taskbarPopupController.setAllowInitialSplitSelection(
                 allowInitialSplitSelection);
+    }
+
+    /**
+     * Gives radius for Transient Taskbar based on selected Launcher Icon Shape.
+     * Transient Taskbar radius = (icon shape radius * icon size ratio) + padding.
+     *
+     * @return The radius for Transient Taskbar.
+     */
+    static float getShapedTaskbarRadius(TaskbarActivityContext activityContext) {
+        float taskbarIconSize =
+                activityContext.getTaskbarSpecsEvaluator().getTaskbarIconSize().getSize();
+        float maxIconSize = TaskbarIconSpecs.INSTANCE.getIconSize52dp().getSize();
+        float iconShapeRadius =
+                ThemeManager.INSTANCE.get(activityContext).getIconState().getShapeRadius();
+        float iconSizeRatio = taskbarIconSize / maxIconSize;
+        return dpToPx((iconShapeRadius * iconSizeRatio)
+                + TaskbarIconSpecs.INSTANCE.getDefaultTransientIconMargin().getSize(),
+                activityContext);
     }
 }

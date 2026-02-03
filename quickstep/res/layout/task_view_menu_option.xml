@@ -30,17 +30,19 @@
       android:layout_width="@dimen/system_shortcut_icon_size"
       android:layout_height="@dimen/system_shortcut_icon_size"
       android:layout_marginStart="@dimen/task_menu_option_start_margin"
-      android:layout_gravity="center_horizontal"
-      android:backgroundTint="?attr/materialColorOnSurface"/>
+      android:layout_gravity="center"
+      android:backgroundTint="@color/materialColorOnSurface"/>
 
     <TextView
         style="@style/BaseIcon"
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/task_menu_option_start_margin"
+        android:layout_marginStart="@dimen/task_menu_option_text_start_margin"
         android:textSize="14sp"
-        android:textColor="?attr/materialColorOnSurface"
-        android:focusable="false" />
+        android:textColor="@color/materialColorOnSurface"
+        android:focusable="false"
+        android:gravity="start|center_vertical"
+        android:ellipsize="end" />
 
 </LinearLayout>

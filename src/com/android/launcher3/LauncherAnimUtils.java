@@ -24,12 +24,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.util.IntProperty;
+import android.util.Property;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.launcher3.util.MultiScalePropertyFactory;
+import com.android.launcher3.views.ScrimColors;
+import com.android.launcher3.views.ScrimView;
 
 public class LauncherAnimUtils {
     /**
@@ -198,6 +201,19 @@ public class LauncherAnimUtils {
                         return Color.TRANSPARENT;
                     }
                     return ((ColorDrawable) view.getBackground()).getColor();
+                }
+            };
+
+    public static final Property<ScrimView, ScrimColors> SCRIM_COLORS =
+            new Property<ScrimView, ScrimColors>(ScrimColors.class, "scrimColors") {
+                @Override
+                public void set(ScrimView scrimView, ScrimColors scrimColors) {
+                    scrimView.setScrimColors(scrimColors);
+                }
+
+                @Override
+                public ScrimColors get(ScrimView scrimView) {
+                    return scrimView.getScrimColors();
                 }
             };
 

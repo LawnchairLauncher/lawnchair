@@ -37,6 +37,9 @@ public class MultiTranslateDelegate {
     public static final int INDEX_TASKBAR_ALIGNMENT_ANIM = 3;
     public static final int INDEX_TASKBAR_REVEAL_ANIM = 4;
     public static final int INDEX_TASKBAR_PINNING_ANIM = 5;
+    public static final int INDEX_NAV_BAR_ANIM = 6;
+    public static final int INDEX_BUBBLE_BAR_ANIM = 7;
+    public static final int INDEX_TASKBAR_APP_RUNNING_STATE_ANIM = 8;
 
     // Affect all items inside of a MultipageCellLayout
     public static final int INDEX_CELLAYOUT_MULTIPAGE_SPACING = 3;
@@ -47,7 +50,7 @@ public class MultiTranslateDelegate {
     // Specific for hotseat items when adjusting for bubbles
     public static final int INDEX_BUBBLE_ADJUSTMENT_ANIM = 3;
 
-    public static final int COUNT = 6;
+    public static final int COUNT = 9;
 
     private final MultiPropertyFactory<View> mTranslationX;
     private final MultiPropertyFactory<View> mTranslationY;

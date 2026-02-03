@@ -14,88 +14,149 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.wm.shell.windowdecor.CaptionMenuLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     android:id="@+id/maximize_menu"
-    style="?android:attr/buttonBarStyle"
-    android:layout_width="@dimen/desktop_mode_maximize_menu_width"
-    android:layout_height="@dimen/desktop_mode_maximize_menu_height"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:padding="16dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:background="@drawable/desktop_mode_maximize_menu_background"
     android:elevation="1dp">
 
     <LinearLayout
+        android:id="@+id/container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="16dp"
+        android:measureWithLargestChild="true"
+        android:gravity="center">
 
-        <Button
-            android:layout_width="94dp"
-            android:layout_height="60dp"
-            android:id="@+id/maximize_menu_maximize_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:stateListAnimator="@null"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp"
-            android:alpha="0"/>
-
-        <TextView
-            android:id="@+id/maximize_menu_maximize_window_text"
-            android:layout_width="94dp"
-            android:layout_height="18dp"
-            android:textSize="11sp"
-            android:layout_marginBottom="76dp"
-            android:gravity="center"
-            android:fontFamily="google-sans-text"
-            android:text="@string/desktop_mode_maximize_menu_maximize_text"
-            android:textColor="?androidprv:attr/materialColorOnSurface"
-            android:alpha="0"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
         <LinearLayout
-            android:id="@+id/maximize_menu_snap_menu_layout"
+            android:id="@+id/maximize_menu_immersive_toggle_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="4dp"
-            android:background="@drawable/desktop_mode_maximize_menu_layout_background"
-            android:layout_marginBottom="4dp"
-            android:alpha="0">
-            <Button
-                android:id="@+id/maximize_menu_snap_left_button"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="41dp"
-                android:layout_height="@dimen/desktop_mode_maximize_menu_button_height"
-                android:layout_marginRight="4dp"
-                android:background="@drawable/desktop_mode_maximize_menu_button_background"
-                android:stateListAnimator="@null"/>
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginHorizontal="4dp">
 
             <Button
-                android:id="@+id/maximize_menu_snap_right_button"
+                android:layout_width="108dp"
+                android:layout_height="60dp"
+                android:id="@+id/maximize_menu_immersive_toggle_button"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="41dp"
-                android:layout_height="@dimen/desktop_mode_maximize_menu_button_height"
-                android:background="@drawable/desktop_mode_maximize_menu_button_background"
-                android:stateListAnimator="@null"/>
+                android:stateListAnimator="@null"
+                android:importantForAccessibility="yes"
+                android:contentDescription="@string/desktop_mode_maximize_menu_immersive_button_text"
+                android:layout_marginBottom="4dp"
+                android:alpha="0"/>
+
+            <TextView
+                android:id="@+id/maximize_menu_immersive_toggle_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:lineHeight="16sp"
+                android:gravity="center"
+                android:fontFamily="google-sans-text"
+                android:textFontWeight="500"
+                android:importantForAccessibility="no"
+                android:text="@string/desktop_mode_maximize_menu_immersive_button_text"
+                android:textColor="?android:attr/textColorPrimary"
+                android:singleLine="true"
+                android:alpha="0"/>
         </LinearLayout>
-        <TextView
-            android:id="@+id/maximize_menu_snap_window_text"
-            android:layout_width="94dp"
-            android:layout_height="18dp"
-            android:textSize="11sp"
-            android:layout_marginBottom="76dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:fontFamily="google-sans-text"
-            android:text="@string/desktop_mode_maximize_menu_snap_text"
-            android:textColor="?androidprv:attr/materialColorOnSurface"
-            android:alpha="0"/>
-    </LinearLayout>
-</LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/maximize_menu_size_toggle_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginHorizontal="4dp">
+
+            <Button
+                android:layout_width="108dp"
+                android:layout_height="60dp"
+                android:id="@+id/maximize_menu_size_toggle_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:stateListAnimator="@null"
+                android:importantForAccessibility="yes"
+                android:contentDescription="@string/desktop_mode_maximize_menu_maximize_button_text"
+                android:layout_marginBottom="4dp"
+                android:alpha="0"/>
+
+            <TextView
+                android:id="@+id/maximize_menu_size_toggle_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:lineHeight="16sp"
+                android:gravity="center"
+                android:fontFamily="google-sans-text"
+                android:textFontWeight="500"
+                android:importantForAccessibility="no"
+                android:text="@string/desktop_mode_maximize_menu_maximize_text"
+                android:textColor="?android:attr/textColorPrimary"
+                android:singleLine="true"
+                android:alpha="0"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/maximize_menu_snap_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginHorizontal="4dp">
+            <LinearLayout
+                android:id="@+id/maximize_menu_snap_menu_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:background="@drawable/desktop_mode_maximize_menu_layout_background"
+                android:layout_marginBottom="4dp"
+                android:alpha="0">
+                <Button
+                    android:id="@+id/maximize_menu_snap_left_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="48dp"
+                    android:layout_height="@dimen/desktop_mode_maximize_menu_button_height"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/desktop_mode_maximize_menu_button_background"
+                    android:importantForAccessibility="yes"
+                    android:contentDescription="@string/desktop_mode_maximize_menu_snap_left_button_text"
+                    android:stateListAnimator="@null"/>
+
+                <Button
+                    android:id="@+id/maximize_menu_snap_right_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="48dp"
+                    android:layout_height="@dimen/desktop_mode_maximize_menu_button_height"
+                    android:background="@drawable/desktop_mode_maximize_menu_button_background"
+                    android:importantForAccessibility="yes"
+                    android:contentDescription="@string/desktop_mode_maximize_menu_snap_right_button_text"
+                    android:stateListAnimator="@null"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/maximize_menu_snap_window_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:lineHeight="16sp"
+                android:gravity="center"
+                android:importantForAccessibility="no"
+                android:fontFamily="google-sans-text"
+                android:textFontWeight="500"
+                android:text="@string/desktop_mode_maximize_menu_snap_text"
+                android:textColor="?android:attr/textColorPrimary"
+                android:singleLine="true"
+                android:alpha="0"/>
+        </LinearLayout>
+    </LinearLayout>
+</com.android.wm.shell.windowdecor.CaptionMenuLayout>

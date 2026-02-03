@@ -16,7 +16,6 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
-import static com.android.launcher3.Utilities.SHOULD_SHOW_FIRST_PAGE_WIDGET;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.content.ContentValues;
@@ -35,12 +34,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import app.lawnchair.preferences2.PreferenceManager2;
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
+import com.android.launcher3.BuildConfig;
+import com.android.launcher3.BuildConfigs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -52,10 +53,12 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
@@ -67,10 +70,8 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
         LayoutParserCallback {
 
     /**
-     * Represents the schema of the database. Changes in scheme need not be
-     * backwards compatible.
-     * When increasing the scheme version, ensure that downgrade_schema.json is
-     * updated
+     * Represents the schema of the database. Changes in scheme need not be backwards compatible.
+     * When increasing the scheme version, ensure that downgrade_schema.json is updated
      */
     public static final int SCHEMA_VERSION = 32;
     private static final String TAG = "DatabaseHelper";
@@ -81,8 +82,8 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     private final Context mContext;
     private final ToLongFunction<UserHandle> mUserSerialProvider;
     private final Runnable mOnEmptyDbCreateCallback;
+    private final AtomicInteger mMaxItemId = new AtomicInteger(-1);
 
-    private int mMaxItemId = -1;
     public boolean mHotseatRestoreTableExists;
 
     /**
@@ -97,25 +98,21 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     }
 
     protected void initIds() {
-        // In the case where neither onCreate nor onUpgrade gets called, we read the
-        // maxId from
+        // In the case where neither onCreate nor onUpgrade gets called, we read the maxId from
         // the DB here
-        if (mMaxItemId == -1) {
-            mMaxItemId = initializeMaxItemId(getWritableDatabase());
-        }
+        mMaxItemId.compareAndSet(-1, initializeMaxItemId(getWritableDatabase()));
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        if (LOGD)
-            Log.d(TAG, "creating new launcher database");
+        if (LOGD) Log.d(TAG, "creating new launcher database");
 
-        mMaxItemId = 1;
+        mMaxItemId.set(1);
 
         addTableToDb(db, getDefaultUserSerial(), false /* optional */);
 
         // Fresh and clean launcher DB.
-        mMaxItemId = initializeMaxItemId(db);
+        mMaxItemId.set(initializeMaxItemId(db));
         mOnEmptyDbCreateCallback.run();
     }
 
@@ -142,11 +139,9 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     }
 
     /**
-     * One-time data updated before support of onDowngrade was added. This update is
-     * backwards
+     * One-time data updated before support of onDowngrade was added. This update is backwards
      * compatible and can safely be run multiple times.
-     * Note: No new logic should be added here after release, as the new logic might
-     * not get
+     * Note: No new logic should be added here after release, as the new logic might not get
      * executed on an existing device.
      * TODO: Move this to db upgrade path, once the downgrade path is released.
      */
@@ -264,7 +259,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                         Favorites.SCREEN, IntArray.wrap(-777, -778)), null);
             }
             case 30: {
-                if (FeatureFlags.topQsbOnFirstScreenEnabled(mContext)) {
+                if (PreferenceExtensionsKt.firstBlocking(PreferenceManager2.INSTANCE.get(mContext).getEnableSmartspace())) {
                     // Clean up first row in screen 0 as it might contain junk data.
                     Log.d(TAG, "Cleaning up first row");
                     db.delete(Favorites.TABLE_NAME,
@@ -272,8 +267,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                                     "%1$s = %2$d AND %3$s = %4$d AND %5$s = %6$d",
                                     Favorites.SCREEN, 0,
                                     Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP,
-                                    Favorites.CELLY, 0),
-                            null);
+                                    Favorites.CELLY, 0), null);
                 }
             }
             case 31: {
@@ -316,8 +310,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     }
 
     /**
-     * Removes widgets which are registered to the Launcher's host, but are not
-     * present
+     * Removes widgets which are registered to the Launcher's host, but are not present
      * in our model.
      */
     public void removeGhostWidgets(SQLiteDatabase db) {
@@ -353,12 +346,13 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                         .mapToObj(String::valueOf)
                         .collect(Collectors.joining(",", "[", "]"));
                 final String allValidLauncherDbWidgetIds = Arrays.stream(
-                        validWidgets.getArray().toArray()).mapToObj(String::valueOf)
+                                validWidgets.getArray().toArray()).mapToObj(String::valueOf)
                         .collect(Collectors.joining(",", "[", "]"));
                 FileLog.d(TAG,
                         "One or more widgets was removed: "
                                 + " allLauncherHostWidgetIds=" + allLauncherHostWidgetIds
-                                + ", allValidLauncherDbWidgetIds=" + allValidLauncherDbWidgetIds);
+                                + ", allValidLauncherDbWidgetIds=" + allValidLauncherDbWidgetIds
+                );
             }
         } finally {
             holder.destroy();
@@ -366,21 +360,21 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     }
 
     /**
-     * Replaces all shortcuts of type {@link Favorites#ITEM_TYPE_SHORTCUT} which
-     * have a valid
+     * Replaces all shortcuts of type {@link Favorites#ITEM_TYPE_SHORTCUT} which have a valid
      * launcher activity target with {@link Favorites#ITEM_TYPE_APPLICATION}.
      */
     @Thunk
     void convertShortcutsToLauncherActivities(SQLiteDatabase db) {
         try (SQLiteTransaction t = new SQLiteTransaction(db);
-                // Only consider the primary user as other users can't have a shortcut.
-                Cursor c = db.query(Favorites.TABLE_NAME,
-                        new String[] { Favorites._ID, Favorites.INTENT },
-                        "itemType=" + Favorites.ITEM_TYPE_SHORTCUT
-                                + " AND profileId=" + getDefaultUserSerial(),
-                        null, null, null, null);
-                SQLiteStatement updateStmt = db.compileStatement("UPDATE favorites SET itemType="
-                        + Favorites.ITEM_TYPE_APPLICATION + " WHERE _id=?")) {
+             // Only consider the primary user as other users can't have a shortcut.
+             Cursor c = db.query(Favorites.TABLE_NAME,
+                     new String[]{Favorites._ID, Favorites.INTENT},
+                     "itemType=" + Favorites.ITEM_TYPE_SHORTCUT
+                             + " AND profileId=" + getDefaultUserSerial(),
+                     null, null, null, null);
+             SQLiteStatement updateStmt = db.compileStatement("UPDATE favorites SET itemType="
+                     + Favorites.ITEM_TYPE_APPLICATION + " WHERE _id=?")
+        ) {
             final int idIndex = c.getColumnIndexOrThrow(Favorites._ID);
             final int intentIndex = c.getColumnIndexOrThrow(Favorites.INTENT);
 
@@ -418,14 +412,14 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
 
             // Get a map for folder ID to folder width
             Cursor c = db.rawQuery("SELECT container, MAX(cellX) FROM favorites"
-                    + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
-                    + " GROUP BY container;",
-                    new String[] { Integer.toString(Favorites.ITEM_TYPE_FOLDER) });
+                            + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
+                            + " GROUP BY container;",
+                    new String[]{Integer.toString(Favorites.ITEM_TYPE_FOLDER)});
 
             while (c.moveToNext()) {
                 db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE "
-                        + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
-                        new Object[] { c.getLong(1) + 1, c.getLong(0) });
+                                + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
+                        new Object[]{c.getLong(1) + 1, c.getLong(0)});
             }
 
             c.close();
@@ -450,22 +444,17 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
         return true;
     }
 
-    // Generates a new ID to use for an object in your database. This method should
-    // be only
-    // called from the main UI thread. As an exception, we do call it when we call
-    // the
-    // constructor from the worker thread; however, this doesn't extend until after
-    // the
-    // constructor is called, and we only pass a reference to LauncherProvider to
-    // LauncherApp
+    // Generates a new ID to use for an object in your database. This method should be only
+    // called from the main UI thread. As an exception, we do call it when we call the
+    // constructor from the worker thread; however, this doesn't extend until after the
+    // constructor is called, and we only pass a reference to LauncherProvider to LauncherApp
     // after that point
     @Override
     public int generateNewItemId() {
-        if (mMaxItemId < 0) {
+        if (mMaxItemId.get() < 0) {
             throw new RuntimeException("Error: max item id was not initialized");
         }
-        mMaxItemId += 1;
-        return mMaxItemId;
+        return mMaxItemId.incrementAndGet();
     }
 
     /**
@@ -494,7 +483,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
 
     public void checkId(ContentValues values) {
         int id = values.getAsInteger(Favorites._ID);
-        mMaxItemId = Math.max(id, mMaxItemId);
+        mMaxItemId.accumulateAndGet(id, Math::max);
     }
 
     private int initializeMaxItemId(SQLiteDatabase db) {
@@ -503,8 +492,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     }
 
     /**
-     * Returns a new ID to use for a workspace screen in your database that is
-     * greater than all
+     * Returns a new ID to use for a workspace screen in your database that is greater than all
      * existing screen IDs
      */
     public int getNewScreenId() {
@@ -519,7 +507,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
         int count = loader.loadLayout(db);
 
         // Ensure that the max ids are initialized
-        mMaxItemId = initializeMaxItemId(db);
+        mMaxItemId.set(initializeMaxItemId(db));
         return count;
     }
 
@@ -537,8 +525,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
         } catch (IllegalArgumentException exception) {
             String message = exception.getMessage();
             if (message.contains("re-open") && message.contains("already-closed")) {
-                // Don't crash trying to end a transaction an an already closed DB. See
-                // b/173162852.
+                // Don't crash trying to end a transaction an an already closed DB. See b/173162852.
             } else {
                 throw exception;
             }

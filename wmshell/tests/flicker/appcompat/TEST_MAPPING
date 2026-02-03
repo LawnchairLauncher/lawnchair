@@ -1,0 +1,25 @@
+{
+  "wm-devices": [
+    {
+      "name": "WMShellFlickerTestsAppCompat-CatchAll"
+    },
+    {
+      "name": "WMShellFlickerTestsAppCompat-OpenAppInSizeCompatModeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsAppCompat-OpenTransparentActivityTest"
+    },
+    {
+      "name": "WMShellFlickerTestsAppCompat-QuickSwitchLauncherToLetterboxAppTest"
+    },
+    {
+      "name": "WMShellFlickerTestsAppCompat-RepositionFixedPortraitAppTest"
+    },
+    {
+      "name": "WMShellFlickerTestsAppCompat-RestartAppInSizeCompatModeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsAppCompat-RotateImmersiveAppInFullscreenTest"
+    }
+  ]
+}

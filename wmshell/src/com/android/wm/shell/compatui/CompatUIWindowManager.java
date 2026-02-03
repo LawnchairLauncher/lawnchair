@@ -16,32 +16,29 @@
 
 package com.android.wm.shell.compatui;
 
-import static android.app.CameraCompatTaskInfo.CAMERA_COMPAT_CONTROL_DISMISSED;
-import static android.app.CameraCompatTaskInfo.CAMERA_COMPAT_CONTROL_HIDDEN;
-import static android.app.CameraCompatTaskInfo.CAMERA_COMPAT_CONTROL_TREATMENT_APPLIED;
-import static android.app.CameraCompatTaskInfo.CAMERA_COMPAT_CONTROL_TREATMENT_SUGGESTED;
 import static android.view.WindowManager.LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP;
 import static android.window.TaskConstants.TASK_CHILD_LAYER_COMPAT_UI;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
-import android.app.CameraCompatTaskInfo.CameraCompatControlState;
 import android.app.TaskInfo;
 import android.content.Context;
 import android.graphics.Rect;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.SurfaceControl;
 import android.view.View;
+import android.window.DesktopModeFlags;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.window.flags.Flags;
 import com.android.wm.shell.R;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.common.DisplayLayout;
 import com.android.wm.shell.common.SyncTransactionQueue;
-import com.android.wm.shell.compatui.CompatUIController.CompatUICallback;
 import com.android.wm.shell.compatui.CompatUIController.CompatUIHintsState;
+import com.android.wm.shell.compatui.api.CompatUIEvent;
+import com.android.wm.shell.compatui.impl.CompatUIEvents.SizeCompatRestartButtonAppeared;
+import com.android.wm.shell.shared.desktopmode.DesktopState;
 
 import java.util.function.Consumer;
 
@@ -50,10 +47,13 @@ import java.util.function.Consumer;
  */
 class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
 
-    private final CompatUICallback mCallback;
+    @NonNull
+    private final Consumer<CompatUIEvent> mCallback;
 
+    @NonNull
     private final CompatUIConfiguration mCompatUIConfiguration;
 
+    @NonNull
     private final Consumer<Pair<TaskInfo, ShellTaskOrganizer.TaskListener>> mOnRestartButtonClicked;
 
     // Remember the last reported states in case visibility changes due to keyguard or IME updates.
@@ -61,10 +61,7 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
     boolean mHasSizeCompat;
 
     @VisibleForTesting
-    @CameraCompatControlState
-    int mCameraCompatControlState = CAMERA_COMPAT_CONTROL_HIDDEN;
-
-    @VisibleForTesting
+    @NonNull
     CompatUIHintsState mCompatUIHintsState;
 
     @Nullable
@@ -73,24 +70,35 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
 
     private final float mHideScmTolerance;
 
-    CompatUIWindowManager(Context context, TaskInfo taskInfo,
-            SyncTransactionQueue syncQueue, CompatUICallback callback,
-            ShellTaskOrganizer.TaskListener taskListener, DisplayLayout displayLayout,
-            CompatUIHintsState compatUIHintsState, CompatUIConfiguration compatUIConfiguration,
-            Consumer<Pair<TaskInfo, ShellTaskOrganizer.TaskListener>> onRestartButtonClicked) {
+    @NonNull
+    private final Rect mLayoutBounds = new Rect();
+
+    @NonNull
+    private final DesktopState mDesktopState;
+
+    CompatUIWindowManager(@NonNull Context context, @NonNull TaskInfo taskInfo,
+                          @NonNull SyncTransactionQueue syncQueue,
+                          @NonNull Consumer<CompatUIEvent> callback,
+                          @Nullable ShellTaskOrganizer.TaskListener taskListener,
+                          @Nullable DisplayLayout displayLayout,
+                          @NonNull CompatUIHintsState compatUIHintsState,
+                          @NonNull CompatUIConfiguration compatUIConfiguration,
+                          @NonNull Consumer<Pair<TaskInfo, ShellTaskOrganizer.TaskListener>>
+                                  onRestartButtonClicked,
+                          @NonNull DesktopState desktopState) {
         super(context, taskInfo, syncQueue, taskListener, displayLayout);
         mCallback = callback;
-        mHasSizeCompat = taskInfo.appCompatTaskInfo.topActivityInSizeCompat;
-        if (Flags.enableDesktopWindowingMode() && Flags.enableWindowingDynamicInitialBounds()) {
+        mHasSizeCompat = taskInfo.appCompatTaskInfo.isTopActivityInSizeCompat();
+        if (desktopState.canEnterDesktopMode()
+                && DesktopModeFlags.ENABLE_WINDOWING_DYNAMIC_INITIAL_BOUNDS.isTrue()) {
             // Don't show the SCM button for freeform tasks
             mHasSizeCompat &= !taskInfo.isFreeform();
         }
-        mCameraCompatControlState =
-                taskInfo.appCompatTaskInfo.cameraCompatTaskInfo.cameraCompatControlState;
         mCompatUIHintsState = compatUIHintsState;
         mCompatUIConfiguration = compatUIConfiguration;
         mOnRestartButtonClicked = onRestartButtonClicked;
         mHideScmTolerance = mCompatUIConfiguration.getHideSizeCompatRestartButtonTolerance();
+        mDesktopState = desktopState;
     }
 
     @Override
@@ -105,13 +113,13 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
 
     @Override
     protected void removeLayout() {
+        mLayoutBounds.setEmpty();
         mLayout = null;
     }
 
     @Override
     protected boolean eligibleToShowLayout() {
-        return (mHasSizeCompat && shouldShowSizeCompatRestartButton(getLastTaskInfo()))
-                || shouldShowCameraControl();
+        return mHasSizeCompat && shouldShowSizeCompatRestartButton(getLastTaskInfo());
     }
 
     @Override
@@ -122,7 +130,7 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
         updateVisibilityOfViews();
 
         if (mHasSizeCompat) {
-            mCallback.onSizeCompatRestartButtonAppeared(mTaskId);
+            mCallback.accept(new SizeCompatRestartButtonAppeared(mTaskId));
         }
 
         return mLayout;
@@ -138,21 +146,18 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
     public boolean updateCompatInfo(TaskInfo taskInfo, ShellTaskOrganizer.TaskListener taskListener,
             boolean canShow) {
         final boolean prevHasSizeCompat = mHasSizeCompat;
-        final int prevCameraCompatControlState = mCameraCompatControlState;
-        mHasSizeCompat = taskInfo.appCompatTaskInfo.topActivityInSizeCompat;
-        if (Flags.enableDesktopWindowingMode() && Flags.enableWindowingDynamicInitialBounds()) {
+        mHasSizeCompat = taskInfo.appCompatTaskInfo.isTopActivityInSizeCompat();
+        if (mDesktopState.canEnterDesktopMode()
+                && DesktopModeFlags.ENABLE_WINDOWING_DYNAMIC_INITIAL_BOUNDS.isTrue()) {
             // Don't show the SCM button for freeform tasks
             mHasSizeCompat &= !taskInfo.isFreeform();
         }
-        mCameraCompatControlState =
-                taskInfo.appCompatTaskInfo.cameraCompatTaskInfo.cameraCompatControlState;
 
         if (!super.updateCompatInfo(taskInfo, taskListener, canShow)) {
             return false;
         }
 
-        if (prevHasSizeCompat != mHasSizeCompat
-                || prevCameraCompatControlState != mCameraCompatControlState) {
+        if (prevHasSizeCompat != mHasSizeCompat) {
             updateVisibilityOfViews();
         }
 
@@ -164,34 +169,6 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
         mOnRestartButtonClicked.accept(Pair.create(getLastTaskInfo(), getTaskListener()));
     }
 
-    /** Called when the camera treatment button is clicked. */
-    void onCameraTreatmentButtonClicked() {
-        if (!shouldShowCameraControl()) {
-            Log.w(getTag(), "Camera compat shouldn't receive clicks in the hidden state.");
-            return;
-        }
-        // When a camera control is shown, only two states are allowed: "treament applied" and
-        // "treatment suggested". Clicks on the conrol's treatment button toggle between these
-        // two states.
-        mCameraCompatControlState =
-                mCameraCompatControlState == CAMERA_COMPAT_CONTROL_TREATMENT_SUGGESTED
-                        ? CAMERA_COMPAT_CONTROL_TREATMENT_APPLIED
-                        : CAMERA_COMPAT_CONTROL_TREATMENT_SUGGESTED;
-        mCallback.onCameraControlStateUpdated(mTaskId, mCameraCompatControlState);
-        mLayout.updateCameraTreatmentButton(mCameraCompatControlState);
-    }
-
-    /** Called when the camera dismiss button is clicked. */
-    void onCameraDismissButtonClicked() {
-        if (!shouldShowCameraControl()) {
-            Log.w(getTag(), "Camera compat shouldn't receive clicks in the hidden state.");
-            return;
-        }
-        mCameraCompatControlState = CAMERA_COMPAT_CONTROL_DISMISSED;
-        mCallback.onCameraControlStateUpdated(mTaskId, CAMERA_COMPAT_CONTROL_DISMISSED);
-        mLayout.setCameraControlVisibility(/* show= */ false);
-    }
-
     /** Called when the restart button is long clicked. */
     void onRestartButtonLongClicked() {
         if (mLayout == null) {
@@ -200,36 +177,30 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
         mLayout.setSizeCompatHintVisibility(/* show= */ true);
     }
 
-    /** Called when either dismiss or treatment camera buttons is long clicked. */
-    void onCameraButtonLongClicked() {
-        if (mLayout == null) {
+    @Override
+    @VisibleForTesting
+    public void updateSurfacePosition() {
+        updateLayoutBounds();
+        if (mLayoutBounds.isEmpty()) {
             return;
         }
-        mLayout.setCameraCompatHintVisibility(/* show= */ true);
+        updateSurfacePosition(mLayoutBounds.left, mLayoutBounds.top);
     }
 
     @Override
     @VisibleForTesting
-    public void updateSurfacePosition() {
-        if (mLayout == null) {
+    public void updateSurfacePosition(@NonNull SurfaceControl.Transaction tx) {
+        updateLayoutBounds();
+        if (mLayoutBounds.isEmpty()) {
             return;
         }
-        // Position of the button in the container coordinate.
-        final Rect taskBounds = getTaskBounds();
-        final Rect taskStableBounds = getTaskStableBounds();
-        final int positionX = getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
-                ? taskStableBounds.left - taskBounds.left
-                : taskStableBounds.right - taskBounds.left - mLayout.getMeasuredWidth();
-        final int positionY = taskStableBounds.bottom - taskBounds.top
-                - mLayout.getMeasuredHeight();
-        updateSurfacePosition(positionX, positionY);
+        updateSurfaceBounds(tx, mLayoutBounds);
     }
 
     @VisibleForTesting
     boolean shouldShowSizeCompatRestartButton(@NonNull TaskInfo taskInfo) {
         // Always show button if display is phone sized.
-        if (!Flags.allowHideScmButton() || taskInfo.configuration.smallestScreenWidthDp
-                < LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP) {
+        if (taskInfo.configuration.smallestScreenWidthDp < LARGE_SCREEN_SMALLEST_SCREEN_WIDTH_DP) {
             return true;
         }
 
@@ -255,7 +226,25 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
             return false;
         }
         final float percentageAreaOfLetterboxInTask = (float) letterboxArea / taskArea * 100;
+
         return percentageAreaOfLetterboxInTask < mHideScmTolerance;
+    }
+
+    private void updateLayoutBounds() {
+        if (mLayout == null) {
+            mLayoutBounds.setEmpty();
+            return;
+        }
+        // Position of the button in the container coordinate.
+        final Rect taskBounds = getTaskBounds();
+        final Rect taskStableBounds = getTaskStableBounds();
+        final int layoutWidth = mLayout.getMeasuredWidth();
+        final int layoutHeight = mLayout.getMeasuredHeight();
+        final int positionX = getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
+                ? taskStableBounds.left - taskBounds.left
+                : taskStableBounds.right - taskBounds.left - layoutWidth;
+        final int positionY = taskStableBounds.bottom - taskBounds.top - layoutHeight;
+        mLayoutBounds.set(positionX, positionY, positionX + layoutWidth, positionY + layoutHeight);
     }
 
     private void updateVisibilityOfViews() {
@@ -269,21 +258,5 @@ class CompatUIWindowManager extends CompatUIWindowManagerAbstract {
             mLayout.setSizeCompatHintVisibility(/* show= */ true);
             mCompatUIHintsState.mHasShownSizeCompatHint = true;
         }
-
-        // Camera control for stretched issues.
-        mLayout.setCameraControlVisibility(shouldShowCameraControl());
-        // Only show by default for the first time.
-        if (shouldShowCameraControl() && !mCompatUIHintsState.mHasShownCameraCompatHint) {
-            mLayout.setCameraCompatHintVisibility(/* show= */ true);
-            mCompatUIHintsState.mHasShownCameraCompatHint = true;
-        }
-        if (shouldShowCameraControl()) {
-            mLayout.updateCameraTreatmentButton(mCameraCompatControlState);
-        }
-    }
-
-    private boolean shouldShowCameraControl() {
-        return mCameraCompatControlState != CAMERA_COMPAT_CONTROL_HIDDEN
-                && mCameraCompatControlState != CAMERA_COMPAT_CONTROL_DISMISSED;
     }
 }

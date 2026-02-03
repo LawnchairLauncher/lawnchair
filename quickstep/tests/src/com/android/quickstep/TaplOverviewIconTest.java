@@ -15,20 +15,16 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
 import android.platform.test.annotations.PlatinumTest;
 
-import com.android.launcher3.tapl.OverviewTask.OverviewSplitTask;
+import com.android.launcher3.tapl.Overview;
+import com.android.launcher3.tapl.OverviewTask.OverviewTaskContainer;
 import com.android.launcher3.tapl.OverviewTaskMenu;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.launcher3.util.rule.TestStabilityRule;
+import com.android.quickstep.util.SplitScreenTestUtils;
 
 import org.junit.Test;
 
@@ -36,7 +32,7 @@ import org.junit.Test;
  * This test run in both Out of process (Oop) and in-process (Ipc).
  * Tests the app Icon in overview.
  */
-public class TaplOverviewIconTest extends AbstractLauncherUiTest<QuickstepLauncher> {
+public class TaplOverviewIconTest extends AbstractQuickStepTest {
 
     private static final String CALCULATOR_APP_PACKAGE =
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
@@ -69,41 +65,18 @@ public class TaplOverviewIconTest extends AbstractLauncherUiTest<QuickstepLaunch
     }
 
     @Test
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/288939273
     public void testSplitTaskTapBothIconMenus() {
-        createAndLaunchASplitPair();
+        Overview overview = SplitScreenTestUtils.createAndLaunchASplitPairInOverview(mLauncher);
 
-        OverviewTaskMenu taskMenu =
-                mLauncher.goHome().switchToOverview().getCurrentTask().tapMenu();
+        OverviewTaskMenu taskMenu = overview.getCurrentTask().tapMenu();
         assertTrue("App info item not appearing in expanded task menu.",
                 taskMenu.hasMenuItem("App info"));
         taskMenu.touchOutsideTaskMenuToDismiss();
 
-        OverviewTaskMenu splitMenu =
-                mLauncher.goHome().switchToOverview().getCurrentTask().tapMenu(
-                        OverviewSplitTask.SPLIT_BOTTOM_OR_RIGHT);
+        OverviewTaskMenu splitMenu = overview.getCurrentTask().tapMenu(
+                        OverviewTaskContainer.SPLIT_BOTTOM_OR_RIGHT);
         assertTrue("App info item not appearing in expanded split task's menu.",
                 splitMenu.hasMenuItem("App info"));
         splitMenu.touchOutsideTaskMenuToDismiss();
-    }
-
-    private void createAndLaunchASplitPair() {
-        clearAllRecentTasks();
-
-        startTestActivity(2);
-        startTestActivity(3);
-
-        if (mLauncher.isTablet() && !mLauncher.isGridOnlyOverviewEnabled()) {
-            mLauncher.goHome().switchToOverview().getOverviewActions()
-                    .clickSplit()
-                    .getTestActivityTask(2)
-                    .open();
-        } else {
-            mLauncher.goHome().switchToOverview().getCurrentTask()
-                    .tapMenu()
-                    .tapSplitMenuItem()
-                    .getCurrentTask()
-                    .open();
-        }
     }
 }

@@ -37,6 +37,7 @@ import com.android.launcher3.celllayout.board.WidgetRect;
 import com.android.launcher3.celllayout.testgenerator.RandomBoardGenerator;
 import com.android.launcher3.celllayout.testgenerator.RandomMultiBoardGenerator;
 import com.android.launcher3.util.ActivityContextWrapper;
+import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 import org.junit.Rule;
@@ -66,6 +67,9 @@ public class ReorderAlgorithmUnitTest {
 
     private static final int TOTAL_OF_CASES_GENERATED = 300;
     private Context mApplicationContext;
+
+    @Rule
+    public TestStabilityRule mTestStabilityRule = new TestStabilityRule();
 
     @Rule
     public UnitTestCellLayoutBuilderRule mCellLayoutBuilder = new UnitTestCellLayoutBuilderRule();
@@ -144,8 +148,8 @@ public class ReorderAlgorithmUnitTest {
 
     public ItemConfiguration solve(CellLayoutBoard board, int x, int y, int spanX,
             int spanY, int minSpanX, int minSpanY, boolean isMulti) {
-        CellLayout cl = mCellLayoutBuilder.createCellLayout(board.getWidth(), board.getHeight(),
-                isMulti);
+        CellLayout cl = mCellLayoutBuilder.createCellLayoutDefaultSize(board.getWidth(),
+                board.getHeight(), isMulti);
 
         // The views have to be sorted or the result can vary
         board.getIcons()

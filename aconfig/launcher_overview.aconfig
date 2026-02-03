@@ -1,0 +1,106 @@
+package: "com.android.launcher3"
+container: "system_ext"
+
+flag {
+    name: "enable_grid_only_overview"
+    namespace: "launcher_overview"
+    description: "Enable a grid-only overview without a focused task."
+    bug: "360204325"
+}
+
+flag {
+    name: "enable_overview_icon_menu"
+    namespace: "launcher_overview"
+    description: "Enable updated overview icon and menu within task."
+    bug: "360205084"
+}
+
+flag {
+    name: "enable_refactor_task_thumbnail"
+    namespace: "launcher_overview"
+    description: "Enables rewritten version of TaskThumbnailViews in Overview"
+    bug: "331754864"
+}
+
+flag {
+    name: "enable_coroutine_threading_improvements"
+    namespace: "launcher_overview"
+    description: "Enables changes to the threading model of Launcher's coroutines implementation"
+    bug: "416206104"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_large_desktop_windowing_tile"
+    namespace: "launcher_overview"
+    description: "Makes the desktop tiles larger and moves them to the front of the list in Overview."
+    bug: "357860832"
+}
+
+flag {
+    name: "enable_desktop_exploded_view"
+    namespace: "launcher_overview"
+    description: "Enables the non-overlapping layout for desktop windows in Overview mode."
+    bug: "378011776"
+}
+
+flag {
+    name: "enable_expressive_dismiss_task_motion"
+    namespace: "launcher_overview"
+    description: "Enables expressive motion and animations for dismissing a task in Overview."
+    bug: "381239462"
+}
+
+flag {
+    name: "enable_overview_on_connected_displays"
+    namespace: "launcher_overview"
+    description: "Enable overview on connected displays."
+    bug: "363251602"
+}
+
+flag {
+    name: "enable_overview_background_wallpaper_blur"
+    namespace: "launcher_overview"
+    description: "Enable wallpaper blur in overview."
+    bug: "360297985"
+}
+
+flag {
+    name: "enable_overview_desktop_tile_wallpaper_background"
+    namespace: "launcher_overview"
+    description: "Enable wallpaper background for desktop tasks in overview."
+    bug: "363257721"
+}
+
+flag {
+    name: "enable_refactor_digital_wellbeing_toast"
+    namespace: "launcher_overview"
+    description: "Enables rewritten version of digital wellbeing toast in overview."
+    bug: "404838605"
+}
+
+flag {
+    name: "enable_refactor_task_content_view"
+    namespace: "launcher_overview"
+    description: "Enables refactor wrapping TaskThumbnailView in a TaskContentView."
+    bug: "408971730"
+}
+
+flag {
+    name: "enable_desktop_menu_on_secondary_display_bugfix"
+    namespace: "launcher_overview"
+    description: "Enable the 'Desktop' menu entry on full screen tiles on secondary display."
+    bug:  "418822736"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_simultaneous_overview_trigger_on_extended_desktop"
+    namespace: "launcher_overview"
+    description: "Enable Overview to launch and exit simultaneously on default and external displays wherever it was triggered or quit from"
+    bug:  "421128035"
+}

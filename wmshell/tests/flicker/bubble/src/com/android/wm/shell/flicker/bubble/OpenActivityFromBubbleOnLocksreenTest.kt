@@ -100,14 +100,14 @@ class OpenActivityFromBubbleOnLocksreenTest(flicker: LegacyFlickerTest) :
     @Postsubmit
     @Test
     fun navBarLayerIsVisibleAtEnd() {
-        Assume.assumeFalse(flicker.scenario.isTablet)
+        Assume.assumeFalse(usesTaskbar)
         flicker.navBarLayerIsVisibleAtEnd()
     }
 
     @Postsubmit
     @Test
     fun navBarLayerPositionAtEnd() {
-        Assume.assumeFalse(flicker.scenario.isTablet)
+        Assume.assumeFalse(usesTaskbar)
         flicker.navBarLayerPositionAtEnd()
     }
 
@@ -154,7 +154,7 @@ class OpenActivityFromBubbleOnLocksreenTest(flicker: LegacyFlickerTest) :
     @Postsubmit
     @Test
     fun taskBarLayerIsVisibleAtEnd() {
-        Assume.assumeTrue(flicker.scenario.isTablet)
+        Assume.assumeTrue(usesTaskbar)
         flicker.assertLayersEnd { this.isVisible(ComponentNameMatcher.TASK_BAR) }
     }
 }

@@ -29,7 +29,6 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.Interpolator
 import android.window.OnBackInvokedDispatcher
 import androidx.core.view.updateLayoutParams
-import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE
 import com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE
 import com.android.app.animation.Interpolators.STANDARD
@@ -40,22 +39,20 @@ import com.android.launcher3.popup.RoundedArrowDrawable
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 
+import app.lawnchair.theme.color.tokens.ColorTokens
+
 private const val ENTER_DURATION_MS = 300L
 private const val EXIT_DURATION_MS = 150L
 
 /** Floating tooltip for Taskbar education. */
 class TaskbarEduTooltip
 @JvmOverloads
-constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-) : AbstractFloatingView(context, attrs, defStyleAttr) {
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    AbstractFloatingView(context, attrs, defStyleAttr) {
 
     private val activityContext: ActivityContext = ActivityContext.lookupContext(context)
 
-    private val backgroundColor =
-        ColorTokens.SurfaceBrightColor.resolveColor(getContext())
+    private val backgroundColor = ColorTokens.SurfaceBrightColor.resolveColor(getContext())
 
     private val tooltipCornerRadius = Themes.getDialogCornerRadius(context)
     private val arrowWidth = resources.getDimension(R.dimen.popup_arrow_width)
@@ -90,8 +87,8 @@ constructor(
         // constraint to reduce the number of lines of text and hopefully free up some height.
         activityContext.dragLayer.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
         if (
-            measuredHeight + activityContext.deviceProfile.taskbarHeight >=
-                activityContext.deviceProfile.availableHeightPx
+            measuredHeight + activityContext.deviceProfile.taskbarProfile.height >=
+                activityContext.deviceProfile.deviceProperties.availableHeightPx
         ) {
             updateLayoutParams { width = MATCH_PARENT }
         }
@@ -102,8 +99,8 @@ constructor(
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        content = requireViewById<android.widget.FrameLayout>(R.id.content)
-        arrow = requireViewById<View>(R.id.arrow)
+        content = requireViewById(R.id.content)
+        arrow = requireViewById(R.id.arrow)
         arrow.background =
             RoundedArrowDrawable(
                 arrowWidth,
@@ -151,6 +148,7 @@ constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        // Lawnchair-TODO-Merge: This was disabled but enabled in 16r2, this function likely disable the gesture system during edu
 //        findOnBackInvokedDispatcher()
 //            ?.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, this)
     }

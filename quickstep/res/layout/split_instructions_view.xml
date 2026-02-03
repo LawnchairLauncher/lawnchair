@@ -24,15 +24,23 @@
     android:paddingTop="@dimen/split_instructions_vertical_padding"
     android:paddingBottom="@dimen/split_instructions_vertical_padding"
     android:elevation="@dimen/split_instructions_elevation"
-    android:visibility="gone"
-    android:importantForAccessibility="yes">
+    android:visibility="gone">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/split_instructions_text"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:gravity="center"
         android:textColor="?attr/textColorOnAccent"
-        android:drawableEnd="@drawable/ic_split_exit"
-        android:drawablePadding="@dimen/split_instructions_drawable_padding"
-        android:text="@string/toast_split_select_app" />
+        android:text="@string/toast_split_select_app"
+        android:layout_weight="1" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/split_instructions_text_cancel"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textColor="?attr/textColorOnAccent"
+        android:layout_marginStart="@dimen/split_instructions_start_margin_cancel"
+        android:text="@string/toast_split_select_app_cancel"
+        android:textStyle="bold"
+        android:visibility="gone"/>
 </com.android.quickstep.views.SplitInstructionsView>

@@ -16,10 +16,10 @@
 package com.android.launcher3.widget;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
-import static com.android.launcher3.Flags.enableWidgetTapToAdd;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP;
+import static com.android.window.flags2.Flags.predictiveBackThreeButtonNav;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -46,7 +46,6 @@ import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemLongClickListener;
@@ -54,6 +53,7 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.AbstractSlideInView;
+import com.android.launcher3.widget.picker.model.WidgetPickerDataProvider.WidgetPickerDataChangeListener;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -64,7 +64,7 @@ import app.lawnchair.theme.color.tokens.ColorTokens;
  */
 public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         implements OnClickListener, OnLongClickListener,
-        PopupDataProvider.PopupDataChangeListener, Insettable, OnDeviceProfileChangeListener {
+        WidgetPickerDataChangeListener, Insettable, OnDeviceProfileChangeListener {
     /** The default number of cells that can fit horizontally in a widget sheet. */
     public static final int DEFAULT_MAX_HORIZONTAL_SPANS = 4;
 
@@ -80,10 +80,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     private boolean mDisableNavBarScrim = false;
 
-    @Nullable
-    private WidgetCell mWidgetCellWithAddButton = null;
-    @Nullable
-    private WidgetItem mLastSelectedWidgetItem = null;
+    @Nullable private WidgetCell mWidgetCellWithAddButton = null;
+    @Nullable private WidgetItem mLastSelectedWidgetItem = null;
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -95,8 +93,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     /**
-     * Returns the margins to be applied to the left and right of the widget apps
-     * list.
+     * Returns the margins to be applied to the left and right of the widget apps list.
      */
     protected int getWidgetListHorizontalMargin() {
         return getResources().getDimensionPixelSize(
@@ -113,14 +110,14 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         WindowInsets windowInsets = WindowManagerProxy.INSTANCE.get(getContext())
                 .normalizeWindowInsets(getContext(), getRootWindowInsets(), new Rect());
         mNavBarScrimHeight = getNavBarScrimHeight(windowInsets);
-        mActivityContext.getPopupDataProvider().setChangeListener(this);
+        mActivityContext.getWidgetPickerDataProvider().setChangeListener(this);
         mActivityContext.addOnDeviceProfileChangeListener(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mActivityContext.getPopupDataProvider().setChangeListener(null);
+        mActivityContext.getWidgetPickerDataProvider().setChangeListener(null);
         mActivityContext.removeOnDeviceProfileChangeListener(this);
     }
 
@@ -135,84 +132,90 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     @Override
+    public void setScaleY(float scaleY) {
+        super.setScaleY(scaleY);
+        try {
+            if (predictiveBackThreeButtonNav() && mNavBarScrimHeight > 0) {
+                // Call invalidate to prevent navbar scrim from scaling. The navbar scrim is drawn
+                // directly onto the canvas. To prevent it from being scaled with the canvas, there's a
+                // counter scale applied in dispatchDraw.
+                invalidate();
+            }
+        } catch (Throwable t) {
+            // LC-Ignored
+        }
+    }
+
+    @Override
     public final void onClick(View v) {
         WidgetCell wc;
         if (v instanceof WidgetCell view) {
             wc = view;
-        } else if (v.getParent() instanceof WidgetCell parent) {
+        }  else if (v.getParent() instanceof WidgetCell parent) {
             wc = parent;
         } else {
             return;
         }
 
-        if (enableWidgetTapToAdd()) {
-            scrollToWidgetCell(wc);
+        scrollToWidgetCell(wc);
 
-            if (mWidgetCellWithAddButton != null) {
-                if (mWidgetCellWithAddButton.isShowingAddButton()) {
-                    // If there is a add button currently showing, hide it.
-                    mWidgetCellWithAddButton.hideAddButton(/* animate= */ true);
-                } else {
-                    // The last recorded widget cell to show an add button is no longer showing it,
-                    // likely because the widget cell has been recycled or lost focus. If this is
-                    // the cell that has been clicked, we will show it below.
-                    mWidgetCellWithAddButton = null;
-                }
-            }
-
-            if (mWidgetCellWithAddButton != wc) {
-                // If click is on a cell not showing an add button, show it now.
-                final PendingAddItemInfo info = (PendingAddItemInfo) wc.getTag();
-                if (mActivityContext instanceof Launcher) {
-                    wc.showAddButton((view) -> addWidget(info));
-                } else {
-                    wc.showAddButton((view) -> mActivityContext.getItemOnClickListener()
-                            .onClick(wc));
-                }
-            }
-
-            mWidgetCellWithAddButton = mWidgetCellWithAddButton != wc ? wc : null;
-            if (mWidgetCellWithAddButton != null) {
-                mLastSelectedWidgetItem = mWidgetCellWithAddButton.getWidgetItem();
+        if (mWidgetCellWithAddButton != null) {
+            if (mWidgetCellWithAddButton.isShowingAddButton()) {
+                // If there is a add button currently showing, hide it.
+                mWidgetCellWithAddButton.hideAddButton(/* animate= */ true);
             } else {
-                mLastSelectedWidgetItem = null;
+                // The last recorded widget cell to show an add button is no longer showing it,
+                // likely because the widget cell has been recycled or lost focus. If this is
+                // the cell that has been clicked, we will show it below.
+                mWidgetCellWithAddButton = null;
             }
+        }
+
+        if (mWidgetCellWithAddButton != wc) {
+            // If click is on a cell not showing an add button, show it now.
+            final PendingAddItemInfo info = (PendingAddItemInfo) wc.getTag();
+            if (mActivityContext instanceof Launcher) {
+                wc.showAddButton((view) -> addWidget(info));
+            } else {
+                wc.showAddButton((view) -> mActivityContext.getItemOnClickListener()
+                        .onClick(wc));
+            }
+        }
+
+        mWidgetCellWithAddButton = mWidgetCellWithAddButton != wc ? wc : null;
+        if (mWidgetCellWithAddButton != null) {
+            mLastSelectedWidgetItem = mWidgetCellWithAddButton.getWidgetItem();
         } else {
-            mActivityContext.getItemOnClickListener().onClick(wc);
+            mLastSelectedWidgetItem = null;
         }
     }
 
     @Override
     protected float getShiftRange() {
-        // We add the extra height added during predictive back / swipe up to the shift
-        // range, so
+        // We add the extra height added during predictive back / swipe up to the shift range, so
         // that the idle interpolator knows to animate the view off fully.
         return mContent.getHeight() + getBottomOffsetPx();
     }
 
     /**
-     * Click handler for tap to add button. This handler assumes we are in the
-     * Launcher activity and
+     * Click handler for tap to add button. This handler assumes we are in the Launcher activity and
      * should not be used when the widget sheet is displayed elsewhere.
      */
     private void addWidget(@NonNull PendingAddItemInfo info) {
-        // Using a boolean flag here to make sure the callback is only run once. This
-        // should never
-        // happen because we close the sheet and it will be reconstructed the next time
-        // it is
+        // Using a boolean flag here to make sure the callback is only run once. This should never
+        // happen because we close the sheet and it will be reconstructed the next time it is
         // needed.
         final AtomicBoolean hasRun = new AtomicBoolean(false);
         addOnCloseListener(() -> {
-            if (hasRun.get())
-                return;
+            if (hasRun.get()) return;
             hasRun.set(true);
 
             // Going to NORMAL state will also dismiss the All Apps view if it is showing.
             Launcher launcher = Launcher.getLauncher(mActivityContext);
             launcher.getStateManager().goToState(NORMAL, forSuccessCallback(() -> {
                 launcher.getAccessibilityDelegate().addToWorkspace(info,
-                        /* accessibility= */ false,
-                        /* finishCallback= */ (success) -> {
+                        /*accessibility=*/ false,
+                        /*finishCallback=*/ (success) -> {
                             mActivityContext.getStatsLogManager()
                                     .logger()
                                     .withItemInfo(info)
@@ -224,8 +227,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     /**
-     * Scroll to show the widget cell. If both the bottom and top of the cell are
-     * clipped, this will
+     * Scroll to show the widget cell. If both the bottom and top of the cell are clipped, this will
      * prioritize showing the bottom of the cell (where the add button is).
      */
     private void scrollToWidgetCell(@NonNull WidgetCell wc) {
@@ -257,11 +259,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     /**
-     * Find the nearest scrollable container of the given WidgetCell, and scroll by
-     * the given
+     * Find the nearest scrollable container of the given WidgetCell, and scroll by the given
      * amount.
      */
     protected abstract void scrollCellContainerByY(WidgetCell wc, int scrollByY);
+
 
     /**
      * Return the top clip of any sticky headers over the given cell.
@@ -271,8 +273,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     /**
-     * Returns the component of the widget that is currently showing an add button,
-     * if any.
+     * Returns the component of the widget that is currently showing an add button, if any.
      */
     @Nullable
     protected WidgetItem getLastSelectedWidgetItem() {
@@ -303,8 +304,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        @Px
-        int contentHorizontalMargin = getWidgetListHorizontalMargin();
+        @Px int contentHorizontalMargin = getWidgetListHorizontalMargin();
         if (contentHorizontalMargin != mContentHorizontalMargin) {
             onContentHorizontalMarginChanged(contentHorizontalMargin);
             mContentHorizontalMargin = contentHorizontalMargin;
@@ -335,8 +335,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         super.dispatchDraw(canvas);
 
         if (mNavBarScrimHeight > 0) {
-            canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
-                    mNavBarScrimPaint);
+            float left = (getWidth() - getWidth() / getScaleX()) / 2;
+            float top = getHeight() / 2f + (getHeight() / 2f - mNavBarScrimHeight) / getScaleY();
+            canvas.drawRect(left, top, getWidth() / getScaleX(),
+                    top + mNavBarScrimHeight / getScaleY(), mNavBarScrimPaint);
         }
     }
 
@@ -344,14 +346,27 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     protected abstract void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx);
 
     /**
-     * Measures the dimension of this view and its children by taking system insets,
-     * navigation bar,
+     * Measures the dimension of this view and its children by taking system insets, navigation bar,
      * status bar, into account.
      */
     protected void doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthUsed = getInsetsWidth();
+
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        measureChildWithMargins(mContent, widthMeasureSpec,
+                widthUsed, heightMeasureSpec,
+                deviceProfile.getBottomSheetProfile().getBottomSheetTopPadding());
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec));
+    }
+
+    /**
+     * Returns the width used on left and right by the insets / padding.
+     */
+    protected int getInsetsWidth() {
         int widthUsed;
-        if (deviceProfile.isTablet) {
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        if (deviceProfile.getDeviceProperties().isTablet()) {
             widthUsed = Math.max(2 * getTabletHorizontalMargin(deviceProfile),
                     2 * (mInsets.left + mInsets.right));
         } else if (mInsets.bottom > 0) {
@@ -361,11 +376,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
             widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
         }
-
-        measureChildWithMargins(mContent, widthMeasureSpec,
-                widthUsed, heightMeasureSpec, deviceProfile.bottomSheetTopPadding);
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
+        return widthUsed;
     }
 
     /** Returns the horizontal margins to be applied to the widget sheet. **/
@@ -375,9 +386,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     @Override
     protected Interpolator getIdleInterpolator() {
-        return mActivityContext.getDeviceProfile().isTablet
-                ? EMPHASIZED
-                : super.getIdleInterpolator();
+        return mActivityContext.getDeviceProfile().getDeviceProperties().isTablet()
+                ? EMPHASIZED : super.getIdleInterpolator();
     }
 
     protected void onCloseComplete() {
@@ -394,7 +404,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         boolean isNavBarDark = Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark);
 
         // In light mode, landscape reverses navbar background color.
-        boolean isPhoneLandscape = !mActivityContext.getDeviceProfile().isTablet && mInsets.bottom == 0;
+        boolean isPhoneLandscape =
+                !mActivityContext.getDeviceProfile().getDeviceProperties().isTablet() && mInsets.bottom == 0;
         if (!isNavBarDark && isPhoneLandscape) {
             isNavBarDark = true;
         }

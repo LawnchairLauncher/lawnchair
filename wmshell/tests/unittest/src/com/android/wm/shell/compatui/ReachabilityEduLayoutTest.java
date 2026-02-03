@@ -16,6 +16,8 @@
 
 package com.android.wm.shell.compatui;
 
+import static com.android.window.flags2.Flags.FLAG_APP_COMPAT_UI_FRAMEWORK;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import android.app.TaskInfo;
+import android.platform.test.annotations.RequiresFlagsDisabled;
 import android.testing.AndroidTestingRunner;
 import android.testing.TestableLooper;
 import android.view.LayoutInflater;
@@ -74,6 +77,7 @@ public class ReachabilityEduLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testOnFinishInflate() {
         assertNotNull(mMoveUpButton);
         assertNotNull(mMoveDownButton);
@@ -82,6 +86,7 @@ public class ReachabilityEduLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void handleVisibility_educationNotEnabled_buttonsAreHidden() {
         mLayout.handleVisibility(/* horizontalEnabled */ false, /* verticalEnabled */
                 false, /* letterboxVerticalPosition */
@@ -94,6 +99,7 @@ public class ReachabilityEduLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void handleVisibility_horizontalEducationEnableduiConfigurationIsUpdated() {
         mLayout.handleVisibility(/* horizontalEnabled */ true, /* verticalEnabled */
                 false, /* letterboxVerticalPosition */ -1, /* letterboxHorizontalPosition */
@@ -106,6 +112,7 @@ public class ReachabilityEduLayoutTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void handleVisibility_verticalEducationEnabled_uiConfigurationIsUpdated() {
         mLayout.handleVisibility(/* horizontalEnabled */ false, /* verticalEnabled */
                 true, /* letterboxVerticalPosition */ 0, /* letterboxHorizontalPosition */

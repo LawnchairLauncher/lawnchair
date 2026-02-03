@@ -19,11 +19,15 @@ package com.android.systemui.log.core
 import android.util.Log
 
 /** Enum version of @Log.Level */
-enum class LogLevel(@Log.Level val nativeLevel: Int, val shortString: String) {
-    VERBOSE(Log.VERBOSE, "V"),
-    DEBUG(Log.DEBUG, "D"),
-    INFO(Log.INFO, "I"),
-    WARNING(Log.WARN, "W"),
-    ERROR(Log.ERROR, "E"),
-    WTF(Log.ASSERT, "WTF")
+enum class LogLevel(
+    val nativeLevel: Int,
+    val shortString: String,
+    val logcatFunc: (String, String, Throwable?) -> Unit,
+) {
+    VERBOSE(Log.VERBOSE, "V", Log::v),
+    DEBUG(Log.DEBUG, "D", Log::d),
+    INFO(Log.INFO, "I", Log::i),
+    WARNING(Log.WARN, "W", Log::w),
+    ERROR(Log.ERROR, "E", Log::e),
+    WTF(Log.ASSERT, "WTF", Log::wtf),
 }

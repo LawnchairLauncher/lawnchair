@@ -35,6 +35,8 @@ public class LogEventChecker {
     // Map from an event sequence name to an ordered list of expected events in that sequence.
     private final ListMap<Pattern> mExpectedEvents = new ListMap<>();
 
+    private LogExclusionRule mLogExclusionRule = null;
+
     LogEventChecker(LauncherInstrumentation launcher) {
         mLauncher = launcher;
     }
@@ -46,6 +48,10 @@ public class LogEventChecker {
 
     void expectPattern(String sequence, Pattern pattern) {
         mExpectedEvents.add(sequence, pattern);
+    }
+
+    void setLogExclusionRule(LogExclusionRule logExclusionRule) {
+        mLogExclusionRule = logExclusionRule;
     }
 
     // Waits for the expected number of events and returns them.
@@ -74,7 +80,9 @@ public class LogEventChecker {
         final ListMap<String> eventSequences = new ListMap<>();
         for (String rawEvent : rawEvents) {
             final String[] split = rawEvent.split("/");
-            eventSequences.add(split[0], split[1]);
+            if (mLogExclusionRule == null || !mLogExclusionRule.shouldExclude(split[1])) {
+                eventSequences.add(split[0], split[1]);
+            }
         }
         return eventSequences;
     }
@@ -174,5 +182,9 @@ public class LogEventChecker {
             }
             return list;
         }
+    }
+
+    interface LogExclusionRule {
+        boolean shouldExclude(String event);
     }
 }

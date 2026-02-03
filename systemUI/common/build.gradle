@@ -1,17 +1,22 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
 }
 
 android {
+    buildToolsVersion "36.1.0"
     namespace "com.android.systemui.common"
 
     sourceSets {
         main {
             java.srcDirs = ['src']
+            kotlin.directories.add('src')
             manifest.srcFile 'AndroidManifest.xml'
         }
     }
 }
 
-addFrameworkJar('framework-15.jar')
+addFrameworkJar('framework-16.jar')
+
+dependencies {
+    implementation projects.utils
+}

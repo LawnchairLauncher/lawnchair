@@ -63,7 +63,7 @@ private constructor(
         const val DEFAULT_BORDER_COLOR = Color.WHITE
         private const val DEFAULT_APPEARANCE_ANIMATION_DURATION_MS = 300L
         private const val DEFAULT_DISAPPEARANCE_ANIMATION_DURATION_MS = 133L
-        private val DEFAULT_INTERPOLATOR = Interpolators.EMPHASIZED_DECELERATE
+        val DEFAULT_INTERPOLATOR = Interpolators.EMPHASIZED_DECELERATE
 
         /**
          * Creates a BorderAnimator that simply draws the border outside the bound of the target
@@ -114,6 +114,8 @@ private constructor(
          *
          * @param borderRadiusPx the radius of the border's corners, in pixels
          * @param borderWidthPx the width of the border, in pixels
+         * @param borderStrokePx the stroke width used to paint the border, in pixels. If smaller
+         *     than border width, it gets drawn at the outside edge of the border.
          * @param boundsBuilder callback to update the border bounds
          * @param targetView the view that will be drawing the border
          * @param contentView the view around which the border will be drawn. this view will be
@@ -128,6 +130,7 @@ private constructor(
         fun createScalingBorderAnimator(
             @Px borderRadiusPx: Int,
             @Px borderWidthPx: Int,
+            @Px borderStrokePx: Int,
             boundsBuilder: (rect: Rect?) -> Unit,
             targetView: View,
             contentView: View,
@@ -139,7 +142,13 @@ private constructor(
             return BorderAnimator(
                 borderRadiusPx,
                 borderColor,
-                ScalingParams(borderWidthPx, boundsBuilder, targetView, contentView),
+                ScalingParams(
+                    borderWidthPx,
+                    borderStrokePx,
+                    boundsBuilder,
+                    targetView,
+                    contentView,
+                ),
                 appearanceDurationMs,
                 disappearanceDurationMs,
                 interpolator,
@@ -151,7 +160,7 @@ private constructor(
         val interpolatedProgress = interpolator.getInterpolation(borderAnimationProgress.value)
         borderAnimationParams.animationProgress = interpolatedProgress
         borderPaint.alpha = (255 * interpolatedProgress).roundToInt()
-        borderPaint.strokeWidth = borderAnimationParams.borderWidth
+        borderPaint.strokeWidth = borderAnimationParams.borderStroke
         borderAnimationParams.targetView.invalidate()
     }
 
@@ -170,7 +179,7 @@ private constructor(
                 /* bottom= */ borderBounds.bottom - alignmentAdjustment,
                 /* rx= */ radius,
                 /* ry= */ radius,
-                /* paint= */ borderPaint
+                /* paint= */ borderPaint,
             )
         }
     }
@@ -212,6 +221,7 @@ private constructor(
     /** Params for handling different target view layout situations. */
     private abstract class BorderAnimationParams(
         @field:Px @param:Px val borderWidthPx: Int,
+        @field:Px @param:Px val borderStrokePx: Int,
         private val boundsBuilder: (rect: Rect) -> Unit,
         val targetView: View,
     ) {
@@ -222,12 +232,12 @@ private constructor(
         abstract val alignmentAdjustmentInset: Int
         abstract val radiusAdjustment: Float
 
-        val borderWidth: Float
-            get() = borderWidthPx * animationProgress
+        val borderStroke: Float
+            get() = borderStrokePx * animationProgress
 
         val alignmentAdjustment: Float
             // Outset the border by half the width to create an outwards-growth animation
-            get() = -borderWidth / 2f + alignmentAdjustmentInset
+            get() = -borderStroke / 2f + alignmentAdjustmentInset
 
         open fun onShowBorder() {
             if (layoutChangeListener == null) {
@@ -253,7 +263,7 @@ private constructor(
         @Px borderWidthPx: Int,
         boundsBuilder: (Rect) -> Unit,
         targetView: View,
-    ) : BorderAnimationParams(borderWidthPx, boundsBuilder, targetView) {
+    ) : BorderAnimationParams(borderWidthPx, borderWidthPx, boundsBuilder, targetView) {
         override val alignmentAdjustmentInset = 0
         override val radiusAdjustment: Float
             get() = -alignmentAdjustment
@@ -265,12 +275,13 @@ private constructor(
      */
     private class ScalingParams(
         @Px borderWidthPx: Int,
+        @Px borderStrokePx: Int,
         boundsBuilder: (rect: Rect?) -> Unit,
         targetView: View,
         private val contentView: View,
-    ) : BorderAnimationParams(borderWidthPx, boundsBuilder, targetView) {
+    ) : BorderAnimationParams(borderWidthPx, borderStrokePx, boundsBuilder, targetView) {
         // Inset the border since we are scaling the container up
-        override val alignmentAdjustmentInset = borderWidthPx
+        override val alignmentAdjustmentInset = borderStrokePx
         override val radiusAdjustment: Float
             // Increase the radius since we are scaling the container up
             get() = alignmentAdjustment

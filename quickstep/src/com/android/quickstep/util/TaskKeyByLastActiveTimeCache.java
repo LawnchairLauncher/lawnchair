@@ -17,6 +17,7 @@ package com.android.quickstep.util;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.systemui.shared.recents.model.Task;
@@ -94,6 +95,7 @@ public class TaskKeyByLastActiveTimeCache<V> implements TaskKeyCache<V> {
      * Gets the entry if it is still valid
      */
     @Override
+    @Nullable
     public synchronized V getAndInvalidateIfModified(Task.TaskKey key) {
         Entry<V> entry = mMap.get(key.id);
         if (entry != null && entry.mKey.windowingMode == key.windowingMode

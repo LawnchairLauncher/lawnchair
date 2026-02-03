@@ -22,12 +22,13 @@ import android.app.ActivityTaskManager.INVALID_TASK_ID
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.os.Process
 import android.os.UserHandle
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.shortcuts.ShortcutKey
-import com.android.launcher3.ui.AbstractLauncherUiTest
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
+import com.android.launcher3.util.ui.AbstractLauncherUiTest
 import com.android.quickstep.util.SplitSelectDataHolder.Companion.SPLIT_PENDINGINTENT_PENDINGINTENT
 import com.android.quickstep.util.SplitSelectDataHolder.Companion.SPLIT_PENDINGINTENT_TASK
 import com.android.quickstep.util.SplitSelectDataHolder.Companion.SPLIT_SHORTCUT_TASK
@@ -54,7 +55,7 @@ class SplitSelectDataHolderTest {
     private val sampleTaskInfo = RunningTaskInfo()
     private val sampleTaskId = 10
     private val sampleTaskId2 = 11
-    private val sampleUser = UserHandle(0)
+    private val sampleUser = UserHandle(Process.myUserHandle().identifier)
     private val sampleIntent = Intent()
     private val sampleIntent2 = Intent()
     private val sampleShortcut = Intent()
@@ -84,7 +85,7 @@ class SplitSelectDataHolderTest {
             sampleTaskInfo,
             STAGE_POSITION_TOP_OR_LEFT,
             null,
-            null
+            null,
         )
         assertTrue(splitSelectDataHolder.isSplitSelectActive())
     }
@@ -96,7 +97,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         assertTrue(splitSelectDataHolder.isSplitSelectActive())
     }
@@ -108,7 +109,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            sampleTaskId
+            sampleTaskId,
         )
         assertTrue(splitSelectDataHolder.isSplitSelectActive())
     }
@@ -120,7 +121,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         assertTrue(splitSelectDataHolder.isSplitSelectActive())
     }
@@ -132,7 +133,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         splitSelectDataHolder.setSecondTask(sampleTaskId, sampleItemInfo2)
         assertTrue(splitSelectDataHolder.isBothSplitAppsConfirmed())
@@ -144,7 +145,7 @@ class SplitSelectDataHolderTest {
             sampleTaskInfo,
             STAGE_POSITION_TOP_OR_LEFT,
             null,
-            null
+            null,
         )
         splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         assertTrue(splitSelectDataHolder.isBothSplitAppsConfirmed())
@@ -157,7 +158,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         splitSelectDataHolder.setSecondTask(sampleShortcut, sampleUser, sampleItemInfo2)
         assertTrue(splitSelectDataHolder.isBothSplitAppsConfirmed())
@@ -169,7 +170,7 @@ class SplitSelectDataHolderTest {
             sampleTaskInfo,
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
-            null
+            null,
         )
         splitSelectDataHolder.setSecondTask(sampleTaskId2, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
@@ -193,7 +194,7 @@ class SplitSelectDataHolderTest {
             sampleTaskInfo,
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
-            null
+            null,
         )
         splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
@@ -217,7 +218,7 @@ class SplitSelectDataHolderTest {
             sampleTaskInfo,
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
-            null
+            null,
         )
         splitSelectDataHolder.setSecondTask(sampleShortcut, sampleUser, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
@@ -242,7 +243,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         splitSelectDataHolder.setSecondTask(sampleTaskId, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
@@ -267,7 +268,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         splitSelectDataHolder.setSecondTask(sampleTaskId, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
@@ -292,7 +293,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         splitSelectDataHolder.setSecondTask(sampleIntent2, sampleUser, sampleItemInfo2)
         val launchData = splitSelectDataHolder.getSplitLaunchData()
@@ -316,7 +317,7 @@ class SplitSelectDataHolderTest {
             sampleTaskInfo,
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
-            null
+            null,
         )
         val launchData = splitSelectDataHolder.getFullscreenLaunchData()
 
@@ -340,7 +341,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         val launchData = splitSelectDataHolder.getFullscreenLaunchData()
 
@@ -364,7 +365,7 @@ class SplitSelectDataHolderTest {
             STAGE_POSITION_TOP_OR_LEFT,
             sampleItemInfo,
             null,
-            INVALID_TASK_ID
+            INVALID_TASK_ID,
         )
         val launchData = splitSelectDataHolder.getFullscreenLaunchData()
 
@@ -387,7 +388,7 @@ class SplitSelectDataHolderTest {
             sampleTaskInfo,
             STAGE_POSITION_TOP_OR_LEFT,
             null,
-            null
+            null,
         )
         splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         splitSelectDataHolder.resetState()
@@ -397,11 +398,11 @@ class SplitSelectDataHolderTest {
     @Test
     fun clearState_intent() {
         splitSelectDataHolder.setInitialTaskSelect(
-                sampleIntent,
-                STAGE_POSITION_TOP_OR_LEFT,
-                sampleItemInfo,
-                null,
-                INVALID_TASK_ID
+            sampleIntent,
+            STAGE_POSITION_TOP_OR_LEFT,
+            sampleItemInfo,
+            null,
+            INVALID_TASK_ID,
         )
         splitSelectDataHolder.setSecondTask(sampleIntent, sampleUser, sampleItemInfo2)
         splitSelectDataHolder.resetState()

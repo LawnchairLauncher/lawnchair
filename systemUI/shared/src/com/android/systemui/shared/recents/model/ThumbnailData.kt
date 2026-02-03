@@ -58,7 +58,7 @@ data class ThumbnailData(
                     "ThumbnailData",
                     "Unexpected snapshot without USAGE_GPU_SAMPLED_IMAGE: " +
                         "${snapshot.hardwareBuffer}",
-                    ex
+                    ex,
                 )
             }
 
@@ -69,10 +69,15 @@ data class ThumbnailData(
         }
 
         @JvmStatic
-        fun wrap(taskIds: IntArray?, snapshots: Array<TaskSnapshot>?): HashMap<Int, ThumbnailData> {
+        fun wrap(
+            taskIds: IntArray?,
+            snapshots: Array<TaskSnapshot?>?,
+        ): HashMap<Int, ThumbnailData> {
             return hashMapOf<Int, ThumbnailData>().apply {
                 if (taskIds != null && snapshots != null && taskIds.size == snapshots.size) {
-                    repeat(snapshots.size) { put(taskIds[it], fromSnapshot(snapshots[it])) }
+                    repeat(snapshots.size) {
+                        snapshots[it]?.let { snapshot -> put(taskIds[it], fromSnapshot(snapshot)) }
+                    }
                 }
             }
         }

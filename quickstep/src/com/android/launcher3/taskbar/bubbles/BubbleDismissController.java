@@ -29,8 +29,8 @@ import androidx.dynamicanimation.animation.DynamicAnimation;
 import com.android.launcher3.R;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarDragLayer;
-import com.android.wm.shell.common.bubbles.DismissView;
-import com.android.wm.shell.common.magnetictarget.MagnetizedObject;
+import com.android.wm.shell.shared.bubbles.DismissView;
+import com.android.wm.shell.shared.magnetictarget.MagnetizedObject;
 
 
 /**
@@ -144,10 +144,10 @@ public class BubbleDismissController {
         if (mMagnetizedObject.getUnderlyingObject() instanceof BubbleView) {
             BubbleView bubbleView = (BubbleView) mMagnetizedObject.getUnderlyingObject();
             if (bubbleView.getBubble() != null) {
-                mBubbleBarViewController.onDismissBubbleWhileDragging(bubbleView.getBubble());
+                mBubbleBarViewController.notifySysUiBubbleDismissed(bubbleView.getBubble());
             }
         } else if (mMagnetizedObject.getUnderlyingObject() instanceof BubbleBarView) {
-            mBubbleBarViewController.onDismissAllBubblesWhileDragging();
+            mBubbleBarViewController.onDismissAllBubbles();
         }
     }
 

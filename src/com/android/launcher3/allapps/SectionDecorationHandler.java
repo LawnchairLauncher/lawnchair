@@ -17,6 +17,7 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -25,7 +26,6 @@ import android.graphics.drawable.InsetDrawable;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
@@ -40,14 +40,13 @@ public class SectionDecorationHandler {
     protected final RectF mBounds = new RectF();
     protected final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    protected final int mFocusAlpha = 255; // main focused item alpha
     protected int mFillColor; // grouping color
     protected int mFocusColor; // main focused item color
+    protected float mFillAlphaMultiplier = 1;
     protected float mFillSpacing;
     protected int mInlineRadius;
     protected Context mContext;
     protected float[] mCorners;
-    protected int mFillAlpha;
     protected boolean mIsTopLeftRound;
     protected boolean mIsTopRightRound;
     protected boolean mIsBottomLeftRound;
@@ -55,16 +54,14 @@ public class SectionDecorationHandler {
     protected boolean mIsBottomRound;
     protected boolean mIsTopRound;
 
-    public SectionDecorationHandler(Context context, int fillAlpha, boolean isTopLeftRound,
+    public SectionDecorationHandler(Context context, boolean isTopLeftRound,
             boolean isTopRightRound, boolean isBottomLeftRound,
             boolean isBottomRightRound) {
 
         mContext = context;
-        mFillAlpha = fillAlpha;
-        mFocusColor = ContextCompat.getColor(context,
-                R.color.material_color_surface_bright); // UX recommended
-        mFillColor = ContextCompat.getColor(context,
-                R.color.material_color_surface_container_high); // UX recommended
+
+        mFocusColor = Themes.getAttrColor(mContext, R.attr.focusHighlight);
+        mFillColor = Themes.getAttrColor(mContext, R.attr.groupHighlight);
 
         mIsTopLeftRound = isTopLeftRound;
         mIsTopRightRound = isTopRightRound;
@@ -97,16 +94,26 @@ public class SectionDecorationHandler {
     }
 
     protected void setFillAlpha(int fillAlpha) {
-        mFillAlpha = fillAlpha;
-        mPaint.setAlpha(mFillAlpha);
+        mFillAlphaMultiplier = (float) fillAlpha / 255;
+        preparePaintForFill();
+    }
+
+    /** Set the paint color in preparation for drawing fill (group). */
+    protected void preparePaintForFill() {
+        mPaint.setColor(mFillColor);
+        mPaint.setAlpha((int) (Color.alpha(mFillColor) *  mFillAlphaMultiplier));
+    }
+
+    /** Set the paint color in preparation for drawing focus (highlight / quick launch). */
+    protected void preparePaintForFocus() {
+        mPaint.setColor(mFocusColor);
     }
 
     protected void onFocusDraw(Canvas canvas, @Nullable View view) {
         if (view == null) {
             return;
         }
-        mPaint.setColor(mFillColor);
-        mPaint.setAlpha(mFillAlpha);
+        preparePaintForFill();
         int scaledHeight = (int) (view.getHeight() * view.getScaleY());
         mBounds.set(view.getLeft(), view.getY(), view.getRight(), view.getY() + scaledHeight);
         onDraw(canvas);
@@ -166,7 +173,7 @@ public class SectionDecorationHandler {
         public UnionDecorationHandler(
                 SectionDecorationHandler decorationHandler,
                 int paddingLeft, int paddingRight) {
-            super(decorationHandler.mContext, decorationHandler.mFillAlpha,
+            super(decorationHandler.mContext,
                     decorationHandler.mIsTopLeftRound, decorationHandler.mIsTopRightRound,
                     decorationHandler.mIsBottomLeftRound, decorationHandler.mIsBottomRightRound);
             mPaddingLeft = paddingLeft;
@@ -195,8 +202,7 @@ public class SectionDecorationHandler {
             initCorners();
             mBounds.left = mPaddingLeft;
             mBounds.right = canvas.getWidth() - mPaddingRight;
-            mPaint.setColor(mFillColor);
-            mPaint.setAlpha(mFillAlpha);
+            preparePaintForFill();
             onDraw(canvas);
         }
     }

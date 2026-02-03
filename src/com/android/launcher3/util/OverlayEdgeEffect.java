@@ -47,6 +47,7 @@ public class OverlayEdgeEffect extends EdgeEffectCompat {
         return mDistance;
     }
 
+    @Override
     public float onPullDistance(float deltaDistance, float displacement) {
         // Fallback implementation, will never actually get called
         if (BuildConfigs.IS_DEBUG_DEVICE) {

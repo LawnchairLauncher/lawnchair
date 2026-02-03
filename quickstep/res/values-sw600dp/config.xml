@@ -17,4 +17,8 @@
     <!-- The number of thumbnails and icons to keep in the cache. The thumbnail cache size also
          determines how many thumbnails will be fetched in the background. -->
     <integer name="recentsThumbnailCacheSize">8</integer>
+
+    <!-- Expressive Dismiss -->
+    <item name="expressive_dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.775</item>
+    <item name="expressive_dismiss_task_trans_x_stiffness" type="dimen" format="float">2400</item>
 </resources>

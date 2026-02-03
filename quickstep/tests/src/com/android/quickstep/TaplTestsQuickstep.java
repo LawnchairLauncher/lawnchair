@@ -16,12 +16,11 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
@@ -29,14 +28,16 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.platform.test.annotations.EnableFlags;
 
+import androidx.annotation.NonNull;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.tapl.BaseOverview;
 import com.android.launcher3.tapl.LaunchedAppState;
@@ -46,19 +47,20 @@ import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.SelectModeButtons;
 import com.android.launcher3.tapl.Workspace;
-import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
-import com.android.launcher3.util.rule.TestStabilityRule;
+import com.android.launcher3.util.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Comparator;
+import java.util.Optional;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -72,32 +74,20 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        executeOnLauncher(launcher -> {
-            RecentsView recentsView = launcher.getOverviewPanel();
-            recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(true);
-        });
+        executeOnOverview(recentsView ->
+                recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(true));
     }
 
     @After
     public void tearDown() {
-        executeOnLauncherInTearDown(launcher -> {
-            RecentsView recentsView = launcher.getOverviewPanel();
-            recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(false);
-        });
+        executeOnOverview(/* forTearDown= */ true, recentsView ->
+                recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(false));
     }
 
     public static void startTestApps() throws Exception {
         startAppFast(getAppPackageName());
         startAppFast(CALCULATOR_APP_PACKAGE);
         startTestActivity(2);
-    }
-
-    private void startTestAppsWithCheck() throws Exception {
-        startTestApps();
-        executeOnLauncher(launcher -> assertTrue(
-                "Launcher activity is the top activity; expecting another activity to be the top "
-                        + "one",
-                isInLaunchedApp(launcher)));
     }
 
     @Test
@@ -116,28 +106,28 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestAppsWithCheck();
         // mLauncher.pressHome() also tests an important case of pressing home while in background.
         Overview overview = mLauncher.goHome().switchToOverview();
-        assertTrue("Launcher internal state didn't switch to Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-        executeOnLauncher(
-                launcher -> assertTrue("Don't have at least 3 tasks", getTaskCount(launcher) >= 3));
+        assertIsInState(
+                "Launcher internal state didn't switch to Overview", LauncherState.OVERVIEW);
+        executeOnOverview(recentsView -> assertTrue("Don't have at least 3 tasks",
+                recentsView.getTaskViewCount() >= 3));
 
         // Test flinging forward and backward.
-        executeOnLauncher(launcher -> assertEquals("Current task in Overview is not 0",
-                0, getCurrentOverviewPage(launcher)));
+        executeOnOverview(recentsView -> assertEquals("Current task in Overview is not first",
+                recentsView.indexOfChild(recentsView.getFirstTaskView()),
+                recentsView.getCurrentPage()));
 
         overview.flingForward();
-        assertTrue("Launcher internal state is not Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-        final Integer currentTaskAfterFlingForward = getFromLauncher(
-                launcher -> getCurrentOverviewPage(launcher));
-        executeOnLauncher(launcher -> assertTrue("Current task in Overview is still 0",
-                currentTaskAfterFlingForward > 0));
+        assertIsInState("Launcher internal state is not Overview", LauncherState.OVERVIEW);
+        final Integer currentTaskAfterFlingForward =
+                getFromOverview(RecentsView::getCurrentPage);
+        executeOnOverview(recentsView -> assertTrue("Current task in Overview is still 0",
+                currentTaskAfterFlingForward > recentsView.indexOfChild(
+                        recentsView.getFirstTaskView())));
 
         overview.flingBackward();
-        assertTrue("Launcher internal state is not Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-        executeOnLauncher(launcher -> assertTrue("Flinging back in Overview did nothing",
-                getCurrentOverviewPage(launcher) < currentTaskAfterFlingForward));
+        assertIsInState("Launcher internal state is not Overview", LauncherState.OVERVIEW);
+        executeOnOverview(recentsView -> assertTrue("Flinging back in Overview did nothing",
+                recentsView.getCurrentPage() < currentTaskAfterFlingForward));
 
         // Test opening a task.
         OverviewTask task = mLauncher.goHome().switchToOverview().getCurrentTask();
@@ -145,31 +135,26 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         assertNotNull("OverviewTask.open returned null", task.open());
         assertTrue("Test activity didn't open from Overview", mDevice.wait(Until.hasObject(
                         By.pkg(getAppPackageName()).text("TestActivity2")),
-                DEFAULT_UI_TIMEOUT));
-        executeOnLauncher(launcher -> assertTrue(
-                "Launcher activity is the top activity; expecting another activity to be the top "
-                        + "one",
-                isInLaunchedApp(launcher)));
+                TestUtil.DEFAULT_UI_TIMEOUT));
+        expectLaunchedAppState();
 
         // Test dismissing a task.
         overview = mLauncher.goHome().switchToOverview();
-        assertTrue("Launcher internal state didn't switch to Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-        final Integer numTasks = getFromLauncher(launcher -> getTaskCount(launcher));
+        assertIsInState("Launcher internal state didn't switch to Overview",
+                LauncherState.OVERVIEW);
+        final Integer numTasks = getFromOverview(RecentsView::getTaskViewCount);
         task = overview.getCurrentTask();
         assertNotNull("overview.getCurrentTask() returned null (2)", task);
         task.dismiss();
-        executeOnLauncher(
-                launcher -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
-                        numTasks - 1, getTaskCount(launcher)));
+        executeOnOverview(recentsView -> assertEquals(
+                "Dismissing a task didn't remove 1 task from Overview",
+                numTasks - 1, recentsView.getTaskViewCount()));
 
         // Test dismissing all tasks.
         mLauncher.goHome().switchToOverview().dismissAllTasks();
-        assertTrue("Launcher internal state is not Home",
-                isInState(() -> LauncherState.NORMAL));
-        executeOnLauncher(
-                launcher -> assertEquals("Still have tasks after dismissing all",
-                        0, getTaskCount(launcher)));
+        assertIsInState("Launcher internal state is not Home", LauncherState.NORMAL);
+        executeOnOverview(recentsView -> assertEquals("Still have tasks after dismissing all",
+                0, recentsView.getTaskViewCount()));
     }
 
     /**
@@ -191,12 +176,10 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     public void testDismissOverviewWithEscKey() throws Exception {
         startTestAppsWithCheck();
         final Overview overview = mLauncher.goHome().switchToOverview();
-        assertTrue("Launcher internal state is not Overview",
-                isInState(() -> LauncherState.OVERVIEW));
+        assertIsInState("Launcher internal state is not Overview", LauncherState.OVERVIEW);
 
         overview.dismissByEscKey();
-        assertTrue("Launcher internal state is not Home",
-                isInState(() -> LauncherState.NORMAL));
+        assertIsInState("Launcher internal state is not Home", LauncherState.NORMAL);
     }
 
     @Test
@@ -212,16 +195,15 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             selectModeButtons = overview.getOverviewActions().clickSelect();
         }
 
-        assertTrue("Launcher internal state is not Overview Modal Task",
-                isInState(() -> LauncherState.OVERVIEW_MODAL_TASK));
+        assertIsInState(
+                "Launcher internal state is not Overview Modal Task",
+                LauncherState.OVERVIEW_MODAL_TASK);
 
         selectModeButtons.dismissByEscKey();
 
-        assertTrue("Launcher internal state is not Overview",
-                isInState(() -> LauncherState.OVERVIEW));
+        assertIsInState("Launcher internal state is not Overview", LauncherState.OVERVIEW);
         overview.dismissByEscKey();
-        assertTrue("Launcher internal state is not Home",
-                isInState(() -> LauncherState.NORMAL));
+        assertIsInState("Launcher internal state is not Home", LauncherState.NORMAL);
     }
 
     @Test
@@ -229,11 +211,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestAppsWithCheck();
         startAppFast(CALCULATOR_APP_PACKAGE); // Ensure Calculator is last opened app.
         Workspace home = mLauncher.goHome();
-        assertTrue("Launcher state is not Home", isInState(() -> LauncherState.NORMAL));
+        assertIsInState("Launcher state is not Home", LauncherState.NORMAL);
 
         Overview overview = home.openOverviewFromActionPlusTabKeyboardShortcut();
 
-        assertTrue("Launcher state is not Overview", isInState(() -> LauncherState.OVERVIEW));
+        assertIsInState("Launcher state is not Overview", LauncherState.OVERVIEW);
         overview.launchFocusedTaskByEnterKey(CALCULATOR_APP_PACKAGE); // Assert app is focused.
     }
 
@@ -242,32 +224,13 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestAppsWithCheck();
         startAppFast(CALCULATOR_APP_PACKAGE); // Ensure Calculator is last opened app.
         Workspace home = mLauncher.goHome();
-        assertTrue("Launcher state is not Home", isInState(() -> LauncherState.NORMAL));
+        assertIsInState("Launcher state is not Home", LauncherState.NORMAL);
 
         Overview overview = home.openOverviewFromRecentsKeyboardShortcut();
 
-        assertTrue("Launcher state is not Overview", isInState(() -> LauncherState.OVERVIEW));
+        assertIsInState("Launcher state is not Overview", LauncherState.OVERVIEW);
         overview.launchFocusedTaskByEnterKey(CALCULATOR_APP_PACKAGE); // Assert app is focused.
     }
-
-    private int getCurrentOverviewPage(Launcher launcher) {
-        return launcher.<RecentsView>getOverviewPanel().getCurrentPage();
-    }
-
-    private int getTaskCount(Launcher launcher) {
-        return launcher.<RecentsView>getOverviewPanel().getTaskViewCount();
-    }
-
-    private int getTopRowTaskCountForTablet(Launcher launcher) {
-        return launcher.<RecentsView>getOverviewPanel().getTopRowTaskCountForTablet();
-    }
-
-    private int getBottomRowTaskCountForTablet(Launcher launcher) {
-        return launcher.<RecentsView>getOverviewPanel().getBottomRowTaskCountForTablet();
-    }
-
-    // Staging; will be promoted to presubmit if stable
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
 
     @Test
     @NavigationModeSwitch
@@ -276,8 +239,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestAppsWithCheck();
         assertNotNull("Workspace.switchToOverview() returned null",
                 mLauncher.goHome().switchToOverview());
-        assertTrue("Launcher internal state didn't switch to Overview",
-                isInState(() -> LauncherState.OVERVIEW));
+        assertIsInState(
+                "Launcher internal state didn't switch to Overview", LauncherState.OVERVIEW);
     }
 
     @Test
@@ -293,9 +256,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         }
     }
 
-    // Staging; will be promoted to presubmit if stable
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
-
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
@@ -305,28 +265,13 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
         assertNotNull("Background.switchToOverview() returned null",
                 launchedAppState.switchToOverview());
-        assertTrue("Launcher internal state didn't switch to Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-    }
-
-    private void quickSwitchToPreviousAppAndAssert(boolean toRight) {
-        final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
-        if (toRight) {
-            launchedAppState.quickSwitchToPreviousApp();
-        } else {
-            launchedAppState.quickSwitchToPreviousAppSwipeLeft();
-        }
-
-        // While enable shell transition, Launcher can be resumed due to transient launch.
-        waitForLauncherCondition("Launcher shouldn't stay in resume forever",
-                this::isInLaunchedApp, 3000 /* timeout */);
+        assertIsInState(
+                "Launcher internal state didn't switch to Overview", LauncherState.OVERVIEW);
     }
 
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @ScreenRecord // b/313464374
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/325659406
     public void testQuickSwitchFromApp() throws Exception {
         startTestActivity(2);
         startTestActivity(3);
@@ -393,11 +338,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         }
     }
 
-    private boolean isHardwareKeyboard() {
-        return Configuration.KEYBOARD_QWERTY
-                == mTargetContext.getResources().getConfiguration().keyboard;
-    }
-
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
@@ -418,81 +358,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Debug if we need to goHome to prevent wrong previous state b/315525621
         mLauncher.goHome();
         mLauncher.getWorkspace().switchToAllApps().pressBackToWorkspace();
-        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+        waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
 
         startAppFast(CALCULATOR_APP_PACKAGE);
         mLauncher.getLaunchedAppState().pressBackToWorkspace();
-        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
-    }
-
-    @Test
-    @PortraitLandscape
-    @TaskbarModeSwitch()
-    @Ignore("b/315376057")
-    public void testOverviewForTablet() throws Exception {
-        assumeTrue(mLauncher.isTablet());
-
-        for (int i = 2; i <= 14; i++) {
-            startTestActivity(i);
-        }
-
-        Overview overview = mLauncher.goHome().switchToOverview();
-        executeOnLauncher(
-                launcher -> assertTrue("Don't have at least 13 tasks",
-                        getTaskCount(launcher) >= 13));
-
-        // Test scroll the first task off screen
-        overview.scrollCurrentTaskOffScreen();
-        assertTrue("Launcher internal state is not Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-        executeOnLauncher(launcher -> assertTrue("Current task in Overview is still 0",
-                getCurrentOverviewPage(launcher) > 0));
-
-        // Test opening the task.
-        overview.getCurrentTask().open();
-        assertTrue("Test activity didn't open from Overview",
-                mDevice.wait(Until.hasObject(By.pkg(getAppPackageName()).text(
-                                mLauncher.isGridOnlyOverviewEnabled() ? "TestActivity12"
-                                        : "TestActivity13")),
-                        DEFAULT_UI_TIMEOUT));
-
-        // Scroll the task offscreen as it is now first
-        overview = mLauncher.goHome().switchToOverview();
-        overview.scrollCurrentTaskOffScreen();
-        assertTrue("Launcher internal state is not Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-        executeOnLauncher(launcher -> assertTrue("Current task in Overview is still 0",
-                getCurrentOverviewPage(launcher) > 0));
-
-        // Test dismissing the later task.
-        final Integer numTasks = getFromLauncher(this::getTaskCount);
-        overview.getCurrentTask().dismiss();
-        executeOnLauncher(
-                launcher -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
-                        numTasks - 1, getTaskCount(launcher)));
-        executeOnLauncher(launcher -> assertTrue("Grid did not rebalance after dismissal",
-                (Math.abs(getTopRowTaskCountForTablet(launcher) - getBottomRowTaskCountForTablet(
-                        launcher)) <= 1)));
-
-        // TODO(b/308841019): Re-enable after fixing Overview jank when dismiss
-//        // Test dismissing more tasks.
-//        assertTrue("Launcher internal state didn't remain in Overview",
-//                isInState(() -> LauncherState.OVERVIEW));
-//        overview.getCurrentTask().dismiss();
-//        assertTrue("Launcher internal state didn't remain in Overview",
-//                isInState(() -> LauncherState.OVERVIEW));
-//        overview.getCurrentTask().dismiss();
-//        executeOnLauncher(launcher -> assertTrue("Grid did not rebalance after multiple dismissals",
-//                (Math.abs(getTopRowTaskCountForTablet(launcher) - getBottomRowTaskCountForTablet(
-//                        launcher)) <= 1)));
-
-        // Test dismissing all tasks.
-        mLauncher.goHome().switchToOverview().dismissAllTasks();
-        assertTrue("Launcher internal state is not Home",
-                isInState(() -> LauncherState.NORMAL));
-        executeOnLauncher(
-                launcher -> assertEquals("Still have tasks after dismissing all",
-                        0, getTaskCount(launcher)));
+        waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
     }
 
     @Test
@@ -501,22 +371,18 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestAppsWithCheck();
 
         Overview overview = mLauncher.goHome().switchToOverview();
-        assertTrue("Launcher internal state should be Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-        executeOnLauncher(
-                launcher -> assertTrue("Should have at least 3 tasks",
-                        getTaskCount(launcher) >= 3));
+        assertIsInState("Launcher internal state should be Overview", LauncherState.OVERVIEW);
+        executeOnOverview(recentsView -> assertTrue("Should have at least 3 tasks",
+                recentsView.getTaskViewCount() >= 3));
 
         // It should not dismiss overview when tapping between tasks
         overview.touchBetweenTasks();
         overview = mLauncher.getOverview();
-        assertTrue("Launcher internal state should be Overview",
-                isInState(() -> LauncherState.OVERVIEW));
+        assertIsInState("Launcher internal state should be Overview", LauncherState.OVERVIEW);
 
         // Dismiss when tapping to the right of the focused task
         overview.touchOutsideFirstTask();
-        assertTrue("Launcher internal state should be Home",
-                isInState(() -> LauncherState.NORMAL));
+        assertIsInState("Launcher internal state should be Home", LauncherState.NORMAL);
     }
 
     @Test
@@ -528,34 +394,28 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestAppsWithCheck();
 
         Overview overview = mLauncher.goHome().switchToOverview();
-        assertTrue("Launcher internal state should be Overview",
-                isInState(() -> LauncherState.OVERVIEW));
-        executeOnLauncher(
-                launcher -> assertTrue("Should have at least 3 tasks",
-                        getTaskCount(launcher) >= 3));
+        assertIsInState("Launcher internal state should be Overview", LauncherState.OVERVIEW);
+        executeOnOverview(recentsView -> assertTrue("Should have at least 3 tasks",
+                recentsView.getTaskViewCount() >= 3));
 
         if (mLauncher.isTransientTaskbar()) {
             // On transient taskbar, it should dismiss when tapping outside taskbar bounds.
             overview.touchTaskbarBottomCorner(/* tapRight= */ false);
-            assertTrue("Launcher internal state should be Normal",
-                    isInState(() -> LauncherState.NORMAL));
+            assertIsInState("Launcher internal state should be Normal", LauncherState.NORMAL);
 
             overview = mLauncher.getWorkspace().switchToOverview();
 
             // On transient taskbar, it should dismiss when tapping outside taskbar bounds.
             overview.touchTaskbarBottomCorner(/* tapRight= */ true);
-            assertTrue("Launcher internal state should be Normal",
-                    isInState(() -> LauncherState.NORMAL));
+            assertIsInState("Launcher internal state should be Normal", LauncherState.NORMAL);
         } else {
             // On persistent taskbar, it should not dismiss when tapping the taskbar
             overview.touchTaskbarBottomCorner(/* tapRight= */ false);
-            assertTrue("Launcher internal state should be Overview",
-                    isInState(() -> LauncherState.OVERVIEW));
+            assertIsInState("Launcher internal state should be Overview", LauncherState.OVERVIEW);
 
             // On persistent taskbar, it should not dismiss when tapping the taskbar
             overview.touchTaskbarBottomCorner(/* tapRight= */ true);
-            assertTrue("Launcher internal state should be Overview",
-                    isInState(() -> LauncherState.OVERVIEW));
+            assertIsInState("Launcher internal state should be Overview", LauncherState.OVERVIEW);
         }
     }
 
@@ -568,7 +428,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             mLauncher.getDevice().setOrientationLeft();
             startTestActivity(7);
             Wait.atMost("Device should not be in natural orientation",
-                    () -> !mDevice.isNaturalOrientation(), DEFAULT_UI_TIMEOUT, mLauncher);
+                    () -> !mDevice.isNaturalOrientation(), mLauncher);
             mLauncher.goHome();
         } finally {
             mLauncher.setExpectedRotationCheckEnabled(true);
@@ -581,20 +441,211 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     public void testExcludeFromRecents() throws Exception {
         startExcludeFromRecentsTestActivity();
         OverviewTask currentTask = getAndAssertLaunchedApp().switchToOverview().getCurrentTask();
-        // TODO(b/326565120): the expected content description shouldn't be null but for now there
-        // is a bug that causes it to sometimes be for excludeForRecents tasks.
         assertTrue("Can't find ExcludeFromRecentsTestActivity after entering Overview from it",
-                currentTask.containsContentDescription("ExcludeFromRecents")
-                        || currentTask.containsContentDescription(null));
+                currentTask.containsContentDescription("ExcludeFromRecents"));
         // Going home should clear out the excludeFromRecents task.
         BaseOverview overview = mLauncher.goHome().switchToOverview();
         if (overview.hasTasks()) {
             currentTask = overview.getCurrentTask();
             assertFalse("Found ExcludeFromRecentsTestActivity after entering Overview from Home",
-                    currentTask.containsContentDescription("ExcludeFromRecents")
-                            || currentTask.containsContentDescription(null));
+                    currentTask.containsContentDescription("ExcludeFromRecents"));
         } else {
             // Presumably the test started with 0 tasks and remains that way after going home.
         }
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDismissCancel() throws Exception {
+        startTestAppsWithCheck();
+        Overview overview = mLauncher.goHome().switchToOverview();
+        assertIsInState("Launcher internal state didn't switch to Overview",
+                LauncherState.OVERVIEW);
+        final Integer numTasks = getFromOverview(RecentsView::getTaskViewCount);
+        OverviewTask task = overview.getCurrentTask();
+        assertNotNull("overview.getCurrentTask() returned null (2)", task);
+
+        task.dismissCancel();
+
+        executeOnOverview(recentsView -> assertEquals(
+                "Canceling dismissing a task removed a task from Overview",
+                numTasks == null ? 0 : numTasks, recentsView.getTaskViewCount()));
+    }
+
+    @Test
+    @PortraitLandscape
+    @EnableFlags(value = Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW)
+    public void testDismissBottomRow() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+        clearAllRecentTasks();
+        startTestAppsWithCheck();
+
+        Overview overview = mLauncher.goHome().switchToOverview();
+        assertIsInState("Launcher internal state didn't switch to Overview",
+                LauncherState.OVERVIEW);
+        final Integer numTasks = getFromOverview(RecentsView::getTaskViewCount);
+        Optional<OverviewTask> bottomTask = overview.getCurrentTasksForTablet().stream().max(
+                Comparator.comparingInt(OverviewTask::getTaskCenterY));
+        assertTrue("bottomTask null", bottomTask.isPresent());
+
+        bottomTask.get().dismiss();
+        executeOnOverview(recentsView -> assertEquals(
+                "Dismissing a bottomTask didn't remove 1 bottomTask from Overview",
+                numTasks - 1, recentsView.getTaskViewCount()));
+    }
+
+    @Test
+    @PortraitLandscape
+    @EnableFlags(value = Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW)
+    public void testDismissLastGridRow() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+        clearAllRecentTasks();
+        startTestAppsWithCheck();
+        startTestActivity(3);
+        startTestActivity(4);
+        executeOnOverview(recentsView -> assertNotEquals(
+                "Grid overview should have unequal row counts",
+                recentsView.getTopRowTaskCountForTablet(),
+                recentsView.getBottomRowTaskCountForTablet()));
+        Overview overview = mLauncher.goHome().switchToOverview();
+        assertIsInState("Launcher internal state didn't switch to Overview",
+                LauncherState.OVERVIEW);
+
+        overview.flingForwardUntilClearAllVisible();
+        assertTrue("Clear All not visible.", overview.isClearAllVisible());
+        final Integer numTasks = getFromOverview(RecentsView::getTaskViewCount);
+        Optional<OverviewTask> lastGridTask = overview.getCurrentTasksForTablet().stream().min(
+                Comparator.comparingInt(OverviewTask::getTaskCenterX));
+        assertTrue("lastGridTask null.", lastGridTask.isPresent());
+
+        lastGridTask.get().dismiss();
+        executeOnOverview(recentsView -> {
+            assertEquals(
+                    "Dismissing a lastGridTask didn't remove 1 lastGridTask from Overview",
+                    numTasks - 1, recentsView.getTaskViewCount());
+            assertEquals(
+                    "Grid overview should have equal row counts.",
+                    recentsView.getTopRowTaskCountForTablet(),
+                    recentsView.getBottomRowTaskCountForTablet());
+        });
+        assertTrue("Clear All not visible.", overview.isClearAllVisible());
+    }
+
+    @Test
+    @PortraitLandscape
+    @EnableFlags(value = Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW)
+    // When dismissing multiple apps, the apps off screen should "re-balance" i.e. re-arrange
+    // themselves evenly across both top and bottom rows.
+    public void gridRebalancesOffScreenAfterDismissingMultipleApps() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+        clearAllRecentTasks();
+        // Launch enough apps so some are offscreen.
+        for (int i = 2; i <= 12; i++) {
+            startTestActivity(i);
+        }
+        Overview overview = mLauncher.goHome().switchToOverview();
+        executeOnOverview(recentsView -> assertTrue("11 tasks should be open",
+                recentsView.getTaskViewCount() >= 11));
+
+        // Dismiss 2 tasks from the top row.
+        assertIsInState(
+                "Launcher internal state didn't remain in Overview", LauncherState.OVERVIEW);
+        overview.getCurrentTask().dismiss();
+        assertIsInState(
+                "Launcher internal state didn't remain in Overview", LauncherState.OVERVIEW);
+        overview.getCurrentTask().dismiss();
+
+        // Assert that the two row counts are no more than 1 apart, therefore were re-balanced.
+        executeOnOverview(recentsView -> assertTrue(
+                "Grid did not re-balance after multiple dismissals",
+                (Math.abs(recentsView.getTopRowTaskCountForTablet()
+                        - recentsView.getBottomRowTaskCountForTablet()) <= 1)));
+    }
+
+    @Test
+    @PortraitLandscape
+    @EnableFlags(value = Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW)
+    // When dismissing multiple apps, the apps on screen should not "re-balance" i.e. dismissing
+    // 2 apps from the top row, will move the top row along 2 and so it will not be balanced
+    // across the bottom row.
+    public void gridDoesNotRebalanceOnScreenAfterDismissingMultipleApps() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+        clearAllRecentTasks();
+        // Launch 6 apps so 3 are in each row.
+        int appsInBothRowsCount = 6;
+        int appsInEachRowCount = appsInBothRowsCount / 2;
+        for (int i = 2; i <= appsInBothRowsCount + 1; i++) {
+            startTestActivity(i);
+        }
+        Overview overview = mLauncher.goHome().switchToOverview();
+        executeOnOverview(recentsView -> {
+            assertEquals(appsInBothRowsCount + " tasks should be open",
+                    appsInBothRowsCount, recentsView.getTaskViewCount());
+            assertEquals("Grid should have " + appsInEachRowCount + " tasks on the top row",
+                    appsInEachRowCount,
+                    recentsView.getTopRowTaskCountForTablet());
+            assertEquals("Grid should have " + appsInEachRowCount + " tasks on the bottom row",
+                    appsInEachRowCount,
+                    recentsView.getBottomRowTaskCountForTablet());
+        });
+
+        // Dismiss 2 tasks from the top row.
+        assertIsInState("Launcher internal state didn't remain in Overview",
+                LauncherState.OVERVIEW);
+        overview.getCurrentTask().dismiss();
+        assertIsInState("Launcher internal state didn't remain in Overview",
+                LauncherState.OVERVIEW);
+        overview.getCurrentTask().dismiss();
+
+        executeOnOverview(recentsView -> {
+            int expectedTopRowCount = appsInEachRowCount - 2;
+            assertEquals(
+                    "Grid should have " + expectedTopRowCount + " tasks on the top row",
+                    expectedTopRowCount,
+                    recentsView.getTopRowTaskCountForTablet());
+            assertEquals("Grid should have " + appsInEachRowCount + " tasks on the bottom row",
+                    appsInEachRowCount,
+                    recentsView.getBottomRowTaskCountForTablet());
+        });
+    }
+
+    private void startTestAppsWithCheck() throws Exception {
+        startTestApps();
+        expectLaunchedAppState();
+    }
+
+    private void quickSwitchToPreviousAppAndAssert(boolean toRight) {
+        final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
+        if (toRight) {
+            launchedAppState.quickSwitchToPreviousApp();
+        } else {
+            launchedAppState.quickSwitchToPreviousAppSwipeLeft();
+        }
+
+        // While enable shell transition, Launcher can be resumed due to transient launch.
+        waitForLauncherCondition("Launcher shouldn't stay in resume forever",
+                this::isInLaunchedApp, 3000 /* timeout */);
+    }
+
+    private boolean isHardwareKeyboard() {
+        return Configuration.KEYBOARD_QWERTY
+                == mTargetContext.getResources().getConfiguration().keyboard;
+    }
+
+    private void assertIsInState(
+            @NonNull String failureMessage, @NonNull LauncherState expectedState) {
+        assertTrue(failureMessage, isInState(() -> expectedState));
+    }
+
+    private void waitForState(
+            @NonNull String failureMessage, @NonNull LauncherState expectedState) {
+        waitForState(failureMessage, () -> expectedState);
+    }
+
+    private void expectLaunchedAppState() {
+        executeOnLauncher(launcher -> assertTrue(
+                "Launcher activity is the top activity; expecting another activity to be the top "
+                        + "one",
+                isInLaunchedApp(launcher)));
     }
 }

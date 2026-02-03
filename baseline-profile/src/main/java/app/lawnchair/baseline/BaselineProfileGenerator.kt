@@ -1,5 +1,7 @@
 package app.lawnchair.baseline
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -33,9 +35,11 @@ import org.junit.runner.RunWith
 class BaselineProfileGenerator {
 
     @get:Rule
+    @RequiresApi(Build.VERSION_CODES.P)
     val rule = BaselineProfileRule()
 
     @Test
+    @RequiresApi(Build.VERSION_CODES.P)
     fun generate() {
         rule.collect(Constants.PACKAGE_NAME) {
             // This block defines the app's critical user journey. Here we are interested in

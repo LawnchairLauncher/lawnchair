@@ -36,11 +36,11 @@ import android.view.LayoutInflater;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.R;
 import com.android.wm.shell.common.SystemWindows;
-import com.android.wm.shell.common.split.SplitScreenConstants;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
+import com.android.wm.shell.shared.split.SplitScreenConstants;
 
 /**
  * Handles the interaction logic with the {@link TvSplitMenuView}.

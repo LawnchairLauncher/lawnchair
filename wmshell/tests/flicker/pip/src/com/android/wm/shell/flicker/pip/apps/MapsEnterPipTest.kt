@@ -29,6 +29,8 @@ import android.tools.device.apphelpers.MapsAppHelper
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
+import android.tools.flicker.subject.layers.LayersTraceSubject.Companion.VISIBLE_FOR_MORE_THAN_ONE_ENTRY_IGNORE_LAYERS
+import android.tools.traces.component.ComponentRegexMatcher
 import androidx.test.filters.RequiresDevice
 import org.junit.Assume
 import org.junit.FixMethodOrder
@@ -40,7 +42,7 @@ import org.junit.runners.Parameterized
 /**
  * Test entering pip from Maps app by interacting with the app UI
  *
- * To run this test: `atest WMShellFlickerTests:MapsEnterPipTest`
+ * To run this test: `atest WMShellFlickerTestsPipAppsCSuite:MapsEnterPipTest`
  *
  * Actions:
  * ```
@@ -63,7 +65,7 @@ import org.junit.runners.Parameterized
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 open class MapsEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransition(flicker) {
-    override val standardAppHelper: MapsAppHelper = MapsAppHelper(instrumentation)
+    override val pipApp: MapsAppHelper = MapsAppHelper(instrumentation)
 
     override val permissions: Array<String> =
         arrayOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -110,23 +112,23 @@ open class MapsEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransition
 
             // normal app open through the Launcher All Apps
             // var mapsAddressOption = "Golden Gate Bridge"
-            // standardAppHelper.open()
-            // standardAppHelper.doSearch(mapsAddressOption)
-            // standardAppHelper.getDirections()
-            // standardAppHelper.startNavigation();
+            // pipApp.open()
+            // pipApp.doSearch(mapsAddressOption)
+            // pipApp.getDirections()
+            // pipApp.startNavigation();
 
-            standardAppHelper.launchViaIntent(
+            pipApp.launchViaIntent(
                 wmHelper,
                 MapsAppHelper.getMapIntent(MapsAppHelper.INTENT_NAVIGATION)
             )
 
-            standardAppHelper.waitForNavigationToStart()
+            pipApp.waitForNavigationToStart()
         }
     }
 
     override val defaultTeardown: FlickerBuilder.() -> Unit = {
         teardown {
-            standardAppHelper.exit(wmHelper)
+            pipApp.exit(wmHelper)
             mainHandler.removeCallbacks(updateLocation)
             // the main looper callback might have tried to provide a new location after the
             // provider is no longer in test mode, causing a crash, this prevents it from happening
@@ -137,14 +139,14 @@ open class MapsEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransition
 
     override val thisTransition: FlickerBuilder.() -> Unit = { transitions { tapl.goHome() } }
 
-    /** Checks [standardAppHelper] layer remains visible throughout the animation */
+    /** Checks [pipApp] layer remains visible throughout the animation */
     @Postsubmit
     @Test
     override fun pipAppLayerAlwaysVisible() {
         // For Maps the transition goes through the UI mode change that adds a snapshot overlay so
         // we assert only start/end layers matching the app instead.
-        flicker.assertLayersStart { this.isVisible(standardAppHelper.packageNameMatcher) }
-        flicker.assertLayersEnd { this.isVisible(standardAppHelper.packageNameMatcher) }
+        flicker.assertLayersStart { this.isVisible(pipApp.packageNameMatcher) }
+        flicker.assertLayersEnd { this.isVisible(pipApp.packageNameMatcher) }
     }
 
     @Postsubmit
@@ -153,5 +155,16 @@ open class MapsEnterPipTest(flicker: LegacyFlickerTest) : AppsEnterPipTransition
         // in gestural nav the focus goes to different activity on swipe up with auto enter PiP
         Assume.assumeFalse(flicker.scenario.isGesturalNavigation)
         super.focusChanges()
+    }
+
+    @Postsubmit
+    @Test
+    override fun visibleLayersShownMoreThanOneConsecutiveEntry() {
+        flicker.assertLayers {
+            this.visibleLayersShownMoreThanOneConsecutiveEntry(
+                ignoreLayers = VISIBLE_FOR_MORE_THAN_ONE_ENTRY_IGNORE_LAYERS
+                    + ComponentRegexMatcher(Regex("Background for .* SurfaceView\\[com\\.google\\.android\\.apps\\.maps/com\\.google\\.android\\.maps\\.MapsActivity\\]\\#\\d+"))
+            )
+        }
     }
 }

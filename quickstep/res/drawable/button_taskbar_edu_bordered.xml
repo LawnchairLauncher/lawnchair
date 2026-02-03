@@ -15,7 +15,8 @@
 -->
 
 <inset
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <ripple
         android:color="?android:attr/colorControlHighlight">
         <item>

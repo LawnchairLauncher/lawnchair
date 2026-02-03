@@ -30,6 +30,7 @@
             android:background="@drawable/bg_rounded_corner_bottom_sheet_handle"/>
         <TextView
             android:id="@+id/title"
+            style="@style/WidgetsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"

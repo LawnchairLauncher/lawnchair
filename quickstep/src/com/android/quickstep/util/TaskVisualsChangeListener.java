@@ -16,6 +16,7 @@
 
 package com.android.quickstep.util;
 
+import android.annotation.NonNull;
 import android.os.UserHandle;
 
 import com.android.systemui.shared.recents.model.Task;
@@ -36,7 +37,7 @@ public interface TaskVisualsChangeListener {
     /**
      * Called when the icon for a task changes
      */
-    default void onTaskIconChanged(String pkg, UserHandle user) {}
+    default void onTaskIconChanged(@NonNull String pkg, @NonNull UserHandle user) {}
 
     /**
      * Called when the icon for a task changes

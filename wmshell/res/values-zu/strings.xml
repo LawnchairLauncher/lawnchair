@@ -36,6 +36,7 @@
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Le-app ingavulwa kuphela ewindini eli-1."</string>
     <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Uhlelo lokusebenza kungenzeka lungasebenzi kusibonisi sesibili."</string>
     <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Uhlelo lokusebenza alusekeli ukuqalisa kuzibonisi zesibili."</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"I-app ayilisekeli ibhamuza"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Isihlukanisi sokuhlukanisa isikrini"</string>
     <string name="divider_title" msgid="1963391955593749442">"Isihlukanisi sokuhlukanisa isikrini"</string>
     <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Isikrini esigcwele esingakwesokunxele"</string>
@@ -43,6 +44,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Kwesokunxele ngo-50%"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Kwesokunxele ngo-30%"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Isikrini esigcwele esingakwesokudla"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Shintshanisa i-app ephezulu ngengaphansi"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Shintshanisa i-app engakwesokunxele naleyo engakwesokudla"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Isikrini esigcwele esiphezulu"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Okuphezulu okungu-70%"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Okuphezulu okungu-50%"</string>
@@ -65,10 +68,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Hambisa phezulu ngakwesokudla"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Hambisa inkinobho ngakwesokunxele"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Hambisa inkinobho ngakwesokudla"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"nweba imenyu"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"goqa imenyu"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"Iya kwesokunxele"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"Iya kwesokudla"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"nweba <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"goqa <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> izilungiselelo"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"Cashisa ibhamuza"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"Hambisa esikrinini esigcwele"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Ungayibhamuzi ingxoxo"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"Xoxa usebenzisa amabhamuza"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"Izingxoxo ezintsha zivela njengezithonjana ezintantayo, noma amabhamuza. Thepha ukuze uvule ibhamuza. Hudula ukuze ulihambise."</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Izinkinga zekhamera?\nThepha ukuze uyilinganise kabusha"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Akuyilungisanga?\nThepha ukuze ubuyele"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Azikho izinkinga zekhamera? Thepha ukuze ucashise."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"Imenyu ye-app ingatholakala lapha"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"Faka ukwenziwa kwamawindi amaningi kwedeskithophu ukuze uvule ama-app amaningi ndawonye"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"Buyela esikrinini esigcwele noma nini ukusuka kumenyu ye-app"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Bona futhi wenze okuningi"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Hudula kwenye i-app mayelana nokuhlukanisa isikrini"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Thepha kabili ngaphandle kwe-app ukuze uyimise kabusha"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"Qala kabusha"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Ungabonisi futhi"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Thepha kabili ukuze\nuhambise le-app"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"Khulisa"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"Nciphisa"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"Vala"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"Khulisa i-<xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"Buyisela i-<xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"Nciphisa i-<xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"Vala i-<xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="back_button_text" msgid="1469718707134137085">"Emuva"</string>
-    <string name="handle_text" msgid="1766582106752184456">"Isibambo"</string>
+    <string name="handle_text" msgid="4419667835599523257">"Inkomba ye-App"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"Isithonjana Se-app"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"Isikrini esigcwele"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"Imodi Yedeskithophu"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"Ukwenziwa kwamawindi amaningi kwedeskithophu"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"Hlukanisa isikrini"</string>
     <string name="more_button_text" msgid="3655388105592893530">"Okwengeziwe"</string>
     <string name="float_button_text" msgid="9221657008391364581">"Iflowuthi"</string>
     <string name="select_text" msgid="5139083974039906583">"Khetha"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"Isithombe-skrini"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"Vula kubhrawuza"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"Vula Ku-app"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"Iwindi Elisha"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"Phatha Amawindi"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Shintsha ukubukeka kwesilinganiselo"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"Lungiselela Ukubuka"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"Isithonjana Sephutha"</string>
     <string name="close_text" msgid="4986518933445178928">"Vala"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"Vala Imenyu"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"Vula Imenyu"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (Ukwenziwa kwamawindi amaningi kwedeskithophu)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Khulisa Isikrini Sifike Ekugcineni"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Thwebula Isikrini"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"Shintsha usayizi"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"I-app ayikwazi ukuhanjiswa lapha"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"Ivula iwindi elisha le-app"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"Ivala iwindi le-app"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"Ukunciphisa iwindi le-app"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (Igxilile)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (Akugxilile)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"Okugxilile"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"Buyisela"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"Khulisa"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"Buyisela"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"Chofoza kwesobunxele"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"Chofoza kwesokudla"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"Shintsha usayizi we-app yewindi ngakwesokunxele"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"Shintsha usayizi we-app yewindi ngakwesokudla"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"Khulisa noma buyisela usayizi wewindi"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"Vula Imenyu"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"Faka i-<xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"Shintsha usayizi wewindi ngakwesokunxele"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"Shintsha usayizi wewindi ngakwesokudla"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"Khulisa noma buyisela usayizi wewindi"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"Khulisa usayizi wewindi le-app"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"Buyisela usayizi wewindi"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"Nciphisa iwindi le-app"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"Vala iwindi le-app"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"Vula amasethingi ngokuzenzakalela"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Khetha indlela yokuvula amalinki ewebhu ale app"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"Ku-app"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"Kubhrawuza yakho"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"KULUNGILE"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"Ngokushesha vula ama-app ebhrawuzeni yakho lapha"</string>
 </resources>

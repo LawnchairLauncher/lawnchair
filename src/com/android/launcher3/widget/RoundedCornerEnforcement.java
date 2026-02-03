@@ -16,6 +16,8 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.Flags.useSystemRadiusForAppWidgets;
+
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.content.res.Resources;
@@ -28,9 +30,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 
+import com.android.launcher3.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,13 +70,8 @@ public class RoundedCornerEnforcement {
     /**
      * Check whether the app widget has opted out of the enforcement.
      */
-    public static boolean hasAppWidgetOptedOut(@NonNull View appWidget, @NonNull View background) {
+    public static boolean hasAppWidgetOptedOut(@NonNull View background) {
         return background.getId() == android.R.id.background && background.getClipToOutline();
-    }
-
-    /** Check if the app widget is in the deny list. */
-    public static boolean isRoundedCornerEnabled() {
-        return sRoundedCornerEnabled;
     }
 
     /**
@@ -109,6 +105,10 @@ public class RoundedCornerEnforcement {
             return res.getDimension(R.dimen.enforced_rounded_corner_max_radius);
         }
         float systemRadius = res.getDimension(android.R.dimen.system_app_widget_background_radius);
+        if (useSystemRadiusForAppWidgets()) {
+            return systemRadius;
+        }
+
         float defaultRadius = res.getDimension(R.dimen.enforced_rounded_corner_max_radius);
         return Math.min(defaultRadius, systemRadius);
     }

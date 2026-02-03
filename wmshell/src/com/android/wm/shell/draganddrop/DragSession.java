@@ -17,7 +17,9 @@
 package com.android.wm.shell.draganddrop;
 
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD;
+import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
+import static android.content.ClipDescription.EXTRA_HIDE_DRAG_SOURCE_TASK_ID;
 
 import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
@@ -30,7 +32,9 @@ import android.content.pm.ActivityInfo;
 
 import androidx.annotation.Nullable;
 
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.common.DisplayLayout;
+import com.android.wm.shell.protolog.ShellProtoLogGroup;
 
 import java.util.List;
 
@@ -39,6 +43,7 @@ import java.util.List;
  */
 public class DragSession {
     private final ActivityTaskManager mActivityTaskManager;
+    @Nullable
     private final ClipData mInitialDragData;
     private final int mInitialDragFlags;
 
@@ -61,6 +66,7 @@ public class DragSession {
     @WindowConfiguration.ActivityType
     int runningTaskActType = ACTIVITY_TYPE_STANDARD;
     boolean dragItemSupportsSplitscreen;
+    final int hideDragSourceTaskId;
 
     DragSession(ActivityTaskManager activityTaskManager,
             DisplayLayout dispLayout, ClipData data, int dragFlags) {
@@ -68,34 +74,70 @@ public class DragSession {
         mInitialDragData = data;
         mInitialDragFlags = dragFlags;
         displayLayout = dispLayout;
+        hideDragSourceTaskId = data != null && data.getDescription().getExtras() != null
+                ? data.getDescription().getExtras().getInt(EXTRA_HIDE_DRAG_SOURCE_TASK_ID, -1)
+                : -1;
+        ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP,
+                "Extracting drag source taskId: taskId=%d", hideDragSourceTaskId);
     }
 
     /**
      * Returns the clip description associated with the drag.
-     * @return
      */
     ClipDescription getClipDescription() {
         return mInitialDragData.getDescription();
     }
 
     /**
-     * Updates the session data based on the current state of the system.
+     * Updates the running task for this drag session.
      */
-    void update() {
-        List<ActivityManager.RunningTaskInfo> tasks =
-                mActivityTaskManager.getTasks(1, false /* filterOnlyVisibleRecents */);
-        if (!tasks.isEmpty()) {
-            final ActivityManager.RunningTaskInfo task = tasks.get(0);
+    void updateRunningTask() {
+        final boolean hideDragSourceTask = hideDragSourceTaskId != -1;
+        final List<ActivityManager.RunningTaskInfo> tasks =
+                mActivityTaskManager.getTasks(5, false /* filterOnlyVisibleRecents */);
+        for (int i = 0; i < tasks.size(); i++) {
+            final ActivityManager.RunningTaskInfo task = tasks.get(i);
+            if (hideDragSourceTask && hideDragSourceTaskId == task.taskId) {
+                ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP,
+                        "Skipping running task: id=%d component=%s", task.taskId,
+                        task.baseIntent != null ? task.baseIntent.getComponent() : "null");
+                continue;
+            }
+            if (!task.isVisible) {
+                // Skip invisible tasks
+                continue;
+            }
+            if (task.configuration.windowConfiguration.isAlwaysOnTop()) {
+                // Skip always-on-top floating tasks
+                continue;
+            }
             runningTaskInfo = task;
             runningTaskWinMode = task.getWindowingMode();
             runningTaskActType = task.getActivityType();
+            ProtoLog.v(ShellProtoLogGroup.WM_SHELL_DRAG_AND_DROP,
+                    "Running task: id=%d component=%s", task.taskId,
+                    task.baseIntent != null ? task.baseIntent.getComponent() : "null");
+            break;
+        }
+    }
+
+    /**
+     * Updates the session data based on the current state of the system at the start of the drag.
+     */
+    void initialize(boolean skipUpdateRunningTask) {
+        if (!skipUpdateRunningTask) {
+            updateRunningTask();
         }
 
         activityInfo = mInitialDragData.getItemAt(0).getActivityInfo();
         // TODO: This should technically check & respect config_supportsNonResizableMultiWindow
         dragItemSupportsSplitscreen = activityInfo == null
                 || ActivityInfo.isResizeableMode(activityInfo.resizeMode);
-        appData = mInitialDragData.getItemAt(0).getIntent();
-        launchableIntent = DragUtils.getLaunchIntent(mInitialDragData, mInitialDragFlags);
+        appData = DragUtils.isAppDrag(getClipDescription())
+                ? mInitialDragData.getItemAt(0).getIntent()
+                : null;
+        launchableIntent = appData != null
+                ? null
+                : DragUtils.getLaunchIntent(mInitialDragData, mInitialDragFlags);
     }
 }

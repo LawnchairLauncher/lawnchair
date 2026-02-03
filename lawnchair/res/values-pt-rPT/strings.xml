@@ -91,7 +91,7 @@
     <string name="wallpaper">Papel de parede</string>
     <string name="style">Style</string>
     <string name="background_opacity">Opacidade do fundo</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">Fundo da Pesquisa em separado</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiado para a área de transferência</string>
     <string name="calculator_search_result_copied_toast">Resultado copiado para a área de transferência</string>
@@ -102,6 +102,8 @@
     <string name="caddy_beta">Organizador (Beta)</string>
     <string name="caddy">Organizador</string>
     <string name="app_drawer_folder">App drawer folders</string>
+    <string name="selected_apps">Selecionar aplicações</string>
+    <string name="add_apps">Adicionar aplicações</string>
     <string name="app_drawer_folder_settings">Pasta do Menu</string>
     <string name="add_folder">Create folder</string>
     <string name="edit_folder">Editar pasta</string>
@@ -120,6 +122,11 @@
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Avançado</string>
+    <!-- Draggable -->
+    <string name="reorderable_active_items">Arquivar itens</string>
+    <string name="reorderable_disabled_items">Outros itens</string>
+    <string name="reorderable_disabled_hint">Disabled items will appear here. Drag an item here or tap the remove button to make an item active.</string>
+    <string name="reorderable_add_hint_items">Active items will appear here. Drag an item here or tap the add button to make an item active.</string>
     <!--
 
     Preference Dashboard
@@ -130,6 +137,7 @@
     <string name="general_description">Cores, pacotes de ícones, pontos de notificação</string>
     <string name="home_screen_label">Ecrã principal</string>
     <string name="home_screen_description">Feed, grelha, ícones</string>
+    <string name="home_screen_actions">Home screen actions</string>
     <string name="dock_label">Doca</string>
     <string name="dock_description">Barra de pesquisa, contagem de ícones</string>
     <string name="app_drawer_label">Menu de aplicações</string>
@@ -166,6 +174,9 @@
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
+    <string name="folder_shape_label">Folder</string>
+    <string name="app_icon_shape_label">Aplicação</string>
     <string name="gesturenavcontract_label">GestureNavContract API</string>
     <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
@@ -212,6 +223,8 @@ Transparentes</string>
     <string name="adaptive_icon_background_description">Usar 100% de luminosidade do fundo para branco</string>
     <string name="reset_custom_icons">Redefinir Ícones Personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados serão redefinidos. Deseja continuar?</string>
+    <string name="remove_all_views_from_home_screen">Limpar área de trabalho</string>
+    <string name="remove_all_views_from_home_screen_desc">A área de trabalho vai ser limpa. Deseja continuar?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Ícones</string>
     <string name="icon_picker_reset_to_default">Redefinir para padrão</string>
@@ -262,7 +275,7 @@ Transparentes</string>
     <string name="themed_icon_title">Ícones temáticos</string>
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Ecrã principal</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Área de trabalho e menu de aplicações</string>
     <string name="lawnicons_not_installed_description">Sem pacotes de ícones suportados</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Adicionar fontes</string>
@@ -328,7 +341,7 @@ Transparentes</string>
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persa</string>
-    <string name="smartspace_calendar_chinese">Chinese</string>
+    <string name="smartspace_calendar_lunar">Lunar</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
     <string name="smartspace_battery_fast_charging">Fast charging</string>
@@ -352,6 +365,14 @@ Transparentes</string>
     <string name="smartspace_weather">Meteorologia</string>
     <string name="smartspace_battery_status">Estado da bateria</string>
     <string name="smartspace_now_playing">A reproduzir</string>
+    <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Onboarding strings -->
+    <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
+    <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
+    <string name="onboarding_major_upgrade_subtitle">See what\'s new!</string>
+    <string name="onboarding_welcome">Welcome to Lawnchair!</string>
+    <string name="onboarding_swipe_up">Swipe up to open the App Drawer</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Número máximo de alvos</string>
     <string name="open_smartspacer_settings">Abrir definições do Smartspacer</string>
@@ -379,21 +400,24 @@ Transparentes</string>
     <string name="translate">Traduzir</string>
     <string name="donate">Doar</string>
     <string name="product">Produto</string>
-    <string name="design_and_development"></string>
+    <string name="design_and_development">Design e programação</string>
     <string name="development">Desenvolvimento</string>
     <string name="quickswitch_maintenance">Manutenção do QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support and PR</string>
-    <string name="community">Community</string>
+    <string name="support_and_pr">Apoio &amp; PR</string>
+    <string name="community">Comunidade</string>
     <string name="telegram">Telegram</string>
     <string name="news">Novidades</string>
     <string name="legal">Legal</string>
     <string name="acknowledgements">Reconhecimentos</string>
-    <string name="privacy_policy">Privacy policy</string>
+    <string name="privacy_policy">Política de privacidade</string>
     <string name="contributor_status_active">Ativo</string>
     <string name="update_check_failed">Falha na procura de atualizações</string>
     <string name="major_update_label">Breaking change!</string>
     <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
+    <string name="pro_disabled_by_unknown">Cannot update!</string>
+    <string name="pro_disabled_by_major_is_newer">Cannot update, This build is way too new!</string>
+    <string name="updater">Updater</string>
     <!--
 
     Backup and restore
@@ -466,12 +490,14 @@ Transparentes</string>
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotação do ecrã principal</string>
     <string name="home_screen_rotation_description">Permitir a rotação do ecrã inicial quando rodar o dispositivo</string>
+    <string name="auto_updater_label">Auto updater</string>
+    <string name="auto_updater_description">Automatically check for Nightly update when going to About section</string>
     <string name="wallpaper_blur">Desfocar o papel de parede (experimental)</string>
     <string name="wallpaper_background_blur">Intensidade do desfoque</string>
     <string name="wallpaper_background_blur_factor">Limite do fator</string>
-    <string name="home_lawn_deck_label">Deck</string>
-    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_label">Biblioteca</string>
+    <string name="home_lawn_deck_label_beta">Biblioteca (Beta)</string>
+    <string name="home_lawn_deck_description">Aceda às suas aplicações na Biblioteca, desenhada para a simplicidade e organização</string>
     <string name="auto_add_shortcuts_label">Adicionar novas aplicações ao ecrã principal</string>
     <string name="minus_one_enable">Mostrar feed</string>
     <string name="minus_one_unavailable">Sem aplicações de feed instaladas</string>
@@ -481,7 +507,7 @@ Transparentes</string>
     <string name="wallpaper_depth_effect_label">Efeito de profundidade do papel de parede</string>
     <string name="wallpaper_depth_effect_description">Aproximar e afastar o papel de parede ao transitar entre as áreas do launcher</string>
     <string name="show_sys_ui_scrim">Sombra superior</string>
-    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_label">Rolar infinito</string>
     <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Grelha do ecrã principal</string>
     <string name="home_screen_lock">Bloquear o ecrã principal</string>
@@ -594,7 +620,7 @@ Transparentes</string>
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Pesquisa</string>
+    <string name="all_apps_device_search_hint">Search web and more</string>
     <string name="all_apps_search_bar_hint">Pesquisar aplicações</string>
     <string name="all_apps_no_search_results">Nenhum aplicativo encontrado correspondente a \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Da web</string>
@@ -675,7 +701,7 @@ Transparentes</string>
     <string name="permissions_photos_videos_full">Access your full media library?</string>
     <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
     <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos_manage_selected">Gerir os itens selecionados</string>
     <!-- External storage -->
     <string name="permissions_external_storage">External storage access needed</string>
     <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
@@ -694,4 +720,6 @@ Transparentes</string>
     <string name="grant_requested_permissions">Conceder permissões</string>
     <string name="permissions_needed">Permissions needed</string>
     <string name="grant_requested_permissions_tap">Ativar permissões</string>
+    <!-- Message shown when all home screen views are removed -->
+    <string name="home_screen_all_views_removed_msg">Área de trabalho limpa</string>
 </resources>

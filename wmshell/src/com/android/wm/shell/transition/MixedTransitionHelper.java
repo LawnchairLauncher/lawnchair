@@ -17,13 +17,14 @@
 package com.android.wm.shell.transition;
 
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
+import static android.view.WindowManager.TRANSIT_PIP;
 import static android.view.WindowManager.TRANSIT_TO_BACK;
 import static android.window.TransitionInfo.FLAG_IS_WALLPAPER;
 
-import static com.android.wm.shell.common.split.SplitScreenConstants.FLAG_IS_DIVIDER_BAR;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
-import static com.android.wm.shell.pip.PipAnimationController.ANIM_TYPE_ALPHA;
+import static com.android.wm.shell.pip.PipTransitionController.ANIM_TYPE_ALPHA;
 import static com.android.wm.shell.shared.TransitionUtil.isOpeningMode;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.FLAG_IS_DIVIDER_BAR;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_UNDEFINED;
 import static com.android.wm.shell.splitscreen.SplitScreen.STAGE_TYPE_MAIN;
 import static com.android.wm.shell.splitscreen.SplitScreen.STAGE_TYPE_SIDE;
 import static com.android.wm.shell.splitscreen.SplitScreen.STAGE_TYPE_UNDEFINED;
@@ -35,10 +36,11 @@ import android.annotation.Nullable;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.keyguard.KeyguardTransitionHandler;
 import com.android.wm.shell.pip.PipTransitionController;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
+import com.android.wm.shell.shared.pip.PipFlags;
 import com.android.wm.shell.splitscreen.SplitScreen;
 import com.android.wm.shell.splitscreen.StageCoordinator;
 
@@ -54,6 +56,7 @@ public class MixedTransitionHelper {
         ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS, " Animating a mixed transition for "
                 + "entering PIP while Split-Screen is foreground.");
         TransitionInfo.Change pipChange = null;
+        TransitionInfo.Change pipActivityChange = null;
         TransitionInfo.Change wallpaper = null;
         final TransitionInfo everythingElse =
                 subCopy(info, TRANSIT_TO_BACK, true /* changes */);
@@ -67,6 +70,13 @@ public class MixedTransitionHelper {
                 }
                 pipChange = change;
                 // going backwards, so remove-by-index is fine.
+                everythingElse.getChanges().remove(i);
+            } else if (change.getTaskInfo() == null && change.getParent() != null
+                    && pipChange != null && change.getParent().equals(pipChange.getContainer())) {
+                // Cache the PiP activity if it's a target and cached pip task change is its parent;
+                // note that we are bottom-to-top, so if such activity has a task
+                // that is also a target, then it must have been cached already as pipChange.
+                pipActivityChange = change;
                 everythingElse.getChanges().remove(i);
             } else if (isHomeOpening(change)) {
                 homeIsOpening = true;
@@ -139,8 +149,18 @@ public class MixedTransitionHelper {
             }
 
             pipHandler.setEnterAnimationType(ANIM_TYPE_ALPHA);
-            pipHandler.startEnterAnimation(pipChange, startTransaction, finishTransaction,
-                    finishCB);
+            if (PipFlags.isPip2ExperimentEnabled()) {
+                TransitionInfo pipInfo = subCopy(info, TRANSIT_PIP, false /* withChanges */);
+                pipInfo.getChanges().add(pipChange);
+                if (pipActivityChange != null) {
+                    pipInfo.getChanges().add(pipActivityChange);
+                }
+                pipHandler.startAnimation(mixed.mTransition, pipInfo, startTransaction,
+                        finishTransaction, finishCB);
+            } else {
+                pipHandler.startEnterAnimation(pipChange, startTransaction, finishTransaction,
+                        finishCB);
+            }
             // Dispatch the rest of the transition normally. This will most-likely be taken by
             // recents or default handler.
             mixed.mLeftoversHandler = player.dispatchTransition(mixed.mTransition, everythingElse,
@@ -184,7 +204,8 @@ public class MixedTransitionHelper {
 
         for (int i = info.getChanges().size() - 1; i >= 0; --i) {
             TransitionInfo.Change change = info.getChanges().get(i);
-            if (change == pipChange || !isOpeningMode(change.getMode())) {
+            if (change == pipChange || !isOpeningMode(change.getMode()) ||
+                    change.getTaskInfo() == null) {
                 // Ignore the change/task that's going into Pip or not opening
                 continue;
             }

@@ -53,9 +53,9 @@ DeviceProfile:
 	bottomSheetTopPadding: 114.0px (43.42857dp)
 	bottomSheetOpenDuration: 267
 	bottomSheetCloseDuration: 267
-	bottomSheetWorkspaceScale: 1.0
+	bottomSheetWorkspaceScale: 0.97
 	bottomSheetDepth: 0.0
-	allAppsShiftRange: 788.0px (300.1905dp)
+	allAppsShiftRange: 1080.0px (411.42856dp)
 	allAppsOpenDuration: 600
 	allAppsCloseDuration: 300
 	allAppsIconSizePx: 147.0px (56.0dp)
@@ -66,7 +66,7 @@ DeviceProfile:
 	allAppsBorderSpacePxX: 42.0px (16.0dp)
 	allAppsBorderSpacePxY: 42.0px (16.0dp)
 	numShownAllAppsColumns: 5
-	allAppsPadding.top: 0.0px (0.0dp)
+	allAppsPadding.top: 74.0px (28.190475dp)
 	allAppsPadding.left: 0.0px (0.0dp)
 	allAppsPadding.right: 0.0px (0.0dp)
 	allAppsLeftRightMargin: 0.0px (0.0dp)
@@ -77,6 +77,8 @@ DeviceProfile:
 	hotseatBarBottomSpacePx: 0.0px (0.0dp)
 	mHotseatBarEdgePaddingPx: 63.0px (24.0dp)
 	mHotseatBarWorkspaceSpacePx: 42.0px (16.0dp)
+	inlineNavButtonsEndSpacingPx: 0.0px (0.0dp)
+	navButtonsLayoutWidthPx: 0.0px (0.0dp)
 	hotseatBarEndOffset: 0.0px (0.0dp)
 	hotseatQsbSpace: 0.0px (0.0dp)
 	hotseatQsbHeight: 0.0px (0.0dp)
@@ -115,7 +117,6 @@ DeviceProfile:
 	overviewActionsTopMarginPx: 0.0px (0.0dp)
 	overviewActionsHeight: 0.0px (0.0dp)
 	overviewActionsClaimedSpaceBelow: 63.0px (24.0dp)
-	overviewActionsButtonSpacing: 0.0px (0.0dp)
 	overviewPageSpacing: 0.0px (0.0dp)
 	overviewRowSpacing: 0.0px (0.0dp)
 	overviewGridSideMargin: 0.0px (0.0dp)

@@ -25,7 +25,7 @@ import androidx.test.uiautomator.UiDevice
 import com.android.launcher3.tapl.LauncherInstrumentation
 import com.android.server.wm.flicker.helpers.DesktopModeAppHelper
 import com.android.server.wm.flicker.helpers.SimpleAppHelper
-import com.android.window.flags.Flags
+import com.android.window.flags2.Flags
 import com.android.wm.shell.flicker.service.common.Utils
 import org.junit.After
 import org.junit.Assume

@@ -17,12 +17,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/keyboard_quick_switch_view"
+    android:contentDescription="@string/quick_switch_content_description"
+    android:accessibilityPaneTitle="@string/quick_switch_pane_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/keyboard_quick_switch_margin_top"
     android:layout_marginHorizontal="@dimen/keyboard_quick_switch_margin_ends"
+    android:layout_gravity="center_horizontal"
     android:background="@drawable/keyboard_quick_switch_view_background"
-    android:clipToOutline="true"
     android:alpha="0"
     android:visibility="invisible"
     android:focusableInTouchMode="true"
@@ -41,8 +44,8 @@
             android:layout_width="@dimen/keyboard_quick_switch_no_recent_items_icon_size"
             android:layout_height="@dimen/keyboard_quick_switch_no_recent_items_icon_size"
             android:layout_marginBottom="@dimen/keyboard_quick_switch_no_recent_items_icon_margin"
-            android:src="@drawable/ic_empty_recents"
-            android:tint="?attr/materialColorOnSurfaceInverse"
+            android:src="@drawable/view_carousel"
+            android:tint="@color/materialColorOnSurface"
             android:importantForAccessibility="no"
 
             app:layout_constraintVertical_chainStyle="packed"
@@ -65,6 +68,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <ImageButton
+        android:id="@+id/scroll_button_start"
+        android:src="@drawable/ic_chevron_start"
+        android:contentDescription="@string/quick_switch_scroll_arrow_left"
+        android:background="@drawable/bg_keyboard_quick_switch_scroll_button"
+        android:foreground="@drawable/fg_keyboard_quick_switch_scroll_button"
+        android:tint="@color/keyboard_quick_switch_scroll_button_icon"
+        android:layout_width="@dimen/keyboard_quick_switch_scroll_button_width"
+        android:layout_height="@dimen/keyboard_quick_switch_scroll_button_height"
+        android:paddingHorizontal="@dimen/keyboard_quick_switch_scroll_button_horizontal_padding"
+        android:paddingVertical="@dimen/keyboard_quick_switch_scroll_button_vertical_padding"
+        android:layout_marginStart="@dimen/keyboard_quick_switch_view_spacing"
+        android:visibility="gone"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <HorizontalScrollView
         android:id="@+id/scroll_view"
         android:layout_width="wrap_content"
@@ -74,9 +95,12 @@
         android:alpha="0"
         android:visibility="gone"
 
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constrainedWidth="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toEndOf="@id/scroll_button_start"
+        app:layout_constraintEnd_toStartOf="@id/scroll_button_end">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/content"
@@ -86,5 +110,23 @@
             android:clipToPadding="false"/>
 
     </HorizontalScrollView>
+
+    <ImageButton
+        android:id="@+id/scroll_button_end"
+        android:src="@drawable/ic_chevron_end"
+        android:contentDescription="@string/quick_switch_scroll_arrow_right"
+        android:background="@drawable/bg_keyboard_quick_switch_scroll_button"
+        android:foreground="@drawable/fg_keyboard_quick_switch_scroll_button"
+        android:tint="@color/keyboard_quick_switch_scroll_button_icon"
+        android:layout_width="@dimen/keyboard_quick_switch_scroll_button_width"
+        android:layout_height="@dimen/keyboard_quick_switch_scroll_button_height"
+        android:paddingHorizontal="@dimen/keyboard_quick_switch_scroll_button_horizontal_padding"
+        android:paddingVertical="@dimen/keyboard_quick_switch_scroll_button_vertical_padding"
+        android:layout_marginEnd="@dimen/keyboard_quick_switch_view_spacing"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </com.android.launcher3.taskbar.KeyboardQuickSwitchView>

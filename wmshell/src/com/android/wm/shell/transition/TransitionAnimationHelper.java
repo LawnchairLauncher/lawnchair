@@ -19,43 +19,42 @@ package com.android.wm.shell.transition;
 import static android.app.ActivityOptions.ANIM_FROM_STYLE;
 import static android.app.ActivityOptions.ANIM_NONE;
 import static android.view.WindowManager.TRANSIT_CLOSE;
+import static android.view.WindowManager.TRANSIT_CLOSE_PREPARE_BACK_NAVIGATION;
 import static android.view.WindowManager.TRANSIT_OPEN;
+import static android.view.WindowManager.TRANSIT_PREPARE_BACK_NAVIGATION;
 import static android.view.WindowManager.TRANSIT_TO_BACK;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
-import static android.view.WindowManager.transitTypeToString;
 import static android.window.TransitionInfo.FLAGS_IS_NON_APP_WINDOW;
 import static android.window.TransitionInfo.FLAG_IS_DISPLAY;
-import static android.window.TransitionInfo.FLAG_STARTING_WINDOW_TRANSFER_RECIPIENT;
 import static android.window.TransitionInfo.FLAG_TRANSLUCENT;
 
 import static com.android.internal.policy.TransitionAnimation.WALLPAPER_TRANSITION_CLOSE;
 import static com.android.internal.policy.TransitionAnimation.WALLPAPER_TRANSITION_INTRA_CLOSE;
 import static com.android.internal.policy.TransitionAnimation.WALLPAPER_TRANSITION_INTRA_OPEN;
 import static com.android.internal.policy.TransitionAnimation.WALLPAPER_TRANSITION_OPEN;
+import static com.android.wm.shell.transition.Transitions.transitTypeToString;
 
 import android.annotation.ColorInt;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
+import android.app.WindowConfiguration;
 import android.graphics.Color;
 import android.graphics.Insets;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.graphics.Shader;
-import android.view.Surface;
+import android.util.SparseArray;
+import android.view.InsetsSource;
+import android.view.InsetsState;
 import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.window.ScreenCapture;
 import android.window.TransitionInfo;
 
 import com.android.internal.R;
 import com.android.internal.policy.TransitionAnimation;
-import com.android.internal.protolog.common.ProtoLog;
-import com.android.window.flags.Flags;
+import com.android.internal.protolog.ProtoLog;
+import com.android.wm.shell.common.DisplayController;
+import com.android.wm.shell.common.DisplayInsetsController;
+import com.android.wm.shell.common.DisplayLayout;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 import com.android.wm.shell.shared.TransitionUtil;
 
@@ -72,12 +71,10 @@ public class TransitionAnimationHelper {
         final int changeFlags = change.getFlags();
         final boolean enter = TransitionUtil.isOpeningType(changeMode);
         final boolean isTask = change.getTaskInfo() != null;
-        final TransitionInfo.AnimationOptions options;
-        if (Flags.moveAnimationOptionsToChange()) {
-            options = change.getAnimationOptions();
-        } else {
-            options = info.getAnimationOptions();
-        }
+        final boolean isFreeform = isTask && change.getTaskInfo().isFreeform();
+        final boolean isCoveredByOpaqueFullscreenChange =
+                isCoveredByOpaqueFullscreenChange(info, change);
+        final TransitionInfo.AnimationOptions options = change.getAnimationOptions();
         final int overrideType = options != null ? options.getType() : ANIM_NONE;
         int animAttr = 0;
         boolean translucent = false;
@@ -107,6 +104,24 @@ public class TransitionAnimationHelper {
             animAttr = enter
                     ? R.styleable.WindowAnimation_wallpaperCloseEnterAnimation
                     : R.styleable.WindowAnimation_wallpaperCloseExitAnimation;
+        } else if (!isCoveredByOpaqueFullscreenChange
+                && isFreeform
+                && TransitionUtil.isOpeningMode(type)
+                && change.getMode() == TRANSIT_TO_BACK) {
+            // Set translucent here so TransitionAnimation loads the appropriate animations for
+            // translucent activities and tasks later
+            translucent = (changeFlags & FLAG_TRANSLUCENT) != 0;
+            // The main Task is launching or being brought to front, this Task is being minimized
+            animAttr = R.styleable.WindowAnimation_activityCloseExitAnimation;
+        } else if (!isCoveredByOpaqueFullscreenChange
+                && isFreeform
+                && type == TRANSIT_TO_FRONT
+                && change.getMode() == TRANSIT_TO_FRONT) {
+            // Set translucent here so TransitionAnimation loads the appropriate animations for
+            // translucent activities and tasks later
+            translucent = (changeFlags & FLAG_TRANSLUCENT) != 0;
+            // Bring the minimized Task back to front
+            animAttr = R.styleable.WindowAnimation_activityOpenEnterAnimation;
         } else if (type == TRANSIT_OPEN) {
             // We will translucent open animation for translucent activities and tasks. Choose
             // WindowAnimation_activityOpenEnterAnimation and set translucent here, then
@@ -199,6 +214,15 @@ public class TransitionAnimationHelper {
      */
     public static int getTransitionTypeFromInfo(@NonNull TransitionInfo info) {
         final int type = info.getType();
+        // This back navigation is canceled, check whether the transition should be open or close
+        if (type == TRANSIT_PREPARE_BACK_NAVIGATION
+                || type == TRANSIT_CLOSE_PREPARE_BACK_NAVIGATION) {
+            if (!info.getChanges().isEmpty()) {
+                final TransitionInfo.Change change = info.getChanges().get(0);
+                return TransitionUtil.isOpeningMode(change.getMode())
+                        ? TRANSIT_OPEN : TRANSIT_CLOSE;
+            }
+        }
         // If the info transition type is opening transition, iterate its changes to see if it
         // has any opening change, if none, returns TRANSIT_CLOSE type for closing animation.
         if (type == TRANSIT_OPEN) {
@@ -246,16 +270,10 @@ public class TransitionAnimationHelper {
      *                      the given transition animation.
      */
     @ColorInt
-    public static int getTransitionBackgroundColorIfSet(@NonNull TransitionInfo info,
-            @NonNull TransitionInfo.Change change, @NonNull Animation a,
-            @ColorInt int defaultColor) {
+    public static int getTransitionBackgroundColorIfSet(@NonNull TransitionInfo.Change change,
+            @NonNull Animation a, @ColorInt int defaultColor) {
         if (!a.getShowBackdrop()) {
             return defaultColor;
-        }
-        if (!Flags.moveAnimationOptionsToChange() && info.getAnimationOptions() != null
-                && info.getAnimationOptions().getBackgroundColor() != 0) {
-            // If available use the background color provided through AnimationOptions
-            return info.getAnimationOptions().getBackgroundColor();
         } else if (a.getBackdropColor() != 0) {
             // Otherwise fallback on the background color provided through the animation
             // definition.
@@ -296,125 +314,97 @@ public class TransitionAnimationHelper {
     }
 
     /**
-     * Adds edge extension surface to the given {@code change} for edge extension animation.
+     * Returns whether there is an opaque fullscreen Change positioned in front of the given Change
+     * in the given TransitionInfo.
      */
-    public static void edgeExtendWindow(@NonNull TransitionInfo.Change change,
-            @NonNull Animation a, @NonNull SurfaceControl.Transaction startTransaction,
-            @NonNull SurfaceControl.Transaction finishTransaction) {
-        // Do not create edge extension surface for transfer starting window change.
-        // The app surface could be empty thus nothing can draw on the hardware renderer, which will
-        // block this thread when calling Surface#unlockCanvasAndPost.
-        if ((change.getFlags() & FLAG_STARTING_WINDOW_TRANSFER_RECIPIENT) != 0) {
-            return;
+    static boolean isCoveredByOpaqueFullscreenChange(
+            TransitionInfo info, TransitionInfo.Change change) {
+        // TransitionInfo#getChanges() are ordered from front to back
+        for (TransitionInfo.Change coveringChange : info.getChanges()) {
+            if (coveringChange == change) {
+                return false;
+            }
+            if ((coveringChange.getFlags() & FLAG_TRANSLUCENT) == 0
+                    && coveringChange.getTaskInfo() != null
+                    && coveringChange.getTaskInfo().getWindowingMode()
+                    == WindowConfiguration.WINDOWING_MODE_FULLSCREEN) {
+                return true;
+            }
         }
-        final Transformation transformationAtStart = new Transformation();
-        a.getTransformationAt(0, transformationAtStart);
-        final Transformation transformationAtEnd = new Transformation();
-        a.getTransformationAt(1, transformationAtEnd);
+        return false;
+    }
 
-        // We want to create an extension surface that is the maximal size and the animation will
-        // take care of cropping any part that overflows.
-        final Insets maxExtensionInsets = Insets.min(
-                transformationAtStart.getInsets(), transformationAtEnd.getInsets());
+    /**
+     * In some situations (eg. TaskBar) the content area of a display appears to be rounded. For
+     * these situations, we may want the animation to also express the same rounded corners (even
+     * though in steady-state, the app internally manages the insets). This class Keeps track of,
+     * and provides, the bounds of rounded-corner display content.
+     *
+     * This is used to enable already-running animations to adapt to changes in taskbar/navbar
+     * position live.
+     */
+    public static class RoundedContentPerDisplay implements
+            DisplayInsetsController.OnInsetsChangedListener {
 
-        final int targetSurfaceHeight = Math.max(change.getStartAbsBounds().height(),
-                change.getEndAbsBounds().height());
-        final int targetSurfaceWidth = Math.max(change.getStartAbsBounds().width(),
-                change.getEndAbsBounds().width());
-        if (maxExtensionInsets.left < 0) {
-            final Rect edgeBounds = new Rect(0, 0, 1, targetSurfaceHeight);
-            final Rect extensionRect = new Rect(0, 0,
-                    -maxExtensionInsets.left, targetSurfaceHeight);
-            final int xPos = maxExtensionInsets.left;
-            final int yPos = 0;
-            createExtensionSurface(change.getLeash(), edgeBounds, extensionRect, xPos, yPos,
-                    "Left Edge Extension", startTransaction, finishTransaction);
-        }
+        /** The current bounds of the display content (post-inset). */
+        final Rect mBounds = new Rect();
 
-        if (maxExtensionInsets.top < 0) {
-            final Rect edgeBounds = new Rect(0, 0, targetSurfaceWidth, 1);
-            final Rect extensionRect = new Rect(0, 0,
-                    targetSurfaceWidth, -maxExtensionInsets.top);
-            final int xPos = 0;
-            final int yPos = maxExtensionInsets.top;
-            createExtensionSurface(change.getLeash(), edgeBounds, extensionRect, xPos, yPos,
-                    "Top Edge Extension", startTransaction, finishTransaction);
-        }
-
-        if (maxExtensionInsets.right < 0) {
-            final Rect edgeBounds = new Rect(targetSurfaceWidth - 1, 0,
-                    targetSurfaceWidth, targetSurfaceHeight);
-            final Rect extensionRect = new Rect(0, 0,
-                    -maxExtensionInsets.right, targetSurfaceHeight);
-            final int xPos = targetSurfaceWidth;
-            final int yPos = 0;
-            createExtensionSurface(change.getLeash(), edgeBounds, extensionRect, xPos, yPos,
-                    "Right Edge Extension", startTransaction, finishTransaction);
-        }
-
-        if (maxExtensionInsets.bottom < 0) {
-            final Rect edgeBounds = new Rect(0, targetSurfaceHeight - 1,
-                    targetSurfaceWidth, targetSurfaceHeight);
-            final Rect extensionRect = new Rect(0, 0,
-                    targetSurfaceWidth, -maxExtensionInsets.bottom);
-            final int xPos = maxExtensionInsets.left;
-            final int yPos = targetSurfaceHeight;
-            createExtensionSurface(change.getLeash(), edgeBounds, extensionRect, xPos, yPos,
-                    "Bottom Edge Extension", startTransaction, finishTransaction);
+        @Override
+        public void insetsChanged(InsetsState insetsState) {
+            Insets insets = Insets.NONE;
+            for (int i = insetsState.sourceSize() - 1; i >= 0; i--) {
+                final InsetsSource source = insetsState.sourceAt(i);
+                if (!source.hasFlags(InsetsSource.FLAG_INSETS_ROUNDED_CORNER)) {
+                    continue;
+                }
+                Rect displayFrame = insetsState.getDisplayFrame();
+                insets = Insets.max(source.calculateInsets(displayFrame, displayFrame, false),
+                        insets);
+            }
+            mBounds.set(insetsState.getDisplayFrame());
+            mBounds.inset(insets);
         }
     }
 
     /**
-     * Takes a screenshot of {@code surfaceToExtend}'s edge and extends it for edge extension
-     * animation.
+     * Keeps track of the bounds of rounded-corner display content (post-inset).
+     *
+     * @see RoundedContentPerDisplay
      */
-    private static SurfaceControl createExtensionSurface(@NonNull SurfaceControl surfaceToExtend,
-            @NonNull Rect edgeBounds, @NonNull Rect extensionRect, int xPos, int yPos,
-            @NonNull String layerName, @NonNull SurfaceControl.Transaction startTransaction,
-            @NonNull SurfaceControl.Transaction finishTransaction) {
-        final SurfaceControl edgeExtensionLayer = new SurfaceControl.Builder()
-                .setName(layerName)
-                .setParent(surfaceToExtend)
-                .setHidden(true)
-                .setCallsite("TransitionAnimationHelper#createExtensionSurface")
-                .setOpaque(true)
-                .setBufferSize(extensionRect.width(), extensionRect.height())
-                .build();
+    public static class RoundedContentTracker implements
+            DisplayController.OnDisplaysChangedListener {
+        final DisplayController mDisplayController;
+        final DisplayInsetsController mDisplayInsetsController;
+        final SparseArray<RoundedContentPerDisplay> mPerDisplay = new SparseArray<>();
 
-        final ScreenCapture.LayerCaptureArgs captureArgs =
-                new ScreenCapture.LayerCaptureArgs.Builder(surfaceToExtend)
-                        .setSourceCrop(edgeBounds)
-                        .setFrameScale(1)
-                        .setPixelFormat(PixelFormat.RGBA_8888)
-                        .setChildrenOnly(true)
-                        .setAllowProtected(false)
-                        .setCaptureSecureLayers(true)
-                        .build();
-        final ScreenCapture.ScreenshotHardwareBuffer edgeBuffer =
-                ScreenCapture.captureLayers(captureArgs);
-
-        if (edgeBuffer == null) {
-            ProtoLog.e(ShellProtoLogGroup.WM_SHELL_TRANSITIONS,
-                    "Failed to capture edge of window.");
-            return null;
+        RoundedContentTracker(DisplayController dc, DisplayInsetsController dic) {
+            mDisplayController = dc;
+            mDisplayInsetsController = dic;
         }
 
-        final BitmapShader shader = new BitmapShader(edgeBuffer.asBitmap(),
-                Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        final Paint paint = new Paint();
-        paint.setShader(shader);
+        void init() {
+            mDisplayController.addDisplayWindowListener(this);
+        }
 
-        final Surface surface = new Surface(edgeExtensionLayer);
-        final Canvas c = surface.lockHardwareCanvas();
-        c.drawRect(extensionRect, paint);
-        surface.unlockCanvasAndPost(c);
-        surface.release();
+        RoundedContentPerDisplay forDisplay(int displayId) {
+            return mPerDisplay.get(displayId);
+        }
 
-        startTransaction.setLayer(edgeExtensionLayer, Integer.MIN_VALUE);
-        startTransaction.setPosition(edgeExtensionLayer, xPos, yPos);
-        startTransaction.setVisibility(edgeExtensionLayer, true);
-        finishTransaction.remove(edgeExtensionLayer);
+        @Override
+        public void onDisplayAdded(int displayId) {
+            final RoundedContentPerDisplay perDisplay = new RoundedContentPerDisplay();
+            mDisplayInsetsController.addInsetsChangedListener(displayId, perDisplay);
+            mPerDisplay.put(displayId, perDisplay);
+            final DisplayLayout dl = mDisplayController.getDisplayLayout(displayId);
+            perDisplay.mBounds.set(0, 0, dl.width(), dl.height());
+        }
 
-        return edgeExtensionLayer;
+        @Override
+        public void onDisplayRemoved(int displayId) {
+            final RoundedContentPerDisplay listener = mPerDisplay.removeReturnOld(displayId);
+            if (listener != null) {
+                mDisplayInsetsController.removeInsetsChangedListener(displayId, listener);
+            }
+        }
     }
 }

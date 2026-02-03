@@ -16,6 +16,7 @@
 
 package com.android.launcher3.util.rule
 
+import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherPrefs
@@ -31,13 +32,12 @@ import org.junit.runners.model.Statement
  * assets/databases/BackupAndRestore to the device. It also set's the needed LauncherPrefs variables
  * needed to kickstart a backup and restore.
  */
-class BackAndRestoreRule : TestRule {
-
-    private val phoneContext = getInstrumentation().targetContext
+class BackAndRestoreRule(private val phoneContext: Context = getInstrumentation().targetContext) :
+    TestRule {
 
     private fun dbBackUp() = File(phoneContext.dataDir.path, "/databasesBackUp")
 
-    private fun dbDirectory() = File(phoneContext.dataDir.path, "/databases")
+    private fun dbDirectory() = phoneContext.getDatabasePath("test").parentFile
 
     private fun isWorkspaceDatabase(rawFileName: String): Boolean {
         val fileName = Paths.get(rawFileName).fileName.pathString
@@ -58,7 +58,7 @@ class BackAndRestoreRule : TestRule {
     }
 
     private fun uploadDatabase(dbName: String) {
-        val file = File(File(getInstrumentation().targetContext.dataDir, "/databases"), dbName)
+        val file = phoneContext.getDatabasePath(dbName)
         file.writeBytes(
             getInstrumentation()
                 .context

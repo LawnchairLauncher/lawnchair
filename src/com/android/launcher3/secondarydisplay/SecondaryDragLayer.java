@@ -39,6 +39,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
@@ -64,8 +65,23 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
     @Override
     public void recreateControllers() {
-        mControllers = new TouchController[]{new CloseAllAppsTouchController(),
-                mActivity.getDragController()};
+        super.recreateControllers();
+        TouchController statusBarController =
+            ApiWrapper.INSTANCE.get(getContext())
+                .createStatusBarTouchController(mContainer, () -> true);
+
+        if (statusBarController != null) {
+            mControllers = new TouchController[]{
+                new CloseAllAppsTouchController(),
+                mContainer.getDragController(),
+                statusBarController
+            };
+        } else {
+            mControllers = new TouchController[]{
+                new CloseAllAppsTouchController(),
+                mContainer.getDragController()
+            };
+        }
     }
 
     /**
@@ -79,10 +95,10 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         mAppsView = findViewById(R.id.apps_view);
         // Setup workspace
         mWorkspace = findViewById(R.id.workspace_grid);
-        mPinnedAppsAdapter = new PinnedAppsAdapter(mActivity, mAppsView.getAppsStore(),
+        mPinnedAppsAdapter = new PinnedAppsAdapter(mContainer, mAppsView.getAppsStore(),
                 this::onIconLongClicked);
         mWorkspace.setAdapter(mPinnedAppsAdapter);
-        mWorkspace.setNumColumns(mActivity.getDeviceProfile().inv.numColumns);
+        mWorkspace.setNumColumns(mContainer.getDeviceProfile().inv.numColumns);
     }
 
     /**
@@ -112,7 +128,7 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         int height = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(width, height);
 
-        DeviceProfile grid = mActivity.getDeviceProfile();
+        DeviceProfile grid = mContainer.getDeviceProfile();
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -123,11 +139,13 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
                         grid.cellLayoutPaddingPx.top + grid.cellLayoutPaddingPx.bottom;
 
                 int maxWidth =
-                        grid.allAppsCellWidthPx * grid.numShownAllAppsColumns + horizontalPadding;
+                        grid.getAllAppsProfile().getCellWidthPx() * grid.numShownAllAppsColumns
+                                + horizontalPadding;
                 int appsWidth = Math.min(width - getPaddingLeft() - getPaddingRight(), maxWidth);
 
                 int maxHeight =
-                        grid.allAppsCellHeightPx * grid.numShownAllAppsColumns + verticalPadding;
+                        grid.getAllAppsProfile().getCellHeightPx() * grid.numShownAllAppsColumns
+                                + verticalPadding;
                 int appsHeight = Math.min(height - getPaddingTop() - getPaddingBottom(), maxHeight);
 
                 mAppsView.measure(
@@ -153,17 +171,17 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
         @Override
         public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-            if (!mActivity.isAppDrawerShown()) {
+            if (!mContainer.isAppDrawerShown()) {
                 return false;
             }
 
-            if (AbstractFloatingView.getTopOpenView(mActivity) != null) {
+            if (AbstractFloatingView.getTopOpenView(mContainer) != null) {
                 return false;
             }
 
             if (ev.getAction() == MotionEvent.ACTION_DOWN
-                    && !isEventOverView(mActivity.getAppsView(), ev)) {
-                mActivity.showAppDrawer(false);
+                    && !isEventOverView(mContainer.getAppsView(), ev)) {
+                mContainer.showAppDrawer(false);
                 return true;
             }
             return false;
@@ -178,7 +196,7 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         if (!(v instanceof BubbleTextView)) {
             return false;
         }
-        if (PopupContainerWithArrow.getOpen(mActivity) != null) {
+        if (PopupContainerWithArrow.getOpen(mContainer) != null) {
             // There is already an items container open, so don't open this one.
             v.clearFocus();
             return false;
@@ -187,33 +205,34 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         if (!ShortcutUtil.supportsShortcuts(item)) {
             return false;
         }
-        PopupDataProvider popupDataProvider = mActivity.getPopupDataProvider();
+        PopupDataProvider popupDataProvider = mContainer.getPopupDataProvider();
         if (popupDataProvider == null) {
             return false;
         }
 
         // order of this list will reflect in the popup
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
-        systemShortcuts.add(APP_INFO.getShortcut(mActivity, item, v));
+        systemShortcuts.add(APP_INFO.getShortcut(mContainer, item, v));
         // Hide redundant pin shortcut for app drawer icons if drag-n-drop is enabled.
-        if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mActivity.isAppDrawerShown()) {
+        if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mContainer.isAppDrawerShown()) {
             systemShortcuts.add(mPinnedAppsAdapter.getSystemShortcut(item, v));
         }
         int deepShortcutCount = popupDataProvider.getShortcutCountForItem(item);
         final PopupContainerWithArrow<SecondaryDisplayLauncher> container;
-        container = (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
-                R.layout.popup_container, mActivity.getDragLayer(), false);
+        container = (PopupContainerWithArrow) mContainer.getLayoutInflater().inflate(
+                R.layout.popup_container, mContainer.getDragLayer(), false);
         container.populateAndShowRows((BubbleTextView) v, deepShortcutCount,
                 systemShortcuts);
         container.requestFocus();
 
-        if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mActivity.isAppDrawerShown()) {
+        if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mContainer.isAppDrawerShown()) {
             return true;
         }
 
         DragOptions options = new DragOptions();
-        DeviceProfile grid = mActivity.getDeviceProfile();
-        options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
+        DeviceProfile grid = mContainer.getDeviceProfile();
+        options.intrinsicIconScaleFactor = (float) grid.getAllAppsProfile().getIconSizePx()
+                / grid.iconSizePx;
         options.preDragCondition = container.createPreDragCondition(false);
         if (options.preDragCondition == null) {
             options.preDragCondition = new DragOptions.PreDragCondition() {
@@ -229,7 +248,7 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
                     mDragView = dragObject.dragView;
                     if (!shouldStartDrag(0)) {
                         mDragView.setOnScaleAnimEndCallback(() ->
-                                mActivity.beginDragShared(v, mActivity.getAppsView(), options));
+                                mContainer.beginDragShared(v, mContainer.getAppsView(), options));
                     }
                 }
 
@@ -239,7 +258,7 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
                 }
             };
         }
-        mActivity.beginDragShared(v, mActivity.getAppsView(), options);
+        mContainer.beginDragShared(v, mContainer.getAppsView(), options);
         return true;
     }
 }

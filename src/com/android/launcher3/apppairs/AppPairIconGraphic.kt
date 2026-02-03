@@ -27,7 +27,6 @@ import com.android.launcher3.DeviceProfile
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener
 import com.android.launcher3.icons.BitmapInfo
 import com.android.launcher3.model.data.AppPairInfo
-import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 
 /**
@@ -46,20 +45,19 @@ constructor(context: Context, attrs: AttributeSet? = null) :
         @JvmStatic
         fun composeDrawable(
             appPairInfo: AppPairInfo,
-            p: AppPairIconDrawingParams
+            p: AppPairIconDrawingParams,
         ): AppPairIconDrawable {
-            // Generate new icons, using themed flag if needed.
-            val flags = if (Themes.isThemedIconEnabled(p.context)) BitmapInfo.FLAG_THEMED else 0
-            val appIcon1 = appPairInfo.getFirstApp().newIcon(p.context, flags)
-            val appIcon2 = appPairInfo.getSecondApp().newIcon(p.context, flags)
+            // Generate new icons, using themed flag since the icon is drawn on homescreen
+            val appIcon1 = appPairInfo.getFirstApp().newIcon(p.context, BitmapInfo.FLAG_THEMED)
+            val appIcon2 = appPairInfo.getSecondApp().newIcon(p.context, BitmapInfo.FLAG_THEMED)
             appIcon1.setBounds(0, 0, p.memberIconSize.toInt(), p.memberIconSize.toInt())
             appIcon2.setBounds(0, 0, p.memberIconSize.toInt(), p.memberIconSize.toInt())
 
             // If icons are unlaunchable due to screen size, manually override disabled appearance.
             // (otherwise, leave disabled state alone; icons will naturally inherit the app's state)
             val (isApp1Launchable, isApp2Launchable) = appPairInfo.isLaunchable(p.context)
-            if (!isApp1Launchable) appIcon1.setIsDisabled(true)
-            if (!isApp2Launchable) appIcon2.setIsDisabled(true)
+            if (!isApp1Launchable) appIcon1.isDisabled = true
+            if (!isApp2Launchable) appIcon2.isDisabled = true
 
             // Create icon drawable.
             val fullIconDrawable = AppPairIconDrawable(p, appIcon1, appIcon2)
@@ -125,7 +123,7 @@ constructor(context: Context, attrs: AttributeSet? = null) :
             ((parentIcon.width - drawParams.backgroundSize) / 2).toInt(),
             // y-coordinate in parent's coordinate system
             (parentIcon.paddingTop + drawParams.standardIconPadding + drawParams.outerPadding)
-                .toInt()
+                .toInt(),
         )
     }
 
@@ -138,5 +136,16 @@ constructor(context: Context, attrs: AttributeSet? = null) :
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
         drawable.draw(canvas)
+    }
+
+    /** Sets the scale of the icon background while hovered. */
+    fun setHoverScale(scale: Float) {
+        drawParams.hoverScale = scale
+        redraw()
+    }
+
+    /** Gets the scale of the icon background while hovered. */
+    fun getHoverScale(): Float {
+        return drawParams.hoverScale
     }
 }

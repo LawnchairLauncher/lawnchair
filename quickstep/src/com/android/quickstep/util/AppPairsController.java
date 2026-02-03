@@ -22,16 +22,15 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static com.android.internal.jank.Cuj.CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_TASKBAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_PAIR_LAUNCH;
 import static com.android.launcher3.model.data.AppInfo.PACKAGE_KEY_COMPARATOR;
-import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SUPPORTS_MULTI_INSTANCE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_NONE;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
-import static com.android.wm.shell.common.split.SplitScreenConstants.isPersistentSnapPosition;
+import static com.android.systemui.shared.recents.utilities.Utilities.isFreeformTask;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_50_50;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_NONE;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.getIndex;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.isPersistentSnapPosition;
 
 import static java.util.stream.Collectors.toList;
 
@@ -45,14 +44,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.app.displaylib.PerDisplayRepository;
 import com.android.internal.jank.Cuj;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.apppairs.AppPairIcon;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
@@ -60,24 +58,31 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.TaskViewItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
-import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TopTaskTracker;
+import com.android.quickstep.fallback.window.RecentsWindowFlags;
+import com.android.quickstep.fallback.window.RecentsWindowManager;
 import com.android.quickstep.views.GroupedTaskView;
+import com.android.quickstep.views.TaskContainer;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
-import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
+import com.android.wm.shell.shared.desktopmode.DesktopModeStatus;
+import com.android.wm.shell.shared.split.SplitScreenConstants.PersistentSnapPosition;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Controller class that handles app pair interactions: saving, modifying, deleting, etc.
@@ -94,10 +99,10 @@ public class AppPairsController {
     private static final int BITMASK_SIZE = 16;
     private static final int BITMASK_FOR_SNAP_POSITION = (1 << BITMASK_SIZE) - 1;
 
-    private Context mContext;
+    private ActivityContext mContext;
     private final SplitSelectStateController mSplitSelectStateController;
     private final StatsLogManager mStatsLogManager;
-    public AppPairsController(Context context,
+    public AppPairsController(ActivityContext context,
             SplitSelectStateController splitSelectStateController,
             StatsLogManager statsLogManager) {
         mContext = context;
@@ -107,6 +112,12 @@ public class AppPairsController {
 
     void onDestroy() {
         mContext = null;
+    }
+
+    private Launcher getLauncher() {
+        return mContext == null || !OverviewComponentObserver.INSTANCE.get(mContext.asContext())
+                .isHomeAndOverviewSame()
+                ? null : Launcher.ACTIVITY_TRACKER.getCreatedContext();
     }
 
     /**
@@ -129,29 +140,27 @@ public class AppPairsController {
                 .anyMatch(att -> att != null && att.getItemInfo() != null
                         && ((att.getItemInfo().runtimeStatusFlags
                             & ItemInfoWithIcon.FLAG_NOT_PINNABLE) != 0));
-        if (!FeatureFlags.enableAppPairs()
-                || !taskView.containsMultipleTasks()
+        if (!taskView.containsMultipleTasks()
                 || hasUnpinnableApp
-                || !(taskView instanceof GroupedTaskView)) {
+                || !(taskView instanceof GroupedTaskView groupedTaskView)) {
             return false;
         }
 
-        GroupedTaskView gtv = (GroupedTaskView) taskView;
-        List<TaskView.TaskContainer> containers = gtv.getTaskContainers();
-        ComponentKey taskKey1 = TaskUtils.getLaunchComponentKeyForTask(
-                containers.get(0).getTask().key);
-        ComponentKey taskKey2 = TaskUtils.getLaunchComponentKeyForTask(
-                containers.get(1).getTask().key);
-        AppInfo app1 = resolveAppInfoByComponent(taskKey1);
-        AppInfo app2 = resolveAppInfoByComponent(taskKey2);
+        ComponentKey leftTopComponentKey = TaskUtils.getLaunchComponentKeyForTask(
+                groupedTaskView.getLeftTopTaskContainer().getTask().key);
+        ComponentKey rightBottomComponentKey = TaskUtils.getLaunchComponentKeyForTask(
+                groupedTaskView.getRightBottomTaskContainer().getTask().key);
+        AppInfo leftTopAppInfo = resolveAppInfoByComponent(leftTopComponentKey);
+        AppInfo rightBottomAppInfo = resolveAppInfoByComponent(rightBottomComponentKey);
 
-        if (app1 == null || app2 == null) {
+        if (leftTopAppInfo == null || rightBottomAppInfo == null) {
             // Disallow saving app pairs for apps that don't have a front-door in Launcher
             return false;
         }
 
-        if (PackageManagerHelper.isSameAppForMultiInstance(app1, app2)) {
-            if (!app1.supportsMultiInstance() || !app2.supportsMultiInstance()) {
+        if (PackageManagerHelper.isSameAppForMultiInstance(leftTopAppInfo, rightBottomAppInfo)) {
+            if (!leftTopAppInfo.supportsMultiInstance()
+                    || !rightBottomAppInfo.supportsMultiInstance()) {
                 return false;
             }
         }
@@ -174,25 +183,11 @@ public class AppPairsController {
      */
     public void saveAppPair(GroupedTaskView gtv) {
         InteractionJankMonitorWrapper.begin(gtv, Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
-        List<TaskView.TaskContainer> containers = gtv.getTaskContainers();
-        WorkspaceItemInfo recentsInfo1 = containers.get(0).getItemInfo();
-        WorkspaceItemInfo recentsInfo2 = containers.get(1).getItemInfo();
-        WorkspaceItemInfo app1 = resolveAppPairWorkspaceInfo(recentsInfo1);
-        WorkspaceItemInfo app2 = resolveAppPairWorkspaceInfo(recentsInfo2);
-
-        if (app1 == null || app2 == null) {
-            // This shouldn't happen if canSaveAppPair() is called above, but log an error and do
-            // not create the app pair if the workspace items can't be resolved
-            Log.w(TAG, "Failed to save app pair due to invalid apps ("
-                    + "app1=" + recentsInfo1.getComponentKey().componentName
-                    + " app2=" + recentsInfo2.getComponentKey().componentName + ")");
-            return;
-        }
 
         @PersistentSnapPosition int snapPosition = gtv.getSnapPosition();
         if (snapPosition == SNAP_TO_NONE) {
             // Free snap mode is enabled, just save it as 50/50 split.
-            snapPosition = SNAP_TO_50_50;
+            snapPosition = SNAP_TO_2_50_50;
         }
         if (!isPersistentSnapPosition(snapPosition)) {
             // If we received an illegal snap position, log an error and do not create the app pair
@@ -201,31 +196,59 @@ public class AppPairsController {
             return;
         }
 
-        app1.rank = encodeRank(SPLIT_POSITION_TOP_OR_LEFT, snapPosition);
-        app2.rank = encodeRank(SPLIT_POSITION_BOTTOM_OR_RIGHT, snapPosition);
-        AppPairInfo newAppPair = new AppPairInfo(app1, app2);
+        List<TaskViewItemInfo> recentsInfos =
+                gtv.getTaskContainers().stream().map(TaskContainer::getItemInfo).toList();
+        List<WorkspaceItemInfo> apps =
+                recentsInfos.stream().map(this::resolveAppPairWorkspaceInfo).toList();
 
-        IconCache iconCache = LauncherAppState.getInstance(mContext).getIconCache();
+        if (apps.stream().anyMatch(Objects::isNull)) {
+            // This shouldn't happen if canSaveAppPair() is called above, but log an error and do
+            // not create the app pair if the workspace items can't be resolved
+            StringBuilder error =
+                    new StringBuilder("Failed to save app pair due to invalid apps (");
+            for (int i = 0; i < recentsInfos.size(); i++) {
+                error.append("app").append(i).append("=")
+                        .append(recentsInfos.get(i).getComponentKey().componentName).append(" ");
+            }
+            error.append(")");
+            Log.w(TAG, error.toString());
+            return;
+        }
+
+        for (int i = 0; i < apps.size(); i++) {
+            apps.get(i).rank = encodeRank(getIndex(i), snapPosition);
+        }
+        AppPairInfo newAppPair = new AppPairInfo(apps);
+
+        IconCache iconCache = LauncherAppState.getInstance(mContext.asContext()).getIconCache();
         MODEL_EXECUTOR.execute(() -> {
             newAppPair.getAppContents().forEach(member -> {
                 member.title = "";
                 member.bitmap = iconCache.getDefaultIcon(newAppPair.user);
-                iconCache.getTitleAndIcon(member, member.usingLowResIcon());
+                iconCache.getTitleAndIcon(member, member.getMatchingLookupFlag());
             });
             MAIN_EXECUTOR.execute(() -> {
-                LauncherAccessibilityDelegate delegate =
-                        QuickstepLauncher.getLauncher(mContext).getAccessibilityDelegate();
-                if (delegate != null) {
-                    delegate.addToWorkspace(newAppPair, true, (success) -> {
-                        if (success) {
-                            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
-                        } else {
-                            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
-                        }
-                    });
-                    mStatsLogManager.logger().withItemInfo(newAppPair)
-                            .log(StatsLogManager.LauncherEvent.LAUNCHER_APP_PAIR_SAVE);
+                Launcher launcher = getLauncher();
+                LauncherAccessibilityDelegate delegate = launcher == null
+                        ? null : launcher.getAccessibilityDelegate();
+                if (delegate == null) {
+                    return;
                 }
+                if (RecentsWindowFlags.enableLauncherOverviewInWindow) {
+                    PerDisplayRepository<RecentsWindowManager> recentsWindowManagerRepository =
+                            RecentsWindowManager.REPOSITORY_INSTANCE.get(mContext.asContext());
+                    recentsWindowManagerRepository.get(gtv.getDisplayId())
+                            .getStateManager().moveToRestState();
+                }
+                delegate.addToWorkspace(newAppPair, true, (success) -> {
+                    if (success) {
+                        InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
+                    } else {
+                        InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
+                    }
+                });
+                mStatsLogManager.logger().withItemInfo(newAppPair)
+                        .log(StatsLogManager.LauncherEvent.LAUNCHER_APP_PAIR_SAVE);
             });
         });
     }
@@ -236,14 +259,16 @@ public class AppPairsController {
      *
      * @param cuj Should be an integer from {@link Cuj} or -1 if no CUJ needs to be logged for jank
      *            monitoring
+     * @param callback Called after the app pair launch finishes animating, or null if no method is
+     *                 to be called
      */
-    public void launchAppPair(AppPairIcon appPairIcon, int cuj) {
+    public void launchAppPair(AppPairIcon appPairIcon, int cuj,
+            @Nullable Consumer<Boolean> callback) {
         WorkspaceItemInfo app1 = appPairIcon.getInfo().getFirstApp();
         WorkspaceItemInfo app2 = appPairIcon.getInfo().getSecondApp();
         ComponentKey app1Key = new ComponentKey(app1.getTargetComponent(), app1.user);
         ComponentKey app2Key = new ComponentKey(app2.getTargetComponent(), app2.user);
-        mSplitSelectStateController.setLaunchingCuj(cuj);
-        InteractionJankMonitorWrapper.begin(appPairIcon, cuj);
+        mSplitSelectStateController.setLaunchingCuj(appPairIcon, cuj);
 
         mSplitSelectStateController.findLastActiveTasksAndRunCallback(
                 Arrays.asList(app1Key, app2Key),
@@ -277,9 +302,16 @@ public class AppPairsController {
                     mSplitSelectStateController.setLaunchingIconView(appPairIcon);
 
                     mSplitSelectStateController.launchSplitTasks(
-                            AppPairsController.convertRankToSnapPosition(app1.rank));
+                            AppPairsController.convertRankToSnapPosition(app1.rank), callback);
                 }
         );
+    }
+
+    /**
+     * Launches an app pair but does not specify a callback
+     */
+    public void launchAppPair(AppPairIcon appPairIcon, int cuj) {
+        launchAppPair(appPairIcon, cuj, null);
     }
 
     /**
@@ -288,8 +320,11 @@ public class AppPairsController {
      */
     @Nullable
     private AppInfo resolveAppInfoByComponent(@NonNull ComponentKey key) {
-        AllAppsStore appsStore = ActivityContext.lookupContext(mContext)
-                .getAppsView().getAppsStore();
+        Launcher launcher = getLauncher();
+        if (launcher == null) {
+            return null;
+        }
+        AllAppsStore appsStore = launcher.getAppsView().getAppsStore();
 
         // First look up the app info in order of:
         // - The exact activity for the recent task
@@ -314,7 +349,7 @@ public class AppPairsController {
         if (appInfo == null) {
             return null;
         }
-        return appInfo.makeWorkspaceItem(mContext);
+        return appInfo.makeWorkspaceItem(mContext.asContext());
     }
 
     /**
@@ -327,10 +362,12 @@ public class AppPairsController {
      *   c) App B is on-screen, but App A isn't.
      *   d) Neither is on-screen.
      *
-     * If the user tapped an app pair while inside a single app, there are 3 cases:
-     *   a) The on-screen app is App A of the app pair.
-     *   b) The on-screen app is App B of the app pair.
-     *   c) It is neither.
+     * If the user tapped an app pair while a fullscreen or freeform app is visible on screen,
+     * there are 4 cases:
+     *   a) At least one of the apps in the app pair is in freeform windowing mode.
+     *   b) The on-screen app is App A of the app pair.
+     *   c) The on-screen app is App B of the app pair.
+     *   d) It is neither.
      *
      * For each case, we call the appropriate animation and split launch type.
      */
@@ -338,7 +375,7 @@ public class AppPairsController {
             List<? extends ItemInfo> itemInfos) {
         TaskbarActivityContext context = (TaskbarActivityContext) launchingIconView.getContext();
         List<ComponentKey> componentKeys =
-                itemInfos.stream().map(ItemInfo::getComponentKey).collect(toList());
+                itemInfos.stream().map(ItemInfo::getComponentKey).toList();
 
         // Use TopTaskTracker to find the currently running app (or apps)
         TopTaskTracker topTaskTracker = getTopTaskTracker();
@@ -364,7 +401,7 @@ public class AppPairsController {
                                     } else {
                                         return INVALID_TASK_ID;
                                     }
-                                }).collect(toList());
+                                }).toList();
 
                         if (lastActiveTasksOfAppPair.contains(runningTaskId1)
                                 && lastActiveTasksOfAppPair.contains(runningTaskId2)) {
@@ -403,8 +440,8 @@ public class AppPairsController {
             );
         } else {
             // Tapped an app pair while in a single app
-            int runningTaskId = topTaskTracker
-                    .getCachedTopTask(false /* filterOnlyVisibleRecents */).getTaskId();
+            final TopTaskTracker.CachedTaskInfo runningTask = topTaskTracker
+                    .getCachedTopTask(false /* filterOnlyVisibleRecents */, context.getDisplayId());
 
             mSplitSelectStateController.findLastActiveTasksAndRunCallback(
                     componentKeys,
@@ -412,10 +449,29 @@ public class AppPairsController {
                     foundTasks -> {
                         Task foundTask1 = foundTasks[0];
                         Task foundTask2 = foundTasks[1];
-                        boolean task1IsOnScreen =
-                                foundTask1 != null && foundTask1.getKey().getId() == runningTaskId;
-                        boolean task2IsOnScreen =
-                                foundTask2 != null && foundTask2.getKey().getId() == runningTaskId;
+
+                        if (DesktopModeStatus.canEnterDesktopMode(context) && (isFreeformTask(
+                                foundTask1) || isFreeformTask(foundTask2))) {
+                            launchAppPair(launchingIconView,
+                                    CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_TASKBAR);
+                            return;
+                        }
+
+                        boolean task1IsOnScreen;
+                        boolean task2IsOnScreen;
+                        if (com.android.wm.shell.Flags.enableShellTopTaskTracking()) {
+                            task1IsOnScreen = foundTask1 != null
+                                    && runningTask.topGroupedTaskContainsTask(
+                                    foundTask1.getKey().getId());
+                            task2IsOnScreen = foundTask2 != null
+                                    && runningTask.topGroupedTaskContainsTask(
+                                    foundTask2.getKey().getId());
+                        } else {
+                            task1IsOnScreen = foundTask1 != null && foundTask1.getKey().getId()
+                                    == runningTask.getTaskId();
+                            task2IsOnScreen = foundTask2 != null && foundTask2.getKey().getId()
+                                    == runningTask.getTaskId();
+                        }
 
                         if (!task1IsOnScreen && !task2IsOnScreen) {
                             // Neither App A nor App B are on-screen, launch the app pair normally.
@@ -515,6 +571,6 @@ public class AppPairsController {
      */
     @VisibleForTesting
     public TopTaskTracker getTopTaskTracker() {
-        return TopTaskTracker.INSTANCE.get(mContext);
+        return TopTaskTracker.INSTANCE.get(mContext.asContext());
     }
 }

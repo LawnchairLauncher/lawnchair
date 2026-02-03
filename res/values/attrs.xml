@@ -21,11 +21,17 @@
     <attr name="allAppsScrimColor" format="color" />
     <attr name="allappsHeaderProtectionColor" format="color" />
     <attr name="allAppsNavBarScrimColor" format="color" />
+    <attr name="allAppsSurfaceLow" format="color" />
+    <attr name="allAppsSurfaceHighest" format="color" />
+    <attr name="allAppsUnselectedTab" format="color" />
+    <attr name="allAppsSearchIconBackground" format="color" />
+    <attr name="privateSpaceSettingsColor" format="color" />
+    <attr name="privateSpaceDividerColor" format="color" />
+    <attr name="bottomSheetDragHandleColor" format="color" />
     <attr name="allAppsTheme" format="reference" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
-    <attr name="popupColorBackground" format="color" />
     <attr name="popupTextColor" format="color" />
     <attr name="popupShadeFirst" format="color" />
     <attr name="popupShadeSecond" format="color" />
@@ -40,12 +46,27 @@
     <attr name="iconOnlyShortcutColor" format="color" />
     <attr name="eduHalfSheetBGColor" format="color" />
     <attr name="overviewScrimColor" format="color" />
+    <attr name="overviewScrimColorFallback" format="color" />
+    <attr name="overviewScrimColorBlur" format="color" />
+    <attr name="overviewScrimForegroundPrimaryBlur" format="color" />
+    <attr name="overviewScrimForegroundPrimary" format="color" />
+    <attr name="overviewScrimForegroundSecondaryBlur" format="color" />
+    <attr name="overviewScrimForegroundSecondary" format="color" />
+    <attr name="overviewActionsContainerStyle" format="reference" />
+    <attr name="overviewActionButtonStyle" format="reference" />
+    <attr name="addDesktopButtonBackgroundDrawable" format="reference" />
     <attr name="popupNotificationDotColor" format="color" />
     <attr name="notificationDotColor" format="color" />
     <attr name="focusOutlineColor" format="color" />
     <attr name="focusInnerOutlineColor" format="color" />
 
+    <!-- Device search related attributes -->
+    <attr name="focusHighlight" format="color" />
+    <attr name="groupHighlight" format="color" />
+    <attr name="searchboxHighlight" format="color" />
+
     <attr name="pageIndicatorDotColor" format="color" />
+    <attr name="pageIndicatorArrowBgColor" format="color" />
     <attr name="folderPreviewColor" format="color" />
     <attr name="folderBackgroundColor" format="color" />
     <attr name="folderIconRadius" format="float" />
@@ -61,6 +82,8 @@
     <attr name="preloadIconAccentColor" format="color" />
     <attr name="preloadIconBackgroundColor" format="color" />
     <attr name="widgetPickerTitleColor" format="color"/>
+    <attr name="widgetPickerDescriptionColor" format="color"/>
+    <attr name="widgetPickerWidgetOptionsMenuColor" format="color"/>
     <attr name="widgetPickerPrimarySurfaceColor" format="color"/>
     <attr name="widgetPickerSecondarySurfaceColor" format="color"/>
     <attr name="widgetPickerHeaderAppTitleColor" format="color"/>
@@ -76,6 +99,8 @@
     <attr name="widgetPickerCollapseHandleColor" format="color"/>
     <attr name="widgetPickerAddButtonBackgroundColor" format="color"/>
     <attr name="widgetPickerAddButtonTextColor" format="color"/>
+    <attr name="widgetPickerExpandButtonBackgroundColor" format="color"/>
+    <attr name="widgetPickerExpandButtonTextColor" format="color"/>
     <attr name="widgetCellTitleColor" format="color" />
     <attr name="widgetCellSubtitleColor" format="color" />
 
@@ -159,8 +184,24 @@
         <attr name="layout_sticky" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="AllAppsSize">
+        <attr name="minDeviceWidthDp" format="float" />
+        <attr name="alignWithWorkspaceRow" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="GridSize">
+        <attr name="minDeviceWidthPx" format="integer"/>
+        <attr name="minDeviceHeightPx" format="integer"/>
+        <attr name="numGridRows" format="integer"/>
+        <attr name="numGridColumns" format="integer"/>
+        <attr name="dbFile" />
+        <attr name="defaultLayoutId"/>
+    </declare-styleable>
+
     <declare-styleable name="GridDisplayOption">
         <attr name="name" format="string" />
+        <attr name="gridTitle" format="string" />
+        <attr name="gridIconId" format="reference"/>
 
         <attr name="numRows" format="integer" />
         <attr name="numColumns" format="integer" />
@@ -211,9 +252,11 @@
              defaults to @dimen/taskbar_button_margin_default -->
         <attr name="inlineNavButtonsEndSpacing" format="reference" />
 
+        <!-- Grid flips row and column count when rotating the device -->
+        <attr name="isDualGrid" format="boolean" />
+
         <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
-        <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
 
@@ -245,8 +288,21 @@
         <!-- File that contains the specs for all apps icon and text size.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="allAppsCellSpecsId" format="reference" />
+        <attr name="gridSizeSpecsId" format="reference" />
+        <!-- File that contains specs describing the all apps container height. If not specified,
+        all apps container will vertically expand to fill available space. -->
+        <attr name="allAppsSizeSpecsId" format="reference" />
         <!-- defaults to allAppsCellSpecsId, if not specified -->
         <attr name="allAppsCellSpecsTwoPanelId" format="reference" />
+        <!-- defaults to false, if not specified -->
+        <attr name="isFixedLandscape" format="boolean" />
+        <!-- By default all grid types are enabled -->
+        <attr name="gridType" format="integer">
+            <!-- Enable on phone only -->
+            <flag name="one_grid" value="1" />
+            <!-- Enable on tablets only -->
+            <flag name="non_one_grid" value="2" />
+        </attr>
 
         <!-- By default all categories are enabled -->
         <attr name="deviceCategory" format="integer">
@@ -256,6 +312,8 @@
             <flag name="tablet" value="2" />
             <!-- Enable on multi display devices only -->
             <flag name="multi_display" value="4" />
+            <!-- Enable on desktop devices only -->
+            <flag name="desktop" value="8" />
         </attr>
 
         <!-- By default all are false -->
@@ -322,6 +380,8 @@
     <declare-styleable name="CellSpec">
         <attr name="dimensionType" />
         <attr name="maxAvailableSize" />
+        <attr name="maxLineCount" format="integer" />
+        <attr name="maxLineCountMatchesWorkspace" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SizeSpec">
@@ -580,51 +640,6 @@
         <attr name="appIconSize" format="dimension" />
         <attr name="collapsable" format="boolean" />
     </declare-styleable>
-
-    <attr name="materialColorOnSecondaryFixedVariant" format="color" />
-    <attr name="materialColorOnTertiaryFixedVariant" format="color" />
-    <attr name="materialColorSurfaceContainerLowest" format="color" />
-    <attr name="materialColorOnPrimaryFixedVariant" format="color" />
-    <attr name="materialColorOnSecondaryContainer" format="color" />
-    <attr name="materialColorOnTertiaryContainer" format="color" />
-    <attr name="materialColorSurfaceContainerLow" format="color" />
-    <attr name="materialColorOnPrimaryContainer" format="color" />
-    <attr name="materialColorSecondaryFixedDim" format="color" />
-    <attr name="materialColorOnErrorContainer" format="color" />
-    <attr name="materialColorOnSecondaryFixed" format="color" />
-    <attr name="materialColorOnSurfaceInverse" format="color" />
-    <attr name="materialColorTertiaryFixedDim" format="color" />
-    <attr name="materialColorOnTertiaryFixed" format="color" />
-    <attr name="materialColorPrimaryFixedDim" format="color" />
-    <attr name="materialColorSecondaryContainer" format="color" />
-    <attr name="materialColorErrorContainer" format="color" />
-    <attr name="materialColorOnPrimaryFixed" format="color" />
-    <attr name="materialColorPrimaryInverse" format="color" />
-    <attr name="materialColorSecondaryFixed" format="color" />
-    <attr name="materialColorTertiaryContainer" format="color" />
-    <attr name="materialColorTertiaryFixed" format="color" />
-    <attr name="materialColorPrimaryContainer" format="color" />
-    <attr name="materialColorOnBackground" format="color" />
-    <attr name="materialColorPrimaryFixed" format="color" />
-    <attr name="materialColorOnSecondary" format="color" />
-    <attr name="materialColorOnTertiary" format="color" />
-    <attr name="materialColorOnError" format="color" />
-    <attr name="materialColorOnSurfaceVariant" format="color" />
-    <attr name="materialColorOutline" format="color" />
-    <attr name="materialColorOutlineVariant" format="color" />
-    <attr name="materialColorOnPrimary" format="color" />
-    <attr name="materialColorOnSurface" format="color" />
-    <attr name="materialColorPrimary" format="color" />
-    <attr name="materialColorSecondary" format="color" />
-    <attr name="materialColorTertiary" format="color" />
-    <attr name="materialColorSurfaceInverse" format="color" />
-    <attr name="materialColorSurfaceVariant" format="color" />
-    <attr name="materialColorSurfaceDim" format="color" />
-    <attr name="materialColorSurfaceBright" format="color" />
-    <attr name="materialColorSurface" format="color" />
-    <attr name="materialColorSurfaceContainerHigh" format="color" />
-    <attr name="materialColorSurfaceContainerHighest" format="color" />
-    <attr name="materialColorSurfaceContainer" format="color" />
 
     <declare-styleable name="WidgetSections">
         <!-- Component name of an app widget provider. -->

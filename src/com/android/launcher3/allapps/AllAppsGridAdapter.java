@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
@@ -134,6 +133,12 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
                 RecyclerView.State state) {
             return super.getRowCountForAccessibility(recycler, state) -
                     getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
+        }
+
+        @Override
+        public int getColumnCountForAccessibility(RecyclerView.Recycler recycler,
+                RecyclerView.State state) {
+            return mAppsPerRow;
         }
 
         @Override

@@ -94,6 +94,11 @@ public class AutoInstallsLayout {
 
     public static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback) {
+        // LC: c51b2a221838aefb610b7146fc4ef7cb34e5e495
+        if (!BuildConfig.ENABLE_AUTO_INSTALLS_LAYOUT) {
+            return null;
+        }
+        
         Partner partner = Partner.get(context.getPackageManager(), ACTION_LAUNCHER_CUSTOMIZATION);
         if (partner == null) {
             return null;
@@ -264,20 +269,28 @@ public class AutoInstallsLayout {
         return count;
     }
 
+    private void addProfileId(XmlPullParser parser) {
+        Long profileId = mUserTypeToSerial.get(getAttributeValue(parser, ATTR_USER_TYPE));
+        if (profileId != null) {
+            mValues.put(Favorites.PROFILE_ID, profileId);
+        }
+    }
+
     /**
      * Parses container and screenId attribute from the current tag, and puts it in
      * the out.
      * 
      * @param out array of size 2.
      */
-    protected void parseContainerAndScreen(XmlPullParser parser, int[] out) {
+    protected void parseContainerAndScreen(XmlPullParser parser, int[] out)
+            throws XmlPullParserException {
         if (HOTSEAT_CONTAINER_NAME.equals(getAttributeValue(parser, ATTR_CONTAINER))) {
             out[0] = Favorites.CONTAINER_HOTSEAT;
             // Hack: hotseat items are stored using screen ids
-            out[1] = Integer.parseInt(getAttributeValue(parser, ATTR_RANK));
+            out[1] = getAttributeValueAsInt(parser, ATTR_RANK);
         } else {
             out[0] = Favorites.CONTAINER_DESKTOP;
-            out[1] = Integer.parseInt(getAttributeValue(parser, ATTR_SCREEN));
+            out[1] = getAttributeValueAsInt(parser, ATTR_SCREEN);
         }
     }
 
@@ -310,10 +323,6 @@ public class AutoInstallsLayout {
                 convertToDistanceFromEnd(getAttributeValue(parser, ATTR_X), mColumnCount));
         mValues.put(Favorites.CELLY,
                 convertToDistanceFromEnd(getAttributeValue(parser, ATTR_Y), mRowCount));
-        Long profileId = mUserTypeToSerial.get(getAttributeValue(parser, ATTR_USER_TYPE));
-        if (profileId != null) {
-            mValues.put(Favorites.PROFILE_ID, profileId);
-        }
 
         TagParser tagParser = tagParserMap.get(parser.getName());
         if (tagParser == null) {
@@ -389,7 +398,7 @@ public class AutoInstallsLayout {
         public int parseAndAdd(XmlPullParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
-
+            addProfileId(parser);
             if (!TextUtils.isEmpty(packageName) && !TextUtils.isEmpty(className)) {
                 ActivityInfo info;
                 try {
@@ -438,6 +447,7 @@ public class AutoInstallsLayout {
         public int parseAndAdd(XmlPullParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
+            addProfileId(parser);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
                 if (LOGD)
                     Log.d(TAG, "Skipping invalid <favorite> with no component");
@@ -460,7 +470,7 @@ public class AutoInstallsLayout {
         public int parseAndAdd(XmlPullParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String shortcutId = getAttributeValue(parser, ATTR_SHORTCUT_ID);
-
+            addProfileId(parser);
             try {
                 LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
                 launcherApps.pinShortcuts(packageName, Collections.singletonList(shortcutId),
@@ -494,6 +504,7 @@ public class AutoInstallsLayout {
         public ComponentName getComponentName(XmlPullParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
+            addProfileId(parser);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
                 return null;
             }
@@ -691,6 +702,16 @@ public class AutoInstallsLayout {
             }
         }
         return value;
+    }
+
+    protected static int getAttributeValueAsInt(XmlPullParser parser, String attribute)
+            throws XmlPullParserException {
+        String value = getAttributeValue(parser, attribute);
+        if (value == null) {
+            throw new XmlPullParserException("Missing attribute " + attribute);
+        } else {
+            return Integer.parseInt(value);
+        }
     }
 
     /**

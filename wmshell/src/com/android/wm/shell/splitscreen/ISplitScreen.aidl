@@ -55,11 +55,6 @@ interface ISplitScreen {
     oneway void unregisterSplitSelectListener(in ISplitSelectListener listener) = 21;
 
     /**
-     * Removes a task from the side stage.
-     */
-    oneway void removeFromSideStage(int taskId) = 4;
-
-    /**
      * Removes the split-screen stages and leaving indicated task to top. Passing INVALID_TASK_ID
      * to indicate leaving no top task after leaving split-screen.
      */
@@ -109,55 +104,12 @@ interface ISplitScreen {
             in RemoteTransition remoteTransition, in InstanceId instanceId) = 17;
 
     /**
-     * Version of startTasks using legacy transition system.
-     */
-    oneway void startTasksWithLegacyTransition(int taskId1, in Bundle options1, int taskId2,
-            in Bundle options2, int splitPosition, int snapPosition,
-            in RemoteAnimationAdapter adapter, in InstanceId instanceId) = 11;
-
-    /**
-     * Starts a pair of intent and task using legacy transition system.
-     */
-    oneway void startIntentAndTaskWithLegacyTransition(in PendingIntent pendingIntent, int userId1,
-            in Bundle options1, int taskId, in Bundle options2, int splitPosition, int snapPosition,
-            in RemoteAnimationAdapter adapter, in InstanceId instanceId) = 12;
-
-    /**
-     * Starts a pair of shortcut and task using legacy transition system.
-     */
-    oneway void startShortcutAndTaskWithLegacyTransition(in ShortcutInfo shortcutInfo,
-            in Bundle options1, int taskId, in Bundle options2, int splitPosition, int snapPosition,
-            in RemoteAnimationAdapter adapter, in InstanceId instanceId) = 15;
-
-    /**
-     * Start a pair of intents using legacy transition system.
-     */
-    oneway void startIntentsWithLegacyTransition(in PendingIntent pendingIntent1, int userId1,
-            in ShortcutInfo shortcutInfo1, in Bundle options1, in PendingIntent pendingIntent2,
-            int userId2, in ShortcutInfo shortcutInfo2, in Bundle options2, int splitPosition,
-            int snapPosition, in RemoteAnimationAdapter adapter, in InstanceId instanceId) = 18;
-
-    /**
      * Start a pair of intents in one transition.
      */
     oneway void startIntents(in PendingIntent pendingIntent1, int userId1,
             in ShortcutInfo shortcutInfo1, in Bundle options1, in PendingIntent pendingIntent2,
             int userId2, in ShortcutInfo shortcutInfo2, in Bundle options2, int splitPosition,
             int snapPosition, in RemoteTransition remoteTransition, in InstanceId instanceId) = 19;
-
-    /**
-     * Blocking call that notifies and gets additional split-screen targets when entering
-     * recents (for example: the dividerBar).
-     * @param appTargets apps that will be re-parented to display area
-     */
-    RemoteAnimationTarget[] onGoingToRecentsLegacy(in RemoteAnimationTarget[] appTargets) = 13;
-
-    /**
-     * Blocking call that notifies and gets additional split-screen targets when entering
-     * recents (for example: the dividerBar). Different than the method above in that this one
-     * does not expect split to currently be running.
-     */
-    RemoteAnimationTarget[] onStartingSplitLegacy(in RemoteAnimationTarget[] appTargets) = 14;
 
     /**
      * Reverse the split.

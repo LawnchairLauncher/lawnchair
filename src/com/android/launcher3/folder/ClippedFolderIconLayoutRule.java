@@ -1,16 +1,21 @@
 package com.android.launcher3.folder;
 
+import com.android.launcher3.Flags;
+
 public class ClippedFolderIconLayoutRule {
 
     public static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
     private static final int MIN_NUM_ITEMS_IN_PREVIEW = 2;
 
-    private static final float MIN_SCALE = 0.44f;
-    private static final float MAX_SCALE = 0.51f;
+    public static final float MIN_SCALE = 0.44f;
+    public static final float MAX_SCALE = 0.51f;
+
+    // TODO: figure out exact radius for different icons
     private static final float MAX_RADIUS_DILATION = 0.25f;
     // The max amount of overlap the preview items can go outside of the background bounds.
     public static final float ICON_OVERLAP_FACTOR = 1 + (MAX_RADIUS_DILATION / 2f);
     private static final float ITEM_RADIUS_SCALE_FACTOR = 1.15f;
+    private static final float ITEM_RADIUS_SCALE_FACTOR_SHAPES = 1.2f;
 
     public static final int EXIT_INDEX = -2;
     public static final int ENTER_INDEX = -3;
@@ -22,18 +27,34 @@ public class ClippedFolderIconLayoutRule {
     private float mIconSize;
     private boolean mIsRtl;
     private float mBaselineIconScale;
+    private int mNumFolderColumns;
 
-    public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
+    /**
+     * initialize the layout rule
+     */
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl,
+            int numFolderColumns) {
         mAvailableSpace = availableSpace;
-        mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
+        mRadius = (
+                Flags.enableLauncherIconShapes()
+                        ? ITEM_RADIUS_SCALE_FACTOR_SHAPES
+                        : ITEM_RADIUS_SCALE_FACTOR) * availableSpace / 2f;
         mIconSize = intrinsicIconSize;
         mIsRtl = rtl;
-        mBaselineIconScale = availableSpace / (intrinsicIconSize * 1f);
+        mBaselineIconScale = availableSpace / intrinsicIconSize;
+        mNumFolderColumns = numFolderColumns;
     }
 
+    /**
+     * Computes positions for icons in Preview.
+     *
+     * @param index       index of icon in folder
+     * @param curNumItems current number of preview items
+     * @param params      params to update for icon
+     */
     public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params) {
-        float totalScale = scaleForItem(curNumItems);
+        float totalScale = scaleForItem(curNumItems, 0);
         float transX;
         float transY;
 
@@ -64,11 +85,43 @@ public class ClippedFolderIconLayoutRule {
     }
 
     /**
+     * Computes positions for icons in folder as part of spring animation. Here both preview icons
+     * and the rest of the content icons are animated along the same grid.
+     *
+     * @param index          index of icon in folder
+     * @param numItemsInPage current number of items in page
+     * @param params         params to update for icon
+     */
+    public PreviewItemDrawingParams computeSpringAnimationItemParams(int index, int numItemsInPage,
+            int page, PreviewItemDrawingParams params) {
+        float totalScale = scaleForItem(numItemsInPage, page);
+        float transX;
+        float transY;
+
+        if (numItemsInPage <= MAX_NUM_ITEMS_IN_PREVIEW) {
+            getPosition(index, numItemsInPage, mTmpPoint);
+        } else {
+            getGridPosition(index / mNumFolderColumns, index % mNumFolderColumns, mTmpPoint);
+        }
+
+        transX = mTmpPoint[0];
+        transY = mTmpPoint[1];
+
+        if (params == null) {
+            params = new PreviewItemDrawingParams(transX, transY, totalScale);
+        } else {
+            params.update(transX, transY, totalScale);
+        }
+        return params;
+    }
+
+
+    /**
      * Builds a grid based on the positioning of the items when there are
      * {@link #MAX_NUM_ITEMS_IN_PREVIEW} in the preview.
      *
      * Positions in the grid: 0 1  // 0 is row 0, col 1
-     *                        2 3  // 3 is row 1, col 1
+     * 2 3  // 3 is row 1, col 1`
      */
     private void getGridPosition(int row, int col, float[] result) {
         // We use position 0 and 3 to calculate the x and y distances between items.
@@ -112,30 +165,56 @@ public class ClippedFolderIconLayoutRule {
             index = 3;
         }
 
-        // We bump the radius up between 0 and MAX_RADIUS_DILATION % as the number of items increase
-        float radius = mRadius * (1 + MAX_RADIUS_DILATION * (curNumItems -
-                MIN_NUM_ITEMS_IN_PREVIEW) / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
+        float radius = getRadius(curNumItems);
         double theta = theta0 + index * (2 * Math.PI / curNumItems) * direction;
-
-        float halfIconSize = (mIconSize * scaleForItem(curNumItems)) / 2;
+        float halfIconSize = (mIconSize * scaleForItem(curNumItems, 0)) / 2;
 
         // Map the location along the circle, and offset the coordinates to represent the center
         // of the icon, and to be based from the top / left of the preview area. The y component
         // is inverted to match the coordinate system.
         result[0] = mAvailableSpace / 2 + (float) (radius * Math.cos(theta) / 2) - halfIconSize;
-        result[1] = mAvailableSpace / 2 + (float) (- radius * Math.sin(theta) / 2) - halfIconSize;
-
+        result[1] = mAvailableSpace / 2 + (float) (-radius * Math.sin(theta) / 2) - halfIconSize;
     }
 
-    public float scaleForItem(int numItems) {
-        // Scale is determined by the number of items in the preview.
-        final float scale;
-        if (numItems <= 3) {
+    private float getRadius(int numItems) {
+        float radiusDilation = Flags.enableLauncherIconShapes() ? radiusDilationForItems(numItems)
+                : MAX_RADIUS_DILATION;
+        if (Flags.enableLauncherIconShapes()) {
+            // Just give custom radius weights for each # of icons.
+            return mRadius * (1 + radiusDilation);
+        } else {
+            // Increase radius from 0 up to MAX_RADIUS_DILATION as the number of items increases.
+            return mRadius * (1 + radiusDilation * (numItems - MIN_NUM_ITEMS_IN_PREVIEW)
+                    / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
+        }
+    }
+
+    /**
+     * Calculate Scale for Preview Icons based on current page and number of items in page.
+     * @param numItems number of items in page
+     * @param page current page of Folder
+     * @return scale for icons in Folder
+     */
+    public float scaleForItem(int numItems, int page) {
+        float scale;
+        if (page > 0) {
+            scale = MIN_SCALE;
+        } else if (numItems <= 3) {
             scale = MAX_SCALE;
         } else {
             scale = MIN_SCALE;
         }
         return scale * mBaselineIconScale;
+    }
+
+    private float radiusDilationForItems(int numItems) {
+        if (numItems == 3) {
+            return 0.15f;
+        } else if (numItems == MAX_NUM_ITEMS_IN_PREVIEW) {
+            return 0.12f;
+        } else {
+            return 0;
+        }
     }
 
     public float getIconSize() {

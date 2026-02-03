@@ -34,11 +34,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import app.lawnchair.icons.CustomIconPack
-import app.lawnchair.icons.IconPack
-import app.lawnchair.icons.IconPackProvider
-import app.lawnchair.icons.IconPickerItem
-import app.lawnchair.icons.filter
+import app.lawnchair.icons.iconpack.CustomIconPack
+import app.lawnchair.icons.iconpack.IconPack
+import app.lawnchair.icons.iconpack.IconPackProvider
+import app.lawnchair.icons.picker.IconPickerItem
+import app.lawnchair.icons.picker.filter
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupDescription
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn

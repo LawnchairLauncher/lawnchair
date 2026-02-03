@@ -16,7 +16,7 @@
 
 package com.android.wm.shell.splitscreen;
 
-import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.wm.shell.shared.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.wm.shell.splitscreen.SplitScreenController.EXIT_REASON_UNKNOWN;
 
 import com.android.wm.shell.sysui.ShellCommandHandler;
@@ -40,8 +40,6 @@ public class SplitScreenShellCommandHandler implements
         switch (args[0]) {
             case "moveToSideStage":
                 return runMoveToSideStage(args, pw);
-            case "removeFromSideStage":
-                return runRemoveFromSideStage(args, pw);
             case "setSideStagePosition":
                 return runSetSideStagePosition(args, pw);
             case "switchSplitPosition":
@@ -64,17 +62,6 @@ public class SplitScreenShellCommandHandler implements
         final int sideStagePosition = args.length > 2
                 ? new Integer(args[2]) : SPLIT_POSITION_BOTTOM_OR_RIGHT;
         mController.moveToSideStage(taskId, sideStagePosition);
-        return true;
-    }
-
-    private boolean runRemoveFromSideStage(String[] args, PrintWriter pw) {
-        if (args.length < 2) {
-            // First argument is the action name.
-            pw.println("Error: task id should be provided as arguments");
-            return false;
-        }
-        final int taskId = new Integer(args[1]);
-        mController.removeFromSideStage(taskId);
         return true;
     }
 
@@ -109,8 +96,6 @@ public class SplitScreenShellCommandHandler implements
     public void printShellCommandHelp(PrintWriter pw, String prefix) {
         pw.println(prefix + "moveToSideStage <taskId> <SideStagePosition>");
         pw.println(prefix + "  Move a task with given id in split-screen mode.");
-        pw.println(prefix + "removeFromSideStage <taskId>");
-        pw.println(prefix + "  Remove a task with given id in split-screen mode.");
         pw.println(prefix + "setSideStagePosition <SideStagePosition>");
         pw.println(prefix + "  Sets the position of the side-stage.");
         pw.println(prefix + "switchSplitPosition");

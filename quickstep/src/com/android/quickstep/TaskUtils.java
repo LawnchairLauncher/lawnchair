@@ -31,8 +31,8 @@ import android.view.RemoteAnimationTarget;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.ApplicationInfoWrapper;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -72,8 +72,8 @@ public final class TaskUtils {
             return "";
         }
         UserHandle user = UserHandle.of(userId);
-        ApplicationInfo applicationInfo = PackageManagerHelper.INSTANCE.get(context)
-                .getApplicationInfo(packageName, user, 0);
+        ApplicationInfo applicationInfo =
+                new ApplicationInfoWrapper(context, packageName, user).getInfo();
         if (applicationInfo == null) {
             Log.e(TAG, "Failed to get title for userId=" + userId + ", packageName=" + packageName);
             return "";

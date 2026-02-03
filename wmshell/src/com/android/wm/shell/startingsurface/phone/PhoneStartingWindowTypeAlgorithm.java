@@ -35,7 +35,7 @@ import static android.window.StartingWindowInfo.TYPE_PARAMETER_WINDOWLESS;
 
 import android.window.StartingWindowInfo;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
 import com.android.wm.shell.startingsurface.StartingWindowTypeAlgorithm;
 

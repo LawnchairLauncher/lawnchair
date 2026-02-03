@@ -16,7 +16,6 @@
 
 package com.android.wm.shell.startingsurface;
 
-import static android.graphics.Color.WHITE;
 import static android.window.StartingWindowInfo.STARTING_WINDOW_TYPE_SPLASH_SCREEN;
 
 import android.app.ActivityManager;
@@ -37,7 +36,7 @@ import android.window.StartingWindowInfo;
 import android.window.StartingWindowRemovalInfo;
 
 import com.android.wm.shell.common.ShellExecutor;
-import com.android.wm.shell.common.TransactionPool;
+import com.android.wm.shell.shared.TransactionPool;
 
 class WindowlessSplashWindowCreator extends AbsSplashWindowCreator {
 
@@ -69,14 +68,15 @@ class WindowlessSplashWindowCreator extends AbsSplashWindowCreator {
             // Can't show splash screen on requested display, so skip showing at all.
             return;
         }
+        final int theme = getSplashScreenTheme(0 /* splashScreenThemeResId */, activityInfo);
         final Context myContext = SplashscreenContentDrawer.createContext(mContext, windowInfo,
-                0 /* theme */, STARTING_WINDOW_TYPE_SPLASH_SCREEN, mDisplayManager);
+                theme, STARTING_WINDOW_TYPE_SPLASH_SCREEN, mDisplayManager);
         if (myContext == null) {
             return;
         }
         final StartingSurfaceDrawer.WindowlessStartingWindow wlw =
                 new StartingSurfaceDrawer.WindowlessStartingWindow(
-                        taskInfo.configuration, rootSurface);
+                        mContext.getResources().getConfiguration(), rootSurface);
         final SurfaceControlViewHost viewHost = new SurfaceControlViewHost(
                 myContext, display, wlw, "WindowlessSplashWindowCreator");
         final String title = "Windowless Splash " + taskInfo.taskId;
@@ -86,19 +86,11 @@ class WindowlessSplashWindowCreator extends AbsSplashWindowCreator {
         final Rect windowBounds = taskInfo.configuration.windowConfiguration.getBounds();
         lp.width = windowBounds.width();
         lp.height = windowBounds.height();
-        final ActivityManager.TaskDescription taskDescription;
-        if (taskInfo.taskDescription != null) {
-            taskDescription = taskInfo.taskDescription;
-        } else {
-            taskDescription = new ActivityManager.TaskDescription();
-            taskDescription.setBackgroundColor(WHITE);
-        }
 
         final FrameLayout rootLayout = new FrameLayout(
-                mSplashscreenContentDrawer.createViewContextWrapper(mContext));
+                mSplashscreenContentDrawer.createViewContextWrapper(myContext));
         viewHost.setView(rootLayout, lp);
-
-        final int bgColor = taskDescription.getBackgroundColor();
+        final int bgColor = mSplashscreenContentDrawer.estimateTaskBackgroundColor(myContext);
         final SplashScreenView splashScreenView = mSplashscreenContentDrawer
                 .makeSimpleSplashScreenContentView(myContext, windowInfo, bgColor);
         rootLayout.addView(splashScreenView);

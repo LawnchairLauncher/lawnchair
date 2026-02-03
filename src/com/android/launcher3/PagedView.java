@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.app.animation.Interpolators.SCROLL;
+import static com.android.launcher3.RemoveAnimationSettingsTracker.WINDOW_ANIMATION_SCALE_URI;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
 import static com.android.launcher3.testing.shared.TestProtocol.SCROLL_FINISHED_MESSAGE;
@@ -33,7 +34,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InputDevice;
@@ -723,12 +723,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Queues the given callback to be run once {@code mPageScrolls} has been initialized.
+     * Run the given `callback` immediately once {@code mPageScrolls} has been initialized,
+     * otherwise queue the callback to `mOnPageScrollsInitializedCallbacks`.
      */
     public void runOnPageScrollsInitialized(Runnable callback) {
-        mOnPageScrollsInitializedCallbacks.add(callback);
         if (isPageScrollsInitialized()) {
-            onPageScrollsInitialized();
+            callback.run();
+        } else {
+            mOnPageScrollsInitializedCallbacks.add(callback);
         }
     }
 
@@ -791,13 +793,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         if (mScroller.isFinished() && pageScrollChanged) {
-            // TODO(b/246283207): Remove logging once root cause of flake detected.
-            if (Utilities.isRunningInTestHarness() && !(this instanceof Workspace)) {
-                Log.d("b/246283207", TAG + "#onLayout() -> "
-                        + "if(mScroller.isFinished() && pageScrollChanged) -> getNextPage(): "
-                        + getNextPage() + ", getScrollForPage(getNextPage()): "
-                        + getScrollForPage(getNextPage()));
-            }
             setCurrentPage(getNextPage());
         }
         onPageScrollsInitialized();
@@ -1476,6 +1471,17 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 mEdgeGlowLeft.onFlingVelocity(velocity);
                 mEdgeGlowRight.onFlingVelocity(velocity);
             }
+
+            // Detect if user tries to swipe to -1 page but gets disallowed by checking if there was
+            // left-over values in mEdgeGlowLeft (or mEdgeGlowRight in RLT).
+            if (Utilities.ATLEAST_S) {
+                final int layoutDir = getLayoutDirection();
+                if ((mEdgeGlowLeft.getDistance() > 0 && layoutDir == LAYOUT_DIRECTION_LTR)
+                        || (mEdgeGlowRight.getDistance() > 0 && layoutDir == LAYOUT_DIRECTION_RTL)) {
+                    onDisallowSwipeToMinusOnePage();
+                }
+            }
+
             mEdgeGlowLeft.onRelease(ev);
             mEdgeGlowRight.onRelease(ev);
             // End any intermediate reordering states
@@ -1499,6 +1505,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         return true;
     }
+
+    protected void onDisallowSwipeToMinusOnePage() {}
 
     protected void onNotSnappingToPageInFreeScroll() { }
 
@@ -1756,8 +1764,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         if (FeatureFlags.IS_STUDIO_BUILD && !Utilities.isRunningInTestHarness()) {
-            duration *= Settings.Global.getFloat(getContext().getContentResolver(),
-                    Settings.Global.WINDOW_ANIMATION_SCALE, 1);
+            duration *= RemoveAnimationSettingsTracker.INSTANCE.get(getContext()).getValue(
+                    WINDOW_ANIMATION_SCALE_URI);
         }
 
         whichPage = validateNewPage(whichPage);

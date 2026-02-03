@@ -19,10 +19,13 @@ import static android.content.Intent.EXTRA_COMPONENT_NAME;
 import static android.content.Intent.EXTRA_USER;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
+import static com.android.launcher3.Utilities.ATLEAST_Q;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,6 +55,7 @@ public class GestureNavContract {
     public static final String EXTRA_ICON_SURFACE = "gesture_nav_contract_surface_control";
     public static final String EXTRA_REMOTE_CALLBACK = "android.intent.extra.REMOTE_CALLBACK";
     public static final String EXTRA_ON_FINISH_CALLBACK = "gesture_nav_contract_finish_callback";
+    public static final String EXTRA_ENABLE_GESTURE_CONTRACT = "gesture_nav_contract_enable";
 
     public final ComponentName componentName;
     public final UserHandle user;
@@ -71,7 +75,9 @@ public class GestureNavContract {
             @Nullable SurfaceControl surfaceControl) {
         Bundle result = new Bundle();
         result.putParcelable(EXTRA_ICON_POSITION, position);
-        result.putParcelable(EXTRA_ICON_SURFACE, surfaceControl);
+        if (ATLEAST_Q) {
+            result.putParcelable(EXTRA_ICON_SURFACE, surfaceControl);
+        }
         if (sMessageReceiver == null) {
             sMessageReceiver = new StaticMessageReceiver();
         }
@@ -89,14 +95,34 @@ public class GestureNavContract {
     }
 
     /**
-     * Clears and returns the GestureNavContract if it was present in the intent.
+     * Returns if a {@link GestureNavContract} can be built from the given intent without clearing
+     * the contract.
      */
-    public static GestureNavContract fromIntent(Intent intent) {
+    public static boolean canBuildFromIntent(@NonNull Intent intent) {
+        return fromIntent(intent, /* clearGnc= */ false) != null;
+    }
+
+    public static boolean isContractEnabled(@NonNull Intent intent) {
+        Bundle extras = intent.getBundleExtra(EXTRA_GESTURE_CONTRACT);
+
+        return extras != null && extras.getBoolean(EXTRA_ENABLE_GESTURE_CONTRACT, true);
+    }
+
+    /**
+     * Clears and returns the {@link GestureNavContract} if it was present in the intent.
+     */
+    public static GestureNavContract fromIntent(@NonNull Intent intent) {
+        return fromIntent(intent, /* clearGnc= */ true);
+    }
+
+    private static GestureNavContract fromIntent(@NonNull Intent intent, boolean clearGnc) {
         Bundle extras = intent.getBundleExtra(EXTRA_GESTURE_CONTRACT);
         if (extras == null) {
             return null;
         }
-        intent.removeExtra(EXTRA_GESTURE_CONTRACT);
+        if (clearGnc) {
+            intent.removeExtra(EXTRA_GESTURE_CONTRACT);
+        }
 
         ComponentName componentName = extras.getParcelable(EXTRA_COMPONENT_NAME);
         UserHandle userHandle = extras.getParcelable(EXTRA_USER);

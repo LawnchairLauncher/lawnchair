@@ -33,10 +33,9 @@ import android.util.Log;
 import androidx.test.uiautomator.SearchCondition;
 import androidx.test.uiautomator.UiDevice;
 
-import org.junit.Assert;
-
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class TestHelpers {
 
@@ -113,8 +112,8 @@ public class TestHelpers {
     }
 
     private static String checkCrash(Context context, String label, long startTime) {
-        DropBoxManager dropbox = (DropBoxManager) context.getSystemService(Context.DROPBOX_SERVICE);
-        Assert.assertNotNull("Unable access the DropBoxManager service", dropbox);
+        DropBoxManager dropbox = Objects.requireNonNull(
+                context.getSystemService(DropBoxManager.class));
 
         long timestamp = startTime;
         DropBoxManager.Entry entry;

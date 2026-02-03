@@ -15,12 +15,12 @@
  */
 package com.android.launcher3.testing;
 
-import static com.android.launcher3.Flags.enableGridOnlyOverview;
+import static com.android.launcher3.Flags.enableFallbackOverviewInWindow;
+import static com.android.launcher3.util.OverviewReleaseFlags.enableGridOnlyOverview;
+import static com.android.launcher3.Flags.enableLauncherOverviewInWindow;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
-import static com.android.launcher3.config.FeatureFlags.enableAppPairs;
-import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
 import static com.android.launcher3.testing.shared.TestProtocol.TEST_INFO_RESPONSE_FIELD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -55,9 +55,7 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.icons.ClockDrawableWrapper;
-import com.android.launcher3.testing.shared.HotseatCellCenterRequest;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.testing.shared.WorkspaceCellCenterRequest;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -168,21 +166,14 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_TARGET_INSETS: {
-                return getUIProperty(Bundle::putParcelable, activity -> {
-                    WindowInsets insets = activity.getWindow()
-                            .getDecorView().getRootWindowInsets();
-                    return Insets.max(
-                            insets.getSystemGestureInsets(),
-                            insets.getSystemWindowInsets());
-                }, this::getCurrentActivity);
+                return getUIProperty(Bundle::putParcelable, insets -> Insets.max(
+                        insets.getSystemGestureInsets(),
+                        insets.getSystemWindowInsets()), this::getWindowInsets);
             }
 
             case TestProtocol.REQUEST_WINDOW_INSETS: {
-                return getUIProperty(Bundle::putParcelable, activity -> {
-                    WindowInsets insets = activity.getWindow()
-                            .getDecorView().getRootWindowInsets();
-                    return insets.getSystemWindowInsets();
-                }, this::getCurrentActivity);
+                return getUIProperty(Bundle::putParcelable,
+                        WindowInsets::getSystemWindowInsets, this::getWindowInsets);
             }
 
             case TestProtocol.REQUEST_CELL_LAYOUT_BOARDER_HEIGHT: {
@@ -192,18 +183,18 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_SYSTEM_GESTURE_REGION: {
-                return getUIProperty(Bundle::putParcelable, activity -> {
-                    WindowInsetsCompat insets = WindowInsetsCompat.toWindowInsetsCompat(
-                            activity.getWindow().getDecorView().getRootWindowInsets());
+                return getUIProperty(Bundle::putParcelable, windowInsets -> {
+                    WindowInsetsCompat insets =
+                            WindowInsetsCompat.toWindowInsetsCompat(windowInsets);
                     return insets.getInsets(WindowInsetsCompat.Type.ime()
                             | WindowInsetsCompat.Type.systemGestures())
                             .toPlatformInsets();
-                }, this::getCurrentActivity);
+                }, this::getWindowInsets);
             }
 
             case TestProtocol.REQUEST_ICON_HEIGHT: {
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        mDeviceProfile.allAppsCellHeightPx);
+                        mDeviceProfile.getAllAppsProfile().getCellHeightPx());
                 return response;
             }
 
@@ -212,7 +203,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return response;
 
             case TestProtocol.REQUEST_IS_TABLET:
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, mDeviceProfile.isTablet);
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, mDeviceProfile.getDeviceProperties().isTablet());
                 return response;
             case TestProtocol.REQUEST_IS_PREDICTIVE_BACK_SWIPE_ENABLED:
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
@@ -223,6 +214,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         ENABLE_TASKBAR_NAVBAR_UNIFICATION);
                 return response;
 
+            case TestProtocol.REQUEST_TASKBAR_SHOWN_ON_HOME:
+                response.putBoolean(TEST_INFO_RESPONSE_FIELD,
+                        DisplayController.showLockedTaskbarOnHome(mContext));
+                return response;
             case TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS:
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                         mDeviceProfile.numShownAllAppsColumns);
@@ -235,7 +230,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_IS_TWO_PANELS:
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        FOLDABLE_SINGLE_PAGE.get() ? false : mDeviceProfile.isTwoPanels);
+                        FOLDABLE_SINGLE_PAGE.get() ? false : mDeviceProfile.getDeviceProperties().isTwoPanels());
                 return response;
 
             case TestProtocol.REQUEST_GET_HAD_NONTEST_EVENTS:
@@ -252,13 +247,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_GET_SPLIT_SELECTION_ACTIVE:
-                response.putBoolean(TEST_INFO_RESPONSE_FIELD, enableSplitContextually()
-                        && Launcher.ACTIVITY_TRACKER.getCreatedActivity().isSplitSelectionActive());
+                response.putBoolean(TEST_INFO_RESPONSE_FIELD,
+                        Launcher.ACTIVITY_TRACKER.getCreatedContext().isSplitSelectionActive());
                 return response;
 
             case TestProtocol.REQUEST_ENABLE_ROTATION:
                 MAIN_EXECUTOR.submit(() ->
-                        Launcher.ACTIVITY_TRACKER.getCreatedActivity().getRotationHelper()
+                        Launcher.ACTIVITY_TRACKER.getCreatedContext().getRotationHelper()
                                 .forceAllowRotationForTesting(Boolean.parseBoolean(arg)));
                 return response;
 
@@ -272,15 +267,15 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 });
 
             case TestProtocol.REQUEST_WORKSPACE_CELL_CENTER: {
-                final WorkspaceCellCenterRequest request = extra.getParcelable(
-                        TestProtocol.TEST_INFO_REQUEST_FIELD);
+                Rect cellPos = extra.getParcelable(TestProtocol.TEST_INFO_PARAM_CELL_SPAN);
                 return getLauncherUIProperty(Bundle::putParcelable, launcher -> {
                     final Workspace<?> workspace = launcher.getWorkspace();
                     // TODO(b/216387249): allow caller selecting different pages.
                     CellLayout cellLayout = (CellLayout) workspace.getPageAt(
                             workspace.getCurrentPage());
                     final Rect cellRect = getDescendantRectRelativeToDragLayerForCell(launcher,
-                            cellLayout, request.cellX, request.cellY, request.spanX, request.spanY);
+                            cellLayout, cellPos.left, cellPos.top, cellPos.width(),
+                            cellPos.height());
                     return new Point(cellRect.centerX(), cellRect.centerY());
                 });
             }
@@ -299,12 +294,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_HOTSEAT_CELL_CENTER: {
-                final HotseatCellCenterRequest request = extra.getParcelable(
-                        TestProtocol.TEST_INFO_REQUEST_FIELD);
+                int cellIndex = extra.getInt(TestProtocol.TEST_INFO_PARAM_INDEX);
                 return getLauncherUIProperty(Bundle::putParcelable, launcher -> {
                     final Hotseat hotseat = launcher.getHotseat();
                     final Rect cellRect = getDescendantRectRelativeToDragLayerForCell(launcher,
-                            hotseat, request.cellInd, /* cellY= */ 0,
+                            hotseat, cellIndex, /* cellY= */ 0,
                             /* spanX= */ 1, /* spanY= */ 1);
                     // TODO(b/234322284): return the real center point.
                     return new Point(cellRect.left + (cellRect.right - cellRect.left) / 3,
@@ -335,8 +329,9 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return response;
             }
 
-            case TestProtocol.REQUEST_FLAG_ENABLE_APP_PAIRS: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, enableAppPairs());
+            case TestProtocol.REQUEST_IS_RECENTS_WINDOW_ENABLED: {
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        enableLauncherOverviewInWindow() || enableFallbackOverviewInWindow());
                 return response;
             }
 
@@ -482,12 +477,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
     }
 
     protected boolean isLauncherInitialized() {
-        return Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null
+        return Launcher.ACTIVITY_TRACKER.getCreatedContext() == null
                 || LauncherAppState.getInstance(mContext).getModel().isModelLoaded();
     }
 
-    protected Activity getCurrentActivity() {
-        return Launcher.ACTIVITY_TRACKER.getCreatedActivity();
+    protected WindowInsets getWindowInsets(){
+        return Launcher.ACTIVITY_TRACKER.getCreatedContext().getWindow().getDecorView()
+                .getRootWindowInsets();
     }
 
     /**
@@ -495,13 +491,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
      */
     public static <T> Bundle getLauncherUIProperty(
             BundleSetter<T> bundleSetter, Function<Launcher, T> provider) {
-        return getUIProperty(bundleSetter, provider, Launcher.ACTIVITY_TRACKER::getCreatedActivity);
+        return getUIProperty(bundleSetter, provider, Launcher.ACTIVITY_TRACKER::getCreatedContext);
     }
 
     /**
      * Returns the result by getting a generic property on UI thread
      */
-    private static <S, T> Bundle getUIProperty(
+    protected static <S, T> Bundle getUIProperty(
             BundleSetter<T> bundleSetter, Function<S, T> provider, Supplier<S> targetSupplier) {
         return getFromExecutorSync(MAIN_EXECUTOR, () -> {
             S target = targetSupplier.get();

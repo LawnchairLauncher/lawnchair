@@ -17,10 +17,12 @@
 package com.android.wm.shell.flicker.pip
 
 import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
 import android.tools.traces.component.ComponentNameMatcher
+import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.ClosePipTransition
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -31,7 +33,7 @@ import org.junit.runners.Parameterized
 /**
  * Test closing a pip window by swiping it to the bottom-center of the screen
  *
- * To run this test: `atest WMShellFlickerTestsPip1:ClosePipBySwipingDownTest`
+ * To run this test: `atest WMShellFlickerTestsPip:ClosePipBySwipingDownTest`
  *
  * Actions:
  * ```
@@ -52,6 +54,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
 class ClosePipBySwipingDownTest(flicker: LegacyFlickerTest) : ClosePipTransition(flicker) {
     override val thisTransition: FlickerBuilder.() -> Unit = {
         transitions {
@@ -60,7 +63,7 @@ class ClosePipBySwipingDownTest(flicker: LegacyFlickerTest) : ClosePipTransition
             val pipCenterY = pipRegion.centerY()
             val displayCenterX = device.displayWidth / 2
             val barComponent =
-                if (flicker.scenario.isTablet) {
+                if (flicker.scenario.isTablet || Flags.enableTaskbarOnPhones()) {
                     ComponentNameMatcher.TASK_BAR
                 } else {
                     ComponentNameMatcher.NAV_BAR

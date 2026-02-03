@@ -49,6 +49,7 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DynamicResource;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.ResourceProvider;
@@ -63,8 +64,7 @@ public class StaggeredWorkspaceAnim {
     private static final int APP_CLOSE_ROW_START_DELAY_MS = 10;
     // Should be used for animations running alongside this StaggeredWorkspaceAnim.
     public static final int DURATION_MS = 250;
-    public static final int DURATION_TASKBAR_MS =
-            QuickstepTransitionManager.getTaskbarToHomeDuration();
+    private final int mTaskbarDurationInMs;
 
     private static final float MAX_VELOCITY_PX_PER_S = 22f;
 
@@ -81,6 +81,10 @@ public class StaggeredWorkspaceAnim {
 
     public StaggeredWorkspaceAnim(QuickstepLauncher launcher, float velocity,
             boolean animateOverviewScrim, @Nullable View ignoredView, boolean staggerWorkspace) {
+        boolean isPinnedTaskbarAndNotInDesktopMode = DisplayController.isPinnedTaskbar(launcher)
+                && !DisplayController.isInDesktopMode(launcher);
+        mTaskbarDurationInMs = QuickstepTransitionManager.getTaskbarToHomeDuration(
+                isPinnedTaskbarAndNotInDesktopMode);
         prepareToAnimate(launcher, animateOverviewScrim);
 
         mIgnoredView = ignoredView;
@@ -93,7 +97,7 @@ public class StaggeredWorkspaceAnim {
                 .getDimensionPixelSize(R.dimen.swipe_up_max_workspace_trans_y);
 
         DeviceProfile grid = launcher.getDeviceProfile();
-        long duration = grid.isTaskbarPresent ? DURATION_TASKBAR_MS : DURATION_MS;
+        long duration = grid.isTaskbarPresent ? mTaskbarDurationInMs : DURATION_MS;
         if (staggerWorkspace) {
             Workspace<?> workspace = launcher.getWorkspace();
             Hotseat hotseat = launcher.getHotseat();

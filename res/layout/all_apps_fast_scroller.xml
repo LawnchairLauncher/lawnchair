@@ -36,4 +36,17 @@
         android:layout_marginEnd="@dimen/fastscroll_end_margin"
         launcher:canThumbDetach="true" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/scroll_letter_layout"
+        android:layout_width="@dimen/fastscroll_width"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/all_apps_header"
+        android:layout_marginTop="@dimen/all_apps_header_bottom_padding"
+        android:layout_marginEnd="@dimen/fastscroll_list_letter_end_margin"
+        android:clipToPadding="false"
+        android:outlineProvider="none"
+        />
 </merge>

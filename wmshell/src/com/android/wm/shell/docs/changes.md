@@ -1,4 +1,5 @@
 # Making changes in the Shell
+[Back to home](README.md)
 
 ---
 
@@ -98,9 +99,8 @@ Don't:
 ### Exposing shared code for use in Launcher
 Launcher doesn't currently build against the Shell library, but needs to have access to some shared
 AIDL interfaces and constants.  Currently, all AIDL files, and classes under the
-`com.android.wm.shell.util` package are automatically built into the `SystemUISharedLib` that
+`com.android.wm.shell.shared` package are automatically built into the `SystemUISharedLib` that
 Launcher uses.
 
-If the new code doesn't fall into those categories, they can be added explicitly in the Shell's
-[Android.bp](/libs/WindowManager/Shell/Android.bp) file under the
-`wm_shell_util-sources` filegroup.
+If the new code doesn't fall into those categories, they should be moved to the Shell shared
+package (`com.android.wm.shell.shared`) under the `WindowManager-Shell-shared` library.

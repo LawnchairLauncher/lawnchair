@@ -23,7 +23,6 @@ import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.touch.SingleAxisSwipeDetector
 import com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE
 import com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL
-import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.TouchController
 import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer
 
@@ -39,7 +38,7 @@ import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer
 class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : TouchController {
 
     private val activity: TaskbarActivityContext = controllers.taskbarActivityContext
-    private val enabled = DisplayController.isTransientTaskbar(activity)
+    private val enabled = activity.isTransientTaskbar
     private val swipeDownDetector: SingleAxisSwipeDetector
     private val translationCallback = controllers.taskbarTranslationController.transitionCallback
     /** Interpolator to apply resistance as user swipes down to the bottom of the screen. */
@@ -48,7 +47,8 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
     private val maxVisualDisplacement =
         activity.resources.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin).toFloat()
     /** How far the swipe could go, if user swiped from the very top of TaskbarView. */
-    private val maxTouchDisplacement = maxVisualDisplacement + activity.deviceProfile.taskbarHeight
+    private val maxTouchDisplacement =
+        maxVisualDisplacement + activity.deviceProfile.taskbarProfile.height
     private val touchDisplacementToStash =
         activity.resources.getDimensionPixelSize(R.dimen.taskbar_to_nav_threshold).toFloat()
 
@@ -67,9 +67,10 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
         val gestureHeight: Int =
             ResourceUtils.getNavbarSize(
                 ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE,
-                activity.resources
+                activity.resources,
             )
-        gestureHeightYThreshold = (activity.deviceProfile.heightPx - gestureHeight).toFloat()
+        gestureHeightYThreshold =
+            (activity.deviceProfile.deviceProperties.heightPx - gestureHeight).toFloat()
     }
 
     private fun createSwipeListener() =
@@ -89,7 +90,7 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
                         maxTouchDisplacement,
                         0f,
                         maxVisualDisplacement,
-                        displacementInterpolator
+                        displacementInterpolator,
                     )
                 )
                 return false
@@ -127,6 +128,14 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
         if (ev.action == MotionEvent.ACTION_OUTSIDE) {
             controllers.taskbarStashController.updateAndAnimateTransientTaskbar(true)
         } else if (controllers.taskbarViewController.isEventOverAnyItem(screenCoordinatesEv)) {
+            // TODO (b/411155437) remove this once BubbleDragController implements TouchController
+            val bubbleBarDragInProgress =
+                controllers.bubbleControllers
+                    .map { it.bubbleDragController.isDragging }
+                    .orElse(false)
+            if (bubbleBarDragInProgress) {
+                return false
+            }
             swipeDownDetector.onTouchEvent(ev)
             if (swipeDownDetector.isDraggingState) {
                 return true

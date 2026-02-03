@@ -1,0 +1,14 @@
+{
+  "imports": [
+    {
+      // Includes all flicker configs
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/appcompat"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/bubble"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/pip"
+    }
+  ]
+}

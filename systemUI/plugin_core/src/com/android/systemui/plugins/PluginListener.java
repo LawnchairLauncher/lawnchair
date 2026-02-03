@@ -16,6 +16,8 @@ package com.android.systemui.plugins;
 
 import android.content.Context;
 
+import com.android.systemui.log.core.MessageBuffer;
+
 /**
  * Interface for listening to plugins being connected and disconnected.
  *
@@ -45,6 +47,12 @@ import android.content.Context;
  * @param <T> is the target plugin type
  */
 public interface PluginListener<T extends Plugin> {
+    /** Returns a LogBuffer that PluginInstances should use to log messages */
+    default MessageBuffer getLogBuffer() {
+        // Optional, will use Logcat by default
+        return null;
+    }
+
     /**
      * Called when the plugin has been loaded and is ready to be used.
      * This may be called multiple times if multiple plugins are allowed.

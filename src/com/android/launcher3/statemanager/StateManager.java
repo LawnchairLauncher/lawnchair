@@ -18,6 +18,7 @@ package com.android.launcher3.statemanager;
 
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
+import static com.android.launcher3.Flags.enableStateManagerProtoLog;
 import static com.android.launcher3.anim.AnimatorPlaybackController.callListenerCommandRecursively;
 import static com.android.launcher3.states.StateAnimationConfig.HANDLE_STATE_APPLY;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_ALL_ANIMATIONS;
@@ -26,7 +27,6 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -39,6 +39,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.states.StateAnimationConfig.AnimationPropertyFlags;
+import com.android.launcher3.util.StateManagerProtoLogProxy;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -48,50 +49,49 @@ import java.util.stream.Collectors;
 /**
  * Class to manage transitions between different states for a StatefulActivity based on different
  * states
- * @param STATE_TYPE Basestate used by the state manager
- * @param STATEFUL_CONTAINER container object used to manage state
+ * @param <S> Basestate used by the state manager
+ * @param <T> container object used to manage state
  */
-public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
-        STATEFUL_CONTAINER extends Context & StatefulContainer<STATE_TYPE>> {
+public class StateManager<S extends BaseState<S>, T extends StatefulContainer<S>> {
 
     public static final String TAG = "StateManager";
     // b/279059025, b/325463989
     private static final boolean DEBUG = true;
 
-    private final AnimationState mConfig = new AnimationState();
+    private final AnimationState<S> mConfig = new AnimationState<>();
     private final Handler mUiHandler;
-    private final STATEFUL_CONTAINER mStatefulContainer;
-    private final ArrayList<StateListener<STATE_TYPE>> mListeners = new ArrayList<>();
-    private final STATE_TYPE mBaseState;
+    private final T mContainer;
+    private final ArrayList<StateListener<S>> mListeners = new ArrayList<>();
+    private final S mBaseState;
 
     // Animators which are run on properties also controlled by state animations.
-    private final AtomicAnimationFactory mAtomicAnimationFactory;
+    private final AtomicAnimationFactory<S> mAtomicAnimationFactory;
 
-    private StateHandler<STATE_TYPE>[] mStateHandlers;
-    private STATE_TYPE mState;
+    private StateHandler<S>[] mStateHandlers;
+    private S mState;
 
-    private STATE_TYPE mLastStableState;
-    private STATE_TYPE mCurrentStableState;
+    private S mLastStableState;
+    private S mCurrentStableState;
 
-    private STATE_TYPE mRestState;
+    private S mRestState;
 
-    public StateManager(STATEFUL_CONTAINER container, STATE_TYPE baseState) {
+    public StateManager(T container, S baseState) {
         mUiHandler = new Handler(Looper.getMainLooper());
-        mStatefulContainer = container;
+        mContainer = container;
         mBaseState = baseState;
         mState = mLastStableState = mCurrentStableState = baseState;
         mAtomicAnimationFactory = container.createAtomicAnimationFactory();
     }
 
-    public STATE_TYPE getState() {
+    public S getState() {
         return mState;
     }
 
-    public STATE_TYPE getTargetState() {
-        return (STATE_TYPE) mConfig.targetState;
+    public S getTargetState() {
+        return mConfig.targetState;
     }
 
-    public STATE_TYPE getCurrentStableState() {
+    public S getCurrentStableState() {
         return mCurrentStableState;
     }
 
@@ -113,20 +113,20 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         writer.println(prefix + "\tisInTransition:" + isInTransition());
     }
 
-    public StateHandler<STATE_TYPE>[] getStateHandlers() {
+    public StateHandler<S>[] getStateHandlers() {
         if (mStateHandlers == null) {
-            ArrayList<StateHandler<STATE_TYPE>> handlers = new ArrayList<>();
-            mStatefulContainer.collectStateHandlers(handlers);
+            ArrayList<StateHandler<S>> handlers = new ArrayList<>();
+            mContainer.collectStateHandlers(handlers);
             mStateHandlers = handlers.toArray(new StateHandler[handlers.size()]);
         }
         return mStateHandlers;
     }
 
-    public void addStateListener(StateListener listener) {
+    public void addStateListener(StateListener<S> listener) {
         mListeners.add(listener);
     }
 
-    public void removeStateListener(StateListener listener) {
+    public void removeStateListener(StateListener<S> listener) {
         mListeners.remove(listener);
     }
 
@@ -134,14 +134,14 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
      * Returns true if the state changes should be animated.
      */
     public boolean shouldAnimateStateChange() {
-        return mStatefulContainer.shouldAnimateStateChange();
+        return mContainer.shouldAnimateStateChange();
     }
 
     /**
      * @return {@code true} if the state matches the current state and there is no active
      *         transition to different state.
      */
-    public boolean isInStableState(STATE_TYPE state) {
+    public boolean isInStableState(S state) {
         return mState == state && mCurrentStableState == state
                 && (mConfig.targetState == null || mConfig.targetState == state);
     }
@@ -154,23 +154,23 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
     }
 
     /**
-     * @see #goToState(STATE_TYPE, boolean, AnimatorListener)
+     * @see #goToState(S, boolean, AnimatorListener)
      */
-    public void goToState(STATE_TYPE state) {
+    public void goToState(S state) {
         goToState(state, shouldAnimateStateChange());
     }
 
     /**
-     * @see #goToState(STATE_TYPE, boolean, AnimatorListener)
+     * @see #goToState(S, boolean, AnimatorListener)
      */
-    public void goToState(STATE_TYPE state, AnimatorListener listener) {
+    public void goToState(S state, AnimatorListener listener) {
         goToState(state, shouldAnimateStateChange(), listener);
     }
 
     /**
-     * @see #goToState(STATE_TYPE, boolean, AnimatorListener)
+     * @see #goToState(S, boolean, AnimatorListener)
      */
-    public void goToState(STATE_TYPE state, boolean animated) {
+    public void goToState(S state, boolean animated) {
         goToState(state, animated, 0, null);
     }
 
@@ -181,21 +181,21 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
      *                true otherwise
      * @param listener any action to perform at the end of the transition, or null.
      */
-    public void goToState(STATE_TYPE state, boolean animated, AnimatorListener listener) {
+    public void goToState(S state, boolean animated, AnimatorListener listener) {
         goToState(state, animated, 0, listener);
     }
 
     /**
      * Changes the Launcher state to the provided state after the given delay.
      */
-    public void goToState(STATE_TYPE state, long delay, AnimatorListener listener) {
+    public void goToState(S state, long delay, AnimatorListener listener) {
         goToState(state, true, delay, listener);
     }
 
     /**
      * Changes the Launcher state to the provided state after the given delay.
      */
-    public void goToState(STATE_TYPE state, long delay) {
+    public void goToState(S state, long delay) {
         goToState(state, true, delay, null);
     }
 
@@ -217,7 +217,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
             cancelAnimation();
         }
         if (mConfig.currentAnimation == null) {
-            for (StateHandler handler : getStateHandlers()) {
+            for (StateHandler<S> handler : getStateHandlers()) {
                 handler.setState(mState);
             }
             if (wasInAnimation) {
@@ -226,35 +226,46 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         }
     }
 
+    /** Handles back started in predictive back gesture by passing it to state handlers. */
+    public void onBackStarted(S toState) {
+        for (StateHandler<S> handler : getStateHandlers()) {
+            handler.onBackStarted(toState);
+        }
+    }
+
     /** Handles backProgress in predictive back gesture by passing it to state handlers. */
     public void onBackProgressed(
-            STATE_TYPE toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {
-        for (StateHandler handler : getStateHandlers()) {
+            S toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {
+        for (StateHandler<S> handler : getStateHandlers()) {
             handler.onBackProgressed(toState, backProgress);
         }
     }
 
     /** Handles back cancelled event in predictive back gesture by passing it to state handlers. */
-    public void onBackCancelled(STATE_TYPE toState) {
-        for (StateHandler handler : getStateHandlers()) {
+    public void onBackCancelled(S toState) {
+        for (StateHandler<S> handler : getStateHandlers()) {
             handler.onBackCancelled(toState);
         }
     }
 
     private void goToState(
-            STATE_TYPE state, boolean animated, long delay, AnimatorListener listener) {
-        if (DEBUG) {
+            S state, boolean animated, long delay, AnimatorListener listener) {
+        if (enableStateManagerProtoLog()) {
+            StateManagerProtoLogProxy.logGoToState(
+                    mState, state, getTrimmedStackTrace("StateManager.goToState"));
+        } else if (DEBUG) {
             Log.d(TAG, "goToState - fromState: " + mState + ", toState: " + state
                     + ", partial trace:\n" + getTrimmedStackTrace("StateManager.goToState"));
         }
 
         animated &= areAnimatorsEnabled();
-        if (mStatefulContainer.isInState(state)) {
+        if (getState() == state) {
             if (mConfig.currentAnimation == null) {
                 // Run any queued runnable
                 if (listener != null) {
-                    listener.onAnimationEnd(null);
+                    listener.onAnimationEnd(new AnimatorSet());
                 }
+                onRepeatStateSetAborted(state);
                 return;
             } else if ((!mConfig.isUserControlled() && animated && mConfig.targetState == state)
                     || mState.shouldPreserveDataStateOnReapply()) {
@@ -263,18 +274,19 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
                 if (listener != null) {
                     mConfig.currentAnimation.addListener(listener);
                 }
+                onRepeatStateSetAborted(state);
                 return;
             }
         }
 
         // Cancel the current animation. This will reset mState to mCurrentStableState, so store it.
-        STATE_TYPE fromState = mState;
+        S fromState = mState;
         cancelAnimation();
 
         if (!animated) {
             mAtomicAnimationFactory.cancelAllStateElementAnimation();
             onStateTransitionStart(state);
-            for (StateHandler handler : getStateHandlers()) {
+            for (StateHandler<S> handler : getStateHandlers()) {
                 handler.setState(state);
             }
 
@@ -282,7 +294,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
 
             // Run any queued runnable
             if (listener != null) {
-                listener.onAnimationEnd(null);
+                listener.onAnimationEnd(new AnimatorSet());
             }
             return;
         }
@@ -301,13 +313,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         }
     }
 
-    private void goToStateAnimated(STATE_TYPE state, STATE_TYPE fromState,
+    private void goToStateAnimated(S state, S fromState,
             AnimatorListener listener) {
         // Since state mBaseState can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == mBaseState
-                ? fromState.getTransitionDuration(mStatefulContainer, false /* isToState */)
-                : state.getTransitionDuration(mStatefulContainer, true /* isToState */);
+                ? fromState.getTransitionDuration(mContainer, false /* isToState */)
+                : state.getTransitionDuration(mContainer, true /* isToState */);
         prepareForAtomicAnimation(fromState, state, mConfig);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(state).buildAnim();
         if (listener != null) {
@@ -321,7 +333,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
      * - Setting interpolators for various animations included in the state transition.
      * - Setting some start values (e.g. scale) for views that are hidden but about to be shown.
      */
-    public void prepareForAtomicAnimation(STATE_TYPE fromState, STATE_TYPE toState,
+    public void prepareForAtomicAnimation(S fromState, S toState,
             StateAnimationConfig config) {
         mAtomicAnimationFactory.prepareForAtomicAnimation(fromState, toState, config);
     }
@@ -330,8 +342,11 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
      * Creates an animation representing atomic transitions between the provided states
      */
     public AnimatorSet createAtomicAnimation(
-            STATE_TYPE fromState, STATE_TYPE toState, StateAnimationConfig config) {
-        if (DEBUG) {
+            S fromState, S toState, StateAnimationConfig config) {
+        if (enableStateManagerProtoLog()) {
+            StateManagerProtoLogProxy.logCreateAtomicAnimation(
+                    mState, toState, getTrimmedStackTrace("StateManager.createAtomicAnimation"));
+        } else if (DEBUG) {
             Log.d(TAG, "createAtomicAnimation - fromState: " + fromState + ", toState: " + toState
                     + ", partial trace:\n" + getTrimmedStackTrace(
                             "StateManager.createAtomicAnimation"));
@@ -340,7 +355,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         PendingAnimation builder = new PendingAnimation(config.duration);
         prepareForAtomicAnimation(fromState, toState, config);
 
-        for (StateHandler handler : mStatefulContainer.getStateManager().getStateHandlers()) {
+        for (StateHandler<S> handler : getStateHandlers()) {
             handler.setStateWithAnimation(toState, config, builder);
         }
         return builder.buildAnim();
@@ -354,19 +369,19 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
      *                accuracy.
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
-            STATE_TYPE state, long duration) {
+            S state, long duration) {
         return createAnimationToNewWorkspace(state, duration, 0 /* animFlags */);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(
-            STATE_TYPE state, long duration, @AnimationFlags int animFlags) {
+            S state, long duration, @AnimationFlags int animFlags) {
         StateAnimationConfig config = new StateAnimationConfig();
         config.duration = duration;
         config.animFlags = animFlags;
         return createAnimationToNewWorkspace(state, config);
     }
 
-    public AnimatorPlaybackController createAnimationToNewWorkspace(STATE_TYPE state,
+    public AnimatorPlaybackController createAnimationToNewWorkspace(S state,
             StateAnimationConfig config) {
         config.animProps |= StateAnimationConfig.USER_CONTROLLED;
         cancelAnimation();
@@ -376,10 +391,10 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         return mConfig.playbackController;
     }
 
-    private PendingAnimation createAnimationToNewWorkspaceInternal(final STATE_TYPE state) {
+    private PendingAnimation createAnimationToNewWorkspaceInternal(final S state) {
         PendingAnimation builder = new PendingAnimation(mConfig.duration);
         if (!mConfig.hasAnimationFlag(SKIP_ALL_ANIMATIONS)) {
-            for (StateHandler handler : getStateHandlers()) {
+            for (StateHandler<S> handler : getStateHandlers()) {
                 handler.setStateWithAnimation(state, mConfig, builder);
             }
         }
@@ -388,7 +403,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         return builder;
     }
 
-    private AnimatorListener createStateAnimationListener(STATE_TYPE state) {
+    private AnimatorListener createStateAnimationListener(S state) {
         return new AnimationSuccessListener() {
 
             @Override
@@ -404,11 +419,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         };
     }
 
-    private void onStateTransitionStart(STATE_TYPE state) {
+    private void onStateTransitionStart(S state) {
         mState = state;
-        mStatefulContainer.onStateSetStart(mState);
+        mContainer.onStateSetStart(mState);
 
-        if (DEBUG) {
+        if (enableStateManagerProtoLog()) {
+            StateManagerProtoLogProxy.logOnStateTransitionStart(state);
+        } else if (DEBUG) {
             Log.d(TAG, "onStateTransitionStart - state: " + state);
         }
         for (int i = mListeners.size() - 1; i >= 0; i--) {
@@ -416,19 +433,21 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         }
     }
 
-    private void onStateTransitionEnd(STATE_TYPE state) {
+    private void onStateTransitionEnd(S state) {
         // Only change the stable states after the transitions have finished
         if (state != mCurrentStableState) {
             mLastStableState = state.getHistoryForState(mCurrentStableState);
             mCurrentStableState = state;
         }
 
-        mStatefulContainer.onStateSetEnd(state);
+        mContainer.onStateSetEnd(state);
         if (state == mBaseState) {
             setRestState(null);
         }
 
-        if (DEBUG) {
+        if (enableStateManagerProtoLog()) {
+            StateManagerProtoLogProxy.logOnStateTransitionEnd(state);
+        } else if (DEBUG) {
             Log.d(TAG, "onStateTransitionEnd - state: " + state);
         }
         for (int i = mListeners.size() - 1; i >= 0; i--) {
@@ -436,7 +455,16 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         }
     }
 
-    public STATE_TYPE getLastState() {
+    private void onRepeatStateSetAborted(S state) {
+        if (enableStateManagerProtoLog()) {
+            StateManagerProtoLogProxy.logOnRepeatStateSetAborted(state);
+        } else if (DEBUG) {
+            Log.d(TAG, "onRepeatStateSetAborted - state: " + state);
+        }
+        mContainer.onRepeatStateSetAborted(state);
+    }
+
+    public S getLastState() {
         return mLastStableState;
     }
 
@@ -456,11 +484,11 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         }
     }
 
-    public STATE_TYPE getRestState() {
+    public S getRestState() {
         return mRestState == null ? mBaseState : mRestState;
     }
 
-    public void setRestState(STATE_TYPE restState) {
+    public void setRestState(S restState) {
         mRestState = restState;
     }
 
@@ -468,7 +496,11 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
      * Cancels the current animation.
      */
     public void cancelAnimation() {
-        if (DEBUG && mConfig.currentAnimation != null) {
+        if (enableStateManagerProtoLog()) {
+            StateManagerProtoLogProxy.logCancelAnimation(
+                    mConfig.currentAnimation != null,
+                    getTrimmedStackTrace("StateManager.cancelAnimation"));
+        } else if (DEBUG && mConfig.currentAnimation != null) {
             Log.d(TAG, "cancelAnimation - with ongoing animation"
                     + ", partial trace:\n" + getTrimmedStackTrace("StateManager.cancelAnimation"));
         }
@@ -502,7 +534,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
      * @param anim The custom animation to the given state.
      * @param toState The state we are animating towards.
      */
-    public void setCurrentAnimation(AnimatorSet anim, STATE_TYPE toState) {
+    public void setCurrentAnimation(AnimatorSet anim, S toState) {
         cancelAnimation();
         setCurrentAnimation(anim);
         anim.addListener(createStateAnimationListener(toState));
@@ -673,12 +705,15 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
         void setStateWithAnimation(
                 STATE_TYPE toState, StateAnimationConfig config, PendingAnimation animation);
 
+        /** Handles back started in predictive back gesture for target state. */
+        default void onBackStarted(STATE_TYPE toState) {}
+
         /** Handles backProgress in predictive back gesture for target state. */
         default void onBackProgressed(
-                STATE_TYPE toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {};
+                STATE_TYPE toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {}
 
         /** Handles back cancelled event in predictive back gesture for target state.  */
-        default void onBackCancelled(STATE_TYPE toState) {};
+        default void onBackCancelled(STATE_TYPE toState) {}
     }
 
     public interface StateListener<STATE_TYPE> {

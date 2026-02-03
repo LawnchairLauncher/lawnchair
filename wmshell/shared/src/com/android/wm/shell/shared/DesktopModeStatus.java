@@ -23,7 +23,7 @@ import android.os.Build;
 
 import com.android.internal.R;
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.window.flags.Flags;
+import com.android.window.flags2.Flags;
 
 /**
  * Constants for desktop mode feature

@@ -12,18 +12,21 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.ViewDebug;
 import android.view.WindowInsets;
 
 import com.android.launcher3.graphics.SysUiScrim;
-import com.android.launcher3.statemanager.StatefulActivity;
-import com.hoko.blur.HokoBlur;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import com.android.launcher3.statemanager.StatefulContainer;
+
 import com.android.launcher3.util.window.WindowManagerProxy;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.Collections;
 import java.util.List;
 
+import com.hoko.blur.HokoBlur;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.FileAccessManager;
@@ -33,10 +36,11 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     private final Rect mTempRect = new Rect();
 
-    private final StatefulActivity mActivity;
+    private final StatefulContainer mStatefulContainer;
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT = Collections.singletonList(new Rect());
+    private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
+            Collections.singletonList(new Rect());
 
     private WindowStateListener mWindowStateListener;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -51,7 +55,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mActivity = StatefulActivity.fromContext(context);
+        mStatefulContainer = ActivityContext.lookupContext(context);
         mSysUiScrim = new SysUiScrim(this);
 
         pref = PreferenceManager.getInstance(context);
@@ -67,9 +71,9 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     private void setUpBlur(Context context) {
-        var display = mActivity.getDeviceProfile();
-        int width = display.widthPx;
-        int height = display.heightPx;
+        var display = mStatefulContainer.getDeviceProfile();
+        int width = display.getDeviceProperties().getWidthPx();
+        int height = display.getDeviceProperties().getHeightPx();
 
         var wallpaper = getScaledWallpaperDrawable(width, height);
         if (wallpaper == null) {
@@ -117,19 +121,29 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     private void handleSystemWindowInsets(Rect insets) {
         // Update device profile before notifying the children.
-        mActivity.getDeviceProfile().updateInsets(insets);
+        mStatefulContainer.getDeviceProfile().updateInsets(insets);
         boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 
         if (resetState) {
-            mActivity.getStateManager().reapplyState(true /* cancelCurrentAnimation */);
+            mStatefulContainer.getStateManager().reapplyState(true /* cancelCurrentAnimation */);
         }
     }
 
     @Override
-    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        mActivity.handleConfigurationChanged(mActivity.getResources().getConfiguration());
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return mStatefulContainer.onRootViewDispatchKeyEvent(event)
+                || super.dispatchKeyEvent(event);
+    }
 
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        mStatefulContainer.handleConfigurationChanged(
+                mStatefulContainer.asContext().getResources().getConfiguration());
+        return updateInsets(insets);
+    }
+
+    private WindowInsets updateInsets(WindowInsets insets) {
         insets = WindowManagerProxy.INSTANCE.get(getContext())
                 .normalizeWindowInsets(getContext(), insets, mTempRect);
         handleSystemWindowInsets(mTempRect);
@@ -138,8 +152,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @Override
     public void setInsets(Rect insets) {
-        // If the insets haven't changed, this is a no-op. Avoid unnecessary layout
-        // caused by
+        // If the insets haven't changed, this is a no-op. Avoid unnecessary layout caused by
         // modifying child layout params.
         if (!insets.equals(mInsets)) {
             super.setInsets(insets);
@@ -148,7 +161,11 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     public void dispatchInsets() {
-        mActivity.getDeviceProfile().updateInsets(mInsets);
+        if (isAttachedToWindow()) {
+            updateInsets(getRootWindowInsets());
+        } else {
+            mStatefulContainer.getDeviceProfile().updateInsets(mInsets);
+        }
         super.setInsets(mInsets);
     }
 
@@ -181,6 +198,8 @@ public class LauncherRootView extends InsettableFrameLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(l, t, r, b);
+        setDisallowBackGesture(mDisallowBackGesture);
         mSysUiScrim.setSize(r - l, b - t);
     }
 

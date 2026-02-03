@@ -21,9 +21,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.Flags
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_BUBBLES
-import com.android.wm.shell.util.KtProtoLog
 
 /** Activity that sends a broadcast to open bubbles */
 class ShowBubblesActivity : Activity() {
@@ -37,7 +37,7 @@ class ShowBubblesActivity : Activity() {
                     // Set the package as the receiver is not exported
                     `package` = packageName
                 }
-            KtProtoLog.v(WM_SHELL_BUBBLES, "Sending broadcast to show bubbles")
+            ProtoLog.v(WM_SHELL_BUBBLES, "Sending broadcast to show bubbles")
             sendBroadcast(intent)
         }
         finish()

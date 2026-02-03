@@ -36,6 +36,7 @@
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Ứng dụng này chỉ có thể mở trong 1 cửa sổ"</string>
     <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Ứng dụng có thể không hoạt động trên màn hình phụ."</string>
     <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Ứng dụng không hỗ trợ khởi chạy trên màn hình phụ."</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"Ứng dụng không hỗ trợ bong bóng"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Trình chia đôi màn hình"</string>
     <string name="divider_title" msgid="1963391955593749442">"Trình chia đôi màn hình"</string>
     <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Toàn màn hình bên trái"</string>
@@ -43,6 +44,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Trái 50%"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Trái 30%"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Toàn màn hình bên phải"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Hoán đổi ứng dụng ở trên cùng với ứng dụng ở dưới cùng"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Hoán đổi ứng dụng bên trái với ứng dụng bên phải"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Toàn màn hình phía trên"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Trên 70%"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Trên 50%"</string>
@@ -65,10 +68,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Chuyển lên trên cùng bên phải"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Chuyển tới dưới cùng bên trái"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Chuyển tới dưới cùng bên phải"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"mở rộng trình đơn"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"thu gọn trình đơn"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"Di chuyển sang trái"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"Di chuyển sang phải"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"mở rộng <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"thu gọn <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"Cài đặt <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"Đóng bong bóng"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"Chuyển sang toàn màn hình"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Dừng sử dụng bong bóng cho cuộc trò chuyện"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"Trò chuyện bằng bong bóng trò chuyện"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"Các cuộc trò chuyện mới sẽ xuất hiện dưới dạng biểu tượng nổi hoặc bong bóng trò chuyện. Nhấn để mở bong bóng trò chuyện. Kéo để di chuyển bong bóng trò chuyện."</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Có vấn đề với máy ảnh?\nHãy nhấn để sửa lỗi"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Bạn chưa khắc phục vấn đề?\nHãy nhấn để hủy bỏ"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Không có vấn đề với máy ảnh? Hãy nhấn để đóng."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"Bạn có thể tìm thấy trình đơn ứng dụng tại đây"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"Chuyển sang chế độ cửa sổ trên máy tính để mở nhiều ứng dụng cùng lúc"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"Trở về chế độ toàn màn hình bất cứ lúc nào từ trình đơn ứng dụng"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Xem và làm được nhiều việc hơn"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Kéo một ứng dụng khác vào để chia đôi màn hình"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Nhấn đúp bên ngoài ứng dụng để đặt lại vị trí"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"Khởi động lại"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Không hiện lại"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Nhấn đúp để\ndi chuyển ứng dụng này"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"Phóng to"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"Thu nhỏ"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"Đóng"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"Phóng to <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"Khôi phục <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"Thu nhỏ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"Đóng <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="back_button_text" msgid="1469718707134137085">"Quay lại"</string>
-    <string name="handle_text" msgid="1766582106752184456">"Xử lý"</string>
+    <string name="handle_text" msgid="4419667835599523257">"Ô điều khiển ứng dụng"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"Biểu tượng ứng dụng"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"Toàn màn hình"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"Chế độ máy tính"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"Chế độ cửa sổ trên máy tính"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"Chia đôi màn hình"</string>
     <string name="more_button_text" msgid="3655388105592893530">"Tuỳ chọn khác"</string>
     <string name="float_button_text" msgid="9221657008391364581">"Nổi"</string>
     <string name="select_text" msgid="5139083974039906583">"Chọn"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"Ảnh chụp màn hình"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"Mở trong trình duyệt"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"Mở trong Ứng dụng"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"Cửa sổ mới"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"Quản lý cửa sổ"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Thay đổi tỷ lệ khung hình"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"Tối ưu hoá chế độ xem"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"Biểu tượng lỗi"</string>
     <string name="close_text" msgid="4986518933445178928">"Đóng"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"Đóng trình đơn"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"Mở Trình đơn"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (Chế độ cửa sổ trên máy tính)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Mở rộng màn hình"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Điều chỉnh kích thước màn hình"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"Đổi kích thước"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"Không di chuyển được ứng dụng đến đây"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"Đang mở cửa sổ ứng dụng mới"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"Đang đóng cửa sổ ứng dụng"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"Đang thu nhỏ cửa sổ ứng dụng"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (Đã lấy tiêu điểm)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (Chưa lấy tiêu điểm)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"Hiển thị tối đa"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"Khôi phục"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"Phóng to tối đa"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"Khôi phục"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"Di chuyển nhanh sang trái"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"Di chuyển nhanh sang phải"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"Đổi kích thước và chuyển cửa sổ ứng dụng sang trái"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"Đổi kích thước và chuyển cửa sổ ứng dụng sang phải"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"Phóng to hoặc khôi phục kích thước cửa sổ"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"Mở Trình đơn"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"Nhập <xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"Đổi kích thước và chuyển cửa sổ sang trái"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"Đổi kích thước và chuyển cửa sổ sang phải"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"Phóng to hoặc khôi phục kích thước cửa sổ"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"Phóng to kích thước cửa sổ ứng dụng"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"Khôi phục kích thước cửa sổ"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"Thu nhỏ cửa sổ ứng dụng"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"Đóng cửa sổ ứng dụng"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"Mở các chế độ cài đặt theo mặc định"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Chọn cách mở đường liên kết trang web cho ứng dụng này"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"Trong ứng dụng"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"Trên trình duyệt"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"OK"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"Mở nhanh các ứng dụng trong trình duyệt tại đây"</string>
 </resources>

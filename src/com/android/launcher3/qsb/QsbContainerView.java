@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2021, Lawnchair
+ * Modifications copyright 2025, Lawnchair
  */
 
 package com.android.launcher3.qsb;
@@ -21,8 +21,6 @@ package com.android.launcher3.qsb;
 import static android.appwidget.AppWidgetManager.ACTION_APPWIDGET_BIND;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_PROVIDER;
-
-import static com.android.launcher3.Utilities.SHOULD_SHOW_FIRST_PAGE_WIDGET;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -46,22 +44,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.BuildConfig;
+import com.android.launcher3.BuildConfigs;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FragmentWithPreview;
 import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
- * A frame layout which contains a QSB. This internally uses fragment to bind
- * the view, which
- * allows it to contain the logic for
- * {@link Fragment#startActivityForResult(Intent, int)}.
+ * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
+ * allows it to contain the logic for {@link Fragment#startActivityForResult(Intent, int)}.
  *
- * Note: WidgetManagerHelper can be disabled using FeatureFlags. In QSB, we
- * should use
+ * Note: WidgetManagerHelper can be disabled using FeatureFlags. In QSB, we should use
  * AppWidgetManager directly, so that it keeps working in that case.
  */
 public class QsbContainerView extends FrameLayout {
@@ -69,9 +65,7 @@ public class QsbContainerView extends FrameLayout {
     public static final String SEARCH_ENGINE_SETTINGS_KEY = "selected_search_engine";
 
     /**
-     * Returns the package name for user configured search provider or from
-     * searchManager
-     * 
+     * Returns the package name for user configured search provider or from searchManager
      * @param context
      * @return String
      */
@@ -91,9 +85,7 @@ public class QsbContainerView extends FrameLayout {
     }
 
     /**
-     * returns it's AppWidgetProviderInfo using package name from
-     * getSearchWidgetPackageName
-     * 
+     * returns it's AppWidgetProviderInfo using package name from getSearchWidgetPackageName
      * @param context
      * @return AppWidgetProviderInfo
      */
@@ -110,7 +102,8 @@ public class QsbContainerView extends FrameLayout {
 
         AppWidgetProviderInfo defaultWidgetForSearchPackage = null;
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        for (AppWidgetProviderInfo info : appWidgetManager.getInstalledProvidersForPackage(providerPkg, null)) {
+        for (AppWidgetProviderInfo info :
+                appWidgetManager.getInstalledProvidersForPackage(providerPkg, null)) {
             if (info.provider.getPackageName().equals(providerPkg) && info.configure == null) {
                 if ((info.widgetCategory
                         & AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX) != 0) {
@@ -128,14 +121,15 @@ public class QsbContainerView extends FrameLayout {
      */
     @WorkerThread
     @Nullable
-    public static ComponentName getSearchComponentName(@NonNull Context context) {
-        AppWidgetProviderInfo providerInfo = QsbContainerView.getSearchWidgetProviderInfo(context);
+    public static ComponentName getSearchComponentName(@NonNull  Context context) {
+        AppWidgetProviderInfo providerInfo =
+                QsbContainerView.getSearchWidgetProviderInfo(context);
         if (providerInfo != null) {
             return providerInfo.provider;
         } else {
             String pkgName = QsbContainerView.getSearchWidgetPackageName(context);
             if (pkgName != null) {
-                // we don't know the class name yet. we'll put the package name as placeholder
+                //we don't know the class name yet. we'll put the package name as placeholder
                 return new ComponentName(pkgName, pkgName);
             }
             return null;
@@ -176,8 +170,7 @@ public class QsbContainerView extends FrameLayout {
         protected AppWidgetProviderInfo mWidgetInfo;
         private QsbWidgetHostView mQsb;
 
-        // We need to store the orientation here, due to a bug (b/64916689) that results
-        // in widgets
+        // We need to store the orientation here, due to a bug (b/64916689) that results in widgets
         // being inflated in the wrong orientation.
         private int mOrientation;
 
@@ -308,7 +301,7 @@ public class QsbContainerView extends FrameLayout {
         }
 
         public boolean isQsbEnabled() {
-            return FeatureFlags.topQsbOnFirstScreenEnabled(getContext());
+            return BuildConfigs.QSB_ON_FIRST_SCREEN;
         }
 
         protected Bundle createBindOptions() {
@@ -320,7 +313,8 @@ public class QsbContainerView extends FrameLayout {
         protected View getDefaultView(ViewGroup container, boolean showSetupIcon) {
             // Return a default widget with setup icon.
             View v = QsbWidgetHostView.getDefaultView(container);
-            if (showSetupIcon) {
+            // pE-TODO(??): Why are we using isInPreviewMode() check to prevent crash?
+            if (showSetupIcon && !isInPreviewMode()) {
                 requestQsbCreate();
                 View setupButton = v.findViewById(R.id.btn_qsb_setup);
                 setupButton.setVisibility(View.VISIBLE);
@@ -337,12 +331,11 @@ public class QsbContainerView extends FrameLayout {
                     REQUEST_BIND_QSB);
         }
 
+
         /**
-         * Returns a widget with category
-         * {@link AppWidgetProviderInfo#WIDGET_CATEGORY_SEARCHBOX}
+         * Returns a widget with category {@link AppWidgetProviderInfo#WIDGET_CATEGORY_SEARCHBOX}
          * provided by the package from getSearchProviderPackageName
-         * If widgetCategory is not supported, or no such widget is found, returns the
-         * first widget
+         * If widgetCategory is not supported, or no such widget is found, returns the first widget
          * provided by the package.
          */
         @WorkerThread
@@ -399,8 +392,7 @@ public class QsbContainerView extends FrameLayout {
     }
 
     /**
-     * Returns true if {@param original} contains all entries defined in
-     * {@param updates} and
+     * Returns true if {@param original} contains all entries defined in {@param updates} and
      * have the same value.
      * The comparison uses {@link Object#equals(Object)} to compare the values.
      */

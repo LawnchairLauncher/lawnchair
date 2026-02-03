@@ -18,16 +18,19 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.dagger.LauncherComponentProvider;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
-import com.android.launcher3.folder.FolderNameProvider;
+import com.android.launcher3.folder.FolderNameSuggestionLoader;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.util.Executors;
 
 /**
  * Interface defining an object that can receive a drag.
@@ -71,7 +74,7 @@ public interface DropTarget {
 
         public DragViewStateAnnouncer stateAnnouncer;
 
-        public FolderNameProvider folderNameProvider;
+        public FolderNameSuggestionLoader folderNameSuggestionLoader;
 
         /** The source view (ie. icon, widget etc.) that is being dragged and which the
          * DragView represents. May be an actual View class or a virtual stand-in */
@@ -81,8 +84,8 @@ public interface DropTarget {
         public final InstanceId logInstanceId = new InstanceIdSequence().newInstanceId();
 
         public DragObject(Context context) {
-            Executors.MODEL_EXECUTOR.post(() ->
-                    folderNameProvider = FolderNameProvider.newInstance(context));
+            folderNameSuggestionLoader = LauncherComponentProvider.get(context)
+                    .getFolderNameSuggestionLoader();
         }
 
         /**
@@ -145,4 +148,19 @@ public interface DropTarget {
 
     // These methods are implemented in Views
     void getHitRectRelativeToDragLayer(Rect outRect);
+
+    /**
+     * Returns the drop target view.<br>
+     *
+     * By default, the implementor class is cast to the view.<br>
+     *
+     * The returned {@link View} will be use to map touch coordinates to the view self descendant
+     * and set as [{@link DragObject#x DragObject.x} {@link DragObject#y DragObject.y}].<br>
+     *
+     * If this method returns {@code null}, the raw touch event coordinates will be directly
+     * assigned to [{@link DragObject#x DragObject.x} and {@link DragObject#y DragObject.y}].
+     */
+    default @Nullable View getDropView() {
+        return (View) this;
+    }
 }

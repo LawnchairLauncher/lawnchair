@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.wm.shell.common.magnetictarget
+package com.android.wm.shell.shared.magnetictarget
 
 import android.annotation.SuppressLint
 import android.content.Context

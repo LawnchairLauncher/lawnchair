@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.widget.util;
 
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -32,6 +30,7 @@ import android.util.SizeF;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.dagger.LauncherComponentProvider;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
 
@@ -80,7 +79,7 @@ public final class WidgetSizes {
     public static Size getWidgetItemSizePx(Context context, DeviceProfile profile,
             WidgetItem widgetItem) {
         if (widgetItem.isShortcut()) {
-            int dimension = profile.allAppsIconSizePx + 2 * context.getResources()
+            int dimension = profile.getAllAppsProfile().getIconSizePx() + 2 * context.getResources()
                     .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
             return new Size(dimension, dimension);
         }
@@ -106,37 +105,13 @@ public final class WidgetSizes {
      * from {@code spanX}, {@code spanY} in all supported device profiles.
      */
     public static void updateWidgetSizeRangesAsync(int widgetId,
-                                                   AppWidgetProviderInfo info, Context context, int spanX, int spanY) {
+            AppWidgetProviderInfo info, Context context, int spanX, int spanY) {
         if (widgetId <= 0 || info == null) {
             return;
         }
 
-        UI_HELPER_EXECUTOR.execute(() -> {
-            AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
-            Bundle sizeOptions = getWidgetSizeOptions(context, info.provider, spanX, spanY);
-
-            if (sizeOptions == null) {
-                Log.e("WidgetSizes", "Failed to get widget size options for widgetId: " + widgetId);
-                return;
-            }
-
-            Bundle currentOptions = widgetManager.getAppWidgetOptions(widgetId);
-            if (currentOptions == null) {
-                currentOptions = new Bundle();
-            }
-
-            if(!Utilities.ATLEAST_S) return;
-            ArrayList<SizeF> newSizes = sizeOptions.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES);
-            ArrayList<SizeF> currentSizes = currentOptions.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES);
-
-            if (newSizes != null && !newSizes.equals(currentSizes)) {
-                try {
-                    widgetManager.updateAppWidgetOptions(widgetId, sizeOptions);
-                } catch (Exception e) {
-                    Log.e("WidgetSizes", "Error updating widget options for widgetId: " + widgetId, e);
-                }
-            }
-        });
+        LauncherComponentProvider.get(context).getWidgetSizeHandler()
+                .updateSizeRangesAsync(widgetId, info, spanX, spanY);
     }
 
     /**
@@ -146,7 +121,7 @@ public final class WidgetSizes {
             int spanY) {
         ArrayList<SizeF> paddedSizes = getWidgetSizesDp(context, spanX, spanY);
         if (paddedSizes == null || paddedSizes.isEmpty()) {
-            Log.e("WidgetSizes", "Failed to get widget sizes for provider: " + provider);
+            Log.e("LC-WidgetSizes", "Failed to get widget sizes for provider: " + provider);
             return null;
         }
 
@@ -159,8 +134,6 @@ public final class WidgetSizes {
         if (Utilities.ATLEAST_S) {
             options.putParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, paddedSizes);
         }
-        Log.d("b/267448330", "provider: " + provider + ", paddedSizes: " + paddedSizes
-                + ", getMinMaxSizes: " + rect);
         return options;
     }
 

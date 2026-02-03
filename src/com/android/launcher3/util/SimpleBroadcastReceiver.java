@@ -19,20 +19,38 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PatternMatcher;
 import android.text.TextUtils;
 
+import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
+import androidx.core.content.ContextCompat;
 import java.util.function.Consumer;
 
 public class SimpleBroadcastReceiver extends BroadcastReceiver {
+    public static final String TAG = "SimpleBroadcastReceiver";
+    // Keeps a strong reference to the context.
+    private final Context mContext;
 
     private final Consumer<Intent> mIntentConsumer;
 
-    public SimpleBroadcastReceiver(Consumer<Intent> intentConsumer) {
+    // Handler to register/unregister broadcast receiver
+    private final Handler mHandler;
+
+    public SimpleBroadcastReceiver(@NonNull Context context, LooperExecutor looperExecutor,
+            Consumer<Intent> intentConsumer) {
+        this(context, looperExecutor.getHandler(), intentConsumer);
+    }
+
+    public SimpleBroadcastReceiver(@NonNull Context context, Handler handler,
+            Consumer<Intent> intentConsumer) {
+        mContext = context;
         mIntentConsumer = intentConsumer;
+        mHandler = handler;
     }
 
     @Override
@@ -40,18 +58,135 @@ public class SimpleBroadcastReceiver extends BroadcastReceiver {
         mIntentConsumer.accept(intent);
     }
 
-    /**
-     * Helper method to register multiple actions
-     */
-    public void register(Context context, String... actions) {
-        ContextCompat.registerReceiver(context, this, getFilter(actions), ContextCompat.RECEIVER_NOT_EXPORTED);
+    /** Calls {@link #register(Runnable, String...)} with null completionCallback. */
+    @AnyThread
+    public void register(String... actions) {
+        register(null, actions);
     }
 
     /**
-     * Helper method to register multiple actions associated with a paction
+     * Calls {@link #register(Runnable, int, String...)} with null completionCallback.
      */
-    public void registerPkgActions(Context context, @Nullable String pkg, String... actions) {
-        ContextCompat.registerReceiver(context, this, getPackageFilter(pkg, actions), ContextCompat.RECEIVER_NOT_EXPORTED);
+    @AnyThread
+    public void register(int flags, String... actions) {
+        register(null, flags, actions);
+    }
+
+    /**
+     * Register broadcast receiver. If this method is called on the same looper with mHandler's
+     * looper, then register will be called synchronously. Otherwise asynchronously. This ensures
+     * register happens on {@link #mHandler}'s looper.
+     *
+     * @param completionCallback callback that will be triggered after registration is completed,
+     *                           caller usually pass this callback to check if states has changed
+     *                           while registerReceiver() is executed on a binder call.
+     */
+    @AnyThread
+    public void register(@Nullable Runnable completionCallback, String... actions) {
+        if (Looper.myLooper() == mHandler.getLooper()) {
+            registerInternal(mContext, completionCallback, actions);
+        } else {
+            mHandler.post(() -> registerInternal(mContext, completionCallback, actions));
+        }
+    }
+
+    /** Register broadcast receiver and run completion callback if passed. */
+    @AnyThread
+    private void registerInternal(
+            @NonNull Context context, @Nullable Runnable completionCallback, String... actions) {
+        ContextCompat.registerReceiver(context, this, getFilter(actions),
+            ContextCompat.RECEIVER_NOT_EXPORTED);
+        if (completionCallback != null) {
+            completionCallback.run();
+        }
+    }
+
+    /**
+     * Same as {@link #register(Runnable, String...)} above but with additional flags
+     * params utilizine the original {@link Context}.
+     */
+    @AnyThread
+    public void register(@Nullable Runnable completionCallback, int flags, String... actions) {
+        if (Looper.myLooper() == mHandler.getLooper()) {
+            registerInternal(mContext, completionCallback, flags, actions);
+        } else {
+            mHandler.post(() -> registerInternal(mContext, completionCallback, flags, actions));
+        }
+    }
+
+    /** Register broadcast receiver and run completion callback if passed. */
+    @AnyThread
+    private void registerInternal(
+            @NonNull Context context, @Nullable Runnable completionCallback, int flags,
+            String... actions) {
+        context.registerReceiver(this, getFilter(actions), flags);
+        if (completionCallback != null) {
+            completionCallback.run();
+        }
+    }
+
+    /**
+     * Same as {@link #register(Runnable, int, String...)} above but with additional permission
+     * params utilizine the original {@link Context}.
+     */
+    @AnyThread
+    public void register(@Nullable Runnable completionCallback,
+                         String broadcastPermission, int flags, String... actions) {
+        if (Looper.myLooper() == mHandler.getLooper()) {
+            registerInternal(mContext, completionCallback, broadcastPermission, flags, actions);
+        } else {
+            mHandler.post(() -> registerInternal(mContext, completionCallback, broadcastPermission,
+                    flags, actions));
+        }
+    }
+
+    /** Register broadcast receiver with permission and run completion callback if passed. */
+    @AnyThread
+    private void registerInternal(
+            @NonNull Context context, @Nullable Runnable completionCallback,
+            String broadcastPermission, int flags, String... actions) {
+        context.registerReceiver(this, getFilter(actions), broadcastPermission, null, flags);
+        if (completionCallback != null) {
+            completionCallback.run();
+        }
+    }
+
+    /** Same as {@link #register(Runnable, String...)} above but with pkg name. */
+    @AnyThread
+    public void registerPkgActions(@Nullable String pkg, String... actions) {
+        if (Looper.myLooper() == mHandler.getLooper()) {
+            mContext.registerReceiver(this, getPackageFilter(pkg, actions));
+        } else {
+            mHandler.post(() -> {
+                mContext.registerReceiver(this, getPackageFilter(pkg, actions));
+            });
+        }
+    }
+
+    /**
+     * Unregister broadcast receiver. If this method is called on the same looper with mHandler's
+     * looper, then unregister will be called synchronously. Otherwise asynchronously. This ensures
+     * unregister happens on {@link #mHandler}'s looper.
+     */
+    @AnyThread
+    public void unregisterReceiverSafely() {
+        if (Looper.myLooper() == mHandler.getLooper()) {
+            unregisterReceiverSafelyInternal(mContext);
+        } else {
+            mHandler.post(() -> {
+                unregisterReceiverSafelyInternal(mContext);
+            });
+        }
+    }
+
+    /** Unregister broadcast receiver ignoring any errors. */
+    @AnyThread
+    private void unregisterReceiverSafelyInternal(@NonNull Context context) {
+        try {
+            context.unregisterReceiver(this);
+        } catch (IllegalArgumentException e) {
+            // It was probably never registered or already unregistered. Ignore.
+        }
     }
 
     /**
@@ -72,16 +207,5 @@ public class SimpleBroadcastReceiver extends BroadcastReceiver {
             filter.addAction(action);
         }
         return filter;
-    }
-
-    /**
-     * Unregisters the receiver ignoring any errors
-     */
-    public void unregisterReceiverSafely(Context context) {
-        try {
-            context.unregisterReceiver(this);
-        } catch (IllegalArgumentException e) {
-            // It was probably never registered or already unregistered. Ignore.
-        }
     }
 }

@@ -52,6 +52,7 @@ const val OPACITY_12 = 31
 const val OPACITY_15 = 38
 const val OPACITY_40 = 102
 const val OPACITY_55 = 140
+const val OPACITY_60 = 153
 const val OPACITY_65 = 166
 
 /**
@@ -91,4 +92,7 @@ internal class DecorThemeUtil(private val context: Context) {
         Theme.LIGHT -> lightColors
         Theme.DARK -> darkColors
     }
+
+    fun getColorScheme(isDarkMode: Boolean): ColorScheme =
+        if (isDarkMode) darkColors else lightColors
 }

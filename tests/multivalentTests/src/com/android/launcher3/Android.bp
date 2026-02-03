@@ -1,0 +1,15 @@
+filegroup {
+    name: "launcher-shared-tests-utils",
+    srcs: [
+        "testcomponent/AppWidgetDynamicColors.java",
+        "testcomponent/AppWidgetHidden.java",
+        "testcomponent/AppWidgetNoConfig.java",
+        "testcomponent/AppWidgetWithConfig.java",
+        "testcomponent/TouchEventGenerator.java",
+        "util/ModelTestExtensions.kt",
+        "util/rule/TestStabilityRule.java",
+        "util/TestUtil.java",
+        "util/ui/TestViewHelpers.java",
+        "util/workspace/FavoriteItemsTransaction.java",
+    ],
+}

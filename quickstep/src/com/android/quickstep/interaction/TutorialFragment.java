@@ -17,7 +17,6 @@ package com.android.quickstep.interaction;
 
 import static android.view.View.NO_ID;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
 import static com.android.quickstep.interaction.GestureSandboxActivity.KEY_GESTURE_COMPLETE;
 import static com.android.quickstep.interaction.GestureSandboxActivity.KEY_TUTORIAL_TYPE;
 import static com.android.quickstep.interaction.GestureSandboxActivity.KEY_USE_TUTORIAL_MENU;
@@ -49,6 +48,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
@@ -176,13 +176,15 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         Bundle args = savedInstanceState != null ? savedInstanceState : getArguments();
         mTutorialType = (TutorialType) args.getSerializable(KEY_TUTORIAL_TYPE);
         mGestureComplete = args.getBoolean(KEY_GESTURE_COMPLETE, false);
-        mEdgeBackGestureHandler = new EdgeBackGestureHandler(getContext());
-        mNavBarGestureHandler = new NavBarGestureHandler(getContext());
+        DeviceProfile deviceProfile = LauncherAppState.getInstance(getContext())
+                .getInvariantDeviceProfile().getDeviceProfile(getContext());
+        mEdgeBackGestureHandler = new EdgeBackGestureHandler(getContext(), deviceProfile);
+        mNavBarGestureHandler = new NavBarGestureHandler(getContext(), deviceProfile);
 
         mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(getContext())
                 .getDeviceProfile(getContext());
-        mIsLargeScreen = mDeviceProfile.isTablet;
-        mIsFoldable = mDeviceProfile.isTwoPanels;
+        mIsLargeScreen = mDeviceProfile.getDeviceProperties().isTablet();
+        mIsFoldable = mDeviceProfile.getDeviceProperties().isTwoPanels();
 
         if (mOnAttachedToWindowPendingCreate) {
             mOnAttachedToWindowPendingCreate = false;
@@ -213,11 +215,8 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
         mRootView = (RootSandboxLayout) inflater.inflate(
-                ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                        ? R.layout.redesigned_gesture_tutorial_fragment
-                        : R.layout.gesture_tutorial_fragment,
+                R.layout.redesigned_gesture_tutorial_fragment,
                 container,
                 false);
 
@@ -271,9 +270,7 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
             mTutorialController.showFeedback(
                     introTitleResId,
                     introSubtitleResId,
-                    mTutorialController.getSpokenIntroductionSubtitle(),
-                    false,
-                    true);
+                    /* isGestureSuccessful= */ false);
             mIntroductionShown = true;
         }
     }
@@ -383,10 +380,7 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         if (mTutorialController != null && !isGestureComplete()) {
             mTutorialController.hideFeedback();
         }
-
-        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            mTutorialController.pauseAndHideLottieAnimation();
-        }
+        mTutorialController.pauseAndHideLottieAnimation();
 
         // Note: Using logical-or to ensure both functions get called.
         return mEdgeBackGestureHandler.onTouch(view, motionEvent)

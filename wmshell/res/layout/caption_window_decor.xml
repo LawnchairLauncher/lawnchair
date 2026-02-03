@@ -37,20 +37,17 @@
         style="@style/CaptionButtonStyle"
         android:id="@+id/minimize_window"
         android:layout_gravity="center_vertical|end"
-        android:contentDescription="@string/minimize_button_text"
         android:background="@drawable/decor_minimize_button_dark"
         android:duplicateParentState="true"/>
     <Button
         style="@style/CaptionButtonStyle"
         android:id="@+id/maximize_window"
         android:layout_gravity="center_vertical|end"
-        android:contentDescription="@string/maximize_button_text"
         android:background="@drawable/decor_maximize_button_dark"
         android:duplicateParentState="true"/>
     <Button
         style="@style/CaptionButtonStyle"
         android:id="@+id/close_window"
-        android:contentDescription="@string/close_button_text"
         android:background="@drawable/decor_close_button_dark"
         android:duplicateParentState="true"/>
 </com.android.wm.shell.windowdecor.WindowDecorLinearLayout>

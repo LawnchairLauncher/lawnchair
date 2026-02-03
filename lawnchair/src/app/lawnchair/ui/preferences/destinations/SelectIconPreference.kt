@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.data.iconoverride.IconOverrideRepository
-import app.lawnchair.icons.IconPickerItem
+import app.lawnchair.icons.picker.IconPickerItem
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.AppItem
@@ -50,7 +50,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
                 model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
-                launcherAppState.reloadIcons()
+                model.forceReload()
             }
         }
     }
@@ -70,7 +70,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                                 it.setResult(Activity.RESULT_OK)
                                 it.finish()
                                 model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
-                                launcherAppState.reloadIcons()
+                                model.forceReload()
                             }
                         }
                     },
@@ -78,9 +78,9 @@ fun SelectIconPreference(componentKey: ComponentKey) {
             }
         }
         preferenceGroupItems(
-            heading = { stringResource(id = R.string.pick_icon_from_label) },
             items = iconPacks,
             isFirstChild = !hasOverride,
+            heading = { stringResource(id = R.string.pick_icon_from_label) },
         ) { _, iconPack ->
             AppItem(
                 label = iconPack.name,

@@ -16,12 +16,15 @@
 
 package com.android.wm.shell.compatui;
 
+import static com.android.window.flags2.Flags.FLAG_APP_COMPAT_UI_FRAMEWORK;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import android.app.ActivityManager;
 import android.app.TaskInfo;
 import android.content.res.Configuration;
+import android.platform.test.annotations.RequiresFlagsDisabled;
 import android.testing.AndroidTestingRunner;
 
 import androidx.test.filters.SmallTest;
@@ -80,6 +83,7 @@ public class ReachabilityEduWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testCreateLayout_notEligible_doesNotCreateLayout() {
         assertFalse(mWindowManager.createLayout(/* canShow= */ true));
 
@@ -87,6 +91,7 @@ public class ReachabilityEduWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testWhenDockedStateHasChanged_needsToBeRecreated() {
         ActivityManager.RunningTaskInfo newTaskInfo = new ActivityManager.RunningTaskInfo();
         newTaskInfo.configuration.uiMode =
@@ -97,6 +102,7 @@ public class ReachabilityEduWindowManagerTest extends ShellTestCase {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_APP_COMPAT_UI_FRAMEWORK)
     public void testWhenDarkLightThemeHasChanged_needsToBeRecreated() {
         ActivityManager.RunningTaskInfo newTaskInfo = new ActivityManager.RunningTaskInfo();
         mTaskInfo.configuration.uiMode =

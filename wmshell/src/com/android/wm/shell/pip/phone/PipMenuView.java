@@ -34,11 +34,13 @@ import android.animation.ValueAnimator;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -59,13 +61,13 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.R;
-import com.android.wm.shell.animation.Interpolators;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.common.pip.PipUiEventLogger;
 import com.android.wm.shell.common.pip.PipUtils;
 import com.android.wm.shell.protolog.ShellProtoLogGroup;
+import com.android.wm.shell.shared.animation.Interpolators;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -151,6 +153,10 @@ public class PipMenuView extends FrameLayout {
     // How long the shell will wait for the app to close the PiP if a custom action is set.
     private final int mPipForceCloseDelay;
 
+    // Context for the currently active user. This may differ from the regular systemui Context
+    // in cases such as secondary users or HSUM.
+    private Context mContextForUser;
+
     public PipMenuView(Context context, PhonePipMenuController controller,
             ShellExecutor mainExecutor, Handler mainHandler,
             PipUiEventLogger pipUiEventLogger) {
@@ -202,6 +208,7 @@ public class PipMenuView extends FrameLayout {
                 .getInteger(R.integer.config_pipExitAnimationDuration);
 
         initAccessibility();
+        setContextForUser();
     }
 
     private void initAccessibility() {
@@ -476,7 +483,7 @@ public class PipMenuView extends FrameLayout {
                         actionView.setImageDrawable(null);
                     } else {
                         // TODO: Check if the action drawable has changed before we reload it
-                        action.getIcon().loadDrawableAsync(mContext, d -> {
+                        action.getIcon().loadDrawableAsync(mContextForUser, d -> {
                             if (d != null) {
                                 d.setTint(Color.WHITE);
                                 actionView.setImageDrawable(d);
@@ -508,6 +515,33 @@ public class PipMenuView extends FrameLayout {
                     R.dimen.pip_expand_container_edge_margin);
         }
         expandContainer.requestLayout();
+    }
+
+    /**
+     * Sets the Context for the current user. If the user is the same as systemui, then simply
+     * use systemui Context.
+     */
+    private void setContextForUser() {
+        int userId = ActivityManager.getCurrentUser();
+
+        if (mContext.getUserId() != userId) {
+            try {
+                mContextForUser = mContext.createPackageContextAsUser(mContext.getPackageName(),
+                        Context.CONTEXT_RESTRICTED, new UserHandle(userId));
+            } catch (PackageManager.NameNotFoundException e) {
+                // Shouldn't happen, use systemui context as backup
+                ProtoLog.w(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+                        "%s: Failed to get context for user. Sysui userid=%d,"
+                                + " current userid=%d, error=%s",
+                        TAG,
+                        mContext.getUserId(),
+                        userId,
+                        e);
+                mContextForUser = mContext;
+            }
+        } else {
+            mContextForUser = mContext;
+        }
     }
 
     private void notifyMenuStateChangeStart(int menuState, boolean resize, Runnable callback) {

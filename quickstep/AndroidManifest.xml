@@ -49,11 +49,15 @@
     <uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES_FULL" />
     <uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES" />
 
+    <!-- Permission required to listen to recent, all app key gestures. -->
+    <uses-permission android:name="android.permission.MANAGE_KEY_GESTURES" />
+
     <!-- Permission required to start a WidgetPickerActivity. -->
     <permission android:name="${applicationId}.permission.START_WIDGET_PICKER_ACTIVITY"
         android:protectionLevel="signature|privileged" />
 
     <application android:backupAgent="com.android.launcher3.LauncherBackupAgent"
+         android:enableOnBackInvokedCallback="true"
          android:fullBackupOnly="true"
          android:fullBackupContent="@xml/backupscheme"
          android:hardwareAccelerated="true"
@@ -80,7 +84,7 @@
              android:stateNotNeeded="true"
              android:theme="@style/LauncherTheme"
              android:screenOrientation="behind"
-             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
              android:resizeableActivity="true"
              android:resumeWhilePausing="true"
              android:enableOnBackInvokedCallback="false"
@@ -118,6 +122,7 @@
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
             android:theme="@style/GestureTutorialActivity"
+            android:label="@string/gesture_tutorial_title"
             android:exported="true"
             android:configChanges="orientation">
             <intent-filter>
@@ -136,6 +141,7 @@
             android:excludeFromRecents="true"
             android:permission="android.permission.REBOOT"
             android:theme="@style/AllSetTheme"
+            android:enableOnBackInvokedCallback="false"
             android:label="@string/allset_title"
             android:exported="true">
             <intent-filter>
@@ -144,14 +150,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.android.launcher3.WidgetPickerActivity"
+        <activity android:name="com.android.launcher3.QuickstepWidgetPickerActivity"
             android:theme="@style/WidgetPickerActivityTheme"
             android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"
-            android:showOnLockScreen="true"
             android:launchMode="singleTop"
             android:exported="true"
-            android:permission="android.permission.START_WIDGET_PICKER_ACTIVITY">
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:permission="${applicationId}.permission.START_WIDGET_PICKER_ACTIVITY">
             <intent-filter>
                 <action android:name="android.intent.action.PICK" />
                 <category android:name="android.intent.category.DEFAULT" />

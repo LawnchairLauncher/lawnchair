@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.wm.shell.shared.TypefaceUtils;
 
 /** Displays the gesture nav tutorial menu. */
 public final class MenuFragment extends GestureSandboxFragment {
@@ -57,6 +58,19 @@ public final class MenuFragment extends GestureSandboxFragment {
                 v -> launchTutorialStep(TutorialController.TutorialType.OVERVIEW_NAVIGATION));
         root.findViewById(R.id.gesture_tutorial_menu_done_button).setOnClickListener(
                 v -> close());
+
+        TypefaceUtils.setTypeface(
+                root.findViewById(R.id.gesture_tutorial_menu_home_button_text),
+                TypefaceUtils.FontFamily.GSF_DISPLAY_SMALL_EMPHASIZED);
+        TypefaceUtils.setTypeface(
+                root.findViewById(R.id.gesture_tutorial_menu_back_button_text),
+                TypefaceUtils.FontFamily.GSF_DISPLAY_SMALL_EMPHASIZED);
+        TypefaceUtils.setTypeface(
+                root.findViewById(R.id.gesture_tutorial_menu_overview_button_text),
+                TypefaceUtils.FontFamily.GSF_DISPLAY_SMALL_EMPHASIZED);
+        TypefaceUtils.setTypeface(
+                root.findViewById(R.id.gesture_tutorial_menu_done_button),
+                TypefaceUtils.FontFamily.GSF_LABEL_LARGE);
 
         return root;
     }

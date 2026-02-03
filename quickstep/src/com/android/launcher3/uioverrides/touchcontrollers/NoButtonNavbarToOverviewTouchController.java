@@ -17,7 +17,7 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
+import static com.android.launcher3.LauncherAnimUtils.SCRIM_COLORS;
 import static com.android.launcher3.LauncherAnimUtils.newSingleUseCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
@@ -39,16 +39,15 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import com.android.internal.jank.Cuj;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.VibratorWrapper;
+import com.android.launcher3.views.ScrimColorsEvaluator;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -64,6 +63,8 @@ import java.util.function.BiConsumer;
  * first home screen instead of to Overview.
  */
 public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouchController {
+
+    public static final String TAG = "NoButtonNavbarToOverviewTouchController";
     private static final float ONE_HANDED_ACTIVATED_SLOP_MULTIPLIER = 2.5f;
 
     // How much of the movement to use for translating overview after swipe and hold.
@@ -86,15 +87,19 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private AnimatorPlaybackController mOverviewResistYAnim;
 
     // Normal to Hint animation has flag SKIP_OVERVIEW, so we update this scrim with this animator.
-    private ObjectAnimator mNormalToHintOverviewScrimAnimator;
+    private ValueAnimator mNormalToHintOverviewScrimAnimator;
+
+    private final QuickstepLauncher mLauncher;
+    private boolean mIsTrackpadSwipe;
 
     /**
      * @param cancelSplitRunnable Called when split placeholder view needs to be cancelled.
      *                            Animation should be added to the provided AnimatorSet
      */
-    public NoButtonNavbarToOverviewTouchController(Launcher l,
+    public NoButtonNavbarToOverviewTouchController(QuickstepLauncher l,
             BiConsumer<AnimatorSet, Long> cancelSplitRunnable) {
         super(l);
+        mLauncher = l;
         mRecentsView = l.getOverviewPanel();
         mMotionPauseDetector = new MotionPauseDetector(l);
         mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
@@ -104,7 +109,9 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
-        if (!isTrackpadMotionEvent(ev) && DisplayController.getNavigationMode(mLauncher)
+        mIsTrackpadSwipe = isTrackpadMotionEvent(ev);
+        mLauncher.setCanShowAllAppsEducationView(!mIsTrackpadSwipe);
+        if (!mIsTrackpadSwipe && DisplayController.getNavigationMode(mLauncher)
                 == THREE_BUTTONS) {
             return false;
         }
@@ -130,7 +137,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         float progressMultiplier = super.initCurrentAnimation();
         if (mToState == HINT_STATE) {
             // Track the drag across the entire height of the screen.
-            progressMultiplier = -1f / mLauncher.getDeviceProfile().heightPx;
+            progressMultiplier = -1f / mLauncher.getDeviceProfile().getDeviceProperties().getHeightPx();
         }
         return progressMultiplier;
     }
@@ -148,6 +155,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         super.onDragStart(start, startDisplacement);
 
         mMotionPauseDetector.clear();
+        mMotionPauseDetector.setIsTrackpadGesture(mIsTrackpadSwipe);
 
         if (handlingOverviewAnim()) {
             InteractionJankMonitorWrapper.begin(mRecentsView, Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS,
@@ -156,15 +164,21 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         }
 
         if (mFromState == NORMAL && mToState == HINT_STATE) {
-            mNormalToHintOverviewScrimAnimator = ObjectAnimator.ofArgb(
+            mNormalToHintOverviewScrimAnimator = ObjectAnimator.ofObject(
                     mLauncher.getScrimView(),
-                    VIEW_BACKGROUND_COLOR,
+                    SCRIM_COLORS,
+                    ScrimColorsEvaluator.INSTANCE,
                     mFromState.getWorkspaceScrimColor(mLauncher),
                     mToState.getWorkspaceScrimColor(mLauncher));
         }
         mStartedOverview = false;
         mReachedOverview = false;
         mOverviewResistYAnim = null;
+    }
+
+    @Override
+    public String dump() {
+        return TAG;
     }
 
     @Override
@@ -191,6 +205,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         }
 
         mMotionPauseDetector.clear();
+        mIsTrackpadSwipe = false;
         mNormalToHintOverviewScrimAnimator = null;
         if (mLauncher.isInState(OVERVIEW)) {
             // Normally we would cleanup the state based on mCurrentAnimation, but since we stop
@@ -213,11 +228,6 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             AnimatorSet animatorSet = new AnimatorSet();
             mCancelSplitRunnable.accept(animatorSet, duration);
             animatorSet.start();
-        }
-        if (FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get() &&
-                ((mFromState == NORMAL && mToState == ALL_APPS)
-                        || (mFromState == ALL_APPS && mToState == NORMAL)) && isFling) {
-            mVibratorWrapper.vibrateForDragBump();
         }
     }
 

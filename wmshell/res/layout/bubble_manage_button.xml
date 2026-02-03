@@ -28,6 +28,6 @@
     android:focusable="true"
     android:text="@string/manage_bubbles_text"
     android:textSize="@*android:dimen/text_size_body_2_material"
-    android:textColor="?androidprv:attr/materialColorOnSurface"
+    android:textColor="?android:attr/textColorPrimary"
     android:background="@drawable/bubble_manage_btn_bg"
     />

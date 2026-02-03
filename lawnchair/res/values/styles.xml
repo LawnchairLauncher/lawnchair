@@ -159,7 +159,6 @@
     </style>
 
     <style name="OverviewClearAllButton" parent="@android:style/Widget.Material.Button">
-        <item name="android:background">@drawable/bg_overview_clear_all_button</item>
         <item name="android:minWidth">96dp</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:stateListAnimator">@null</item>

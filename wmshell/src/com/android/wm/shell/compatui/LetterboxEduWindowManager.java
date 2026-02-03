@@ -19,6 +19,7 @@ package com.android.wm.shell.compatui;
 import static android.provider.Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING;
 import static android.window.TaskConstants.TASK_CHILD_LAYER_COMPAT_UI;
 
+import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.TaskInfo;
 import android.content.Context;
@@ -76,15 +77,19 @@ class LetterboxEduWindowManager extends CompatUIWindowManagerAbstract {
 
     private final DockStateReader mDockStateReader;
 
+    @NonNull
+    private final CompatUIStatusManager mCompatUIStatusManager;
+
     LetterboxEduWindowManager(Context context, TaskInfo taskInfo,
             SyncTransactionQueue syncQueue, ShellTaskOrganizer.TaskListener taskListener,
             DisplayLayout displayLayout, Transitions transitions,
             Consumer<Pair<TaskInfo, ShellTaskOrganizer.TaskListener>> onDismissCallback,
-            DockStateReader dockStateReader, CompatUIConfiguration compatUIConfiguration) {
+            DockStateReader dockStateReader, CompatUIConfiguration compatUIConfiguration,
+            @NonNull CompatUIStatusManager compatUIStatusManager) {
         this(context, taskInfo, syncQueue, taskListener, displayLayout, transitions,
                 onDismissCallback,
                 new DialogAnimationController<>(context, /* tag */ "LetterboxEduWindowManager"),
-                dockStateReader, compatUIConfiguration);
+                dockStateReader, compatUIConfiguration, compatUIStatusManager);
     }
 
     @VisibleForTesting
@@ -93,7 +98,8 @@ class LetterboxEduWindowManager extends CompatUIWindowManagerAbstract {
             DisplayLayout displayLayout, Transitions transitions,
             Consumer<Pair<TaskInfo, ShellTaskOrganizer.TaskListener>> onDismissCallback,
             DialogAnimationController<LetterboxEduDialogLayout> animationController,
-            DockStateReader dockStateReader, CompatUIConfiguration compatUIConfiguration) {
+            DockStateReader dockStateReader, CompatUIConfiguration compatUIConfiguration,
+            @NonNull CompatUIStatusManager compatUIStatusManager) {
         super(context, taskInfo, syncQueue, taskListener, displayLayout);
         mTransitions = transitions;
         mOnDismissCallback = onDismissCallback;
@@ -103,8 +109,9 @@ class LetterboxEduWindowManager extends CompatUIWindowManagerAbstract {
                 R.dimen.letterbox_education_dialog_margin);
         mDockStateReader = dockStateReader;
         mCompatUIConfiguration = compatUIConfiguration;
+        mCompatUIStatusManager = compatUIStatusManager;
         mEligibleForLetterboxEducation =
-                taskInfo.appCompatTaskInfo.topActivityEligibleForLetterboxEducation;
+                taskInfo.appCompatTaskInfo.eligibleForLetterboxEducation();
     }
 
     @Override
@@ -139,7 +146,7 @@ class LetterboxEduWindowManager extends CompatUIWindowManagerAbstract {
     protected View createLayout() {
         mLayout = inflateLayout();
         updateDialogMargins();
-
+        mCompatUIStatusManager.onEducationShown();
         // startEnterAnimation will be called immediately if shell-transitions are disabled.
         mTransitions.runOnIdle(this::startEnterAnimation);
         return mLayout;
@@ -199,14 +206,14 @@ class LetterboxEduWindowManager extends CompatUIWindowManagerAbstract {
     @Override
     public void release() {
         mAnimationController.cancelAnimation();
+        mCompatUIStatusManager.onEducationHidden();
         super.release();
     }
 
     @Override
     public boolean updateCompatInfo(TaskInfo taskInfo, ShellTaskOrganizer.TaskListener taskListener,
             boolean canShow) {
-        mEligibleForLetterboxEducation =
-                taskInfo.appCompatTaskInfo.topActivityEligibleForLetterboxEducation;
+        mEligibleForLetterboxEducation = taskInfo.appCompatTaskInfo.eligibleForLetterboxEducation();
 
         return super.updateCompatInfo(taskInfo, taskListener, canShow);
     }

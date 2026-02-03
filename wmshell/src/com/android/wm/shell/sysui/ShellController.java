@@ -22,16 +22,20 @@ import static android.content.pm.ActivityInfo.CONFIG_LAYOUT_DIRECTION;
 import static android.content.pm.ActivityInfo.CONFIG_LOCALE;
 import static android.content.pm.ActivityInfo.CONFIG_SMALLEST_SCREEN_SIZE;
 import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
+import static android.window.DesktopExperienceFlags.DesktopExperienceFlag;
 
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_INIT;
 import static com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_SYSUI_EVENTS;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.UserInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.UserHandle;
+import android.os.UserManager;
 import android.util.ArrayMap;
 import android.view.InsetsSource;
 import android.view.InsetsState;
@@ -40,15 +44,18 @@ import android.view.SurfaceControlRegistry;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
+import com.android.wm.shell.Flags;
 import com.android.wm.shell.common.DisplayInsetsController;
 import com.android.wm.shell.common.DisplayInsetsController.OnInsetsChangedListener;
 import com.android.wm.shell.common.ExternalInterfaceBinder;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.shared.annotations.ExternalThread;
+import com.android.wm.shell.sysui.ShellCommandHandler.ShellCommandActionHandler;
 
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
@@ -60,11 +67,16 @@ import java.util.function.Supplier;
 public class ShellController {
     private static final String TAG = ShellController.class.getSimpleName();
 
+    public static final DesktopExperienceFlag FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG =
+            new DesktopExperienceFlag(Flags::fixMissingUserChangeCallbacks, true,
+                    Flags.FLAG_FIX_MISSING_USER_CHANGE_CALLBACKS);
+
     private final Context mContext;
     private final ShellInit mShellInit;
     private final ShellCommandHandler mShellCommandHandler;
     private final ShellExecutor mMainExecutor;
     private final DisplayInsetsController mDisplayInsetsController;
+    private final UserManager mUserManager;
     private final ShellInterfaceImpl mImpl = new ShellInterfaceImpl();
 
     private final CopyOnWriteArrayList<ConfigurationChangeListener> mConfigChangeListeners =
@@ -82,6 +94,9 @@ public class ShellController {
     private ArrayMap<String, ExternalInterfaceBinder> mExternalInterfaces = new ArrayMap<>();
 
     private Configuration mLastConfiguration;
+    private int mUserId;
+    private Context mUserContext;
+    private List<UserInfo> mProfiles;
 
     private OnInsetsChangedListener mInsetsChangeListener = new OnInsetsChangedListener() {
         private InsetsState mInsetsState = new InsetsState();
@@ -112,24 +127,51 @@ public class ShellController {
         }
     };
 
+    private ShellCommandActionHandler mDumpCommandHandler = new ShellCommandActionHandler() {
+        @Override
+        public boolean onShellCommand(String[] args, PrintWriter pw) {
+            handleDump(pw);
+            return true;
+        }
+
+        @Override
+        public void printShellCommandHelp(PrintWriter pw, String prefix) {
+            pw.println(prefix + "Dump all Window Manager Shell internal state");
+        }
+    };
+
 
     public ShellController(Context context,
             ShellInit shellInit,
             ShellCommandHandler shellCommandHandler,
             DisplayInsetsController displayInsetsController,
+            UserManager userManager,
             ShellExecutor mainExecutor) {
         mContext = context;
         mShellInit = shellInit;
         mShellCommandHandler = shellCommandHandler;
         mDisplayInsetsController = displayInsetsController;
+        mUserManager = userManager;
         mMainExecutor = mainExecutor;
         shellInit.addInitCallback(this::onInit, this);
+        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue()) {
+            final int currentUserId = ActivityManager.getCurrentUser();
+            updateCurrentUser(currentUserId, getOrCreateUserContext(currentUserId));
+            updateProfiles(getUserProfiles(currentUserId));
+        }
     }
 
     private void onInit() {
+        mShellCommandHandler.addCommandCallback("dump", mDumpCommandHandler, this);
         mShellCommandHandler.addDumpCallback(this::dump, this);
         mDisplayInsetsController.addInsetsChangedListener(
                 mContext.getDisplayId(), mInsetsChangeListener);
+        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue()) {
+            // Update current user again, in case it changed between the constructor and |onInit|.
+            final int currentUserId = ActivityManager.getCurrentUser();
+            updateCurrentUser(currentUserId, getOrCreateUserContext(currentUserId));
+            updateProfiles(getUserProfiles(currentUserId));
+        }
     }
 
     /**
@@ -178,6 +220,10 @@ public class ShellController {
     public void addUserChangeListener(UserChangeListener listener) {
         mUserChangeListeners.remove(listener);
         mUserChangeListeners.add(listener);
+        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue()) {
+            listener.onUserChanged(mUserId, mUserContext);
+            listener.onUserProfilesChanged(mProfiles);
+        }
     }
 
     /**
@@ -216,7 +262,10 @@ public class ShellController {
     public void createExternalInterfaces(Bundle output) {
         // Invalidate the old binders
         for (int i = 0; i < mExternalInterfaces.size(); i++) {
-            mExternalInterfaces.valueAt(i).invalidate();
+            final ExternalInterfaceBinder extInterface = mExternalInterfaces.valueAt(i);
+            ProtoLog.v(WM_SHELL_SYSUI_EVENTS, "Invalidating external interface: %s",
+                    extInterface.getClass().getSimpleName());
+            extInterface.invalidate();
         }
         mExternalInterfaces.clear();
 
@@ -227,6 +276,18 @@ public class ShellController {
             mExternalInterfaces.put(key, b);
             output.putBinder(key, b.asBinder());
         }
+    }
+
+    /** Returns the current user id. */
+    public int getCurrentUserId() {
+        return mUserId;
+    }
+
+    /** Returns the current user id. */
+    @VisibleForTesting
+    @NonNull
+    List<UserInfo> getCurrentUserProfiles() {
+        return mProfiles;
     }
 
     @VisibleForTesting
@@ -288,6 +349,11 @@ public class ShellController {
 
     @VisibleForTesting
     void onUserChanged(int newUserId, @NonNull Context userContext) {
+        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue()
+                && !updateCurrentUser(newUserId, userContext)) {
+            // No change, do not notify listeners.
+            return;
+        }
         ProtoLog.v(WM_SHELL_SYSUI_EVENTS, "User changed: id=%d", newUserId);
         for (UserChangeListener listener : mUserChangeListeners) {
             listener.onUserChanged(newUserId, userContext);
@@ -296,6 +362,10 @@ public class ShellController {
 
     @VisibleForTesting
     void onUserProfilesChanged(@NonNull List<UserInfo> profiles) {
+        if (FIX_MISSING_USER_CHANGE_CALLBACKS_FLAG.isTrue() && !updateProfiles(profiles)) {
+            // No change, do not notify listeners.
+            return;
+        }
         ProtoLog.v(WM_SHELL_SYSUI_EVENTS, "User profiles changed");
         for (UserChangeListener listener : mUserChangeListeners) {
             listener.onUserProfilesChanged(profiles);
@@ -331,9 +401,42 @@ public class ShellController {
         SurfaceControlRegistry.dump(100 /* limit */, false /* runGc */, pw);
     }
 
+    /** Updates the current user and returns {@code true} if it changed. */
+    private boolean updateCurrentUser(int newUserId, @NonNull Context userContext) {
+        if (mUserId == newUserId && mUserContext != null
+                && mUserContext.getUserId() == userContext.getUserId()) {
+            return false;
+        }
+        mUserId = newUserId;
+        mUserContext = userContext;
+        return true;
+    }
+
+    /** Updates the current user profiles and returns {@code true} if they changed. */
+    private boolean updateProfiles(@NonNull List<UserInfo> profiles) {
+        if (Objects.equals(mProfiles, profiles)) return false;
+        mProfiles = profiles;
+        return true;
+    }
+
+    @NonNull
+    private Context getOrCreateUserContext(int userId) {
+        if (mUserContext != null && mUserContext.getUserId() == userId) {
+            return mUserContext;
+        }
+        return mContext.createContextAsUser(UserHandle.of(userId), 0 /* flags */);
+    }
+
+    @NonNull
+    private List<UserInfo> getUserProfiles(int userId) {
+        return mUserManager.getProfiles(userId);
+    }
+
     public void dump(@NonNull PrintWriter pw, String prefix) {
         final String innerPrefix = prefix + "  ";
         pw.println(prefix + TAG);
+        pw.println(innerPrefix + "mUserId=" + mUserId);
+        pw.println(innerPrefix + "mProfiles=" + mProfiles);
         pw.println(innerPrefix + "mConfigChangeListeners=" + mConfigChangeListeners.size());
         pw.println(innerPrefix + "mLastConfiguration=" + mLastConfiguration);
         pw.println(innerPrefix + "mKeyguardChangeListeners=" + mKeyguardChangeListeners.size());

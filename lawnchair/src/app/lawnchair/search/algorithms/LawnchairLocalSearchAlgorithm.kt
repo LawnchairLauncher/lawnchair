@@ -91,44 +91,36 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
     override fun doZeroStateSearch(callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
         currentJob?.cancel()
-        currentJob = coroutineScope.launch {
-            val prefs = PreferenceManager.getInstance(context)
-            val prefs2 = PreferenceManager2.getInstance(context)
 
-            val historyEnabled = prefs.searchResulRecentSuggestion.get()
-            val maxHistory = prefs2.maxRecentResultCount.firstBlocking()
+        val prefs = PreferenceManager.getInstance(context)
+        val historyEnabled = prefs.searchResulRecentSuggestion.get()
 
-            val historyResults = if (historyEnabled) {
-                historySearchProvider.getRecentKeywords(context, maxHistory)
-            } else {
-                emptyList()
-            }
+        if (!historyEnabled) {
+            callback.clearSearchResult()
+        } else {
+            currentJob = coroutineScope.launch {
+                val prefs2 = PreferenceManager2.getInstance(context)
+                val maxHistory = prefs2.maxRecentResultCount.firstBlocking()
 
-            val resultsToTranslate = if (historyResults.isNotEmpty()) {
-                historyResults + listOf(SearchResult.Action.SearchSettings)
-            } else {
-                listOf(
-                    if (historyEnabled) {
-                        // State A: No History
+                val historyResults = historySearchProvider.getRecentKeywords(context, maxHistory)
+
+                val resultsToTranslate = if (historyResults.isNotEmpty()) {
+                    historyResults + listOf(SearchResult.Action.SearchSettings)
+                } else {
+                    listOf(
                         SearchResult.Action.EmptyState(
                             titleRes = R.string.search_empty_state_title,
                             subtitleRes = R.string.search_empty_state_no_history_subtitle,
-                        )
-                    } else {
-                        // State B: History Disabled
-                        SearchResult.Action.EmptyState(
-                            titleRes = R.string.search_empty_state_title,
-                            subtitleRes = R.string.search_empty_state_history_disabled_subtitle,
-                        )
-                    },
-                    SearchResult.Action.SearchSettings,
-                )
-            }
+                        ),
+                        SearchResult.Action.SearchSettings,
+                    )
+                }
 
-            val searchTargets = translateToSearchTargets(resultsToTranslate)
-            val adapterItems = transformSearchResults(searchTargets)
-            withContext(Dispatchers.Main) {
-                callback.onSearchResult("", ArrayList(adapterItems))
+                val searchTargets = translateToSearchTargets(resultsToTranslate)
+                val adapterItems = transformSearchResults(searchTargets)
+                withContext(Dispatchers.Main) {
+                    callback.onSearchResult("", ArrayList(adapterItems))
+                }
             }
         }
     }

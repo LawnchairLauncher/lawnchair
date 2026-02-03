@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 
@@ -69,6 +70,9 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
     @NonNull
     final CompatUIHintsState mCompatUIHintsState;
 
+    @NonNull
+    private final Rect mLayoutBounds = new Rect();
+
     @Nullable
     private UserAspectRatioSettingsLayout mLayout;
 
@@ -108,6 +112,7 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
 
     @Override
     protected void removeLayout() {
+        mLayoutBounds.setEmpty();
         mLayout = null;
     }
 
@@ -168,18 +173,21 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
     @Override
     @VisibleForTesting
     public void updateSurfacePosition() {
-        if (mLayout == null) {
+        updateLayoutBounds();
+        if (mLayoutBounds.isEmpty()) {
             return;
         }
-        // Position of the button in the container coordinate.
-        final Rect taskBounds = getTaskBounds();
-        final Rect taskStableBounds = getTaskStableBounds();
-        final int positionX = getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
-                ? taskStableBounds.left - taskBounds.left
-                : taskStableBounds.right - taskBounds.left - mLayout.getMeasuredWidth();
-        final int positionY = taskStableBounds.bottom - taskBounds.top
-                - mLayout.getMeasuredHeight();
-        updateSurfacePosition(positionX, positionY);
+        updateSurfacePosition(mLayoutBounds.left, mLayoutBounds.top);
+    }
+
+    @Override
+    @VisibleForTesting
+    public void updateSurfacePosition(@NonNull SurfaceControl.Transaction tx) {
+        updateLayoutBounds();
+        if (mLayoutBounds.isEmpty()) {
+            return;
+        }
+        updateSurfaceBounds(tx, mLayoutBounds);
     }
 
     @VisibleForTesting
@@ -200,6 +208,23 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
     boolean isShowingButton() {
         return (mUserAspectRatioButtonShownChecker.get()
                 && !isHideDelayReached(mNextButtonHideTimeMs));
+    }
+
+    private void updateLayoutBounds() {
+        if (mLayout == null) {
+            mLayoutBounds.setEmpty();
+            return;
+        }
+        // Position of the button in the container coordinate.
+        final Rect taskBounds = getTaskBounds();
+        final Rect taskStableBounds = getTaskStableBounds();
+        final int layoutWidth = mLayout.getMeasuredWidth();
+        final int layoutHeight = mLayout.getMeasuredHeight();
+        final int positionX = getLayoutDirection() == View.LAYOUT_DIRECTION_RTL
+                ? taskStableBounds.left - taskBounds.left
+                : taskStableBounds.right - taskBounds.left - layoutWidth;
+        final int positionY = taskStableBounds.bottom - taskBounds.top - layoutHeight;
+        mLayoutBounds.set(positionX, positionY, positionX + layoutWidth, positionY + layoutHeight);
     }
 
     private void showUserAspectRatioButton() {
@@ -238,14 +263,14 @@ class UserAspectRatioSettingsWindowManager extends CompatUIWindowManagerAbstract
         // App is not visibly letterboxed if it covers status bar/bottom insets or matches the
         // stable bounds, so don't show the button
         if (stableBounds.height() <= letterboxHeight && stableBounds.width() <= letterboxWidth
-                && !taskInfo.isUserFullscreenOverrideEnabled) {
+                && !taskInfo.isUserFullscreenOverrideEnabled()) {
             return false;
         }
 
-        return taskInfo.topActivityEligibleForUserAspectRatioButton
-                && (taskInfo.topActivityBoundsLetterboxed
-                    || taskInfo.isUserFullscreenOverrideEnabled)
-                && !taskInfo.isSystemFullscreenOverrideEnabled
+        return taskInfo.eligibleForUserAspectRatioButton()
+                && (taskInfo.isTopActivityLetterboxed()
+                    || taskInfo.isUserFullscreenOverrideEnabled())
+                && !taskInfo.isSystemFullscreenOverrideEnabled()
                 && Intent.ACTION_MAIN.equals(intent.getAction())
                 && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
                 && (!mUserAspectRatioButtonShownChecker.get() || isShowingButton());

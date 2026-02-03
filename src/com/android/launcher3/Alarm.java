@@ -20,6 +20,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 
+import androidx.annotation.VisibleForTesting;
+
 public class Alarm implements Runnable{
     // if we reach this time and the alarm hasn't been cancelled, call the listener
     private long mAlarmTriggerTime;
@@ -95,5 +97,14 @@ public class Alarm implements Runnable{
     /** Returns the last value passed to {@link #setAlarm(long)} */
     public long getLastSetTimeout() {
         return mLastSetTimeout;
+    }
+
+    /** Simulates the alarm firing for tests. */
+    @VisibleForTesting
+    public void finishAlarm() {
+        if (!mAlarmPending) return;
+        mAlarmPending = false;
+        mHandler.removeCallbacks(this);
+        mAlarmListener.onAlarm(this);
     }
 }

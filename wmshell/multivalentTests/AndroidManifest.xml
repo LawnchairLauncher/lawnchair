@@ -1,8 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.wm.shell.multivalenttests">
 
+    <uses-permission android:name="android.permission.MANAGE_ACTIVITY_TASKS"/>
+    <uses-permission android:name="android.permission.GET_INTENT_SENDER_INTENT"/>
+
     <application android:debuggable="true" android:supportsRtl="true" >
         <uses-library android:name="android.test.runner" />
+        <activity android:name="com.android.wm.shell.bubbles.bar.BubbleBarAnimationHelperTest$TestActivity"
+            android:exported="true"/>
+
+        <activity android:name="com.android.wm.shell.bubbles.bar.BubbleBarMenuViewControllerTest$TestActivity"
+            android:exported="true"/>
+
+        <activity android:name=".bubbles.TestActivity"
+            android:allowEmbedded="true"
+            android:documentLaunchMode="always"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:resizeableActivity="true" />
     </application>
 
     <instrumentation

@@ -16,6 +16,7 @@
 
 package com.android.wm.shell.common.pip;
 
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.PictureInPictureParams;
 import android.view.SurfaceControl;
 import android.content.ComponentName;
@@ -41,9 +42,8 @@ interface IPip {
               bounds
      * @return destination bounds the PiP window should land into
      */
-    Rect startSwipePipToHome(in ComponentName componentName, in ActivityInfo activityInfo,
-                in PictureInPictureParams pictureInPictureParams,
-                int launcherRotation, in Rect hotseatKeepClearArea) = 1;
+    Rect startSwipePipToHome(in RunningTaskInfo taskInfo, int launcherRotation,
+            in Rect hotseatKeepClearArea) = 1;
 
     /**
      * Notifies the swiping Activity to PiP onto home transition is finished

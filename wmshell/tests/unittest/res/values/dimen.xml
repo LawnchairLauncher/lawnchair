@@ -18,6 +18,8 @@
     <!-- Resources used in WindowDecorationTests -->
     <dimen name="test_freeform_decor_caption_height">32dp</dimen>
     <dimen name="test_freeform_decor_caption_menu_width">216dp</dimen>
+    <dimen name="test_freeform_shadow_radius">20dp</dimen>
+    <dimen name="test_freeform_corner_radius">16dp</dimen>
     <dimen name="test_window_decor_left_outset">10dp</dimen>
     <dimen name="test_window_decor_top_outset">20dp</dimen>
     <dimen name="test_window_decor_right_outset">30dp</dimen>

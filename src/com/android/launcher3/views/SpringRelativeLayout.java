@@ -24,7 +24,6 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.EdgeEffectFactory;
-
 import com.android.launcher3.Utilities;
 
 /**
@@ -46,10 +45,13 @@ public class SpringRelativeLayout extends RelativeLayout {
 
     public SpringRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mEdgeGlowTop = Utilities.ATLEAST_S
-                ? new EdgeEffect(context, attrs) : new EdgeEffect(context);
-        mEdgeGlowBottom = Utilities.ATLEAST_S
-                ? new EdgeEffect(context, attrs) : new EdgeEffect(context);
+        if (Utilities.ATLEAST_S) {
+            mEdgeGlowTop = new EdgeEffect(context, attrs);
+            mEdgeGlowBottom = new EdgeEffect(context, attrs);
+        } else {
+            mEdgeGlowTop = new EdgeEffect(context);
+            mEdgeGlowBottom = new EdgeEffect(context);
+        }
         setWillNotDraw(false);
     }
 

@@ -19,6 +19,7 @@ package com.android.launcher3.statehandlers;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 
 import android.animation.Animator;
@@ -29,19 +30,21 @@ import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.ViewTreeObserver;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.BaseDepthController;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.preferences2.PreferenceManager2;
 
@@ -50,8 +53,8 @@ import app.lawnchair.preferences2.PreferenceManager2;
  */
 public class DepthController extends BaseDepthController implements StateHandler<LauncherState>,
         BaseActivity.MultiWindowModeChangedListener {
-
-    private final ViewTreeObserver.OnDrawListener mOnDrawListener = this::onLauncherDraw;
+    @VisibleForTesting
+    final ViewTreeObserver.OnDrawListener mOnDrawListener = this::onLauncherDraw;
 
     private final Consumer<Boolean> mCrossWindowBlurListener = this::setCrossWindowBlursEnabled;
 
@@ -62,11 +65,16 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     private View.OnAttachStateChangeListener mOnAttachListener;
 
+    // Ensure {@link mOnDrawListener} is added only once to avoid spamming DragLayer's mRunQueue
+    // via {@link View#post(Runnable)}
+    private boolean mIsOnDrawListenerAdded = false;
+    private boolean mRemoveOnDrawListenerCancelled = false;
+
     private final boolean mEnableDepth;
 
-    public DepthController(Launcher l) {
-        super(l);
-        var pref = PreferenceManager2.getInstance(l).getWallpaperDepthEffect();
+    public DepthController(QuickstepLauncher launcher) {
+        super(launcher);
+        var pref = PreferenceManager2.getInstance(launcher).getWallpaperDepthEffect();
         mEnableDepth = PreferenceExtensionsKt.firstBlocking(pref);
     }
 
@@ -75,41 +83,53 @@ public class DepthController extends BaseDepthController implements StateHandler
         ViewRootImpl viewRootImpl = view.getViewRootImpl();
         try {
             if (Utilities.ATLEAST_Q) {
-                setSurface(viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
+                setBaseSurface(viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
             }
         } catch (Throwable t) {
-            // Ignore any exceptions
+            // LC-Ignored
         }
-        view.post(() -> view.getViewTreeObserver().removeOnDrawListener(mOnDrawListener));
+        mRemoveOnDrawListenerCancelled = false;
+        view.post(() -> {
+            if (!mRemoveOnDrawListenerCancelled) {
+                removeOnDrawListener();
+            }
+        });
     }
 
     private void ensureDependencies() {
-        if (mLauncher.getRootView() != null && mOnAttachListener == null) {
-            View rootView = mLauncher.getRootView();
-            mOnAttachListener = new View.OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(View view) {
+        View rootView = mLauncher.getRootView();
+        if (rootView == null) {
+            return;
+        }
+        if (mOnAttachListener != null) {
+            return;
+        }
+        mOnAttachListener = new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                if (Utilities.ATLEAST_S) {
                     try {
-                        CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
-                                mCrossWindowBlurListener);
+                            UI_HELPER_EXECUTOR.execute(() ->
+                                    CrossWindowBlurListeners.getInstance().addListener(
+                                            mLauncher.getMainExecutor(), mCrossWindowBlurListener));
                     } catch (Throwable t) {
-                        // Ignore
+                        // LC-Ignored
                     }
-                    mLauncher.getScrimView().addOpaquenessListener(mOpaquenessListener);
-
-                    // To handle the case where window token is invalid during last setDepth call.
-                    applyDepthAndBlur();
                 }
+                mLauncher.getScrimView().addOpaquenessListener(mOpaquenessListener);
 
-                @Override
-                public void onViewDetachedFromWindow(View view) {
-                    removeSecondaryListeners();
-                }
-            };
-            rootView.addOnAttachStateChangeListener(mOnAttachListener);
-            if (rootView.isAttachedToWindow()) {
-                mOnAttachListener.onViewAttachedToWindow(rootView);
+                // To handle the case where window token is invalid during last setDepth call.
+                applyDepthAndBlur();
             }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                removeSecondaryListeners();
+            }
+        };
+        rootView.addOnAttachStateChangeListener(mOnAttachListener);
+        if (rootView.isAttachedToWindow()) {
+            mOnAttachListener.onViewAttachedToWindow(rootView);
         }
     }
 
@@ -126,11 +146,13 @@ public class DepthController extends BaseDepthController implements StateHandler
     }
 
     private void removeSecondaryListeners() {
-        if (mCrossWindowBlurListener != null) {
+        if (Utilities.ATLEAST_S) {
             try {
-                CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+                UI_HELPER_EXECUTOR.execute(() ->
+                    CrossWindowBlurListeners.getInstance()
+                        .removeListener(mCrossWindowBlurListener));
             } catch (Throwable t) {
-                // Ignore
+                // LC-Ignored
             }
         }
         if (mOpaquenessListener != null) {
@@ -143,10 +165,11 @@ public class DepthController extends BaseDepthController implements StateHandler
      */
     public void setActivityStarted(boolean isStarted) {
         if (isStarted) {
-            mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
+            addOnDrawListener();
         } else {
-            mLauncher.getDragLayer().getViewTreeObserver().removeOnDrawListener(mOnDrawListener);
-            setSurface(null);
+            removeOnDrawListener();
+            setBaseSurface(null);
+            setEarlyWakeup(false);
         }
     }
 
@@ -158,13 +181,13 @@ public class DepthController extends BaseDepthController implements StateHandler
 
         stateDepth.setValue(toState.getDepth(mLauncher));
         if (toState == LauncherState.BACKGROUND_APP) {
-            mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
+            addOnDrawListener();
         }
     }
 
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
-                                      PendingAnimation animation) {
+            PendingAnimation animation) {
         if (config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)
                 || mIgnoreStateChangesDuringMultiWindowAnimation) {
             return;
@@ -183,14 +206,32 @@ public class DepthController extends BaseDepthController implements StateHandler
                 super.applyDepthAndBlur();
             }
         } catch (Throwable t) {
-            // Ignore
+            // LC-Ignored
         }
     }
 
     @Override
     protected void onInvalidSurface() {
         // Lets wait for surface to become valid again
+        addOnDrawListener();
+    }
+
+    private void addOnDrawListener() {
+        mRemoveOnDrawListenerCancelled = true;
+        if (mIsOnDrawListenerAdded) {
+            return;
+        }
         mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
+        mIsOnDrawListenerAdded = true;
+    }
+
+    private void removeOnDrawListener() {
+        mRemoveOnDrawListenerCancelled = true;
+        if (!mIsOnDrawListenerAdded) {
+            return;
+        }
+        mLauncher.getDragLayer().getViewTreeObserver().removeOnDrawListener(mOnDrawListener);
+        mIsOnDrawListenerAdded = false;
     }
 
     @Override
@@ -198,7 +239,7 @@ public class DepthController extends BaseDepthController implements StateHandler
         mIgnoreStateChangesDuringMultiWindowAnimation = true;
 
         ObjectAnimator mwAnimation = ObjectAnimator.ofFloat(stateDepth, MULTI_PROPERTY_VALUE,
-                        mLauncher.getStateManager().getState().getDepth(mLauncher, isInMultiWindowMode))
+                mLauncher.getStateManager().getState().getDepth(mLauncher, isInMultiWindowMode))
                 .setDuration(300);
         mwAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -214,7 +255,8 @@ public class DepthController extends BaseDepthController implements StateHandler
         writer.println(prefix + "DepthController");
         writer.println(prefix + "\tmMaxBlurRadius=" + mMaxBlurRadius);
         writer.println(prefix + "\tmCrossWindowBlursEnabled=" + mCrossWindowBlursEnabled);
-        writer.println(prefix + "\tmSurface=" + mSurface);
+        writer.println(prefix + "\tmBaseSurface=" + mBaseSurface);
+        writer.println(prefix + "\tmBaseSurfaceOverride=" + mBaseSurfaceOverride);
         writer.println(prefix + "\tmStateDepth=" + stateDepth.getValue());
         writer.println(prefix + "\tmWidgetDepth=" + widgetDepth.getValue());
         writer.println(prefix + "\tmCurrentBlur=" + mCurrentBlur);

@@ -100,7 +100,7 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
 
         // Special case to not expand the search bar when exiting All Apps on phones.
         if (stateManager.getCurrentStableState() == LauncherState.ALL_APPS
-                && mActivityContext.getDeviceProfile().isPhone) {
+                && mActivityContext.getDeviceProfile().getDeviceProperties().isPhone()) {
             return LauncherState.ALL_APPS.getFloatingSearchBarRestingMarginStart(mActivityContext);
         }
 
@@ -122,7 +122,7 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
 
         // Special case to not expand the search bar when exiting All Apps on phones.
         if (stateManager.getCurrentStableState() == LauncherState.ALL_APPS
-                && mActivityContext.getDeviceProfile().isPhone) {
+                && mActivityContext.getDeviceProfile().getDeviceProperties().isPhone()) {
             return LauncherState.ALL_APPS.getFloatingSearchBarRestingMarginEnd(mActivityContext);
         }
 

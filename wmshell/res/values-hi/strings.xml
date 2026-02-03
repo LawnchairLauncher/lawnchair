@@ -36,6 +36,7 @@
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"इस ऐप्लिकेशन को सिर्फ़ एक विंडो में खोला जा सकता है"</string>
     <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"हो सकता है कि ऐप प्राइमरी (मुख्य) डिस्प्ले के अलावा बाकी दूसरे डिस्प्ले पर काम न करे."</string>
     <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"प्राइमरी (मुख्य) डिस्प्ले के अलावा बाकी दूसरे डिस्प्ले पर ऐप लॉन्च नहीं किया जा सकता."</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"इस ऐप्लिकेशन पर बबल की सुविधा काम नहीं करती"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"स्प्लिट स्क्रीन डिवाइडर मोड"</string>
     <string name="divider_title" msgid="1963391955593749442">"स्प्लिट स्क्रीन डिवाइडर मोड"</string>
     <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"बाईं स्क्रीन को फ़ुल स्क्रीन बनाएं"</string>
@@ -43,6 +44,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"बाईं स्क्रीन को 50% बनाएं"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"बाईं स्क्रीन को 30% बनाएं"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"दाईं स्क्रीन को फ़ुल स्क्रीन बनाएं"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"सबसे ऊपर मौजूद ऐप्लिकेशन को सबसे नीचे मौजूद ऐप्लिकेशन से बदलें"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"बाईं ओर मौजूद ऐप्लिकेशन को दाईं ओर मौजूद ऐप्लिकेशन से बदलें"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"ऊपर की स्क्रीन को फ़ुल स्क्रीन बनाएं"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ऊपर की स्क्रीन को 70% बनाएं"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ऊपर की स्क्रीन को 50% बनाएं"</string>
@@ -65,10 +68,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"सबसे ऊपर दाईं ओर ले जाएं"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"बाईं ओर सबसे नीचे ले जाएं"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"सबसे नीचे दाईं ओर ले जाएं"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"मेन्यू बड़ा करें"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"मेन्यू छोटा करें"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"बाईं ओर ले जाएं"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"दाईं ओर ले जाएं"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> को बड़ा करें"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> को छोटा करें"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> की सेटिंग"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"बबल खारिज करें"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"फ़ुलस्क्रीन पर मूव करें"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"बातचीत को बबल न करें"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"बबल्स का इस्तेमाल करके चैट करें"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"नई बातचीत फ़्लोटिंग आइकॉन या बबल्स की तरह दिखेंगी. बबल को खोलने के लिए टैप करें. इसे एक जगह से दूसरी जगह ले जाने के लिए खींचें और छोड़ें."</string>
@@ -79,7 +87,7 @@
     <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"हाल ही के बबल्स और हटाए गए बबल्स यहां दिखेंगे"</string>
     <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"बबल्स का इस्तेमाल करके चैट करें"</string>
     <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"नई बातचीत, आपकी स्क्रीन पर सबसे नीचे आइकॉन के तौर पर दिखती हैं. किसी आइकॉन को बड़ा करने के लिए उस पर टैप करें या खारिज करने के लिए उसे खींचें और छोड़ें."</string>
-    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"जब चाहें, बबल्स की सुविधा को कंट्रोल करें"</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"जब चाहें, बबल्स को कंट्रोल करें"</string>
     <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"किसी ऐप्लिकेशन और बातचीत के लिए बबल की सुविधा को मैनेज करने के लिए यहां टैप करें"</string>
     <string name="notification_bubble_title" msgid="6082910224488253378">"बबल"</string>
     <string name="manage_bubbles_text" msgid="7730624269650594419">"मैनेज करें"</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"क्या कैमरे से जुड़ी कोई समस्या है?\nफिर से फ़िट करने के लिए टैप करें"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"क्या समस्या ठीक नहीं हुई?\nपहले जैसा करने के लिए टैप करें"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"क्या कैमरे से जुड़ी कोई समस्या नहीं है? खारिज करने के लिए टैप करें."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"ऐप्लिकेशन मेन्यू यहां पाया जा सकता है"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"एक साथ कई ऐप्लिकेशन खोलने के लिए, डेस्कटॉप विंडोविंग का इस्तेमाल करें"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"ऐप्लिकेशन मेन्यू से फ़ुल स्क्रीन मोड पर किसी भी समय वापस जाएं"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"पूरी जानकारी लेकर, बेहतर तरीके से काम करें"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"स्प्लिट स्क्रीन का इस्तेमाल करने के लिए, किसी अन्य ऐप्लिकेशन को खींचें और छोड़ें"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"किसी ऐप्लिकेशन की जगह बदलने के लिए, उसके बाहर दो बार टैप करें"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"रीस्टार्ट करें"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"फिर से न दिखाएं"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"ऐप्लिकेशन की जगह बदलने के लिए\nदो बार टैप करें"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"बड़ा करें"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"विंडो छोटी करें"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"बंद करें"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"<xliff:g id="APP_NAME">%1$s</xliff:g> की विंडो को बड़ा करें"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"<xliff:g id="APP_NAME">%1$s</xliff:g> की विंडो को पहले जैसा करें"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"<xliff:g id="APP_NAME">%1$s</xliff:g> की विंडो को छोटा करें"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"<xliff:g id="APP_NAME">%1$s</xliff:g> को बंद करें"</string>
     <string name="back_button_text" msgid="1469718707134137085">"वापस जाएं"</string>
-    <string name="handle_text" msgid="1766582106752184456">"हैंडल"</string>
+    <string name="handle_text" msgid="4419667835599523257">"ऐप्लिकेशन का हैंडल"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"ऐप्लिकेशन आइकॉन"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"फ़ुलस्क्रीन"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"डेस्कटॉप मोड"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"डेस्कटॉप विंडोविंग"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"स्प्लिट स्क्रीन मोड"</string>
     <string name="more_button_text" msgid="3655388105592893530">"ज़्यादा देखें"</string>
     <string name="float_button_text" msgid="9221657008391364581">"फ़्लोट"</string>
     <string name="select_text" msgid="5139083974039906583">"चुनें"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"स्क्रीनशॉट"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"ब्राउज़र में खोलें"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"ऐप्लिकेशन में खोलें"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"नई विंडो"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"विंडो मैनेज करें"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"आसपेक्ट रेशियो (लंबाई-चौड़ाई का अनुपात) बदलें"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"व्यू को ऑप्टिमाइज़ करें"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"गड़बड़ी का आइकॉन"</string>
     <string name="close_text" msgid="4986518933445178928">"बंद करें"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"मेन्यू बंद करें"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"मेन्यू खोलें"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (डेस्कटॉप विंडोविंग)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"स्क्रीन को बड़ा करें"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"स्नैप स्क्रीन"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"साइज़ बदलें"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"ऐप्लिकेशन को यहां मूव नहीं किया जा सकता"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"ऐप्लिकेशन की नई विंडो खोली जा रही है"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"ऐप्लिकेशन की विंडो बंद की जा रही है"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"ऐप्लिकेशन की विंडो को छोटा किया जा रहा है"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (फ़ोकस किया गया)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (फ़ोकस नहीं किया गया)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"इमर्सिव"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"वापस लाएं"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"बड़ा करें"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"पहले जैसा करें"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"बाईं ओर स्नैप करें"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"दाईं ओर स्नैप करें"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"ऐप्लिकेशन विंडो का साइज़ बाईं ओर से बदलें"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"ऐप्लिकेशन विंडो का साइज़ दाईं ओर से बदलें"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"विंडो को बड़ा करें या उसका साइज़ पहले जैसा करें"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"मेन्यू खोलें"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"<xliff:g id="WINDOWING_MODE">%1$s</xliff:g> में जाएं"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"विंडो का साइज़ बाईं ओर से बदलें"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"विंडो का साइज़ दाईं ओर से बढ़ाएं"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"विंडो को बड़ा करें या उसका साइज़ पहले जैसा करें"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"ऐप्लिकेशन की विंडो का साइज़ बड़ा करें"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"विंडो का साइज़ पहले जैसा करें"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"ऐप्लिकेशन की विंडो को छोटा करें"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"ऐप्लिकेशन की विंडो बंद करें"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"डिफ़ॉल्ट सेटिंग के हिसाब से खोलें"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"इस ऐप्लिकेशन के लिए वेब लिंक खोलने का तरीका चुनें"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"ऐप्लिकेशन में"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"आपके ब्राउज़र में"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"ठीक है"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"अपने ब्राउज़र में तुरंत ऐप्लिकेशन खोलें"</string>
 </resources>

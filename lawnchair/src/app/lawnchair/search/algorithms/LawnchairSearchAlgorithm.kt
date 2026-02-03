@@ -6,11 +6,13 @@ import app.lawnchair.allapps.views.SearchItemBackground
 import app.lawnchair.allapps.views.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAdapterProvider
+import app.lawnchair.search.adapter.START_PAGE
 import app.lawnchair.search.adapter.SearchAdapterItem
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import com.android.app.search.LayoutType.CALCULATOR
+import com.android.app.search.LayoutType.EDUCARD
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.EMPTY_STATE
 import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
@@ -18,6 +20,7 @@ import com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT
 import com.android.app.search.LayoutType.ICON_SINGLE_VERTICAL_TEXT
 import com.android.app.search.LayoutType.ICON_SLICE
 import com.android.app.search.LayoutType.PEOPLE_TILE
+import com.android.app.search.LayoutType.PLAY_PLACEHOLDER
 import com.android.app.search.LayoutType.SEARCH_SETTINGS
 import com.android.app.search.LayoutType.SMALL_ICON_HORIZONTAL_TEXT
 import com.android.app.search.LayoutType.TEXT_HEADER
@@ -169,19 +172,35 @@ sealed class LawnchairSearchAlgorithm(
         calculator: List<Int>,
     ): SearchItemBackground = when {
         layoutType == TEXT_HEADER || layoutType == ICON_SINGLE_VERTICAL_TEXT || layoutType == EMPTY_DIVIDER -> iconBackground
+
         layoutType == SMALL_ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, smallIconIndices)
+
         layoutType == ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, iconRowIndices)
+
         layoutType == PEOPLE_TILE -> getGroupedBackground(index, peopleTileIndices)
+
         layoutType == HORIZONTAL_MEDIUM_TEXT -> getGroupedBackground(index, suggestionIndices)
+
         layoutType == THUMBNAIL -> getGroupedBackground(index, fileIndices)
+
         layoutType == ICON_SLICE -> getGroupedBackground(index, settingIndices)
+
         layoutType == WIDGET_LIVE -> getGroupedBackground(index, recentIndices)
+
         layoutType == CALCULATOR && calculator.isNotEmpty() -> normalBackground
+
         layoutType == EMPTY_STATE -> transparentBackground
+
         layoutType == SEARCH_SETTINGS -> transparentBackground
+
+        //        layoutType == PLAY_PLACEHOLDER -> transparentBackground
+//        layoutType == EDUCARD -> transparentBackground
         isFirst && isLast -> normalBackground
+
         isFirst -> topBackground
+
         isLast -> bottomBackground
+
         else -> centerBackground
     }
 

@@ -17,8 +17,11 @@
 package com.android.wm.shell.flicker.pip
 
 import android.app.Activity
+import android.platform.test.annotations.FlakyTest
 import android.platform.test.annotations.Postsubmit
 import android.platform.test.annotations.Presubmit
+import android.platform.test.annotations.RequiresDevice
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.Rotation
 import android.tools.flicker.assertions.FlickerTest
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
@@ -26,10 +29,9 @@ import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
 import android.tools.flicker.legacy.LegacyFlickerTestFactory
 import android.tools.helpers.WindowUtils
-import androidx.test.filters.FlakyTest
-import androidx.test.filters.RequiresDevice
 import com.android.server.wm.flicker.testapp.ActivityOptions
 import com.android.server.wm.flicker.testapp.ActivityOptions.PortraitOnlyActivity.EXTRA_FIXED_ORIENTATION
+import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.PipTransition
 import com.android.wm.shell.flicker.pip.common.PipTransition.BroadcastActionTrigger.Companion.ORIENTATION_LANDSCAPE
 import org.junit.Assume
@@ -41,16 +43,35 @@ import org.junit.runners.MethodSorters
 import org.junit.runners.Parameterized
 
 /**
- * Test exiting Pip with orientation changes. To run this test:
- * `atest WMShellFlickerTestsPip1:SetRequestedOrientationWhilePinned`
+ * Test leaving pip while changing orientation (from pip window in portrait to app in landscape)
+ *
+ * To run this test: `atest WMShellFlickerTestsPip:SetRequestedOrientationWhilePinned`
+ *
+ * Actions:
+ * ```
+ *     Launch [pipApp] on a fixed landscape orientation
+ *     Broadcast action [ACTION_ENTER_PIP] to enter pip mode in portrait
+ *     Restore PIP from the original task to landscape
+ * ```
+ *
+ * Notes:
+ * ```
+ *     1. Some default assertions (e.g., nav bar, status bar and screen covered)
+ *        are inherited [PipTransition]
+ *     2. Part of the test setup occurs automatically via
+ *        [android.tools.flicker.legacy.runner.TransitionRunner],
+ *        including configuring navigation mode, initial orientation and ensuring no
+ *        apps are running before setup
+ * ```
  */
 @RequiresDevice
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
 open class SetRequestedOrientationWhilePinned(flicker: LegacyFlickerTest) : PipTransition(flicker) {
     private val startingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_0)
-    private val endingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_90)
+    internal open val endingBounds = WindowUtils.getDisplayBounds(Rotation.ROTATION_90)
 
     override val thisTransition: FlickerBuilder.() -> Unit = {
         transitions {
@@ -128,7 +149,7 @@ open class SetRequestedOrientationWhilePinned(flicker: LegacyFlickerTest) : PipT
 
     @Presubmit
     @Test
-    fun pipAppLayerCoversFullScreen() {
+    open fun pipAppLayerCoversDisplayBoundsOnEnd() {
         flicker.assertLayersEnd { visibleRegion(pipApp).coversExactly(endingBounds) }
     }
 
@@ -146,6 +167,12 @@ open class SetRequestedOrientationWhilePinned(flicker: LegacyFlickerTest) : PipT
     @FlakyTest(bugId = 264243884)
     @Test
     override fun entireScreenCovered() = super.entireScreenCovered()
+
+    @Postsubmit
+    @Test
+    override fun pipLayerHasCorrectCornersAtEnd() {
+        flicker.assertLayersEnd { hasNoRoundedCorners(pipApp) }
+    }
 
     companion object {
         @Parameterized.Parameters(name = "{0}")

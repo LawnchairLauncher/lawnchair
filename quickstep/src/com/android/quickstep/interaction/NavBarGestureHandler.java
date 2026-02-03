@@ -33,6 +33,7 @@ import android.view.View.OnTouchListener;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
@@ -58,15 +59,16 @@ public class NavBarGestureHandler implements OnTouchListener,
     @Nullable
     private NavBarGestureAttemptCallback mGestureCallback;
 
-    NavBarGestureHandler(Context context) {
+    NavBarGestureHandler(Context context, DeviceProfile deviceProfile) {
         mContext = context;
-        DisplayController.Info displayInfo = DisplayController.INSTANCE.get(mContext).getInfo();
-        Point currentSize = displayInfo.currentSize;
-        mDisplaySize.set(currentSize.x, currentSize.y);
-        mSwipeUpTouchTracker =
-                new TriggerSwipeUpTouchTracker(context, true /*disableHorizontalSwipe*/,
-                        new NavBarPosition(NavigationMode.NO_BUTTON, displayInfo),
-                        this);
+        mDisplaySize.set(deviceProfile.getDeviceProperties().getWidthPx(), deviceProfile.getDeviceProperties().getHeightPx());
+        mSwipeUpTouchTracker = new TriggerSwipeUpTouchTracker(
+                context,
+                /* disableHorizontalSwipe= */ true,
+                new NavBarPosition(
+                        NavigationMode.NO_BUTTON,
+                        DisplayController.INSTANCE.get(mContext).getInfo()),
+                /* onSwipeUp= */ this);
         mMotionPauseDetector = new MotionPauseDetector(context);
 
         final Resources resources = context.getResources();

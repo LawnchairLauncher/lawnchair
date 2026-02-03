@@ -41,18 +41,20 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.cache.CachedObject;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.search.SearchCallback;
+import com.android.launcher3.util.SandboxApplication;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.picker.search.WidgetsSearchBar.WidgetsSearchDataProvider;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -66,6 +68,7 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class SimpleWidgetsSearchAlgorithmTest {
 
+    @Rule public SandboxApplication app = new SandboxApplication();
     @Mock private IconCache mIconCache;
 
     private InvariantDeviceProfile mTestProfile;
@@ -79,7 +82,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
 
     private SimpleWidgetsSearchAlgorithm mSimpleWidgetsSearchAlgorithm;
     @Mock
-    private PopupDataProvider mDataProvider;
+    private WidgetsSearchDataProvider mDataProvider;
     @Mock
     private SearchCallback<WidgetsListBaseEntry> mSearchCallback;
 
@@ -87,10 +90,10 @@ public class SimpleWidgetsSearchAlgorithmTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         doAnswer(invocation -> {
-            ComponentWithLabel componentWithLabel = (ComponentWithLabel) invocation.getArgument(0);
+            CachedObject componentWithLabel = invocation.getArgument(0);
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
-        mTestProfile = new InvariantDeviceProfile();
+        mTestProfile = InvariantDeviceProfile.INSTANCE.get(app);
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
         mContext = getApplicationContext();
@@ -106,7 +109,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
 
         mSimpleWidgetsSearchAlgorithm = MAIN_EXECUTOR.submit(
                 () -> new SimpleWidgetsSearchAlgorithm(mDataProvider)).get();
-        doReturn(Collections.EMPTY_LIST).when(mDataProvider).getAllWidgets();
+        doReturn(Collections.EMPTY_LIST).when(mDataProvider).getWidgets();
     }
 
     @Test
@@ -114,7 +117,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
         doReturn(List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
                 mCameraContentEntry, mClockHeaderEntry, mClockContentEntry))
                 .when(mDataProvider)
-                .getAllWidgets();
+                .getWidgets();
 
         assertEquals(List.of(
                 WidgetsListHeaderEntry.createForSearch(
@@ -135,7 +138,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
         doReturn(List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
                 mCameraContentEntry))
                 .when(mDataProvider)
-                .getAllWidgets();
+                .getWidgets();
 
         assertEquals(List.of(
                 WidgetsListHeaderEntry.createForSearch(
@@ -162,7 +165,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
         doReturn(List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
                 mCameraContentEntry, mClockHeaderEntry, mClockContentEntry))
                 .when(mDataProvider)
-                .getAllWidgets();
+                .getWidgets();
         mSimpleWidgetsSearchAlgorithm.doSearch("Ca", mSearchCallback);
         getInstrumentation().waitForIdleSync();
         verify(mSearchCallback).onSearchResult(

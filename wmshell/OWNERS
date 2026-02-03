@@ -1,5 +1,7 @@
-xutan@google.com
+jorgegil@google.com
+pbdr@google.com
+pragyabajoria@google.com
 
 # Give submodule owners in shell resource approval
-per-file res*/*/*.xml = atsjenk@google.com, hwwang@google.com, jorgegil@google.com, lbill@google.com, madym@google.com, nmusgrave@google.com, pbdr@google.com, tkachenkoi@google.com, mpodolian@google.com, liranb@google.com
+per-file res*/*/*.xml = atsjenk@google.com, hwwang@google.com, lbill@google.com, madym@google.com, vaniadesmonda@google.com, pbdr@google.com, mpodolian@google.com, liranb@google.com, pragyabajoria@google.com, uysalorhan@google.com, gsennton@google.com, mattsziklay@google.com, mdehaini@google.com, peanutbutter@google.com, jeremysim@google.com
 per-file res*/*/tv_*.xml = bronger@google.com

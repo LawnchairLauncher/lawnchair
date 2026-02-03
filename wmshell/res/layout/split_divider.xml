@@ -24,6 +24,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.android.wm.shell.common.split.DividerTooltip
+            android:id="@+id/docked_divider_tooltip"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone" />
+
         <com.android.wm.shell.common.split.DividerHandleView
             android:id="@+id/docked_divider_handle"
             android:layout_height="match_parent"

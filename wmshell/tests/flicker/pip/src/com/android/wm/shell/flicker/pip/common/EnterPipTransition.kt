@@ -71,7 +71,9 @@ abstract class EnterPipTransition(flicker: LegacyFlickerTest) : PipTransition(fl
     @Presubmit
     @Test
     open fun pipLayerOrOverlayRemainInsideVisibleBounds() {
-        flicker.assertLayersVisibleRegion(pipApp.or(ComponentNameMatcher.PIP_CONTENT_OVERLAY)) {
+        flicker.assertLayersVisibleRegion(
+            pipApp.or(ComponentNameMatcher.PIP_CONTENT_OVERLAY)
+        ) {
             coversAtMost(displayBounds)
         }
     }
@@ -117,7 +119,9 @@ abstract class EnterPipTransition(flicker: LegacyFlickerTest) : PipTransition(fl
     @Presubmit
     @Test
     open fun focusChanges() {
-        flicker.assertEventLog { this.focusChanges(pipApp.packageName, "NexusLauncherActivity") }
+        flicker.assertEventLog {
+            this.focusChanges(pipApp.packageName, "NexusLauncherActivity")
+        }
     }
 
     companion object {

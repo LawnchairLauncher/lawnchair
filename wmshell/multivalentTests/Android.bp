@@ -35,7 +35,6 @@ android_app {
 android_robolectric_test {
     name: "WMShellRobolectricTests",
     instrumentation_for: "WindowManagerShellRobolectric",
-    upstream: true,
     java_resource_dirs: [
         "robolectric/config",
     ],
@@ -50,9 +49,14 @@ android_robolectric_test {
         "androidx.test.runner",
         "androidx.test.rules",
         "androidx.test.ext.junit",
-        "mockito-robolectric-prebuilt",
+        "mockito-robolectric-prebuilt", // mockito deps order matters!
         "mockito-kotlin2",
+        "WMShellTests-utils", // order matters because it depends on mockito-kotlin2
+        "platform-parametric-runner-lib",
         "truth",
+        "flag-junit-base",
+        "flag-junit",
+        "testables",
     ],
     auto_gen_config: true,
 }
@@ -63,22 +67,25 @@ android_test {
         "src/**/*.kt",
     ],
     static_libs: [
+        "WMShellTests-utils",
         "WindowManager-Shell",
-        "junit",
         "androidx.core_core-animation-testing",
-        "androidx.test.runner",
-        "androidx.test.rules",
         "androidx.test.ext.junit",
+        "androidx.test.rules",
+        "androidx.test.runner",
         "frameworks-base-testutils",
+        "junit",
         "mockito-kotlin2",
         "mockito-target-extended-minus-junit4",
-        "truth",
+        "platform-parametric-runner-lib",
         "platform-test-annotations",
         "platform-test-rules",
+        "testables",
+        "truth",
     ],
     libs: [
-        "android.test.base",
-        "android.test.runner",
+        "android.test.base.stubs.system",
+        "android.test.runner.stubs.system",
     ],
     jni_libs: [
         "libdexmakerjvmtiagent",

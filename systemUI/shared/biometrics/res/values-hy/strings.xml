@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="udfps_accessibility_touch_hints_left" msgid="3793013841480032588">"Տեղափոխել ձախ"</string>
+    <string name="udfps_accessibility_touch_hints_down" msgid="9132329374881388581">"Տեղափոխել ներքև"</string>
+    <string name="udfps_accessibility_touch_hints_right" msgid="9011758174187897740">"Տեղափոխել աջ"</string>
+    <string name="udfps_accessibility_touch_hints_up" msgid="140580161237287180">"Տեղափոխել վերև"</string>
+</resources>

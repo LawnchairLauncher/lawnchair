@@ -18,15 +18,15 @@
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <item android:id="@+id/indicator_solid">
         <shape android:shape="rectangle">
-            <solid android:color="?androidprv:attr/materialColorPrimaryContainer" />
+            <solid android:color="@androidprv:color/materialColorPrimaryFixed" />
             <corners android:radius="28dp" />
         </shape>
     </item>
     <item android:id="@+id/indicator_stroke">
         <shape android:shape="rectangle">
             <corners android:radius="28dp" />
-            <stroke android:width="1dp"
-                android:color="?androidprv:attr/materialColorPrimaryContainer"/>
+            <stroke android:width="2dp"
+                android:color="@androidprv:color/materialColorPrimaryFixed"/>
         </shape>
     </item>
 </layer-list>

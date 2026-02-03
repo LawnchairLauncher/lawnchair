@@ -19,107 +19,94 @@ package com.android.wm.shell.pip2;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.graphics.RectF;
+import android.gui.BorderSettings;
+import android.gui.BoxShadowSettings;
 import android.view.Choreographer;
 import android.view.SurfaceControl;
 
+import androidx.annotation.NonNull;
+
+import com.android.wm.shell.Flags;
 import com.android.wm.shell.R;
-import com.android.wm.shell.transition.Transitions;
+import com.android.wm.shell.common.BoxShadowHelper;
+import com.android.wm.shell.common.pip.PipDisplayLayoutState;
+import com.android.wm.shell.common.pip.PipUtils;
+import com.android.wm.shell.sysui.ShellInit;
 
 /**
  * Abstracts the common operations on {@link SurfaceControl.Transaction} for PiP transition.
  */
-public class PipSurfaceTransactionHelper {
-    /** for {@link #scale(SurfaceControl.Transaction, SurfaceControl, Rect, Rect)} operation */
+public class PipSurfaceTransactionHelper implements PipDisplayLayoutState.DisplayIdListener {
     private final Matrix mTmpTransform = new Matrix();
     private final float[] mTmpFloat9 = new float[9];
-    private final RectF mTmpSourceRectF = new RectF();
-    private final RectF mTmpDestinationRectF = new RectF();
     private final Rect mTmpDestinationRect = new Rect();
 
     private int mCornerRadius;
     private int mShadowRadius;
+    private float mMirrorOpacity;
 
-    public PipSurfaceTransactionHelper(Context context) {
-        onDensityOrFontScaleChanged(context);
+    private BoxShadowSettings mBoxShadowSettings;
+    private BorderSettings mBorderSettings;
+    private Context mContext;
+    private PipDisplayLayoutState mPipDisplayLayoutState;
+
+    public PipSurfaceTransactionHelper(Context context, @NonNull ShellInit shellInit,
+            PipDisplayLayoutState pipDisplayLayoutState) {
+        mContext = context;
+        mPipDisplayLayoutState = pipDisplayLayoutState;
+        shellInit.addInitCallback(this::onInit, this);
+    }
+
+    /** Called when Shell is done initializing. */
+    public void onInit() {
+        mPipDisplayLayoutState.addDisplayIdListener(this);
+        onThemeChanged(mContext);
+        reloadResources();
+    }
+
+    private void reloadResources() {
+        mCornerRadius = mContext.getResources().getDimensionPixelSize(R.dimen.pip_corner_radius);
+        mShadowRadius = mContext.getResources().getDimensionPixelSize(R.dimen.pip_shadow_radius);
+        mMirrorOpacity = mContext.getResources().getFloat(
+                R.dimen.config_pipDraggingAcrossDisplaysOpacity);
     }
 
     /**
-     * Called when display size or font size of settings changed
+     * Called when theme changes.
      *
      * @param context the current context
      */
-    public void onDensityOrFontScaleChanged(Context context) {
-        mCornerRadius = context.getResources().getDimensionPixelSize(R.dimen.pip_corner_radius);
-        mShadowRadius = context.getResources().getDimensionPixelSize(R.dimen.pip_shadow_radius);
+    public void onThemeChanged(Context context) {
+        if (Flags.enablePipBoxShadows()) {
+            if (PipUtils.isDarkSystemTheme(context)) {
+                mBoxShadowSettings = BoxShadowHelper.getBoxShadowSettings(context,
+                        new int[]{R.style.BoxShadowParamsPIPDark1,
+                                R.style.BoxShadowParamsPIPDark2});
+                mBorderSettings = BoxShadowHelper.getBorderSettings(context,
+                        R.style.BorderSettingsPIPDark);
+            } else {
+                mBoxShadowSettings = BoxShadowHelper.getBoxShadowSettings(context,
+                        new int[]{R.style.BoxShadowParamsPIPLight1,
+                                R.style.BoxShadowParamsPIPLight2});
+
+                mBorderSettings = BoxShadowHelper.getBorderSettings(context,
+                        R.style.BorderSettingsPIPLight);
+            }
+        }
+    }
+
+    @Override
+    public void onDisplayIdChanged(@NonNull Context context) {
+        mContext = context;
+        reloadResources();
     }
 
     /**
-     * Operates the alpha on a given transaction and leash
-     * @return same {@link PipSurfaceTransactionHelper} instance for method chaining
+     * Gets corner radius which is loaded from resources.
+     * @return the corner radius.
      */
-    public PipSurfaceTransactionHelper alpha(SurfaceControl.Transaction tx, SurfaceControl leash,
-            float alpha) {
-        tx.setAlpha(leash, alpha);
-        return this;
-    }
-
-    /**
-     * Operates the crop (and position) on a given transaction and leash
-     * @return same {@link PipSurfaceTransactionHelper} instance for method chaining
-     */
-    public PipSurfaceTransactionHelper crop(SurfaceControl.Transaction tx, SurfaceControl leash,
-            Rect destinationBounds) {
-        tx.setWindowCrop(leash, destinationBounds.width(), destinationBounds.height())
-                .setPosition(leash, destinationBounds.left, destinationBounds.top);
-        return this;
-    }
-
-    /**
-     * Operates the scale (setMatrix) on a given transaction and leash
-     * @return same {@link PipSurfaceTransactionHelper} instance for method chaining
-     */
-    public PipSurfaceTransactionHelper scale(SurfaceControl.Transaction tx, SurfaceControl leash,
-            Rect sourceBounds, Rect destinationBounds) {
-        mTmpDestinationRectF.set(destinationBounds);
-        return scale(tx, leash, sourceBounds, mTmpDestinationRectF, 0 /* degrees */);
-    }
-
-    /**
-     * Operates the scale (setMatrix) on a given transaction and leash
-     * @return same {@link PipSurfaceTransactionHelper} instance for method chaining
-     */
-    public PipSurfaceTransactionHelper scale(SurfaceControl.Transaction tx, SurfaceControl leash,
-            Rect sourceBounds, RectF destinationBounds) {
-        return scale(tx, leash, sourceBounds, destinationBounds, 0 /* degrees */);
-    }
-
-    /**
-     * Operates the scale (setMatrix) on a given transaction and leash
-     * @return same {@link PipSurfaceTransactionHelper} instance for method chaining
-     */
-    public PipSurfaceTransactionHelper scale(SurfaceControl.Transaction tx, SurfaceControl leash,
-            Rect sourceBounds, Rect destinationBounds, float degrees) {
-        mTmpDestinationRectF.set(destinationBounds);
-        return scale(tx, leash, sourceBounds, mTmpDestinationRectF, degrees);
-    }
-
-    /**
-     * Operates the scale (setMatrix) on a given transaction and leash, along with a rotation.
-     * @return same {@link PipSurfaceTransactionHelper} instance for method chaining
-     */
-    public PipSurfaceTransactionHelper scale(SurfaceControl.Transaction tx, SurfaceControl leash,
-            Rect sourceBounds, RectF destinationBounds, float degrees) {
-        mTmpSourceRectF.set(sourceBounds);
-        // We want the matrix to position the surface relative to the screen coordinates so offset
-        // the source to 0,0
-        mTmpSourceRectF.offsetTo(0, 0);
-        mTmpDestinationRectF.set(destinationBounds);
-        mTmpTransform.setRectToRect(mTmpSourceRectF, mTmpDestinationRectF, Matrix.ScaleToFit.FILL);
-        mTmpTransform.postRotate(degrees,
-                mTmpDestinationRectF.centerX(), mTmpDestinationRectF.centerY());
-        tx.setMatrix(leash, mTmpTransform, mTmpFloat9);
-        return this;
+    public int getCornerRadius() {
+        return mCornerRadius;
     }
 
     /**
@@ -180,8 +167,7 @@ public class PipSurfaceTransactionHelper {
         // destination are different.
         final float scale = srcW <= srcH ? (float) destW / srcW : (float) destH / srcH;
         final Rect crop = mTmpDestinationRect;
-        crop.set(0, 0, Transitions.SHELL_TRANSITIONS_ROTATION ? destH
-                : destW, Transitions.SHELL_TRANSITIONS_ROTATION ? destW : destH);
+        crop.set(0, 0, destW, destH);
         // Inverse scale for crop to fit in screen coordinates.
         crop.scale(1 / scale);
         crop.offset(insets.left, insets.top);
@@ -200,22 +186,9 @@ public class PipSurfaceTransactionHelper {
             }
         }
         mTmpTransform.setScale(scale, scale);
-        mTmpTransform.postRotate(degrees);
         mTmpTransform.postTranslate(positionX, positionY);
+        mTmpTransform.postRotate(degrees);
         tx.setMatrix(leash, mTmpTransform, mTmpFloat9).setCrop(leash, crop);
-        return this;
-    }
-
-    /**
-     * Resets the scale (setMatrix) on a given transaction and leash if there's any
-     *
-     * @return same {@link PipSurfaceTransactionHelper} instance for method chaining
-     */
-    public PipSurfaceTransactionHelper resetScale(SurfaceControl.Transaction tx,
-            SurfaceControl leash,
-            Rect destinationBounds) {
-        tx.setMatrix(leash, Matrix.IDENTITY_MATRIX, mTmpFloat9)
-                .setPosition(leash, destinationBounds.left, destinationBounds.top);
         return this;
     }
 
@@ -247,7 +220,54 @@ public class PipSurfaceTransactionHelper {
      */
     public PipSurfaceTransactionHelper shadow(SurfaceControl.Transaction tx, SurfaceControl leash,
             boolean applyShadowRadius) {
-        tx.setShadowRadius(leash, applyShadowRadius ? mShadowRadius : 0);
+        if (Flags.enablePipBoxShadows()) {
+            if (applyShadowRadius) {
+                tx.setBoxShadowSettings(leash, mBoxShadowSettings);
+                tx.setBorderSettings(leash, mBorderSettings);
+            } else {
+                tx.setBoxShadowSettings(leash, new BoxShadowSettings());
+                tx.setBorderSettings(leash, new BorderSettings());
+            }
+        } else {
+            tx.setShadowRadius(leash, applyShadowRadius ? mShadowRadius : 0);
+        }
+        return this;
+    }
+
+    /**
+     * Sets default transformations for mirrors a given mirror root of a PiP {@param leash}.
+     */
+    public PipSurfaceTransactionHelper setMirrorTransformations(SurfaceControl.Transaction tx,
+            SurfaceControl leash) {
+        tx.setAlpha(leash, mMirrorOpacity);
+        tx.setLayer(leash, Integer.MAX_VALUE);
+        tx.show(leash);
+        return this;
+    }
+
+    /**
+     * Sets PiP translational, scaling and rotational transformations on a given transaction.
+     *
+     * @param leash PiP leash to apply the transformations on
+     * @param outTransaction transaction to set the matrix on
+     * @param baseBounds base bounds from PipBoundsState
+     * @param toBounds bounds to position the PiP to
+     * @param degrees the angle to rotate the bounds to
+     */
+    public PipSurfaceTransactionHelper setPipTransformations(SurfaceControl leash,
+            SurfaceControl.Transaction outTransaction, Rect baseBounds, Rect toBounds,
+            float degrees) {
+        final float scale = (float) toBounds.width() / baseBounds.width();
+
+        mTmpTransform.setScale(scale, scale);
+        mTmpTransform.postTranslate(toBounds.left, toBounds.top);
+        mTmpTransform.postRotate(degrees, toBounds.centerX(), toBounds.centerY());
+
+        round(outTransaction, leash, baseBounds, toBounds);
+        outTransaction.setMatrix(leash, mTmpTransform, mTmpFloat9);
+        // Note: Put this at layer=MAX_VALUE-2 since the input consumer for PIP is placed at
+        //       MAX_VALUE-1
+        outTransaction.setLayer(leash, Integer.MAX_VALUE - 2);
         return this;
     }
 

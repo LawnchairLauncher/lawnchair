@@ -18,6 +18,7 @@ package com.android.launcher3.workprofile;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.RippleDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -51,6 +52,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         typedArray.recycle();
     }
 
+    // Lawnchair: This function theme the work mode tab and toggle
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -59,8 +61,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         for (int i = 0; i < getChildCount(); i++) {
             Button tab = (Button) getChildAt(i);
             tab.setAllCaps(false);
-            RippleDrawable background = (RippleDrawable) tab.getBackground();
-            background.setDrawableByLayerId(android.R.id.mask, DrawableTokens.AllAppsTabsMaskDrawable.resolve(getContext()));
+            // Lawnchair-TODO: StateListDrawable
+//            RippleDrawable background = (RippleDrawable) tab.getBackground();
+//            background.setDrawableByLayerId(android.R.id.mask, DrawableTokens.AllAppsTabsMaskDrawable.resolve(getContext()));
             tab.setBackground(DrawableTokens.AllAppsTabsBackground.resolve(getContext()));
             tab.setTextColor(ColorStateListTokens.AllAppsTabText.resolve(getContext()));
             fontManager.setCustomFont(tab, R.id.font_body_medium);
@@ -78,8 +81,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
-    public void setScroll(int currentScroll, int totalScroll) {
-    }
+    public void setScroll(int currentScroll, int totalScroll) {}
 
     @Override
     public void setActiveMarker(int activePage) {
@@ -119,13 +121,13 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
      */
     public static int getTabWidth(Context context, int totalWidth) {
         DeviceProfile grid = ActivityContext.lookupContext(context).getDeviceProfile();
-        int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
+        int iconPadding = totalWidth / grid.numShownAllAppsColumns
+                - grid.getAllAppsProfile().getIconSizePx();
         return totalWidth - iconPadding;
     }
 
     /**
-     * Interface definition for a callback to be invoked when an active page has
-     * been changed.
+     * Interface definition for a callback to be invoked when an active page has been changed.
      */
     public interface OnActivePageChangedListener {
         /** Called when the active page has been changed. */

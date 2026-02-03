@@ -31,6 +31,7 @@ import com.android.wm.shell.shared.animation.PhysicsAnimator.EndListener
 import com.android.wm.shell.shared.animation.PhysicsAnimator.UpdateListener
 import com.android.wm.shell.shared.animation.PhysicsAnimatorTestUtils.clearAnimationUpdateFrames
 import com.android.wm.shell.shared.animation.PhysicsAnimatorTestUtils.getAnimationUpdateFrames
+import com.android.wm.shell.shared.animation.PhysicsAnimatorTestUtils.timeoutMs
 import com.android.wm.shell.shared.animation.PhysicsAnimatorTestUtils.verifyAnimationUpdateFrames
 import org.junit.After
 import org.junit.Assert
@@ -50,6 +51,8 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.MockitoAnnotations
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 @TestableLooper.RunWithLooper
 @RunWith(AndroidTestingRunner::class)
@@ -68,6 +71,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
     private lateinit var mockUpdateListener: UpdateListener<View>
     private lateinit var mockEndListener: EndListener<View>
     private lateinit var mockEndAction: Runnable
+    private lateinit var mockEndOrCancelAction: Runnable
 
     private fun <T> eq(value: T): T = Mockito.eq(value) ?: value
 
@@ -78,6 +82,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
         mockUpdateListener = mock(UpdateListener::class.java) as UpdateListener<View>
         mockEndListener = mock(EndListener::class.java) as EndListener<View>
         mockEndAction = mock(Runnable::class.java)
+        mockEndOrCancelAction = mock(Runnable::class.java)
 
         viewGroup = FrameLayout(context)
         testView = View(context)
@@ -159,6 +164,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
                 .spring(DynamicAnimation.TRANSLATION_Y, 500f, springConfig)
                 .addEndListener(mockEndListener)
                 .withEndActions(mockEndAction::run)
+                .withEndOrCancelActions(mockEndOrCancelAction::run)
                 .start()
 
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(animator, DynamicAnimation.TRANSLATION_X)
@@ -183,6 +189,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
 
         // The end action should not have been run yet.
         verify(mockEndAction, times(0)).run()
+        verify(mockEndOrCancelAction, times(0)).run()
 
         // Block until TRANSLATION_Y finishes.
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(animator, DynamicAnimation.TRANSLATION_Y)
@@ -205,6 +212,36 @@ class PhysicsAnimatorTest : ShellTestCase() {
 
         // Now that all properties are done animating, the end action should have been called.
         verify(mockEndAction, times(1)).run()
+        verify(mockEndOrCancelAction, times(1)).run()
+    }
+
+    @Test
+    @Throws(InterruptedException::class)
+    fun testEndOrCancelActions() {
+        PhysicsAnimatorTestUtils.setAllAnimationsBlock(false)
+
+        var endOrCancelCalled = false;
+        val latch = CountDownLatch(1)
+        val endOrCancelRunnable = Runnable {
+            endOrCancelCalled = true;
+            latch.countDown()
+        }
+
+        animator
+            .spring(DynamicAnimation.TRANSLATION_X, 10f, springConfig)
+            .spring(DynamicAnimation.TRANSLATION_Y, 500f, springConfig)
+            .addEndListener(mockEndListener)
+            .withEndActions(mockEndAction::run)
+            .withEndOrCancelActions(endOrCancelRunnable)
+            .start()
+        animator.cancel()
+
+        // Wait until the end actions are all run
+        latch.await(timeoutMs, TimeUnit.MILLISECONDS)
+
+        // Verify that the end action was not called, but the endOrCancel action was
+        verify(mockEndAction, times(0)).run()
+        assertTrue(endOrCancelCalled)
     }
 
     @Test
@@ -232,6 +269,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
                 .addUpdateListener(mockUpdateListener)
                 .addEndListener(mockEndListener)
                 .withEndActions(mockEndAction::run)
+                .withEndOrCancelActions(mockEndOrCancelAction::run)
                 .start()
 
         verifyUpdateListenerCalls(animator, mockUpdateListener)
@@ -239,6 +277,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
                 eq(testView), eq(DynamicAnimation.TRANSLATION_X), eq(false), eq(false), anyFloat(),
                 anyFloat(), eq(true))
         verify(mockEndAction, times(1)).run()
+        verify(mockEndOrCancelAction, times(1)).run()
 
         animator
                 .spring(DynamicAnimation.TRANSLATION_X, 0f, springConfig)
@@ -249,6 +288,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
         verifyNoMoreInteractions(mockUpdateListener)
         verifyNoMoreInteractions(mockEndListener)
         verifyNoMoreInteractions(mockEndAction)
+        verifyNoMoreInteractions(mockEndOrCancelAction)
     }
 
     @Test
@@ -483,6 +523,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
                 .addUpdateListener(mockUpdateListener)
                 .addEndListener(mockEndListener)
                 .withEndActions(mockEndAction::run)
+                .withEndOrCancelActions(mockEndOrCancelAction::run)
                 .start()
 
         // Block until we pass the minimum.
@@ -502,6 +543,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
         // since we're about to begin springing the same property.
         verifyNoMoreInteractions(mockEndListener)
         verifyNoMoreInteractions(mockEndAction)
+        verifyNoMoreInteractions(mockEndOrCancelAction)
 
         // Wait for the spring to finish.
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_X)
@@ -523,6 +565,7 @@ class PhysicsAnimatorTest : ShellTestCase() {
 
         // The end action should also have been called once.
         verify(mockEndAction, times(1)).run()
+        verify(mockEndOrCancelAction, times(1)).run()
         verifyNoMoreInteractions(mockEndAction)
 
         assertEquals(250f, testView.translationX)

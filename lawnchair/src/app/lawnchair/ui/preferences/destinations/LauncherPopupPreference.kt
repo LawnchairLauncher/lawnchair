@@ -39,12 +39,12 @@ import app.lawnchair.ui.popup.toLauncherOptions
 import app.lawnchair.ui.popup.toOptionOrderString
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.components.DragHandle
-import app.lawnchair.ui.preferences.components.DraggablePreferenceGroup
-import app.lawnchair.ui.preferences.components.DraggableSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.ui.preferences.components.reorderable.ReorderableDragHandle
+import app.lawnchair.ui.preferences.components.reorderable.ReorderablePreferenceGroup
+import app.lawnchair.ui.preferences.components.reorderable.ReorderableSwitchPreference
 import app.lawnchair.ui.preferences.navigation.HomeScreenPopupEditor
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
@@ -85,7 +85,7 @@ fun LauncherPopupPreference(
             LauncherPopupPreview(optionsList)
         }
 
-        DraggablePreferenceGroup(
+        ReorderablePreferenceGroup(
             label = stringResource(R.string.popup_menu_items),
             items = optionsList,
             defaultList = LauncherOptionsPopup.DEFAULT_ORDER,
@@ -104,7 +104,7 @@ fun LauncherPopupPreference(
 
             val interactionSource = remember { MutableInteractionSource() }
 
-            DraggableSwitchPreference(
+            ReorderableSwitchPreference(
                 label = stringResource(metadata.label),
                 description = if (!enabled && item.identifier != "home_settings") stringResource(R.string.home_screen_locked) else null,
                 checked = if (!enabled && item.identifier != "home_settings") false else item.isEnabled,
@@ -112,8 +112,8 @@ fun LauncherPopupPreference(
                     optionsList[index].isEnabled = it
                     optionsPref.onChange(optionsList.toOptionOrderString())
                 },
-                dragIndicator = {
-                    DragHandle(
+                dragHandle = {
+                    ReorderableDragHandle(
                         scope = this,
                         interactionSource = if (!metadata.isCarousel) interactionSource else remember { MutableInteractionSource() },
                         isDraggable = !metadata.isCarousel,

@@ -16,9 +16,12 @@
 
 package com.android.wm.shell.flicker.pip
 
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.tools.flicker.junit.FlickerParametersRunnerFactory
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
+import com.android.server.wm.flicker.helpers.PipAppHelper
+import com.android.wm.shell.Flags
 import com.android.wm.shell.flicker.pip.common.EnterPipTransition
 import org.junit.FixMethodOrder
 import org.junit.runner.RunWith
@@ -28,7 +31,7 @@ import org.junit.runners.Parameterized
 /**
  * Test entering pip from an app by interacting with the app UI
  *
- * To run this test: `atest WMShellFlickerTestsPip2:EnterPipViaAppUiButtonTest`
+ * To run this test: `atest WMShellFlickerTestsPip:EnterPipViaAppUiButtonTest`
  *
  * Actions:
  * ```
@@ -49,7 +52,10 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @Parameterized.UseParametersRunnerFactory(FlickerParametersRunnerFactory::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RequiresFlagsDisabled(Flags.FLAG_ENABLE_PIP2)
 open class EnterPipViaAppUiButtonTest(flicker: LegacyFlickerTest) : EnterPipTransition(flicker) {
+    override val pipApp: PipAppHelper = PipAppHelper(instrumentation)
+
     override val thisTransition: FlickerBuilder.() -> Unit = {
         transitions { pipApp.clickEnterPipButton(wmHelper) }
     }

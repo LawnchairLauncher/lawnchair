@@ -3,7 +3,7 @@ changelog:
     labels:
       - bot
     authors:
-      - renovate
+      - renovate[bot]
       - lawnchair-bot
       - crowdin-bot
   categories:
@@ -18,6 +18,3 @@ changelog:
     - title: 🧹 Housekeeping
       labels:
         - housekeeping
-    - title: 🧑‍💻 Dependencies
-      labels:
-        - dependencies

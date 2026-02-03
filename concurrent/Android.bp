@@ -1,0 +1,58 @@
+// Copyright (C) 2025 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    // See: http://go/android-license-faq
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+java_library {
+    name: "launcher-executor-qualifiers",
+    srcs: [
+        "src/com/android/launcher3/concurrent/annotations/Background.kt",
+        "src/com/android/launcher3/concurrent/annotations/LightweightBackground.kt",
+        "src/com/android/launcher3/concurrent/annotations/ThreadPool.kt",
+        "src/com/android/launcher3/concurrent/annotations/Ui.kt",
+        "src/com/android/launcher3/concurrent/annotations/UiContext.kt",
+        "src/com/android/launcher3/concurrent/annotations/BackgroundContext.kt",
+        "src/com/android/launcher3/concurrent/annotations/LightweightBackgroundContext.kt",
+        "src/com/android/launcher3/concurrent/annotations/ThreadPoolContext.kt",
+    ],
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    target_sdk_version: "current",
+    static_libs: [
+        "androidx.annotation_annotation",
+        "jsr330",
+    ],
+}
+
+java_library {
+    name: "launcher-executors-module",
+    srcs: [
+        "src/com/android/launcher3/concurrent/ExecutorsModule.kt",
+    ],
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    target_sdk_version: "current",
+    plugins: ["dagger2-compiler"],
+    static_libs: [
+        "androidx.annotation_annotation",
+        "dagger2",
+        "guava",
+        "jsr330",
+        "launcher-executor-qualifiers",
+        "kotlinx-coroutines-android",
+    ],
+}

@@ -16,9 +16,8 @@
 
 package com.android.launcher3.uioverrides.states;
 
-import android.content.Context;
-
 import com.android.launcher3.Launcher;
+import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.util.SplitAnimationTimings;
 import com.android.quickstep.views.RecentsView;
 
@@ -43,11 +42,10 @@ public class SplitScreenSelectState extends OverviewState {
     }
 
     @Override
-    public int getTransitionDuration(Context context, boolean isToState) {
-        boolean isTablet = ((Launcher) context).getDeviceProfile().isTablet;
-        if (isToState && isTablet) {
+    public int getTransitionDuration(ActivityContext context, boolean isToState) {
+        if (isToState && context.getDeviceProfile().getDeviceProperties().isTablet()) {
             return SplitAnimationTimings.TABLET_ENTER_DURATION;
-        } else if (isToState && !isTablet) {
+        } else if (isToState) {
             return SplitAnimationTimings.PHONE_ENTER_DURATION;
         } else {
             return SplitAnimationTimings.ABORT_DURATION;

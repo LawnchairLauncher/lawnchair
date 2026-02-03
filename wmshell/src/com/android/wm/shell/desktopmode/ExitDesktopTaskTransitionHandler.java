@@ -29,8 +29,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
+import android.view.Choreographer;
 import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.view.WindowManager.TransitionType;
@@ -42,12 +44,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource;
+import com.android.internal.jank.Cuj;
+import com.android.internal.jank.InteractionJankMonitor;
+import com.android.internal.util.LatencyTracker;
+import com.android.wm.shell.shared.annotations.ShellMainThread;
+import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource;
 import com.android.wm.shell.transition.Transitions;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 
@@ -56,28 +64,41 @@ import java.util.function.Supplier;
  * entering and exiting freeform.
  */
 public class ExitDesktopTaskTransitionHandler implements Transitions.TransitionHandler {
-    private static final int FULLSCREEN_ANIMATION_DURATION = 336;
+    public static final int FULLSCREEN_ANIMATION_DURATION = 336;
 
     private final Context mContext;
     private final Transitions mTransitions;
+    private final InteractionJankMonitor mInteractionJankMonitor;
+    private final LatencyTracker mLatencyTracker;
+    @ShellMainThread
+    private final Handler mHandler;
     private final List<IBinder> mPendingTransitionTokens = new ArrayList<>();
-    private Consumer<SurfaceControl.Transaction> mOnAnimationFinishedCallback;
+    private Function0<Unit> mOnAnimationFinishedCallback;
     private final Supplier<SurfaceControl.Transaction> mTransactionSupplier;
     private Point mPosition;
 
     public ExitDesktopTaskTransitionHandler(
             Transitions transitions,
-            Context context) {
-        this(transitions, SurfaceControl.Transaction::new, context);
+            Context context,
+            InteractionJankMonitor interactionJankMonitor,
+            @ShellMainThread Handler handler
+    ) {
+        this(transitions, SurfaceControl.Transaction::new, context, interactionJankMonitor,
+                handler);
     }
 
     private ExitDesktopTaskTransitionHandler(
             Transitions transitions,
             Supplier<SurfaceControl.Transaction> supplier,
-            Context context) {
+            Context context,
+            InteractionJankMonitor interactionJankMonitor,
+            @ShellMainThread Handler handler) {
         mTransitions = transitions;
         mTransactionSupplier = supplier;
         mContext = context;
+        mInteractionJankMonitor = interactionJankMonitor;
+        mLatencyTracker = LatencyTracker.getInstance(mContext);
+        mHandler = handler;
     }
 
     /**
@@ -88,14 +109,16 @@ public class ExitDesktopTaskTransitionHandler implements Transitions.TransitionH
      * @param position               Position of the task when transition is started
      * @param onAnimationEndCallback to be called after animation
      */
-    public void startTransition(@NonNull DesktopModeTransitionSource transitionSource,
+    public IBinder startTransition(@NonNull DesktopModeTransitionSource transitionSource,
             @NonNull WindowContainerTransaction wct, Point position,
-            Consumer<SurfaceControl.Transaction> onAnimationEndCallback) {
+            Function0<Unit> onAnimationEndCallback) {
+        mLatencyTracker.onActionStart(LatencyTracker.ACTION_DESKTOP_MODE_EXIT_MODE);
         mPosition = position;
         mOnAnimationFinishedCallback = onAnimationEndCallback;
         final IBinder token = mTransitions.startTransition(getExitTransitionType(transitionSource),
                 wct, this);
         mPendingTransitionTokens.add(token);
+        return token;
     }
 
     @Override
@@ -122,6 +145,11 @@ public class ExitDesktopTaskTransitionHandler implements Transitions.TransitionH
 
         mPendingTransitionTokens.remove(transition);
 
+
+        if (transitionHandled) {
+            mLatencyTracker.onActionEnd(LatencyTracker.ACTION_DESKTOP_MODE_EXIT_MODE);
+        }
+
         return transitionHandled;
     }
 
@@ -146,6 +174,8 @@ public class ExitDesktopTaskTransitionHandler implements Transitions.TransitionH
             final int screenHeight = metrics.heightPixels;
             final SurfaceControl sc = change.getLeash();
             final Rect endBounds = change.getEndAbsBounds();
+            mInteractionJankMonitor
+                    .begin(sc, mContext, mHandler, Cuj.CUJ_DESKTOP_MODE_EXIT_MODE);
             // Hide the first (fullscreen) frame because the animation will start from the freeform
             // size.
             startT.hide(sc)
@@ -167,14 +197,16 @@ public class ExitDesktopTaskTransitionHandler implements Transitions.TransitionH
                 t.setPosition(sc, mPosition.x * (1 - fraction), mPosition.y * (1 - fraction))
                         .setScale(sc, currentScaleX, currentScaleY)
                         .show(sc)
+                        .setFrameTimeline(Choreographer.getInstance().getVsyncId())
                         .apply();
             });
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (mOnAnimationFinishedCallback != null) {
-                        mOnAnimationFinishedCallback.accept(finishT);
+                        mOnAnimationFinishedCallback.invoke();
                     }
+                    mInteractionJankMonitor.end(Cuj.CUJ_DESKTOP_MODE_EXIT_MODE);
                     mTransitions.getMainExecutor().execute(
                             () -> finishCallback.onTransitionFinished(null));
                 }

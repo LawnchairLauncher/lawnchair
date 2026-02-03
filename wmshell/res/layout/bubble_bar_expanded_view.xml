@@ -19,7 +19,8 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/bubble_bar_expanded_view">
+    android:clipChildren="false"
+    android:id="@+id/bubble_expanded_view">
 
     <com.android.wm.shell.bubbles.bar.BubbleBarHandleView
         android:id="@+id/bubble_bar_handle_view"

@@ -47,7 +47,7 @@ fun SearchBarPreference(
         PreferenceGroup(
             heading = stringResource(id = R.string.search_bar_label),
         ) {
-            preference()
+            Item { preference() }
         }
     } else {
         preference()

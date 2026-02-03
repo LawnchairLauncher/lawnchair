@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
@@ -54,17 +55,28 @@ public class RemoteActionShortcut<T extends Context & ActivityContext> extends S
 
     @Override
     public void setIconAndLabelFor(View iconView, TextView labelView) {
-        mAction.getIcon().loadDrawableAsync(iconView.getContext(),
-                iconView::setBackground,
-                MAIN_EXECUTOR.getHandler());
+        if (Flags.enableLauncherVisualRefresh()) {
+            // temporarily force icon update until b/402211847
+            iconView.setBackground(iconView.getContext().getDrawable(R.drawable.hourglass_24px));
+        } else {
+            mAction.getIcon().loadDrawableAsync(iconView.getContext(),
+                    iconView::setBackground,
+                    MAIN_EXECUTOR.getHandler());
+        }
+
         labelView.setText(mAction.getTitle());
     }
 
     @Override
     public void setIconAndContentDescriptionFor(ImageView view) {
-        mAction.getIcon().loadDrawableAsync(view.getContext(),
-                view::setImageDrawable,
-                MAIN_EXECUTOR.getHandler());
+        if (Flags.enableLauncherVisualRefresh()) {
+            // temporarily force icon update until b/402211847
+            view.setImageDrawable(view.getContext().getDrawable(R.drawable.hourglass_24px));
+        } else {
+            mAction.getIcon().loadDrawableAsync(view.getContext(),
+                    view::setImageDrawable,
+                    MAIN_EXECUTOR.getHandler());
+        }
         view.setContentDescription(mAction.getContentDescription());
     }
 

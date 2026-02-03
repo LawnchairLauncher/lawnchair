@@ -17,20 +17,14 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
 
-    <FrameLayout
+    <ViewStub
+        android:id="@+id/stub_progress_bar_container"
+        android:inflatedId="@+id/inflatedProgressBarContainer"
+        android:layout="@layout/desktop_header_maximize_menu_button_progress_indicator_layout"
         android:layout_width="44dp"
-        android:layout_height="40dp">
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:progressDrawable="@drawable/circular_progress"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:indeterminate="false"
-            android:layout_marginHorizontal="6dp"
-            android:layout_marginVertical="4dp"
-            android:visibility="invisible"/>
-    </FrameLayout>
+        android:layout_height="40dp"
+        android:importantForAccessibility="noHideDescendants"
+        />
 
     <ImageButton
         android:id="@+id/maximize_window"

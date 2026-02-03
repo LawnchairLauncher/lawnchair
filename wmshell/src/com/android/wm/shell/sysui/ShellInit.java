@@ -25,8 +25,9 @@ import android.view.SurfaceControl;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.internal.protolog.common.ProtoLog;
+import com.android.internal.protolog.ProtoLog;
 import com.android.wm.shell.common.ShellExecutor;
+import com.android.wm.shell.protolog.ShellProtoLogGroup;
 
 import java.util.ArrayList;
 
@@ -47,6 +48,7 @@ public class ShellInit {
 
     public ShellInit(ShellExecutor mainExecutor) {
         mMainExecutor = mainExecutor;
+        ProtoLog.init(ShellProtoLogGroup.values());
     }
 
     /**

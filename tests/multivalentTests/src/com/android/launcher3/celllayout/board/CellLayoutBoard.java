@@ -88,7 +88,7 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
 
     public WidgetRect getWidgetOfType(char type) {
         return mWidgetsRects.stream()
-                .filter(widgetRect -> widgetRect.mType == type).findFirst().orElse(null);
+                .filter(widgetRect -> widgetRect.getType() == type).findFirst().orElse(null);
     }
 
     public WidgetRect getWidgetAt(int x, int y) {
@@ -117,8 +117,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
     }
 
     private void removeWidgetFromBoard(WidgetRect widget) {
-        for (int xi = widget.mBounds.left; xi <= widget.mBounds.right; xi++) {
-            for (int yi = widget.mBounds.bottom; yi <= widget.mBounds.top; yi++) {
+        for (int xi = widget.getBounds().left; xi <= widget.getBounds().right; xi++) {
+            for (int yi = widget.getBounds().bottom; yi <= widget.getBounds().top; yi++) {
                 mWidget[xi][yi] = '-';
             }
         }
@@ -127,7 +127,7 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
     private void removeOverlappingItems(Rect rect) {
         // Remove overlapping widgets and remove them from the board
         mWidgetsRects = mWidgetsRects.stream().filter(widget -> {
-            if (rect.intersect(widget.mBounds)) {
+            if (rect.intersect(widget.getBounds())) {
                 removeWidgetFromBoard(widget);
                 return false;
             }
@@ -135,8 +135,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         }).collect(Collectors.toList());
         // Remove overlapping icons and remove them from the board
         mIconPoints = mIconPoints.stream().filter(iconPoint -> {
-            int x = iconPoint.coord.x;
-            int y = iconPoint.coord.y;
+            int x = iconPoint.getCoord().x;
+            int y = iconPoint.getCoord().y;
             if (rect.contains(x, y)) {
                 mWidget[x][y] = '-';
                 return false;
@@ -146,8 +146,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
 
         // Remove overlapping folders and remove them from the board
         mFolderPoints = mFolderPoints.stream().filter(folderPoint -> {
-            int x = folderPoint.coord.x;
-            int y = folderPoint.coord.y;
+            int x = folderPoint.getCoord().x;
+            int y = folderPoint.getCoord().y;
             if (rect.contains(x, y)) {
                 mWidget[x][y] = '-';
                 return false;
@@ -159,7 +159,7 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
     private void removeOverlappingItems(Point p) {
         // Remove overlapping widgets and remove them from the board
         mWidgetsRects = mWidgetsRects.stream().filter(widget -> {
-            if (IdenticalBoardComparator.Companion.touchesPoint(widget.mBounds, p)) {
+            if (IdenticalBoardComparator.Companion.touchesPoint(widget.getBounds(), p)) {
                 removeWidgetFromBoard(widget);
                 return false;
             }
@@ -167,8 +167,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         }).collect(Collectors.toList());
         // Remove overlapping icons and remove them from the board
         mIconPoints = mIconPoints.stream().filter(iconPoint -> {
-            int x = iconPoint.coord.x;
-            int y = iconPoint.coord.y;
+            int x = iconPoint.getCoord().x;
+            int y = iconPoint.getCoord().y;
             if (p.x == x && p.y == y) {
                 mWidget[x][y] = '-';
                 return false;
@@ -178,8 +178,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
 
         // Remove overlapping folders and remove them from the board
         mFolderPoints = mFolderPoints.stream().filter(folderPoint -> {
-            int x = folderPoint.coord.x;
-            int y = folderPoint.coord.y;
+            int x = folderPoint.getCoord().x;
+            int y = folderPoint.getCoord().y;
             if (p.x == x && p.y == y) {
                 mWidget[x][y] = '-';
                 return false;
@@ -226,7 +226,7 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
 
     public void removeItem(char type) {
         mWidgetsRects.stream()
-                .filter(widgetRect -> widgetRect.mType == type)
+                .filter(widgetRect -> widgetRect.getType() == type)
                 .forEach(widgetRect -> removeOverlappingItems(
                         new Point(widgetRect.getCellX(), widgetRect.getCellY())));
     }
@@ -365,10 +365,10 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         board.mWidth = lines[0].length();
         board.mWidgetsRects = getRects(board.mWidget);
         board.mWidgetsRects.forEach(widgetRect -> {
-            if (widgetRect.mType == CellType.MAIN_WIDGET) {
+            if (widgetRect.getType() == CellType.MAIN_WIDGET) {
                 board.mMain = widgetRect;
             }
-            board.mWidgetsMap.put(widgetRect.mType, widgetRect);
+            board.mWidgetsMap.put(widgetRect.getType(), widgetRect);
         });
         board.mIconPoints = getIconPoints(board.mWidget);
         board.mFolderPoints = getFolderPoints(board.mWidget);

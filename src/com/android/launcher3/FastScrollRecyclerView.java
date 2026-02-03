@@ -25,24 +25,23 @@ import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.app.animation.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * A base {@link RecyclerView}, which does the following:
  * <ul>
- * <li>NOT intercept a touch unless the scrolling velocity is below a predefined
- * threshold.
- * <li>Enable fast scroller.
+ *   <li> NOT intercept a touch unless the scrolling velocity is below a predefined threshold.
+ *   <li> Enable fast scroller.
  * </ul>
  */
-public abstract class FastScrollRecyclerView extends RecyclerView {
+public abstract class FastScrollRecyclerView extends RecyclerView  {
 
     protected RecyclerViewFastScroller mScrollbar;
 
@@ -63,9 +62,12 @@ public abstract class FastScrollRecyclerView extends RecyclerView {
         pref2 = PreferenceManager2.getInstance(context);
     }
 
-    public void bindFastScrollbar(RecyclerViewFastScroller scrollbar) {
+    public void bindFastScrollbar(RecyclerViewFastScroller scrollbar,
+            RecyclerViewFastScroller.FastScrollerLocation location) {
         mScrollbar = scrollbar;
         mScrollbar.setRecyclerView(this);
+        mScrollbar.setFastScrollerLocation(location);
+        scrollToTop();
         onUpdateScrollbar(0);
     }
 
@@ -113,7 +115,7 @@ public abstract class FastScrollRecyclerView extends RecyclerView {
 
     /**
      * Returns the available scroll height:
-     * AvailableScrollHeight = Total height of the all items - last page height
+     *   AvailableScrollHeight = Total height of the all items - last page height
      */
     protected int getAvailableScrollHeight() {
         // AvailableScrollHeight = Total height of the all items - first page height
@@ -124,17 +126,15 @@ public abstract class FastScrollRecyclerView extends RecyclerView {
 
     /**
      * Returns the available scroll bar height:
-     * AvailableScrollBarHeight = Total height of the visible view - thumb height
+     *   AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
         return getScrollbarTrackHeight() - mScrollbar.getThumbHeight();
     }
 
     /**
-     * Updates the scrollbar thumb offset to match the visible scroll of the
-     * recycler view. It does
-     * this by mapping the available scroll area of the recycler view to the
-     * available space for the
+     * Updates the scrollbar thumb offset to match the visible scroll of the recycler view.  It does
+     * this by mapping the available scroll area of the recycler view to the available space for the
      * scroll bar.
      *
      * @param scrollY the current scroll y
@@ -147,12 +147,11 @@ public abstract class FastScrollRecyclerView extends RecyclerView {
             return;
         }
 
-        // Calculate the current scroll position, the scrollY of the recycler view
-        // accounts for the
-        // view padding, while the scrollBarY is drawn right up to the background
-        // padding (ignoring
+        // Calculate the current scroll position, the scrollY of the recycler view accounts for the
+        // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
         // padding)
-        int scrollBarY = (int) (((float) scrollY / availableScrollHeight) * getAvailableScrollBarHeight());
+        int scrollBarY =
+                (int) (((float) scrollY / availableScrollHeight) * getAvailableScrollBarHeight());
 
         // Calculate the position and size of the scroll bar
         mScrollbar.setThumbOffsetY(scrollBarY);
@@ -160,7 +159,6 @@ public abstract class FastScrollRecyclerView extends RecyclerView {
 
     /**
      * Returns whether the view itself will handle the touch event or not.
-     * 
      * @param ev MotionEvent in {@param eventSource}
      */
     public boolean shouldContainerScroll(MotionEvent ev, View eventSource) {
@@ -173,8 +171,7 @@ public abstract class FastScrollRecyclerView extends RecyclerView {
             return false;
         }
 
-        // IF scroller is at the very top OR there is no scroll bar because there is
-        // probably not
+        // IF scroller is at the very top OR there is no scroll bar because there is probably not
         // enough items to scroll, THEN it's okay for the container to be pulled down.
         return computeVerticalScrollOffset() == 0;
     }
@@ -188,24 +185,27 @@ public abstract class FastScrollRecyclerView extends RecyclerView {
 
     /**
      * Maps the touch (from 0..1) to the adapter position that should be visible.
-     * <p>
-     * Override in each subclass of this base class.
+     * <p>Override in each subclass of this base class.
      */
     public abstract CharSequence scrollToPositionAtProgress(float touchFraction);
 
     /**
      * Updates the bounds for the scrollbar.
-     * <p>
-     * Override in each subclass of this base class.
+     * <p>Override in each subclass of this base class.
      */
     public abstract void onUpdateScrollbar(int dy);
 
     /**
-     * <p>
-     * Override in each subclass of this base class.
+     * Return the fast scroll letter list view in the A-Z list.
      */
-    public void onFastScrollCompleted() {
+    public ConstraintLayout getLetterList() {
+        return null;
     }
+
+    /**
+     * <p>Override in each subclass of this base class.
+     */
+    public void onFastScrollCompleted() {}
 
     @Override
     public void onScrollStateChanged(int state) {
@@ -221,8 +221,7 @@ public abstract class FastScrollRecyclerView extends RecyclerView {
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        if (isLayoutSuppressed())
-            info.setScrollable(false);
+        if (isLayoutSuppressed()) info.setScrollable(false);
     }
 
     /**

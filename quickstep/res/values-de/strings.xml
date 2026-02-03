@@ -22,11 +22,14 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fixieren"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform-Modus"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Desktopmodus"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"Auf externes Display verschieben"</string>
+    <string name="recent_task_option_remove_task" msgid="803559928027541555">"Entfernen"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"Desktopmodus"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Keine kürzlich verwendeten Elemente"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Einstellungen zur App-Nutzung"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Alle Apps schließen"</string>
+    <string name="add_desk_button_content_description" msgid="5866025518368823735">"Neuen Desktop hinzufügen"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Kürzlich geöffnete Apps"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"Aufgabe geschlossen"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 Min."</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Heute noch <xliff:g id="TIME">%1$s</xliff:g>"</string>
@@ -45,28 +48,27 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Funktion „App-Vorschläge“ aktiviert"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Funktion \"App-Vorschläge\" deaktiviert"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Vorgeschlagene App: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Anleitung zur Bedienung über Gesten"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Gerät drehen"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Bitte drehe dein Gerät, um die Anleitung für die Bedienung über Gesten abzuschließen"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Wische vom äußersten rechten oder linken Displayrand"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Wische vom rechten oder linken Displayrand zur Displaymitte und lass los"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Du hast jetzt gelernt, vom rechten Displayrand aus zu wischen, um zurückzugehen. Gleich erfährst du, wie man zwischen Apps wechselt."</string>
-    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Du hast die „Zurück“-Touch-Geste abgeschlossen. Gleich lernst du, wie man zwischen Apps wechselt."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Du hast den Schritt für die „Zurück“-Touch-Geste abgeschlossen"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Du hast die „Zurück“-Touchgeste abgeschlossen. Gleich lernst du, wie man zwischen Apps wechselt."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Du hast das Tutorial für die Touchgeste „Zurück“ abgeschlossen"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Wische nicht zu nah an den unteren Displayrand"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Du kannst die Empfindlichkeit von „Zurück“ in den Einstellungen ändern"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Zum Zurückgehen wischen"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Wenn du zum letzten Bildschirm zurückgehen möchtest, wische vom linken oder rechten Rand zur Mitte."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Wenn du zum letzten Bildschirm zurückgehen möchtest, wische mit zwei Fingern vom linken oder rechten Displayrand zur Mitte."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Zurück"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Wische vom linken oder rechten Displayrand bis zur Mitte des Displays"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Wische vom unteren Displayrand nach oben"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Achte darauf, nicht innezuhalten, bevor du loslässt"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Wische gerade nach oben"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Du hast den Schritt für die „Zum Startbildschirm“-Geste abgeschlossen. Jetzt lernst du, wie du zurückgehst."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Du hast den Schritt für die „Startbildschirm“-Touch-Geste abgeschlossen"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Du hast den Schritt für die Geste „Zum Startbildschirm“ abgeschlossen. Jetzt lernst du, wie du zurückgehst."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Du hast den Schritt für die „Startbildschirm“-Touchgeste abgeschlossen"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Den Startbildschirm aufrufen"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Wenn du zum Startbildschirm gehen möchtest, wische einfach vom unteren Displayrand nach oben."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Wische mit zwei Fingern vom unteren Displayrand nach oben. So gelangst du immer zum Startbildschirm."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Zum Start­bildschirm"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Wische vom unteren Displayrand nach oben"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Gut gemacht!"</string>
@@ -74,10 +76,9 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Halte das Fenster länger gedrückt, bevor du es loslässt"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Wische gerade nach oben und halte dann inne"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Nun weißt du, wie Touch-Gesten funktionieren. Du kannst sie in den Einstellungen deaktivieren."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Du hast den Schritt für die „Apps wechseln“-Touch-Geste abgeschlossen"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Du hast das Tutorial für die Touchgeste „Apps wechseln“ abgeschlossen"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Zwischen Apps wechseln"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Wische auf dem Display von unten nach oben, halte den Finger gedrückt und lass dann los, um zwischen Apps zu wechseln."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Wische zum App-Wechseln mit zwei Fingern vom unteren Displayrand nach oben, halte und lass dann los."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Apps wechseln"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Wische auf dem Display von unten nach oben, halte es gedrückt und lass es dann los"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Perfekt!"</string>
@@ -89,26 +90,35 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Anleitung <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Fertig!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Nach oben wischen, um den Startbildschirm aufzurufen"</string>
-    <string name="allset_button_hint" msgid="2395219947744706291">"Startbildschirmtaste drücken, um zum Startbildschirm zu gehen"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Home-Button drücken, um zum Startbildschirm zu gehen"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Du kannst dein <xliff:g id="DEVICE">%1$s</xliff:g> jetzt verwenden"</string>
-    <string name="default_device_name" msgid="6660656727127422487">"Gerät"</string>
-    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Einstellungen der Systemsteuerung"</annotation></string>
+    <string name="allset_description_fallback" msgid="2488751930355201578">"Du kannst dein Gerät jetzt verwenden"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Einstellungen für die Systemnavigation"</annotation></string>
+    <string name="allset_title_expressive" msgid="474399969304146994">"Dein <xliff:g id="DEVICE">%1$s</xliff:g> ist \nbereit."</string>
+    <string name="allset_title_expressive_fallback" msgid="2829102990606405239">"Dein Gerät ist \nbereit."</string>
+    <string name="allset_subtitle_expressive" msgid="419688197551192358">"Viel Spaß mit deinem neuen <xliff:g id="DEVICE">%1$s</xliff:g>."</string>
+    <string name="allset_navigation_settings_expressive" msgid="3745595273748356"><annotation id="link">"Navigationsmethode auswählen"</annotation></string>
+    <string name="allset_hint_expressive" msgid="756856423510976261">"Nach oben wischen"</string>
+    <string name="allset_button_hint_expressive" msgid="667643693410494225">"Auf den Home-Button tippen"</string>
+    <string name="allset_device_type_tablet" msgid="2173392009787325894">"Tablet"</string>
+    <string name="allset_device_type_phone" msgid="6842334562074507337">"Smartphone"</string>
     <string name="action_share" msgid="2648470652637092375">"Teilen"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Splitscreen"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"App-Paar speichern"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Für Splitscreen auf weitere App tippen"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Für Splitscreen andere App auswählen"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Abbrechen"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"Abbrechen"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Splitscreen-Auswahl beenden"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Für Splitscreen andere App auswählen"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Die App oder deine Organisation lässt diese Aktion nicht zu"</string>
     <string name="split_widgets_not_supported" msgid="1355743038053053866">"Widgets werden momentan nicht unterstützt, bitte wähle eine andere App aus"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Tutorial zur Bedienung überspringen?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du findest es später auch in der <xliff:g id="NAME">%1$s</xliff:g> App"</string>
-    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Abbrechen"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Überspringen"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Bildschirm drehen"</string>
+    <string name="taskbar_edu_swipe_animation_description" msgid="1690727240826006218">"Animation, die zeigt, wie die Taskleiste vom unteren Bildschirmrand aus eingeblendet und dann automatisch wieder ausgeblendet wird, wenn sie nicht verwendet wird"</string>
+    <string name="taskbar_edu_pinning_animation_description" msgid="8148601093590683880">"Animation, die zeigt, wie du die Taskleiste mit einem Schalter anpinnst, damit sie immer unten auf dem Bildschirm sichtbar ist"</string>
+    <string name="taskbar_edu_split_screen_animation_description" msgid="371796444988899166">"Animation, die zeigt, wie du einen Splitscreen erstellst, indem du eine App per Drag-and-drop aus der Taskleiste ziehst und auf einer geöffneten App ablegst"</string>
+    <string name="taskbar_edu_suggested_app_animation_description" msgid="3443453246478079085">"Animation, die zeigt, wie du auf deinem Gerät auf vorgeschlagene Apps zugreifst"</string>
+    <string name="taskbar_edu_suggested_search_animation_description" msgid="1874284242557104818">"Animation, die zeigt, wie du auf dem Bildschirm nach einem Element suchst, indem du die Aktionstaste gedrückt hältst und den Bereich auswählst, in dem sich das Element befindet"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informationen zur Taskleiste"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"App zur Seite ziehen, um zwei Apps gleichzeitig zu nutzen"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Langsam nach oben wischen, um die Taskleiste zu sehen"</string>
@@ -117,8 +127,8 @@
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Mehr Möglichkeiten mit der Taskleiste"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Taskleiste immer anzeigen"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Damit die Taskleiste immer unten angezeigt wird, halte den Teiler gedrückt"</string>
-    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Aktionstaste gedrückt halten, um auf dem Bildschirm zu suchen"</string>
-    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Dieses Produkt verwendet den ausgewählten Teil deines Bildschirms für die Suche. Es gelten die <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Datenschutzerklärung<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> und die <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Nutzungsbedingungen<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> von Google."</string>
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Aktionstaste gedrückt halten, um nach Inhalten auf deinem Display zu suchen"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Dieses Produkt sucht dann anhand des ausgewählten Teils deines Displays nach weiteren Informationen. Es gelten die <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Datenschutzerklärung<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> und die <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Nutzungsbedingungen<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> von Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Schließen"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fertig"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Startbildschirm"</string>
@@ -130,18 +140,40 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Schnelleinstellungen"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Taskleiste"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskleiste eingeblendet"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taskleiste ausgeblendet"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Taskleiste &amp; Bubbles links eingeblendet"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Taskleiste &amp; Bubbles rechts eingeblendet"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigationsleiste"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Taskleiste immer anzeigen"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Navigationsmodus ändern"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Taskleisten-Teiler"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="8114045167370723746">"Andere kürzlich verwendete Apps"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Nach oben / Nach links verschieben"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Nach unten / Nach rechts verschieben"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# weitere App anzeigen}other{# weitere Apps anzeigen}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# Desktop-App anzeigen.}other{# Desktop-Apps anzeigen.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"App als Bubble öffnen"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"Zuletzt aktive Apps"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"Liste der zuletzt aktiven Apps"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{weitere App}other{weitere Apps}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"Desktopmodus"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> und <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, Element <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g> von <xliff:g id="TOTAL_TASKS">%3$d</xliff:g>"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"Nach links scrollen"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"Nach rechts scrollen"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Bubble"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Weitere Optionen"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"„<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>“ aus <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> und <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> weitere"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"Nach links bewegen"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"Nach rechts bewegen"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"Alle schließen"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"„<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>“ maximieren"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"„<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>“ minimieren"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"Circle to Search"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"App-Symbol"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"Titel der App"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"Schaltfläche „Schließen“"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"An Taskleiste pinnen"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Von Taskleiste lösen"</string>
+    <string name="nudge_a11y_title" msgid="2126529303123687912">"Erinnerung"</string>
+    <string name="nudge_a11y_close" msgid="4513937143817625570">"Schließen"</string>
+    <string name="nudge_a11y_image" msgid="117910310515857252">"Bild für Erinnerung"</string>
 </resources>

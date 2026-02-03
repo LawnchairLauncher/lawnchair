@@ -16,29 +16,39 @@
 
 package com.android.wm.shell.common;
 
+import static android.app.WindowConfiguration.ROTATION_UNDEFINED;
+
+import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.hardware.display.DisplayManager;
+import android.hardware.display.DisplayTopology;
 import android.os.RemoteException;
 import android.util.ArraySet;
+import android.util.Size;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.IDisplayWindowListener;
 import android.view.IWindowManager;
 import android.view.InsetsState;
+import android.window.DesktopExperienceFlags;
 import android.window.WindowContainerTransaction;
 
 import androidx.annotation.BinderThread;
 
 import com.android.wm.shell.common.DisplayChangeController.OnDisplayChangingListener;
 import com.android.wm.shell.shared.annotations.ShellMainThread;
+import com.android.wm.shell.shared.desktopmode.DesktopState;
 import com.android.wm.shell.sysui.ShellInit;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -53,19 +63,26 @@ public class DisplayController {
     private final ShellExecutor mMainExecutor;
     private final Context mContext;
     private final IWindowManager mWmService;
+    private final DisplayManager mDisplayManager;
     private final DisplayChangeController mChangeController;
     private final IDisplayWindowListener mDisplayContainerListener;
+    private final DesktopState mDesktopState;
 
     private final SparseArray<DisplayRecord> mDisplays = new SparseArray<>();
     private final ArrayList<OnDisplaysChangedListener> mDisplayChangedListeners = new ArrayList<>();
+    private final Map<Integer, RectF> mUnpopulatedDisplayBounds = new HashMap<>();
+    private DisplayTopology mDisplayTopology;
 
     public DisplayController(Context context, IWindowManager wmService, ShellInit shellInit,
-            ShellExecutor mainExecutor) {
+            ShellExecutor mainExecutor, DisplayManager displayManager,
+            DesktopState desktopState) {
         mMainExecutor = mainExecutor;
         mContext = context;
         mWmService = wmService;
-        // TODO: Inject this instead
-        mChangeController = new DisplayChangeController(mWmService, shellInit, mainExecutor);
+        mDisplayManager = displayManager;
+        mDesktopState = desktopState;
+        mChangeController = new DisplayChangeController(this, wmService, shellInit,
+                mainExecutor);
         mDisplayContainerListener = new DisplayWindowListenerImpl();
         // Note, add this after DisplaceChangeController is constructed to ensure that is
         // initialized first
@@ -73,13 +90,20 @@ public class DisplayController {
     }
 
     /**
-     * Initializes the window listener.
+     * Initializes the window listener and the topology listener.
      */
     public void onInit() {
         try {
             int[] displayIds = mWmService.registerDisplayWindowListener(mDisplayContainerListener);
             for (int i = 0; i < displayIds.length; i++) {
                 onDisplayAdded(displayIds[i]);
+            }
+
+            if (DesktopExperienceFlags.ENABLE_CONNECTED_DISPLAYS_WINDOW_DRAG.isTrue()
+                    && mDesktopState.canEnterDesktopMode()) {
+                mDisplayManager.registerTopologyListener(mMainExecutor,
+                        this::onDisplayTopologyChanged);
+                onDisplayTopologyChanged(mDisplayManager.getDisplayTopology());
             }
         } catch (RemoteException e) {
             throw new RuntimeException("Unable to register display controller");
@@ -90,8 +114,15 @@ public class DisplayController {
      * Gets a display by id from DisplayManager.
      */
     public Display getDisplay(int displayId) {
-        final DisplayManager displayManager = mContext.getSystemService(DisplayManager.class);
-        return displayManager.getDisplay(displayId);
+        return mDisplayManager.getDisplay(displayId);
+    }
+
+    /**
+     * Returns true if the display with the given displayId is part of the topology.
+     */
+    public boolean isDisplayInTopology(int displayId) {
+        return mDisplayTopology != null
+                && mDisplayTopology.findDisplay(displayId, mDisplayTopology.getRoot()) != null;
     }
 
     /**
@@ -141,6 +172,7 @@ public class DisplayController {
             for (int i = 0; i < mDisplays.size(); ++i) {
                 listener.onDisplayAdded(mDisplays.keyAt(i));
             }
+            listener.onTopologyChanged(mDisplayTopology);
         }
     }
 
@@ -182,8 +214,17 @@ public class DisplayController {
             final Context context = (displayId == Display.DEFAULT_DISPLAY)
                     ? mContext
                     : mContext.createDisplayContext(display);
-            final DisplayRecord record = new DisplayRecord(displayId);
-            record.setDisplayLayout(context, new DisplayLayout(context, display));
+            boolean hasStatusAndNavBars = false;
+            if (DesktopExperienceFlags.ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT.isTrue()) {
+                hasStatusAndNavBars = mDesktopState.isDesktopModeSupportedOnDisplay(displayId);
+            }
+            final DisplayRecord record = new DisplayRecord(displayId, hasStatusAndNavBars);
+            DisplayLayout displayLayout = record.createLayout(context, display);
+            if (DesktopExperienceFlags.ENABLE_CONNECTED_DISPLAYS_WINDOW_DRAG.isTrue()
+                    && mUnpopulatedDisplayBounds.containsKey(displayId)) {
+                displayLayout.setGlobalBoundsDp(mUnpopulatedDisplayBounds.get(displayId));
+            }
+            record.setDisplayLayout(context, displayLayout);
             mDisplays.put(displayId, record);
             for (int i = 0; i < mDisplayChangedListeners.size(); ++i) {
                 mDisplayChangedListeners.get(i).onDisplayAdded(displayId);
@@ -191,23 +232,61 @@ public class DisplayController {
         }
     }
 
-
     /** Called when a display rotate requested. */
-    public void onDisplayRotateRequested(WindowContainerTransaction wct, int displayId,
-            int fromRotation, int toRotation) {
+    public void onDisplayChangeRequested(WindowContainerTransaction wct, int displayId,
+            Rect startAbsBounds, Rect endAbsBounds, int fromRotation, int toRotation) {
         synchronized (mDisplays) {
-            final DisplayRecord dr = mDisplays.get(displayId);
-            if (dr == null) {
+            final DisplayLayout dl = getDisplayLayout(displayId);
+            if (dl == null) {
                 Slog.w(TAG, "Skipping Display rotate on non-added display.");
                 return;
             }
-
-            if (dr.mDisplayLayout != null) {
-                dr.mDisplayLayout.rotateTo(dr.mContext.getResources(), toRotation);
-            }
+            updateDisplayLayout(displayId, startAbsBounds, endAbsBounds, fromRotation, toRotation);
 
             mChangeController.dispatchOnDisplayChange(
                     wct, displayId, fromRotation, toRotation, null /* newDisplayAreaInfo */);
+        }
+    }
+
+    void updateDisplayLayout(int displayId,
+            @NonNull Rect startBounds, @Nullable Rect endBounds, int fromRotation, int toRotation) {
+        final DisplayLayout dl = getDisplayLayout(displayId);
+        final Context ctx = getDisplayContext(displayId);
+        if (dl == null || ctx == null) return;
+
+        if (endBounds != null) {
+            // Note that endAbsBounds should ignore any potential rotation changes, so
+            // we still need to rotate the layout after if needed.
+            dl.resizeTo(ctx.getResources(), new Size(endBounds.width(), endBounds.height()));
+        }
+        if (fromRotation != toRotation && toRotation != ROTATION_UNDEFINED) {
+            dl.rotateTo(ctx.getResources(), toRotation);
+        }
+    }
+
+    private void onDisplayTopologyChanged(DisplayTopology topology) {
+        if (topology == null) {
+            return;
+        }
+        mDisplayTopology = topology;
+        SparseArray<RectF> absoluteBounds = topology.getAbsoluteBounds();
+        mUnpopulatedDisplayBounds.clear();
+        for (int i = 0; i < absoluteBounds.size(); ++i) {
+            int displayId = absoluteBounds.keyAt(i);
+            DisplayLayout displayLayout = getDisplayLayout(displayId);
+            if (displayLayout == null) {
+                // onDisplayTopologyChanged can arrive before onDisplayAdded.
+                // Store the bounds to be applied later in onDisplayAdded.
+                Slog.d(TAG, "Storing bounds for onDisplayTopologyChanged on unknown"
+                        + " display, displayId=" + displayId);
+                mUnpopulatedDisplayBounds.put(displayId, absoluteBounds.valueAt(i));
+            } else {
+                displayLayout.setGlobalBoundsDp(absoluteBounds.valueAt(i));
+            }
+        }
+
+        for (int i = 0; i < mDisplayChangedListeners.size(); ++i) {
+            mDisplayChangedListeners.get(i).onTopologyChanged(topology);
         }
     }
 
@@ -229,7 +308,13 @@ public class DisplayController {
                     ? mContext
                     : mContext.createDisplayContext(display);
             final Context context = perDisplayContext.createConfigurationContext(newConfig);
-            dr.setDisplayLayout(context, new DisplayLayout(context, display));
+            final DisplayLayout displayLayout = dr.createLayout(context, display);
+            if (mDisplayTopology != null) {
+                displayLayout.setGlobalBoundsDp(
+                        mDisplayTopology.getAbsoluteBounds().get(
+                                displayId, displayLayout.globalBoundsDp()));
+            }
+            dr.setDisplayLayout(context, displayLayout);
             for (int i = 0; i < mDisplayChangedListeners.size(); ++i) {
                 mDisplayChangedListeners.get(i).onDisplayConfigurationChanged(
                         displayId, newConfig);
@@ -291,14 +376,56 @@ public class DisplayController {
         }
     }
 
+    private void onDesktopModeEligibleChanged(int displayId) {
+        synchronized (mDisplays) {
+            DisplayRecord r = mDisplays.get(displayId);
+            Display display = getDisplay(displayId);
+            if (r == null ||  display == null) {
+                Slog.w(TAG, "Skipping onDesktopModeEligibleChanged on unknown"
+                        + " display, displayId=" + displayId);
+                return;
+            }
+            if (DesktopExperienceFlags.ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT.isTrue()) {
+                r.updateHasStatusAndNavBars(display,
+                        mDesktopState.isDesktopModeSupportedOnDisplay(display));
+            }
+            for (int i = mDisplayChangedListeners.size() - 1; i >= 0; --i) {
+                mDisplayChangedListeners.get(i).onDesktopModeEligibleChanged(displayId);
+            }
+        }
+    }
+
     private static class DisplayRecord {
-        private int mDisplayId;
+        private final int mDisplayId;
         private Context mContext;
         private DisplayLayout mDisplayLayout;
         private InsetsState mInsetsState = new InsetsState();
+        private boolean mHasStatusAndNavBars;
 
-        private DisplayRecord(int displayId) {
+        private DisplayRecord(int displayId, boolean hasStatusAndNavBars) {
             mDisplayId = displayId;
+            mHasStatusAndNavBars = hasStatusAndNavBars;
+        }
+
+        private DisplayLayout createLayout(Context context, Display display) {
+            if (mDisplayId != Display.DEFAULT_DISPLAY && mHasStatusAndNavBars) {
+                return new DisplayLayout(context, display, true /* hasNavigationBar */,
+                        true /* hasTaskBar */);
+            } else {
+                return new DisplayLayout(context, display);
+            }
+        }
+
+
+        private void updateHasStatusAndNavBars(Display display, boolean hasStatusAndNavBars) {
+            if (mHasStatusAndNavBars == hasStatusAndNavBars) {
+                return;
+            }
+            mHasStatusAndNavBars = hasStatusAndNavBars;
+            // Don't change how DEFAULT_DISPLAY is handled: the default heuristic is correct.
+            if (mDisplayId != Display.DEFAULT_DISPLAY) {
+                setDisplayLayout(mContext, createLayout(mContext, display));
+            }
         }
 
         private void setDisplayLayout(Context context, DisplayLayout displayLayout) {
@@ -358,6 +485,19 @@ public class DisplayController {
                         new ArraySet<>(restricted), new ArraySet<>(unrestricted));
             });
         }
+
+        @Override
+        public void onDesktopModeEligibleChanged(int displayId) {
+            mMainExecutor.execute(() -> {
+                DisplayController.this.onDesktopModeEligibleChanged(displayId);
+            });
+        }
+
+        @Override
+        public void onDisplayAddSystemDecorations(int displayId) { }
+
+        @Override
+        public void onDisplayRemoveSystemDecorations(int displayId) { }
     }
 
     /**
@@ -398,5 +538,15 @@ public class DisplayController {
          */
         default void onKeepClearAreasChanged(int displayId, Set<Rect> restricted,
                 Set<Rect> unrestricted) {}
+
+        /**
+         * Called when the display topology has changed.
+         */
+        default void onTopologyChanged(DisplayTopology topology) {}
+
+        /**
+         * Called when the eligibility of the desktop mode for a display have changed.
+         */
+        default void onDesktopModeEligibleChanged(int displayId) {}
     }
 }

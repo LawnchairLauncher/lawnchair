@@ -1,0 +1,22 @@
+{
+  "wm-devices": [
+    {
+      "name": "WMShellFlickerTestsBubbles-CatchAll"
+    },
+    {
+      "name": "WMShellFlickerTestsBubbles-ChangeActiveActivityFromBubbleTest"
+    },
+    {
+      "name": "WMShellFlickerTestsBubbles-DragToDismissBubbleScreenTest"
+    },
+    {
+      "name": "WMShellFlickerTestsBubbles-OpenActivityFromBubbleOnLocksreenTest"
+    },
+    {
+      "name": "WMShellFlickerTestsBubbles-OpenActivityFromBubbleTest"
+    },
+    {
+      "name": "WMShellFlickerTestsBubbles-SendBubbleNotificationTest"
+    }
+  ]
+}

@@ -13,8 +13,47 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.TaskThumbnailViewDeprecated
+<com.android.quickstep.task.thumbnail.TaskThumbnailView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/snapshot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="0dp"
+    android:layout_weight="1" >
+
+    <com.android.quickstep.views.FixedSizeImageView
+        android:id="@+id/task_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="matrix"
+        android:visibility="invisible"/>
+
+    <com.android.quickstep.task.thumbnail.LiveTileView
+        android:id="@+id/task_thumbnail_live_tile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
+    <View
+        android:id="@+id/task_thumbnail_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/overview_foreground_scrim_color"
+        android:alpha="0" />
+
+    <View
+        android:id="@+id/splash_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:importantForAccessibility="no" />
+
+    <com.android.quickstep.views.FixedSizeImageView
+        android:id="@+id/splash_icon"
+        android:layout_width="@dimen/task_thumbnail_splash_icon_size"
+        android:layout_height="@dimen/task_thumbnail_splash_icon_size"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:alpha="0"
+        android:importantForAccessibility="no" />
+</com.android.quickstep.task.thumbnail.TaskThumbnailView>

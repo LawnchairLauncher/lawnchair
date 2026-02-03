@@ -15,16 +15,16 @@
   ~ limitations under the License.
   -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="@dimen/letterbox_education_dialog_icon_width"
-        android:height="@dimen/letterbox_education_dialog_icon_height"
-        android:viewportWidth="40"
+        android:width="32dp"
+        android:height="32dp"
+        android:viewportWidth="32"
         android:viewportHeight="32">
 
     <path
+        android:pathData="M4,4C2.527,4 1.333,5.194 1.333,6.667V25.333C1.333,26.806 2.527,28 4,28H28C29.472,28 30.666,26.806 30.666,25.333V6.667C30.666,5.194 29.472,4 28,4H4ZM28,6.667H4V25.333H28V6.667Z"
         android:fillColor="@color/letterbox_education_text_secondary"
-        android:fillType="evenOdd"
-        android:pathData="M4 0C1.79086 0 0 1.79086 0 4V28C0 30.2091 1.79086 32 4 32H36C38.2091 32 40 30.2091 40 28V4C40 1.79086 38.2091 0 36 0H4ZM36 4H4V28H36V4Z" />
+        android:fillType="evenOdd" />
     <path
-        android:fillColor="@color/letterbox_education_text_secondary"
-        android:pathData="M19.98 8L17.16 10.82L20.32 14L12 14V18H20.32L17.14 21.18L19.98 24L28 16.02L19.98 8Z" />
+        android:pathData="M17.32,10.667L15.44,12.547L17.546,14.667L9.333,14.667L9.333,17.333H17.546L15.426,19.453L17.32,21.333L22.666,16.013L17.32,10.667Z"
+        android:fillColor="@color/letterbox_education_text_secondary" />
 </vector>

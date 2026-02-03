@@ -94,6 +94,11 @@ public class CounterRotatorHelper {
         return rotatedBounds;
     }
 
+    /** Returns true if the change is put on a surface in previous rotation. */
+    public boolean isRotated(@NonNull TransitionInfo.Change change) {
+        return mLastRotationDelta != 0 && mRotatorMap.containsKey(change.getParent());
+    }
+
     /**
      * Removes the counter rotation surface in the finish transaction. No need to reparent the
      * children as the finish transaction should have already taken care of that.

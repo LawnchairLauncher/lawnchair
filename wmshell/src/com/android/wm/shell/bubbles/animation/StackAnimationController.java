@@ -42,8 +42,8 @@ import com.android.wm.shell.bubbles.BadgedImageView;
 import com.android.wm.shell.bubbles.BubblePositioner;
 import com.android.wm.shell.bubbles.BubbleStackView;
 import com.android.wm.shell.common.FloatingContentCoordinator;
-import com.android.wm.shell.common.magnetictarget.MagnetizedObject;
 import com.android.wm.shell.shared.animation.PhysicsAnimator;
+import com.android.wm.shell.shared.magnetictarget.MagnetizedObject;
 
 import com.google.android.collect.Sets;
 

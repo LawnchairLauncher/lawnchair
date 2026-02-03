@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -8,9 +7,10 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src']
+            kotlin.directories.add('src')
         }
     }
 }
 
-addFrameworkJar('framework-15.jar')
+addFrameworkJar('framework-16.jar')
 compileOnlyCommonJars()

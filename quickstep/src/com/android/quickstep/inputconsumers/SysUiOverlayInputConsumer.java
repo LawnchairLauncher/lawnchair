@@ -47,11 +47,15 @@ public class SysUiOverlayInputConsumer implements InputConsumer,
     private final InputMonitorCompat mInputMonitor;
     private final TriggerSwipeUpTouchTracker mTriggerSwipeUpTracker;
 
+    private final int mDisplayId;
+
     public SysUiOverlayInputConsumer(
             Context context,
+            int displayId,
             RecentsAnimationDeviceState deviceState,
             InputMonitorCompat inputMonitor) {
         mContext = context;
+        mDisplayId = displayId;
         mInputMonitor = inputMonitor;
         mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(context, true,
                 deviceState.getNavBarPosition(), this);
@@ -60,6 +64,11 @@ public class SysUiOverlayInputConsumer implements InputConsumer,
     @Override
     public int getType() {
         return TYPE_SYSUI_OVERLAY;
+    }
+
+    @Override
+    public int getDisplayId() {
+        return mDisplayId;
     }
 
     @Override

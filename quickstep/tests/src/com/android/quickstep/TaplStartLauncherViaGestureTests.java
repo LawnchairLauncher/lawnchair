@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import android.util.Log;
+
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -29,7 +31,13 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TaplStartLauncherViaGestureTests extends AbstractQuickStepTest {
 
+    public static final String TAG = "TaplStartLauncherViaGestureTests";
+
     static final int STRESS_REPEAT_COUNT = 10;
+
+    private enum TestCase {
+        TO_HOME, TO_OVERVIEW,
+    }
 
     @Override
     @Before
@@ -41,28 +49,60 @@ public class TaplStartLauncherViaGestureTests extends AbstractQuickStepTest {
     }
 
     @Test
-    @NavigationModeSwitch
+    @NavigationModeSwitch(mode = NavigationModeSwitchRule.Mode.THREE_BUTTON)
     public void testStressPressHome() {
-        for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
-            // Destroy Launcher activity.
-            closeLauncherActivity();
-
-            // The test action.
-            mLauncher.goHome();
-        }
+        runTest(TestCase.TO_HOME);
     }
 
     @Test
-    @NavigationModeSwitch
+    @NavigationModeSwitch(mode = NavigationModeSwitchRule.Mode.ZERO_BUTTON)
+    public void testStressSwipeHome() {
+        runTest(TestCase.TO_HOME);
+    }
+
+    @Test
+    @NavigationModeSwitch(mode = NavigationModeSwitchRule.Mode.THREE_BUTTON)
+    public void testStressPressOverview() {
+        runTest(TestCase.TO_OVERVIEW);
+    }
+
+    @Test
+    @NavigationModeSwitch(mode = NavigationModeSwitchRule.Mode.ZERO_BUTTON)
     public void testStressSwipeToOverview() {
+        runTest(TestCase.TO_OVERVIEW);
+    }
+
+    private void runTest(TestCase testCase) {
+        long testStartTime = System.currentTimeMillis();
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
+            long loopStartTime = System.currentTimeMillis();
             // Destroy Launcher activity.
             closeLauncherActivity();
 
             // The test action.
-            mLauncher.getLaunchedAppState().switchToOverview();
+            switch (testCase) {
+                case TO_OVERVIEW:
+                    mLauncher.getLaunchedAppState().switchToOverview();
+                    break;
+                case TO_HOME:
+                    mLauncher.goHome();
+                    break;
+                default:
+                    throw new IllegalStateException("Cannot run test case: " + testCase);
+            }
+            Log.d(TAG, "Loop " + (i + 1) + " runtime="
+                    + (System.currentTimeMillis() - loopStartTime) + "ms");
         }
-        closeLauncherActivity();
-        mLauncher.goHome();
+        Log.d(TAG, "Test runtime=" + (System.currentTimeMillis() - testStartTime) + "ms");
+        switch (testCase) {
+            case TO_OVERVIEW:
+                closeLauncherActivity();
+                mLauncher.goHome();
+                break;
+            case TO_HOME:
+            default:
+                // No-Op
+                break;
+        }
     }
 }

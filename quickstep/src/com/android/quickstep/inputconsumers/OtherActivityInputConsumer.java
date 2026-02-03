@@ -38,6 +38,7 @@ import android.graphics.PointF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.window.TransitionInfo;
 
 import androidx.annotation.UiThread;
 
@@ -57,6 +58,7 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
+import com.android.quickstep.util.ActiveGestureProtoLogProxy;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
@@ -69,6 +71,9 @@ import java.util.function.Consumer;
  * Input consumer for handling events originating from an activity other than Launcher
  */
 public class OtherActivityInputConsumer extends ContextWrapper implements InputConsumer {
+
+    private static final String TAG = "OtherActivityInputConsumer";
+    private static final boolean DEBUG = true;
 
     public static final String DOWN_EVT = "OtherActivityInputConsumer.DOWN";
     private static final String UP_EVT = "OtherActivityInputConsumer.UP";
@@ -121,11 +126,18 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     // The callback called upon finishing the recents transition if it was force-canceled
     private Runnable mForceFinishRecentsTransitionCallback;
 
-    public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
-            TaskAnimationManager taskAnimationManager, GestureState gestureState,
-            boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
-            InputMonitorCompat inputMonitorCompat, InputEventReceiver inputEventReceiver,
-            boolean disableHorizontalSwipe, Factory handlerFactory) {
+    public OtherActivityInputConsumer(
+            Context base,
+            RecentsAnimationDeviceState deviceState,
+            TaskAnimationManager taskAnimationManager,
+            GestureState gestureState,
+            boolean isDeferredDownTarget,
+            Consumer<OtherActivityInputConsumer> onCompleteCallback,
+            InputMonitorCompat inputMonitorCompat,
+            InputEventReceiver inputEventReceiver,
+            boolean disableHorizontalSwipe,
+            Factory handlerFactory,
+            RotationTouchHelper rotationTouchHelper) {
         super(base);
         mDeviceState = deviceState;
         mNavBarPosition = mDeviceState.getNavBarPosition();
@@ -152,12 +164,17 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mPassedPilferInputSlop = mPassedWindowMoveSlop = continuingPreviousGesture;
         mStartDisplacement = continuingPreviousGesture ? 0 : -mTouchSlop;
         mDisableHorizontalSwipe = !mPassedPilferInputSlop && disableHorizontalSwipe;
-        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
+        mRotationTouchHelper = rotationTouchHelper;
     }
 
     @Override
     public int getType() {
         return TYPE_OTHER_ACTIVITY;
+    }
+
+    @Override
+    public int getDisplayId() {
+        return mGestureState.getDisplayId();
     }
 
     @Override
@@ -230,6 +247,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
+                if (DEBUG) {
+                    Log.d(TAG, "ACTION_DOWN: mIsDeferredDownTarget=" + mIsDeferredDownTarget);
+                }
                 if (!mIsDeferredDownTarget) {
                     startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
@@ -284,9 +304,18 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                 float horizontalDist = Math.abs(displacementX);
                 float upDist = -displacement;
-                boolean passedSlop = mGestureState.isTrackpadGesture()
-                        || (squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop
-                            && !mGestureState.isInExtendedSlopRegion());
+                boolean isTrackpadGesture = mGestureState.isTrackpadGesture();
+                float squaredHypot = squaredHypot(displacementX, displacementY);
+                boolean isInExtendedSlopRegion = mGestureState.isInExtendedSlopRegion();
+                boolean passedSlop = isTrackpadGesture
+                        || (squaredHypot >= mSquaredTouchSlop
+                        && !isInExtendedSlopRegion);
+                if (DEBUG) {
+                    Log.d(TAG, "ACTION_MOVE: passedSlop=" + passedSlop
+                            + " ( " + isTrackpadGesture
+                            + " || (" + squaredHypot + " >= " + mSquaredTouchSlop
+                            + " && " + !isInExtendedSlopRegion + " ))");
+                }
 
                 if (!mPassedSlopOnThisGesture && passedSlop) {
                     mPassedSlopOnThisGesture = true;
@@ -306,6 +335,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 boolean isLikelyToStartNewTask =
                         haveNotPassedSlopOnContinuedGesture || swipeWithinQuickSwitchRange;
 
+                if (DEBUG) {
+                    Log.d(TAG, "ACTION_MOVE: mPassedPilferInputSlop=" + mPassedPilferInputSlop);
+                }
                 if (!mPassedPilferInputSlop) {
                     if (passedSlop) {
                         // Horizontal gesture is not allowed in this region
@@ -389,11 +421,25 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
         mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs);
+        if (mInteractionHandler == null) {
+            // Can happen e.g. when a display is disconnected, so try to handle gracefully.
+            Log.d(TAG, "AbsSwipeUpHandler not available for displayId=$focusedDisplayId");
+            ActiveGestureProtoLogProxy.logOnAbsSwipeUpHandlerNotAvailable(
+                    mGestureState.getDisplayId());
+            return;
+        }
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
         mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler.getMotionPauseListener());
+        mMotionPauseDetector.setIsTrackpadGesture(mGestureState.isTrackpadGesture());
         mInteractionHandler.initWhenReady(
                 "OtherActivityInputConsumer.startTouchTrackingForWindowAnimation");
+        ActiveGestureProtoLogProxy.logGestureStartSwipeHandler(
+                mInteractionHandler.getClass().getSimpleName());
 
+        if (DEBUG) {
+            Log.d(TAG, "startTouchTrackingForWindowAnimation: isRecentsAnimationRunning="
+                    + mTaskAnimationManager.isRecentsAnimationRunning());
+        }
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             mActiveCallbacks = mTaskAnimationManager.continueRecentsAnimation(mGestureState);
             mActiveCallbacks.removeListener(mCleanupHandler);
@@ -422,6 +468,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
      */
     private void finishTouchTracking(MotionEvent ev) {
         TraceHelper.INSTANCE.beginSection(UP_EVT);
+        if (DEBUG) {
+            Log.d(TAG, "finishTouchTracking: mPassedWindowMoveSlop=" + mPassedWindowMoveSlop);
+            Log.d(TAG, "finishTouchTracking: mInteractionHandler=" + mInteractionHandler);
+            Log.d(TAG, "finishTouchTracking: ev=" + ev);
+        }
 
         boolean isCanceled = ev.getActionMasked() == ACTION_CANCEL;
         if (mPassedWindowMoveSlop && mInteractionHandler != null) {
@@ -438,13 +489,21 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                                 : velocityYPxPerMs;
                 mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
                 mInteractionHandler.onGestureEnded(velocityPxPerMs,
-                        new PointF(velocityXPxPerMs, velocityYPxPerMs));
+                        new PointF(velocityXPxPerMs, velocityYPxPerMs),
+                        Math.abs(mDownPos.x - mLastPos.x) > mTouchSlop);
             }
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, we need to clean-up an unfinished or un-started
             // animation.
+            if (DEBUG) {
+                Log.d(TAG, "finishTouchTracking: mActiveCallbacks=" + mActiveCallbacks);
+            }
             if (mActiveCallbacks != null && mInteractionHandler != null) {
+                if (DEBUG) {
+                    Log.d(TAG, "finishTouchTracking: isRecentsAnimationRunning="
+                            + mTaskAnimationManager.isRecentsAnimationRunning());
+                }
                 if (mTaskAnimationManager.isRecentsAnimationRunning()) {
                     // The animation started, but with no movement, in this case, there will be no
                     // animateToProgress so we have to manually finish here. In the case of
@@ -470,6 +529,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mVelocityTracker = null;
         }
         mMotionPauseDetector.clear();
+        // Clear ref to recents view and launcher activity on action up or cancel to avoid leak
+        mRecentsViewDispatcher.clearConsumer();
     }
 
     @Override
@@ -533,9 +594,16 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private static class FinishImmediatelyHandler
             implements RecentsAnimationCallbacks.RecentsAnimationListener {
 
+        @Override
         public void onRecentsAnimationStart(RecentsAnimationController controller,
-                RecentsAnimationTargets targets) {
+                RecentsAnimationTargets targets, TransitionInfo transitionInfo) {
+            if (DEBUG) {
+                Log.d(TAG, "FinishImmediatelyHandler: queuing callback");
+            }
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
+                if (DEBUG) {
+                    Log.d(TAG, "FinishImmediatelyHandler: running callback");
+                }
                 controller.finish(false /* toRecents */, null);
             });
         }

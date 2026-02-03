@@ -97,12 +97,4 @@ class SettingsAwareViewCaptureTest {
             }
         }
     }
-
-    @Test
-    fun getInstance_calledTwiceInARow_returnsSameObject() {
-        assertEquals(
-            SettingsAwareViewCapture.getInstance(context).hashCode(),
-            SettingsAwareViewCapture.getInstance(context).hashCode()
-        )
-    }
 }

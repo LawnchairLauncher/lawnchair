@@ -120,6 +120,23 @@ sealed interface UpdateState {
 
     /** An update download has failed. */
     data object Failed : UpdateState
+
+    /** An major update has detected. */
+    data class MajorUpdate(val file: File) : UpdateState
+
+    /** An major update has detected. */
+    data class Disabled(val reason: UpdateDisabledReason) : UpdateState
+}
+
+/**
+ * Indicate why the auto-updater was disabled.
+ *
+ * @property USER_OVERRIDE Disabled because of user configuration.
+ * @property MAJOR_IS_NEWER Disabled because of current build major version is higher than what is currently offered by updater source.
+ */
+enum class UpdateDisabledReason {
+    /** Disabled because of current build major version is higher than what is currently offered by updater source. */
+    MAJOR_IS_NEWER,
 }
 
 data class ChangelogState(

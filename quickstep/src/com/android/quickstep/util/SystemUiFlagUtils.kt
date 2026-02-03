@@ -47,6 +47,22 @@ object SystemUiFlagUtils {
             !hasAnyFlag(flags, QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_GOING_AWAY)
     }
 
+    /**
+     * Taskbar is hidden whenever the device is dreaming. The dreaming state includes the
+     * interactive dreams, AoD, screen off. Since the SYSUI_STATE_DEVICE_DREAMING only kicks in when
+     * the device is asleep, the second condition extends ensures that the transition from and to
+     * the WAKEFULNESS_ASLEEP state also hide the taskbar, and improves the taskbar hide/reveal
+     * animation timings. The Taskbar can show when dreaming if the glanceable hub is showing on
+     * top.
+     */
+    @JvmStatic
+    fun isTaskbarHidden(@SystemUiStateFlags flags: Long): Boolean {
+        return ((hasAnyFlag(flags, QuickStepContract.SYSUI_STATE_DEVICE_DREAMING) &&
+            !hasAnyFlag(flags, QuickStepContract.SYSUI_STATE_COMMUNAL_HUB_SHOWING)) ||
+            (flags and QuickStepContract.SYSUI_STATE_WAKEFULNESS_MASK) !=
+                QuickStepContract.WAKEFULNESS_AWAKE)
+    }
+
     private fun hasAnyFlag(@SystemUiStateFlags flags: Long, flagMask: Long): Boolean {
         return (flags and flagMask) != 0L
     }

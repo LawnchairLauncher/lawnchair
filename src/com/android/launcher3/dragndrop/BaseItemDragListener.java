@@ -34,7 +34,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.util.ActivityTracker.SchedulerCallback;
+import com.android.launcher3.util.ContextTracker.SchedulerCallback;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
 import java.util.UUID;
@@ -74,9 +74,9 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
     }
 
     @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
-        AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
-        launcher.getStateManager().goToState(NORMAL, alreadyOnHome /* animated */);
+    public boolean init(Launcher launcher, boolean isHomeStarted) {
+        AbstractFloatingView.closeAllOpenViews(launcher, /* animate= */ isHomeStarted);
+        launcher.getStateManager().goToState(NORMAL, /* animated= */ isHomeStarted);
         launcher.getDragLayer().setOnDragListener(this);
         launcher.getRotationHelper().setStateHandlerRequest(REQUEST_LOCK);
 

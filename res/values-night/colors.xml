@@ -1,64 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-**
-** Copyright 2023, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
--->
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2024 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <resources>
-    <color name="material_color_on_secondary_fixed_variant">#3F4759</color>
-    <color name="material_color_on_tertiary_fixed_variant">#583E5B</color>
-    <color name="material_color_surface_container_lowest">#0D0E11</color>
-    <color name="material_color_on_primary_fixed_variant">#2B4678</color>
-    <color name="material_color_on_secondary_container">#DBE2F9</color>
-    <color name="material_color_on_tertiary_container">#FBD7FC</color>
-    <color name="material_color_surface_container_low">#1B1B1F</color>
-    <color name="material_color_on_primary_container">#D8E2FF</color>
-    <color name="material_color_secondary_fixed_dim">#BFC6DC</color>
-    <color name="material_color_on_error_container">#FFDAD5</color>
-    <color name="material_color_on_secondary_fixed">#141B2C</color>
-    <color name="material_color_on_surface_inverse">#1B1B1F</color>
-    <color name="material_color_tertiary_fixed_dim">#DEBCDF</color>
-    <color name="material_color_on_tertiary_fixed">#29132D</color>
-    <color name="material_color_primary_fixed_dim">#ADC6FF</color>
-    <color name="material_color_secondary_container">#3F4759</color>
-    <color name="material_color_error_container">#930001</color>
-    <color name="material_color_on_primary_fixed">#001A41</color>
-    <color name="material_color_primary_inverse">#445E91</color>
-    <color name="material_color_secondary_fixed">#DBE2F9</color>
-    <color name="material_color_surface_inverse">#FAF9FD</color>
-    <color name="material_color_surface_variant">#44474F</color>
-    <color name="material_color_tertiary_container">#583E5B</color>
-    <color name="material_color_tertiary_fixed">#FBD7FC</color>
-    <color name="material_color_primary_container">#2B4678</color>
-    <color name="material_color_on_background">#E3E2E6</color>
-    <color name="material_color_primary_fixed">#D8E2FF</color>
-    <color name="material_color_on_secondary">#293041</color>
-    <color name="material_color_on_tertiary">#402843</color>
-    <color name="material_color_surface_dim">#121316</color>
-    <color name="material_color_surface_bright">#38393C</color>
-    <color name="material_color_on_error">#690001</color>
-    <color name="material_color_surface">#121316</color>
-    <color name="material_color_surface_container_high">#292A2D</color>
-    <color name="material_color_surface_container_highest">#343538</color>
-    <color name="material_color_on_surface_variant">#C4C6D0</color>
-    <color name="material_color_outline">#72747D</color>
-    <color name="material_color_outline_variant">#444746</color>
-    <color name="material_color_on_primary">#102F60</color>
-    <color name="material_color_on_surface">#E3E2E6</color>
-    <color name="material_color_surface_container">#1F1F23</color>
-    <color name="material_color_primary">#ADC6FF</color>
-    <color name="material_color_secondary">#BFC6DC</color>
-    <color name="material_color_tertiary">#DEBCDF</color>
+    <color name="materialColorBackground">@color/system_background_dark</color>
+    <color name="materialColorControlActivated">@color/system_control_activated_dark</color>
+    <color name="materialColorControlHighlight">@color/system_control_highlight_dark</color>
+    <color name="materialColorControlNormal">@color/system_control_normal_dark</color>
+    <color name="materialColorError">@color/system_error_dark</color>
+    <color name="materialColorErrorContainer">@color/system_error_container_dark</color>
+    <color name="materialColorErrorDim">@color/system_error_dim_dark</color>
+    <color name="materialColorInverseOnSurface">@color/system_inverse_on_surface_dark</color>
+    <color name="materialColorInversePrimary">@color/system_inverse_primary_dark</color>
+    <color name="materialColorInverseSurface">@color/system_inverse_surface_dark</color>
+    <color name="materialColorOnBackground">@color/system_on_background_dark</color>
+    <color name="materialColorOnError">@color/system_on_error_dark</color>
+    <color name="materialColorOnErrorContainer">@color/system_on_error_container_dark</color>
+    <color name="materialColorOnPrimary">@color/system_on_primary_dark</color>
+    <color name="materialColorOnPrimaryContainer">@color/system_on_primary_container_dark</color>
+    <color name="materialColorOnSecondary">@color/system_on_secondary_dark</color>
+    <color name="materialColorOnSecondaryContainer">@color/system_on_secondary_container_dark</color>
+    <color name="materialColorOnSurface">@color/system_on_surface_dark</color>
+    <color name="materialColorOnSurfaceVariant">@color/system_on_surface_variant_dark</color>
+    <color name="materialColorOnTertiary">@color/system_on_tertiary_dark</color>
+    <color name="materialColorOnTertiaryContainer">@color/system_on_tertiary_container_dark</color>
+    <color name="materialColorOutline">@color/system_outline_dark</color>
+    <color name="materialColorOutlineVariant">@color/system_outline_variant_dark</color>
+    <color name="materialColorPaletteKeyColorError">@color/system_palette_key_color_error_dark</color>
+    <color name="materialColorPaletteKeyColorNeutral">@color/system_palette_key_color_neutral_dark</color>
+    <color name="materialColorPaletteKeyColorNeutralVariant">@color/system_palette_key_color_neutral_variant_dark</color>
+    <color name="materialColorPaletteKeyColorPrimary">@color/system_palette_key_color_primary_dark</color>
+    <color name="materialColorPaletteKeyColorSecondary">@color/system_palette_key_color_secondary_dark</color>
+    <color name="materialColorPaletteKeyColorTertiary">@color/system_palette_key_color_tertiary_dark</color>
+    <color name="materialColorPrimary">@color/system_primary_dark</color>
+    <color name="materialColorPrimaryContainer">@color/system_primary_container_dark</color>
+    <color name="materialColorPrimaryDim">@color/system_primary_dim_dark</color>
+    <color name="materialColorScrim">@color/system_scrim_dark</color>
+    <color name="materialColorSecondary">@color/system_secondary_dark</color>
+    <color name="materialColorSecondaryContainer">@color/system_secondary_container_dark</color>
+    <color name="materialColorSecondaryDim">@color/system_secondary_dim_dark</color>
+    <color name="materialColorShadow">@color/system_shadow_dark</color>
+    <color name="materialColorSurface">@color/system_surface_dark</color>
+    <color name="materialColorSurfaceBright">@color/system_surface_bright_dark</color>
+    <color name="materialColorSurfaceContainer">@color/system_surface_container_dark</color>
+    <color name="materialColorSurfaceContainerHigh">@color/system_surface_container_high_dark</color>
+    <color name="materialColorSurfaceContainerHighest">@color/system_surface_container_highest_dark</color>
+    <color name="materialColorSurfaceContainerLow">@color/system_surface_container_low_dark</color>
+    <color name="materialColorSurfaceContainerLowest">@color/system_surface_container_lowest_dark</color>
+    <color name="materialColorSurfaceDim">@color/system_surface_dim_dark</color>
+    <color name="materialColorSurfaceTint">@color/system_surface_tint_dark</color>
+    <color name="materialColorSurfaceVariant">@color/system_surface_variant_dark</color>
+    <color name="materialColorTertiary">@color/system_tertiary_dark</color>
+    <color name="materialColorTertiaryContainer">@color/system_tertiary_container_dark</color>
+    <color name="materialColorTertiaryDim">@color/system_tertiary_dim_dark</color>
+    <color name="materialColorTextHintInverse">@color/system_text_hint_inverse_dark</color>
+    <color name="materialColorTextPrimaryInverse">@color/system_text_primary_inverse_dark</color>
+    <color name="materialColorTextPrimaryInverseDisableOnly">@color/system_text_primary_inverse_disable_only_dark</color>
+    <color name="materialColorTextSecondaryAndTertiaryInverse">@color/system_text_secondary_and_tertiary_inverse_dark</color>
+    <color name="materialColorTextSecondaryAndTertiaryInverseDisabled">@color/system_text_secondary_and_tertiary_inverse_disabled_dark</color>
+    <color name="materialColorOnPrimaryFixed">@color/system_on_primary_fixed</color>
+    <color name="materialColorOnPrimaryFixedVariant">@color/system_on_primary_fixed_variant</color>
+    <color name="materialColorOnSecondaryFixed">@color/system_on_secondary_fixed</color>
+    <color name="materialColorOnSecondaryFixedVariant">@color/system_on_secondary_fixed_variant</color>
+    <color name="materialColorOnTertiaryFixed">@color/system_on_tertiary_fixed</color>
+    <color name="materialColorOnTertiaryFixedVariant">@color/system_on_tertiary_fixed_variant</color>
+    <color name="materialColorPrimaryFixed">@color/system_primary_fixed</color>
+    <color name="materialColorPrimaryFixedDim">@color/system_primary_fixed_dim</color>
+    <color name="materialColorSecondaryFixed">@color/system_secondary_fixed</color>
+    <color name="materialColorSecondaryFixedDim">@color/system_secondary_fixed_dim</color>
+    <color name="materialColorTertiaryFixed">@color/system_tertiary_fixed</color>
+    <color name="materialColorTertiaryFixedDim">@color/system_tertiary_fixed_dim</color>
 </resources>

@@ -18,12 +18,22 @@ package com.android.wm.shell.splitscreen;
 
 import android.app.ActivityManager.RunningTaskInfo;
 import android.graphics.Rect;
+import android.window.WindowContainerTransaction;
+
 /**
  * Listener interface that Launcher attaches to SystemUI to get split-select callbacks.
  */
 interface ISplitSelectListener {
     /**
-     * Called when a task requests to enter split select
+     * Called when a task requests to enter split select.
+     *
+     * @param taskInfo the task requesting to enter split select
+     * @param splitPosition the position in which to place it
+     * @param taskBounds the bounds of the task prior to entering split select
+     * @param startRecents whether Launcher should start recents prior to entering split select
+     * @param withRecentsWct the wct to include with the recents start, if appplicable
      */
-    boolean onRequestSplitSelect(in RunningTaskInfo taskInfo, int splitPosition, in Rect taskBounds);
+    boolean onRequestSplitSelect(in RunningTaskInfo taskInfo,
+        int splitPosition, in Rect taskBounds, boolean startRecents,
+        in @nullable WindowContainerTransaction withRecentsWct);
 }

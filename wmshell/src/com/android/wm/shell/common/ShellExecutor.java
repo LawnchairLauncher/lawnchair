@@ -18,15 +18,15 @@ package com.android.wm.shell.common;
 
 import java.lang.reflect.Array;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 /**
  * Super basic Executor interface that adds support for delayed execution and removing callbacks.
- * Intended to wrap Handler while better-supporting testing.
+ * Intended to wrap Handler while better-supporting testing.  Not every ShellExecutor implementation
+ * may support boosting.
  */
-public interface ShellExecutor extends Executor {
+public interface ShellExecutor extends BoostExecutor {
 
     /**
      * Executes the given runnable. If the caller is running on the same looper as this executor,
@@ -96,4 +96,11 @@ public interface ShellExecutor extends Executor {
      * See {@link android.os.Handler#hasCallbacks(Runnable)}.
      */
     boolean hasCallback(Runnable runnable);
+
+    /**
+     * May throw if the caller is not on the same thread as the executor.
+     */
+    default void assertCurrentThread() {
+       return;
+    }
 }

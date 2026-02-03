@@ -18,7 +18,6 @@ package com.android.wm.shell.flicker.pip.apps
 
 import android.platform.test.annotations.Postsubmit
 import android.tools.Rotation
-import android.tools.device.apphelpers.StandardAppHelper
 import android.tools.flicker.junit.FlickerBuilderProvider
 import android.tools.flicker.legacy.FlickerBuilder
 import android.tools.flicker.legacy.LegacyFlickerTest
@@ -29,8 +28,6 @@ import org.junit.Test
 import org.junit.runners.Parameterized
 
 abstract class AppsEnterPipTransition(flicker: LegacyFlickerTest) : EnterPipTransition(flicker) {
-    protected abstract val standardAppHelper: StandardAppHelper
-
     protected abstract val permissions: Array<String>
 
     @FlickerBuilderProvider
@@ -39,7 +36,7 @@ abstract class AppsEnterPipTransition(flicker: LegacyFlickerTest) : EnterPipTran
             instrumentation.uiAutomation.adoptShellPermissionIdentity()
             for (permission in permissions) {
                 instrumentation.uiAutomation.grantRuntimePermission(
-                    standardAppHelper.packageName,
+                    pipApp.packageName,
                     permission
                 )
             }
@@ -48,18 +45,18 @@ abstract class AppsEnterPipTransition(flicker: LegacyFlickerTest) : EnterPipTran
         }
     }
 
-    /** Checks [standardAppHelper] window remains visible throughout the animation */
+    /** Checks [pipApp] window remains visible throughout the animation */
     @Postsubmit
     @Test
     override fun pipAppWindowAlwaysVisible() {
-        flicker.assertWm { this.isAppWindowVisible(standardAppHelper.packageNameMatcher) }
+        flicker.assertWm { this.isAppWindowVisible(pipApp.packageNameMatcher) }
     }
 
-    /** Checks [standardAppHelper] layer remains visible throughout the animation */
+    /** Checks [pipApp] layer remains visible throughout the animation */
     @Postsubmit
     @Test
     override fun pipAppLayerAlwaysVisible() {
-        flicker.assertLayers { this.isVisible(standardAppHelper.packageNameMatcher) }
+        flicker.assertLayers { this.isVisible(pipApp.packageNameMatcher) }
     }
 
     /** Checks the content overlay appears then disappears during the animation */
@@ -70,39 +67,39 @@ abstract class AppsEnterPipTransition(flicker: LegacyFlickerTest) : EnterPipTran
     }
 
     /**
-     * Checks that [standardAppHelper] window remains inside the display bounds throughout the whole
+     * Checks that [pipApp] window remains inside the display bounds throughout the whole
      * animation
      */
     @Postsubmit
     @Test
     override fun pipWindowRemainInsideVisibleBounds() {
-        flicker.assertWmVisibleRegion(standardAppHelper.packageNameMatcher) {
+        flicker.assertWmVisibleRegion(pipApp.packageNameMatcher) {
             coversAtMost(displayBounds)
         }
     }
 
     /**
-     * Checks that the [standardAppHelper] layer remains inside the display bounds throughout the
+     * Checks that the [pipApp] layer remains inside the display bounds throughout the
      * whole animation
      */
     @Postsubmit
     @Test
     override fun pipLayerOrOverlayRemainInsideVisibleBounds() {
         flicker.assertLayersVisibleRegion(
-            standardAppHelper.packageNameMatcher.or(ComponentNameMatcher.PIP_CONTENT_OVERLAY)
+            pipApp.packageNameMatcher.or(ComponentNameMatcher.PIP_CONTENT_OVERLAY)
         ) {
             coversAtMost(displayBounds)
         }
     }
 
-    /** Checks that the visible region of [standardAppHelper] always reduces during the animation */
+    /** Checks that the visible region of [pipApp] always reduces during the animation */
     @Postsubmit
     @Test
     override fun pipLayerReduces() {
         flicker.assertLayers {
             val pipLayerList =
                 this.layers {
-                    standardAppHelper.packageNameMatcher.layerMatchesAnyOf(it) && it.isVisible
+                    pipApp.packageNameMatcher.layerMatchesAnyOf(it) && it.isVisible
                 }
             pipLayerList.zipWithNext { previous, current ->
                 current.visibleRegion.notBiggerThan(previous.visibleRegion.region)
@@ -110,14 +107,14 @@ abstract class AppsEnterPipTransition(flicker: LegacyFlickerTest) : EnterPipTran
         }
     }
 
-    /** Checks that [standardAppHelper] window becomes pinned */
+    /** Checks that [pipApp] window becomes pinned */
     @Postsubmit
     @Test
     override fun pipWindowBecomesPinned() {
         flicker.assertWm {
-            invoke("pipWindowIsNotPinned") { it.isNotPinned(standardAppHelper.packageNameMatcher) }
+            invoke("pipWindowIsNotPinned") { it.isNotPinned(pipApp.packageNameMatcher) }
                 .then()
-                .invoke("pipWindowIsPinned") { it.isPinned(standardAppHelper.packageNameMatcher) }
+                .invoke("pipWindowIsPinned") { it.isPinned(pipApp.packageNameMatcher) }
         }
     }
 
@@ -129,14 +126,14 @@ abstract class AppsEnterPipTransition(flicker: LegacyFlickerTest) : EnterPipTran
     }
 
     /**
-     * Checks that the focus changes between the [standardAppHelper] window and the launcher when
+     * Checks that the focus changes between the [pipApp] window and the launcher when
      * closing the pip window
      */
     @Postsubmit
     @Test
     override fun focusChanges() {
         flicker.assertEventLog {
-            this.focusChanges(standardAppHelper.packageName, "NexusLauncherActivity")
+            this.focusChanges(pipApp.packageName, "NexusLauncherActivity")
         }
     }
 

@@ -65,7 +65,7 @@ data class ResponsiveSpec(
     constructor(
         responsiveSpecType: ResponsiveSpecType,
         attrs: TypedArray,
-        specs: Map<String, SizeSpec>
+        specs: Map<String, SizeSpec>,
     ) : this(
         maxAvailableSize =
             attrs.getDimensionPixelSize(R.styleable.ResponsiveSpec_maxAvailableSize, 0),
@@ -73,13 +73,13 @@ data class ResponsiveSpec(
             DimensionType.entries[
                     attrs.getInt(
                         R.styleable.ResponsiveSpec_dimensionType,
-                        DimensionType.HEIGHT.ordinal
+                        DimensionType.HEIGHT.ordinal,
                     )],
         specType = responsiveSpecType,
         startPadding = specs.getOrError(SizeSpec.XmlTags.START_PADDING),
         endPadding = specs.getOrError(SizeSpec.XmlTags.END_PADDING),
         gutter = specs.getOrError(SizeSpec.XmlTags.GUTTER),
-        cellSize = specs.getOrError(SizeSpec.XmlTags.CELL_SIZE)
+        cellSize = specs.getOrError(SizeSpec.XmlTags.CELL_SIZE),
     )
 
     fun isValid(): Boolean {
@@ -159,18 +159,18 @@ data class ResponsiveSpec(
 
     enum class DimensionType {
         HEIGHT,
-        WIDTH
+        WIDTH,
     }
 
     companion object {
         private const val LOG_TAG = "ResponsiveSpec"
 
-        enum class ResponsiveSpecType(val xmlTag: String) {
-            AllApps("allAppsSpec"),
-            Folder("folderSpec"),
-            Workspace("workspaceSpec"),
-            Hotseat("hotseatSpec"),
-            Cell("cellSpec")
+        enum class ResponsiveSpecType(val xmlTag: String, val styleId: IntArray) {
+            AllApps("allAppsSpec", R.styleable.ResponsiveSpec),
+            Folder("folderSpec", R.styleable.ResponsiveSpec),
+            Workspace("workspaceSpec", R.styleable.ResponsiveSpec),
+            Hotseat("hotseatSpec", R.styleable.ResponsiveSpec),
+            Cell("cellSpec", R.styleable.CellSpec),
         }
     }
 }
@@ -209,7 +209,7 @@ class CalculatedResponsiveSpec {
         availableSpace: Int,
         cells: Int,
         spec: ResponsiveSpec,
-        calculatedWorkspaceSpec: CalculatedResponsiveSpec
+        calculatedWorkspaceSpec: CalculatedResponsiveSpec,
     ) {
         this.aspectRatio = aspectRatio
         this.availableSpace = availableSpace
@@ -220,7 +220,7 @@ class CalculatedResponsiveSpec {
         startPaddingPx =
             spec.startPadding.getCalculatedValue(
                 availableSpace,
-                calculatedWorkspaceSpec.startPaddingPx
+                calculatedWorkspaceSpec.startPaddingPx,
             )
         endPaddingPx =
             spec.endPadding.getCalculatedValue(availableSpace, calculatedWorkspaceSpec.endPaddingPx)

@@ -23,9 +23,9 @@ import com.android.wm.shell.R
 import java.io.PrintWriter
 
 class PhoneSizeSpecSource(
-        private val context: Context,
+        private var context: Context,
         private val pipDisplayLayoutState: PipDisplayLayoutState
-) : SizeSpecSource {
+) : SizeSpecSource, PipDisplayLayoutState.DisplayIdListener {
     private var DEFAULT_OPTIMIZED_ASPECT_RATIO = 9f / 16
 
     private var mDefaultMinSize = 0
@@ -87,6 +87,7 @@ class PhoneSizeSpecSource(
     private var mOptimizedAspectRatio = 0f
 
     init {
+        pipDisplayLayoutState.addDisplayIdListener(this)
         reloadResources()
     }
 
@@ -117,6 +118,11 @@ class PhoneSizeSpecSource(
         } else {
             requestedOptAspRatio
         }
+    }
+
+    override fun onDisplayIdChanged(newContext: Context) {
+        context = newContext
+        reloadResources()
     }
 
     override fun onConfigurationChanged() {

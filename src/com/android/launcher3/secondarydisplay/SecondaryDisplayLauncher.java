@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.secondarydisplay;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS_PREDICTION;
+import static com.android.launcher3.util.WallpaperThemeManager.setWallpaperDependentTheme;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
@@ -26,20 +29,21 @@ import android.view.View.OnClickListener;
 import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
+import com.android.launcher3.deviceprofile.AllAppsProfile;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DraggableView;
@@ -50,11 +54,12 @@ import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.PredictedContainerInfo;
+import com.android.launcher3.model.data.WorkspaceData;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Themes;
@@ -62,11 +67,12 @@ import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Launcher activity for secondary displays
  */
-public class SecondaryDisplayLauncher extends BaseDraggingActivity
+public class SecondaryDisplayLauncher extends BaseActivity
         implements BgDataModel.Callbacks, DragController.DragListener {
 
     private LauncherModel mModel;
@@ -80,58 +86,35 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     private boolean mAppDrawerShown = false;
 
     private StringCache mStringCache;
-    private boolean mBindingItems = false;
-    private SecondaryDisplayPredictions mSecondaryDisplayPredictions;
+    private SecondaryDisplayQuickstepDelegate mSecondaryDisplayQuickstepDelegate;
 
     private final int[] mTempXY = new int[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setWallpaperDependentTheme(this);
         mModel = LauncherAppState.getInstance(this).getModel();
         mDragController = new SecondaryDragController(this);
-        mSecondaryDisplayPredictions = SecondaryDisplayPredictions.newInstance(this);
-        if (getWindow().getDecorView().isAttachedToWindow()) {
-            initUi();
-        }
-    }
+        mSecondaryDisplayQuickstepDelegate = SecondaryDisplayQuickstepDelegate.newInstance(this);
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        initUi();
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        this.getDragController().removeDragListener(this);
-    }
-
-    private void initUi() {
-        if (mDragLayer != null) {
-            return;
-        }
-        InvariantDeviceProfile currentDisplayIdp = new InvariantDeviceProfile(
-                this, getWindow().getDecorView().getDisplay());
-
-        // Disable transpose layout and use multi-window mode so that the icons are
-        // scaled properly
-        mDeviceProfile = currentDisplayIdp.getDeviceProfile(this)
-                .toBuilder(this)
-                .setMultiWindowMode(true)
-                .setTransposeLayoutWithOrientation(false)
-                .build();
-        mDeviceProfile.autoResizeAllAppsCells();
+        mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(this)
+                .createDeviceProfileForSecondaryDisplay(this);
+        // TODO(b/420948290) Remove this!
+        mDeviceProfile.setAllAppsProfile(AllAppsProfile
+                .Factory
+                .autoResizeAllAppsCells(mDeviceProfile.getAllAppsProfile()));
 
         setContentView(R.layout.secondary_launcher);
         mDragLayer = findViewById(R.id.drag_layer);
         mAppsView = findViewById(R.id.apps_view);
         mAppsButton = findViewById(R.id.all_apps_button);
+        if (mSecondaryDisplayQuickstepDelegate.enableTaskbarConnectedDisplays()) {
+            mAppsButton.setVisibility(View.INVISIBLE);
+        }
 
         mDragController.addDragListener(this);
-        mPopupDataProvider = new PopupDataProvider(
-                mAppsView.getAppsStore()::updateNotificationDots);
+        mPopupDataProvider = new PopupDataProvider(this);
 
         mModel.addCallbacksAndLoad(this);
     }
@@ -155,8 +138,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             }
         }
 
-        // A new intent will bring the launcher to top. Hide the app drawer to reset the
-        // state.
+        // A new intent will bring the launcher to top. Hide the app drawer to reset the state.
         showAppDrawer(false);
     }
 
@@ -175,8 +157,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             return;
         }
 
-        // Note: There should be at most one log per method call. This is enforced
-        // implicitly
+        // Note: There should be at most one log per method call. This is enforced implicitly
         // by using if-else statements.
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null && topView.canHandleBack()) {
@@ -200,15 +181,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     @Override
     public ActivityAllAppsContainerView<SecondaryDisplayLauncher> getAppsView() {
         return mAppsView;
-    }
-
-    @Override
-    public View getRootView() {
-        return mDragLayer;
-    }
-
-    @Override
-    protected void reapplyUi() {
     }
 
     @Override
@@ -240,7 +212,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         float closeR = Themes.getDialogCornerRadius(this);
         float startR = mAppsButton.getWidth() / 2f;
 
-        float[] buttonPos = new float[] { startR, startR };
+        float[] buttonPos = new float[]{startR, startR};
         mDragLayer.getDescendantCoordRelativeToSelf(mAppsButton, buttonPos);
         mDragLayer.mapCoordInSelfToDescendant(mAppsView, buttonPos);
         final Animator animator = ViewAnimationUtils.createCircularReveal(mAppsView,
@@ -251,35 +223,22 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             mAppDrawerShown = true;
             mAppsView.setVisibility(View.VISIBLE);
             mAppsButton.setVisibility(View.INVISIBLE);
-            mSecondaryDisplayPredictions.updateAppDivider();
+            mSecondaryDisplayQuickstepDelegate.updateAppDivider();
         } else {
             mAppDrawerShown = false;
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mAppsView.setVisibility(View.INVISIBLE);
-                    mAppsButton.setVisibility(View.VISIBLE);
+                    mAppsButton.setVisibility(
+                            mSecondaryDisplayQuickstepDelegate.enableTaskbarConnectedDisplays()
+                                    ? View.INVISIBLE
+                                    : View.VISIBLE);
                     mAppsView.getSearchUiManager().resetSearch();
                 }
             });
         }
         animator.start();
-    }
-
-    @Override
-    public void startBinding() {
-        mBindingItems = true;
-        mDragController.cancelDrag();
-    }
-
-    @Override
-    public boolean isBindingItems() {
-        return mBindingItems;
-    }
-
-    @Override
-    public void finishBindingItems(IntSet pagesBoundFirst) {
-        mBindingItems = false;
     }
 
     @Override
@@ -298,9 +257,20 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    public void bindExtraContainerItems(BgDataModel.FixedContainerItems item) {
-        if (item.containerId == LauncherSettings.Favorites.CONTAINER_PREDICTION) {
-            mSecondaryDisplayPredictions.setPredictedApps(item);
+    public void bindCompleteModel(
+            @NonNull WorkspaceData itemIdMap, boolean isBindingSync) {
+        if (itemIdMap.get(CONTAINER_ALL_APPS_PREDICTION) instanceof PredictedContainerInfo pci) {
+            mSecondaryDisplayQuickstepDelegate.setPredictedApps(pci);
+        }
+    }
+
+    @Override
+    public void bindItemsUpdated(@NonNull Set<ItemInfo> updates) {
+        for (ItemInfo updatedItem: updates) {
+            if (updatedItem.container == CONTAINER_ALL_APPS_PREDICTION
+                    && updatedItem instanceof PredictedContainerInfo pci) {
+                mSecondaryDisplayQuickstepDelegate.setPredictedApps(pci);
+            }
         }
     }
 
@@ -314,6 +284,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         mStringCache = cache;
     }
 
+    @Override
+    @NonNull
     public PopupDataProvider getPopupDataProvider() {
         return mPopupDataProvider;
     }
@@ -329,12 +301,9 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     private void onIconClicked(View v) {
-        // Make sure that rogue clicks don't get through while allapps is launching, or
-        // after the
-        // view has detached (it's possible for this to happen if the view is removed
-        // mid touch).
-        if (v.getWindowToken() == null)
-            return;
+        // Make sure that rogue clicks don't get through while allapps is launching, or after the
+        // view has detached (it's possible for this to happen if the view is removed mid touch).
+        if (v.getWindowToken() == null) return;
 
         Object tag = v.getTag();
         if (tag instanceof ItemClickProxy) {
@@ -344,7 +313,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             Intent intent;
             if (item instanceof ItemInfoWithIcon
                     && (((ItemInfoWithIcon) item).runtimeStatusFlags
-                            & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
                 ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
                 intent = appInfo.getMarketIntent(this);
             } else {
@@ -358,8 +327,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     /**
-     * Core functionality for beginning a drag operation for an item that will be
-     * dropped within
+     * Core functionality for beginning a drag operation for an item that will be dropped within
      * the secondary display grid home screen
      */
     public void beginDragShared(View child, DragSource source, DragOptions options) {
@@ -456,10 +424,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-    }
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) { }
 
     @Override
-    public void onDragEnd() {
-    }
+    public void onDragEnd() { }
 }

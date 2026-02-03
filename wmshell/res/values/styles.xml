@@ -29,6 +29,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="Animation.ForcedResizable" parent="@android:style/Animation">
@@ -42,19 +43,38 @@
     <style name="DesktopModeHandleMenuActionButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">52dp</item>
+        <item name="android:textColor">@androidprv:color/materialColorOnSurface</item>
+        <item name="android:drawableTint">@androidprv:color/materialColorOnSurface</item>
+        <item name="android:importantForAccessibility">yes</item>
         <item name="android:gravity">start|center_vertical</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textFontWeight">500</item>
-        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
-        <item name="android:drawablePadding">16dp</item>
-        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:orientation">horizontal</item>
     </style>
+
+    <style name="DesktopModeHandleMenuActionButtonImage">
+       <item name="android:layout_width">20dp</item>
+       <item name="android:layout_height">20dp</item>
+       <item name="android:layout_marginEnd">16dp</item>
+   </style>
+
+    <style name="DesktopModeHandleMenuActionButtonTextView">
+       <item name="android:layout_width">0dp</item>
+       <item name="android:layout_height">wrap_content</item>
+       <item name="android:layout_weight">1</item>
+       <item name="android:textSize">14sp</item>
+       <item name="android:lineHeight">20sp</item>
+       <item name="android:textFontWeight">500</item>
+       <item name="android:textColor">@androidprv:color/materialColorOnSurface</item>
+       <item name="android:ellipsize">marquee</item>
+       <item name="android:scrollHorizontally">true</item>
+       <item name="android:singleLine">true</item>
+   </style>
 
     <style name="DesktopModeHandleMenuWindowingButton">
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
-        <item name="android:padding">14dp</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:background">?android:selectableItemBackgroundBorderless</item>
     </style>
@@ -73,16 +93,7 @@
         <item name="android:background">@color/split_divider_background</item>
     </style>
 
-    <style name="TvPipEduText">
-        <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">10sp</item>
-        <item name="android:lineSpacingExtra">4sp</item>
-        <item name="android:lineHeight">16sp</item>
-        <item name="android:textColor">@color/tv_pip_edu_text</item>
-    </style>
-
-    <style name="LetterboxDialog" parent="@android:style/Theme.Holo">
+    <style name="LetterboxDialog" parent="@android:style/Theme.DeviceDefault.Dialog.Alert">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/letterbox_dialog_background</item>
@@ -90,7 +101,7 @@
 
     <style name="RestartDialogTitleText">
         <item name="android:textSize">24sp</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">@androidprv:color/materialColorOnSurface</item>
         <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:fontFamily">@*android:string/config_headlineFontFamily</item>
     </style>
@@ -102,23 +113,23 @@
 
     <style name="RestartDialogBodyText" parent="RestartDialogBodyStyle">
         <item name="android:letterSpacing">0.02</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textColor">@androidprv:color/materialColorOnSurfaceVariant</item>
         <item name="android:lineSpacingExtra">6sp</item>
     </style>
 
     <style name="RestartDialogCheckboxText" parent="RestartDialogBodyStyle">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">@androidprv:color/materialColorOnSurface</item>
         <item name="android:lineSpacingExtra">6sp</item>
     </style>
 
     <style name="RestartDialogDismissButton" parent="RestartDialogBodyStyle">
         <item name="android:lineSpacingExtra">2sp</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">@androidprv:color/materialColorPrimary</item>
     </style>
 
     <style name="RestartDialogConfirmButton" parent="RestartDialogBodyStyle">
         <item name="android:lineSpacingExtra">2sp</item>
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColor">@androidprv:color/materialColorOnPrimary</item>
     </style>
 
     <style name="ReachabilityEduHandLayout" parent="Theme.AppCompat.Light">
@@ -132,6 +143,100 @@
         <item name="android:textAppearance">
             @*android:style/TextAppearance.DeviceDefault.Body2
         </item>
+    </style>
+
+    <style name="BoxShadowParamsKeyUnfocused">
+        <item name="boxShadowColor">#0A000000</item>
+        <item name="boxShadowOffsetX">0dp</item>
+        <item name="boxShadowOffsetY">0dp</item>
+        <item name="boxShadowBlurRadius">12dp</item>
+        <item name="boxShadowSpreadRadius">0dp</item>
+    </style>
+
+    <style name="BoxShadowParamsKeyFocused">
+        <item name="boxShadowColor">#19000000</item>
+        <item name="boxShadowOffsetX">0dp</item>
+        <item name="boxShadowOffsetY">0dp</item>
+        <item name="boxShadowBlurRadius">24dp</item>
+        <item name="boxShadowSpreadRadius">0dp</item>
+    </style>
+
+    <style name="BoxShadowParamsAmbientUnfocused">
+        <item name="boxShadowColor">#1F000000</item>
+        <item name="boxShadowOffsetX">0dp</item>
+        <item name="boxShadowOffsetY">6dp</item>
+        <item name="boxShadowBlurRadius">12dp</item>
+        <item name="boxShadowSpreadRadius">0dp</item>
+    </style>
+
+    <style name="BoxShadowParamsAmbientFocused">
+        <item name="boxShadowColor">#33000000</item>
+        <item name="boxShadowOffsetX">0dp</item>
+        <item name="boxShadowOffsetY">16dp</item>
+        <item name="boxShadowBlurRadius">24dp</item>
+        <item name="boxShadowSpreadRadius">0dp</item>
+    </style>
+
+    <style name="BoxShadowParamsPIPLight1">
+        <item name="boxShadowColor">#0A000000</item>
+        <item name="boxShadowOffsetX">0dp</item>
+        <item name="boxShadowOffsetY">0dp</item>
+        <item name="boxShadowBlurRadius">14dp</item>
+        <item name="boxShadowSpreadRadius">0dp</item>
+    </style>
+
+    <style name="BoxShadowParamsPIPLight2">
+        <item name="boxShadowColor">#1A000000</item>
+        <item name="boxShadowOffsetX">0dp</item>
+        <item name="boxShadowOffsetY">2dp</item>
+        <item name="boxShadowBlurRadius">8dp</item>
+        <item name="boxShadowSpreadRadius">0dp</item>
+    </style>
+
+    <style name="BoxShadowParamsPIPDark1">
+        <item name="boxShadowColor">#33000000</item>
+        <item name="boxShadowOffsetX">0dp</item>
+        <item name="boxShadowOffsetY">0dp</item>
+        <item name="boxShadowBlurRadius">14dp</item>
+        <item name="boxShadowSpreadRadius">0dp</item>
+    </style>
+
+    <style name="BoxShadowParamsPIPDark2">
+        <item name="boxShadowColor">#33000000</item>
+        <item name="boxShadowOffsetX">0dp</item>
+        <item name="boxShadowOffsetY">2dp</item>
+        <item name="boxShadowBlurRadius">8dp</item>
+        <item name="boxShadowSpreadRadius">0dp</item>
+    </style>
+
+    <style name="BorderSettingsUnfocusedLight">
+        <item name="borderStrokeWidth">1dp</item>
+        <item name="borderColor">#32BDC1C6</item>
+    </style>
+
+    <style name="BorderSettingsFocusedLight">
+        <item name="borderStrokeWidth">1dp</item>
+        <item name="borderColor">#4DBDC1C6</item>
+    </style>
+
+    <style name="BorderSettingsUnfocusedDark">
+        <item name="borderStrokeWidth">1dp</item>
+        <item name="borderColor">#339AA0A6</item>
+    </style>
+
+    <style name="BorderSettingsFocusedDark">
+        <item name="borderStrokeWidth">1dp</item>
+        <item name="borderColor">#579AA0A6</item>
+    </style>
+
+    <style name="BorderSettingsPIPLight">
+        <item name="borderStrokeWidth">1dp</item>
+        <item name="borderColor">#27BDC1C6</item>
+    </style>
+
+    <style name="BorderSettingsPIPDark">
+        <item name="borderStrokeWidth">1dp</item>
+        <item name="borderColor">#339AA0A6</item>
     </style>
 
 </resources>

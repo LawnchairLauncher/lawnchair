@@ -17,11 +17,15 @@
 package com.android.wm.shell.flicker.utils
 
 import android.app.Instrumentation
+import android.app.UiAutomation
+import android.content.Context
 import android.graphics.Point
 import android.os.SystemClock
 import android.tools.Rotation
+import android.tools.device.apphelpers.IStandardAppHelper
 import android.tools.device.apphelpers.StandardAppHelper
 import android.tools.flicker.rules.ChangeDisplayOrientationRule
+import android.tools.helpers.WindowUtils
 import android.tools.traces.component.ComponentNameMatcher
 import android.tools.traces.component.IComponentMatcher
 import android.tools.traces.component.IComponentNameMatcher
@@ -102,8 +106,8 @@ object SplitScreenUtils {
         wmHelper: WindowManagerStateHelper,
         tapl: LauncherInstrumentation,
         device: UiDevice,
-        primaryApp: StandardAppHelper,
-        secondaryApp: StandardAppHelper,
+        primaryApp: IStandardAppHelper,
+        secondaryApp: IStandardAppHelper,
         rotation: Rotation
     ) {
         primaryApp.launchViaIntent(wmHelper)
@@ -117,8 +121,8 @@ object SplitScreenUtils {
 
     fun enterSplitViaIntent(
         wmHelper: WindowManagerStateHelper,
-        primaryApp: StandardAppHelper,
-        secondaryApp: StandardAppHelper
+        primaryApp: IStandardAppHelper,
+        secondaryApp: IStandardAppHelper
     ) {
         val stringExtras = mapOf(Primary.EXTRA_LAUNCH_ADJACENT to "true")
         primaryApp.launchViaIntent(wmHelper, null, null, stringExtras)
@@ -307,12 +311,18 @@ object SplitScreenUtils {
         }
     }
 
+    /**
+     * Drags the divider, then releases, making it snap to a new snap point.
+     */
     fun dragDividerToResizeAndWait(device: UiDevice, wmHelper: WindowManagerStateHelper) {
+        // Find the first display that is turned on (making the assumption that there is only one).
         val displayBounds =
-            wmHelper.currentState.layerState.displays.firstOrNull { !it.isVirtual }?.layerStackSpace
-                ?: error("Display not found")
+            wmHelper.currentState.layerState.displays.firstOrNull { !it.isVirtual && it.isOn }
+                ?.layerStackSpace ?: error("Display not found")
         val dividerBar = device.wait(Until.findObject(dividerBarSelector), TIMEOUT_MS)
-        dividerBar.drag(Point(displayBounds.width() * 1 / 3, displayBounds.height() * 2 / 3), 200)
+        // Drag to a point on the lower left of the screen -- this will cause the divider to snap
+        // to the left- or bottom-side snap point, shrinking the "primary" test app.
+        dividerBar.drag(Point(displayBounds.width() * 1 / 4, displayBounds.height() * 3 / 4), 200)
 
         wmHelper
             .StateSyncBuilder()
@@ -346,13 +356,40 @@ object SplitScreenUtils {
         )
     }
 
-    fun doubleTapDividerToSwitch(device: UiDevice) {
+    fun doubleTapDividerToSwitch(device: UiDevice, uiAutomation: UiAutomation) {
         val dividerBar = device.wait(Until.findObject(dividerBarSelector), TIMEOUT_MS)
-        val interval =
-            (ViewConfiguration.getDoubleTapTimeout() + ViewConfiguration.getDoubleTapMinTime()) / 2
-        dividerBar.click()
-        SystemClock.sleep(interval.toLong())
-        dividerBar.click()
+        val x = dividerBar.visibleCenter.x.toFloat()
+        val y = dividerBar.visibleCenter.y.toFloat()
+
+        // To send a double-tap action, we set a DOWN event, then UP, then DOWN, then, UP.
+        val startTime = SystemClock.uptimeMillis()
+        val timeOfFirstUp = startTime + ViewConfiguration.getTapTimeout()
+        // Between the two taps, we wait an arbitrary amount of time between the min and max times
+        // for a double-tap.
+        val timeOfSecondDown = timeOfFirstUp + ViewConfiguration.getDoubleTapMinTime() +
+                ((ViewConfiguration.getDoubleTapTimeout() -
+                        ViewConfiguration.getDoubleTapMinTime()) / 4)
+        val timeOfSecondUp = timeOfSecondDown + ViewConfiguration.getTapTimeout()
+
+        val downEvent = MotionEvent.obtain(startTime, startTime, MotionEvent.ACTION_DOWN, x, y,
+            0 /* metaState */)
+        downEvent.setSource(InputDevice.SOURCE_TOUCHSCREEN)
+        uiAutomation.injectInputEvent(downEvent, true)
+
+        val upEvent = MotionEvent.obtain(startTime, timeOfFirstUp, MotionEvent.ACTION_UP, x, y,
+            0 /* metaState */)
+        upEvent.setSource(InputDevice.SOURCE_TOUCHSCREEN)
+        uiAutomation.injectInputEvent(upEvent, true)
+
+        val downEvent2 = MotionEvent.obtain(timeOfSecondDown, timeOfSecondDown,
+            MotionEvent.ACTION_DOWN, x, y, 0 /* metaState */)
+        downEvent2.setSource(InputDevice.SOURCE_TOUCHSCREEN)
+        uiAutomation.injectInputEvent(downEvent2, true)
+
+        val upEvent2 = MotionEvent.obtain(timeOfSecondDown, timeOfSecondUp, MotionEvent.ACTION_UP,
+            x, y, 0 /* metaState */)
+        upEvent2.setSource(InputDevice.SOURCE_TOUCHSCREEN)
+        uiAutomation.injectInputEvent(upEvent2, true)
     }
 
     fun copyContentInSplit(
@@ -391,5 +428,25 @@ object SplitScreenUtils {
         if (!textView.text.contentEquals(editText.text)) {
             error("Fail to copy content in split")
         }
+    }
+
+    fun isLeftRightSplit(context: Context, rotation: Rotation, displaySizeDp: Point): Boolean {
+        val allowLeftRightSplit = context.resources.getBoolean(
+            com.android.internal.R.bool.config_leftRightSplitInPortrait)
+        val displayBounds = WindowUtils.getDisplayBounds(rotation)
+        val isLandscape = displayBounds.width() > displayBounds.height()
+        if (allowLeftRightSplit && isTablet(displaySizeDp)) {
+            // Certain devices allow left/right split in portrait, so they end up with top/bottom
+            // split in landscape
+            return !isLandscape
+        } else {
+            return isLandscape
+        }
+    }
+
+    fun isTablet(displaySizeDp: Point): Boolean {
+        val LARGE_SCREEN_DP_THRESHOLD = 600
+        return displaySizeDp.x >= LARGE_SCREEN_DP_THRESHOLD
+                && displaySizeDp.y >= LARGE_SCREEN_DP_THRESHOLD
     }
 }

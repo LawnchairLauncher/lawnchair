@@ -23,15 +23,16 @@ public class LauncherConstants {
     public static class TraceEvents {
 
         public static final String DISPLAY_ALL_APPS_TRACE_METHOD_NAME = "DisplayAllApps";
-        public static final int DISPLAY_WORKSPACE_TRACE_COOKIE = 0;
-        public static final int DISPLAY_ALL_APPS_TRACE_COOKIE = 1;
-        public static final int COLD_STARTUP_TRACE_COOKIE = 2;
+
+        // Only use a hard-coded cookie since we only want to trace this once.
+        public static final int SINGLE_TRACE_COOKIE = 0;
         public static final String ON_CREATE_EVT = "Launcher.onCreate";
         public static final String ON_START_EVT = "Launcher.onStart";
         public static final String ON_RESUME_EVT = "Launcher.onResume";
         public static final String ON_NEW_INTENT_EVT = "Launcher.onNewIntent";
-        static final String DISPLAY_WORKSPACE_TRACE_METHOD_NAME = "DisplayWorkspaceFirstFrame";
-        static final String COLD_STARTUP_TRACE_METHOD_NAME = "LauncherColdStartup";
+        public static final String DISPLAY_WORKSPACE_TRACE_METHOD_NAME =
+                "DisplayWorkspaceFirstFrame";
+        public static final String COLD_STARTUP_TRACE_METHOD_NAME = "LauncherColdStartup";
     }
 
     /**
@@ -67,5 +68,8 @@ public class LauncherConstants {
         static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
         // Type int[]
         static final String RUNTIME_STATE_CURRENT_SCREEN_IDS = "launcher.current_screen_ids";
+        // Type: boolean
+        public static final String RUNTIME_STATE_RECREATE_TO_UPDATE_THEME =
+                "launcher.recreate_to_update_theme";
     }
 }

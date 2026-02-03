@@ -16,15 +16,47 @@
 
 package com.android.wm.shell.recents;
 
-import android.os.IBinder;
+import android.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /** The listener for the events from {@link RecentsTransitionHandler}. */
 public interface RecentsTransitionStateListener {
 
-    /** Notifies whether the recents animation is running. */
-    default void onAnimationStateChanged(boolean running) {
+    @IntDef(prefix = { "TRANSITION_STATE_" }, value = {
+            TRANSITION_STATE_NOT_RUNNING,
+            TRANSITION_STATE_REQUESTED,
+            TRANSITION_STATE_ANIMATING,
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    @interface RecentsTransitionState {}
+
+    int TRANSITION_STATE_NOT_RUNNING = 1;
+    int TRANSITION_STATE_REQUESTED = 2;
+    int TRANSITION_STATE_ANIMATING = 3;
+
+    /** Notifies whether the recents transition state changes. */
+    default void onTransitionStateChanged(@RecentsTransitionState int state) {
     }
 
-    /** Notifies that a recents shell transition has started. */
-    default void onTransitionStarted(IBinder transition) {}
+    /** Returns whether the recents transition is running. */
+    static boolean isRunning(@RecentsTransitionState int state) {
+        return state >= TRANSITION_STATE_REQUESTED;
+    }
+
+    /** Returns whether the recents transition is animating. */
+    static boolean isAnimating(@RecentsTransitionState int state) {
+        return state >= TRANSITION_STATE_ANIMATING;
+    }
+
+    /** Returns a string representation of the given state. */
+    static String stateToString(@RecentsTransitionState int state) {
+        return switch (state) {
+            case TRANSITION_STATE_NOT_RUNNING -> "TRANSITION_STATE_NOT_RUNNING";
+            case TRANSITION_STATE_REQUESTED -> "TRANSITION_STATE_REQUESTED";
+            case TRANSITION_STATE_ANIMATING -> "TRANSITION_STATE_ANIMATING";
+            default -> "UNKNOWN";
+        };
+    }
 }

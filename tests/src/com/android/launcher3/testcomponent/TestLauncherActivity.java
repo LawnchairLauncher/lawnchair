@@ -20,8 +20,12 @@ import static android.content.Intent.CATEGORY_LAUNCHER;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
 
+import static com.android.launcher3.testing.shared.TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE;
+
 import android.app.LauncherActivity;
 import android.content.Intent;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 
 public class TestLauncherActivity extends LauncherActivity {
 
@@ -30,5 +34,19 @@ public class TestLauncherActivity extends LauncherActivity {
         return new Intent(ACTION_MAIN, null)
                 .addCategory(CATEGORY_LAUNCHER)
                 .addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        final AccessibilityManager accessibilityManager =
+                getSystemService(AccessibilityManager.class);
+        if (accessibilityManager == null || !accessibilityManager.isEnabled()) return;
+
+        final AccessibilityEvent e = AccessibilityEvent.obtain(
+                AccessibilityEvent.TYPE_ANNOUNCEMENT);
+        e.setClassName(LAUNCHER_ACTIVITY_STOPPED_MESSAGE);
+        e.setPackageName(getApplicationContext().getPackageName());
+        accessibilityManager.sendAccessibilityEvent(e);
     }
 }

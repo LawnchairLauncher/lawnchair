@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright (C) 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="widgets_list_header_app_name_fallback_label" msgid="5151621916941957989">"Ilova nomi"</string>
+    <string name="widgets_list_header_widgets_count_label" msgid="578128450351893001">"{count,plural, =1{# ta vidjet}other{# ta vidjet}}"</string>
+    <string name="widget_span_dimensions_format" msgid="4325492869474815131">"%1$d × %2$d"</string>
+    <string name="widget_span_dimensions_accessible_format" msgid="6976586776463259811">"Eniga: %1$d, boʻyiga: %2$d"</string>
+    <string name="widget_details_accessibility_label" msgid="4525863892199168041">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> vidjeti, eniga: %2$d, boʻyiga: %3$d"</string>
+    <string name="widget_tap_to_show_add_button_label" msgid="3358071294981269937">"Qoʻshish tugmasini koʻrsatish"</string>
+    <string name="widget_tap_to_hide_add_button_label" msgid="7484536838079871360">"Qoʻshish tugmasini berkitish"</string>
+    <string name="widget_tap_to_add_button_label" msgid="3110313936849291769">"Kiritish"</string>
+    <string name="widget_tap_to_add_button_content_description" msgid="3591512565497536699">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> vidjetini chiqarish"</string>
+    <string name="featured_widgets_tab_label" msgid="5911854248145111652">"Qiziqarli"</string>
+    <string name="browse_widgets_tab_label" msgid="7179933202350730737">"Qarab chiqish"</string>
+    <string name="widget_picker_right_pane_accessibility_label" msgid="5095301787174820892">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> vidjetlari oʻngda, qidiruv va sozlamalar chapda"</string>
+    <string name="widgets_search_bar_hint" msgid="5705758627532180867">"Qidiruv"</string>
+    <string name="widget_search_bar_clear_button_label" msgid="6120140737164336517">"Tozalash"</string>
+    <string name="widget_search_bar_back_button_label" msgid="7028448831228587743">"Orqaga"</string>
+    <string name="widgets_list_no_widgets_available" msgid="6451723564588621540">"Vidjet va yorliqlar mavjud emas"</string>
+    <string name="widgets_no_search_results" msgid="4336254967062545985">"Hech qanday vidjet yoki yorliq topilmadi"</string>
+</resources>

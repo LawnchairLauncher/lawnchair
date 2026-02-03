@@ -19,11 +19,32 @@ package com.android.wm.shell.windowdecor;
 /**
  * Holds the state of a drag resize.
  */
-interface TaskDragResizer {
+public interface TaskDragResizer {
 
     /**
      * Returns true if task is currently being resized or animating the final transition after
      * a resize is complete.
      */
     boolean isResizingOrAnimating();
+
+    /**
+     * Adds a drag start listener to be notified of drag start events.
+     *
+     * @param dragEventListener Listener to be added.
+     */
+    void addDragEventListener(DragPositioningCallbackUtility.DragEventListener dragEventListener);
+
+    /**
+     * Removes a drag start listener from the listener set.
+     *
+     * @param dragEventListener Listener to be removed.
+     */
+    void removeDragEventListener(
+            DragPositioningCallbackUtility.DragEventListener dragEventListener);
+
+    /**
+     * Releases any resources associated with this TaskDragResizer. This should be called when the
+     * associated window is closed.
+     */
+    void close();
 }

@@ -32,7 +32,7 @@
         </item>
         <item>
             <shape android:shape="rectangle">
-                <solid android:color="?androidprv:attr/colorAccentPrimaryVariant"/>
+                <solid android:color="@androidprv:color/materialColorPrimary"/>
                 <corners android:radius="@dimen/letterbox_education_dialog_button_radius"/>
                 <padding android:left="@dimen/letterbox_education_dialog_horizontal_padding"
                          android:top="@dimen/letterbox_education_dialog_vertical_padding"

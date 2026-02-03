@@ -36,6 +36,7 @@
     <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Ова апликација може да се отвори само у једном прозору"</string>
     <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Апликација можда неће функционисати на секундарном екрану."</string>
     <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Апликација не подржава покретање на секундарним екранима."</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"Апликација не подржава облачић"</string>
     <string name="accessibility_divider" msgid="6407584574218956849">"Разделник подељеног екрана"</string>
     <string name="divider_title" msgid="1963391955593749442">"Разделник подељеног екрана"</string>
     <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Режим целог екрана за леви екран"</string>
@@ -43,6 +44,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Леви екран 50%"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Леви екран 30%"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Режим целог екрана за доњи екран"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Замените горњу апликацију доњом"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Замените леву апликацију десном"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Режим целог екрана за горњи екран"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Горњи екран 70%"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Горњи екран 50%"</string>
@@ -65,19 +68,24 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Премести горе десно"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Премести доле лево"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Премести доле десно"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"прошири мени"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"скупи мени"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"Померите налево"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"Померите надесно"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"проширите облачић <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"скупите облачић <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"Подешавања за <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"Одбаци облачић"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"Пребаци на цео екран"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Не користи облачиће за конверзацију"</string>
-    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Ћаскајте у облачићима"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Четујте у облачићима"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"Нове конверзације се приказују као плутајуће иконе или облачићи. Додирните да бисте отворили облачић. Превуците да бисте га преместили."</string>
     <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Контролишите облачиће у било ком тренутку"</string>
     <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Додирните Управљајте да бисте искључили облачиће из ове апликације"</string>
     <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Важи"</string>
     <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Нема недавних облачића"</string>
     <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Овде се приказују недавни и одбачени облачићи"</string>
-    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Ћаскајте у облачићима"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Четујте у облачићима"</string>
     <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Нове конверзације се појављују као иконе у доњем углу екрана. Додирните да бисте их проширили или превуците да бисте их одбацили."</string>
     <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Контролишите облачиће у сваком тренутку"</string>
     <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Додирните овде и одредите које апликације и конверзације могу да имају облачић"</string>
@@ -92,6 +100,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Имате проблема са камером?\nДодирните да бисте поново уклопили"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Проблем није решен?\nДодирните да бисте вратили"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Немате проблема са камером? Додирните да бисте одбацили."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"Мени апликације можете да пронађете овде"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"Уђите у приказ рачунарских прозора да бисте истовремено отворили више апликација"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"Вратите се на цео екран било када из менија апликације"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Видите и урадите више"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Превуците другу апликацију да бисте користили подељени екран"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Двапут додирните изван апликације да бисте променили њену позицију"</string>
@@ -103,22 +114,60 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"Рестартуј"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Не приказуј поново"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Двапут додирните да бисте\nпреместили ову апликацију"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"Увећајте"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"Умањите"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"Затворите"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"Увећајте: <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"Вратите: <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"Умањите: <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"Затворите: <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="back_button_text" msgid="1469718707134137085">"Назад"</string>
-    <string name="handle_text" msgid="1766582106752184456">"Идентификатор"</string>
+    <string name="handle_text" msgid="4419667835599523257">"Идентификатор апликације"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"Икона апликације"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"Преко целог екрана"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"Режим за рачунаре"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"Приказ рачунарских прозора"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"Подељени екран"</string>
     <string name="more_button_text" msgid="3655388105592893530">"Још"</string>
     <string name="float_button_text" msgid="9221657008391364581">"Плутајуће"</string>
     <string name="select_text" msgid="5139083974039906583">"Изаберите"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"Снимак екрана"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"Отвори у прегледачу"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"Отворите у апликацији"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"Нови прозор"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"Управљајте прозорима"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Промени размеру"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"Оптимизујте приказ"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"Икона грешке"</string>
     <string name="close_text" msgid="4986518933445178928">"Затворите"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"Затворите мени"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"Отворите мени"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (приказ рачунарских прозора)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Повећај екран"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Уклопи екран"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"Прилагоди"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"Апликација не може да се премести овде"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"Отвара се нови прозор апликације"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"Затвара се прозор апликације"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"Умањује се прозор апликације"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (фокусирано)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (није фокусирано)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"Имерзивно"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"Врати"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"Увећај"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"Вратите"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"Прикачите лево"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"Прикачите десно"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"Промените величину прозора апликације налево"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"Промените величину прозора апликације надесно"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"Увећајте или вратите величину прозора"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"Отворите Мени"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"Унесите <xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"Промените величину прозора налево"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"Промените величину прозора надесно"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"Увећајте или вратите величину прозора"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"Увећајте величину прозора апликације"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"Вратите величину прозора"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"Умањите прозор апликације"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"Затворите прозор апликације"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"Подешавање Подразумевано отварај"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Одаберите начин отварања веб-линкова за ову апликацију"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"У апликацији"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"У прегледачу"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"Потврди"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"Овде можете брзо да отварате апликације у прегледачу"</string>
 </resources>

@@ -37,6 +37,7 @@
     <!-- All Set page-->
     <dimen name="allset_page_allset_text_size">42sp</dimen>
     <dimen name="allset_page_swipe_up_text_size">16sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size_expressive">16sp</dimen>
 
     <!-- Taskbar swipe up thresholds -->
     <dimen name="taskbar_from_nav_threshold">30dp</dimen>

@@ -35,20 +35,27 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.dagger.LauncherAppComponent;
+import com.android.launcher3.dagger.LauncherAppSingleton;
+import com.android.launcher3.util.AllModulesMinusWMProxy;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
-import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.RotationUtils;
+import com.android.launcher3.util.SandboxApplication;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.util.SurfaceTransaction.MockProperties;
 
+import dagger.BindsInstance;
+import dagger.Component;
+
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,6 +65,8 @@ import java.util.List;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class TaskViewSimulatorTest {
+
+    @Rule public final SandboxApplication app = new SandboxApplication();
 
     @Test
     public void taskProperlyScaled_portrait_noRotation_sameInsets1() {
@@ -117,7 +126,7 @@ public class TaskViewSimulatorTest {
                 .verifyNoTransforms();
     }
 
-    private static class TaskMatrixVerifier extends TransformParams {
+    private class TaskMatrixVerifier extends TransformParams {
 
         private Point mDisplaySize = new Point();
         private int mDensityDpi = DisplayMetrics.DENSITY_DEFAULT;
@@ -157,71 +166,67 @@ public class TaskViewSimulatorTest {
         }
 
         void verifyNoTransforms() {
-            LauncherModelHelper helper = new LauncherModelHelper();
-            try {
-                int rotation = mDisplaySize.x > mDisplaySize.y
-                        ? Surface.ROTATION_90 : Surface.ROTATION_0;
-                CachedDisplayInfo cdi = new CachedDisplayInfo(mDisplaySize, rotation);
-                WindowBounds wm = new WindowBounds(
-                        new Rect(0, 0, mDisplaySize.x, mDisplaySize.y),
-                        mDisplayInsets);
-                List<WindowBounds> allBounds = new ArrayList<>(4);
-                for (int i = 0; i < 4; i++) {
-                    Rect boundsR = new Rect(wm.bounds);
-                    Rect insetsR = new Rect(wm.insets);
+            DisplayController mockController = mock(DisplayController.class);
 
-                    RotationUtils.rotateRect(insetsR, RotationUtils.deltaRotation(rotation, i));
-                    RotationUtils.rotateRect(boundsR, RotationUtils.deltaRotation(rotation, i));
-                    boundsR.set(0, 0, Math.abs(boundsR.width()), Math.abs(boundsR.height()));
-                    allBounds.add(new WindowBounds(boundsR, insetsR));
-                }
+            app.initDaggerComponent(
+                    DaggerTaskViewSimulatorTest_TaskViewSimulatorTestComponent.builder()
+                            .bindDisplayController(mockController));
+            int rotation = mDisplaySize.x > mDisplaySize.y
+                    ? Surface.ROTATION_90 : Surface.ROTATION_0;
+            CachedDisplayInfo cdi = new CachedDisplayInfo(mDisplaySize, rotation);
+            WindowBounds wm = new WindowBounds(
+                    new Rect(0, 0, mDisplaySize.x, mDisplaySize.y),
+                    mDisplayInsets);
+            List<WindowBounds> allBounds = new ArrayList<>(4);
+            for (int i = 0; i < 4; i++) {
+                Rect boundsR = new Rect(wm.bounds);
+                Rect insetsR = new Rect(wm.insets);
 
-                WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
-                doReturn(cdi).when(wmProxy).getDisplayInfo(any());
-                doReturn(wm).when(wmProxy).getRealBounds(any(), any());
-                doReturn(NavigationMode.NO_BUTTON).when(wmProxy).getNavigationMode(any());
-
-                ArrayMap<CachedDisplayInfo, List<WindowBounds>> perDisplayBoundsCache =
-                        new ArrayMap<>();
-                perDisplayBoundsCache.put(cdi.normalize(wmProxy), allBounds);
-
-                Configuration configuration = new Configuration();
-                configuration.densityDpi = mDensityDpi;
-                Context configurationContext = helper.sandboxContext.createConfigurationContext(
-                        configuration);
-
-                DisplayController.Info info = new Info(
-                        configurationContext, wmProxy, perDisplayBoundsCache);
-
-                DisplayController mockController = mock(DisplayController.class);
-                when(mockController.getInfo()).thenReturn(info);
-                helper.sandboxContext.putObject(DisplayController.INSTANCE, mockController);
-
-                mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(helper.sandboxContext)
-                        .getBestMatch(mAppBounds.width(), mAppBounds.height(), rotation);
-                mDeviceProfile.updateInsets(mLauncherInsets);
-
-                TaskViewSimulator tvs = new TaskViewSimulator(helper.sandboxContext,
-                        FallbackActivityInterface.INSTANCE);
-                tvs.setDp(mDeviceProfile);
-
-                int launcherRotation = info.rotation;
-                if (mAppRotation < 0) {
-                    mAppRotation = launcherRotation;
-                }
-
-                tvs.getOrientationState().update(launcherRotation, mAppRotation);
-                if (mAppInsets == null) {
-                    mAppInsets = new Rect(mLauncherInsets);
-                }
-                tvs.setPreviewBounds(mAppBounds, mAppInsets);
-
-                tvs.fullScreenProgress.value = 1;
-                tvs.recentsViewScale.value = tvs.getFullScreenScale();
-                tvs.apply(this);
-            } finally {
-                helper.destroy();
+                RotationUtils.rotateRect(insetsR, RotationUtils.deltaRotation(rotation, i));
+                RotationUtils.rotateRect(boundsR, RotationUtils.deltaRotation(rotation, i));
+                boundsR.set(0, 0, Math.abs(boundsR.width()), Math.abs(boundsR.height()));
+                allBounds.add(new WindowBounds(boundsR, insetsR));
             }
+
+            WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
+            doReturn(cdi).when(wmProxy).getDisplayInfo(any());
+            doReturn(wm).when(wmProxy).getRealBounds(any(), any());
+            doReturn(NavigationMode.NO_BUTTON).when(wmProxy).getNavigationMode(any());
+
+            ArrayMap<CachedDisplayInfo, List<WindowBounds>> perDisplayBoundsCache =
+                    new ArrayMap<>();
+            perDisplayBoundsCache.put(cdi.normalize(wmProxy), allBounds);
+
+            Configuration configuration = new Configuration();
+            configuration.densityDpi = mDensityDpi;
+            Context configurationContext = app.createConfigurationContext(configuration);
+
+            DisplayController.Info info = new Info(
+                    configurationContext, false, wmProxy, perDisplayBoundsCache, mDensityDpi);
+            when(mockController.getInfo()).thenReturn(info);
+
+            mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(app)
+                    .getBestMatch(mAppBounds.width(), mAppBounds.height(), rotation);
+            mDeviceProfile.updateInsets(mLauncherInsets);
+
+            TaskViewSimulator tvs = new TaskViewSimulator(app,
+                    FallbackActivityInterface.INSTANCE, false, 0);
+            tvs.setDp(mDeviceProfile);
+
+            int launcherRotation = info.rotation;
+            if (mAppRotation < 0) {
+                mAppRotation = launcherRotation;
+            }
+
+            tvs.getOrientationState().update(launcherRotation, mAppRotation);
+            if (mAppInsets == null) {
+                mAppInsets = new Rect(mLauncherInsets);
+            }
+            tvs.setPreviewBounds(mAppBounds, mAppInsets);
+
+            tvs.fullScreenProgress.value = 1;
+            tvs.recentsViewScale.value = tvs.getFullScreenScale();
+            tvs.apply(this);
         }
 
         @Override
@@ -269,6 +274,20 @@ public class TaskViewSimulatorTest {
         @Override
         public void describeTo(Description description) {
             description.appendValue(mExpected);
+        }
+    }
+
+    @LauncherAppSingleton
+    @Component(modules = {AllModulesMinusWMProxy.class})
+    interface TaskViewSimulatorTestComponent extends LauncherAppComponent {
+
+        @Component.Builder
+        interface Builder extends LauncherAppComponent.Builder {
+
+            @BindsInstance
+            Builder bindDisplayController(DisplayController controller);
+
+            TaskViewSimulatorTestComponent build();
         }
     }
 }

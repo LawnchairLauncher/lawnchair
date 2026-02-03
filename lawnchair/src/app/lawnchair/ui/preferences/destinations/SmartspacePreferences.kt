@@ -34,8 +34,6 @@ import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
-import app.lawnchair.ui.preferences.components.layout.DividerColumn
-import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.theme.isSelectedThemeDark
@@ -60,6 +58,7 @@ fun SmartspacePreferences(
         modifier = modifier,
     ) {
         if (fromWidget) {
+            SmartspacePreview()
             LawnchairSmartspaceSettings(smartspaceProvider)
         } else {
             MainSwitchPreference(
@@ -67,15 +66,20 @@ fun SmartspacePreferences(
                 label = stringResource(R.string.smartspace_widget_toggle_label),
                 description = stringResource(id = R.string.smartspace_widget_toggle_description).takeIf { modeIsLawnchair },
             ) {
+                if (modeIsLawnchair) {
+                    SmartspacePreview()
+                }
                 PreferenceGroup {
-                    SmartspaceProviderPreference(
-                        adapter = smartspaceModeAdapter,
-                    )
+                    Item {
+                        SmartspaceProviderPreference(
+                            adapter = smartspaceModeAdapter,
+                        )
+                    }
                 }
 
                 Crossfade(
                     targetState = selectedMode,
-                    label = "Smartspace setting transision",
+                    label = "Smartspace setting transition",
                 ) { targetState ->
                     when (targetState) {
                         LawnchairSmartspace -> {
@@ -102,7 +106,6 @@ private fun LawnchairSmartspaceSettings(
     Column(
         modifier = modifier,
     ) {
-        SmartspacePreview()
         PreferenceGroup(
             heading = stringResource(id = R.string.what_to_show),
             modifier = Modifier.padding(top = 8.dp),
@@ -112,10 +115,12 @@ private fun LawnchairSmartspaceSettings(
                 .filter { it.isAvailable }
                 .forEach {
                     key(it.providerName) {
-                        SwitchPreference(
-                            adapter = it.enabledPref.getAdapter(),
-                            label = stringResource(id = it.providerName),
-                        )
+                        Item { _ ->
+                            SwitchPreference(
+                                adapter = it.enabledPref.getAdapter(),
+                                label = stringResource(id = it.providerName),
+                            )
+                        }
                     }
                 }
         }
@@ -160,24 +165,25 @@ fun SmartspacePreview(
         heading = stringResource(id = R.string.preview_label),
         modifier = modifier,
     ) {
-        CompositionLocalProvider(LocalContext provides themedContext) {
-            AndroidView(
-                factory = {
-                    val view = SmartspaceViewContainer(it, previewMode = true)
-                    val height = it.resources
-                        .getDimensionPixelSize(R.dimen.enhanced_smartspace_height)
-                    view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, height)
-                    view
-                },
-                modifier = Modifier.padding(
-                    start = 8.dp,
-                    top = 8.dp,
-                    bottom = 16.dp,
-                ),
-            )
-        }
-        LaunchedEffect(key1 = null) {
-            SmartspaceProvider.INSTANCE.get(context).startSetup(context as Activity)
+        Item {
+            CompositionLocalProvider(LocalContext provides themedContext) {
+                AndroidView(
+                    factory = {
+                        val view = SmartspaceViewContainer(it, previewMode = true)
+                        val height = it.resources
+                            .getDimensionPixelSize(R.dimen.enhanced_smartspace_height)
+                        view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, height)
+                        view
+                    },
+                    modifier = Modifier.padding(
+                        top = 8.dp,
+                        bottom = 16.dp,
+                    ),
+                )
+            }
+            LaunchedEffect(key1 = null) {
+                SmartspaceProvider.INSTANCE.get(context).startSetup(context as Activity)
+            }
         }
     }
 }
@@ -186,48 +192,48 @@ fun SmartspacePreview(
 fun SmartspaceDateAndTimePreferences(
     modifier: Modifier = Modifier,
 ) {
+    val preferenceManager2 = preferenceManager2()
+
+    val calendarAdapter = preferenceManager2.smartspaceCalendar.getAdapter()
+    val showDateAdapter = preferenceManager2.smartspaceShowDate.getAdapter()
+    val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
+
+    val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
+    val calendar = calendarAdapter.state.value
+
     PreferenceGroup(
         heading = stringResource(id = R.string.smartspace_date_and_time),
         modifier = modifier.padding(top = 8.dp),
     ) {
-        val preferenceManager2 = preferenceManager2()
-
-        val calendarSelectionAdapter =
-            preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
-        val calendarAdapter = preferenceManager2.smartspaceCalendar.getAdapter()
-        val showDateAdapter = preferenceManager2.smartspaceShowDate.getAdapter()
-        val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
-
-        val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
-
-        val calendar = if (calendarSelectionAdapter.state.value) {
-            calendarAdapter.state.value
-        } else {
-            preferenceManager2.smartspaceCalendar.defaultValue
+        val supportCustomizationFormat = calendar.formatCustomizationSupport
+        Item(
+            key = "smartspace_date",
+            visible = supportCustomizationFormat,
+        ) {
+            SwitchPreference(
+                adapter = showDateAdapter,
+                label = stringResource(id = R.string.smartspace_date),
+                enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
+            )
         }
-
-        ExpandAndShrink(visible = calendar.formatCustomizationSupport) {
-            DividerColumn {
-                SwitchPreference(
-                    adapter = showDateAdapter,
-                    label = stringResource(id = R.string.smartspace_date),
-                    enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
-                )
-                val calendarSelectionEnabled =
-                    preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
-                ExpandAndShrink(visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value) {
-                    SmartspaceCalendarPreference()
-                }
-                SwitchPreference(
-                    adapter = showTimeAdapter,
-                    label = stringResource(id = R.string.smartspace_time),
-                    enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
-                )
-                ExpandAndShrink(visible = showTimeAdapter.state.value) {
-                    SmartspaceTimeFormatPreference()
-                }
-            }
+        Item(
+            "smartspace_calendar",
+            supportCustomizationFormat && showDateAdapter.state.value,
+        ) { SmartspaceCalendarPreference() }
+        Item(
+            "smartspace_time",
+            supportCustomizationFormat,
+        ) {
+            SwitchPreference(
+                adapter = showTimeAdapter,
+                label = stringResource(id = R.string.smartspace_time),
+                enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
+            )
         }
+        Item(
+            "smartspace_time_format",
+            supportCustomizationFormat && showTimeAdapter.state.value,
+        ) { SmartspaceTimeFormatPreference() }
     }
 }
 
@@ -282,17 +288,21 @@ fun SmartspacerSettings(
         PreferenceGroup(
             heading = stringResource(id = R.string.smartspacer_settings),
         ) {
-            SliderPreference(
-                label = stringResource(R.string.maximum_number_of_targets),
-                adapter = prefs2.smartspacerMaxCount.getAdapter(),
-                valueRange = 5..15,
-                step = 1,
-            )
-            ClickablePreference(label = stringResource(R.string.open_smartspacer_settings)) {
-                val intent = context.packageManager.getLaunchIntentForPackage(
-                    SmartspacerConstants.SMARTSPACER_PACKAGE_NAME,
+            Item {
+                SliderPreference(
+                    label = stringResource(R.string.maximum_number_of_targets),
+                    adapter = prefs2.smartspacerMaxCount.getAdapter(),
+                    valueRange = 5..15,
+                    step = 1,
                 )
-                context.startActivity(intent)
+            }
+            Item {
+                ClickablePreference(label = stringResource(R.string.open_smartspacer_settings)) {
+                    val intent = context.packageManager.getLaunchIntentForPackage(
+                        SmartspacerConstants.SMARTSPACER_PACKAGE_NAME,
+                    )
+                    context.startActivity(intent)
+                }
             }
         }
     }

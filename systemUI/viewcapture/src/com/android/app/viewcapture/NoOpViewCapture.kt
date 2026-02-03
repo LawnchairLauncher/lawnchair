@@ -10,7 +10,7 @@ import android.view.Window
  * 1p apps, and has memory / cpu load that we don't want to risk negatively impacting release builds
  */
 class NoOpViewCapture: ViewCapture(0, 0,
-    createAndStartNewLooperExecutor("NoOpViewCapture", HandlerThread.MIN_PRIORITY)) {
+        createAndStartNewLooperExecutor("NoOpViewCapture", HandlerThread.MIN_PRIORITY)) {
     override fun startCapture(view: View, name: String): SafeCloseable {
         return SafeCloseable { }
     }

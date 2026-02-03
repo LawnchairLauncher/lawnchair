@@ -17,8 +17,8 @@ package com.android.wm.shell.common
 
 import android.window.WindowContainerToken
 import android.window.WindowContainerTransaction
+import com.android.internal.protolog.ProtoLog
 import com.android.wm.shell.protolog.ShellProtoLogGroup.WM_SHELL_TASK_ORG
-import com.android.wm.shell.util.KtProtoLog
 
 /**
  * Controller to manage behavior of activities launched with
@@ -30,7 +30,7 @@ class LaunchAdjacentController(private val syncQueue: SyncTransactionQueue) {
     var launchAdjacentEnabled: Boolean = true
         set(value) {
             if (field != value) {
-                KtProtoLog.d(WM_SHELL_TASK_ORG, "set launch adjacent flag root enabled=%b", value)
+                ProtoLog.d(WM_SHELL_TASK_ORG, "set launch adjacent flag root enabled=%b", value)
                 field = value
                 container?.let { c ->
                     if (value) {
@@ -52,7 +52,7 @@ class LaunchAdjacentController(private val syncQueue: SyncTransactionQueue) {
      * @see WindowContainerTransaction.setLaunchAdjacentFlagRoot
      */
     fun setLaunchAdjacentRoot(container: WindowContainerToken) {
-        KtProtoLog.d(WM_SHELL_TASK_ORG, "set new launch adjacent flag root container")
+        ProtoLog.d(WM_SHELL_TASK_ORG, "set new launch adjacent flag root container")
         this.container = container
         if (launchAdjacentEnabled) {
             enableContainer(container)
@@ -67,7 +67,7 @@ class LaunchAdjacentController(private val syncQueue: SyncTransactionQueue) {
      * @see WindowContainerTransaction.clearLaunchAdjacentFlagRoot
      */
     fun clearLaunchAdjacentRoot() {
-        KtProtoLog.d(WM_SHELL_TASK_ORG, "clear launch adjacent flag root container")
+        ProtoLog.d(WM_SHELL_TASK_ORG, "clear launch adjacent flag root container")
         container?.let {
             disableContainer(it)
             container = null
@@ -75,14 +75,14 @@ class LaunchAdjacentController(private val syncQueue: SyncTransactionQueue) {
     }
 
     private fun enableContainer(container: WindowContainerToken) {
-        KtProtoLog.v(WM_SHELL_TASK_ORG, "enable launch adjacent flag root container")
+        ProtoLog.v(WM_SHELL_TASK_ORG, "enable launch adjacent flag root container")
         val wct = WindowContainerTransaction()
         wct.setLaunchAdjacentFlagRoot(container)
         syncQueue.queue(wct)
     }
 
     private fun disableContainer(container: WindowContainerToken) {
-        KtProtoLog.v(WM_SHELL_TASK_ORG, "disable launch adjacent flag root container")
+        ProtoLog.v(WM_SHELL_TASK_ORG, "disable launch adjacent flag root container")
         val wct = WindowContainerTransaction()
         wct.clearLaunchAdjacentFlagRoot(container)
         syncQueue.queue(wct)

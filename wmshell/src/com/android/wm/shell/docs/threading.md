@@ -1,4 +1,5 @@
 # Threading
+[Back to home](README.md)
 
 ---
 
@@ -36,7 +37,8 @@ the product.
   thread)
   - This is always another thread even if config_enableShellMainThread is not set true
   - **Note**:
-    - This thread runs with `THREAD_PRIORITY_BACKGROUND` priority
+    - This thread runs with `THREAD_PRIORITY_BACKGROUND` priority but can be requested to be boosted
+      to `THREAD_PRIORITY_FOREGROUND`
 - `ShellAnimationThread` (currently only used for Transitions and Splitscreen, but potentially all
   animations could be offloaded here)
 - `ShellSplashScreenThread` (only for use with splashscreens)

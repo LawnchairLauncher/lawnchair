@@ -1,5 +1,6 @@
 package app.lawnchair.qsb.providers
 
+import android.app.ActivityOptions
 import android.app.PendingIntent
 import android.appwidget.AppWidgetHostView
 import android.content.Context
@@ -11,6 +12,7 @@ import app.lawnchair.qsb.ThemingMethod
 import app.lawnchair.util.pendingIntent
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.qsb.QsbContainerView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -31,6 +33,12 @@ data object Google : QsbSearchProvider(
         if (!forceWebsite) {
             val subscription = getSearchIntent(launcher)
             val pendingIntent = subscription.firstOrNull()
+            val options = ActivityOptions.makeBasic()
+            if (Utilities.ATLEAST_U) {
+                options.setPendingIntentBackgroundActivityStartMode(
+                    ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED,
+                )
+            }
             if (pendingIntent != null) {
                 launcher.startIntentSender(
                     pendingIntent.intentSender,
@@ -38,6 +46,7 @@ data object Google : QsbSearchProvider(
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
                     0,
+                    options.toBundle(),
                 )
                 return
             }

@@ -1,26 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~     This file is part of Lawnchair Launcher.
-  ~
-  ~     Lawnchair Launcher is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     (at your option) any later version.
-  ~
-  ~     Lawnchair Launcher is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
-  ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
-  -->
-
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <path
-        android:fillColor="#000"
-        android:pathData="M14,12H10V10H14M14,16H10V14H14M20,8H17.19C16.74,7.22 16.12,6.55 15.37,6.04L17,4.41L15.59,3L13.42,5.17C12.96,5.06 12.5,5 12,5C11.5,5 11.04,5.06 10.59,5.17L8.41,3L7,4.41L8.62,6.04C7.88,6.55 7.26,7.22 6.81,8H4V10H6.09C6.04,10.33 6,10.66 6,11V12H4V14H6V15C6,15.34 6.04,15.67 6.09,16H4V18H6.81C7.85,19.79 9.78,21 12,21C14.22,21 16.15,19.79 17.19,18H20V16H17.91C17.96,15.67 18,15.34 18,15V14H20V12H18V11C18,10.66 17.96,10.33 17.91,10H20V8Z" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:tint="#000000" android:viewportHeight="960" android:viewportWidth="960" android:width="24dp">
+      
+    <path android:fillColor="@android:color/white" android:pathData="M480,840Q415,840 359.5,808Q304,776 272,720L200,720Q183,720 171.5,708.5Q160,697 160,680Q160,663 171.5,651.5Q183,640 200,640L244,640Q241,620 240.5,600Q240,580 240,560L200,560Q183,560 171.5,548.5Q160,537 160,520Q160,503 171.5,491.5Q183,480 200,480L240,480Q240,460 240.5,440Q241,420 244,400L200,400Q183,400 171.5,388.5Q160,377 160,360Q160,343 171.5,331.5Q183,320 200,320L272,320Q286,297 303.5,277Q321,257 344,242L307,204Q296,193 296,176.5Q296,160 308,148Q319,137 336,137Q353,137 364,148L422,206Q450,197 479,197Q508,197 536,206L596,147Q607,136 623.5,136Q640,136 652,148Q663,159 663,176Q663,193 652,204L614,242Q637,257 655.5,276.5Q674,296 688,320L760,320Q777,320 788.5,331.5Q800,343 800,360Q800,377 788.5,388.5Q777,400 760,400L716,400Q719,420 719.5,440Q720,460 720,480L760,480Q777,480 788.5,491.5Q800,503 800,520Q800,537 788.5,548.5Q777,560 760,560L720,560Q720,580 719.5,600Q719,620 716,640L760,640Q777,640 788.5,651.5Q800,663 800,680Q800,697 788.5,708.5Q777,720 760,720L688,720Q656,776 600.5,808Q545,840 480,840ZM440,640L520,640Q537,640 548.5,628.5Q560,617 560,600Q560,583 548.5,571.5Q537,560 520,560L440,560Q423,560 411.5,571.5Q400,583 400,600Q400,617 411.5,628.5Q423,640 440,640ZM440,480L520,480Q537,480 548.5,468.5Q560,457 560,440Q560,423 548.5,411.5Q537,400 520,400L440,400Q423,400 411.5,411.5Q400,423 400,440Q400,457 411.5,468.5Q423,480 440,480Z"/>
+    
 </vector>

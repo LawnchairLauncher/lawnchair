@@ -16,38 +16,45 @@
 
 package com.android.quickstep
 
+import android.view.Display
 import android.view.View
+import com.android.internal.jank.Cuj
 import com.android.launcher3.AbstractFloatingViewHelper
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.popup.SystemShortcut
+import com.android.quickstep.fallback.window.RecentsWindowFlags.enableDesktopMenuOnSecondaryDisplay
 import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.RecentsViewContainer
-import com.android.quickstep.views.TaskView.TaskContainer
-import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource
-import com.android.wm.shell.shared.DesktopModeStatus
+import com.android.quickstep.views.TaskContainer
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper
+import com.android.wm.shell.shared.desktopmode.DesktopModeCompatPolicy
+import com.android.wm.shell.shared.desktopmode.DesktopModeStatus
+import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource
 
 /** A menu item, "Desktop", that allows the user to bring the current app into Desktop Windowing. */
 class DesktopSystemShortcut(
     container: RecentsViewContainer,
     private val taskContainer: TaskContainer,
-    abstractFloatingViewHelper: AbstractFloatingViewHelper
+    abstractFloatingViewHelper: AbstractFloatingViewHelper,
 ) :
     SystemShortcut<RecentsViewContainer>(
-        R.drawable.ic_caption_desktop_button_foreground,
+        R.drawable.ic_desktop,
         R.string.recent_task_option_desktop,
         container,
         taskContainer.itemInfo,
         taskContainer.taskView,
-        abstractFloatingViewHelper
+        abstractFloatingViewHelper,
     ) {
     override fun onClick(view: View) {
+        InteractionJankMonitorWrapper.begin(view, Cuj.CUJ_DESKTOP_MODE_ENTER_FROM_OVERVIEW_MENU)
         dismissTaskMenuView()
         val recentsView = mTarget.getOverviewPanel<RecentsView<*, *>>()
         recentsView.moveTaskToDesktop(
             taskContainer,
-            DesktopModeTransitionSource.APP_FROM_OVERVIEW
+            DesktopModeTransitionSource.APP_FROM_OVERVIEW,
         ) {
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_DESKTOP_MODE_ENTER_FROM_OVERVIEW_MENU)
             mTarget.statsLogManager
                 .logger()
                 .withItemInfo(taskContainer.itemInfo)
@@ -60,26 +67,49 @@ class DesktopSystemShortcut(
         @JvmOverloads
         fun createFactory(
             abstractFloatingViewHelper: AbstractFloatingViewHelper = AbstractFloatingViewHelper()
-        ): TaskShortcutFactory {
-            return object : TaskShortcutFactory {
+        ): TaskShortcutFactory =
+            object : TaskShortcutFactory {
+
                 override fun getShortcuts(
                     container: RecentsViewContainer,
-                    taskContainer: TaskContainer
+                    taskContainer: TaskContainer,
                 ): List<DesktopSystemShortcut>? {
-                    return if (!DesktopModeStatus.canEnterDesktopMode(container.asContext())) null
-                    else if (!taskContainer.task.isDockable) null
-                    else
-                        listOf(
-                            DesktopSystemShortcut(
-                                container,
-                                taskContainer,
-                                abstractFloatingViewHelper
+                    val context = container.asContext()
+                    val taskKey = taskContainer.task.key
+                    val desktopModeCompatPolicy = DesktopModeCompatPolicy(context)
+                    val isShortcutSupported =
+                        enableDesktopMenuOnSecondaryDisplay ||
+                            context.displayId == Display.DEFAULT_DISPLAY
+
+                    return when {
+                        !isShortcutSupported -> null
+
+                        !DesktopModeStatus.isDesktopModeSupportedOnDisplay(
+                            context,
+                            context.display,
+                        ) -> null
+
+                        desktopModeCompatPolicy.shouldDisableDesktopEntryPoints(
+                            taskKey.baseActivity?.packageName,
+                            taskKey.numActivities,
+                            taskKey.isTopActivityNoDisplay,
+                            taskKey.isActivityStackTransparent,
+                        ) -> null
+
+                        !taskContainer.task.isDockable -> null
+
+                        else ->
+                            listOf(
+                                DesktopSystemShortcut(
+                                    container,
+                                    taskContainer,
+                                    abstractFloatingViewHelper,
+                                )
                             )
-                        )
+                    }
                 }
 
                 override fun showForGroupedTask() = true
             }
-        }
     }
 }

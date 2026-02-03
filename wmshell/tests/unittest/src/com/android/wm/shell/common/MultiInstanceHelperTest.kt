@@ -33,8 +33,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.kotlin.any
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -80,17 +78,19 @@ class MultiInstanceHelperTest : ShellTestCase() {
     @Test
     fun supportsMultiInstanceSplit_inStaticAllowList() {
         val allowList = arrayOf(TEST_PACKAGE)
-        val helper = MultiInstanceHelper(mContext, context.packageManager, allowList, true)
+        val helper = MultiInstanceHelper(mContext, context.packageManager, allowList,
+            mock(), mock(), true)
         val component = ComponentName(TEST_PACKAGE, TEST_ACTIVITY)
-        assertEquals(true, helper.supportsMultiInstanceSplit(component))
+        assertEquals(true, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
 
     @Test
     fun supportsMultiInstanceSplit_notInStaticAllowList() {
         val allowList = arrayOf(TEST_PACKAGE)
-        val helper = MultiInstanceHelper(mContext, context.packageManager, allowList, true)
+        val helper = MultiInstanceHelper(mContext, context.packageManager, allowList,
+            mock(), mock(), true)
         val component = ComponentName(TEST_NOT_ALLOWED_PACKAGE, TEST_ACTIVITY)
-        assertEquals(false, helper.supportsMultiInstanceSplit(component))
+        assertEquals(false, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
 
     @Test
@@ -99,17 +99,17 @@ class MultiInstanceHelperTest : ShellTestCase() {
         val component = ComponentName(TEST_PACKAGE, TEST_ACTIVITY)
         val pm = mock<PackageManager>()
         val activityProp = PackageManager.Property("", true, "", "")
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(component.className), eq(TEST_OTHER_USER_ID)))
                 .thenReturn(activityProp)
         val appProp = PackageManager.Property("", false, "", "")
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component.packageName)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
                 .thenReturn(appProp)
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), true)
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), true)
         // Expect activity property to override application property
-        assertEquals(true, helper.supportsMultiInstanceSplit(component))
+        assertEquals(true, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
 
     @Test
@@ -118,17 +118,17 @@ class MultiInstanceHelperTest : ShellTestCase() {
         val component = ComponentName(TEST_PACKAGE, TEST_ACTIVITY)
         val pm = mock<PackageManager>()
         val activityProp = PackageManager.Property("", false, "", "")
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(component.className), eq(TEST_OTHER_USER_ID)))
                 .thenReturn(activityProp)
         val appProp = PackageManager.Property("", true, "", "")
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component.packageName)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
                 .thenReturn(appProp)
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), true)
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), true)
         // Expect activity property to override application property
-        assertEquals(false, helper.supportsMultiInstanceSplit(component))
+        assertEquals(false, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
 
     @Test
@@ -136,17 +136,17 @@ class MultiInstanceHelperTest : ShellTestCase() {
     fun supportsMultiInstanceSplit_noActivityPropertyApplicationPropertyTrue() {
         val component = ComponentName(TEST_PACKAGE, TEST_ACTIVITY)
         val pm = mock<PackageManager>()
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(component.className), eq(TEST_OTHER_USER_ID)))
                 .thenThrow(PackageManager.NameNotFoundException())
         val appProp = PackageManager.Property("", true, "", "")
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component.packageName)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
                 .thenReturn(appProp)
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), true)
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), true)
         // Expect fall through to app property
-        assertEquals(true, helper.supportsMultiInstanceSplit(component))
+        assertEquals(true, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
 
     @Test
@@ -154,15 +154,15 @@ class MultiInstanceHelperTest : ShellTestCase() {
     fun supportsMultiInstanceSplit_noActivityOrAppProperty() {
         val component = ComponentName(TEST_PACKAGE, TEST_ACTIVITY)
         val pm = mock<PackageManager>()
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(component.className), eq(TEST_OTHER_USER_ID)))
                 .thenThrow(PackageManager.NameNotFoundException())
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component.packageName)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
                 .thenThrow(PackageManager.NameNotFoundException())
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), true)
-        assertEquals(false, helper.supportsMultiInstanceSplit(component))
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), true)
+        assertEquals(false, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
     }
 
     @Test
@@ -171,24 +171,25 @@ class MultiInstanceHelperTest : ShellTestCase() {
         val component = ComponentName(TEST_PACKAGE, TEST_ACTIVITY)
         val pm = mock<PackageManager>()
         val activityProp = PackageManager.Property("", true, "", "")
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(component.className), eq(TEST_OTHER_USER_ID)))
             .thenReturn(activityProp)
         val appProp = PackageManager.Property("", true, "", "")
-        whenever(pm.getProperty(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
-            eq(component.packageName)))
+        whenever(pm.getPropertyAsUser(eq(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI),
+            eq(component.packageName), eq(null), eq(TEST_OTHER_USER_ID)))
             .thenReturn(appProp)
 
-        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), false)
+        val helper = MultiInstanceHelper(mContext, pm, emptyArray(), mock(), mock(), false)
         // Expect we only check the static list and not the property
-        assertEquals(false, helper.supportsMultiInstanceSplit(component))
+        assertEquals(false, helper.supportsMultiInstanceSplit(component, TEST_OTHER_USER_ID))
         verify(pm, never()).getProperty(any(), any<ComponentName>())
     }
 
     companion object {
         val TEST_PACKAGE = "com.android.wm.shell.common"
-        val TEST_NOT_ALLOWED_PACKAGE = "com.android.wm.shell.common.fake";
-        val TEST_ACTIVITY = "TestActivity";
+        val TEST_NOT_ALLOWED_PACKAGE = "com.android.wm.shell.common.fake"
+        val TEST_ACTIVITY = "TestActivity"
         val TEST_SHORTCUT_ID = "test_shortcut_1"
+        val TEST_OTHER_USER_ID = 1234
     }
 }

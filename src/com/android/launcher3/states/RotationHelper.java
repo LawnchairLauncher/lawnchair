@@ -18,6 +18,7 @@ package com.android.launcher3.states;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LOCKED;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 
 import static com.android.launcher3.LauncherPrefs.ALLOW_ROTATION;
@@ -26,23 +27,24 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherPrefChangeListener;
 import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.util.ContextTracker;
 import com.android.launcher3.util.DisplayController;
 
 /**
  * Utility class to manage launcher rotation
  */
-public class RotationHelper implements OnSharedPreferenceChangeListener,
+public class RotationHelper implements LauncherPrefChangeListener,
         DeviceProfile.OnDeviceProfileChangeListener,
         DisplayController.DisplayInfoChangeListener {
 
@@ -63,6 +65,8 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
     public static final int REQUEST_ROTATE = 1;
     public static final int REQUEST_LOCK = 2;
 
+    private boolean mIsFixedLandscape = false;
+
     @NonNull
     private final BaseActivity mActivity;
     private final Handler mRequestOrientationHandler;
@@ -73,7 +77,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
 
     /**
      * Rotation request made by
-     * {@link com.android.launcher3.util.ActivityTracker.SchedulerCallback}.
+     * {@link ContextTracker.SchedulerCallback}.
      * This supersedes any other request.
      */
     private int mStateHandlerRequest = REQUEST_NONE;
@@ -112,7 +116,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+    public void onPrefChanged(String s) {
         if (mDestroyed || mIgnoreAutoRotateSettings) return;
         boolean wasRotationEnabled = mHomeRotationEnabled;
         mHomeRotationEnabled = LauncherPrefs.get(mActivity).get(ALLOW_ROTATION);
@@ -134,7 +138,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
 
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
-        onIgnoreAutoRotateChanged(dp.isTablet);
+        onIgnoreAutoRotateChanged(dp.getDeviceProperties().isTablet());
     }
 
     private void onIgnoreAutoRotateChanged(boolean ignoreAutoRotateSettings) {
@@ -160,6 +164,18 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
     public void setCurrentStateRequest(int request) {
         if (mDestroyed || mCurrentStateRequest == request) return;
         mCurrentStateRequest = request;
+        notifyChange();
+    }
+
+    public boolean isFixedLandscape() {
+        return mIsFixedLandscape;
+    }
+
+    /**
+     * If fixedLandscape is true then the Launcher become landscape until set false..
+     */
+    public void setFixedLandscape(boolean fixedLandscape) {
+        mIsFixedLandscape = fixedLandscape;
         notifyChange();
     }
 
@@ -195,7 +211,9 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         }
 
         final int activityFlags;
-        if (mStateHandlerRequest != REQUEST_NONE) {
+        if (mIsFixedLandscape) {
+            activityFlags = SCREEN_ORIENTATION_USER_LANDSCAPE;
+        } else if (mStateHandlerRequest != REQUEST_NONE) {
             activityFlags = mStateHandlerRequest == REQUEST_LOCK ?
                     SCREEN_ORIENTATION_LOCKED : SCREEN_ORIENTATION_UNSPECIFIED;
         } else if (mCurrentTransitionRequest != REQUEST_NONE) {
@@ -213,6 +231,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         }
         if (activityFlags != mLastActivityFlags) {
             mLastActivityFlags = activityFlags;
+            Log.d("b/380940677", toString());
             mRequestOrientationHandler.sendEmptyMessage(activityFlags);
         }
     }
@@ -240,9 +259,9 @@ public class RotationHelper implements OnSharedPreferenceChangeListener,
         return String.format("[mStateHandlerRequest=%d, mCurrentStateRequest=%d, "
                         + "mLastActivityFlags=%d, mIgnoreAutoRotateSettings=%b, "
                         + "mHomeRotationEnabled=%b, mForceAllowRotationForTesting=%b,"
-                        + " mDestroyed=%b]",
+                        + " mDestroyed=%b, mIsFixedLandscape=%b]",
                 mStateHandlerRequest, mCurrentStateRequest, mLastActivityFlags,
                 mIgnoreAutoRotateSettings, mHomeRotationEnabled, mForceAllowRotationForTesting,
-                mDestroyed);
+                mDestroyed, mIsFixedLandscape);
     }
 }
