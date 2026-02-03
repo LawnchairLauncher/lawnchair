@@ -146,9 +146,9 @@ public class WorkProfileManager extends UserProfileManager
         }
         int currentPage = mAllApps.getCurrentPage();
         if (currentPage != WORK) {
-            mWorkModeSwitch.animateVisibility(false);
+            mWorkUtilityView.animateVisibility(false);
         } else {
-            mWorkModeSwitch.animateVisibility(true);
+            mWorkUtilityView.animateVisibility(true);
         }
         if (getAH() != null) {
             getAH().applyPadding();
