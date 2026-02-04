@@ -119,12 +119,29 @@ jobs:
           gh pr comment $PR_URL --body "No issues found, auto-merging the Crowdin pull request."
           gh pr merge $PR_URL --auto --squash --delete-branch
 
+  # Status check that is required in branch protection rules.
+  final-status:
+    needs:
+      - build-debug-apk
+      - check-style
+    runs-on: ubuntu-slim
+    if: always()
+    steps:
+      - name: Check
+        run: |
+          results=$(tr -d '\n' <<< '${{ toJSON(needs.*.result) }}')
+          if ! grep -q -v -E '(failure|cancelled)' <<< "$results"; then
+            echo "One or more required jobs failed"
+            exit 1
+          fi
+          echo "All required jobs completed successfully."
+
   nightly-release:
     runs-on: ubuntu-latest
     # Lawnchair-TODO(Configuration): Don't publish nightly build until Android 8.0, 8.1 is stable, and (probably) stable to match Lawnchair 15 Beta 1 or 2
     if: false
     # if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/15-dev'
-    needs: build-debug-apk
+    needs: final-status
     permissions:
       contents: write
     steps:
