@@ -47,6 +47,13 @@ class ColorPreferenceModelList @Inject constructor(
         )
         registerModel(
             ColorPreferenceModel(
+                prefObject = prefs.workProfileTabBackgroundColor,
+                labelRes = R.string.work_profile_tab_background_label,
+                dynamicEntries = dynamicColors,
+            ),
+        )
+        registerModel(
+            ColorPreferenceModel(
                 prefObject = prefs.notificationDotColor,
                 labelRes = R.string.notification_dots_color,
                 dynamicEntries = dynamicColorsWithDefault,

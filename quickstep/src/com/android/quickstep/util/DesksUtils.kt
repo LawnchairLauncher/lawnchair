@@ -30,8 +30,8 @@ class DesksUtils {
 
         @JvmStatic
         fun areMultiDesksFlagsEnabled() =
-            if (Utilities.ATLEAST_BAKLAVA_1) {
-                // LC-Ignored: Lawnchair-TODO: Intentional unless we can find a way to detect QPR1 build or skip to Android 17
+            if (false) {
+                // LC-Ignored: Intentional, all Android desktop flags are disabled
                 DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue &&
                     DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_FRONTEND.isTrue
             } else {

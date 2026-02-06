@@ -58,6 +58,7 @@ Compatibility list:
 * [Lawnchair] Crash when tapping on launcher preview
 * [Launcher] Actually fix app drawer alphabetical listing when loading icon in bulk
 * [Launcher] Mark home bounce as seen when user actually opens All Apps
+* [Lawnchair] Reimplement app drawer suggested app toggle
 
 ### 🥞 Development 4 Release 1 (Snapshot 10)
 

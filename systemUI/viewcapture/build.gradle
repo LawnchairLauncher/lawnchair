@@ -13,13 +13,13 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src']
-            kotlin.srcDirs = ['src']
+            kotlin.directories.add('src')
             manifest.srcFile 'AndroidManifest.xml'
             proto.srcDirs = ['src']
         }
         androidTest {
             java.srcDirs = ["tests"]
-            kotlin.srcDirs = ['tests']
+            kotlin.directories.add('tests')
             manifest.srcFile "tests/AndroidManifest.xml"
         }
     }

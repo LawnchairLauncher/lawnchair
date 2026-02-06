@@ -1,6 +1,7 @@
 package app.lawnchair.theme.drawable
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
@@ -8,8 +9,10 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import androidx.appcompat.content.res.AppCompatResources
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
+import com.patrykmichalik.opto.core.firstBlocking
 
 object DrawableTokens {
 
@@ -146,7 +149,19 @@ object DrawableTokens {
             context,
             R.drawable.all_apps_tabs_background,
         )
-        selected?.setTint(ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode))
+
+        // Get custom color from preferences
+        val prefs2 = PreferenceManager2.getInstance(context)
+        val colorOption = prefs2.workProfileTabBackgroundColor.firstBlocking()
+        val customColor = colorOption.colorPreferenceEntry.lightColor.invoke(context)
+
+        val selectedColor = if (customColor != 0) {
+            customColor
+        } else {
+            ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode)
+        }
+
+        selected?.setTint(selectedColor)
 
         list.addState(intArrayOf(-android.R.attr.state_selected), unselected)
         list.addState(intArrayOf(android.R.attr.state_selected), selected)

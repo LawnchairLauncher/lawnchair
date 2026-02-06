@@ -130,11 +130,13 @@ public class WorkProfileManager extends UserProfileManager
      * Creates and attaches for profile toggle button to {@link ActivityAllAppsContainerView}
      */
     public boolean attachWorkUtilityViews() {
-        if (!mAllApps.getAppsStore().hasModelFlag(
-                FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION)) {
-            Log.e(TAG, "unable to attach work mode switch; Missing required permissions");
-            return false;
-        }
+           // LC: Skip permission checks - being the default launcher is sufficient for work profile control
+           // FLAG_HAS_SHORTCUT_PERMISSION and FLAG_QUIET_MODE_CHANGE_PERMISSION are not required
+//         if (!mAllApps.getAppsStore().hasModelFlag(
+//                 FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION)) {
+//             Log.e(TAG, "unable to attach work mode switch; Missing required permissions");
+//             return false;
+//         }
         if (mWorkUtilityView == null) {
             mWorkUtilityView = (WorkUtilityView) mAllApps.getLayoutInflater().inflate(
                     R.layout.work_mode_utility_view, mAllApps, false);
@@ -142,8 +144,11 @@ public class WorkProfileManager extends UserProfileManager
         if (mWorkUtilityView.getParent() == null) {
             mAllApps.addView(mWorkUtilityView);
         }
-        if (mAllApps.getCurrentPage() != WORK) {
+        int currentPage = mAllApps.getCurrentPage();
+        if (currentPage != WORK) {
             mWorkUtilityView.animateVisibility(false);
+        } else {
+            mWorkUtilityView.animateVisibility(true);
         }
         if (getAH() != null) {
             getAH().applyPadding();

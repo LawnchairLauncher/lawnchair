@@ -70,6 +70,15 @@ public class UserManagerState {
     }
 
     /**
+     * Updates the quiet mode state for a specific user
+     */
+    public void updateUserQuietMode(UserCache userCache, UserHandle user, boolean isQuiet) {
+        long serialNo = userCache.getSerialNumberForUser(user);
+        mQuietUsersHashCodeMap.put(user.hashCode(), isQuiet);
+        mQuietUsersSerialNoMap.put(serialNo, isQuiet);
+    }
+
+    /**
      * Returns true if any user profile has quiet mode enabled.
      * <p>
      * Do not use this for determining if a specific profile has quiet mode enabled, as their can

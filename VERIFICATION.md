@@ -1,12 +1,12 @@
 # Lawnchair verification
 
 Lawnchair apk are cryptographically signed and can be verified using two verifications system.
-1. GitHub or SLSA attestations
+1. GitHub or SLSA attestations (Starting with Lawnchair 15 Beta 1)
 2. SHA256 of android app certificate
 
-## SLSA Attestation
+## SLSA Attestation (Starting with Lawnchair 15 Beta 1)
 
-Lawnchair repository is SLSA-Level 2 compliance and can be verified using a provenance.
+Every release of Lawnchair with the exception of Nightly is attested and verified with SLSA provenance. This repository meet the requirements of SLSA-Level 2 compliance
 
 > [!NOTE]
 > It is possible to verify without GitHub CLI by cross-referencing check from 
