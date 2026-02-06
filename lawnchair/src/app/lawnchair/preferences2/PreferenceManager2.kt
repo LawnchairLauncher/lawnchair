@@ -599,7 +599,6 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_two_line_allapps),
         onSet = { value ->
             LauncherPrefs.get(context).put(ENABLE_TWOLINE_ALLAPPS_TOGGLE, value)
-            reloadHelper.recreate()
         },
     )
 
