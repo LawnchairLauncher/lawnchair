@@ -798,18 +798,6 @@ public class LoaderTask implements Runnable {
         return new IconRequestInfo<>(appInfo, activityInfo,
                 DEFAULT_LOOKUP_FLAG.withUseLowRes(false));
     }
-    private ComponentKey findMatchingKey(
-        Map<ComponentKey, String> map,
-        ComponentKey target
-    ) {
-        for (ComponentKey key : map.keySet()) {
-            if (key.componentName.equals(target.componentName)
-                && key.user.equals(target.user)) {
-                return key;
-            }
-        }
-        return null;
-    }
 
     private List<ShortcutInfo> loadDeepShortcuts() {
         List<ShortcutInfo> allShortcuts = new ArrayList<>();
