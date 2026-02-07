@@ -49,6 +49,7 @@ import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
@@ -90,6 +91,7 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ApiWrapper;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -705,6 +707,14 @@ public class LoaderTask implements Runnable {
                 }
                 allAppsItemRequestInfos.forEach(iconRequestInfo ->
                     mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
+                Map<ComponentKey, String> renamedApps = pref.getCustomAppName().get();
+                for (AppInfo info : mBgAllAppsList.data) {
+                    ComponentKey k = new ComponentKey(info.getTargetComponent(), info.user);
+                    String customTitle = renamedApps.get(k);
+                    if (!TextUtils.isEmpty(customTitle)) {
+                        info.title = customTitle;
+                    }
+                }
             } finally {
                 Trace.endSection();
             }
@@ -787,6 +797,18 @@ public class LoaderTask implements Runnable {
         }
         return new IconRequestInfo<>(appInfo, activityInfo,
                 DEFAULT_LOOKUP_FLAG.withUseLowRes(false));
+    }
+    private ComponentKey findMatchingKey(
+        Map<ComponentKey, String> map,
+        ComponentKey target
+    ) {
+        for (ComponentKey key : map.keySet()) {
+            if (key.componentName.equals(target.componentName)
+                && key.user.equals(target.user)) {
+                return key;
+            }
+        }
+        return null;
     }
 
     private List<ShortcutInfo> loadDeepShortcuts() {
