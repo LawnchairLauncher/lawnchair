@@ -584,6 +584,8 @@
     <string name="row_height_label">行高</string>
     <string name="app_drawer_indent_label">水平边距</string>
     <string name="app_drawer_bg_color_label">背景颜色</string>
+    <string name="work_profile_tab_background_label">标签页背景颜色</string>
+    <string name="work_profile_tab_container_background_label">分隔符标签页容器背景</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">从应用抽屉中隐藏</string>
     <string name="hidden_apps_label_with_count">隐藏的应用 (%1$d)</string>

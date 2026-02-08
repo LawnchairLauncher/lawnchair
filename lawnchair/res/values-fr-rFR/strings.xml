@@ -584,6 +584,8 @@
     <string name="row_height_label">Hauteur de ligne</string>
     <string name="app_drawer_indent_label">Décalage vers le centre</string>
     <string name="app_drawer_bg_color_label">Couleur d\'arrière-plan</string>
+    <string name="work_profile_tab_background_label">Couleur d\'arrière-plan des onglets</string>
+    <string name="work_profile_tab_container_background_label">Arrière-plan séparé du conteneur des onglets</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Masquer dans le tiroir des applis</string>
     <string name="hidden_apps_label_with_count">Applis masquées (%1$d)</string>

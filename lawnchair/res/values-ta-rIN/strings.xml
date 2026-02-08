@@ -584,6 +584,8 @@
     <string name="row_height_label">வரிசை உயரம்</string>
     <string name="app_drawer_indent_label">கிடைமட்ட திணிப்பு</string>
     <string name="app_drawer_bg_color_label">Background color</string>
+    <string name="work_profile_tab_background_label">Tabs background color</string>
+    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">செயலி இழுப்பறையிலிருந்து மறை</string>
     <string name="hidden_apps_label_with_count">மறைக்கப்பட்ட செயலிகள்(%1$d)</string>

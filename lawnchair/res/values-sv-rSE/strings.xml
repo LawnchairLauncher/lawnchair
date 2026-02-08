@@ -584,6 +584,8 @@
     <string name="row_height_label">Radhöjd</string>
     <string name="app_drawer_indent_label">Vågrätt avstånd</string>
     <string name="app_drawer_bg_color_label">Bakgrundsfärg</string>
+    <string name="work_profile_tab_background_label">Tabs background color</string>
+    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Dölj från applådan</string>
     <string name="hidden_apps_label_with_count">Dolda appar (%1$d)</string>

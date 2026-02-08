@@ -584,6 +584,8 @@
     <string name="row_height_label">Visina reda</string>
     <string name="app_drawer_indent_label">Horizontalni razmak</string>
     <string name="app_drawer_bg_color_label">Background color</string>
+    <string name="work_profile_tab_background_label">Tabs background color</string>
+    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Sakrij sa liste aplikacija</string>
     <string name="hidden_apps_label_with_count">Skrivene aplikacije (%1$d)</string>

@@ -584,6 +584,8 @@
     <string name="row_height_label">가로 행 높이</string>
     <string name="app_drawer_indent_label">가로 패딩</string>
     <string name="app_drawer_bg_color_label">배경색</string>
+    <string name="work_profile_tab_background_label">Tabs background color</string>
+    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">앱 서랍에서 숨기기</string>
     <string name="hidden_apps_label_with_count">숨겨진 앱 (%1$d)</string>
