@@ -102,8 +102,8 @@
     <string name="caddy_beta">Группировка (бета)</string>
     <string name="caddy">Группировка</string>
     <string name="app_drawer_folder">Папки в Меню приложений</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="selected_apps">Выбранные приложения</string>
+    <string name="add_apps">Добавить приложения</string>
     <string name="app_drawer_folder_settings">Папка с приложениями</string>
     <string name="add_folder">Создать папку</string>
     <string name="edit_folder">Изменить папку</string>
@@ -111,7 +111,7 @@
     <string name="edit_label">Изменить</string>
     <string name="apply_label">Применить</string>
     <string name="delete_label">Удалить</string>
-    <string name="folder_list_note">Смахните влево для редактирования, Смахните вправо для удаления или коснитесь для обновления элементов</string>
+    <string name="folder_list_note">Смахните влево для редактирования, Смахните вправо для удаления или Коснитесь для обновления элементов</string>
     <string name="apps_in_folder_label">Скрыть приложения в папках</string>
     <string name="apps_in_folder_description">Скрывать приложения в папках из общего списка приложений</string>
     <string name="folders_filter_duplicates">Показывать только неповторяющиеся приложения</string>
@@ -123,10 +123,10 @@
     <string name="x_and_y">%1$s и %2$s</string>
     <string name="advanced">Расширенные настройки</string>
     <!-- Draggable -->
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here. Drag an item here or tap the remove button to make an item active.</string>
-    <string name="reorderable_add_hint_items">Active items will appear here. Drag an item here or tap the add button to make an item active.</string>
+    <string name="reorderable_active_items">Активные элементы</string>
+    <string name="reorderable_disabled_items">Прочие элементы</string>
+    <string name="reorderable_disabled_hint">Здесь будут показаны отключенные элементы. Перетащите элемент сюда или нажмите кнопку Удалить, чтобы сделать элемент активным.</string>
+    <string name="reorderable_add_hint_items">Здесь будут показаны активные элементы. Перетащите элемент сюда или нажмите кнопку Добавить, чтобы сделать элемент активным.</string>
     <!--
 
     Preference Dashboard
@@ -137,7 +137,7 @@
     <string name="general_description">Цвета, Наборы иконок, Точки уведомлений</string>
     <string name="home_screen_label">Главный экран</string>
     <string name="home_screen_description">Лента, сетка, иконки</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">Действия на главном экране</string>
     <string name="dock_label">Док-панель</string>
     <string name="dock_description">Строка поиска, число иконок</string>
     <string name="app_drawer_label">Меню приложений</string>
@@ -155,10 +155,10 @@
     <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
     <string name="experimental_features_label">Эксперимент. функции</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
+    <string name="workspace_label">Рабочее пространство</string>
     <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
+    <string name="internal_label">Внутренние</string>
+    <string name="internal_description">Внутренние могут быть более нестабильными, чем другие экспериментальные группы</string>
     <string name="font_picker_label">Настройки шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений</string>
     <string name="smartspace_calendar_label">Настройки календаря виджета \"Самое главное\"</string>
@@ -167,15 +167,15 @@
     <string name="workspace_increase_max_grid_size_description">Увеличить макс. допустимый размер сетки глав. экрана с 10х10 на 20x20</string>
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
+    <string name="always_reload_icons_warning">Вызывает регулярную перезагрузку значка, это не требуется, если набор значков не обновляется регулярно</string>
     <string name="icon_swipe_gestures">Свайп-жесты по иконкам</string>
     <string name="icon_swipe_gestures_description">Выполнять действия при смахивании влево или вправо по иконкам вместо прокрутки экрана</string>
     <string name="show_deck_layout">Стиль колоды</string>
     <string name="show_deck_layout_description">Показывать опцию для скрытия Меню приложений и автоматического добавления новых приложений на главный экран</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="material_expressive_label">Стиль Material 3 Expressive</string>
+    <string name="material_expressive_description">Включить Material 3 Expressive стиль в рабочем пространстве</string>
+    <string name="experimental_folder_shape_modify_label">Настраиваемая форма папок</string>
+    <string name="folder_shape_label">Папка</string>
     <string name="app_icon_shape_label">Приложение</string>
     <string name="gesturenavcontract_label">GestureNavContract API</string>
     <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
@@ -222,8 +222,8 @@
     <string name="adaptive_icon_background_description">Для белой подложки установите 100% значение яркости</string>
     <string name="reset_custom_icons">Сброс польз. иконок</string>
     <string name="reset_custom_icons_confirmation">Все польз. иконки будут сброшены. Вы хотите продолжить?</string>
-    <string name="remove_all_views_from_home_screen">Clear home screen</string>
-    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
+    <string name="remove_all_views_from_home_screen">Очистить главный экран</string>
+    <string name="remove_all_views_from_home_screen_desc">Домашний экран будет очищен. Продолжить?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Иконки</string>
     <string name="icon_picker_reset_to_default">Сбросить настройки</string>
@@ -246,8 +246,8 @@
     <string name="icon_shape_squircle">Квадратный круг</string>
     <string name="icon_shape_teardrop">Капля</string>
     <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <string name="icon_shape_very_sunny">Очень солнечно</string>
+    <string name="icon_shape_complex_clover">Сложный клевер</string>
     <string name="icon_shape_four_sided_cookie">4-сторонняя печенька</string>
     <string name="icon_shape_seven_sided_cookie">7-сторонняя печенька</string>
     <string name="icon_shape_arch">Арка</string>
@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Источник тематических иконок</string>
     <string name="themed_icon_pack_tint">Тонировка в цвет акцента</string>
     <string name="system_icons">Системные иконки</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Тематические иконки</string>
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Главный экран</string>
@@ -340,11 +342,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Григорианский</string>
     <string name="smartspace_calendar_persian">Персидский</string>
-    <string name="smartspace_calendar_lunar">Lunar</string>
+    <string name="smartspace_calendar_lunar">Лунный</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
+    <string name="smartspace_battery_fast_charging">Быстрая зарядка</string>
+    <string name="smartspace_battery_slow_charging">Медленная зарядка</string>
     <string name="smartspace_battery_charging">Заряжается</string>
     <string name="smartspace_battery_full">Заряжено</string>
     <string name="smartspace_battery_low">Низкий заряд батареи</string>
@@ -489,8 +491,8 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Поворот главного экрана</string>
     <string name="home_screen_rotation_description">Разрешить поворот глав. экрана при повороте устройства</string>
-    <string name="auto_updater_label">Auto updater</string>
-    <string name="auto_updater_description">Automatically check for Nightly update when going to About section</string>
+    <string name="auto_updater_label">Авто-обновление</string>
+    <string name="auto_updater_description">Автоматически проверять наличие обновлений при переходе в раздел \"О программе\"</string>
     <string name="wallpaper_blur">Размытие обоев (эксперимент.)</string>
     <string name="wallpaper_background_blur">Степень размытия</string>
     <string name="wallpaper_background_blur_factor">Предел фактора размытия</string>
@@ -506,8 +508,8 @@
     <string name="wallpaper_depth_effect_label">Эффект глубины обоев</string>
     <string name="wallpaper_depth_effect_description">Приближать и отдалять обои при переключении между приложениями</string>
     <string name="show_sys_ui_scrim">Тень сверху</string>
-    <string name="infinite_scrolling_label">Infinite scrolling</string>
-    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
+    <string name="infinite_scrolling_label">Бесконечная прокрутка</string>
+    <string name="infinite_scrolling_description">Смахните для перехода между первой и последней страницами</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
     <string name="home_screen_lock">Блокировать глав. экран</string>
     <string name="home_screen_unlock">Разблокировать глав. экран</string>
@@ -584,8 +586,8 @@
     <string name="row_height_label">Высота строки</string>
     <string name="app_drawer_indent_label">Горизонт. отступ</string>
     <string name="app_drawer_bg_color_label">Цвет фона</string>
-    <string name="work_profile_tab_background_label">Tabs background color</string>
-    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
+    <string name="work_profile_tab_background_label">Фоновый цвет вкладок</string>
+    <string name="work_profile_tab_container_background_label">Фон контейнера отдельной вкладки</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Скрыть из Меню приложений</string>
     <string name="hidden_apps_label_with_count">Скрытые приложения (%1$d)</string>
@@ -623,7 +625,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search web and more</string>
+    <string name="all_apps_device_search_hint">Поиск в Интернете и других источниках</string>
     <string name="all_apps_search_bar_hint">Поиск приложений</string>
     <string name="all_apps_no_search_results">Не найдено приложений по запросу \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Из Интернета</string>
@@ -658,7 +660,7 @@
     <string name="search_algorithm_global_search_via_asi">Глобальный поиск (с помощью ASI)</string>
     <string name="custom_search_label">Имя поисковой системы</string>
     <string name="custom_search_url">URL поисковой системы</string>
-    <string name="custom_search_suggestions_url">Search suggestions URL</string>
+    <string name="custom_search_suggestions_url">URL поисковых подсказок</string>
     <string name="custom_search_input_hint">&#37; будет заменен на поисковый запрос</string>
     <string name="custom_search_suggestions_hint">&#37; будет заменен на поисковый запрос. Результаты должны быть в формате JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
@@ -724,5 +726,5 @@
     <string name="permissions_needed">Требуется выдача разрешений</string>
     <string name="grant_requested_permissions_tap">Нажмите, чтобы предоставить разрешения</string>
     <!-- Message shown when all home screen views are removed -->
-    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
+    <string name="home_screen_all_views_removed_msg">Главный экран очищен</string>
 </resources>

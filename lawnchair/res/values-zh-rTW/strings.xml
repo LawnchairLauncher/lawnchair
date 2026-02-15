@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">主題圖示來源</string>
     <string name="themed_icon_pack_tint">用強調色進行著色</string>
     <string name="system_icons">系統圖示</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">主題圖示</string>
     <string name="themed_icons_off_label">關閉</string>
     <string name="themed_icons_home_label">主畫面</string>

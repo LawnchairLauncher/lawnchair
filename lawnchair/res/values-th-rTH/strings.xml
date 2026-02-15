@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">แหล่งที่มาของธีมไอคอน</string>
     <string name="themed_icon_pack_tint">ย้อมด้วยสีเน้น</string>
     <string name="system_icons">ไอคอนระบบ</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">ธีมไอคอน</string>
     <string name="themed_icons_off_label">ปิด</string>
     <string name="themed_icons_home_label">หน้าแรก</string>

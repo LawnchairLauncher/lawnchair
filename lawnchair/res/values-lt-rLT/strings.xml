@@ -38,23 +38,23 @@
     <string name="action_copy">Kopijuoti</string>
     <string name="action_paste">Įklijuoti</string>
     <string name="action_done">Baigta</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
+    <string name="select_all">Pasirinkti visus</string>
+    <string name="deselect_all">Panaikinti visų žymėjimą</string>
     <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Kraunasi…</string>
     <string name="dismiss">Dismiss</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="view_changes">View changes</string>
+    <string name="download_update">Atsiųsti atnaujinimą</string>
+    <string name="install_update">Įdiegti atnaujinimą</string>
+    <string name="view_changes">Žiūrėti pakeitimus</string>
     <string name="pro_updated">You\'re up-to-date!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_title">Atnaujinimai</string>
+    <string name="changes_dialog_error">Nepavyko įkelti pakeitimų</string>
+    <string name="changes_dialog_no_changes">Nerasta pakeitimų</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">dabar</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -72,7 +72,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Kiti</string>
     <!-- Selection options -->
     <string name="dynamic">Dinamiškai</string>
     <string name="presets">Iš anksto nustatyti</string>
@@ -87,35 +87,35 @@
     <string name="grid">Tinklelis</string>
     <string name="layout">Išdėstimas</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Rodyti ekrano foną</string>
     <string name="wallpaper">Ekrano Fonas</string>
-    <string name="style">Style</string>
+    <string name="style">Stilius</string>
     <string name="background_opacity">Fono skaidrumas</string>
     <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Nukopijuota į iškarpinę</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Rezultatas nukopijuotas į iškarpinę</string>
     <string name="item_removed">Elementas pašalintas</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Ką rodyti</string>
-    <string name="wallpapers">Wallpapers</string>
+    <string name="wallpapers">Ekrano fonai</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">App drawer folders</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="selected_apps">Pasirinktos programos</string>
+    <string name="add_apps">Pridėti programas</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="add_folder">Sukurti aplanką</string>
+    <string name="edit_folder">Redaguoti aplanką</string>
+    <string name="add_label">Pridėti</string>
+    <string name="edit_label">Redaguoti</string>
     <string name="apply_label">Taikyti</string>
     <string name="delete_label">Ištrinti</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="folder_list_note">Braukti kairėn kad redaguotumėte, braukti dešinėn kad ištrintumėte, arba paspauskite kad atnaujintumėte elementus</string>
+    <string name="apps_in_folder_label">Slėpti aplanko programas</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="folders_filter_duplicates">Rodyti tik unikalias programas</string>
+    <string name="my_folder_label">Mano aplankas</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -123,8 +123,8 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Advanced</string>
     <!-- Draggable -->
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
+    <string name="reorderable_active_items">Aktyvūs elementai</string>
+    <string name="reorderable_disabled_items">Kiti elementai</string>
     <string name="reorderable_disabled_hint">Disabled items will appear here. Drag an item here or tap the remove button to make an item active.</string>
     <string name="reorderable_add_hint_items">Active items will appear here. Drag an item here or tap the add button to make an item active.</string>
     <!--
@@ -137,7 +137,7 @@
     <string name="general_description">Spalvos, piktogramų paketai, pranešimų taškeliai</string>
     <string name="home_screen_label">Pagrindinis ekranas</string>
     <string name="home_screen_description">Naujienos, tinklelis, piktrogramos</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">Namų ekrano veiksmai</string>
     <string name="dock_label">Pažemynis</string>
     <string name="dock_description">Paieškos juosta, piktogramų skaičius</string>
     <string name="app_drawer_label">Programėlių lentyna</string>
@@ -157,7 +157,7 @@
     <!-- Experimental features -->
     <string name="workspace_label">Workspace</string>
     <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
+    <string name="internal_label">Vidinis</string>
     <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Šriftų tinkinimas</string>
     <string name="font_picker_description">Dalis teksto liko nepakeista</string>
@@ -168,14 +168,14 @@
     <string name="always_reload_icons_label">Visada perkrauti piktogramas</string>
     <string name="always_reload_icons_description">Vengti talpyklose esančias piktogramas iš piktogramų paketų</string>
     <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
+    <string name="icon_swipe_gestures">Piktogramų braukimo gestai</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
     <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">Aplankas</string>
     <string name="app_icon_shape_label">Programėlė</string>
     <string name="gesturenavcontract_label">GestureNavContract API</string>
     <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
@@ -184,9 +184,9 @@
     <string name="recents_lock_unlock_description">Neleisti pasirinktai programėlei užsidaryti paspaudžiant \"Išvalyti visus\"</string>
     <!--Overlay-->
     <string name="overlay_fade_in">Fade In</string>
-    <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_label">Overlay</string>
+    <string name="overlay_suck_in">Įsiurbti</string>
+    <string name="app_closing_animation">Programos uždarymo animacija</string>
+    <string name="overlay_label">Perdanga</string>
     <string name="overlay_none">None</string>
     <!--
 
@@ -222,7 +222,7 @@
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
     <string name="reset_custom_icons">Reset custom icons</string>
     <string name="reset_custom_icons_confirmation">Visos pasirinktos piktogramos bus atstatytos. Ar norite tęsti?</string>
-    <string name="remove_all_views_from_home_screen">Clear home screen</string>
+    <string name="remove_all_views_from_home_screen">Išvalyti namų ekraną</string>
     <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Piktogramos</string>
@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Themed icon source</string>
     <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">System icons</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">Išjungtos</string>
     <string name="themed_icons_home_label">Home screen</string>

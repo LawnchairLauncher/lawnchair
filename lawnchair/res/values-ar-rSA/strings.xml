@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">مصدر الأيقونات المخصصة</string>
     <string name="themed_icon_pack_tint">الدرجة بلون تمييزي</string>
     <string name="system_icons">أيقونات النظام</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">الأيقونات المخصصة</string>
     <string name="themed_icons_off_label">معطل</string>
     <string name="themed_icons_home_label">الشاشة الرئيسية</string>

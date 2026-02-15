@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">تھیم آئیکن ماخذ</string>
     <string name="themed_icon_pack_tint">لہجے کے رنگ کے ساتھ ٹنٹ</string>
     <string name="system_icons">سسٹم شبیہیں</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">تھیم والے شبیہیں</string>
     <string name="themed_icons_off_label">آف</string>
     <string name="themed_icons_home_label">ہوم اسکرین</string>

@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Fonte dos Ícones Temáticos</string>
     <string name="themed_icon_pack_tint">Colorir com a cor de destaque</string>
     <string name="system_icons">Ícones do Sistema</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Ícones Temáticos</string>
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Tela inicial</string>

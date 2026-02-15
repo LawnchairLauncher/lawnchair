@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Source des icônes à thème</string>
     <string name="themed_icon_pack_tint">Appliquer la couleur d\'accentuation</string>
     <string name="system_icons">Icônes du système</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Icônes à thème</string>
     <string name="themed_icons_off_label">Désactivé</string>
     <string name="themed_icons_home_label">Écran d\'accueil</string>
@@ -367,7 +369,7 @@
     <string name="smartspace_onboarding">Configuration</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configurez votre Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Faites un appui long sur l\'écran d\'accueil pour ouvrir les paramètres</string>
+    <string name="onboarding_open_settings_subtitle">Appui long sur l\'écran d\'accueil pour ouvrir les paramètres</string>
     <string name="onboarding_major_upgrade_title">Bienvenue dans Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g> !</string>
     <string name="onboarding_major_upgrade_subtitle">Découvrez les nouveautés !</string>
     <string name="onboarding_welcome">Bienvenue dans Lawnchair !</string>
@@ -489,7 +491,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
     <string name="home_screen_rotation_description">Autoriser la rotation de l\'écran d\'accueil lorsque l\'appareil est tourné</string>
-    <string name="auto_updater_label">Mise à jour auto</string>
+    <string name="auto_updater_label">Mise à jour automatique</string>
     <string name="auto_updater_description">Recherchez automatiquement une mise à jour Nightly en accédant à la section À propos</string>
     <string name="wallpaper_blur">Flouter le fond d\'écran (expérimental)</string>
     <string name="wallpaper_background_blur">Intensité du flou</string>

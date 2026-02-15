@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Fuente de iconos temáticos</string>
     <string name="themed_icon_pack_tint">Tinte con color de acento</string>
     <string name="system_icons">Iconos del sistema</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Iconos temáticos</string>
     <string name="themed_icons_off_label">Desactivados</string>
     <string name="themed_icons_home_label">Pantalla principal</string>

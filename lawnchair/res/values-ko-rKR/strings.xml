@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">테마 아이콘 소스</string>
     <string name="themed_icon_pack_tint">강조 색상으로 칠하기</string>
     <string name="system_icons">시스템 아이콘</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">테마 아이콘</string>
     <string name="themed_icons_off_label">사용 안함</string>
     <string name="themed_icons_home_label">홈 화면</string>

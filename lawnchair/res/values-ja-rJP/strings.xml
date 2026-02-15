@@ -173,9 +173,11 @@
     <string name="show_deck_layout">ドックのレイアウト</string>
     <string name="show_deck_layout_description">アプリドロワーを非表示にし、自動的に新しいアプリをホーム画面に追加するためのレイアウトオプションを表示します</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="material_expressive_description">ワークスペースでMaterial 3 Expressive の変更を有効にします。</string>
+    <string name="experimental_folder_shape_modify_label">カスタマイズ可能なフォルダーの形状　
+
+実験フォルダの形状変更ラベル</string>
+    <string name="folder_shape_label">フォルダ</string>
     <string name="app_icon_shape_label">アプリ</string>
     <string name="gesturenavcontract_label">GestureNavContract API</string>
     <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
@@ -271,6 +273,8 @@
     <string name="themed_icon_pack">テーマアイコンのソース</string>
     <string name="themed_icon_pack_tint">アクセントカラーで染色する</string>
     <string name="system_icons">システムアイコン</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">テーマアイコン</string>
     <string name="themed_icons_off_label">オフ</string>
     <string name="themed_icons_home_label">ホーム画面</string>
@@ -366,12 +370,12 @@
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_onboarding">Onboarding</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
+    <string name="onboarding_open_settings_title">Lawncharの設定</string>
+    <string name="onboarding_open_settings_subtitle">ホーム画面長押しして設定を開く</string>
     <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new!</string>
-    <string name="onboarding_welcome">Welcome to Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the App Drawer</string>
+    <string name="onboarding_major_upgrade_subtitle">新着情報をご覧ください!</string>
+    <string name="onboarding_welcome">Lawncharへようこそ!</string>
+    <string name="onboarding_swipe_up">上にスワイプしてアプリドロワーを開く</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">ターゲットの最大数</string>
     <string name="open_smartspacer_settings">Smartspacer の設定を開く</string>
@@ -412,10 +416,10 @@
     <string name="privacy_policy">プライバシーポリシー</string>
     <string name="contributor_status_active">アクティブ</string>
     <string name="update_check_failed">アップデートの確認に失敗しました</string>
-    <string name="major_update_label">Breaking change!</string>
+    <string name="major_update_label"></string>
     <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
-    <string name="pro_disabled_by_unknown">Cannot update!</string>
-    <string name="pro_disabled_by_major_is_newer">Cannot update, This build is way too new!</string>
+    <string name="pro_disabled_by_unknown">更新できません!</string>
+    <string name="pro_disabled_by_major_is_newer">アップデートできません。このアプリは最新です。</string>
     <string name="updater">Updater</string>
     <!--
 

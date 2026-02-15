@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Izvor tematskih ikona</string>
     <string name="themed_icon_pack_tint">Koristi boju za naglašavanje</string>
     <string name="system_icons">Sistemske ikone</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Tematske ikone</string>
     <string name="themed_icons_off_label">Isključeno</string>
     <string name="themed_icons_home_label">Početni ekran</string>

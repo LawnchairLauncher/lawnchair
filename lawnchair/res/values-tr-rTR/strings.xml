@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Temalı simge kaynağı</string>
     <string name="themed_icon_pack_tint">Vurgulu renk tonu</string>
     <string name="system_icons">Sistem simgeleri</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Temalı simgeler</string>
     <string name="themed_icons_off_label">Kapat</string>
     <string name="themed_icons_home_label">Ana ekran</string>

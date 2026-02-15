@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Bron van themapictogrammen</string>
     <string name="themed_icon_pack_tint">Tint met accentkleur</string>
     <string name="system_icons">Systeempictogrammen</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Themapictogrammen</string>
     <string name="themed_icons_off_label">Uitgeschakeld</string>
     <string name="themed_icons_home_label">Startscherm</string>

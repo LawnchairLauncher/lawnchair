@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Źródło ikon z motywu</string>
     <string name="themed_icon_pack_tint">Użyj koloru motywu</string>
     <string name="system_icons">Ikony systemowe</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
     <string name="themed_icon_title">Ikony z motywu</string>
     <string name="themed_icons_off_label">Wyłączono</string>
     <string name="themed_icons_home_label">Ekran główny</string>

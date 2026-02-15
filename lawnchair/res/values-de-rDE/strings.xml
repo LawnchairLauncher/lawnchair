@@ -271,6 +271,8 @@
     <string name="themed_icon_pack">Symboldesign-Quelle</string>
     <string name="themed_icon_pack_tint">In Akzentfarbe einfärben</string>
     <string name="system_icons">System-Symbole</string>
+    <string name="force_monochrome_label">Einfarbigkeit erzwingen</string>
+    <string name="force_monochrome_description">Erfordert Neustart, nicht unterstützte Apps in Akzentfarbe einfärben</string>
     <string name="themed_icon_title">Symboldesigns</string>
     <string name="themed_icons_off_label">Aus</string>
     <string name="themed_icons_home_label">Startbildschirm</string>
