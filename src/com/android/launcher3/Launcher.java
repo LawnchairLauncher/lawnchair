@@ -1596,7 +1596,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
 
                 if (shouldMoveToDefaultScreen && !mWorkspace.isHandlingTouch()) {
-                    if (mWorkspace.getNextPage() != Workspace.DEFAULT_PAGE) {
+                    if (mWorkspace.getNextPage() != mWorkspace.getDefaultPage()) {
                         mWorkspace.post(mWorkspace::moveToDefaultScreen);
                     } else {
                         handleHomeTap();

@@ -1,6 +1,7 @@
 package app.lawnchair.ui.popup
 
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import app.lawnchair.preferences2.PreferenceManager2.Companion.getInstance
@@ -23,6 +24,7 @@ object LauncherOptionsPopup {
         LauncherOptionPopupItem("all_apps", true),
         LauncherOptionPopupItem("home_settings", true),
         LauncherOptionPopupItem("sys_settings", false),
+        LauncherOptionPopupItem("default_page", true),
     )
 
     fun restoreMissingPopupOptions(
@@ -39,7 +41,7 @@ object LauncherOptionsPopup {
         }
 
         prefs2.launcherPopupOrder.setBlocking(
-            (missingItems + currentOptions).toOptionOrderString(),
+            (currentOptions + missingItems).toOptionOrderString(),
         )
     }
 
@@ -123,6 +125,13 @@ object LauncherOptionsPopup {
                 LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 onStartHomeSettings,
             ),
+            "default_page" to OptionItem(
+                launcher,
+                R.string.set_default_home_page,
+                R.drawable.ic_home_pin,
+                LauncherEvent.IGNORE,
+                ::setAsDefaultHomePage,
+            ),
         )
 
         val options = ArrayList<OptionItem>()
@@ -137,10 +146,19 @@ object LauncherOptionsPopup {
                     true
                 }
             }
+            .filter { it.identifier != "default_page" || !launcher.workspace.isCurrentPageDefault }
             .mapNotNull { optionsList[it.identifier] }
             .forEach { options.add(it) }
 
         return options
+    }
+
+    private fun setAsDefaultHomePage(v: View): Boolean {
+        val launcher = Launcher.getLauncher(v.context)
+        val currentPage = launcher.workspace.getNextPage()
+        launcher.workspace.setDefaultPage(currentPage)
+        Toast.makeText(launcher, R.string.default_home_page_set, Toast.LENGTH_SHORT).show()
+        return true
     }
 
     fun getMetadataForOption(identifier: String): LauncherOptionMetadata {
@@ -184,6 +202,11 @@ object LauncherOptionsPopup {
             "home_settings" -> LauncherOptionMetadata(
                 label = R.string.settings_button_text,
                 icon = R.drawable.ic_home_screen,
+            )
+
+            "default_page" -> LauncherOptionMetadata(
+                label = R.string.set_default_home_page,
+                icon = R.drawable.ic_home_pin,
             )
 
             else -> throw IllegalArgumentException("invalid popup option")
