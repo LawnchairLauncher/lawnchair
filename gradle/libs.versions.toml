@@ -9,7 +9,7 @@ accompanist = "0.37.3"
 opto = "1.0.18"
 protobuf = "4.33.5"
 retrofit = "3.0.0"
-dagger = "2.59.1"
+dagger = "2.59.2"
 libsu = "6.0.0"
 refine = "4.4.0"
 
