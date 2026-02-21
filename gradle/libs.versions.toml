@@ -141,7 +141,7 @@ xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
 errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.47.0"
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.8.0"
-composeRules = "io.nlopez.compose.rules:ktlint:0.5.3"
+composeRules = "io.nlopez.compose.rules:ktlint:0.5.6"
 google-guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 
 # Testing (Merged)
