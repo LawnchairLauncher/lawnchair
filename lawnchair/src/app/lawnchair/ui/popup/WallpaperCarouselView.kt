@@ -14,18 +14,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
-import app.lawnchair.LawnchairLauncher
 import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.data.wallpaper.model.WallpaperViewModel
+import app.lawnchair.launcher
 import app.lawnchair.views.component.IconFrame
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
-import com.android.launcher3.views.ActivityContext
 import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,8 +34,9 @@ class WallpaperCarouselView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private val viewModel: WallpaperViewModel by (context as ComponentActivity).viewModels()
-    private val deviceProfile = ActivityContext.lookupContext<LawnchairLauncher>(context).deviceProfile
+    private val launcher = context.launcher
+    private val viewModel = WallpaperViewModel(launcher.application)
+    private val deviceProfile = launcher.deviceProfile
     private var currentItemIndex = 0
     private val iconFrame = IconFrame(context).apply {
         setIcon(R.drawable.ic_tick)
@@ -54,7 +51,7 @@ class WallpaperCarouselView @JvmOverloads constructor(
     }
 
     private fun observeWallpapers() {
-        viewModel.wallpapers.observe(context as LifecycleOwner) { wallpapers ->
+        viewModel.wallpapers.observe(launcher) { wallpapers ->
             visibility = if (wallpapers.isEmpty()) GONE else VISIBLE
             loadingView.visibility = if (wallpapers.isEmpty()) GONE else VISIBLE
             if (wallpapers.isNotEmpty()) displayWallpapers(wallpapers)

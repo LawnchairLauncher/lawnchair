@@ -230,14 +230,14 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean enableLongPressRemoveShortcut() {
-        return false;
+        return true;
     }
 
     @Override
 
 
     public boolean enableMouseInteractionChanges() {
-        return false;
+        return true;
     }
 
     @Override
@@ -489,14 +489,14 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean enableUnfoldStateAnimation() {
-        return false;
+        return true;
     }
 
     @Override
 
 
     public boolean enableWidgetPickerRefactor() {
-        return false;
+        return true;
     }
 
     @Override
@@ -524,7 +524,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean expressiveThemeInTaskbarAndNavigation() {
-        return false;
+        return true;
     }
 
     @Override

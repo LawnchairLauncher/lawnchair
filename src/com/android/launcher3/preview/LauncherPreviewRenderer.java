@@ -109,7 +109,9 @@ public class LauncherPreviewRenderer extends BaseContext
     private final Hotseat mHotseat;
     private final Map<Integer, CellLayout> mWorkspaceScreens = new HashMap<>();
     private final ItemInflater<LauncherPreviewRenderer> mItemInflater;
-    
+
+    // LC-Note: (we don't use QSB preview)
+    private int mWorkspaceSearchContainer = R.layout.smartspace_container;
     private final PreferenceManager2 mPreferenceManager2;
 
     public LauncherPreviewRenderer(Context context,
@@ -337,7 +339,7 @@ public class LauncherPreviewRenderer extends BaseContext
         if (PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getEnableSmartspace())) {
             CellLayout firstScreen = mWorkspaceScreens.get(FIRST_SCREEN_ID);
             if (firstScreen != null) {
-                View qsb = mHomeElementInflater.inflate(R.layout.qsb_preview, firstScreen, false);
+                View qsb = mHomeElementInflater.inflate(mWorkspaceSearchContainer, firstScreen, false);
                 // TODO: set bgHandler on qsb when it is BaseTemplateCard, which requires API
                 //  changes.
                 CellLayoutLayoutParams lp = new CellLayoutLayoutParams(
@@ -378,6 +380,11 @@ public class LauncherPreviewRenderer extends BaseContext
             itemInfo.screenId = rank;
             inflateAndAdd(itemInfo);
         }
+    }
+    
+    // LC-Note: LC stuff that set the search container of preview (but we dont use it as search container)
+    public void setWorkspaceSearchContainer(int resId) {
+        mWorkspaceSearchContainer = resId;
     }
 
     private void inflateAndAdd(ItemInfo itemInfo) {

@@ -79,6 +79,7 @@ class NightlyBuildsRepository(
                             } else {
                                 null
                             },
+                            expectedSha256 = asset.sha256Hash,
                         )
                     }
                 } else {
@@ -106,7 +107,7 @@ class NightlyBuildsRepository(
         coroutineScope.launch(Dispatchers.IO) {
             _updateState.update { UpdateState.Downloading(0f) }
             try {
-                val file = downloadApk(currentState.url) { progress ->
+                val file = downloadApk(currentState.url, currentState.expectedSha256) { progress ->
                     _updateState.update { UpdateState.Downloading(progress) }
                 }
                 if (file != null) {
@@ -172,7 +173,7 @@ class NightlyBuildsRepository(
         }
     }
 
-    private suspend fun downloadApk(url: String, onProgress: (Float) -> Unit): File? {
+    private suspend fun downloadApk(url: String, expectedSha256: String?, onProgress: (Float) -> Unit): File? {
         return try {
             val cacheDir = applicationContext.cacheDir
             val apkDirPath = cacheDir.toPath().resolve("updates").createDirectories()
@@ -185,6 +186,8 @@ class NightlyBuildsRepository(
                 return null
             }
 
+            val messageDigest = java.security.MessageDigest.getInstance("SHA-256")
+
             responseBody.byteStream().use { input ->
                 apkFilePath.outputStream().use { output ->
                     val buffer = ByteArray(8192)
@@ -192,11 +195,22 @@ class NightlyBuildsRepository(
                     var bytesRead: Int
                     while (input.read(buffer).also { bytesRead = it } != -1) {
                         output.write(buffer, 0, bytesRead)
+                        messageDigest.update(buffer, 0, bytesRead)
                         bytesDownloaded += bytesRead
                         onProgress(bytesDownloaded / totalBytes)
                     }
                 }
             }
+            if (expectedSha256 != null) {
+                val computedHash = messageDigest.digest().joinToString("") { "%02x".format(it) }
+                if (!computedHash.equals(expectedSha256, ignoreCase = true)) {
+                    Log.e(TAG, "SHA256 verification failed. Expected: $expectedSha256, Got: $computedHash")
+                    apkFilePath.deleteIfExists()
+                    return null
+                }
+                Log.d(TAG, "SHA256 verification passed: $computedHash")
+            }
+
             apkFilePath.toFile()
         } catch (e: Exception) {
             Log.e(TAG, "APK download failed", e)

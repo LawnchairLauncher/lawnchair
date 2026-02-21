@@ -344,6 +344,8 @@
     <string name="themed_icon_pack">Themed icon source</string>
     <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">System icons</string>
+    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
 
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">Off</string>
@@ -767,6 +769,8 @@
     <string name="row_height_label">Row height</string>
     <string name="app_drawer_indent_label">Horizontal padding</string>
     <string name="app_drawer_bg_color_label">Background color</string>
+    <string name="work_profile_tab_background_label">Tabs background color</string>
+    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
 
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Hide from app drawer</string>

@@ -12,7 +12,7 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['shared/src']
-            kotlin.srcDirs = ['shared/src']
+            kotlin.directories.add('shared/src')
             aidl.srcDirs = ['shared/src']
             manifest.srcFile 'AndroidManifest.xml'
             res.srcDirs = ['shared', 'shared/res']

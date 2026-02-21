@@ -56,7 +56,7 @@ class PreferenceManager @Inject constructor(
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", recreate)
     val allowRotation = BoolPref("pref_allowRotation", false)
-    val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, recreate)
+    val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", true, recreate)
     val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false, recreate)
     val shadowBGIcons = BoolPref("pref_shadowBGIcons", true, recreate)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
@@ -110,8 +110,6 @@ class PreferenceManager @Inject constructor(
     val searchResultSettingsEntry = BoolPref("pref_searchResultSettingsEntry", false, recreate)
     val searchResulRecentSuggestion = BoolPref("pref_searchResultRecentSuggestion", false, recreate)
 
-    val allAppBulkIconLoading = BoolPref("pref_allapps_bulk_icon_loading", true, recreate)
-
     val themedIcons = BoolPref("themed_icons", false, recreate)
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, recreate)
     val tintIconPackBackgrounds = BoolPref("tint_icon_pack_backgrounds", false, recreate)
@@ -152,6 +150,8 @@ class PreferenceManager @Inject constructor(
         "pref_lawnchairMajorVersion",
         context.getApkVersionComparison().first[0],
     )
+
+    val forceIconMonochrome = BoolPref("pref_forceIconMonochrome", false, recreate)
 
     override fun close() {
         TODO("Not yet implemented")

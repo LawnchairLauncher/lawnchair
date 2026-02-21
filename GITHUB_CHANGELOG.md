@@ -8,7 +8,7 @@
 > This branch has diverged timeline from the original `16-dev`, meaning you will have to rebase your
 > commit back to this branch if you wish to contribute to this branch.
 
-Build: BD5.2401 (latest), BD5.2101, BD5.2001, BD5.1901, BD5.1301, BD5.1201, BD4.2712
+Build: BD5.1002 (latest), BD5.0702, BD5.2401, BD5.2101, BD5.2001, BD5.1901, BD5.1301, BD5.1201, BD4.2712
 
 Compatibility list:
 
@@ -34,6 +34,12 @@ Compatibility list:
 * [Launcher] Reintroduce folder expressive animations from Bubble Tea QPR1 Development 1 Release 1
 * [Lawnchair/Smartspace] Onboarding provider (Full-parity with Lawnchair Legacy)
 * [Launcher] Theme page indicator dots
+* [Lawnchair] Add work profile customization and fix issues (https://github.com/LawnchairLauncher/lawnchair/pull/6167)
+* [Lawnchair] Update Google Fonts listing to 03022026 (https://github.com/LawnchairLauncher/lawnchair/pull/6193)
+* [Lawnchair] Compare GitHub digest with actual downloaded file in Nightly updater
+* [Lawnchair] Enable wrap adaptive icons by default (only on by default)
+* [Lawnchair] Enable bulk icon loading by default (toggle removed, on by default)
+* [Lawnchair] Allow customising force monochrome option
 
 #### Fixes
 * [Launcher] Limited Android 11 support
@@ -58,6 +64,15 @@ Compatibility list:
 * [Lawnchair] Crash when tapping on launcher preview
 * [Launcher] Actually fix app drawer alphabetical listing when loading icon in bulk
 * [Launcher] Mark home bounce as seen when user actually opens All Apps
+* [Lawnchair] Reimplement app drawer suggested app toggle
+* [Lawnchair] Disable all Android Desktop components
+* [Lawnchair] Reimplement app drawer multiple lines logic (https://github.com/LawnchairLauncher/lawnchair/pull/6324)
+* [Launcher] Skip initialising QuickstepProtoLog for Android 11
+* [Lawnchair] Reimplement Lawnchair 13 migration
+* [Launcher] Launcher render At a Glance widget as search widget in preview
+* [Lawnchair/Iconloaderlib] Use correct default percentage for icon adaptive lightness
+* [Lawnchair/Iconloaderlib] Correct wrap adaptive drawable behaviour
+* [Launcher] Null exception in FloatingIconView
 
 ### 🥞 Development 4 Release 1 (Snapshot 10)
 

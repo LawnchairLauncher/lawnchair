@@ -21,13 +21,15 @@ import android.content.ComponentCallbacks
 import android.content.res.Configuration
 import android.os.Bundle
 import app.lawnchair.theme.ThemeProvider
+import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE_RECREATE_TO_UPDATE_THEME
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 /** Utility class to manage activity's theme in case it is wallpaper dependent */
 class WallpaperThemeManager(private val activity: Activity) :
-    OnColorHintListener, ActivityLifecycleCallbacksAdapter, ComponentCallbacks {
+    OnColorHintListener, ActivityLifecycleCallbacksAdapter, ComponentCallbacks,
+    WallpaperManagerCompat.OnColorsChangedListener {
 
     private var themeRes: Int = R.style.AppTheme
 
@@ -35,6 +37,7 @@ class WallpaperThemeManager(private val activity: Activity) :
 
     init {
         // Update theme
+        WallpaperManagerCompat.INSTANCE.get(activity).addOnChangeListener(this);
         WallpaperColorHints.get(activity).registerOnColorHintsChangedListener(this)
         val expectedTheme = Themes.getActivityThemeRes(activity)
         if (expectedTheme != themeRes) {
@@ -53,8 +56,10 @@ class WallpaperThemeManager(private val activity: Activity) :
     override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) =
         bundle.putBoolean(RUNTIME_STATE_RECREATE_TO_UPDATE_THEME, recreateToUpdateTheme)
 
-    override fun onActivityDestroyed(unused: Activity) =
+    override fun onActivityDestroyed(unused: Activity) {
+        WallpaperManagerCompat.INSTANCE.get(activity).removeOnChangeListener(this);
         WallpaperColorHints.get(activity).unregisterOnColorsChangedListener(this)
+    }
 
     override fun onConfigurationChanged(config: Configuration) = updateTheme()
 
@@ -71,6 +76,10 @@ class WallpaperThemeManager(private val activity: Activity) :
     fun recreateToUpdateTheme() {
         recreateToUpdateTheme = true
         activity.recreate()
+    }
+
+    override fun onColorsChanged() {
+        updateTheme()
     }
 
     companion object {

@@ -56,6 +56,8 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherPrefs
+import com.android.launcher3.LauncherPrefs.Companion.ENABLE_TWOLINE_ALLAPPS_TOGGLE
 import com.android.launcher3.R
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
@@ -198,6 +200,20 @@ class PreferenceManager2 @Inject constructor(
     val appDrawerSearchBarBackground = preference(
         key = booleanPreferencesKey(name = "all_apps_search_bar_background"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_search_bar_background),
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val workProfileTabBackgroundColor = preference(
+        key = stringPreferencesKey(name = "work_profile_tab_background_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.SystemAccent,
+    )
+
+    val workProfileTabContainerBackground = preference(
+        key = booleanPreferencesKey(name = "work_profile_tab_container_background"),
+        defaultValue = true,
         onSet = { reloadHelper.recreate() },
     )
 
@@ -595,7 +611,9 @@ class PreferenceManager2 @Inject constructor(
     val twoLineAllApps = preference(
         key = booleanPreferencesKey(name = "two_line_all_apps"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_two_line_allapps),
-        onSet = { reloadHelper.recreate() },
+        onSet = { value ->
+            LauncherPrefs.get(context).put(ENABLE_TWOLINE_ALLAPPS_TOGGLE, value)
+        },
     )
 
     val enableFeed = preference(

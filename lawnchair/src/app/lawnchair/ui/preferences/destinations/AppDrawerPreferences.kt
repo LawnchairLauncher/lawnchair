@@ -98,6 +98,13 @@ fun AppDrawerPreferences(
                     showAsPercentage = true,
                 )
             }
+            Item { ColorPreference(preference = prefs2.workProfileTabBackgroundColor) }
+            Item {
+                SwitchPreference(
+                    label = stringResource(id = R.string.work_profile_tab_container_background_label),
+                    adapter = prefs2.workProfileTabContainerBackground.getAdapter(),
+                )
+            }
             Item {
                 SwitchPreference(
                     label = stringResource(id = R.string.pref_all_apps_search_bar_background),
@@ -173,13 +180,6 @@ fun AppDrawerPreferences(
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.advanced)) {
-            Item {
-                SwitchPreference(
-                    label = stringResource(id = R.string.pref_all_apps_bulk_icon_loading_title),
-                    description = stringResource(id = R.string.pref_all_apps_bulk_icon_loading_description),
-                    adapter = prefs.allAppBulkIconLoading.getAdapter(),
-                )
-            }
             Item {
                 SwitchPreference(
                     label = stringResource(id = R.string.pref_all_apps_remember_position_title),

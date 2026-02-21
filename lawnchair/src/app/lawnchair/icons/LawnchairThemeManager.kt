@@ -52,7 +52,8 @@ constructor(
 
         // Listen for specific Lawnchair SharedPreferences it's easier than trying to make prefs1 work with listener
         val drawerThemedIcons = backedUpItem("drawer_themed_icons", false, EncryptionType.DEVICE_PROTECTED)
-        val keys = listOf(drawerThemedIcons)
+        val forceMonochrome = backedUpItem("pref_forceIconMonochrome", false, EncryptionType.DEVICE_PROTECTED)
+        val keys = listOf(drawerThemedIcons, forceMonochrome)
         val keysArray = keys.toTypedArray()
         val prefKeySet = keys.map { it.sharedPrefKey }
 

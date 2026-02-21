@@ -117,8 +117,6 @@ import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.stream.Collectors;
 
-import app.lawnchair.preferences.PreferenceManager;
-
 import javax.inject.Named;
 import javax.inject.Provider;
 
@@ -612,9 +610,6 @@ public class LoaderTask implements Runnable {
         List<LauncherActivityInfo> allActivityList = new ArrayList<>();
         // Clear the list of apps
         mBgAllAppsList.clear();
-
-        var pref = PreferenceManager.getInstance(mContext);
-        var enableBulkLoading = pref.getAllAppBulkIconLoading().get();
         
         List<IconRequestInfo<AppInfo>> allAppsItemRequestInfos = new ArrayList<>();
         boolean isWorkProfileQuiet = false;
@@ -627,13 +622,16 @@ public class LoaderTask implements Runnable {
             if (apps == null || apps.isEmpty()) {
                 return allActivityList;
             }
-            boolean quietMode = mUserManagerState.isUserQuiet(user);
+            // Query UserManager directly for current quiet mode state to avoid stale cached values
+            boolean quietMode = mUserManager.isQuietModeEnabled(user);
+            // Update the cached state for consistency
+            mUserManagerState.updateUserQuietMode(mUserCache, user, quietMode);
 
             if (Flags.enablePrivateSpace()) {
                 if (mUserCache.getUserInfo(user).isWork()) {
-                    isWorkProfileQuiet = quietMode;
+                    isWorkProfileQuiet |= quietMode;
                 } else if (mUserCache.getUserInfo(user).isPrivate()) {
-                    isPrivateProfileQuiet = quietMode;
+                    isPrivateProfileQuiet |= quietMode;
                 }
             }
             // Create the ApplicationInfos
@@ -687,54 +685,26 @@ public class LoaderTask implements Runnable {
                 }
             }
         }
+        Trace.beginSection("LoadAllAppsIconsInBulk");
 
-        if (enableBulkLoading) {
-            Trace.beginSection("LoadAllAppsIconsInBulk");
-
-            try {
-                mIconCache.getTitlesAndIconsInBulk(allAppsItemRequestInfos);
-                if (Flags.restoreArchivedAppIconsFromDb()) {
-                    for (IconRequestInfo<AppInfo> iconRequestInfo : allAppsItemRequestInfos) {
-                        AppInfo appInfo = iconRequestInfo.itemInfo;
-                        if (mIconCache.isDefaultIcon(appInfo.bitmap, appInfo.user)) {
-                            logASplit("LoadAllAppsIconsInBulk: default icon found for "
-                                + appInfo.getTargetComponent()
-                                + ", will attempt to load from iconBlob: "
-                                + Arrays.toString(iconRequestInfo.iconBlob));
-                            iconRequestInfo.loadIconFromDbBlob(mContext);
-                        }
-                    }
-                }
-                allAppsItemRequestInfos.forEach(iconRequestInfo ->
-                    mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
-                Map<ComponentKey, String> renamedApps = pref.getCustomAppName().get();
-                for (AppInfo info : mBgAllAppsList.data) {
-                    ComponentKey k = new ComponentKey(info.getTargetComponent(), info.user);
-                    String customTitle = renamedApps.get(k);
-                    if (!TextUtils.isEmpty(customTitle)) {
-                        info.title = customTitle;
-                    }
-                }
-            } finally {
-                Trace.endSection();
-            }
-        } else {
-            // LC-Note: This code dark magic sorting fallback is powered by Opus 4.5
-            Trace.beginSection("LoadAllAppsIconsIndividually");
-            try {
+        try {
+            mIconCache.getTitlesAndIconsInBulk(allAppsItemRequestInfos);
+            if (Flags.restoreArchivedAppIconsFromDb()) {
                 for (IconRequestInfo<AppInfo> iconRequestInfo : allAppsItemRequestInfos) {
                     AppInfo appInfo = iconRequestInfo.itemInfo;
-                    if (iconRequestInfo.launcherActivityInfo != null) {
-                        mIconCache.getTitleAndIcon(appInfo, iconRequestInfo.launcherActivityInfo,
-                                appInfo.getMatchingLookupFlag());
-                    } else {
-                        mIconCache.getTitleAndIcon(appInfo, appInfo.getMatchingLookupFlag());
+                    if (mIconCache.isDefaultIcon(appInfo.bitmap, appInfo.user)) {
+                        logASplit("LoadAllAppsIconsInBulk: default icon found for "
+                            + appInfo.getTargetComponent()
+                            + ", will attempt to load from iconBlob: "
+                            + Arrays.toString(iconRequestInfo.iconBlob));
+                        iconRequestInfo.loadIconFromDbBlob(mContext);
                     }
-                    mBgAllAppsList.updateSectionName(appInfo);
                 }
-            } finally {
-                Trace.endSection();
             }
+            allAppsItemRequestInfos.forEach(iconRequestInfo ->
+                mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
+        } finally {
+            Trace.endSection();
         }
 
         if (Flags.enablePrivateSpace()) {

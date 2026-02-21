@@ -503,12 +503,6 @@ public class DeviceProfile {
         HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
 
-        // pE-TODO(QPR1): Check this (Tablet/Foldable)
-//        if (inv.inlineQsb[INDEX_DEFAULT] && !isPhone) {
-//            hotseatQsbShadowHeight = res.getDimensionPixelSize(R.dimen.taskbar_size);
-//        } else {
-//            hotseatQsbShadowHeight = res.getDimensionPixelSize(R.dimen.qsb_shadow_height);
-//        }
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
         mHotseatColumnSpan = inv.numColumns;
 

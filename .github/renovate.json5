@@ -14,9 +14,6 @@
                 'patch',
             ],
             automerge: true,
-            matchPackageNames: [
-                '/.*/',
-            ],
         },
     ],
 }

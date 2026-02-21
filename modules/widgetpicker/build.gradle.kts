@@ -32,28 +32,32 @@ android {
     }
     sourceSets {
         named("main") {
-            java.srcDirs("src")
-            kotlin.srcDirs("src")
+            java.directories.add("src")
+            kotlin.directories.add("src")
             manifest.srcFile("AndroidManifest.xml")
-            res.srcDirs("res")
+            res.directories.add("res")
         }
         named("androidTest") {
-            java.srcDirs(
-                "tests/multivalentScreenshotTests/src",
-                "tests/multivalentTestsForDevice/src",
+            java.directories.addAll(
+                listOf(
+                    "tests/multivalentScreenshotTests/src",
+                    "tests/multivalentTestsForDevice/src",
+                )
             )
-            kotlin.srcDirs(
-                "tests/multivalentScreenshotTests/src",
-                "tests/multivalentTestsForDevice/src",
+            kotlin.directories.addAll(
+                listOf(
+                    "tests/multivalentScreenshotTests/src",
+                    "tests/multivalentTestsForDevice/src",
+                )
             )
             manifest.srcFile("tests/AndroidManifest.xml")
         }
         named("test") {
-            java.srcDirs("tests/multivalentTests/src")
-            kotlin.srcDirs("tests/multivalentTests/src")
-            resources.srcDirs("tests/config")
+            java.directories.add("tests/multivalentTests/src")
+            kotlin.directories.add("tests/multivalentTests/src")
+            resources.directories.add("tests/config")
             manifest.srcFile("tests/AndroidManifest.xml")
-            res.srcDirs("tests/multivalentScreenshotTests/res")
+            res.directories.add("tests/multivalentScreenshotTests/res")
         }
     }
 

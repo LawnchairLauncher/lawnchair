@@ -160,7 +160,11 @@ class LawnchairApp : Application() {
 
     private val activityHandler = object : ActivityLifecycleCallbacks {
         private val activities = HashSet<Activity>()
-        private var foregroundActivity: Activity? = null
+        var foregroundActivity: Activity? = null
+            private set
+
+        val launcher: LawnchairLauncher?
+            get() = activities.filterIsInstance<LawnchairLauncher>().firstOrNull()
 
         fun finishAll() {
             HashSet(activities).forEach { it.finish() }
@@ -235,6 +239,9 @@ class LawnchairApp : Application() {
 
         @JvmStatic
         val isAtleastT: Boolean get() = instance.isAtleastT
+
+        @JvmStatic
+        val launcher: LawnchairLauncher? get() = instance.activityHandler.launcher
 
         @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
         fun Launcher.showQuickstepWarningIfNecessary() {
