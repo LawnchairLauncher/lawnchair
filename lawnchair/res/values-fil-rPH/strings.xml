@@ -36,7 +36,7 @@
     <string name="clipboard">Klipboard</string>
     <string name="action_copy_link">Kopyahin ang link</string>
     <string name="action_copy">Kopya</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Idikit</string>
     <string name="action_done">Tapos na</string>
     <string name="select_all">Piliin lahat</string>
     <string name="deselect_all">Deselect all</string>
@@ -115,7 +115,7 @@
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">Baguhin ang folder</string>
+    <string name="my_folder_label">Aking folder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -263,8 +263,8 @@
     <string name="custom_icon_shape_top_right">Top right</string>
     <string name="custom_icon_shape_bottom_left">Bottom left</string>
     <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
+    <string name="export_to_clipboard">Iluwas patungo sa clipboard</string>
+    <string name="import_from_clipboard">Iimbak mula sa clipboard</string>
     <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
@@ -280,8 +280,8 @@
     <string name="lawnicons_not_installed_description">No supported icon packs</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="pref_fonts_add_fonts_summary">Sinusuportahan ang mga font na TTF at OTF</string>
+    <string name="pref_fonts_missing_font">Hindi nahanap ang font</string>
     <string name="font_label">Font (experimental)</string>
     <string name="fontWorkspace">Pangkalahatan</string>
     <string name="fontHeading">Headings</string>
@@ -310,7 +310,7 @@
     <string name="theme_system_default">System</string>
     <string name="theme_follow_wallpaper">Match wallpaper</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
+    <string name="color_style_label">Istilo ng kulay</string>
     <string name="color_style_spritz">Spritz</string>
     <string name="color_style_tonal_spot">Tonal Spot</string>
     <string name="color_style_vibrant">Vibrant</string>
@@ -507,7 +507,7 @@
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
     <string name="wallpaper_depth_effect_label">Epekto ng lalim ng wallpaper</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
-    <string name="show_sys_ui_scrim">Top shadow</string>
+    <string name="show_sys_ui_scrim">Anino sa itaas</string>
     <string name="infinite_scrolling_label">Infinite scrolling</string>
     <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Home screen grid</string>

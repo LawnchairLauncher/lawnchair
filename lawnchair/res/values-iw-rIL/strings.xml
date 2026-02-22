@@ -31,42 +31,42 @@
     <string name="action_lock">נעילה</string>
     <string name="action_apply">החל</string>
     <string name="action_customize">התאמה אישית</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">תמיד</string>
+    <string name="never_choice">אף פעם</string>
     <string name="clipboard">לוח</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">העתקת קישור</string>
     <string name="action_copy">העתקה</string>
     <string name="action_paste">הדבק</string>
     <string name="action_done">סיום</string>
     <string name="select_all">בחר הכל</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="deselect_all">ביטול בחירה</string>
+    <string name="inverse_selection">הפיכת בחירה</string>
     <string name="loading">כעת בטעינה…</string>
     <string name="dismiss">Dismiss</string>
     <string name="download_update">הורד עדכון</string>
     <string name="install_update">התקן עדכון</string>
-    <string name="view_changes">View changes</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="view_changes">הצגת שינויים</string>
+    <string name="pro_updated">אין עדכונים!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">עדכונים</string>
+    <string name="changes_dialog_error">טעינת השינויים נכשלה</string>
+    <string name="changes_dialog_no_changes">לא נמצאו שינויים</string>
+    <string name="changes_dialog_build_format">קימפול מס. %1$d למס. %2$d</string>
+    <string name="changes_dialog_commit_info">ע\"י %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_just_now">הרגע</string>
+    <string name="time_minutes_ago">%d דק\'</string>
+    <string name="time_hours_ago">%d שע\'</string>
+    <string name="time_days_ago">%d י\'</string>
+    <string name="time_weeks_ago">%d שב\'</string>
+    <string name="time_months_ago">%d ח\'</string>
+    <string name="time_years_ago">%d שנ\'</string>
     <string name="managed_by_lawnchair">מנוהל ע\"י Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">העדפות</string>
     <string name="settings_button_text">הגדרות כפתור בית</string>
     <string name="system_settings">הגדרות מערכת</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="title_change_settings">שינוי הגדרות</string>
     <!--
 
     General "words" used throughout Lawnchair

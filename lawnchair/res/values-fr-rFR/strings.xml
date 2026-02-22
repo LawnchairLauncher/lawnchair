@@ -271,8 +271,8 @@
     <string name="themed_icon_pack">Source des icônes à thème</string>
     <string name="themed_icon_pack_tint">Appliquer la couleur d\'accentuation</string>
     <string name="system_icons">Icônes du système</string>
-    <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
+    <string name="force_monochrome_label">Forcer monochrome</string>
+    <string name="force_monochrome_description">Requiert un redémarrage, teindre avec la couleur d\'accentuation les applis non prises en charge</string>
     <string name="themed_icon_title">Icônes à thème</string>
     <string name="themed_icons_off_label">Désactivé</string>
     <string name="themed_icons_home_label">Écran d\'accueil</string>

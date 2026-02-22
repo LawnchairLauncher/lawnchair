@@ -271,8 +271,8 @@
     <string name="themed_icon_pack">主题图标来源</string>
     <string name="themed_icon_pack_tint">用强调色进行着色</string>
     <string name="system_icons">系统图标</string>
-    <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
+    <string name="force_monochrome_label">强制单色</string>
+    <string name="force_monochrome_description">需要重启，为不支持的应用着色，使用强调色</string>
     <string name="themed_icon_title">主题图标</string>
     <string name="themed_icons_off_label">关</string>
     <string name="themed_icons_home_label">主屏幕</string>
