@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Ekrana malê ya li ser bingeha Launcher3 ji AOSP

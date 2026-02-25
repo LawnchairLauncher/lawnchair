@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Domači zaslon na podlagi Launcherja 3 iz projekta AOSP

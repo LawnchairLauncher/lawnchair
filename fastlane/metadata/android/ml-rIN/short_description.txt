@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+AOSP-ൽ നിന്നുള്ള Launcher3-നെ അടിസ്ഥാനമാക്കിയുള്ള ഹോംസ്ക്രീൻ

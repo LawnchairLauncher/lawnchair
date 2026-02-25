@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Ecran principal bazat pe Launcher3 din AOSP

@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+AOSP'тен Launcher3 негизиндеги башкы экран

@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Skrini ya nyumbani kulingana na Launcher3 kutoka AOSP

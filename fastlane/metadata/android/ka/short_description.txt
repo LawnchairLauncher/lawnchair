@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+მთავარი ეკრანი დაფუძნებული AOSP Launcher3-ზე

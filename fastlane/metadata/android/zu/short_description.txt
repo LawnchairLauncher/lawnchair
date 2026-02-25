@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Isikrini sasekhaya esisekelwe ku-Launcher3 esuka ku-AOSP

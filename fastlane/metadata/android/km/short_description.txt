@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+អេក្រង់ដើមផ្អែកលើ Launcher3 ពី AOSP

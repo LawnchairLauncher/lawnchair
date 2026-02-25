@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Az AOSP Launcher3-án alapuló kezdőképernyő
