@@ -29,7 +29,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Outline;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -48,6 +47,7 @@ import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
+import com.android.launcher3.graphics.PathWrapper;
 import com.android.launcher3.graphics.ShapeDelegate;
 import com.android.launcher3.graphics.ThemeManager;
 
@@ -73,7 +73,7 @@ public class ClipIconView extends View implements ClipPathView {
 
     private final Rect mStartRevealRect = new Rect();
     private final Rect mEndRevealRect = new Rect();
-    private Path mClipPath;
+    private PathWrapper mClipPath;
     private float mTaskCornerRadius;
 
     private final Rect mOutline = new Rect();
@@ -304,7 +304,7 @@ public class ClipIconView extends View implements ClipPathView {
     }
 
     @Override
-    public void setClipPath(Path clipPath) {
+    public void setClipPath(PathWrapper clipPath) {
         mClipPath = clipPath;
         invalidate();
     }
@@ -313,7 +313,7 @@ public class ClipIconView extends View implements ClipPathView {
     public void draw(Canvas canvas) {
         int count1 = canvas.save();
         if (mClipPath != null) {
-            canvas.clipPath(mClipPath);
+            canvas.clipPath(mClipPath.getPath());
         }
         int count2 = canvas.save();
         if (mBackground != null) {
