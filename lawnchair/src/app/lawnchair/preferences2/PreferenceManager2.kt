@@ -386,6 +386,11 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.recreate() },
     )
 
+    val appDrawerHapticFeedback = preference(
+        key = booleanPreferencesKey(name = "app_drawer_haptic_feedback"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_app_drawer_haptic_feedback),
+    )
+
     val showHiddenAppsInSearch = preference(
         key = booleanPreferencesKey(name = "show_hidden_apps_in_search"),
         defaultValue = false,
