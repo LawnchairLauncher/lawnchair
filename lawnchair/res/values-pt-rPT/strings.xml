@@ -177,8 +177,8 @@
     <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
     <string name="folder_shape_label">Folder</string>
     <string name="app_icon_shape_label">Aplicação</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Bloquear/desbloquear</string>
     <string name="recents_lock_unlock_description">Impedir que a aplicação selecionada seja fechada ao pressionar \"Limpar tudo\"</string>
@@ -516,6 +516,8 @@ Transparentes</string>
     <string name="home_screen_unlock">Desbloquear o ecrã principal</string>
     <string name="home_screen_locked">Ecrã principal bloqueado</string>
     <string name="home_screen_lock_description">Impedir alterações na disposição do ecrã principal</string>
+    <string name="set_default_home_page">Set as default page</string>
+    <string name="default_home_page_set">Default home page updated</string>
     <string name="popup_menu">Menu suspenso</string>
     <string name="popup_menu_items">Itens do menu suspenso</string>
     <string name="edit_menu_items">Editar itens do menu suspenso</string>
@@ -585,6 +587,7 @@ Transparentes</string>
     <string name="pref_all_apps_show_scrollbar_title">Mostrar barra de rolagem</string>
     <string name="app_drawer_columns">Colunas do menu de aplicações</string>
     <string name="row_height_label">Altura da linha</string>
+    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">Preenchimento horizontal</string>
     <string name="app_drawer_bg_color_label">Cor de fundo</string>
     <string name="work_profile_tab_background_label">Tabs background color</string>

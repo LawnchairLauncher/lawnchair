@@ -177,8 +177,8 @@
     <string name="experimental_folder_shape_modify_label">Προσαρμόσιμο σχήμα φακέλου</string>
     <string name="folder_shape_label">Φάκελος</string>
     <string name="app_icon_shape_label">Εφαρμογή</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Τα κινούμενα γραφικά του προγράμματος εκκίνησης απόδοσης χωρίς πρόσβαση root δεν λειτουργούν με έντονα τροποποιημένο λογισμικό AOSP</string>
+    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
     <string name="gesturenavcontract_warning_incompatibility">Το GestureNavContract μπορεί να προκαλέσει τεχνουργήματα κατά τη διάρκεια κινουμένων γραφικών</string>
     <string name="recents_lock_unlock">Κλείδωμα/ξεκλείδωμα</string>
     <string name="recents_lock_unlock_description">Αποτροπή κλεισίματος επιλεγμένης εφαρμογής κατά το πάτημα του \"Καθαρισμός όλων\"</string>
@@ -515,6 +515,8 @@
     <string name="home_screen_unlock">Ξεκλείδωμα Αρχ. Οθ.</string>
     <string name="home_screen_locked">Η Αρχ. Οθ. είναι κλειδωμένη</string>
     <string name="home_screen_lock_description">Αποτροπή αλλαγών στη διάταξη της αρχικής οθόνης</string>
+    <string name="set_default_home_page">Set as default page</string>
+    <string name="default_home_page_set">Default home page updated</string>
     <string name="popup_menu">Αναδυόμενο μενού</string>
     <string name="popup_menu_items">Στοιχεία αναδυόμενου μενού</string>
     <string name="edit_menu_items">Επεξεργασία στοιχείων αναδυόμενου μενού</string>
@@ -584,6 +586,7 @@
     <string name="pref_all_apps_show_scrollbar_title">Εμφάνιση πλαϊνής μπάρας κύλισης</string>
     <string name="app_drawer_columns">Στήλες συρταριού εφαρμογών</string>
     <string name="row_height_label">Ύψος γραμμής</string>
+    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">Οριζόντιο περιθώριο</string>
     <string name="app_drawer_bg_color_label">Χρώμα φόντου συρταριού εφαρμογών</string>
     <string name="work_profile_tab_background_label">Χρώμα φόντου καρτελών</string>

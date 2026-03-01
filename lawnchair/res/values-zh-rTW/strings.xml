@@ -177,8 +177,8 @@
     <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
     <string name="folder_shape_label">Folder</string>
     <string name="app_icon_shape_label">應用程式</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">鎖定/解鎖</string>
     <string name="recents_lock_unlock_description">按下 \"全部清除\" 時略過已選取的應用程式</string>
@@ -515,6 +515,8 @@
     <string name="home_screen_unlock">解鎖主畫面版面</string>
     <string name="home_screen_locked">主畫面版面已鎖定</string>
     <string name="home_screen_lock_description">防止主畫面版面更動</string>
+    <string name="set_default_home_page">Set as default page</string>
+    <string name="default_home_page_set">Default home page updated</string>
     <string name="popup_menu">彈出選單</string>
     <string name="popup_menu_items">彈出選單項目</string>
     <string name="edit_menu_items">編輯彈出選單項目</string>
@@ -584,6 +586,7 @@
     <string name="pref_all_apps_show_scrollbar_title">顯示捲軸</string>
     <string name="app_drawer_columns">應用程式抽屜列數</string>
     <string name="row_height_label">清單高度</string>
+    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">水平間距</string>
     <string name="app_drawer_bg_color_label">背景顏色</string>
     <string name="work_profile_tab_background_label">Tabs background color</string>
