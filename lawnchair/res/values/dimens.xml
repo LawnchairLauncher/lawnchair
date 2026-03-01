@@ -113,4 +113,6 @@
     <dimen name="aspect_ratio_portrait">1</dimen>
     <dimen name="aspect_ratio_portrait_and_square">1.05</dimen>
 
+    <dimen name="all_apps_button_size">48dp</dimen>S
+
 </resources>

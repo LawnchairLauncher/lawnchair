@@ -105,4 +105,5 @@
     <color name="surface_variant_light">@color/system_neutral2_100</color>
 
     <color name="accent_primary_device_default">@color/system_accent1_100</color>
+    <color name="all_apps_button_color">?attr/colorControlNormal</color>
 </resources>
