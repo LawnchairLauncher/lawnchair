@@ -23,6 +23,7 @@ import app.lawnchair.ui.preferences.components.colorpreference.ColorSelection
 import app.lawnchair.ui.preferences.components.search.SearchProviderPreferenceScreen
 import app.lawnchair.ui.preferences.destinations.AppDrawerFoldersPreference
 import app.lawnchair.ui.preferences.destinations.AppDrawerPreferences
+import app.lawnchair.ui.preferences.destinations.BackupAndRestorePreference
 import app.lawnchair.ui.preferences.destinations.CustomIconShapePreference
 import app.lawnchair.ui.preferences.destinations.DebugMenuPreferences
 import app.lawnchair.ui.preferences.destinations.DockPreferences
@@ -143,6 +144,7 @@ fun PreferenceNavigation(
         composable<GesturesPickApp> { PickAppForGesture() }
 
         composable<Quickstep> { QuickstepPreferences() }
+        composable<BackupAndRestore> { BackupAndRestorePreference() }
 
         composable<About> { About() }
         composable<AboutLicenses> { Acknowledgements() }

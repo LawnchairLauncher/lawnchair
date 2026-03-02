@@ -55,6 +55,9 @@ data object Folders : PreferenceRootRoute
 data object Quickstep : PreferenceRootRoute
 
 @Serializable
+data object BackupAndRestore : PreferenceRootRoute
+
+@Serializable
 data object Gestures : PreferenceRootRoute
 
 @Serializable
