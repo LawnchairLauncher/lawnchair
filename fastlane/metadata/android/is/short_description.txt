@@ -1,1 +1,1 @@
-Heimaskjár byggður á Launcher3 frá AOSP
+Homescreen based on Launcher3 from AOSP

@@ -1,1 +1,1 @@
-Startskærm baseret på Launcher3 fra AOSP
+Homescreen based on Launcher3 from AOSP

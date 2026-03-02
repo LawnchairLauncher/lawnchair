@@ -1,1 +1,1 @@
-Tela inicial baseada no Launcher3 do AOSP
+Homescreen based on Launcher3 from AOSP

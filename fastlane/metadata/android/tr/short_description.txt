@@ -1,1 +1,1 @@
-AOSP'den Launcher3 tabanlı ana ekran
+Homescreen based on Launcher3 from AOSP

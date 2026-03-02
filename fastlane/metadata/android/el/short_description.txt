@@ -1,1 +1,1 @@
-Αρχική οθόνη βασισμένη στον Launcher3 του AOSP
+Homescreen based on Launcher3 from AOSP

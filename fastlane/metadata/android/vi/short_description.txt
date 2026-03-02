@@ -1,1 +1,1 @@
-Màn hình chính dựa trên Launcher3 từ AOSP
+Homescreen based on Launcher3 from AOSP

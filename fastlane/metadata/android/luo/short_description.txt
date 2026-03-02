@@ -1,1 +1,1 @@
-Sikrin mar dala motenore gi Launcher3 moa AOSP
+Homescreen based on Launcher3 from AOSP

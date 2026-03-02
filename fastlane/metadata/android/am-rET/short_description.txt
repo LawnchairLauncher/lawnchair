@@ -1,1 +1,1 @@
-በAOSP Launcher3 ላይ የተመሰረተ መነሻ ስክሪን
+Homescreen based on Launcher3 from AOSP

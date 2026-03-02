@@ -1,1 +1,1 @@
-Tuisskerm gebaseer op Launcher3 van AOSP
+Homescreen based on Launcher3 from AOSP

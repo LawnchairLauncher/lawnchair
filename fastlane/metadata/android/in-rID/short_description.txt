@@ -1,1 +1,1 @@
-Layar beranda berdasarkan Launcher3 dari AOSP
+Homescreen based on Launcher3 from AOSP

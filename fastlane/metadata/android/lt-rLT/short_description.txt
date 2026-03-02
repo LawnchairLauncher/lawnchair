@@ -1,1 +1,1 @@
-Pradinis ekranas, pagrįstas „Launcher3“ iš AOSP
+Homescreen based on Launcher3 from AOSP

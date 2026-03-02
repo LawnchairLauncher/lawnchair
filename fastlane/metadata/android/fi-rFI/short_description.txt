@@ -1,1 +1,1 @@
-AOSP:n Launcher3:een perustuva aloitusnäyttö
+Homescreen based on Launcher3 from AOSP

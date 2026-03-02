@@ -1,1 +1,1 @@
-شاشة رئيسية تعتمد على Launcher3 من AOSP
+Homescreen based on Launcher3 from AOSP

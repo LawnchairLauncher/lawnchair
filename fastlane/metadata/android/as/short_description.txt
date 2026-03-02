@@ -1,1 +1,1 @@
-AOSP ৰ Launcher3 ৰ ওপৰত ভিত্তি কৰি তৈয়াৰ কৰা হোমস্ক্ৰীণ
+Homescreen based on Launcher3 from AOSP

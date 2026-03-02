@@ -1,1 +1,1 @@
-Home screen na batay sa Launcher3 mula sa AOSP
+Homescreen based on Launcher3 from AOSP

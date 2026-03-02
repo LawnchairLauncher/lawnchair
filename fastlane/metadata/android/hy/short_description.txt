@@ -1,1 +1,1 @@
-Հիմնական էկրան՝ հիմնված AOSP Launcher3-ի վրա
+Homescreen based on Launcher3 from AOSP

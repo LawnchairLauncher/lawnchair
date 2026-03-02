@@ -1,1 +1,1 @@
-Schermata iniziale basata su Launcher3 di AOSP
+Homescreen based on Launcher3 from AOSP

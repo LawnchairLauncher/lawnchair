@@ -1,1 +1,1 @@
-AOSP Launcher3 негізіндегі басты экран
+Homescreen based on Launcher3 from AOSP

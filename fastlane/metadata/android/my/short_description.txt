@@ -1,1 +1,1 @@
-AOSP ရဲ့ Launcher3 ကို အခြေခံထားတဲ့ ပင်မမျက်နှာပြင် (Homescreen)
+Homescreen based on Launcher3 from AOSP

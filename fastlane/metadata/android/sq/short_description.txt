@@ -1,1 +1,1 @@
-Ekrani bazë i bazuar në Launcher3 nga AOSP
+Homescreen based on Launcher3 from AOSP

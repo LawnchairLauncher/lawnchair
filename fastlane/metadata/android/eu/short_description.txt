@@ -1,1 +1,1 @@
-AOSP-ren Launcher3-n oinarritutako hasierako pantaila
+Homescreen based on Launcher3 from AOSP

@@ -1,1 +1,1 @@
-หน้าจอหลักที่อิงตาม Launcher3 จาก AOSP
+Homescreen based on Launcher3 from AOSP

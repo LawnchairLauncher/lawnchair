@@ -1,1 +1,1 @@
-מסך בית המבוסס על Launcher3 מ-AOSP
+Homescreen based on Launcher3 from AOSP

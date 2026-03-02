@@ -1,1 +1,1 @@
-基於 AOSP Launcher3 的主畫面介面
+Homescreen based on Launcher3 from AOSP

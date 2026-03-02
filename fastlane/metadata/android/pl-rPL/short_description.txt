@@ -1,1 +1,1 @@
-Ekran główny oparty na Launcher3 z AOSP
+Homescreen based on Launcher3 from AOSP

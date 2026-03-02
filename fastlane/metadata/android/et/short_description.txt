@@ -1,1 +1,1 @@
-AOSP Launcher3-l põhinev koduekraan
+Homescreen based on Launcher3 from AOSP

@@ -1,1 +1,1 @@
-ໜ້າຈໍຫຼັກໂດຍອີງໃສ່ Launcher3 ຈາກ AOSP
+Homescreen based on Launcher3 from AOSP

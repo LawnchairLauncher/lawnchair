@@ -1,1 +1,1 @@
-Skrin utama berdasarkan Launcher3 daripada AOSP
+Homescreen based on Launcher3 from AOSP

@@ -1,1 +1,1 @@
-Sākuma ekrāns, kura pamatā ir Launcher3 no AOSP
+Homescreen based on Launcher3 from AOSP
