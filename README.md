@@ -14,7 +14,7 @@
 > 
 > If you wish to contribute, read our [contributing guidelines](CONTRIBUTING.md). This branch will undergo many changes as we slowly refactor our codebase, so the `16-dev` branch may be particularly unfriendly to new contributors.
 > 
-> For regular users, we recommend staying on **Lawnchair 15 Beta 2**.
+> For regular users, we recommend staying on **Lawnchair 15 Beta 2.1**.
 
 <picture>
     <!-- Avoid image being clickable with slight workaround -->

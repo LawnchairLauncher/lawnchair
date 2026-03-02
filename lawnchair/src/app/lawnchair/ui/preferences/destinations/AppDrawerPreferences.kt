@@ -40,6 +40,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.AppDrawerHapticFeedbackPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.SuggestionsPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
@@ -71,9 +72,11 @@ fun AppDrawerPreferences(
         modifier = modifier,
     ) {
         val drawerListAdapter = prefs.drawerList.getAdapter()
-        DrawerLayoutPreference(drawerListAdapter)
-        ExpandAndShrink(visible = drawerListAdapter.state.value) {
-            AppDrawerFolderPreferenceItem()
+        Column {
+            DrawerLayoutPreference(drawerListAdapter)
+            ExpandAndShrink(visible = drawerListAdapter.state.value) {
+                AppDrawerFolderPreferenceItem()
+            }
         }
         val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
@@ -85,7 +88,8 @@ fun AppDrawerPreferences(
                 )
             }
             Item { SearchBarPreference(SearchRoute.DRAWER_SEARCH, showLabel = false) }
-            Item { SuggestionsPreference() }
+            SuggestionsPreference()
+            AppDrawerHapticFeedbackPreference()
         }
         PreferenceGroup(heading = stringResource(R.string.style)) {
             Item { ColorPreference(preference = prefs2.appDrawerBackgroundColor) }

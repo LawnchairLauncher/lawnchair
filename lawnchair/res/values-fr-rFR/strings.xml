@@ -177,8 +177,8 @@
     <string name="experimental_folder_shape_modify_label">Forme de dossier personnalisable</string>
     <string name="folder_shape_label">Dossier</string>
     <string name="app_icon_shape_label">Application</string>
-    <string name="gesturenavcontract_label">API GestureNavContract</string>
-    <string name="gesturenavcontract_description">Effectuer le rendu des animations du lanceur d\'applications sans accès root, ne fonctionne pas avec une version d\'Android déviant fortement d\'AOSP</string>
+    <string name="gesturenavcontract_label">Utiliser l\'API GestureNavContract</string>
+    <string name="gesturenavcontract_description">Activez la prise en charge des animations Android améliorées lors de l\'utilisation de la navigation par gestes. Incompatible avec certains appareils. Peut causer des bugs d\'animation lorsque activé.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract peut entraîner la présence d\'artéfacts pendant les animations</string>
     <string name="recents_lock_unlock">Verrouiller/déverrouiller</string>
     <string name="recents_lock_unlock_description">Empêcher l\'appli sélectionnée d\'être fermée lors d\'un appui sur « Tout effacer »</string>
@@ -515,6 +515,8 @@
     <string name="home_screen_unlock">Déverrouiller l\'écran d\'accueil</string>
     <string name="home_screen_locked">L\'écran d\'accueil est verrouillé</string>
     <string name="home_screen_lock_description">Empêcher les changements d\'agencement de l\'écran d\'accueil</string>
+    <string name="set_default_home_page">Définir comme page par défaut</string>
+    <string name="default_home_page_set">Page par défaut mise à jour</string>
     <string name="popup_menu">Menu pop-up</string>
     <string name="popup_menu_items">Éléments du menu pop-up</string>
     <string name="edit_menu_items">Modifier les éléments du menu pop-up</string>
@@ -584,6 +586,7 @@
     <string name="pref_all_apps_show_scrollbar_title">Afficher la barre de défilement</string>
     <string name="app_drawer_columns">Colonnes du tiroir des applis</string>
     <string name="row_height_label">Hauteur de ligne</string>
+    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">Décalage vers le centre</string>
     <string name="app_drawer_bg_color_label">Couleur d\'arrière-plan</string>
     <string name="work_profile_tab_background_label">Couleur d\'arrière-plan des onglets</string>

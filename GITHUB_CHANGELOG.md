@@ -8,8 +8,6 @@
 > This branch has diverged timeline from the original `16-dev`, meaning you will have to rebase your
 > commit back to this branch if you wish to contribute to this branch.
 
-Build: BD5.1002 (latest), BD5.0702, BD5.2401, BD5.2101, BD5.2001, BD5.1901, BD5.1301, BD5.1201, BD4.2712
-
 Compatibility list:
 
 | 📱 Android version | 🥞 Recommended? | 💥 Crash? | 🧑‍💻 QuickSwitch Ready? |
@@ -40,6 +38,10 @@ Compatibility list:
 * [Lawnchair] Enable wrap adaptive icons by default (only on by default)
 * [Lawnchair] Enable bulk icon loading by default (toggle removed, on by default)
 * [Lawnchair] Allow customising force monochrome option
+* [Lawnchair] Update Google Fonts listing to 20022026
+* [Lawnchair/Workspace] Add "Set as default page" option (https://github.com/LawnchairLauncher/lawnchair/pull/6395)
+* [Lawnchair] Improve GestureNavContract device detection
+* [Lawnchair] App drawer haptic feedback toggle (https://github.com/LawnchairLauncher/lawnchair/pull/6436)
 
 #### Fixes
 * [Launcher] Limited Android 11 support
@@ -73,6 +75,14 @@ Compatibility list:
 * [Lawnchair/Iconloaderlib] Use correct default percentage for icon adaptive lightness
 * [Lawnchair/Iconloaderlib] Correct wrap adaptive drawable behaviour
 * [Launcher] Null exception in FloatingIconView
+* [Lawnchair/Search] Add timeout for web suggestions (https://github.com/LawnchairLauncher/lawnchair/pull/6338)
+* [Lawnchair] Restore custom app labels (https://github.com/LawnchairLauncher/lawnchair/pull/6364)
+* [Lawnchair/Preference] Fix layout change animation of paddings on AppDrawerPreferences
+* [Lawnchair/Preference] Resolve unnecessary launcherPopupOrder write (https://github.com/LawnchairLauncher/lawnchair/pull/6419)
+* [Launcher] Resolve unnecessary model reload (https://github.com/LawnchairLauncher/lawnchair/pull/6420)
+* [Launcher/Widget] Widget configuration activity fail to open due to BAL hardening on Android 14
+* [Lawnchair/Iconloaderlib] Icon shadow can't be disabled by user preference
+* [Lawnchair/Workspace] Disallow infinite scroll to the left when feed is enabled
 
 ### 🥞 Development 4 Release 1 (Snapshot 10)
 

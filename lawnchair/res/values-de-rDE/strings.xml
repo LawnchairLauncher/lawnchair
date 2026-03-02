@@ -177,8 +177,8 @@
     <string name="experimental_folder_shape_modify_label">Anpassbare Ordner-Form</string>
     <string name="folder_shape_label">Ordner</string>
     <string name="app_icon_shape_label">App</string>
-    <string name="gesturenavcontract_label">GestureNavContract-API</string>
-    <string name="gesturenavcontract_description">Rendern von Launcher-Animationen ohne Root, funktioniert nicht mit stark modifizierten AOSP-ROMs</string>
+    <string name="gesturenavcontract_label">API für GestureNavContract verwenden</string>
+    <string name="gesturenavcontract_description">Greift auf erweiterte Animationen bei der Gesten-Navigation in Android zu. Nicht alle Geräte unterstützen dies und bei der Verwendung kann es zu Animationsfehlern kommen.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract kann während der Animationen Artefakte verursachen</string>
     <string name="recents_lock_unlock">Anpinnen/Lösen</string>
     <string name="recents_lock_unlock_description">Verhindert, dass die gewählte App durch \"Alle Apps schließen\" entfernt wird</string>
@@ -515,6 +515,8 @@
     <string name="home_screen_unlock">Startbildschirm entsperren</string>
     <string name="home_screen_locked">Startbildschirm ist gesperrt</string>
     <string name="home_screen_lock_description">Verhindert Änderungen am Startbildschirm-Layout</string>
+    <string name="set_default_home_page">Als Standard-Startseite festlegen</string>
+    <string name="default_home_page_set">Standard-Startseite aktualisiert</string>
     <string name="popup_menu">Pop-up-Menü</string>
     <string name="popup_menu_items">Pop-up-Menü-Einträge</string>
     <string name="edit_menu_items">Pop-up-Menü-Einträge bearbeiten</string>
@@ -584,10 +586,11 @@
     <string name="pref_all_apps_show_scrollbar_title">Scroll-Leiste anzeigen</string>
     <string name="app_drawer_columns">Spalten der App-Übersicht</string>
     <string name="row_height_label">Zeilenhöhe</string>
+    <string name="app_drawer_haptic_feedback_label">Haptisches Feedback</string>
     <string name="app_drawer_indent_label">Horizontaler Abstand</string>
     <string name="app_drawer_bg_color_label">Hintergrundfarbe</string>
-    <string name="work_profile_tab_background_label">Tabs background color</string>
-    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
+    <string name="work_profile_tab_background_label">Tab-Hintergrundfarbe</string>
+    <string name="work_profile_tab_container_background_label">Separater Hintergrund für Tab-Container</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Aus der App-Übersicht ausblenden</string>
     <string name="hidden_apps_label_with_count">Versteckte Apps (%1$d)</string>

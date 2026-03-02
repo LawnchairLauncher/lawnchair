@@ -177,8 +177,8 @@
     <string name="experimental_folder_shape_modify_label">Hình dạng thư mục có thể tùy chỉnh</string>
     <string name="folder_shape_label">Thư mục</string>
     <string name="app_icon_shape_label">Ứng dụng</string>
-    <string name="gesturenavcontract_label">API Giao ước điều hướng cữ chỉ</string>
-    <string name="gesturenavcontract_description">Hiển thị hoạt ảnh khởi chạy mà không cần quyền root, không hoạt động với AOSP đã được chỉnh sửa nhiều.</string>
+    <string name="gesturenavcontract_label">Sử dụng API GestureNavContract</string>
+    <string name="gesturenavcontract_description">Hỗ trợ hiệu ứng hoạt ảnh nâng cao của Android khi sử dụng điều hướng bằng cử chỉ. Không phải tất cả thiết bị đều hỗ trợ tính năng này. Có thể gây ra lỗi hoạt ảnh khi sử dụng.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract có thể gây ra hiện tượng nhiễu ảnh trong quá trình hoạt động hiệu ứng.</string>
     <string name="recents_lock_unlock">Khóa/mở</string>
     <string name="recents_lock_unlock_description">Ngăn chứa ứng dụng đã chọn đóng khi nhấn \"Đóng tất cả\"</string>
@@ -271,8 +271,8 @@
     <string name="themed_icon_pack">Nguồn biểu tượng theo chủ đề</string>
     <string name="themed_icon_pack_tint">Pha màu với màu nhấn</string>
     <string name="system_icons">Biểu tượng từ hệ thống</string>
-    <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
+    <string name="force_monochrome_label">Buộc đơn sắc</string>
+    <string name="force_monochrome_description">Yêu cầu khởi động lại, tô màu các ứng dụng không được hỗ trợ bằng màu nhấn</string>
     <string name="themed_icon_title">Biểu tượng theo chủ đề</string>
     <string name="themed_icons_off_label">Tắt</string>
     <string name="themed_icons_home_label">Trang chủ</string>
@@ -366,7 +366,7 @@
     <string name="smartspace_weather">Thời tiết</string>
     <string name="smartspace_battery_status">Tình trạng pin</string>
     <string name="smartspace_now_playing">Đang phát</string>
-    <string name="smartspace_onboarding">Onboarding</string>
+    <string name="smartspace_onboarding">Quy trình hội nhập</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Tùy chỉnh Lawnchair của bạn</string>
     <string name="onboarding_open_settings_subtitle">Nhấn-giữ trên màn hình chính để mở Tùy chỉnh</string>
@@ -515,6 +515,8 @@
     <string name="home_screen_unlock">Mở khóa trang chủ</string>
     <string name="home_screen_locked">Trang chủ đã bị khóa</string>
     <string name="home_screen_lock_description">Khoá bố cục màn hình chính</string>
+    <string name="set_default_home_page">Đặt làm trang mặc định</string>
+    <string name="default_home_page_set">Trang chủ mặc định đã được cập nhật</string>
     <string name="popup_menu">Menu Pop-up</string>
     <string name="popup_menu_items">Các mục menu Pop-up</string>
     <string name="edit_menu_items">Chỉnh sửa các mục menu Pop-up</string>
@@ -584,10 +586,11 @@
     <string name="pref_all_apps_show_scrollbar_title">Hiển thị thanh kéo</string>
     <string name="app_drawer_columns">Cột của ngăn ứng dụng</string>
     <string name="row_height_label">Chiều cao hàng</string>
+    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">Khoản trống ngang</string>
     <string name="app_drawer_bg_color_label">Màu nền</string>
-    <string name="work_profile_tab_background_label">Tabs background color</string>
-    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
+    <string name="work_profile_tab_background_label">Màu nền của các tab</string>
+    <string name="work_profile_tab_container_background_label">Nền vùng chứa tab tách biệt</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Ẩn khỏi ngăn ứng dụng</string>
     <string name="hidden_apps_label_with_count">Ẩn ứng dụng (%1$d)</string>

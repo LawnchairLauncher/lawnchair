@@ -40,9 +40,11 @@ object LauncherOptionsPopup {
             defaultItem.identifier !in currentOptions.map { it.identifier }
         }
 
-        prefs2.launcherPopupOrder.setBlocking(
-            (currentOptions + missingItems).toOptionOrderString(),
-        )
+        if (missingItems.isNotEmpty()) {
+            prefs2.launcherPopupOrder.setBlocking(
+                (currentOptions + missingItems).toOptionOrderString(),
+            )
+        }
     }
 
     /**

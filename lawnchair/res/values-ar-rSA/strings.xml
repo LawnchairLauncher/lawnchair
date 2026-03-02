@@ -177,8 +177,8 @@
     <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
     <string name="folder_shape_label">Folder</string>
     <string name="app_icon_shape_label">التطبيق</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">قفل/فتح</string>
     <string name="recents_lock_unlock_description">منع إغلاق التطبيق المحدد عند الضغط على \"مسح الكل\"</string>
@@ -515,6 +515,8 @@
     <string name="home_screen_unlock">فتح قفل الشاشة الرئيسية</string>
     <string name="home_screen_locked">الشاشة الرئيسية مقفلة</string>
     <string name="home_screen_lock_description">منع التغييرات في تخطيط الشاشة الرئيسية</string>
+    <string name="set_default_home_page">Set as default page</string>
+    <string name="default_home_page_set">Default home page updated</string>
     <string name="popup_menu">القائمة المنبثقة</string>
     <string name="popup_menu_items">عناصر القائمة المنبثقة</string>
     <string name="edit_menu_items">تعديل عناصر القائمة المنبثقة</string>
@@ -584,6 +586,7 @@
     <string name="pref_all_apps_show_scrollbar_title">إظهار شريط التمرير</string>
     <string name="app_drawer_columns">أعمدة درج التطبيقات</string>
     <string name="row_height_label">ارتفاع الصف</string>
+    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">التوسيع الأفقي</string>
     <string name="app_drawer_bg_color_label">لون الخلفية</string>
     <string name="work_profile_tab_background_label">Tabs background color</string>

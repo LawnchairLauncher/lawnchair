@@ -7,7 +7,7 @@ androidx-room = "2.8.4"
 androidx-lifecycle = "2.10.0"
 accompanist = "0.37.3"
 opto = "1.0.18"
-protobuf = "4.33.5"
+protobuf = "4.34.0"
 retrofit = "3.0.0"
 dagger = "2.59.2"
 libsu = "6.0.0"
@@ -15,7 +15,7 @@ refine = "4.4.0"
 
 guava = "33.5.0-android"
 junitVersion = "4.13.2"
-mockito = "5.21.0"
+mockito = "5.22.0"
 mockitoKotlin = "6.2.3"
 truth = "1.4.5"
 testRules = "1.7.0"
@@ -65,11 +65,11 @@ androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
-compose-bom = "androidx.compose:compose-bom:2026.02.00"
+compose-bom = "androidx.compose:compose-bom:2026.02.01"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha14"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha15"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
@@ -138,7 +138,7 @@ rikka-annotation-processor = { module = "dev.rikka.tools.refine:annotation-proce
 rikka-refine-runtime = { group = "dev.rikka.tools.refine", name = "runtime", version.ref = "refine" }
 smartspacer-sdk = "com.kieronquinn.smartspacer:sdk-client:1.1.2"
 xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
-errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.47.0"
+errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.48.0"
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.8.0"
 composeRules = "io.nlopez.compose.rules:ktlint:0.5.6"
@@ -149,8 +149,8 @@ google-truth = { group = "com.google.truth", name = "truth", version.ref = "trut
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 mockito-robolectric = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
-mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.5"
-mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.5"
+mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.7"
+mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.7-jdk5"
 
 [bundles]
 accompanist = ["accompanist-adaptive", "accompanist-drawablepainter", "accompanist-permissions"]
