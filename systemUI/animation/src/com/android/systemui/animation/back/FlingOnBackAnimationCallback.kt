@@ -129,7 +129,7 @@ abstract class FlingOnBackAnimationCallback(
     }
 
     final override fun onBackInvoked() {
-        if (predictiveBackTimestampApi() && lastBackEvent != null) {
+        if (predictiveBackTimestampApi() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA && lastBackEvent != null) {
             velocityTracker.computeCurrentVelocity(1000)
             backInvokedFlingAnim =
                 FlingAnimation(FloatValueHolder())

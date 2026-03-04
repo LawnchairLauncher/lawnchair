@@ -400,16 +400,63 @@ class SearchTargetFactory(
 }
 
 object FilesTarget {
+    private const val MAX_PREVIEW_SIZE_PX = 256
+
     fun getPreviewIcon(
         context: Context,
         info: IFileInfo,
     ): Icon {
         val fileInfo = info as? FileInfo
         return if (fileInfo?.isImageType == true) {
-            Icon.createWithFilePath(fileInfo.path)
+            decodeThumbnailIcon(fileInfo.path)
+                ?: Icon.createWithResource(context, fileInfo.iconRes)
         } else {
             Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_folder)
         }
+    }
+
+    private fun decodeThumbnailIcon(path: String): Icon? {
+        return try {
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(path, options)
+
+            options.inSampleSize = calculateInSampleSize(
+                options.outWidth,
+                options.outHeight,
+                MAX_PREVIEW_SIZE_PX,
+                MAX_PREVIEW_SIZE_PX,
+            )
+            options.inJustDecodeBounds = false
+
+            val bitmap = BitmapFactory.decodeFile(path, options)
+            bitmap?.let { Icon.createWithBitmap(it) }
+        } catch (e: Exception) {
+            Log.w("FilesTarget", "Failed to decode thumbnail for $path", e)
+            null
+        }
+    }
+
+    /**
+     * We calculate the In Sample Size by a power of 2 so that the decoded bitmap will be as small as
+     * possible while both dimensions remain >= [reqWidth] / [reqHeight]
+     */
+    private fun calculateInSampleSize(
+        rawWidth: Int,
+        rawHeight: Int,
+        reqWidth: Int,
+        reqHeight: Int,
+    ): Int {
+        var inSampleSize = 1
+        if (rawHeight > reqHeight || rawWidth > reqWidth) {
+            // If so we calculate the image at half the dimensions
+            val halfHeight = rawHeight / 2
+            val halfWidth = rawWidth / 2
+            // Then we loop until we find the right sample size by the power of 2
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+        return inSampleSize
     }
 }
 

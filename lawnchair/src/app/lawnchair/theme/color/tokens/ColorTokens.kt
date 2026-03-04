@@ -99,7 +99,11 @@ object ColorTokens {
 
     @JvmField val FocusHighlight = DayNightColorToken(Neutral1_0, Neutral1_700)
 
+    @JvmField val FocusHighlightBlur = DayNightColorToken(Neutral1_0, Neutral1_700).setAlpha(.40f)
+
     @JvmField val GroupHighlight = Surface
+
+    @JvmField val GroupHighlightBlur = Surface.setAlpha(.40f)
 
     @JvmField val OverviewScrimColor = DayNightColorToken(Neutral2_100.setLStar(87.0), Neutral1_800)
 
