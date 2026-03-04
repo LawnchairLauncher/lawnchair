@@ -80,6 +80,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                     val allResults = appResults + shortcutResults + (calcResult ?: emptyList()) + nonAppResults + generateActionResults(query)
 
                     val searchTargets = translateToSearchTargets(allResults)
+                    setFirstItemQuickLaunch(searchTargets)
                     val adapterItems = transformSearchResults(searchTargets)
                     withContext(Dispatchers.Main) {
                         callback.onSearchResult(query, ArrayList(adapterItems))
