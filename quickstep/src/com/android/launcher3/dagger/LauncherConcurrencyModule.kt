@@ -20,6 +20,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Process
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.coroutines.DispatcherProvider
 import com.android.launcher3.util.coroutines.ProductionDispatchers
 import com.android.systemui.dagger.qualifiers.Background
@@ -45,9 +46,14 @@ object LauncherConcurrencyModule {
     fun provideBgLooper(): Looper {
         val thread = HandlerThread("LauncherBg", Process.THREAD_PRIORITY_BACKGROUND)
         thread.start()
-        thread
-            .getLooper()
-            .setSlowLogThresholdMs(BG_SLOW_DISPATCH_THRESHOLD, BG_SLOW_DELIVERY_THRESHOLD)
+        if (Utilities.ATLEAST_P) {
+            thread
+                .getLooper()
+                .setSlowLogThresholdMs(BG_SLOW_DISPATCH_THRESHOLD, BG_SLOW_DELIVERY_THRESHOLD)
+        } else {
+            thread
+                .getLooper()
+        }
         return thread.getLooper()
     }
 

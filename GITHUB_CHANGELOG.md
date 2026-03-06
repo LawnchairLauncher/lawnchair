@@ -12,9 +12,9 @@ Compatibility list:
 
 | 📱 Android version | 🥞 Recommended? | 💥 Crash? | 🧑‍💻 QuickSwitch Ready? |
 |--------------------|-----------------|-----------|--------------------------|
-| Android 8.0        | ❌               | ✅         | N/A                      |
-| Android 8.1        | ❌               | ✅         | N/A                      |
-| Android 9          | ❌               | ✅         | N/A                      |
+| Android 8.0        | ❌               | ❌         | Not supported            |
+| Android 8.1        | ❌               | ❌         | Not supported            |
+| Android 9          | ❌               | ❌         | Not supported            |
 | Android 10         | ❌               | ❌         | ❌                        |
 | Android 11         | ❌               | ❌         | ❌                        |
 | Android 12.0       | ✅               | ❌         | ❌                        |
@@ -23,7 +23,7 @@ Compatibility list:
 | Android 14         | ✅               | ❌         | ❌                        |
 | Android 15         | ✅               | ❌         | ❌                        |
 | Android 16         | ✅               | ❌         | ❌                        |
-| Android 16.1       | ✅               | ❌         | N/A                      |
+| Android 17         | ✅               | ❌         | ❌                        |
 
 #### Features
 * [Lawnchair] Allow user to disable the auto-updater (for Nightly build only)
@@ -42,6 +42,9 @@ Compatibility list:
 * [Lawnchair/Workspace] Add "Set as default page" option (https://github.com/LawnchairLauncher/lawnchair/pull/6395)
 * [Lawnchair] Improve GestureNavContract device detection
 * [Lawnchair] App drawer haptic feedback toggle (https://github.com/LawnchairLauncher/lawnchair/pull/6436)
+* [Lawnchair] Move backup and restore to separate screen (237a0beb)
+* [Lawnchair/Search] Make blurred app search look nicer
+* [Lawnchair/Search] Load image preview faster at less memory usage
 
 #### Fixes
 * [Launcher] Limited Android 11 support
@@ -83,6 +86,8 @@ Compatibility list:
 * [Launcher/Widget] Widget configuration activity fail to open due to BAL hardening on Android 14
 * [Lawnchair/Iconloaderlib] Icon shadow can't be disabled by user preference
 * [Lawnchair/Workspace] Disallow infinite scroll to the left when feed is enabled
+* [Launcher] Crash when trying to use back gesture on below Android 16
+* [Lawnchair] Limited Android 9, 8.1, 8.0 support
 
 ### 🥞 Development 4 Release 1 (Snapshot 10)
 

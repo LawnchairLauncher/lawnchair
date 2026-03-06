@@ -23,9 +23,14 @@ import com.android.launcher3.util.window.RefreshRateTracker
 /** [RefreshRateTracker] using main thread [Choreographer] */
 object ChoreographerFrameRateTracker : RefreshRateTracker {
 
+    // LC-Note: Ignore? Why is it complaining about inapplicable candidate when you compile just fine?
     override val singleFrameMs: Int
         get() =
-            Choreographer.getMainThreadInstance()?.let {
-                (it.frameIntervalNanos / TimeUtils.NANOS_PER_MS).toInt().coerceAtLeast(1)
-            } ?: 1
+            try {
+                Choreographer.getMainThreadInstance()?.let {
+                    (it.frameIntervalNanos / TimeUtils.NANOS_PER_MS).toInt().coerceAtLeast(1)
+                } ?: 1
+            } catch (_: NoSuchMethodError) {
+                16
+            }
 }
