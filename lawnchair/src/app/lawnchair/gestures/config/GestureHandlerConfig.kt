@@ -1,6 +1,7 @@
 package app.lawnchair.gestures.config
 
 import android.content.Context
+import androidx.annotation.DrawableRes
 import app.lawnchair.gestures.handlers.GestureHandler
 import app.lawnchair.gestures.handlers.NoOpGestureHandler
 import app.lawnchair.gestures.handlers.OpenAppDrawerGestureHandler
@@ -13,6 +14,7 @@ import app.lawnchair.gestures.handlers.OpenQuickSettingsHandler
 import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
 import app.lawnchair.gestures.handlers.RecentsGestureHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
+import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -20,6 +22,9 @@ import kotlinx.serialization.Transient
 
 @Serializable
 sealed class GestureHandlerConfig {
+
+    @get:DrawableRes
+    open val iconRes: Int = R.drawable.ic_launcher_home
 
     abstract fun getLabel(context: Context): String
     abstract fun createHandler(context: Context): GestureHandler
@@ -58,7 +63,11 @@ sealed class GestureHandlerConfig {
 
     @Serializable
     @SerialName("openAppDrawer")
-    data object OpenAppDrawer : Simple(R.string.gesture_handler_open_app_drawer, ::OpenAppDrawerGestureHandler)
+    data object OpenAppDrawer :
+        Simple(R.string.gesture_handler_open_app_drawer, ::OpenAppDrawerGestureHandler) {
+        // todo: change this
+        override val iconRes = R.drawable.ic_apps
+    }
 
     @Serializable
     @SerialName("openAppSearch")
@@ -77,5 +86,19 @@ sealed class GestureHandlerConfig {
     data class OpenApp(val appName: String, val target: OpenAppTarget) : GestureHandlerConfig() {
         override fun getLabel(context: Context) = context.getString(R.string.gesture_handler_open_app_config, appName)
         override fun createHandler(context: Context) = OpenAppGestureHandler(context, target)
+    }
+
+    companion object {
+        fun toString(config: GestureHandlerConfig): String {
+            return kotlinxJson.encodeToString(config)
+        }
+
+        fun fromString(string: String): GestureHandlerConfig {
+            return try {
+                kotlinxJson.decodeFromString<GestureHandlerConfig>(string)
+            } catch (_: Exception) {
+                NoOp
+            }
+        }
     }
 }

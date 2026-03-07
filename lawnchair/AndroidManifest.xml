@@ -72,6 +72,29 @@
         </activity>
 
         <activity
+            android:label="@string/lawnchair_actions"
+            android:icon="@mipmap/ic_launcher_home"
+            android:name="app.lawnchair.gestures.ui.LawnchairShortcutActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Lawnchair">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="app.lawnchair.gestures.ui.RunHandlerActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Lawnchair">
+            <intent-filter>
+                <action android:name="app.lawnchair.START_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
             android:name="com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher"
             tools:node="remove" />
 

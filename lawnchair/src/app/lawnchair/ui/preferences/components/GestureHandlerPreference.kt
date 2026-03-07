@@ -39,7 +39,7 @@ import com.android.launcher3.util.ComponentKey
 import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.launch
 
-val options = listOf(
+val gestureHandlerOptions = listOf(
     GestureHandlerOption.NoOp,
     GestureHandlerOption.Sleep,
     GestureHandlerOption.Recents,
@@ -73,7 +73,7 @@ fun GestureHandlerPreference(
         }
     }
 
-    val newOptions = options.filterNot { option ->
+    val newOptions = gestureHandlerOptions.filterNot { option ->
         option in listOf(
             GestureHandlerOption.OpenAppDrawer,
             GestureHandlerOption.OpenAppSearch,
@@ -167,7 +167,7 @@ fun AppGesturePreference(
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    itemsIndexed(options) { index, option ->
+                    itemsIndexed(gestureHandlerOptions) { index, option ->
                         if (index > 0) {
                             PreferenceDivider(startIndent = 40.dp)
                         }

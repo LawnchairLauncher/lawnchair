@@ -64,6 +64,13 @@ class GestureController(private val launcher: LawnchairLauncher) {
         triggerHandler(backPressHandler, false)
     }
 
+    fun handle(handler: GestureHandlerConfig) {
+        launcher.lifecycleScope.launch {
+            val handler = handler.createHandler(launcher)
+            handler.onTrigger(launcher)
+        }
+    }
+
     private fun triggerHandler(handlerFlow: Flow<GestureHandler>, withHaptic: Boolean = true) {
         launcher.lifecycleScope.launch {
             val handler = handlerFlow.first()
