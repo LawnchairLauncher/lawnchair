@@ -28,6 +28,10 @@ import android.util.PathParser
 import com.android.launcher3.Utilities
 import com.android.launcher3.shapes.ShapesProvider
 
+@Deprecated(
+    message = "Use IconShapeV2 instead",
+    level = DeprecationLevel.ERROR,
+)
 open class IconShape(
     val topLeft: Corner,
     val topRight: Corner,

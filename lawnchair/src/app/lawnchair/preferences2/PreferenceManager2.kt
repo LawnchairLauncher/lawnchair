@@ -34,8 +34,8 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
-import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
+import app.lawnchair.icons.shape.IconShapeV2
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
@@ -120,12 +120,12 @@ class PreferenceManager2 @Inject constructor(
 
     val iconShape = preference(
         key = stringPreferencesKey(name = "icon_shape"),
-        defaultValue = IconShape.fromString(
+        defaultValue = IconShapeV2.fromString(
             value = context.getString(R.string.config_default_icon_shape),
             context = context,
-        ) ?: IconShape.Circle,
+        ) ?: IconShapeV2.Circle,
         parse = {
-            IconShape.fromString(value = it, context = context)
+            IconShapeV2.fromString(value = it, context = context)
                 ?: IconShapeManager.getSystemIconShape(context)
         },
         save = { it.toString() },
@@ -136,12 +136,12 @@ class PreferenceManager2 @Inject constructor(
 
     val folderShape = preference(
         key = stringPreferencesKey(name = "folder_shape"),
-        defaultValue = IconShape.fromString(
+        defaultValue = IconShapeV2.fromString(
             value = context.getString(R.string.config_default_folder_shape),
             context = context,
-        ) ?: IconShape.Circle,
+        ) ?: IconShapeV2.Circle,
         parse = {
-            IconShape.fromString(value = it, context = context)
+            IconShapeV2.fromString(value = it, context = context)
                 ?: IconShapeManager.getSystemIconShape(context)
         },
         save = { it.toString() },
@@ -154,7 +154,7 @@ class PreferenceManager2 @Inject constructor(
         key = stringPreferencesKey(name = "custom_icon_shape"),
         defaultValue = null,
         parse = {
-            IconShape.fromString(value = it, context = context)
+            IconShapeV2.fromString(value = it, context = context)
                 ?: IconShapeManager.getSystemIconShape(context)
         },
         save = { it.toString() },
@@ -822,7 +822,7 @@ class PreferenceManager2 @Inject constructor(
         }
     }
 
-    private fun initializeIconShape(shape: IconShape) {
+    private fun initializeIconShape(shape: IconShapeV2) {
         CustomAdaptiveIconDrawable.sInitialized = true
         CustomAdaptiveIconDrawable.sMaskId = shape.getHashString()
         CustomAdaptiveIconDrawable.sMask = shape.getMaskPath()
