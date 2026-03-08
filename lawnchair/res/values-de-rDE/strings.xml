@@ -150,6 +150,8 @@
     <string name="gestures_description">Tippen und Wischen</string>
     <string name="quickstep_label">Letzte Apps</string>
     <string name="quickstep_description">\"Alle Apps schließen\"-Schaltfläche, Eckradius</string>
+    <string name="backup_and_restore_label">Sichern und Wiederherstellen</string>
+    <string name="backup_and_restore_description">Aktuelles Setup speichern, Backups wiederherstellen</string>
     <string name="about_label">Über</string>
     <string name="app_info_drop_target_label">App-Info</string>
     <string name="debug_restart_launcher">Lawnchair neustarten</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">Sicherung wiederhergestellt</string>
     <string name="backup_restore_error">Fehler beim Wiederherstellen der Sicherung</string>
     <string name="invalid_backup_file">Ungültige Sicherungsdatei</string>
+    <string name="create_backup_description">Einstellungen und Launcher-Layout exportieren</string>
+    <string name="restore_backup_description">Eine zuvor erstellte Sicherung importieren</string>
     <!--
 
     Gesture settings

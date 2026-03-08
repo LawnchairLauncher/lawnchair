@@ -150,6 +150,8 @@
     <string name="gestures_description">Tocchi e scorrimenti</string>
     <string name="quickstep_label">Schermata Recenti</string>
     <string name="quickstep_description">Pulsante Cancella Tutto, raggio dell\'angolo</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">Informazioni</string>
     <string name="app_info_drop_target_label">Informazioni sull\'app</string>
     <string name="debug_restart_launcher">Riavvia Lawnchair</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">Backup ripristinato</string>
     <string name="backup_restore_error">Ripristino del backup non riuscito</string>
     <string name="invalid_backup_file">File di backup non valido</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings

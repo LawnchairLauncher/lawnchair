@@ -150,6 +150,8 @@
     <string name="gestures_description">탭 및 스와이프</string>
     <string name="quickstep_label">최근 앱</string>
     <string name="quickstep_description">모두 닫기 버튼, 가장자리 둥글기</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">더 보기</string>
     <string name="app_info_drop_target_label">앱 정보</string>
     <string name="debug_restart_launcher">Lawnchair 다시 시작</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">백업을 복원했습니다.</string>
     <string name="backup_restore_error">백업을 복원하지 못했습니다</string>
     <string name="invalid_backup_file">잘못된 백업 파일입니다</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings

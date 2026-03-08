@@ -150,6 +150,8 @@
     <string name="gestures_description">タップとスワイプ</string>
     <string name="quickstep_label">タスク管理画面</string>
     <string name="quickstep_description">「すべてクリア」ボタン、角の丸み</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">このアプリについて</string>
     <string name="app_info_drop_target_label">アプリ情報</string>
     <string name="debug_restart_launcher">Lawnchair を再起動</string>
@@ -437,6 +439,8 @@
     <string name="backup_restore_success">バックアップの復元</string>
     <string name="backup_restore_error">バックアップの復元に失敗しました</string>
     <string name="invalid_backup_file">バックアップファイルが無効です</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings

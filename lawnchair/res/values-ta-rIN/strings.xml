@@ -150,6 +150,8 @@
     <string name="gestures_description">தட்டுவது மற்றும் தேய்ப்பது</string>
     <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">அனைத்தயுந்துடை பொத்தான், மூலை ஆரம்</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">விவர பெயர்கள்</string>
     <string name="app_info_drop_target_label">செயலியின் தகவல்கள்</string>
     <string name="debug_restart_launcher">Lawnchairஐ மறுதுவக்கு</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">காப்புப்பிரதி உருவாக்கப்பட்டது</string>
     <string name="backup_restore_error">மறுபிரதியை உருவாக்குவதில் தோல்வி</string>
     <string name="invalid_backup_file">தவறான காப்பு கோப்பு</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings

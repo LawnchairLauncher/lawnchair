@@ -150,13 +150,15 @@
     <string name="gestures_description">輕觸和滑動</string>
     <string name="quickstep_label">最近使用畫面</string>
     <string name="quickstep_description">清除全部按鈕、圓角大小</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">關於</string>
     <string name="app_info_drop_target_label">應用程式資訊</string>
     <string name="debug_restart_launcher">重啟 Lawnchair</string>
     <string name="experimental_features_label">實驗性功能</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
+    <string name="workspace_label">工作空間</string>
+    <string name="smartspace_label">智慧空間</string>
     <string name="internal_label">Internal</string>
     <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">自訂字體</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">已還原備份</string>
     <string name="backup_restore_error">還原備份失敗</string>
     <string name="invalid_backup_file">無效的備份檔案</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings

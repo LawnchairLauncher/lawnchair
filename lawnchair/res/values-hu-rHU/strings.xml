@@ -150,6 +150,8 @@
     <string name="gestures_description">Koppintások és csúsztatások</string>
     <string name="quickstep_label">Az Előzmények képernyője</string>
     <string name="quickstep_description">„Összes törlése” gomb, sarok sugara</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">Névjegy</string>
     <string name="app_info_drop_target_label">Alkalmazásinformáció</string>
     <string name="debug_restart_launcher">A Lawnchair újraindítása</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">A visszaállítás elkészült</string>
     <string name="backup_restore_error">A visszaállítás meghiúsult</string>
     <string name="invalid_backup_file">Hibás visszaállítási fájl</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings

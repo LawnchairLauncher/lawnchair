@@ -150,6 +150,8 @@
     <string name="gestures_description">Appuis et balayages</string>
     <string name="quickstep_label">Écran Récents</string>
     <string name="quickstep_description">Bouton Tout effacer, rayon d\'angle</string>
+    <string name="backup_and_restore_label">Sauvegarder et restaurer</string>
+    <string name="backup_and_restore_description">Créez une sauvegarde de votre configuration, restaurez vos sauvegardes</string>
     <string name="about_label">À propos</string>
     <string name="app_info_drop_target_label">Infos sur l\'appli</string>
     <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">Sauvegarde restaurée</string>
     <string name="backup_restore_error">Échec de la restauration de la sauvegarde</string>
     <string name="invalid_backup_file">Fichier de sauvegarde invalide</string>
+    <string name="create_backup_description">Exportez les paramètres et la disposition du lanceur d\'applications</string>
+    <string name="restore_backup_description">Importez une sauvegarde précédemment créée</string>
     <!--
 
     Gesture settings
@@ -586,7 +590,7 @@
     <string name="pref_all_apps_show_scrollbar_title">Afficher la barre de défilement</string>
     <string name="app_drawer_columns">Colonnes du tiroir des applis</string>
     <string name="row_height_label">Hauteur de ligne</string>
-    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
+    <string name="app_drawer_haptic_feedback_label">Retour haptique</string>
     <string name="app_drawer_indent_label">Décalage vers le centre</string>
     <string name="app_drawer_bg_color_label">Couleur d\'arrière-plan</string>
     <string name="work_profile_tab_background_label">Couleur d\'arrière-plan des onglets</string>

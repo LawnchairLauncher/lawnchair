@@ -150,6 +150,8 @@
     <string name="gestures_description">Πατήματα και σαρώσεις</string>
     <string name="quickstep_label">Οθόνη πρόσφατων εφαρμογών</string>
     <string name="quickstep_description">Κουμπί καθαρισμού όλων, ακτίνα γωνίας</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">Πληροφορίες</string>
     <string name="app_info_drop_target_label">Πληροφορίες εφαρμογής</string>
     <string name="debug_restart_launcher">Επανεκκίνηση του Lawnchair</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">Έγινε επαναφορά αντιγράφου ασφαλείας</string>
     <string name="backup_restore_error">Αποτυχία επαναφοράς αντιγράφου ασφαλείας</string>
     <string name="invalid_backup_file">Μη έγκυρο αρχείο αντιγράφου ασφαλείας</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings

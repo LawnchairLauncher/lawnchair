@@ -150,6 +150,8 @@
     <string name="gestures_description">Додири и превлачења</string>
     <string name="quickstep_label">Недавне апликације</string>
     <string name="quickstep_description">Дугме „Обриши све”, заобљеност углова</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">О апликацији</string>
     <string name="app_info_drop_target_label">Информације о апликацији</string>
     <string name="debug_restart_launcher">Рестартуј Lawnchair</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">Резервна копија је враћена</string>
     <string name="backup_restore_error">Није могуће вратити резервну копију</string>
     <string name="invalid_backup_file">Неважећи фајл резервне копије</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings

@@ -150,6 +150,8 @@
     <string name="gestures_description">Касания и Свайп-жесты</string>
     <string name="quickstep_label">Экран недавних приложений</string>
     <string name="quickstep_description">Кнопка \"Очистить всё\", радиус углов</string>
+    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">О программе</string>
     <string name="app_info_drop_target_label">О приложении</string>
     <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
@@ -435,6 +437,8 @@
     <string name="backup_restore_success">Резервная копия восстановлена</string>
     <string name="backup_restore_error">Не удалось восстановить резервную копию</string>
     <string name="invalid_backup_file">Файл резервной копии недействителен</string>
+    <string name="create_backup_description">Export settings and launcher layout</string>
+    <string name="restore_backup_description">Import a previously created backup</string>
     <!--
 
     Gesture settings
