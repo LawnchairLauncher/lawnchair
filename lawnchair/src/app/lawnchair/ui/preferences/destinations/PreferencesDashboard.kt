@@ -42,6 +42,7 @@ import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.backup.ui.restoreBackupOpener
+import app.lawnchair.backup.ui.restoreNovaBackupOpener
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
@@ -244,6 +245,7 @@ fun RowScope.PreferencesOverflowMenu(
     val navController = LocalNavController.current
     val openCreateBackup = { navController.navigate(CreateBackup) }
     val openRestoreBackup = restoreBackupOpener()
+    val openRestoreNovaBackup = restoreNovaBackupOpener()
     OverflowMenu(
         modifier = modifier.addIf(
             listOf(ExperimentalFeatures).any {
@@ -335,6 +337,22 @@ fun RowScope.PreferencesOverflowMenu(
             },
             text = {
                 Text(text = stringResource(id = R.string.restore_backup))
+            },
+        )
+        DropdownMenuItem(
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.SettingsBackupRestore,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
+            onClick = {
+                openRestoreNovaBackup()
+                hideMenu()
+            },
+            text = {
+                Text(text = stringResource(id = R.string.restore_nova_backup))
             },
         )
     }

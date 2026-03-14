@@ -518,6 +518,15 @@
     <string name="backup_restore_success">Backup restored</string>
     <string name="backup_restore_error">Failed to restore backup</string>
     <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="restore_nova_backup">Restore Nova backup</string>
+    <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
+    <string name="nova_grid_info">Grid: %1$d x %2$d</string>
+    <string name="nova_dock_count">Dock: %1$d</string>
+    <string name="nova_app_count">Apps: %1$d</string>
+    <string name="nova_widget_count">Widgets: %1$d</string>
+    <string name="nova_folder_count">Folders: %1$d</string>
+    <string name="nova_shortcut_count">Shortcuts: %1$d</string>
+    <string name="nova_icon_pack">Icon pack: %1$s</string>
 
     <!--
 
