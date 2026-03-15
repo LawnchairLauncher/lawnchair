@@ -218,7 +218,7 @@
     <string name="transparent_background_icons_label">Icônes à thème transparentes</string>
     <string name="transparent_background_icons_description">Appliquer un arrière-plan transparent aux icônes à thème</string>
     <string name="auto_adaptive_icons_label">Icônes adaptatives automatiques</string>
-    <string name="auto_adaptive_icons_description">Pour toutes les icônes non-adaptatives</string>
+    <string name="auto_adaptive_icons_description">Pour toutes les icônes non adaptatives</string>
     <string name="shadow_bg_icons_label">Afficher une ombre derrière les icônes</string>
     <string name="background_lightness_label">Luminosité de l\'arrière-plan</string>
     <string name="adaptive_icon_background_description">Définissez la luminosité à 100 % pour obtenir un arrière-plan blanc</string>
@@ -428,7 +428,7 @@
     -->
     <string name="create_backup">Créer une sauvegarde</string>
     <string name="what_to_backup">Éléments à sauvegarder</string>
-    <string name="backup_content_layout_and_settings">Mise en page et paramètres</string>
+    <string name="backup_content_layout_and_settings">Disposition et paramètres</string>
     <string name="backup_content_wallpaper">Fond d\'écran</string>
     <string name="backup_create_success">Sauvegarde créée</string>
     <string name="backup_create_error">Échec de la création de la sauvegarde</string>

@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Pantalla d'inici basat en Launcher3 d'AOSP

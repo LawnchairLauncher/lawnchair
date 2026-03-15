@@ -150,8 +150,8 @@
     <string name="gestures_description">Dokunmalar ve kaydırmalar</string>
     <string name="quickstep_label">Son Kullanılanlar</string>
     <string name="quickstep_description">Tümünü Temizle tuşu, köşe yarıçapı</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="backup_and_restore_label">Yedekle ve geri yükle</string>
+    <string name="backup_and_restore_description">Mevcut kurulumu kaydet, yedekleri geri yükle</string>
     <string name="about_label">Hakkında</string>
     <string name="app_info_drop_target_label">Uygulama Hakkında</string>
     <string name="debug_restart_launcher">Lawnchair\'i Yeniden Başlat</string>
@@ -437,8 +437,8 @@
     <string name="backup_restore_success">Yedekleme geri yüklendi</string>
     <string name="backup_restore_error">Yedek oluşturulamadı</string>
     <string name="invalid_backup_file">Geçersiz yedekleme dosyası</string>
-    <string name="create_backup_description">Export settings and launcher layout</string>
-    <string name="restore_backup_description">Import a previously created backup</string>
+    <string name="create_backup_description">Ayarları ve başlatıcı düzenini yedekle</string>
+    <string name="restore_backup_description">Önceden oluşturulan bir yedeği geri yükle</string>
     <!--
 
     Gesture settings
@@ -503,7 +503,7 @@
     <string name="home_lawn_deck_label">Deck</string>
     <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
     <string name="home_lawn_deck_description">Deck ile uygulamalarınıza zahmetsizce erişin; sadelik ve kusursuz düzen için tasarlanmış en iyi çekmecesiz deneyimi yaşayın</string>
-    <string name="auto_add_shortcuts_label">Ana ekrana yeni uylulamaları ekle</string>
+    <string name="auto_add_shortcuts_label">Ana ekrana yeni uygulamaları ekle</string>
     <string name="minus_one_enable">Akışı göster</string>
     <string name="minus_one_unavailable">Bir akış uygulaması yüklü değil</string>
     <string name="minus_one">Akış</string>
@@ -590,7 +590,7 @@
     <string name="pref_all_apps_show_scrollbar_title">Kaydırma çubuğunu göster</string>
     <string name="app_drawer_columns">Uygulama çekmecesi sütunları</string>
     <string name="row_height_label">Satır yüksekliği</string>
-    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
+    <string name="app_drawer_haptic_feedback_label">Dokunsal geri bildirim</string>
     <string name="app_drawer_indent_label">Yatay dolgu</string>
     <string name="app_drawer_bg_color_label">Arka plan rengi</string>
     <string name="work_profile_tab_background_label">Sekmelerin arka plan rengi</string>

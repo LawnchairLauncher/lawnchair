@@ -150,8 +150,8 @@
     <string name="gestures_description">点击和滑动</string>
     <string name="quickstep_label">最近任务界面</string>
     <string name="quickstep_description">全部清除按钮，圆角半径</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="backup_and_restore_label">备份和还原</string>
+    <string name="backup_and_restore_description">保存当前设置，恢复备份</string>
     <string name="about_label">关于</string>
     <string name="app_info_drop_target_label">应用信息</string>
     <string name="debug_restart_launcher">重启 Lawnchair</string>
@@ -437,8 +437,8 @@
     <string name="backup_restore_success">备份已恢复</string>
     <string name="backup_restore_error">恢复备份失败</string>
     <string name="invalid_backup_file">无效的备份文件</string>
-    <string name="create_backup_description">Export settings and launcher layout</string>
-    <string name="restore_backup_description">Import a previously created backup</string>
+    <string name="create_backup_description">导出设置和启动器局部</string>
+    <string name="restore_backup_description">导入之前创建的备份</string>
     <!--
 
     Gesture settings
@@ -590,7 +590,7 @@
     <string name="pref_all_apps_show_scrollbar_title">显示滚动条</string>
     <string name="app_drawer_columns">应用程序抽屉列数</string>
     <string name="row_height_label">行高</string>
-    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
+    <string name="app_drawer_haptic_feedback_label">触觉反馈</string>
     <string name="app_drawer_indent_label">水平边距</string>
     <string name="app_drawer_bg_color_label">背景颜色</string>
     <string name="work_profile_tab_background_label">标签页背景颜色</string>

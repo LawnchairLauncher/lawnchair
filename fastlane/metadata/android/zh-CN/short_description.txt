@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+主屏幕基于为Launcher3从AODP
