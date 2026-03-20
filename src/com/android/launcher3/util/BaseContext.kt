@@ -86,8 +86,8 @@ constructor(base: Context, themeResId: Int, private val destroyOnDetach: Boolean
             object : OnAttachStateChangeListener {
 
                 override fun onViewAttachedToWindow(view: View) {
-                    view.rootView.setViewTreeLifecycleOwner(this@BaseContext)
-                    view.rootView.setViewTreeSavedStateRegistryOwner(this@BaseContext)
+                    view.setViewTreeLifecycleOwner(this@BaseContext)
+                    view.setViewTreeSavedStateRegistryOwner(this@BaseContext)
                     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
                     val treeObserver = view.viewTreeObserver
