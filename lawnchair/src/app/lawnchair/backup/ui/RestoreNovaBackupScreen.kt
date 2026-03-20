@@ -2,13 +2,11 @@ package app.lawnchair.backup.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,11 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,121 +30,73 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import app.lawnchair.backup.NovaBackupConverter.NovaBackupInfo
+import app.lawnchair.backup.ui.RestoreNovaBackupViewModel.Event
+import app.lawnchair.backup.ui.RestoreNovaBackupViewModel.State
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.RestoreNovaBackup
 import app.lawnchair.util.BackHandler
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.R
 import java.util.Base64
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 
 fun NavGraphBuilder.restoreNovaBackupGraph() {
     composable<RestoreNovaBackup> { backStackEntry ->
         val route: RestoreNovaBackup = backStackEntry.toRoute()
         val backupUri = remember {
-            val base64Uri = route.base64Uri
-            val backupUriString = String(Base64.getDecoder().decode(base64Uri))
-            backupUriString.toUri()
+            String(Base64.getDecoder().decode(route.base64Uri)).toUri()
         }
-        RestoreNovaBackupScreen(backupUri)
+        val viewModel: RestoreNovaBackupViewModel = viewModel()
+        DisposableEffect(key1 = null) {
+            viewModel.init(backupUri)
+            onDispose { }
+        }
+        RestoreNovaBackupScreen()
     }
 }
 
 @Composable
 internal fun RestoreNovaBackupScreen(
-    backupUri: Uri,
     viewModel: RestoreNovaBackupViewModel = viewModel(),
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.loadBackup(backupUri)
-    }
+    val state = viewModel.state.collectAsStateWithLifecycle()
 
-    val state = viewModel.uiState.collectAsStateWithLifecycle().value
+    CollectEvents(viewModel.events)
 
     PreferenceLayout(
         label = stringResource(id = R.string.restore_nova_backup),
         backArrowVisible = !LocalIsExpandedScreen.current,
     ) {
-        when (state) {
-            is RestoreNovaBackupUiState.Success -> RestoreNovaBackupContent(state)
-            is RestoreNovaBackupUiState.Loading -> RestoreNovaBackupLoading()
-            is RestoreNovaBackupUiState.Error -> RestoreNovaBackupError()
+        when (val stateValue = state.value) {
+            is State.Success -> {
+                RestoreNovaBackupContent(
+                    state = stateValue,
+                    onRestore = viewModel::restore,
+                )
+            }
+
+            is State.Loading -> RestoreNovaBackupLoading()
+
+            is State.Error -> RestoreNovaBackupError()
         }
     }
 }
 
 @Composable
 internal fun ColumnScope.RestoreNovaBackupContent(
-    state: RestoreNovaBackupUiState.Success,
+    state: State.Success,
+    onRestore: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-
-    var restoring by remember { mutableStateOf(false) }
-    if (restoring) {
+    if (state.isRestoring) {
         BackHandler {}
     }
 
-    val countItems = remember(state.info) {
-        listOf(
-            R.string.nova_app_count to state.info.appCount,
-            R.string.nova_widget_count to state.info.widgetCount,
-            R.string.nova_folder_count to state.info.folderCount,
-            R.string.nova_shortcut_count to state.info.shortcutCount,
-        ).filter { (_, count) -> count > 0 }
-    }
-
-    fun restore() {
-        if (restoring) return
-        scope.launch {
-            restoring = true
-            try {
-                state.converter.convertAndRestore(state.info)
-                Toast.makeText(context, R.string.backup_restore_success, Toast.LENGTH_SHORT).show()
-                restartLauncher(context)
-            } catch (t: Throwable) {
-                Log.e("RestoreNovaBackup", "failed to restore Nova backup", t)
-                Toast.makeText(context, R.string.backup_restore_error, Toast.LENGTH_SHORT).show()
-            }
-            restoring = false
-        }
-    }
-
-    PreferenceGroup {
-        Text(
-            text = stringResource(R.string.nova_grid_info, state.info.columns, state.info.rows),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-        Text(
-            text = stringResource(R.string.nova_dock_count, state.info.hotseatCount),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-        for ((stringRes, count) in countItems) {
-            Text(
-                text = stringResource(stringRes, count),
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            )
-        }
-        if (!state.info.iconPackPackage.isNullOrEmpty()) {
-            val packageManager = LocalContext.current.packageManager
-            val iconPackLabel = remember(state.info.iconPackPackage) {
-                try {
-                    packageManager.getApplicationInfo(state.info.iconPackPackage, 0)
-                        .loadLabel(packageManager)
-                        .toString()
-                } catch (_: PackageManager.NameNotFoundException) {
-                    state.info.iconPackPackage
-                }
-            }
-            Text(
-                text = stringResource(R.string.nova_icon_pack, iconPackLabel),
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            )
-        }
-    }
+    BackupInfoGroup(state.info)
 
     Box(
         modifier = Modifier
@@ -159,14 +105,52 @@ internal fun ColumnScope.RestoreNovaBackupContent(
             .padding(horizontal = 16.dp),
     ) {
         Button(
-            onClick = { restore() },
+            onClick = onRestore,
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .fillMaxWidth(),
-            enabled = !restoring,
+            enabled = !state.isRestoring,
         ) {
             Text(text = stringResource(id = R.string.action_restore))
         }
+    }
+}
+
+@Composable
+private fun BackupInfoGroup(info: NovaBackupInfo) {
+    PreferenceGroup {
+        if (info.columns != null && info.rows != null) {
+            BackupInfoStringPreference(
+                R.string.nova_grid_label,
+                stringResource(R.string.nova_grid_value, info.columns, info.rows),
+            )
+        }
+        BackupInfoIntPreference(R.string.nova_dock_label, info.hotseatCount)
+        BackupInfoIntPreference(R.string.nova_app_label, info.appCount)
+        BackupInfoIntPreference(R.string.nova_widget_label, info.widgetCount)
+        BackupInfoIntPreference(R.string.nova_folder_label, info.folderCount)
+        BackupInfoIntPreference(R.string.nova_shortcut_label, info.shortcutCount)
+        BackupInfoStringPreference(R.string.nova_icon_pack_label, info.iconPackLabel)
+    }
+}
+
+@Composable
+private fun BackupInfoIntPreference(@StringRes labelRes: Int, value: Int?) {
+    if (value != null && value > 0) {
+        PreferenceTemplate(
+            title = { Text(text = stringResource(labelRes)) },
+            description = { Text(text = value.toString()) },
+        )
+    }
+}
+
+@Composable
+private fun BackupInfoStringPreference(@StringRes labelRes: Int, value: String?) {
+    if (!value.isNullOrEmpty()) {
+        PreferenceTemplate(
+            title = { Text(text = stringResource(labelRes)) },
+            description = { Text(text = value) },
+        )
     }
 }
 
@@ -181,10 +165,32 @@ private fun RestoreNovaBackupLoading() {
 private fun RestoreNovaBackupError() {
     val context = LocalContext.current
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    DisposableEffect(null) {
+
+    LaunchedEffect(Unit) {
         Toast.makeText(context, R.string.invalid_nova_backup_file, Toast.LENGTH_SHORT).show()
         backDispatcher?.onBackPressed()
-        onDispose { }
+    }
+}
+
+@Composable
+private fun CollectEvents(events: Flow<Event>) {
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        events.collect { event ->
+            when (event) {
+                is Event.RestoreSuccess -> {
+                    Toast.makeText(context, R.string.backup_restore_success, Toast.LENGTH_SHORT)
+                        .show()
+                    restartLauncher(context)
+                }
+
+                is Event.RestoreError -> {
+                    Toast.makeText(context, R.string.backup_restore_error, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
     }
 }
 

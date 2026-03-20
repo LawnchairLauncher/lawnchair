@@ -520,13 +520,14 @@
     <string name="invalid_backup_file">Invalid backup file</string>
     <string name="restore_nova_backup">Restore Nova backup</string>
     <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
-    <string name="nova_grid_info">Grid: %1$d x %2$d</string>
-    <string name="nova_dock_count">Dock: %1$d</string>
-    <string name="nova_app_count">Apps: %1$d</string>
-    <string name="nova_widget_count">Widgets: %1$d</string>
-    <string name="nova_folder_count">Folders: %1$d</string>
-    <string name="nova_shortcut_count">Shortcuts: %1$d</string>
-    <string name="nova_icon_pack">Icon pack: %1$s</string>
+    <string name="nova_grid_label">Grid</string>
+    <string name="nova_grid_value">%1$d x %2$d</string>
+    <string name="nova_dock_label">Dock</string>
+    <string name="nova_app_label">Apps</string>
+    <string name="nova_widget_label">Widgets</string>
+    <string name="nova_folder_label">Folders</string>
+    <string name="nova_shortcut_label">Shortcuts</string>
+    <string name="nova_icon_pack_label">Icon pack</string>
 
     <!--
 

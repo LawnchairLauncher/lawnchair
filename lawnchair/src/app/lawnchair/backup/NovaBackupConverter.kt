@@ -3,6 +3,7 @@ package app.lawnchair.backup
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
+import android.content.pm.PackageManager
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.os.Process
@@ -28,23 +29,82 @@ import javax.xml.parsers.DocumentBuilderFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-data class NovaBackupInfo(
-    val columns: Int,
-    val rows: Int,
-    val hotseatCount: Int,
-    val appCount: Int,
-    val widgetCount: Int,
-    val folderCount: Int,
-    val shortcutCount: Int,
-    val iconPackPackage: String?,
-)
-
 class NovaBackupConverter(
     private val context: Context,
     private val uri: Uri,
 ) {
+
+    companion object {
+        private const val TAG = "NovaBackupConverter"
+        private const val NOVA_XML = "nova.xml"
+        private const val NOVA_DB = "nova.db"
+        private const val NOVA_CONTAINER_DESKTOP = -100
+        private const val NOVA_CONTAINER_HOTSEAT = -101
+        private const val FOLDER_PAGE_RANK_OFFSET = 1_000
+        private const val FOLDER_ROW_RANK_OFFSET = 100
+        private const val NOVA_TEMP_DIR_PREFIX = "nova_"
+        private const val NOVA_WORKSPACE_DB = "nova_workspace.db"
+        private const val NOVA_TABLE_FAVORITES = "favorites"
+        private const val NOVA_XML_TAG_STRING = "string"
+        private const val NOVA_XML_TAG_INT = "int"
+        private const val NOVA_XML_ATTR_NAME = "name"
+        private const val NOVA_XML_ATTR_VALUE = "value"
+        private const val NOVA_XML_KEY_DESKTOP_GRID = "desktop_grid"
+        private const val NOVA_XML_KEY_ICON_PACK = "theme_icon_pack"
+        private const val NOVA_XML_KEY_DOCK_COLS = "dock_grid_cols"
+        private const val NOVA_ICON_PACK_MIN_PARTS = 3
+        private const val NOVA_ICON_PACK_PACKAGE_INDEX = 2
+        private const val NOVA_COL_ID = "_id"
+        private const val NOVA_COL_CONTAINER = "container"
+        private const val NOVA_COL_ITEM_TYPE = "itemType"
+        private const val NOVA_COL_TITLE = "title"
+        private const val NOVA_COL_INTENT = "intent"
+        private const val NOVA_COL_CELL_X = "cellX"
+        private const val NOVA_COL_CELL_Y = "cellY"
+        private const val NOVA_COL_SCREEN = "screen"
+        private const val NOVA_COL_SPAN_X = "spanX"
+        private const val NOVA_COL_SPAN_Y = "spanY"
+        private const val NOVA_COL_ICON = "icon"
+        private const val NOVA_COL_APP_WIDGET_PROVIDER = "appWidgetProvider"
+    }
+
+    private val novaGridRegex = Regex("(\\d+)x(\\d+)")
+
+    data class NovaBackupInfo(
+        val columns: Int?,
+        val rows: Int?,
+        val hotseatCount: Int?,
+        val appCount: Int,
+        val widgetCount: Int,
+        val folderCount: Int,
+        val shortcutCount: Int,
+        val iconPackPackage: String?,
+        val iconPackLabel: String?,
+    )
+
+    private data class NovaConfig(
+        val columns: Int?,
+        val rows: Int?,
+        val dockCols: Int?,
+        val iconPackPackage: String?,
+    )
+
+    private data class ItemCounts(
+        val apps: Int,
+        val widgets: Int,
+        val folders: Int,
+        val shortcuts: Int,
+    )
+
+    private data class ImportedDeepShortcut(
+        val packageName: String,
+        val shortcutId: String,
+    ) {
+        fun toLauncherIntentUri(): String = ShortcutKey.makeIntent(shortcutId, packageName).toUri(0)
+    }
+
     suspend fun parseInfo(): NovaBackupInfo = withContext(Dispatchers.IO) {
-        val tempDir = File(context.cacheDir, "nova_${UUID.randomUUID()}")
+        val tempDir = File(context.cacheDir, "$NOVA_TEMP_DIR_PREFIX${UUID.randomUUID()}")
         tempDir.mkdirs()
 
         try {
@@ -52,7 +112,7 @@ class NovaBackupConverter(
 
             val xmlFile = File(tempDir, NOVA_XML)
             val dbFile = File(tempDir, NOVA_DB)
-            require(xmlFile.exists() && dbFile.exists()) { "Missing nova.xml or nova.db" }
+            require(xmlFile.exists() && dbFile.exists()) { "Missing $NOVA_XML or $NOVA_DB" }
 
             val novaConfig = parseNovaConfig(xmlFile)
             val (apps, widgets, folders, shortcuts) = countItems(dbFile)
@@ -66,6 +126,9 @@ class NovaBackupConverter(
                 folderCount = folders,
                 shortcutCount = shortcuts,
                 iconPackPackage = novaConfig.iconPackPackage,
+                iconPackLabel = novaConfig.iconPackPackage?.let { packageName ->
+                    resolveIconPackLabel(packageName)
+                },
             )
         } finally {
             tempDir.deleteRecursively()
@@ -73,33 +136,38 @@ class NovaBackupConverter(
     }
 
     suspend fun convertAndRestore(info: NovaBackupInfo) = withContext(Dispatchers.IO) {
-        val tempDir = File(context.cacheDir, "nova_${UUID.randomUUID()}")
+        val tempDir = File(context.cacheDir, "$NOVA_TEMP_DIR_PREFIX${UUID.randomUUID()}")
         tempDir.mkdirs()
 
         try {
             extractFromZip(uri, tempDir, setOf(NOVA_DB))
 
             val novaDbFile = File(tempDir, NOVA_DB)
-            require(novaDbFile.exists()) { "Missing nova.db" }
+            require(novaDbFile.exists()) { "Missing $NOVA_DB" }
 
-            val stagedDbFile = File(tempDir, "nova_workspace.db")
+            val stagedDbFile = File(tempDir, NOVA_WORKSPACE_DB)
             val importedDeepShortcuts = createRestoredDb(novaDbFile, stagedDbFile)
 
-            val gridInfo = DeviceProfileOverrides.DBGridInfo(
-                numHotseatColumns = info.hotseatCount,
-                numRows = info.rows,
-                numColumns = info.columns,
-            )
-            val gridState = DeviceGridState(
-                info.columns,
-                info.rows,
-                info.hotseatCount,
-                InvariantDeviceProfile.TYPE_PHONE,
-                gridInfo.dbFile,
-            )
-
-            context.getDatabasePath(LawnchairBackup.LAUNCHER_DB_FILE_NAME).parentFile?.deleteRecursively()
-            gridState.writeToPrefs(context, true)
+            val columns = info.columns
+            val rows = info.rows
+            val hotseatCount = info.hotseatCount
+            if (columns != null && rows != null && hotseatCount != null) {
+                val gridInfo = DeviceProfileOverrides.DBGridInfo(
+                    numHotseatColumns = hotseatCount,
+                    numRows = rows,
+                    numColumns = columns,
+                )
+                val gridState = DeviceGridState(
+                    columns,
+                    rows,
+                    hotseatCount,
+                    InvariantDeviceProfile.TYPE_PHONE,
+                    gridInfo.dbFile,
+                )
+                gridState.writeToPrefs(context, true)
+                gridState.writeToPrefs(context)
+                InvariantDeviceProfile.INSTANCE.get(context).dbFile = gridInfo.dbFile
+            }
             writeGridToLawnchairPrefs(info)
 
             val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
@@ -115,68 +183,71 @@ class NovaBackupConverter(
         }
     }
 
-    private fun writeGridToLawnchairPrefs(info: NovaBackupInfo) {
-        val prefs = PreferenceManager.getInstance(context)
-        prefs.batchEdit {
-            prefs.workspaceColumns.set(info.columns)
-            prefs.workspaceRows.set(info.rows)
-            prefs.hotseatColumns.set(info.hotseatCount)
-            prefs.iconPackPackage.set(info.iconPackPackage.orEmpty())
-        }
+    private fun resolveIconPackLabel(packageName: String): String = try {
+        val pm = context.packageManager
+        pm.getApplicationInfo(packageName, 0).loadLabel(pm).toString()
+    } catch (_: PackageManager.NameNotFoundException) {
+        packageName
     }
 
-    private data class NovaConfig(val columns: Int, val rows: Int, val dockCols: Int, val iconPackPackage: String?)
+    private fun writeGridToLawnchairPrefs(info: NovaBackupInfo) {
+        val prefs = PreferenceManager.getInstance(context)
+        prefs.sp.edit().apply {
+            info.columns?.let { putInt(prefs.workspaceColumns.key, it) }
+            info.rows?.let { putInt(prefs.workspaceRows.key, it) }
+            info.hotseatCount?.let { putInt(prefs.hotseatColumns.key, it) }
+            info.iconPackPackage?.let { putString(prefs.iconPackPackage.key, it) }
+        }.commit()
+    }
 
     private fun parseNovaConfig(xmlFile: File): NovaConfig {
         val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile)
         val root = doc.documentElement
-        var columns = 5
-        var rows = 5
-        var dockCols = 5
+        var columns: Int? = null
+        var rows: Int? = null
+        var dockCols: Int? = null
         var iconPackPackage: String? = null
 
-        val stringNodes = root.getElementsByTagName("string")
+        val stringNodes = root.getElementsByTagName(NOVA_XML_TAG_STRING)
         for (i in 0 until stringNodes.length) {
             val node = stringNodes.item(i)
-            val name = node.attributes.getNamedItem("name")?.nodeValue ?: continue
+            val name = node.attributes.getNamedItem(NOVA_XML_ATTR_NAME)?.nodeValue ?: continue
             val text = node.textContent ?: continue
             when (name) {
-                "desktop_grid" -> {
-                    val match = Regex("(\\d+)x(\\d+)").find(text) ?: continue
-                    columns = match.groupValues[1].toInt()
-                    rows = match.groupValues[2].toInt()
+                NOVA_XML_KEY_DESKTOP_GRID -> {
+                    val match = novaGridRegex.find(text) ?: continue
+                    columns = match.groupValues[1].toIntOrNull() ?: continue
+                    rows = match.groupValues[2].toIntOrNull() ?: continue
                 }
 
-                "theme_icon_pack" -> {
+                NOVA_XML_KEY_ICON_PACK -> {
                     val parts = text.split(":")
-                    if (parts.size >= 3) iconPackPackage = parts[2]
+                    if (parts.size >= NOVA_ICON_PACK_MIN_PARTS) iconPackPackage = parts[NOVA_ICON_PACK_PACKAGE_INDEX]
                 }
             }
         }
 
-        val intNodes = root.getElementsByTagName("int")
+        val intNodes = root.getElementsByTagName(NOVA_XML_TAG_INT)
         for (i in 0 until intNodes.length) {
             val node = intNodes.item(i)
-            val name = node.attributes.getNamedItem("name")?.nodeValue ?: continue
-            val value = node.attributes.getNamedItem("value")?.nodeValue?.toIntOrNull() ?: continue
-            if (name == "dock_grid_cols") dockCols = value
+            val name = node.attributes.getNamedItem(NOVA_XML_ATTR_NAME)?.nodeValue ?: continue
+            val value = node.attributes.getNamedItem(NOVA_XML_ATTR_VALUE)?.nodeValue?.toIntOrNull() ?: continue
+            if (name == NOVA_XML_KEY_DOCK_COLS) dockCols = value
         }
 
         return NovaConfig(columns, rows, dockCols, iconPackPackage)
     }
 
-    private data class ItemCounts(val apps: Int, val widgets: Int, val folders: Int, val shortcuts: Int)
-
     private fun countItems(dbFile: File): ItemCounts {
         val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
         return db.use {
             it.rawQuery(
-                """SELECT itemType, COUNT(*) FROM favorites
-                    WHERE itemType != -1
-                    AND (container = $NOVA_CONTAINER_DESKTOP
-                        OR container = $NOVA_CONTAINER_HOTSEAT
-                        OR container >= 0)
-                    GROUP BY itemType""",
+                """SELECT $NOVA_COL_ITEM_TYPE, COUNT(*) FROM $NOVA_TABLE_FAVORITES
+                    WHERE $NOVA_COL_ITEM_TYPE != -1
+                    AND ($NOVA_COL_CONTAINER = $NOVA_CONTAINER_DESKTOP
+                        OR $NOVA_COL_CONTAINER = $NOVA_CONTAINER_HOTSEAT
+                        OR $NOVA_COL_CONTAINER >= 0)
+                    GROUP BY $NOVA_COL_ITEM_TYPE""",
                 null,
             ).use { cursor ->
                 var apps = 0
@@ -204,7 +275,7 @@ class NovaBackupConverter(
     ): Map<String, Set<String>> {
         val profileId = UserCache.INSTANCE.get(context)
             .getSerialNumberForUser(Process.myUserHandle())
-        val importedDeepShortcuts = linkedMapOf<String, LinkedHashSet<String>>()
+        val importedDeepShortcuts = mutableMapOf<String, MutableSet<String>>()
 
         val targetDb = SQLiteDatabase.openOrCreateDatabase(targetDbFile, null)
         targetDb.use { db ->
@@ -233,18 +304,18 @@ class NovaBackupConverter(
         src: SQLiteDatabase,
         db: SQLiteDatabase,
         profileId: Long,
-        importedDeepShortcuts: MutableMap<String, LinkedHashSet<String>>,
+        importedDeepShortcuts: MutableMap<String, MutableSet<String>>,
     ) {
         src.rawQuery(
-            "SELECT * FROM favorites WHERE itemType != -1",
+            "SELECT * FROM $NOVA_TABLE_FAVORITES WHERE $NOVA_COL_ITEM_TYPE != -1",
             null,
         ).use { cursor ->
             val now = System.currentTimeMillis()
 
             while (cursor.moveToNext()) {
-                val novaId = cursor.getInt(cursor.getColumnIndexOrThrow("_id"))
-                val novaContainer = cursor.getInt(cursor.getColumnIndexOrThrow("container"))
-                val itemType = cursor.getInt(cursor.getColumnIndexOrThrow("itemType"))
+                val novaId = cursor.getInt(cursor.getColumnIndexOrThrow(NOVA_COL_ID))
+                val novaContainer = cursor.getInt(cursor.getColumnIndexOrThrow(NOVA_COL_CONTAINER))
+                val itemType = cursor.getInt(cursor.getColumnIndexOrThrow(NOVA_COL_ITEM_TYPE))
 
                 val isDesktop = novaContainer == NOVA_CONTAINER_DESKTOP
                 val isHotseat = novaContainer == NOVA_CONTAINER_HOTSEAT
@@ -258,24 +329,24 @@ class NovaBackupConverter(
                     else -> novaContainer
                 }
 
-                val title = getStringOrNull(cursor, "title")
-                val rawIntent = getStringOrNull(cursor, "intent")
+                val title = getStringOrNull(cursor, NOVA_COL_TITLE)
+                val rawIntent = getStringOrNull(cursor, NOVA_COL_INTENT)
                 val importedDeepShortcut = if (itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     parseNovaDeepShortcut(rawIntent)?.also { shortcut ->
-                        importedDeepShortcuts.getOrPut(shortcut.packageName) { linkedSetOf() }
+                        importedDeepShortcuts.getOrPut(shortcut.packageName) { mutableSetOf() }
                             .add(shortcut.shortcutId)
                     }
                 } else {
                     null
                 }
                 val intent = importedDeepShortcut?.toLauncherIntentUri() ?: rawIntent
-                val cellX = cursor.getDouble(cursor.getColumnIndexOrThrow("cellX")).toInt()
-                val cellY = cursor.getDouble(cursor.getColumnIndexOrThrow("cellY")).toInt()
-                val screen = if (isHotseat) cellX else cursor.getInt(cursor.getColumnIndexOrThrow("screen"))
-                val spanX = cursor.getDouble(cursor.getColumnIndexOrThrow("spanX")).toInt().coerceAtLeast(1)
-                val spanY = cursor.getDouble(cursor.getColumnIndexOrThrow("spanY")).toInt().coerceAtLeast(1)
-                val icon = getBlobOrNull(cursor, "icon")
-                val appWidgetProvider = getStringOrNull(cursor, "appWidgetProvider")
+                val cellX = cursor.getDouble(cursor.getColumnIndexOrThrow(NOVA_COL_CELL_X)).toInt()
+                val cellY = cursor.getDouble(cursor.getColumnIndexOrThrow(NOVA_COL_CELL_Y)).toInt()
+                val screen = if (isHotseat) cellX else cursor.getInt(cursor.getColumnIndexOrThrow(NOVA_COL_SCREEN))
+                val spanX = cursor.getDouble(cursor.getColumnIndexOrThrow(NOVA_COL_SPAN_X)).toInt().coerceAtLeast(1)
+                val spanY = cursor.getDouble(cursor.getColumnIndexOrThrow(NOVA_COL_SPAN_Y)).toInt().coerceAtLeast(1)
+                val icon = getBlobOrNull(cursor, NOVA_COL_ICON)
+                val appWidgetProvider = getStringOrNull(cursor, NOVA_COL_APP_WIDGET_PROVIDER)
                 val rank = when {
                     isFolderChild -> calculateFolderRank(screen, cellX, cellY)
                     isHotseat -> screen
@@ -375,36 +446,17 @@ class NovaBackupConverter(
         return (screen * FOLDER_PAGE_RANK_OFFSET) + (cellY * FOLDER_ROW_RANK_OFFSET) + cellX
     }
 
-    companion object {
-        private const val TAG = "NovaBackupConverter"
-        private const val NOVA_XML = "nova.xml"
-        private const val NOVA_DB = "nova.db"
-        private const val NOVA_CONTAINER_DESKTOP = -100
-        private const val NOVA_CONTAINER_HOTSEAT = -101
-        private const val FOLDER_PAGE_RANK_OFFSET = 1_000
-        private const val FOLDER_ROW_RANK_OFFSET = 100
+    private fun parseNovaDeepShortcut(intentUri: String?): ImportedDeepShortcut? {
+        if (intentUri.isNullOrEmpty()) return null
+
+        val intent = try {
+            Intent.parseUri(intentUri, 0)
+        } catch (_: URISyntaxException) {
+            return null
+        }
+
+        val packageName = intent.`package` ?: intent.component?.packageName ?: return null
+        val shortcutId = intent.getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) ?: return null
+        return ImportedDeepShortcut(packageName, shortcutId)
     }
-}
-
-internal data class ImportedDeepShortcut(
-    val packageName: String,
-    val shortcutId: String,
-)
-
-internal fun ImportedDeepShortcut.toLauncherIntentUri(): String {
-    return ShortcutKey.makeIntent(shortcutId, packageName).toUri(0)
-}
-
-internal fun parseNovaDeepShortcut(intentUri: String?): ImportedDeepShortcut? {
-    if (intentUri.isNullOrEmpty()) return null
-
-    val intent = try {
-        Intent.parseUri(intentUri, 0)
-    } catch (_: URISyntaxException) {
-        return null
-    }
-
-    val packageName = intent.`package` ?: intent.component?.packageName ?: return null
-    val shortcutId = intent.getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) ?: return null
-    return ImportedDeepShortcut(packageName, shortcutId)
 }
