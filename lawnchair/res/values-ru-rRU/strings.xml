@@ -150,8 +150,8 @@
     <string name="gestures_description">Касания и Свайп-жесты</string>
     <string name="quickstep_label">Экран недавних приложений</string>
     <string name="quickstep_description">Кнопка \"Очистить всё\", радиус углов</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="backup_and_restore_label">Резервные копии и восстановление</string>
+    <string name="backup_and_restore_description">Сохранить текущую конфигурацию, восстановить резервные копии</string>
     <string name="about_label">О программе</string>
     <string name="app_info_drop_target_label">О приложении</string>
     <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
@@ -179,9 +179,9 @@
     <string name="experimental_folder_shape_modify_label">Настраиваемая форма папок</string>
     <string name="folder_shape_label">Папка</string>
     <string name="app_icon_shape_label">Приложение</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
+    <string name="gesturenavcontract_label">Использовать API GestureNavContract</string>
+    <string name="gesturenavcontract_description">Поддерживает улучшенные анимации Android когда использована навигация жестами. Не все устройства поддерживают это. Может вызывать ошибки анимации если в использовании.</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract может вызывать глюки в анимации</string>
     <string name="recents_lock_unlock">Блокировка/разблокировка</string>
     <string name="recents_lock_unlock_description">Запретить закрытие выбранного приложения при нажатии кнопки \"Очистить всё\"</string>
     <!--Overlay-->
@@ -273,8 +273,8 @@
     <string name="themed_icon_pack">Источник тематических иконок</string>
     <string name="themed_icon_pack_tint">Тонировка в цвет акцента</string>
     <string name="system_icons">Системные иконки</string>
-    <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
+    <string name="force_monochrome_label">Включить монохром</string>
+    <string name="force_monochrome_description">Требует перезапуска, подсвечивать неподдерживаемые приложения акцентным цветом</string>
     <string name="themed_icon_title">Тематические иконки</string>
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Главный экран</string>
@@ -370,12 +370,12 @@
     <string name="smartspace_now_playing">Сейчас играет</string>
     <string name="smartspace_onboarding">Onboarding</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
-    <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new!</string>
-    <string name="onboarding_welcome">Welcome to Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the App Drawer</string>
+    <string name="onboarding_open_settings_title">Настроить ваш Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Зажмите и удерживайте главный экран, что бы открыть настройки</string>
+    <string name="onboarding_major_upgrade_title">Добро пожаловать в Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
+    <string name="onboarding_major_upgrade_subtitle">Смотрите что нового!</string>
+    <string name="onboarding_welcome">Добро пожаловать в Lawnchair!</string>
+    <string name="onboarding_swipe_up">Проведите пальцем вверх по экрану, что бы открыть меню приложений</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Макс. кол-во целей</string>
     <string name="open_smartspacer_settings">Открыть настройки Smartspacer</string>
@@ -416,11 +416,11 @@
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="contributor_status_active">Активные участники</string>
     <string name="update_check_failed">Ошибка проверки обновлений</string>
-    <string name="major_update_label">Breaking change!</string>
-    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
-    <string name="pro_disabled_by_unknown">Cannot update!</string>
-    <string name="pro_disabled_by_major_is_newer">Cannot update, This build is way too new!</string>
-    <string name="updater">Updater</string>
+    <string name="major_update_label">Крутое изменение!</string>
+    <string name="major_update_description">Вы обновляетесь с Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> до Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, свежие крупные версии могут быть мене стабильными чем текущих версий.</string>
+    <string name="pro_disabled_by_unknown">Невозможно обновиться!</string>
+    <string name="pro_disabled_by_major_is_newer">Невозможно обновиться, эта сборка слишком свежая!</string>
+    <string name="updater">Центр обновлений</string>
     <!--
 
     Backup and restore
@@ -437,8 +437,8 @@
     <string name="backup_restore_success">Резервная копия восстановлена</string>
     <string name="backup_restore_error">Не удалось восстановить резервную копию</string>
     <string name="invalid_backup_file">Файл резервной копии недействителен</string>
-    <string name="create_backup_description">Export settings and launcher layout</string>
-    <string name="restore_backup_description">Import a previously created backup</string>
+    <string name="create_backup_description">Экспортировать настройки и вид рабочего стола</string>
+    <string name="restore_backup_description">Импортировать резервную копию</string>
     <!--
 
     Gesture settings
@@ -455,7 +455,7 @@
     <string name="gesture_handler_sleep">Сон</string>
     <string name="gesture_handler_recents">Открыть Экран недавних приложений</string>
     <string name="gesture_handler_open_notifications">Открыть панель уведомлений</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
+    <string name="gesture_handler_open_quick_settings">Открыть быстрые настройки</string>
     <string name="gesture_handler_open_app_option">Открыть приложение</string>
     <string name="gesture_handler_open_app_config">Открыть %1$s</string>
     <string name="gesture_handler_open_app_drawer">Открыть Меню приложений</string>
@@ -464,12 +464,12 @@
     <string name="gesture_handler_open_assistant">Открыть приложение-ассистент</string>
     <string name="pick_app_for_gesture">Выбрать приложение</string>
     <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">Что бы выключить экран устройства, установите Lawnchair как администратор устройства. Нажмите \"Открыть настройки\", затем нажмите \"Установить этого администратора устройства\"</string>
+    <string name="dt2s_admin_warning">Жесты для выключения экрана устройства будут выключены.</string>
     <string name="d2ts_recents_a11y_hint_title">Включить службу спец. возможностей</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="sleep_a11y_hint">Выключить экран устройства</string>
+    <string name="notifications_fallback_a11y_hint">Открыть панель уведомлений</string>
+    <string name="quick_settings_a11y_hint">Открыть панель быстрых настроек</string>
     <string name="recents_screen_a11y_hint">open the Recents screen</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
