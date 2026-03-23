@@ -133,13 +133,12 @@ public class ModelDbController {
 
     protected DatabaseHelper createDatabaseHelper(boolean forMigration, String dbFile) {
         boolean isSandbox = mContext instanceof SandboxContext;
-        String dbName = isSandbox ? null : InvariantDeviceProfile.INSTANCE.get(mContext).dbFile;
 
         try {
-            if (!forMigration && dbName != null) {
+            if (!forMigration) {
                 LawnchairApp app = LawnchairAppKt.getLawnchairApp(mContext);
-                app.renameRestoredDb(dbName);
-                app.migrateDbName(dbName);
+                app.renameRestoredDb(dbFile);
+                app.migrateDbName(dbFile);
             }
         } catch (Throwable t) {
             // LC-Ignored
