@@ -750,6 +750,7 @@
     <string name="search_provider_iceraven" translatable="false">Iceraven</string>
     <string name="search_provider_ironfox" translatable="false">IronFox</string>
     <string name="search_provider_kagi" translatable="false">Kagi</string>
+    <string name="search_provider_cromite" translatable="false">Cromite</string>
     <string name="search_provider_custom">Custom</string>
 
     <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>

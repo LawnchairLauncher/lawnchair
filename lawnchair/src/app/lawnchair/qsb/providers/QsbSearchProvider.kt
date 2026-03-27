@@ -139,6 +139,7 @@ sealed class QsbSearchProvider(
             Startpage,
             IronFox,
             Kagi,
+            Cromite,
         )
 
         /**
