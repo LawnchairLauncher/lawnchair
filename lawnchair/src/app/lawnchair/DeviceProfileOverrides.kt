@@ -104,11 +104,11 @@ class DeviceProfileOverrides @Inject constructor(
             iconSizeFactor = prefs2.homeIconSizeFactor.firstBlocking(),
             allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstBlocking(),
             allAppsIconTextSizeFactor =
-                if (prefs2.showIconLabelsInDrawer.firstBlocking()) {
-                    prefs2.drawerIconLabelSizeFactor.firstBlocking()
-                } else {
-                    0f
-                },
+            if (prefs2.showIconLabelsInDrawer.firstBlocking()) {
+                prefs2.drawerIconLabelSizeFactor.firstBlocking()
+            } else {
+                0f
+            },
 
             enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstBlocking(),
         )
