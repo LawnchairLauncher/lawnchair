@@ -403,6 +403,15 @@ class SearchTargetFactory(
 
 object FilesTarget {
     private const val MAX_PREVIEW_SIZE_PX = 256
+    private const val MAX_RAW_DIMENSION_PX = 16_384
+    private const val MAX_ASPECT_RATIO = 5
+
+    private fun isValidPreviewSize(width: Int, height: Int): Boolean {
+        if (width <= 0 || height <= 0) return false
+        if (maxOf(width, height) > MAX_RAW_DIMENSION_PX) return false
+        if (maxOf(width, height) > minOf(width, height) * MAX_ASPECT_RATIO) return false
+        return true
+    }
 
     fun getPreviewIcon(
         context: Context,
@@ -421,6 +430,10 @@ object FilesTarget {
         return try {
             val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeFile(path, options)
+
+            val w = options.outWidth
+            val h = options.outHeight
+            if (!isValidPreviewSize(w, h)) return null
 
             options.inSampleSize = calculateInSampleSize(
                 options.outWidth,
