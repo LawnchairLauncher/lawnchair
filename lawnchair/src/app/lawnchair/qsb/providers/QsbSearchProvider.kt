@@ -140,6 +140,7 @@ sealed class QsbSearchProvider(
             IronFox,
             Kagi,
             Cromite,
+            Vivaldi,
         )
 
         /**

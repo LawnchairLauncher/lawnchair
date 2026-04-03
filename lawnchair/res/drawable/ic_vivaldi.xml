@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- Dark red background circle -->
+    <path
+        android:fillColor="#9C1A1A"
+        android:pathData="M50,5 A45,45 0 1,0 95,50 A45,45 0 1,0 50,5 Z" />
+    <!-- Bright red ring (outer circle minus inner circle via evenOdd fill) -->
+    <path
+        android:fillColor="#EF3939"
+        android:fillType="evenOdd"
+        android:pathData="M50,12 A38,38 0 1,0 88,50 A38,38 0 1,0 50,12 Z M50,22 A28,28 0 1,1 78,50 A28,28 0 1,1 50,22 Z" />
+    <!-- White V letterform -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M26,30 L40,30 L50,58 L60,30 L74,30 L52,70 L48,70 Z" />
+</vector>
