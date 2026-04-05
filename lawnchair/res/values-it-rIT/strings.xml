@@ -175,7 +175,7 @@
     <string name="show_deck_layout">Disposizione a Deck</string>
     <string name="show_deck_layout_description">Mostra un\'opzione di disposizione per nascondere il menu delle app e aggiungere automaticamente nuove app alla schermata Home</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description"></string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
     <string name="experimental_folder_shape_modify_label">Personalizza la forma della cartella</string>
     <string name="folder_shape_label">Cartella</string>
     <string name="app_icon_shape_label">App</string>
