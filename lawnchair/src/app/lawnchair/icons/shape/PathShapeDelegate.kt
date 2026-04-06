@@ -78,36 +78,17 @@ data class PathShapeDelegate(private val iconShape: IconShapeV2) : ShapeDelegate
         isReversed: Boolean,
     ): ValueAnimator where T : View, T : ClipPathView {
 
-        val pathProvider: (Float, Path) -> Unit = when (iconShape) {
-            is IconShapeV2.SystemBased -> {
-                val fallback = iconShape.findNearestShape()
-                require(fallback is IconShapeV2.DefaultShapes)
+        val shape = if (iconShape is IconShapeV2.SystemBased) iconShape.findNearestShape() else iconShape
 
-                when (fallback) {
-                    is IconShapeV2.PathBased -> getPathBasedProvider(
-                        fallback,
-                        startRect,
-                        endRect,
-                        endRadius,
-                    )
-
-                    is IconShapeV2.CornerBased -> getCornerBasedProvider(
-                        fallback,
-                        startRect,
-                        endRect,
-                        endRadius,
-                    )
-
-                    else -> throw RuntimeException("Invalid system icon shape")
-                }
-            }
-
+        val pathProvider: (Float, Path) -> Unit = when (shape) {
             is IconShapeV2.PathBased ->
-                getPathBasedProvider(iconShape, startRect, endRect, endRadius)
+                getPathBasedProvider(shape, startRect, endRect, endRadius)
 
             is IconShapeV2.CornerBased ->
-                getCornerBasedProvider(iconShape, startRect, endRect, endRadius)
+                // Fallback: Use IconShape's addToPath with progress interpolation for corner-based shapes
+                getCornerBasedProvider(shape, startRect, endRect, endRadius)
 
+            else -> throw RuntimeException("Could not find proper shape provider for $shape")
         }
 
         val shouldUseSpringAnimation =
@@ -125,8 +106,6 @@ data class PathShapeDelegate(private val iconShape: IconShapeV2) : ShapeDelegate
         endRect: Rect,
         endRadius: Float,
     ): (Float, Path) -> Unit = { progress: Float, path: Path ->
-        // Fallback: Use IconShape's addToPath with progress interpolation for corner-based shapes
-
         // Interpolate the bounds from start to end
         val left = (1 - progress) * startRect.left + progress * endRect.left
         val top = (1 - progress) * startRect.top + progress * endRect.top

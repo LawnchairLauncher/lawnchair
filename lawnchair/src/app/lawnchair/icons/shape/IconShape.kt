@@ -30,7 +30,6 @@ import com.android.launcher3.shapes.ShapesProvider
 
 @Deprecated(
     message = "Use IconShapeV2 instead",
-    level = DeprecationLevel.ERROR,
 )
 open class IconShape(
     val topLeft: Corner,
@@ -721,11 +720,11 @@ open class IconShape(
     companion object {
 
         fun fromString(value: String, context: Context): IconShape? {
-            if (value == "system") {
-                runCatching {
-                    return IconShapeManager.getSystemIconShape(context = context)
-                }
-            }
+//            if (value == "system") {
+//                runCatching {
+//                    return IconShapeManager.getSystemIconShape(context = context)
+//                }
+//            }
             return fromStringWithoutContext(value = value)
         }
 

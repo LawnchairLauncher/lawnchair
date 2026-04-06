@@ -49,7 +49,7 @@ class IconShapeManager @Inject constructor(
 
     private val systemIconShape = getSystemShape()
 
-    private fun getSystemShape(): IconShapeV2 {
+    private fun getSystemShape(): IconShapeV2.SystemBased {
         if (!Utilities.ATLEAST_O) throw RuntimeException("not supported on < oreo")
 
         val iconMask = AdaptiveIconDrawable(null, null).iconMask

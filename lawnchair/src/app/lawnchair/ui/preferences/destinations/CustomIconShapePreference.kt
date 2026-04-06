@@ -69,7 +69,7 @@ fun CustomIconShapePreference(
 
     val appliedIconShape = customIconShapeAdapter.state.value
     val selectedIconShape =
-        remember { mutableStateOf(appliedIconShape ?: IconShapeV2.RoundedSquare) }
+        remember { mutableStateOf(appliedIconShape ?: IconShapeV2.Circle) }
     val selectedIconShapeApplied = remember {
         derivedStateOf {
             appliedIconShape.toString() == selectedIconShape.value.toString()
