@@ -216,8 +216,8 @@ class NovaBackupConverter(
             when (name) {
                 NOVA_XML_KEY_DESKTOP_GRID -> {
                     val match = novaGridRegex.find(text) ?: continue
-                    columns = match.groupValues[1].toIntOrNull() ?: continue
-                    rows = match.groupValues[2].toIntOrNull() ?: continue
+                    rows = match.groupValues[1].toIntOrNull() ?: continue
+                    columns = match.groupValues[2].toIntOrNull() ?: continue
                 }
 
                 NOVA_XML_KEY_ICON_PACK -> {
