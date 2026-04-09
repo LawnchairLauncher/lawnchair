@@ -10,10 +10,9 @@
 [![Play Store Installs](https://img.shields.io/endpoint?color=green&logo=googleplay&logoColor=green&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dapp.lawnchair.play%26l%3DPlay%2520Store%2520Installs%26m%3D%24shortinstalls)](https://play.google.com/store/apps/details?id=app.lawnchair.play)
 
 > [!WARNING]
-> This branch contains major changes from the rebase of Launcher3, including breaking changes that can cause Lawnchair to break.
-> 
-> If you wish to contribute, read our [contributing guidelines](CONTRIBUTING.md). This branch will undergo many changes as we slowly refactor our codebase, so the `16-dev` branch may be particularly unfriendly to new contributors.
-> 
+> This branch contains major changes from the rebase of Launcher3, including changes that can cause
+> Lawnchair to crash or break.
+>
 > For regular users, we recommend staying on **Lawnchair 15 Beta 2.1**.
 
 <picture>
@@ -31,12 +30,12 @@ This branch houses the codebase of Lawnchair 16, which is currently in developme
 
 ## Features
 
--   **Material Expressive Theming:** Adapts to your wallpaper and system theme.
--   **At a Glance Widget:** Displays information *at a glance* with support for [Smartspacer](https://github.com/KieronQuinn/Smartspacer).
--   **QuickSwitch Support:** Integrates with Android Recents on Android 10-15 (requires root).
--   **Global Search:** Allows quick access to apps, contacts, and web results from the home screen.
--   **Customization Options:** Provides options to tweak icons, fonts, and colors to your liking.
--   And more!
+- Material 3 Expressive theming that follows your wallpaper and system colors.
+- At a Glance widget support, with integration
+  for [Smartspacer](https://github.com/KieronQuinn/Smartspacer).
+- QuickSwitch support for Android Recents integration on Android 10-15 (root required).
+- Global search for apps, contacts, and web results from the home screen.
+- Customization options for icon packs, fonts, and color settings.
 
 ## Download
 
@@ -76,7 +75,8 @@ You can also [verify your installation](VERIFICATION.md) to see if you have inst
 
 Interested in keeping yourself up-to-date with every Lawnchair development? Try our development builds!
 
-These builds offer the latest features and bug fixes at a cost of performance and additional issues. Make backups before installing!
+These builds offer the latest features and bug fixes at a cost of performance and additional issues.
+Make backups before installing.
 
 **Download:** [Obtainium][Obtainium link] • [GitHub][GitHub link] • [nightly.link][Nightly link]
 
