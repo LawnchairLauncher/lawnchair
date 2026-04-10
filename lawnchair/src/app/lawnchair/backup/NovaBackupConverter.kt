@@ -69,6 +69,7 @@ class NovaBackupConverter(
         private const val NOVA_COL_SPAN_Y = "spanY"
         private const val NOVA_COL_ICON = "icon"
         private const val NOVA_COL_APP_WIDGET_PROVIDER = "appWidgetProvider"
+        private const val NOVA_SMART_FOLDER_MARKER = "FOLDER%3A-"
     }
 
     private val novaGridRegex = Regex("(\\d+)x(\\d+)")
@@ -259,7 +260,8 @@ class NovaBackupConverter(
                     WHERE $NOVA_COL_ITEM_TYPE != -1
                     AND ($NOVA_COL_CONTAINER = $NOVA_CONTAINER_DESKTOP
                         OR $NOVA_COL_CONTAINER = $NOVA_CONTAINER_HOTSEAT
-                        OR $NOVA_COL_CONTAINER >= 0)
+                        OR $NOVA_COL_CONTAINER >= 0
+                        OR $NOVA_COL_CONTAINER <= -200)
                     GROUP BY $NOVA_COL_ITEM_TYPE""",
                 null,
             ).use { cursor ->
@@ -323,6 +325,8 @@ class NovaBackupConverter(
         info: NovaBackupInfo,
         smartspaceEnabled: Boolean,
     ) {
+        val smartFolderMap = buildSmartFolderMap(src)
+
         src.rawQuery(
             "SELECT * FROM $NOVA_TABLE_FAVORITES WHERE $NOVA_COL_ITEM_TYPE != -1",
             null,
@@ -337,16 +341,25 @@ class NovaBackupConverter(
                 val isDesktop = novaContainer == NOVA_CONTAINER_DESKTOP
                 val isHotseat = novaContainer == NOVA_CONTAINER_HOTSEAT
                 val isFolderChild = novaContainer >= 0
+                val isSmartFolderChild = novaContainer in smartFolderMap
 
-                if (!isDesktop && !isHotseat && !isFolderChild) continue
+                if (!isDesktop && !isHotseat && !isFolderChild && !isSmartFolderChild) continue
 
                 val container = when {
                     isDesktop -> Favorites.CONTAINER_DESKTOP
                     isHotseat -> Favorites.CONTAINER_HOTSEAT
+                    isSmartFolderChild -> smartFolderMap.getValue(novaContainer)
                     else -> novaContainer
                 }
 
                 val title = getStringOrNull(cursor, NOVA_COL_TITLE)
+                /* TODO: Lawnchair folder synchronization support
+                 *        For nova parity:
+                 *           Sync folder contents from allapps to workspace, or workspace to allapps
+                 *        ImplNote:
+                 *           Check folder with intent: #Intent;component=com.teslacoilsw.launcher/FOLDER%3A-20X;end
+                 *           X being category ID that are defined in drawer_group table
+                 */
                 val rawIntent = getStringOrNull(cursor, NOVA_COL_INTENT)
                 val importedDeepShortcut = if (itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     parseNovaDeepShortcut(rawIntent)?.also { shortcut ->
@@ -379,7 +392,7 @@ class NovaBackupConverter(
                 val icon = getBlobOrNull(cursor, NOVA_COL_ICON)
                 val appWidgetProvider = getStringOrNull(cursor, NOVA_COL_APP_WIDGET_PROVIDER)
                 val rank = when {
-                    isFolderChild -> calculateFolderRank(screen, cellX, cellY)
+                    isFolderChild || isSmartFolderChild -> calculateFolderRank(screen, cellX, cellY)
                     isHotseat -> screen
                     else -> 0
                 }
@@ -477,6 +490,46 @@ class NovaBackupConverter(
         return (screen * FOLDER_PAGE_RANK_OFFSET) + (cellY * FOLDER_ROW_RANK_OFFSET) + cellX
     }
 
+    /**
+     * Get smart folder header rows from favorites table and builds a mapping from the smart folder
+     * container ID (-20X) to the folder row's _id.
+     *
+     * X being category ID that are defined in drawer_group table
+     */
+    private fun buildSmartFolderMap(src: SQLiteDatabase): Map<Int, Int> {
+        val map = mutableMapOf<Int, Int>()
+        src.rawQuery(
+            """SELECT $NOVA_COL_ID, $NOVA_COL_INTENT FROM $NOVA_TABLE_FAVORITES
+                WHERE $NOVA_COL_ITEM_TYPE = ${Favorites.ITEM_TYPE_FOLDER}
+                AND $NOVA_COL_CONTAINER = $NOVA_CONTAINER_DESKTOP
+                AND $NOVA_COL_INTENT LIKE '%$NOVA_SMART_FOLDER_MARKER%'""",
+            null,
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                val folderId = cursor.getInt(0)
+                val intentUri = cursor.getString(1) ?: continue
+                val smartContainerId = extractSmartFolderContainerId(intentUri)
+                if (smartContainerId != null) {
+                    map[smartContainerId] = folderId
+                }
+            }
+        }
+        return map
+    }
+
+    /**
+     * Get smart folder container ID from a Nova folder intent URI.
+     * `#Intent;component=com.teslacoilsw.launcher/FOLDER%3A-208;end` -> -208
+     */
+    private fun extractSmartFolderContainerId(intentUri: String): Int? {
+        val marker = "FOLDER%3A"
+        val idx = intentUri.indexOf(marker)
+        if (idx < 0) return null
+        val afterMarker = intentUri.substring(idx + marker.length)
+        val numStr = afterMarker.takeWhile { it == '-' || it.isDigit() }
+        return numStr.toIntOrNull()
+    }
+
     private fun parseNovaDeepShortcut(intentUri: String?): ImportedDeepShortcut? {
         if (intentUri.isNullOrEmpty()) return null
 
@@ -490,4 +543,26 @@ class NovaBackupConverter(
         val shortcutId = intent.getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) ?: return null
         return ImportedDeepShortcut(packageName, shortcutId)
     }
+
+    /*
+     * Glossary: drawer_group
+     *
+     * The drawer_group table define app drawer tabs (groups) in Nova.
+     * This table is the following category from category_id in drawer_group table:
+     * 1. null (known as: "Apps", for items that belong to main profile)
+     * 2. null (known as: "Work", for items that belong to work profile)
+     * 3. ENTERTAINMENT
+     * 4. FINANCE
+     * 5. FOOD
+     * 6. GAMES
+     * 7. SHOPPING
+     * 8. SOCIAL
+     * 9. TRAVEL
+     *
+     * Note: This table is related to the appgroups table which is a table that already assigns apps
+     *       to these categories.
+     *
+     * Note: Nova assigns items to these categories by crowdsourcing,
+     *       unlike our Flowerpot (v1) Azalea system that needs to be constantly updated manually.
+     */
 }
