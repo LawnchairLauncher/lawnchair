@@ -22,6 +22,12 @@ class FontManager private constructor(private val context: Context) : SafeClosea
 
     private val specMap = createFontMap()
 
+    init {
+        for (spec in specMap.values) {
+            fontCache.preloadFont(spec.font)
+        }
+    }
+
     private fun createFontMap(): Map<Int, FontSpec> {
         val sansSerif = Typeface.SANS_SERIF
         val sansSerifMedium = Typeface.create("sans-serif-medium", Typeface.NORMAL)
@@ -73,9 +79,21 @@ class FontManager private constructor(private val context: Context) : SafeClosea
     @JvmOverloads
     fun setCustomFont(textView: TextView, @IdRes type: Int, style: Int = -1) {
         val spec = specMap[type] ?: return
+        val font = spec.font.createWithWeight(style)
+
+        val cachedFont = fontCache.getLoadedFont(font)
+        if (cachedFont != null) {
+            if (textView.typeface != cachedFont.typeface) {
+                textView.typeface = cachedFont.typeface
+            }
+            return
+        }
+
+        textView.typeface = spec.fallback
+
         val lifecycleOwner = textView.context.lookupLifecycleOwner()
         lifecycleOwner?.lifecycleScope?.launch {
-            val typeface = fontCache.getTypeface(spec.font.createWithWeight(style)) ?: spec.fallback
+            val typeface = fontCache.getTypeface(font) ?: spec.fallback
             runOnMainThread {
                 textView.typeface = typeface
             }
