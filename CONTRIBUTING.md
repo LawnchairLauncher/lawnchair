@@ -88,8 +88,7 @@ We follow the **[Conventional Commits specification][conventional-commits]**.
 
 ### Versioning scheme
 
-As of Lawnchair 15 Beta 1, Lawnchair’s version code is composed of four parts, separated by
-underscores:
+Lawnchair’s version code is composed of five parts, separated by underscores:
 
 <p align="center">
     <picture>
@@ -101,39 +100,21 @@ underscores:
 
 1. Android major version
 2. Android minor version
-3. Lawnchair development status
+3. Lawnchair development stage
 4. Lawnchair development version
+5. Revision/Release number
 
-#### Android major & minor versions
+#### Lawnchair development stage
 
-These represent the Android version in which Lawnchair is based on.
-They make up the first two parts of the version code:
+This table show list of development stages in use by Lawnchair:
 
-- Major version: Indicates the main Android version.
-- Minor version: Reflects any point release or update within the major version.
-
-Example: Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
-
-#### Development status & version
-
-The third and fourth parts of the version code refer to Lawnchair's development stage
-and the specific version within that stage:
-
-- Development status: Shows the current development stage of the Lawnchair build (e.g., Alpha,
-  Beta).
-- Development version: Specifies the incremental version within the same development stage.
-
-The table below shows release phase used by Lawnchair:
-
-| Status            | Stage |
-|-------------------|-------|
-| Development       | 00    |
-| Alpha             | 01    |
-| Beta              | 02    |
-| Release Candidate | 03    |
-| Release           | 04    |
-
-Example: Alpha 5 will be `XX_XX_01_05` and Beta 3 will be `XX_XX_02_03`.
+| Stage             | Denote |
+|-------------------|--------|
+| Development       | 00     |
+| Alpha             | 01     |
+| Beta              | 02     |
+| Release Candidate | 03     |
+| Release           | 04     |
 
 ### String naming
 

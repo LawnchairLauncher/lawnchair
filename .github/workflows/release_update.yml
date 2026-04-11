@@ -49,7 +49,9 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepGithubRelease
       - name: Rename artifact
-        run: mv build/outputs/apk/**/**/*.apk "${{ github.event.inputs.artifactName }}"
+        env:
+          ARTIFACT_NAME: ${{ github.event.inputs.artifactName }}
+        run: mv build/outputs/apk/**/**/*.apk "$ARTIFACT_NAME"
       - name: Attest
         uses: actions/attest-build-provenance@v3
         with:

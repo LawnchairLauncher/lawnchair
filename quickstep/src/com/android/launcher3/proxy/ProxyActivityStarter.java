@@ -16,7 +16,10 @@
 
 package com.android.launcher3.proxy;
 
+import static com.android.launcher3.Utilities.allowBGLaunch;
+
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -81,24 +84,34 @@ public class ProxyActivityStarter extends Activity {
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     }
 
+    // LC-Note: Allow BG launch anyway, 
+    // fix BAL hardening issues on some Android version starting with 13 ~ 15
+    private Bundle getOptionsWithBAL() {
+        ActivityOptions options = mParams.options != null ?
+            ActivityOptions.fromBundle(mParams.options) : ActivityOptions.makeBasic();
+        return allowBGLaunch(options).toBundle();
+    }
+
     private void startActivity() throws SendIntentException {
+        Bundle options = getOptionsWithBAL();
         if (mParams.requireActivityResult) {
-            startActivityForResult(mParams.intent, mParams.requestCode, mParams.options);
+            startActivityForResult(mParams.intent, mParams.requestCode, options);
         } else {
-            startActivity(mParams.intent, mParams.options);
+            startActivity(mParams.intent, options);
             finishAndRemoveTask();
         }
     }
 
     private void startIntentSender() throws SendIntentException {
+        Bundle options = getOptionsWithBAL();
         if (mParams.requireActivityResult) {
             startIntentSenderForResult(mParams.intentSender, mParams.requestCode,
                     mParams.fillInIntent, mParams.flagsMask, mParams.flagsValues,
                     mParams.extraFlags,
-                    mParams.options);
+                    options);
         } else {
             startIntentSender(mParams.intentSender, mParams.fillInIntent, mParams.flagsMask,
-                    mParams.flagsValues, mParams.extraFlags, mParams.options);
+                mParams.flagsValues, mParams.extraFlags, options);
             finishAndRemoveTask();
         }
     }

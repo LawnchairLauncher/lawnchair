@@ -1,12 +1,17 @@
 package app.lawnchair.bugreport
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import java.util.LinkedList
 import java.util.Queue
 import kotlinx.coroutines.CoroutineName
@@ -61,15 +66,27 @@ class UploaderService : Service() {
 
         Log.d("DUS", "onCreate")
 
-        startForeground(
-            101,
-            NotificationCompat.Builder(this, BugReportReceiver.STATUS_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_bug_notification)
-                .setContentTitle(getString(R.string.dogbin_uploading))
-                .setColor(ContextCompat.getColor(this, R.color.bugNotificationColor))
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .build(),
+        val notificationManager: NotificationManager = requireSystemService()
+        notificationManager.createNotificationChannel(
+            NotificationChannel(
+                BugReportReceiver.STATUS_CHANNEL_ID,
+                getString(R.string.status_channel_name),
+                NotificationManager.IMPORTANCE_NONE,
+            ),
         )
+
+        val notification = NotificationCompat.Builder(this, BugReportReceiver.STATUS_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_bug_notification)
+            .setContentTitle(getString(R.string.dogbin_uploading))
+            .setColor(ContextCompat.getColor(this, R.color.bugNotificationColor))
+            .setPriority(NotificationCompat.PRIORITY_MIN)
+            .build()
+
+        if (Utilities.ATLEAST_U) {
+            startForeground(101, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            startForeground(101, notification)
+        }
     }
 
     override fun onDestroy() {

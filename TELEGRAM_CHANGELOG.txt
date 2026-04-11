@@ -1,18 +1,20 @@
-Hey everyone, and happy holidays from the Lawnchair team! 🎄
+Lawnchair 15 Beta 3 is here!
 
-We're excited to announce that Lawnchair 15 Beta 2 is now available for download!
+As many of you know, the Android launcher landscape is changing rapidly over the past few months. To welcome users looking for a new, open-source home, this release now <b>supports importing backups from Nova Launcher</b>!
 
-This release contains several bug fixes and quality-of-life improvements that make the Lawnchair 15 experience much more stable and enjoyable. Some of the highlights include:
+What it imports
+• Home screen and dock grid layout
+• Widgets and folders
+• Selected icon pack
 
-- A completely revamped search experience
-- Infinite home screen scrolling
-- The ability to reorder apps inside app drawer folders
-- ...and many more fixes for crashes and visual bugs!
+How to use it
+1. Open Lawnchair Settings
+2. Tap the three dots (⋮) in the top right corner
+3. Select "Restore Nova backup" and choose your file
 
-A huge thank you to everyone who made this release possible: our code contributors on GitHub, our translators on Crowdin, and our financial supporters on Open Collective. Your support is what keeps this project going.
+<b>Note:</b> Other Nova features not mentioned (like app drawer categories and icon swipe gestures) are not yet supported and won't be imported. You may need to do a little manual tweaking after the import.
 
-We'll have a full Lawnstate blog post coming soon with a look back at the year and a deep dive into the ongoing work for Lawnchair 16.
+While this is a major milestone for Lawnchair 15, our team is still working hard to improve and polish the Lawnchair 16 experience. Stay tuned for updates!
 
-For now, enjoy a more stable home screen for the holidays!
-
-Download and changelog: https://github.com/LawnchairLauncher/lawnchair/releases/tag/v15.0.0-beta2
+<a href="https://opencollective.com/lawnchair">Donate on Open Collective</a> &bull;
+<a href="https://github.com/LawnchairLauncher/lawnchair/releases/tag/v15.0.0-beta3">View full changelog on GitHub</a>

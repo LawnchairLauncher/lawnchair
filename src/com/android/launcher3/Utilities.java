@@ -699,7 +699,7 @@ public final class Utilities {
      * options
      */
     public static ActivityOptions allowBGLaunch(ActivityOptions options) {
-        if (ATLEAST_V) {
+        if (ATLEAST_U) {
             options.setPendingIntentBackgroundActivityStartMode(
                     ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
         }
