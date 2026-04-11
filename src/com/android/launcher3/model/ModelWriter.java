@@ -378,6 +378,55 @@ public class ModelWriter {
     }
 
     /**
+     * Deletes an entire widget stack: removes every widget in the stack from the
+     * database, releases their AppWidget IDs, and cleans up the stack metadata.
+     *
+     * Non-first widgets in a stack are never added to {@link BgDataModel#itemsIdMap}
+     * during binding, so we query the database directly for the full set of widget IDs.
+     */
+    public void deleteWidgetStack(final WidgetStackInfo stackInfo,
+            final LauncherWidgetHolder holder, @Nullable final String reason) {
+        // Delete widgets that ARE in BgDataModel (the first widget)
+        for (int widgetId : stackInfo.getWidgetIds()) {
+            LauncherAppWidgetInfo found = null;
+            synchronized (mBgDataModel) {
+                for (ItemInfo item : mBgDataModel.itemsIdMap) {
+                    if (item instanceof LauncherAppWidgetInfo w
+                            && w.appWidgetId == widgetId) {
+                        found = w;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                deleteWidgetInfo(found, holder, reason);
+            }
+        }
+
+        // Delete remaining widgets directly from the database (non-first stack members
+        // that were never inflated into BgDataModel).
+        enqueueDeleteRunnable(newModelTask(() -> {
+            final ModelDbController dbController = mModel.getModelDbController();
+            try (SQLiteTransaction t = dbController.newTransaction()) {
+                SQLiteDatabase db = t.getDb();
+                for (int widgetId : stackInfo.getWidgetIds()) {
+                    // Release the AppWidget ID
+                    if (holder != null) {
+                        try {
+                            holder.deleteAppWidgetId(widgetId);
+                        } catch (Exception ignored) { }
+                    }
+                    // Delete the row from the database
+                    db.delete(TABLE_NAME,
+                            Favorites.APPWIDGET_ID + "=?",
+                            new String[]{String.valueOf(widgetId)});
+                }
+                t.commit();
+            }
+        }));
+    }
+
+    /**
      * Saves a widget stack to the database
      * IMPORTANT: This should be called AFTER all individual widgets have been updated
      * to ensure consistency between database and in-memory model

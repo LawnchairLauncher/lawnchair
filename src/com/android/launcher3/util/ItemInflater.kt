@@ -118,44 +118,30 @@ class ItemInflater<T>(
             // Check if this widget is part of a stack
             val widgetStackId = item.widgetStackId
             if (widgetStackId != null) {
-                // Load the stack info from database
                 val db = writer.getModelDbController().db
                 val stackInfo = WidgetStackManager.loadStack(db, widgetStackId)
 
-                if (stackInfo != null) {
-                    // Validate stack info - ensure it's not empty or corrupted
-                    if (stackInfo.widgetIds.isEmpty()) {
-                        android.util.Log.w("ItemInflater", "Stack $widgetStackId has no widgets, clearing stack reference for widget ${item.appWidgetId}")
-                        item.widgetStackId = null
-                        writer.updateItemInDatabase(item)
-                        // Fall through to normal widget inflation
+                if (stackInfo != null && stackInfo.widgetIds.isNotEmpty()) {
+                    val isFirstWidget = stackInfo.widgetIds.firstOrNull() == item.appWidgetId
+                    if (isFirstWidget) {
+                        val widgetStackView = WidgetStackView(context)
+                        widgetStackView.setStackInfo(stackInfo)
+                        widgetStackView.tag = item
+                        widgetStackView.isFocusable = true
+                        widgetStackView.onFocusChangeListener = focusListener
+                        return widgetStackView
                     } else {
-                        // Only create WidgetStackView for the FIRST widget in the stack
-                        // Check if this widget is the first one in the stack's widgetIds list
-                        // This works regardless of how stackId is set (timestamp or first widget ID)
-                        val isFirstWidget = stackInfo.widgetIds.firstOrNull() == item.appWidgetId
-                        if (isFirstWidget) {
-                            // Create a WidgetStackView
-                            val widgetStackView = WidgetStackView(context)
-                            widgetStackView.setStackInfo(stackInfo)
-                            widgetStackView.tag = item
-                            widgetStackView.isFocusable = true
-                            widgetStackView.onFocusChangeListener = focusListener
-                            android.util.Log.d("ItemInflater", "Created WidgetStackView for stack $widgetStackId with ${stackInfo.widgetIds.size} widgets")
-                            return widgetStackView
-                        } else {
-                            // Skip other widgets in the stack - they're already in the WidgetStackView
-                            android.util.Log.d("ItemInflater", "Skipping widget ${item.appWidgetId} - not first widget in stack $widgetStackId")
-                            return null
-                        }
+                        return null
                     }
-                } else {
-                    // Stack info not found - might be corrupted or deleted, clear the stack reference
-                    android.util.Log.w("ItemInflater", "Stack $widgetStackId not found in database, clearing stack reference for widget ${item.appWidgetId}")
+                }
+
+                // loadStack returned null — no other widget with this stackId
+                // exists. Only NOW is it safe to clear the orphaned reference.
+                if (stackInfo == null) {
                     item.widgetStackId = null
                     writer.updateItemInDatabase(item)
-                    // Fall through to normal widget inflation
                 }
+                // Fall through to normal widget inflation
             }
 
             // Normal widget inflation (no stack or stack was invalid)

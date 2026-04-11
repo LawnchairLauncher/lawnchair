@@ -17,20 +17,39 @@
 package app.lawnchair.widget
 
 import android.content.ContentValues
-import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.android.launcher3.LauncherSettings
-import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
 
 /**
  * Manages widget stack persistence and queries
  */
 object WidgetStackManager {
     private const val TAG = "WidgetStackManager"
-    private val gson: Gson = Gson()
+    private val gson: Gson = GsonBuilder()
+        .registerTypeAdapter(
+            WidgetStackInfo::class.java,
+            JsonDeserializer<WidgetStackInfo> { json, _, _ ->
+                val obj = json.asJsonObject
+                WidgetStackInfo(
+                    stackId = obj.get("stackId").asLong,
+                    widgetIds = obj.getAsJsonArray("widgetIds").map { it.asInt },
+                    currentIndex = obj.get("currentIndex")?.asInt ?: 0,
+                    autoRotate = obj.get("autoRotate")?.asBoolean ?: false,
+                    container = obj.get("container")?.asInt
+                        ?: LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                    screenId = obj.get("screenId")?.asInt ?: 0,
+                    cellX = obj.get("cellX")?.asInt ?: 0,
+                    cellY = obj.get("cellY")?.asInt ?: 0,
+                    spanX = obj.get("spanX")?.asInt ?: 2,
+                    spanY = obj.get("spanY")?.asInt ?: 2,
+                )
+            },
+        )
+        .create()
 
     // Store pending stack info for widgets waiting for permission
     // Key: appWidgetId, Value: WidgetStackInfo
@@ -131,73 +150,31 @@ object WidgetStackManager {
             return
         }
 
-        try {
-            // Convert stack info to JSON
-            val stackJson = gson.toJson(stackInfo)
+        val stackJson = gson.toJson(stackInfo)
+        var successCount = 0
 
-            // Use a transaction to ensure all updates are atomic
-            db.beginTransaction()
-            try {
-                var successCount = 0
-                val missingWidgetIds = mutableListOf<Int>()
-
-                // Update all widgets in the stack to reference the stack ID and store the data
-                // Only update WIDGET_STACK_ID and WIDGET_STACK_DATA to avoid overwriting other fields
-                stackInfo.widgetIds.forEach { widgetId ->
-                    // First, verify the widget exists in the database
-                    val widgetExists = db.query(
-                        LauncherSettings.Favorites.TABLE_NAME,
-                        arrayOf(LauncherSettings.Favorites._ID),
-                        "${LauncherSettings.Favorites.APPWIDGET_ID} = ?",
-                        arrayOf(widgetId.toString()),
-                        null,
-                        null,
-                        null,
-                        "1",
-                    ).use { it.moveToFirst() }
-
-                    if (widgetExists) {
-                        val values = ContentValues().apply {
-                            put(LauncherSettings.Favorites.WIDGET_STACK_ID, stackInfo.stackId)
-                            // Store the stack data in ALL widgets for redundancy
-                            put(LauncherSettings.Favorites.WIDGET_STACK_DATA, stackJson)
-                        }
-                        val rowsUpdated = db.update(
-                            LauncherSettings.Favorites.TABLE_NAME,
-                            values,
-                            "${LauncherSettings.Favorites.APPWIDGET_ID} = ?",
-                            arrayOf(widgetId.toString()),
-                        )
-
-                        if (rowsUpdated > 0) {
-                            successCount++
-                        } else {
-                            Log.w(TAG, "Failed to update widget $widgetId in stack ${stackInfo.stackId}")
-                            missingWidgetIds.add(widgetId)
-                        }
-                    } else {
-                        Log.w(TAG, "Widget $widgetId not found in database when saving stack ${stackInfo.stackId}")
-                        missingWidgetIds.add(widgetId)
-                    }
-                }
-
-                // Only commit if at least one widget was updated successfully
-                // This prevents creating empty or invalid stacks
-                if (successCount > 0) {
-                    db.setTransactionSuccessful()
-                    Log.d(TAG, "Saved stack ${stackInfo.stackId} with $successCount/${stackInfo.widgetIds.size} widgets")
-                    if (missingWidgetIds.isNotEmpty()) {
-                        Log.w(TAG, "Stack ${stackInfo.stackId} missing ${missingWidgetIds.size} widgets: $missingWidgetIds")
-                    }
-                } else {
-                    Log.e(TAG, "Failed to save stack ${stackInfo.stackId}: no widgets could be updated")
-                }
-            } finally {
-                db.endTransaction()
+        stackInfo.widgetIds.forEach { widgetId ->
+            val values = ContentValues().apply {
+                put(LauncherSettings.Favorites.WIDGET_STACK_ID, stackInfo.stackId)
+                put(LauncherSettings.Favorites.WIDGET_STACK_DATA, stackJson)
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error saving widget stack ${stackInfo.stackId}", e)
-            throw e // Re-throw to allow callers to handle the error
+            val rowsUpdated = db.update(
+                LauncherSettings.Favorites.TABLE_NAME,
+                values,
+                "${LauncherSettings.Favorites.APPWIDGET_ID} = ?",
+                arrayOf(widgetId.toString()),
+            )
+            if (rowsUpdated > 0) {
+                successCount++
+            } else {
+                Log.w(TAG, "Widget $widgetId not found in DB when saving stack ${stackInfo.stackId}")
+            }
+        }
+
+        if (successCount > 0) {
+            Log.d(TAG, "Saved stack ${stackInfo.stackId}: $successCount/${stackInfo.widgetIds.size} widgets")
+        } else {
+            Log.e(TAG, "Failed to save stack ${stackInfo.stackId}: no widgets updated")
         }
     }
 
@@ -206,10 +183,11 @@ object WidgetStackManager {
      * Looks for any widget with this stackId that has the data.
      * Returns null if stack not found or corrupted.
      */
+    @JvmStatic
     fun loadStack(db: SQLiteDatabase, stackId: Long): WidgetStackInfo? {
         return try {
-            // Query for any widget with this stackId that has stack data
-            val cursor = db.query(
+            // Strategy 1: load the full JSON blob stored alongside any widget in the stack
+            db.query(
                 LauncherSettings.Favorites.TABLE_NAME,
                 arrayOf(LauncherSettings.Favorites.WIDGET_STACK_DATA),
                 "${LauncherSettings.Favorites.WIDGET_STACK_ID} = ? AND ${LauncherSettings.Favorites.WIDGET_STACK_DATA} IS NOT NULL",
@@ -217,38 +195,86 @@ object WidgetStackManager {
                 null,
                 null,
                 null,
-                "1", // Limit to 1 result (all widgets in stack have same data)
-            )
-
-            cursor.use {
-                if (it.moveToFirst()) {
-                    val stackJson = it.getString(0)
-                    if (stackJson != null && stackJson.isNotEmpty()) {
+                "1",
+            ).use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val json = cursor.getString(0)
+                    if (!json.isNullOrEmpty()) {
                         try {
-                            val stackInfo = gson.fromJson(stackJson, WidgetStackInfo::class.java)
-                            // Validate loaded stack info
-                            if (stackInfo.stackId == stackId && stackInfo.widgetIds.isNotEmpty()) {
-                                Log.d(TAG, "Loaded stack $stackId with ${stackInfo.widgetIds.size} widgets")
-                                return stackInfo
-                            } else {
-                                Log.w(TAG, "Invalid stack data for stackId: $stackId (stackId mismatch or empty widgetIds)")
-                                null
+                            val info = gson.fromJson(json, WidgetStackInfo::class.java)
+                            if (info.stackId == stackId && info.widgetIds.isNotEmpty()) {
+                                return info
                             }
                         } catch (e: Exception) {
-                            Log.e(TAG, "Error parsing stack JSON for stackId: $stackId", e)
-                            null
+                            Log.w(TAG, "Error parsing stack JSON for $stackId", e)
                         }
-                    } else {
-                        Log.w(TAG, "Stack data is null or empty for stackId: $stackId")
-                        null
                     }
-                } else {
-                    Log.d(TAG, "No widget found with stackId: $stackId")
-                    null
                 }
             }
+
+            // Strategy 2: JSON missing/corrupt — reconstruct from WIDGET_STACK_ID column
+            val widgetIds = mutableListOf<Int>()
+            var container = LauncherSettings.Favorites.CONTAINER_DESKTOP
+            var screenId = 0
+            var cellX = 0
+            var cellY = 0
+            var spanX = 2
+            var spanY = 2
+            db.query(
+                LauncherSettings.Favorites.TABLE_NAME,
+                arrayOf(
+                    LauncherSettings.Favorites.APPWIDGET_ID,
+                    LauncherSettings.Favorites.CONTAINER,
+                    LauncherSettings.Favorites.SCREEN,
+                    LauncherSettings.Favorites.CELLX,
+                    LauncherSettings.Favorites.CELLY,
+                    LauncherSettings.Favorites.SPANX,
+                    LauncherSettings.Favorites.SPANY,
+                ),
+                "${LauncherSettings.Favorites.WIDGET_STACK_ID} = ?",
+                arrayOf(stackId.toString()),
+                null,
+                null,
+                null,
+            ).use { cursor ->
+                while (cursor.moveToNext()) {
+                    widgetIds.add(cursor.getInt(0))
+                    if (widgetIds.size == 1) {
+                        container = cursor.getInt(1)
+                        screenId = cursor.getInt(2)
+                        cellX = cursor.getInt(3)
+                        cellY = cursor.getInt(4)
+                        spanX = cursor.getInt(5)
+                        spanY = cursor.getInt(6)
+                    }
+                }
+            }
+
+            if (widgetIds.isEmpty()) {
+                Log.d(TAG, "No widgets found for stackId $stackId")
+                return null
+            }
+
+            val reconstructed = WidgetStackInfo(
+                stackId = stackId,
+                widgetIds = widgetIds,
+                container = container,
+                screenId = screenId,
+                cellX = cellX,
+                cellY = cellY,
+                spanX = spanX,
+                spanY = spanY,
+            )
+            Log.d(TAG, "Reconstructed stack $stackId with ${widgetIds.size} widgets from WIDGET_STACK_ID")
+
+            // Persist the reconstruction so future loads hit Strategy 1
+            try {
+                saveStack(db, reconstructed)
+            } catch (_: Exception) { }
+
+            reconstructed
         } catch (e: Exception) {
-            Log.e(TAG, "Error loading widget stack for stackId: $stackId", e)
+            Log.e(TAG, "Error loading widget stack $stackId", e)
             null
         }
     }

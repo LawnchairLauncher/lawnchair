@@ -22,7 +22,8 @@ import com.android.launcher3.LauncherSettings
 
 /**
  * Represents a stack of widgets that can be displayed on top of each other.
- * All widgets in a stack share the same size and position on the home screen.
+ * Widgets in a stack share the same position on the home screen but may have
+ * different native sizes; each widget is scaled to fit the stack bounds.
  */
 data class WidgetStackInfo(
     /**

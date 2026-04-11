@@ -20,14 +20,35 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.android.launcher3.CheckLongPressHelper
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Reorderable
 import com.android.launcher3.dragndrop.DraggableView
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.util.MultiTranslateDelegate
+
+/**
+ * Listener interface for widget stack changes
+ */
+interface WidgetStackChangeListener {
+    /**
+     * Called when a stack should collapse to a single widget
+     * @param stackView The WidgetStackView that should be collapsed
+     * @param remainingWidgetId The widget ID that should remain as a single widget
+     */
+    fun onStackShouldCollapse(stackView: WidgetStackView, remainingWidgetId: Int)
+
+    /**
+     * Called when a stack is created or modified
+     * @param stackView The WidgetStackView that was created or modified
+     */
+    fun onStackChanged(stackView: WidgetStackView)
+}
 
 /**
  * Outer container for widget stacks.
@@ -40,16 +61,18 @@ class WidgetStackView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr),
     DraggableView,
-    Reorderable {
+    Reorderable,
+    View.OnLongClickListener {
 
     // Required for Reorderable interface
     private val translateDelegate = MultiTranslateDelegate(this)
     private var reorderBounceScale = 1f
 
     private val contentView: WidgetStackContentView
+    private var stackChangeListener: WidgetStackChangeListener? = null
+    private val longPressHelper = CheckLongPressHelper(this, this)
 
     init {
-        // Inflate the content view from XML (same pattern as smartspace)
         val inflater = LayoutInflater.from(context)
         contentView = inflater.inflate(
             R.layout.widget_stack_content,
@@ -59,23 +82,62 @@ class WidgetStackView @JvmOverloads constructor(
 
         addView(contentView)
 
-        // Set focusable and long-clickable to allow workspace to handle long press and drag
-        // This enables both context menu and drag operations
         isFocusable = true
         isLongClickable = true
-        // Allow this view to receive focus even when children are present
-        // This ensures long-press on children bubbles up to this view
         descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
-        // Must be clickable for workspace to detect touch events for drag operations
-        // Without this, long-press won't trigger drag-and-drop
         isClickable = true
     }
 
+    // ==================== Touch / Long-press ====================
+
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        longPressHelper.onTouchEvent(ev)
+        return longPressHelper.hasPerformedLongPress()
+    }
+
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        longPressHelper.onTouchEvent(ev)
+        return true
+    }
+
+    override fun onLongClick(view: View): Boolean {
+        view.performLongClick()
+        return true
+    }
+
+    override fun cancelLongPress() {
+        super.cancelLongPress()
+        longPressHelper.cancelLongPress()
+    }
+
     /**
-     * Sets the stack information and loads widgets
+     * Sets the stack information and loads widgets.
+     * @param knownWidgets widget infos to cache locally so they can be found
+     *        even before [BgDataModel] has been updated asynchronously.
      */
-    fun setStackInfo(info: WidgetStackInfo) {
-        contentView.setStackInfo(info)
+    @JvmOverloads
+    fun setStackInfo(
+        info: WidgetStackInfo,
+        knownWidgets: List<LauncherAppWidgetInfo> = emptyList(),
+    ) {
+        contentView.setStackInfo(info, knownWidgets)
+        stackChangeListener?.onStackChanged(this)
+    }
+
+    /**
+     * Sets the listener for stack changes
+     */
+    fun setStackChangeListener(listener: WidgetStackChangeListener?) {
+        stackChangeListener = listener
+        contentView.setStackChangeListener(object : WidgetStackChangeListener {
+            override fun onStackShouldCollapse(stackView: WidgetStackView, remainingWidgetId: Int) {
+                listener?.onStackShouldCollapse(stackView, remainingWidgetId)
+            }
+
+            override fun onStackChanged(stackView: WidgetStackView) {
+                listener?.onStackChanged(stackView)
+            }
+        })
     }
 
     /**
@@ -84,10 +146,18 @@ class WidgetStackView @JvmOverloads constructor(
     fun getStackInfo(): WidgetStackInfo? = contentView.getStackInfo()
 
     /**
-     * Adds a widget to the stack
+     * Adds a widget to the stack by ID (looked up from BgDataModel).
      */
     fun addWidget(widgetId: Int) {
         contentView.addWidget(widgetId)
+    }
+
+    /**
+     * Adds a widget to the stack using the provided info directly,
+     * bypassing the BgDataModel lookup (useful when the model hasn't been updated yet).
+     */
+    fun addWidget(widgetInfo: LauncherAppWidgetInfo) {
+        contentView.addWidget(widgetInfo)
     }
 
     /**
