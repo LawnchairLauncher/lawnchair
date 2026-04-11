@@ -38,6 +38,7 @@ import com.android.launcher3.widget.PendingAppWidgetHostView
 import com.android.launcher3.widget.WidgetInflater
 import com.android.launcher3.widget.WidgetManagerHelper
 import com.android.launcher3.widget.util.WidgetSizes
+import kotlin.math.min
 
 /**
  * Inner view that displays and manages a stack of widgets inside a [ViewPager].
@@ -53,6 +54,14 @@ class WidgetStackContentView @JvmOverloads constructor(
         private const val TAG = "WidgetStackContent"
         private const val AUTO_ROTATE_INTERVAL_MS = 20_000L
         private const val MAX_REFRESH_ATTEMPTS = 5
+
+        /**
+         * Pages retained on each side of the current page ([ViewPager] API). Each offscreen slot
+         * may hold a live [LauncherAppWidgetHostView], so a large limit multiplies memory and
+         * RemoteViews work. `2` keeps immediate neighbors warm for swipes/auto-rotate without
+         * retaining the whole stack (the previous `size` / `20` caps were effectively unbounded).
+         */
+        private const val OFFSCREEN_PAGE_LIMIT_EACH_SIDE = 2
     }
 
     private lateinit var viewPager: InterceptingWidgetPager
@@ -94,7 +103,7 @@ class WidgetStackContentView @JvmOverloads constructor(
         viewPager.isSaveEnabled = false
         viewPager.isLongClickable = false
         viewPager.isClickable = true
-        viewPager.offscreenPageLimit = 20
+        viewPager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_EACH_SIDE
 
         isLongClickable = false
         isClickable = false
@@ -190,7 +199,10 @@ class WidgetStackContentView @JvmOverloads constructor(
         stackInfo = info
 
         if (::viewPager.isInitialized) {
-            viewPager.offscreenPageLimit = info.widgetIds.size.coerceAtLeast(1)
+            viewPager.offscreenPageLimit = min(
+                info.widgetIds.size.coerceAtLeast(1),
+                OFFSCREEN_PAGE_LIMIT_EACH_SIDE,
+            )
         }
 
         rebuildWidgetViews(info)

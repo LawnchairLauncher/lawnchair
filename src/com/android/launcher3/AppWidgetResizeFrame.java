@@ -698,8 +698,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                             spanY
                         );
                         
-                        // Update all widgets in the stack to the new size
-                        final com.android.launcher3.model.BgDataModel bgDataModel = mLauncher.getModel().getBgDataModel();
+                        // Update all widgets in the stack to the new size (lookups under lock; DB work off lock)
+                        final com.android.launcher3.model.BgDataModel bgDataModel =
+                                mLauncher.getModel().getBgDataModel();
+                        ArrayList<LauncherAppWidgetInfo> stackMembersToResize = new ArrayList<>();
                         synchronized (bgDataModel) {
                             for (Integer widgetIdObj : stackInfo.getWidgetIds()) {
                                 int widgetId = widgetIdObj;
@@ -707,15 +709,16 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                                     if (item instanceof LauncherAppWidgetInfo) {
                                         LauncherAppWidgetInfo wInfo = (LauncherAppWidgetInfo) item;
                                         if (wInfo.appWidgetId == widgetId) {
-                                            mLauncher.getModelWriter().modifyItemInDatabase(
-                                                wInfo, container, screenId,
-                                                cellX, cellY, spanX, spanY
-                                            );
+                                            stackMembersToResize.add(wInfo);
                                             break;
                                         }
                                     }
                                 }
                             }
+                        }
+                        for (LauncherAppWidgetInfo wInfo : stackMembersToResize) {
+                            mLauncher.getModelWriter().modifyItemInDatabase(
+                                    wInfo, container, screenId, cellX, cellY, spanX, spanY);
                         }
                         
                         // Save updated stack info to database

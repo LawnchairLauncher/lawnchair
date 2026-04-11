@@ -102,6 +102,7 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 import static com.android.launcher3.testing.shared.TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 import static com.android.launcher3.util.SettingsCache.TOUCHPAD_NATURAL_SCROLLING;
 
@@ -283,6 +284,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -1750,7 +1752,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                         if (child instanceof app.lawnchair.widget.WidgetStackView) {
                             LauncherAppWidgetInfo childInfo = (LauncherAppWidgetInfo) child.getTag();
                             if (childInfo != null && childInfo.widgetStackId != null
-                                    && childInfo.widgetStackId == pendingStackInfo.getStackId()) {
+                                    && Objects.equals(childInfo.widgetStackId, pendingStackInfo.getStackId())) {
                                 existingStack = (app.lawnchair.widget.WidgetStackView) child;
                                 break;
                             }
@@ -2381,24 +2383,38 @@ public class Launcher extends StatefulActivity<LauncherState>
                 // If this widget belongs to a stack, delete the entire stack.
                 // Check the widgetStackId on the item itself (not the view) because
                 // the view may be null when removed via drag-to-delete.
-                WidgetStackInfo stackInfo = null;
                 if (widgetInfo.widgetStackId != null) {
-                    // Try to get stack info from the view first
+                    WidgetStackInfo stackInfo = null;
+                    // Try to get stack info from the view first (avoids DB on UI thread)
                     if (v instanceof WidgetStackView) {
                         stackInfo = ((WidgetStackView) v).getStackInfo();
                     }
-                    // Fall back to loading from database
-                    if (stackInfo == null) {
-                        try {
-                            SQLiteDatabase db = getModelWriter().getModelDbController().getDb();
-                            stackInfo = WidgetStackManager.loadStack(db, widgetInfo.widgetStackId);
-                        } catch (Exception e) {
-                            android.util.Log.w(TAG, "Failed to load stack info for deletion", e);
-                        }
+                    if (stackInfo != null) {
+                        deleteEntireWidgetStack(stackInfo, reason);
+                    } else {
+                        final long stackId = widgetInfo.widgetStackId.longValue();
+                        MODEL_EXECUTOR.execute(() -> {
+                            WidgetStackInfo loaded = null;
+                            try {
+                                SQLiteDatabase db = getModel().getModelDbController().getDb();
+                                loaded = WidgetStackManager.loadStack(db, stackId);
+                            } catch (Exception e) {
+                                android.util.Log.w(TAG, "Failed to load stack info for deletion", e);
+                            }
+                            final WidgetStackInfo loadedFinal = loaded;
+                            MAIN_EXECUTOR.execute(() -> {
+                                if (isFinishing() || isDestroyed()) {
+                                    return;
+                                }
+                                if (loadedFinal != null) {
+                                    deleteEntireWidgetStack(loadedFinal, reason);
+                                } else {
+                                    getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHolder(),
+                                            reason);
+                                }
+                            });
+                        });
                     }
-                }
-                if (stackInfo != null) {
-                    deleteEntireWidgetStack(stackInfo, reason);
                 } else {
                     getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHolder(), reason);
                 }
@@ -3672,7 +3688,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             if (child instanceof WidgetStackView) {
                 LauncherAppWidgetInfo childTag = (LauncherAppWidgetInfo) child.getTag();
                 if (childTag != null && childTag.widgetStackId != null
-                        && childTag.widgetStackId == stackInfo.getStackId()) {
+                        && Objects.equals(childTag.widgetStackId, stackInfo.getStackId())) {
                     existingStack = (WidgetStackView) child;
                     break;
                 }

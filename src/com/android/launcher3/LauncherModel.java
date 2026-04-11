@@ -35,11 +35,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.content.pm.ShortcutInfo;
+import android.os.Looper;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -147,12 +149,40 @@ public class LauncherModel implements InstallSessionTracker.Callback {
     private final AllAppsList mBgAllAppsList;
 
     /**
-     * Gets the BgDataModel instance. Should be used carefully as it's accessed from background thread.
-     * @return The BgDataModel instance
+     * Returns the {@link BgDataModel} for this launcher model.
+     * <p>
+     * This reference may be read from any thread. However, <b>all use of mutable state inside
+     * {@link BgDataModel}</b> (fields, collections, item maps, etc.) must occur either on
+     * {@link com.android.launcher3.util.Executors#MODEL_EXECUTOR} or while holding the intrinsic
+     * lock on the returned instance: {@code synchronized (bgDataModel) { ... }}. Typical UI code
+     * obtains the reference, then immediately enters such a {@code synchronized} block.
+     * <p>
+     * In studio builds, call {@link #assertBgDataModelLockedOrModelThread(BgDataModel)} at the
+     * start of a section that touches model data to fail fast if neither condition holds.
      */
+    @AnyThread
     @NonNull
     public BgDataModel getBgDataModel() {
         return mBgDataModel;
+    }
+
+    /**
+     * Studio builds only: throws if the current thread may not access {@link BgDataModel} data.
+     * Allowed: the thread holds {@code synchronized (bgDataModel)}, or it is
+     * {@link com.android.launcher3.util.Executors#MODEL_EXECUTOR}. No-op in non-studio builds.
+     */
+    public static void assertBgDataModelLockedOrModelThread(@NonNull BgDataModel bgDataModel) {
+        if (!FeatureFlags.IS_STUDIO_BUILD) {
+            return;
+        }
+        if (Thread.holdsLock(bgDataModel)) {
+            return;
+        }
+        if (Looper.myLooper() == MODEL_EXECUTOR.getLooper()) {
+            return;
+        }
+        throw new IllegalStateException(
+                "BgDataModel must be accessed under synchronized(bgDataModel) or on MODEL_EXECUTOR");
     }
 
     /**

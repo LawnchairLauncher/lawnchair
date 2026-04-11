@@ -202,8 +202,13 @@ public class LauncherAppWidgetInfo extends ItemInfo {
                 .put(LauncherSettings.Favorites.OPTIONS, options)
                 .put(LauncherSettings.Favorites.INTENT, bindOptions)
                 .put(LauncherSettings.Favorites.APPWIDGET_SOURCE, sourceContainer);
+        // Always persist stack columns so updates clear DB state when leaving a stack
+        // (otherwise LoaderCursor still sees the old WIDGET_STACK_ID after reload).
         if (widgetStackId != null) {
             writer.put(LauncherSettings.Favorites.WIDGET_STACK_ID, widgetStackId);
+        } else {
+            writer.putNull(LauncherSettings.Favorites.WIDGET_STACK_ID);
+            writer.putNull(LauncherSettings.Favorites.WIDGET_STACK_DATA);
         }
     }
 

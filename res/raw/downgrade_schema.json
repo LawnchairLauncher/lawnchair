@@ -2,7 +2,7 @@
   // Note: Comments are not supported in JSON schema, but android parser is lenient.
 
   // Maximum DB version supported by this schema
-  "version" : 32,
+  "version" : 33,
   "downgrade_to_31" : [
     "ALTER TABLE favorites ADD COLUMN iconPackage TEXT;",
     "ALTER TABLE favorites ADD COLUMN iconResource TEXT;"
@@ -28,6 +28,13 @@
     "ALTER TABLE favorites RENAME TO temp_favorites;",
     "CREATE TABLE favorites(_id INTEGER PRIMARY KEY, title TEXT, intent TEXT, container INTEGER, screen INTEGER, cellX INTEGER, cellY INTEGER, spanX INTEGER, spanY INTEGER, itemType INTEGER, appWidgetId INTEGER NOT NULL DEFAULT - 1, iconPackage TEXT, iconResource TEXT, icon BLOB, appWidgetProvider TEXT, modified INTEGER NOT NULL DEFAULT 0, restored INTEGER NOT NULL DEFAULT 0, profileId INTEGER DEFAULT 0, rank INTEGER NOT NULL DEFAULT 0);",
     "INSERT INTO favorites SELECT _id, title, intent, container, screen, cellX, cellY, spanX, spanY, itemType, appWidgetId, iconPackage, iconResource, icon, appWidgetProvider, modified, restored, profileId, rank FROM temp_favorites;",
+    "DROP TABLE temp_favorites;"
+  ],
+  // Downgrade from 33 to 32: remove widget stack columns (rebuild; SQLite has no DROP COLUMN on older devices).
+  "downgrade_to_32" : [
+    "ALTER TABLE favorites RENAME TO temp_favorites;",
+    "CREATE TABLE favorites(_id INTEGER PRIMARY KEY, title TEXT, intent TEXT, container INTEGER, screen INTEGER, cellX INTEGER, cellY INTEGER, spanX INTEGER, spanY INTEGER, itemType INTEGER, appWidgetId INTEGER NOT NULL DEFAULT -1, icon BLOB, appWidgetProvider TEXT, modified INTEGER NOT NULL DEFAULT 0, restored INTEGER NOT NULL DEFAULT 0, profileId INTEGER DEFAULT 0, rank INTEGER NOT NULL DEFAULT 0, options INTEGER NOT NULL DEFAULT 0, appWidgetSource INTEGER NOT NULL DEFAULT -1);",
+    "INSERT INTO favorites SELECT _id, title, intent, container, screen, cellX, cellY, spanX, spanY, itemType, appWidgetId, icon, appWidgetProvider, modified, restored, profileId, rank, options, appWidgetSource FROM temp_favorites;",
     "DROP TABLE temp_favorites;"
   ]
 

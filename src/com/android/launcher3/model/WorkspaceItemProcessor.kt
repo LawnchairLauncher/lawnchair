@@ -51,6 +51,7 @@ import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.android.launcher3.widget.WidgetInflater
 import com.android.launcher3.widget.util.WidgetSizes
+import app.lawnchair.widget.WidgetStackInfo
 import app.lawnchair.widget.WidgetStackManager
 
 /**
@@ -492,19 +493,14 @@ class WorkspaceItemProcessor(
                         val db = app.model.modelDbController.db
                         val stackInfo = WidgetStackManager.loadStack(db, stackId)
                         if (stackInfo != null) {
-                            // Remove this widget from the stack
-                            val updatedWidgetIds = stackInfo.widgetIds.filter { it != appWidgetInfo.appWidgetId }
+                            val newWidgetIds = stackInfo.widgetIds.filter { it != appWidgetInfo.appWidgetId }
 
-                            if (updatedWidgetIds.isEmpty()) {
+                            if (newWidgetIds.isEmpty()) {
                                 // All widgets invalid - delete the entire stack
                                 WidgetStackManager.deleteStack(db, stackId)
                                 Log.w(TAG, "processWidget: All widgets invalid in stack $stackId, deleting stack")
                             } else {
-                                // Update stack to remove invalid widget
-                                val updatedStackInfo = stackInfo.copy(
-                                    widgetIds = updatedWidgetIds,
-                                    currentIndex = stackInfo.currentIndex.coerceIn(0, (updatedWidgetIds.size - 1).coerceAtLeast(0))
-                                )
+                                val updatedStackInfo = stackInfoAfterRemovingWidget(stackInfo, newWidgetIds)
                                 WidgetStackManager.saveStack(db, updatedStackInfo)
                                 Log.w(TAG, "processWidget: Removed invalid widget ${appWidgetInfo.appWidgetId} from stack $stackId")
                             }
@@ -539,16 +535,13 @@ class WorkspaceItemProcessor(
                             val db = app.model.modelDbController.db
                             val stackInfo = WidgetStackManager.loadStack(db, stackId)
                             if (stackInfo != null) {
-                                val updatedWidgetIds = stackInfo.widgetIds.filter { it != appWidgetInfo.appWidgetId }
+                                val newWidgetIds = stackInfo.widgetIds.filter { it != appWidgetInfo.appWidgetId }
 
-                                if (updatedWidgetIds.isEmpty()) {
+                                if (newWidgetIds.isEmpty()) {
                                     WidgetStackManager.deleteStack(db, stackId)
                                     Log.w(TAG, "processWidget: All widgets invalid in stack $stackId, deleting stack")
                                 } else {
-                                    val updatedStackInfo = stackInfo.copy(
-                                        widgetIds = updatedWidgetIds,
-                                        currentIndex = stackInfo.currentIndex.coerceIn(0, (updatedWidgetIds.size - 1).coerceAtLeast(0))
-                                    )
+                                    val updatedStackInfo = stackInfoAfterRemovingWidget(stackInfo, newWidgetIds)
                                     WidgetStackManager.saveStack(db, updatedStackInfo)
                                     Log.w(TAG, "processWidget: Removed invalid pending widget ${appWidgetInfo.appWidgetId} from stack $stackId")
                                 }
@@ -617,6 +610,25 @@ class WorkspaceItemProcessor(
             }
         }
         c.checkAndAddItem(appWidgetInfo, bgDataModel)
+    }
+
+    /**
+     * Applies [newWidgetIds] (stack with one member removed) and adjusts [WidgetStackInfo.currentIndex]
+     * so the same visible widget stays selected when possible (matches stack editor / UI behavior).
+     */
+    private fun stackInfoAfterRemovingWidget(
+        stackInfo: WidgetStackInfo,
+        newWidgetIds: List<Int>,
+    ): WidgetStackInfo {
+        val oldIds = stackInfo.widgetIds
+        val oldCur = stackInfo.currentIndex.coerceIn(0, (oldIds.size - 1).coerceAtLeast(0))
+        val visibleId = oldIds.getOrNull(oldCur)
+        val newIndex = when {
+            visibleId != null && visibleId in newWidgetIds -> newWidgetIds.indexOf(visibleId)
+            newWidgetIds.isEmpty() -> 0
+            else -> oldCur.coerceIn(0, newWidgetIds.lastIndex)
+        }
+        return stackInfo.copy(widgetIds = newWidgetIds, currentIndex = newIndex)
     }
 
     companion object {

@@ -125,25 +125,16 @@ data class WidgetStackInfo(
      * This is a helper method for Java interop since Kotlin's copy() uses named parameters.
      */
     fun copyWithWidgetIds(newWidgetIds: List<Int>): WidgetStackInfo {
-        return copy(
-            stackId = stackId,
-            widgetIds = newWidgetIds,
-            currentIndex = currentIndex,
-            autoRotate = autoRotate,
-            container = container,
-            screenId = screenId,
-            cellX = cellX,
-            cellY = cellY,
-            spanX = spanX,
-            spanY = spanY,
-        )
+        val clampedIndex =
+            currentIndex.coerceIn(0, newWidgetIds.lastIndex.coerceAtLeast(0))
+        return copy(widgetIds = newWidgetIds, currentIndex = clampedIndex)
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(stackId)
         parcel.writeIntArray(widgetIds.toIntArray())
         parcel.writeInt(currentIndex)
-        parcel.writeByte(if (autoRotate) 1 else 0)
+        parcel.writeByte((if (autoRotate) 1 else 0).toByte())
         parcel.writeInt(container)
         parcel.writeInt(screenId)
         parcel.writeInt(cellX)

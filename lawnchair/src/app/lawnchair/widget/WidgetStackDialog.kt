@@ -52,6 +52,7 @@ import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
+import com.android.launcher3.util.Executors
 import com.android.launcher3.model.WidgetItem
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
@@ -77,37 +78,167 @@ fun showWidgetStackDialog(
         LauncherSettings.Favorites.CONTAINER_DESKTOP
     }
 
-    // Initialize stack info
-    val initialStackInfo = if (isEditing) {
-        val stackId = widgetInfo.widgetStackId!!
+    fun presentWidgetStackSheet(initialStackInfo: WidgetStackInfo?) {
+        ComposeBottomSheet.show(
+            context = launcher,
+            contentPaddings = PaddingValues(),
+        ) {
+            this.WidgetStackDialogContent(
+                isEditing = isEditing,
+                initialStackInfo = initialStackInfo,
+                launcher = launcher,
+                onSave = { stackInfo: WidgetStackInfo ->
+                    // Determine which widgets were removed (if editing)
+                    val removedWidgets = if (isEditing && initialStackInfo != null) {
+                        initialStackInfo.widgetIds.filter { widgetId: Int -> widgetId !in stackInfo.widgetIds }
+                    } else {
+                        emptyList()
+                    }
 
-        // Strategy 1: load from DB
-        val db = launcher.model.modelDbController.db
-        var result: WidgetStackInfo? = WidgetStackManager.loadStack(db, stackId)
-
-        // Strategy 2: read live state from the WidgetStackView on the workspace
-        if (result == null) {
-            launcher.workspace?.let { workspace ->
-                workspace.mapOverItems(
-                    object : com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator {
-                        override fun evaluate(info: ItemInfo, v: android.view.View): Boolean {
-                            if (v is WidgetStackView && info is LauncherAppWidgetInfo &&
-                                info.widgetStackId == stackId
-                            ) {
-                                result = v.getStackInfo()
-                                return true
+                    // Delete removed widgets from database (lookups under lock; DB work is async on model thread)
+                    val modelWriter = launcher.modelWriter
+                    if (removedWidgets.isNotEmpty() && modelWriter != null) {
+                        val bgDataModel = launcher.model.getBgDataModel()
+                        val toDelete = synchronized(bgDataModel) {
+                            removedWidgets.mapNotNull { widgetId: Int ->
+                                bgDataModel.itemsIdMap.firstOrNull { itemInfo: ItemInfo ->
+                                    itemInfo is LauncherAppWidgetInfo && itemInfo.appWidgetId == widgetId
+                                } as? LauncherAppWidgetInfo
                             }
-                            return false
                         }
-                    },
-                )
-            }
+                        toDelete.forEach { wi: LauncherAppWidgetInfo ->
+                            modelWriter.deleteItemFromDatabase(wi, "removed from stack")
+                        }
+                    }
+
+                    val validContainer = if (stackInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                        stackInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                    ) {
+                        stackInfo.container
+                    } else {
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP
+                    }
+
+                    val finalStackInfo = stackInfo.copy(container = validContainer)
+                    val bgDataModel = launcher.model.getBgDataModel()
+
+                    // Collect LauncherAppWidgetInfo objects for all widgets in the stack
+                    val widgetsToUpdate = synchronized(bgDataModel) {
+                        finalStackInfo.widgetIds.mapNotNull { widgetId: Int ->
+                            bgDataModel.itemsIdMap.firstOrNull { itemInfo: ItemInfo ->
+                                itemInfo is LauncherAppWidgetInfo && itemInfo.appWidgetId == widgetId
+                            } as? LauncherAppWidgetInfo
+                        }
+                    }
+
+                    if (isEditing) {
+                        // --- Edit existing stack ---
+                        // Find the WidgetStackView on the workspace
+                        var existingStackView: WidgetStackView? = null
+                        launcher.workspace?.let { workspace ->
+                            workspace.mapOverItems(object : com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator {
+                                override fun evaluate(info: ItemInfo, v: android.view.View): Boolean {
+                                    if (v is WidgetStackView && info is LauncherAppWidgetInfo &&
+                                        info.widgetStackId == finalStackInfo.stackId
+                                    ) {
+                                        existingStackView = v
+                                        return true
+                                    }
+                                    return false
+                                }
+                            })
+                        }
+
+                        existingStackView?.setStackInfo(finalStackInfo, widgetsToUpdate)
+                        modelWriter?.saveWidgetStack(finalStackInfo)
+                    } else {
+                        // --- Create new stack ---
+                        widgetsToUpdate.forEach { wi ->
+                            wi.widgetStackId = finalStackInfo.stackId
+                            wi.container = validContainer
+                            wi.sourceContainer = validContainer
+                            modelWriter?.updateItemInDatabase(wi)
+                        }
+
+                        launcher.workspace?.let { workspace ->
+                            val targetCellLayout = workspace.getScreenWithId(finalStackInfo.screenId)
+                            targetCellLayout?.let { layout ->
+                                val container = layout.getShortcutsAndWidgets()
+
+                                // Find the old standalone widget view to replace
+                                var oldWidgetView: android.view.View? = null
+                                val firstWidget = widgetsToUpdate.firstOrNull()
+                                if (firstWidget != null) {
+                                    for (i in 0 until container.childCount) {
+                                        val child = container.getChildAt(i)
+                                        val childInfo = child.tag as? LauncherAppWidgetInfo
+                                        if (childInfo?.appWidgetId == firstWidget.appWidgetId &&
+                                            child !is WidgetStackView
+                                        ) {
+                                            oldWidgetView = child
+                                            break
+                                        }
+                                    }
+                                }
+
+                                // Remove the old view first so the cell is free
+                                oldWidgetView?.let { container.removeView(it) }
+
+                                val stackView = WidgetStackView(launcher)
+                                stackView.tag = firstWidget ?: widgetsToUpdate.firstOrNull()
+                                workspace.addInScreen(
+                                    stackView,
+                                    finalStackInfo.container,
+                                    finalStackInfo.screenId,
+                                    finalStackInfo.cellX,
+                                    finalStackInfo.cellY,
+                                    finalStackInfo.spanX,
+                                    finalStackInfo.spanY,
+                                )
+                                stackView.setStackInfo(finalStackInfo, widgetsToUpdate)
+                            }
+                        }
+                        modelWriter?.saveWidgetStack(finalStackInfo)
+                    }
+
+                    close(true)
+                },
+                onCancel = {
+                    close(true)
+                },
+            )
+        }
+    }
+
+    if (!isEditing) {
+        presentWidgetStackSheet(
+            WidgetStackInfo(
+                stackId = widgetInfo.id.toLong(),
+                widgetIds = listOf(widgetInfo.appWidgetId),
+                container = validContainer,
+                screenId = widgetInfo.screenId,
+                cellX = widgetInfo.cellX,
+                cellY = widgetInfo.cellY,
+                spanX = widgetInfo.spanX,
+                spanY = widgetInfo.spanY,
+            ),
+        )
+        return
+    }
+
+    val stackId = widgetInfo.widgetStackId!!
+    Executors.MODEL_EXECUTOR.execute {
+        val fromDb: WidgetStackInfo? = try {
+            val db = launcher.model.modelDbController.db
+            WidgetStackManager.loadStack(db, stackId)
+        } catch (_: Exception) {
+            null
         }
 
-        // Strategy 3: query DB for every widget that references this stackId
-        if (result == null) {
-            val ids = mutableListOf<Int>()
+        val strategy3Fallback: WidgetStackInfo? = if (fromDb == null) {
             try {
+                val db = launcher.model.modelDbController.db
+                val ids = mutableListOf<Int>()
                 db.query(
                     LauncherSettings.Favorites.TABLE_NAME,
                     arrayOf(LauncherSettings.Favorites.APPWIDGET_ID),
@@ -121,182 +252,73 @@ fun showWidgetStackDialog(
                         ids.add(cursor.getInt(0))
                     }
                 }
-            } catch (_: Exception) { }
-
-            if (ids.isEmpty()) ids.add(widgetInfo.appWidgetId)
-
-            result = WidgetStackInfo(
-                stackId = stackId,
-                widgetIds = ids,
-                container = validContainer,
-                screenId = widgetInfo.screenId,
-                cellX = widgetInfo.cellX,
-                cellY = widgetInfo.cellY,
-                spanX = widgetInfo.spanX,
-                spanY = widgetInfo.spanY,
-            )
-        }
-
-        // Filter out widget IDs that no longer exist in the model
-        // so the dialog only shows live, valid widgets.
-        val bgDataModel = launcher.model.getBgDataModel()
-        val liveIds = result?.let { info ->
-            synchronized(bgDataModel) {
-                info.widgetIds.filter { wid ->
-                    bgDataModel.itemsIdMap.any { it is LauncherAppWidgetInfo && it.appWidgetId == wid }
-                }
+                if (ids.isEmpty()) ids.add(widgetInfo.appWidgetId)
+                WidgetStackInfo(
+                    stackId = stackId,
+                    widgetIds = ids,
+                    container = validContainer,
+                    screenId = widgetInfo.screenId,
+                    cellX = widgetInfo.cellX,
+                    cellY = widgetInfo.cellY,
+                    spanX = widgetInfo.spanX,
+                    spanY = widgetInfo.spanY,
+                )
+            } catch (_: Exception) {
+                WidgetStackInfo(
+                    stackId = stackId,
+                    widgetIds = listOf(widgetInfo.appWidgetId),
+                    container = validContainer,
+                    screenId = widgetInfo.screenId,
+                    cellX = widgetInfo.cellX,
+                    cellY = widgetInfo.cellY,
+                    spanX = widgetInfo.spanX,
+                    spanY = widgetInfo.spanY,
+                )
             }
-        } ?: emptyList()
-
-        if (liveIds.isNotEmpty() && liveIds.size != result!!.widgetIds.size) {
-            result = result!!.copy(widgetIds = liveIds)
+        } else {
+            null
         }
 
-        result
-    } else {
-        // New stack — just wrap the current widget
-        WidgetStackInfo(
-            stackId = widgetInfo.id.toLong(),
-            widgetIds = listOf(widgetInfo.appWidgetId),
-            container = validContainer,
-            screenId = widgetInfo.screenId,
-            cellX = widgetInfo.cellX,
-            cellY = widgetInfo.cellY,
-            spanX = widgetInfo.spanX,
-            spanY = widgetInfo.spanY,
-        )
-    }
+        Executors.MAIN_EXECUTOR.execute {
+            if (launcher.isFinishing || launcher.isDestroyed) return@execute
 
-    ComposeBottomSheet.show(
-        context = launcher,
-        contentPaddings = PaddingValues(),
-    ) {
-        this.WidgetStackDialogContent(
-            isEditing = isEditing,
-            initialStackInfo = initialStackInfo,
-            launcher = launcher,
-            onSave = { stackInfo: WidgetStackInfo ->
-                // Determine which widgets were removed (if editing)
-                val removedWidgets = if (isEditing && initialStackInfo != null) {
-                    initialStackInfo.widgetIds.filter { widgetId: Int -> widgetId !in stackInfo.widgetIds }
-                } else {
-                    emptyList()
-                }
-
-                // Delete removed widgets from database
-                val modelWriter = launcher.modelWriter
-                if (removedWidgets.isNotEmpty() && modelWriter != null) {
-                    val bgDataModel = launcher.model.getBgDataModel()
-                    removedWidgets.forEach { widgetId: Int ->
-                        synchronized(bgDataModel) {
-                            // Find and delete the widget
-                            val widgetInfo = bgDataModel.itemsIdMap.firstOrNull { itemInfo: ItemInfo ->
-                                itemInfo is LauncherAppWidgetInfo && itemInfo.appWidgetId == widgetId
-                            } as? LauncherAppWidgetInfo
-
-                            if (widgetInfo != null) {
-                                modelWriter.deleteItemFromDatabase(widgetInfo, "removed from stack")
-                            }
-                        }
-                    }
-                }
-
-                val validContainer = if (stackInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                    stackInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                ) {
-                    stackInfo.container
-                } else {
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP
-                }
-
-                val finalStackInfo = stackInfo.copy(container = validContainer)
-                val bgDataModel = launcher.model.getBgDataModel()
-
-                // Collect LauncherAppWidgetInfo objects for all widgets in the stack
-                val widgetsToUpdate = synchronized(bgDataModel) {
-                    finalStackInfo.widgetIds.mapNotNull { widgetId: Int ->
-                        bgDataModel.itemsIdMap.firstOrNull { itemInfo: ItemInfo ->
-                            itemInfo is LauncherAppWidgetInfo && itemInfo.appWidgetId == widgetId
-                        } as? LauncherAppWidgetInfo
-                    }
-                }
-
-                if (isEditing) {
-                    // --- Edit existing stack ---
-                    // Find the WidgetStackView on the workspace
-                    var existingStackView: WidgetStackView? = null
-                    launcher.workspace?.let { workspace ->
-                        workspace.mapOverItems(object : com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator {
+            var result = fromDb
+            if (result == null) {
+                launcher.workspace?.let { workspace ->
+                    workspace.mapOverItems(
+                        object : com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator {
                             override fun evaluate(info: ItemInfo, v: android.view.View): Boolean {
                                 if (v is WidgetStackView && info is LauncherAppWidgetInfo &&
-                                    info.widgetStackId == finalStackInfo.stackId
+                                    info.widgetStackId == stackId
                                 ) {
-                                    existingStackView = v
+                                    result = v.getStackInfo()
                                     return true
                                 }
                                 return false
                             }
-                        })
-                    }
-
-                    existingStackView?.setStackInfo(finalStackInfo, widgetsToUpdate)
-                    modelWriter?.saveWidgetStack(finalStackInfo)
-                } else {
-                    // --- Create new stack ---
-                    widgetsToUpdate.forEach { wi ->
-                        wi.widgetStackId = finalStackInfo.stackId
-                        wi.container = validContainer
-                        wi.sourceContainer = validContainer
-                        modelWriter?.updateItemInDatabase(wi)
-                    }
-
-                    launcher.workspace?.let { workspace ->
-                        val targetCellLayout = workspace.getScreenWithId(finalStackInfo.screenId)
-                        targetCellLayout?.let { layout ->
-                            val container = layout.getShortcutsAndWidgets()
-
-                            // Find the old standalone widget view to replace
-                            var oldWidgetView: android.view.View? = null
-                            val firstWidget = widgetsToUpdate.firstOrNull()
-                            if (firstWidget != null) {
-                                for (i in 0 until container.childCount) {
-                                    val child = container.getChildAt(i)
-                                    val childInfo = child.tag as? LauncherAppWidgetInfo
-                                    if (childInfo?.appWidgetId == firstWidget.appWidgetId &&
-                                        child !is WidgetStackView
-                                    ) {
-                                        oldWidgetView = child
-                                        break
-                                    }
-                                }
-                            }
-
-                            // Remove the old view first so the cell is free
-                            oldWidgetView?.let { container.removeView(it) }
-
-                            val stackView = WidgetStackView(launcher)
-                            stackView.tag = firstWidget ?: widgetsToUpdate.firstOrNull()
-                            workspace.addInScreen(
-                                stackView,
-                                finalStackInfo.container,
-                                finalStackInfo.screenId,
-                                finalStackInfo.cellX,
-                                finalStackInfo.cellY,
-                                finalStackInfo.spanX,
-                                finalStackInfo.spanY,
-                            )
-                            stackView.setStackInfo(finalStackInfo, widgetsToUpdate)
-                        }
-                    }
-                    modelWriter?.saveWidgetStack(finalStackInfo)
+                        },
+                    )
                 }
+            }
+            if (result == null) {
+                result = strategy3Fallback
+            }
 
-                close(true)
-            },
-            onCancel = {
-                close(true)
-            },
-        )
+            val bgDataModel = launcher.model.getBgDataModel()
+            val liveIds = result?.let { info ->
+                synchronized(bgDataModel) {
+                    info.widgetIds.filter { wid ->
+                        bgDataModel.itemsIdMap.any { it is LauncherAppWidgetInfo && it.appWidgetId == wid }
+                    }
+                }
+            } ?: emptyList()
+
+            if (liveIds.isNotEmpty() && result != null && liveIds.size != result!!.widgetIds.size) {
+                result = result!!.copy(widgetIds = liveIds)
+            }
+
+            presentWidgetStackSheet(result)
+        }
     }
 }
 

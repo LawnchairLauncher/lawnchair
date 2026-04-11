@@ -28,6 +28,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.view.ViewConfiguration;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -99,14 +100,13 @@ public class ItemLongClickListener {
         // This keeps the popup open until drag actually begins (user moves finger)
         DragOptions dragOptions = new DragOptions();
         if (widgetStackPopup != null) {
-            // Use PreDragCondition to delay drag start until user moves their finger
-            // This prevents onDragStart from being called immediately, keeping popup open
+            final int touchSlop = ViewConfiguration.get(v.getContext()).getScaledTouchSlop();
+            // Use PreDragCondition to delay drag start until movement exceeds touch slop
+            // (avoids starting drag on long-press jitter; keeps popup usable)
             dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
                 @Override
                 public boolean shouldStartDrag(double distanceDragged) {
-                    // Start drag when user moves their finger (distance > 0)
-                    // This keeps popup open until user actually drags
-                    return distanceDragged > 0;
+                    return distanceDragged >= touchSlop;
                 }
 
                 @Override

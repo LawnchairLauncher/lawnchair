@@ -65,6 +65,15 @@ public class ContentWriter {
         return this;
     }
 
+    /**
+     * Sets the column to SQL NULL. Prefer this over {@code put(key, (Long) null)} so updates
+     * clear the column on all API levels.
+     */
+    public ContentWriter putNull(String key) {
+        mValues.putNull(key);
+        return this;
+    }
+
     public ContentWriter put(String key, String value) {
         mValues.put(key, value);
         return this;

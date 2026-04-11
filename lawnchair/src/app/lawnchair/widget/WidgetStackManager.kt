@@ -31,6 +31,8 @@ import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import java.lang.reflect.Type
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedDeque
 
 /**
  * Manages widget stack persistence and queries
@@ -91,14 +93,13 @@ object WidgetStackManager {
         .registerTypeAdapter(WidgetStackInfo::class.java, widgetStackInfoTypeAdapter)
         .create()
 
-    // Store pending stack info for widgets waiting for permission
-    // Key: appWidgetId, Value: WidgetStackInfo
-    private val pendingStackInfo = mutableMapOf<Int, WidgetStackInfo>()
+    // Thread-safe: accessed from UI, activity results, and model paths.
+    private val pendingStackInfo = ConcurrentHashMap<Int, WidgetStackInfo>()
 
-    // Store pending stack info by provider component name for widgets that haven't been allocated yet
-    // This is used when addPendingItem is called before widget ID is allocated
-    // Key: ComponentName.toString(), Value: WidgetStackInfo
-    private val pendingStackInfoByProvider = mutableMapOf<String, WidgetStackInfo>()
+    // Per-provider queue: same provider can have multiple pendings (e.g. two stack adds) before IDs exist.
+    // FIFO — first stored pending matches the first completed bind for that provider.
+    private val pendingStackInfoByProvider =
+        ConcurrentHashMap<String, ConcurrentLinkedDeque<WidgetStackInfo>>()
 
     /**
      * Stores pending stack info for a widget that's waiting for permission
@@ -116,7 +117,10 @@ object WidgetStackManager {
      */
     @JvmStatic
     fun storePendingStackInfoByProvider(provider: android.content.ComponentName, stackInfo: WidgetStackInfo) {
-        pendingStackInfoByProvider[provider.toString()] = stackInfo
+        val key = provider.flattenToString()
+        pendingStackInfoByProvider
+            .computeIfAbsent(key) { ConcurrentLinkedDeque() }
+            .addLast(stackInfo)
         Log.d(TAG, "Stored pending stack info for provider $provider, stackId: ${stackInfo.stackId}")
     }
 
@@ -138,7 +142,12 @@ object WidgetStackManager {
      */
     @JvmStatic
     fun getAndRemovePendingStackInfoByProvider(provider: android.content.ComponentName): WidgetStackInfo? {
-        val info = pendingStackInfoByProvider.remove(provider.toString())
+        val key = provider.flattenToString()
+        val deque = pendingStackInfoByProvider[key] ?: return null
+        val info = deque.pollFirst()
+        if (deque.isEmpty()) {
+            pendingStackInfoByProvider.remove(key, deque)
+        }
         if (info != null) {
             Log.d(TAG, "Retrieved pending stack info for provider $provider, stackId: ${info.stackId}")
         }
@@ -172,8 +181,14 @@ object WidgetStackManager {
      */
     @JvmStatic
     fun clearPendingStackInfoByProvider(provider: android.content.ComponentName) {
-        pendingStackInfoByProvider.remove(provider.toString())
-        Log.d(TAG, "Cleared pending stack info for provider $provider")
+        val key = provider.flattenToString()
+        val deque = pendingStackInfoByProvider[key] ?: return
+        // Drop one pending (typically the bind that was just cancelled); last = most recently queued.
+        deque.pollLast()
+        if (deque.isEmpty()) {
+            pendingStackInfoByProvider.remove(key, deque)
+        }
+        Log.d(TAG, "Cleared pending stack info entry for provider $provider")
     }
 
     /**

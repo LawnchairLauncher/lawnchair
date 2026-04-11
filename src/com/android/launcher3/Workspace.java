@@ -50,6 +50,7 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -4036,11 +4037,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // Update widget in database (remove stack reference)
         mLauncher.getModelWriter().updateItemInDatabase(widgetInfo);
 
-        // Delete the stack from database
-        WidgetStackManager.INSTANCE.deleteStack(
-            mLauncher.getModelWriter().getModelDbController().getDb(),
-            stackInfo.getStackId()
-        );
+        // Clear stack metadata for this stack id on the model thread (same executor as ModelWriter)
+        final long stackIdToClear = stackInfo.getStackId();
+        Executors.MODEL_EXECUTOR.execute(() -> {
+            SQLiteDatabase db = mLauncher.getModel().getModelDbController().getDb();
+            WidgetStackManager.INSTANCE.deleteStack(db, stackIdToClear);
+        });
 
         // Create a new single widget view
         View newWidgetView = mLauncher.getItemInflater().inflateItem(widgetInfo, mLauncher.getModelWriter());

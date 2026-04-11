@@ -140,7 +140,8 @@ class WidgetStackEditMembersHost(
 
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewPager.isSaveEnabled = false
-        viewPager.offscreenPageLimit = 20
+        // Cap neighbor retention: each page holds a WidgetCell preview pipeline; 20 each side ≈ 41 pages.
+        viewPager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_EACH_SIDE
         viewPager.adapter = adapter
 
         installPagerParentScrollHandoff()
@@ -425,5 +426,8 @@ class WidgetStackEditMembersHost(
         const val TYPE_WIDGET_PAGE = 0
         const val TYPE_ADD_PAGE = 1
         const val ADD_PAGE_STABLE_ID = Long.MAX_VALUE
+
+        /** [ViewPager2] pages kept on each side of the current page; previews are still non-trivial. */
+        private const val OFFSCREEN_PAGE_LIMIT_EACH_SIDE = 2
     }
 }
