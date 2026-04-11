@@ -929,4 +929,7 @@
     <string name="auto_rotate_widgets">Automatically rotate between widgets</string>
     <string name="save_stack">Save</string>
     <string name="remove_widget">Remove widget</string>
+    <string name="widget_stack_sheet_subtitle">Stack uses a %1$d × %2$d cell area on the home screen. Widget names and previews match the widget list.</string>
+    <string name="widget_stack_members_title">In this stack (%1$d)</string>
+    <string name="widget_stack_member_id">ID %1$d</string>
 </resources>

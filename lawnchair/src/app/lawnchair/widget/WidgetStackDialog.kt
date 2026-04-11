@@ -16,29 +16,41 @@
 
 package app.lawnchair.widget
 
-import androidx.compose.foundation.clickable
+import android.util.TypedValue
+import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,16 +59,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.Launcher
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
 import com.android.launcher3.model.WidgetItem
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.widget.PendingAddWidgetInfo
+import com.android.launcher3.widget.WidgetCell
 import com.android.launcher3.widget.WidgetManagerHelper
-import com.android.launcher3.widget.model.WidgetsListContentEntry
+import com.android.launcher3.widget.picker.WidgetsFullSheet
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.withContext
+
+/**
+ * [widget_cell] uses `?attr/widgetCellTitleColor` etc., which live on [R.style.WidgetContainerTheme]
+ * (see `widgets_full_sheet.xml` `android:theme="?attr/widgetsTheme"`), not on the activity theme.
+ */
+private fun widgetCellLayoutInflater(launcher: Launcher): LayoutInflater {
+    val tv = TypedValue()
+    return if (launcher.theme.resolveAttribute(R.attr.widgetsTheme, tv, true)) {
+        LayoutInflater.from(ContextThemeWrapper(launcher, tv.resourceId))
+    } else {
+        LayoutInflater.from(launcher)
+    }
+}
 
 /**
  * Shows the widget stack dialog using Compose
@@ -169,7 +201,7 @@ fun showWidgetStackDialog(
 
     ComposeBottomSheet.show(
         context = launcher,
-        contentPaddings = androidx.compose.foundation.layout.PaddingValues(bottom = 64.dp),
+        contentPaddings = PaddingValues(),
     ) {
         this.WidgetStackDialogContent(
             isEditing = isEditing,
@@ -322,35 +354,58 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
         mutableStateOf(currentStackInfo.autoRotate)
     }
 
+    val scroll = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .navigationBarsPadding()
+            .verticalScroll(scroll)
+            .padding(horizontal = 24.dp)
+            .padding(top = 20.dp, bottom = 24.dp),
     ) {
-        // Title
+        // Title (match widget sheet typography weight)
         Text(
             text = stringResource(
                 if (isEditing) R.string.edit_stack else R.string.create_stack,
             ),
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Widget list
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(
-                items = currentStackInfo.widgetIds,
-                key = { widgetId: Int -> widgetId },
-            ) { widgetId: Int ->
-                WidgetStackItem(
+        Text(
+            text = stringResource(
+                R.string.widget_stack_sheet_subtitle,
+                currentStackInfo.spanX,
+                currentStackInfo.spanY,
+            ),
+            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.widget_stack_members_title, currentStackInfo.widgetIds.size),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Column (not LazyColumn): AndroidView+WidgetCell measures reliably; stacks are small.
+        for (widgetId in currentStackInfo.widgetIds) {
+            key(widgetId) {
+                WidgetStackMemberRow(
                     widgetId = widgetId,
                     launcher = launcher,
                     canRemove = currentStackInfo.widgetIds.size > 1,
@@ -369,9 +424,10 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
                     },
                 )
             }
+            Spacer(modifier = Modifier.height(12.dp))
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Auto-rotate checkbox
         Row(
@@ -399,7 +455,7 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
             onClick = {
                 // Close current dialog and show widget picker
                 close(true)
-                showWidgetPickerDialog(launcher, currentStackInfo) { widgetItem: WidgetItem ->
+                showWidgetPickerDialog(launcher) { widgetItem: WidgetItem ->
                     val providerInfo = widgetItem.widgetInfo ?: return@showWidgetPickerDialog
 
                     val validContainer = if (currentStackInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
@@ -445,12 +501,18 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
                     // The widget ID will be available in onActivityResult
                 }
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 52.dp),
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp),
         ) {
-            Text(stringResource(R.string.add_widget_to_stack))
+            Text(
+                text = stringResource(R.string.add_widget_to_stack),
+                style = MaterialTheme.typography.labelLarge,
+            )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Action buttons
         Row(
@@ -459,12 +521,17 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
         ) {
             OutlinedButton(
                 onClick = onCancel,
-                modifier = Modifier.padding(end = 8.dp),
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .heightIn(min = 48.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
             ) {
                 Text(stringResource(android.R.string.cancel))
             }
             Button(
                 onClick = { onSave(currentStackInfo) },
+                modifier = Modifier.heightIn(min = 48.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
             ) {
                 Text(stringResource(R.string.save_stack))
             }
@@ -472,216 +539,211 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
     }
 }
 
+/**
+ * Builds a [WidgetItem] for a bound workspace widget so [WidgetCell] can show the same preview
+ * pipeline as [WidgetsFullSheet].
+ *
+ * Must run on [MODEL_EXECUTOR] — [WidgetItem]'s constructor uses [com.android.launcher3.icons.IconCache]
+ * which asserts the model worker looper.
+ */
+private fun widgetItemForStackMember(launcher: Launcher, widgetId: Int): WidgetItem? {
+    val wi = synchronized(launcher.model.bgDataModel) {
+        launcher.model.bgDataModel.itemsIdMap
+            .firstOrNull { it is LauncherAppWidgetInfo && it.appWidgetId == widgetId } as? LauncherAppWidgetInfo
+    } ?: return null
+    val helper = WidgetManagerHelper(launcher)
+    val providerInfo = helper.getLauncherAppWidgetInfo(wi.appWidgetId, wi.providerName) ?: return null
+    val idp = LauncherAppState.getIDP(launcher)
+    val iconCache = LauncherAppState.getInstance(launcher).iconCache
+    return WidgetItem(providerInfo, idp, iconCache, launcher, helper)
+}
+
 @Composable
-private fun WidgetStackItem(
+private fun WidgetStackMemberRow(
     widgetId: Int,
     launcher: Launcher,
     canRemove: Boolean,
     onRemove: () -> Unit,
 ) {
-    val widgetName = remember(widgetId, launcher) {
-        // Try BgDataModel first, then AppWidgetManager as fallback
-        val bgDataModel = launcher.model.getBgDataModel()
-        val fromModel = synchronized(bgDataModel) {
-            var info: LauncherAppWidgetInfo? = null
-            for (item in bgDataModel.itemsIdMap) {
-                if (item is LauncherAppWidgetInfo && item.appWidgetId == widgetId) {
-                    info = item
-                    break
-                }
-            }
-            info?.let { wi ->
-                val wmHelper = WidgetManagerHelper(launcher)
-                wmHelper.getLauncherAppWidgetInfo(widgetId, wi.providerName)?.label
-                    ?: wi.providerName?.className?.substringAfterLast('.')
-            }
+    var widgetItem by remember(widgetId, launcher) {
+        mutableStateOf<WidgetItem?>(null)
+    }
+    var loadFinished by remember(widgetId, launcher) {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(widgetId, launcher) {
+        widgetItem = null
+        loadFinished = false
+        widgetItem = withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+            widgetItemForStackMember(launcher, widgetId)
         }
-        fromModel ?: try {
-            val awm = android.appwidget.AppWidgetManager.getInstance(launcher)
-            val providerInfo = awm.getAppWidgetInfo(widgetId)
-            providerInfo?.loadLabel(launcher.packageManager) ?: "Widget"
-        } catch (_: Exception) {
-            "Widget"
-        }
+        loadFinished = true
     }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+    OutlinedCard(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
+        border = CardDefaults.outlinedCardBorder(),
     ) {
-        Text(
-            text = widgetName,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f),
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp, end = 4.dp, top = 10.dp, bottom = 10.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
+            // Do not pass WidgetItem? into key() — null hits ComponentKey.equals(null) and NPEs
+            // (ComponentKey casts the argument without a null check).
+            val loadedItem = widgetItem
+            val previewKey = loadedItem?.hashCode() ?: 0
+            key(widgetId, previewKey) {
+                when {
+                    loadedItem != null -> {
+                        AndroidView(
+                            factory = { _ ->
+                                val cell = widgetCellLayoutInflater(launcher).inflate(
+                                    R.layout.widget_cell,
+                                    null,
+                                    false,
+                                ) as WidgetCell
+                                cell.setSourceContainer(LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY)
+                                cell.isClickable = false
+                                cell.isFocusable = false
+                                cell.isLongClickable = false
+                                cell.applyFromCellItem(loadedItem)
+                                cell.hideAddButton(false)
+                                cell
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .heightIn(min = 200.dp, max = 280.dp),
+                            update = { },
+                        )
+                    }
 
-        if (canRemove) {
-            IconButton(
-                onClick = onRemove,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(R.string.remove_widget),
-                    modifier = Modifier.size(24.dp),
-                )
-            }
-        }
-    }
-}
+                    !loadFinished -> {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .heightIn(min = 140.dp, max = 200.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(28.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                                Text(
+                                    text = stringResource(R.string.loading),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
 
-/**
- * Shows a widget picker as a separate bottom sheet
- */
-private fun showWidgetPickerDialog(
-    launcher: Launcher,
-    stackInfo: WidgetStackInfo,
-    onSelectWidget: (WidgetItem) -> Unit,
-) {
-    ComposeBottomSheet.show(
-        context = launcher,
-        contentPaddings = androidx.compose.foundation.layout.PaddingValues(bottom = 64.dp),
-    ) {
-        this@show.WidgetPickerDialogContent(
-            launcher = launcher,
-            stackInfo = stackInfo,
-            onSelectWidget = { widgetItem: WidgetItem ->
-                onSelectWidget(widgetItem)
-                close(true)
-            },
-            onDismiss = {
-                close(true)
-            },
-        )
-    }
-}
-
-/**
- * Widget picker dialog content
- */
-@Composable
-private fun ComposeBottomSheet<*>.WidgetPickerDialogContent(
-    launcher: Launcher,
-    stackInfo: WidgetStackInfo,
-    onSelectWidget: (WidgetItem) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val availableWidgets = remember(launcher, stackInfo) {
-        val popupDataProvider = launcher.popupDataProvider
-        val allEntries = popupDataProvider.allWidgets
-        val filteredWidgets = mutableListOf<WidgetItem>()
-
-        for (entry in allEntries) {
-            if (entry is WidgetsListContentEntry) {
-                for (widget in entry.mWidgets) {
-                    if (widget.widgetInfo != null && widget.label != null) {
-                        filteredWidgets.add(widget)
+                    else -> {
+                        WidgetStackMemberFallback(
+                            widgetId = widgetId,
+                            launcher = launcher,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 8.dp, horizontal = 4.dp),
+                        )
                     }
                 }
             }
-        }
-        filteredWidgets
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp),
-    ) {
-        Text(
-            text = "Select Widget",
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Widgets will be scaled to fit the stack",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        if (availableWidgets.isEmpty()) {
-            Text(
-                text = "No widgets available",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 48.dp),
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(
-                    items = availableWidgets,
-                    key = { widgetItem: WidgetItem -> widgetItem.componentName?.flattenToString() ?: widgetItem.hashCode() },
-                ) { widgetItem: WidgetItem ->
-                    WidgetPickerItem(
-                        widgetItem = widgetItem,
-                        onClick = {
-                            onSelectWidget(widgetItem)
-                        },
+            if (canRemove) {
+                IconButton(
+                    onClick = onRemove,
+                    modifier = Modifier.padding(top = 4.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.remove_widget),
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(22.dp),
                     )
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedButton(
-            onClick = onDismiss,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(stringResource(android.R.string.cancel))
-        }
     }
 }
 
+private data class StackMemberFallbackMeta(
+    val label: String,
+    val spanX: Int,
+    val spanY: Int,
+)
+
 @Composable
-private fun WidgetPickerItem(
-    widgetItem: WidgetItem,
-    onClick: () -> Unit,
+private fun WidgetStackMemberFallback(
+    widgetId: Int,
+    launcher: Launcher,
+    modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(
-            modifier = Modifier.weight(1f),
-        ) {
-            Text(
-                text = widgetItem.label ?: widgetItem.componentName?.shortClassName ?: "Widget",
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            val desc = widgetItem.description
-            if (desc != null && desc.isNotEmpty()) {
-                Text(
-                    text = desc.toString(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Text(
-                text = "${widgetItem.spanX}x${widgetItem.spanY}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+    val meta = remember(widgetId, launcher) {
+        val wi = synchronized(launcher.model.bgDataModel) {
+            launcher.model.bgDataModel.itemsIdMap
+                .firstOrNull { it is LauncherAppWidgetInfo && it.appWidgetId == widgetId } as? LauncherAppWidgetInfo
         }
+        if (wi != null) {
+            val wmHelper = WidgetManagerHelper(launcher)
+            val label = wmHelper.getLauncherAppWidgetInfo(widgetId, wi.providerName)?.label
+                ?: wi.providerName?.className?.substringAfterLast('.')
+                ?: "Widget"
+            StackMemberFallbackMeta(
+                label,
+                wi.spanX.coerceAtLeast(1),
+                wi.spanY.coerceAtLeast(1),
+            )
+        } else {
+            val label = try {
+                val awm = android.appwidget.AppWidgetManager.getInstance(launcher)
+                awm.getAppWidgetInfo(widgetId)?.loadLabel(launcher.packageManager)
+            } catch (_: Exception) {
+                null
+            } ?: "Widget"
+            StackMemberFallbackMeta(label, 1, 1)
+        }
+    }
+
+    Column(modifier = modifier) {
+        Text(
+            text = meta.label,
+            style = MaterialTheme.typography.titleSmall,
+        )
+        Text(
+            text = stringResource(R.string.widget_stack_member_id, widgetId) + " · " +
+                stringResource(R.string.widget_dims_format, meta.spanX, meta.spanY),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/**
+ * Opens the same full widget tray as the launcher ([WidgetsFullSheet]) so previews, search,
+ * work profile tabs, and tap behavior match the stock picker.
+ */
+private fun showWidgetPickerDialog(
+    launcher: Launcher,
+    onSelectWidget: (WidgetItem) -> Unit,
+) {
+    val sheet = WidgetsFullSheet.show(launcher, true)
+    sheet.setPickerTitle(launcher.getString(R.string.add_widget_to_stack))
+    sheet.setWidgetPickListener { item: WidgetItem ->
+        onSelectWidget(item)
+    }
+    sheet.addOnCloseListener {
+        sheet.setWidgetPickListener(null)
     }
 }

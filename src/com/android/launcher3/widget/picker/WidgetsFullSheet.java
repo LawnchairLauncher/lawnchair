@@ -702,6 +702,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return sheet;
     }
 
+    /**
+     * Overrides the header title (defaults to {@link R.string#widget_button_text}), e.g. when the
+     * sheet is used to add a widget to a stack.
+     */
+    public void setPickerTitle(@Nullable CharSequence title) {
+        if (mHeaderTitle != null && title != null) {
+            mHeaderTitle.setText(title);
+        }
+    }
+
     @Override
     public void saveHierarchyState(SparseArray<Parcelable> sparseArray) {
         Bundle bundle = new Bundle();
