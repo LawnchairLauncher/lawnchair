@@ -146,6 +146,15 @@ class WidgetStackView @JvmOverloads constructor(
     fun getStackInfo(): WidgetStackInfo? = contentView.getStackInfo()
 
     /**
+     * Clears "tap to finish setup" / pending UI for a member after its configuration activity
+     * completes. Required when the launcher skips the default workspace completion path for
+     * stacked widgets.
+     */
+    fun onAppWidgetConfigureCompleted(appWidgetId: Int) {
+        contentView.onAppWidgetConfigureCompleted(appWidgetId)
+    }
+
+    /**
      * Adds a widget to the stack by ID (looked up from BgDataModel).
      */
     fun addWidget(widgetId: Int) {

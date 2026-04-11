@@ -1044,7 +1044,15 @@ public class Launcher extends StatefulActivity<LauncherState>
                         }
                     }
                 }
+                // Model add runs on a background thread; stack UI may already include the widget.
+                if (!alreadyInStack && mWorkspace != null
+                        && mWorkspace.isAppWidgetIdInDisplayedWidgetStack(appWidgetId)) {
+                    alreadyInStack = true;
+                }
                 if (alreadyInStack) {
+                    if (mWorkspace != null) {
+                        mWorkspace.onAppWidgetConfigureCompletedInStack(appWidgetId);
+                    }
                     if (!isInState(EDIT_MODE)) {
                         mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
                     }
@@ -1601,19 +1609,29 @@ public class Launcher extends StatefulActivity<LauncherState>
             boolean showPendingWidget, boolean updateWidgetSize,
             @Nullable Bitmap widgetPreviewBitmap) {
 
-        // Guard: if this widget was already added to a stack (e.g. by a prior call
-        // from addAppWidgetImpl before the config activity returned), skip the
-        // duplicate add to avoid "widget ID already in use" crashes.
+        // Guard: if this widget was already added to a stack (e.g. REQUEST_BIND_APPWIDGET
+        // + addWidgetToStackAfterPermission, or a prior completeAddAppWidget), skip the
+        // duplicate add. BgDataModel can lag behind the stack view because addItemToDatabase
+        // commits items on a model thread after bindItems.
         com.android.launcher3.model.BgDataModel bgModel = getModel().getBgDataModel();
         synchronized (bgModel) {
             for (ItemInfo existing : bgModel.itemsIdMap) {
                 if (existing instanceof LauncherAppWidgetInfo) {
                     LauncherAppWidgetInfo w = (LauncherAppWidgetInfo) existing;
                     if (w.appWidgetId == appWidgetId && w.widgetStackId != null) {
+                        WidgetStackManager.clearPendingStackInfo(appWidgetId);
+                        if (mWorkspace != null) {
+                            mWorkspace.onAppWidgetConfigureCompletedInStack(appWidgetId);
+                        }
                         return;
                     }
                 }
             }
+        }
+        if (mWorkspace != null && mWorkspace.isAppWidgetIdInDisplayedWidgetStack(appWidgetId)) {
+            WidgetStackManager.clearPendingStackInfo(appWidgetId);
+            mWorkspace.onAppWidgetConfigureCompletedInStack(appWidgetId);
+            return;
         }
 
         if (appWidgetInfo == null) {
@@ -1802,6 +1820,8 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
             }
             
+            // Avoid a second pass (e.g. after configuration) re-reading stale pending from the map.
+            WidgetStackManager.clearPendingStackInfo(appWidgetId);
             return; // Don't add to workspace - it's part of a stack
         }
         

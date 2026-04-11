@@ -4175,6 +4175,54 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 ((LauncherAppWidgetInfo) info).appWidgetId == appWidgetId);
     }
 
+    /**
+     * Returns true if {@code appWidgetId} is already shown inside a {@link WidgetStackView}
+     * on the workspace or hotseat. Used after the bind flow: {@link BgDataModel} may not yet
+     * list the new widget when configuration finishes, but the stack view already contains it.
+     */
+    public boolean isAppWidgetIdInDisplayedWidgetStack(int appWidgetId) {
+        for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
+            if (layout == null) {
+                continue;
+            }
+            ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
+            final int n = container.getChildCount();
+            for (int i = 0; i < n; i++) {
+                View child = container.getChildAt(i);
+                if (child instanceof WidgetStackView) {
+                    app.lawnchair.widget.WidgetStackInfo si = ((WidgetStackView) child).getStackInfo();
+                    if (si != null && si.getWidgetIds().contains(appWidgetId)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * After a stacked widget's configuration activity returns, clears pending-setup state and
+     * upgrades any {@link PendingAppWidgetHostView} inside the stack.
+     */
+    public void onAppWidgetConfigureCompletedInStack(int appWidgetId) {
+        for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
+            if (layout == null) {
+                continue;
+            }
+            ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
+            final int n = container.getChildCount();
+            for (int i = 0; i < n; i++) {
+                View child = container.getChildAt(i);
+                if (child instanceof WidgetStackView) {
+                    app.lawnchair.widget.WidgetStackInfo si = ((WidgetStackView) child).getStackInfo();
+                    if (si != null && si.getWidgetIds().contains(appWidgetId)) {
+                        ((WidgetStackView) child).onAppWidgetConfigureCompleted(appWidgetId);
+                    }
+                }
+            }
+        }
+    }
+
     public View getFirstMatch(final ItemOperator operator) {
         final View[] value = new View[1];
         mapOverItems(new ItemOperator() {

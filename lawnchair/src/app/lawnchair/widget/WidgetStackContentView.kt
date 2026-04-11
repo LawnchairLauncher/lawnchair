@@ -37,6 +37,7 @@ import com.android.launcher3.widget.NavigableAppWidgetHostView
 import com.android.launcher3.widget.PendingAppWidgetHostView
 import com.android.launcher3.widget.WidgetInflater
 import com.android.launcher3.widget.WidgetManagerHelper
+import com.android.launcher3.widget.util.WidgetSizes
 
 /**
  * Inner view that displays and manages a stack of widgets inside a [ViewPager].
@@ -148,6 +149,39 @@ class WidgetStackContentView @JvmOverloads constructor(
     }
 
     fun getStackInfo(): WidgetStackInfo? = stackInfo
+
+    /**
+     * Call after the provider's configuration activity finishes for a widget in this stack.
+     * When the launcher skips the normal post-config path for stacked widgets,
+     * [LauncherAppWidgetInfo.FLAG_UI_NOT_READY] is never cleared and the cell stays on
+     * "tap to finish setup" unless we update the item and re-run [refreshPendingWidgets].
+     */
+    fun onAppWidgetConfigureCompleted(appWidgetId: Int) {
+        val ids = stackInfo?.widgetIds ?: return
+        if (appWidgetId !in ids) return
+
+        val widgetInfo = findWidgetInfo(appWidgetId) ?: return
+        if (widgetInfo.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+            widgetInfo.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED
+            widgetInfo.pendingItemInfo = null
+            launcher?.modelWriter?.updateItemInDatabase(widgetInfo)
+        }
+
+        // While the widget was "tap to finish setup", refreshPendingWidgets() may have hit
+        // MAX_REFRESH_ATTEMPTS and stopped scheduling — a later call would no-op forever
+        // until process restart unless we reset counters here.
+        cancelRefresh()
+
+        val upgradeRunnable = Runnable {
+            if (!isAttachedToWindow) return@Runnable
+            if (appWidgetId !in (stackInfo?.widgetIds ?: emptyList())) return@Runnable
+            refreshAttempts = 0
+            refreshPendingWidgets()
+        }
+        handler.post(upgradeRunnable)
+        // Config activity can return before AppWidgetManager has pushed RemoteViews; retry once.
+        handler.postDelayed(upgradeRunnable, 350)
+    }
 
     @JvmOverloads
     fun setStackInfo(info: WidgetStackInfo, knownWidgets: List<LauncherAppWidgetInfo> = emptyList()) {
@@ -522,6 +556,13 @@ class WidgetStackContentView @JvmOverloads constructor(
                             as? LauncherAppWidgetHostView ?: continue
                         real.setAppWidget(widgetInfo.appWidgetId, provider)
                         configureWidgetView(real, widgetInfo)
+                        launcherInstance.itemInflater?.prepareAppWidget(real, widgetInfo)
+                        WidgetSizes.updateWidgetSizeRanges(
+                            real,
+                            launcherInstance,
+                            widgetInfo.spanX,
+                            widgetInfo.spanY,
+                        )
                         widgetViews[i] = real
                         changed = true
                         if (widgetInfo.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED) {
