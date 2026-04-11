@@ -22,33 +22,73 @@ import android.util.Log
 import com.android.launcher3.LauncherSettings
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
+import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import java.lang.reflect.Type
 
 /**
  * Manages widget stack persistence and queries
  */
 object WidgetStackManager {
     private const val TAG = "WidgetStackManager"
+
+    /**
+     * Explicit JSON adapter so [WidgetStackInfo.widgetIds] order round-trips reliably.
+     * Gson's default reflection serializer for Kotlin data classes can omit or mishandle
+     * list fields, which made reordered stacks fall back to cursor order after restart.
+     */
+    private val widgetStackInfoTypeAdapter = object : JsonSerializer<WidgetStackInfo>, JsonDeserializer<WidgetStackInfo> {
+        override fun serialize(
+            src: WidgetStackInfo,
+            @Suppress("UNUSED_PARAMETER") typeOfSrc: Type,
+            @Suppress("UNUSED_PARAMETER") context: JsonSerializationContext,
+        ): JsonElement {
+            val o = JsonObject()
+            o.addProperty("stackId", src.stackId)
+            val ids = JsonArray()
+            src.widgetIds.forEach { id -> ids.add(JsonPrimitive(id)) }
+            o.add("widgetIds", ids)
+            o.addProperty("currentIndex", src.currentIndex)
+            o.addProperty("autoRotate", src.autoRotate)
+            o.addProperty("container", src.container)
+            o.addProperty("screenId", src.screenId)
+            o.addProperty("cellX", src.cellX)
+            o.addProperty("cellY", src.cellY)
+            o.addProperty("spanX", src.spanX)
+            o.addProperty("spanY", src.spanY)
+            return o
+        }
+
+        override fun deserialize(
+            json: JsonElement,
+            @Suppress("UNUSED_PARAMETER") typeOfT: Type,
+            @Suppress("UNUSED_PARAMETER") context: JsonDeserializationContext,
+        ): WidgetStackInfo {
+            val obj = json.asJsonObject
+            return WidgetStackInfo(
+                stackId = obj.get("stackId").asLong,
+                widgetIds = obj.getAsJsonArray("widgetIds").map { it.asInt },
+                currentIndex = obj.get("currentIndex")?.asInt ?: 0,
+                autoRotate = obj.get("autoRotate")?.asBoolean ?: false,
+                container = obj.get("container")?.asInt
+                    ?: LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                screenId = obj.get("screenId")?.asInt ?: 0,
+                cellX = obj.get("cellX")?.asInt ?: 0,
+                cellY = obj.get("cellY")?.asInt ?: 0,
+                spanX = obj.get("spanX")?.asInt ?: 2,
+                spanY = obj.get("spanY")?.asInt ?: 2,
+            )
+        }
+    }
+
     private val gson: Gson = GsonBuilder()
-        .registerTypeAdapter(
-            WidgetStackInfo::class.java,
-            JsonDeserializer<WidgetStackInfo> { json, _, _ ->
-                val obj = json.asJsonObject
-                WidgetStackInfo(
-                    stackId = obj.get("stackId").asLong,
-                    widgetIds = obj.getAsJsonArray("widgetIds").map { it.asInt },
-                    currentIndex = obj.get("currentIndex")?.asInt ?: 0,
-                    autoRotate = obj.get("autoRotate")?.asBoolean ?: false,
-                    container = obj.get("container")?.asInt
-                        ?: LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                    screenId = obj.get("screenId")?.asInt ?: 0,
-                    cellX = obj.get("cellX")?.asInt ?: 0,
-                    cellY = obj.get("cellY")?.asInt ?: 0,
-                    spanX = obj.get("spanX")?.asInt ?: 2,
-                    spanY = obj.get("spanY")?.asInt ?: 2,
-                )
-            },
-        )
+        .registerTypeAdapter(WidgetStackInfo::class.java, widgetStackInfoTypeAdapter)
         .create()
 
     // Store pending stack info for widgets waiting for permission

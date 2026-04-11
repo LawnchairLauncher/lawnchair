@@ -118,5 +118,6 @@
     <dimen name="widget_stack_indicator_dot_spacing">6dp</dimen>
     <dimen name="widget_stack_indicator_padding">4dp</dimen>
     <dimen name="widget_stack_indicator_margin">8dp</dimen>
+    <dimen name="widget_stack_edit_pager_height">320dp</dimen>
 
 </resources>

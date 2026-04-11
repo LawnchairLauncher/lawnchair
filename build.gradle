@@ -397,6 +397,7 @@ dependencies {
     baselineProfile projects.baselineProfile
 
     implementation libs.androidx.recyclerview
+    implementation libs.androidx.viewpager2
     implementation libs.androidx.preference.ktx
 
     implementation libs.kotlinx.coroutines.android

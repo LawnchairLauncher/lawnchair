@@ -16,11 +16,7 @@
 
 package app.lawnchair.widget
 
-import android.util.TypedValue
-import android.view.ContextThemeWrapper
-import android.view.LayoutInflater
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -30,27 +26,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,32 +50,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.Launcher
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
 import com.android.launcher3.model.WidgetItem
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
-import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.widget.PendingAddWidgetInfo
-import com.android.launcher3.widget.WidgetCell
-import com.android.launcher3.widget.WidgetManagerHelper
 import com.android.launcher3.widget.picker.WidgetsFullSheet
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.withContext
-
-/**
- * [widget_cell] uses `?attr/widgetCellTitleColor` etc., which live on [R.style.WidgetContainerTheme]
- * (see `widgets_full_sheet.xml` `android:theme="?attr/widgetsTheme"`), not on the activity theme.
- */
-private fun widgetCellLayoutInflater(launcher: Launcher): LayoutInflater {
-    val tv = TypedValue()
-    return if (launcher.theme.resolveAttribute(R.attr.widgetsTheme, tv, true)) {
-        LayoutInflater.from(ContextThemeWrapper(launcher, tv.resourceId))
-    } else {
-        LayoutInflater.from(launcher)
-    }
-}
 
 /**
  * Shows the widget stack dialog using Compose
@@ -354,7 +322,17 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
         mutableStateOf(currentStackInfo.autoRotate)
     }
 
+    var localWidgetIds by remember(initialStackInfo) {
+        mutableStateOf(initialStackInfo.widgetIds)
+    }
+    LaunchedEffect(currentStackInfo.widgetIds) {
+        if (localWidgetIds != currentStackInfo.widgetIds) {
+            localWidgetIds = currentStackInfo.widgetIds
+        }
+    }
+
     val scroll = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -391,41 +369,113 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = stringResource(R.string.widget_stack_members_title, currentStackInfo.widgetIds.size),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Column (not LazyColumn): AndroidView+WidgetCell measures reliably; stacks are small.
-        for (widgetId in currentStackInfo.widgetIds) {
-            key(widgetId) {
-                WidgetStackMemberRow(
-                    widgetId = widgetId,
-                    launcher = launcher,
-                    canRemove = currentStackInfo.widgetIds.size > 1,
-                    onRemove = {
-                        if (currentStackInfo.widgetIds.size > 1) {
+        Text(
+            text = stringResource(R.string.widget_stack_reorder_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+        )
+
+        AndroidView(
+            modifier = Modifier.fillMaxWidth(),
+            factory = { WidgetStackEditMembersHost(launcher) },
+            update = { host: WidgetStackEditMembersHost ->
+                host.bind(
+                    widgetIds = localWidgetIds,
+                    currentIndex = currentStackInfo.currentIndex,
+                    onRemove = { widgetId: Int ->
+                        val oldIds = currentStackInfo.widgetIds
+                        if (oldIds.size > 1) {
+                            val oldCur = currentStackInfo.currentIndex.coerceIn(
+                                0,
+                                (oldIds.size - 1).coerceAtLeast(0),
+                            )
+                            val visibleId = oldIds.getOrNull(oldCur)
+                            val newIds = oldIds.filter { id: Int -> id != widgetId }
+                            val newIdx = when {
+                                visibleId != null && visibleId in newIds ->
+                                    newIds.indexOf(visibleId)
+
+                                newIds.isEmpty() -> 0
+
+                                else -> oldCur.coerceIn(0, newIds.lastIndex)
+                            }
+                            localWidgetIds = newIds
                             currentStackInfo = currentStackInfo.copy(
-                                widgetIds = currentStackInfo.widgetIds.filter { id: Int -> id != widgetId },
-                                container = currentStackInfo.container,
-                                screenId = currentStackInfo.screenId,
-                                cellX = currentStackInfo.cellX,
-                                cellY = currentStackInfo.cellY,
-                                spanX = currentStackInfo.spanX,
-                                spanY = currentStackInfo.spanY,
+                                widgetIds = newIds,
+                                currentIndex = newIdx,
                             )
                         }
                     },
+                    onReorder = { newIds: List<Int> ->
+                        val oldCur = currentStackInfo.currentIndex.coerceIn(
+                            0,
+                            (localWidgetIds.size - 1).coerceAtLeast(0),
+                        )
+                        val visibleId = localWidgetIds.getOrNull(oldCur)
+                        val newIdx = when {
+                            visibleId != null && visibleId in newIds ->
+                                newIds.indexOf(visibleId)
+
+                            newIds.isEmpty() -> 0
+
+                            else -> oldCur.coerceIn(0, newIds.lastIndex)
+                        }
+                        localWidgetIds = newIds
+                        currentStackInfo = currentStackInfo.copy(
+                            widgetIds = newIds,
+                            currentIndex = newIdx,
+                        )
+                    },
+                    onAddWidget = {
+                        close(true)
+                        showWidgetPickerDialog(launcher) { widgetItem: WidgetItem ->
+                            val providerInfo = widgetItem.widgetInfo ?: return@showWidgetPickerDialog
+
+                            val validContainer = if (currentStackInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                                currentStackInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                            ) {
+                                currentStackInfo.container
+                            } else {
+                                LauncherSettings.Favorites.CONTAINER_DESKTOP
+                            }
+
+                            val pendingInfo = PendingAddWidgetInfo(providerInfo, validContainer).apply {
+                                spanX = currentStackInfo.spanX
+                                spanY = currentStackInfo.spanY
+                                minSpanX = widgetItem.spanX
+                                minSpanY = widgetItem.spanY
+                            }
+
+                            val provider = providerInfo.getComponent()
+                            if (provider != null) {
+                                WidgetStackManager.storePendingStackInfoByProvider(provider, currentStackInfo)
+                            }
+
+                            val targetCell = intArrayOf(currentStackInfo.cellX, currentStackInfo.cellY)
+
+                            launcher.addPendingItem(
+                                pendingInfo,
+                                validContainer,
+                                currentStackInfo.screenId,
+                                targetCell,
+                                currentStackInfo.spanX,
+                                currentStackInfo.spanY,
+                            )
+                        }
+                    },
+                    onPageSelected = { pos: Int ->
+                        if (currentStackInfo.currentIndex != pos) {
+                            currentStackInfo = currentStackInfo.copy(currentIndex = pos)
+                        }
+                    },
                 )
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-        }
+            },
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -445,70 +495,6 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
             Text(
                 text = stringResource(R.string.auto_rotate_widgets),
                 style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Add widget button
-        Button(
-            onClick = {
-                // Close current dialog and show widget picker
-                close(true)
-                showWidgetPickerDialog(launcher) { widgetItem: WidgetItem ->
-                    val providerInfo = widgetItem.widgetInfo ?: return@showWidgetPickerDialog
-
-                    val validContainer = if (currentStackInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                        currentStackInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                    ) {
-                        currentStackInfo.container
-                    } else {
-                        LauncherSettings.Favorites.CONTAINER_DESKTOP
-                    }
-
-                    val pendingInfo = PendingAddWidgetInfo(providerInfo, validContainer).apply {
-                        spanX = currentStackInfo.spanX
-                        spanY = currentStackInfo.spanY
-                        minSpanX = widgetItem.spanX
-                        minSpanY = widgetItem.spanY
-                    }
-
-                    val provider = providerInfo.getComponent()
-                    if (provider != null) {
-                        WidgetStackManager.storePendingStackInfoByProvider(provider, currentStackInfo)
-                    }
-
-                    // Create target cell array for addPendingItem
-                    val targetCell = intArrayOf(currentStackInfo.cellX, currentStackInfo.cellY)
-
-                    // Call addPendingItem - this will:
-                    // 1. Allocate widget ID (inside addAppWidgetFromDrop)
-                    // 2. Try to bind the widget
-                    // 3. If binding fails (no permission), call startBindFlow to show permission dialog
-                    // 4. The permission dialog will be shown to the user (this is what was missing!)
-                    launcher.addPendingItem(
-                        pendingInfo,
-                        validContainer,
-                        currentStackInfo.screenId,
-                        targetCell,
-                        currentStackInfo.spanX,
-                        currentStackInfo.spanY,
-                    )
-
-                    // Note: After permission is granted, Launcher.onActivityResult will:
-                    // 1. Call addAppWidgetImpl to add the widget
-                    // 2. Check for pending stack info and add widget to stack
-                    // The widget ID will be available in onActivityResult
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 52.dp),
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.add_widget_to_stack),
-                style = MaterialTheme.typography.labelLarge,
             )
         }
 
@@ -536,197 +522,6 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
                 Text(stringResource(R.string.save_stack))
             }
         }
-    }
-}
-
-/**
- * Builds a [WidgetItem] for a bound workspace widget so [WidgetCell] can show the same preview
- * pipeline as [WidgetsFullSheet].
- *
- * Must run on [MODEL_EXECUTOR] — [WidgetItem]'s constructor uses [com.android.launcher3.icons.IconCache]
- * which asserts the model worker looper.
- */
-private fun widgetItemForStackMember(launcher: Launcher, widgetId: Int): WidgetItem? {
-    val wi = synchronized(launcher.model.bgDataModel) {
-        launcher.model.bgDataModel.itemsIdMap
-            .firstOrNull { it is LauncherAppWidgetInfo && it.appWidgetId == widgetId } as? LauncherAppWidgetInfo
-    } ?: return null
-    val helper = WidgetManagerHelper(launcher)
-    val providerInfo = helper.getLauncherAppWidgetInfo(wi.appWidgetId, wi.providerName) ?: return null
-    val idp = LauncherAppState.getIDP(launcher)
-    val iconCache = LauncherAppState.getInstance(launcher).iconCache
-    return WidgetItem(providerInfo, idp, iconCache, launcher, helper)
-}
-
-@Composable
-private fun WidgetStackMemberRow(
-    widgetId: Int,
-    launcher: Launcher,
-    canRemove: Boolean,
-    onRemove: () -> Unit,
-) {
-    var widgetItem by remember(widgetId, launcher) {
-        mutableStateOf<WidgetItem?>(null)
-    }
-    var loadFinished by remember(widgetId, launcher) {
-        mutableStateOf(false)
-    }
-    LaunchedEffect(widgetId, launcher) {
-        widgetItem = null
-        loadFinished = false
-        widgetItem = withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
-            widgetItemForStackMember(launcher, widgetId)
-        }
-        loadFinished = true
-    }
-
-    OutlinedCard(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        ),
-        border = CardDefaults.outlinedCardBorder(),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp, end = 4.dp, top = 10.dp, bottom = 10.dp),
-            verticalAlignment = Alignment.Top,
-        ) {
-            // Do not pass WidgetItem? into key() — null hits ComponentKey.equals(null) and NPEs
-            // (ComponentKey casts the argument without a null check).
-            val loadedItem = widgetItem
-            val previewKey = loadedItem?.hashCode() ?: 0
-            key(widgetId, previewKey) {
-                when {
-                    loadedItem != null -> {
-                        AndroidView(
-                            factory = { _ ->
-                                val cell = widgetCellLayoutInflater(launcher).inflate(
-                                    R.layout.widget_cell,
-                                    null,
-                                    false,
-                                ) as WidgetCell
-                                cell.setSourceContainer(LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY)
-                                cell.isClickable = false
-                                cell.isFocusable = false
-                                cell.isLongClickable = false
-                                cell.applyFromCellItem(loadedItem)
-                                cell.hideAddButton(false)
-                                cell
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .heightIn(min = 200.dp, max = 280.dp),
-                            update = { },
-                        )
-                    }
-
-                    !loadFinished -> {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .heightIn(min = 140.dp, max = 200.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(28.dp),
-                                    strokeWidth = 2.dp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                )
-                                Text(
-                                    text = stringResource(R.string.loading),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                        }
-                    }
-
-                    else -> {
-                        WidgetStackMemberFallback(
-                            widgetId = widgetId,
-                            launcher = launcher,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 8.dp, horizontal = 4.dp),
-                        )
-                    }
-                }
-            }
-
-            if (canRemove) {
-                IconButton(
-                    onClick = onRemove,
-                    modifier = Modifier.padding(top = 4.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = stringResource(R.string.remove_widget),
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(22.dp),
-                    )
-                }
-            }
-        }
-    }
-}
-
-private data class StackMemberFallbackMeta(
-    val label: String,
-    val spanX: Int,
-    val spanY: Int,
-)
-
-@Composable
-private fun WidgetStackMemberFallback(
-    widgetId: Int,
-    launcher: Launcher,
-    modifier: Modifier = Modifier,
-) {
-    val meta = remember(widgetId, launcher) {
-        val wi = synchronized(launcher.model.bgDataModel) {
-            launcher.model.bgDataModel.itemsIdMap
-                .firstOrNull { it is LauncherAppWidgetInfo && it.appWidgetId == widgetId } as? LauncherAppWidgetInfo
-        }
-        if (wi != null) {
-            val wmHelper = WidgetManagerHelper(launcher)
-            val label = wmHelper.getLauncherAppWidgetInfo(widgetId, wi.providerName)?.label
-                ?: wi.providerName?.className?.substringAfterLast('.')
-                ?: "Widget"
-            StackMemberFallbackMeta(
-                label,
-                wi.spanX.coerceAtLeast(1),
-                wi.spanY.coerceAtLeast(1),
-            )
-        } else {
-            val label = try {
-                val awm = android.appwidget.AppWidgetManager.getInstance(launcher)
-                awm.getAppWidgetInfo(widgetId)?.loadLabel(launcher.packageManager)
-            } catch (_: Exception) {
-                null
-            } ?: "Widget"
-            StackMemberFallbackMeta(label, 1, 1)
-        }
-    }
-
-    Column(modifier = modifier) {
-        Text(
-            text = meta.label,
-            style = MaterialTheme.typography.titleSmall,
-        )
-        Text(
-            text = stringResource(R.string.widget_stack_member_id, widgetId) + " · " +
-                stringResource(R.string.widget_dims_format, meta.spanX, meta.spanY),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }
 
