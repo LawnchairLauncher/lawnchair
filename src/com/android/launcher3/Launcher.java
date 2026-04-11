@@ -1729,7 +1729,8 @@ public class Launcher extends StatefulActivity<LauncherState>
                     itemInfo.container, presenterPos.screenId, presenterPos.cellX, presenterPos.cellY);
 
             if (mWorkspace != null) {
-                CellLayout cellLayout = mWorkspace.getScreenWithId(pendingStackInfo.getScreenId());
+                CellLayout cellLayout = getCellLayout(
+                        pendingStackInfo.getContainer(), pendingStackInfo.getScreenId());
                 if (cellLayout != null) {
                     android.view.ViewGroup widgetContainer = cellLayout.getShortcutsAndWidgets();
 

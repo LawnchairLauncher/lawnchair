@@ -22,6 +22,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.android.launcher3.CheckLongPressHelper
@@ -31,6 +32,7 @@ import com.android.launcher3.dragndrop.DraggableView
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.touch.ItemLongClickListener
 import com.android.launcher3.util.MultiTranslateDelegate
+import kotlin.math.abs
 
 /**
  * Listener interface for widget stack changes
@@ -71,6 +73,9 @@ class WidgetStackView @JvmOverloads constructor(
     private val contentView: WidgetStackContentView
     private var stackChangeListener: WidgetStackChangeListener? = null
     private val longPressHelper = CheckLongPressHelper(this, this)
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private var longPressDownX = 0f
+    private var longPressDownY = 0f
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -90,12 +95,34 @@ class WidgetStackView @JvmOverloads constructor(
 
     // ==================== Touch / Long-press ====================
 
+    /**
+     * [CheckLongPressHelper] only cancels on MOVE when the finger leaves the view. Paging the
+     * stack keeps the finger inside bounds, so we cancel the pending long-press once movement
+     * exceeds touch slop (same idea as scrolling vs long-press elsewhere).
+     */
+    private fun cancelLongPressIfScrolled(ev: MotionEvent) {
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                longPressDownX = ev.x
+                longPressDownY = ev.y
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                if (abs(ev.x - longPressDownX) > touchSlop || abs(ev.y - longPressDownY) > touchSlop) {
+                    longPressHelper.cancelLongPress()
+                }
+            }
+        }
+    }
+
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        cancelLongPressIfScrolled(ev)
         longPressHelper.onTouchEvent(ev)
         return longPressHelper.hasPerformedLongPress()
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
+        cancelLongPressIfScrolled(ev)
         longPressHelper.onTouchEvent(ev)
         return true
     }

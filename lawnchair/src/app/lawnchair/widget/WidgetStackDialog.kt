@@ -168,7 +168,10 @@ fun showWidgetStackDialog(
                         }
 
                         launcher.workspace?.let { workspace ->
-                            val targetCellLayout = workspace.getScreenWithId(finalStackInfo.screenId)
+                            val targetCellLayout = launcher.getCellLayout(
+                                finalStackInfo.container,
+                                finalStackInfo.screenId,
+                            )
                             targetCellLayout?.let { layout ->
                                 val container = layout.getShortcutsAndWidgets()
 

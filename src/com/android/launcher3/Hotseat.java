@@ -47,6 +47,7 @@ import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import app.lawnchair.hotseat.DisabledHotseat;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.hotseat.LawnchairHotseat;
+import app.lawnchair.widget.WidgetStackView;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.drawable.DrawableTokens;
@@ -69,6 +70,8 @@ public class Hotseat extends CellLayout implements Insettable {
     private boolean mHasVerticalHotseat;
     private Workspace<?> mWorkspace;
     private boolean mSendTouchToWorkspace;
+    /** When true, do not forward touches to Workspace — child (e.g. stack ViewPager) needs them. */
+    private boolean mTouchStartedOnWidgetStack;
 
     private final View mQsb;
 
@@ -279,6 +282,30 @@ public class Hotseat extends CellLayout implements Insettable {
         setCellLayoutContainer(w);
     }
 
+    /**
+     * {@link Hotseat#onInterceptTouchEvent} runs before children, so we normally forward
+     * horizontal swipes to {@link Workspace}. That prevents {@link WidgetStackView}'s
+     * horizontal paging from ever receiving the gesture — skip workspace forwarding when
+     * the pointer went down on a stack.
+     */
+    private boolean isTouchOverWidgetStack(MotionEvent ev) {
+        ViewGroup icons = getShortcutsAndWidgets();
+        final int xInIcons = (int) (ev.getX() - icons.getLeft());
+        final int yInIcons = (int) (ev.getY() - icons.getTop());
+        final Rect hit = new Rect();
+        for (int i = icons.getChildCount() - 1; i >= 0; i--) {
+            View child = icons.getChildAt(i);
+            if (!(child instanceof WidgetStackView)) {
+                continue;
+            }
+            child.getHitRect(hit);
+            if (hit.contains(xInIcons, yInIcons)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // We allow horizontal workspace scrolling from within the Hotseat. We do this
@@ -286,8 +313,20 @@ public class Hotseat extends CellLayout implements Insettable {
         // touch intercept the Workspace, and if it intercepts, delegating touch to the
         // Workspace
         // for the remainder of the this input stream.
+        final int actionMasked = ev.getActionMasked();
+        if (actionMasked == MotionEvent.ACTION_DOWN) {
+            mTouchStartedOnWidgetStack = isTouchOverWidgetStack(ev);
+        } else if (actionMasked == MotionEvent.ACTION_UP
+                || actionMasked == MotionEvent.ACTION_CANCEL) {
+            mTouchStartedOnWidgetStack = false;
+        }
+
         int yThreshold = getMeasuredHeight() - getPaddingBottom();
         if (mWorkspace != null && ev.getY() <= yThreshold) {
+            if (mTouchStartedOnWidgetStack) {
+                mSendTouchToWorkspace = false;
+                return false;
+            }
             mSendTouchToWorkspace = mWorkspace.onInterceptTouchEvent(ev);
             return mSendTouchToWorkspace;
         }
