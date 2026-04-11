@@ -16,10 +16,14 @@
 
 package app.lawnchair.widget
 
+import android.content.ComponentName
 import android.content.ContentValues
+import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.android.launcher3.LauncherSettings
+import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -500,6 +504,83 @@ object WidgetStackManager {
         } catch (e: Exception) {
             Log.e(TAG, "Error deleting widget stack $stackId", e)
             throw e
+        }
+    }
+
+    /**
+     * Builds [LauncherAppWidgetInfo] from the favorites row for [appWidgetId].
+     * Non-first stack members are often omitted from [com.android.launcher3.model.BgDataModel.itemsIdMap]
+     * but still have a DB row — used when collapsing a one-widget stack.
+     */
+    @JvmStatic
+    fun loadLauncherAppWidgetInfoFromFavorites(
+        context: Context,
+        db: SQLiteDatabase,
+        appWidgetId: Int,
+    ): LauncherAppWidgetInfo? {
+        return try {
+            val projection = arrayOf(
+                LauncherSettings.Favorites._ID,
+                LauncherSettings.Favorites.CONTAINER,
+                LauncherSettings.Favorites.SCREEN,
+                LauncherSettings.Favorites.CELLX,
+                LauncherSettings.Favorites.CELLY,
+                LauncherSettings.Favorites.SPANX,
+                LauncherSettings.Favorites.SPANY,
+                LauncherSettings.Favorites.APPWIDGET_PROVIDER,
+                LauncherSettings.Favorites.PROFILE_ID,
+                LauncherSettings.Favorites.RESTORED,
+                LauncherSettings.Favorites.OPTIONS,
+                LauncherSettings.Favorites.APPWIDGET_SOURCE,
+                LauncherSettings.Favorites.ITEM_TYPE,
+                LauncherSettings.Favorites.WIDGET_STACK_ID,
+            )
+            db.query(
+                LauncherSettings.Favorites.TABLE_NAME,
+                projection,
+                "${LauncherSettings.Favorites.APPWIDGET_ID} = ?",
+                arrayOf(appWidgetId.toString()),
+                null,
+                null,
+                null,
+                "1",
+            ).use { c ->
+                if (!c.moveToFirst()) return null
+                val itemType = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE))
+                if (itemType != LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET &&
+                    itemType != LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET
+                ) {
+                    return null
+                }
+                val providerStr =
+                    c.getString(c.getColumnIndexOrThrow(LauncherSettings.Favorites.APPWIDGET_PROVIDER))
+                        ?: return null
+                val component = ComponentName.unflattenFromString(providerStr) ?: return null
+                val info = LauncherAppWidgetInfo(appWidgetId, component)
+                info.id = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID))
+                info.container = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER))
+                info.screenId = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN))
+                info.cellX = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX))
+                info.cellY = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY))
+                info.spanX = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX))
+                info.spanY = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY))
+                val serial = c.getLong(c.getColumnIndexOrThrow(LauncherSettings.Favorites.PROFILE_ID))
+                info.user = UserCache.INSTANCE.get(context).getUserForSerialNumber(serial)
+                info.restoreStatus = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.RESTORED))
+                info.options = c.getInt(c.getColumnIndexOrThrow(LauncherSettings.Favorites.OPTIONS))
+                val sourceIdx = c.getColumnIndex(LauncherSettings.Favorites.APPWIDGET_SOURCE)
+                if (sourceIdx >= 0 && !c.isNull(sourceIdx)) {
+                    info.sourceContainer = c.getInt(sourceIdx)
+                }
+                val stackIdx = c.getColumnIndex(LauncherSettings.Favorites.WIDGET_STACK_ID)
+                if (stackIdx >= 0 && !c.isNull(stackIdx)) {
+                    info.widgetStackId = c.getLong(stackIdx)
+                }
+                info
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "loadLauncherAppWidgetInfoFromFavorites failed for id=$appWidgetId", e)
+            null
         }
     }
 }

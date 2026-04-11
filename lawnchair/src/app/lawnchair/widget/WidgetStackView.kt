@@ -142,6 +142,14 @@ class WidgetStackView @JvmOverloads constructor(
      */
     fun getStackInfo(): WidgetStackInfo? = contentView.getStackInfo()
 
+    /** @see WidgetStackContentView.getWidgetInfoForMember */
+    fun getWidgetInfoForMember(appWidgetId: Int): LauncherAppWidgetInfo? = contentView.getWidgetInfoForMember(appWidgetId)
+
+    /** @see WidgetStackContentView.updateMemberWidgetSizeRangesForResize */
+    fun updateMemberWidgetSizeRangesForResize(spanX: Int, spanY: Int) {
+        contentView.updateMemberWidgetSizeRangesForResize(spanX, spanY)
+    }
+
     /** @see WidgetStackContentView.getCurrentMemberScaleToFit */
     fun getCurrentMemberScaleToFit(): Float = contentView.getCurrentMemberScaleToFit()
 

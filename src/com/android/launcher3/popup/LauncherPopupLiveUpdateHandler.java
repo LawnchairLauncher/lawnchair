@@ -58,14 +58,14 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
             return;
         }
         
-        // Validate widget info exists in model before proceeding
-        // This prevents deletion if widget info is stale or invalid
-        ItemInfo itemInfo = (ItemInfo) originalIcon.getTag();
-        if (itemInfo == null) {
-            android.util.Log.w("LauncherPopupLiveUpdateHandler", 
-                    "ItemInfo is null, skipping widget bound update");
+        // Validate tag is ItemInfo before proceeding (avoid ClassCastException on wrong type)
+        Object tag = originalIcon.getTag();
+        if (!(tag instanceof ItemInfo)) {
+            android.util.Log.w("LauncherPopupLiveUpdateHandler",
+                    "Original icon tag is not ItemInfo, skipping widget bound update");
             return;
         }
+        ItemInfo itemInfo = (ItemInfo) tag;
         
         // For widgets, validate widget info exists in model before accessing it
         // This prevents deletion if widget info is stale or invalid

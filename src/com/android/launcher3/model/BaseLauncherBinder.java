@@ -418,10 +418,18 @@ public class BaseLauncherBinder {
             ModelWriter writer = mApp.getModel()
                     .getWriter(false /* verifyChanges */, CellPosMapper.DEFAULT, null);
             inflater.clearWidgetStackLoadCache();
-            List<Pair<ItemInfo, View>> finalBindItems = items.stream().map(i ->
-                    Pair.create(i, inflater.inflateItem(i, writer, null))).collect(Collectors.toList());
-            inflater.clearWidgetStackLoadCache();
-            executeCallbacksTask(c -> c.bindInflatedItems(finalBindItems), executor);
+            List<Pair<ItemInfo, View>> finalBindItems = null;
+            try {
+                finalBindItems = items.stream().map(i ->
+                        Pair.create(i, inflater.inflateItem(i, writer, null)))
+                        .collect(Collectors.toList());
+            } finally {
+                inflater.clearWidgetStackLoadCache();
+            }
+            final List<Pair<ItemInfo, View>> bindItems = finalBindItems;
+            if (bindItems != null) {
+                executeCallbacksTask(c -> c.bindInflatedItems(bindItems), executor);
+            }
         }
 
         private void bindItemsInChunks(

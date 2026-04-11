@@ -110,7 +110,11 @@ fun showWidgetStackDialog(
                             }
                         }
                         toDelete.forEach { wi: LauncherAppWidgetInfo ->
-                            modelWriter.deleteItemFromDatabase(wi, "removed from stack")
+                            modelWriter.deleteWidgetInfo(
+                                wi,
+                                launcher.appWidgetHolder,
+                                "removed from stack",
+                            )
                         }
                     }
 

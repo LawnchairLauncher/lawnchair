@@ -2395,10 +2395,23 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             return false;
         }
 
-        // Check if both are widgets (not already in a stack)
-        boolean aboveWidget = (dropOverView.getTag() instanceof LauncherAppWidgetInfo) 
+        // Whole-stack drag uses LauncherAppWidgetInfo on the tag; do not treat as new-stack merge
+        if (mDragInfo != null && mDragInfo.cell instanceof WidgetStackView) {
+            return false;
+        }
+
+        // Both must be standalone widgets (not stack members, not stack container views)
+        boolean aboveWidget = (dropOverView.getTag() instanceof LauncherAppWidgetInfo)
                 && !(dropOverView instanceof WidgetStackView);
-        boolean willBecomeWidget = (info instanceof LauncherAppWidgetInfo);
+        if (aboveWidget) {
+            LauncherAppWidgetInfo dest = (LauncherAppWidgetInfo) dropOverView.getTag();
+            aboveWidget = dest.widgetStackId == null;
+        }
+        boolean willBecomeWidget = false;
+        if (info instanceof LauncherAppWidgetInfo) {
+            LauncherAppWidgetInfo src = (LauncherAppWidgetInfo) info;
+            willBecomeWidget = src.widgetStackId == null;
+        }
 
         return (aboveWidget && willBecomeWidget);
     }
@@ -2421,6 +2434,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     || lp.getTmpCellY() != lp.getCellY())) {
                 return false;
             }
+        }
+
+        if (mDragInfo != null && mDragInfo.cell instanceof WidgetStackView) {
+            return false;
         }
 
         if (dropOverView instanceof WidgetStackView && dragInfo instanceof LauncherAppWidgetInfo) {
@@ -2450,9 +2467,24 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mCreateWidgetStackOnDrop = false;
         final int screenId = getCellLayoutId(target);
 
-        boolean aboveWidget = (v.getTag() instanceof LauncherAppWidgetInfo) 
+        if (mDragInfo != null && mDragInfo.cell instanceof WidgetStackView) {
+            return false;
+        }
+        if (newView instanceof WidgetStackView) {
+            return false;
+        }
+
+        boolean aboveWidget = (v.getTag() instanceof LauncherAppWidgetInfo)
                 && !(v instanceof WidgetStackView);
-        boolean willBecomeWidget = (newView.getTag() instanceof LauncherAppWidgetInfo);
+        if (aboveWidget) {
+            LauncherAppWidgetInfo dest = (LauncherAppWidgetInfo) v.getTag();
+            aboveWidget = dest.widgetStackId == null;
+        }
+        boolean willBecomeWidget = false;
+        if (newView.getTag() instanceof LauncherAppWidgetInfo) {
+            LauncherAppWidgetInfo src = (LauncherAppWidgetInfo) newView.getTag();
+            willBecomeWidget = src.widgetStackId == null;
+        }
 
         if (aboveWidget && willBecomeWidget) {
             LauncherAppWidgetInfo sourceInfo = (LauncherAppWidgetInfo) newView.getTag();
@@ -2948,7 +2980,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (widgetView instanceof LauncherAppWidgetHostView) {
             LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) widgetView;
             AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
-            boolean shouldResize = (pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) || force;
+            boolean shouldResize =
+                    (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) || force;
             if (pInfo != null && shouldResize && !options.isAccessibleDrag) {
                 return () -> {
                     if (!isPageInTransition()) {
@@ -4052,7 +4085,17 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         if (widgetInfo == null) {
-            android.util.Log.w("Workspace", "Cannot collapse stack: widget " + remainingWidgetId + " not found in model");
+            widgetInfo = stackView.getWidgetInfoForMember(remainingWidgetId);
+        }
+        if (widgetInfo == null) {
+            widgetInfo = WidgetStackManager.loadLauncherAppWidgetInfoFromFavorites(
+                    mLauncher,
+                    mLauncher.getModel().getModelDbController().getDb(),
+                    remainingWidgetId);
+        }
+        if (widgetInfo == null) {
+            android.util.Log.w("Workspace", "Cannot collapse stack: widget " + remainingWidgetId
+                    + " not in model, stack cache, or DB");
             return;
         }
 

@@ -166,6 +166,18 @@ class WidgetStackContentView @JvmOverloads constructor(
     fun getStackInfo(): WidgetStackInfo? = stackInfo
 
     /**
+     * Live resize only: updates each member's AppWidget size ranges for the preview spans without
+     * database writes or [setStackInfo] (which would rebuild the pager).
+     */
+    fun updateMemberWidgetSizeRangesForResize(spanX: Int, spanY: Int) {
+        val launcherInstance = launcher ?: return
+        for (view in widgetViews) {
+            if (view is PendingAppWidgetHostView) continue
+            WidgetSizes.updateWidgetSizeRanges(view, launcherInstance, spanX, spanY)
+        }
+    }
+
+    /**
      * [NavigableAppWidgetHostView.getScaleToFit] for the visible page — matches single-widget
      * resize-frame sizing ([com.android.launcher3.AppWidgetResizeFrame]).
      */
@@ -394,6 +406,9 @@ class WidgetStackContentView @JvmOverloads constructor(
             view.post { applyScalingToWidget(view) }
         }
     }
+
+    /** Stack cache + model; used when collapsing if [BgDataModel] has no row for a member. */
+    fun getWidgetInfoForMember(widgetId: Int): LauncherAppWidgetInfo? = findWidgetInfo(widgetId)
 
     private fun findWidgetInfo(widgetId: Int): LauncherAppWidgetInfo? {
         knownWidgetInfos[widgetId]?.let { return it }

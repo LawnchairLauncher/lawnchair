@@ -670,59 +670,62 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 mRunningVInc += vSpanDelta;
                 mRunningHInc += hSpanDelta;
 
-                // Update stack info with new size
                 WidgetStackInfo stackInfo = mWidgetStackView.getStackInfo();
                 if (stackInfo != null) {
                     ItemInfo itemInfo = (ItemInfo) mWidgetStackView.getTag();
                     if (itemInfo != null) {
-                        int container = itemInfo.container;
-                        int screenId = mLauncher.getCellPosMapper().mapModelToPresenter(itemInfo).screenId;
-                        
-                        WidgetStackInfo updatedStackInfo = stackInfo.copy(
-                            stackInfo.getStackId(),
-                            stackInfo.getWidgetIds(),
-                            stackInfo.getCurrentIndex(),
-                            stackInfo.getAutoRotate(),
-                            container,
-                            screenId,
-                            cellX,
-                            cellY,
-                            spanX,
-                            spanY
-                        );
-                        
-                        // Update all widgets in the stack to the new size (lookups under lock; DB work off lock)
-                        final com.android.launcher3.model.BgDataModel bgDataModel =
-                                mLauncher.getModel().getBgDataModel();
-                        ArrayList<LauncherAppWidgetInfo> stackMembersToResize = new ArrayList<>();
-                        synchronized (bgDataModel) {
-                            for (Integer widgetIdObj : stackInfo.getWidgetIds()) {
-                                int widgetId = widgetIdObj;
-                                for (ItemInfo item : bgDataModel.itemsIdMap) {
-                                    if (item instanceof LauncherAppWidgetInfo) {
-                                        LauncherAppWidgetInfo wInfo = (LauncherAppWidgetInfo) item;
-                                        if (wInfo.appWidgetId == widgetId) {
-                                            stackMembersToResize.add(wInfo);
-                                            break;
+                        if (onDismiss) {
+                            // Commit: persist stack + members (matches createAreaForResize commit=true)
+                            int container = itemInfo.container;
+                            int screenId = mLauncher.getCellPosMapper()
+                                    .mapModelToPresenter(itemInfo).screenId;
+
+                            WidgetStackInfo updatedStackInfo = stackInfo.copy(
+                                    stackInfo.getStackId(),
+                                    stackInfo.getWidgetIds(),
+                                    stackInfo.getCurrentIndex(),
+                                    stackInfo.getAutoRotate(),
+                                    container,
+                                    screenId,
+                                    cellX,
+                                    cellY,
+                                    spanX,
+                                    spanY);
+
+                            final com.android.launcher3.model.BgDataModel bgDataModel =
+                                    mLauncher.getModel().getBgDataModel();
+                            ArrayList<LauncherAppWidgetInfo> stackMembersToResize =
+                                    new ArrayList<>();
+                            synchronized (bgDataModel) {
+                                for (Integer widgetIdObj : stackInfo.getWidgetIds()) {
+                                    int widgetId = widgetIdObj;
+                                    for (ItemInfo item : bgDataModel.itemsIdMap) {
+                                        if (item instanceof LauncherAppWidgetInfo) {
+                                            LauncherAppWidgetInfo wInfo =
+                                                    (LauncherAppWidgetInfo) item;
+                                            if (wInfo.appWidgetId == widgetId) {
+                                                stackMembersToResize.add(wInfo);
+                                                break;
+                                            }
                                         }
                                     }
                                 }
                             }
+                            for (LauncherAppWidgetInfo wInfo : stackMembersToResize) {
+                                mLauncher.getModelWriter().modifyItemInDatabase(
+                                        wInfo, container, screenId, cellX, cellY, spanX, spanY);
+                            }
+
+                            mLauncher.getModelWriter().saveWidgetStack(updatedStackInfo);
+                            mWidgetStackView.setStackInfo(updatedStackInfo);
+
+                            itemInfo.spanX = spanX;
+                            itemInfo.spanY = spanY;
+                        } else {
+                            // Live resize only: same idea as WidgetSizes.updateWidgetSizeRanges for
+                            // a single widget — update option ranges without DB or setStackInfo.
+                            mWidgetStackView.updateMemberWidgetSizeRangesForResize(spanX, spanY);
                         }
-                        for (LauncherAppWidgetInfo wInfo : stackMembersToResize) {
-                            mLauncher.getModelWriter().modifyItemInDatabase(
-                                    wInfo, container, screenId, cellX, cellY, spanX, spanY);
-                        }
-                        
-                        // Save updated stack info to database
-                        mLauncher.getModelWriter().saveWidgetStack(updatedStackInfo);
-                        
-                        // Update the view with new stack info
-                        mWidgetStackView.setStackInfo(updatedStackInfo);
-                        
-                        // Update item info
-                        itemInfo.spanX = spanX;
-                        itemInfo.spanY = spanY;
                     }
                 }
             }
@@ -946,7 +949,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         // is pressed.
         if (shouldConsume(keyCode)) {
             close(false);
-            mWidgetView.requestFocus();
+            View focusTarget = mWidgetView != null ? mWidgetView : mWidgetStackView;
+            if (focusTarget != null) {
+                focusTarget.requestFocus();
+            }
             return true;
         }
         return false;
