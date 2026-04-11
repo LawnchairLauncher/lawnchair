@@ -292,6 +292,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
     override fun bindItems(items: List<ItemInfo>, forceAnimateIcons: Boolean) {
+        itemInflater?.clearWidgetStackLoadCache()
         val inflatedItems = items.map { i ->
             Pair.create(
                 i,
@@ -301,6 +302,7 @@ class LawnchairLauncher : QuickstepLauncher() {
                 ),
             )
         }.toList()
+        itemInflater?.clearWidgetStackLoadCache()
         bindInflatedItems(inflatedItems, if (forceAnimateIcons) AnimatorSet() else null)
     }
 

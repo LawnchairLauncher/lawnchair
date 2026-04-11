@@ -129,6 +129,12 @@ class WidgetStackEditMembersHost(
     private var onPageSelected: ((Int) -> Unit)? = null
 
     private var touchHelperAttached = false
+    private var touchHelperLayoutListenerRegistered = false
+
+    private val touchHelperAttachLayoutListener =
+        View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            tryAttachItemTouchHelperToRecyclerView()
+        }
 
     private data class PageTag(val widgetId: Int)
 
@@ -160,12 +166,39 @@ class WidgetStackEditMembersHost(
             },
         )
 
-        viewPager.post {
-            if (touchHelperAttached) return@post
-            val rv = viewPager.getChildAt(0) as? RecyclerView ?: return@post
-            itemTouchHelper.attachToRecyclerView(rv)
-            touchHelperAttached = true
+        scheduleItemTouchHelperAttachment()
+    }
+
+    override fun onDetachedFromWindow() {
+        viewPager.removeOnLayoutChangeListener(touchHelperAttachLayoutListener)
+        touchHelperLayoutListenerRegistered = false
+        super.onDetachedFromWindow()
+    }
+
+    /**
+     * ViewPager2's internal [RecyclerView] may not exist until after layout. Try immediately, then
+     * on the next frame and on subsequent layouts until attachment succeeds.
+     */
+    private fun tryAttachItemTouchHelperToRecyclerView(): Boolean {
+        if (touchHelperAttached) return true
+        val rv = viewPager.getChildAt(0) as? RecyclerView ?: return false
+        itemTouchHelper.attachToRecyclerView(rv)
+        touchHelperAttached = true
+        if (touchHelperLayoutListenerRegistered) {
+            viewPager.removeOnLayoutChangeListener(touchHelperAttachLayoutListener)
+            touchHelperLayoutListenerRegistered = false
         }
+        return true
+    }
+
+    private fun scheduleItemTouchHelperAttachment() {
+        if (touchHelperAttached) return
+        if (tryAttachItemTouchHelperToRecyclerView()) return
+        if (!touchHelperLayoutListenerRegistered) {
+            viewPager.addOnLayoutChangeListener(touchHelperAttachLayoutListener)
+            touchHelperLayoutListenerRegistered = true
+        }
+        viewPager.post { tryAttachItemTouchHelperToRecyclerView() }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -239,14 +272,7 @@ class WidgetStackEditMembersHost(
             }
         }
 
-        if (!touchHelperAttached) {
-            viewPager.post {
-                if (touchHelperAttached) return@post
-                val rv = viewPager.getChildAt(0) as? RecyclerView ?: return@post
-                itemTouchHelper.attachToRecyclerView(rv)
-                touchHelperAttached = true
-            }
-        }
+        scheduleItemTouchHelperAttachment()
     }
 
     private fun widgetCellLayoutInflater(): LayoutInflater {

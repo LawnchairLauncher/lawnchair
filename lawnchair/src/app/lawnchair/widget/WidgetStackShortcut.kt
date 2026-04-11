@@ -23,23 +23,23 @@ import com.android.launcher3.R
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.popup.SystemShortcut
-import com.android.launcher3.views.ActivityContext
-
 /**
- * System shortcut for creating or editing widget stacks
+ * System shortcut for creating or editing widget stacks.
+ *
+ * Only meaningful on [Launcher]; [FACTORY] is registered for the phone workspace only.
  */
-class WidgetStackShortcut<T : ActivityContext>(
-    target: T,
+class WidgetStackShortcut(
+    launcher: Launcher,
     itemInfo: ItemInfo,
     originalView: View,
-) : SystemShortcut<T>(
+) : SystemShortcut<Launcher>(
     R.drawable.ic_widget,
     if (itemInfo is LauncherAppWidgetInfo && itemInfo.widgetStackId != null) {
         R.string.edit_stack
     } else {
         R.string.create_stack
     },
-    target,
+    launcher,
     itemInfo,
     originalView,
 ) {
@@ -47,11 +47,9 @@ class WidgetStackShortcut<T : ActivityContext>(
     override fun onClick(view: View) {
         AbstractFloatingView.closeAllOpenViews(mTarget)
 
-        val launcher = mTarget as? Launcher ?: return
         val widgetInfo = mItemInfo as? LauncherAppWidgetInfo ?: return
 
-        // Show the widget stack dialog using Compose
-        showWidgetStackDialog(launcher, widgetInfo)
+        showWidgetStackDialog(mTarget, widgetInfo)
     }
 
     companion object {

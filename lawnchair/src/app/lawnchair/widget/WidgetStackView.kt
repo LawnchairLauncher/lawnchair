@@ -25,7 +25,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.android.launcher3.CheckLongPressHelper
-import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Reorderable
 import com.android.launcher3.dragndrop.DraggableView
@@ -101,8 +100,7 @@ class WidgetStackView @JvmOverloads constructor(
         return true
     }
 
-    override fun onLongClick(view: View): Boolean =
-        ItemLongClickListener.INSTANCE_WORKSPACE.onLongClick(view)
+    override fun onLongClick(view: View): Boolean = ItemLongClickListener.INSTANCE_WORKSPACE.onLongClick(view)
 
     override fun cancelLongPress() {
         super.cancelLongPress()
@@ -144,6 +142,9 @@ class WidgetStackView @JvmOverloads constructor(
      */
     fun getStackInfo(): WidgetStackInfo? = contentView.getStackInfo()
 
+    /** @see WidgetStackContentView.getCurrentMemberScaleToFit */
+    fun getCurrentMemberScaleToFit(): Float = contentView.getCurrentMemberScaleToFit()
+
     /**
      * Clears "tap to finish setup" / pending UI for a member after its configuration activity
      * completes. Required when the launcher skips the default workspace completion path for
@@ -173,33 +174,6 @@ class WidgetStackView @JvmOverloads constructor(
      */
     fun removeWidget(widgetId: Int) {
         contentView.removeWidget(widgetId)
-    }
-
-    /**
-     * Opens the edit dialog for this widget stack
-     */
-    private fun openEditDialog() {
-        val launcher = Launcher.getLauncher(context)
-        val currentStackInfo = getStackInfo() ?: return
-
-        // Find the first widget info in the stack to use as reference
-        val bgDataModel = launcher.model.getBgDataModel()
-        val firstWidgetInfo = synchronized(bgDataModel) {
-            var found: LauncherAppWidgetInfo? = null
-            for (itemInfo in bgDataModel.itemsIdMap) {
-                if (itemInfo is LauncherAppWidgetInfo &&
-                    itemInfo.appWidgetId == currentStackInfo.widgetIds.firstOrNull()
-                ) {
-                    found = itemInfo
-                    break
-                }
-            }
-            found
-        }
-
-        if (firstWidgetInfo != null) {
-            showWidgetStackDialog(launcher, firstWidgetInfo)
-        }
     }
 
     // Touch handling removed - let workspace handle everything normally

@@ -682,22 +682,13 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         // For widgets, ensure they stay visible even when popup closes due to drag
         // This is especially important during stack creation when the initial widget
         // must remain visible even if another widget's drag starts
-        // Only hide the widget if THIS popup's widget is the one being dragged
+        // Only skip forcing visibility when THIS popup's anchor view is the one being dragged
+        // (same instance as DragObject.originalView from Workspace.beginDragShared). Deep-shortcut
+        // drags use a different DraggableView, so they never match mOriginalView.
         if (mOriginalView != null) {
-            // Check if the drag object is for this widget (not another widget)
-            ItemInfo dragInfo = dragObject.dragInfo;
-            ItemInfo originalInfo = mOriginalView.getTag() instanceof ItemInfo 
-                    ? (ItemInfo) mOriginalView.getTag() 
-                    : null;
-            
-            // Only hide if this widget is the one being dragged
-            // If another widget is being dragged (e.g., for stack creation), keep this widget visible
-            if (originalInfo != null && dragInfo != null && originalInfo.id == dragInfo.id) {
-                // This widget is being dragged - it will be handled by Workspace.startDrag
-                // Don't hide it here, let Workspace handle it
+            if (isDragFromPopupAnchorView(dragObject)) {
+                // Anchor is being dragged — Workspace / DragController own visibility.
             } else {
-                // Another item is being dragged - ensure this widget stays visible
-                // This is critical for stack creation where the initial widget must remain visible
                 if (mOriginalView.getVisibility() != View.VISIBLE) {
                     mOriginalView.setVisibility(View.VISIBLE);
                 }
@@ -705,6 +696,15 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         }
         
         animateClose();
+    }
+
+    /**
+     * True when the drag was started from this popup's anchor (workspace widget or stack view).
+     * Uses object identity with {@link DragObject#originalView}, not item ids (which can be
+     * ambiguous across model copies).
+     */
+    private boolean isDragFromPopupAnchorView(DragObject dragObject) {
+        return dragObject.originalView != null && dragObject.originalView == mOriginalView;
     }
 
     @Override

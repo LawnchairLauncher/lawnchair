@@ -957,7 +957,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 if (appWidgetId > 0) {
                     WidgetStackManager.clearPendingStackInfo(appWidgetId);
                 }
-                if (requestArgs != null && requestArgs.getWidgetHandler() != null) {
+                if (requestArgs.getWidgetHandler() != null) {
                     try {
                         LauncherAppWidgetProviderInfo providerInfo = requestArgs.getWidgetHandler().getProviderInfo(this);
                         if (providerInfo != null && providerInfo.getComponent() != null) {
@@ -973,7 +973,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             } else if (resultCode == RESULT_OK) {
                 // Transfer pending stack info from provider-based to widget ID-based storage
                 // This handles the case where widget ID was allocated in addAppWidgetFromDrop
-                if (requestArgs != null && requestArgs.getWidgetHandler() != null) {
+                if (requestArgs.getWidgetHandler() != null) {
                     try {
                         LauncherAppWidgetProviderInfo providerInfo = requestArgs.getWidgetHandler().getProviderInfo(this);
                         if (providerInfo != null && providerInfo.getComponent() != null) {
@@ -1807,16 +1807,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                             // the stack info to include both widgets, and saves to DB.
                             stackView.addWidget(launcherInfo);
 
-                            stackView.setStackChangeListener(new app.lawnchair.widget.WidgetStackChangeListener() {
-                                @Override
-                                public void onStackShouldCollapse(app.lawnchair.widget.WidgetStackView sv, int remainingWidgetId) {
-                                    mWorkspace.collapseStackToSingleWidget(sv, remainingWidgetId);
-                                }
-                                @Override
-                                public void onStackChanged(app.lawnchair.widget.WidgetStackView sv) {
-                                    mWorkspace.requestLayout();
-                                }
-                            });
+                            bindWidgetStackChangeListener(stackView, mWorkspace);
                         }
                     }
                 }
@@ -2612,9 +2603,12 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     @Override
     public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
+        ItemInflater<Launcher> inflater = getItemInflater();
+        inflater.clearWidgetStackLoadCache();
         bindInflatedItems(items.stream().map(i -> Pair.create(
-                i, getItemInflater().inflateItem(i, getModelWriter()))).collect(Collectors.toList()),
+                i, inflater.inflateItem(i, getModelWriter()))).collect(Collectors.toList()),
                 forceAnimateIcons ? new AnimatorSet() : null);
+        inflater.clearWidgetStackLoadCache();
     }
 
     @Override
@@ -2737,22 +2731,9 @@ public class Launcher extends StatefulActivity<LauncherState>
             
             // Set up listener for WidgetStackView to handle collapse and updates
             if (view instanceof app.lawnchair.widget.WidgetStackView) {
-                app.lawnchair.widget.WidgetStackView stackView = 
-                    (app.lawnchair.widget.WidgetStackView) view;
-                stackView.setStackChangeListener(new app.lawnchair.widget.WidgetStackChangeListener() {
-                    @Override
-                    public void onStackShouldCollapse(
-                            app.lawnchair.widget.WidgetStackView stackView, 
-                            int remainingWidgetId) {
-                        workspace.collapseStackToSingleWidget(stackView, remainingWidgetId);
-                    }
-                    
-                    @Override
-                    public void onStackChanged(app.lawnchair.widget.WidgetStackView stackView) {
-                        // Trigger UI refresh to ensure workspace is in sync
-                        workspace.requestLayout();
-                    }
-                });
+                app.lawnchair.widget.WidgetStackView stackView =
+                        (app.lawnchair.widget.WidgetStackView) view;
+                bindWidgetStackChangeListener(stackView, workspace);
             }
             
             if (boundAnim != null) {
@@ -3629,6 +3610,20 @@ public class Launcher extends StatefulActivity<LauncherState>
         return findViewById(R.id.popup_container);
     }
 
+    private void bindWidgetStackChangeListener(WidgetStackView stackView, Workspace<?> workspace) {
+        stackView.setStackChangeListener(new WidgetStackChangeListener() {
+            @Override
+            public void onStackShouldCollapse(WidgetStackView sv, int remainingWidgetId) {
+                workspace.collapseStackToSingleWidget(sv, remainingWidgetId);
+            }
+
+            @Override
+            public void onStackChanged(WidgetStackView sv) {
+                workspace.requestLayout();
+            }
+        });
+    }
+
     /**
      * Adds a widget to the database only (not to workspace) when it's part of a stack.
      * This prevents the widget from replacing the existing WidgetStackView.
@@ -3753,16 +3748,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                         java.util.Collections.singletonList(firstWidgetInfo));
                 stackView.addWidget(launcherInfo);
 
-                stackView.setStackChangeListener(new WidgetStackChangeListener() {
-                    @Override
-                    public void onStackShouldCollapse(WidgetStackView sv, int remainingWidgetId) {
-                        mWorkspace.collapseStackToSingleWidget(sv, remainingWidgetId);
-                    }
-                    @Override
-                    public void onStackChanged(WidgetStackView sv) {
-                        mWorkspace.requestLayout();
-                    }
-                });
+                bindWidgetStackChangeListener(stackView, mWorkspace);
             } else {
                 // First widget not found on workspace — remove stray view if present
                 View viewAtPosition = cellLayout.getChildAt(

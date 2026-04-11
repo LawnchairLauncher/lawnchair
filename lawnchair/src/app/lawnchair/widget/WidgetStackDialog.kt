@@ -52,10 +52,10 @@ import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
-import com.android.launcher3.util.Executors
 import com.android.launcher3.model.WidgetItem
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.util.Executors
 import com.android.launcher3.widget.PendingAddWidgetInfo
 import com.android.launcher3.widget.picker.WidgetsFullSheet
 
@@ -87,6 +87,9 @@ fun showWidgetStackDialog(
                 isEditing = isEditing,
                 initialStackInfo = initialStackInfo,
                 launcher = launcher,
+                reopenStackDialogAfterPickerCancelled = { info: WidgetStackInfo ->
+                    presentWidgetStackSheet(info)
+                },
                 onSave = { stackInfo: WidgetStackInfo ->
                     // Determine which widgets were removed (if editing)
                     val removedWidgets = if (isEditing && initialStackInfo != null) {
@@ -327,6 +330,7 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
     isEditing: Boolean,
     initialStackInfo: WidgetStackInfo?,
     launcher: Launcher,
+    reopenStackDialogAfterPickerCancelled: (WidgetStackInfo) -> Unit,
     onSave: (WidgetStackInfo) -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -454,41 +458,12 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
                         )
                     },
                     onAddWidget = {
+                        WidgetStackManager.prepareStackDialogForWidgetPicker(currentStackInfo, isEditing)
                         close(true)
-                        showWidgetPickerDialog(launcher) { widgetItem: WidgetItem ->
-                            val providerInfo = widgetItem.widgetInfo ?: return@showWidgetPickerDialog
-
-                            val validContainer = if (currentStackInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                                currentStackInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                            ) {
-                                currentStackInfo.container
-                            } else {
-                                LauncherSettings.Favorites.CONTAINER_DESKTOP
-                            }
-
-                            val pendingInfo = PendingAddWidgetInfo(providerInfo, validContainer).apply {
-                                spanX = currentStackInfo.spanX
-                                spanY = currentStackInfo.spanY
-                                minSpanX = widgetItem.spanX
-                                minSpanY = widgetItem.spanY
-                            }
-
-                            val provider = providerInfo.getComponent()
-                            if (provider != null) {
-                                WidgetStackManager.storePendingStackInfoByProvider(provider, currentStackInfo)
-                            }
-
-                            val targetCell = intArrayOf(currentStackInfo.cellX, currentStackInfo.cellY)
-
-                            launcher.addPendingItem(
-                                pendingInfo,
-                                validContainer,
-                                currentStackInfo.screenId,
-                                targetCell,
-                                currentStackInfo.spanX,
-                                currentStackInfo.spanY,
-                            )
-                        }
+                        showWidgetPickerDialog(
+                            launcher = launcher,
+                            onResumeStackDialog = reopenStackDialogAfterPickerCancelled,
+                        )
                     },
                     onPageSelected = { pos: Int ->
                         if (currentStackInfo.currentIndex != pos) {
@@ -553,14 +528,50 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
  */
 private fun showWidgetPickerDialog(
     launcher: Launcher,
-    onSelectWidget: (WidgetItem) -> Unit,
+    onResumeStackDialog: (WidgetStackInfo) -> Unit,
 ) {
     val sheet = WidgetsFullSheet.show(launcher, true)
     sheet.setPickerTitle(launcher.getString(R.string.add_widget_to_stack))
     sheet.setWidgetPickListener { item: WidgetItem ->
-        onSelectWidget(item)
+        val providerInfo = item.widgetInfo ?: return@setWidgetPickListener
+        val state = WidgetStackManager.takeSuspendedStackDialogForPickerSession() ?: return@setWidgetPickListener
+        val (stackInfo, _) = state
+
+        val validContainer = if (stackInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+            stackInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+        ) {
+            stackInfo.container
+        } else {
+            LauncherSettings.Favorites.CONTAINER_DESKTOP
+        }
+
+        val pendingInfo = PendingAddWidgetInfo(providerInfo, validContainer).apply {
+            spanX = stackInfo.spanX
+            spanY = stackInfo.spanY
+            minSpanX = item.spanX
+            minSpanY = item.spanY
+        }
+
+        val provider = providerInfo.getComponent()
+        if (provider != null) {
+            WidgetStackManager.storePendingStackInfoByProvider(provider, stackInfo)
+        }
+
+        val targetCell = intArrayOf(stackInfo.cellX, stackInfo.cellY)
+
+        launcher.addPendingItem(
+            pendingInfo,
+            validContainer,
+            stackInfo.screenId,
+            targetCell,
+            stackInfo.spanX,
+            stackInfo.spanY,
+        )
     }
     sheet.addOnCloseListener {
         sheet.setWidgetPickListener(null)
+        WidgetStackManager.takeSuspendedStackDialogForPickerSession()?.let { (info, _) ->
+            onResumeStackDialog(info)
+        }
     }
 }

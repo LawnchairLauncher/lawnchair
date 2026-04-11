@@ -18,11 +18,13 @@ package com.android.launcher3.util
 
 import android.appwidget.AppWidgetHostView
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import app.lawnchair.widget.WidgetStackInfo
 import app.lawnchair.widget.WidgetStackManager
 import app.lawnchair.widget.WidgetStackView
 import com.android.launcher3.BubbleTextView
@@ -52,6 +54,27 @@ class ItemInflater<T>(
 ) where T : Context, T : ActivityContext {
 
     private val widgetInflater = WidgetInflater(context)
+
+    /**
+     * One [WidgetStackManager.loadStack] per [widgetStackId] while binding a batch of items.
+     * Call [clearWidgetStackLoadCache] before and after inflating a list (e.g. workspace bind) so
+     * single-item inflates do not see stale stack JSON.
+     */
+    private val widgetStackLoadCache = mutableMapOf<Long, WidgetStackInfo?>()
+
+    /** Clears stack load cache; bracket multi-item inflation with before/after calls. */
+    fun clearWidgetStackLoadCache() {
+        widgetStackLoadCache.clear()
+    }
+
+    private fun loadStackCached(db: SQLiteDatabase, widgetStackId: Long): WidgetStackInfo? {
+        if (widgetStackLoadCache.containsKey(widgetStackId)) {
+            return widgetStackLoadCache[widgetStackId]
+        }
+        val loaded = WidgetStackManager.loadStack(db, widgetStackId)
+        widgetStackLoadCache[widgetStackId] = loaded
+        return loaded
+    }
 
     @JvmOverloads
     fun inflateItem(item: ItemInfo, writer: ModelWriter, nullableParent: ViewGroup? = null): View? {
@@ -119,7 +142,7 @@ class ItemInflater<T>(
             val widgetStackId = item.widgetStackId
             if (widgetStackId != null) {
                 val db = writer.getModelDbController().db
-                val stackInfo = WidgetStackManager.loadStack(db, widgetStackId)
+                val stackInfo = loadStackCached(db, widgetStackId)
 
                 if (stackInfo != null && stackInfo.widgetIds.isNotEmpty()) {
                     val isFirstWidget = stackInfo.widgetIds.firstOrNull() == item.appWidgetId

@@ -257,10 +257,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     public static void showForWidgetStack(WidgetStackView widgetStack, CellLayout cellLayout) {
-        PreferenceManager2 pref2 = PreferenceManager2.getInstance(widgetStack.getContext());
-        boolean force = PreferenceExtensionsKt.firstBlocking(pref2.getForceWidgetResize());
-        boolean unlimited = PreferenceExtensionsKt.firstBlocking(pref2.getWidgetUnlimitedSize());
-
         // If widget stack is not added to view hierarchy, we cannot show resize frame at
         // correct location
         if (widgetStack.getParent() == null) {
@@ -274,7 +270,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 .inflate(R.layout.app_widget_resize_frame, dl, false);
         ImageView imageView = frame.findViewById(R.id.widget_resize_frame);
         imageView.setImageDrawable(DrawableTokens.WidgetResizeFrame.resolve(launcher));
-        if (!frame.setupForWidgetStack(widgetStack, cellLayout, dl, force, unlimited)) {
+        if (!frame.setupForWidgetStack(widgetStack, cellLayout, dl)) {
             Log.w(TAG, "showForWidgetStack: stackInfo was null, not showing resize frame");
             return;
         }
@@ -411,34 +407,24 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     private boolean setupForWidgetStack(WidgetStackView widgetStackView, CellLayout cellLayout,
-            DragLayer dragLayer, boolean force, boolean unlimited) {
+            DragLayer dragLayer) {
         mCellLayout = cellLayout;
         mWidgetStackView = widgetStackView;
         mWidgetView = null; // Clear widget view when using stack
         mDragLayer = dragLayer;
         InvariantDeviceProfile idp = LauncherAppState.getIDP(cellLayout.getContext());
 
-        app.lawnchair.widget.WidgetStackInfo stackInfo = widgetStackView.getStackInfo();
-        if (stackInfo == null) {
+        if (widgetStackView.getStackInfo() == null) {
             Log.w(TAG, "setupForWidgetStack: WidgetStackView has null stackInfo");
             return false;
         }
 
-        // For widget stacks, we allow resizing in both directions by default
-        // Use the minimum and maximum spans from the device profile
-        int resizeMode = AppWidgetProviderInfo.RESIZE_BOTH;
-        if (unlimited) {
-            mMinHSpan = 1;
-            mMinVSpan = 1;
-            mMaxHSpan = idp.numColumns;
-            mMaxVSpan = idp.numRows;
-        } else {
-            // Use current stack size as base, allow resizing from 1x1 to full screen
-            mMinHSpan = 1;
-            mMinVSpan = 1;
-            mMaxHSpan = idp.numColumns;
-            mMaxVSpan = idp.numRows;
-        }
+        // Resizable from 1x1 up to the workspace grid (same as former unlimited/non-unlimited
+        // branches, which were identical).
+        mMinHSpan = 1;
+        mMinVSpan = 1;
+        mMaxHSpan = idp.numColumns;
+        mMaxVSpan = idp.numRows;
 
         // Show all resize handles for widget stacks
         mVerticalResizeActive = mMinVSpan < idp.numRows && mMaxVSpan > 1 && mMinVSpan < mMaxVSpan;
@@ -813,7 +799,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             return;
         }
 
-        float scale = mWidgetView != null ? mWidgetView.getScaleToFit() : 1.0f;
+        float scale;
+        if (mWidgetView != null) {
+            scale = mWidgetView.getScaleToFit();
+        } else if (mWidgetStackView != null) {
+            scale = mWidgetStackView.getCurrentMemberScaleToFit();
+        } else {
+            scale = 1.0f;
+        }
         if (FeatureFlags.ENABLE_WIDGET_TRANSITION_FOR_RESIZING.get() && mWidgetView != null) {
             getViewRectRelativeToDragLayer(out);
         } else {

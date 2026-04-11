@@ -140,6 +140,7 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverla
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -264,6 +265,18 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public static final int REORDER_TIMEOUT = 650;
     protected final Alarm mReorderAlarm = new Alarm();
     private PreviewBackground mFolderCreateBg;
+    /** Highlight behind a widget / stack cell when a stack will be created or grown (folder-style). */
+    private PreviewBackground mWidgetStackCreateBg;
+
+    /**
+     * Monotonic unique stack ids for drag-created stacks; avoids same-millisecond collisions from
+     * {@link System#currentTimeMillis()} alone.
+     */
+    private static final AtomicLong sNextWidgetStackId = new AtomicLong();
+
+    private static long allocateWidgetStackId() {
+        return sNextWidgetStackId.updateAndGet(prev -> Math.max(prev + 1, System.currentTimeMillis()));
+    }
     /** The underlying view that we are dragging something over. */
     private View mDragOverView = null;
     private FolderIcon mDragOverFolderIcon = null;
@@ -2445,10 +2458,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             LauncherAppWidgetInfo sourceInfo = (LauncherAppWidgetInfo) newView.getTag();
             LauncherAppWidgetInfo destInfo = (LauncherAppWidgetInfo) v.getTag();
             
-            // Create a new widget stack
-            // Use timestamp for stackId to ensure uniqueness and stability
-            // The first widget in widgetIds list will create the WidgetStackView (checked in ItemInflater)
-            long stackId = System.currentTimeMillis();
+            // Create a new widget stack. The first widget in widgetIds creates the WidgetStackView
+            // (see ItemInflater).
+            long stackId = allocateWidgetStackId();
             List<Integer> widgetIds = new ArrayList<>();
             widgetIds.add(destInfo.appWidgetId);
             widgetIds.add(sourceInfo.appWidgetId);
@@ -2600,20 +2612,18 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     );
                 }
                 
-                // Set up listener for stack changes if not already set
-                if (stackView.getStackInfo() == null || stackView.getStackInfo().getWidgetIds().size() == 1) {
-                    stackView.setStackChangeListener(new WidgetStackChangeListener() {
-                        @Override
-                        public void onStackShouldCollapse(WidgetStackView stackView, int remainingWidgetId) {
-                            collapseStackToSingleWidget(stackView, remainingWidgetId);
-                        }
-                        
-                        @Override
-                        public void onStackChanged(WidgetStackView stackView) {
-                            requestLayout();
-                        }
-                    });
-                }
+                // Replace any prior listener (e.g. bind path) so collapse/layout stay wired after drag-add.
+                stackView.setStackChangeListener(new WidgetStackChangeListener() {
+                    @Override
+                    public void onStackShouldCollapse(WidgetStackView stackView, int remainingWidgetId) {
+                        collapseStackToSingleWidget(stackView, remainingWidgetId);
+                    }
+
+                    @Override
+                    public void onStackChanged(WidgetStackView stackView) {
+                        requestLayout();
+                    }
+                });
                 
                 // Add widget directly with its info, bypassing BgDataModel lookup.
                 // addWidget also updates the stack info and persists via ModelWriter.
@@ -3097,17 +3107,35 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 // as this feels to slow / unresponsive.
                 cleanupReorder(false);
                 cleanupFolderCreation();
+                cleanupWidgetStackDragPreview();
             } else if (dragMode == DRAG_MODE_ADD_TO_FOLDER) {
                 cleanupReorder(true);
                 cleanupFolderCreation();
+                cleanupWidgetStackDragPreview();
             } else if (dragMode == DRAG_MODE_CREATE_FOLDER) {
                 cleanupAddToFolder();
                 cleanupReorder(true);
+                cleanupWidgetStackDragPreview();
             } else if (dragMode == DRAG_MODE_REORDER) {
                 cleanupAddToFolder();
                 cleanupFolderCreation();
+                cleanupWidgetStackDragPreview();
+            } else if (dragMode == DRAG_MODE_CREATE_WIDGET_STACK) {
+                cleanupAddToFolder();
+                cleanupReorder(true);
+                cleanupFolderCreation();
+            } else if (dragMode == DRAG_MODE_ADD_TO_WIDGET_STACK) {
+                cleanupAddToFolder();
+                cleanupReorder(true);
+                cleanupFolderCreation();
             }
             mDragMode = dragMode;
+        }
+    }
+
+    private void cleanupWidgetStackDragPreview() {
+        if (mWidgetStackCreateBg != null) {
+            mWidgetStackCreateBg.animateToRest();
         }
     }
 
@@ -3479,7 +3507,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         ItemInfo info = dragObject.dragInfo;
         boolean widgetStackPending = willCreateWidgetStack(info, mDragOverWidgetView, false);
         if (mDragMode == DRAG_MODE_NONE && widgetStackPending) {
-            // Visual feedback can be added here similar to folder creation
+            if (mDragOverWidgetView != null) {
+                mWidgetStackCreateBg = new PreviewBackground(getContext());
+                mWidgetStackCreateBg.setup(mLauncher, mLauncher, null,
+                        mDragOverWidgetView.getMeasuredWidth(), mDragOverWidgetView.getPaddingTop());
+                mWidgetStackCreateBg.isClipping = false;
+                mWidgetStackCreateBg.animateToAccept(
+                        mDragTargetLayout, mTargetCell[0], mTargetCell[1]);
+            }
             mDragTargetLayout.clearDragOutlines();
             setDragMode(DRAG_MODE_CREATE_WIDGET_STACK);
             return;
@@ -3487,6 +3522,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         boolean willAddToStack = willAddToExistingWidgetStack(info, mDragOverWidgetView);
         if (willAddToStack && mDragMode == DRAG_MODE_NONE) {
+            if (mDragOverWidgetView != null) {
+                mWidgetStackCreateBg = new PreviewBackground(getContext());
+                mWidgetStackCreateBg.setup(mLauncher, mLauncher, null,
+                        mDragOverWidgetView.getMeasuredWidth(), mDragOverWidgetView.getPaddingTop());
+                mWidgetStackCreateBg.isClipping = false;
+                mWidgetStackCreateBg.animateToAccept(
+                        mDragTargetLayout, mTargetCell[0], mTargetCell[1]);
+            }
             if (mDragTargetLayout != null) {
                 mDragTargetLayout.clearDragOutlines();
             }

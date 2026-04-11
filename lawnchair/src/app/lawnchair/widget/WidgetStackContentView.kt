@@ -78,6 +78,7 @@ class WidgetStackContentView @JvmOverloads constructor(
     private val handler = Handler(Looper.getMainLooper())
     private var autoRotateRunnable: Runnable? = null
     private var refreshRunnable: Runnable? = null
+
     /** Pending posts from [onAppWidgetConfigureCompleted]; cleared before rescheduling to avoid overlap. */
     private var configureCompletedUpgradeRunnable: Runnable? = null
     private var isRefreshing = false
@@ -122,7 +123,9 @@ class WidgetStackContentView @JvmOverloads constructor(
                 }
             }
 
-            override fun onPageScrollStateChanged(state: Int) {}
+            // ViewPager.OnPageChangeListener requires this; we only drive the indicator from
+            // onPageScrolled / onPageSelected.
+            override fun onPageScrollStateChanged(state: Int) = Unit
         })
 
         viewPager.adapter = adapter
@@ -161,6 +164,17 @@ class WidgetStackContentView @JvmOverloads constructor(
     }
 
     fun getStackInfo(): WidgetStackInfo? = stackInfo
+
+    /**
+     * [NavigableAppWidgetHostView.getScaleToFit] for the visible page — matches single-widget
+     * resize-frame sizing ([com.android.launcher3.AppWidgetResizeFrame]).
+     */
+    fun getCurrentMemberScaleToFit(): Float {
+        if (!::viewPager.isInitialized || widgetViews.isEmpty()) return 1f
+        val idx = viewPager.currentItem.coerceIn(0, widgetViews.lastIndex)
+        val host = widgetViews[idx] as? NavigableAppWidgetHostView ?: return 1f
+        return host.scaleToFit
+    }
 
     /**
      * Call after the provider's configuration activity finishes for a widget in this stack.
@@ -554,11 +568,13 @@ class WidgetStackContentView @JvmOverloads constructor(
                 }
                 when {
                     widgetViews.size < pos -> continue
+
                     pos < widgetViews.size -> {
                         val old = widgetViews[pos]
                         existingIds.remove(old.appWidgetId)
                         widgetViews[pos] = view
                     }
+
                     else -> widgetViews.add(view)
                 }
                 existingIds.add(widgetId)

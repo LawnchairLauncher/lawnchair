@@ -20,6 +20,7 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.android.launcher3.LauncherSettings
+import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
@@ -100,6 +101,41 @@ object WidgetStackManager {
     // FIFO — first stored pending matches the first completed bind for that provider.
     private val pendingStackInfoByProvider =
         ConcurrentHashMap<String, ConcurrentLinkedDeque<WidgetStackInfo>>()
+
+    /**
+     * While the widget tray is open from [WidgetStackDialog], holds stack UI state so we can resume
+     * the dialog if the user dismisses the picker without choosing a widget.
+     */
+    private val stackDialogPickerLock = Any()
+    private var suspendedStackDialogInfo: WidgetStackInfo? = null
+    private var suspendedStackDialogIsEditing: Boolean = false
+
+    /**
+     * Call before closing the stack sheet to open [WidgetsFullSheet]. Paired with
+     * [takeSuspendedStackDialogForPickerSession] on pick (after validating the selection) or on
+     * sheet close (resume dialog).
+     */
+    @JvmStatic
+    fun prepareStackDialogForWidgetPicker(info: WidgetStackInfo, isEditing: Boolean) {
+        synchronized(stackDialogPickerLock) {
+            suspendedStackDialogInfo = info
+            suspendedStackDialogIsEditing = isEditing
+        }
+    }
+
+    /**
+     * Removes and returns suspended stack dialog state if present. Invoke from the widget pick
+     * callback only after the selection is valid, or from the picker's close listener to resume
+     * the stack dialog when the user cancelled.
+     */
+    @JvmStatic
+    fun takeSuspendedStackDialogForPickerSession(): Pair<WidgetStackInfo, Boolean>? {
+        synchronized(stackDialogPickerLock) {
+            val info = suspendedStackDialogInfo ?: return null
+            suspendedStackDialogInfo = null
+            return Pair(info, suspendedStackDialogIsEditing)
+        }
+    }
 
     /**
      * Stores pending stack info for a widget that's waiting for permission
@@ -196,7 +232,8 @@ object WidgetStackManager {
      * IMPORTANT: This only updates WIDGET_STACK_ID and WIDGET_STACK_DATA columns.
      * It does NOT modify other widget properties to avoid corrupting widget data.
      *
-     * This method ensures atomic updates and validates widget existence before updating.
+     * Row updates run in a single SQLite transaction so a crash mid-save cannot leave some
+     * members on the new JSON and others on stale data.
      */
     @JvmStatic
     fun saveStack(db: SQLiteDatabase, stackInfo: WidgetStackInfo) {
@@ -208,22 +245,26 @@ object WidgetStackManager {
         val stackJson = gson.toJson(stackInfo)
         var successCount = 0
 
-        stackInfo.widgetIds.forEach { widgetId ->
-            val values = ContentValues().apply {
-                put(LauncherSettings.Favorites.WIDGET_STACK_ID, stackInfo.stackId)
-                put(LauncherSettings.Favorites.WIDGET_STACK_DATA, stackJson)
+        SQLiteTransaction(db).use { transaction ->
+            val dbx = transaction.db
+            stackInfo.widgetIds.forEach { widgetId ->
+                val values = ContentValues().apply {
+                    put(LauncherSettings.Favorites.WIDGET_STACK_ID, stackInfo.stackId)
+                    put(LauncherSettings.Favorites.WIDGET_STACK_DATA, stackJson)
+                }
+                val rowsUpdated = dbx.update(
+                    LauncherSettings.Favorites.TABLE_NAME,
+                    values,
+                    "${LauncherSettings.Favorites.APPWIDGET_ID} = ?",
+                    arrayOf(widgetId.toString()),
+                )
+                if (rowsUpdated > 0) {
+                    successCount++
+                } else {
+                    Log.w(TAG, "Widget $widgetId not found in DB when saving stack ${stackInfo.stackId}")
+                }
             }
-            val rowsUpdated = db.update(
-                LauncherSettings.Favorites.TABLE_NAME,
-                values,
-                "${LauncherSettings.Favorites.APPWIDGET_ID} = ?",
-                arrayOf(widgetId.toString()),
-            )
-            if (rowsUpdated > 0) {
-                successCount++
-            } else {
-                Log.w(TAG, "Widget $widgetId not found in DB when saving stack ${stackInfo.stackId}")
-            }
+            transaction.commit()
         }
 
         if (successCount > 0) {

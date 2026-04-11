@@ -414,7 +414,9 @@ public class ModelWriter {
                     if (holder != null) {
                         try {
                             holder.deleteAppWidgetId(widgetId);
-                        } catch (Exception ignored) { }
+                        } catch (Exception e) {
+                            Log.w(TAG, "Failed to delete app widget id " + widgetId, e);
+                        }
                     }
                     // Delete the row from the database
                     db.delete(TABLE_NAME,
