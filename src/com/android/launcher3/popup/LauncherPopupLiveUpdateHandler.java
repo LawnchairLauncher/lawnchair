@@ -70,23 +70,21 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
         // For widgets, validate widget info exists in model before accessing it
         // This prevents deletion if widget info is stale or invalid
         if (itemInfo instanceof com.android.launcher3.model.data.LauncherAppWidgetInfo) {
-            com.android.launcher3.model.data.LauncherAppWidgetInfo widgetInfo = 
+            com.android.launcher3.model.data.LauncherAppWidgetInfo widgetInfo =
                     (com.android.launcher3.model.data.LauncherAppWidgetInfo) itemInfo;
             com.android.launcher3.model.BgDataModel bgDataModel = mContext.getModel().getBgDataModel();
             boolean widgetExists = false;
             synchronized (bgDataModel) {
-                for (ItemInfo info : bgDataModel.itemsIdMap) {
-                    if (info instanceof com.android.launcher3.model.data.LauncherAppWidgetInfo) {
-                        com.android.launcher3.model.data.LauncherAppWidgetInfo wInfo = 
-                                (com.android.launcher3.model.data.LauncherAppWidgetInfo) info;
-                        if (wInfo.appWidgetId == widgetInfo.appWidgetId) {
-                            widgetExists = true;
-                            // Use fresh widget info from model
-                            itemInfo = wInfo;
-                            // Update tag with fresh info to keep it in sync
-                            originalIcon.setTag(itemInfo);
-                            break;
-                        }
+                // itemsIdMap is keyed by stable ItemInfo.id; avoid matching only appWidgetId in case
+                // the host reuses an id after delete/rebind.
+                ItemInfo fresh = bgDataModel.itemsIdMap.get(widgetInfo.id);
+                if (fresh instanceof com.android.launcher3.model.data.LauncherAppWidgetInfo) {
+                    com.android.launcher3.model.data.LauncherAppWidgetInfo wInfo =
+                            (com.android.launcher3.model.data.LauncherAppWidgetInfo) fresh;
+                    if (wInfo.appWidgetId == widgetInfo.appWidgetId) {
+                        widgetExists = true;
+                        itemInfo = wInfo;
+                        originalIcon.setTag(itemInfo);
                     }
                 }
             }

@@ -435,40 +435,35 @@ public class ModelWriter {
         newModelTask(() -> {
             final ModelDbController dbController = mModel.getModelDbController();
             try (SQLiteTransaction t = dbController.newTransaction()) {
-                // Get the database from the transaction
                 SQLiteDatabase db = t.getDb();
                 app.lawnchair.widget.WidgetStackManager.INSTANCE.saveStack(db, stackInfo);
-                
-                // Update in-memory widget info objects to keep them in sync
-                // This ensures widgets have the correct stackId in memory
-                synchronized (mBgDataModel) {
-                    // Access Kotlin data class properties directly (they generate getters automatically)
-                    List<Integer> widgetIdsList = stackInfo.getWidgetIds();
-                    long stackIdValue = stackInfo.getStackId();
-                    for (Integer widgetIdObj : widgetIdsList) {
-                        int widgetId = widgetIdObj;
-                        // Find widget by appWidgetId, not by item id
-                        ItemInfo item = null;
-                        for (ItemInfo info : mBgDataModel.itemsIdMap) {
-                            if (info instanceof LauncherAppWidgetInfo) {
-                                LauncherAppWidgetInfo wInfo = (LauncherAppWidgetInfo) info;
-                                if (wInfo.appWidgetId == widgetId) {
-                                    item = info;
-                                    break;
-                                }
-                            }
-                        }
-                        if (item instanceof LauncherAppWidgetInfo) {
-                            LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
-                            // Only update if different to avoid unnecessary changes
-                            if (widgetInfo.widgetStackId == null || 
-                                !widgetInfo.widgetStackId.equals(stackIdValue)) {
-                                widgetInfo.widgetStackId = stackIdValue;
+                t.commit();
+            }
+            // Update memory only after the transaction has ended successfully so we do not
+            // diverge from the DB if commit/endTransaction fails.
+            synchronized (mBgDataModel) {
+                List<Integer> widgetIdsList = stackInfo.getWidgetIds();
+                long stackIdValue = stackInfo.getStackId();
+                for (Integer widgetIdObj : widgetIdsList) {
+                    int widgetId = widgetIdObj;
+                    ItemInfo item = null;
+                    for (ItemInfo info : mBgDataModel.itemsIdMap) {
+                        if (info instanceof LauncherAppWidgetInfo) {
+                            LauncherAppWidgetInfo wInfo = (LauncherAppWidgetInfo) info;
+                            if (wInfo.appWidgetId == widgetId) {
+                                item = info;
+                                break;
                             }
                         }
                     }
+                    if (item instanceof LauncherAppWidgetInfo) {
+                        LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
+                        if (widgetInfo.widgetStackId == null
+                                || !widgetInfo.widgetStackId.equals(stackIdValue)) {
+                            widgetInfo.widgetStackId = stackIdValue;
+                        }
+                    }
                 }
-                t.commit();
             }
         }).executeOnModelThread();
     }

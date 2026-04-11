@@ -2670,18 +2670,26 @@ public class Launcher extends StatefulActivity<LauncherState>
                     if (cl != null && cl.isOccupied(presenterPos.cellX, presenterPos.cellY)) {
                         View existingView = cl.getChildAt(presenterPos.cellX, presenterPos.cellY);
                         // If existing view is a WidgetStackView, check if this widget belongs to it
-                        if (existingView instanceof app.lawnchair.widget.WidgetStackView && 
-                            item instanceof LauncherAppWidgetInfo) {
+                        if (existingView instanceof app.lawnchair.widget.WidgetStackView
+                                && item instanceof LauncherAppWidgetInfo) {
                             LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
-                            app.lawnchair.widget.WidgetStackView stackView = 
-                                (app.lawnchair.widget.WidgetStackView) existingView;
+                            app.lawnchair.widget.WidgetStackView stackView =
+                                    (app.lawnchair.widget.WidgetStackView) existingView;
                             app.lawnchair.widget.WidgetStackInfo stackInfo = stackView.getStackInfo();
-                            if (stackInfo != null && stackInfo.getWidgetIds().contains(widgetInfo.appWidgetId)) {
+                            if (stackInfo != null
+                                    && stackInfo.getWidgetIds().contains(widgetInfo.appWidgetId)) {
                                 // This widget is already in the existing WidgetStackView, skip binding
                                 continue;
                             }
+                            // Do not delete: WIDGET_STACK_ID / model can be ahead of stack JSON after a
+                            // partial write or crash; deleting here would drop a valid widget.
+                            android.util.Log.w(TAG,
+                                    "Workspace bind: widget collides with WidgetStackView but is not listed "
+                                            + "in stack JSON (or stack info null); skipping bind/delete for "
+                                            + widgetInfo);
+                            continue;
                         }
-                        
+
                         Object tag = existingView != null ? existingView.getTag() : null;
                         String desc = "Collision while binding workspace item: " + item
                                 + ". Collides with " + tag;
@@ -2702,11 +2710,20 @@ public class Launcher extends StatefulActivity<LauncherState>
                     if (cl != null) {
                         View existingView = cl.getChildAt(presenterPos.cellX, presenterPos.cellY);
                         if (existingView instanceof app.lawnchair.widget.WidgetStackView) {
-                            app.lawnchair.widget.WidgetStackView stackView = 
-                                (app.lawnchair.widget.WidgetStackView) existingView;
+                            app.lawnchair.widget.WidgetStackView stackView =
+                                    (app.lawnchair.widget.WidgetStackView) existingView;
                             app.lawnchair.widget.WidgetStackInfo stackInfo = stackView.getStackInfo();
-                            if (stackInfo != null && stackInfo.getWidgetIds().contains(widgetInfo.appWidgetId)) {
+                            if (stackInfo != null
+                                    && stackInfo.getWidgetIds().contains(widgetInfo.appWidgetId)) {
                                 // WidgetStackView already exists and contains this widget - skip binding
+                                continue;
+                            }
+                            if (stackInfo != null && Objects.equals(widgetInfo.widgetStackId,
+                                    stackInfo.getStackId())) {
+                                // Same stack by id as cell, but JSON list stale — avoid second bind.
+                                android.util.Log.w(TAG,
+                                        "Stack bind: widget has stackId matching cell stack but id missing "
+                                                + "from stack JSON; skipping bind for " + widgetInfo);
                                 continue;
                             }
                         }

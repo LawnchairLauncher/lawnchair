@@ -12,6 +12,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/widget_stack_indicator_margin"
-        android:importantForAccessibility="no"
         android:visibility="visible" />
 </merge>

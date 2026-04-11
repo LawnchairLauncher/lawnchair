@@ -325,7 +325,9 @@ object WidgetStackManager {
             // Persist the reconstruction so future loads hit Strategy 1
             try {
                 saveStack(db, reconstructed)
-            } catch (_: Exception) { }
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to persist reconstructed stack $stackId; will reconstruct on next load", e)
+            }
 
             reconstructed
         } catch (e: Exception) {

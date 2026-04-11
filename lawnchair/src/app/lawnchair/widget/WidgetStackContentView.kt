@@ -78,6 +78,8 @@ class WidgetStackContentView @JvmOverloads constructor(
     private val handler = Handler(Looper.getMainLooper())
     private var autoRotateRunnable: Runnable? = null
     private var refreshRunnable: Runnable? = null
+    /** Pending posts from [onAppWidgetConfigureCompleted]; cleared before rescheduling to avoid overlap. */
+    private var configureCompletedUpgradeRunnable: Runnable? = null
     private var isRefreshing = false
     private var refreshAttempts = 0
     private var stackChangeListener: WidgetStackChangeListener? = null
@@ -137,6 +139,7 @@ class WidgetStackContentView @JvmOverloads constructor(
         super.onDetachedFromWindow()
         stopAutoRotate()
         cancelRefresh()
+        configureCompletedUpgradeRunnable = null
         handler.removeCallbacksAndMessages(null)
     }
 
@@ -181,12 +184,14 @@ class WidgetStackContentView @JvmOverloads constructor(
         // until process restart unless we reset counters here.
         cancelRefresh()
 
+        configureCompletedUpgradeRunnable?.let { handler.removeCallbacks(it) }
         val upgradeRunnable = Runnable {
             if (!isAttachedToWindow) return@Runnable
             if (appWidgetId !in (stackInfo?.widgetIds ?: emptyList())) return@Runnable
             refreshAttempts = 0
             refreshPendingWidgets()
         }
+        configureCompletedUpgradeRunnable = upgradeRunnable
         handler.post(upgradeRunnable)
         // Config activity can return before AppWidgetManager has pushed RemoteViews; retry once.
         handler.postDelayed(upgradeRunnable, 350)
@@ -531,19 +536,32 @@ class WidgetStackContentView @JvmOverloads constructor(
         try {
             var changed = false
 
-            // 1) Fill missing views
-            val existingIds = widgetViews.map { it.appWidgetId }.toSet()
-            for (widgetId in currentInfo.widgetIds) {
+            // 1) Fill missing views (keep order aligned with widgetIds)
+            val existingIds = widgetViews.map { it.appWidgetId }.toMutableSet()
+            for ((pos, widgetId) in currentInfo.widgetIds.withIndex()) {
                 if (widgetId in existingIds) continue
                 val view = createWidgetView(widgetId) ?: createPlaceholder(widgetId, currentInfo)
                     ?: continue
-                val pos = currentInfo.widgetIds.indexOf(widgetId)
-                if (pos in widgetViews.indices) {
-                    widgetViews[pos] = view
-                } else {
-                    while (widgetViews.size < pos) widgetViews.add(view)
-                    widgetViews.add(view)
+                // Pad [size..pos) with the correct id for each index (not duplicates of `view`).
+                while (widgetViews.size < pos) {
+                    val fillIndex = widgetViews.size
+                    val fillId = currentInfo.widgetIds[fillIndex]
+                    val fillView = createWidgetView(fillId) ?: createPlaceholder(fillId, currentInfo)
+                        ?: break
+                    widgetViews.add(fillView)
+                    existingIds.add(fillId)
+                    changed = true
                 }
+                when {
+                    widgetViews.size < pos -> continue
+                    pos < widgetViews.size -> {
+                        val old = widgetViews[pos]
+                        existingIds.remove(old.appWidgetId)
+                        widgetViews[pos] = view
+                    }
+                    else -> widgetViews.add(view)
+                }
+                existingIds.add(widgetId)
                 changed = true
             }
 

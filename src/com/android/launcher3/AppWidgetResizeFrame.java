@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,6 +63,7 @@ import app.lawnchair.widget.WidgetStackInfo;
 import app.lawnchair.widget.WidgetStackView;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
+    private static final String TAG = "AppWidgetResizeFrame";
     private static final int SNAP_DURATION_MS = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
@@ -272,7 +274,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 .inflate(R.layout.app_widget_resize_frame, dl, false);
         ImageView imageView = frame.findViewById(R.id.widget_resize_frame);
         imageView.setImageDrawable(DrawableTokens.WidgetResizeFrame.resolve(launcher));
-        frame.setupForWidgetStack(widgetStack, cellLayout, dl, force, unlimited);
+        if (!frame.setupForWidgetStack(widgetStack, cellLayout, dl, force, unlimited)) {
+            Log.w(TAG, "showForWidgetStack: stackInfo was null, not showing resize frame");
+            return;
+        }
         ((DragLayer.LayoutParams) frame.getLayoutParams()).customPosition = true;
 
         dl.addView(frame);
@@ -405,7 +410,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetView.addOnLayoutChangeListener(mWidgetViewLayoutListener);
     }
 
-    private void setupForWidgetStack(WidgetStackView widgetStackView, CellLayout cellLayout,
+    private boolean setupForWidgetStack(WidgetStackView widgetStackView, CellLayout cellLayout,
             DragLayer dragLayer, boolean force, boolean unlimited) {
         mCellLayout = cellLayout;
         mWidgetStackView = widgetStackView;
@@ -415,7 +420,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         app.lawnchair.widget.WidgetStackInfo stackInfo = widgetStackView.getStackInfo();
         if (stackInfo == null) {
-            return;
+            Log.w(TAG, "setupForWidgetStack: WidgetStackView has null stackInfo");
+            return false;
         }
 
         // For widget stacks, we allow resizing in both directions by default
@@ -479,6 +485,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         }
 
         setOnKeyListener(this);
+        return true;
     }
 
     public boolean beginResizeIfPointInRegion(int x, int y) {

@@ -30,6 +30,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Reorderable
 import com.android.launcher3.dragndrop.DraggableView
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.touch.ItemLongClickListener
 import com.android.launcher3.util.MultiTranslateDelegate
 
 /**
@@ -100,10 +101,8 @@ class WidgetStackView @JvmOverloads constructor(
         return true
     }
 
-    override fun onLongClick(view: View): Boolean {
-        view.performLongClick()
-        return true
-    }
+    override fun onLongClick(view: View): Boolean =
+        ItemLongClickListener.INSTANCE_WORKSPACE.onLongClick(view)
 
     override fun cancelLongPress() {
         super.cancelLongPress()

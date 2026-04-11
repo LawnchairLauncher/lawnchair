@@ -2101,8 +2101,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             child.post(new Runnable() {
                 @Override
                 public void run() {
-                    // Double-check visibility after reattachment
-                    // Ensure widget is visible if it's attached to workspace
+                    // If the real drag has already started, DragView owns the preview — do not
+                    // force the workspace copy visible (avoids flicker / duplicate widget chrome).
+                    if (!mDragController.isInPreDrag()) {
+                        return;
+                    }
                     if (widgetView.getParent() != null && widgetView.getVisibility() != View.VISIBLE) {
                         widgetView.setVisibility(View.VISIBLE);
                     }
