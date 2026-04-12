@@ -313,7 +313,7 @@ public class RotationButtonController {
             // Ignore if we can't read the setting for the current user
             return;
         }
-        if (isFoldable() && Flags.enableDeviceStateAutoRotateSettingRefactor()) {
+        if (isFoldable() && isDeviceStateAutoRotateSettingRefactorEnabled()) {
             RotationPolicy.setRotationAtAngleIfAllowed(rotationSuggestion, caller);
             return;
         }
@@ -706,25 +706,45 @@ public class RotationButtonController {
         }
     }
 
-    private boolean isFoldable() {
-        if (android.hardware.devicestate.feature.flags.Flags.deviceStatePropertyMigration()) {
-            final DeviceStateManager deviceStateManager = mContext.getSystemService(
-                    DeviceStateManager.class);
-            if (deviceStateManager == null) return false;
-            List<DeviceState> deviceStates = deviceStateManager.getSupportedDeviceStates();
-            for (int i = 0; i < deviceStates.size(); i++) {
-                DeviceState state = deviceStates.get(i);
-                if (state.hasProperty(PROPERTY_FOLDABLE_DISPLAY_CONFIGURATION_OUTER_PRIMARY)
-                        || state.hasProperty(
-                        PROPERTY_FOLDABLE_DISPLAY_CONFIGURATION_INNER_PRIMARY)) {
-                    return true;
-                }
-            }
+    /**
+     * Checks if device state auto-rotate setting refactor is enabled.
+     * Wrapped in try-catch to handle ROMs that may be missing the Flags class.
+     */
+    private boolean isDeviceStateAutoRotateSettingRefactorEnabled() {
+        try {
+            return Flags.enableDeviceStateAutoRotateSettingRefactor();
+        } catch (NoClassDefFoundError e) {
+            // some ROM may be missing Flags class
             return false;
-        } else {
-            return mContext.getResources().getIntArray(
-                    com.android.internal.R.array.config_foldedDeviceStates).length != 0;
         }
+    }
+
+    private boolean isFoldable() {
+        // Try to use the new API, fallback to old method if Flags class is not available
+        // (e.g., on some OEM ROMs or Custom ROMs)
+        try {
+            if (android.hardware.devicestate.feature.flags.Flags.deviceStatePropertyMigration()) {
+                final DeviceStateManager deviceStateManager = mContext.getSystemService(
+                        DeviceStateManager.class);
+                if (deviceStateManager == null) return false;
+                List<DeviceState> deviceStates = deviceStateManager.getSupportedDeviceStates();
+                for (int i = 0; i < deviceStates.size(); i++) {
+                    DeviceState state = deviceStates.get(i);
+                    if (state.hasProperty(PROPERTY_FOLDABLE_DISPLAY_CONFIGURATION_OUTER_PRIMARY)
+                            || state.hasProperty(
+                            PROPERTY_FOLDABLE_DISPLAY_CONFIGURATION_INNER_PRIMARY)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        } catch (NoClassDefFoundError | Exception e) {
+            // Fallback to old method: some ROMs may be missing the Flags class
+        }
+
+        // Old method: works on all Android versions and ROMs
+        return mContext.getResources().getIntArray(
+                com.android.internal.R.array.config_foldedDeviceStates).length != 0;
     }
 
     private class TaskStackListenerImpl implements TaskStackChangeListener {
