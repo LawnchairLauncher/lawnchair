@@ -1,6 +1,8 @@
 package app.lawnchair.gestures.config
 
 import android.content.Context
+import android.content.pm.LauncherApps
+import android.graphics.drawable.Icon
 import androidx.annotation.DrawableRes
 import app.lawnchair.gestures.handlers.GestureHandler
 import app.lawnchair.gestures.handlers.NoOpGestureHandler
@@ -15,7 +17,15 @@ import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
 import app.lawnchair.gestures.handlers.RecentsGestureHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import app.lawnchair.util.kotlinxJson
+import com.android.launcher3.AppFilter
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
+import com.android.launcher3.icons.cache.CacheLookupFlag.Companion.DEFAULT_LOOKUP_FLAG
+import com.android.launcher3.model.data.AppInfo
+import com.android.launcher3.pm.UserCache
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -26,6 +36,7 @@ sealed class GestureHandlerConfig {
     @get:DrawableRes
     open val iconRes: Int = R.drawable.ic_launcher_home
 
+    abstract fun getIcon(context: Context): Icon
     abstract fun getLabel(context: Context): String
     abstract fun createHandler(context: Context): GestureHandler
 
@@ -36,6 +47,7 @@ sealed class GestureHandlerConfig {
             throw IllegalArgumentException("default creator not supported")
         },
     ) : GestureHandlerConfig() {
+        override fun getIcon(context: Context) = Icon.createWithResource(context, iconRes)
         override fun getLabel(context: Context) = context.getString(labelRes)
         override fun createHandler(context: Context) = creator(context)
     }
@@ -99,6 +111,40 @@ sealed class GestureHandlerConfig {
     @Serializable
     @SerialName("openApp")
     data class OpenApp(val appName: String, val target: OpenAppTarget) : GestureHandlerConfig() {
+        override fun getIcon(context: Context): Icon {
+            when (target) {
+                is OpenAppTarget.Shortcut -> {
+                    // fallback
+                    return Icon.createWithResource(context, iconRes)
+                }
+
+                is OpenAppTarget.App -> {
+                    val filter = AppFilter(context)
+
+                    val packageName = target.key.componentName.packageName
+                    val launcherApps = context.getSystemService(LauncherApps::class.java)
+
+                    return runBlocking(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                        val appInfo = UserCache.INSTANCE.get(context).userProfiles.asSequence()
+                            .flatMap { launcherApps.getActivityList(packageName, it) }
+                            .filter { filter.shouldShowApp(it.componentName) }
+                            .map {
+                                AppInfo(context, it, it.user)
+                            }
+                            .first()
+
+                        LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(
+                            appInfo,
+                            DEFAULT_LOOKUP_FLAG,
+                        )
+
+                        LauncherAppState.getInstance(context).iconCache
+
+                        Icon.createWithBitmap(appInfo.bitmap.icon)
+                    }
+                }
+            }
+        }
         override fun getLabel(context: Context) = context.getString(R.string.gesture_handler_open_app_config, appName)
         override fun createHandler(context: Context) = OpenAppGestureHandler(context, target)
     }

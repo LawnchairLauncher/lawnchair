@@ -16,12 +16,10 @@
 
 package app.lawnchair.gestures.ui
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
-import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -44,10 +42,6 @@ import app.lawnchair.ui.theme.EdgeToEdge
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.addIf
 import app.lawnchair.util.ProvideLifecycleState
-import com.android.launcher3.LauncherAppState.Companion.getInstance
-import com.android.launcher3.icons.CacheableShortcutCachingLogic.loadIcon
-import com.android.launcher3.icons.CacheableShortcutInfo
-import com.android.launcher3.model.data.WorkspaceItemInfo
 
 class LawnchairShortcutActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -94,12 +88,10 @@ class LawnchairShortcutActivity : ComponentActivity() {
             ContextCompat.getSystemService(applicationContext, ShortcutManager::class.java)
                 ?: return
 
-        val icon = Icon.createWithResource(context, selectedHandler.iconRes)
-
-        val shortcutInfo = ShortcutInfo.Builder(context, selectedHandler::class.java.name)
+        val shortcutInfo = ShortcutInfo.Builder(context, selectedHandler.toString())
             .apply {
                 setShortLabel(selectedHandler.getLabel(context))
-                setIcon(icon)
+                setIcon(selectedHandler.getIcon(context))
                 setIntent(
                     Intent(context, RunHandlerActivity::class.java).apply {
                         action = START_ACTION
