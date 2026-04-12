@@ -50,36 +50,51 @@ sealed class GestureHandlerConfig {
 
     @Serializable
     @SerialName("recents")
-    data object Recents : Simple(R.string.gesture_handler_recents, ::RecentsGestureHandler)
+    data object Recents : Simple(R.string.gesture_handler_recents, ::RecentsGestureHandler) {
+        override val iconRes = R.drawable.ic_quickstep
+    }
 
     @Serializable
     @SerialName("openNotificationdata")
-    data object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, ::OpenNotificationsHandler)
+    data object OpenNotifications :
+        Simple(R.string.gesture_handler_open_notifications, ::OpenNotificationsHandler) {
+        override val iconRes = R.drawable.ic_sysbar_notifications
+    }
 
     @Serializable
     @SerialName("openQuickSettings")
     data object OpenQuickSettings :
-        Simple(R.string.gesture_handler_open_quick_settings, ::OpenQuickSettingsHandler)
+        Simple(R.string.gesture_handler_open_quick_settings, ::OpenQuickSettingsHandler) {
+        override val iconRes = R.drawable.ic_setting
+    }
 
     @Serializable
     @SerialName("openAppDrawer")
     data object OpenAppDrawer :
         Simple(R.string.gesture_handler_open_app_drawer, ::OpenAppDrawerGestureHandler) {
-        // todo: change this
         override val iconRes = R.drawable.ic_apps
     }
 
     @Serializable
     @SerialName("openAppSearch")
-    data object OpenAppSearch : Simple(R.string.gesture_handler_open_app_search, ::OpenAppSearchGestureHandler)
+    data object OpenAppSearch :
+        Simple(R.string.gesture_handler_open_app_search, ::OpenAppSearchGestureHandler) {
+        override val iconRes = R.drawable.ic_search
+    }
 
     @Serializable
     @SerialName("openSearch")
-    data object OpenSearch : Simple(R.string.gesture_handler_open_search, ::OpenSearchGestureHandler)
+    data object OpenSearch :
+        Simple(R.string.gesture_handler_open_search, ::OpenSearchGestureHandler) {
+        override val iconRes = R.drawable.ic_search
+    }
 
     @Serializable
     @SerialName("openAssistant")
-    data object OpenAssistant : Simple(R.string.gesture_handler_open_assistant, ::OpenAssistantHandler)
+    data object OpenAssistant :
+        Simple(R.string.gesture_handler_open_assistant, ::OpenAssistantHandler) {
+        override val iconRes = R.drawable.ic_mic_flat
+    }
 
     @Serializable
     @SerialName("openApp")
