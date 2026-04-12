@@ -1,7 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
 import android.R as AndroidR
-import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,6 +27,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.config.GestureHandlerOption
+import app.lawnchair.gestures.config.buildConfigFrom
+import app.lawnchair.gestures.config.filterGestureHandlerOptions
+import app.lawnchair.gestures.config.gestureHandlerOptions
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences2.preferenceManager2
@@ -38,19 +40,6 @@ import app.lawnchair.ui.util.LocalBottomSheetHandler
 import com.android.launcher3.util.ComponentKey
 import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.launch
-
-val gestureHandlerOptions = listOf(
-    GestureHandlerOption.NoOp,
-    GestureHandlerOption.Sleep,
-    GestureHandlerOption.Recents,
-    GestureHandlerOption.OpenNotifications,
-    GestureHandlerOption.OpenQuickSettings,
-    GestureHandlerOption.OpenAppDrawer,
-    GestureHandlerOption.OpenAppSearch,
-    GestureHandlerOption.OpenSearch,
-    GestureHandlerOption.OpenApp,
-    GestureHandlerOption.OpenAssistant,
-)
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -68,18 +57,13 @@ fun GestureHandlerPreference(
 
     fun onSelect(option: GestureHandlerOption) {
         scope.launch {
-            val config = option.buildConfig(context as Activity) ?: return@launch
+            val config = option.buildConfigFrom(context) ?: return@launch
             adapter.onChange(config)
         }
     }
 
-    val newOptions = gestureHandlerOptions.filterNot { option ->
-        option in listOf(
-            GestureHandlerOption.OpenAppDrawer,
-            GestureHandlerOption.OpenAppSearch,
-        ) &&
-            pref2.deckLayout.firstBlocking()
-    }
+    val newOptions =
+        filterGestureHandlerOptions(deckLayoutEnabled = pref2.deckLayout.firstBlocking())
 
     PreferenceTemplate(
         title = { Text(text = label) },
@@ -143,7 +127,7 @@ fun AppGesturePreference(
 
     fun onSelect(option: GestureHandlerOption) {
         scope.launch {
-            val config = option.buildConfig(context as Activity) ?: return@launch
+            val config = option.buildConfigFrom(context) ?: return@launch
             prefs.setGestureForApp(cmp, gestureType, config)
             isExpanded = false
         }
