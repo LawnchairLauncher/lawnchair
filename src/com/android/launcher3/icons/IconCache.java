@@ -69,6 +69,7 @@ import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DaggerSingletonTracker;
+import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetSections;
@@ -86,6 +87,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import app.lawnchair.LawnchairActivityCachingLogic;
+import app.lawnchair.gestures.ui.LawnchairShortcutActivity;
 import app.lawnchair.icons.LawnchairIconProvider;
 
 /**
@@ -322,7 +324,10 @@ public class IconCache extends BaseIconCache {
         if (isDefaultIcon(bitmapInfo, user) && fallbackIconCheck.test(info)) {
             return;
         }
-        info.bitmap = bitmapInfo.withBadgeInfo(getShortcutInfoBadge(si.getShortcutInfo()));
+
+        info.bitmap = LawnchairShortcutActivity.Companion.shouldSkipShortcutBadge(context, si.getShortcutInfo())
+            ? bitmapInfo.withFlags(FlagOp.NO_OP)
+            : bitmapInfo.withBadgeInfo(getShortcutInfoBadge(si.getShortcutInfo()));
     }
 
     /**
@@ -386,7 +391,10 @@ public class IconCache extends BaseIconCache {
                     CacheableShortcutCachingLogic.INSTANCE,
                     lookupFlag.withSkipAddToMemCache());
             applyCacheEntry(entry, info);
-            info.bitmap = info.bitmap.withBadgeInfo(getShortcutInfoBadge(si));
+
+            if (!LawnchairShortcutActivity.Companion.shouldSkipShortcutBadge(context, si)) {
+                info.bitmap = info.bitmap.withBadgeInfo(getShortcutInfoBadge(si));
+            }
         } else {
             Intent intent = info.getIntent();
             getTitleAndIcon(info, () -> mLauncherApps.resolveActivity(intent, info.user),

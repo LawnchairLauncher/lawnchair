@@ -21,6 +21,8 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -88,7 +90,10 @@ class LawnchairShortcutActivity : ComponentActivity() {
             ContextCompat.getSystemService(applicationContext, ShortcutManager::class.java)
                 ?: return
 
-        val shortcutInfo = ShortcutInfo.Builder(context, selectedHandler.toString())
+        val shortcutInfo = ShortcutInfo.Builder(
+            context,
+            "$GESTURE_SHORTCUT_ID_PREFIX:${selectedHandler}",
+        )
             .apply {
                 setShortLabel(selectedHandler.getLabel(context))
                 setIcon(selectedHandler.getIcon(context))
@@ -107,5 +112,14 @@ class LawnchairShortcutActivity : ComponentActivity() {
     companion object {
         const val START_ACTION = "app.lawnchair.START_ACTION"
         const val EXTRA_HANDLER = "app.lawnchair.EXTRA_HANDLER"
+        const val GESTURE_SHORTCUT_ID_PREFIX = "gesture:"
+
+        fun shouldSkipShortcutBadge(context: Context, si: ShortcutInfo): Boolean {
+            val value = context.packageName == si.`package`
+                && si.id.startsWith(GESTURE_SHORTCUT_ID_PREFIX)
+
+            Log.d("LawnchairShortcutActivity", "shouldSkipShortcutBadge: $value")
+            return value
+        }
     }
 }
