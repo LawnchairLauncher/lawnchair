@@ -43,15 +43,15 @@
     <string name="inverse_selection">Balik pilihan</string>
     <string name="loading">Memuat…</string>
     <string name="dismiss">Menolak</string>
-    <string name="download_update">Unduh pembaruan</string>
+    <string name="download_update">Unduh pembaruan </string>
     <string name="install_update">Pasang pembaruan</string>
     <string name="view_changes">Tampilkan perubahan</string>
-    <string name="pro_updated">Sudah versi terbaru!</string>
+    <string name="pro_updated">Anda sudah menggunakan versi terbaru!</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Pembaruan</string>
-    <string name="changes_dialog_error">Gagal untuk memproses pembaruan</string>
-    <string name="changes_dialog_no_changes">Tidak ditemukan pembaruan</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_error">Gagal memuat perubahan</string>
+    <string name="changes_dialog_no_changes">Tidak ditemukan perubahan</string>
+    <string name="changes_dialog_build_format">Buatan #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">oleh %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">baru saja</string>
@@ -87,14 +87,14 @@
     <string name="grid">Kisi</string>
     <string name="layout">Tata Letak</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Tampilkan wallpaper</string>
+    <string name="show_wallpaper">Tampilkan wallpaper </string>
     <string name="wallpaper">Wallpaper</string>
     <string name="style">Gaya</string>
-    <string name="background_opacity">Tingkat transparan latar belakang</string>
-    <string name="pref_all_apps_search_bar_background">Pisahkan latar Bilah pencari</string>
+    <string name="background_opacity">Tingkat transparansi latar belakang</string>
+    <string name="pref_all_apps_search_bar_background">Pisahkan latar kolom pencarian</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Disalin ke papan klip</string>
-    <string name="calculator_search_result_copied_toast">Hasil disalin ke papan klip</string>
+    <string name="copied_toast">Disalin ke klip salinan</string>
+    <string name="calculator_search_result_copied_toast">Hasil disalin ke klip</string>
     <string name="item_removed">Butir dihapus</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Yang ditampilkan</string>

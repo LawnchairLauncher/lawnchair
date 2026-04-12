@@ -368,7 +368,7 @@
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Состояние батареи</string>
     <string name="smartspace_now_playing">Сейчас играет</string>
-    <string name="smartspace_onboarding">Onboarding</string>
+    <string name="smartspace_onboarding">Конфигурация</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Настроить ваш Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Зажмите и удерживайте главный экран, что бы открыть настройки</string>
@@ -470,9 +470,9 @@
     <string name="sleep_a11y_hint">Выключить экран устройства</string>
     <string name="notifications_fallback_a11y_hint">Открыть панель уведомлений</string>
     <string name="quick_settings_a11y_hint">Открыть панель быстрых настроек</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_screen_a11y_hint">открыть Экран недавних приложений</string>
+    <string name="generic_a11y_hint">Чтобы использовать функционал \" %1$s \", включите Lawnchair в меню спец. возможностей. Для этого откройте Настройки, затем выберите \"Lawnchair\" и нажмите \"Использовать Lawnchair\".</string>
+    <string name="generic_a11y_disclaimer">Lawnchair использует метод спец. возможностей «performGlobalAction» для выполнения этого действия. Это чувствительное разрешение, позволяющее отслеживать другие приложения. Однако, Lawnchair не настроен на такой мониторинг и не регистрирует никакие события.</string>
     <!--
 
     Bug reporting
@@ -519,8 +519,8 @@
     <string name="home_screen_unlock">Разблокировать глав. экран</string>
     <string name="home_screen_locked">Глав. экран заблокирован</string>
     <string name="home_screen_lock_description">Предотвращать изменения макета глав. экрана</string>
-    <string name="set_default_home_page">Set as default page</string>
-    <string name="default_home_page_set">Default home page updated</string>
+    <string name="set_default_home_page">Установить как страницу по умолчанию</string>
+    <string name="default_home_page_set">Домашняя страница по умолчанию обновлена</string>
     <string name="popup_menu">Всплывающее меню</string>
     <string name="popup_menu_items">Пункты всплывающего меню</string>
     <string name="edit_menu_items">Редактировать пункты всплыв. меню</string>
@@ -590,7 +590,7 @@
     <string name="pref_all_apps_show_scrollbar_title">Показать полосу прокрутки</string>
     <string name="app_drawer_columns">Кол-во столбцов в Меню приложений</string>
     <string name="row_height_label">Высота строки</string>
-    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
+    <string name="app_drawer_haptic_feedback_label">Виброотклик</string>
     <string name="app_drawer_indent_label">Горизонт. отступ</string>
     <string name="app_drawer_bg_color_label">Цвет фона</string>
     <string name="work_profile_tab_background_label">Фоновый цвет вкладок</string>

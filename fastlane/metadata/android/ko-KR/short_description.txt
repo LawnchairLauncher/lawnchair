@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+AOSP의 Launcher 3 기반 홈 화면
