@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.LabelComparator;
@@ -492,6 +493,19 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
         @Override
         public int compare(WidgetsListBaseEntry a, WidgetsListBaseEntry b) {
+            // Display Lawnchair at the top of the list
+            boolean leftIsLawnchair = a.mPkgItem.packageName.equals(BuildConfig.APPLICATION_ID);
+            boolean rightIsLawnchair = b.mPkgItem.packageName.equals(BuildConfig.APPLICATION_ID);
+            if (leftIsLawnchair || rightIsLawnchair) {
+                if (leftIsLawnchair && rightIsLawnchair) {
+                    return 0;
+                }
+                if (leftIsLawnchair) {
+                    return -1;
+                }
+                return 1;
+            }
+            
             int i = mComparator.compare(a.mPkgItem.title.toString(), b.mPkgItem.title.toString());
             if (i != 0) {
                 return i;
