@@ -95,7 +95,7 @@ class LawnchairShortcutActivity : ComponentActivity() {
             "$GESTURE_SHORTCUT_ID_PREFIX:${selectedHandler}",
         )
             .apply {
-                setShortLabel(selectedHandler.getLabel(context))
+                setShortLabel(selectedHandler.getDisplayLabel(context))
                 setIcon(selectedHandler.getIcon(context))
                 setIntent(
                     Intent(context, RunHandlerActivity::class.java).apply {

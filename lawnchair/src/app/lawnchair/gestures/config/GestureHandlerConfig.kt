@@ -2,8 +2,11 @@ package app.lawnchair.gestures.config
 
 import android.content.Context
 import android.content.pm.LauncherApps
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.Icon
 import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
 import app.lawnchair.gestures.handlers.GestureHandler
 import app.lawnchair.gestures.handlers.NoOpGestureHandler
 import app.lawnchair.gestures.handlers.OpenAppDrawerGestureHandler
@@ -16,6 +19,7 @@ import app.lawnchair.gestures.handlers.OpenQuickSettingsHandler
 import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
 import app.lawnchair.gestures.handlers.RecentsGestureHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
+import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.AppFilter
 import com.android.launcher3.LauncherAppState
@@ -29,6 +33,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import androidx.core.graphics.createBitmap
+import com.android.launcher3.icons.LauncherIcons
 
 @Serializable
 sealed class GestureHandlerConfig {
@@ -40,6 +46,8 @@ sealed class GestureHandlerConfig {
     abstract fun getLabel(context: Context): String
     abstract fun createHandler(context: Context): GestureHandler
 
+    open fun getDisplayLabel(context: Context) = getLabel(context)
+
     @Serializable
     sealed class Simple(
         val labelRes: Int,
@@ -47,7 +55,18 @@ sealed class GestureHandlerConfig {
             throw IllegalArgumentException("default creator not supported")
         },
     ) : GestureHandlerConfig() {
-        override fun getIcon(context: Context) = Icon.createWithResource(context, iconRes)
+        override fun getIcon(context: Context): Icon {
+            val drawable = AppCompatResources.getDrawable(context, iconRes)!!
+            drawable.setTint(ColorTokens.ColorAccent.resolveColor(context))
+
+            val bitmap = createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+
+            return Icon.createWithBitmap(bitmap)
+        }
+
         override fun getLabel(context: Context) = context.getString(labelRes)
         override fun createHandler(context: Context) = creator(context)
     }
@@ -138,13 +157,13 @@ sealed class GestureHandlerConfig {
                             DEFAULT_LOOKUP_FLAG,
                         )
 
-                        LauncherAppState.getInstance(context).iconCache
-
                         Icon.createWithBitmap(appInfo.bitmap.icon)
                     }
                 }
             }
         }
+
+        override fun getDisplayLabel(context: Context) = appName
         override fun getLabel(context: Context) = context.getString(R.string.gesture_handler_open_app_config, appName)
         override fun createHandler(context: Context) = OpenAppGestureHandler(context, target)
     }
