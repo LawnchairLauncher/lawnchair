@@ -134,6 +134,8 @@ fun AppGesturePreference(
         }
     }
 
+    val options = filterGestureHandlerOptions(deckLayoutEnabled = prefs.deckLayout.getAdapter().state.value)
+
     Column(modifier = modifier.fillMaxWidth()) {
         PreferenceTemplate(
             title = { Text(text = label) },
@@ -152,7 +154,7 @@ fun AppGesturePreference(
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    itemsIndexed(gestureHandlerOptions) { index, option ->
+                    itemsIndexed(options) { index, option ->
                         if (index > 0) {
                             PreferenceDivider(startIndent = 40.dp)
                         }
