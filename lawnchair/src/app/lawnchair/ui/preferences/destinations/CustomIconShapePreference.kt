@@ -41,7 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.lawnchair.icons.shape.IconCornerShape
-import app.lawnchair.icons.shape.IconShapeV2
+import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.ModalBottomSheetContent
@@ -69,7 +69,7 @@ fun CustomIconShapePreference(
 
     val appliedIconShape = customIconShapeAdapter.state.value
     val selectedIconShape =
-        remember { mutableStateOf(appliedIconShape ?: IconShapeV2.Circle) }
+        remember { mutableStateOf(appliedIconShape ?: IconShape.Circle) }
     val selectedIconShapeApplied = remember {
         derivedStateOf {
             appliedIconShape.toString() == selectedIconShape.value.toString()
@@ -130,9 +130,9 @@ fun CustomIconShapePreference(
 
 @Composable
 private fun IconShapeCornerPreferenceGroup(
-    selectedIconShape: IconShapeV2.CornerBased,
+    selectedIconShape: IconShape.CornerBased,
     modifier: Modifier = Modifier,
-    onSelectedIconShapeChange: (IconShapeV2.CornerBased) -> Unit,
+    onSelectedIconShapeChange: (IconShape.CornerBased) -> Unit,
 ) {
     PreferenceGroup(
         modifier = modifier,
@@ -195,9 +195,9 @@ private fun IconShapeCornerPreferenceGroup(
 
 @Composable
 private fun IconShapeClipboardPreferenceGroup(
-    selectedIconShape: IconShapeV2.CornerBased,
+    selectedIconShape: IconShape.CornerBased,
     modifier: Modifier = Modifier,
-    onSelectedIconShapeChange: (IconShapeV2.CornerBased) -> Unit,
+    onSelectedIconShapeChange: (IconShape.CornerBased) -> Unit,
 ) {
     val context = LocalContext.current
     val importErrorMessage = stringResource(id = R.string.icon_shape_clipboard_import_error)
@@ -222,7 +222,7 @@ private fun IconShapeClipboardPreferenceGroup(
                 label = stringResource(id = R.string.import_from_clipboard),
             ) {
                 getClipboardContent(context)?.let {
-                    IconShapeV2.fromString(value = it, context = context) as IconShapeV2.CornerBased
+                    IconShape.fromString(value = it, context = context) as IconShape.CornerBased
                 }?.let {
                     onSelectedIconShapeChange(it)
                 } ?: run {

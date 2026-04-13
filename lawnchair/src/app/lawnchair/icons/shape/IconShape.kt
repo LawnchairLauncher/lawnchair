@@ -22,7 +22,7 @@ import kotlin.apply
  * Each shape is identified by a unique [key] and provides a [getMaskPath]
  * implementation for rendering the icon's outline.
  */
-sealed class IconShapeV2 {
+sealed class IconShape {
     abstract val key: String
 
     override fun toString(): String {
@@ -45,7 +45,7 @@ sealed class IconShapeV2 {
     class SystemBased(
         private val iconMask: Path,
         val context: Context,
-    ) : IconShapeV2() {
+    ) : IconShape() {
         private val nearestShape: CornerBased by lazy(LazyThreadSafetyMode.PUBLICATION) {
             findNearestShape()
         }
@@ -94,7 +94,7 @@ sealed class IconShapeV2 {
     open class PathBased(
         override val key: String,
         val svgPathString: String,
-    ) : IconShapeV2(), DefaultShapes {
+    ) : IconShape(), DefaultShapes {
         private val cachedPath by lazy {
             PathParser.createPathFromPathData(svgPathString)
         }
@@ -108,7 +108,7 @@ sealed class IconShapeV2 {
         val topRight: Corner,
         val bottomLeft: Corner,
         val bottomRight: Corner,
-    ) : IconShapeV2(), DefaultShapes {
+    ) : IconShape(), DefaultShapes {
         constructor(
             key: String,
             topLeftShape: IconCornerShape,
@@ -368,7 +368,7 @@ sealed class IconShapeV2 {
 
     companion object {
 
-        fun fromString(value: String, context: Context): IconShapeV2? {
+        fun fromString(value: String, context: Context): IconShape? {
             if (value == "system") {
                 runCatching {
                     return IconShapeManager.getSystemIconShape(context = context)
@@ -377,7 +377,7 @@ sealed class IconShapeV2 {
             return fromStringWithoutContext(value = value)
         }
 
-        private fun fromStringWithoutContext(value: String): IconShapeV2? = when (value) {
+        private fun fromStringWithoutContext(value: String): IconShape? = when (value) {
             "circle" -> Circle
             "square" -> Square
             "sharpSquare" -> SharpSquare
@@ -413,7 +413,7 @@ sealed class IconShapeV2 {
             )
         }
 
-        fun isCustomShape(iconShape: IconShapeV2): Boolean {
+        fun isCustomShape(iconShape: IconShape): Boolean {
             return try {
                 parseCustomShape(iconShape.toString())
                 true
@@ -451,7 +451,7 @@ sealed class IconShapeV2 {
 object CornerShapeCompat {
     @JvmOverloads
     fun addToPath(
-        shape: IconShapeV2.CornerBased,
+        shape: IconShape.CornerBased,
         path: Path,
         left: Float,
         top: Float,

@@ -20,23 +20,12 @@
 package app.lawnchair.icons.shape
 
 import android.content.Context
-import android.graphics.Path
-import android.graphics.Region
 import android.graphics.drawable.AdaptiveIconDrawable
-import app.lawnchair.icons.shape.IconShapeV2.Circle
-import app.lawnchair.icons.shape.IconShapeV2.Cylinder
-import app.lawnchair.icons.shape.IconShapeV2.RoundedSquare
-import app.lawnchair.icons.shape.IconShapeV2.Sammy
-import app.lawnchair.icons.shape.IconShapeV2.Square
-import app.lawnchair.icons.shape.IconShapeV2.Squircle
-import app.lawnchair.icons.shape.IconShapeV2.Teardrop
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.Utilities
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
-import com.android.launcher3.graphics.ThemeManager
-import com.android.launcher3.icons.GraphicsUtils
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.firstBlocking
@@ -49,11 +38,11 @@ class IconShapeManager @Inject constructor(
 
     private val systemIconShape = getSystemShape()
 
-    private fun getSystemShape(): IconShapeV2.SystemBased {
+    private fun getSystemShape(): IconShape.SystemBased {
         if (!Utilities.ATLEAST_O) throw RuntimeException("not supported on < oreo")
 
         val iconMask = AdaptiveIconDrawable(null, null).iconMask
-        return IconShapeV2.SystemBased(iconMask, context)
+        return IconShape.SystemBased(iconMask, context)
     }
 
     override fun close() {

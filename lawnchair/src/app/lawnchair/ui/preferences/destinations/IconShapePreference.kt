@@ -48,7 +48,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.lawnchair.icons.shape.IconShapeV2
+import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
@@ -71,31 +71,31 @@ enum class ShapeRoute {
 }
 
 /**
- * @return The list of all [IconShapeV2]s each wrapped inside a [ListPreferenceEntry].
+ * @return The list of all [IconShape]s each wrapped inside a [ListPreferenceEntry].
  */
-fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShapeV2>> {
+fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShape>> {
     val systemShape = IconShapeManager.getSystemIconShape(context)
     return listOf(
         // Organized as seen in /lawnchair/res/values/strings.xml
         ListPreferenceEntry(systemShape) { stringResource(id = R.string.icon_shape_system) },
-        ListPreferenceEntry(IconShapeV2.Circle) { stringResource(id = R.string.icon_shape_circle) },
-        ListPreferenceEntry(IconShapeV2.Cylinder) { stringResource(id = R.string.icon_shape_cylinder) },
-        ListPreferenceEntry(IconShapeV2.Diamond) { stringResource(id = R.string.icon_shape_diamond) },
-        ListPreferenceEntry(IconShapeV2.Egg) { stringResource(id = R.string.icon_shape_egg) },
-        ListPreferenceEntry(IconShapeV2.Hexagon) { stringResource(id = R.string.icon_shape_hexagon) },
-        ListPreferenceEntry(IconShapeV2.Cupertino) { stringResource(id = R.string.icon_shape_cupertino) },
-        ListPreferenceEntry(IconShapeV2.Octagon) { stringResource(id = R.string.icon_shape_octagon) },
-        ListPreferenceEntry(IconShapeV2.Sammy) { stringResource(id = R.string.icon_shape_sammy) },
-        ListPreferenceEntry(IconShapeV2.RoundedSquare) { stringResource(id = R.string.icon_shape_rounded_square) },
-        ListPreferenceEntry(IconShapeV2.SharpSquare) { stringResource(id = R.string.icon_shape_sharp_square) },
-        ListPreferenceEntry(IconShapeV2.Square) { stringResource(id = R.string.icon_shape_square) },
-        ListPreferenceEntry(IconShapeV2.Squircle) { stringResource(id = R.string.icon_shape_squircle) },
-        ListPreferenceEntry(IconShapeV2.Teardrop) { stringResource(id = R.string.icon_shape_teardrop) },
-        ListPreferenceEntry(IconShapeV2.VerySunny) { stringResource(id = R.string.icon_shape_very_sunny) },
-        ListPreferenceEntry(IconShapeV2.ComplexClover) { stringResource(id = R.string.icon_shape_complex_clover) },
-        ListPreferenceEntry(IconShapeV2.FourSidedCookie) { stringResource(id = R.string.icon_shape_four_sided_cookie) },
-        ListPreferenceEntry(IconShapeV2.SevenSidedCookie) { stringResource(id = R.string.icon_shape_seven_sided_cookie) },
-        ListPreferenceEntry(IconShapeV2.Arch) { stringResource(id = R.string.icon_shape_arch) },
+        ListPreferenceEntry(IconShape.Circle) { stringResource(id = R.string.icon_shape_circle) },
+        ListPreferenceEntry(IconShape.Cylinder) { stringResource(id = R.string.icon_shape_cylinder) },
+        ListPreferenceEntry(IconShape.Diamond) { stringResource(id = R.string.icon_shape_diamond) },
+        ListPreferenceEntry(IconShape.Egg) { stringResource(id = R.string.icon_shape_egg) },
+        ListPreferenceEntry(IconShape.Hexagon) { stringResource(id = R.string.icon_shape_hexagon) },
+        ListPreferenceEntry(IconShape.Cupertino) { stringResource(id = R.string.icon_shape_cupertino) },
+        ListPreferenceEntry(IconShape.Octagon) { stringResource(id = R.string.icon_shape_octagon) },
+        ListPreferenceEntry(IconShape.Sammy) { stringResource(id = R.string.icon_shape_sammy) },
+        ListPreferenceEntry(IconShape.RoundedSquare) { stringResource(id = R.string.icon_shape_rounded_square) },
+        ListPreferenceEntry(IconShape.SharpSquare) { stringResource(id = R.string.icon_shape_sharp_square) },
+        ListPreferenceEntry(IconShape.Square) { stringResource(id = R.string.icon_shape_square) },
+        ListPreferenceEntry(IconShape.Squircle) { stringResource(id = R.string.icon_shape_squircle) },
+        ListPreferenceEntry(IconShape.Teardrop) { stringResource(id = R.string.icon_shape_teardrop) },
+        ListPreferenceEntry(IconShape.VerySunny) { stringResource(id = R.string.icon_shape_very_sunny) },
+        ListPreferenceEntry(IconShape.ComplexClover) { stringResource(id = R.string.icon_shape_complex_clover) },
+        ListPreferenceEntry(IconShape.FourSidedCookie) { stringResource(id = R.string.icon_shape_four_sided_cookie) },
+        ListPreferenceEntry(IconShape.SevenSidedCookie) { stringResource(id = R.string.icon_shape_seven_sided_cookie) },
+        ListPreferenceEntry(IconShape.Arch) { stringResource(id = R.string.icon_shape_arch) },
     )
 }
 
@@ -268,8 +268,8 @@ fun IconShapePreference(
 
 @Composable
 private fun CustomIconShapePreferenceOption(
-    iconShapeAdapter: PreferenceAdapter<IconShapeV2>,
-    customIconShape: IconShapeV2,
+    iconShapeAdapter: PreferenceAdapter<IconShape>,
+    customIconShape: IconShape,
     modifier: Modifier = Modifier,
 ) {
     PreferenceTemplate(
@@ -279,7 +279,7 @@ private fun CustomIconShapePreferenceOption(
         },
         startWidget = {
             RadioButton(
-                selected = IconShapeV2.isCustomShape(iconShapeAdapter.state.value),
+                selected = IconShape.isCustomShape(iconShapeAdapter.state.value),
                 onClick = null,
             )
         },
@@ -291,7 +291,7 @@ private fun CustomIconShapePreferenceOption(
 
 @Composable
 private fun ModifyCustomIconShapePreference(
-    customIconShape: IconShapeV2?,
+    customIconShape: IconShape?,
     modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
@@ -338,11 +338,11 @@ private fun ModifyCustomIconShapePreference(
 }
 
 /**
- * Draws a preview of an [IconShapeV2].
+ * Draws a preview of an [IconShape].
  */
 @Composable
 fun IconShapePreview(
-    iconShape: IconShapeV2,
+    iconShape: IconShape,
     modifier: Modifier = Modifier,
     strokeColor: Color = MaterialTheme.colorScheme.primary,
     fillColor: Color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f),

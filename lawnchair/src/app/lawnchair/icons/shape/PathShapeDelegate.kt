@@ -31,7 +31,7 @@ import com.android.launcher3.views.ClipPathView
  * when the IconShape provides an SVG path string. The shape is assumed
  * to be defined within a [0, 0, 100, 100] viewport.
  */
-data class PathShapeDelegate(private val iconShape: IconShapeV2) : ShapeDelegate {
+data class PathShapeDelegate(private val iconShape: IconShape) : ShapeDelegate {
 
     private val basePath: Path = iconShape.getMaskPath()
     private val tmpPath = Path()
@@ -78,13 +78,13 @@ data class PathShapeDelegate(private val iconShape: IconShapeV2) : ShapeDelegate
         isReversed: Boolean,
     ): ValueAnimator where T : View, T : ClipPathView {
 
-        val shape = if (iconShape is IconShapeV2.SystemBased) iconShape.findNearestShape() else iconShape
+        val shape = if (iconShape is IconShape.SystemBased) iconShape.findNearestShape() else iconShape
 
         val pathProvider: (Float, Path) -> Unit = when (shape) {
-            is IconShapeV2.PathBased ->
+            is IconShape.PathBased ->
                 getPathBasedProvider(shape, startRect, endRect, endRadius)
 
-            is IconShapeV2.CornerBased ->
+            is IconShape.CornerBased ->
                 // Fallback: Use IconShape's addToPath with progress interpolation for corner-based shapes
                 getCornerBasedProvider(shape, startRect, endRect, endRadius)
 
@@ -101,7 +101,7 @@ data class PathShapeDelegate(private val iconShape: IconShapeV2) : ShapeDelegate
     }
 
     private fun getCornerBasedProvider(
-        iconShape: IconShapeV2.CornerBased,
+        iconShape: IconShape.CornerBased,
         startRect: Rect,
         endRect: Rect,
         endRadius: Float,
@@ -130,7 +130,7 @@ data class PathShapeDelegate(private val iconShape: IconShapeV2) : ShapeDelegate
     }
 
     private fun getPathBasedProvider(
-        iconShape: IconShapeV2.PathBased,
+        iconShape: IconShape.PathBased,
         startRect: Rect,
         endRect: Rect,
         endRadius: Float,

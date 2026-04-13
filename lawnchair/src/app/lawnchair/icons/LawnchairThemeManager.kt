@@ -2,7 +2,7 @@ package app.lawnchair.icons
 
 import android.content.Context
 import android.util.Log
-import app.lawnchair.icons.shape.IconShapeV2
+import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.PathShapeDelegate
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.EncryptionType
@@ -77,18 +77,18 @@ constructor(
     }
 
     private fun parseIconStateV2(oldState: IconState?): IconState {
-        val currentAppShape: IconShapeV2 = try {
+        val currentAppShape: IconShape = try {
             prefs2.iconShape.firstBlocking()
         } catch (e: Exception) {
             Log.d(TAG, "Error getting icon shape", e)
-            IconShapeV2.Circle
+            IconShape.Circle
         }
 
-        val currentFolderShape: IconShapeV2 = try {
+        val currentFolderShape: IconShape = try {
             prefs2.folderShape.firstBlocking()
         } catch (e: Exception) {
             Log.d(TAG, "Error getting icon shape", e)
-            IconShapeV2.Circle
+            IconShape.Circle
         }
 
         val appShapeKey = currentAppShape.getHashString()
