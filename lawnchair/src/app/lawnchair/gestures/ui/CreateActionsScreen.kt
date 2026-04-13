@@ -10,6 +10,7 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.config.GestureHandlerOption
 import app.lawnchair.gestures.config.buildConfigFrom
 import app.lawnchair.gestures.config.filterGestureHandlerOptions
+import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
@@ -28,13 +29,11 @@ fun CreateActionsScreen(
 
     val prefs2 = preferenceManager2()
     val newOptions =
-        filterGestureHandlerOptions(deckLayoutEnabled = prefs2.deckLayout.firstBlocking())
+        filterGestureHandlerOptions(deckLayoutEnabled = prefs2.deckLayout.getAdapter().state.value)
 
     fun onClick(option: GestureHandlerOption) {
         scope.launch {
             val config = option.buildConfigFrom(context) ?: return@launch
-
-            Log.d("CreateActionsScreen", "config: $config")
             onSelect(config)
         }
     }

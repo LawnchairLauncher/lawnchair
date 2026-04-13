@@ -92,7 +92,7 @@ class LawnchairShortcutActivity : ComponentActivity() {
 
         val shortcutInfo = ShortcutInfo.Builder(
             context,
-            "$GESTURE_SHORTCUT_ID_PREFIX:${selectedHandler}",
+            "$GESTURE_SHORTCUT_ID_PREFIX:$selectedHandler",
         )
             .apply {
                 setShortLabel(selectedHandler.getDisplayLabel(context))
@@ -115,10 +115,9 @@ class LawnchairShortcutActivity : ComponentActivity() {
         const val GESTURE_SHORTCUT_ID_PREFIX = "gesture:"
 
         fun shouldSkipShortcutBadge(context: Context, si: ShortcutInfo): Boolean {
-            val value = context.packageName == si.`package`
-                && si.id.startsWith(GESTURE_SHORTCUT_ID_PREFIX)
+            val value = context.packageName == si.`package` &&
+                si.id.startsWith(GESTURE_SHORTCUT_ID_PREFIX)
 
-            Log.d("LawnchairShortcutActivity", "shouldSkipShortcutBadge: $value")
             return value
         }
     }

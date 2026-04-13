@@ -251,8 +251,9 @@ class LawnchairLauncher : QuickstepLauncher() {
     override fun onNewIntent(intent: Intent?) {
         if (intent != null && intent.action == LawnchairShortcutActivity.START_ACTION) {
             val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
-            handlerString?.let {
-                gestureController.handle(GestureHandlerConfig.fromString(it))
+            val config = handlerString?.let { GestureHandlerConfig.fromString(it) }
+            if (config != null && config.isExternallyInvokable()) {
+                gestureController.handle(config)
             }
         }
 

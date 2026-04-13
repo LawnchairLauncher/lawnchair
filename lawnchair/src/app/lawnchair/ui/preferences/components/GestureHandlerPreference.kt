@@ -32,6 +32,7 @@ import app.lawnchair.gestures.config.filterGestureHandlerOptions
 import app.lawnchair.gestures.config.gestureHandlerOptions
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.preferences.PreferenceAdapter
+import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
@@ -51,7 +52,7 @@ fun GestureHandlerPreference(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val bottomSheetHandler = LocalBottomSheetHandler.current
-    val pref2 = preferenceManager2()
+    val prefs2 = preferenceManager2()
 
     val currentConfig = adapter.state.value
 
@@ -63,7 +64,7 @@ fun GestureHandlerPreference(
     }
 
     val newOptions =
-        filterGestureHandlerOptions(deckLayoutEnabled = pref2.deckLayout.firstBlocking())
+        filterGestureHandlerOptions(deckLayoutEnabled = prefs2.deckLayout.getAdapter().state.value)
 
     PreferenceTemplate(
         title = { Text(text = label) },
