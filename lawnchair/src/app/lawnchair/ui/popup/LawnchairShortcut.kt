@@ -32,6 +32,7 @@ import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.firstBlocking
 import java.net.URISyntaxException
@@ -73,6 +74,21 @@ class LawnchairShortcut {
                     return@Factory null
                 }
                 UnInstall(activity, itemInfo, view)
+            }
+
+        val OPEN_IN_STORE =
+            SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, originalView: View ->
+                if (itemInfo.itemType != ITEM_TYPE_APPLICATION) return@Factory null
+                val packageName = itemInfo.targetComponent?.packageName ?: return@Factory null
+                val context = activity.asContext()
+                val installer = PackageManagerHelper.INSTANCE.get(context)
+                    .getAppInstallerPackage(packageName) ?: return@Factory null
+                if (installer == "com.google.android.packageinstaller" ||
+                    installer == "com.android.packageinstaller"
+                ) {
+                    return@Factory null
+                }
+                OpenInStore(activity, itemInfo, originalView, packageName, installer)
             }
 
         val PAUSE_APPS = SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
@@ -239,6 +255,44 @@ class LawnchairShortcut {
             } catch (e: URISyntaxException) {
                 // Do nothing.
             }
+        }
+    }
+
+    class OpenInStore(
+        target: ActivityContext,
+        itemInfo: ItemInfo,
+        originalView: View,
+        private val packageName: String,
+        private val installerPackage: String,
+    ) : SystemShortcut<ActivityContext>(
+        R.drawable.ic_open_in_store,
+        R.string.open_in_store_drop_target_label,
+        target,
+        itemInfo,
+        originalView,
+    ) {
+        override fun onClick(v: View) {
+            dismissTaskMenuView()
+            val intent = buildIntent() ?: return
+            mTarget.startActivitySafely(v, intent, mItemInfo)
+        }
+
+        private fun buildIntent(): Intent? {
+            val uri = when (installerPackage) {
+                "com.android.vending",
+                "org.gdroid.gdroid",
+                "com.aurora.store",
+                -> "market://details?id=$packageName"
+
+                "org.fdroid.fdroid" -> "https://f-droid.org/packages/$packageName/"
+
+                "com.github.librecaptcha.apps.fdroidclient",
+                "com.looker.droidify",
+                -> "droidify://details?id=$packageName"
+
+                else -> "market://details?id=$packageName"
+            }
+            return Intent(Intent.ACTION_VIEW, Uri.parse(uri))
         }
     }
 }
