@@ -46,7 +46,11 @@ sealed class IconShapeV2 {
         private val iconMask: Path,
         val context: Context,
     ) : IconShapeV2() {
-        override fun getMaskPath(): Path = iconMask
+        private val nearestShape: CornerBased by lazy(LazyThreadSafetyMode.PUBLICATION) {
+            findNearestShape()
+        }
+
+        override fun getMaskPath(): Path = nearestShape.getMaskPath()
 
         override val key = "system"
 
@@ -95,7 +99,7 @@ sealed class IconShapeV2 {
             PathParser.createPathFromPathData(svgPathString)
         }
 
-        override fun getMaskPath(): Path = cachedPath
+        override fun getMaskPath(): Path = Path(cachedPath)
     }
 
     open class CornerBased(
