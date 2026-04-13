@@ -94,7 +94,8 @@ sealed class IconShape {
     open class PathBased(
         override val key: String,
         val svgPathString: String,
-    ) : IconShape(), DefaultShapes {
+    ) : IconShape(),
+        DefaultShapes {
         private val cachedPath by lazy {
             PathParser.createPathFromPathData(svgPathString)
         }
@@ -108,7 +109,8 @@ sealed class IconShape {
         val topRight: Corner,
         val bottomLeft: Corner,
         val bottomRight: Corner,
-    ) : IconShape(), DefaultShapes {
+    ) : IconShape(),
+        DefaultShapes {
         constructor(
             key: String,
             topLeftShape: IconCornerShape,

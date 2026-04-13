@@ -34,8 +34,8 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
-import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.icons.shape.IconShape
+import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm

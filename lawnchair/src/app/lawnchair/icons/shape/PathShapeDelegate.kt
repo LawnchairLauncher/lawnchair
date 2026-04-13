@@ -77,7 +77,6 @@ data class PathShapeDelegate(private val iconShape: IconShape) : ShapeDelegate {
         endRadius: Float,
         isReversed: Boolean,
     ): ValueAnimator where T : View, T : ClipPathView {
-
         val shape = if (iconShape is IconShape.SystemBased) iconShape.findNearestShape() else iconShape
 
         val pathProvider: (Float, Path) -> Unit = when (shape) {
