@@ -154,8 +154,10 @@ class PreferenceManager2 @Inject constructor(
         key = stringPreferencesKey(name = "custom_icon_shape"),
         defaultValue = null,
         parse = {
-            IconShape.runCatching { parseCustomShape(value = it) }.getOrNull()
-                ?: IconShapeManager.getSystemIconShape(context).findNearestShape()
+            IconShape.CustomCornerBased.fromStringOrNull(value = it)
+                ?: IconShape.CustomCornerBased(
+                    IconShapeManager.getSystemIconShape(context).findNearestShape(),
+                )
         },
         save = { it.toString() },
         onSet = { it?.let(iconShape::setBlocking) },

@@ -105,10 +105,10 @@ sealed class IconShape {
 
     open class CornerBased(
         override val key: String,
-        val topLeft: Corner,
-        val topRight: Corner,
-        val bottomLeft: Corner,
-        val bottomRight: Corner,
+        open val topLeft: Corner,
+        open val topRight: Corner,
+        open val bottomLeft: Corner,
+        open val bottomRight: Corner,
     ) : IconShape(),
         DefaultShapes {
         constructor(
@@ -186,6 +186,63 @@ sealed class IconShape {
 
         override fun getMaskPath(): Path {
             return Path().also { CornerShapeCompat.addToPath(this, it, 0f, 0f, 100f, 100f, 50f) }
+        }
+    }
+
+    data class CustomCornerBased(
+        override val topLeft: Corner,
+        override val topRight: Corner,
+        override val bottomLeft: Corner,
+        override val bottomRight: Corner,
+        val version: Int = 1,
+    ) : CornerBased(
+        key = "custom",
+        topLeft = topLeft,
+        topRight = topRight,
+        bottomLeft = bottomLeft,
+        bottomRight = bottomRight,
+    ) {
+        constructor(iconShape: CornerBased) : this(
+            topLeft = iconShape.topLeft,
+            topRight = iconShape.topRight,
+            bottomLeft = iconShape.bottomLeft,
+            bottomRight = iconShape.bottomRight,
+        )
+
+        fun copy(
+            topLeftShape: IconCornerShape = topLeft.shape,
+            topRightShape: IconCornerShape = topRight.shape,
+            bottomLeftShape: IconCornerShape = bottomLeft.shape,
+            bottomRightShape: IconCornerShape = bottomRight.shape,
+            topLeftScale: Float = topLeft.scale.x,
+            topRightScale: Float = topRight.scale.x,
+            bottomLeftScale: Float = bottomLeft.scale.x,
+            bottomRightScale: Float = bottomRight.scale.x,
+        ): CustomCornerBased = CustomCornerBased(
+            Corner(topLeftShape, topLeftScale),
+            Corner(topRightShape, topRightScale),
+            Corner(bottomLeftShape, bottomLeftScale),
+            Corner(bottomRightShape, bottomRightScale),
+        )
+
+        override fun toString(): String = "v$version|$topLeft|$topRight|$bottomLeft|$bottomRight"
+
+        companion object {
+            fun fromStringOrNull(value: String): CustomCornerBased? {
+                return runCatching { fromString(value) }.getOrNull()
+            }
+
+            fun fromString(value: String): CustomCornerBased {
+                val parts = value.split("|")
+                check(parts[0] == "v1") { "unknown config format" }
+                check(parts.size == 5) { "invalid arguments size" }
+                return CustomCornerBased(
+                    Corner.fromString(parts[1]),
+                    Corner.fromString(parts[2]),
+                    Corner.fromString(parts[3]),
+                    Corner.fromString(parts[4]),
+                )
+            }
         }
     }
 
@@ -399,25 +456,12 @@ sealed class IconShape {
             "sevensidedcookie" -> SevenSidedCookie
             "arch" -> Arch
             "" -> null
-            else -> runCatching { parseCustomShape(value) }.getOrNull()
-        }
-
-        fun parseCustomShape(value: String): CornerBased {
-            val parts = value.split("|")
-            check(parts[0] == "v1") { "unknown config format" }
-            check(parts.size == 5) { "invalid arguments size" }
-            return CornerBased(
-                "v1|${parts[1]}|${parts[2]}|${parts[3]}|${parts[4]}",
-                Corner.fromString(parts[1]),
-                Corner.fromString(parts[2]),
-                Corner.fromString(parts[3]),
-                Corner.fromString(parts[4]),
-            )
+            else -> CustomCornerBased.fromStringOrNull(value)
         }
 
         fun isCustomShape(iconShape: IconShape): Boolean {
             return try {
-                parseCustomShape(iconShape.toString())
+                CustomCornerBased.fromString(iconShape.toString())
                 true
             } catch (e: Exception) {
                 Log.e("IconShape", "Error creating shape $iconShape", e)

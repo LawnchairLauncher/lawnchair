@@ -28,6 +28,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +58,7 @@ import app.lawnchair.util.copyToClipboard
 import app.lawnchair.util.getClipboardContent
 import com.android.launcher3.R
 import kotlin.math.roundToInt
+import kotlin.toString
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -68,11 +70,14 @@ fun CustomIconShapePreference(
     val customIconShapeAdapter = preferenceManager2.customIconShape.getAdapter()
 
     val appliedIconShape = customIconShapeAdapter.state.value
-    val selectedIconShape =
-        remember { mutableStateOf(appliedIconShape ?: IconShape.Circle) }
+    val selectedIconShape = remember {
+        mutableStateOf(IconShape.CustomCornerBased(appliedIconShape ?: IconShape.Circle))
+    }
+
     val selectedIconShapeApplied = remember {
         derivedStateOf {
-            appliedIconShape.toString() == selectedIconShape.value.toString()
+            // Force recompose here instead of outside
+            customIconShapeAdapter.state.value.toString() == selectedIconShape.value.toString()
         }
     }
 
@@ -130,9 +135,9 @@ fun CustomIconShapePreference(
 
 @Composable
 private fun IconShapeCornerPreferenceGroup(
-    selectedIconShape: IconShape.CornerBased,
+    selectedIconShape: IconShape.CustomCornerBased,
     modifier: Modifier = Modifier,
-    onSelectedIconShapeChange: (IconShape.CornerBased) -> Unit,
+    onSelectedIconShapeChange: (IconShape.CustomCornerBased) -> Unit,
 ) {
     PreferenceGroup(
         modifier = modifier,
@@ -195,9 +200,9 @@ private fun IconShapeCornerPreferenceGroup(
 
 @Composable
 private fun IconShapeClipboardPreferenceGroup(
-    selectedIconShape: IconShape.CornerBased,
+    selectedIconShape: IconShape.CustomCornerBased,
     modifier: Modifier = Modifier,
-    onSelectedIconShapeChange: (IconShape.CornerBased) -> Unit,
+    onSelectedIconShapeChange: (IconShape.CustomCornerBased) -> Unit,
 ) {
     val context = LocalContext.current
     val importErrorMessage = stringResource(id = R.string.icon_shape_clipboard_import_error)
@@ -222,7 +227,7 @@ private fun IconShapeClipboardPreferenceGroup(
                 label = stringResource(id = R.string.import_from_clipboard),
             ) {
                 getClipboardContent(context)?.let {
-                    IconShape.fromString(value = it, context = context) as IconShape.CornerBased
+                    IconShape.fromString(value = it, context = context) as IconShape.CustomCornerBased
                 }?.let {
                     onSelectedIconShapeChange(it)
                 } ?: run {
