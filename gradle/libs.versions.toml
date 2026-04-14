@@ -14,7 +14,7 @@ libsu = "6.0.0"
 refine = "4.4.0"
 exifinterface = "1.4.2"
 
-guava = "33.5.0-android"
+guava = "33.6.0-jre"
 junitVersion = "4.13.2"
 mockito = "5.23.0"
 mockitoKotlin = "6.3.0"
