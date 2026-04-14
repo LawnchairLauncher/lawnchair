@@ -76,6 +76,15 @@ class LawnchairShortcut {
                 UnInstall(activity, itemInfo, view)
             }
 
+        private val SUPPORTED_STORES = setOf(
+            "com.android.vending",
+            "com.aurora.store",
+            "org.fdroid.fdroid",
+            "org.gdroid.gdroid",
+            "com.looker.droidify",
+            "com.github.librecaptcha.apps.fdroidclient",
+        )
+
         val OPEN_IN_STORE =
             SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, originalView: View ->
                 if (itemInfo.itemType != ITEM_TYPE_APPLICATION) return@Factory null
@@ -83,11 +92,7 @@ class LawnchairShortcut {
                 val context = activity.asContext()
                 val installer = PackageManagerHelper.INSTANCE.get(context)
                     .getAppInstallerPackage(packageName) ?: return@Factory null
-                if (installer == "com.google.android.packageinstaller" ||
-                    installer == "com.android.packageinstaller"
-                ) {
-                    return@Factory null
-                }
+                if (installer !in SUPPORTED_STORES) return@Factory null
                 OpenInStore(activity, itemInfo, originalView, packageName, installer)
             }
 
@@ -290,9 +295,9 @@ class LawnchairShortcut {
                 "com.looker.droidify",
                 -> "droidify://details?id=$packageName"
 
-                else -> "market://details?id=$packageName"
+                else -> return null
             }
-            return Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+            return Intent(Intent.ACTION_VIEW, Uri.parse(uri)).setPackage(installerPackage)
         }
     }
 }
