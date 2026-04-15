@@ -26,6 +26,9 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
+
+import app.lawnchair.preferences2.PreferenceManager2;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import com.android.launcher3.util.IntSet;
 
 public interface WorkspaceLayoutManager {
@@ -105,9 +108,12 @@ public interface WorkspaceLayoutManager {
                 || container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             layout = getHotseat();
 
-            // Hide folder title in the hotseat
+            // Show/hide folder title based on dock label preference
             if (child instanceof FolderIcon) {
-                ((FolderIcon) child).setTextVisible(false);
+                ((FolderIcon) child).setTextVisible(
+                        PreferenceExtensionsKt.firstBlocking(
+                                PreferenceManager2.getInstance(child.getContext())
+                                        .getEnableLabelInDock()));
             }
         } else {
             // Show folder title if not in the hotseat
