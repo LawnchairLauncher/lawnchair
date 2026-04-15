@@ -1,0 +1,147 @@
+/*
+ * Copyright 2026, Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package app.lawnchair.ui
+
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import app.lawnchair.icons.CustomAdaptiveIconDrawable
+import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.ui.preferences.iconPackIntents
+import app.lawnchair.ui.theme.EdgeToEdge
+import app.lawnchair.ui.theme.LawnchairTheme
+import com.android.launcher3.R
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
+
+class ApplyIconPackActivity : ComponentActivity() {
+
+    companion object {
+        const val EXTRA_PACKAGE_NAME = "packageName"
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        val packPackageName = intent.getStringExtra(EXTRA_PACKAGE_NAME)
+        if (packPackageName.isNullOrEmpty()) {
+            finish()
+            return
+        }
+
+        val packInfo = resolveIconPackInfo(packPackageName)
+        if (packInfo == null) {
+            finish()
+            return
+        }
+
+        setContent {
+            LawnchairTheme {
+                EdgeToEdge()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = BottomSheetDefaults.ScrimColor,
+                ) {
+                    ApplyIconPackDialog(
+                        packName = packInfo.first,
+                        packIcon = packInfo.second,
+                        onConfirm = {
+                            PreferenceManager.getInstance(this@ApplyIconPackActivity)
+                                .iconPackPackage.set(packPackageName)
+                            finish()
+                        },
+                        onDismiss = { finish() },
+                    )
+                }
+            }
+        }
+    }
+
+    private fun resolveIconPackInfo(packageName: String): Pair<String, Drawable>? {
+        val pm = this.packageManager
+        val resolveInfo = iconPackIntents
+            .flatMap { pm.queryIntentActivities(it, 0) }
+            .firstOrNull { it.activityInfo.packageName == packageName }
+            ?: return null
+        val name = resolveInfo.loadLabel(pm).toString()
+        val icon = CustomAdaptiveIconDrawable.wrapNonNull(resolveInfo.loadIcon(pm))
+        return name to icon
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun ApplyIconPackDialog(
+    packName: String,
+    packIcon: Drawable,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                shapes = ButtonDefaults.shapes(),
+            ) {
+                Text(text = stringResource(id = R.string.action_apply))
+            }
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = onDismiss,
+                shapes = ButtonDefaults.shapes(),
+            ) {
+                Text(text = stringResource(id = android.R.string.cancel))
+            }
+        },
+        icon = {
+            Image(
+                painter = rememberDrawablePainter(drawable = packIcon),
+                contentDescription = packName,
+                modifier = Modifier.size(48.dp),
+            )
+        },
+        title = {
+            Text(text = stringResource(id = R.string.apply_icon_pack_title))
+        },
+        text = {
+            Text(
+                text = stringResource(id = R.string.apply_icon_pack_message, packName),
+            )
+        },
+    )
+}
