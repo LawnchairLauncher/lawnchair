@@ -108,12 +108,12 @@ public interface WorkspaceLayoutManager {
                 || container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             layout = getHotseat();
 
-            // Show/hide folder title based on dock label preference
+            // Hide folder title in the hotseat
             if (child instanceof FolderIcon) {
                 ((FolderIcon) child).setTextVisible(
                         PreferenceExtensionsKt.firstBlocking(
                                 PreferenceManager2.getInstance(child.getContext())
-                                        .getEnableLabelInDock()));
+                                        .getEnableLabelInDock())); // LC-Note: Show/hide folder title based on dock label preference
             }
         } else {
             // Show folder title if not in the hotseat
