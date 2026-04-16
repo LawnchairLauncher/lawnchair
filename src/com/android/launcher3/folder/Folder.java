@@ -136,6 +136,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.folder.FolderCloseAnimHelper;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.tokens.ColorTokens;
@@ -1031,6 +1032,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mContent.snapToPageImmediately(mContent.getDestinationPage());
 
         cancelRunningAnimations();
+
+        // LC: Custom close animation for folders with override icon
+        if (FolderCloseAnimHelper.animateClose(this, mFolderIcon)) return;
+
         AnimatorSet animatorSet = getFolderAnimationManager()
                 .createAnimatorSet(/* isOpening */ false);
 
@@ -2177,5 +2182,19 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public interface OnFolderStateChangedListener {
         /** See {@link Folder.FolderState} */
         void onFolderStateChanged(@FolderState int newState);
+    }
+
+    // LC: Bridge methods for FolderCloseAnimHelper
+    public void lcSetAnimatingClosed(boolean animating) {
+        mIsAnimatingClosed = animating;
+    }
+
+    public void lcCloseComplete(boolean wasAnimated) {
+        closeComplete(wasAnimated);
+        announceAccessibilityChanges();
+    }
+
+    public void lcAddAnimationStartListeners(AnimatorSet a) {
+        addAnimationStartListeners(a);
     }
 }

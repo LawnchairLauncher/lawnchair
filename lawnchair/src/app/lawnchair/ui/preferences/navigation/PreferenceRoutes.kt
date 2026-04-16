@@ -182,6 +182,9 @@ data object AboutLicenses : PreferenceRoute, PreferenceDeepLink {
 // These are intentionally not prefixed as per your instruction,
 // as they might be used across different sections or are standalone actions.
 @Serializable
+data class SelectFolderIcon(val folderId: Int) : PreferenceRoute
+
+@Serializable
 data class SelectIcon(
     // assuming componentKey is a ComponentKey.toString()
     val componentKey: String,

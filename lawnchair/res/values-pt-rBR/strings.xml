@@ -231,6 +231,8 @@
     <string name="icon_picker_reset_to_default">Restaurar ao padrão</string>
     <string name="icon_pack_external_picker">Abrir seletor externo</string>
     <string name="pick_icon_from_label">Escolher ícone de</string>
+    <string name="pick_icon_from_gallery">Escolher da galeria</string>
+    <string name="failed_to_load_icon">Não foi possível carregar a imagem</string>
     <string name="icon_picker_load_failed">Não foi possível carregar mais ícones</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">Padrão (sistema)</string>

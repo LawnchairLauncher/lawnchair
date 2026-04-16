@@ -17,10 +17,14 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 
 @LauncherAppSingleton
@@ -28,6 +32,7 @@ class FolderService @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : SafeCloseable {
 
+    private val scope = MainScope() + CoroutineName("FolderService")
     private val folderDao = AppDatabase.INSTANCE.get(context).folderDao()
     private val launcherApps = context.getSystemService(LauncherApps::class.java)
     private val userCache = UserCache.INSTANCE.get(context)
@@ -59,8 +64,17 @@ class FolderService @Inject constructor(
         folderDao.updateFolderInfo(folderInfo.id, folderInfo.title.toString(), hide)
     }
 
+    fun updateFolderInfoAsync(folderInfo: FolderInfo) {
+        scope.launch { updateFolderInfo(folderInfo) }
+    }
+
     suspend fun deleteFolderInfo(id: Int) = withContext(Dispatchers.IO) {
         folderDao.deleteFolder(id)
+        app.lawnchair.ui.popup.folderIconFile(context, id).delete()
+        val prefs = app.lawnchair.preferences.PreferenceManager.getInstance(context)
+        prefs.folderCustomIcon[id] = null
+        prefs.folderBadgeHidden[id] = null
+        app.lawnchair.ui.popup.invalidateFolderIconCache(id)
     }
 
     suspend fun getFolderInfo(folderId: Int, hasId: Boolean = false): FolderInfo? = withContext(Dispatchers.Default) {

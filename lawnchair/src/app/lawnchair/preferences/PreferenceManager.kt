@@ -84,6 +84,20 @@ class PreferenceManager @Inject constructor(
         override fun unflattenValue(value: String) = value
     }
 
+    val folderCustomIcon = object : MutableMapPref<Int, String>("pref_folderIconMap", reloadGrid) {
+        override fun flattenKey(key: Int) = key.toString()
+        override fun unflattenKey(key: String) = key.toIntOrNull() ?: 0
+        override fun flattenValue(value: String) = value
+        override fun unflattenValue(value: String) = value
+    }
+
+    val folderBadgeHidden = object : MutableMapPref<Int, String>("pref_folderBadgeHidden", reloadGrid) {
+        override fun flattenKey(key: Int) = key.toString()
+        override fun unflattenKey(key: String) = key.toIntOrNull() ?: 0
+        override fun flattenValue(value: String) = value
+        override fun unflattenValue(value: String) = value
+    }
+
     val recentActionOrder = StringPref("pref_recentActionOrder", "0,1,2,3,4", recreate)
 
     private val fontCache = FontCache.INSTANCE.get(context)

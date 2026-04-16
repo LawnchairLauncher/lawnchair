@@ -231,6 +231,8 @@
     <string name="icon_picker_reset_to_default">還原預設設定</string>
     <string name="icon_pack_external_picker">開啟外部選擇器</string>
     <string name="pick_icon_from_label">選取圖示來源</string>
+    <string name="pick_icon_from_gallery">從相簿選擇</string>
+    <string name="failed_to_load_icon">無法載入圖片</string>
     <string name="icon_picker_load_failed">無法載入更多圖示</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">系統</string>

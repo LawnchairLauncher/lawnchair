@@ -231,6 +231,9 @@
     <string name="icon_picker_reset_to_default">重置为默认</string>
     <string name="icon_pack_external_picker">打开外部选择器</string>
     <string name="pick_icon_from_label">选取图标自</string>
+    <string name="pick_icon_from_gallery">从相册选择</string>
+    <string name="folder_badge_toggle">显示文件夹标识</string>
+    <string name="failed_to_load_icon">无法加载图片</string>
     <string name="icon_picker_load_failed">无法加载更多图标</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">系统</string>

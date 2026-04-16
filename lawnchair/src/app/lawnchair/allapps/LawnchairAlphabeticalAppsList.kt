@@ -106,6 +106,7 @@ class LawnchairAlphabeticalAppsList<T>(
             folderList.forEach { folder ->
                 if (folder.getContents().size > 1) {
                     val folderInfo = FolderInfo()
+                    folderInfo.id = folder.id
                     folderInfo.title = folder.title
                     mAdapterItems.add(AdapterItem.asFolder(folderInfo))
                     folder.getContents().forEach { app ->
