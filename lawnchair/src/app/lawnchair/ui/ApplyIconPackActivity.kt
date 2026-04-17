@@ -34,6 +34,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -44,6 +49,8 @@ import app.lawnchair.ui.theme.EdgeToEdge
 import app.lawnchair.ui.theme.LawnchairTheme
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ApplyIconPackActivity : ComponentActivity() {
 
@@ -62,29 +69,38 @@ class ApplyIconPackActivity : ComponentActivity() {
             return
         }
 
-        val packInfo = resolveIconPackInfo(packPackageName)
-        if (packInfo == null) {
-            finish()
-            return
-        }
-
         setContent {
-            LawnchairTheme {
-                EdgeToEdge()
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = BottomSheetDefaults.ScrimColor,
-                ) {
-                    ApplyIconPackDialog(
-                        packName = packInfo.first,
-                        packIcon = packInfo.second,
-                        onConfirm = {
-                            PreferenceManager.getInstance(this@ApplyIconPackActivity)
-                                .iconPackPackage.set(packPackageName)
-                            finish()
-                        },
-                        onDismiss = { finish() },
-                    )
+            var packInfo by remember { mutableStateOf<Pair<String, Drawable>?>(null) }
+            var resolved by remember { mutableStateOf(false) }
+
+            LaunchedEffect(packPackageName) {
+                val result = withContext(Dispatchers.Default) {
+                    resolveIconPackInfo(packPackageName)
+                }
+                packInfo = result
+                resolved = true
+                if (result == null) finish()
+            }
+
+            val info = packInfo
+            if (resolved && info != null) {
+                LawnchairTheme {
+                    EdgeToEdge()
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = BottomSheetDefaults.ScrimColor,
+                    ) {
+                        ApplyIconPackDialog(
+                            packName = info.first,
+                            packIcon = info.second,
+                            onConfirm = {
+                                PreferenceManager.getInstance(this@ApplyIconPackActivity)
+                                    .iconPackPackage.set(packPackageName)
+                                finish()
+                            },
+                            onDismiss = { finish() },
+                        )
+                    }
                 }
             }
         }
