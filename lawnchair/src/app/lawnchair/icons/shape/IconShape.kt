@@ -34,33 +34,52 @@ import kotlin.apply
 /**
  * Represents a base class for defining icon shapes in the launcher.
  *
- * This class provides a framework for creating various icon masks, supporting both
- * path-based shapes (via SVG data) and corner-based shapes (with customizable
- * corner styles and scales).
+ * This class provides a framework for creating various icon masks, supporting:
+ * - [SystemBased]: Shapes derived from the Android system's adaptive icon mask.
+ * - [PathBased]: Shapes defined via SVG path data.
+ * - [CornerBased]: Shapes defined by individual styles and scales for each of the four corners.
  *
- * Each shape is identified by a unique [key] and provides a [getMaskPath]
- * implementation for rendering the icon's outline.
+ * Persistence contract: [toString] is the serialized value stored in preferences and later
+ * parsed by [fromString]. For built-in shapes this is [key], while custom shapes use a
+ * versioned corner format.
  */
 sealed class IconShape {
     abstract val key: String
 
-    override fun toString(): String {
-        return key
-    }
+    override fun toString(): String = key
 
     open fun getHashString(): String = key
 
-    /** Returns the mask path normalized to a 100x100 viewport */
+    /** Returns the mask path normalized to a 100x100 viewport.
+     *
+     * Implementations are expected to return a new [Path] instance on each call so callers can
+     * mutate the result safely.
+     */
     abstract fun getMaskPath(): Path
 
-    /** The icon scale used by Launcher3 */
+    /**
+     * Rendering scale multiplier used by Launcher3 when fitting artwork inside this mask.
+     *
+     * `1f` keeps default sizing; values below `1f` shrink content and values above `1f` expand it.
+     */
     open val iconScale = 1f
 
-    /** Transition radius for window animations */
+    /**
+     * Normalized corner-radius hint ([0, 1]) used for window transition animations.
+     *
+     * `1f` corresponds to a fully rounded transition radius for the shape's bounds.
+     */
     open val windowTransitionRadius = 1f
 
+    /** Marker interface for built-in, non-user-defined shapes. */
     interface DefaultShapes
 
+    /**
+     * Shape backed by the platform icon mask.
+     *
+     * We approximate the platform mask to the nearest supported [CornerBased] shape for
+     * rendering consistency with the editor/customization pipeline.
+     */
     class SystemBased(
         private val iconMask: Path,
         val context: Context,
@@ -73,6 +92,11 @@ sealed class IconShape {
 
         override val key = "system"
 
+        /** Finds the closest supported corner-based shape by minimizing XOR region area.
+         *
+         * This intentionally compares only the most common preset shapes to avoid expensive
+         * matching over every possible custom corner configuration.
+         */
         fun findNearestShape(): CornerBased {
             val size = 200
             val clip = Region(0, 0, size, size)
@@ -101,6 +125,12 @@ sealed class IconShape {
                 }!!
         }
 
+        /**
+         * Returns a stable identifier for cache invalidation.
+         *
+         * Uses the configured theme resource string when available, otherwise falls back to a
+         * fixed marker for raw path-based system masks.
+         */
         override fun getHashString(): String {
             val resId = ThemeManager.CONFIG_ICON_MASK_RES_ID
             if (resId == 0) {
@@ -128,8 +158,7 @@ sealed class IconShape {
         open val topRight: Corner,
         open val bottomLeft: Corner,
         open val bottomRight: Corner,
-    ) : IconShape(),
-        DefaultShapes {
+    ) : IconShape() {
         constructor(
             key: String,
             topLeftShape: IconCornerShape,
@@ -166,28 +195,6 @@ sealed class IconShape {
             Corner(bottomRightShape, bottomRightScale),
         )
 
-        fun copy(
-            key: String = this.key,
-            topLeftShape: IconCornerShape = topLeft.shape,
-            topRightShape: IconCornerShape = topRight.shape,
-            bottomLeftShape: IconCornerShape = bottomLeft.shape,
-            bottomRightShape: IconCornerShape = bottomRight.shape,
-            topLeftScale: Float = topLeft.scale.x,
-            topRightScale: Float = topRight.scale.x,
-            bottomLeftScale: Float = bottomLeft.scale.x,
-            bottomRightScale: Float = bottomRight.scale.x,
-        ): CornerBased = CornerBased(
-            key = key,
-            topLeftShape = topLeftShape,
-            topRightShape = topRightShape,
-            bottomLeftShape = bottomLeftShape,
-            bottomRightShape = bottomRightShape,
-            topLeftScale = topLeftScale,
-            topRightScale = topRightScale,
-            bottomLeftScale = bottomLeftScale,
-            bottomRightScale = bottomRightScale,
-        )
-
         private val isCircle =
             topLeft == Corner.fullArc &&
                 topRight == Corner.fullArc &&
@@ -206,6 +213,33 @@ sealed class IconShape {
         override fun getMaskPath(): Path {
             return Path().also { CornerShapeCompat.addToPath(this, it, 0f, 0f, 100f, 100f, 50f) }
         }
+    }
+
+    open class SimpleCornerBased(
+        override val key: String,
+        shape: IconCornerShape,
+        scale: PointF,
+    ) : CornerBased(
+        key,
+        shape,
+        shape,
+        shape,
+        shape,
+        scale,
+        scale,
+        scale,
+        scale,
+    ),
+        DefaultShapes {
+        constructor(
+            key: String,
+            shape: IconCornerShape,
+            scale: Float,
+        ) : this(
+            key,
+            shape,
+            PointF(scale, scale),
+        )
     }
 
     data class CustomCornerBased(
@@ -228,6 +262,7 @@ sealed class IconShape {
             bottomRight = iconShape.bottomRight,
         )
 
+        // Intentional, see [IconShapeCornerPreferenceGroup]
         fun copy(
             topLeftShape: IconCornerShape = topLeft.shape,
             topRightShape: IconCornerShape = topRight.shape,
@@ -244,13 +279,20 @@ sealed class IconShape {
             Corner(bottomRightShape, bottomRightScale),
         )
 
+        // Format: v1|<topLeft>|<topRight>|<bottomLeft>|<bottomRight>
         override fun toString(): String = "v$version|$topLeft|$topRight|$bottomLeft|$bottomRight"
 
         companion object {
+            /** Parses [value], returning null for invalid or unsupported serialized input. */
             fun fromStringOrNull(value: String): CustomCornerBased? {
                 return runCatching { fromString(value) }.getOrNull()
             }
 
+            /**
+             * Parses `v1|<corner>|<corner>|<corner>|<corner>` custom shape strings.
+             *
+             * Throws when the format/version is invalid.
+             */
             fun fromString(value: String): CustomCornerBased {
                 val parts = value.split("|")
                 check(parts[0] == "v1") { "unknown config format" }
@@ -265,151 +307,98 @@ sealed class IconShape {
         }
     }
 
-    object Circle : CornerBased(
+    object Circle : SimpleCornerBased(
         key = "circle",
         IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        1f,
-        1f,
-        1f,
         1f,
     )
 
-    object Square : CornerBased(
+    object Square : SimpleCornerBased(
         key = "square",
         IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        .16f,
-        .16f,
-        .16f,
         .16f,
     ) {
         override val windowTransitionRadius = .16f
     }
 
-    object SharpSquare : CornerBased(
+    object SharpSquare : SimpleCornerBased(
         key = "sharpSquare",
         IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        0f,
-        0f,
-        0f,
         0f,
     ) {
         override val windowTransitionRadius = 0f
     }
 
-    object RoundedSquare : CornerBased(
+    object RoundedSquare : SimpleCornerBased(
         key = "roundedSquare",
         IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        .6f,
-        .6f,
-        .6f,
         .6f,
     ) {
-
         override val windowTransitionRadius = .6f
     }
 
-    object Squircle : CornerBased(
+    object Squircle : SimpleCornerBased(
         key = "squircle",
         IconCornerShape.Squircle,
-        IconCornerShape.Squircle,
-        IconCornerShape.Squircle,
-        IconCornerShape.Squircle,
-        1f, 1f, 1f, 1f,
+        1f,
     )
 
-    object Sammy : CornerBased(
+    object Sammy : SimpleCornerBased(
         key = "sammy",
         IconCornerShape.Sammy,
-        IconCornerShape.Sammy,
-        IconCornerShape.Sammy,
-        IconCornerShape.Sammy,
-        1f, 1f, 1f, 1f,
+        1f,
     )
 
-    object Teardrop : CornerBased(
+    object Teardrop : SimpleCornerBased(
         key = "teardrop",
         IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        1f, 1f, 1f, .3f,
+        .3f,
     )
 
-    object Cylinder : CornerBased(
+    object Cylinder : SimpleCornerBased(
         key = "cylinder",
         IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        PointF(1f, .6f),
-        PointF(1f, .6f),
-        PointF(1f, .6f),
         PointF(1f, .6f),
     )
 
-    object Cupertino : CornerBased(
+    object Cupertino : SimpleCornerBased(
         key = "cupertino",
         IconCornerShape.Cupertino,
-        IconCornerShape.Cupertino,
-        IconCornerShape.Cupertino,
-        IconCornerShape.Cupertino,
-        1f, 1f, 1f, 1f,
+        1f,
     ) {
         override val windowTransitionRadius = .45f
     }
 
-    object Octagon : CornerBased(
+    object Octagon : SimpleCornerBased(
         key = "octagon",
         IconCornerShape.Cut,
-        IconCornerShape.Cut,
-        IconCornerShape.Cut,
-        IconCornerShape.Cut,
-        .5f, .5f, .5f, .5f,
+        .5f,
     )
 
-    object Hexagon : CornerBased(
+    object Hexagon : SimpleCornerBased(
         key = "hexagon",
         IconCornerShape.CutHex,
-        IconCornerShape.CutHex,
-        IconCornerShape.CutHex,
-        IconCornerShape.CutHex,
-        PointF(1f, .5f),
-        PointF(1f, .5f),
-        PointF(1f, .5f),
         PointF(1f, .5f),
     )
 
-    object Diamond : CornerBased(
+    object Diamond : SimpleCornerBased(
         key = "diamond",
         IconCornerShape.Cut,
-        IconCornerShape.Cut,
-        IconCornerShape.Cut,
-        IconCornerShape.Cut,
-        1f, 1f, 1f, 1f,
+        1f,
     ) {
         override val windowTransitionRadius = 0f
     }
 
-    object Egg : CornerBased(
-        key = "egg",
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        IconCornerShape.arc,
-        1f, 1f, 0.75f, 0.75f,
-    ) {
+    object Egg :
+        CornerBased(
+            key = "egg",
+            IconCornerShape.arc,
+            IconCornerShape.arc,
+            IconCornerShape.arc,
+            IconCornerShape.arc,
+            1f, 1f, 0.75f, 0.75f,
+        ),
+        DefaultShapes {
         override val windowTransitionRadius = 0.85f
     }
 
@@ -446,6 +435,16 @@ sealed class IconShape {
 
     companion object {
 
+        /**
+         * Parses a persisted icon shape token.
+         *
+         * Accepted values:
+         * - `system`: resolve the platform mask via [IconShapeManager.getSystemIconShape]
+         * - built-in keys such as `circle`, `squircle`, `arch`, etc.
+         * - custom serialized shapes in `v1|...` format
+         *
+         * If resolving `system` fails, parsing falls back to non-system tokens.
+         */
         fun fromString(value: String, context: Context): IconShape? {
             if (value == "system") {
                 runCatching {
@@ -455,6 +454,11 @@ sealed class IconShape {
             return fromStringWithoutContext(value = value)
         }
 
+        /**
+         * Parses non-system shape tokens.
+         *
+         * Returns `null` for empty/unknown values or malformed custom `v1|...` payloads.
+         */
         private fun fromStringWithoutContext(value: String): IconShape? = when (value) {
             "circle" -> Circle
             "square" -> Square
@@ -478,6 +482,11 @@ sealed class IconShape {
             else -> CustomCornerBased.fromStringOrNull(value)
         }
 
+        /**
+         * Returns `true` when [iconShape] serializes as a valid custom `v1|...` corner shape.
+         *
+         * This is serialization-based detection; parse failures are logged and return `false`.
+         */
         fun isCustomShape(iconShape: IconShape): Boolean {
             return try {
                 CustomCornerBased.fromString(iconShape.toString())
@@ -493,6 +502,7 @@ sealed class IconShape {
 
         constructor(shape: IconCornerShape, scale: Float) : this(shape, PointF(scale, scale))
 
+        // Format: <shape>,<scaleX>,<scaleY>
         override fun toString(): String {
             return "$shape,${scale.x},${scale.y}"
         }
@@ -501,6 +511,11 @@ sealed class IconShape {
 
             val fullArc = Corner(IconCornerShape.arc, 1f)
 
+            /**
+             * Parses `<shape>,<scaleX>[,<scaleY>]` where omitted `scaleY` reuses `scaleX`.
+             *
+             * Both scales must be in [0, 1]. Invalid input throws.
+             */
             fun fromString(value: String): Corner {
                 val parts = value.split(",")
                 val scaleX = parts[1].toFloat()
@@ -526,6 +541,7 @@ object CornerShapeCompat {
         endSize: Float = size,
         progress: Float = 0f,
     ) {
+        // Interpolates each corner size from its configured value toward [endSize] by [progress].
         val tmpPoint = PointF()
 
         val topLeft = shape.topLeft
