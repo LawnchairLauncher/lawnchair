@@ -1360,10 +1360,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     if (prefs.getInfiniteScrolling().get() && !mFreeScroll && getChildCount() > 1) {
                         boolean enableFeed = PreferenceExtensionsKt.firstBlocking(prefs2.getEnableFeed());
                         float pulledTo = oldScroll + delta;
-                        if (!isWrapScrolling() && mCurrentPage == getChildCount() - 1 && pulledTo > mMaxScroll) {
-                            startWrapDrag(0);
-                        } else if (!isWrapScrolling() && mCurrentPage == 0 && !enableFeed && pulledTo < mMinScroll) {
-                            startWrapDrag(getChildCount() - 1);
+                        if (!isWrapScrolling() && mCurrentPage == getChildCount() - 1) {
+                            boolean pastEnd = mIsRtl ? pulledTo < mMinScroll : pulledTo > mMaxScroll;
+                            if (pastEnd) {
+                                startWrapDrag(0);
+                            }
+                        } else if (!isWrapScrolling() && mCurrentPage == 0 && !enableFeed) {
+                            boolean pastStart = mIsRtl ? pulledTo > mMaxScroll : pulledTo < mMinScroll;
+                            if (pastStart) {
+                                startWrapDrag(getChildCount() - 1);
+                            }
                         }
                     }
 
