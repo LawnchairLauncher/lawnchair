@@ -22,17 +22,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,6 +48,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.iconPackIntents
 import app.lawnchair.ui.theme.EdgeToEdge
 import app.lawnchair.ui.theme.LawnchairTheme
@@ -63,11 +69,8 @@ class ApplyIconPackActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val packPackageName = intent.getStringExtra(EXTRA_PACKAGE_NAME)
-        if (packPackageName.isNullOrEmpty()) {
-            finish()
-            return
-        }
+        val packPackageName = intent.getStringExtra(EXTRA_PACKAGE_NAME).orEmpty()
+        if (packPackageName.isEmpty()) finish()
 
         setContent {
             var packInfo by remember { mutableStateOf<Pair<String, Drawable>?>(null) }
@@ -90,7 +93,7 @@ class ApplyIconPackActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = BottomSheetDefaults.ScrimColor,
                     ) {
-                        ApplyIconPackDialog(
+                        ApplyIconPackSheet(
                             packName = info.first,
                             packIcon = info.second,
                             onConfirm = {
@@ -118,46 +121,52 @@ class ApplyIconPackActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun ApplyIconPackDialog(
+private fun ApplyIconPackSheet(
     packName: String,
     packIcon: Drawable,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    AlertDialog(
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        confirmButton = {
-            Button(
-                onClick = onConfirm,
-                shapes = ButtonDefaults.shapes(),
-            ) {
-                Text(text = stringResource(id = R.string.action_apply))
-            }
-        },
-        dismissButton = {
-            OutlinedButton(
-                onClick = onDismiss,
-                shapes = ButtonDefaults.shapes(),
-            ) {
-                Text(text = stringResource(id = android.R.string.cancel))
-            }
-        },
-        icon = {
-            Image(
-                painter = rememberDrawablePainter(drawable = packIcon),
-                contentDescription = packName,
-                modifier = Modifier.size(48.dp),
-            )
-        },
-        title = {
-            Text(text = stringResource(id = R.string.apply_icon_pack_title))
-        },
-        text = {
-            Text(
-                text = stringResource(id = R.string.apply_icon_pack_message, packName),
-            )
-        },
-    )
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        ModalBottomSheetContent(
+            title = { Text(text = stringResource(id = R.string.apply_icon_pack_title)) },
+            content = {
+                PreferenceGroup {
+                    Item {
+                        PreferenceTemplate(
+                            title = { Text(text = packName) },
+                            startWidget = {
+                                Image(
+                                    painter = rememberDrawablePainter(drawable = packIcon),
+                                    contentDescription = packName,
+                                    modifier = Modifier.size(36.dp),
+                                )
+                            },
+                        )
+                    }
+                }
+            },
+            buttons = {
+                OutlinedButton(
+                    onClick = onDismiss,
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(id = android.R.string.cancel))
+                }
+                Spacer(modifier = Modifier.requiredWidth(8.dp))
+                Button(
+                    onClick = onConfirm,
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(id = R.string.action_apply))
+                }
+            },
+        )
+    }
 }
