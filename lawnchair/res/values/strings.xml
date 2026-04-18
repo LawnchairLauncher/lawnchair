@@ -324,6 +324,16 @@
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
+    <!-- Additional icon shapes -->
+    <string name="icon_shape_cloudy">Cloudy</string>
+    <string name="icon_shape_flower">Flower</string>
+    <string name="icon_shape_heart">Heart</string>
+    <string name="icon_shape_leaf">Leaf</string>
+    <string name="icon_shape_meow">Meow</string>
+    <string name="icon_shape_pebble">Pebble</string>
+    <string name="icon_shape_roundedhexagon">Rouded Hexagon</string>
+    <string name="icon_shape_stretched">Stretched</string>
+    <string name="icon_shape_vessel">Vessel</string>
 
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Custom icon shape</string>

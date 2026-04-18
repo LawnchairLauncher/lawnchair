@@ -96,6 +96,15 @@ fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShape>> {
         ListPreferenceEntry(IconShape.FourSidedCookie) { stringResource(id = R.string.icon_shape_four_sided_cookie) },
         ListPreferenceEntry(IconShape.SevenSidedCookie) { stringResource(id = R.string.icon_shape_seven_sided_cookie) },
         ListPreferenceEntry(IconShape.Arch) { stringResource(id = R.string.icon_shape_arch) },
+        ListPreferenceEntry(IconShape.Cloudy) { stringResource(id = R.string.icon_shape_cloudy) },
+        ListPreferenceEntry(IconShape.Flower) { stringResource(id = R.string.icon_shape_flower) },
+        ListPreferenceEntry(IconShape.Heart) { stringResource(id = R.string.icon_shape_heart) },
+        ListPreferenceEntry(IconShape.Leaf) { stringResource(id = R.string.icon_shape_leaf) },
+        ListPreferenceEntry(IconShape.Meow) { stringResource(id = R.string.icon_shape_meow) },
+        ListPreferenceEntry(IconShape.Pebble) { stringResource(id = R.string.icon_shape_pebble) },
+        ListPreferenceEntry(IconShape.RoundedHexagon) { stringResource(id = R.string.icon_shape_roundedhexagon) },
+        ListPreferenceEntry(IconShape.Stretched) { stringResource(id = R.string.icon_shape_stretched) },
+        ListPreferenceEntry(IconShape.Vessel) { stringResource(id = R.string.icon_shape_vessel) },
     )
 }
 
