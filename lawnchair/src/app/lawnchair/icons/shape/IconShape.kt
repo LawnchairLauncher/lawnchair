@@ -476,7 +476,7 @@ sealed class IconShape {
     )
 
     object Vessel : PathBased(
-        key = "stretched",
+        key = "vessel",
         svgPathString = "M12.97,0 C8.41,0 4.14,2.55 2.21,6.68 -1.03,13.61 -0.71,21.78 3.16,28.46 4.89,31.46 4.89,35.2 3.16,38.2 -1.05,45.48 -1.05,54.52 3.16,61.8 4.89,64.8 4.89,68.54 3.16,71.54 -0.71,78.22 -1.03,86.39 2.21,93.32 4.14,97.45 8.41,100 12.97,100 21.38,100 78.62,100 87.03,100 91.59,100 95.85,97.45 97.79,93.32 101.02,86.39 100.71,78.22 96.84,71.54 95.1,68.54 95.1,64.8 96.84,61.8 101.05,54.52 101.05,45.48 96.84,38.2 95.1,35.2 95.1,31.46 96.84,28.46 100.71,21.78 101.02,13.61 97.79,6.68 95.85,2.55 91.59,0 87.03,0 78.62,0 21.38,0 12.97,0 Z",
     )
 
@@ -525,6 +525,15 @@ sealed class IconShape {
             "foursidedcookie" -> FourSidedCookie
             "sevensidedcookie" -> SevenSidedCookie
             "arch" -> Arch
+            "cloudy" -> Cloudy
+            "flower" -> Flower
+            "heart" -> Heart
+            "leaf" -> Leaf
+            "meow" -> Meow
+            "pebble" -> Pebble
+            "roundedhexagon" -> RoundedHexagon
+            "stretched" -> Stretched
+            "vessel" -> Vessel
             "" -> null
             else -> CustomCornerBased.fromStringOrNull(value)
         }
