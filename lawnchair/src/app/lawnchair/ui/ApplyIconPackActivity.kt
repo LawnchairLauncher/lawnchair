@@ -23,10 +23,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +32,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -89,21 +86,16 @@ class ApplyIconPackActivity : ComponentActivity() {
             if (resolved && info != null) {
                 LawnchairTheme {
                     EdgeToEdge()
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = BottomSheetDefaults.ScrimColor,
-                    ) {
-                        ApplyIconPackSheet(
-                            packName = info.first,
-                            packIcon = info.second,
-                            onConfirm = {
-                                PreferenceManager.getInstance(this@ApplyIconPackActivity)
-                                    .iconPackPackage.set(packPackageName)
-                                finish()
-                            },
-                            onDismiss = { finish() },
-                        )
-                    }
+                    ApplyIconPackSheet(
+                        packName = info.first,
+                        packIcon = info.second,
+                        onConfirm = {
+                            PreferenceManager.getInstance(this@ApplyIconPackActivity)
+                                .iconPackPackage.set(packPackageName)
+                            finish()
+                        },
+                        onDismiss = { finish() },
+                    )
                 }
             }
         }
