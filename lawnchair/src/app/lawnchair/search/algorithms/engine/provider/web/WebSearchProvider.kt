@@ -52,6 +52,7 @@ interface WebSearchProvider {
             GoogleWebSearchProvider,
             DuckDuckGoWebSearchProvider,
             StartPageWebSearchProvider,
+            StartPageEUWebSearchProvider,
             KagiWebSearchProvider,
             CustomWebSearchProvider,
         )
@@ -60,6 +61,7 @@ interface WebSearchProvider {
             "google" -> GoogleWebSearchProvider
             "duckduckgo" -> DuckDuckGoWebSearchProvider
             "startpage" -> StartPageWebSearchProvider
+            "startpage-eu" -> StartPageEUWebSearchProvider
             "kagi" -> KagiWebSearchProvider
             "custom" -> CustomWebSearchProvider
             else -> GoogleWebSearchProvider
