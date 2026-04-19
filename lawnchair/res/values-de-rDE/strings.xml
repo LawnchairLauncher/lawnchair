@@ -253,6 +253,16 @@
     <string name="icon_shape_four_sided_cookie">Vierseitiges Cookie</string>
     <string name="icon_shape_seven_sided_cookie">Siebseitiges Cookie</string>
     <string name="icon_shape_arch">Bogen</string>
+    <!-- Additional icon shapes -->
+    <string name="icon_shape_cloudy">Wolke</string>
+    <string name="icon_shape_flower">Blume</string>
+    <string name="icon_shape_heart">Herz</string>
+    <string name="icon_shape_leaf">Blatt</string>
+    <string name="icon_shape_meow">Miau</string>
+    <string name="icon_shape_pebble">Kiesel</string>
+    <string name="icon_shape_roundedhexagon">Abgerundetes Sechseck</string>
+    <string name="icon_shape_stretched">Gedehnt</string>
+    <string name="icon_shape_vessel">Boot</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Eigene Symbolform</string>
     <string name="custom_icon_shape_create">Eigene Symbolform erstellen</string>
@@ -447,6 +457,8 @@
     <string name="gesture_double_tap">Doppeltipp</string>
     <string name="gesture_swipe_up">Nach oben wischen</string>
     <string name="gesture_swipe_down">Nach unten wischen</string>
+    <string name="gesture_two_finger_swipe_down">Two-finger swipe down</string>
+    <string name="gesture_two_finger_swipe_up">Two-finger swipe up</string>
     <string name="gesture_home_tap">Home-Schaltfläche</string>
     <string name="gesture_back_tap">Zurück-Taste</string>
     <string name="gesture_swipe_left">Nach links wischen</string>
@@ -732,4 +744,7 @@
     <string name="grant_requested_permissions_tap">Tippen um Berechtigungen zu erteilen</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">Startbildschirm geleert</string>
+    <string name="lawnchair_actions">Aktionen</string>
+    <string name="lawnchair_action_failed">Aktion fehlgeschlagen</string>
+    <string name="please_wait">Please wait…</string>
 </resources>

@@ -253,6 +253,16 @@
     <string name="icon_shape_four_sided_cookie">Τετράπλευρο μπισκότο</string>
     <string name="icon_shape_seven_sided_cookie">Επτάπλευρο μπισκότο</string>
     <string name="icon_shape_arch">Αψίδα</string>
+    <!-- Additional icon shapes -->
+    <string name="icon_shape_cloudy">Cloudy</string>
+    <string name="icon_shape_flower">Flower</string>
+    <string name="icon_shape_heart">Heart</string>
+    <string name="icon_shape_leaf">Leaf</string>
+    <string name="icon_shape_meow">Meow</string>
+    <string name="icon_shape_pebble">Pebble</string>
+    <string name="icon_shape_roundedhexagon">Rounded Hexagon</string>
+    <string name="icon_shape_stretched">Stretched</string>
+    <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Προσαρμοσμένο σχήμα εικονιδίων</string>
     <string name="custom_icon_shape_create">Δημιουργία προσαρμοσμένου σχήματος εικονιδίων</string>
@@ -447,6 +457,8 @@
     <string name="gesture_double_tap">Διπλό πάτημα</string>
     <string name="gesture_swipe_up">Σύρετε προς τα επάνω</string>
     <string name="gesture_swipe_down">Σύρετε προς τα κάτω</string>
+    <string name="gesture_two_finger_swipe_down">Two-finger swipe down</string>
+    <string name="gesture_two_finger_swipe_up">Two-finger swipe up</string>
     <string name="gesture_home_tap">Κουμπί αρχικής οθόνης</string>
     <string name="gesture_back_tap">Κουμπί επιστροφής</string>
     <string name="gesture_swipe_left">Σύρετε προς τα αριστερά</string>
@@ -732,4 +744,7 @@
     <string name="grant_requested_permissions_tap">Πατήστε για εκχώρηση δικαιωμάτων</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">Έγινε εκκαθάριση της αρχικής οθόνης</string>
+    <string name="lawnchair_actions">Actions</string>
+    <string name="lawnchair_action_failed">Failed to trigger action</string>
+    <string name="please_wait">Please wait…</string>
 </resources>
