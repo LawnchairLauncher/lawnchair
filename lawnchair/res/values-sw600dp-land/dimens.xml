@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="search_result_small_row_height">72dp</dimen>
+    <dimen name="search_result_row_medium_height">86dp</dimen>
+    <dimen name="search_result_row_height">102dp</dimen>
+    <dimen name="search_result_text_height">62dp</dimen>
+    <dimen name="search_result_files_row_height">110dp</dimen>
+
     <dimen name="allset_page_margin_horizontal">48dp</dimen>
     <dimen name="cell_layout_padding">11.33dp</dimen>
     <dimen name="drop_target_bottom_margin">16dp</dimen>
