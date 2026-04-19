@@ -77,7 +77,7 @@ class ApplyIconPackActivity : ComponentActivity() {
             var resolved by remember { mutableStateOf(false) }
 
             LaunchedEffect(packPackageName) {
-                val result = withContext(Dispatchers.Default) {
+                val result = withContext(Dispatchers.IO) {
                     resolveIconPackInfo(packPackageName)
                 }
                 packInfo = result
