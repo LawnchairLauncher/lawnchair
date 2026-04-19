@@ -39,12 +39,13 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
 
     override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
         title.text = target.searchAction?.title
-        val res = when (title.text) {
+        val titleText = title.text
+        val res = when (titleText) {
             SPACE -> resources.getDimensionPixelSize(R.dimen.space_layout_height)
             SPACE_MINI -> resources.getDimensionPixelSize(R.dimen.space_layout_mini_height)
             else -> resources.getDimensionPixelSize(R.dimen.search_result_text_height)
         }
-        if (title.text == SPACE || title.text == SPACE_MINI) {
+        if (titleText == SPACE || titleText == SPACE_MINI) {
             val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, res)
             this.layoutParams = layoutParams
             minimumHeight = 0
