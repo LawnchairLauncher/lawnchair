@@ -67,7 +67,10 @@ class ApplyIconPackActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val packPackageName = intent.getStringExtra(EXTRA_PACKAGE_NAME).orEmpty()
-        if (packPackageName.isEmpty()) finish()
+        if (packPackageName.isEmpty()) {
+            finish()
+            return
+        }
 
         setContent {
             var packInfo by remember { mutableStateOf<Pair<String, Drawable>?>(null) }
