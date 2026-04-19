@@ -1208,7 +1208,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected float getScrollProgress(int screenCenter, View v, int page) {
         final int halfScreenSize = getMeasuredWidth() / 2;
-        int delta = screenCenter - (getScrollForPage(page) + halfScreenSize);
+        int delta = screenCenter - (getVisualScrollForPage(page) + halfScreenSize);
         int panelCount = getPanelCount();
         int pageCount = getChildCount();
 
@@ -1221,7 +1221,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (adjacentPage < 0 || adjacentPage > pageCount - 1) {
             totalDistance = (v.getMeasuredWidth() + mPageSpacing) * panelCount;
         } else {
-            totalDistance = Math.abs(getScrollForPage(adjacentPage) - getScrollForPage(page));
+            totalDistance = Math.abs(getVisualScrollForPage(adjacentPage)
+                    - getVisualScrollForPage(page));
         }
 
         float scrollProgress = delta / (totalDistance * 1.0f);
@@ -1233,9 +1234,26 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public int getScrollForPage(int index) {
         if (!isPageScrollsInitialized() || index >= mPageScrolls.length || index < 0) {
             return 0;
-        } else {
-            return mPageScrolls[index];
         }
+        return mPageScrolls[index];
+    }
+
+    /**
+     * Returns the visual scroll position for a page, accounting for wrap-scroll translation.
+     * Only used by getScrollProgress so that alpha/scroll-progress calculations see the
+     * correct on-screen location of the wrap target.
+     */
+    private int getVisualScrollForPage(int index) {
+        int scroll = getScrollForPage(index);
+        if (isWrapScrolling() && index == mWrapToPage) {
+            int totalWidth = mSavedMaxScroll - mSavedMinScroll + getOnePageDistance();
+            if ((mWrapToPage == 0) != mIsRtl) {
+                scroll += totalWidth;
+            } else {
+                scroll -= totalWidth;
+            }
+        }
+        return scroll;
     }
 
     // While layout transitions are occurring, a child's position may stray from its baseline
@@ -1457,11 +1475,17 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                     if (((isSignificantMove && !isDeltaLeft && !isFling) ||
                             (isFling && !isVelocityLeft)) && mCurrentPage > 0) {
+                        if (isWrapScrolling()) {
+                            cancelWrapScroll();
+                        }
                         finalPage = returnToOriginalPage
                                 ? mCurrentPage : mCurrentPage - getPanelCount();
                         runOnPageScrollsInitialized(
                                 () -> snapToPageWithVelocity(finalPage, velocity));
                     } else if (((isSignificantMove && isDeltaLeft && !isFling) || (isFling && isVelocityLeft)) && mCurrentPage < getChildCount() - 1) {
+                        if (isWrapScrolling()) {
+                            cancelWrapScroll();
+                        }
                         finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + getPanelCount();
                         runOnPageScrollsInitialized(() -> snapToPageWithVelocity(finalPage, velocity));
 					} else if (mCurrentPage == getChildCount() - 1 && infiniteScroll) {
@@ -1471,7 +1495,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                                     () -> snapToPageWrapped(finalPage, velocity));
                         } else {
                             if (isWrapScrolling()) {
-                                finalizeWrapScroll();
+                                cancelWrapScroll();
                             }
                             runOnPageScrollsInitialized(
                                     () -> snapToPageWithVelocity(finalPage, velocity));
@@ -1483,14 +1507,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                                     () -> snapToPageWrapped(finalPage, velocity));
                         } else {
                             if (isWrapScrolling()) {
-                                finalizeWrapScroll();
+                                cancelWrapScroll();
                             }
                             runOnPageScrollsInitialized(
                                     () -> snapToPageWithVelocity(finalPage, velocity));
                         }
                     } else {
                         if (isWrapScrolling()) {
-                            finalizeWrapScroll();
+                            cancelWrapScroll();
                         }
                         runOnPageScrollsInitialized(this::snapToDestination);
                     }
@@ -1542,7 +1566,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         case MotionEvent.ACTION_CANCEL:
             if (mIsBeingDragged) {
                 if (isWrapScrolling()) {
-                    finalizeWrapScroll();
+                    cancelWrapScroll();
                 }
                 runOnPageScrollsInitialized(this::snapToDestination);
             }
@@ -1811,6 +1835,24 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
+     * Cancels wrap-scroll state without jumping scroll position.
+     * Used when the user drags back or the gesture is cancelled, so the subsequent
+     * snapToPage animates from the current drag position instead of jumping first.
+     */
+    private void cancelWrapScroll() {
+        if (!isWrapScrolling()) {
+            return;
+        }
+        View targetView = getPageAt(mWrapToPage);
+        if (targetView != null) {
+            targetView.setTranslationX(0);
+        }
+        mWrapToPage = INVALID_PAGE;
+        mMinScroll = mSavedMinScroll;
+        mMaxScroll = mSavedMaxScroll;
+    }
+
+    /**
      * Returns the scroll value to use for the page indicator during wrap scrolling.
      * Maps out-of-bounds scroll values back into the normal range so dots animate correctly.
      */
@@ -1833,6 +1875,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return scroll;
     }
 
+    // Returns 0 on two-panel (foldable) workspaces, disabling wrap scroll.
     private int getOnePageDistance() {
         if (!isPageScrollsInitialized() || mPageScrolls.length < 2) {
             return 0;
