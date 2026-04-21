@@ -107,6 +107,16 @@
             tools:node="remove" />
 
         <activity
+            android:name="app.lawnchair.ui.ApplyIconPackActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Transparent">
+            <intent-filter>
+                <action android:name="app.lawnchair.APPLY_ICONS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="app.lawnchair.BlankActivity"
             android:theme="@style/Theme.Transparent" />
 

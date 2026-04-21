@@ -271,6 +271,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Icon style</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Icon shape</string>
     <string name="icon_sizes">Icon size</string>
 
