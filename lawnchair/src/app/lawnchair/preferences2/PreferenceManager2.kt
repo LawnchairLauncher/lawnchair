@@ -31,6 +31,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.Converters
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.gestures.handlers.SleepMode
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
@@ -745,6 +746,13 @@ class PreferenceManager2 @Inject constructor(
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("double_tap_gesture_handler"),
         defaultValue = GestureHandlerConfig.Sleep,
+    )
+
+    val sleepMode = preference(
+        key = stringPreferencesKey(name = "sleep_mode"),
+        defaultValue = SleepMode.AUTO,
+        parse = { SleepMode.fromString(it) ?: SleepMode.AUTO },
+        save = { it.toString() },
     )
 
     val swipeUpGestureHandler = serializablePreference<GestureHandlerConfig>(

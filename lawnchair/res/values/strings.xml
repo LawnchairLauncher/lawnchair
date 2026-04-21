@@ -616,6 +616,12 @@
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
 
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
+
     <!--
 
     Bug reporting
