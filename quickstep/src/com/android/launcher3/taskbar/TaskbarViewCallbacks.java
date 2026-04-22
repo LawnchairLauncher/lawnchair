@@ -123,7 +123,7 @@ public class TaskbarViewCallbacks {
 
     /** Callback invoked before Taskbar icons are laid out. */
     void onPreLayoutChildren() {
-        if (enableTaskbarPinning() && ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()) {
+        if (enableTaskbarPinning() && false) { // LC-Ignored: Intentional, all Android desktop flags are disabled -  ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
             mControllers.taskbarViewController.updateTaskbarIconTranslationXForPinning();
         }
     }

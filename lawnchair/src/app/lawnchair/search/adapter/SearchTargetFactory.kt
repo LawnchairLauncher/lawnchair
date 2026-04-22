@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +18,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.exifinterface.media.ExifInterface
 import app.lawnchair.allapps.views.SearchResultView
 import app.lawnchair.search.algorithms.data.Calculation
 import app.lawnchair.search.algorithms.data.ContactInfo
@@ -305,7 +308,6 @@ class SearchTargetFactory(
 
         val fileIntent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             .setDataAndType(fileUri, mimeType)
 
         val action = SearchActionCompat.Builder(info.path, info.name)
@@ -400,16 +402,108 @@ class SearchTargetFactory(
 }
 
 object FilesTarget {
+    private const val MAX_PREVIEW_SIZE_PX = 256
+
     fun getPreviewIcon(
         context: Context,
         info: IFileInfo,
     ): Icon {
         val fileInfo = info as? FileInfo
         return if (fileInfo?.isImageType == true) {
-            Icon.createWithFilePath(fileInfo.path)
+            decodeThumbnailIcon(fileInfo.path)
+                ?: Icon.createWithResource(context, fileInfo.iconRes)
         } else {
             Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_folder)
         }
+    }
+
+    private fun decodeThumbnailIcon(path: String): Icon? {
+        return try {
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(path, options)
+
+            options.inSampleSize = calculateInSampleSize(
+                options.outWidth,
+                options.outHeight,
+                MAX_PREVIEW_SIZE_PX,
+                MAX_PREVIEW_SIZE_PX,
+            )
+            options.inJustDecodeBounds = false
+
+            val bitmap = BitmapFactory.decodeFile(path, options) ?: return null
+
+            val orientation = try {
+                ExifInterface(path).getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED,
+                )
+            } catch (_: IOException) {
+                ExifInterface.ORIENTATION_UNDEFINED
+            }
+
+            val matrix = Matrix()
+            when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+
+                ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+
+                ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+
+                ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.postScale(-1f, 1f)
+
+                ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.postScale(1f, -1f)
+
+                ExifInterface.ORIENTATION_TRANSPOSE -> {
+                    matrix.postRotate(90f)
+                    matrix.postScale(-1f, 1f)
+                }
+
+                ExifInterface.ORIENTATION_TRANSVERSE -> {
+                    matrix.postRotate(270f)
+                    matrix.postScale(-1f, 1f)
+                }
+
+                else -> return Icon.createWithBitmap(bitmap) // ORIENTATION_NORMAL or ORIENTATION_UNDEFINED
+            }
+
+            val oriented = Bitmap.createBitmap(
+                bitmap,
+                0,
+                0,
+                bitmap.width,
+                bitmap.height,
+                matrix,
+                true,
+            )
+            bitmap.recycle() // Recycle instantly without waiting for GC
+            Icon.createWithBitmap(oriented)
+        } catch (e: Exception) {
+            Log.w("FilesTarget", "Failed to decode thumbnail", e)
+            null
+        }
+    }
+
+    /**
+     * We calculate the In Sample Size by a power of 2 so that the decoded bitmap will be as small as
+     * possible while both dimensions remain >= [reqWidth] / [reqHeight]
+     */
+    private fun calculateInSampleSize(
+        rawWidth: Int,
+        rawHeight: Int,
+        reqWidth: Int,
+        reqHeight: Int,
+    ): Int {
+        var inSampleSize = 1
+        if (rawHeight > reqHeight || rawWidth > reqWidth) {
+            // If so we calculate the image at half the dimensions
+            val halfHeight = rawHeight / 2
+            val halfWidth = rawWidth / 2
+            // Then we loop until we find the right sample size by the power of 2
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+        return inSampleSize
     }
 }
 

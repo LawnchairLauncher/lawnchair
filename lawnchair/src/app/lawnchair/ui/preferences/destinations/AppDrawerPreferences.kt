@@ -40,6 +40,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.AppDrawerHapticFeedbackPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.SuggestionsPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
@@ -71,9 +72,11 @@ fun AppDrawerPreferences(
         modifier = modifier,
     ) {
         val drawerListAdapter = prefs.drawerList.getAdapter()
-        DrawerLayoutPreference(drawerListAdapter)
-        ExpandAndShrink(visible = drawerListAdapter.state.value) {
-            AppDrawerFolderPreferenceItem()
+        Column {
+            DrawerLayoutPreference(drawerListAdapter)
+            ExpandAndShrink(visible = drawerListAdapter.state.value) {
+                AppDrawerFolderPreferenceItem()
+            }
         }
         val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
@@ -85,7 +88,8 @@ fun AppDrawerPreferences(
                 )
             }
             Item { SearchBarPreference(SearchRoute.DRAWER_SEARCH, showLabel = false) }
-            Item { SuggestionsPreference() }
+            SuggestionsPreference()
+            AppDrawerHapticFeedbackPreference()
         }
         PreferenceGroup(heading = stringResource(R.string.style)) {
             Item { ColorPreference(preference = prefs2.appDrawerBackgroundColor) }
@@ -96,6 +100,13 @@ fun AppDrawerPreferences(
                     step = 0.1f,
                     valueRange = 0F..1F,
                     showAsPercentage = true,
+                )
+            }
+            Item { ColorPreference(preference = prefs2.workProfileTabBackgroundColor) }
+            Item {
+                SwitchPreference(
+                    label = stringResource(id = R.string.work_profile_tab_container_background_label),
+                    adapter = prefs2.workProfileTabContainerBackground.getAdapter(),
                 )
             }
             Item {
@@ -173,13 +184,6 @@ fun AppDrawerPreferences(
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.advanced)) {
-            Item {
-                SwitchPreference(
-                    label = stringResource(id = R.string.pref_all_apps_bulk_icon_loading_title),
-                    description = stringResource(id = R.string.pref_all_apps_bulk_icon_loading_description),
-                    adapter = prefs.allAppBulkIconLoading.getAdapter(),
-                )
-            }
             Item {
                 SwitchPreference(
                     label = stringResource(id = R.string.pref_all_apps_remember_position_title),

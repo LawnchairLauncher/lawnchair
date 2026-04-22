@@ -10,11 +10,10 @@
 [![Play Store Installs](https://img.shields.io/endpoint?color=green&logo=googleplay&logoColor=green&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dapp.lawnchair.play%26l%3DPlay%2520Store%2520Installs%26m%3D%24shortinstalls)](https://play.google.com/store/apps/details?id=app.lawnchair.play)
 
 > [!WARNING]
-> This branch contains major changes from the rebase of Launcher3, including breaking changes and refactors that can cause Lawnchair to break.
-> 
-> If you wish to contribute, read our [contributing guidelines](CONTRIBUTING.md). Note that this branch will undergo many changes as we slowly refactor our codebase, so the `16-dev` branch may be particularly unfriendly to new contributors. It is still possible to submit changes to `15-dev`, but new feature development will be focused on this branch.
-> 
-> For regular users, we recommend staying on `15-dev` for stability purposes.
+> This branch contains major changes from the rebase of Launcher3, including changes that can cause
+> Lawnchair to crash or break.
+>
+> For regular users, we recommend staying on **Lawnchair 15 Beta 2.1**.
 
 <picture>
     <!-- Avoid image being clickable with slight workaround -->
@@ -31,12 +30,12 @@ This branch houses the codebase of Lawnchair 16, which is currently in developme
 
 ## Features
 
--   **Material Expressive Theming:** Adapts to your wallpaper and system theme.
--   **At a Glance Widget:** Displays information *at a glance* with support for [Smartspacer](https://github.com/KieronQuinn/Smartspacer).
--   **QuickSwitch Support:** Integrates with Android Recents on Android 10-15. (requires root)
--   **Global Search:** Allows quick access to apps, contacts, and web results from the home screen.
--   **Customization Options:** Provides options to tweak icons, fonts, and colors to your liking.
--   And more!
+- Material 3 Expressive theming that follows your wallpaper and system colors.
+- At a Glance widget support, with integration
+  for [Smartspacer](https://github.com/KieronQuinn/Smartspacer).
+- QuickSwitch support for Android Recents integration on Android 10-15 (root required).
+- Global search for apps, contacts, and web results from the home screen.
+- Customization options for icon packs, fonts, and color settings.
 
 ## Download
 
@@ -68,23 +67,22 @@ This branch houses the codebase of Lawnchair 16, which is currently in developme
   </a>
 </p>
 
-Lawnchair on Play Store will install as a different app from other sources. Some features may be restricted to comply with Google Play's publishing rules.
+Lawnchair on Play Store will install as a different app from other sources. Features may be restricted to comply with Google Play's publishing rules.
+
+You can also [verify your installation](VERIFICATION.md) to see if you have installed an official build.
 
 ### Development builds
 
 Interested in keeping yourself up-to-date with every Lawnchair development? Try our development builds!
 
-These builds offer the latest features and bug fixes at a cost of being slower and introducing new bugs. Ensure that you make backups before installing.
+These builds offer the latest features and bug fixes at a cost of performance and additional issues.
+Make backups before installing.
 
 **Download:** [Obtainium][Obtainium link] • [GitHub][GitHub link] • [nightly.link][Nightly link]
 
-### Verification
-
-Please visit [Lawnchair Verification](VERIFICATION.md) on way to verify Lawnchair.
-
 ## Contributing
 
-Please visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
+Visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
 
 ## Supporting Lawnchair
 
@@ -100,12 +98,13 @@ A huge thank you to our **Core Backers ($5+)**:
 ## Quick links
 
 -   [Website](https://lawnchair.app)
+-   [Support](https://lawnchair.app/support)
 -   [News on Telegram](https://t.me/lawnchairci)
 -   [Discord](https://discord.com/invite/3x8qNWxgGZ)
--   [Lawnchair on X (formerly Twitter)](https://x.com/lawnchairapp)
+-   [X (formerly Twitter)](https://x.com/lawnchairapp)
 -   [_XDA_ thread](https://xdaforums.com/t/lawnchair-customizable-pixel-launcher.3627137/)
 
-You can view all our links in the [Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki).
+View all our links in the [Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki).
 
 <!-- Download link -->
 [Nightly link]: https://nightly.link/LawnchairLauncher/lawnchair/workflows/ci/15-dev

@@ -18,24 +18,38 @@ package com.android.launcher3.folder
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.graphics.Color
+import com.android.launcher3.Launcher
 import com.android.launcher3.views.ScrimView
 
-class FolderScrimAnimationListener(val scrimView: ScrimView?, val isOpening: Boolean) :
-    AnimatorListenerAdapter() {
+/**
+ * After the expressive folder close animation, reapply the scrim for the current launcher state.
+ * On the home screen the folder animation temporarily uses a black dim layer; when closing, that
+ * must be cleared. In ALL_APPS, [FolderSpringAnimatorSet.addScrimAnimators] does not run, so the
+ * drawer scrim is never replaced (#6551).
+ */
+class FolderScrimAnimationListener(
+    private val scrimView: ScrimView,
+    private val isOpening: Boolean,
+    private val launcher: Launcher,
+) : AnimatorListenerAdapter() {
     override fun onAnimationEnd(animation: Animator) {
         super.onAnimationEnd(animation)
         if (!isOpening) {
-            scrimView?.alpha = 1f
-            scrimView?.setBackgroundColor(Color.TRANSPARENT)
+            restoreScrimAfterFolderClose()
         }
     }
 
     override fun onAnimationCancel(animation: Animator) {
         super.onAnimationCancel(animation)
         if (!isOpening) {
-            scrimView?.alpha = 1f
-            scrimView?.setBackgroundColor(Color.TRANSPARENT)
+            restoreScrimAfterFolderClose()
         }
+    }
+
+    private fun restoreScrimAfterFolderClose() {
+        scrimView.alpha = 1f
+        scrimView.setScrimColors(
+            launcher.stateManager.state.getWorkspaceScrimColor(launcher),
+        )
     }
 }

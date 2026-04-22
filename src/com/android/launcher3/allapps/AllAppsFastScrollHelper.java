@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
-import static android.view.HapticFeedbackConstants.CLOCK_TICK;
+import static androidx.core.view.HapticFeedbackConstantsCompat.CLOCK_TICK;
 
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;

@@ -119,7 +119,6 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
     }
 

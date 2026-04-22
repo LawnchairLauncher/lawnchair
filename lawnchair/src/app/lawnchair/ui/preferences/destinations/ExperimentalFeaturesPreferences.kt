@@ -36,8 +36,10 @@ import app.lawnchair.util.FileAccessManager
 import app.lawnchair.util.FileAccessState
 import app.lawnchair.util.isGestureNavContractCompatible
 import com.android.launcher3.R
-import com.android.launcher3.Utilities.ATLEAST_S
+import com.android.launcher3.Utilities
+import com.android.launcher3.util.MSDLPlayerWrapper
 import com.android.systemui.shared.system.BlurUtils
+import com.google.android.msdl.data.model.MSDLToken
 
 @Composable
 fun ExperimentalFeaturesPreferences(
@@ -45,6 +47,8 @@ fun ExperimentalFeaturesPreferences(
 ) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
+
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     PreferenceLayout(
         label = stringResource(id = R.string.experimental_features_label),
         backArrowVisible = !LocalIsExpandedScreen.current,
@@ -93,6 +97,7 @@ fun ExperimentalFeaturesPreferences(
                         Switch(
                             checked = enabled,
                             onCheckedChange = {
+                                mMSDLPlayerWrapper.playToken(if (it) MSDLToken.SWITCH_ON else MSDLToken.SWITCH_OFF)
                                 enableFolderIconShapeCustomizationAdapter.onChange(it)
                                 // Clean-up when user disables folder shape customisation.
                                 if (!it) {
@@ -219,7 +224,7 @@ fun ExperimentalFeaturesPreferences(
                     adapter = enableGncAdapter,
                     label = stringResource(id = R.string.gesturenavcontract_label),
                     description = stringResource(id = R.string.gesturenavcontract_description),
-                    enabled = ATLEAST_S,
+                    enabled = Utilities.ATLEAST_Q,
                 )
             }
             Item(

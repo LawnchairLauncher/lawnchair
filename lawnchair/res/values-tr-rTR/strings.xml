@@ -102,8 +102,8 @@
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">Uygulama çekmecesi klasörleri</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="selected_apps">Seçilen uygulamalar</string>
+    <string name="add_apps">Uygulamalar ekle</string>
     <string name="app_drawer_folder_settings">Çekmece klasörü</string>
     <string name="add_folder">Klasör oluştur</string>
     <string name="edit_folder">Klasörü düzenle</string>
@@ -122,6 +122,11 @@
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Gelişmiş</string>
+    <!-- Draggable -->
+    <string name="reorderable_active_items">Aktif öğeler</string>
+    <string name="reorderable_disabled_items">Diğer öğeler</string>
+    <string name="reorderable_disabled_hint">Devre dışı bırakılan öğeler burada görünecek. Bir öğeyi buraya sürükleyin veya aktif hale getirmek için kaldır düğmesine dokunun.</string>
+    <string name="reorderable_add_hint_items">Aktif öğeler burada gözükecektir. Buraya bir öğe sürükleyin ya da ekle düğmesine basarak aktif bir öğe oluşturun.</string>
     <!--
 
     Preference Dashboard
@@ -132,7 +137,7 @@
     <string name="general_description">Renkler, simge paketleri, bildirim rozetleri</string>
     <string name="home_screen_label">Ana ekran</string>
     <string name="home_screen_description">Akış, ızgara, simgeler</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">Ana ekran eylemleri</string>
     <string name="dock_label">Alt Sıra</string>
     <string name="dock_description">Arama çubuğu, simge sayısı</string>
     <string name="app_drawer_label">Uygulama çekmecesi</string>
@@ -145,11 +150,17 @@
     <string name="gestures_description">Dokunmalar ve kaydırmalar</string>
     <string name="quickstep_label">Son Kullanılanlar</string>
     <string name="quickstep_description">Tümünü Temizle tuşu, köşe yarıçapı</string>
+    <string name="backup_and_restore_label">Yedekle ve geri yükle</string>
+    <string name="backup_and_restore_description">Mevcut kurulumu kaydet, yedekleri geri yükle</string>
     <string name="about_label">Hakkında</string>
     <string name="app_info_drop_target_label">Uygulama Hakkında</string>
     <string name="debug_restart_launcher">Lawnchair\'i Yeniden Başlat</string>
     <string name="experimental_features_label">Deneyimsel özellikler</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Çalışma Alanı</string>
+    <string name="smartspace_label">Akıllı Alan</string>
+    <string name="internal_label">Dahili sürüm</string>
+    <string name="internal_description">Dahili sürüm diğer deneysel gruplara göre daha kararsız olabilir</string>
     <string name="font_picker_label">Yazı tipi özelleştirmesi</string>
     <string name="font_picker_description">Bazı metinler değişmeden kalır</string>
     <string name="smartspace_calendar_label">Bir Bakışta takvim özelleştirme</string>
@@ -158,10 +169,19 @@
     <string name="workspace_increase_max_grid_size_description">İzin verilen maksimum na ekran ızgara boyutunu 10 x 10\'dan 20 x 20\'ye artırın</string>
     <string name="always_reload_icons_label">Simgeleri her zaman yeniden yükle</string>
     <string name="always_reload_icons_description">Ön belleklenmiş simgeleri kullanmaktan kaçın</string>
+    <string name="always_reload_icons_warning">Bu işlem simgenin düzenli olarak yeniden yüklenmesine neden olur, simge paketi düzenli olarak güncellenmiyorsa bu gerekli değildir</string>
     <string name="icon_swipe_gestures">Simge kaydırma hareketleri</string>
     <string name="icon_swipe_gestures_description">Ana ekranda kaydırmak yerine simgeleri sola ya da sağa kaydırarak işlemler yap</string>
     <string name="show_deck_layout">Deck düzeni</string>
     <string name="show_deck_layout_description">Uygulama çekmecesini gizle ve yeni uygulamaları ana ekrana ekle seçeneğini göster</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Çalışma Alanındaki Material 3 Expressive değişikliklerini etkinleştir</string>
+    <string name="experimental_folder_shape_modify_label">Özelleştirilebilir klasör şekli</string>
+    <string name="folder_shape_label">Klasör</string>
+    <string name="app_icon_shape_label">Uygulama</string>
+    <string name="gesturenavcontract_label">GestureNavContract API\'sini kullan</string>
+    <string name="gesturenavcontract_description">Hareketle gezinme kullanılırken Android\'in gelişmiş animasyonlarını destekle. Tüm cihazlar bunu desteklemez. Kullanım sırasında animasyon hatalarına neden olabilir.</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract animasyonlar sırasında görüntü bozukluklarına neden olabilir</string>
     <string name="recents_lock_unlock">Kilitle/kilidi aç</string>
     <string name="recents_lock_unlock_description">\"Tümünü Temizle\"ye basıldığında seçilen uygulamanın kapanmasını engelle</string>
     <!--Overlay-->
@@ -204,8 +224,8 @@
     <string name="adaptive_icon_background_description">Beyaz için %100 arka plan açıklığı kullan</string>
     <string name="reset_custom_icons">Özel simgeleri sıfırla</string>
     <string name="reset_custom_icons_confirmation">Tüm özel simgeler sıfırlanacak. Devam etmek istiyor musun?</string>
-    <string name="remove_all_views_from_home_screen">Clear home screen</string>
-    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
+    <string name="remove_all_views_from_home_screen">Ana ekranı temizle</string>
+    <string name="remove_all_views_from_home_screen_desc">Ana ekran temizlenecek. Devam etmek ister misin?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Simgeler</string>
     <string name="icon_picker_reset_to_default">Varsayılanlara sıfırla</string>
@@ -227,10 +247,22 @@
     <string name="icon_shape_square">Kare</string>
     <string name="icon_shape_squircle">Yuvarlatılmış Kare</string>
     <string name="icon_shape_teardrop">Damla</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Çok Güneşli</string>
+    <string name="icon_shape_complex_clover">Karmaşık Yonca</string>
     <string name="icon_shape_four_sided_cookie">Dörtgen kurabiye</string>
     <string name="icon_shape_seven_sided_cookie">Yedigen kurabiye</string>
     <string name="icon_shape_arch">Kavis</string>
+    <!-- Additional icon shapes -->
+    <string name="icon_shape_cloudy">Cloudy</string>
+    <string name="icon_shape_flower">Flower</string>
+    <string name="icon_shape_heart">Heart</string>
+    <string name="icon_shape_leaf">Leaf</string>
+    <string name="icon_shape_meow">Meow</string>
+    <string name="icon_shape_pebble">Pebble</string>
+    <string name="icon_shape_roundedhexagon">Rounded Hexagon</string>
+    <string name="icon_shape_stretched">Stretched</string>
+    <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Özel simge şekli</string>
     <string name="custom_icon_shape_create">Özel simge şekli oluştur</string>
@@ -251,6 +283,8 @@
     <string name="themed_icon_pack">Temalı simge kaynağı</string>
     <string name="themed_icon_pack_tint">Vurgulu renk tonu</string>
     <string name="system_icons">Sistem simgeleri</string>
+    <string name="force_monochrome_label">Tek renkliliği zorla</string>
+    <string name="force_monochrome_description">Yeniden başlatma gerektirir, desteklenmeyen uygulamaları vurgu rengiyle renklendirir</string>
     <string name="themed_icon_title">Temalı simgeler</string>
     <string name="themed_icons_off_label">Kapat</string>
     <string name="themed_icons_home_label">Ana ekran</string>
@@ -320,8 +354,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoryen</string>
     <string name="smartspace_calendar_persian">Farsça</string>
+    <string name="smartspace_calendar_lunar">Ay</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Hızlı şarj</string>
+    <string name="smartspace_battery_slow_charging">Yavaş şarj</string>
     <string name="smartspace_battery_charging">Şarj ediliyor</string>
     <string name="smartspace_battery_full">Şarj oldu</string>
     <string name="smartspace_battery_low">Pil zayıf</string>
@@ -341,6 +378,14 @@
     <string name="smartspace_weather">Hava durumu</string>
     <string name="smartspace_battery_status">Pil durumu</string>
     <string name="smartspace_now_playing">Şimdi Oynatılıyor</string>
+    <string name="smartspace_onboarding">Başlangıç</string>
+    <!-- Onboarding strings -->
+    <string name="onboarding_open_settings_title">Lawnchair\'inizi yapılandırın</string>
+    <string name="onboarding_open_settings_subtitle">Ayarları açmak için Ana Ekrana uzun basın</string>
+    <string name="onboarding_major_upgrade_title">Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g> sürümüne hoş geldiniz!</string>
+    <string name="onboarding_major_upgrade_subtitle">Yeni neler olduğuna bir bakın!</string>
+    <string name="onboarding_welcome">Lawnchair\'e Hoş Geldiniz!</string>
+    <string name="onboarding_swipe_up">Uygulama Çekmecesini açmak için yukarı kaydırın</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maksimum hedef sayısı</string>
     <string name="open_smartspacer_settings">Smartspacer ayarlarını aç</string>
@@ -381,6 +426,11 @@
     <string name="privacy_policy">Gizlilik sözleşmesi</string>
     <string name="contributor_status_active">Aktif</string>
     <string name="update_check_failed">Güncellemeler denetlenirken bir hata oluştu</string>
+    <string name="major_update_label">Büyük güncelleme!</string>
+    <string name="major_update_description">Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> sürümünden Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g> sürümüne geçmek üzeresiniz. Lütfen dikkatlice düşünün çünkü daha yeni ana sürüm mevcut sürüme göre daha kararsız olabilir.</string>
+    <string name="pro_disabled_by_unknown">Güncellenemedi!</string>
+    <string name="pro_disabled_by_major_is_newer">Güncellenemedi, bu sürüm fazla yeni!</string>
+    <string name="updater">Güncelleyici</string>
     <!--
 
     Backup and restore
@@ -397,6 +447,8 @@
     <string name="backup_restore_success">Yedekleme geri yüklendi</string>
     <string name="backup_restore_error">Yedek oluşturulamadı</string>
     <string name="invalid_backup_file">Geçersiz yedekleme dosyası</string>
+    <string name="create_backup_description">Ayarları ve başlatıcı düzenini yedekle</string>
+    <string name="restore_backup_description">Önceden oluşturulan bir yedeği geri yükle</string>
     <!--
 
     Gesture settings
@@ -405,6 +457,8 @@
     <string name="gesture_double_tap">İki kez tıklayın</string>
     <string name="gesture_swipe_up">Yukarı kaydırın</string>
     <string name="gesture_swipe_down">Aşağı doğru kaydırın</string>
+    <string name="gesture_two_finger_swipe_down">Two-finger swipe down</string>
+    <string name="gesture_two_finger_swipe_up">Two-finger swipe up</string>
     <string name="gesture_home_tap">Ana sayfa düğmesi</string>
     <string name="gesture_back_tap">Geri düğmesi</string>
     <string name="gesture_swipe_left">Sola kaydır</string>
@@ -413,6 +467,7 @@
     <string name="gesture_handler_sleep">Uyku</string>
     <string name="gesture_handler_recents">Son uygulamaları aç</string>
     <string name="gesture_handler_open_notifications">Bildirim panelini aç</string>
+    <string name="gesture_handler_open_quick_settings">Hızlı Ayarları aç</string>
     <string name="gesture_handler_open_app_option">Uygulamayı aç</string>
     <string name="gesture_handler_open_app_config">Aç %1$s</string>
     <string name="gesture_handler_open_app_drawer">Uygulama çekmecesini aç</string>
@@ -421,12 +476,15 @@
     <string name="gesture_handler_open_assistant">Asistanı aç</string>
     <string name="pick_app_for_gesture">Uygulama seç</string>
     <string name="dt2s_admin_hint_title">Yönetici izinleri gerekli</string>
-    <string name="dt2s_admin_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanmak için Lawnchair\'i bir cihaz yöneticisi uygulaması olarak ayarlayın. Ayarları Aç\'a tıklayın, ardından \"Bu cihaz yöneticisi uygulamasını aktif et\" seçeneğine tıklayın</string>
-    <string name="dt2s_admin_warning">Ekranı Kapatmak İçin Çift Dokunun kapatılacaktır.</string>
+    <string name="dt2s_admin_hint">Cihazı uyku moduna geçirmek için Lawnchair\'i cihaz yönetici uygulaması olarak ayarlayın. \"Ayarları aç\" seçeneğine ardından \"Bu cihaz yönetici uygulamasını etkinleştir\" seçeneğine dokunun.</string>
+    <string name="dt2s_admin_warning">Cihazı uykuya alma hareketleri devre dışı bırakılacaktır.</string>
     <string name="d2ts_recents_a11y_hint_title">Erişilebilirlik hizmetini açın</string>
-    <string name="dt2s_a11y_hint">Çift Dokunarak Uyutma özelliğini kullanmak için Lawnchair erişilebilirlik servisini açın. \"Ayarları aç\" seçeneğine dokunun, \"Lawnchair\"i seçin ve \"Etkinleştir\" seçeneğini aktif edin.\n\nLawnchair, bu işlemi gerçekleştirmek için Erişilebilirlik’in performGlobalAction yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak, Lawnchair bu işlevsellik için yapılandırılmamıştır ve herhangi bir etkinlik almaz.</string>
-    <string name="dt2s_recents_warning_open_settings">Ayarları aç</string>
-    <string name="recents_a11y_hint">Son Kullanılanlar özelliğini kullanmak için Lawnchair erişilebilirlik hizmetini açın. \"Ayarları aç\"a dokunun, \"Lawnchair\"i seçin ve etkinleştirin.\n\nLawnchair, bu işlemi gerçekleştirmek için Accessibility\'nin performGlobalAction yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak Lawnchair, bu işlev için yapılandırılmamıştır ve herhangi bir olay almaz.</string>
+    <string name="sleep_a11y_hint">cihazı uykuya al</string>
+    <string name="notifications_fallback_a11y_hint">bildirim panelini aç</string>
+    <string name="quick_settings_a11y_hint">Hızlı Ayarlar panelini aç</string>
+    <string name="recents_screen_a11y_hint">Son kullanılanlar ekranını aç</string>
+    <string name="generic_a11y_hint">%1$s için Lawnchair erişilebilirlik hizmetini etkinleştirin. \"Ayarları aç\" seçeneğine dokunun, \"Lawnchair\"i seçin ve \"Lawnchair\'i kullan\"ı etkinleştirin.</string>
+    <string name="generic_a11y_disclaimer">Lawnchair bu işlemi gerçekleştirmek için Erişilebilirliğin `performGlobalAction` yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak Lawnchair bu işlev için yapılandırılmamıştır ve hiçbir olayı izlemez.</string>
     <!--
 
     Bug reporting
@@ -449,13 +507,15 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Ana ekranı döndürme</string>
     <string name="home_screen_rotation_description">Cihaz döndürüldüğünde ana ekranın dönmesine izin ver</string>
+    <string name="auto_updater_label">Otomatik güncelleyici</string>
+    <string name="auto_updater_description">Hakkında bölümüne gidildiğinde Deneysel güncellemesini otomatik olarak kontrol et</string>
     <string name="wallpaper_blur">Duvar kağıdı bulanıklaştırma (deneysel)</string>
     <string name="wallpaper_background_blur">Bulanıklaştırma yoğunluğu</string>
     <string name="wallpaper_background_blur_factor">Bulanıklık faktörü eşiği</string>
     <string name="home_lawn_deck_label">Deck</string>
     <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
     <string name="home_lawn_deck_description">Deck ile uygulamalarınıza zahmetsizce erişin; sadelik ve kusursuz düzen için tasarlanmış en iyi çekmecesiz deneyimi yaşayın</string>
-    <string name="auto_add_shortcuts_label">Ana ekrana yeni uylulamaları ekle</string>
+    <string name="auto_add_shortcuts_label">Ana ekrana yeni uygulamaları ekle</string>
     <string name="minus_one_enable">Akışı göster</string>
     <string name="minus_one_unavailable">Bir akış uygulaması yüklü değil</string>
     <string name="minus_one">Akış</string>
@@ -464,17 +524,15 @@
     <string name="wallpaper_depth_effect_label">Duvar kağıdı derinlik efekti</string>
     <string name="wallpaper_depth_effect_description">Başlatıcının alanları arasında geçiş yaparken duvar kağıdını yakınlaştırın ve uzaklaştırın</string>
     <string name="show_sys_ui_scrim">Üst gölge</string>
-    <string name="infinite_scrolling_label">Infinite scrolling</string>
-    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
+    <string name="infinite_scrolling_label">Sonsuz kaydırma</string>
+    <string name="infinite_scrolling_description">İlk ve son sayfalar arasında geçiş yapmak için kaydırın</string>
     <string name="home_screen_grid">Ana ekran ızgarası</string>
     <string name="home_screen_lock">Ana ekranı kilitle</string>
     <string name="home_screen_unlock">Ana ekranın kilidini aç</string>
     <string name="home_screen_locked">Ana ekran kilitli</string>
     <string name="home_screen_lock_description">Ana Ekran düzeninde değişiklik yapılmasının önle</string>
-    <string name="show_dot_pagination_label">Nokta sayfalandırmasını göster</string>
-    <string name="show_dot_pagination_description">Sayfa numarasının gösterirken çizgi yerine nokta kullanın</string>
-    <string name="show_material_u_popup_label">Yeni açılır pencere stilini kullan</string>
-    <string name="show_material_u_popup_description">Material You\'nun hareketli ve biraz birleştirilmiş pop-up stilini kullanın</string>
+    <string name="set_default_home_page">Varsayılan sayfa olarak ayarla</string>
+    <string name="default_home_page_set">Varsayılan ana sayfa güncellendi</string>
     <string name="popup_menu">Açılır menü</string>
     <string name="popup_menu_items">Açılır menü öğeleri</string>
     <string name="edit_menu_items">Açılır menü öğelerini düzenle</string>
@@ -544,8 +602,11 @@
     <string name="pref_all_apps_show_scrollbar_title">Kaydırma çubuğunu göster</string>
     <string name="app_drawer_columns">Uygulama çekmecesi sütunları</string>
     <string name="row_height_label">Satır yüksekliği</string>
+    <string name="app_drawer_haptic_feedback_label">Dokunsal geri bildirim</string>
     <string name="app_drawer_indent_label">Yatay dolgu</string>
     <string name="app_drawer_bg_color_label">Arka plan rengi</string>
+    <string name="work_profile_tab_background_label">Sekmelerin arka plan rengi</string>
+    <string name="work_profile_tab_container_background_label">Ayrılmış Sekme kapsayıcısının arka planı</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Uygulama çekmecesinden gizle</string>
     <string name="hidden_apps_label_with_count">Gizli uygulamalar (%1$d)</string>
@@ -581,7 +642,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search web and more</string>
+    <string name="all_apps_device_search_hint">İnterneti ve daha fazlasını arayın</string>
     <string name="all_apps_search_bar_hint">Uygulamaları Ara</string>
     <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\" ile eşleşen bir uygulama bulunamadı</string>
     <string name="all_apps_search_result_suggestions">Web\'den</string>
@@ -682,5 +743,8 @@
     <string name="permissions_needed">İzinler gerekli</string>
     <string name="grant_requested_permissions_tap">İzinleri vermek için dokunun</string>
     <!-- Message shown when all home screen views are removed -->
-    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
+    <string name="home_screen_all_views_removed_msg">Ana ekran temizlendi</string>
+    <string name="lawnchair_actions">İşlemler</string>
+    <string name="lawnchair_action_failed">İşlem tetiklenemedi</string>
+    <string name="please_wait">Please wait…</string>
 </resources>

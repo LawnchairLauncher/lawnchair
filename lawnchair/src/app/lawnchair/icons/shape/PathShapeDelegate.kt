@@ -37,19 +37,6 @@ data class PathShapeDelegate(private val iconShape: IconShape) : ShapeDelegate {
     private val tmpPath = Path()
     private val tmpMatrix = Matrix()
 
-    // Create RoundedPolygon from SVG path if available for morph animations
-    private val polygon: RoundedPolygon? = iconShape.svgPathString?.let { pathString ->
-        try {
-            RoundedPolygon(
-                features = SvgPathParser.parseFeatures(pathString),
-                centerX = 50f,
-                centerY = 50f,
-            )
-        } catch (e: Exception) {
-            null
-        }
-    }
-
     override fun drawShape(
         canvas: Canvas,
         offsetX: Float,
@@ -90,51 +77,17 @@ data class PathShapeDelegate(private val iconShape: IconShape) : ShapeDelegate {
         endRadius: Float,
         isReversed: Boolean,
     ): ValueAnimator where T : View, T : ClipPathView {
-        val pathProvider: (Float, Path) -> Unit = if (polygon != null) {
-            // Use proper Morph animation with RoundedPolygon for smooth folder animations
-            val morph = Morph(
-                start = polygon.transformed(
-                    Matrix().apply {
-                        setRectToRect(
-                            RectF(0f, 0f, DEFAULT_PATH_SIZE, DEFAULT_PATH_SIZE),
-                            RectF(startRect),
-                            Matrix.ScaleToFit.FILL,
-                        )
-                    },
-                ),
-                end = createRoundedRect(
-                    left = endRect.left.toFloat(),
-                    top = endRect.top.toFloat(),
-                    right = endRect.right.toFloat(),
-                    bottom = endRect.bottom.toFloat(),
-                    cornerR = endRadius,
-                ),
-            )
-            morph::toPath
-        } else {
-            // Fallback: Use IconShape's addToPath with progress interpolation for corner-based shapes
-            { progress: Float, path: Path ->
-                // Interpolate the bounds from start to end
-                val left = (1 - progress) * startRect.left + progress * endRect.left
-                val top = (1 - progress) * startRect.top + progress * endRect.top
-                val right = (1 - progress) * startRect.right + progress * endRect.right
-                val bottom = (1 - progress) * startRect.bottom + progress * endRect.bottom
+        val shape = if (iconShape is IconShape.SystemBased) iconShape.findNearestShape() else iconShape
 
-                // Calculate the size (half of the average dimension) for the icon shape
-                val startSize = (startRect.width() + startRect.height()) / 4f
+        val pathProvider: (Float, Path) -> Unit = when (shape) {
+            is IconShape.PathBased ->
+                getPathBasedProvider(shape, startRect, endRect, endRadius)
 
-                // Use IconShape's addToPath with progress for smooth interpolation
-                iconShape.addToPath(
-                    path = path,
-                    left = left,
-                    top = top,
-                    right = right,
-                    bottom = bottom,
-                    size = startSize,
-                    endSize = endRadius,
-                    progress = progress,
-                )
-            }
+            is IconShape.CornerBased ->
+                // Fallback: Use IconShape's addToPath with progress interpolation for corner-based shapes
+                getCornerBasedProvider(shape, startRect, endRect, endRadius)
+
+            else -> throw RuntimeException("Could not find proper shape provider for $shape")
         }
 
         val shouldUseSpringAnimation =
@@ -144,6 +97,69 @@ data class PathShapeDelegate(private val iconShape: IconShape) : ShapeDelegate {
         } else {
             ClipAnimBuilder(target, pathProvider).toAnim(isReversed)
         }
+    }
+
+    private fun getCornerBasedProvider(
+        iconShape: IconShape.CornerBased,
+        startRect: Rect,
+        endRect: Rect,
+        endRadius: Float,
+    ): (Float, Path) -> Unit = { progress: Float, path: Path ->
+        // Interpolate the bounds from start to end
+        val left = (1 - progress) * startRect.left + progress * endRect.left
+        val top = (1 - progress) * startRect.top + progress * endRect.top
+        val right = (1 - progress) * startRect.right + progress * endRect.right
+        val bottom = (1 - progress) * startRect.bottom + progress * endRect.bottom
+
+        // Calculate the size (half of the average dimension) for the icon shape
+        val startSize = (startRect.width() + startRect.height()) / 4f
+
+        // Use IconShape's addToPath with progress for smooth interpolation
+        CornerShapeCompat.addToPath(
+            shape = iconShape,
+            path = path,
+            left = left,
+            top = top,
+            right = right,
+            bottom = bottom,
+            size = startSize,
+            endSize = endRadius,
+            progress = progress,
+        )
+    }
+
+    private fun getPathBasedProvider(
+        iconShape: IconShape.PathBased,
+        startRect: Rect,
+        endRect: Rect,
+        endRadius: Float,
+    ): (Float, Path) -> Unit {
+        val polygon = RoundedPolygon(
+            features = SvgPathParser.parseFeatures(iconShape.svgPathString),
+            centerX = 50f,
+            centerY = 50f,
+        )
+
+        // Use proper Morph animation with RoundedPolygon for smooth folder animations
+        val morph = Morph(
+            start = polygon.transformed(
+                Matrix().apply {
+                    setRectToRect(
+                        RectF(0f, 0f, DEFAULT_PATH_SIZE, DEFAULT_PATH_SIZE),
+                        RectF(startRect),
+                        Matrix.ScaleToFit.FILL,
+                    )
+                },
+            ),
+            end = createRoundedRect(
+                left = endRect.left.toFloat(),
+                top = endRect.top.toFloat(),
+                right = endRect.right.toFloat(),
+                bottom = endRect.bottom.toFloat(),
+                cornerR = endRadius,
+            ),
+        )
+        return morph::toPath
     }
 
     private class ClipAnimBuilder<T>(val target: T, val pathProvider: (Float, Path) -> Unit) :

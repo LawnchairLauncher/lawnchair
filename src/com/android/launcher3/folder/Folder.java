@@ -19,6 +19,7 @@ package com.android.launcher3.folder;
 import static android.text.TextUtils.isEmpty;
 
 import static com.android.launcher3.Flags.enableLauncherVisualRefresh;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -119,6 +120,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.ClipPathView;
+import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import com.androidinternal.graphics.ColorUtils;
@@ -1108,6 +1110,28 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         clearDragInfo();
         setState(STATE_CLOSED);
         mContent.setCurrentPage(0);
+
+        // Expressive folder animations dim the workspace scrim and scale workspace/hotseat. When the
+        // folder is dismissed without running the close animation (e.g. launching an app), those
+        // effects are not cleared by FolderScrimAnimationListener — restore them here.
+        restoreLauncherAfterFolderDismissed();
+    }
+
+    /**
+     * Resets scrim and workspace/hotseat scale after folder is removed from the hierarchy.
+     */
+    private void restoreLauncherAfterFolderDismissed() {
+        if (!(mActivityContext instanceof Launcher launcher)) {
+            return;
+        }
+        ScrimView scrim = launcher.getScrimView();
+        if (scrim != null) {
+            scrim.setAlpha(1f);
+            scrim.setScrimColors(
+                    launcher.getStateManager().getState().getWorkspaceScrimColor(launcher));
+        }
+        SCALE_PROPERTY.set(launcher.getWorkspace(), 1f);
+        SCALE_PROPERTY.set(launcher.getHotseat(), 1f);
     }
 
     @Override

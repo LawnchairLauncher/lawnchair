@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -46,6 +47,8 @@ import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import kotlin.math.roundToInt
 
 @Composable
@@ -112,6 +115,12 @@ private fun SliderPreference(
     showUnit: String = "",
 ) {
     var sliderValue by remember { mutableFloatStateOf(value) }
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
+    val getAppropriateHaptic = if (step == 0f) {
+        MSDLToken.DRAG_INDICATOR_CONTINUOUS
+    } else {
+        MSDLToken.DRAG_INDICATOR_DISCRETE
+    }
 
     DisposableEffect(value) {
         sliderValue = value
@@ -156,7 +165,10 @@ private fun SliderPreference(
         description = {
             Slider(
                 value = sliderValue,
-                onValueChange = { newValue -> sliderValue = newValue },
+                onValueChange = { newValue ->
+                    sliderValue = newValue
+                    mMSDLPlayerWrapper.playToken(getAppropriateHaptic)
+                },
                 onValueChangeFinished = { onValueChangeFinished(sliderValue) },
                 valueRange = valueRange,
                 steps = getSteps(valueRange, step),

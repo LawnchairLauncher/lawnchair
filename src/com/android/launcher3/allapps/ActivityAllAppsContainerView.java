@@ -834,9 +834,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     protected void updateHeaderScroll(int scrolledOffset) {
         if (PreferenceExtensionsKt.firstBlocking(pref2.getHideAppDrawerSearchBar()))
             return;
+        
+        // Check if tab container background should be shown
+        boolean showTabContainerBackground = PreferenceExtensionsKt.firstBlocking(
+                pref2.getWorkProfileTabContainerBackground());
+        
         float prog = Utilities.boundToRange((float) scrolledOffset / mHeaderThreshold, 0f, 1f);
         int headerColor = getHeaderColor(prog);
-        int tabsAlpha = mHeader.getPeripheralProtectionHeight(/* expectedHeight */ false) == 0 ? 0
+        int tabsAlpha = (!showTabContainerBackground || mHeader.getPeripheralProtectionHeight(/* expectedHeight */ false) == 0) ? 0
                 : (int) (Utilities.boundToRange(
                         (scrolledOffset + mHeader.mSnappedScrolledY) / mHeaderThreshold, 0f, 1f)
                         * 255);
@@ -1719,6 +1724,13 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                     new ViewGroupFocusHelper(mRecyclerView)) : new FocusedItemDecorator(
                     mRecyclerView);
             mRecyclerView.addItemDecoration(focusedItemDecorator);
+            // LC-Note: This is needed for highlight focused app decoration, this has some problem of it own but purely visual.
+            if (isSearch()) {
+                RecyclerView.ItemDecoration searchDecorator = getMainAdapterProvider().getDecorator();
+                if (searchDecorator != null) {
+                    mRecyclerView.addItemDecoration(searchDecorator);
+                }
+            }
             mOnFocusChangeListener = focusedItemDecorator.getFocusListener();
             mAdapter.setIconFocusListener(mOnFocusChangeListener);
             applyPadding();

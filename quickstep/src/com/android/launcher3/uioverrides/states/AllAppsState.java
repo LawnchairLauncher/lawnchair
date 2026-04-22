@@ -213,8 +213,7 @@ public class AllAppsState extends LauncherState {
         int backgroundColor;
         if (!launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
             // Always use an opaque scrim if there's no sheet.
-            // Lawnchair-TODO-Colour: Check R.color.materialColorSurfaceDim
-            backgroundColor = launcher.getResources().getColor(R.color.materialColorSurfaceDim);
+            backgroundColor = ColorTokens.SurfaceDimColor.resolveColor(launcher);
         } else if (!Flags.allAppsBlur()) {
             // If there's a sheet but no blur, use the old scrim color.
             backgroundColor = ColorTokens.WidgetsPickerScrim.resolveColor(launcher);

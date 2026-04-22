@@ -23,6 +23,7 @@ import androidx.annotation.VisibleForTesting
 import com.android.launcher3.BubbleTextView.RunningAppState
 import com.android.launcher3.Flags
 import com.android.launcher3.Flags.enableRecentsInTaskbar
+import com.android.launcher3.Utilities
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.TaskItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
@@ -50,7 +51,11 @@ class TaskbarRecentAppsController(
 
     var canShowRunningApps =
         DesktopModeStatus.canEnterDesktopMode(context) &&
-            DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS.isTrue
+            if (Utilities.ATLEAST_BAKLAVA_1) {
+                DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS.isTrue
+            } else {
+                false
+            }
         @VisibleForTesting
         set(isEnabledFromTest) {
             field = isEnabledFromTest
@@ -60,7 +65,11 @@ class TaskbarRecentAppsController(
         }
 
     val enableRecentTasksThrottle =
-        DesktopExperienceFlags.ENABLE_TASKBAR_RECENT_TASKS_THROTTLE_BUGFIX.isTrue
+        if (Utilities.ATLEAST_BAKLAVA_1) {
+            DesktopExperienceFlags.ENABLE_TASKBAR_RECENT_TASKS_THROTTLE_BUGFIX.isTrue
+        } else {
+            false
+        }
 
     // TODO(b/343532825): Add a setting to disable Recents even when the flag is on.
     var canShowRecentApps = enableRecentsInTaskbar()

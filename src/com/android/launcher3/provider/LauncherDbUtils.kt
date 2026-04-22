@@ -19,6 +19,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ShortcutInfo
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
@@ -259,12 +260,45 @@ object LauncherDbUtils {
         }
 
         // Drop the unused columns
-        db.run {
-            execSQL("ALTER TABLE ${LauncherSettings.Favorites.TABLE_NAME} DROP COLUMN iconPackage;")
-            execSQL(
-                "ALTER TABLE ${LauncherSettings.Favorites.TABLE_NAME} DROP COLUMN iconResource;"
-            )
+        try {
+            db.run {
+                execSQL("ALTER TABLE ${LauncherSettings.Favorites.TABLE_NAME} DROP COLUMN iconPackage;")
+                execSQL(
+                    "ALTER TABLE ${LauncherSettings.Favorites.TABLE_NAME} DROP COLUMN iconResource;"
+                )
+            }
+        } catch (ignored: SQLiteException) {
+            // Compat users upgrade from Lawnchair 13, see https://github.com/LawnchairLauncher/lawnchair/issues/3881.
+            removeColumn(db, TABLE_NAME, "iconPackage")
+            removeColumn(db, TABLE_NAME, "iconResource")
         }
+    }
+
+    // Compat users upgrade from Lawnchair 13, see https://github.com/LawnchairLauncher/lawnchair/issues/3881.
+    private fun removeColumn(db: SQLiteDatabase, tableName: String, columnName: String) {
+        val columns = ArrayList<String>()
+
+        // Get all column names from the table
+        db.rawQuery("PRAGMA table_info($tableName)", null).use { c ->
+            while (c.moveToNext()) {
+                val nameIndex = c.getColumnIndex("name")
+                val column = c.getString(nameIndex)
+                if (column != columnName) {
+                    columns.add(column)
+                }
+            }
+        }
+
+        // Create a new table without the column
+        val newTable = "${tableName}_new"
+        val columnsSeparated = TextUtils.join(",", columns)
+        db.execSQL("CREATE TABLE $newTable AS SELECT $columnsSeparated FROM $tableName")
+
+        // Drop the old table
+        db.execSQL("DROP TABLE $tableName")
+
+        // Rename the new table to the old table's name
+        db.execSQL("ALTER TABLE $newTable RENAME TO $tableName")
     }
 
     /** Utility class to simplify managing sqlite transactions */

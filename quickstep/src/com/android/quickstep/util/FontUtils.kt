@@ -20,6 +20,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.os.Build
+import com.android.launcher3.Utilities
 import com.android.wm.shell.shared.TypefaceUtils
 
 object FontUtils {
@@ -29,7 +30,11 @@ object FontUtils {
 
     @JvmStatic
     fun getTypeFace(resources: Resources): Typeface =
-        Typeface.create(baseTypeface, getFontWeight(resources), /* italic= */ false)
+        if (Utilities.ATLEAST_P) {
+            Typeface.create(baseTypeface, getFontWeight(resources), /* italic= */ false)
+        } else {
+            Typeface.create(baseTypeface, getFontWeight(resources))
+        }
 
     fun getFontWeight(resources: Resources): Int {
         val fontWeightAdjustment: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

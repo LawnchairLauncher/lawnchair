@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 
+import androidx.core.content.ContextCompat;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.BuildConfigs;
 import com.android.launcher3.dagger.ApplicationContext;
@@ -63,7 +64,7 @@ public class PluginManagerWrapperImpl extends PluginManagerWrapper {
                 new PluginInstance.VersionCheckerImpl(), privilegedPlugins,
                 BuildConfigs.IS_DEBUG_DEVICE);
         PluginActionManager.Factory instanceManagerFactory = new PluginActionManager.Factory(
-                c, c.getPackageManager(), c.getMainExecutor(), MODEL_EXECUTOR,
+                c, c.getPackageManager(), ContextCompat.getMainExecutor(c), MODEL_EXECUTOR,
                 c.getSystemService(NotificationManager.class), mPluginEnabler,
                 privilegedPlugins, instanceFactory);
 

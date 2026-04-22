@@ -42,6 +42,18 @@ fun GesturePreferences(
             }
             Item {
                 GestureHandlerPreference(
+                    adapter = prefs.twoFingerSwipeUpGestureHandler.getAdapter(),
+                    label = stringResource(id = R.string.gesture_two_finger_swipe_up),
+                )
+            }
+            Item {
+                GestureHandlerPreference(
+                    adapter = prefs.twoFingerSwipeDownGestureHandler.getAdapter(),
+                    label = stringResource(id = R.string.gesture_two_finger_swipe_down),
+                )
+            }
+            Item {
+                GestureHandlerPreference(
                     adapter = prefs.homePressGestureHandler.getAdapter(),
                     label = stringResource(id = R.string.gesture_home_tap),
                 )

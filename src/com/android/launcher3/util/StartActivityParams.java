@@ -74,7 +74,7 @@ public class StartActivityParams implements Parcelable {
         flagsMask = parcel.readInt();
         flagsValues = parcel.readInt();
         extraFlags = parcel.readInt();
-        options = parcel.readBundle();
+        options = parcel.readBundle(getClass().getClassLoader());
         requireActivityResult = parcel.readInt() != 0;
     }
 

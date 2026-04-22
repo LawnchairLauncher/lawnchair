@@ -57,6 +57,7 @@ import app.lawnchair.util.copyToClipboard
 import app.lawnchair.util.getClipboardContent
 import com.android.launcher3.R
 import kotlin.math.roundToInt
+import kotlin.toString
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -68,10 +69,14 @@ fun CustomIconShapePreference(
     val customIconShapeAdapter = preferenceManager2.customIconShape.getAdapter()
 
     val appliedIconShape = customIconShapeAdapter.state.value
-    val selectedIconShape = remember { mutableStateOf(appliedIconShape ?: IconShape.Circle) }
+    val selectedIconShape = remember {
+        mutableStateOf(IconShape.CustomCornerBased(appliedIconShape ?: IconShape.Circle))
+    }
+
     val selectedIconShapeApplied = remember {
         derivedStateOf {
-            appliedIconShape.toString() == selectedIconShape.value.toString()
+            // Force recompose here instead of outside
+            customIconShapeAdapter.state.value.toString() == selectedIconShape.value.toString()
         }
     }
 
@@ -129,9 +134,9 @@ fun CustomIconShapePreference(
 
 @Composable
 private fun IconShapeCornerPreferenceGroup(
-    selectedIconShape: IconShape,
+    selectedIconShape: IconShape.CustomCornerBased,
     modifier: Modifier = Modifier,
-    onSelectedIconShapeChange: (IconShape) -> Unit,
+    onSelectedIconShapeChange: (IconShape.CustomCornerBased) -> Unit,
 ) {
     PreferenceGroup(
         modifier = modifier,
@@ -194,9 +199,9 @@ private fun IconShapeCornerPreferenceGroup(
 
 @Composable
 private fun IconShapeClipboardPreferenceGroup(
-    selectedIconShape: IconShape,
+    selectedIconShape: IconShape.CustomCornerBased,
     modifier: Modifier = Modifier,
-    onSelectedIconShapeChange: (IconShape) -> Unit,
+    onSelectedIconShapeChange: (IconShape.CustomCornerBased) -> Unit,
 ) {
     val context = LocalContext.current
     val importErrorMessage = stringResource(id = R.string.icon_shape_clipboard_import_error)
@@ -221,7 +226,7 @@ private fun IconShapeClipboardPreferenceGroup(
                 label = stringResource(id = R.string.import_from_clipboard),
             ) {
                 getClipboardContent(context)?.let {
-                    IconShape.fromString(value = it, context = context)
+                    IconShape.CustomCornerBased.fromStringOrNull(it)
                 }?.let {
                     onSelectedIconShapeChange(it)
                 } ?: run {

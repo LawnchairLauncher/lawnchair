@@ -84,18 +84,20 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
         if (appResults.isNotEmpty()) {
-            appResults.mapTo(searchTargets, searchTargetFactory::createAppSearchTarget)
-
             if (appResults.size == 1 && context.isDefaultLauncher()) {
                 val singleAppResult = appResults.firstOrNull()
                 val shortcuts = singleAppResult?.let { SearchUtils.getShortcuts(it, context) }
-                if (shortcuts != null) {
-                    if (shortcuts.isNotEmpty()) {
-                        searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
-                        singleAppResult.let { searchTargets.add(searchTargetFactory.createAppSearchTarget(it, true)) }
-                        searchTargets.addAll(shortcuts.map(searchTargetFactory::createShortcutTarget))
-                    }
+                if (shortcuts != null && shortcuts.isNotEmpty()) {
+                    // Show app as a row alongside its shortcuts (no duplicate icon)
+                    singleAppResult.let { searchTargets.add(searchTargetFactory.createAppSearchTarget(it, true)) }
+                    searchTargets.addAll(shortcuts.map(searchTargetFactory::createShortcutTarget))
+                } else {
+                    // No shortcuts: show as icon
+                    appResults.mapTo(searchTargets, searchTargetFactory::createAppSearchTarget)
                 }
+            } else {
+                // Multiple results: show as icons
+                appResults.mapTo(searchTargets, searchTargetFactory::createAppSearchTarget)
             }
             searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
         }

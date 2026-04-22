@@ -116,51 +116,6 @@
     </grid-option>
 
     <grid-option
-        launcher:name="7_by_7"
-        launcher:numRows="7"
-        launcher:numColumns="7"
-        launcher:numFolderRows="4"
-        launcher:numFolderColumns="4"
-        launcher:numHotseatIcons="5"
-        launcher:numExtendedHotseatIcons="6"
-        launcher:dbFile="launcher_7_by_7.db"
-        launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_split"
-        launcher:defaultLayoutId="@xml/default_workspace_7x7"
-        launcher:deviceCategory="phone|multi_display" >
-
-        <display-option
-            launcher:name="Large Phone"
-            launcher:minWidthDps="406"
-            launcher:minHeightDps="694"
-            launcher:iconImageSize="56"
-            launcher:iconTextSize="14.4"
-            launcher:allAppsBorderSpace="16"
-            launcher:allAppsCellHeight="104"
-            launcher:canBeDefault="true" />
-
-        <display-option
-            launcher:name="Large Phone Split Display"
-            launcher:minWidthDps="406"
-            launcher:minHeightDps="694"
-            launcher:iconImageSize="56"
-            launcher:iconTextSize="14.4"
-            launcher:allAppsBorderSpace="16"
-            launcher:allAppsCellHeight="104"
-            launcher:canBeDefault="true" />
-
-        <display-option
-            launcher:name="Shorter Stubby"
-            launcher:minWidthDps="255"
-            launcher:minHeightDps="400"
-            launcher:iconImageSize="48"
-            launcher:iconTextSize="13.0"
-            launcher:allAppsBorderSpace="16"
-            launcher:allAppsCellHeight="104"
-            launcher:canBeDefault="true" />
-
-    </grid-option>
-
-    <grid-option
         launcher:name="6_by_5"
         launcher:numRows="5"
         launcher:numColumns="6"

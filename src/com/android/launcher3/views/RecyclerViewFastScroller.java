@@ -16,7 +16,7 @@
 
 package com.android.launcher3.views;
 
-import static android.view.HapticFeedbackConstants.CLOCK_TICK;
+import static androidx.core.view.HapticFeedbackConstantsCompat.CLOCK_TICK;
 
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 

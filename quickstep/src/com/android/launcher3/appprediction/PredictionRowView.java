@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.lawnchair.preferences2.PreferenceManager2;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
@@ -47,6 +48,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
 
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +76,8 @@ public class PredictionRowView<T extends Context & ActivityContext>
     private boolean mPredictionsEnabled = false;
 
     private boolean mPredictionUiUpdatePaused = false;
+
+    private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -118,9 +122,10 @@ public class PredictionRowView<T extends Context & ActivityContext>
     }
 
     private void updateVisibility() {
-        setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
+        boolean enabled = mPredictionsEnabled && PreferenceExtensionsKt.firstBlocking(prefs2.getShowSuggestedAppsInDrawer());
+        setVisibility(enabled ? VISIBLE : GONE);
         if (mActivityContext.getAppsView() != null) {
-            if (mPredictionsEnabled) {
+            if (enabled) {
                 mActivityContext.getAppsView().getAppsStore().registerIconContainer(this);
             } else {
                 mActivityContext.getAppsView().getAppsStore().unregisterIconContainer(this);

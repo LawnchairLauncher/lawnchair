@@ -34,6 +34,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.UserInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -64,8 +65,7 @@ public class ActivityManagerWrapper {
     // Should match the value in AssistManager
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
-    // pE-TODO(CompatTier2): Try not to do this? Just use ActivityTaskManager.getInstance()
-    private final ActivityTaskManager mAtm = null;
+    private final ActivityTaskManager mAtm = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) ? ActivityTaskManager.getInstance() : null;
     private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {

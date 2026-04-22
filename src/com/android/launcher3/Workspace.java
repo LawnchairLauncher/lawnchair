@@ -598,7 +598,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Initializes various states for this workspace.
      */
     protected void initWorkspace() {
-        mCurrentPage = DEFAULT_PAGE;
+        mCurrentPage = getDefaultPage();
         setClipToPadding(false);
 
         setupLayoutTransition();
@@ -1152,6 +1152,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         // Now that we have removed some pages, ensure state description is up to date.
         updateAccessibilityViewPageDescription();
+
+        // Reset default home page if it's now out of range after page removal
+        int storedDefault = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getDefaultHomePage());
+        if (storedDefault >= getChildCount()) {
+            setDefaultPage(DEFAULT_PAGE);
+        }
     }
 
     /**
@@ -1159,6 +1165,17 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // pE-TODO(Reimpl): Check Icon Swipe Gesture
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            View touchedView = findViewAtPosition(ev.getX(), ev.getY());
+            Boolean iconSwipeGestures = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getIconSwipeGestures());
+
+            if (iconSwipeGestures && touchedView instanceof ShortcutAndWidgetContainer container) {
+                container.onTouchEvent(ev);
+                return false;
+            }
+        }
+        
         if (isTrackpadMultiFingerSwipe(ev)) {
             return false;
         }
@@ -3536,7 +3553,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Calls {@link #snapToPage(int)} on the {@link #DEFAULT_PAGE}, then requests focus on it.
      */
     public void moveToDefaultScreen() {
-        int page = DEFAULT_PAGE;
+        int page = getDefaultPage();
         if (!workspaceInModalState() && getNextPage() != page) {
             snapToPage(page);
         }
@@ -3544,6 +3561,33 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (child != null) {
             child.requestFocus();
         }
+    }
+
+    /**
+     * Returns the validated default home page index from user preferences.
+     * Falls back to {@link #DEFAULT_PAGE} if the stored page is out of range.
+     */
+    public int getDefaultPage() {
+        int storedPage = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getDefaultHomePage());
+        int pageCount = getChildCount();
+        if (storedPage >= 0 && storedPage < pageCount) {
+            return storedPage;
+        }
+        return DEFAULT_PAGE;
+    }
+
+    /**
+     * Sets the given page index as the default home page.
+     */
+    public void setDefaultPage(int pageIndex) {
+        PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getDefaultHomePage(), pageIndex);
+    }
+
+    /**
+     * Returns true if the current page is the default home page.
+     */
+    public boolean isCurrentPageDefault() {
+        return getNextPage() == getDefaultPage();
     }
 
     /**

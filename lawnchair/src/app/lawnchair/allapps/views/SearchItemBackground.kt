@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.view.View
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
+import com.android.systemui.shared.system.BlurUtils
 
 class SearchItemBackground(
     context: Context,
@@ -21,8 +22,22 @@ class SearchItemBackground(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val tmpPath = Path()
     private val tmpRect = RectF()
-    val focusHighlight = ColorTokens.FocusHighlight.resolveColor(context)
-    val groupHighlight = if (showBackground) ColorTokens.GroupHighlight.resolveColor(context) else 0
+
+    val supportBlur = BlurUtils.supportsBlursOnWindows()
+    val focusHighlight = if (supportBlur) {
+        ColorTokens.FocusHighlightBlur.resolveColor(context)
+    } else {
+        ColorTokens.FocusHighlight.resolveColor(context)
+    }
+    val groupHighlight = if (showBackground) {
+        if (supportBlur) {
+            ColorTokens.GroupHighlightBlur.resolveColor(context)
+        } else {
+            ColorTokens.GroupHighlight.resolveColor(context)
+        }
+    } else {
+        0
+    }
 
     val cornerRadii: FloatArray
 

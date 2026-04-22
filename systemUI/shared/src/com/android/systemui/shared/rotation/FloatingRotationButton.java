@@ -90,7 +90,7 @@ public class FloatingRotationButton implements RotationButton {
             @DimenRes int taskbarBottomMargin, @DimenRes int buttonDiameter,
             @DimenRes int rippleMaxWidth, @BoolRes int floatingRotationBtnPositionLeftResource) {
         mContext = context;
-        mWindowManager = WindowManagerUtils.getWindowManager(mContext);
+        mWindowManager = mContext.getSystemService(WindowManager.class);
         mKeyButtonContainer = (ViewGroup) LayoutInflater.from(mContext).inflate(layout, null);
         mKeyButtonView = mKeyButtonContainer.findViewById(keyButtonId);
         mKeyButtonView.setVisibility(View.VISIBLE);

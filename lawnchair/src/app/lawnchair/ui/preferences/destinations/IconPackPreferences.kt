@@ -68,6 +68,7 @@ import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.WithWallpaper
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.invariantDeviceProfile
 import app.lawnchair.ui.preferences.components.layout.Chip
 import app.lawnchair.ui.preferences.components.layout.NestedScrollStretch
@@ -125,6 +126,7 @@ fun IconPackPreferences(
     val scrollState = rememberScrollState()
     val drawerThemedIconsEnabled = drawerThemedIconsAdapter.state.value
     val tintIconpack = prefs.tintIconPackBackgrounds.getAdapter()
+    val forceMonochromeAdapter = prefs.forceIconMonochrome.getAdapter()
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style_label),
@@ -246,6 +248,15 @@ fun IconPackPreferences(
                                         } else {
                                             null
                                         },
+                                    )
+                                }
+                                Item(
+                                    visible = themedIconsAdapter.state.value,
+                                ) {
+                                    SwitchPreference(
+                                        label = stringResource(id = R.string.force_monochrome_label),
+                                        description = stringResource(id = R.string.force_monochrome_description),
+                                        adapter = forceMonochromeAdapter,
                                     )
                                 }
                             }

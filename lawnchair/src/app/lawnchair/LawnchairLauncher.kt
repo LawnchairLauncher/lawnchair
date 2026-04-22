@@ -38,6 +38,7 @@ import app.lawnchair.data.wallpaper.service.WallpaperService
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.gestures.ui.LawnchairShortcutActivity
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -245,6 +246,18 @@ class LawnchairLauncher : QuickstepLauncher() {
         reloadIconsIfNeeded()
 
         AppDatabase.INSTANCE.get(this).checkpointSync()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        if (intent != null && intent.action == LawnchairShortcutActivity.START_ACTION) {
+            val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
+            val config = handlerString?.let { GestureHandlerConfig.fromString(it) }
+            if (config != null && config.isExternallyInvokable()) {
+                gestureController.handle(config)
+            }
+        }
+
+        super.onNewIntent(intent)
     }
 
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {
@@ -500,7 +513,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
         var sRestartFlags = 0
 
-        val instance get() = LauncherAppState.getInstance(LawnchairApp.instance) as? LawnchairLauncher
+        val instance get() = LawnchairApp.launcher
     }
 }
 

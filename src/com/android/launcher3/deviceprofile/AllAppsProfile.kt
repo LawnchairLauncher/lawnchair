@@ -71,10 +71,11 @@ data class AllAppsProfile(
             scale: Float,
             iconSizePx: Int,
             iconDrawablePaddingOriginalPx: Int,
+            cellHeightMultiplier: Float = 1f,
         ): AllAppsProfile {
             val allAppsBorderSpacePx = calculateAllAppsBorderSpacePx(inv, metric, typeIndex, scale)
             var allAppsCellHeightPx =
-                (pxFromDp(inv.allAppsCellSize[typeIndex].y, metric) + allAppsBorderSpacePx.y)
+                (pxFromDp(inv.allAppsCellSize[typeIndex].y, metric, cellHeightMultiplier) + allAppsBorderSpacePx.y)
             var allAppsIconSizePx = pxFromDp(inv.allAppsIconSize[typeIndex], metric)
             val allAppsIconTextSizePx =
                 pxFromSp(inv.allAppsIconTextSize[typeIndex], metric).toFloat()
@@ -133,6 +134,7 @@ data class AllAppsProfile(
             metric: DisplayMetrics,
             typeIndex: Int,
             scale: Float,
+            cellHeightMultiplier: Float = 1f,
         ): AllAppsProfile {
             val allAppsBorderSpacePx = calculateAllAppsBorderSpacePx(inv, metric, typeIndex, scale)
             val allAppsIconSizePx = max(1, pxFromDp(inv.allAppsIconSize[typeIndex], metric, scale))
@@ -140,13 +142,10 @@ data class AllAppsProfile(
                 res.getDimensionPixelSize(R.dimen.all_apps_icon_drawable_padding)
             return AllAppsProfile(
                 borderSpacePx = allAppsBorderSpacePx,
-                // AllApps cells don't have real space between cells,
-                // so we add the border space to the cell height
                 cellHeightPx =
-                    (pxFromDp(inv.allAppsCellSize.get(typeIndex).y, metric) +
+                    (pxFromDp(inv.allAppsCellSize.get(typeIndex).y, metric, cellHeightMultiplier) +
                         allAppsBorderSpacePx.y),
                 iconSizePx = allAppsIconSizePx,
-                // We need the double conversion to keep the original behaviour
                 iconTextSizePx =
                     (pxFromSp(inv.allAppsIconTextSize[typeIndex], metric).toFloat() * scale)
                         .toInt()
@@ -247,6 +246,7 @@ data class AllAppsProfile(
             scale: Float,
             iconSizePx: Int,
             iconDrawablePaddingOriginalPx: Int,
+            cellHeightMultiplier: Float = 1f,
         ) =
             when {
                 isScalableGrid -> {
@@ -257,11 +257,15 @@ data class AllAppsProfile(
                         scale = scale,
                         iconSizePx = iconSizePx,
                         iconDrawablePaddingOriginalPx = iconDrawablePaddingOriginalPx,
+                        cellHeightMultiplier = cellHeightMultiplier,
                     )
                 }
 
                 else -> {
-                    createAllAppsProfileNonScalable(res, inv, metric, typeIndex, scale)
+                    createAllAppsProfileNonScalable(
+                        res, inv, metric, typeIndex, scale,
+                        cellHeightMultiplier = cellHeightMultiplier,
+                    )
                 }
             }
     }

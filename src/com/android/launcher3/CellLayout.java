@@ -1897,6 +1897,33 @@ public class CellLayout extends ViewGroup {
                 + ((mCountY - 1) * mBorderSpace.y);
     }
 
+    /**
+     * Vertical space needed for the rows that currently contain items. Used by folders so the
+     * window height matches sparse content instead of always using the full {@link #mCountY} grid
+     * (which left empty space above the footer).
+     *
+     * <p>When there are no children yet (e.g. before bind), returns {@link #getDesiredHeight()}.
+     */
+    public int getDesiredHeightForOccupiedRows() {
+        ShortcutAndWidgetContainer container = getShortcutsAndWidgets();
+        int childCount = container.getChildCount();
+        if (childCount == 0) {
+            return getDesiredHeight();
+        }
+        int maxBottomRow = -1;
+        for (int i = 0; i < childCount; i++) {
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) container.getChildAt(i)
+                    .getLayoutParams();
+            maxBottomRow = Math.max(maxBottomRow, lp.getCellY() + lp.cellVSpan - 1);
+        }
+        int rowCount = maxBottomRow + 1;
+        if (rowCount < 1) {
+            return getDesiredHeight();
+        }
+        return getPaddingTop() + getPaddingBottom() + (rowCount * mCellHeight)
+                + ((rowCount - 1) * mBorderSpace.y);
+    }
+
     public boolean isOccupied(int x, int y) {
         if (x >= 0 && x < mCountX && y >= 0 && y < mCountY) {
             return mOccupied.cells[x][y] && !PreferenceExtensionsKt.firstBlocking(pref.getAllowWidgetOverlap());

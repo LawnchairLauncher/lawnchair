@@ -58,6 +58,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
 import app.lawnchair.ui.preferences.navigation.About
 import app.lawnchair.ui.preferences.navigation.AppDrawer
+import app.lawnchair.ui.preferences.navigation.BackupAndRestore
 import app.lawnchair.ui.preferences.navigation.CreateBackup
 import app.lawnchair.ui.preferences.navigation.DebugMenu
 import app.lawnchair.ui.preferences.navigation.Dock
@@ -231,6 +232,18 @@ fun PreferencesDashboard(
 
             Item {
                 PreferenceCategory(
+                    label = stringResource(R.string.backup_and_restore_label),
+                    description = stringResource(R.string.backup_and_restore_description),
+                    iconResource = R.drawable.backup_restore,
+                    onNavigate = { onNavigate(BackupAndRestore) },
+                    isSelected = currentRoute is BackupAndRestore,
+                    isFirst = it.isFirst,
+                    isLast = it.isLast,
+                )
+            }
+
+            Item {
+                PreferenceCategory(
                     label = stringResource(R.string.about_label),
                     description = aboutDescrption,
                     iconResource = R.drawable.ic_about,
@@ -266,9 +279,6 @@ fun RowScope.PreferencesOverflowMenu(
             },
         )
     }
-    val navController = LocalNavController.current
-    val openCreateBackup = { navController.navigate(CreateBackup) }
-    val openRestoreBackup = restoreBackupOpener()
     val context = LocalContext.current
 
     OverflowMenuGrouped(
@@ -283,7 +293,7 @@ fun RowScope.PreferencesOverflowMenu(
         },
     ) {
         DropdownMenuGroup(
-            shapes = MenuDefaults.groupShape(0, 2),
+            shapes = MenuDefaults.groupShape(0, 1),
         ) {
             DropdownMenuItem(
                 leadingIcon = {
@@ -336,43 +346,6 @@ fun RowScope.PreferencesOverflowMenu(
         }
 
         Spacer(Modifier.height(MenuDefaults.GroupSpacing))
-
-        DropdownMenuGroup(
-            shapes = MenuDefaults.groupShape(1, 2),
-        ) {
-            DropdownMenuItem(
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Backup,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                },
-                onClick = {
-                    openCreateBackup()
-                    hideMenu()
-                },
-                text = {
-                    Text(text = stringResource(id = R.string.create_backup))
-                },
-            )
-            DropdownMenuItem(
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.SettingsBackupRestore,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                },
-                onClick = {
-                    openRestoreBackup()
-                    hideMenu()
-                },
-                text = {
-                    Text(text = stringResource(id = R.string.restore_backup))
-                },
-            )
-        }
     }
 }
 

@@ -130,6 +130,7 @@
     <bool name="config_default_edit_home_screen_on_popup">false</bool>
     <bool name="config_default_show_system_settings_entry_on_popup">false</bool>
     <bool name="config_default_hide_app_drawer_search_bar">false</bool>
+    <bool name="config_default_app_drawer_haptic_feedback">true</bool>
     <bool name="config_default_show_hidden_apps_in_search">false</bool>
     <bool name="config_default_enable_smart_hide">false</bool>
     <bool name="config_default_show_suggested_apps_at_drawer_top">true</bool>

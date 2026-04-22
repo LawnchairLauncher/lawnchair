@@ -107,7 +107,7 @@ public final class TaskbarOverlayController {
     /**
      * Token for early wakeup requests to SurfaceFlinger.
      */
-    private EarlyWakeupInfo mEarlyWakeupInfo = new EarlyWakeupInfo();
+//    private EarlyWakeupInfo mEarlyWakeupInfo = new EarlyWakeupInfo(); // pE-TODO(QuickSwitch-Baklava): Investigate
 
     public TaskbarOverlayController(
             TaskbarActivityContext taskbarContext, DeviceProfile launcherDeviceProfile) {
@@ -118,8 +118,8 @@ public final class TaskbarOverlayController {
         mLauncherDeviceProfile = launcherDeviceProfile;
         mMaxBlurRadius = mTaskbarContext.getResources().getDimensionPixelSize(
                 R.dimen.max_depth_blur_radius_enhanced);
-        mEarlyWakeupInfo.token = new Binder();
-        mEarlyWakeupInfo.trace = TaskbarOverlayController.class.getName();
+//        mEarlyWakeupInfo.token = new Binder();
+//        mEarlyWakeupInfo.trace = TaskbarOverlayController.class.getName();
     }
 
     /** Initialize the controller. */
@@ -277,21 +277,21 @@ public final class TaskbarOverlayController {
             // SurfaceFlinger will adjust its internal offsets to avoid jank.
             boolean wantsEarlyWakeUp = radius > 0 && radius < mMaxBlurRadius;
             if (wantsEarlyWakeUp && !mInEarlyWakeUp) {
-               Log.d(TAG, "setBackgroundBlurRadius: setting early wakeup with token "
-                                                    + mEarlyWakeupInfo);
+//               Log.d(TAG, "setBackgroundBlurRadius: setting early wakeup with token "
+//                                                    + mEarlyWakeupInfo);
                 Trace.instantForTrack(TRACE_TAG_APP, TAG, "notifyRendererForGpuLoadUp");
                 dragLayerViewRoot.notifyRendererForGpuLoadUp("setBackgroundBlurRadius");
                 try {
-                    transaction.setEarlyWakeupStart(mEarlyWakeupInfo);
+//                    transaction.setEarlyWakeupStart(mEarlyWakeupInfo);
                 } catch (NoSuchMethodError e) {
                     // LC-Ignored: wtf?
                 }
                 mInEarlyWakeUp = true;
             } else if (!wantsEarlyWakeUp && mInEarlyWakeUp) {
-                Log.d(TAG, "setBackgroundBlurRadius: clearing early wakeup with token "
-                                                    + mEarlyWakeupInfo);
+//                Log.d(TAG, "setBackgroundBlurRadius: clearing early wakeup with token "
+//                                                    + mEarlyWakeupInfo);
                 try {
-                    transaction.setEarlyWakeupEnd(mEarlyWakeupInfo);
+//                    transaction.setEarlyWakeupEnd(mEarlyWakeupInfo);
                 } catch (NoSuchMethodError e) {
                     // LC-Ignored: wtf?
                 }

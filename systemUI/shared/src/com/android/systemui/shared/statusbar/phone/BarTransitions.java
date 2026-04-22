@@ -30,6 +30,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.util.Log;
@@ -181,20 +182,36 @@ public class BarTransitions {
 
 
         public BarBackgroundDrawable(Context context, int gradientResourceId) {
-            final Resources res = context.getResources();
-            if (DEBUG_COLORS) {
-                mOpaque = 0xff0000ff;
-                mSemiTransparent = 0x7f0000ff;
-                mTransparent = 0x2f0000ff;
-                mWarning = 0xffff0000;
-            } else {
-                mOpaque = SYSTEM_BAR_BACKGROUND_OPAQUE;
-                mSemiTransparent = context.getColor(
+            mOpaque = SYSTEM_BAR_BACKGROUND_OPAQUE;
+            mSemiTransparent = loadSystemBarSemiTransparentColor(context);
+            mTransparent = SYSTEM_BAR_BACKGROUND_TRANSPARENT;
+            mWarning = getColorAttrDefaultColor(context, android.R.attr.colorError, 0);
+            mGradient = loadGradientDrawable(context, gradientResourceId);
+        }
+
+        /**
+         * Internal framework color; may be absent for non-system / themed contexts.
+         * Fallback matches typical AOSP semi-transparent system bar scrim (~40% black).
+         */
+        private static int loadSystemBarSemiTransparentColor(Context context) {
+            try {
+                return context.getColor(
                         com.android.internal.R.color.system_bar_background_semi_transparent);
-                mTransparent = SYSTEM_BAR_BACKGROUND_TRANSPARENT;
-                mWarning = getColorAttrDefaultColor(context, android.R.attr.colorError, 0);
+            } catch (Resources.NotFoundException e) {
+                return 0x66000000;
             }
-            mGradient = context.getDrawable(gradientResourceId);
+        }
+
+        private static Drawable loadGradientDrawable(Context context, int gradientResourceId) {
+            if (gradientResourceId == 0) {
+                return new ColorDrawable(Color.TRANSPARENT);
+            }
+            try {
+                Drawable d = context.getDrawable(gradientResourceId);
+                return d != null ? d : new ColorDrawable(Color.TRANSPARENT);
+            } catch (Resources.NotFoundException e) {
+                return new ColorDrawable(Color.TRANSPARENT);
+            }
         }
 
         public void setFrame(Rect frame) {

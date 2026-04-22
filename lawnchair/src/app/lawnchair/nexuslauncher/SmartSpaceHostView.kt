@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.graphics.RectF
-import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import androidx.core.view.HapticFeedbackConstantsCompat
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.util.unsafeLazy
 import com.android.launcher3.CheckLongPressHelper
@@ -38,7 +38,7 @@ sealed class SmartSpaceHostView(context: Context) :
         if (!hasSettings(view.context)) {
             return false
         }
-        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        performHapticFeedback(HapticFeedbackConstantsCompat.LONG_PRESS)
         val pos = Rect()
         mLauncher.dragLayer.getDescendantRectRelativeToSelf(this, pos)
         val centerPos = RectF()

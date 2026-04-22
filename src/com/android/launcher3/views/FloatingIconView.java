@@ -60,6 +60,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -331,11 +332,12 @@ public class FloatingIconView extends FrameLayout implements
             }
         }
 
-        drawable = drawable == null ? null : drawable.getConstantState().newDrawable();
+        drawable = drawable == null ? null : Objects.requireNonNull(drawable.getConstantState()).newDrawable();
         int iconOffset = getOffsetForIconBounds(l, drawable, pos);
         // Clone right away as we are on the background thread instead of blocking the
         // main thread later
-        Drawable btvClone = btvIcon == null ? null : btvIcon.getConstantState().newDrawable();
+        Drawable btvClone = btvIcon == null ? null : Objects.requireNonNull(
+            btvIcon.getConstantState()).newDrawable();
         synchronized (outIconLoadResult) {
             outIconLoadResult.btvDrawable = () -> btvClone;
             outIconLoadResult.drawable = drawable;

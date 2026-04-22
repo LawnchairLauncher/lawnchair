@@ -17,6 +17,7 @@
 package android.window;
 
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
+import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
 import static android.view.WindowManager.TransitionType;
 
 import android.annotation.IntDef;
@@ -32,7 +33,8 @@ import android.view.WindowManager;
 
 /**
  * A parcelable filter that can be used for rerouting transitions to a remote. This is a local
- * representation so that the transition system doesn't need to make blocking queries over binder.
+ * representation so that the transition system doesn't need to make blocking queries over
+ * binder.
  *
  * @hide
  */
@@ -40,17 +42,14 @@ public final class TransitionFilter implements Parcelable {
 
     /** The associated requirement doesn't care about the z-order. */
     public static final int CONTAINER_ORDER_ANY = 0;
-
     /** The associated requirement only matches the top-most (z-order) container. */
     public static final int CONTAINER_ORDER_TOP = 1;
 
     /** @hide */
-    @IntDef(
-            prefix = {"CONTAINER_ORDER_"},
-            value = {
-                CONTAINER_ORDER_ANY,
-                CONTAINER_ORDER_TOP,
-            })
+    @IntDef(prefix = { "CONTAINER_ORDER_" }, value = {
+            CONTAINER_ORDER_ANY,
+            CONTAINER_ORDER_TOP,
+    })
     public @interface ContainerOrder {}
 
     /**
@@ -65,10 +64,13 @@ public final class TransitionFilter implements Parcelable {
     /** All flags must NOT be set on a transition. */
     public @WindowManager.TransitionFlags int mNotFlags = 0;
 
-    /** A list of required changes. To pass, a transition must meet all requirements. */
+    /**
+     * A list of required changes. To pass, a transition must meet all requirements.
+     */
     @Nullable public Requirement[] mRequirements = null;
 
-    public TransitionFilter() {}
+    public TransitionFilter() {
+    }
 
     private TransitionFilter(Parcel in) {
         mTypeSet = in.createIntArray();
@@ -77,9 +79,7 @@ public final class TransitionFilter implements Parcelable {
         mRequirements = in.createTypedArray(Requirement.CREATOR);
     }
 
-    /**
-     * @return true if `info` meets all the requirements to pass this filter.
-     */
+    /** @return true if `info` meets all the requirements to pass this filter. */
     public boolean matches(@NonNull TransitionInfo info) {
         if (mTypeSet != null) {
             // non-null typeset, so make sure info is one of the types.
@@ -184,7 +184,14 @@ public final class TransitionFilter implements Parcelable {
         public ComponentName mTopActivity;
         public IBinder mLaunchCookie;
 
-        public Requirement() {}
+        /** If non-null, requires the change to specifically have or not-have a custom animation. */
+        public Boolean mCustomAnimation = null;
+        public IBinder mTaskFragmentToken = null;
+
+        public int mWindowingMode = WINDOWING_MODE_UNDEFINED;
+
+        public Requirement() {
+        }
 
         private Requirement(Parcel in) {
             mActivityType = in.readInt();
@@ -196,12 +203,23 @@ public final class TransitionFilter implements Parcelable {
             mOrder = in.readInt();
             mTopActivity = in.readTypedObject(ComponentName.CREATOR);
             mLaunchCookie = in.readStrongBinder();
+            // 0: null, 1: false, 2: true
+            final int customAnimRaw = in.readInt();
+            mCustomAnimation = customAnimRaw == 0 ? null : Boolean.valueOf(customAnimRaw == 2);
+            mTaskFragmentToken = in.readStrongBinder();
+            mWindowingMode = in.readInt();
         }
 
         /** Go through changes and find if at-least one change matches this filter */
         boolean matches(@NonNull TransitionInfo info) {
             for (int i = info.getChanges().size() - 1; i >= 0; --i) {
                 final TransitionInfo.Change change = info.getChanges().get(i);
+
+                if (mTaskFragmentToken != null
+                        && !mTaskFragmentToken.equals(change.getTaskFragmentToken())) {
+                    continue;
+                }
+
                 if (mMustBeIndependent && !TransitionInfo.isIndependent(change, info)) {
                     // Only look at independent animating windows.
                     continue;
@@ -237,13 +255,33 @@ public final class TransitionFilter implements Parcelable {
                 if (!matchesCookie(change.getTaskInfo())) {
                     continue;
                 }
+                if (mCustomAnimation != null
+                        // only applies to activity/task
+                        && (change.getTaskInfo() != null
+                                || change.getActivityComponent() != null)) {
+                    final TransitionInfo.AnimationOptions opts = change.getAnimationOptions();
+                    if (opts != null) {
+                        boolean canActuallyOverride = change.getTaskInfo() == null
+                                || opts.getOverrideTaskTransition();
+                        if (mCustomAnimation != canActuallyOverride) {
+                            continue;
+                        }
+                    } else if (mCustomAnimation) {
+                        continue;
+                    }
+                }
+                if (mWindowingMode != WINDOWING_MODE_UNDEFINED) {
+                    if (change.getTaskInfo() == null
+                            || change.getTaskInfo().getWindowingMode() != mWindowingMode) {
+                        continue;
+                    }
+                }
                 return true;
             }
             return false;
         }
 
-        private boolean matchesTopActivity(
-                ActivityManager.RunningTaskInfo taskInfo,
+        private boolean matchesTopActivity(ActivityManager.RunningTaskInfo taskInfo,
                 @Nullable ComponentName activityComponent) {
             if (mTopActivity == null) return true;
             if (activityComponent != null) {
@@ -287,6 +325,10 @@ public final class TransitionFilter implements Parcelable {
             dest.writeInt(mOrder);
             dest.writeTypedObject(mTopActivity, flags);
             dest.writeStrongBinder(mLaunchCookie);
+            int customAnimRaw = mCustomAnimation == null ? 0 : (mCustomAnimation ? 2 : 1);
+            dest.writeInt(customAnimRaw);
+            dest.writeStrongBinder(mTaskFragmentToken);
+            dest.writeInt(mWindowingMode);
         }
 
         @NonNull
@@ -328,6 +370,14 @@ public final class TransitionFilter implements Parcelable {
             out.append(" order=" + containerOrderToString(mOrder));
             out.append(" topActivity=").append(mTopActivity);
             out.append(" launchCookie=").append(mLaunchCookie);
+            if (mCustomAnimation != null) {
+                out.append(" customAnim=").append(mCustomAnimation.booleanValue());
+            }
+            if (mTaskFragmentToken != null) {
+                out.append(" taskFragmentToken=").append(mTaskFragmentToken);
+            }
+            out.append(" windowingMode="
+                    + WindowConfiguration.windowingModeToString(mWindowingMode));
             out.append("}");
             return out.toString();
         }
@@ -335,10 +385,8 @@ public final class TransitionFilter implements Parcelable {
 
     private static String containerOrderToString(int order) {
         switch (order) {
-            case CONTAINER_ORDER_ANY:
-                return "ANY";
-            case CONTAINER_ORDER_TOP:
-                return "TOP";
+            case CONTAINER_ORDER_ANY: return "ANY";
+            case CONTAINER_ORDER_TOP: return "TOP";
         }
         return "UNKNOWN(" + order + ")";
     }

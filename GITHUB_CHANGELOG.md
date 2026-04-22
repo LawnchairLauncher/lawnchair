@@ -8,24 +8,24 @@
 > This branch has diverged timeline from the original `16-dev`, meaning you will have to rebase your
 > commit back to this branch if you wish to contribute to this branch.
 
-Build: BD5.2401 (latest), BD5.2101, BD5.2001, BD5.1901, BD5.1301, BD5.1201, BD4.2712
-
 Compatibility list:
 
-| 📱 Android version | 🥞 Recommended? | 💥 Crash? | 🧑‍💻 QuickSwitch Ready? |
-|--------------------|-----------------|-----------|--------------------------|
-| Android 8.0        | ❌               | ✅         | N/A                      |
-| Android 8.1        | ❌               | ✅         | N/A                      |
-| Android 9          | ❌               | ✅         | N/A                      |
-| Android 10         | ❌               | ❌         | ❌                        |
-| Android 11         | ❌               | ❌         | ❌                        |
-| Android 12.0       | ✅               | ❌         | ❌                        |
-| Android 12.1       | ✅               | ❌         | ❌                        |
-| Android 13         | ✅               | ❌         | ❌                        |
-| Android 14         | ✅               | ❌         | ❌                        |
-| Android 15         | ✅               | ❌         | ❌                        |
-| Android 16         | ✅               | ❌         | ❌                        |
-| Android 16.1       | ✅               | ❌         | N/A                      |
+| 📱 Android version                        | 🥞 Recommended? | 💥 Crash? | 🧑‍💻 QuickSwitch Ready? |
+|-------------------------------------------|-----------------|-----------|--------------------------|
+| Android 8.0                               | ❌               | ❌         | Not supported            |
+| Android 8.1                               | ❌               | ❌         | Not supported            |
+| Android 9                                 | ❌               | ❌         | Not supported            |
+| Android 10                                | ❌               | ❌         | ❌                        |
+| Android 11                                | ✅               | ❌         | ❌                        |
+| Android 12.0                              | ✅               | ❌         | ❌                        |
+| Android 12.1                              | ✅               | ❌         | ❌                        |
+| Android 13                                | ✅               | ❌         | ❌                        |
+| Android 14                                | ✅               | ❌         | ❌                        |
+| Android 15                                | ✅               | ❌         | ❌                        |
+| Android 15 QPR2                           | ✅               | ❌         | 💥 Not recommended       |
+| Android 16.0 (Android 16 initial release) | ✅               | ❌         | 💥 Not recommended       |
+| Android 16.1 (Android 16 QPR2)            | ✅               | ❌         | ❌                        |
+| Android 17.0                              | ✅               | ❌         | ❌                        |
 
 #### Features
 * [Lawnchair] Allow user to disable the auto-updater (for Nightly build only)
@@ -34,6 +34,19 @@ Compatibility list:
 * [Launcher] Reintroduce folder expressive animations from Bubble Tea QPR1 Development 1 Release 1
 * [Lawnchair/Smartspace] Onboarding provider (Full-parity with Lawnchair Legacy)
 * [Launcher] Theme page indicator dots
+* [Lawnchair] Add work profile customization and fix issues (https://github.com/LawnchairLauncher/lawnchair/pull/6167)
+* [Lawnchair] Update Google Fonts listing to 03022026 (https://github.com/LawnchairLauncher/lawnchair/pull/6193)
+* [Lawnchair] Compare GitHub digest with actual downloaded file in Nightly updater
+* [Lawnchair] Enable wrap adaptive icons by default (only on by default)
+* [Lawnchair] Enable bulk icon loading by default (toggle removed, on by default)
+* [Lawnchair] Allow customising force monochrome option
+* [Lawnchair] Update Google Fonts listing to 20022026
+* [Lawnchair/Workspace] Add "Set as default page" option (https://github.com/LawnchairLauncher/lawnchair/pull/6395)
+* [Lawnchair] Improve GestureNavContract device detection
+* [Lawnchair] App drawer haptic feedback toggle (https://github.com/LawnchairLauncher/lawnchair/pull/6436)
+* [Lawnchair] Move backup and restore to separate screen (237a0beb)
+* [Lawnchair/Search] Make blurred app search look nicer
+* [Lawnchair/Search] Load image preview faster at less memory usage
 
 #### Fixes
 * [Launcher] Limited Android 11 support
@@ -58,6 +71,47 @@ Compatibility list:
 * [Lawnchair] Crash when tapping on launcher preview
 * [Launcher] Actually fix app drawer alphabetical listing when loading icon in bulk
 * [Launcher] Mark home bounce as seen when user actually opens All Apps
+* [Lawnchair] Reimplement app drawer suggested app toggle
+* [Lawnchair] Disable all Android Desktop components
+* [Lawnchair] Reimplement app drawer multiple lines logic (https://github.com/LawnchairLauncher/lawnchair/pull/6324)
+* [Launcher] Skip initialising QuickstepProtoLog for Android 11
+* [Lawnchair] Reimplement Lawnchair 13 migration
+* [Launcher] Launcher render At a Glance widget as search widget in preview
+* [Lawnchair/Iconloaderlib] Use correct default percentage for icon adaptive lightness
+* [Lawnchair/Iconloaderlib] Correct wrap adaptive drawable behaviour
+* [Launcher] Null exception in FloatingIconView
+* [Lawnchair/Search] Add timeout for web suggestions (https://github.com/LawnchairLauncher/lawnchair/pull/6338)
+* [Lawnchair] Restore custom app labels (https://github.com/LawnchairLauncher/lawnchair/pull/6364)
+* [Lawnchair/Preference] Fix layout change animation of paddings on AppDrawerPreferences
+* [Lawnchair/Preference] Resolve unnecessary launcherPopupOrder write (https://github.com/LawnchairLauncher/lawnchair/pull/6419)
+* [Launcher] Resolve unnecessary model reload (https://github.com/LawnchairLauncher/lawnchair/pull/6420)
+* [Launcher/Widget] Widget configuration activity fail to open due to BAL hardening on Android 14
+* [Lawnchair/Iconloaderlib] Icon shadow can't be disabled by user preference
+* [Lawnchair/Workspace] Disallow infinite scroll to the left when feed is enabled
+* [Launcher] Crash when trying to use back gesture on below Android 16
+* [Lawnchair] Limited Android 9, 8.1, 8.0 support
+* [Lawnchair/Search] Launch app on enter for local search algorithm (https://github.com/LawnchairLauncher/lawnchair/pull/6477)
+* [Lawnchair/Search] Stale search result (https://github.com/LawnchairLauncher/lawnchair/pull/6472)
+* [Launcher] Don't run app archive on under Android 15
+* [Launcher] Fix inconsistent haptic across all Android version
+* [Lawnchair/Search] Fix accessibility issues with allapps blurred style
+* [Lawnchair/Search] Fix search result and focus decorator
+* [Launcher] Fix 5th folder preview item appearing out of bounds
+* [Launcher] Fully reimplement IDP/DP customisation
+* [Lawnchair/Settings] Pass preview IDP to preview renderer
+* [Launcher] Move from 7x7 grid to 4x7
+* [Lawnchair] Temporarily fix reloadIcons
+* [Launcher/AllApps] Don't use workspace scale on allapps
+* [Lawnchair/Settings] Leave Lawnchair settings lifecycle alone
+* [Lawnchair/Settings] Correct dropdown menu count
+* [Lawnchair] Register LawnchairApp activity handler
+* [Launcher] Don't call IProtoLog in launcher-level
+* [Launcher] Don't override device rotation prefs on phone form factor
+* [Launcher] Reimplement icon gesture customisation
+* [QuickSwitch] Reimplement ActivityTaskManager
+* [QuickSwitch] Remove DesktopExperienceFlags
+* [QuickSwitch] Implement Baklava compat
+* [QuickSwitch] Initial QuickSwitch testing with Baklava
 
 ### 🥞 Development 4 Release 1 (Snapshot 10)
 

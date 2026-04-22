@@ -82,30 +82,17 @@ class LauncherPreviewView(
         val workspaceScreenId = 0
         val themeRes = Themes.getActivityThemeRes(context)
 
-        // We use the current context. The Renderer extends BaseContext,
-        // so it will wrap this context internally.
         val renderer = LauncherPreviewRenderer(
             context,
             workspaceScreenId,
             null, // Wallpaper colors
             model,
             themeRes,
+            idp,
         )
 
-        /*
-           pE-TODO(QPR1/Collision-Gemini3Pro): MIGRATION NOTE
-           The new LauncherPreviewRenderer provided is the AOSP upstream version.
-           It does not yet have the Lawnchair methods 'setWorkspaceSearchContainer'.
-
-           To support 'dummySmartspace', you must re-apply the Lawnchair patch to
-           com.android.launcher3.preview.LauncherPreviewRenderer.java:
-
-           1. Add field: private int mWorkspaceSearchContainer = R.layout.qsb_preview;
-           2. Add method: public void setWorkspaceSearchContainer(int resId) { mWorkspaceSearchContainer = resId; }
-           3. Use 'mWorkspaceSearchContainer' inside 'bindCompleteModel' when inflating the QSB.
-         */
         if (dummySmartspace) {
-            // renderer.setWorkspaceSearchContainer(R.layout.smartspace_widget_placeholder)
+            renderer.setWorkspaceSearchContainer(R.layout.smartspace_widget_placeholder)
         }
 
         // The renderer exposes a CompletableFuture that completes when the model is bound and view is measured

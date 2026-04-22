@@ -12,6 +12,7 @@ import app.lawnchair.search.adapter.SPACE_MINI
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
+import com.android.systemui.shared.system.BlurUtils
 
 class SearchResultText(context: Context, attrs: AttributeSet?) :
     LinearLayout(context, attrs),
@@ -24,7 +25,11 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
         super.onFinishInflate()
         onFocusChangeListener = launcher.focusHandler
         title = ViewCompat.requireViewById(this, R.id.title)
-        title.setTextColor(ColorTokens.ColorAccent.resolveColor(context))
+        if (BlurUtils.supportsBlursOnWindows()) {
+            title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(context))
+        } else {
+            title.setTextColor(ColorTokens.ColorAccent.resolveColor(context))
+        }
         FontManager.INSTANCE.get(context).setCustomFont(title, R.id.font_heading)
     }
 

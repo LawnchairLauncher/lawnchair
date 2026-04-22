@@ -85,12 +85,13 @@ constructor(base: Context, themeResId: Int, private val destroyOnDetach: Boolean
         val attachListener =
             object : OnAttachStateChangeListener {
 
-                override fun onViewAttachedToWindow(view: View) {
-                    view.rootView.setViewTreeLifecycleOwner(this@BaseContext)
-                    view.rootView.setViewTreeSavedStateRegistryOwner(this@BaseContext)
+                override fun onViewAttachedToWindow(_view: View) {
+                    // Lawnchair: Leave the settings window alone!!
+                    view.setViewTreeLifecycleOwner(this@BaseContext)
+                    view.setViewTreeSavedStateRegistryOwner(this@BaseContext)
                     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
-                    val treeObserver = view.viewTreeObserver
+                    val treeObserver = _view.viewTreeObserver
 
                     val focusListener = OnWindowFocusChangeListener { updateState() }
                     treeObserver.addOnWindowFocusChangeListener(focusListener)

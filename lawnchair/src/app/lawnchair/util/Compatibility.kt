@@ -9,12 +9,6 @@ private const val TAG = "Compatibility"
 
 val isOnePlusStock = checkOnePlusStock()
 
-val isNothingStock = checkNothingStock()
-
-val isGoogle = checkGoogle()
-
-val isSamsung = checkSamsungStock()
-
 val isGestureNavContractCompatible = checkGestureNavContract()
 
 private fun checkOnePlusStock(): Boolean = when {
@@ -28,43 +22,45 @@ private fun checkOnePlusStock(): Boolean = when {
     else -> false
 }
 
-private fun checkNothingStock(): Boolean = when {
-    getSystemProperty("ro.nothing.version.id", "").isNotEmpty() -> true
-    getSystemProperty("ro.build.nothing.version", "").isNotEmpty() -> true
-    getSystemProperty("ro.build.nothing.feature.base", "").isNotEmpty() -> true
+private fun checkSamsungStock(): Boolean = when {
+    getSystemProperty("ro.build.version.oneui", "").isNotEmpty() -> true
+    getSystemProperty("ro.build.PDA", "").isNotEmpty() && getSystemProperty("ro.build.hidden_ver", "").isNotEmpty() -> true
     else -> false
 }
 
-private fun checkGoogle(): Boolean = if (Utilities.ATLEAST_S) {
-    when {
-        Build.BRAND.contains("google", true) &&
-            Build.SOC_MODEL.contains("tensor", true) &&
-            Build.SOC_MANUFACTURER.contains("google", true) -> true
-
-        else -> false
-    }
-} else {
-    when {
-        Build.BRAND.contains("google", true) &&
-            Build.MANUFACTURER.contains("google", true) &&
-            Build.FINGERPRINT.contains("pixel", true) &&
-            Build.PRODUCT.contains("pixel", true) -> true
-
-        else -> false
-    }
+private fun checkXiaomiStock(): Boolean = when {
+    getSystemProperty("ro.miui.ui.version.name", "").isNotEmpty() -> true
+    getSystemProperty("ro.miui.ui.version.code", "").isNotEmpty() -> true
+    else -> false
 }
 
-private fun checkSamsungStock(): Boolean = when {
-    getSystemProperty("ro.build.version.oneui", "").isNotEmpty() -> true
-    getSystemProperty("ro.config.knox", "").isNotEmpty() -> true
-    getSystemProperty("ro.build.PDA", "").isNotEmpty() -> true
+private fun checkHuaweiHonorStock(): Boolean = when {
+    getSystemProperty("ro.build.hw_emui_api_level", "").isNotEmpty() -> true
+    getSystemProperty("ro.config.huawei_smallwindow", "").isNotEmpty() -> true
+    else -> false
+}
+
+private fun checkOppoStock(): Boolean = when {
+    getSystemProperty("ro.oppo.version", "").isNotEmpty() -> true
+    getSystemProperty("ro.build.version.opporom", "").isNotEmpty() -> true
+    else -> false
+}
+
+private fun checkMeizuStock(): Boolean = when {
+    getSystemProperty("ro.meizu.build.number", "").isNotEmpty() -> true
+    getSystemProperty("ro.meizu.project.id", "").isNotEmpty() -> true
     else -> false
 }
 
 private fun checkGestureNavContract(): Boolean = when {
-    checkGoogle() -> true
-    checkNothingStock() -> true
-    else -> false
+    !Utilities.ATLEAST_Q -> false
+    checkOnePlusStock() -> false
+    checkSamsungStock() -> false
+    checkXiaomiStock() -> false
+    checkHuaweiHonorStock() -> false
+    checkOppoStock() -> false
+    checkMeizuStock() -> false
+    else -> true
 }
 
 fun getSystemProperty(property: String, defaultValue: String): String {

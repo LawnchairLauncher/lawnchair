@@ -153,16 +153,16 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         getViewTreeObserver().addOnComputeInternalInsetsListener(mTaskbarInsetsComputer);
 //        if (Utilities.ATLEAST_U) {
 //            mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
-//                    .startCapture(getRootView(), ".Taskbar");
+//                    .startCapture(getRootView(), ".Taskbar"); // pE-TODO(QuickSwitch-Baklava): Investigate
 //        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (Utilities.ATLEAST_U) {
-            mViewCaptureCloseable.close();
-        }
+        super.onDetachedFromWindow(); 
+//        if (Utilities.ATLEAST_U) { // pE-TODO(QuickSwitch-Baklava): Investigate
+//            mViewCaptureCloseable.close();
+//        }
         onDestroy(true);
     }
 

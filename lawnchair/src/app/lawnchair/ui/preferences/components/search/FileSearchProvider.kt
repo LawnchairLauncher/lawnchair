@@ -53,6 +53,7 @@ import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
+import app.lawnchair.ui.preferences.components.layout.PreferenceGroupScope
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.dividerColor
 import app.lawnchair.ui.util.isPlayStoreFlavor
@@ -143,7 +144,6 @@ fun FileSearchProvider(
                 onPermissionRequest = viewModel::refreshAccessStates,
                 alwaysEnabled = allFilesAccessAdapter.state.value && allFilesAccessState == FileAccessState.Full,
             )
-
             GenericAccessSetting(
                 adapter = prefs.searchResultAudio.getAdapter(),
                 requiredPermission = android.Manifest.permission.READ_MEDIA_AUDIO,
@@ -173,7 +173,7 @@ fun FileSearchProvider(
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
-private fun ManageExternalStorageSetting(
+private fun PreferenceGroupScope.ManageExternalStorageSetting(
     accessState: FileAccessState,
     adapter: PreferenceAdapter<Boolean>,
     onPermissionRequest: () -> Unit,
@@ -182,31 +182,35 @@ private fun ManageExternalStorageSetting(
     var showPermissionDialog by remember { mutableStateOf(false) }
 
     if (accessState == FileAccessState.Full) {
-        SwitchPreference(
-            adapter = adapter,
-            label = stringResource(R.string.search_pref_result_all_files_title),
-            modifier = modifier,
-        )
+        Item {
+            SwitchPreference(
+                adapter = adapter,
+                label = stringResource(R.string.search_pref_result_all_files_title),
+                modifier = modifier,
+            )
+        }
     } else {
-        TwoTargetSwitchPreference(
-            label = stringResource(R.string.search_pref_result_all_files_title),
-            description = stringResource(R.string.permissions_needed),
-            checked = false,
-            onCheckedChange = {
-                if (accessState == FileAccessState.Denied) {
-                    showPermissionDialog = true
-                } else {
-                    adapter.onChange(it)
-                }
-            },
-            onClick = {
-                if (accessState == FileAccessState.Denied) {
-                    showPermissionDialog = true
-                }
-            },
-            switchEnabled = !isPlayStoreFlavor() && (accessState != FileAccessState.Denied),
-            modifier = modifier,
-        )
+        Item {
+            TwoTargetSwitchPreference(
+                label = stringResource(R.string.search_pref_result_all_files_title),
+                description = stringResource(R.string.permissions_needed),
+                checked = false,
+                onCheckedChange = {
+                    if (accessState == FileAccessState.Denied) {
+                        showPermissionDialog = true
+                    } else {
+                        adapter.onChange(it)
+                    }
+                },
+                onClick = {
+                    if (accessState == FileAccessState.Denied) {
+                        showPermissionDialog = true
+                    }
+                },
+                switchEnabled = !isPlayStoreFlavor() && (accessState != FileAccessState.Denied),
+                modifier = modifier,
+            )
+        }
     }
 
     if (showPermissionDialog) {
@@ -220,7 +224,7 @@ private fun ManageExternalStorageSetting(
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun VisualMediaSetting(
+private fun PreferenceGroupScope.VisualMediaSetting(
     accessState: FileAccessState,
     adapter: PreferenceAdapter<Boolean>,
     onPermissionRequest: () -> Unit,
@@ -240,33 +244,37 @@ private fun VisualMediaSetting(
     var showPartialAccessDialog by remember { mutableStateOf(false) }
 
     if (alwaysEnabled || accessState == FileAccessState.Full) {
-        SwitchPreference(
-            checked = alwaysEnabled || adapter.state.value,
-            onCheckedChange = adapter::onChange,
-            label = stringResource(R.string.search_pref_result_visual_media_title),
-            enabled = !alwaysEnabled,
-        )
+        Item {
+            SwitchPreference(
+                checked = alwaysEnabled || adapter.state.value,
+                onCheckedChange = adapter::onChange,
+                label = stringResource(R.string.search_pref_result_visual_media_title),
+                enabled = !alwaysEnabled,
+            )
+        }
     } else {
-        TwoTargetSwitchPreference(
-            label = stringResource(R.string.search_pref_result_visual_media_title),
-            description = stringResource(R.string.permissions_needed),
-            checked = (adapter.state.value && accessState != FileAccessState.Denied),
-            onCheckedChange = {
-                if (accessState == FileAccessState.Denied) {
-                    showPermissionDialog = true
-                } else {
-                    adapter.onChange(it)
-                }
-            },
-            onClick = {
-                if (accessState == FileAccessState.Denied) {
-                    showPermissionDialog = true
-                } else if (accessState == FileAccessState.Partial) {
-                    showPartialAccessDialog = true
-                }
-            },
-            switchEnabled = accessState != FileAccessState.Denied,
-        )
+        Item {
+            TwoTargetSwitchPreference(
+                label = stringResource(R.string.search_pref_result_visual_media_title),
+                description = stringResource(R.string.permissions_needed),
+                checked = (adapter.state.value && accessState != FileAccessState.Denied),
+                onCheckedChange = {
+                    if (accessState == FileAccessState.Denied) {
+                        showPermissionDialog = true
+                    } else {
+                        adapter.onChange(it)
+                    }
+                },
+                onClick = {
+                    if (accessState == FileAccessState.Denied) {
+                        showPermissionDialog = true
+                    } else if (accessState == FileAccessState.Partial) {
+                        showPartialAccessDialog = true
+                    }
+                },
+                switchEnabled = accessState != FileAccessState.Denied,
+            )
+        }
     }
 
     if (showPermissionDialog) {
@@ -318,7 +326,7 @@ private fun VisualMediaSetting(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun GenericAccessSetting(
+private fun PreferenceGroupScope.GenericAccessSetting(
     adapter: PreferenceAdapter<Boolean>,
     requiredPermission: String,
     switchEnabled: (PermissionState) -> Boolean,
@@ -336,23 +344,27 @@ private fun GenericAccessSetting(
     val context = LocalContext.current
 
     if (!alwaysEnabled && !switchEnabled(permission)) {
-        TwoTargetSwitchPreference(
-            label = label,
-            description = stringResource(R.string.permissions_needed),
-            switchEnabled = false,
-            checked = false,
-            onCheckedChange = {},
-            onClick = {
-                showPermissionDialog = true
-            },
-        )
+        Item {
+            TwoTargetSwitchPreference(
+                label = label,
+                description = stringResource(R.string.permissions_needed),
+                switchEnabled = false,
+                checked = false,
+                onCheckedChange = {},
+                onClick = {
+                    showPermissionDialog = true
+                },
+            )
+        }
     } else {
-        SwitchPreference(
-            label = label,
-            checked = alwaysEnabled || adapter.state.value,
-            onCheckedChange = adapter::onChange,
-            enabled = !alwaysEnabled,
-        )
+        Item {
+            SwitchPreference(
+                label = label,
+                checked = alwaysEnabled || adapter.state.value,
+                onCheckedChange = adapter::onChange,
+                enabled = !alwaysEnabled,
+            )
+        }
     }
 
     if (showPermissionDialog) {

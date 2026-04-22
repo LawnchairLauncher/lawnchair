@@ -127,6 +127,7 @@ constructor(
     }
 
     fun initialize() {
+        if (!this::taskView.isInitialized) return // pE-TODO(QuickSwitch-Baklava): Investigate
         check(!isDestroyed) { "Cannot re-initialize a destroyed toast" }
         setupTranslations()
         Executors.ORDERED_BG_EXECUTOR.execute {
@@ -263,6 +264,7 @@ constructor(
         else task.titleDescription
 
     fun setupLayout() {
+        if (!this::taskView.isInitialized) return
         val snapshotWidth: Int
         val snapshotHeight: Int
         val splitBounds = splitBounds

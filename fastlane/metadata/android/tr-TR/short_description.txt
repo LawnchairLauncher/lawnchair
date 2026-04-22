@@ -1,0 +1,1 @@
+AOSP tabanlı Launcher3'ü temel alan ana ekran uygulaması

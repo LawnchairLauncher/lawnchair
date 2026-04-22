@@ -32,6 +32,7 @@ import androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_S
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAnimUtils
 import com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY
+import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.isDarkTheme
 import com.android.launcher3.anim.SpringAnimationBuilder
@@ -328,6 +329,11 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             launcherDelegate: LauncherDelegate,
         ) {
             val launcher = launcherDelegate.launcher ?: return
+            // Folder scrim uses a black overlay with alpha 0→dimmed; that replaces the app drawer
+            // scrim colors and starts fully transparent, so the list background disappears (#6551).
+            if (launcher.isInState(LauncherState.ALL_APPS)) {
+                return
+            }
             val scrimView = launcher.scrimView
             val workspace = launcher.workspace
             val hotseat = launcher.hotseat
@@ -372,7 +378,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 property = SCALE_PROPERTY,
                 view = hotseat,
             )
-            animatorSet.addListener(FolderScrimAnimationListener(scrimView, isOpening))
+            animatorSet.addListener(FolderScrimAnimationListener(scrimView, isOpening, launcher))
         }
 
         /**

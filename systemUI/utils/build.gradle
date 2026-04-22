@@ -8,7 +8,7 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src']
-            kotlin.srcDirs = ['src']
+            kotlin.directories.add('src')
         }
     }
 }

@@ -20,6 +20,7 @@ import android.content.Context
 import app.lawnchair.LawnchairLauncher
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.util.Executors
 import com.android.quickstep.TouchInteractionService
 import com.android.quickstep.util.TISBindHelper
@@ -44,11 +45,14 @@ class ReloadHelper(private val context: Context) {
         recreate()
     }
 
+    /**
+     * This doesn't work, please migrate this to being a [ThemeManager] reload,
+     * as of right now the behaviour is defaulted to L3 that listens on prefs changes
+     */
     fun reloadIcons() {
-        // This doesn't work, please migrate this to being a ThemeManager reload,
-        // as of right now the behaviour is defaulted to L3 that listens on prefs changes
         Executors.MODEL_EXECUTOR.execute {
             LauncherAppState.INSTANCE.get(context).iconCache.clearMemoryCache()
+            LauncherAppState.INSTANCE.get(context).model.reloadIfActive()
         }
     }
 

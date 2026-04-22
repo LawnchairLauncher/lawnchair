@@ -941,6 +941,9 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
     @Override
     protected void logOnNewIntent(boolean alreadyOnHome, boolean shouldMoveToDefaultScreen,
             String action, boolean internalStateHandled) {
+        // LC-Note: This is workaround for skipping Android 11 Release 41. 
+        //          Not the best solutions but this is not significant enough to Lawnchair.
+        if (!Utilities.ATLEAST_S) return;
         OverviewCommandHelperProtoLogProxy.logOnNewIntent(alreadyOnHome, shouldMoveToDefaultScreen,
                 action, internalStateHandled);
     }

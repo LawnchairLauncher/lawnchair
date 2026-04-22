@@ -213,7 +213,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mTaskbarDividerContainer = new TaskbarDividerContainer(context);
         }
 
-        if (ENABLE_TASKBAR_OVERFLOW.isTrue()) {
+        if (false) { // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_OVERFLOW.isTrue()
             mTaskbarOverflowView = TaskbarOverflowView.inflateIcon(
                     R.layout.taskbar_overflow_view, this,
                     mIconTouchSize, mItemPadding);
@@ -389,7 +389,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             }
         }
 
-        if (ENABLE_TASKBAR_OVERFLOW.isTrue()) {
+        if (false) { // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_OVERFLOW.isTrue()
             mMaxNumIcons = calculateMaxNumIcons();
         }
     }
@@ -428,7 +428,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         // TODO(b/343289567 and b/316004172): support app pairs and desktop mode.
         recentTasks = recentTasks.stream().filter(it -> it instanceof SingleTask).toList();
 
-        if (ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()) {
+        if (false) { // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
             updateItemsWithLayoutTransition(hotseatItemInfos, recentTasks);
         } else {
             updateItemsWithoutLayoutTransition(hotseatItemInfos, recentTasks);
@@ -714,7 +714,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     private void updateRecents(List<GroupTask> recentTasks, int hotseatSize) {
-        boolean supportsOverflow = ENABLE_TASKBAR_OVERFLOW.isTrue() && recentTasks.size() > 1;
+        boolean supportsOverflow = false && recentTasks.size() > 1; // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_OVERFLOW.isTrue()
         int overflowSize = 0;
         boolean hasOverflow = false;
         if (supportsOverflow && mTaskbarOverflowView != null) {
@@ -827,7 +827,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             removeAndRecycle(getChildAt(mNextViewIndex));
         }
 
-        if (ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue() && mIsRtl && hasOverflow) {
+        if (false && mIsRtl && hasOverflow) { // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
             if (mPrevOverflowTasks.isEmpty()) {
                 addView(mTaskbarOverflowView, mNextViewIndex);
             }

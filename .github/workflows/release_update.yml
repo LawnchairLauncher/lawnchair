@@ -34,7 +34,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@v6
       - name: Write sign info
         id: sign-release-apk
         if: github.repository_owner == 'LawnchairLauncher'
@@ -49,13 +49,15 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepGithubRelease
       - name: Rename artifact
-        run: mv build/outputs/apk/**/**/*.apk "${{ github.event.inputs.artifactName }}"
+        env:
+          ARTIFACT_NAME: ${{ github.event.inputs.artifactName }}
+        run: mv build/outputs/apk/**/**/*.apk "$ARTIFACT_NAME"
       - name: Attest
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: ${{ github.event.inputs.artifactName }}
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Release APK
           path: ${{ github.event.inputs.artifactName }}
@@ -68,12 +70,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Download artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: Release APK
           path: artifacts/release-apk
       - name: Publish GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.event.inputs.tagName }}
           prerelease: ${{ github.event.inputs.prerelease }}
@@ -88,7 +90,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Download artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: Release APK
           path: artifacts/release-apk

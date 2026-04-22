@@ -347,7 +347,7 @@ public class InvariantDeviceProfile {
         this.mThemeManager = ThemeManager.INSTANCE.get(context.getApplicationContext());
         this.mDisplayController = DisplayController.INSTANCE.get(context.getApplicationContext());
         String gridName = DeviceProfileOverrides.INSTANCE.get(context).getGridName(dbGridInfo);
-        initGrid(context, gridName);
+        initGrid(context, gridName, dbGridInfo);
     }
 
     private String initGrid(Context context, String gridName) {
@@ -385,6 +385,32 @@ public class InvariantDeviceProfile {
         return displayOption.grid.name;
     }
 
+    private String initGrid(Context context, String gridName, DeviceProfileOverrides.DBGridInfo dbGridInfo) {
+        Info displayInfo = mDisplayController.getInfo();
+        List<DisplayOption> allOptions = getPredefinedDeviceProfiles(
+                context,
+                gridName,
+                displayInfo,
+                (RestoreDbTask.isPending(mPrefs) && !Flags.oneGridSpecs()),
+                mPrefs.get(FIXED_LANDSCAPE_MODE)
+        );
+
+        List<DisplayOption> allOptionsFilteredByColCount =
+                filterByColumnCount(allOptions, dbGridInfo.getNumColumns());
+
+        DisplayOption displayOption =
+                invDistWeightedInterpolate(displayInfo, allOptionsFilteredByColCount.isEmpty()
+                                ? new ArrayList<>(allOptions)
+                                : new ArrayList<>(allOptionsFilteredByColCount),
+                        displayInfo.getDeviceType());
+
+        if (!displayOption.grid.name.equals(gridName)) {
+            mPrefs.put(GRID_NAME, displayOption.grid.name);
+        }
+        initGrid(context, displayInfo, displayOption, dbGridInfo);
+        return displayOption.grid.name;
+    }
+
     private List<DisplayOption> filterByColumnCount(
             List<DisplayOption> allOptions, int numColumns) {
         return allOptions.stream()
@@ -415,7 +441,9 @@ public class InvariantDeviceProfile {
         GridOption closestProfile = displayOption.grid;
         numRows = dbGridInfo.getNumRows();
         numColumns = dbGridInfo.getNumColumns();
-        numSearchContainerColumns = closestProfile.numSearchContainerColumns;
+        numSearchContainerColumns = deviceType == TYPE_MULTI_DISPLAY
+                ? closestProfile.numSearchContainerColumns
+                : dbGridInfo.getNumHotseatColumns();
         dbFile = dbGridInfo.getDbFile();
         gridType = closestProfile.gridType;
         defaultLayoutId = closestProfile.defaultLayoutId;
@@ -451,19 +479,6 @@ public class InvariantDeviceProfile {
 
         iconSize = displayOption.iconSizes;
         allAppsIconSize = displayOption.allAppsIconSizes;
-        float maxIconSize = iconSize[0];
-        for (int i = 1; i < iconSize.length; i++) {
-            maxIconSize = Math.max(maxIconSize, iconSize[i]);
-        }
-        float maxAllAppsIconSize = allAppsIconSize[0];
-        for (int i = 1; i < allAppsIconSize.length; i++) {
-            maxAllAppsIconSize = Math.max(maxAllAppsIconSize, allAppsIconSize[i]);
-        }
-                // Calculate separate bitmap sizes for workspace and all apps
-                iconBitmapSize = ResourceUtils.pxFromDp(maxIconSize, metrics);
-                allAppsIconBitmapSize = ResourceUtils.pxFromDp(maxAllAppsIconSize, metrics);
-                // Use the larger of the two for fillResIconDpi to ensure we have adequate resources
-                fillResIconDpi = getLauncherIconDensity(Math.max(iconBitmapSize, allAppsIconBitmapSize));
 
         iconTextSize = displayOption.textSizes;
 
@@ -507,6 +522,18 @@ public class InvariantDeviceProfile {
 
         // Lawnchair ignores partner overrides and allows the user to customize the grid themselves
         overrideOptions.applyUi(this);
+
+        float maxIconSize = iconSize[0];
+        for (int i = 1; i < iconSize.length; i++) {
+            maxIconSize = Math.max(maxIconSize, iconSize[i]);
+        }
+        float maxAllAppsIconSize = allAppsIconSize[0];
+        for (int i = 1; i < allAppsIconSize.length; i++) {
+            maxAllAppsIconSize = Math.max(maxAllAppsIconSize, allAppsIconSize[i]);
+        }
+        iconBitmapSize = ResourceUtils.pxFromDp(maxIconSize, metrics);
+        allAppsIconBitmapSize = ResourceUtils.pxFromDp(maxAllAppsIconSize, metrics);
+        fillResIconDpi = getLauncherIconDensity(Math.max(iconBitmapSize, allAppsIconBitmapSize));
 
         final List<DeviceProfile> localSupportedProfiles = new ArrayList<>();
         defaultWallpaperSize = new Point(displayInfo.currentSize);
@@ -575,9 +602,7 @@ public class InvariantDeviceProfile {
     @VisibleForTesting
     public void setCurrentGrid(Context context, String newGridName) {
         if (TextUtils.equals(mPrefs.get(GRID_NAME), newGridName)) return;
-        // pE-TODO(QPR1): Move off setCurrentGrid to Prefs?
-        // Lawnchair-TODO: Move off setCurrentGrid to Prefs?
-        //mPrefs.put(GRID_NAME, newGridName);
+        mPrefs.put(GRID_NAME, newGridName);
         DeviceProfileOverrides.INSTANCE.get(context).setCurrentGrid(newGridName);
         MAIN_EXECUTOR.execute(() -> {
             onConfigChanged(context.getApplicationContext());
@@ -596,7 +621,7 @@ public class InvariantDeviceProfile {
         Object[] oldState = toModelState();
 
         // Re-init grid
-        initGrid(context, mPrefs.get(GRID_NAME));
+        initGrid(context, getCurrentGridName(context));
 
         boolean modelPropsChanged = !Arrays.equals(oldState, toModelState());
         for (OnIDPChangeListener listener : mChangeListeners) {

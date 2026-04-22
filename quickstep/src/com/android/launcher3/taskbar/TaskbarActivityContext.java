@@ -210,8 +210,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     public static final String SIMPLE_VIEW_SETTINGS_KEY = "matcha_enable";
 
-    protected static final DesktopModeFlag ENABLE_TASKBAR_BEHIND_SHADE = new DesktopModeFlag(
-            Flags::enableTaskbarBehindShade, false);
+    protected static final boolean ENABLE_TASKBAR_BEHIND_SHADE = false;
+    // // LC-Ignored: Intentional, all Android desktop flags are disabled
+    // new DesktopModeFlag(
+    //            Flags::enableTaskbarBehindShade, false);
 
     private final @Nullable Context mNavigationBarPanelContext;
 
@@ -1147,7 +1149,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     private void updateTaskbarSnapshot(AnimatorSet anim, boolean isExpanded) {
-        if (!ENABLE_TASKBAR_BEHIND_SHADE.isTrue()
+        if (!ENABLE_TASKBAR_BEHIND_SHADE
                 || isPhoneMode()) {
             return;
         }

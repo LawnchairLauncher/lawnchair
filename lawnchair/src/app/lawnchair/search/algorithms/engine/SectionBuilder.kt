@@ -199,6 +199,8 @@ data object AppsAndShortcutsSectionBuilder : SectionBuilder {
 
         if (appResultCount == 1 && shortcuts.isNotEmpty()) {
             val singleApp = apps.first()
+            targets.add(factory.createAppSearchTarget(singleApp.data, asRow = false))
+            targets.add(factory.createHeaderTarget(SPACE))
             targets.add(factory.createAppSearchTarget(singleApp.data, asRow = true))
             targets.addAll(shortcuts.map { factory.createShortcutTarget(it.data) })
         } else {
