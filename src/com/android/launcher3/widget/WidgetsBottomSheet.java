@@ -1,0 +1,265 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.launcher3.widget;
+
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_BOTTOM_WIDGETS_TRAY;
+import static com.android.launcher3.widget.picker.model.data.WidgetPickerDataUtils.findAllWidgetsForPackageUser;
+
+import android.content.Context;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.util.Pair;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.animation.Interpolator;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TextView;
+
+import androidx.annotation.Px;
+
+import com.android.launcher3.R;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.widget.picker.model.data.WidgetPickerData;
+import com.android.launcher3.widget.util.WidgetsTableUtils;
+
+import java.util.List;
+
+import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.drawable.DrawableTokens;
+
+/**
+ * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
+ */
+public class WidgetsBottomSheet extends BaseWidgetSheet {
+    private static final int DEFAULT_CLOSE_DURATION = 200;
+
+    private ItemInfo mOriginalItemInfo;
+    @Px
+    private int mMaxHorizontalSpan;
+
+    public WidgetsBottomSheet(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        setWillNotDraw(false);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mContent = findViewById(R.id.widgets_bottom_sheet);
+        TextView mTitle = findViewById(R.id.title);
+
+        FontManager fontManager = FontManager.INSTANCE.get(getContext());
+        fontManager.setCustomFont(mTitle, R.id.font_heading);
+
+        mContent.setBackground(DrawableTokens.WidgetsBottomSheetBackground.resolve(getContext()));
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        doMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (updateMaxSpansPerRow()) {
+            doMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    /** Returns {@code true} if the max spans have been updated. */
+    private boolean updateMaxSpansPerRow() {
+        if (getMeasuredWidth() == 0)
+            return false;
+
+        @Px
+        int maxHorizontalSpan = mContent.getMeasuredWidth() - (2 * mContentHorizontalMargin);
+        if (mMaxHorizontalSpan != maxHorizontalSpan) {
+            // Ensure the table layout is showing widgets in the right column after measure.
+            mMaxHorizontalSpan = maxHorizontalSpan;
+            onWidgetsBound();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int width = r - l;
+        int height = b - t;
+
+        // Content is laid out as center bottom aligned.
+        int contentWidth = mContent.getMeasuredWidth();
+        int contentLeft = (width - contentWidth - mInsets.left - mInsets.right) / 2 + mInsets.left;
+        mContent.layout(contentLeft, height - mContent.getMeasuredHeight(),
+                contentLeft + contentWidth, height);
+
+        setTranslationShift(mTranslationShift);
+
+        ScrollView widgetsTableScrollView = findViewById(R.id.widgets_table_scroll_view);
+        TableLayout widgetsTable = findViewById(R.id.widgets_table);
+        if (widgetsTable.getMeasuredHeight() > widgetsTableScrollView.getMeasuredHeight()) {
+            findViewById(R.id.collapse_handle).setVisibility(VISIBLE);
+        }
+    }
+
+    public void populateAndShow(ItemInfo itemInfo) {
+        mOriginalItemInfo = itemInfo;
+        ((TextView) findViewById(R.id.title)).setText(mOriginalItemInfo.title);
+
+        onWidgetsBound();
+        attachToContainer();
+        mIsOpen = false;
+        animateOpen();
+    }
+
+    @Override
+    public void onWidgetsBound() {
+        final WidgetPickerData data = mActivityContext.getWidgetPickerDataProvider().get();
+        final PackageUserKey packageUserKey = PackageUserKey.fromItemInfo(mOriginalItemInfo);
+        List<WidgetItem> widgets = packageUserKey != null ? findAllWidgetsForPackageUser(data,
+                packageUserKey) : List.of();
+
+        TableLayout widgetsTable = findViewById(R.id.widgets_table);
+        widgetsTable.removeAllViews();
+
+        WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(widgets, mActivityContext,
+                mActivityContext.getDeviceProfile(), mMaxHorizontalSpan,
+                mWidgetCellHorizontalPadding)
+                .forEach(row -> {
+                    WidgetTableRow tableRow = new WidgetTableRow(getContext());
+                    tableRow.setGravity(Gravity.TOP);
+                    tableRow.setupRow(row.size(), /* resizeDelayMs= */ 0);
+                    row.forEach(widgetItem -> {
+                        WidgetCell widget = addItemCell(tableRow);
+                        widget.applyFromCellItem(widgetItem);
+                        if (widget.matchesItem(getLastSelectedWidgetItem())) {
+                            widget.callOnClick();
+                        }
+                    });
+                    widgetsTable.addView(tableRow);
+                });
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mNoIntercept = false;
+            ScrollView scrollView = findViewById(R.id.widgets_table_scroll_view);
+            if (getPopupContainer().isEventOverView(scrollView, ev)
+                    && scrollView.getScrollY() > 0) {
+                mNoIntercept = true;
+            }
+        }
+        return super.onControllerInterceptTouchEvent(ev);
+    }
+
+    protected WidgetCell addItemCell(WidgetTableRow parent) {
+        WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext())
+                .inflate(R.layout.widget_cell, parent, false);
+        widget.addPreviewReadyListener(parent);
+        widget.setOnClickListener(this);
+
+        View previewContainer = widget.findViewById(R.id.widget_preview_container);
+        previewContainer.setOnClickListener(this);
+        previewContainer.setOnLongClickListener(this);
+        widget.setAnimatePreview(false);
+        widget.setSourceContainer(CONTAINER_BOTTOM_WIDGETS_TRAY);
+
+        parent.addView(widget);
+        return widget;
+    }
+
+    private void animateOpen() {
+        if (mIsOpen || mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
+            return;
+        }
+        mIsOpen = true;
+        setupNavBarColor();
+        setUpDefaultOpenAnimation().start();
+    }
+
+    @Override
+    protected void handleClose(boolean animate) {
+        handleClose(animate, DEFAULT_CLOSE_DURATION);
+    }
+
+    @Override
+    protected boolean isOfType(@FloatingViewType int type) {
+        return (type & TYPE_WIDGETS_BOTTOM_SHEET) != 0;
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        super.setInsets(insets);
+        int bottomPadding = Math.max(insets.bottom, mNavBarScrimHeight);
+
+        View widgetsTable = findViewById(R.id.widgets_table);
+        widgetsTable.setPadding(
+                widgetsTable.getPaddingLeft(),
+                widgetsTable.getPaddingTop(),
+                widgetsTable.getPaddingRight(),
+                bottomPadding);
+        if (bottomPadding > 0) {
+            setupNavBarColor();
+        } else {
+            clearNavBarColor();
+        }
+    }
+
+    @Override
+    protected void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx) {
+        ViewGroup.MarginLayoutParams layoutParams = ((ViewGroup.MarginLayoutParams) findViewById(R.id.widgets_table)
+                .getLayoutParams());
+        layoutParams.setMarginStart(contentHorizontalMarginInPx);
+        layoutParams.setMarginEnd(contentHorizontalMarginInPx);
+    }
+
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(findViewById(R.id.title), getContext().getString(
+                mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
+    }
+
+    @Override
+    public void addHintCloseAnim(
+            float distanceToMove, Interpolator interpolator, PendingAnimation target) {
+        target.addAnimatedFloat(mSwipeToDismissProgress, 0f, 1f, interpolator);
+    }
+
+    @Override
+    protected void scrollCellContainerByY(WidgetCell wc, int scrollByY) {
+        for (ViewParent parent = wc.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof ScrollView scrollView) {
+                scrollView.smoothScrollBy(0, scrollByY);
+                return;
+            } else if (parent == this) {
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onRecommendedWidgetsBound() {} // no op
+}

@@ -1,0 +1,51 @@
+### 🥞 Development 4 Release 1 (Snapshot 10)
+
+~~Bug fixes only~~ You may see duplicated changelogs in this release because of merged diverged timeline.
+
+In this release, the initial 16-dev branch has now merged to QPR1 branch,
+meaning you'll have tons of improvements from upstream Launcher3 source.
+
+Build: BD4.2412 (latest), BD4.2112, BD4.2012, BD4.2311, BS10.2111, BS10.2011
+
+Compatibility list:
+
+| 🏗️ Crash   | 🥞 Fully supported |
+|-------------|--------------------|
+| Android 8.1 | Android 12.0       |
+| Android 9   | Android 12.1       |
+| Android 10  | Android 13         |
+| Android 11  | Android 14         |
+|             | Android 15         |
+|             | Android 16         |
+
+
+#### Features
+
+* [Launcher] Move to Google Sans Flex font (TODO)*
+* [Lawnchair] Material 3 Expressive Settings (Phase 2, TODO)*
+* ~~[Lawnchair] Better At-a-Glance perceptive wallpaper colour luminance detection*~~
+    * ~~Big word that means Lawnchair will take system default hint bright/dark theme and fallback to luminosity detection for bright/dark mode detection in At a Glance.*~~
+* ~~[Launcher] Enable Material Expressive Folder Expansion animation flag~~*
+    * Disabled due to rendering bugs*
+* [Launcher/Font] Variable font for Launcher3 (????????)*
+* [Launcher/Popup] Dynamically get app widget popup icon*
+* [Launcher] Foldable support (actually real)*
+* [Launcher] Google Sans Flex font uses almost the exact same configuration as Pixel*
+* [Launcher] Enable bulk loading by default*
+* [Launcher] Tablet support (ish)*
+
+#### Fixes
+* [Launcher] Fix a lot of internal basic functionality*
+* [Lawnchair] Re-added some Lawnchair-specific code*
+* [Launcher] Fix workspace navigation*
+* [Launcher] Fix allapps navigation*
+* [Launcher] Fix folder navigation*
+* [Launcher] Support Android 12.0/12.1/13/14/15*
+* [Lawnchair/Smartspace] At-a-Glance can't launch activity due to background startup restrictions on Android 14 and above*
+* [Launcher] Use Lawnchair theming colour for allapps*
+* [WM-Shell] Fix conflict with prebuilts aidl, make Release build work again*
+* [Launcher/Desktop] Correct deviceHasLargeScreen check for Baklava*
+* [Lawnchair/Search] Make search layout changes work*
+* [Lawnchair/Smartspace] Allow disabling the smartspace feature*
+* [Launcher3] Widget preview crash for no reason at all on compatible Android version*
+* [Launcher3] Correct fallback (blur unsupported) allapps colour

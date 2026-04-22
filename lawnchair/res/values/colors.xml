@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <color name="accent_light">@color/system_accent1_500</color>
+    <color name="accent_dark">@color/system_accent1_200</color>
+    <color name="dark_drawer_text_color">#FFFFFFFF</color>
+    <color name="light_drawer_text_color">#DE000000</color>
+
+    <color name="system_neutral1_0">#ffffffff</color>
+    <color name="system_neutral1_10">#fffbfbfb</color>
+    <color name="system_neutral1_50">#fff0f0f0</color>
+    <color name="system_neutral1_100">#ffe2e2e2</color>
+    <color name="system_neutral1_200">#ffc6c6c6</color>
+    <color name="system_neutral1_300">#ffababab</color>
+    <color name="system_neutral1_400">#ff909090</color>
+    <color name="system_neutral1_500">#ff757575</color>
+    <color name="system_neutral1_600">#ff5e5e5e</color>
+    <color name="system_neutral1_700">#ff464646</color>
+    <color name="system_neutral1_800">#ff303030</color>
+    <color name="system_neutral1_900">#ff1b1b1b</color>
+    <color name="system_neutral1_1000">#ff000000</color>
+
+    <color name="system_neutral2_0">#ffffffff</color>
+    <color name="system_neutral2_10">#fffbfbfb</color>
+    <color name="system_neutral2_50">#fff0f0f0</color>
+    <color name="system_neutral2_100">#ffe2e2e2</color>
+    <color name="system_neutral2_200">#ffc6c6c6</color>
+    <color name="system_neutral2_300">#ffababab</color>
+    <color name="system_neutral2_400">#ff909090</color>
+    <color name="system_neutral2_500">#ff757575</color>
+    <color name="system_neutral2_600">#ff5e5e5e</color>
+    <color name="system_neutral2_700">#ff464646</color>
+    <color name="system_neutral2_800">#ff303030</color>
+    <color name="system_neutral2_900">#ff1b1b1b</color>
+    <color name="system_neutral2_1000">#ff000000</color>
+
+    <color name="system_accent1_0">#ffffffff</color>
+    <color name="system_accent1_10">#fffdfcff</color>
+    <color name="system_accent1_50">#ffecf3fe</color>
+    <color name="system_accent1_100">#ffd3e3fd</color>
+    <color name="system_accent1_200">#ffa8c7fa</color>
+    <color name="system_accent1_300">#ff7cacf8</color>
+    <color name="system_accent1_400">#ff4c8df6</color>
+    <color name="system_accent1_500">#ff1b6ef3</color>
+    <color name="system_accent1_600">#ff0b57d0</color>
+    <color name="system_accent1_700">#ff0842a0</color>
+    <color name="system_accent1_800">#ff062e6f</color>
+    <color name="system_accent1_900">#ff041e49</color>
+    <color name="system_accent1_1000">#ff000000</color>
+
+    <color name="system_accent2_0">#ffffffff</color>
+    <color name="system_accent2_10">#fffdfbff</color>
+    <color name="system_accent2_50">#ffedeeff</color>
+    <color name="system_accent2_100">#ffdfe0ff</color>
+    <color name="system_accent2_200">#ffc3c4e2</color>
+    <color name="system_accent2_300">#ffa8a9c6</color>
+    <color name="system_accent2_400">#ff8d8fab</color>
+    <color name="system_accent2_500">#ff72738f</color>
+    <color name="system_accent2_600">#ff5a5c77</color>
+    <color name="system_accent2_700">#ff43455e</color>
+    <color name="system_accent2_800">#ff2c2f46</color>
+    <color name="system_accent2_900">#ff161a30</color>
+    <color name="system_accent2_1000">#ff000000</color>
+
+    <color name="system_accent3_0">#ffffffff</color>
+    <color name="system_accent3_10">#fffffbfd</color>
+    <color name="system_accent3_50">#ffffe7ff</color>
+    <color name="system_accent3_100">#fff5d9ff</color>
+    <color name="system_accent3_200">#ffd8bde6</color>
+    <color name="system_accent3_300">#ffbca2ca</color>
+    <color name="system_accent3_400">#ffa187ae</color>
+    <color name="system_accent3_500">#ff846c91</color>
+    <color name="system_accent3_600">#ff6d567a</color>
+    <color name="system_accent3_700">#ff553e61</color>
+    <color name="system_accent3_800">#ff3d2849</color>
+    <color name="system_accent3_900">#ff271332</color>
+    <color name="system_accent3_1000">#ff000000</color>
+
+    <color name="background_device_default_dark">@color/system_neutral1_900</color>
+    <color name="background_device_default_light">@color/system_neutral1_50</color>
+    <color name="background_floating_device_default_dark">@color/system_neutral2_900</color>
+    <color name="background_floating_device_default_light">@color/system_neutral2_50</color>
+
+    <color name="surface_dark">@color/system_neutral1_800</color>
+    <color name="surface_header_dark">@color/system_neutral1_700</color>
+    <color name="surface_header_light">@color/system_neutral1_100</color>
+    <color name="surface_highlight_light">@color/system_neutral1_0</color>
+    <color name="surface_variant_dark">@color/system_neutral1_700</color>
+    <color name="surface_variant_light">@color/system_neutral2_100</color>
+
+    <color name="accent_primary_device_default">@color/system_accent1_100</color>
+</resources>

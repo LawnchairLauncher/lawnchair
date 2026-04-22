@@ -1,0 +1,16 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace "com.android.launcher3.flags"
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            kotlin.directories.add('src')
+        }
+    }
+}
+
+addFrameworkJar('framework-16.jar')
+compileOnlyCommonJars()

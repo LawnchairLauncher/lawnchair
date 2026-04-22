@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright (C) 2019 The Android Open Source Project
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?android:attr/textColorPrimary">
+
+    <path
+        android:fillColor="@android:color/white"
+        android:strokeWidth="1"
+        android:pathData="M10,20 C4.49,20 0,15.51 0,10 C0,4.49 4.49,0 10,0 C15.51,0 20,4.04 20,9
+            C20,12.31 17.31,15 14,15 L12.23,15 C11.95,15 11.73,15.22 11.73,15.5 C11.73,15.62
+            11.78,15.73 11.86,15.83 C12.27,16.3 12.5,16.89 12.5,17.5 C12.5,18.88 11.38,20
+            10,20 Z M10,2 C5.59,2 2,5.59 2,10 C2,14.41 5.59,18 10,18 C10.28,18 10.5,17.78
+            10.5,17.5 C10.5,17.34 10.42,17.22 10.36,17.15 C9.95,16.69 9.73,16.1 9.73,15.5
+            C9.73,14.12 10.85,13 12.23,13 L14,13 C16.21,13 18,11.21 18,9 C18,5.14 14.41,2
+            10,2 Z M4.5,11 C5.32842712,11 6,10.3284271 6,9.5 C6,8.67157288 5.32842712,8
+            4.5,8 C3.67157288,8 3,8.67157288 3,9.5 C3,10.3284271 3.67157288,11 4.5,11 Z
+            M7.5,7 C8.32842712,7 9,6.32842712 9,5.5 C9,4.67157288 8.32842712,4 7.5,4
+            C6.67157288,4 6,4.67157288 6,5.5 C6,6.32842712 6.67157288,7 7.5,7 Z M12.5,7
+            C13.3284271,7 14,6.32842712 14,5.5 C14,4.67157288 13.3284271,4 12.5,4
+            C11.6715729,4 11,4.67157288 11,5.5 C11,6.32842712 11.6715729,7 12.5,7 Z M15.5,11
+            C16.3284271,11 17,10.3284271 17,9.5 C17,8.67157288 16.3284271,8 15.5,8
+            C14.6715729,8 14,8.67157288 14,9.5 C14,10.3284271 14.6715729,11 15.5,11 Z" />
+</vector>

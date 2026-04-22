@@ -1,0 +1,56 @@
+/*
+ * Copyright (C) 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+syntax = "proto2";
+
+option java_package = "com.android.wm.shell.desktopmode.education.data";
+option java_multiple_files = true;
+
+// Desktop Windowing education data
+message WindowingEducationProto {
+  // Timestamp in milliseconds of when the education was last viewed.
+  optional int64 education_viewed_timestamp_millis = 1 [deprecated=true];
+  // Timestamp in milliseconds of when the feature was last used.
+  optional int64 feature_used_timestamp_millis = 2 [deprecated=true];
+
+  // Timestamp in milliseconds of when the app handle hint was last viewed.
+  optional int64 app_handle_hint_viewed_timestamp_millis = 5;
+  // Timestamp in milliseconds of when the app handle hint was last used.
+  optional int64 app_handle_hint_used_timestamp_millis = 6;
+  // Timestamp in milliseconds of when the enter desktop mode hint was last viewed.
+  optional int64 enter_desktop_mode_hint_viewed_timestamp_millis = 7;
+  // Timestamp in milliseconds of when the exit desktop mode hint was last viewed.
+  optional int64 exit_desktop_mode_hint_viewed_timestamp_millis = 8;
+
+  oneof education_data {
+    // Fields specific to app handle education
+    AppHandleEducation app_handle_education = 3;
+    // Fields specific to App-to-Web education
+    AppToWebEducation app_to_web_education = 4;
+  }
+
+  message AppHandleEducation {
+    // Map that stores app launch count for corresponding package
+    map<string, int32> app_usage_stats = 1;
+    // Timestamp of when app_usage_stats was last cached
+    optional int64 app_usage_stats_last_update_timestamp_millis = 2;
+  }
+
+  message AppToWebEducation {
+    // Number of times education is shown
+    optional int64 education_shown_count = 1;
+  }
+}

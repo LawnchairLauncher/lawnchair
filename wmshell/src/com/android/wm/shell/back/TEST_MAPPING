@@ -1,0 +1,10 @@
+{
+  "presubmit": [
+    {
+      "name": "WMShellUnitTests_shell_back"
+    },
+    {
+      "name": "CtsWindowManagerDeviceBackNavigation_com_android_wm_shell_back"
+    }
+  ]
+}

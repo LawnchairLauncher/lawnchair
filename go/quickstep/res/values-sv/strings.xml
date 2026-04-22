@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Dela app"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Lyssna"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Översätt"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"AVBRYT"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"INSTÄLLNINGAR"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Översätt eller lyssna på texten på skärmen"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Information som text på skärmen, webbadresser och skärmbilder kan delas med Google.\n\nFör att ändra vilken information du delar öppnar du "<b>"Inställningar &gt; Appar &gt; Standardappar &gt; Digital assistentapp"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Välj en assistent om du vill använda den här funktionen"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Välj en digital assistentapp i Inställningar om du vill lyssna på eller översätta text på skärmen"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Byt assistent om du vill använda den här funktionen"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Byt digital assistentapp i Inställningar om du vill lyssna på eller översätta text på skärmen"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Tryck här för att lyssna på texten på skärmen"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Tryck här för att översätta texten på skärmen"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Den här appen kan inte delas"</string>
+</resources>

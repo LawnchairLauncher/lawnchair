@@ -1,0 +1,68 @@
+/*
+ * Copyright (C) 2019 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+syntax = "proto2";
+
+package com.android.launcher3.tracing;
+
+option java_multiple_files = true;
+
+message LauncherTraceProto {
+
+    optional TouchInteractionServiceProto touch_interaction_service = 1;
+}
+
+message TouchInteractionServiceProto {
+
+    optional bool service_connected = 1;
+    optional OverviewComponentObserverProto overview_component_obvserver = 2;
+    optional InputConsumerProto input_consumer = 3;
+}
+
+message OverviewComponentObserverProto {
+
+    optional bool overview_activity_started = 1;
+    optional bool overview_activity_resumed = 2;
+}
+
+message InputConsumerProto {
+
+    optional string name = 1;
+    optional SwipeHandlerProto swipe_handler = 2;
+}
+
+message SwipeHandlerProto {
+
+    optional GestureStateProto gesture_state = 1;
+    optional bool is_recents_attached_to_app_window = 2;
+    optional int32 scroll_offset = 3;
+    // Swipe up progress from 0 (app) to 1 (overview); can be > 1 if swiping past overview.
+    optional float app_to_overview_progress = 4;
+}
+
+message GestureStateProto {
+
+    optional GestureEndTarget endTarget = 1 [default = UNSET];
+
+    enum GestureEndTarget {
+        UNSET = 0;
+        HOME = 1;
+        RECENTS = 2;
+        NEW_TASK = 3;
+        LAST_TASK = 4;
+        ALL_APPS = 5;
+    }
+}

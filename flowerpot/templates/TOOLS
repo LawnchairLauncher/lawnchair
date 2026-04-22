@@ -1,0 +1,10 @@
+:android.intent.action.ASSIST
+;android.intent.category.APP_MARKET
+;android.intent.category.APP_BROWSER
+;android.intent.category.APP_CALCULATOR
+;android.intent.category.APP_FILES
+:android.intent.action.WEB_SEARCH
+:android.intent.action.QUICK_CLOCK
+:android.intent.action.OPEN_DOCUMENT_TREE
+:android.intent.action.OPEN_DOCUMENT
+:android.intent.action.CREATE_DOCUMENT

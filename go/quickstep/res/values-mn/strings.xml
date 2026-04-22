@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Аппыг хуваалцах"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Сонсох"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Орчуулах"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ОЙЛГОЛОО"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ЦУЦЛАХ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ТОХИРГОО"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Дэлгэц дээрх текстийг орчуулах эсвэл сонсох"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Таны дэлгэц дээрх текст, веб хаяг, дэлгэцийн агшин зэрэг мэдээллийг Google-тэй хуваалцаж болзошгүй.\n\nТа ямар мэдээлэл хуваалцахаа өөрчлөхийн тулд "<b>"Тохиргоо &gt; Апп &gt; Өгөгдмөл апп &gt; Дижитал туслах апп"</b>" руу очно уу."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Энэ онцлогийг ашиглахын тулд туслах сонгоно уу"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Дэлгэц дээрээ текст сонсох эсвэл орчуулахын тулд Тохиргоо хэсэгт дижитал туслах аппыг сонгоно уу"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Энэ онцлогийг ашиглахын тулд туслахаа өөрчилнө үү"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Дэлгэц дээрээ текст сонсох эсвэл орчуулахын тулд Тохиргоо хэсэгт дижитал туслах аппаа өөрчилнө үү"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Энэ дэлгэц дээр текст сонсохын тулд энд товшино уу"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Энэ дэлгэц дээр текст орчуулахын тулд энд товшино уу"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Энэ аппыг хуваалцах боломжгүй"</string>
+</resources>

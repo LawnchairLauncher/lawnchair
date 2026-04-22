@@ -1,0 +1,11 @@
+# See system/logging/logcat/event.logtags for a description of the format of this file.
+
+option java_package com.android.wm.shell
+
+# Do not change these names without updating the checkin_events setting in
+# google3/googledata/wireless/android/provisioning/gservices.config !!
+#
+
+38500 wm_shell_enter_desktop_mode (EnterReason|1|5),(SessionId|1|5)
+38501 wm_shell_exit_desktop_mode (ExitReason|1|5),(SessionId|1|5)
+38502 wm_shell_desktop_mode_task_update (TaskEvent|1|5),(InstanceId|1|5),(uid|1|5),(TaskHeight|1),(TaskWidth|1),(TaskX|1),(TaskY|1),(SessionId|1|5),(MinimiseReason|1|5),(UnminimiseReason|1|5),(VisibleTaskCount|1),(FocusReason|1|5)

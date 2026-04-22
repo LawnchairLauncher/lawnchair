@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ~ Copyright (C) 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+   -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="widgets_list_header_app_name_fallback_label" msgid="5151621916941957989">"Pangalan ng app"</string>
+    <string name="widgets_list_header_widgets_count_label" msgid="578128450351893001">"{count,plural, =1{# widget}one{# widget}other{# na widget}}"</string>
+    <string name="widget_span_dimensions_format" msgid="4325492869474815131">"%1$d × %2$d"</string>
+    <string name="widget_span_dimensions_accessible_format" msgid="6976586776463259811">"%1$d ang lapad at %2$d ang taas"</string>
+    <string name="widget_details_accessibility_label" msgid="4525863892199168041">"Widget na <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, %2$d ang lapad at %3$d ang taas"</string>
+    <string name="widget_tap_to_show_add_button_label" msgid="3358071294981269937">"Ipakita ang button na magdagdag"</string>
+    <string name="widget_tap_to_hide_add_button_label" msgid="7484536838079871360">"I-hide ang button na magdagdag"</string>
+    <string name="widget_tap_to_add_button_label" msgid="3110313936849291769">"Magdagdag"</string>
+    <string name="widget_tap_to_add_button_content_description" msgid="3591512565497536699">"Idagdag ang widget na <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
+    <string name="featured_widgets_tab_label" msgid="5911854248145111652">"Itinatampok"</string>
+    <string name="browse_widgets_tab_label" msgid="7179933202350730737">"Mag-browse"</string>
+    <string name="widget_picker_right_pane_accessibility_label" msgid="5095301787174820892">"Mga widget ng <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> sa kanan, paghahanap at mga opsyon sa kaliwa"</string>
+    <string name="widgets_search_bar_hint" msgid="5705758627532180867">"Maghanap"</string>
+    <string name="widget_search_bar_clear_button_label" msgid="6120140737164336517">"I-clear"</string>
+    <string name="widget_search_bar_back_button_label" msgid="7028448831228587743">"Bumalik"</string>
+    <string name="widgets_list_no_widgets_available" msgid="6451723564588621540">"Hindi available ang mga widget at shortcut"</string>
+    <string name="widgets_no_search_results" msgid="4336254967062545985">"Walang nakitang widget o shortcut"</string>
+</resources>

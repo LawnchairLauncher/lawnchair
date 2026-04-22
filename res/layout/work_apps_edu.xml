@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2020 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<com.android.launcher3.allapps.WorkEduCard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/work_edu_card_margin"
+    android:paddingBottom="@dimen/work_edu_card_bottom_margin"
+    android:gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/work_card"
+        android:layout_gravity="center_horizontal"
+        android:paddingStart="@dimen/work_card_margin"
+        android:paddingEnd="@dimen/work_card_margin_end"
+        android:paddingBottom="@dimen/work_card_margin"
+        android:id="@+id/wrapper">
+        <TextView
+            style="@style/PrimaryHeadline"
+            android:textColor="?android:attr/textColorPrimary"
+            android:id="@+id/work_apps_paused_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/work_card_margin"
+            android:paddingEnd="@dimen/work_edu_card_text_end_margin"
+            android:text="@string/work_profile_edu_work_apps"
+            android:textDirection="locale"
+            android:textSize="18sp" />
+        <FrameLayout
+            android:id="@+id/action_btn"
+            android:layout_width="@dimen/rounded_button_width"
+            android:layout_height="@dimen/rounded_button_width"
+            android:layout_marginTop="@dimen/work_edu_card_button_margin_top"
+            android:clickable="true"
+            android:contentDescription="@string/accessibility_close"
+            android:gravity="center"
+            android:background="@drawable/inset_rounded_action_button">
+            <ImageButton
+                android:layout_width="@dimen/x_icon_size"
+                android:layout_height="@dimen/x_icon_size"
+                android:clickable="false"
+                android:scaleType="centerInside"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_close_work_edu" />
+        </FrameLayout>
+    </LinearLayout>
+</com.android.launcher3.allapps.WorkEduCard>

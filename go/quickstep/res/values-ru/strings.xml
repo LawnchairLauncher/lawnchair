@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Поделиться"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Слушать"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Перевести"</string>
+    <string name="action_search" msgid="6269564710943755464">"Объектив"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ОК"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ОТМЕНА"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ОТКРЫТЬ НАСТРОЙКИ"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Перевод или прослушивание текста на экране"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Определенные сведения (например, текст на экране, веб-адреса и скриншоты) могут быть отправлены в Google.\n\nИзменить информацию, которой вы делитесь, можно в меню "<b>"Настройки &gt; Приложения &gt; Приложения по умолчанию &gt; Цифровой помощник"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Выберите помощника, чтобы пользоваться этой функцией"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Чтобы слушать или переводить текст на экране, укажите цифрового помощника в настройках."</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Смените помощника, чтобы пользоваться этой функцией"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Чтобы слушать или переводить текст на экране, выберите другого цифрового помощника в настройках."</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Нажмите, чтобы прослушать текст на этой странице"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Нажмите, чтобы перевести текст на этой странице"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Невозможно предоставить доступ к этому приложению."</string>
+</resources>

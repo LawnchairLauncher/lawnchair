@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"アプリを共有"</string>
+    <string name="action_listen" msgid="2370304050784689486">"聴く"</string>
+    <string name="action_translate" msgid="8028378961867277746">"翻訳"</string>
+    <string name="action_search" msgid="6269564710943755464">"レンズ"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"キャンセル"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"設定"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"画面上のテキストを翻訳または聞く"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"画面上のテキスト、ウェブアドレス、スクリーンショットなどの情報が Google と共有される場合があります。\n\n共有される情報を変更するには、"<b>"[設定] &gt; [アプリ] &gt; [デフォルトのアプリ] &gt; [デジタル アシスタント アプリ]"</b>" に移動してください。"</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"この機能を使用するにはアシスタントを選択してください"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"画面上のテキストを翻訳するかまたは聞くには、[設定] でデジタル アシスタント アプリを選択してください"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"この機能を使用するにはアシスタントを変更してください"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"画面上のテキストを翻訳するかまたは聞くには、[設定] でデジタル アシスタント アプリを変更してください"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"この画面上のテキストを聞くには、ここをタップしてください"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"この画面上のテキストを翻訳するには、ここをタップしてください"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"このアプリは共有できません"</string>
+</resources>

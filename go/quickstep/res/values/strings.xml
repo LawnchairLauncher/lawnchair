@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for app share drop target. [CHAR_LIMIT=20] -->
+    <string name="app_share_drop_target_label">Share App</string>
+
+    <!-- ******* Overview ******* -->
+    <!-- Label for a button that lets the user listen to the content of the current app. [CHAR_LIMIT=40] -->
+    <string name="action_listen">Listen</string>
+    <!-- Label for a button that translates a screenshot of the current app. [CHAR_LIMIT=40] -->
+    <string name="action_translate">Translate</string>
+    <!-- Label for a button that triggers Search on a screenshot of the current app. [CHAR_LIMIT=40] -->
+    <string name="action_search">Lens</string>
+
+    <!-- ******* Dialogs ******* -->
+    <!-- Label for a button that acknowledges the contents of the dialog. [CHAR_LIMIT=40] -->
+    <string name="dialog_acknowledge">GOT IT</string>
+    <!-- Label for a button that cancels the dialog. [CHAR_LIMIT=40] -->
+    <string name="dialog_cancel">CANCEL</string>
+    <!-- Label for a button that redirects the user to Settings. [CHAR_LIMIT=40] -->
+    <string name="dialog_settings">SETTINGS</string>
+
+    <!-- ******* NIU Actions First-Run Confirmation Dialog ******* -->
+    <!-- Dialog title -->
+    <string name="niu_actions_confirmation_title">Translate or listen to text on screen</string>
+    <!-- Dialog content -->
+    <string name="niu_actions_confirmation_text">Information such as text on your screen, web addresses, and screenshots may be shared with Google.\n\nTo change what information you share, go to <b>Settings > Apps > Default apps > Digital assistant app</b>.</string>
+
+    <!-- ******* NIU Actions Default Assistant Error Dialogs ******* -->
+    <!-- Assistant not selected: Dialog title -->
+    <string name="assistant_not_selected_title">Choose an assistant to use this feature</string>
+    <!-- Assistant not selected: Dialog content -->
+    <string name="assistant_not_selected_text">To listen to or translate text on your screen, choose a digital assistant app in Settings</string>
+    <!-- Assistant not supported: Dialog title -->
+    <string name="assistant_not_supported_title">Change your assistant to use this feature</string>
+    <!-- Assistant not supported: Dialog content -->
+    <string name="assistant_not_supported_text">To listen to or translate text on your screen, change your digital assistant app in Settings</string>
+
+    <!-- ******* NIU Actions Tooltip ******* -->
+    <!-- Tooltip to highlight and explain the Listen button -->
+    <string name="tooltip_listen">Tap here to listen to text on this screen</string>
+    <!-- Tooltip to highlight and explain the Translate button -->
+    <string name="tooltip_translate">Tap here to translate text on this screen</string>
+
+    <!-- ******* Toast Messages ******* -->
+    <!-- Toast to indicate that an app cannot be shared -->
+    <string name="toast_p2p_app_not_shareable">This app can’t be shared</string>
+</resources>

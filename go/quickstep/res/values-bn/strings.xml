@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"অ্যাপ শেয়ার করুন"</string>
+    <string name="action_listen" msgid="2370304050784689486">"শুনুন"</string>
+    <string name="action_translate" msgid="8028378961867277746">"অনুবাদ করুন"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"বুঝেছি"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"বাতিল করুন"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"সেটিংস"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"অনুবাদ করুন বা স্ক্রিনে দেখানো টেক্সট শুনুন"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"আপনার স্ক্রিনে থাকা তথ্য যেমন ওয়েব ঠিকানা এবং স্ক্রিনশট Google-এর সাথে শেয়ার করা হতে পারে।\n\nকোন কোন তথ্য শেয়ার করবেন তা বেছে নিতে, "<b>"সেটিংস &gt; অ্যাপ &gt; ডিফল্ট অ্যাপ &gt; ডিজিটাল অ্যাসিস্ট্যান্ট অ্যাপ"</b>" বিকল্পগুলি বেছে নিন।"</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"এই ফিচার ব্যবহার করতে অ্যাসিস্ট্যান্ট বেছে নিন"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"আপনার স্ক্রিনে থাকা টেক্সট শুনতে বা অনুবাদ করতে, সেটিংস থেকে ডিজিটাল অ্যাসিস্ট্যান্ট অ্যাপ বেছে নিন"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"এই ফিচার ব্যবহার করতে অ্যাসিস্ট্যান্ট পরিবর্তন করুন"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"আপনার স্ক্রিনে থাকা টেক্সট শুনতে বা অনুবাদ করতে, সেটিংস থেকে ডিজিটাল অ্যাসিস্ট্যান্ট অ্যাপ পরিবর্তন করুন"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"স্ক্রিনে থাকা টেক্সট শুনতে এখানে ট্যাপ করুন"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"স্ক্রিনে থাকা টেক্সট অনুবাদ করতে এখানে ট্যাপ করুন"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"এই অ্যাপ শেয়ার করা যাবে না"</string>
+</resources>

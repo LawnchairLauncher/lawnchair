@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Колдонмону бөлүшүү"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Угуу"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Которуу"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ТҮШҮНДҮМ"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ЖОККО ЧЫГАРУУ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ЖӨНДӨӨЛӨР"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Экрандагы текстти которуу же угуу"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Экрандагы текст, веб-даректер жана скриншоттор сыяктуу маалымат Google менен бөлүшүлүшү мүмкүн.\n\nБөлүшүлгөн маалыматты өзгөртүү үчүн"<b>"Параметрлер &gt; Колдонмолор &gt; Демейки колдонмолор &gt; Санариптик жардамчы колдонмосуна өтүңүз"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Бул функцияны колдонуу үчүн жардамчыны тандаңыз"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Экраныңыздагы текстти угуу же которуу үчүн Параметрлерден санариптик жардамчы колдонмосун тандаңыз"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Бул функцияны колдонуу үчүн жардамчыңызды өзгөртүңүз"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Экраныңыздагы текстти угуу же которуу үчүн Параметрлерден санариптик жардамчы колдонмосун өзгөртүңүз"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Бул экрандагы текстти угуу үчүн бул жерди басыңыз"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Бул экрандагы текстти которуу үчүн бул жерди басыңыз"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Бул колдонмону бөлүшүүгө болбойт"</string>
+</resources>

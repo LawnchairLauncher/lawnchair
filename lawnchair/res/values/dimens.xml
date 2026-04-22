@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2025, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <!-- Hotseat -->
+    <dimen name="dynamic_grid_hotseat_top_padding">0dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_padding">62dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_non_tall_padding">15dp</dimen>
+    <dimen name="dynamic_grid_hotseat_extra_vertical_size">24dp</dimen>
+    <dimen name="noqsb_hotseat_top_padding">8dp</dimen>
+    <dimen name="noqsb_hotseat_bottom_padding">2dp</dimen>
+    <dimen name="noqsb_hotseat_bottom_non_tall_padding">0dp</dimen>
+    <dimen name="noqsb_hotseat_extra_vertical_size">34dp</dimen>
+
+    <dimen name="lawnchair_dialog_corner_radius">24dp</dimen>
+
+    <!-- qsb -->
+    <dimen name="all_apps_search_bar_bottom_padding">36dp</dimen>
+    <dimen name="all_apps_search_vertical_offset">30dp</dimen>
+    <dimen name="qsb_g_icon_marginStart">16dp</dimen>
+    <dimen name="qsb_icon_padding">10dp</dimen>
+    <dimen name="qsb_margin_top_adjusting">20dp</dimen>
+    <dimen name="qsb_min_width_with_mic">124dp</dimen>
+    <dimen name="qsb_shadow_margin">6dp</dimen>
+    <dimen name="qsb_widget_height">64dp</dimen>
+    <dimen name="qsb_icon_width">56dp</dimen>
+    <dimen name="search_widget_top_shift">16dp</dimen>
+    <dimen name="search_widget_hotseat_height">56dp</dimen>
+    <dimen name="qsb_widget_vertical_padding">6dp</dimen>
+
+    <!-- search -->
+    <dimen name="search_box_container_height">60dp</dimen>
+    <dimen name="search_box_height">52dp</dimen>
+    <dimen name="search_decoration_padding">1dp</dimen>
+    <dimen name="search_group_radius">28dp</dimen>
+    <dimen name="search_hero_inline_button_text_size">12sp</dimen>
+    <dimen name="search_result_hero_title_size">16sp</dimen>
+    <dimen name="search_result_hero_subtitle_size">14sp</dimen>
+    <dimen name="search_result_margin">8dp</dimen>
+    <dimen name="search_result_padding">16dp</dimen>
+    <dimen name="search_result_padding_medium">12dp</dimen>
+    <dimen name="search_result_radius">4dp</dimen>
+    <dimen name="search_result_row_height">88dp</dimen>
+    <dimen name="search_result_row_medium_height">72dp</dimen>
+    <dimen name="search_result_small_row_height">56dp</dimen>
+    <dimen name="search_result_files_row_height">96dp</dimen>
+    <dimen name="search_result_text_height">52dp</dimen>
+    <dimen name="search_result_subtitle_padding_start">4dp</dimen>
+
+    <dimen name="all_apps_header_top_margin">64dp</dimen>
+
+    <!-- smartspace -->
+    <dimen name="smartspaceAmbientShadowBlur">1.5dp</dimen>
+    <dimen name="smartspaceKeyShadowBlur">2dp</dimen>
+    <dimen name="smartspaceKeyShadowOffset">0.5dp</dimen>
+    <dimen name="smartspaceLetterSpacing">0.02</dimen>
+
+    <dimen name="ambient_text_shadow_radius">1.5dp</dimen>
+    <dimen name="enhanced_smartspace_combination_card_padding">8dp</dimen>
+    <dimen name="enhanced_smartspace_combination_sub_card_corner_radius">20dp</dimen>
+    <dimen name="enhanced_smartspace_dismiss_margin">16dp</dimen>
+    <dimen name="enhanced_smartspace_height">104dp</dimen>
+    <dimen name="enhanced_smartspace_icon_margin">6dp</dimen>
+    <dimen name="enhanced_smartspace_icon_size">20dp</dimen>
+    <dimen name="enhanced_smartspace_margin_start_launcher">0dp</dimen>
+    <dimen name="enhanced_smartspace_padding_start">16dp</dimen>
+    <dimen name="enhanced_smartspace_padding_end">16dp</dimen>
+    <dimen name="enhanced_smartspace_padding_top">16dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_corner_radius">28dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_end_margin">1dp</dimen>
+    <dimen name="enhanced_smartspace_secondary_card_start_margin">8dp</dimen>
+    <dimen name="enhanced_smartspace_subtitle_margin_top">9dp</dimen>
+    <dimen name="enhanced_smartspace_subtitle_size">16sp</dimen>
+    <dimen name="enhanced_smartspace_title_size">20sp</dimen>
+    <dimen name="key_text_shadow_dx">0.5dp</dimen>
+    <dimen name="key_text_shadow_dy">0.5dp</dimen>
+    <dimen name="key_text_shadow_radius">0.5dp</dimen>
+    <dimen name="page_indicator_dot_margin">3dp</dimen>
+    <dimen name="page_indicator_dot_size">6dp</dimen>
+    <dimen name="page_indicator_padding_start">2dp</dimen>
+    <dimen name="page_indicator_padding_top_bottom">10dp</dimen>
+    <dimen name="page_indicator_width">16dp</dimen>
+    <dimen name="smartspace_icon_shadow">1dp</dimen>
+    <dimen name="status_bar_header_height_keyguard">40dp</dimen>
+
+    <dimen name="theme_icon_size">24dp</dimen>
+
+    <dimen name="search_row_medium_icon_size">24dp</dimen>
+    <dimen name="search_row_mini_icon_size">22dp</dimen>
+    <dimen name="space_layout_height">14dp</dimen>
+    <dimen name="space_layout_mini_height">8dp</dimen>
+    <dimen name="search_row_files_preview_width">80dp</dimen>
+    <dimen name="search_row_files_preview_height">64dp</dimen>
+    <dimen name="search_row_preview_radius">18dp</dimen>
+
+    <dimen name="wallpaper_carousel_height">120dp</dimen>
+
+    <dimen name="aspect_ratio_landscape">10</dimen>
+    <dimen name="aspect_ratio_portrait">1</dimen>
+    <dimen name="aspect_ratio_portrait_and_square">1.05</dimen>
+
+</resources>

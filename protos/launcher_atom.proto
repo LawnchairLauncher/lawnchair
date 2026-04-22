@@ -1,0 +1,420 @@
+/*
+ * Copyright (C) 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto2";
+
+option java_package = "com.android.launcher3.logger";
+option java_outer_classname = "LauncherAtom";
+
+import "launcher_atom_extension.proto";
+
+//
+// ItemInfos
+message ItemInfo {
+  reserved 8;
+
+  oneof Item {
+    Application application = 1;
+    Task task = 2;
+    Shortcut shortcut = 3;
+    Widget widget = 4;
+    FolderIcon folder_icon = 9;
+    Slice slice = 10;
+    SearchActionItem search_action_item = 11;
+    TaskView task_view = 15;
+  }
+  // When used for launch event, stores the global predictive rank
+  optional int32 rank = 5;
+
+  // Stores whether the Item belows to non primary user
+  optional bool is_work = 6 [deprecated = true];
+
+  // Item can be child node to parent container or parent containers (nested)
+  optional ContainerInfo container_info = 7;
+
+  // Stores the origin of the Item
+  repeated Attribute item_attributes = 12;
+
+  // Stores whether the navigation bar is in kids mode.
+  optional bool is_kids_mode = 13;
+
+  // Stores type of the user the Item belong to
+  optional int32 user_type = 14;
+}
+
+message LauncherAttributes{
+
+  // Integer value of item attribute enum
+  // (e.g. SUGGESTED_LABEL, ALL_APPS_SEARCH_RESULT_SETTING etc)
+  repeated int32 item_attributes = 1;
+}
+
+// Represents various launcher surface where items are placed.
+message ContainerInfo {
+  oneof Container {
+    WorkspaceContainer workspace = 1;
+    HotseatContainer hotseat = 2;
+    FolderContainer folder = 3;
+    AllAppsContainer all_apps_container = 4;
+    WidgetsContainer widgets_container = 5;
+    PredictionContainer prediction_container = 6;
+    SearchResultContainer search_result_container = 7;
+    ShortcutsContainer shortcuts_container = 8;
+    SettingsContainer settings_container = 9;
+    PredictedHotseatContainer predicted_hotseat_container = 10;
+    TaskSwitcherContainer task_switcher_container = 11;
+    TaskBarContainer task_bar_container = 12;
+    WallpapersContainer wallpapers_container = 13;
+    ExtendedContainers extended_containers = 20;
+  }
+}
+
+// Represents the apps list sorted alphabetically inside the all-apps view.
+message AllAppsContainer {
+  oneof ParentContainer {
+    TaskBarContainer taskbar_container = 1;
+  }
+}
+
+message WidgetsContainer {
+}
+
+// Represents the predicted apps row(top row) in the all-apps view.
+message PredictionContainer {
+  oneof ParentContainer {
+    TaskBarContainer taskbar_container = 1;
+  }
+}
+
+// Represents the apps container within search results.
+message SearchResultContainer {
+
+  // Length of search term.
+  optional int32 query_length = 1;
+
+  // Container from where search was invoked.
+  oneof ParentContainer {
+    WorkspaceContainer workspace = 2;
+    AllAppsContainer all_apps_container = 3;
+  }
+}
+
+// Container for package specific shortcuts to deep links and notifications.
+// Typically shown as popup window by longpressing on an icon.
+message ShortcutsContainer {
+}
+
+// Container for generic system shortcuts for launcher specific settings.
+// Typically shown up as popup window by longpressing on empty space on workspace.
+message SettingsContainer {
+}
+
+message TaskSwitcherContainer {
+  /**
+   * Indicates the current OrientationHandler in use in Overview.
+   * In fake landscape, the value will be
+   * {@link com.android.quickstep.orientation.LandscapePagedViewHandler} and in real landscape,
+   * the value will be {@link com.android.quickstep.orientation.PortraitPagedViewHandler} for
+   * example.
+   */
+  optional OrientationHandler orientation_handler = 1;
+
+  enum OrientationHandler {
+    PORTRAIT = 0;
+    LANDSCAPE = 1;
+    SEASCAPE = 2;
+  }
+}
+
+// Container for taskbar.
+// Configured to show up on large screens(tablet-sized) such as foldables in expanded state, within
+// an app view(not in launcher screen).
+message TaskBarContainer {
+  optional int32 index = 1;
+
+  // Bit encoded value to capture pinned and predicted taskbar positions.
+  optional int32 cardinality = 2;
+
+  // Container where taskbar was invoked.
+  oneof ParentContainer {
+    TaskSwitcherContainer task_switcher_container = 3;
+  }
+}
+
+// Next value 55
+enum Attribute {
+  option allow_alias = true;
+
+  UNKNOWN = 0;
+  DEFAULT_LAYOUT = 1;       // icon automatically placed in workspace, folder, hotseat
+  BACKUP_RESTORE = 2;       // icon layout restored from backup
+  PINITEM = 3;              // from another app (e.g., Chrome's "Add to Home screen")
+  ALLAPPS_ATOZ = 4;         // within launcher surface, all aps a-z
+  WIDGETS = 5;              // within launcher, widgets tray
+  ADD_TO_HOMESCREEN = 6;    // play install + launcher home setting
+  ALLAPPS_PREDICTION = 7;   // from prediction bar in all apps container
+  HOTSEAT_PREDICTION = 8;   // from prediction bar in hotseat container
+
+  // Folder's label is one of the non-empty suggested values.
+  SUGGESTED_LABEL = 9;
+
+  // Folder's label is non-empty, manually entered by the user
+  // and different from any of suggested values.
+  MANUAL_LABEL = 10;
+
+  // Folder's label is not yet assigned( i.e., title == null).
+  // Eligible for auto-labeling.
+  UNLABELED = 11;
+
+  // Folder's label is empty(i.e., title == "").
+  // Not eligible for auto-labeling.
+  EMPTY_LABEL = 12;
+
+  ALL_APPS_SEARCH_RESULT_APPLICATION = 13;
+  ALL_APPS_SEARCH_RESULT_SHORTCUT = 14;
+  ALL_APPS_SEARCH_RESULT_PEOPLE = 15;
+  ALL_APPS_SEARCH_RESULT_ACTION = 16;
+  ALL_APPS_SEARCH_RESULT_SETTING = 17;
+  ALL_APPS_SEARCH_RESULT_SCREENSHOT = 18;
+  ALL_APPS_SEARCH_RESULT_SLICE = 19;
+  ALL_APPS_SEARCH_RESULT_WIDGETS = 20;
+  ALL_APPS_SEARCH_RESULT_PLAY = 21;
+  ALL_APPS_SEARCH_RESULT_PLAY_GMS = 44;
+  ALL_APPS_SEARCH_RESULT_FALLBACK = 22;
+  ALL_APPS_SEARCH_RESULT_SUGGEST = 22 [deprecated = true];
+  ALL_APPS_SEARCH_RESULT_ASSISTANT = 23;
+  ALL_APPS_SEARCH_RESULT_CHROMETAB = 24;
+  ALL_APPS_SEARCH_RESULT_NAVVYSITE = 25 [deprecated = true];
+  ALL_APPS_SEARCH_RESULT_TIPS = 26;
+  ALL_APPS_SEARCH_RESULT_QS_TILE = 27;
+  ALL_APPS_SEARCH_RESULT_PEOPLE_TILE = 27 [deprecated = true];
+  ALL_APPS_SEARCH_RESULT_LEGACY_SHORTCUT = 30;
+  ALL_APPS_SEARCH_RESULT_ASSISTANT_MEMORY = 31;
+  ALL_APPS_SEARCH_RESULT_VIDEO = 41;
+  ALL_APPS_SEARCH_RESULT_SYSTEM_POINTER = 42;
+  ALL_APPS_SEARCH_RESULT_EDUCARD = 43;
+  ALL_APPS_SEARCH_RESULT_LOCATION = 50;
+  ALL_APPS_SEARCH_RESULT_TEXT_HEADER = 51;
+  ALL_APPS_SEARCH_RESULT_NO_FULFILLMENT = 52;
+
+  // Result sources
+  DATA_SOURCE_APPSEARCH_APP_PREVIEW = 45;
+  DATA_SOURCE_APPSEARCH_APP_SRP_PREVIEW = 46;
+  DATA_SOURCE_APPSEARCH_CATEGORY_SRP_PREVIEW = 48;
+  DATA_SOURCE_APPSEARCH_ENTITY_SRP_PREVIEW = 49;
+  DATA_SOURCE_AIAI_SEARCH_ROOT = 47;
+  DATA_SOURCE_LAUNCHER = 53;
+
+  // Web suggestions provided by AGA
+  ALL_APPS_SEARCH_RESULT_WEB_SUGGEST = 39;
+
+  // Suggestion Type provided by AGA
+  WEB_SEARCH_RESULT_QUERY = 32;
+  WEB_SEARCH_RESULT_TRENDING = 33;
+  WEB_SEARCH_RESULT_ENTITY = 34;
+  WEB_SEARCH_RESULT_ANSWER = 35;
+  WEB_SEARCH_RESULT_PERSONAL = 36;
+  WEB_SEARCH_RESULT_CALCULATOR = 37;
+  WEB_SEARCH_RESULT_URL = 38;
+  WEB_SEARCH_RESULT_RICH_ANSWER = 40;
+  WEB_SEARCH_RESULT_AI_MODE = 54;
+
+  WIDGETS_BOTTOM_TRAY = 28;
+  WIDGETS_TRAY_PREDICTION = 29;
+}
+
+// Main app icons
+message Application {
+  optional string package_name = 1;
+  optional string component_name = 2;
+}
+
+// Legacy shortcuts and shortcuts handled by ShortcutManager
+message Shortcut {
+  optional string shortcut_name = 1;
+  optional string shortcut_id = 2;
+}
+
+// AppWidgets handled by AppWidgetManager
+message Widget {
+  optional int32 span_x = 1 [default = 1];
+  optional int32 span_y = 2 [default = 1];
+  optional int32 app_widget_id = 3;
+  optional string package_name = 4; // only populated during snapshot if from workspace
+  optional string component_name = 5; // only populated during snapshot if from workspace
+  optional int32 widget_features = 6;
+}
+
+// Tasks handled by PackageManager
+message Task {
+  optional string package_name = 1;
+  optional string component_name = 2;
+  optional int32 index = 3;
+}
+
+// TaskView in RecentsView.
+message TaskView {
+  // TaskViewType.
+  optional int32 type = 1;
+
+  // Index of TaskView in RecentsView.
+  optional int32 index = 2;
+
+  // ComponentName of the Task.
+  optional string component_name = 3;
+
+  // Number of tasks in the TaskView.
+  optional int32 cardinality = 4;
+}
+
+// Represents folder in a closed state.
+message FolderIcon {
+  // Number of items inside folder.
+  optional int32 cardinality = 1;
+
+  // State of the folder label before the event.
+  optional FromState from_label_state = 2;
+
+  // State of the folder label after the event.
+  optional ToState to_label_state = 3;
+
+  // Details about actual folder label.
+  // Populated when folder label is not a PII.
+  optional string label_info = 4;
+}
+
+// Contains Slice details for logging.
+message Slice{
+  optional string uri = 1;
+}
+
+// Represents SearchAction with in launcher
+message SearchActionItem{
+  optional string package_name = 1;
+  optional string title = 2;
+}
+
+//////////////////////////////////////////////
+// Containers
+
+message WorkspaceContainer {
+  optional int32 page_index = 1 [default = -2]; // range [-1, l], 0 is the index of the main homescreen
+  optional int32 grid_x = 2 [default = -1]; // [0, m], m varies based on the display density and resolution
+  optional int32 grid_y = 3 [default = -1]; // [0, n], n varies based on the display density and resolution
+}
+
+message HotseatContainer {
+  optional int32 index = 1;
+}
+
+// Represents hotseat container with prediction feature enabled.
+message PredictedHotseatContainer {
+  optional int32 index = 1;
+
+  // No of hotseat positions filled with predicted items.
+  optional int32 cardinality = 2;
+}
+
+message FolderContainer {
+  optional int32 page_index = 1 [default = -1];
+  optional int32 grid_x = 2 [default = -1];
+  optional int32 grid_y = 3 [default = -1];
+  oneof ParentContainer {
+    WorkspaceContainer workspace = 4;
+    HotseatContainer hotseat = 5;
+    TaskBarContainer taskbar = 6;
+  }
+}
+
+// Represents wallpapers container for quick switching.
+message WallpapersContainer {
+  // Number of wallpapers in the container.
+  optional int32 cardinality = 1;
+}
+
+// Represents state of EditText field before update.
+enum FromState {
+  // Default value.
+  // Used when a FromState is not applicable, for example, during folder creation.
+  FROM_STATE_UNSPECIFIED = 0;
+
+  // EditText was empty.
+  // Eg: When a folder label is updated from empty string.
+  FROM_EMPTY = 1;
+
+  // EditText was non-empty and manually entered by the user.
+  // Eg: When a folder label is updated from a user-entered value.
+  FROM_CUSTOM = 2;
+
+  // EditText was non-empty and one of the suggestions.
+  // Eg: When a folder label is updated from a suggested value.
+  FROM_SUGGESTED = 3;
+}
+
+// Represents state of EditText field after update.
+enum ToState {
+  // Default value.
+  // Used when ToState is not applicable, for example, when folder label is updated to a different
+  // value when folder label suggestion feature is disabled.
+  TO_STATE_UNSPECIFIED = 0;
+
+  // User attempted to change the EditText, but was not changed.
+  UNCHANGED = 1;
+
+  // New label matches with primary(aka top) suggestion.
+  TO_SUGGESTION0 = 2;
+
+  // New value matches with second top suggestion even though the top suggestion was non-empty.
+  TO_SUGGESTION1_WITH_VALID_PRIMARY = 3;
+
+  // New value matches with second top suggestion given that top suggestion was empty.
+  TO_SUGGESTION1_WITH_EMPTY_PRIMARY = 4;
+
+  // New value matches with third top suggestion even though the top suggestion was non-empty.
+  TO_SUGGESTION2_WITH_VALID_PRIMARY = 5;
+
+  // New value matches with third top suggestion given that top suggestion was empty.
+  TO_SUGGESTION2_WITH_EMPTY_PRIMARY = 6;
+
+  // New value matches with 4th top suggestion even though the top suggestion was non-empty.
+  TO_SUGGESTION3_WITH_VALID_PRIMARY = 7;
+
+  // New value matches with 4th top suggestion given that top suggestion was empty.
+  TO_SUGGESTION3_WITH_EMPTY_PRIMARY = 8;
+
+  // New value is empty even though the top suggestion was non-empty.
+  TO_EMPTY_WITH_VALID_PRIMARY = 9;
+
+  // New value is empty given that top suggestion was empty.
+  TO_EMPTY_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY = 10;
+
+  // New value is empty given that no suggestions were provided.
+  TO_EMPTY_WITH_EMPTY_SUGGESTIONS = 11;
+
+  // New value is empty given that suggestions feature was disabled.
+  TO_EMPTY_WITH_SUGGESTIONS_DISABLED = 12;
+
+  // New value is non-empty and does not match with any of the suggestions even though the top suggestion was non-empty.
+  TO_CUSTOM_WITH_VALID_PRIMARY = 13;
+
+  // New value is non-empty and not match with any suggestions given that top suggestion was empty.
+  TO_CUSTOM_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY = 14;
+
+  // New value is non-empty and also no suggestions were provided.
+  TO_CUSTOM_WITH_EMPTY_SUGGESTIONS = 15;
+
+  // New value is non-empty and also suggestions feature was disable.
+  TO_CUSTOM_WITH_SUGGESTIONS_DISABLED = 16;
+}

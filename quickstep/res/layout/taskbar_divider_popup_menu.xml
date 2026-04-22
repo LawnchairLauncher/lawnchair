@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2023 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.taskbar.TaskbarDividerPopupView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="@dimen/taskbar_pinning_popup_menu_width"
+    android:focusable="true"
+    android:background="@drawable/popup_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/taskbar_switch_option"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_gravity="center_vertical"
+        android:elevation="2dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/rounded_popup_ripple"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:theme="@style/PopupItem">
+
+        <View
+            android:id="@+id/taskbar_pinning_visibility_icon"
+            android:layout_margin="6dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_visibility"
+            android:backgroundTint="?android:attr/textColorPrimary" />
+
+        <Switch
+            style="@android:style/Widget.Material.CompoundButton.Switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/taskbar_pinning_switch"
+            android:background="@null"
+            android:gravity="start|center_vertical"
+            android:textAlignment="viewStart"
+            android:paddingStart="12dp"
+            android:switchPadding="12dp"
+            android:layout_weight="1"
+            android:fontFamily="*@android:string/config_bodyFontFamilyMedium"
+            android:lines="1"
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:text="@string/always_show_taskbar" />
+
+    </LinearLayout>
+</com.android.launcher3.taskbar.TaskbarDividerPopupView>

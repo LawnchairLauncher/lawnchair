@@ -1,0 +1,36 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.google.ksp)
+}
+
+android {
+    buildToolsVersion "36.1.0"
+    namespace "com.android.systemui.unfold"
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            kotlin.directories.add('src')
+            aidl.srcDirs = ['src']
+        }
+    }
+}
+
+ksp {
+    arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+}
+
+addFrameworkJar('framework-16.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    implementation libs.dagger.hilt.android
+    ksp libs.dagger.hilt.compiler
+
+    implementation libs.androidx.concurrent.futures
+    implementation libs.androidx.lifecycle.common
+
+    compileOnly projects.androidxLib
+}

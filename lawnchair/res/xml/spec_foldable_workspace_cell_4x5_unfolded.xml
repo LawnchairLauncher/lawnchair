@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cellSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_portrait_and_square">
+        <cellSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <iconDrawablePadding launcher:fixedSize="12dp"/>
+            <iconSize launcher:fixedSize="@dimen/iconSize52dp"/>
+            <iconTextSize launcher:fixedSize="12sp"/>
+        </cellSpec>
+    </specs>
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_landscape">
+        <cellSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="645dp">
+            <iconDrawablePadding launcher:fixedSize="4dp"/>
+            <iconSize launcher:fixedSize="@dimen/iconSize48dp"/>
+            <iconTextSize launcher:fixedSize="12sp"/>
+        </cellSpec>
+        <cellSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="700dp">
+            <iconDrawablePadding launcher:fixedSize="8dp"/>
+            <iconSize launcher:fixedSize="@dimen/iconSize48dp"/>
+            <iconTextSize launcher:fixedSize="12sp"/>
+        </cellSpec>
+        <cellSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <iconDrawablePadding launcher:fixedSize="4dp"/>
+            <iconSize launcher:fixedSize="@dimen/iconSize52dp"/>
+            <iconTextSize launcher:fixedSize="12sp"/>
+        </cellSpec>
+    </specs>
+</cellSpecs>

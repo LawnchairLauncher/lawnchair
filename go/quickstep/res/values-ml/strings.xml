@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ആപ്പ് പങ്കിടുക"</string>
+    <string name="action_listen" msgid="2370304050784689486">"കേൾക്കുക"</string>
+    <string name="action_translate" msgid="8028378961867277746">"വിവർത്തനം ചെയ്യുക"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"മനസ്സിലായി"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"റദ്ദാക്കുക"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ക്രമീകരണം"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"സ്ക്രീനിലെ ടെക്സ്റ്റ് വിവർത്തനം ചെയ്യുകയോ കേൾക്കുകയോ ചെയ്യുക"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"നിങ്ങളുടെ സ്ക്രീനിലെ ടെക്സ്റ്റ്, വെബ് വിലാസങ്ങൾ, സ്ക്രീൻഷോട്ടുകൾ എന്നിവ പോലുള്ള വിവരങ്ങൾ Google-മായി പങ്കിട്ടേക്കാം.\n\nനിങ്ങൾ പങ്കിടുന്ന വിവരങ്ങൾ മാറ്റാൻ, "<b>"ക്രമീകരണ &gt; ആപ്പുകൾ &gt; ഡിഫോൾട്ട് ആപ്പുകൾ &gt; ഡിജിറ്റൽ അസിസ്‌റ്റന്റ് ആപ്പ്"</b>" എന്നതിലേക്ക് പോകുക."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, ഒരു അസിസ്‌റ്റന്റ് തിരഞ്ഞെടുക്കുക"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"നിങ്ങളുടെ സ്ക്രീനിലുള്ള ടെക്‌സ്‌റ്റ് കേൾക്കാനോ വിവർത്തനം ചെയ്യാനോ, ക്രമീകരണത്തിൽ നിന്ന് ഒരു ഡിജിറ്റൽ അസിസ്‌റ്റന്റ് ആപ്പ് തിരഞ്ഞെടുക്കുക"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, നിങ്ങളുടെ അസിസ്‌റ്റന്റ് മാറ്റുക"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"നിങ്ങളുടെ സ്ക്രീനിലുള്ള ടെക്‌സ്‌റ്റ് കേൾക്കാനോ വിവർത്തനം ചെയ്യാനോ, ക്രമീകരണത്തിലെ നിങ്ങളുടെ ഡിജിറ്റൽ അസിസ്‌റ്റന്റ് ആപ്പ് മാറ്റുക"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"ഈ സ്ക്രീനിലെ ടെക്‌സ്‌റ്റ് കേൾക്കാൻ, ഇവിടെ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"ഈ സ്ക്രീനിലെ ടെക്‌സ്‌റ്റ് വിവർത്തനം ചെയ്യാൻ, ഇവിടെ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"ഈ ആപ്പ് പങ്കിടാനാകില്ല"</string>
+</resources>

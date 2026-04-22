@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CellStyle4x4Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">4dp</item>
+    </style>
+    <style name="CellStyle4x5Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">4dp</item>
+    </style>
+    <style name="CellStyle5x5Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">4dp</item>
+    </style>
+    <style name="CellStyle_4_Col_Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">4dp</item>
+    </style>
+    <style name="CellStyle_5_Col_Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">4dp</item>
+    </style>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ایپ کا اشتراک کریں"</string>
+    <string name="action_listen" msgid="2370304050784689486">"سنیں"</string>
+    <string name="action_translate" msgid="8028378961867277746">"‏Google ترجمہ"</string>
+    <string name="action_search" msgid="6269564710943755464">"‏Google لینز"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"سمجھ آ گئی"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"منسوخ کریں"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ترتیبات"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"اسکرین پر موجود ٹیکسٹ کو سنیں یا ترجمہ کریں"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"‏آپ کی اسکرین پر ٹیکسٹ، ویب پتے اور اسکرین شاٹس جیسی معلومات کا اشتراک Google کے ساتھ کیا جا سکتا ہے۔\n\nآپ جس معلومات کا اشتراک کرتے ہیں اسے تبدیل کرنے کیلئے "<b>"ترتیبات ‎&gt;‎ ایپس ‎&gt;‎ ڈیفالٹ ایپس ‎&gt;‎ ڈیجیٹل اسسٹنٹ ایپ"</b>" پر جائیں۔"</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"اس خصوصیت کا استعمال کرنے کے لیے اسسٹنٹ کا انتخاب کریں"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"اپنی اسکرین پر موجود ٹیکسٹ کو سننے یا اس کا ترجمہ کرنے کیلئے ترتیبات میں ڈیجیٹل اسسٹنٹ ایپ کا انتخاب کریں"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"اس خصوصیت کا استعمال کرنے کے لیے اپنی اسسٹنٹ کا استعمال کریں"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"اپنی اسکرین پر موجود ٹیکسٹ کو سننے یا اس کا ترجمہ کرنے کیلئے ترتیبات میں اپنی ڈیجیٹل اسسٹنٹ ایپ کو تبدیل کریں"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"اس اسکرین پر موجود ٹیکسٹ کو سننے کے لیے یہاں تھپتھپائیں"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"اس اسکرین پر موجود ٹیکسٹ کا ترجمہ کرنے کے لیے یہاں تھپتھپائیں"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"اس ایپ کا اشتراک نہیں کیا جا سکتا"</string>
+</resources>

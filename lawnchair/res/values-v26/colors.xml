@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="system_accent1_100">@android:color/transparent</color>
+    <color name="accent_primary_device_default">@android:color/transparent</color>
+    <color name="overview_foreground_scrim_color">@android:color/black</color>
+</resources>

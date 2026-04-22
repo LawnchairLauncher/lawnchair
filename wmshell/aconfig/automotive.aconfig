@@ -1,0 +1,11 @@
+# proto-file: build/make/tools/aconfig/aconfig_protos/protos/aconfig.proto
+
+package: "com.android.wm.shell"
+container: "system"
+
+flag {
+    name: "enable_auto_task_stack_controller"
+    namespace: "multitasking"
+    description: "Enables auto task stack controller to manage task stacks on automotive"
+    bug: "384082238"
+}

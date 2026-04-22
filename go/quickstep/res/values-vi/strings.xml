@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Chia sẻ ứng dụng"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Nghe"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Dịch"</string>
+    <string name="action_search" msgid="6269564710943755464">"Ống kính"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"HỦY"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"CÀI ĐẶT"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Dịch hoặc nghe văn bản trên màn hình"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Những thông tin như văn bản trên màn hình, địa chỉ web và ảnh chụp màn hình có thể được chia sẻ với Google.\n\nĐể thay đổi những thông tin mà bạn chia sẻ, hãy chuyển đến phần "<b>"Cài đặt &gt; Ứng dụng &gt; Ứng dụng mặc định &gt; Ứng dụng trợ lý kỹ thuật số"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Chọn một ứng dụng trợ lý để dùng tính năng này"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Để nghe hoặc dịch văn bản trên màn hình, hãy chọn một ứng dụng trợ lý kỹ thuật số trong phần Cài đặt"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Thay đổi ứng dụng trợ lý để dùng tính năng này"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Để nghe hoặc dịch văn bản trên màn hình, hãy thay đổi ứng dụng trợ lý kỹ thuật số trong phần Cài đặt"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Nhấn vào đây để nghe văn bản trên màn hình này"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Nhấn vào đây để dịch văn bản trên màn hình này"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Bạn không thể chia sẻ ứng dụng này"</string>
+</resources>

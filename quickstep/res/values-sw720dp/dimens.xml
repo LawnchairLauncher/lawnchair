@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ * Copyright (c) 2021, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+-->
+<!-- Applies to large tablet screens -->
+<resources>
+    <!--  Overview Task Views  -->
+    <!--  The primary task thumbnail uses up to this much of the total screen height/width  -->
+    <item name="overview_max_scale" format="float" type="dimen">0.7</item>
+    <!--  A touch target for icons, sometimes slightly larger than the icons themselves  -->
+    <dimen name="task_thumbnail_icon_size">48dp</dimen>
+    <!--  The icon size for the focused task, placed in center of touch target  -->
+    <dimen name="task_thumbnail_icon_drawable_size">44dp</dimen>
+    <!--  The space under the focused task icon  -->
+    <dimen name="overview_task_margin">16dp</dimen>
+    <!--  The icon size of all non-focused task icons, placed in center of touch target  -->
+    <dimen name="task_thumbnail_icon_drawable_size_grid">44dp</dimen>
+    <!--  The space between grid rows (when there's 2 rows of thumbnails)  -->
+    <dimen name="overview_grid_row_spacing">36dp</dimen>
+    <!--  The horizontal space between tasks  -->
+    <dimen name="overview_page_spacing">44dp</dimen>
+    <!--  The space to the left and to the right of the "Clear all" button  -->
+    <dimen name="overview_grid_side_margin">64dp</dimen>
+
+    <!-- All Set page-->
+    <dimen name="allset_page_allset_text_size">42sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size">16sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size_expressive">16sp</dimen>
+
+    <!-- Taskbar swipe up thresholds -->
+    <dimen name="taskbar_from_nav_threshold">30dp</dimen>
+    <dimen name="taskbar_app_window_threshold">100dp</dimen>
+    <dimen name="taskbar_home_overview_threshold">180dp</dimen>
+    <dimen name="taskbar_catch_up_threshold">300dp</dimen>
+
+    <!-- Taskbar swipe up threshold multipliers -->
+    <item name="taskbar_nav_threshold_mult" format="float" type="dimen">3</item>
+</resources>

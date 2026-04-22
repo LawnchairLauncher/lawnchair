@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Tətbiqi paylaşın"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Dinləyin"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Tərcümə"</string>
+    <string name="action_search" msgid="6269564710943755464">"Linza"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ANLADIM"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"LƏĞV EDİN"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"AYARLAR"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Ekrandakı mətni tərcümə edin və ya dinləyin"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Ekrandakı mətn, veb ünvanlar və ekran görüntüləri kimi məlumatlar Google ilə paylaşıla bilər.\n\nHansı məlumatların paylaşılmasını dəyişmək üçün "<b>"Ayarlar &gt; Tətbiqlər &gt; Defolt tətbiqlər &gt; Rəqəmsal assistent tətbiqi"</b>" bölməsinə keçin."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Bu funksiyadan istifadə etmək üçün assistenti seçin"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Ekrandakı mətni dinləmək və ya tərcümə etmək üçün Ayarlarda rəqəmsal assistent tətbiqini seçin"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Bu funksiyadan istifadə etmək üçün assistenti dəyişin"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Ekrandakı mətni dinləmək və ya tərcümə etmək üçün Ayarlarda rəqəmsal assistent tətbiqini dəyişin"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Bu ekrandakı mətni dinləmək üçün buraya toxunun"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Bu ekrandakı mətni tərcümə etmək üçün buraya toxunun"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Bu tətbiqi paylaşmaq mümkün deyil"</string>
+</resources>

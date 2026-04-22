@@ -1,0 +1,74 @@
+/*
+ * Copyright (C) 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto2";
+
+option java_package = "com.android.launcher3.logger";
+option java_outer_classname = "LauncherAtomExtensions";
+
+
+// Wrapper message for containers used at the quickstep level.
+// Message name should match with launcher_atom_extension.proto message at
+// the AOSP level.
+// Next ID = 3
+message ExtendedContainers {
+  reserved 2; // Deleted fields
+
+  oneof Container{
+    DeviceSearchResultContainer device_search_result_container = 1;
+  }
+}
+
+// Represents on-device search result container.
+// Next ID = 4
+message DeviceSearchResultContainer{
+  optional int32 query_length = 1;
+  optional SearchAttributes search_attributes = 2;
+  // [0, m], m varies based on the display density and resolution
+  // To indicate the location of the tapped on-device search result.
+  // For application, it will be the column number in the apps row.
+  optional int32 grid_x = 3;
+
+  // LINT.IfChange
+  // Next ID = 4
+  message SearchAttributes{
+
+    // True if results are based on spell corrected query
+    optional bool corrected_query = 1;
+
+    // True if the item's title/content is a direct match to the search query, false otherwise.
+    optional bool direct_match = 2;
+
+    // Entry point for this on-device search session
+    optional EntryState entry_state = 3;
+
+    enum EntryState{
+      ENTRY_STATE_UNKNOWN = 0;
+
+      // User entered using swipe-up gesture from homescreen and searchbox in AllApps drawer.
+      ALL_APPS = 1;
+
+      // User entered by tapping on QSB bar on homescreen.
+      QSB = 2;
+
+      // User entered by swiping up from overview (using Rocket Gesture).
+      OVERVIEW = 3;
+
+      // User entered by tapping the search box in the Taskbar AllApps drawer.
+      TASKBAR = 4;
+    }
+  }
+  // LINT.ThenChange(//quickstep/src/com/android/quickstep/logging/StatsLogCompatManager.java)
+}

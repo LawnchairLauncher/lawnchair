@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hotseatSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_portrait_and_square">
+        <hotseatSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="840dp">
+            <hotseatQsbSpace launcher:fixedSize="24dp"/>
+            <edgePadding launcher:fixedSize="31dp"/>
+        </hotseatSpec>
+        <hotseatSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <hotseatQsbSpace launcher:fixedSize="36dp"/>
+            <edgePadding launcher:fixedSize="31dp"/>
+        </hotseatSpec>
+    </specs>
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_landscape">
+        <hotseatSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <hotseatQsbSpace launcher:fixedSize="24dp"/>
+            <edgePadding launcher:fixedSize="19dp"/>
+        </hotseatSpec>
+    </specs>
+</hotseatSpecs>

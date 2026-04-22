@@ -1,0 +1,33 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.google.protobuf)
+}
+
+android {
+    namespace = "com.android.app.viewcapture"
+    testNamespace = "com.android.app.viewcapture.test"
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            kotlin.directories.add('src')
+            manifest.srcFile 'AndroidManifest.xml'
+            proto.srcDirs = ['src']
+        }
+        androidTest {
+            java.srcDirs = ["tests"]
+            kotlin.directories.add('tests')
+            manifest.srcFile "tests/AndroidManifest.xml"
+        }
+    }
+    lint {
+        abortOnError false
+    }
+
+}
+
+addFrameworkJar('framework-16.jar')
+compileOnlyCommonJars()

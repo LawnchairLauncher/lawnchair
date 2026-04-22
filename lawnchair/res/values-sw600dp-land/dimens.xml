@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="allset_page_margin_horizontal">48dp</dimen>
+    <dimen name="cell_layout_padding">11.33dp</dimen>
+    <dimen name="drop_target_bottom_margin">16dp</dimen>
+    <dimen name="drop_target_top_margin">0dp</dimen>
+    <dimen name="dynamic_grid_edge_margin">11.33dp</dimen>
+    <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">49dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_height">491dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_spacing">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_bottom">16dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_horizontal">48dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_top">32dp</dimen>
+    <dimen name="min_page_snap_velocity">3600dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin">44dp</dimen>
+    <dimen name="taskbar_suw_insets">24dp</dimen>
+</resources>

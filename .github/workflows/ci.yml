@@ -1,0 +1,162 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*-dev'
+    paths-ignore:
+      - '.idea/**'
+      - '.gitattributes'
+      - '.github/**.json'
+      - '.gitignore'
+      - '.gitmodules'
+      - '**.md'
+      - 'LICENSE'
+      - 'NOTICE'
+  pull_request:
+    paths-ignore:
+      - '.idea/**'
+      - '.gitattributes'
+      - '.github/**.json'
+      - '.gitignore'
+      - '.gitmodules'
+      - '**.md'
+      - 'LICENSE'
+      - 'NOTICE'
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build-debug-apk:
+    strategy:
+      matrix:
+        build-variant: [ assembleLawnWithQuickstepNightlyRelease, assembleLawnWithQuickstepGithubDebug, assembleLawnWithQuickstepPlayDebug ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-encryption-key: Da25KUVSE5jbGds2zXmfXw==
+      - name: Write sign info
+        if: github.repository_owner == 'LawnchairLauncher'
+        run: |
+          if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
+            echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
+            echo keyAlias='${{ secrets.KEY_ALIAS }}' >> keystore.properties
+            echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> keystore.properties
+            echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
+            echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
+          fi
+      - name: Build APK
+        run: ./gradlew ${{ matrix.build-variant }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.build-variant }}
+          path: build/outputs/apk/**/*.apk
+
+  check-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - run: ./gradlew spotlessCheck
+
+  send-notifications:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'LawnchairLauncher'
+    needs: build-debug-apk
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Install Python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install gitpython requests
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+          pattern: assembleLawnWith*
+          merge-multiple: true
+          path: artifacts/debug-apk
+      - name: Send notifications
+        run: python ci.py
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
+          TELEGRAM_CI_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
+          TELEGRAM_TEAM_GROUP_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
+          ARTIFACT_DIRECTORY: artifacts/debug-apk
+          GITHUB_REF: ${{ github.ref }}
+          ACTION: internal_notifications
+
+  crowdin-auto-merge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.title == 'New Crowdin translations by Github Action'
+    needs: build-debug-apk
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.LAWNCHAIR_BOT_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr comment $PR_URL --body "No issues found, auto-merging the Crowdin pull request."
+          gh pr merge $PR_URL --auto --squash --delete-branch
+
+  # Status check that is required in branch protection rules.
+  final-status:
+    needs:
+      - build-debug-apk
+      - check-style
+    runs-on: ubuntu-slim
+    if: always()
+    steps:
+      - name: Check
+        run: |
+          results=$(tr -d '\n' <<< '${{ toJSON(needs.*.result) }}')
+          if ! grep -q -v -E '(failure|cancelled)' <<< "$results"; then
+            echo "One or more required jobs failed"
+            exit 1
+          fi
+          echo "All required jobs completed successfully."
+
+  nightly-release:
+    runs-on: ubuntu-latest
+    # Lawnchair-TODO(Configuration): Don't publish nightly build until Android 8.0, 8.1 is stable, and (probably) stable to match Lawnchair 15 Beta 1 or 2
+    if: false
+    # if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/15-dev'
+    needs: final-status
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: assembleLawnWithQuickstepNightlyRelease
+      # Note the # and () symbols are not supported in GitHub Release filenames, even manually
+      - name: Export APK_NAME for later use
+        run: echo "APK_NAME=Lawnchair.Debug.${{ github.ref_name }}.Nightly-CI_${{ github.run_number }}-$(echo ${{ github.sha }} | cut -c1-7).apk" >> $GITHUB_ENV
+      - name: Rename .apk file
+        run: mv "./lawnWithQuickstepNightly/release/"*.apk "./$APK_NAME"
+      - name: Delete release if exist then create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag
+          gh release create "nightly" "./$APK_NAME" -p -t "Lawnchair Nightly" --generate-notes

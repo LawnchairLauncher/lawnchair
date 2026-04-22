@@ -1,0 +1,9 @@
+arguments: 5 6 normal
+board: 6x5
+xxxxx-
+------
+------
+---3--
+---3--
+---3--
+# this is a comment

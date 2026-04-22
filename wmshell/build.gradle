@@ -1,0 +1,39 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.google.ksp)
+}
+
+android {
+    buildToolsVersion "36.1.0"
+    namespace "com.android.wm.shell"
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['shared/src']
+            kotlin.directories.add('shared/src')
+            aidl.srcDirs = ['shared/src']
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['shared', 'shared/res']
+        }
+    }
+}
+
+addFrameworkJar('framework-16.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    implementation libs.dagger.hilt.android
+    ksp libs.dagger.hilt.compiler
+    implementation libs.androidx.core.animation
+    implementation libs.androidx.dynamicanimation
+    compileOnly projects.iconloaderlib
+    compileOnly projects.msdllib
+    compileOnly projects.flags
+    compileOnly projects.utils
+}
+
+ksp {
+    arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+}

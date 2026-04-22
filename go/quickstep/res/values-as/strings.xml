@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"এপ্‌ শ্বেয়াৰ কৰক"</string>
+    <string name="action_listen" msgid="2370304050784689486">"শুনক"</string>
+    <string name="action_translate" msgid="8028378961867277746">"অনুবাদ কৰক"</string>
+    <string name="action_search" msgid="6269564710943755464">"লেন্স"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"বুজি পালোঁ"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"বাতিল কৰক"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ছেটিং"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"স্ক্ৰীনত থকা পাঠ অনুবাদ কৰক অথবা শুনক"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"আপোনাৰ স্ক্ৰীনত থকা পাঠ, ৱেব ঠিকনা আৰু স্ক্ৰীনশ্বটৰ দৰে তথ্য Googleৰ সৈতে হয়তো শ্বেয়াৰ কৰা হ’ব।\n\nআপুনি কোনসমুহ তথ্য শ্বেয়াৰ কৰিব সেয়া সলনি কৰিবলৈ, "<b>"ছেটিং &gt; এপ্‌ &gt; ডিফ’ল্ট এপ্‌ &gt; ডিজিটেল সহায়ক এপ"</b>"লৈ যাওক।"</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ এটা সহায়ক বাছনি কৰক"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"আপোনাৰ স্ক্ৰীনত থকা পাঠ শুনিবলৈ অথবা সেই পাঠৰ অনুবাদ কৰিবলৈ, ছেটিঙত এটা ডিজিটেল সহায়ক এপ্‌ বাছনি কৰক"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ আপোনাৰ সহায়ক সলনি কৰক"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"আপোনাৰ স্ক্ৰীনত থকা পাঠ শুনিবলৈ অথবা সেই পাঠৰ অনুবাদ কৰিবলৈ, ছেটিঙত আপোনাৰ ডিজিটেল সহায়ক এপ্‌টো সলনি কৰক"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"এই স্ক্ৰীনখনত থকা পাঠ শুনিবলৈ ইয়াত টিপক"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"এই স্ক্ৰীনখনত থকা পাঠৰ অনুবাদ কৰিবলৈ ইয়াত টিপক"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"এই এপ্‌টো শ্বেয়াৰ কৰিব নোৱাৰি"</string>
+</resources>

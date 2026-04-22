@@ -1,0 +1,12 @@
+{
+  "imports": [
+    {
+      // Includes all unittest configs that rely on the utils in this directory
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/unittest"
+    },
+    {
+      // Includes all multivalent tests that rely on the utils in this directory
+      "path": "frameworks/base/libs/WindowManager/Shell/multivalentTests"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AllAppsStyle4x5Fold" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">32dp</item>
+    </style>
+    <style name="AllAppsStyle5x5Fold" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">33dp</item>
+    </style>
+    <style name="AllAppsStyle_4_Col_Fold" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">32dp</item>
+    </style>
+    <style name="AllAppsStyle_5_Col_Fold" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">33dp</item>
+    </style>
+    <style name="CellStyle4x4Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">12dp</item>
+    </style>
+    <style name="CellStyle4x5Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">12dp</item>
+    </style>
+    <style name="CellStyle_4_Col_Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">12dp</item>
+    </style>
+</resources>

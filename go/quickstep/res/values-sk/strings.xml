@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Zdieľať aplikáciu"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Počúvať"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Preložiť"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"DOBRE"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ZRUŠIŤ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"NASTAVENIA"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Prekladajte alebo počúvajte text na obrazovke"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Údaje, napríklad text na obrazovke, webové adresy a snímky obrazovky, môžu byť zdieľané s Googlom.\n\nAk chcete zmeniť, ktoré údaje zdieľate, prejdite do sekcie "<b>"Nastavenia &gt; Aplikácie &gt; Predvolené aplikácie &gt; Digitálny asistent"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Ak chcete používať túto funkciu, vyberte asistenta"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Ak si chcete vypočuť alebo nechať preložiť text na obrazovke, vyberte v Nastaveniach aplikáciu digitálneho asistenta"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Ak chcete použígvať túto funkciu, zmeňte svojho asistenta"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Ak si chcete vypočuť alebo nechať preložiť text na obrazovke, zmeňte v Nastaveniach aplikáciu digitálneho asistenta"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Klepnutím tu si vypočujte text na tejto obrazovke"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Klepnutím tu si nechajte preložiť text na tejto obrazovke"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Táto aplikácia sa nedá zdieľať"</string>
+</resources>

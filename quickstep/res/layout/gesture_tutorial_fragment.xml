@@ -1,0 +1,186 @@
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<com.android.quickstep.interaction.RootSandboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+    <RelativeLayout
+        android:id="@+id/gesture_tutorial_fake_launcher_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/gesture_tutorial_fake_hotseat_view"
+            android:layout_width="@dimen/gesture_tutorial_hotseat_width"
+            android:layout_height="@dimen/gesture_tutorial_hotseat_height"/>
+
+    </RelativeLayout>
+
+    <com.android.launcher3.views.ClipIconView
+        android:id="@+id/gesture_tutorial_fake_icon_view"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:visibility="invisible" />
+
+    <com.android.quickstep.interaction.AnimatedTaskView
+        android:id="@+id/gesture_tutorial_fake_previous_task_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleX="0.98"
+        android:scaleY="0.98"
+        android:visibility="invisible">
+
+        <View
+            android:id="@+id/full_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        <View
+            android:id="@+id/top_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/gesture_tutorial_multi_row_task_view_spacing"
+            android:background="@drawable/top_task_view"
+            android:clipToOutline="true"
+            android:visibility="invisible"
+
+            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintBottom_toTopOf="@id/bottom_task_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/full_task_view" />
+
+        <View
+            android:id="@+id/bottom_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/top_task_view"
+            android:clipToOutline="true"
+            android:visibility="invisible"
+
+            app:layout_constraintBottom_toBottomOf="@id/full_task_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_task_view" />
+
+    </com.android.quickstep.interaction.AnimatedTaskView>
+
+    <FrameLayout
+        android:id="@+id/gesture_tutorial_fake_task_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+    <View
+        android:id="@+id/gesture_tutorial_ripple_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gesture_tutorial_ripple"/>
+
+    <include
+        layout="@layout/gesture_tutorial_tablet_mock_taskbar"
+        android:id="@+id/gesture_tutorial_fake_taskbar_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/gesture_tutorial_taskbar_margin_bottom"/>
+
+    <ImageView
+        android:id="@+id/gesture_tutorial_edge_gesture_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="fitXY"
+        android:visibility="gone"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gesture_tutorial_fragment_feedback_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:background="@drawable/bg_sandbox_feedback">
+
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_feedback_title"
+            style="@style/TextAppearance.GestureTutorial.Feedback.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_feedback_subtitle"
+            style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_title"/>
+
+        <Button
+            android:id="@+id/gesture_tutorial_fragment_action_button"
+            style="@style/TextAppearance.GestureTutorial.ButtonLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingStart="26dp"
+            android:paddingEnd="26dp"
+            android:text="@string/gesture_tutorial_action_button_label"
+            android:background="@drawable/gesture_tutorial_action_button_background"
+            android:backgroundTint="?android:attr/colorAccent"
+            android:stateListAnimator="@null"
+            android:visibility="invisible"
+
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/gesture_tutorial_finger_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/gesture_tutorial_finger_dot"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"/>
+
+</com.android.quickstep.interaction.RootSandboxLayout>

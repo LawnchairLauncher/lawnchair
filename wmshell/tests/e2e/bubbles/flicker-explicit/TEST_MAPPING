@@ -1,0 +1,19 @@
+{
+  "wm-devices": [
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-CatchAll"
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-CollapseBubbleViaBackTest"
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-DismissExpandedBubbleViaBubbleViewTes"
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-EnterBubbleViaBubbleMenuTest"
+    },
+    {
+      "name": "WMShellExplicitFlickerTestsBubbles-ExpandBubbleViaBubbleStackTest"
+    }
+  ]
+}

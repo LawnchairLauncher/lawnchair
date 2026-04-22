@@ -1,0 +1,9 @@
+package: "com.android.launcher3"
+container: "system_ext"
+
+flag {
+    name: "enable_growth_nudge"
+    namespace: "desktop_oobe"
+    description: "Add growth nudge in launcher"
+    bug: "396165728"
+}

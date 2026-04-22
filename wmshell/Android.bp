@@ -1,0 +1,187 @@
+// Copyright (C) 2019 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "frameworks_base_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["frameworks_base_license"],
+    default_team: "trendy_team_multitasking_windowing",
+}
+
+// Begin ProtoLog
+java_library {
+    name: "wm_shell_protolog-groups",
+    srcs: [
+        "src/com/android/wm/shell/protolog/ShellProtoLogGroup.java",
+    ],
+    static_libs: [
+        "protolog-common-lib",
+    ],
+}
+
+filegroup {
+    name: "wm_shell-sources",
+    srcs: [
+        "src/**/*.java",
+    ],
+    path: "src",
+}
+
+// Aidls which can be used directly downstream of this library
+filegroup {
+    name: "wm_shell-aidls",
+    srcs: [
+        "src/**/*.aidl",
+    ],
+    path: "src",
+}
+
+// TODO(b/168581922) protologtool do not support kotlin(*.kt)
+filegroup {
+    name: "wm_shell-sources-kt",
+    srcs: [
+        "src/**/*.kt",
+    ],
+    path: "src",
+}
+
+java_genrule {
+    name: "wm_shell_protolog_src",
+    srcs: [
+        ":protolog-impl",
+        ":wm_shell-sources",
+        ":wm_shell_protolog-groups",
+    ],
+    tools: ["protologtool"],
+    cmd: "$(location protologtool) transform-protolog-calls " +
+        "--protolog-class com.android.internal.protolog.ProtoLog " +
+        "--loggroups-class com.android.wm.shell.protolog.ShellProtoLogGroup " +
+        "--loggroups-jar $(location :wm_shell_protolog-groups) " +
+        "--viewer-config-file-path /system_ext/etc/wmshell.protolog.pb " +
+        "--output-srcjar $(out) " +
+        "$(locations :wm_shell-sources)",
+    out: ["wm_shell_protolog.srcjar"],
+}
+
+java_genrule {
+    name: "gen-wmshell.protolog.pb",
+    srcs: [
+        ":wm_shell-sources",
+        ":wm_shell_protolog-groups",
+    ],
+    tools: ["protologtool"],
+    cmd: "$(location protologtool) generate-viewer-config " +
+        "--protolog-class com.android.internal.protolog.ProtoLog " +
+        "--loggroups-class com.android.wm.shell.protolog.ShellProtoLogGroup " +
+        "--loggroups-jar $(location :wm_shell_protolog-groups) " +
+        "--viewer-config $(out) " +
+        "$(locations :wm_shell-sources)",
+    out: ["wmshell.protolog.pb"],
+}
+
+prebuilt_etc {
+    name: "wmshell.protolog.pb",
+    system_ext_specific: true,
+    src: ":gen-wmshell.protolog.pb",
+    filename_from_src: true,
+}
+
+// End ProtoLog
+
+java_library {
+    name: "WindowManager-Shell-proto",
+
+    srcs: ["proto/*.proto"],
+
+    proto: {
+        type: "nano",
+    },
+}
+
+java_library {
+    name: "WindowManager-Shell-lite-proto",
+
+    srcs: [
+        "src/com/android/wm/shell/desktopmode/education/data/proto/**/*.proto",
+        "src/com/android/wm/shell/desktopmode/persistence/*.proto",
+    ],
+    proto: {
+        type: "lite",
+    },
+}
+
+android_library {
+    name: "WindowManager-Shell",
+    srcs: [
+        // TODO(b/168581922) protologtool do not support kotlin(*.kt)
+        ":wm_shell-aidls",
+        ":wm_shell-shared-aidls",
+        ":wm_shell-sources-kt",
+        ":wm_shell_protolog_src",
+        "src/com/android/wm/shell/EventLogTags.logtags",
+    ],
+    resource_dirs: [
+        "res",
+    ],
+    static_libs: [
+        "//frameworks/base/packages/SystemUI/aconfig:com_android_systemui_flags_lib",
+        "//frameworks/libs/systemui:com_android_systemui_shared_flags_lib",
+        "//frameworks/libs/systemui:iconloader_base",
+        "//frameworks/libs/systemui:msdl",
+        "//frameworks/libs/systemui:tracinglib-platform",
+        "//frameworks/libs/systemui:view_capture",
+        "PlatformAnimationLib",
+        "WindowManager-Shell-lite-proto",
+        "WindowManager-Shell-proto",
+        "WindowManager-Shell-shared",
+        "androidx-constraintlayout_constraintlayout",
+        "androidx.appcompat_appcompat",
+        "androidx.arch.core_core-runtime",
+        "androidx.compose.material3_material3",
+        "androidx.core_core-ktx",
+        "androidx.datastore_datastore",
+        "androidx.dynamicanimation_dynamicanimation",
+        "androidx.recyclerview_recyclerview",
+        "com_android_launcher3_flags_lib",
+        "com_android_wm_shell_flags_lib",
+        "dagger2",
+        "jsr330",
+        "kotlinx-coroutines-android",
+        "kotlinx-coroutines-core",
+        "mechanics",
+        "perfetto_trace_java_protos",
+    ],
+    libs: [
+        // Soong fails to automatically add this dependency because all the
+        // *.kt sources are inside a filegroup.
+        "kotlin-annotations",
+    ],
+    flags_packages: [
+        "com_android_wm_shell_flags",
+    ],
+    kotlincflags: ["-Xjvm-default=all"],
+    manifest: "AndroidManifest.xml",
+    plugins: ["dagger2-compiler"],
+    use_resource_processor: true,
+}
+
+java_defaults {
+    name: "wmshell_defaults",
+    required: [
+        "wmshell.protolog.pb",
+    ],
+}

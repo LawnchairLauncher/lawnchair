@@ -1,0 +1,249 @@
+// Copyright (C) 2025 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    // See: http://go/android-license-faq
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+android_library {
+    name: "widget_picker_dagger_annotations",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/Annotations.kt",
+    ],
+
+    static_libs: [
+        "androidx.annotation_annotation",
+        "jsr330",
+    ],
+}
+
+android_library {
+    name: "widget_picker_component",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/WidgetPickerModule.kt",
+        "src/com/android/launcher3/widgetpicker/WidgetPickerComponent.kt",
+    ],
+    static_libs: [
+        "dagger2",
+        "widget_picker_dagger_annotations",
+        "widget_picker_data_repositories",
+        "widget_picker_shared_data_types",
+        "widget_picker_domain_layer",
+        "widget_picker_ui",
+    ],
+}
+
+// Data types that are accessible & potentially provided by hosts using the widget picker library
+android_library {
+    name: "widget_picker_shared_data_types",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/shared/model/PickableWidget.kt",
+        "src/com/android/launcher3/widgetpicker/shared/model/WidgetApp.kt",
+        "src/com/android/launcher3/widgetpicker/shared/model/WidgetAppIcon.kt",
+        "src/com/android/launcher3/widgetpicker/shared/model/WidgetAppId.kt",
+        "src/com/android/launcher3/widgetpicker/shared/model/WidgetId.kt",
+        "src/com/android/launcher3/widgetpicker/shared/model/WidgetPreview.kt",
+        "src/com/android/launcher3/widgetpicker/shared/model/WidgetUserProfiles.kt",
+        "src/com/android/launcher3/widgetpicker/shared/model/WidgetHostInfo.kt",
+    ],
+    static_libs: [
+        "androidx.core_core-ktx",
+        "androidx.annotation_annotation",
+    ],
+}
+
+android_library {
+    name: "widget_picker_data_repositories",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/data/repository/WidgetAppIconsRepository.kt",
+        "src/com/android/launcher3/widgetpicker/data/repository/WidgetsRepository.kt",
+        "src/com/android/launcher3/widgetpicker/data/repository/WidgetUsersRepository.kt",
+    ],
+    static_libs: [
+        "widget_picker_shared_data_types",
+        "kotlinx_coroutines_android",
+        "kotlinx_coroutines",
+    ],
+}
+
+android_library {
+    name: "widget_picker_domain_layer",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/domain/usecase/GroupWidgetAppsByProfileUseCase.kt",
+        "src/com/android/launcher3/widgetpicker/domain/usecase/FilterWidgetsForHostUseCase.kt",
+        "src/com/android/launcher3/widgetpicker/domain/interactor/WidgetsInteractor.kt",
+        "src/com/android/launcher3/widgetpicker/domain/interactor/WidgetAppIconsInteractor.kt",
+    ],
+    static_libs: [
+        "widget_picker_shared_data_types",
+        "widget_picker_data_repositories",
+        "widget_picker_dagger_annotations",
+        "dagger2",
+        "kotlinx-coroutines-android",
+        "kotlinx-coroutines-core",
+    ],
+}
+
+android_library {
+    name: "widget_picker_ui_data_types",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/ui/model/DisplayableWidgetApp.kt",
+        "src/com/android/launcher3/widgetpicker/ui/model/WidgetSizeGroup.kt",
+    ],
+    static_libs: [
+        "androidx.compose.runtime_runtime",
+        "widget_picker_shared_data_types",
+    ],
+}
+
+android_library {
+    name: "widget_picker_ui_theme",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/ui/theme/WidgetPickerTheme.kt",
+        "src/com/android/launcher3/widgetpicker/ui/theme/WidgetPickerColors.kt",
+        "src/com/android/launcher3/widgetpicker/ui/theme/WidgetPickerTextStyles.kt",
+    ],
+    static_libs: [
+        "androidx.compose.foundation_foundation",
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.ui_ui",
+        "androidx.compose.material3_material3",
+    ],
+}
+
+android_library {
+    name: "widget_picker_ui_components",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    plugins: ["dagger2-compiler"],
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/ui/components/ScrollableFloatingToolbar.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/LeadingIconToolbarTab.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/TitledBottomSheet.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/TwoPaneLayout.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/SinglePaneLayout.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/WidgetsSearchBar.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/WidgetAppIcon.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/Strings.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/WidgetDetails.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/WidgetPreview.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/DragAndDrop.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/WidgetPreviewHostView.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/WidgetsGrid.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/ExpandCollapseIndicator.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/WidgetAppsListHeader.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/WidgetAppsList.kt",
+        "src/com/android/launcher3/widgetpicker/ui/components/TestTag.kt",
+    ],
+    static_libs: [
+        "widget_picker_event_listeners",
+        "widget_picker_ui_theme",
+        "widget_picker_ui_data_types",
+        "androidx.compose.foundation_foundation",
+        "androidx.compose.foundation_foundation-layout",
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.ui_ui",
+        "androidx.compose.ui_ui-tooling",
+        "androidx.compose.material3_material3",
+        "androidx.compose.material3_material3-window-size-class",
+        "androidx.compose.material_material-icons-extended",
+        "androidx.activity_activity-compose",
+        "widget_picker_window_size_class",
+        "kotlinx-coroutines-android",
+        "kotlinx-coroutines-core",
+    ],
+    resource_dirs: [
+        "res",
+    ],
+}
+
+android_library {
+    name: "widget_picker_event_listeners",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/ui/WidgetPickerEventListeners.kt",
+    ],
+    static_libs: [
+        "widget_picker_shared_data_types",
+    ],
+}
+
+android_library {
+    name: "widget_picker_ui",
+    sdk_version: "current",
+    plugins: ["dagger2-compiler"],
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/ui/ViewModel.kt",
+        "src/com/android/launcher3/widgetpicker/ui/fullcatalog/FullWidgetsCatalog.kt",
+        "src/com/android/launcher3/widgetpicker/ui/fullcatalog/FullWidgetsCatalogViewModel.kt",
+        "src/com/android/launcher3/widgetpicker/ui/fullcatalog/screens/landing/LandingScreen.kt",
+        "src/com/android/launcher3/widgetpicker/ui/fullcatalog/screens/landing/LandingScreenSinglePane.kt",
+        "src/com/android/launcher3/widgetpicker/ui/fullcatalog/screens/landing/LandingScreenTwoPane.kt",
+        "src/com/android/launcher3/widgetpicker/ui/fullcatalog/screens/landing/LandingScreenViewModel.kt",
+        "src/com/android/launcher3/widgetpicker/ui/fullcatalog/screens/search/SearchScreen.kt",
+        "src/com/android/launcher3/widgetpicker/ui/fullcatalog/screens/search/SearchScreenViewModel.kt",
+    ],
+    static_libs: [
+        "widget_picker_ui_theme",
+        "widget_picker_ui_components",
+        "widget_picker_event_listeners",
+        "widget_picker_ui_data_types",
+        "widget_picker_domain_layer",
+        "dagger2",
+        "widget_picker_dagger_annotations",
+        "androidx.compose.foundation_foundation",
+        "androidx.compose.foundation_foundation-layout",
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.ui_ui",
+        "androidx.compose.ui_ui-tooling",
+        "androidx.compose.material3_material3",
+        "androidx.compose.material3_material3-window-size-class",
+        "androidx.compose.material_material-icons-extended",
+        "androidx.activity_activity-compose",
+        "widget_picker_window_size_class",
+        "kotlinx-coroutines-android",
+        "kotlinx-coroutines-core",
+    ],
+}
+
+android_library {
+    name: "widget_picker_window_size_class",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+    srcs: [
+        "src/com/android/launcher3/widgetpicker/ui/windowsizeclass/WindowSizeClass.kt",
+    ],
+    static_libs: [
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.material3_material3-window-size-class",
+        "androidx.window_window",
+    ],
+}

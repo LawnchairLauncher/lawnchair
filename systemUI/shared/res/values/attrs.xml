@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2022 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!-- Formatting note: terminate all comments with a period, to avoid breaking
+     the documentation output. To suppress comment lines from the documentation
+     output, insert an eat-comment element after the comment lines.
+-->
+
+<resources>
+    <declare-styleable name="DoubleShadowAttrDeclare">
+        <attr name="keyShadowBlur" format="dimension" />
+        <attr name="keyShadowOffsetX" format="dimension" />
+        <attr name="keyShadowOffsetY" format="dimension" />
+        <attr name="keyShadowAlpha" format="float" />
+        <attr name="ambientShadowBlur" format="dimension" />
+        <attr name="ambientShadowOffsetX" format="dimension" />
+        <attr name="ambientShadowOffsetY" format="dimension" />
+        <attr name="ambientShadowAlpha" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="DoubleShadowTextClock">
+        <attr name="keyShadowBlur" />
+        <attr name="keyShadowOffsetX" />
+        <attr name="keyShadowOffsetY" />
+        <attr name="keyShadowAlpha" />
+        <attr name="ambientShadowBlur" />
+        <attr name="ambientShadowOffsetX" />
+        <attr name="ambientShadowOffsetY" />
+        <attr name="ambientShadowAlpha" />
+        <attr name="removeTextDescent" format="boolean" />
+        <!-- padding to add back when removing text descent so it ensures text is not clipped -->
+        <attr name="textDescentExtraPadding" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="DoubleShadowTextView">
+        <attr name="keyShadowBlur" />
+        <attr name="keyShadowOffsetX" />
+        <attr name="keyShadowOffsetY" />
+        <attr name="keyShadowAlpha" />
+        <attr name="ambientShadowBlur" />
+        <attr name="ambientShadowOffsetX" />
+        <attr name="ambientShadowOffsetY" />
+        <attr name="ambientShadowAlpha" />
+        <attr name="drawableIconSize" format="dimension" />
+        <attr name="drawableIconInsetSize" format="dimension" />
+    </declare-styleable>
+</resources>

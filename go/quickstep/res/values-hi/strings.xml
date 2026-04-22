@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ऐप्लिकेशन शेयर करें"</string>
+    <string name="action_listen" msgid="2370304050784689486">"सुनें"</string>
+    <string name="action_translate" msgid="8028378961867277746">"अनुवाद करें"</string>
+    <string name="action_search" msgid="6269564710943755464">"Google Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ठीक है"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"रद्द करें"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"सेटिंग"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"स्क्रीन पर मौजूद टेक्स्ट का अनुवाद पाएं या उसे सुनें"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"आपकी स्क्रीन पर मौजूद टेक्स्ट, वेब पते, और स्क्रीनशॉट जैसी जानकारी Google के साथ शेयर की जा सकती है.\n\nआप Google के साथ किस जानकारी को शेयर करते हैं, इसे कंट्रोल करने के लिए "<b>"सेटिंग &gt; ऐप्लिकेशन &gt; डिफ़ॉल्ट ऐप्लिकेशन &gt; डिजिटल असिस्टेंट ऐप्लिकेशन"</b>" पर जाएं."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"इस सुविधा का इस्तेमाल करने के लिए, कोई डिजिटल असिस्टेंट ऐप्लिकेशन चुनें"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"स्क्रीन पर मौजूद टेक्स्ट का अनुवाद करने या उसे सुनने के लिए, \'सेटिंग\' में जाकर कोई डिजिटल असिस्टेंट ऐप्लिकेशन चुनें"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"इस सुविधा का इस्तेमाल करने के लिए, अपना डिजिटल असिस्टेंट ऐप्लिकेशन बदलें"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"स्क्रीन पर मौजूद टेक्स्ट का अनुवाद करने या उसे सुनने के लिए, \'सेटिंग\' में जाकर अपना डिजिटल असिस्टेंट ऐप्लिकेशन बदलें"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"स्क्रीन पर मौजूद टेक्स्ट को सुनने के लिए, यहां टैप करें"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"स्क्रीन पर मौजूद टेक्स्ट का अनुवाद करने के लिए, यहां टैप करें"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"इस ऐप्लिकेशन को शेयर नहीं किया जा सकता"</string>
+</resources>

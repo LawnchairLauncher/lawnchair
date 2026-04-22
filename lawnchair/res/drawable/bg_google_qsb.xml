@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:colorControlHighlight">
+    <item
+        android:id="@android:id/mask"
+        android:bottom="@dimen/qsb_shadow_margin"
+        android:top="@dimen/qsb_shadow_margin">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/qsb_widget_height" />
+            <solid android:color="#ffffffff" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/qsb_shadow_margin"
+        android:top="@dimen/qsb_shadow_margin">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/qsb_widget_height" />
+            <solid android:color="#ffffffff" />
+        </shape>
+    </item>
+</ripple>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hotseatSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <!-- landscape -->
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_landscape">
+        <hotseatSpec
+            launcher:maxAvailableSize="9999dp"
+            launcher:dimensionType="width">
+            <hotseatQsbSpace launcher:fixedSize="0dp" />
+            <edgePadding launcher:fixedSize="0dp" />
+        </hotseatSpec>
+    </specs>
+</hotseatSpecs>

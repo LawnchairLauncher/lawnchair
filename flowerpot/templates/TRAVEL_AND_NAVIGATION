@@ -1,0 +1,4 @@
+&category|maps
+;android.intent.category.CAR_DOCK
+;android.intent.category.CAR_MODE
+:android.intent.action.TRANSLATE

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Comparteix aplicació"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Escolta"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Tradueix"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ENTESOS"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"CANCEL·LA"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"CONFIGURACIÓ"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Tradueix o escolta el text en pantalla"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"És possible que determinada informació es comparteixi amb Google, com ara el text en pantalla, les adreces web i les captures de pantalla.\n\nPer canviar quina informació comparteixes, ves a "<b>"Configuració &gt; Aplicacions &gt; Aplicacions predeterminades &gt; Aplicació de l\'assistent digital"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Tria un assistent per utilitzar aquesta funció"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Per escoltar o traduir text en pantalla, tria una aplicació d\'assistent digital a Configuració"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Canvia l\'assistent per utilitzar aquesta funció"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Per escoltar o traduir text en pantalla, canvia l\'aplicació d\'assistent digital a Configuració"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Toca aquí per escoltar text en pantalla"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Toca aquí per traduir text en pantalla"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Aquesta aplicació o es pot compartir"</string>
+</resources>

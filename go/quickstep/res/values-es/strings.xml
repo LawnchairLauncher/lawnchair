@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Compartir aplicación"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Escuchar"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Traducir"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ENTENDIDO"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"CANCELAR"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"AJUSTES"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Traduce o escucha texto que haya en pantalla"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Se puede compartir con Google cierta información, como el texto que aparece en pantalla, direcciones web o capturas de pantalla.\n\nPara cambiar la información que compartes, ve a "<b>"Ajustes &gt; Aplicaciones &gt; Aplicaciones predeterminadas &gt; Asistente digital"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Elige un asistente para usar esta función"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Para escuchar o traducir texto que haya en tu pantalla, elige una aplicación de asistente digital en Ajustes"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Cambia tu asistente para usar esta función"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Para escuchar o traducir texto que haya en tu pantalla, cambia tu aplicación de asistente digital en Ajustes"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Toca aquí para escuchar el texto que hay en esta pantalla"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Toca aquí para traducir el texto que hay en esta pantalla"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Esta aplicación no se puede compartir"</string>
+</resources>

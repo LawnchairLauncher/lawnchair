@@ -1,0 +1,58 @@
+{
+  "wm-devices": [
+    {
+      "name": "WMShellFlickerTestsSplitScreen-CatchAll"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-CopyContentInSplit"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-DismissSplitScreenByDivider"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-DismissSplitScreenByGoHome"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-DragDividerToResize"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-EnterSplitScreenByDragFromAllApps"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-EnterSplitScreenByDragFromNotification"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-EnterSplitScreenByDragFromShortcut"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-EnterSplitScreenByDragFromTaskbar"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-EnterSplitScreenFromOverview"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-MultipleShowImeRequestsInSplitScreen"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-SwitchAppByDoubleTapDivider"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-SwitchBackToSplitFromAnotherApp"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-SwitchBackToSplitFromHome"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-SwitchBackToSplitFromRecent"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-SwitchBetweenSplitPairs"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-SwitchBetweenSplitPairsNoPip"
+    },
+    {
+      "name": "WMShellFlickerTestsSplitScreen-UnlockKeyguardToSplitScreen"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+     Copyright (C) 2025 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.quickstep.views.TaskHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/task_header_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/task_thumbnail_header_padding_top_bottom"
+    android:paddingBottom="@dimen/task_thumbnail_header_padding_top_bottom"
+    android:paddingStart="@dimen/task_thumbnail_header_padding_start_end"
+    android:paddingEnd="@dimen/task_thumbnail_header_padding_start_end"
+    android:background="@drawable/task_thumbnail_header_bg">
+    <ImageView
+        android:id="@+id/header_app_icon"
+        android:layout_width="@dimen/task_thumbnail_header_icon_size"
+        android:layout_height="@dimen/task_thumbnail_header_icon_size"
+        android:layout_marginStart="@dimen/task_thumbnail_header_margin_between_views"
+        android:layout_marginEnd="@dimen/task_thumbnail_header_margin_between_views"
+        android:contentDescription="@string/header_app_icon_description"
+        android:color="@color/materialColorOnSecondaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/header_app_title"
+        android:layout_width="0dp"
+        android:ellipsize="none"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/task_thumbnail_header_margin_between_views"
+        android:layout_marginEnd="@dimen/task_thumbnail_header_margin_between_views"
+        android:maxLines="1"
+        android:text="@string/header_default_app_title"
+        android:scrollHorizontally="true"
+        android:requiresFadingEdge="horizontal"
+        android:fadingEdgeLength="@dimen/task_header_title_fading_edge_length"
+        android:singleLine="true"
+        android:color="@color/materialColorOnSecondaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/header_app_icon"
+        app:layout_constraintEnd_toStartOf="@id/header_close_button"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageButton
+        android:id="@+id/header_close_button"
+        android:layout_width="@dimen/task_header_close_button_size"
+        android:layout_height="@dimen/task_header_close_button_size"
+        android:layout_marginStart="@dimen/task_thumbnail_header_margin_between_views"
+        android:layout_marginEnd="@dimen/task_thumbnail_header_margin_between_views"
+        android:background="@drawable/task_header_close_button_bg"
+        android:contentDescription="@string/header_close_icon_description"
+        android:src="@drawable/task_header_close_button"
+        android:tint="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/header_app_title"
+        app:layout_constraintTop_toTopOf="parent" />
+</com.android.quickstep.views.TaskHeaderView>

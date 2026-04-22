@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ಆ್ಯಪ್ ಹಂಚಿಕೊಳ್ಳಿ"</string>
+    <string name="action_listen" msgid="2370304050784689486">"ಆಲಿಸಿ"</string>
+    <string name="action_translate" msgid="8028378961867277746">"ಅನುವಾದಿಸಿ"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ಅರ್ಥವಾಯಿತು"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ರದ್ದುಗೊಳಿಸಿ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ಸ್ಕ್ರೀನ್ ಮೇಲಿರುವ ಪಠ್ಯವನ್ನು ಅನುವಾದಿಸಿ ಅಥವಾ ಆಲಿಸಿ"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"ನಿಮ್ಮ ಸ್ಕ್ರೀನ್ ಮೇಲಿರುವ ಪಠ್ಯ, ವೆಬ್ ವಿಳಾಸಗಳು, ಮತ್ತು ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳಂತಹ ಮಾಹಿತಿಯನ್ನು Google ಜೊತೆಗೆ ಹಂಚಿಕೊಳ್ಳಬಹುದು.\n\nನೀವು ಯಾವ ಮಾಹಿತಿಯನ್ನು ಹಂಚಿಕೊಳ್ಳುತ್ತೀರಿ ಎಂಬುದನ್ನು ಬದಲಾಯಿಸಲು, "<b>"ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ಆ್ಯಪ್‌ಗಳು ಮತ್ತು ಡೀಫಾಲ್ಟ್ ಆ್ಯಪ್‌ಗಳು, ಡಿಜಿಟಲ್ ಅಸಿಸ್ಟೆಂಟ್ ಆ್ಯಪ್ ಎಂಬಲ್ಲಿ ಹೋಗಿ"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ಅಸಿಸ್ಟಂಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿರುವ ಪಠ್ಯವನ್ನು ಆಲಿಸಲು ಅಥವಾ ಅನುವಾದಿಸಲು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಡಿಜಿಟಲ್ ಅಸಿಸ್ಟೆಂಟ್ ಆ್ಯಪ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನಿಮ್ಮ ಅಸಿಸ್ಟಂಟ್ ಅನ್ನು ಬದಲಾಯಿಸಿ"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿರುವ ಪಠ್ಯವನ್ನು ಆಲಿಸಲು ಅಥವಾ ಅನುವಾದಿಸಲು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ನಿಮ್ಮ ಡಿಜಿಟಲ್ ಅಸಿಸ್ಟೆಂಟ್ ಆ್ಯಪ್ ಅನ್ನು ಬದಲಾಯಿಸಿ"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"ಈ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿರುವ ಪಠ್ಯವನ್ನು ಆಲಿಸಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"ಈ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿರುವ ಪಠ್ಯವನ್ನು ಅನುವಾದಿಸಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"ಈ ಆ್ಯಪ್ ಅನ್ನು ಹಂಚಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
+</resources>

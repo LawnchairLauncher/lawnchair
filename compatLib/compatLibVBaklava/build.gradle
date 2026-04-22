@@ -1,0 +1,13 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'app.lawnchair.compatlib.sixteen'
+}
+
+addFrameworkJar('framework-16.jar')
+
+dependencies {
+    api projects.compatLib.compatLibVV
+}

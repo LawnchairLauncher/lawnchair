@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Deila forriti"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Hlusta"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Þýða"</string>
+    <string name="action_search" msgid="6269564710943755464">"Linsa"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ÉG SKIL"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"HÆTTA VIÐ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"STILLINGAR"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Þýða eða hlusta á texta á skjánum"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Mögulegt er að upplýsingum á borð við texta á skjánum, vefslóðum og skjámyndum verði deilt með Google.\n\nTil að breyta því hvaða upplýsingum þú deilir skaltu opna "<b>"Stillingar &gt; Forrit &gt; Sjálfgefin forrit &gt; Forrit stafræns hjálpara"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Veldu hjálpara til að nota þennan eiginleika"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Veldu stafrænan hjálpara í stillingum til að hlusta á eða þýða texta á skjánum"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Breyttu hjálparanum til að nota þennan eiginleika"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Breyttu forriti stafræna hjálparans í stillingum til að hlusta á eða þýða texta"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Ýttu hér til að hlusta á texta á þessum skjá"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Ýttu hér til að þýða texta á þessum skjá"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Ekki er hægt að deila þessu forriti"</string>
+</resources>

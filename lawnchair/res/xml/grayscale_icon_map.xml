@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<icons>
+    <icon
+        drawable="@array/grayscale_calendar_icons"
+        package="com.google.android.calendar" />
+    <icon
+        drawable="@array/grayscale_clock_icons"
+        package="com.google.android.deskclock" />
+    <icon
+        drawable="@array/grayscale_clock_icons"
+        package="com.android.deskclock" />
+    <icon
+        drawable="@array/grayscale_clock_icons"
+        package="com.coloros.alarmclock" />
+    <icon
+        drawable="@array/grayscale_clock_icons"
+        package="com.sec.android.app.clockpackage" />
+    <icon
+        drawable="@array/grayscale_clock_icons"
+        package="com.huawei.deskclock" />
+    <icon
+        drawable="@array/grayscale_clock_icons"
+        package="com.oneplus.deskclock" />
+</icons>

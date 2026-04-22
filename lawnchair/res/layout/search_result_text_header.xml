@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app.lawnchair.allapps.views.SearchResultText xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_result_text"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_result_text_height"
+    android:orientation="horizontal"
+    android:paddingStart="8dp">
+
+    <LinearLayout
+        android:id="@+id/text_rows"
+        style="@style/AllAppsSearchResult"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.0"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dynamic_grid_edge_margin"
+        android:paddingTop="@dimen/dynamic_grid_edge_margin"
+        android:paddingEnd="@dimen/dynamic_grid_edge_margin"
+        android:paddingBottom="@dimen/dynamic_grid_edge_margin"
+        android:singleLine="true">
+        <TextView
+            android:id="@+id/title"
+            style="@style/AllAppsSearchResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="start|center"
+            android:maxLines="1"
+            android:paddingEnd="4dp"
+            android:singleLine="true"
+            android:textAlignment="viewStart"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/search_result_hero_subtitle_size" />
+    </LinearLayout>
+</app.lawnchair.allapps.views.SearchResultText>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- Tablet - 6x5 portrait -->
+<folderSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <specs launcher:maxAspectRatio="10">
+        <folderSpec launcher:dimensionType="width" launcher:maxAvailableSize="800dp">
+            <!--  missing startPadding  -->
+            <endPadding launcher:fixedSize="16dp" />
+            <gutter launcher:fixedSize="16dp" />
+            <cellSize launcher:matchWorkspace="true" />
+        </folderSpec>
+        <folderSpec launcher:dimensionType="width" launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="16dp" />
+            <endPadding launcher:fixedSize="16dp" />
+            <gutter launcher:fixedSize="16dp" />
+            <cellSize launcher:fixedSize="102dp" />
+        </folderSpec>
+
+        <!-- Height spec is fixed -->
+        <folderSpec launcher:dimensionType="height" launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="24dp" />
+            <!-- mapped to footer height size -->
+            <endPadding launcher:fixedSize="64dp" />
+            <gutter launcher:fixedSize="16dp" />
+            <cellSize launcher:fixedSize="104dp" />
+        </folderSpec>
+    </specs>
+</folderSpecs>

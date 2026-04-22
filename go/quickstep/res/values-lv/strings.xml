@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Kopīgot lietotni"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Klausīties"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Tulkot"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"LABI"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ATCELT"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"IESTATĪJUMI"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Ekrānā redzamā teksta atskaņošana vai tulkošana"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Ar uzņēmumu Google var tikt kopīgota noteikta informācija, piemēram, ekrānā redzamais teksts, tīmekļa adreses un ekrānuzņēmumi.\n\nLai mainītu kopīgotās informācijas veidu, atveriet sadaļu "<b>"Iestatījumi &gt; Lietotnes &gt; Noklusējuma lietotnes &gt; Digitālā asistenta lietotne"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Lai izmantotu šo funkciju, izvēlieties asistentu"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Lai klausītos vai tulkotu ekrānā parādīto tekstu, iestatījumos izvēlieties digitālā asistenta lietotni"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Lai izmantotu šo funkciju, mainiet asistentu"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Lai klausītos vai tulkotu ekrānā parādīto tekstu, iestatījumos mainiet digitālā asistenta lietotni"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Lai klausītos ekrānā parādīto tekstu, pieskarieties šeit"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Lai tulkotu ekrānā parādīto tekstu, pieskarieties šeit"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Šo lietotni nevar kopīgot."</string>
+</resources>

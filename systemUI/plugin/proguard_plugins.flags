@@ -1,0 +1,19 @@
+# The plugins and core log subpackages act as shared libraries that might be referenced in
+# dynamically-loaded plugin APKs.
+-keep class com.android.systemui.plugins.** {
+    *;
+}
+
+-keep class com.android.systemui.log.core.** {
+    *;
+}
+
+# This type is used in the plugin API boundary, so ensure the used public methods are kept.
+-keepclassmembers class androidx.constraintlayout.widget.ConstraintSet {
+    public void connect(int, int, int, int, int);
+    public void constrainWidth(int, int);
+    public void constrainHeight(int, int);
+    public int getHeight(int);
+    public int getWidth(int);
+    public void setGoneMargin(int, int, int);
+}

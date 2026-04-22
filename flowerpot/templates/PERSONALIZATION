@@ -1,0 +1,22 @@
+# Icon pack intents
+:com.fede.launcher.THEME_ICONPACK
+:com.anddoes.launcher.THEME
+:com.teslacoilsw.launcher.THEME
+:com.gau.go.launcherex.theme
+:org.adw.launcher.THEMES
+:net.oneplus.launcher.icons.ACTION_PICK_ICON
+:ch.deletescape.lawnchair.ICONPACK
+# Launcher intent
+;android.intent.category.HOME
+# Kustom intents
+:org.kustom.provider.WALLPAPERS
+:org.kustom.provider.WIDGETS
+:org.kustom.provider.KOMPONENTS
+:org.kustom.provider.LOCKSCREENS
+# Zooper intent
+:org.zooper.zw.TEMPLATES
+# Wallpaper picker intent
+:android.intent.action.SET_WALLPAPER
+# Muzei intent
+:com.google.android.apps.muzei.api.MuzeiArtProvider
+;android.intent.category.SECONDARY_HOME

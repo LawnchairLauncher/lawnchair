@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2017 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.android.launcher3.tests">
+
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <application android:debuggable="true" android:extractNativeLibs="true">
+        <uses-library android:name="android.test.runner"/>
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetNoConfig"
+            android:exported="true"
+            android:icon="@drawable/test_widget_no_config_icon"
+            android:label="No Config">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/appwidget_no_config"/>
+        </receiver>
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetHidden"
+            android:exported="true"
+            android:label="Hidden widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/appwidget_hidden"/>
+        </receiver>
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetWithConfig"
+            android:exported="true"
+            android:icon="@drawable/test_widget_with_config_icon"
+            android:label="With Config">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/appwidget_with_config"/>
+        </receiver>
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetWithDialog"
+            android:exported="true"
+            android:icon="@drawable/test_widget_with_dialog_icon"
+            android:label="With Dialog">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_no_config_large"/>
+        </receiver>
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetDynamicColors"
+            android:exported="true"
+            android:icon="@drawable/test_widget_dynamic_colors_icon"
+            android:label="Dynamic Colors">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_dynamic_colors"/>
+        </receiver>
+
+        <receiver android:name="com.android.launcher3.testcomponent.UnarchiveBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.UNARCHIVE_PACKAGE"/>
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.android.launcher3.testcomponent.WidgetConfigActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.android.launcher3.testcomponent.CustomShortcutConfigActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.launcher3.testcomponent.RequestPinItemActivity"
+            android:icon="@drawable/test_drawable_pin_item"
+            android:exported="true"
+            android:label="Test Pin Item">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="com.android.launcher3.testcomponent.ListViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <provider
+            android:name="com.android.launcher3.testcomponent.TestCommandProvider"
+            android:authorities="${packageName}.commands"
+            android:exported="true"/>
+
+        <activity
+            android:name="com.android.launcher3.testcomponent.TestLauncherActivity"
+            android:clearTaskOnLaunch="true"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:enabled="false"
+            android:label="Test launcher"
+            android:launchMode="singleTask"
+            android:process=":testLauncherProcess"
+            android:resizeableActivity="true"
+            android:screenOrientation="unspecified"
+            android:stateNotNeeded="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.DeviceDefault.Light"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.LAUNCHER_APP"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.launcher3.testcomponent.BaseTestingActivity"
+            android:label="LauncherTestApp"
+            android:exported="true"
+            android:taskAffinity="com.android.launcher3.testcomponent.Affinity1"
+            android:theme="@style/Theme.TestActivities">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.android.launcher3.intent.action.test_shortcut"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                       android:resource="@xml/shortcuts"/>
+        </activity>
+        <activity
+            android:name="com.android.launcher3.testcomponent.OtherBaseTestingActivity"
+            android:label="OtherLauncherTestApp"
+            android:exported="true"
+            android:taskAffinity="com.android.launcher3.testcomponent.Affinity2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity-alias android:name="Activity2"
+                        android:label="TestActivity2"
+                        android:icon="@drawable/test_icon"
+                        android:exported="true"
+                        android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity3"
+                        android:label="TestActivity3"
+                        android:icon="@drawable/test_icon"
+                        android:exported="true"
+                        android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity4"
+                        android:label="TestActivity4"
+                        android:icon="@drawable/test_icon"
+                        android:exported="true"
+                        android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity5"
+                        android:label="TestActivity5"
+                        android:icon="@drawable/test_icon"
+                        android:exported="true"
+                        android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity6"
+                        android:label="TestActivity6"
+                        android:icon="@drawable/test_icon"
+                        android:exported="true"
+                        android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity7"
+                        android:label="TestActivity7"
+                        android:icon="@drawable/test_icon"
+                        android:exported="true"
+                        android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity8"
+                        android:label="TestActivity8"
+                        android:icon="@drawable/test_icon"
+                        android:exported="true"
+                        android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity9" android:exported="true"
+            android:label="TestActivity9"
+            android:icon="@drawable/test_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity10" android:exported="true"
+            android:label="TestActivity10"
+            android:icon="@drawable/test_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity11" android:exported="true"
+            android:label="TestActivity11"
+            android:icon="@drawable/test_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity12" android:exported="true"
+            android:label="TestActivity12"
+            android:icon="@drawable/test_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity13" android:exported="true"
+            android:label="TestActivity13"
+            android:icon="@drawable/test_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity14" android:exported="true"
+            android:label="TestActivity14"
+            android:icon="@drawable/test_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity15" android:exported="true"
+            android:label="IconThemedActivity"
+            android:icon="@drawable/test_theme_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="SplitTask1"
+            android:label="1st TopLeft"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="SplitTask2"
+            android:label="2nd BottomRight"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ActivityNoLabel"
+            android:label=""
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="MaxShortcutsActivity"
+            android:label="TestActivityMaxShortcuts"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/max_shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="SingleShortcutActivity"
+            android:label="TestActivitySingleShortcut"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/single_shortcut"/>
+        </activity-alias>
+        <activity
+            android:name="com.android.launcher3.testcomponent.DialogTestActivity"
+            android:label="Dialog Activity"
+            android:theme="@android:style/Theme.Dialog"
+            android:exported="true"
+            android:taskAffinity="com.android.launcher3.testcomponent.Affinity2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.android.launcher3.testcomponent.ImeTestActivity"
+            android:label="ImeTestActivity"
+            android:icon="@drawable/test_icon"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity-alias android:name="WebSearchActivity"
+            android:label="WebSearchActivity"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.WEB_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="AAAActivity"
+            android:label="AAA"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ZZZActivity"
+            android:label="ZZZ"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity android:name="com.android.launcher3.testcomponent.ExcludeFromRecentsTestActivity"
+            android:label="ExcludeFromRecentsTestActivity"
+            android:exported="true"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity-alias android:name="AppIconActivity"
+            android:label="Application Icon"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="DiffIconActivity"
+            android:label="Different icon"
+            android:exported="true"
+            android:icon="@drawable/test_different_activity_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="WrongIconActivity"
+            android:label="Wrong icon"
+            android:exported="true"
+            android:icon="@drawable/test_wrong_activity_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Disable eager initialization of Jetpack libraries. See bug 197780098. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+
+        <property
+            android:name="android.window.PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI"
+            android:value="true"/>
+    </application>
+</manifest>

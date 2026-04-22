@@ -1,0 +1,155 @@
+package app.lawnchair.gestures
+
+import android.graphics.PointF
+import android.view.MotionEvent
+import androidx.lifecycle.lifecycleScope
+import app.lawnchair.LawnchairLauncher
+import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.preferences2.PreferenceManager2
+import com.android.launcher3.AbstractFloatingView
+import com.android.launcher3.LauncherState
+import com.android.launcher3.Utilities
+import com.android.launcher3.touch.BothAxesSwipeDetector
+import com.android.launcher3.util.TouchController
+import kotlin.math.absoluteValue
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+
+class VerticalSwipeTouchController(
+    private val launcher: LawnchairLauncher,
+    private val gestureController: GestureController,
+) : TouchController,
+    BothAxesSwipeDetector.Listener {
+
+    private val prefs = PreferenceManager2.getInstance(launcher)
+    private val detector = BothAxesSwipeDetector(launcher, this)
+
+    private var overrideSwipeUp = false
+    private var overrideSwipeDown = false
+    private var overrideTwoFingerSwipeUp = false
+    private var overrideTwoFingerSwipeDown = false
+
+    private var noIntercept = false
+    private var currentMillis = 0L
+    private var currentVelocity = 0f
+    private var currentDisplacement = 0f
+
+    private var pointerCount = 0
+    private var triggered = false
+
+    init {
+        launcher.lifecycleScope.launch {
+            prefs.swipeUpGestureHandler.get()
+                .onEach { overrideSwipeUp = it != prefs.swipeUpGestureHandler.defaultValue }
+                .launchIn(this)
+            prefs.swipeDownGestureHandler.get()
+                .onEach { overrideSwipeDown = it != prefs.swipeDownGestureHandler.defaultValue }
+                .launchIn(this)
+            // Override when a custom gesture handler is configured, as launcher does not handle these by default
+            prefs.twoFingerSwipeUpGestureHandler.get()
+                .onEach { overrideTwoFingerSwipeUp = it !is GestureHandlerConfig.NoOp }
+                .launchIn(this)
+            prefs.twoFingerSwipeDownGestureHandler.get()
+                .onEach { overrideTwoFingerSwipeDown = it !is GestureHandlerConfig.NoOp }
+                .launchIn(this)
+        }
+    }
+
+    override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
+            noIntercept = !canInterceptTouch(ev)
+            if (noIntercept) {
+                return false
+            }
+            detector.setDetectableScrollConditions(getSwipeDirection(), false)
+        }
+        if (noIntercept) {
+            return false
+        }
+        onControllerTouchEvent(ev)
+        return detector.isDraggingOrSettling
+    }
+
+    override fun onControllerTouchEvent(ev: MotionEvent): Boolean {
+        // We don't need to check when the pointer count changes during a swipe
+        pointerCount = ev.pointerCount
+        return detector.onTouchEvent(ev)
+    }
+
+    private fun canInterceptTouch(ev: MotionEvent): Boolean {
+        if ((ev.edgeFlags and Utilities.EDGE_NAV_BAR) != 0) {
+            return false
+        }
+        return AbstractFloatingView.getTopOpenView(launcher) == null &&
+            launcher.isInState(LauncherState.NORMAL)
+    }
+
+    override fun onDragStart(start: Boolean) {
+        triggered = false
+    }
+
+    override fun onDrag(displacement: PointF, motionEvent: MotionEvent): Boolean {
+        if (triggered) return true
+        val velocity = computeVelocity(displacement.y - currentDisplacement, motionEvent.eventTime)
+        if (velocity.absoluteValue > TRIGGER_VELOCITY) {
+            triggered = true
+            if (velocity < 0) {
+                if (pointerCount == 1) {
+                    gestureController.onSwipeUp()
+                } else if (pointerCount == 2) {
+                    gestureController.onTwoFingerSwipeUp()
+                }
+            } else {
+                if (pointerCount == 1) {
+                    gestureController.onSwipeDown()
+                } else if (pointerCount == 2) {
+                    gestureController.onTwoFingerSwipeDown()
+                }
+            }
+        }
+        return true
+    }
+
+    override fun onDragEnd(velocity: PointF) {
+        detector.finishedScrolling()
+    }
+
+    private fun getSwipeDirection(): Int {
+        var directions = 0
+        if (overrideSwipeUp || overrideTwoFingerSwipeUp) {
+            directions = directions or BothAxesSwipeDetector.DIRECTION_UP
+        }
+        if (overrideSwipeDown || overrideTwoFingerSwipeDown) {
+            directions = directions or BothAxesSwipeDetector.DIRECTION_DOWN
+        }
+        return directions
+    }
+
+    private fun computeVelocity(delta: Float, millis: Long): Float {
+        val previousMillis = currentMillis
+        currentMillis = millis
+
+        val deltaTimeMillis = (currentMillis - previousMillis).toFloat()
+        val velocity = if (deltaTimeMillis > 0) delta / deltaTimeMillis else 0f
+        currentVelocity = if (currentVelocity.absoluteValue < 0.001f) {
+            velocity
+        } else {
+            val alpha = computeDampeningFactor(deltaTimeMillis)
+            Utilities.mapRange(alpha, currentVelocity, velocity)
+        }
+        return currentVelocity
+    }
+
+    /**
+     * Returns a time-dependent dampening factor using delta time.
+     */
+    private fun computeDampeningFactor(deltaTime: Float): Float {
+        return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime)
+    }
+
+    companion object {
+        private const val SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * Math.PI.toFloat() * 10f)
+        private const val TRIGGER_VELOCITY = 2.25f
+    }
+}

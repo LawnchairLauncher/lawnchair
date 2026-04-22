@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+     Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<!-- NOTE! don't add dimensions for margins / paddings / sizes that change per orientation to this
+     file, they need to be loaded at runtime. -->
+
+<!-- DOUBLE NOTE! Don't deviate IDs from task.xml since this layout acts as a "subclass" (read as
+     "bad code"). How can we use the view pool in RecentsView to use task.xml layout with using
+     GroupedTaskView.java class? Is that possible (while still keeping code in separate class) ? -->
+
+<com.android.quickstep.views.GroupedTaskView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/task_view_grouped"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:defaultFocusHighlightEnabled="false"
+    android:focusable="true"
+    launcher:focusBorderColor="@color/materialColorOutline"
+    launcher:hoverBorderColor="@color/materialColorPrimary">
+
+    <ViewStub
+        android:id="@+id/task_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ViewStub
+        android:id="@+id/bottomright_task_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Filtering affects only alpha instead of the visibility since visibility can be altered
+         separately through RecentsView#resetFromSplitSelectionState() -->
+    <ImageView
+        android:id="@+id/show_windows"
+        android:layout_height="@dimen/recents_filter_icon_size"
+        android:layout_width="@dimen/recents_filter_icon_size"
+        android:layout_gravity="start"
+        android:alpha="0"
+        android:tint="@color/recents_filter_icon"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_select_windows" />
+
+    <!-- Filtering affects only alpha instead of the visibility since visibility can be altered
+         separately through RecentsView#resetFromSplitSelectionState() -->
+    <ImageView
+        android:id="@+id/show_windows_right"
+        android:layout_height="@dimen/recents_filter_icon_size"
+        android:layout_width="@dimen/recents_filter_icon_size"
+        android:layout_gravity="end"
+        android:alpha="0"
+        android:tint="@color/recents_filter_icon"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_select_windows" />
+
+    <ViewStub
+        android:id="@+id/icon"
+        android:inflatedId="@id/icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <ViewStub
+        android:id="@+id/bottomRight_icon"
+        android:inflatedId="@id/bottomRight_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <ViewStub
+        android:id="@+id/digital_wellbeing_toast"
+        android:inflatedId="@id/digital_wellbeing_toast"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/digital_wellbeing_toast_height" />
+
+    <ViewStub
+        android:id="@+id/bottomRight_digital_wellbeing_toast"
+        android:inflatedId="@id/bottomRight_digital_wellbeing_toast"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/digital_wellbeing_toast_height" />
+</com.android.quickstep.views.GroupedTaskView>

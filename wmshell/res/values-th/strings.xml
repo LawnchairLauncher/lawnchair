@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"ปิด"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"ขยาย"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"การตั้งค่า"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"เมนู"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"เมนูการแสดงภาพซ้อนภาพ"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> ใช้การแสดงภาพซ้อนภาพ"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"หากคุณไม่ต้องการให้ <xliff:g id="NAME">%s</xliff:g> ใช้ฟีเจอร์นี้ ให้แตะเพื่อเปิดการตั้งค่าแล้วปิดฟีเจอร์"</string>
+    <string name="pip_play" msgid="3496151081459417097">"เล่น"</string>
+    <string name="pip_pause" msgid="690688849510295232">"หยุดชั่วคราว"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"ข้ามไปรายการถัดไป"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"ข้ามไปรายการก่อนหน้า"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"ปรับขนาด"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"เก็บเข้าที่เก็บส่วนตัว"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"เอาออกจากที่เก็บส่วนตัว"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"แอปอาจใช้ไม่ได้กับโหมดแยกหน้าจอ"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"แอปไม่รองรับการแยกหน้าจอ"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"แอปนี้เปิดได้ใน 1 หน้าต่างเท่านั้น"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"แอปอาจไม่ทำงานในจอแสดงผลรอง"</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"แอปไม่รองรับการเรียกใช้ในจอแสดงผลรอง"</string>
+    <string name="bubble_not_supported_text" msgid="8843806122229754809">"แอปไม่รองรับบับเบิล"</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"เส้นแยกหน้าจอ"</string>
+    <string name="divider_title" msgid="1963391955593749442">"เส้นแยกหน้าจอ"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"เต็มหน้าจอทางซ้าย"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"ซ้าย 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ซ้าย 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ซ้าย 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"เต็มหน้าจอทางขวา"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"สลับแอปด้านบนกับด้านล่าง"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"สลับแอปด้านซ้ายกับด้านขวา"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"เต็มหน้าจอด้านบน"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ด้านบน 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ด้านบน 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"ด้านบน 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"เต็มหน้าจอด้านล่าง"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"แยกไปทางซ้าย"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"แยกไปทางขวา"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"แยกไปด้านบน"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"แยกไปด้านล่าง"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"การใช้โหมดมือเดียว"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"หากต้องการออก ให้เลื่อนขึ้นจากด้านล่างของหน้าจอหรือแตะที่ใดก็ได้เหนือแอป"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"เริ่มโหมดมือเดียว"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"ออกจากโหมดมือเดียว"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"การตั้งค่าบับเบิล <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"รายการเพิ่มเติม"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"เพิ่มกลับไปที่สแต็ก"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> จาก <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> จาก <xliff:g id="APP_NAME">%2$s</xliff:g> และอีก <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> รายการ"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"ย้ายไปด้านซ้ายบน"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"ย้ายไปด้านขวาบน"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"ย้ายไปด้านซ้ายล่าง"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"ย้ายไปด้านขวาล่าง"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"ขยายเมนู"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"ยุบเมนู"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"ย้ายไปทางซ้าย"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"ย้ายไปทางขวา"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"ขยาย <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"ยุบ <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"การตั้งค่า <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"ปิดบับเบิล"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"เปลี่ยนเป็นแบบเต็มหน้าจอ"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"ไม่ต้องแสดงการสนทนาเป็นบับเบิล"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"แชทโดยใช้บับเบิล"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"การสนทนาใหม่ๆ จะปรากฏเป็นไอคอนแบบลอยหรือบับเบิล แตะเพื่อเปิดบับเบิล ลากเพื่อย้ายที่"</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"ควบคุมบับเบิลได้ทุกเมื่อ"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"แตะ \"จัดการ\" เพื่อปิดบับเบิลจากแอปนี้"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"รับทราบ"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"ไม่มีบับเบิลเมื่อเร็วๆ นี้"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"บับเบิลที่แสดงและที่ปิดไปเมื่อเร็วๆ นี้จะปรากฏที่นี่"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"แชทโดยใช้บับเบิล"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"การสนทนาครั้งใหม่ๆ จะปรากฏเป็นไอคอนที่มุมล่างของหน้าจอ โดยสามารถแตะเพื่อขยายหรือลากเพื่อปิด"</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"ควบคุมบับเบิลได้ทุกเมื่อ"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"แตะที่นี่เพื่อจัดการแอปและการสนทนาที่แสดงเป็นบับเบิลได้"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"บับเบิล"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"จัดการ"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"ปิดบับเบิลแล้ว"</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"บับเบิล"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"แสดงบับเบิล"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"แตะเพื่อรีสตาร์ทแอปนี้และรับมุมมองที่ดียิ่งขึ้น"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"เปลี่ยนสัดส่วนภาพของแอปนี้ในการตั้งค่า"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"เปลี่ยนอัตราส่วนกว้างยาว"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"หากพบปัญหากับกล้อง\nแตะเพื่อแก้ไข"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"หากไม่ได้แก้ไข\nแตะเพื่อเปลี่ยนกลับ"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"หากไม่พบปัญหากับกล้อง แตะเพื่อปิด"</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"ดูเมนูแอปที่นี่ได้"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"เข้าสู่หน้าต่างเดสก์ท็อปเพื่อเปิดหลายแอปพร้อมกัน"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"กลับไปที่โหมดเต็มหน้าจอได้ทุกเมื่อจากเมนูแอป"</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"รับชมและทำสิ่งต่างๆ ได้มากขึ้น"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"ลากไปไว้ในแอปอื่นเพื่อแยกหน้าจอ"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"แตะสองครั้งด้านนอกแอปเพื่อเปลี่ยนตำแหน่ง"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"รับทราบ"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"ขยายเพื่อดูข้อมูลเพิ่มเติม"</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"รีสตาร์ทเพื่อรับมุมมองที่ดียิ่งขึ้นใช่ไหม"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"คุณรีสตาร์ทแอปเพื่อรับมุมมองที่ดียิ่งขึ้นบนหน้าจอได้ แต่ความคืบหน้าและการเปลี่ยนแปลงใดๆ ที่ไม่ได้บันทึกอาจหายไป"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"ยกเลิก"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"รีสตาร์ท"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"ไม่ต้องแสดงข้อความนี้อีก"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"แตะสองครั้ง\nเพื่อย้ายแอปนี้"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"ขยาย <xliff:g id="APP_NAME">%1$s</xliff:g> ให้ใหญ่สุด"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"คืนค่า <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"ย่อ <xliff:g id="APP_NAME">%1$s</xliff:g> ให้เล็กสุด"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"ปิด <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"กลับ"</string>
+    <string name="handle_text" msgid="4419667835599523257">"แฮนเดิลแอป"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"ไอคอนแอป"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"เต็มหน้าจอ"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"หน้าต่างเดสก์ท็อป"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"แยกหน้าจอ"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"เพิ่มเติม"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"ล่องลอย"</string>
+    <string name="select_text" msgid="5139083974039906583">"เลือก"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"ภาพหน้าจอ"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"เปิดในเบราว์เซอร์"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"เปิดในแอป"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"หน้าต่างใหม่"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"จัดการหน้าต่าง"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"เปลี่ยนสัดส่วนการแสดงผล"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"เพิ่มประสิทธิภาพมุมมอง"</string>
+    <string name="handle_menu_error_icon_text" msgid="7200375184879808684">"ไอคอนข้อผิดพลาด"</string>
+    <string name="close_text" msgid="4986518933445178928">"ปิด"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"ปิดเมนู"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (หน้าต่างเดสก์ท็อป)"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"ขยายหน้าจอให้ใหญ่สุด"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"ปรับขนาด"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"ย้ายแอปมาที่นี่ไม่ได้"</string>
+    <string name="desktop_mode_talkback_state_opening" msgid="8505494249513712682">"กำลังเปิดหน้าต่างแอปใหม่"</string>
+    <string name="desktop_mode_talkback_state_closing" msgid="6791583518636526904">"กำลังปิดหน้าต่างแอป"</string>
+    <string name="desktop_mode_talkback_state_minimizing" msgid="7406911785134757827">"กำลังย่อหน้าต่างแอป"</string>
+    <string name="desktop_mode_talkback_state_focused" msgid="6287982923335568236">"<xliff:g id="APP_NAME">%1$s</xliff:g> (โฟกัสอยู่)"</string>
+    <string name="desktop_mode_talkback_state_not_focused" msgid="4640618691603218929">"<xliff:g id="APP_NAME">%1$s</xliff:g> (ไม่โฟกัส)"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"สมจริง"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"คืนค่า"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"ขยายใหญ่สุด"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"คืนค่า"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"จัดพอดีกับทางซ้าย"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"จัดพอดีกับทางขวา"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"ปรับขนาดหน้าต่างแอปไปทางซ้าย"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"ปรับขนาดหน้าต่างแอปไปทางขวา"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"ขยายหรือคืนค่าขนาดหน้าต่าง"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"เปิดเมนู"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"เข้าสู่ <xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"ปรับขนาดหน้าต่างไปทางซ้าย"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"ปรับขนาดหน้าต่างไปทางขวา"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"ขยายหรือคืนค่าขนาดหน้าต่าง"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"ขยายขนาดหน้าต่างแอปให้ใหญ่สุด"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"คืนค่าขนาดหน้าต่าง"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"ย่อหน้าต่างแอปให้เล็กสุด"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"ปิดหน้าต่างแอป"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"เปิดตามการตั้งค่าเริ่มต้น"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"เลือกวิธีเปิดเว็บลิงก์สำหรับแอปนี้"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"ในแอป"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"ในเบราว์เซอร์"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"ตกลง"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"เปิดแอปในเบราว์เซอร์ได้อย่างรวดเร็วที่นี่"</string>
+</resources>

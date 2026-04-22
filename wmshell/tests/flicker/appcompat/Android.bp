@@ -1,0 +1,99 @@
+//
+// Copyright (C) 2020 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+package {
+    default_team: "trendy_team_lse_app_compat",
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "frameworks_base_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["frameworks_base_license"],
+}
+
+android_test {
+    name: "WMShellFlickerTestsAppCompat",
+    defaults: ["WMShellFlickerTestsDefault"],
+    manifest: "AndroidManifest.xml",
+    package_name: "com.android.wm.shell.flicker",
+    instrumentation_target_package: "com.android.wm.shell.flicker",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: ["src/**/*.kt"],
+    static_libs: ["WMShellFlickerTestsBase"],
+    data: ["trace_config/*"],
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Begin breakdowns for WMShellFlickerTestsAppCompat module
+
+test_module_config {
+    name: "WMShellFlickerTestsAppCompat-CatchAll",
+    base: "WMShellFlickerTestsAppCompat",
+    exclude_filters: [
+        "com.android.wm.shell.flicker.appcompat.OpenAppInSizeCompatModeTest",
+        "com.android.wm.shell.flicker.appcompat.OpenTransparentActivityTest",
+        "com.android.wm.shell.flicker.appcompat.QuickSwitchLauncherToLetterboxAppTest",
+        "com.android.wm.shell.flicker.appcompat.RepositionFixedPortraitAppTest",
+        "com.android.wm.shell.flicker.appcompat.RestartAppInSizeCompatModeTest",
+        "com.android.wm.shell.flicker.appcompat.RotateImmersiveAppInFullscreenTest",
+    ],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsAppCompat-OpenAppInSizeCompatModeTest",
+    base: "WMShellFlickerTestsAppCompat",
+    include_filters: ["com.android.wm.shell.flicker.appcompat.OpenAppInSizeCompatModeTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsAppCompat-OpenTransparentActivityTest",
+    base: "WMShellFlickerTestsAppCompat",
+    include_filters: ["com.android.wm.shell.flicker.appcompat.OpenTransparentActivityTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsAppCompat-QuickSwitchLauncherToLetterboxAppTest",
+    base: "WMShellFlickerTestsAppCompat",
+    include_filters: ["com.android.wm.shell.flicker.appcompat.QuickSwitchLauncherToLetterboxAppTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsAppCompat-RepositionFixedPortraitAppTest",
+    base: "WMShellFlickerTestsAppCompat",
+    include_filters: ["com.android.wm.shell.flicker.appcompat.RepositionFixedPortraitAppTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsAppCompat-RestartAppInSizeCompatModeTest",
+    base: "WMShellFlickerTestsAppCompat",
+    include_filters: ["com.android.wm.shell.flicker.appcompat.RestartAppInSizeCompatModeTest"],
+    test_suites: ["device-tests"],
+}
+
+test_module_config {
+    name: "WMShellFlickerTestsAppCompat-RotateImmersiveAppInFullscreenTest",
+    base: "WMShellFlickerTestsAppCompat",
+    include_filters: ["com.android.wm.shell.flicker.appcompat.RotateImmersiveAppInFullscreenTest"],
+    test_suites: ["device-tests"],
+}
+
+// End breakdowns for FlickerTestsRotation module
+////////////////////////////////////////////////////////////////////////////////

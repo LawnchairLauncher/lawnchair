@@ -1,0 +1,45 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.google.ksp)
+}
+
+android {
+    buildToolsVersion "36.1.0"
+    namespace "com.android.systemui.shared"
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            kotlin.directories.add('src')
+            aidl.srcDirs = ['src']
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+        }
+    }
+}
+
+ksp {
+    arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+}
+
+addFrameworkJar('framework-16.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    compileOnly projects.hiddenApi
+    compileOnly projects.unfold
+    compileOnly projects.plugin
+    compileOnly projects.plugincore
+    compileOnly projects.flags
+    compileOnly projects.wmshell
+    compileOnly projects.animationlib
+    compileOnly projects.utils
+    compileOnly projects.log
+
+    implementation libs.dagger.hilt.android
+    ksp libs.dagger.hilt.compiler
+
+    implementation libs.androidx.concurrent.futures
+}

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/widgets_two_pane_sheet_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="start"
+        android:layout_gravity="start"
+        android:clipChildren="false"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical">
+        <!-- SearchAndRecommendationsView without the tab layout as well -->
+        <LinearLayout
+            android:id="@+id/search_and_recommendations_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToOutline="true"
+            android:background="?attr/widgetPickerPrimarySurfaceColor"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/search_bar_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:background="?attr/widgetPickerPrimarySurfaceColor"
+                android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
+                launcher:layout_sticky="true">
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clipToPadding="false"
+                    android:elevation="0.1dp"
+                    android:paddingBottom="16dp">
+
+                    <include layout="@layout/widgets_search_bar" />
+                </FrameLayout>
+
+                <ImageButton
+                    android:id="@+id/widget_picker_widget_options_menu"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/full_rounded_transparent_ripple"
+                    android:contentDescription="@string/widget_picker_widget_options_button_description"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_more_vert_dots"
+                    android:visibility="gone"
+                    android:tint="?attr/widgetPickerWidgetOptionsMenuColor" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/suggestions_header"
+                android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
+                android:paddingBottom="16dp"
+                android:background="?attr/widgetPickerPrimarySurfaceColor"
+                launcher:layout_sticky="true">
+            </FrameLayout>
+        </LinearLayout>
+
+        <com.android.launcher3.widget.picker.WidgetsRecyclerView
+            android:id="@+id/primary_widgets_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
+            android:clipToPadding="false" />
+
+        <com.android.launcher3.widget.picker.WidgetsRecyclerView
+            android:id="@+id/search_widgets_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
+            android:visibility="gone" />
+    </LinearLayout>
+</merge>

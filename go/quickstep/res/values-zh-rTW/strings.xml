@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"分享應用程式"</string>
+    <string name="action_listen" msgid="2370304050784689486">"聆聽"</string>
+    <string name="action_translate" msgid="8028378961867277746">"翻譯"</string>
+    <string name="action_search" msgid="6269564710943755464">"智慧鏡頭"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"我知道了"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"取消"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"設定"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"翻譯或朗讀畫面上的文字"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"系統可能會將畫面上的文字、網址和螢幕截圖等資訊分享給 Google。\n\n如要變更分享的資訊類型，請前往 [設定] &gt; [應用程式] &gt; [預設應用程式] &gt; [數位助理應用程式]"<b></b>"。"</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"必須選擇數位助理應用程式才能使用這項功能"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"如要聽取或翻譯畫面上的文字，請前往「設定」選擇數位助理應用程式"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"必須變更數位助理應用程式才能使用這項功能"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"如要聽取或翻譯畫面上的文字，請前往「設定」變更數位助理應用程式"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"輕觸這裡即可聽取這個畫面上的文字"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"輕觸這裡即可翻譯這個畫面上的文字"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"無法分享這個應用程式"</string>
+</resources>

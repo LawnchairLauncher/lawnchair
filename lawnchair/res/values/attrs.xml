@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <attr name="uiColorMode" format="integer" />
+    <attr name="allAppsAlternateTextColor" format="color" />
+    <attr name="searchboxHighlight" format="color" />
+    <attr name="focusHighlight" format="color" />
+    <attr name="groupHighlight" format="color" />
+    <attr name="qsbFillColor" format="color" />
+    <attr name="qsbIconTintPrimary" format="color" />
+    <attr name="qsbIconTintQuaternary" format="color" />
+    <attr name="qsbIconTintSecondary" format="color" />
+    <attr name="qsbIconTintTertiary" format="color" />
+
+    <attr name="colorAccentPrimary" format="color" />
+    <attr name="textColorOnAccent" format="color" />
+    <attr name="borderColor" format="color" />
+
+    <attr name="customFontType" format="reference" />
+
+    <declare-styleable name="CustomSeekBarPreference">
+        <attr name="minValue" format="integer" />
+        <attr name="maxValue" format="integer" />
+        <attr name="snapEvery" format="integer" />
+        <attr name="asPercentages" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomFont">
+        <attr name="android:textAppearance"/>
+        <attr name="customFontType" />
+        <attr name="customFontWeight" format="enum">
+            <enum name="w100" value="100" />
+            <enum name="w200" value="200" />
+            <enum name="w300" value="300" />
+            <enum name="w400" value="400" />
+            <enum name="w500" value="500" />
+            <enum name="w600" value="600" />
+            <enum name="w700" value="700" />
+            <enum name="w800" value="800" />
+            <enum name="w900" value="900" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CustomTextView">
+        <attr name="customFontType" />
+    </declare-styleable>
+
+    <declare-styleable name="ExtendedEditText">
+        <attr name="customFontType" />
+    </declare-styleable>
+
+    <declare-styleable name="FallbackSearchInputView">
+        <attr name="customFontType" />
+    </declare-styleable>
+</resources>

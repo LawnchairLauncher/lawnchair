@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2018 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/task_card_menu_option_vertical_padding"
+    android:paddingBottom="@dimen/task_card_menu_option_vertical_padding"
+    android:background="@drawable/task_menu_item_bg"
+    android:theme="@style/PopupItem" >
+
+    <View
+      android:id="@+id/icon"
+      android:layout_width="@dimen/system_shortcut_icon_size"
+      android:layout_height="@dimen/system_shortcut_icon_size"
+      android:layout_marginStart="@dimen/task_menu_option_start_margin"
+      android:layout_gravity="center"
+      android:backgroundTint="@color/materialColorOnSurface"/>
+
+    <TextView
+        style="@style/BaseIcon"
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/task_menu_option_text_start_margin"
+        android:textSize="14sp"
+        android:textColor="@color/materialColorOnSurface"
+        android:focusable="false"
+        android:gravity="start|center_vertical"
+        android:ellipsize="end" />
+
+</LinearLayout>

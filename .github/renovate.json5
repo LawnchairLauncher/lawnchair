@@ -1,0 +1,19 @@
+{
+    $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+    extends: [
+        'config:recommended',
+    ],
+    labels: [
+        'dependencies',
+    ],
+    packageRules: [
+        // Enable auto-merge for minor/patch updates.
+        {
+            matchUpdateTypes: [
+                'minor',
+                'patch',
+            ],
+            automerge: true,
+        },
+    ],
+}

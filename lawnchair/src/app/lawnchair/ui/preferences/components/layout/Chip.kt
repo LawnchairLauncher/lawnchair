@@ -1,0 +1,87 @@
+package app.lawnchair.ui.preferences.components.layout
+
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.unit.dp
+import kotlin.math.abs
+
+@Composable
+fun Chip(
+    label: String,
+    currentOffset: Float,
+    page: Int,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val selectedProgress = 1f - abs(currentOffset - page).coerceIn(0f, 1f)
+    Chip(
+        label = label,
+        selectedProgress = selectedProgress,
+        onClick = onClick,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun Chip(
+    label: String,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val selectedProgress by animateFloatAsState(targetValue = if (selected) 1f else 0f, label = "")
+    Chip(
+        label = label,
+        selectedProgress = selectedProgress,
+        onClick = onClick,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun Chip(
+    label: String,
+    selectedProgress: Float,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val shape = RoundedCornerShape(8.dp)
+    val textColor = lerp(
+        MaterialTheme.colorScheme.onSurface,
+        MaterialTheme.colorScheme.primary,
+        selectedProgress,
+    )
+    val outlineColor = MaterialTheme.colorScheme.outline
+    val borderColor = outlineColor.copy(alpha = outlineColor.alpha * (1f - selectedProgress))
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .height(32.dp)
+            .clip(shape)
+            .background(color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = selectedProgress))
+            .border(width = 1.dp, color = borderColor, shape = shape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = textColor,
+        )
+    }
+}

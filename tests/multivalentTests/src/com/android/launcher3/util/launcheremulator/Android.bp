@@ -1,0 +1,11 @@
+filegroup {
+    name: "launcher-emulator-util",
+    srcs: [
+        "models/DeviceEmulationData.kt",
+        "models/EmulationParams.kt",
+        "models/EmulatorDisplay.kt",
+        "models/LauncherDeviceList.kt",
+        "DensityPicker.java",
+        "TestWindowManagerProxy.java",
+    ],
+}

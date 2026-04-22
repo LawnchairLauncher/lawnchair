@@ -1,0 +1,63 @@
+name: Feature request
+description: Suggest features you want the developers (or contributors) to make for the launcher.
+labels: [feature-request, 'status: needs triage']
+type: Feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]
+        > Lawnchair's issue tracker is maintained on a best-effort basis — due to limited resources, we do not guarantee that all issues will be triaged or checked by the developers.
+
+        Thanks for taking the time to file this issue! Here are a few things to do before submitting:
+        1. Use the [**latest nightly version**](https://github.com/LawnchairLauncher/lawnchair#development-builds) when requesting.
+        2. [**Read the FAQ**](https://lawnchair.app/faq) to check if your request is already planned by the developers.
+        3. Search **both [open and closed issues](https://github.com/LawnchairLauncher/lawnchair/issues?q=is%3Aissue+sort%3Aupdated-desc+)** for your feature request.
+
+        Please keep in mind that **we may not always implement this feature request**.
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Describe the feature
+      description: A clear and concise description of what the feature is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-usefulness
+    attributes:
+      label: Why would it be useful to add?
+      description: Explain why this feature would be useful to you
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feature-in-version-two
+    attributes:
+      label: Did the feature exist in Lawnchair Legacy?
+      description: |
+        See [this FAQ page](https://lawnchair.app/faq/#what-happened-to-lawnchair-legacy) for more info about Lawnchair Legacy, previously
+        known as Lawnchair 2.
+
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-examples
+    attributes:
+      label: Example(s)
+      description: Post screenshots/drawings/links/etc of the feature request, or proof-of-concept images about the feature.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the feature here.
+    validations:
+      required: false

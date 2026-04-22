@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<configuration description="Runs Tests for PlatformAnimationLib-core.">
+    <target_preparer class="com.android.tradefed.targetprep.TestAppInstallSetup">
+        <option name="test-file-name" value="PlatformAnimationLibCoreTests.apk" />
+        <option name="install-arg" value="-t" />
+    </target_preparer>
+
+    <!-- Among other reasons, root access is needed for screen recording artifacts. -->
+    <target_preparer class="com.android.tradefed.targetprep.RootTargetPreparer">
+        <option name="force-root" value="true" />
+    </target_preparer>
+
+    <test class="com.android.tradefed.testtype.AndroidJUnitTest" >
+        <option name="package" value="com.android.systemui.animation.core.tests" />
+        <option name="runner" value="android.testing.TestableInstrumentation" />
+        <option name="test-filter-dir" value="/data/data/com.android.systemui.animation.core.tests" />
+        <option name="hidden-api-checks" value="false"/>
+    </test>
+
+    <metrics_collector class="com.android.tradefed.device.metric.FilePullerLogCollector">
+        <option name="directory-keys" value="/data/user/0/com.android.systemui.animation.core.tests/files" />
+        <option name="collect-on-run-ended-only" value="false" />
+    </metrics_collector>
+</configuration>

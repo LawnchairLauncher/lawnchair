@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"යෙදුම බෙදා ගන්න"</string>
+    <string name="action_listen" msgid="2370304050784689486">"සවන් දෙන්න"</string>
+    <string name="action_translate" msgid="8028378961867277746">"පරිවර්තනය කරන්න"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"තේරුණා"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"අවලංගු කරන්න"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"සැකසීම්"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"තිරය මත පෙළ පරිවර්තනය කරන්න හෝ එයට සවන් දෙන්න"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"ඔබගේ තිරයේ ඇති පෙළ, වෙබ් ලිපින සහ තිර රූ වැනි තොරතුරු Google සමඟ බෙදා ගත හැකිය.\n\nඔබ බෙදා ගන්නා තොරතුරු වෙනස් කිරීමට, "<b>"සැකසීම් &gt; යෙදුම් &gt; පෙරනිමි යෙදුම් &gt; ඩිජිටල් සහායක යෙදුම"</b>" වෙත යන්න."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"මෙම විශේෂාංගය භාවිත කිරීමට සහායකයකු තෝරන්න"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"ඔබගේ තිරයේ පෙළ සවන් දීමට හෝ පරිවර්තනය කිරීමට, සැකසීම්වල ඩිජිටල් සහායක යෙදුමක් තෝරන්න"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"මෙම විශේෂාංගය භාවිත කිරීමට ඔබගේ සහායක වෙනස් කරන්න"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"ඔබගේ තිරයේ පෙළට සවන් දීමට හෝ පරිවර්තනය කිරීමට, සැකසීම් තුළ ඔබගේ ඩිජිටල් සහායක යෙදුම වෙනස් කරන්න"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"මෙම තිරයේ පෙළට සවන් දීමට මෙහි තට්ටු කරන්න"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"මෙම තිරයේ පෙළ පරිවර්තනය කිරීමට මෙහි තට්ටු කරන්න"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"මෙම යෙදුම බෙදා ගත නොහැකිය"</string>
+</resources>

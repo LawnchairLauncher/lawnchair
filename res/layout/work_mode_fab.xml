@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2017 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/work_mode_toggle"
+    android:layout_height="@dimen/work_fab_height"
+    android:layout_width="wrap_content"
+    android:elevation="@dimen/work_fab_elevation"
+    android:minHeight="@dimen/work_fab_height"
+    android:gravity="center_vertical"
+    android:background="@drawable/work_mode_fab_background"
+    android:forceHasOverlappingRendering="false"
+    android:contentDescription="@string/work_apps_pause_btn_text">
+    <ImageView
+        android:id="@+id/work_icon"
+        android:layout_width="@dimen/work_fab_icon_size"
+        android:layout_height="@dimen/work_fab_icon_size"
+        android:layout_marginVertical="@dimen/work_fab_icon_vertical_margin"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_corp_off"
+        android:layout_marginStart="@dimen/work_fab_icon_start_margin_expanded"
+        android:scaleType="center"/>
+    <TextView
+        android:id="@+id/pause_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="@dimen/work_fab_width"
+        android:textColor="@color/materialColorOnPrimary"
+        android:textSize="14sp"
+        android:includeFontPadding="false"
+        android:textDirection="locale"
+        android:text="@string/work_apps_pause_btn_text"
+        android:layout_marginStart="@dimen/work_fab_text_start_margin"
+        android:layout_marginEnd="@dimen/work_fab_text_end_margin"
+        android:maxLines="1"
+        style="@style/WorkModeFabTextStyle"/>
+</LinearLayout>

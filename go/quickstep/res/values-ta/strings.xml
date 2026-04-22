@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ஆப்ஸைப் பகிருங்கள்"</string>
+    <string name="action_listen" msgid="2370304050784689486">"கேளுங்கள்"</string>
+    <string name="action_translate" msgid="8028378961867277746">"மொழிபெயர்"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"சரி"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ரத்துசெய்"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"அமைப்புகள்"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"திரையிலுள்ள உரையை மொழிபெயருங்கள் அல்லது கேளுங்கள்"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"உங்கள் திரையிலுள்ள உரை, வலை முகவரிகள், ஸ்கிரீன்ஷாட்டுகள் போன்ற தகவல்கள் Googleளுடன் பகிரப்படலாம்.\n\nஎந்தத் தகவல்கள் பகிரப்படலாம் என்பதை மாற்ற, "<b>"அமைப்புகள் &gt; ஆப்ஸ் &gt; இயல்பு ஆப்ஸ் &gt; டிஜிட்டல் அசிஸ்டண்ட் ஆப்ஸ்"</b>" என்பதற்குச் செல்லுங்கள்."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"இந்த அம்சத்தைப் பயன்படுத்த அசிஸ்டண்ட்டைத் தேர்வுசெய்யவும்"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"திரையில் தோன்றும் வார்த்தைகளைக் கேட்கவோ மொழிபெயர்க்கவோ அமைப்புகளில் டிஜிட்டல் அசிஸ்டண்ட் ஆப்ஸைத் தேர்வுசெய்யவும்"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"இந்த அம்சத்தைப் பயன்படுத்த அசிஸ்டண்ட்டை மாற்றவும்"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"திரையில் தோன்றும் வார்த்தைகளைக் கேட்கவோ மொழிபெயர்க்கவோ அமைப்புகளில் டிஜிட்டல் அசிஸ்டண்ட் ஆப்ஸை மாற்றவும்"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"இந்தத் திரையில் தோன்றும் வார்த்தைகளைக் கேட்க இங்கே தட்டவும்"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"இந்தத் திரையில் தோன்றும் வார்த்தைகளை மொழிபெயர்க்க இங்கே தட்டவும்"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"இந்த ஆப்ஸைப் பகிர முடியாது"</string>
+</resources>

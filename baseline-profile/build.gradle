@@ -1,0 +1,45 @@
+plugins {
+    alias(libs.plugins.android.test)
+    alias(libs.plugins.androidx.baselineprofile)
+}
+
+android {
+    namespace 'app.lawnchair.baseline'
+
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    targetProjectPath = ":"
+
+    flavorDimensions += ["app", "recents", "channel"]
+    productFlavors {
+        lawn { dimension = "app" }
+        withQuickstep { dimension = "recents" }
+        github { dimension = "channel" }
+        nightly { dimension = "channel" }
+        play { dimension = "channel" }
+    }
+
+    testOptions.managedDevices.localDevices {
+        create("pixel7Api36") {
+            device = "Pixel 7"
+            apiLevel = 36
+            systemImageSource = "google"
+        }
+    }
+}
+
+// This is the configuration block for the Baseline Profile plugin.
+// You can specify to run the generators on a managed devices or connected devices.
+baselineProfile {
+    managedDevices += ["pixel7Api36"]
+    useConnectedDevices = false
+}
+
+dependencies {
+    implementation libs.androidx.junit
+    implementation libs.androidx.espresso.core
+    implementation libs.androidx.uiautomator
+    implementation libs.androidx.benchmark.macro.junit4
+}

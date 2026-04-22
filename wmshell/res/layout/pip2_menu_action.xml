@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2024 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<com.android.wm.shell.pip2.phone.PipMenuActionView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/pip_action_size"
+    android:layout_height="@dimen/pip_action_size"
+    android:background="?android:selectableItemBackgroundBorderless"
+    android:forceHasOverlappingRendering="false">
+
+    <ImageView
+        android:id="@+id/custom_close_bg"
+        android:layout_width="@dimen/pip_custom_close_bg_size"
+        android:layout_height="@dimen/pip_custom_close_bg_size"
+        android:layout_gravity="center"
+        android:src="@drawable/pip_custom_close_bg"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/pip_action_inner_size"
+        android:layout_height="@dimen/pip_action_inner_size"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"/>
+
+</com.android.wm.shell.pip2.phone.PipMenuActionView>

@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2017 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <!-- For screens without rounded corners -->
+    <dimen name="task_corner_radius_small">2dp</dimen>
+    <!-- For Launchers that want to override the default dialog corner radius -->
+    <dimen name="task_corner_radius_override">-1dp</dimen>
+
+    <!--  Task Menu View  -->
+    <dimen name="task_menu_corner_radius">26dp</dimen>
+    <dimen name="task_menu_item_corner_radius">4dp</dimen>
+    <dimen name="task_menu_spacing">2dp</dimen>
+    <dimen name="task_menu_width_grid">216dp</dimen>
+    <dimen name="task_menu_horizontal_padding">8dp</dimen>
+    <dimen name="overview_proactive_row_height">48dp</dimen>
+    <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
+
+    <dimen name="overview_minimum_next_prev_size">50dp</dimen>
+
+    <!--  Overview Task Views  -->
+    <!--  The thumbnail uses up to this much of the total screen height/width in Overview -->
+    <item name="overview_max_scale" format="float" type="dimen">0.7</item>
+    <!--  A touch target for icons, sometimes slightly larger than the icons themselves  -->
+    <dimen name="task_thumbnail_icon_size">48dp</dimen>
+    <!--  The icon size for the focused task, placed in center of touch target  -->
+    <dimen name="task_thumbnail_icon_drawable_size">44dp</dimen>
+    <!--  The splash icon size on in Overview when a task is settled in the list -->
+    <dimen name="task_thumbnail_splash_icon_size">52dp</dimen>
+    <!--  The border width shown when task is hovered  -->
+    <dimen name="task_hover_border_width">4dp</dimen>
+    <!--  The space under the focused task icon  -->
+    <dimen name="overview_task_margin">16dp</dimen>
+    <!--  The horizontal space between tasks  -->
+    <dimen name="overview_page_spacing">16dp</dimen>
+    <!--  The collapsed max width of the icon menu text  -->
+    <dimen name="task_thumbnail_icon_menu_text_collapsed_max_width">86dp</dimen>
+    <!--  The expanded max width of the icon menu text  -->
+    <dimen name="task_thumbnail_icon_menu_text_expanded_max_width">118dp</dimen>
+    <!--  The size of the icon menu text  -->
+    <dimen name="task_thumbnail_icon_menu_text_size">14sp</dimen>
+    <!--  The width of the thumbnail icon menu when collapsed (for non-split tasks)  -->
+    <dimen name="task_thumbnail_icon_menu_collapsed_width">156dp</dimen>
+    <!--  The width of the thumbnail icon menu when expanded -->
+    <dimen name="task_thumbnail_icon_menu_expanded_width">216dp</dimen>
+    <!--  The height of the thumbnail icon menu when collapsed  -->
+    <dimen name="task_thumbnail_icon_menu_collapsed_height">36dp</dimen>
+    <!--  The height of the thumbnail icon menu when expanded -->
+    <dimen name="task_thumbnail_icon_menu_expanded_height">52dp</dimen>
+    <!--  The margin at the top/start of the task icon menu when expanded  -->
+    <dimen name="task_thumbnail_icon_menu_expanded_top_start_margin">4dp</dimen>
+    <!--  The margin at the start of the background when collapsed  -->
+    <dimen name="task_thumbnail_icon_menu_background_margin_top_start">8dp</dimen>
+    <!--  The margin between the app name + app icon and app name + arrow icon when collapsed  -->
+    <dimen name="task_thumbnail_icon_menu_app_name_margin_horizontal_collapsed">8dp</dimen>
+    <!--  The margin between the app name + app icon and app name + arrow icon when expanded  -->
+    <dimen name="task_thumbnail_icon_menu_app_name_margin_horizontal_expanded">12dp</dimen>
+    <!--  The gap at the top of the task icon menu when expanded  -->
+    <dimen name="task_thumbnail_icon_menu_expanded_gap">2dp</dimen>
+    <!--  The margin at the start of the task icon view in the icon menu  -->
+    <dimen name="task_thumbnail_icon_view_start_margin">6dp</dimen>
+    <!--  The space around the task icon arrow within the icon menu  -->
+    <dimen name="task_thumbnail_icon_menu_arrow_margin">8dp</dimen>
+    <!--  The size for the icon menu arrow -->
+    <dimen name="task_thumbnail_icon_menu_arrow_size">24dp</dimen>
+    <!--  The collapsed size for the icon menu icon -->
+    <dimen name="task_thumbnail_icon_menu_app_icon_collapsed_size">24dp</dimen>
+    <!--  The expanded icon size for the icon menu -->
+    <dimen name="task_thumbnail_icon_menu_app_icon_expanded_size">32dp</dimen>
+    <!--  The size of the icon menu's icon touch target  -->
+    <dimen name="task_thumbnail_icon_menu_drawable_touch_size">44dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_elevation">4dp</dimen>
+    <dimen name="app_chip_round_corner_radius">28dp</dimen>
+    <!--  The size of the text fading horizontally -->
+    <dimen name="task_thumbnail_icon_menu_text_fading_size">20dp</dimen>
+    <!--  The size of the task thumbnail header  -->
+    <dimen name="task_thumbnail_header_padding_top_bottom">6dp</dimen>
+    <dimen name="task_thumbnail_header_padding_start_end">12dp</dimen>
+    <dimen name="task_thumbnail_header_margin_between_views">8dp</dimen>
+    <dimen name="task_thumbnail_header_icon_size">18dp</dimen>
+    <dimen name="task_header_close_button_size">20dp</dimen>
+    <dimen name="task_thumbnail_header_close_button_hit_rect_size">32dp</dimen>
+    <dimen name="task_thumbnail_header_round_corner_radius">16dp</dimen>
+    <!-- The size for non-overlapping layout in desktop tile -->
+    <dimen name="desktop_vertical_padding_between_tasks">24dp</dimen>
+    <dimen name="desktop_horizontal_padding_between_tasks">24dp</dimen>
+    <dimen name="desktop_top_bottom_margin_one_row">72dp</dimen>
+    <dimen name="desktop_left_right_margin_one_row">72dp</dimen>
+    <dimen name="desktop_top_margin_multi_rows">72dp</dimen>
+    <dimen name="desktop_bottom_margin_multi_rows">24dp</dimen>
+    <dimen name="desktop_left_right_margin_multi_rows">24dp</dimen>
+    <!-- The length of the fading edge (gradient) of the task header title -->
+    <dimen name="task_header_title_fading_edge_length">28dp</dimen>
+
+    <!--  How much a task being dragged for dismissal can undershoot the origin when dragged back to its start position.  -->
+    <dimen name="task_dismiss_max_undershoot">25dp</dimen>
+    <!--  How much a task should be dragged from the origin before it detaches (or reattaches).  -->
+    <dimen name="task_dismiss_detach_threshold">72dp</dimen>
+
+    <dimen name="task_icon_cache_default_icon_size">72dp</dimen>
+    <item name="overview_modal_max_scale" format="float" type="dimen">1.1</item>
+
+    <!-- Overrideable in overlay that provides the Overview Actions. -->
+    <dimen name="overview_actions_top_margin">24dp</dimen>
+    <dimen name="overview_actions_height">48dp</dimen>
+    <dimen name="overview_actions_button_spacing">16dp</dimen>
+    <dimen name="overview_actions_button_radius">28dp</dimen>
+    <dimen name="overview_actions_button_vertical_padding">10dp</dimen>
+    <dimen name="overview_actions_button_horizontal_padding">16dp</dimen>
+
+    <!-- These speeds are in dp/s -->
+    <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity">1.5dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity_grid">1dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity_grid_focus_task">5dp</dimen>
+
+    <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
+    <dimen name="recents_clear_all_outline_radius">24dp</dimen>
+    <dimen name="recents_clear_all_outline_padding">2dp</dimen>
+
+    <!-- Recents add desktop button -->
+    <dimen name="add_desktop_button_size">56dp</dimen>
+    <dimen name="add_desktop_button_outline_padding">2dp</dimen>
+
+    <!-- Recents App Chip -->
+    <dimen name="app_chip_keyboard_border_width">3dp</dimen>
+
+    <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
+             loading full resolution screenshots. -->
+    <dimen name="recents_fast_fling_velocity">600dp</dimen>
+
+    <!-- These speeds are in dp / ms -->
+    <dimen name="motion_pause_detector_speed_very_slow">0.0285dp</dimen>
+    <dimen name="motion_pause_detector_speed_slow">0.15dp</dimen>
+    <dimen name="motion_pause_detector_speed_somewhat_fast">0.285dp</dimen>
+    <dimen name="motion_pause_detector_speed_trackpad_somewhat_fast">0.7dp</dimen>
+    <dimen name="motion_pause_detector_speed_fast">1.4dp</dimen>
+    <dimen name="motion_pause_detector_min_displacement_from_app">36dp</dimen>
+    <dimen name="quickstep_fling_threshold_speed">0.5dp</dimen>
+
+    <!-- Launcher app transition -->
+    <dimen name="closing_window_trans_y">115dp</dimen>
+    <dimen name="closing_freeform_window_trans_y">36dp</dimen>
+
+    <dimen name="quick_switch_scaling_scroll_threshold">100dp</dimen>
+
+    <dimen name="recents_empty_message_text_size">14sp</dimen>
+    <dimen name="recents_empty_message_text_padding">16dp</dimen>
+
+    <dimen name="max_shadow_radius">0dp</dimen>
+
+    <!-- Total space (start + end) between the task card and the edge of the screen
+         in various configurations -->
+    <dimen name="task_card_menu_option_vertical_padding">16dp</dimen>
+    <dimen name="task_menu_edge_padding">8dp</dimen>
+    <dimen name="task_card_margin">8dp</dimen>
+    <dimen name="task_card_menu_shadow_height">3dp</dimen>
+    <dimen name="task_menu_option_start_margin">16dp</dimen>
+    <dimen name="task_menu_option_text_start_margin">18dp</dimen>
+    <!-- Copied from framework resource:
+       docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
+    <dimen name="multi_window_task_divider_size">10dp</dimen>
+
+    <!-- Assistant Gestures -->
+    <!-- Distance from the vertical edges of the screen in which assist gestures are recognized -->
+    <dimen name="gestures_assistant_width">48dp</dimen>
+    <dimen name="gestures_assistant_drag_threshold">55dp</dimen>
+    <dimen name="gestures_assistant_fling_threshold">55dp</dimen>
+
+    <!-- One-Handed Mode -->
+    <!-- Threshold for draging distance to enable one-handed mode -->
+    <dimen name="gestures_onehanded_drag_threshold">20dp</dimen>
+
+    <!-- Distance to move elements when swiping up to go home from launcher -->
+    <dimen name="home_pullback_distance">28dp</dimen>
+
+    <!-- Distance to move the tasks when swiping up while the device is locked -->
+    <dimen name="device_locked_y_offset">-80dp</dimen>
+
+    <!-- Overscroll Gesture -->
+    <dimen name="gestures_overscroll_fling_threshold">40dp</dimen>
+    <dimen name="gestures_overscroll_active_threshold">80dp</dimen>
+    <dimen name="gestures_overscroll_finish_threshold">136dp</dimen>
+
+    <!-- Tips Gesture Tutorial -->
+    <dimen name="gesture_tutorial_feedback_margin_start_end">8dp</dimen>
+    <dimen name="gesture_tutorial_tablet_feedback_margin_start_end">140dp</dimen>
+    <dimen name="gesture_tutorial_feedback_margin_top">16dp</dimen>
+    <dimen name="gesture_tutorial_tablet_feedback_margin_top">24dp</dimen>
+    <dimen name="gesture_tutorial_multi_row_task_view_spacing">72dp</dimen>
+    <dimen name="gesture_tutorial_small_task_view_corner_radius">18dp</dimen>
+    <dimen name="gesture_tutorial_mock_taskbar_height">80dp</dimen>
+    <dimen name="gesture_tutorial_back_gesture_exiting_app_margin">8dp</dimen>
+    <dimen name="gesture_tutorial_back_gesture_end_corner_radius">36dp</dimen>
+
+    <!-- Gesture Tutorial menu page -->
+    <dimen name="gesture_tutorial_menu_padding_horizontal">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_top">31dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_bottom">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_height">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_spacing">16dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_radius">28dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_top_spacing">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_spacing">72dp</dimen>
+    <dimen name="gesture_tutorial_done_button_bottom_margin">40dp</dimen>
+    <dimen name="gesture_tutorial_done_button_end_margin">24dp</dimen>
+    <dimen name="gesture_tutorial_done_button_width">142dp</dimen>
+    <dimen name="gesture_tutorial_done_button_padding">16dp</dimen>
+
+    <!-- Gesture Tutorial mock conversations -->
+    <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
+    <dimen name="gesture_tutorial_message_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_message_input_margin_top">36dp</dimen>
+    <dimen name="gesture_tutorial_message_large_margin_bottom">32dp</dimen>
+    <dimen name="gesture_tutorial_message_small_margin_bottom">4dp</dimen>
+    <dimen name="gesture_tutorial_message_padding_start">26dp</dimen>
+    <dimen name="gesture_tutorial_message_padding_end">18dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_margin_start">34dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_margin_end">211dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_button_margin_end">24dp</dimen>
+    <dimen name="gesture_tutorial_conversation_bottom_padding">66dp</dimen>
+    <integer name="gesture_tutorial_extra_messages_visibility">0</integer> <!-- VISIBLE -->
+    <dimen name="gesture_tutorial_message_margin_start">124dp</dimen>
+    <dimen name="gesture_tutorial_reply_margin_end">144dp</dimen>
+    <dimen name="gesture_tutorial_input_margin_start">34dp</dimen>
+    <dimen name="gesture_tutorial_input_margin_end">24dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_padding_start_end">126dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_1_margin">245dp</dimen>
+    <dimen name="gesture_tutorial_tablet_reply_1_margin">241dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_2_margin">401dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_3_margin">245dp</dimen>
+    <dimen name="gesture_tutorial_tablet_reply_2_margin">273dp</dimen>
+
+    <!-- Gesture Tutorial mock conversation lists -->
+    <dimen name="gesture_tutorial_conversation_icon_size">56dp</dimen>
+    <dimen name="gesture_tutorial_conversation_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_conversation_list_padding_top">28dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_padding_start">20dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_1_margin_end">217dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_2_margin_end">142dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_3_margin_end">190dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_4_margin_end">171dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_5_margin_end">198dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_6_margin_end">79dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_7_margin_end">174dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_8_margin_end">117dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_6_margin_end">65dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_8_margin_end">132dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_10_margin_end">161dp</dimen>
+    <integer name="gesture_tutorial_extra_conversations_visibility">0</integer> <!-- VISIBLE -->
+    <dimen name="gesture_tutorial_mock_button_margin_end">24dp</dimen>
+    <dimen name="gesture_tutorial_mock_button_margin_bottom">66dp</dimen>
+
+    <!-- Gesture Tutorial mock hotseats -->
+    <dimen name="gesture_tutorial_hotseat_width">-1px</dimen> <!-- match_parent -->
+    <dimen name="gesture_tutorial_hotseat_height">-2px</dimen> <!-- wrap_content -->
+    <dimen name="gesture_tutorial_hotseat_padding_start_end">26dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_icon_size">60dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_search_height">50dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_search_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_icon_search_margin">36dp</dimen>
+
+    <!-- Gesture Tutorial mock webpages -->
+    <dimen name="gesture_tutorial_webpage_padding_top">32dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_margin_top">24dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_margin_top">8dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_corner_radius">22dp</dimen>
+    <dimen name="gesture_tutorial_webpage_medium_corner_radius">8dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_corner_radius">4dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_line_height">36dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_line_height">22dp</dimen>
+    <dimen name="gesture_tutorial_webpage_url_margin_start_end">16dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_button_margin_start">24dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_margin_start">97dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_margin_end">97dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_1_margin_end">126dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_2_margin_end">64dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_3_margin_end">151dp</dimen>
+    <dimen name="gesture_tutorial_webpage_block_margin_end">24dp</dimen>
+    <integer name="gesture_tutorial_webpage_extra_lines_visibility">0</integer> <!-- VISIBLE -->
+
+    <!-- Gesture Tutorial mock taskbar -->
+    <dimen name="gesture_tutorial_taskbar_icon_size">52dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_all_apps_mini_size">7dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_padding">12dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_icon_spacing">24dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_margin_bottom">24dp</dimen>
+
+    <!-- All Set page -->
+    <dimen name="allset_page_padding_horizontal">40dp</dimen>
+    <dimen name="allset_page_allset_text_size">36sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size">14sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size_expressive">16sp</dimen>
+
+    <dimen name="allset_title_margin_top">24dp</dimen>
+    <dimen name="allset_title_icon_margin_top">32dp</dimen>
+    <dimen name="allset_subtitle_margin_top">24dp</dimen>
+    <dimen name="allset_subtitle_width_max">348dp</dimen>
+    <dimen name="allset_swipe_up_shift">10dp</dimen>
+
+    <!-- All Apps Education tutorial -->
+    <dimen name="swipe_edu_padding">8dp</dimen>
+    <dimen name="swipe_edu_circle_size">64dp</dimen>
+    <dimen name="swipe_edu_width">80dp</dimen>
+    <dimen name="swipe_edu_max_height">184dp</dimen>
+
+    <dimen name="chip_hint_border_width">1dp</dimen>
+    <dimen name="chip_hint_corner_radius">20dp</dimen>
+    <dimen name="chip_hint_outer_padding">20dp</dimen>
+    <dimen name="chip_hint_start_padding">10dp</dimen>
+    <dimen name="chip_hint_end_padding">12dp</dimen>
+    <dimen name="chip_hint_horizontal_margin">20dp</dimen>
+    <dimen name="chip_hint_vertical_offset">16dp</dimen>
+    <dimen name="chip_hint_elevation">2dp</dimen>
+    <dimen name="chip_icon_size">16dp</dimen>
+    <dimen name="chip_text_height">26dp</dimen>
+    <dimen name="chip_text_top_padding">4dp</dimen>
+    <dimen name="chip_text_start_padding">10dp</dimen>
+    <dimen name="chip_text_size">14sp</dimen>
+
+    <dimen name="all_apps_prediction_row_divider_height">17dp</dimen>
+    <dimen name="all_apps_label_top_padding">16dp</dimen>
+    <dimen name="all_apps_label_bottom_padding">8dp</dimen>
+    <dimen name="all_apps_label_text_size">14sp</dimen>
+
+    <!-- Minimum distance to swipe to trigger accessibility gesture -->
+    <dimen name="accessibility_gesture_min_swipe_distance">80dp</dimen>
+
+    <!-- The maximum width of the navigation bar ripples. -->
+    <dimen name="key_button_ripple_max_width">95dp</dimen>
+
+    <dimen name="rounded_corner_content_padding">0dp</dimen>
+
+    <dimen name="navigation_key_padding">0dp</dimen>
+
+    <!-- Floating rotation button -->
+    <dimen name="floating_rotation_button_diameter">52dp</dimen>
+    <dimen name="floating_rotation_button_min_margin">20dp</dimen>
+    <dimen name="floating_rotation_button_taskbar_left_margin">20dp</dimen>
+    <dimen name="floating_rotation_button_taskbar_bottom_margin">10dp</dimen>
+
+    <!-- Copied from frameworks/base/packages/SystemUI -->
+    <dimen name="navigation_home_handle_width">108dp</dimen>
+
+    <!-- Taskbar -->
+    <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
+    <dimen name="taskbar_ime_size">48dp</dimen>
+    <dimen name="taskbar_icon_min_touch_size">48dp</dimen>
+    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
+    <dimen name="taskbar_icon_spacing">12dp</dimen>
+    <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
+    <dimen name="taskbar_folder_margin">16dp</dimen>
+    <dimen name="taskbar_contextual_button_padding">16dp</dimen>
+    <dimen name="taskbar_contextual_padding_top">8dp</dimen>
+    <dimen name="taskbar_nav_buttons_size">44dp</dimen>
+    <dimen name="taskbar_split_instructions_margin">48dp</dimen>
+    <dimen name="taskbar_ime_switcher_button_margin_start">40dp</dimen>
+    <dimen name="taskbar_suw_insets">48dp</dimen>
+    <dimen name="taskbar_suw_frame">96dp</dimen>
+    <dimen name="taskbar_hotseat_nav_spacing">24dp</dimen>
+    <dimen name="taskbar_contextual_buttons_size">35dp</dimen>
+    <dimen name="taskbar_stashed_size">24dp</dimen>
+    <dimen name="taskbar_stashed_handle_width">220dp</dimen>
+    <dimen name="taskbar_stashed_small_screen">108dp</dimen>
+    <dimen name="taskbar_unstash_input_area">316dp</dimen>
+    <dimen name="taskbar_stashed_handle_height">4dp</dimen>
+    <dimen name="taskbar_nudge_pill_height">24dp</dimen>
+    <dimen name="taskbar_nudge_pill_width">108dp</dimen>
+    <dimen name="taskbar_nudge_glow_radius_percent">200%</dimen>
+    <dimen name="taskbar_stashed_screen_edge_hover_deadzone_height">10dp</dimen>
+    <dimen name="taskbar_stashed_below_hover_deadzone_height">1dp</dimen>
+    <dimen name="taskbar_edu_horizontal_margin">112dp</dimen>
+    <dimen name="taskbar_nav_buttons_width_kids">88dp</dimen>
+    <dimen name="taskbar_nav_buttons_height_kids">40dp</dimen>
+    <dimen name="taskbar_nav_buttons_corner_radius_kids">40dp</dimen>
+    <dimen name="taskbar_back_button_left_margin_kids">48dp</dimen>
+    <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
+    <dimen name="taskbar_icon_size_kids">32dp</dimen>
+    <dimen name="taskbar_all_apps_search_button_translation_x_offset">6dp</dimen>
+    <dimen name="taskbar_all_apps_search_button_translation_x_offset_for_expressive_theme">0dp</dimen>
+    <dimen name="taskbar_contextual_button_suw_margin">64dp</dimen>
+    <dimen name="taskbar_contextual_button_suw_height">64dp</dimen>
+    <dimen name="taskbar_back_button_suw_start_margin">48dp</dimen>
+    <dimen name="taskbar_back_button_suw_bottom_margin">1dp</dimen>
+    <dimen name="taskbar_back_button_suw_height">72dp</dimen>
+    <dimen name="taskbar_running_app_indicator_height">2dp</dimen>
+    <dimen name="taskbar_running_app_indicator_width">12dp</dimen>
+    <dimen name="taskbar_running_app_indicator_top_margin">4dp</dimen>
+    <dimen name="taskbar_minimized_app_indicator_width">6dp</dimen>
+    <dimen name="taskbar_line_indicator_width_spring">20dp</dimen>
+    <dimen name="taskbar_app_translate_y_spring">4dp</dimen>
+
+    <!-- Transient taskbar -->
+    <dimen name="transient_taskbar_padding">12dp</dimen>
+    <dimen name="transient_taskbar_min_width">150dp</dimen>
+    <dimen name="transient_taskbar_bottom_margin">24dp</dimen>
+    <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
+    <dimen name="transient_taskbar_stroke_width">1dp</dimen>
+    <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
+    <dimen name="transient_taskbar_stashed_height">32dp</dimen>
+    <dimen name="transient_taskbar_all_apps_button_translation_x_offset">8dp</dimen>
+    <dimen name="transient_taskbar_stash_spring_velocity_dp_per_s">400dp</dimen>
+    <dimen name="transient_taskbar_action_corner_padding">48dp</dimen>
+    <dimen name="taskbar_tooltip_vertical_padding">8dp</dimen>
+    <dimen name="taskbar_tooltip_horizontal_padding">16dp</dimen>
+    <dimen name="taskbar_tooltip_y_offset">4dp</dimen>
+
+    <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
+    <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
+    <!-- Taskbar swipe up thresholds -->
+    <dimen name="taskbar_from_nav_threshold">40dp</dimen>
+    <dimen name="taskbar_app_window_threshold">88dp</dimen>
+    <dimen name="taskbar_home_overview_threshold">156dp</dimen>
+    <dimen name="taskbar_catch_up_threshold">264dp</dimen>
+    <!-- Taskbar swipe down threshold -->
+    <dimen name="taskbar_to_nav_threshold">24dp</dimen>
+
+    <!-- Taskbar variables that help determine when to animate the Taskbar background -->
+    <!-- Velocity defined as dp per s. Negative because the gesture is an upwards motion. -->
+    <dimen name="taskbar_slow_velocity_y_threshold">-288dp</dimen>
+    <integer name="taskbar_background_duration">80</integer>
+
+    <!-- Taskbar swipe up threshold multipliers -->
+    <item name="taskbar_nav_threshold_mult" format="float" type="dimen">4.5</item>
+    <item name="taskbar_app_window_threshold_mult" format="float" type="dimen">10</item>
+    <item name="taskbar_home_overview_threshold_mult" format="float" type="dimen">18</item>
+    <item name="taskbar_catch_up_threshold_mult" format="float" type="dimen">30</item>
+
+    <!--  Taskbar 3 button spacing  -->
+    <dimen name="taskbar_button_space_inbetween">24dp</dimen>
+    <dimen name="taskbar_button_space_inbetween_phone">40dp</dimen>
+    <dimen name="taskbar_button_margin_split">48dp</dimen>
+    <dimen name="taskbar_button_margin_6_5">75dp</dimen>
+    <dimen name="taskbar_button_margin_default">48dp</dimen>
+
+    <!-- Taskbar education tooltip -->
+    <dimen name="taskbar_edu_tooltip_elevation">14dp</dimen>
+    <dimen name="taskbar_edu_tooltip_horizontal_margin">32dp</dimen>
+    <dimen name="taskbar_edu_tooltip_vertical_margin">24dp</dimen>
+    <dimen name="taskbar_edu_tooltip_enter_y_delta">20dp</dimen>
+    <dimen name="taskbar_edu_tooltip_exit_y_delta">-10dp</dimen>
+    <dimen name="taskbar_edu_swipe_lottie_width">348dp</dimen>
+    <dimen name="taskbar_edu_swipe_lottie_height">217dp</dimen>
+    <dimen name="taskbar_edu_features_lottie_width">170dp</dimen>
+    <dimen name="taskbar_edu_features_lottie_height">106dp</dimen>
+    <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_with_one_feature">412dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_with_two_features">428dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_with_three_features">624dp</dimen>
+    <dimen name="taskbar_edu_search_subtitle_text_size">12sp</dimen>
+
+    <!--- Taskbar Pinning -->
+    <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>
+    <dimen name="taskbar_pinning_popup_menu_vertical_margin">16dp</dimen>
+    <dimen name="taskbar_pinning_popup_menu_min_padding_from_screen_edge">16dp</dimen>
+
+    <!-- Taskbar Multi Instance Menu -->
+    <dimen name="taskbar_multi_instance_menu_min_padding_from_screen_edge">8dp</dimen>
+
+    <!--- Floating Ime Inset height-->
+    <dimen name="floating_ime_inset_height">60dp</dimen>
+
+    <!-- Recents overview -->
+    <dimen name="recents_filter_icon_size">30dp</dimen>
+
+    <!-- Bubble bar -->
+    <dimen name="bubblebar_size">72dp</dimen>
+    <dimen name="bubblebar_stashed_handle_width">55dp</dimen>
+    <dimen name="bubblebar_stashed_size">@dimen/transient_taskbar_stashed_height</dimen>
+    <dimen name="bubblebar_stashed_handle_height">@dimen/taskbar_stashed_handle_height</dimen>
+    <dimen name="bubblebar_stashed_handle_spring_velocity_dp_per_s">@dimen/transient_taskbar_stash_spring_velocity_dp_per_s</dimen>
+    <!-- this is a pointer height minus 1dp to ensure the pointer overlaps with the bubblebar
+    background appropriately when close to the rounded corner -->
+    <dimen name="bubblebar_pointer_visible_size">9dp</dimen>
+    <dimen name="bubblebar_pointer_width">12dp</dimen>
+    <dimen name="bubblebar_pointer_height">10dp</dimen>
+    <dimen name="bubblebar_pointer_radius">2dp</dimen>
+    <!-- Container size with pointer included: bubblebar_size + bubblebar_pointer_size -->
+    <dimen name="bubblebar_size_with_pointer">80dp</dimen>
+    <dimen name="bubblebar_elevation">1dp</dimen>
+    <!-- TODO b/396539130: used wmshared value once resources are fixed -->
+    <dimen name="dragged_bubble_elevation">3dp</dimen>
+    <dimen name="bubblebar_hotseat_adjustment_threshold">90dp</dimen>
+    <dimen name="bubblebar_bounce_distance">20dp</dimen>
+
+    <dimen name="bubblebar_icon_size_small">32dp</dimen>
+    <dimen name="bubblebar_icon_size">36dp</dimen>
+    <dimen name="bubblebar_icon_size_persistent_taskbar">28dp</dimen>
+    <dimen name="bubblebar_badge_size">24dp</dimen>
+    <dimen name="bubblebar_icon_overlap">12dp</dimen>
+    <dimen name="bubblebar_overflow_inset">16dp</dimen>
+    <dimen name="bubblebar_icon_spacing">6dp</dimen>
+    <dimen name="bubblebar_icon_spacing_large">8dp</dimen>
+    <dimen name="bubblebar_icon_spacing_persistent_taskbar">@dimen/bubblebar_icon_spacing</dimen>
+    <dimen name="bubblebar_expanded_icon_spacing">12dp</dimen>
+    <dimen name="bubblebar_icon_elevation">1dp</dimen>
+    <dimen name="bubblebar_transient_taskbar_min_distance">12dp</dimen>
+
+    <!-- Bubble bar dismiss view -->
+    <dimen name="bubblebar_dismiss_target_size">@dimen/floating_dismiss_background_size</dimen>
+    <dimen name="bubblebar_dismiss_target_small_size">60dp</dimen>
+    <dimen name="bubblebar_dismiss_target_icon_size">@dimen/floating_dismiss_icon_size</dimen>
+    <dimen name="bubblebar_dismiss_target_bottom_margin">60dp</dimen>
+    <dimen name="bubblebar_dismiss_floating_gradient_height">548dp</dimen>
+    <dimen name="bubblebar_dismiss_zone_width">192dp</dimen>
+    <dimen name="bubblebar_dismiss_zone_height">242dp</dimen>
+
+    <!-- Bubble bar drop target -->
+    <dimen name="bubblebar_drop_target_corner_radius">36dp</dimen>
+    <dimen name="bubble_expanded_view_drop_target_default_width">412dp</dimen>
+    <dimen name="bubble_expanded_view_drop_target_default_height">600dp</dimen>
+    <dimen name="bubble_expanded_view_drop_target_corner_radius">28dp</dimen>
+    <dimen name="bubble_expanded_view_drop_target_padding">24dp</dimen>
+    <dimen name="bubble_expanded_view_drop_target_margin">16dp</dimen>
+
+    <!-- Bubble bar flyout view -->
+    <dimen name="bubblebar_flyout_padding">16dp</dimen>
+    <dimen name="bubblebar_flyout_elevation">4dp</dimen>
+    <dimen name="bubblebar_flyout_avatar_message_space">14dp</dimen>
+    <dimen name="bubblebar_flyout_min_width">238dp</dimen>
+    <dimen name="bubblebar_flyout_max_width">276dp</dimen>
+    <dimen name="bubblebar_flyout_triangle_width">12dp</dimen>
+    <dimen name="bubblebar_flyout_triangle_height">10dp</dimen>
+    <dimen name="bubblebar_flyout_triangle_overlap_amount">1dp</dimen>
+    <dimen name="bubblebar_flyout_triangle_radius">2dp</dimen>
+
+    <!-- Launcher splash screen -->
+    <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
+    <!--     starting_surface_exit_animation_window_shift_length -->
+    <dimen name="starting_surface_exit_animation_window_shift_length">20dp</dimen>
+
+    <!-- Keyboard Quick Switch -->
+    <dimen name="keyboard_quick_switch_border_width">5dp</dimen>
+    <dimen name="keyboard_quick_switch_border_stroke">3dp</dimen>
+    <dimen name="keyboard_quick_switch_border_padding">2dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_width">104dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_height">136dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_icon_size">52dp</dimen>
+    <dimen name="keyboard_quick_switch_recents_icon_size">20dp</dimen>
+    <dimen name="keyboard_quick_switch_desktop_icon_size">32dp</dimen>
+    <dimen name="keyboard_quick_switch_margin_top">56dp</dimen>
+    <dimen name="keyboard_quick_switch_margin_bottom">24dp</dimen>
+    <dimen name="keyboard_quick_switch_margin_ends">16dp</dimen>
+    <dimen name="keyboard_quick_switch_view_spacing">16dp</dimen>
+    <dimen name="keyboard_quick_switch_view_small_spacing">4dp</dimen>
+    <dimen name="keyboard_quick_switch_view_radius">28dp</dimen>
+    <dimen name="keyboard_quick_switch_task_view_radius">16dp</dimen>
+    <dimen name="keyboard_quick_switch_no_recent_items_icon_size">24dp</dimen>
+    <dimen name="keyboard_quick_switch_no_recent_items_icon_margin">8dp</dimen>
+    <dimen name="keyboard_quick_switch_text_button_width">104dp</dimen>
+    <dimen name="keyboard_quick_switch_text_button_radius">360dp</dimen>
+    <dimen name="keyboard_quick_switch_text_button_horizontal_padding">16dp</dimen>
+    <dimen name="keyboard_quick_switch_text_button_fade_edge_length">20dp</dimen>
+    <dimen name="keyboard_quick_switch_scroll_button_width">36dp</dimen>
+    <dimen name="keyboard_quick_switch_scroll_button_height">56dp</dimen>
+    <dimen name="keyboard_quick_switch_scroll_button_horizontal_padding">6dp</dimen>
+    <dimen name="keyboard_quick_switch_scroll_button_vertical_padding">16dp</dimen>
+    <dimen name="keyboard_quick_switch_scroll_button_corner_radius">18dp</dimen>
+
+    <!-- Digital Wellbeing -->
+    <dimen name="digital_wellbeing_toast_height">48dp</dimen>
+
+    <!-- Nudge -->
+    <dimen name="nudge_elevation">14dp</dimen>
+    <dimen name="nudge_horizontal_margin">32dp</dimen>
+    <dimen name="nudge_vertical_margin">24dp</dimen>
+
+    <dimen name="nudge_width">428dp</dimen>
+    <dimen name="nudge_paddingBottom">16dp</dimen>
+    <dimen name="nudge_content_elements_spacing">8dp</dimen>
+    <dimen name="nudge_buttons_margin_top">36dp</dimen>
+    <dimen name="nudge_buttons_spacing">8dp</dimen>
+    <dimen name="nudge_button_horizontal_padding">6dp</dimen>
+    <dimen name="nudge_button_vertical_padding">12dp</dimen>
+    <dimen name="nudge_enter_y_delta">20dp</dimen>
+    <dimen name="nudge_exit_y_delta">-10dp</dimen>
+
+    <dimen name="nudge_default_position_side_spacing">16dp</dimen>
+
+    <!-- Add Desktop Button -->
+    <integer name="add_desktop_button_fade_duration">50</integer>
+    <integer name="add_desktop_button_fade_delay">33</integer>
+    <dimen name="newly_created_desktop_offscreen_position">40dp</dimen>
+    <item name="newly_created_desktop_spring_damping_ratio" format="float" type="dimen">0.8</item>
+    <item name="newly_created_desktop_spring_stiffness" format="float" type="dimen">380</item>
+
+</resources>

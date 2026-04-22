@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+* Copyright (C) 2017 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Options for recent tasks -->
+    <!-- Title for an option to keep an app pinned to the screen until it is unpinned -->
+    <string name="recent_task_option_pin">Pin</string>
+    <!-- Title for an option to enter freeform mode for a given app -->
+    <string name="recent_task_option_freeform">Freeform</string>
+    <!-- Title and content description for an option to enter desktop windowing mode for a given app -->
+    <string name="recent_task_option_desktop">Desktop</string>
+    <!-- Title and content description for an option to move app to external display. -->
+    <string name="recent_task_option_external_display">Move to external display</string>
+    <!-- Title and content description for an option to remove the task [CHAR LIMIT=30] -->
+    <string name="recent_task_option_remove_task">Clear</string>
+
+    <!-- Title and content description for Desktop tile in Recents screen that contains apps opened inside desktop windowing mode [CHAR LIMIT=NONE] -->
+    <string name="recent_task_desktop">Desktop</string>
+
+    <!-- Recents: The empty recents string. [CHAR LIMIT=NONE] -->
+    <string name="recents_empty_message">No recent items</string>
+
+    <!-- Content description for the recent apps's accessibility option that opens its usage settings. [CHAR LIMIT=NONE] -->
+    <string name="accessibility_app_usage_settings">App usage settings</string>
+
+    <!-- Recents: Title of a button that clears the task list, i.e. closes all tasks. [CHAR LIMIT=30] -->
+    <string name="recents_clear_all">Clear all</string>
+
+    <!-- Recents: Title of a button that goes back from displaying tasks filtered by package name to displaying all tasks [CHAR LIMIT=30] -->
+    <string name="recents_back" translatable="false">Back</string>
+
+    <!-- Content description for the add desk button inside recents [CHAR_LIMIT=none] -->
+    <string name="add_desk_button_content_description">Add new desk</string>
+
+    <!-- Accessibility title for the list of recent apps [CHAR_LIMIT=none] -->
+    <string name="accessibility_recent_apps">Recent apps</string>
+
+    <!-- Accessibility title for an app card in Recents for apps that have time limit set
+     [CHAR_LIMIT=none] -->
+    <string name="task_contents_description_with_remaining_time"><xliff:g id="task_description" example="GMail">%1$s</xliff:g>, <xliff:g id="remaining_time" example="7 minutes left today">%2$s</xliff:g></string>
+
+    <!-- Text to show total app usage per day if it is less than 1 minute ("&lt;" is the
+     escaped form of '<'). [CHAR LIMIT=15] -->
+    <string name="shorter_duration_less_than_one_minute">&lt; 1 minute</string>
+
+    <!-- Annotation shown on an app card in Recents, telling that the app has a usage limit set by
+    the user, and a given time is left for it today [CHAR LIMIT=22] -->
+    <string name="time_left_for_app"><xliff:g id="time" example="7 minutes">%1$s</xliff:g> left today</string>
+
+    <!-- Accessibility title for the row of all-apps containing app predictions. [CHAR LIMIT=50] -->
+    <string name="title_app_suggestions">App suggestions</string>
+    <!-- Text of the tip when user lands in all apps view for the first time, indicating where the tip toast points to is the predicted apps section. [CHAR_LIMIT=50] -->
+    <string name="all_apps_prediction_tip">Your predicted apps</string>
+
+    <!-- Content description for a close button. [CHAR LIMIT=NONE] -->
+    <string name="gesture_tutorial_close_button_content_description" translatable="false">Close</string>
+
+    <!-- Hotseat educational strings for users who don't qualify for migration -->
+    <string name="hotseat_edu_title_migrate">Get app suggestions on the bottom row of your Home screen</string>
+    <string name="hotseat_edu_title_migrate_landscape">Get app suggestions on favorites row of your Home screen</string>
+
+    <string name="hotseat_edu_message_migrate">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move up to your Home screen. </string>
+    <string name="hotseat_edu_message_migrate_landscape">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps in favorites row will move to your Home screen. </string>
+
+    <!-- Button text to opt in for fully predicted hotseat -->
+    <string name="hotseat_edu_accept">Get app suggestions</string>
+    <!-- Button text to dismiss opt in for fully predicted hotseat -->
+    <string name="hotseat_edu_dismiss">No thanks</string>
+
+    <!-- action shown to toggle predictions after onboarding -->
+    <string name="hotseat_prediction_settings">Settings</string>
+
+    <!-- tip shown if user has no items in hotseat to migrate -->
+    <string name="hotseat_auto_enrolled">Most-used apps appear here, and change based on routines</string>
+    <!-- tip shown if user declines migration and has no open spots for prediction -->
+    <string name="hotseat_tip_no_empty_slots">Drag apps off the bottom row to get app suggestions</string>
+    <!-- tip shown if user declines migration and has some open spots for prediction -->
+    <string name="hotseat_tip_gaps_filled">App suggestions added to empty space</string>
+    <!-- tip shown when user migrates and predictions are enabled in hotseat -->
+    <string name="hotsaet_tip_prediction_enabled">App suggestions enabled</string>
+    <!-- tip shown when hotseat edu is requested while predictions are disabled -->
+    <string name="hotsaet_tip_prediction_disabled">App suggestions are disabled</string>
+
+    <!-- content description for hotseat items -->
+    <string name="hotseat_prediction_content_description">Predicted app: <xliff:g id="title" example="Chrome">%1$s</xliff:g></string>
+
+    <!-- Title of the Gesture Navigation Tutorial page [CHAR LIMIT=NONE] -->
+    <string name="gesture_tutorial_title">Gesture Navigation Tutorial</string>
+
+    <!-- Title of prompt shown before the gesture navigation tutorial to users who need to rotate their screen. [CHAR LIMIT=100] -->
+    <string name="gesture_tutorial_rotation_prompt_title">Rotate your device</string>
+    <!-- Prompt shown before the gesture navigation tutorial to users who need to rotate their screen to begin. [CHAR LIMIT=100] -->
+    <string name="gesture_tutorial_rotation_prompt">Please rotate your device to complete the gesture navigation tutorial</string>
+
+    <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe from the far-right or far-left edge</string>
+    <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is cancelled. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_cancelled">Make sure you swipe from the right or left edge to the middle of the screen and let go</string>
+    <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_complete_with_overview_follow_up">You learned how to swipe from the right to go back. Next up, learn how to switch apps.</string>
+    <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_complete_with_follow_up">You completed the go back gesture. Next up, learn how to switch apps.</string>
+    <!-- Feedback shown after completing the back gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_complete_without_follow_up">You completed the go back gesture</string>
+    <!-- Feedback shown during interactive parts of Back gesture tutorial when the gesture is within the nav bar region. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_swipe_in_nav_bar">Make sure you don\'t swipe too close to the bottom of the screen</string>
+    <!-- Subtitle shown on the confirmation screen after successful gesture. [CHAR LIMIT=60] -->
+    <string name="back_gesture_tutorial_confirm_subtitle">To change the sensitivity of the back gesture, go to Settings</string>
+    <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
+    <!-- Introduction title for the Back gesture tutorial. [CHAR LIMIT=100] -->
+    <string name="back_gesture_intro_title">Swipe to go back</string>
+    <!-- Introduction subtitle for the Back gesture tutorial. [CHAR LIMIT=200] -->
+    <string name="back_gesture_intro_subtitle">To go back to the last screen, swipe from the left or right edge to the middle of the screen.</string>
+    <!-- Title of the gesture tutorial section educating users on how to go back to the previous screen. [CHAR LIMIT=100] -->
+    <string name="back_gesture_tutorial_title">Go back</string>
+    <!-- Subtitle of the gesture tutorial section educating users on how to go to back to the previous screen [CHAR LIMIT=100] -->
+    <string name="back_gesture_tutorial_subtitle">Swipe from the left or right edge to the middle of the screen</string>
+
+    <string name="home_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen</string>
+    <!-- Feedback shown during interactive parts of Home gesture tutorial when the Overview gesture is detected. [CHAR LIMIT=100] -->
+    <string name="home_gesture_feedback_overview_detected">Make sure you don\'t pause before letting go</string>
+    <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
+    <string name="home_gesture_feedback_wrong_swipe_direction">Make sure you swipe straight up</string>
+    <!-- Feedback shown after completing the home gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
+    <string name="home_gesture_feedback_complete_with_follow_up">You completed the go home gesture. Next up, learn how to go back.</string>
+    <!-- Feedback shown after completing the home gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
+    <string name="home_gesture_feedback_complete_without_follow_up">You completed the go home gesture</string>
+    <!-- Introduction title for the Home gesture tutorial. [CHAR LIMIT=100] -->
+    <string name="home_gesture_intro_title">Swipe to go home</string>
+    <!-- Introduction subtitle for the Home gesture tutorial. [CHAR LIMIT=100] -->
+    <string name="home_gesture_intro_subtitle">Swipe up from the bottom of your screen. This gesture always takes you to the Home screen.</string>
+    <!-- Title of the gesture tutorial section educating users on how to go to the home screen. [CHAR LIMIT=100] -->
+    <string name="home_gesture_tutorial_title">Go home</string>
+    <!-- Subtitle of the gesture tutorial section educating users on how to go to the home screen [CHAR LIMIT=100] -->
+    <string name="home_gesture_tutorial_subtitle">Swipe up from the bottom of your screen</string>
+    <!-- Title message when users successfully learn to go to the home screen [CHAR LIMIT=100] -->
+    <string name="home_gesture_tutorial_success">Great job!</string>
+
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen</string>
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the Home gesture is detected. The window refers to the current app's window during the gesture. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_home_detected">Try holding the window for longer before releasing</string>
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_wrong_swipe_direction">Make sure you swipe straight up, then pause</string>
+    <!-- Feedback shown after completing the overview gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_complete_with_follow_up">You learned how to use gestures. To turn off gestures, go to Settings.</string>
+    <!-- Feedback shown after completing the overview gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_complete_without_follow_up">You completed the switch apps gesture</string>
+    <!-- Introduction title for the Overview gesture tutorial. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_intro_title">Swipe to switch apps</string>
+    <!-- Introduction subtitle for the Overview gesture tutorial. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_intro_subtitle">To switch between apps, swipe up from the bottom of your screen, hold, then release.</string>
+    <!-- Title of the gesture tutorial section educating users on how to switch between apps. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_tutorial_title">Switch apps</string>
+    <!-- Subtitle of the gesture tutorial section educating users on how to switch between apps [CHAR LIMIT=100] -->
+    <string name="overview_gesture_tutorial_subtitle">Swipe up from the bottom of your screen, hold, then release</string>
+    <!-- Title message when users successfully learn to switch between apps [CHAR LIMIT=100] -->
+    <string name="overview_gesture_tutorial_success">Well done!</string>
+
+
+    <!-- Title shown during interactive part of Assistant gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="assistant_gesture_tutorial_playground_title" translatable="false">Tutorial: Assistant</string>
+    <!-- Subtitle shown during interactive parts of Assistant gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="assistant_gesture_tutorial_playground_subtitle" translatable="false">Try swiping diagonally from a bottom corner of the screen</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture is started too far from the corner. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_too_far_from_corner" translatable="false">Make sure you swipe from a bottom corner of the screen.</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture doesn't go diagonally enough. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_not_diagonal" translatable="false">Make sure you swipe diagonally.</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture doesn't go far enough. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_not_long_enough" translatable="false">Try swiping further.</string>
+
+    <!-- Title shown in sandbox mode part of gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="sandbox_mode_title" translatable="false">Sandbox Mode</string>
+    <!-- Subtitle shown in sandbox mode part of gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="sandbox_mode_subtitle" translatable="false">Try any navigation gesture</string>
+    <!-- Feedback shown in sandbox mode when the back gesture is successfully issued. [CHAR LIMIT=60] -->
+    <string name="sandbox_mode_back_gesture_feedback_successful" translatable="false">Back gesture successful</string>
+    <!-- Feedback shown in sandbox mode when the assistant gesture is a successfully issued. [CHAR LIMIT=60] -->
+    <string name="sandbox_mode_assistant_gesture_feedback_successful" translatable="false">Assistant gesture successful</string>
+    <!-- Feedback shown in sandbox mode when the home gesture is a successfully issued. [CHAR LIMIT=60] -->
+    <string name="sandbox_mode_home_gesture_feedback_successful" translatable="false">Home gesture successful</string>
+    <!-- Feedback shown in sandbox mode when the overview gesture is a successfully issued. [CHAR LIMIT=60] -->
+    <string name="sandbox_mode_overview_gesture_feedback_successful" translatable="false">Overview gesture successful</string>
+    <!-- Feedback shown in sandbox mode when the back gesture swipe is too far from the edge. [CHAR LIMIT=60] -->
+    <string name="sandbox_mode_back_gesture_feedback_swipe_too_far_from_edge" translatable="false">Make sure you swipe from the left/right edge of the screen</string>
+
+    <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
+    <string name="gesture_tutorial_confirm_title">All set</string>
+    <!-- Button text shown on a button on the feedback popup to complete the gesture tutorial. [CHAR LIMIT=14] -->
+    <string name="gesture_tutorial_action_button_label">Done</string>
+    <!-- Button text shown on a button to go to Settings. [CHAR LIMIT=14] -->
+    <string name="gesture_tutorial_action_button_label_settings">Settings</string>
+    <!-- Feedback title to try again. [CHAR LIMIT=30] -->
+    <string name="gesture_tutorial_try_again">Try again</string>
+    <!-- Feedback title for a successful gesture. [CHAR LIMIT=30] -->
+    <string name="gesture_tutorial_nice">Nice!</string>
+    <!-- Feedback subtext displaying the current step and the total number of steps for the tutorial. [CHAR LIMIT=30] -->
+    <string name="gesture_tutorial_step">Tutorial <xliff:g id="current">%1$d</xliff:g>/<xliff:g id="total">%2$d</xliff:g></string>
+
+    <!-- Title of "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_title">All set!</string>
+    <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_hint">Swipe up to go home</string>
+    <!-- Hint string at the bottom of "All Set" page for button navigation [CHAR LIMIT=NONE] -->
+    <string name="allset_button_hint">Tap the home button to go to your home screen</string>
+    <!-- Description of "All Set" page on the user's device when their device name is provided [CHAR LIMIT=NONE] -->
+    <string name="allset_description_generic">You\u2019re ready to start using your <xliff:g id="device" example="Pixel 6">%1$s</xliff:g></string>
+    <!-- Description of "All Set" page on the user's device when no device name is provided [CHAR LIMIT=NONE] -->
+    <string name="allset_description_fallback">You\u2019re ready to start using your device</string>
+    <!-- String linking to navigation settings on "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_navigation_settings"><annotation id="link">System navigation settings</annotation></string>
+    <!-- New Title of "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_title_expressive">Your <xliff:g id="device" example="Pixel 9">%1$s</xliff:g> is \nready!</string>
+    <!-- Description of "All Set" page on the user's device when no device name is provided [CHAR LIMIT=NONE] -->
+    <string name="allset_title_expressive_fallback">Your device is \nready!</string>
+    <!-- New subtitle of "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_subtitle_expressive">Enjoy your new <xliff:g id="device" example="phone">%1$s</xliff:g>!</string>
+    <!-- String linking to navigation settings on "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_navigation_settings_expressive"><annotation id="link">Choose how to navigate</annotation></string>
+    <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="allset_hint_expressive">Swipe up</string>
+    <!-- Hint string at the bottom of "All Set" page for button navigation [CHAR LIMIT=NONE] -->
+    <string name="allset_button_hint_expressive">Tap the home button</string>
+    <!-- String representing device type of a Tablet [CHAR LIMIT=30] -->
+    <string name="allset_device_type_tablet">tablet</string>
+    <!-- String representing device type of a Phone [CHAR LIMIT=30] -->
+    <string name="allset_device_type_phone">phone</string>
+
+    <!-- ******* Overview ******* -->
+    <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->
+    <string name="action_share">Share</string>
+    <!-- Label for a button that causes a screen shot of the current app to be taken. [CHAR_LIMIT=40] -->
+    <string name="action_screenshot">Screenshot</string>
+    <!-- Label for a button that enters split screen selection mode. [CHAR_LIMIT=20] -->
+    <string name="action_split">Split</string>
+    <!-- Label for a button that saves a new app pair. [CHAR_LIMIT=20] -->
+    <string name="action_save_app_pair">Save app pair</string>
+    <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
+    <string name="toast_split_select_app">Tap another app to use split screen</string>
+    <string name="toast_contextual_split_select_app">Choose another app to use split screen</string>
+    <string name="toast_split_select_app_cancel">Cancel</string>
+    <string name="toast_split_select_cont_desc">Exit split screen selection</string>
+    <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
+    <string name="toast_split_app_unsupported">Choose another app to use split screen</string>
+    <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
+    <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
+    <string name="split_widgets_not_supported">Widgets not currently supported, please select another app</string>
+
+
+    <!-- Accessibility label for the rotation suggestion button -->
+    <string name="accessibility_rotate_button">Rotate screen</string>
+
+    <!-- ******* Taskbar Edu ******* -->
+    <!-- Text description to describe Taskbar education animation for Taskbar autohide functionality. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_swipe_animation_description">Animation showing how the taskbar comes into view from the bottom of the screen, and automatically hides when not in use</string>
+    <!-- Text description to describe Taskbar education animation for Taskbar pinning functionality. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_pinning_animation_description">Animation showing how to pin your taskbar using a toggle, so the taskbar remains permanently visible at the bottom of the screen</string>
+    <!-- Text description to describe Taskbar education animation for split screen functionality. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_split_screen_animation_description">Animation showing how to create a split screen, by dragging and dropping an app from the taskbar above an open app</string>
+    <!-- Text description to describe Taskbar education animation for app suggestion functionality. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_suggested_app_animation_description">Animation showing how to access suggested apps on your device</string>
+    <!-- Text description to describe Taskbar education animation for app suggestion functionality. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_suggested_search_animation_description">Animation showing how to search for an item on screen, by touching and holding the action key and selecting the area the item is in</string>
+    <!-- Accessibility title for the Taskbar education window. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_a11y_title">Taskbar education</string>
+    <!-- Text in dialog that lets a user know how they can use the Taskbar to use multiple apps at once on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_splitscreen">Drag an app to the side to use 2 apps at once</string>
+    <!-- Text in dialog that lets a user know how they can show the Taskbar on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_stashing">Slow-swipe up to show the Taskbar</string>
+    <!-- Text in dialog that lets a user know how the Taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_suggestions">Get app suggestions based on your routine</string>
+    <!-- Title in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
+    <string name="taskbar_edu_pinning">Long press on the divider to pin the Taskbar</string>
+    <!-- Title in dialog that shows a user what they can do with the Taskbar. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_features">Do more with the Taskbar</string>
+    <!-- Title in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
+    <string name="taskbar_edu_pinning_title">Always show the Taskbar</string>
+    <!-- Text in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 150] -->
+    <string name="taskbar_edu_pinning_standalone">To always show the Taskbar on the bottom of your screen, touch &amp; hold the divider</string>
+    <!-- Title in dialog that shows a user how to invoke the Search feature. [CHAR_LIMIT 150] -->
+    <string name="taskbar_search_edu_title">Touch &amp; hold the action key to search what\'s on your screen</string>
+    <!-- Message showed to user to disclose privacy information they need to accept in order to access the app. [CHAR LIMIT=200]-->
+    <string name="taskbar_edu_search_disclosure">This product uses the selected part of your screen to search. Google\'s <xliff:g example="https://policies.google.com/privacy/embedded" id="begin_privacy_link">&lt;a href=\"%1$s\"&gt;</xliff:g>Privacy Policy<xliff:g id="end_privacy_link">&lt;/a&gt;</xliff:g> and <xliff:g example="https://policies.google.com/terms" id="begin_tos_link">&lt;a href=\"%2$s\"&gt;</xliff:g>Terms of Service<xliff:g id="end_tos_link">&lt;/a&gt;</xliff:g> apply.</string>
+    <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->
+    <string name="taskbar_edu_close">Close</string>
+    <!-- Text on button to finish a tutorial [CHAR_LIMIT=16] -->
+    <string name="taskbar_edu_done">Done</string>
+        <!-- Content description for home button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_home">Home</string>
+    <!-- Content description for accessibility button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_a11y">Accessibility</string>
+    <!-- Content description for back button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_back">Back</string>
+    <!-- Content description for ime switcher button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_ime_switcher">IME switcher</string>
+    <!-- Content description for recents button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_recents">Recents</string>
+    <!-- Content description for notifications button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_notifications">Notifications</string>
+    <!-- Content description for quick settings button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_quick_settings">Quick Settings</string>
+    <!-- Accessibility title for the Taskbar window. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_a11y_title">Taskbar</string>
+    <!-- Accessibility title for the Taskbar window appeared. [CHAR_LIMIT=30] -->
+    <string name="taskbar_a11y_shown_title">Taskbar shown</string>
+    <!-- Accessibility title for the Taskbar window appearing together with bubble bar on left. [CHAR_LIMIT=30] -->
+    <string name="taskbar_a11y_shown_with_bubbles_left_title">Taskbar &#38; bubbles left shown</string>
+    <!-- Accessibility title for the Taskbar window appearing together with bubble bar on right. [CHAR_LIMIT=30] -->
+    <string name="taskbar_a11y_shown_with_bubbles_right_title">Taskbar &#38; bubbles right shown</string>
+    <!-- Accessibility title for the Taskbar window on phones. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_phone_a11y_title">Navigation bar</string>
+    <!-- Text in popup dialog for user to switch between always showing Taskbar or not. [CHAR LIMIT=30] -->
+    <string name="always_show_taskbar">Always show Taskbar</string>
+    <!-- Text in popup dialog for user to switch between system navigation modes. [CHAR LIMIT=30] -->
+    <string name="change_navigation_mode">Change navigation mode</string>
+    <!-- Accessibility title for the Taskbar vertical divider icon. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_divider_a11y_title">Taskbar Divider</string>
+    <!-- Accessibility title for the Taskbar Overflow icon. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_overflow_a11y_title">Other recent apps</string>
+
+
+    <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the Taskbar only). -->
+    <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
+    <!-- Label for moving drop target to the bottom or right side of the screen, depending on orientation (from the Taskbar only). -->
+    <string name="move_drop_target_bottom_or_right">Move to bottom&#47;right</string>
+    <!-- Label for creating an application bubble (from the Taskbar only). -->
+    <string name="open_app_as_a_bubble">Open app as a bubble</string>
+
+    <!-- Accessibility pane title for quick switch view, which lists apps opened by the user, ordered by how recently the app was opened. -->
+    <string name="quick_switch_pane_title">Recent apps</string>
+
+    <!-- Content description for the quick switch view, which lists apps opened by the user, ordered by how recently the app was opened. -->
+    <string name="quick_switch_content_description">Recent app list</string>
+
+    <!-- Label for quick switch tile showing how many more apps are available. The number will be displayed above this text. [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_overflow">{count, plural,
+            =1{more app}
+            other{more apps}
+        }</string>
+
+    <!-- Label for quick switch tile to launch desktop mode [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_desktop">Desktop</string>
+
+    <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
+    <!-- Accessibility label for quick switch tiles that include information about the tile's position in the parent list [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_task_with_position_in_parent"><xliff:g id="task_description" example="Chrome">%1$s</xliff:g>, item <xliff:g id="index_in_parent" example="1">%2$d</xliff:g> of <xliff:g id="total_tasks" example="5">%3$d</xliff:g></string>
+
+    <!-- Accessibility label for an arrow button within quick switch UI that scrolls the quick switch content left -->
+    <string name="quick_switch_scroll_arrow_left">Scroll left</string>
+    <!-- Accessibility label for an arrow button within quick switch UI that scrolls the quick switch content right -->
+    <string name="quick_switch_scroll_arrow_right">Scroll right</string>
+
+    <!-- Strings for bubble bar -->
+    <!-- Fallback name for a bubble if it does have a title [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_bubble_fallback_description">Bubble</string>
+    <!-- content description for the overflow bubble [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_overflow_description">Overflow</string>
+    <!-- Content description for a bubble bar bubble. [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_bubble_description"><xliff:g id="notification_title" example="some title">%1$s</xliff:g> from <xliff:g id="app_name" example="YouTube">%2$s</xliff:g></string>
+    <!-- Content description for bubble bar when it has multiple bubbles. [CHAR_LIMIT=NONE] -->
+    <string name="bubble_bar_description_multiple_bubbles"><xliff:g id="bubble_bar_bubble_description" example="some title from YouTube">%1$s</xliff:g> and <xliff:g id="bubble_count" example="4">%2$d</xliff:g> more</string>
+    <!-- Action in accessibility menu to move the bubble bar to the left side of the screen. [CHAR_LIMIT=30] -->
+    <string name="bubble_bar_action_move_left">Move left</string>
+    <!-- Action in accessibility menu to move the bubble bar to the right side of the screen. [CHAR_LIMIT=30] -->
+    <string name="bubble_bar_action_move_right">Move right</string>
+    <!-- Action in accessibility menu to dismiss all bubbles. [CHAR_LIMIT=30] -->
+    <string name="bubble_bar_action_dismiss_all">Dismiss all</string>
+    <!-- Accessibility announcement when the bubble bar expands. [CHAR LIMIT=NONE]-->
+    <string name="bubble_bar_accessibility_announce_expand">expand <xliff:g id="bubble_description" example="some title from Messages">%1$s</xliff:g></string>
+    <!-- Accessibility announcement when the bubble bar collapses. [CHAR LIMIT=NONE]-->
+    <string name="bubble_bar_accessibility_announce_collapse">collapse <xliff:g id="bubble_description" example="some title from Messages">%1$s</xliff:g></string>
+
+    <!-- Name of Google's new feature to circle to search anything on your phone screen, without
+     switching apps. [CHAR_LIMIT=60] -->
+    <string name="search_gesture_feature_title">Circle to Search</string>
+
+    <!-- Strings for task thumbnail header in Overview -->
+    <!-- Content description for the header app icon. [CHAR LIMIT=NONE] -->
+    <string name="header_app_icon_description">App icon</string>
+    <!-- Default app title for a task view in Overview. [CHAR LIMIT=NONE] -->
+    <string name="header_default_app_title">App title</string>
+    <!-- Content description for the header close button. [CHAR LIMIT=NONE] -->
+    <string name="header_close_icon_description">Close button</string>
+
+    <!-- Label for pinning an item to the taskbar. [CHAR_LIMIT=20] -->
+    <string name="pin_to_taskbar">Pin to taskbar</string>
+    <!-- Label for unpinning an item from the taskbar. [CHAR_LIMIT=20] -->
+    <string name="unpin_from_taskbar">Unpin from taskbar</string>
+
+    <!-- ******* Growth Framework Nudge ******* -->
+    <!-- Accessibility title for the nudge window. [CHAR_LIMIT=NONE] -->
+    <string name="nudge_a11y_title">Nudge</string>
+    <!-- Accessibility announcement for closing the nudge window. [CHAR_LIMIT=16] -->
+    <string name="nudge_a11y_close">Close</string>
+    <string name="nudge_a11y_image">Nudge image</string>
+</resources>

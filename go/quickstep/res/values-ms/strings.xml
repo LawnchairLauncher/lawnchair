@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Kongsi Apl"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Dengar"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Terjemah"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"BATAL"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"TETAPAN"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Terjemahkan atau dengar teks pada skrin"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Maklumat seperti teks pada skrin anda, alamat web dan tangkapan skrin boleh dikongsi dengan Google.\n\nUntuk menukar maklumat yang anda kongsi, pergi ke "<b>"Tetapan &gt; Apl &gt; Apl lalai &gt; Apl pembantu digital"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Pilih pembantu untuk menggunakan ciri ini"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Untuk mendengar atau menterjemahkan teks pada skrin anda, pilih apl pembantu digital dalam Tetapan"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Tukar pembantu anda untuk menggunakan ciri ini"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Untuk mendengar atau menterjemahkan teks pada skrin anda, tukar apl pembantu digital anda dalam Tetapan"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Ketik di sini untuk mendengar teks pada skrin ini"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Ketik di sini untuk menterjemahkan teks pada skrin ini"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Apl ini tidak boleh dikongsi"</string>
+</resources>

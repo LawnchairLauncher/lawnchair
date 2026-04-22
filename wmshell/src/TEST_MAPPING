@@ -1,0 +1,35 @@
+{
+  "imports": [
+    {
+      // Includes all flicker configs that rely on these scenarios
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/desktopmode/flicker-service"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/desktopmode/scenarios"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/mediaprojection"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/flicker-legacy"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/flicker-service"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/platinum"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/appcompat"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/bubble"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/flicker/pip"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/unittest"
+    }
+  ]
+}

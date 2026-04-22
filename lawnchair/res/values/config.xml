@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="app_filter_class" translatable="false">app.lawnchair.DefaultAppFilter</string>
+    <string name="calendar_component_name" translatable="false">com.google.android.calendar/com.android.calendar.AllInOneActivity</string>
+    <dimen name="settingslib_preferred_minimum_touch_target">48dp</dimen>
+    <string-array name="dynamic_calendar_components_name">
+        <item>com.android.calendar</item>
+        <item>com.blackberry.calendar</item>
+        <item>com.huawei.calendar</item>
+        <item>com.mi.calendar.agenda</item>
+        <item>com.oneplus.calendar</item>
+        <item>com.samsung.android.calendar</item>
+        <item>com.simplemobiletools.calendar.pro</item>
+        <item>com.xiaomi.calendar</item>
+        <item>org.lineageos.etar</item>
+        <item>org.withouthat.acalendarplus</item>
+        <item>org.withouthat.acalendar</item>
+        <item>ws.xsoh.etar</item>
+    </string-array>
+    <!-- String representing the intent for search on the apps market. To specify a query, add
+    q=<query> to the data to the intent -->
+    <string name="market_search_intent" translatable="false">market://search?c=apps</string>
+    <string name="icon_packs_intent_name" translatable="false">app.lawnchair.icons.THEMED_ICON</string>
+    <string name="clock_component_name" translatable="false">com.google.android.deskclock/com.android.deskclock.DeskClock</string>
+    <string name="launcher_activity_logic_class" translatable="false">app.lawnchair.LauncherActivityCachingLogic</string>
+    <string name="main_process_initializer_class" translatable="false">app.lawnchair.LawnchairProcessInitializer</string>
+    <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>
+    <string name="wallpaper_picker_package" translatable="false">com.android.wallpaper</string>
+    <string name="wallpaper_picker_package_alt" translatable="false">com.google.android.apps.wallpaper</string>
+    <string name="widget_holder_factory_class" translatable="false">app.lawnchair.factory.LawnchairWidgetHolder$LawnchairHolderFactory</string>
+    <string name="window_manager_proxy_class" translatable="false">app.lawnchair.util.LawnchairWindowManagerProxy</string>
+
+    <bool name="config_header_protection_supported">true</bool>
+
+    <string-array name="filtered_components">
+        <!-- Voice search -->
+        <item>com.google.android.googlequicksearchbox/.VoiceSearchActivity</item>
+        <!-- GNL -->
+        <item>com.google.android.launcher/.StubApp</item>
+        <!-- Action Services -->
+        <item>com.google.android.as/com.google.android.apps.miphone.aiai.allapps.main.MainDummyActivity</item>
+        <!-- Lawnchair -->
+        <item>@string/launcher_component</item>
+    </string-array>
+
+    <dimen name="page_indicator_dot_size_v2">6dp</dimen>
+
+    <!-- Which QSB search provider to use by default -->
+    <string name="config_default_qsb_search_provider_id" translatable="false">google</string>
+
+    <!-- Which icon shape for application to use by default -->
+    <string name="config_default_icon_shape" translatable="false">system</string>
+
+    <!-- Which icon shape for folder to use by default -->
+    <string name="config_default_folder_shape" translatable="false">system</string>
+
+    <!-- Which calendar to use on smartspace by default -->
+    <string name="config_default_smart_space_calendar" translatable="false">gregorian</string>
+
+    <!-- which accent color to use by default -->
+    <string name="config_default_accent_color" translatable="false">no_default</string>
+
+    <!-- which notification dot color to use by default -->
+    <string name="config_default_notification_dot_color" translatable="false">default</string>
+    <string name="config_default_notification_dot_text_color" translatable="false">default</string>
+    <string name="config_default_folder_color" translatable="false">default</string>
+
+    <!-- which hotseat bg color to use by default -->
+    <string name="config_default_hotseat_bg_color" translatable="false">default</string>
+
+    <!-- which app drawer bg color to use by default -->
+    <string name="config_default_app_drawer_bg_color" translatable="false">default</string>
+
+    <!-- which smartspace mode to use by default -->
+    <string name="config_default_smartspace_mode" translatable="false">lawnchair</string>
+
+    <!-- which time format to use by default on smartspace -->
+    <string name="config_default_smartspace_time_format" translatable="false">system</string>
+
+    <!-- which hotseat mode to use by default -->
+    <string name="config_default_hotseat_mode" translatable="false">lawnchair</string>
+
+    <!-- which web search provider to use by default -->
+    <string name="config_default_web_suggestion_provider" translatable="false">google</string>
+
+    <!-- which overlay to use by default -->
+    <string name="config_default_overlay" translatable="false">none</string>
+
+
+    <!-- swipe gesture key -->
+    <string name="pref_key_swipe_up" translatable="false">pref_swipe_up</string>
+    <string name="pref_key_swipe_down" translatable="false">pref_swipe_down</string>
+    <string name="pref_key_swipe_right" translatable="false">pref_swipe_right</string>
+    <string name="pref_key_swipe_left" translatable="false">pref_swipe_left</string>
+
+    <bool name="config_default_show_hotseat">true</bool>
+    <bool name="config_default_always_reload_icons">true</bool>
+    <bool name="config_default_dark_status_bar">false</bool>
+    <bool name="config_default_show_notification_count">false</bool>
+    <bool name="config_default_themed_hotseat_qsb">true</bool>
+    <bool name="config_default_dock_search_bar_force_website">false</bool>
+    <bool name="config_default_rounded_widgets">true</bool>
+    <bool name="config_default_allow_widget_overlap">false</bool>
+    <bool name="config_default_force_widget_resize">false</bool>
+    <bool name="config_default_widget_unlimited_size">false</bool>
+    <bool name="config_default_show_status_bar">true</bool>
+    <bool name="config_default_remember_position">false</bool>
+    <bool name="config_default_dynamic_hide_status_bar_clock">false</bool>
+    <bool name="config_default_search_bar_background">true</bool>
+    <bool name="config_default_show_scrollbar">true</bool>
+    <bool name="config_default_show_top_shadow">true</bool>
+    <bool name="config_default_lock_home_screen">false</bool>
+    <bool name="config_default_lock_home_screen_on_popup">false</bool>
+    <bool name="config_default_edit_home_screen_on_popup">false</bool>
+    <bool name="config_default_show_system_settings_entry_on_popup">false</bool>
+    <bool name="config_default_hide_app_drawer_search_bar">false</bool>
+    <bool name="config_default_app_drawer_haptic_feedback">true</bool>
+    <bool name="config_default_show_hidden_apps_in_search">false</bool>
+    <bool name="config_default_enable_smart_hide">false</bool>
+    <bool name="config_default_show_suggested_apps_at_drawer_top">true</bool>
+    <bool name="config_default_enable_font_selection">true</bool>
+    <bool name="config_default_enable_smartspace_calendar_selection">true</bool>
+    <bool name="config_default_dts2">true</bool>
+    <bool name="config_default_auto_show_keyboard_in_drawer">false</bool>
+    <bool name="config_default_show_icon_labels_on_home_screen">true</bool>
+    <bool name="config_default_show_icon_labels_in_drawer">true</bool>
+    <bool name="config_default_enable_fuzzy_search">false</bool>
+    <bool name="config_default_enable_smartspace">true</bool>
+    <bool name="config_default_enable_feed">false</bool>
+    <bool name="config_default_enable_icon_selection">false</bool>
+    <bool name="config_default_show_component_names">false</bool>
+    <bool name="config_default_smartspace_show_date">true</bool>
+    <bool name="config_default_smartspace_show_time">false</bool>
+    <bool name="config_default_perform_wide_search">true</bool>
+    <bool name="config_default_live_information_enabled">true</bool>
+    <bool name="config_default_live_information_show_announcements">true</bool>
+    <bool name="config_default_enable_dot_pagination">true</bool>
+    <bool name="config_default_enable_material_u_popup">true</bool>
+    <bool name="config_default_enable_two_line_allapps">true</bool>
+    <bool name="config_default_enable_nightly_auto_updater">true</bool>
+    <bool name="config_default_enable_folder_icon_shape_customization">false</bool>
+
+    <item name="config_default_home_icon_size_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_folder_preview_background_opacity" type="dimen" format="float">1.0</item>
+    <item name="config_default_folder_background_opacity" type="dimen" format="float">1.0</item>
+    <item name="config_default_drawer_icon_size_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_home_icon_label_size_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_home_icon_label_folder_size_factor" type="dimen" format="float">1.0</item>
+    <item name="page_indicator_height_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_drawer_icon_label_size_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_drawer_cell_height_factor" type="dimen" format="float">1.0</item>
+    <item name="config_default_drawer_left_right_factor" type="dimen" format="float">0.1</item>
+    <item name="config_default_search_max_result_count" type="dimen" format="integer">5</item>
+    <item name="config_default_files_max_result_count" type="dimen" format="integer">3</item>
+    <item name="config_default_people_max_result_count" type="dimen" format="integer">10</item>
+    <item name="config_default_suggestion_max_result_count" type="dimen" format="integer">3</item>
+    <item name="config_default_settings_entry_max_result_count" type="dimen" format="integer">5</item>
+    <item name="config_default_recent_max_result_count" type="dimen" format="integer">2</item>
+    <item name="config_default_max_web_suggestion_delay" type="dimen" format="integer">1000</item>
+    <item name="config_default_hotseat_bottom_factor" type="dimen" format="float">1.0</item>
+
+
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">1.10</item>
+
+    <attr name="isOldGrid" format="boolean" />
+</resources>

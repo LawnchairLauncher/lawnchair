@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cellSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_landscape">
+        <cellSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <iconDrawablePadding launcher:matchWorkspace="true" />
+            <iconSize launcher:matchWorkspace="true" />
+            <iconTextSize launcher:matchWorkspace="true" />
+        </cellSpec>
+    </specs>
+</cellSpecs>

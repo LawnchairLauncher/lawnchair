@@ -1,0 +1,532 @@
+import app.cash.licensee.SpdxId
+import com.android.build.gradle.api.AndroidBasePlugin
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.androidx.baselineprofile)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.cash.licensee)
+    alias(libs.plugins.rikka.refine)
+    alias(libs.plugins.diffplug.spotless)
+}
+
+allprojects {
+    plugins.withType(AndroidBasePlugin).configureEach {
+        android {
+            buildToolsVersion "36.1.0"
+            compileSdk {
+                version = release(36) {
+                    minorApiLevel = 1
+                }
+            }
+            defaultConfig {
+                minSdk = 26
+                targetSdk = 36
+                vectorDrawables.useSupportLibrary = true
+            }
+            lint {
+                abortOnError true
+                checkReleaseBuilds false
+            }
+            compileOptions {
+                sourceCompatibility = libs.versions.jdkRelease.get()
+                targetCompatibility = libs.versions.jdkRelease.get()
+            }
+        }
+        dependencies {
+            implementation libs.androidx.core.ktx
+            implementation libs.androidx.core.animation
+        }
+    }
+
+    plugins.withId('com.google.protobuf') {
+        protobuf {
+            // Configure the protoc executable
+            protoc {
+                artifact = libs.protobuf.protoc.get().toString()
+            }
+            generateProtoTasks {
+                all().configureEach { task ->
+                    task.builtins {
+                        java {
+                            option "lite"
+                        }
+                    }
+                }
+            }
+        }
+        dependencies {
+            implementation libs.protobuf.javalite
+        }
+    }
+
+    plugins.withType(JavaBasePlugin).configureEach {
+        java {
+            sourceCompatibility = libs.versions.jdkRelease.get()
+            targetCompatibility = libs.versions.jdkRelease.get()
+        }
+    }
+
+    tasks.withType(KotlinCompile).configureEach {
+        compilerOptions {
+            jvmDefault = JvmDefaultMode.ENABLE
+            jvmTarget = JvmTarget.fromTarget(libs.versions.jdkRelease.get())
+        }
+    }
+
+    ext {
+        FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
+
+        addFrameworkJar = { String name ->
+            def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
+            if (!frameworkJar.exists()) {
+                throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
+            }
+            gradle.projectsEvaluated {
+                tasks.withType(JavaCompile).configureEach {
+                    // Make sure the frameworkJar is always first in the classpath.
+                    classpath = files(frameworkJar, classpath)
+                }
+                tasks.withType(KotlinCompile).configureEach {
+                    // Make sure the frameworkJar is always first in the classpath.
+                    libraries.setFrom files(frameworkJar, libraries)
+                }
+            }
+            dependencies {
+                compileOnly files(frameworkJar)
+            }
+        }
+
+        compileOnlyCommonJars = {
+            dependencies {
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core-16.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-16.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-16.jar')
+
+                compileOnly projects.compatLib
+                compileOnly projects.compatLib.compatLibVQ
+                compileOnly projects.compatLib.compatLibVR
+                compileOnly projects.compatLib.compatLibVS
+                compileOnly projects.compatLib.compatLibVT
+                compileOnly projects.compatLib.compatLibVU
+                compileOnly projects.compatLib.compatLibVV
+                compileOnly projects.compatLib.compatLibVBaklava
+            }
+        }
+    }
+}
+
+final def buildCommit = providers.exec {
+    commandLine('git', 'rev-parse', '--short=7', 'HEAD')
+}.standardOutput.asText.get().trim()
+
+final def ciBuild = System.getenv("CI") == "true"
+final def ciRef = System.getenv("GITHUB_REF") ?: ""
+final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
+final def isReleaseBuild = ciBuild && ciRef.contains("beta")
+final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
+
+final def version = "16"
+final def releaseName = "Development 5.1"
+final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
+final def majorVersion = versionDisplayName.split("\\.")[0]
+
+final def quickstepMinSdk = "29"
+final def quickstepMaxSdk = "36"
+
+android {
+    namespace "com.android.launcher3"
+    defaultConfig {
+        /*
+         * Lawnchair Launcher 16.0 Development 5.1
+         * see CONTRIBUTING.md#versioning-scheme
+         */
+        versionCode 16_00_01_05_01
+        versionName "${versionDisplayName}"
+        buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
+        buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
+        buildConfigField "String", "COMMIT_HASH", "\"${buildCommit}\""
+        buildConfigField "boolean", "ENABLE_AUTO_INSTALLS_LAYOUT", "false"
+
+        manifestPlaceholders.quickstepMinSdk = quickstepMinSdk
+        manifestPlaceholders.quickstepMaxSdk = quickstepMaxSdk
+        buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
+        buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
+    }
+
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            def channel = variant.productFlavors.last().name
+            outputFileName = "Lawnchair.${variant.versionName}.$channel.${variant.buildType.name}.apk"
+        }
+    }
+
+    androidResources {
+        generateLocaleConfig true
+    }
+
+    buildFeatures {
+        aidl true
+        buildConfig true
+        resValues true
+    }
+
+    packagingOptions.resources.excludes += [
+        "**/*.proto",
+        "**/*.bin",
+        "**/*.java",
+        "**/*.properties",
+        "**/*.version",
+        "**/*.*_module",
+        "com/**",
+        "google/**",
+        "kotlin/**",
+        "kotlinx/**",
+        "okhttp3/**",
+        "META-INF/services/**",
+        "META-INF/com/**",
+        "META-INF/licenses/**",
+        "META-INF/AL2.0",
+        "META-INF/LGPL2.1",
+    ]
+
+    // Load all proguard configs from AOSP
+    def proguardFilesFromAosp = allprojects
+        .collect { it.file("proguard.flags") }
+        .findAll { it.exists() }
+        .toArray()
+
+    def releaseSigning
+    try {
+        def keystoreProperties = new Properties()
+        keystoreProperties.load(rootProject.file("keystore.properties").newInputStream())
+        releaseSigning = signingConfigs.create("release") {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile rootProject.file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    } catch (Exception ignored) {
+        releaseSigning = signingConfigs.debug
+    }
+
+    buildTypes {
+        all {
+            signingConfig releaseSigning
+
+            applicationVariants.configureEach { variant ->
+                variant.outputs.configureEach {
+                    def channel = variant.productFlavors.last().name
+                    // Override signingConfig to debug if the "nightly" flavor is selected
+                    if (channel.any { it == "nightly" }) {
+                        signingConfig = signingConfigs.debug
+                    }
+                }
+            }
+            pseudoLocalesEnabled true
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+
+            manifestPlaceholders.quickstepMinSdk = "0"
+            manifestPlaceholders.quickstepMaxSdk = "100000"
+            buildConfigField "int", "QUICKSTEP_MIN_SDK", "0"
+            buildConfigField "int", "QUICKSTEP_MAX_SDK", "100000"
+        }
+
+        release {
+            resValue("string", "derived_app_name", "Lawnchair")
+            minifyEnabled true
+            shrinkResources true
+            pseudoLocalesEnabled false
+            proguardFiles proguardFilesFromAosp + "proguard.pro"
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
+    // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
+    flavorDimensions += ["app", "recents", "channel"]
+
+    productFlavors {
+        lawn {
+            dimension "app"
+        }
+
+        withQuickstep {
+            dimension "recents"
+            minSdk = 26
+        }
+
+        github {
+            applicationId 'app.lawnchair'
+            dimension "channel"
+        }
+
+        nightly {
+            applicationId 'app.lawnchair.nightly'
+            dimension "channel"
+        }
+
+        play {
+            applicationId "app.lawnchair.play"
+            dimension "channel"
+            isDefault true
+        }
+
+        configureEach {
+            resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
+        }
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = ['res']
+
+            // Lawnchair-TODO: Don't include Compose Disabled, but there's has to be another way of making this NOT long
+            java.srcDirs = ['src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features']
+            kotlin.directories.addAll('src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features')
+
+            manifest.srcFile 'AndroidManifest-common.xml'
+            proto {
+                srcDirs = ['protos/', 'quickstep/protos_overrides/']
+            }
+        }
+
+        lawn {
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
+            kotlin.directories.addAll('src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared')
+            aidl.srcDirs = ['lawnchair/aidl']
+            res.srcDirs = ['lawnchair/res', 'platform_frameworks_libs_systemui/animationlib/res']
+            manifest.srcFile "lawnchair/AndroidManifest.xml"
+            assets {
+                srcDirs 'lawnchair/assets'
+            }
+            proto {
+                srcDirs = ['lawnchair/protos/']
+            }
+        }
+
+        github {
+            manifest.srcFile "github/AndroidManifest.xml"
+        }
+
+        nightly {
+            manifest.srcFile "nightly/AndroidManifest.xml"
+        }
+
+        lawnWithQuickstepGithub {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        lawnWithQuickstepNightly {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        lawnWithQuickstepPlay {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        withQuickstep {
+            res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
+            java.srcDirs = ['quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog']
+            kotlin.directories.addAll('quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog')
+            manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+    }
+}
+
+baselineProfile {
+    saveInSrc = true
+    mergeIntoMain = true
+    automaticGenerationDuringBuild = false
+}
+
+composeCompiler {
+    stabilityConfigurationFiles.addAll(
+        layout.projectDirectory.file("compose_compiler_config.conf"),
+    )
+    reportsDestination = layout.buildDirectory.dir("compose_build_reports")
+}
+
+addFrameworkJar('framework-16.jar')
+
+dependencies {
+    implementation projects.iconloaderlib
+    implementation projects.searchuilib
+    implementation projects.animationlib
+    implementation projects.msdllib
+    implementation projects.contextualeducationlib
+    implementation projects.viewcapturelib
+    implementation projects.displaylib
+    implementation projects.mechanics
+
+    // Recents lib dependency
+    withQuickstepCompileOnly projects.hiddenApi
+    withQuickstepImplementation projects.shared
+    withQuickstepImplementation projects.animation
+    withQuickstepImplementation projects.unfold
+    withQuickstepImplementation projects.log
+    withQuickstepCompileOnly projects.plugin
+    withQuickstepImplementation projects.plugincore
+    withQuickstepCompileOnly projects.common
+    withQuickstepCompileOnly projects.utils
+
+    // QuickSwitch Compat
+    withQuickstepImplementation projects.compatLib
+    withQuickstepImplementation projects.compatLib.compatLibVQ
+    withQuickstepImplementation projects.compatLib.compatLibVR
+    withQuickstepImplementation projects.compatLib.compatLibVS
+    withQuickstepImplementation projects.compatLib.compatLibVT
+    withQuickstepImplementation projects.compatLib.compatLibVU
+    withQuickstepImplementation projects.compatLib.compatLibVV
+    withQuickstepImplementation projects.compatLib.compatLibVBaklava
+    withQuickstepImplementation projects.wmshell
+    withQuickstepImplementation projects.flags
+    withQuickstepImplementation projects.dagger
+    withQuickstepImplementation projects.concurrent
+//    withQuickstepImplementation projects.compose
+    withQuickstepImplementation projects.modules.widgetpicker
+    implementation libs.androidx.dynamicanimation
+
+    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-16.jar')
+    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-16.jar')
+    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-16.jar')
+    baselineProfile projects.baselineProfile
+
+    coreLibraryDesugaring libs.android.desugarJdkLibs
+
+    implementation libs.androidx.profileinstaller
+    baselineProfile projects.baselineProfile
+
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.preference.ktx
+
+    implementation libs.javax.inject
+    implementation libs.kotlinx.coroutines.android
+    implementation libs.kotlinx.serialization.json
+    implementation libs.chickenhook.restrictionbypass
+    implementation libs.rikka.refine.runtime
+
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.datastore.preferences
+
+    implementation platform(libs.compose.bom)
+    implementation libs.compose.ui
+    implementation libs.compose.ui.util
+    implementation libs.compose.ui.graphics
+    implementation libs.bundles.graphics
+    debugImplementation libs.compose.ui.tooling
+    implementation libs.compose.ui.tooling.preview
+    implementation libs.compose.ui.google.fonts
+    implementation libs.compose.foundation
+    implementation libs.compose.material.icons
+    implementation libs.compose.runtime.livedata
+    implementation libs.compose.material3
+    implementation libs.compose.material3.windowSizeClass
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.lifecycle.viewmodel.compose
+    implementation libs.androidx.navigation.compose
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.palette.ktx
+    implementation libs.androidx.slice.core
+    implementation libs.bundles.accompanist
+    implementation libs.google.material
+    implementation libs.material.motion.compose
+    implementation libs.kdrag0n.colorkt
+    implementation libs.coil.compose
+    implementation libs.xdrop.fuzzywuzzy
+
+    implementation libs.bundles.opto
+    implementation libs.androidx.datastore.preferences
+
+    implementation libs.bundles.retrofit
+
+    implementation libs.bundles.room
+    ksp libs.room.compiler
+
+    implementation libs.libsu.service
+
+    implementation libs.airbnb.lottie
+
+    // Compose drag and drop library
+    implementation libs.reorderable
+
+    // Smartspacer
+    implementation(libs.smartspacer.sdk) {
+        exclude group: "com.github.skydoves", module: "balloon"
+    }
+
+    implementation libs.hoko.blur
+
+    implementation libs.androidx.window
+
+    ksp libs.dagger.compiler
+    implementation libs.dagger.hilt.android
+    ksp libs.dagger.hilt.compiler
+
+    implementation libs.google.guava
+
+    implementation libs.androidx.exifinterface
+
+    debugImplementation libs.leakcanary.android
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+}
+
+
+spotless {
+    java {
+        // LC-Note: Don't spotless AOSP code in compatlib
+        // target("compatLib/**/src/**/*.java")
+        googleJavaFormat().aosp()
+        removeUnusedImports()
+    }
+    kotlin {
+        target("lawnchair/src/**/*.kt")
+        ktlint(libs.ktlint.get().version).customRuleSets([
+            libs.composeRules.get().toString()
+        ]).editorConfigOverride([
+            "ktlint_compose_compositionlocal-allowlist": "disabled",
+            "ktlint_compose_lambda-param-event-trailing": "disabled",
+            "ktlint_compose_content-slot-reused": "disabled",
+            "ktlint_compose_state-param-check": "disabled",
+        ])
+    }
+}
+
+licensee {
+    allow(SpdxId.Apache_20)
+    allow(SpdxId.BSD_3_Clause)
+    allow(SpdxId.GPL_20_or_later)
+    allowDependency(libs.libsu.core)
+    allowDependency(libs.libsu.service)
+    allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
+    allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
+    allowUrl("https://opensource.org/licenses/mit-license.php")
+
+    bundleAndroidAsset = true
+    androidAssetReportPath = 'licenses.json'
+}

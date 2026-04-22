@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="config_allAppsCloseDuration">@integer/config_bottomSheetCloseDuration</integer>
+    <integer name="config_allAppsOpenDuration">@integer/config_bottomSheetOpenDuration</integer>
+    <integer name="config_bottomSheetCloseDuration">500</integer>
+    <integer name="config_bottomSheetOpenDuration">500</integer>
+    <integer name="config_keyboardTaskFocusSnapAnimationDuration">400</integer>
+    <integer name="config_pageSnapAnimationDuration">550</integer>
+    <integer name="recentsThumbnailCacheSize">8</integer>
+</resources>

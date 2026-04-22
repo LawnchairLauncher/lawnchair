@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<folderSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_portrait">
+        <folderSpec
+            launcher:dimensionType="width"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="16dp"/>
+            <endPadding launcher:fixedSize="16dp"/>
+            <gutter launcher:fixedSize="16dp"/>
+            <cellSize
+                launcher:matchWorkspace="true"
+                launcher:maxSize="80dp"/>
+        </folderSpec>
+        <folderSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="24dp"/>
+            <endPadding launcher:fixedSize="56dp"/>
+            <gutter launcher:fixedSize="16dp"/>
+            <cellSize
+                launcher:matchWorkspace="true"
+                launcher:maxSize="94dp"/>
+        </folderSpec>
+    </specs>
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_landscape">
+        <folderSpec
+            launcher:dimensionType="width"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="16dp"/>
+            <endPadding launcher:fixedSize="16dp"/>
+            <gutter launcher:fixedSize="16dp"/>
+            <cellSize launcher:fixedSize="66dp"/>
+        </folderSpec>
+        <folderSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="318dp">
+            <startPadding launcher:fixedSize="16dp"/>
+            <endPadding launcher:fixedSize="32dp"/>
+            <gutter launcher:fixedSize="0dp"/>
+            <cellSize launcher:fixedSize="72dp"/>
+        </folderSpec>
+        <folderSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="16dp"/>
+            <endPadding launcher:fixedSize="48dp"/>
+            <gutter launcher:fixedSize="0dp"/>
+            <cellSize launcher:fixedSize="80dp"/>
+        </folderSpec>
+    </specs>
+</folderSpecs>

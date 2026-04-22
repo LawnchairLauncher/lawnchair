@@ -1,0 +1,11 @@
+{
+  "imports": [
+    {
+      // Includes all flicker configs that rely on these scenarios
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/flicker-service"
+    },
+    {
+      "path": "frameworks/base/libs/WindowManager/Shell/tests/e2e/splitscreen/platinum"
+    }
+  ]
+}

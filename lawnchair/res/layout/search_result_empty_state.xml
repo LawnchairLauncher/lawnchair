@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app.lawnchair.allapps.views.SearchResultEmptyState xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_result_empty_state"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="32dp">
+
+    <ImageView
+        android:id="@+id/empty_state_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_qsb_search"
+        android:layout_marginBottom="16dp"
+        app:tint="?android:textColorSecondary" />
+
+    <TextView
+        android:id="@+id/empty_state_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="?android:attr/textColorPrimary"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/empty_state_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:attr/textColorSecondary" />
+
+</app.lawnchair.allapps.views.SearchResultEmptyState>

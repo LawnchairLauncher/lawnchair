@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cellSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <!-- portrait TODO: remove portrait specs-->
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_portrait">
+        <cellSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <iconDrawablePadding launcher:fixedSize="0dp" />
+            <iconSize launcher:fixedSize="@dimen/iconSize52dp" />
+            <iconTextSize launcher:fixedSize="12sp" />
+        </cellSpec>
+    </specs>
+    <!-- landscape -->
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_landscape">
+        <cellSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <iconDrawablePadding launcher:fixedSize="4dp" />
+            <iconSize launcher:fixedSize="@dimen/iconSize52dp" />
+            <iconTextSize launcher:fixedSize="12sp" />
+        </cellSpec>
+    </specs>
+</cellSpecs>

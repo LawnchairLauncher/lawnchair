@@ -1,0 +1,72 @@
+# Copyright (C) 2023 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# proto-message: TraceConfig
+
+# Enable periodic flushing of the trace buffer into the output file.
+write_into_file: true
+
+# Writes the userspace buffer into the file every 1s.
+file_write_period_ms: 2500
+
+# See b/126487238 - we need to guarantee ordering of events.
+flush_period_ms: 30000
+
+# The trace buffers needs to be big enough to hold |file_write_period_ms| of
+# trace data. The trace buffer sizing depends on the number of trace categories
+# enabled and the device activity.
+
+# RSS events
+buffers: {
+  size_kb: 63488
+  fill_policy: RING_BUFFER
+}
+
+data_sources {
+  config {
+    name: "linux.process_stats"
+    target_buffer: 0
+    # polled per-process memory counters and process/thread names.
+    # If you don't want the polled counters, remove the "process_stats_config"
+    # section, but keep the data source itself as it still provides on-demand
+    # thread/process naming for ftrace data below.
+    process_stats_config {
+      scan_all_processes_on_start: true
+    }
+  }
+}
+
+data_sources: {
+  config {
+    name: "linux.ftrace"
+    ftrace_config {
+      ftrace_events: "ftrace/print"
+      ftrace_events: "task/task_newtask"
+      ftrace_events: "task/task_rename"
+      atrace_categories: "ss"
+      atrace_categories: "wm"
+      atrace_categories: "am"
+      atrace_categories: "aidl"
+      atrace_categories: "input"
+      atrace_categories: "binder_driver"
+      atrace_categories: "sched_process_exit"
+      atrace_apps: "com.android.server.wm.flicker.testapp"
+      atrace_apps: "com.android.systemui"
+      atrace_apps: "com.android.wm.shell.flicker.service"
+      atrace_apps: "com.android.wm.shell.flicker.splitscreen"
+      atrace_apps: "com.google.android.apps.nexuslauncher"
+    }
+  }
+}
+

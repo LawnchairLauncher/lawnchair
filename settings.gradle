@@ -1,0 +1,120 @@
+pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        gradlePluginPortal()
+    }
+}
+
+// https://docs.gradle.com/enterprise/gradle-plugin/
+plugins {
+    id "com.gradle.develocity" version "4.4.1"
+}
+
+def isCI = providers.environmentVariable('CI').present
+
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+        publishing {
+            onlyIf { isCI }
+        }
+    }
+}
+
+rootProject.name = "lawnchair"
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+include ':iconloaderlib'
+project(':iconloaderlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/iconloaderlib')
+
+include ':searchuilib'
+project(':searchuilib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/searchuilib')
+
+include ':animationlib'
+project(':animationlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/animationlib')
+
+include ':msdllib'
+project(':msdllib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/msdllib')
+
+include ':contextualeducationlib'
+project(':contextualeducationlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/contextualeducationlib')
+
+include ':viewcapturelib'
+project(':viewcapturelib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/viewcapturelib')
+
+include ':displaylib'
+project(':displaylib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/displaylib')
+
+include ':mechanics'
+project(':mechanics').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/mechanics')
+
+include ':hidden-api'
+
+include ':shared'
+project(':shared').projectDir = new File(rootDir, 'systemUI/shared')
+
+include ':plugin'
+project(':plugin').projectDir = new File(rootDir, 'systemUI/plugin')
+
+include ':plugincore'
+project(':plugincore').projectDir = new File(rootDir, 'systemUI/plugin_core')
+
+include ':common'
+project(':common').projectDir = new File(rootDir, 'systemUI/common')
+
+include ':log'
+project(':log').projectDir = new File(rootDir, 'systemUI/log')
+
+include ':animation'
+project(':animation').projectDir = new File(rootDir, 'systemUI/animation')
+
+include ':unfold'
+project(':unfold').projectDir = new File(rootDir, 'systemUI/unfold')
+
+include ':utils'
+project(':utils').projectDir = new File(rootDir, 'systemUI/utils')
+
+
+include ':compatLib'
+include ':compatLib:compatLibVQ'
+include ':compatLib:compatLibVR'
+include ':compatLib:compatLibVS'
+include ':compatLib:compatLibVT'
+include ':compatLib:compatLibVU'
+include ':compatLib:compatLibVV'
+include ':compatLib:compatLibVBaklava'
+
+include ':baseline-profile'
+
+include ':androidx-lib'
+include ':flags'
+include ':wmshell'
+include ':dagger'
+include ':concurrent'
+//include ':compose'
+include ':modules:widgetpicker'
+

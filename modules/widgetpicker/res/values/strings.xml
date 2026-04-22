@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ Copyright (C) 2025 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Placeholder text shown when app name is not loaded yet to display in the widget picker [CHAR_LIMIT=25] -->
+    <string name="widgets_list_header_app_name_fallback_label">App name</string>
+    <!-- Label for showing the number of widgets an app has in the full widgets picker.
+     [CHAR_LIMIT=25] -->
+    <string name="widgets_list_header_widgets_count_label">{count, plural,
+        =1 {# widget}
+        other {# widgets}
+    }</string>
+
+    <!-- The format string for the cell dimensions of a widget in the widget picker e.g. 2x2 -->
+    <!-- There is a special version of this format string for Farsi (%1$dx%2$d) -->
+    <string name="widget_span_dimensions_format">%1$d \u00d7 %2$d</string>
+    <!-- Accessibility spoken message format for the cell dimensions of a widget in the widget picker [CHAR_LIMIT=none] -->
+    <string name="widget_span_dimensions_accessible_format">%1$d wide by %2$d high</string>
+    <!-- Accessibility spoken message format for the widget's details shown in the widget picker. [CHAR_LIMIT=none] -->
+    <string name="widget_details_accessibility_label">
+      <xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget, %2$d wide by %3$d high
+    </string>
+    <!-- Accessibility label on the widget preview that on click (if add button is hidden) shows the button to add widget to the home screen. [CHAR_LIMIT=none] -->
+    <string name="widget_tap_to_show_add_button_label">Show add button</string>
+    <!-- Accessibility label on the widget preview that on click (if add button is showing) hides the button to add widget to the home screen. [CHAR_LIMIT=none] -->
+    <string name="widget_tap_to_hide_add_button_label">Hide add button</string>
+    <!-- Text on the button that adds a widget to the home screen. [CHAR_LIMIT=15] -->
+    <string name="widget_tap_to_add_button_label">Add</string>
+    <!-- Accessibility content description for the button that adds a widget to the home screen. The
+         placeholder text is the widget name. [CHAR_LIMIT=none] -->
+    <string name="widget_tap_to_add_button_content_description">Add <xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget</string>
+
+    <!-- Tab / list header label. A user can tap this to access recommended (or featured) widgets.
+     [CHAR_LIMIT=25]  -->
+    <string name="featured_widgets_tab_label">Featured</string>
+
+    <!-- Tab label. A user can tap this tab to access list of all apps hosting appwidgets.
+    [CHAR_LIMIT=25]  -->
+    <string name="browse_widgets_tab_label">Browse</string>
+
+    <!-- accessibilityPaneTitle for the right pane when showing widgets selected on left. -->
+    <string name="widget_picker_right_pane_accessibility_label"><xliff:g id="selected_header" example="Calendar">%1$s</xliff:g> widgets on right, search and options on left</string>
+
+    <!-- Search bar strings -->
+    <!-- Placeholder text displayed in the widget's search bar [CHAR_LIMIT=50] -->
+    <string name="widgets_search_bar_hint">Search</string>
+    <!-- Accessibility label for the button to clear text in widgets search bar -->
+    <string name="widget_search_bar_clear_button_label">Clear</string>
+    <!-- Accessibility label for the button to go back from the search screen -->
+    <string name="widget_search_bar_back_button_label">Back</string>
+
+    <!-- Text shown when there are no widgets or shortcuts that can be added to the device.
+         [CHAR_LIMIT=150] -->
+    <string name="widgets_list_no_widgets_available">Widgets and shortcuts aren\'t available</string>
+    <!-- Text shown when there are no matching widget or shortcut search results for user's search
+     query. [CHAR_LIMIT=150] -->
+    <string name="widgets_no_search_results">No widgets or shortcuts found</string>
+</resources>

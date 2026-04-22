@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="AppTheme" parent="@style/LauncherTheme">
+        <item name="uiColorMode">0</item>
+
+        <item name="android:colorAccent">@color/accent_light</item>
+        <item name="android:colorBackground">@color/background_device_default_light</item>
+        <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
+        <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="android:textAppearance">@style/TextAppearance.Lawnchair</item>
+
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
+        <item name="allAppsScrimColor">?android:attr/colorBackground</item>
+        <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
+        <item name="allAppsAlternateTextColor">@color/dark_drawer_text_color</item>
+        <item name="focusHighlight">@color/system_neutral1_0</item>
+        <item name="groupHighlight">@color/surface_light</item>
+        <item name="qsbFillColor">#ffffffff</item>
+        <item name="qsbIconTintPrimary">#ff4285f4</item>
+        <item name="qsbIconTintQuaternary">#ffea4335</item>
+        <item name="qsbIconTintSecondary">#ff34a853</item>
+        <item name="qsbIconTintTertiary">#fffbbc05</item>
+        <item name="searchboxHighlight">@color/surface_variant_light</item>
+    </style>
+    <style name="AppTheme.DarkMainColor" parent="@style/LauncherTheme.DarkMainColor">
+        <item name="uiColorMode">4</item>
+
+        <item name="android:colorAccent">@color/accent_light</item>
+        <item name="android:colorBackground">@color/background_device_default_light</item>
+        <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
+        <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="android:textAppearance">@style/TextAppearance.Lawnchair</item>
+
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
+        <item name="allAppsScrimColor">?android:attr/colorBackground</item>
+        <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
+        <item name="allAppsAlternateTextColor">@color/dark_drawer_text_color</item>
+        <item name="focusHighlight">@color/system_neutral1_0</item>
+        <item name="groupHighlight">@color/surface_light</item>
+        <item name="qsbFillColor">#ffffffff</item>
+        <item name="qsbIconTintPrimary">#ff4285f4</item>
+        <item name="qsbIconTintQuaternary">#ffea4335</item>
+        <item name="qsbIconTintSecondary">#ff34a853</item>
+        <item name="qsbIconTintTertiary">#fffbbc05</item>
+        <item name="searchboxHighlight">@color/surface_variant_light</item>
+    </style>
+    <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText">
+        <item name="uiColorMode">2</item>
+
+        <item name="android:colorAccent">@color/accent_light</item>
+        <item name="android:colorBackground">@color/background_device_default_light</item>
+        <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
+        <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="android:textAppearance">@style/TextAppearance.Lawnchair</item>
+
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
+        <item name="allAppsScrimColor">?android:attr/colorBackground</item>
+        <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
+        <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
+        <item name="focusHighlight">@color/system_neutral1_0</item>
+        <item name="groupHighlight">@color/surface_light</item>
+        <item name="qsbFillColor">#ffffffff</item>
+        <item name="qsbIconTintPrimary">#ff4285f4</item>
+        <item name="qsbIconTintQuaternary">#ffea4335</item>
+        <item name="qsbIconTintSecondary">#ff34a853</item>
+        <item name="qsbIconTintTertiary">#fffbbc05</item>
+        <item name="searchboxHighlight">@color/surface_variant_light</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark">
+        <item name="uiColorMode">1</item>
+
+        <item name="android:colorAccent">@color/accent_dark</item>
+        <item name="android:colorBackground">@color/background_device_default_dark</item>
+        <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
+        <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="android:textAppearance">@style/TextAppearance.Lawnchair</item>
+
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
+        <item name="allAppsScrimColor">?android:attr/colorBackground</item>
+        <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>
+        <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
+        <item name="focusHighlight">@color/system_neutral1_700</item>
+        <item name="groupHighlight">@color/surface_dark</item>
+        <item name="qsbFillColor">#ff3c4043</item>
+        <item name="qsbIconTintPrimary">#ff4285f4</item>
+        <item name="qsbIconTintQuaternary">#ffea4335</item>
+        <item name="qsbIconTintSecondary">#ff34a853</item>
+        <item name="qsbIconTintTertiary">#fffbbc05</item>
+        <item name="searchboxHighlight">@color/system_neutral1_800</item>
+    </style>
+    <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor">
+        <item name="uiColorMode">5</item>
+
+        <item name="android:colorAccent">@color/accent_dark</item>
+        <item name="android:colorBackground">@color/background_device_default_dark</item>
+        <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
+        <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="android:textAppearance">@style/TextAppearance.Lawnchair</item>
+
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
+        <item name="allAppsScrimColor">?android:attr/colorBackground</item>
+        <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>
+        <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
+        <item name="focusHighlight">@color/system_neutral1_700</item>
+        <item name="groupHighlight">@color/surface_dark</item>
+        <item name="qsbFillColor">#ff202124</item>
+        <item name="qsbIconTintPrimary">#ff4285f4</item>
+        <item name="qsbIconTintQuaternary">#ffea4335</item>
+        <item name="qsbIconTintSecondary">#ff34a853</item>
+        <item name="qsbIconTintTertiary">#fffbbc05</item>
+        <item name="searchboxHighlight">@color/system_neutral1_800</item>
+    </style>
+    <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText">
+        <item name="uiColorMode">3</item>
+
+        <item name="android:colorAccent">@color/accent_dark</item>
+        <item name="android:colorBackground">@color/background_device_default_dark</item>
+        <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
+        <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="android:textAppearance">@style/TextAppearance.Lawnchair</item>
+
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
+        <item name="allAppsScrimColor">?android:attr/colorBackground</item>
+        <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>
+        <item name="allAppsAlternateTextColor">@color/light_drawer_text_color</item>
+        <item name="focusHighlight">@color/system_neutral1_700</item>
+        <item name="groupHighlight">@color/surface_dark</item>
+        <item name="qsbFillColor">#ff202124</item>
+        <item name="qsbIconTintPrimary">#ff4285f4</item>
+        <item name="qsbIconTintQuaternary">#ffea4335</item>
+        <item name="qsbIconTintSecondary">#ff34a853</item>
+        <item name="qsbIconTintTertiary">#fffbbc05</item>
+        <item name="searchboxHighlight">@color/system_neutral1_800</item>
+    </style>
+
+    <style name="AllAppsSearchResult">
+        <item name="android:fontFamily">google-sans-medium</item>
+        <item name="customFontType">@id/font_heading_medium</item>
+    </style>
+
+    <style name="QsbIconTint">
+        <item name="qsbIconTintPrimary">#ff4285f4</item>
+        <item name="qsbIconTintQuaternary">#ffea4335</item>
+        <item name="qsbIconTintSecondary">#ff34a853</item>
+        <item name="qsbIconTintTertiary">#fffbbc05</item>
+    </style>
+
+    <style name="OverviewClearAllButton" parent="@android:style/Widget.Material.Button">
+        <item name="android:minWidth">96dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="customFontType">@id/font_button</item>
+    </style>
+
+    <style name="TextAppearance.Lawnchair" parent="@android:style/TextAppearance.Material">
+        <item name="customFontType">@id/font_body</item>
+    </style>
+
+    <style name="SmartspaceTextHeadline">
+        <item name="android:textColor">?attr/workspaceTextColor</item>
+        <item name="android:letterSpacing">@dimen/smartspaceLetterSpacing</item>
+        <item name="ambientShadowBlur">@dimen/smartspaceAmbientShadowBlur</item>
+        <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="keyShadowBlur">@dimen/smartspaceKeyShadowBlur</item>
+        <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
+        <item name="keyShadowOffsetX">@dimen/smartspaceKeyShadowOffset</item>
+        <item name="keyShadowOffsetY">@dimen/smartspaceKeyShadowOffset</item>
+    </style>
+
+    <style name="EnhancedSmartspaceTextSubtitle" parent="@style/EnhancedSmartspaceTextTitle">
+        <item name="android:textSize">@dimen/enhanced_smartspace_subtitle_size</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:fontFamily">google-sans-text</item>
+        <item name="customFontType">@id/font_body</item>
+        <item name="android:letterSpacing">@dimen/smartspaceLetterSpacing</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <style name="EnhancedSmartspaceTextTitle" parent="@android:style/Theme.Material">
+        <item name="android:textSize">@dimen/enhanced_smartspace_title_size</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:drawablePadding">@dimen/enhanced_smartspace_icon_margin</item>
+        <item name="android:fontFamily">google-sans</item>
+        <item name="customFontType">@id/font_heading</item>
+        <item name="android:lineHeight">24sp</item>
+
+        <item name="ambientShadowBlur">@dimen/ambient_text_shadow_radius</item>
+        <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="keyShadowBlur">@dimen/key_text_shadow_radius</item>
+        <item name="keyShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="keyShadowOffsetX">@dimen/key_text_shadow_dx</item>
+        <item name="keyShadowOffsetY">@dimen/key_text_shadow_dy</item>
+    </style>
+
+    <style name="AllAppsStyle4x5Fold" parent="@style/AllAppsStyleDefault">
+        <item name="horizontalPadding">32dp</item>
+    </style>
+
+    <style name="CellStyle4x5Fold" parent="@style/CellStyleDefault">
+        <item name="iconDrawablePadding">12dp</item>
+    </style>
+
+    <style name="Folder4x5FoldStyle" parent="@style/FolderStyleDefault">
+        <item name="folderCellHeight">83dp</item>
+        <item name="folderCellWidth">58dp</item>
+    </style>
+</resources>

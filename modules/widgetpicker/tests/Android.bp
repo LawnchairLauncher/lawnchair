@@ -1,0 +1,183 @@
+// Copyright (C) 2025 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    // See: http://go/android-license-faq
+    default_applicable_licenses: ["Android-Apache-2.0"],
+    default_team: "trendy_team_launcher",
+}
+
+android_app {
+    name: "WidgetPickerTestApp",
+    defaults: [
+        "platform_app_defaults",
+        "SystemUI_optimized_defaults",
+    ],
+    platform_apis: true,
+    privileged: true,
+    certificate: "platform",
+    system_ext_specific: true,
+    static_libs: [
+        "widget_picker_ui",
+        "widget_picker_ui_components",
+        "widget_picker_domain_layer",
+        "widget_picker_data_repositories",
+    ],
+    kotlincflags: ["-Xjvm-default=all"],
+    use_resource_processor: false,
+}
+
+android_test {
+    name: "WidgetPickerScreenshotTests",
+    manifest: "AndroidManifest.xml",
+    srcs: [
+        "multivalentScreenshotTests/src/com/android/launcher3/widgetpicker/goldenpathmanager/WidgetPickerGoldenPathManager.kt",
+        "multivalentScreenshotTests/src/com/android/launcher3/widgetpicker/ui/components/FloatingToolbarScreenshotTest.kt",
+        "multivalentScreenshotTests/src/com/android/launcher3/widgetpicker/ui/components/WidgetsGridScreenshotTest.kt",
+        "multivalentScreenshotTests/src/com/android/launcher3/widgetpicker/ui/components/WidgetsGridTestSamples.kt",
+    ],
+    platform_apis: true,
+    static_libs: [
+        "widget_picker_ui_theme",
+        "widget_picker_ui_components",
+        "collector-device-lib-platform",
+        "widget_picker_window_size_class",
+        "testables",
+        "androidx.compose.runtime_runtime",
+        "junit",
+        "androidx.test.ext.junit",
+        "androidx.test.rules",
+        "androidx.test.runner",
+        "platform-test-rules",
+        "platform-screenshot-diff-core",
+        "platform-parametric-runner-lib",
+        "ScreenshotComposeUtilsLib",
+        "SystemUI-res", // Theme.SystemUI (dragged in by ScreenshotComposeUtilsLib)
+    ],
+    libs: [
+        "android.test.base.stubs.system",
+        "android.test.runner.stubs.system",
+    ],
+    kotlincflags: ["-Xjvm-default=all"],
+    // Needed to compile native libs for cuttlefish
+    compile_multilib: "both",
+    // Needed to link mokito libraries to run unbundled
+    use_embedded_native_libs: false,
+    instrumentation_for: "WidgetPickerTestApp",
+    test_config: "WidgetPickerScreenshotTests.xml",
+    test_suites: ["device-tests"],
+    certificate: "platform",
+    asset_dirs: ["multivalentScreenshotTests/assets/widgetpicker_screenshots"],
+    resource_dirs: [
+        "multivalentScreenshotTests/res",
+    ],
+}
+
+filegroup {
+    name: "widget-picker-multivalent-tests-src",
+    srcs: [
+        "multivalentTests/src/com/android/launcher3/widgetpicker/TestUtils.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/domain/usecase/GroupWidgetAppsByProfileUseCaseTest.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/domain/usecase/FilterWidgetsForHostUseCaseTest.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/domain/interactor/WidgetsInteractorTest.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/domain/interactor/WidgetAppIconsInteractorTest.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/repository/FakeWidgetsRepository.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/repository/FakeWidgetUsersRepository.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/repository/FakeWidgetAppIconsRepository.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/ui/fullcatalog/screens/landing/LandingScreenSinglePaneTest.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/ui/fullcatalog/screens/landing/LandingScreenTwoPaneTest.kt",
+        "multivalentTests/src/com/android/launcher3/widgetpicker/ui/components/WidgetInteractionsTest.kt",
+    ],
+}
+
+android_test {
+    name: "WidgetPickerDeviceTests",
+    manifest: "AndroidManifest.xml",
+    srcs: [":widget-picker-multivalent-tests-src"],
+    platform_apis: true,
+    static_libs: [
+        "widget_picker_ui_theme",
+        "widget_picker_ui",
+        "widget_picker_ui_components",
+        "widget_picker_domain_layer",
+        "widget_picker_data_repositories",
+        "androidx.compose.ui_ui-test-junit4",
+        "androidx.compose.ui_ui-test-manifest",
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.ui_ui",
+        "collector-device-lib-platform",
+        "testables",
+        "platform-test-annotations",
+        "platform-test-rules",
+        "platform-parametric-runner-lib",
+        "junit",
+        "androidx.test.ext.junit",
+        "androidx.test.rules",
+        "androidx.test.runner",
+    ],
+    libs: [
+        "android.test.base.impl",
+        "android.test.runner.impl",
+        "android.test.mock.impl",
+    ],
+    // Libraries used by mockito inline extended
+    jni_libs: [
+        "libdexmakerjvmtiagent",
+        "libstaticjvmtiagent",
+    ],
+    // Needed to link mokito libraries to run unbundled
+    use_embedded_native_libs: false,
+    // Needed to compile native libs for cuttlefish
+    compile_multilib: "both",
+    instrumentation_for: "WidgetPickerTestApp",
+    plugins: ["dagger2-compiler"],
+    test_suites: ["device-tests"],
+    test_config: "WidgetPickerDeviceTests.xml",
+}
+
+android_robolectric_test {
+    enabled: true,
+    name: "WidgetPickerRoboTests",
+    srcs: [":widget-picker-multivalent-tests-src"],
+    java_resource_dirs: ["config"],
+    static_libs: [
+        "widget_picker_ui_theme",
+        "widget_picker_ui",
+        "widget_picker_ui_components",
+        "widget_picker_domain_layer",
+        "widget_picker_data_repositories",
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.ui_ui",
+        "androidx.compose.ui_ui-test-junit4",
+        "androidx.compose.ui_ui-test-manifest",
+        "kotlinx_coroutines_test",
+        "platform-test-rules-deviceless",
+        "testables",
+        "platform-parametric-runner-lib",
+        "junit",
+        "androidx.test.ext.junit",
+        "platform-test-annotations",
+        "androidx.test.rules",
+    ],
+    libs: [
+        "android.test.runner.impl",
+        "android.test.base.impl",
+        "android.test.mock.impl",
+        "truth",
+    ],
+    plugins: ["dagger2-compiler"],
+    instrumentation_for: "WidgetPickerTestApp",
+    strict_mode: true,
+    test_suites: ["general-tests"],
+}

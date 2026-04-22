@@ -1,0 +1,1 @@
+Schermata iniziale basata su Launcher3 da AOSP

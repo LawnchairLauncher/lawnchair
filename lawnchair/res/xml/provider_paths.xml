@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <cache-path name="log_files" path="logs"/>
+    <cache-path name="nightly_updates" path="updates" />
+    <external-path name="external_files" path="." />
+    <external-path name="external_storage" path="/"/>
+</paths>

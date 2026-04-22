@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ઍપ શેર કરો"</string>
+    <string name="action_listen" msgid="2370304050784689486">"સાંભળો"</string>
+    <string name="action_translate" msgid="8028378961867277746">"અનુવાદ કરો"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"સમજાઈ ગયું"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"રદ કરો"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"સેટિંગ"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"સ્ક્રીન પરની ટેક્સ્ટનો અનુવાદ કરો અથવા સાંભળો"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"તમારી સ્ક્રીન પરની ટેક્સ્ટ, વેબ ઍડ્રેસ અને સ્ક્રીનશૉટ જેવી માહિતી Google સાથે શેર કરવામાં આવી શકે છે.\n\nતમે શેર કરતા હો તેવી માહિતીમાં ફેરફાર કરવા માટે, "<b>"સેટિંગ &gt; ઍપ &gt; ડિફૉલ્ટ ઍપ &gt; ડિજિટલ આસિસ્ટંટ ઍપ"</b>" પર જાઓ."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"આ સુવિધાનો ઉપયોગ કરવા માટે આસિસ્ટંટ પસંદ કરો"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"તમારી સ્ક્રીન પર ટેક્સ્ટ સાંભળવા માટે અથવા તેનો અનુવાદ કરવા માટે, સેટિંગમાં જઈને ડિજિટલ આસિસ્ટંટ ઍપ પસંદ કરો"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"આ સુવિધાનો ઉપયોગ કરવા માટે તમારું આસિસ્ટંટ બદલો"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"તમારી સ્ક્રીન પર ટેક્સ્ટ સાંભળવા માટે અથવા તેનો અનુવાદ કરવા માટે, સેટિંગમાં જઈને તમારી ડિજિટલ આસિસ્ટંટ ઍપ બદલો"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"આ સ્ક્રીન પર ટેક્સ્ટ સાંભળવા માટે અહીં ટૅપ કરો"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"આ સ્ક્રીન પર ટેક્સ્ટનો અનુવાદ કરવા માટે અહીં ટૅપ કરો"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"આ ઍપ શેર કરી શકાતી નથી"</string>
+</resources>

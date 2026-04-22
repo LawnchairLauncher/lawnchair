@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Дели апликацију"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Пусти"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Преведи"</string>
+    <string name="action_search" msgid="6269564710943755464">"Објектив"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ВАЖИ"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ОТКАЖИ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ПОДЕШАВАЊА"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Преводите или слушајте текст на екрану"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Информације попут текста на екрану, веб-адреса и снимака екрана могу да се деле са Google-ом.\n\nДа бисте променили информације које делите, идите у "<b>"Подешавања &gt; Апликације &gt; Подразумеване апликације &gt; Апликација дигиталног помоћника"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Одаберите помоћника да бисте користили ову функцију"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Да бисте чули текст са екрана или га превели, одаберите апликацију дигиталног помоћника у Подешавањима"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Промените помоћника да бисте користили ову функцију"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Да бисте чули текст са екрана или га превели, промените апликацију дигиталног помоћника у Подешавањима"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Додирните овде да бисте чули текст са овог екрана"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Додирните овде да бисте превели текст са овог екрана"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Ова апликација не може да се дели"</string>
+</resources>

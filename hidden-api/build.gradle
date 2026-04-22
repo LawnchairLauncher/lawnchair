@@ -1,0 +1,23 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace 'app.lawnchair.hidden_api'
+    buildFeatures {
+        aidl true
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
+}
+
+dependencies {
+    annotationProcessor libs.rikka.annotation.processor
+    compileOnly libs.rikka.annotation
+}

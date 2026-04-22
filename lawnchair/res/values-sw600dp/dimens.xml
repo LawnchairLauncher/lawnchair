@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="all_apps_search_bar_content_overlap">0dp</dimen>
+    <dimen name="allset_page_allset_text_size">38sp</dimen>
+    <dimen name="allset_page_margin_horizontal">120dp</dimen>
+    <dimen name="allset_page_swipe_up_text_size">15sp</dimen>
+    <dimen name="cell_layout_padding">9dp</dimen>
+    <dimen name="drag_flingToDeleteMinVelocity">-1000dp</dimen>
+    <dimen name="drop_target_bottom_margin">16dp</dimen>
+    <dimen name="drop_target_button_drawable_vertical_padding">16dp</dimen>
+    <dimen name="drop_target_top_margin">64dp</dimen>
+    <dimen name="dynamic_grid_drop_target_size">56dp</dimen>
+    <dimen name="dynamic_grid_edge_margin">9dp</dimen>
+    <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
+    <dimen name="fastscroll_popup_height">62dp</dimen>
+    <dimen name="fastscroll_popup_padding">13dp</dimen>
+    <dimen name="fastscroll_popup_text_size">32dp</dimen>
+    <dimen name="fastscroll_popup_width">75dp</dimen>
+    <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
+    <dimen name="min_hotseat_icon_space">17dp</dimen>
+    <dimen name="min_page_snap_velocity">3000dp</dimen>
+    <dimen name="navigation_key_padding">25dp</dimen>
+    <dimen name="overview_actions_top_margin">24dp</dimen>
+    <dimen name="overview_grid_row_spacing">28dp</dimen>
+    <dimen name="overview_grid_side_margin">64dp</dimen>
+    <dimen name="overview_page_spacing">36dp</dimen>
+    <dimen name="overview_task_margin">12dp</dimen>
+    <dimen name="split_instructions_view_max_width">300dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin">65dp</dimen>
+    <dimen name="task_thumbnail_icon_drawable_size_grid">44dp</dimen>
+    <dimen name="wallpaper_carousel_height">132dp</dimen>
+    <dimen name="widget_list_horizontal_margin">32dp</dimen>
+</resources>

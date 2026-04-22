@@ -1,0 +1,13 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace 'app.lawnchair.compatlib.fourteen'
+}
+
+addFrameworkJar('framework-14.jar')
+
+dependencies {
+    api projects.compatLib.compatLibVT
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<folderSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_portrait_and_square">
+        <folderSpec
+            launcher:dimensionType="width"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="16dp"/>
+            <endPadding launcher:fixedSize="16dp"/>
+            <gutter launcher:fixedSize="16dp"/>
+            <cellSize
+                launcher:matchWorkspace="true"
+                launcher:maxSize="68dp"/>
+        </folderSpec>
+        <folderSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="24dp"/>
+            <endPadding launcher:fixedSize="56dp"/>
+            <gutter launcher:fixedSize="16dp"/>
+            <cellSize
+                launcher:matchWorkspace="true"
+                launcher:maxSize="89dp"/>
+        </folderSpec>
+    </specs>
+    <specs launcher:maxAspectRatio="@dimen/aspect_ratio_landscape">
+        <folderSpec
+            launcher:dimensionType="width"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="16dp"/>
+            <endPadding launcher:fixedSize="16dp"/>
+            <gutter launcher:fixedSize="16dp"/>
+            <cellSize
+                launcher:matchWorkspace="true"
+                launcher:maxSize="84dp"/>
+        </folderSpec>
+        <folderSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="459dp">
+            <startPadding launcher:fixedSize="24dp"/>
+            <endPadding launcher:fixedSize="56dp"/>
+            <gutter launcher:matchWorkspace="true"/>
+            <cellSize
+                launcher:matchWorkspace="true"
+                launcher:maxSize="79dp"/>
+        </folderSpec>
+        <folderSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="24dp"/>
+            <endPadding launcher:fixedSize="56dp"/>
+            <gutter launcher:fixedSize="16dp"/>
+            <cellSize
+                launcher:matchWorkspace="true"
+                launcher:maxSize="79dp"/>
+        </folderSpec>
+    </specs>
+</folderSpecs>

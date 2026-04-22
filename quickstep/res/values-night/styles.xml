@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Home"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Back"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Overview"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceOverview</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Home"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/onSurfaceHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Back"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/onSurfaceBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Overview"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/onSurfaceOverview</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Home"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/secondaryHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Back"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/secondaryBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Overview"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/secondaryOverview</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Home"
+        parent="TextAppearance.GestureTutorial.MainTitle.Home" />
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Back"
+        parent="TextAppearance.GestureTutorial.MainTitle.Back" />
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Overview"
+        parent="TextAppearance.GestureTutorial.MainTitle.Overview" />
+
+    <style name="GestureTutorialActivity" parent="@style/AppTheme">
+        <item name="background">@android:color/transparent</item>
+        <item name="tutorialSubtitle">@android:color/white</item>
+        <item name="surfaceContainer">@color/materialColorSurfaceContainer</item>
+        <item name="onSurfaceHome">@color/materialColorPrimaryFixedDim</item>
+        <item name="surfaceHome">@color/materialColorOnPrimaryFixedVariant</item>
+        <item name="secondaryHome">@color/materialColorOnPrimaryFixed</item>
+        <item name="onSurfaceBack">@color/materialColorTertiaryFixedDim</item>
+        <item name="surfaceBack">@color/materialColorOnTertiaryFixedVariant</item>
+        <item name="secondaryBack">@color/materialColorOnTertiaryFixed</item>
+        <item name="onSurfaceOverview">@color/materialColorPrimaryFixed</item>
+        <item name="surfaceOverview">@color/materialColorOnSecondaryFixedVariant</item>
+        <item name="secondaryOverview">@color/materialColorOnSecondaryFixed</item>
+    </style>
+
+</resources>

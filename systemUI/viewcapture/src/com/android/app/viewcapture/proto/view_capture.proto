@@ -1,0 +1,83 @@
+/*
+ * Copyright (C) 2022 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+syntax = "proto2";
+
+package com.android.app.viewcapture.data;
+
+option java_multiple_files = true;
+
+message ExportedData {
+  /* constant; MAGIC_NUMBER = (long) MAGIC_NUMBER_H << 32 | MagicNumber.MAGIC_NUMBER_L
+   (this is needed because enums have to be 32 bits and there's no nice way to put 64bit
+    constants into .proto files. */
+  enum MagicNumber {
+    INVALID = 0;
+    MAGIC_NUMBER_L = 0x65906578;  /* AZAN (ASCII) */
+    MAGIC_NUMBER_H = 0x68658273;  /* DARI (ASCII) */
+  }
+
+  optional fixed64 magic_number = 1;  /* Must be the first field, set to value in MagicNumber */
+  repeated WindowData windowData = 2;
+  optional string package = 3;
+  repeated string classname = 4;
+
+  /* offset between real-time clock and elapsed time clock in nanoseconds.
+     Calculated as: 1000000 * System.currentTimeMillis() - SystemClock.elapsedRealtimeNanos() */
+  optional fixed64 real_to_elapsed_time_offset_nanos = 5;
+}
+
+message WindowData {
+  repeated FrameData frameData = 1;
+  optional string title = 2;
+}
+
+message MotionWindowData {
+  repeated FrameData frameData = 1;
+  repeated string classname = 2;
+}
+
+message FrameData {
+  optional int64 timestamp = 1; // unit is elapsed realtime nanos
+  optional ViewNode node = 2;
+}
+
+message ViewNode {
+  optional int32 classname_index = 1;
+  optional int32 hashcode = 2;
+
+  repeated ViewNode children = 3;
+
+  optional string id = 4;
+  optional int32 left = 5;
+  optional int32 top = 6;
+  optional int32 width = 7;
+  optional int32 height = 8;
+  optional int32 scrollX = 9;
+  optional int32 scrollY = 10;
+
+  optional float translationX = 11;
+  optional float translationY = 12;
+  optional float scaleX = 13 [default = 1];
+  optional float scaleY = 14 [default = 1];
+  optional float alpha = 15 [default = 1];
+
+  optional bool willNotDraw = 16;
+  optional bool clipChildren = 17;
+  optional int32 visibility = 18;
+
+  optional float elevation = 19;
+}

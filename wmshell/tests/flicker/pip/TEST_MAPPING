@@ -1,0 +1,97 @@
+{
+  "wm-devices": [
+    {
+      "name": "WMShellFlickerTestsPip-CatchAll"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-AutoEnterPipOnGoToHomeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-AutoEnterPipWithSourceRectHintTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-ClosePipBySwipingDownTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-ClosePipWithDismissButtonTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-EnterPipOnUserLeaveHintTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-EnterPipViaAppUiButtonTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-ExitPipToAppViaExpandButtonTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-ExitPipToAppViaIntentTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-ExpandPipOnDoubleClickTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-ExpandPipOnPinchOpenTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-FromSplitScreenAutoEnterPipOnGoToHomeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-FromSplitScreenEnterPipOnUserLeaveHintTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-MovePipDownOnShelfHeightChange"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-MovePipOnImeVisibilityChangeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-MovePipUpOnShelfHeightChangeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-PipAspectRatioChangeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-PipDragTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-PipDragThenSnapTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-PipPinchInTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-SetRequestedOrientationWhilePinned"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-ShowPipAndRotateDisplay"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfExitPipToAppViaExpandButtonTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfExitPipToAppViaIntentTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfAutoEnterPipOnGoToHomeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfEnterPipOnUserLeaveHintTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfEnterPipViaAppUiButtonTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfEnterPipToOtherOrientation"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfSetRequestedOrientationWhilePinned"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfFromSplitScreenAutoEnterPipOnGoToHomeTest"
+    },
+    {
+      "name": "WMShellFlickerTestsPip-BottomHalfFromSplitScreenEnterPipOnUserLeaveHintTest"
+    }
+  ]
+}
