@@ -142,7 +142,7 @@ xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
 errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.49.0"
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.8.0"
-composeRules = "io.nlopez.compose.rules:ktlint:0.5.7"
+composeRules = "io.nlopez.compose.rules:ktlint:0.5.8"
 google-guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 
