@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <dimen name="allset_page_margin_horizontal">48dp</dimen>
     <dimen name="cell_layout_padding">11.33dp</dimen>
     <dimen name="drop_target_bottom_margin">16dp</dimen>
