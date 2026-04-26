@@ -209,6 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">아이콘 스타일</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">아이콘 모양</string>
     <string name="icon_sizes">아이콘 크기</string>
     <string name="show_labels">라벨 표시</string>
@@ -486,6 +487,11 @@
     <string name="generic_a11y_hint">%1$s로, Lawnchair 접근성 서비스를 켜세요. \"설정 열기\"를 탭하고, \"Lawnchair\"를 선택한 다음 \"Lawnchair 사용\"을 켜세요.</string>
     <string name="generic_a11y_disclaimer">Lawnchair는 접근성의
 \'performGlobalAction\' 메서드를 사용하여 이 작업을 수행합니다. 이는 다른 앱을 모니터링할 수 있는 민감한 권한입니다. 그러나 Lawnchair는 해당 기능을 위해 구성되어 있지 않으며 이벤트를 수신하지 않습니다</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

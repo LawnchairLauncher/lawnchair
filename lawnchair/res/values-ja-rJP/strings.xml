@@ -211,6 +211,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">アイコンのスタイル</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">アイコンの形状</string>
     <string name="icon_sizes">アイコンのサイズ</string>
     <string name="show_labels">ラベルの表示</string>
@@ -487,6 +488,11 @@
     <string name="recents_screen_a11y_hint">タスク管理画面を開く</string>
     <string name="generic_a11y_hint">%1$s を行うには、Lawnchair のユーザー補助サービスを有効にしてください。「設定を開く」をタップし、「Lawnchair」を選択して「Lawnchair の使用」をオンにしてください。</string>
     <string name="generic_a11y_disclaimer">Lawnchair はこの操作を実行するために、ユーザー補助の performGlobalAction メソッドを使用します。これは他のアプリの監視を許可する機密性の高い権限ですが、Lawnchair にはその機能は実装されておらず、いかなるイベントも受信しません。</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

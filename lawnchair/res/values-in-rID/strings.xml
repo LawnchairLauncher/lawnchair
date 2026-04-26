@@ -209,6 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Gaya ikon</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Bentuk ikon</string>
     <string name="icon_sizes">Ukuran lambang</string>
     <string name="show_labels">Tampilkan label</string>
@@ -485,6 +486,11 @@
     <string name="recents_screen_a11y_hint">buka layar Terbaru</string>
     <string name="generic_a11y_hint">Untuk %1$s, aktifkan aksesibilitas Lawnchair.</string>
     <string name="generic_a11y_disclaimer">Lawnchair menggunakan metode `performGlobalAction` dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Lawnchair tidak dikonfigurasi untuk fungsi tersebut.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

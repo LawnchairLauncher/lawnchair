@@ -209,6 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">รูปแบบไอคอน</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">รูปร่างไอคอน</string>
     <string name="icon_sizes">ขนาดไอคอน</string>
     <string name="show_labels">แสดงชื่อแอป</string>
@@ -485,6 +486,11 @@
     <string name="recents_screen_a11y_hint">เปิดแอปล่าสุด</string>
     <string name="generic_a11y_hint">เพื่อ %1$s ให้เปิดบริการการช่วยเหลือพิเศษของ Lawnchair แตะ \"เปิดการตั้งค่า\" เลือก \"Lawnchair\" และเปิด ใช้ \"Lawnchair\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair ใช้วิธี performGlobalAction ของการช่วยเหลือพิเศษเพื่อดำเนินการนี้ นี่เป็นสิทธิ์ที่ละเอียดอ่อนที่อนุญาตให้ตรวจสอบแอปอื่นได้ อย่างไรก็ตาม Lawnchair ไม่ได้ตั้งค่ามาเพื่อฟังก์ชันดังกล่าวและจะไม่ได้รับข้อมูลเหตุการณ์ใด ๆ</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

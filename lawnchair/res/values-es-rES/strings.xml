@@ -209,6 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Estilo de los iconos</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Forma de los iconos</string>
     <string name="icon_sizes">Tamaño de los iconos</string>
     <string name="show_labels">Mostrar etiquetas</string>
@@ -485,6 +486,11 @@
     <string name="recents_screen_a11y_hint">abrir la pantalla Recientes</string>
     <string name="generic_a11y_hint">Para %1$s, activa el servicio de accesibilidad de Lawnchair. Pulsa \"Abrir configuración\", selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
     <string name="generic_a11y_disclaimer">Lawnchair utiliza el método `performGlobalAction` de Accesibilidad para realizar esta acción. Este es un permiso confidencial que permite supervisar otras aplicaciones. Sin embargo, Lawnchair no está configurado para esa función.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

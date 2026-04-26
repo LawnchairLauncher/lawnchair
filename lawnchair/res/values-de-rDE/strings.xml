@@ -209,6 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Symbolstil</string>
+    <string name="apply_icon_pack_title">Symbolpaket anwenden</string>
     <string name="icon_shape_label">Symbolform</string>
     <string name="icon_sizes">Symbolgröße</string>
     <string name="show_labels">Beschriftung anzeigen</string>
@@ -485,6 +486,11 @@
     <string name="recents_screen_a11y_hint">den Anwendungsverlauf öffnen</string>
     <string name="generic_a11y_hint">Um %1$s, aktiviere die Bedienungshilfe für Lawnchair. Tippe auf \"Einstellungen öffnen\", wähle \"Lawnchair\" aus und aktiviere \"Lawnchair verwenden\".</string>
     <string name="generic_a11y_disclaimer">Lawnchair verwendet die \"performGlobalAction\"-Bedienungshilfe, um diese Aktion auszuführen. Dies ist eine sensible Berechtigung, die die Überwachung anderer Apps erlaubt. Lawnchair ist jedoch nicht für diese Funktionalität konfiguriert und empfängt keine Ereignisse.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting
