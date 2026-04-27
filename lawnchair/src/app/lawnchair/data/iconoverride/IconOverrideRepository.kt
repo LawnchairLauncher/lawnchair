@@ -26,6 +26,7 @@ class IconOverrideRepository @Inject constructor(
 
     private val scope = MainScope() + CoroutineName("IconOverrideRepository")
     private val dao = AppDatabase.INSTANCE.get(context).iconOverrideDao()
+    @Volatile
     private var _overridesMap = mapOf<ComponentKey, IconPickerItem>()
     val overridesMap get() = _overridesMap
 
@@ -50,11 +51,13 @@ class IconOverrideRepository @Inject constructor(
 
     suspend fun setOverride(target: ComponentKey, item: IconPickerItem) {
         dao.insert(IconOverride(target, item))
+        _overridesMap = _overridesMap + (target to item)
         updatePackageQueue.offer(target)
     }
 
     suspend fun deleteOverride(target: ComponentKey) {
         dao.delete(target)
+        _overridesMap = _overridesMap - target
         updatePackageQueue.offer(target)
     }
 
