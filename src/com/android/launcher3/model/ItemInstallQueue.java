@@ -49,6 +49,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.dagger.LauncherAppSingleton;
 import com.android.launcher3.dagger.LauncherBaseAppComponent;
@@ -325,7 +326,7 @@ public class ItemInstallQueue {
                         lai = laiList.get(0);
                         si.intent = makeLaunchIntent(lai);
                         try {
-                            if (Flags.enableSupportForArchiving()
+                            if (Utilities.ATLEAST_V && Flags.enableSupportForArchiving()
                                     && lai.getActivityInfo().isArchived) {
                                 si.runtimeStatusFlags |= FLAG_ARCHIVED;
                             }

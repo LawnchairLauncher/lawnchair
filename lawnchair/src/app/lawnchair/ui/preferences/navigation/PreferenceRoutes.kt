@@ -121,7 +121,9 @@ data object GeneralIconPack : PreferenceRoute, PreferenceDeepLink {
 data class GeneralIconShape(val selectedId: ShapeRoute = ShapeRoute.APP_SHAPE) : PreferenceRoute
 
 @Serializable
-data object GeneralCustomIconShapeCreator : PreferenceRoute, PreferenceDeepLink {
+data class GeneralCustomIconShapeCreator(val selectedId: ShapeRoute = ShapeRoute.APP_SHAPE) :
+    PreferenceRoute,
+    PreferenceDeepLink {
     override val deepLink = "$URI/general-icon-shape-creator"
 }
 

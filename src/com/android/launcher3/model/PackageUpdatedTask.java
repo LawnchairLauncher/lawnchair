@@ -41,6 +41,7 @@ import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
@@ -350,7 +351,7 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                             // In case an app is archived, we need to make sure that archived state
                             // in WorkspaceItemInfo is refreshed.
                             try {
-                                if (Flags.enableSupportForArchiving() && !activities.isEmpty()) {
+                                if (Utilities.ATLEAST_V && (Flags.enableSupportForArchiving() && !activities.isEmpty())) {
                                 boolean newArchivalState = activities.get(0)
                                         .getActivityInfo().isArchived;
                                 if (newArchivalState != itemInfo.isArchived()) {

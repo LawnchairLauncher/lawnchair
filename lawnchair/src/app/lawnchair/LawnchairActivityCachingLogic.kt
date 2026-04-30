@@ -39,7 +39,7 @@ class LawnchairActivityCachingLogic @Inject constructor(
         if (!customLabel.isNullOrEmpty()) {
             return customLabel
         }
-        return getCustomAppNameForComponent(info)
+        return getCustomAppNameForComponent(context, info)
     }
 
     override fun getComponent(info: LauncherActivityInfo): ComponentName = info.componentName

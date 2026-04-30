@@ -209,6 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Phong cách biểu tượng</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Hình dạng biểu tượng</string>
     <string name="icon_sizes">Kích thước biểu tượng</string>
     <string name="show_labels">Hiển thị tên</string>
@@ -485,6 +486,11 @@
     <string name="recents_screen_a11y_hint">mở màn hình Gần đây</string>
     <string name="generic_a11y_hint">Để %1$s, bật dịch vụ hỗ trợ tiếp cận Lawnchair, hãy nhấn vào \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair\".</string>
     <string name="generic_a11y_disclaimer">Lawnchair sử dụng phương thức `performGlobalAction` của Trợ năng để thực hiện hành động này. Đây là một quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho chức năng đó.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

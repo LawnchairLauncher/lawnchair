@@ -31,7 +31,7 @@ import com.android.launcher3.views.ClipPathView
  * when the IconShape provides an SVG path string. The shape is assumed
  * to be defined within a [0, 0, 100, 100] viewport.
  */
-data class PathShapeDelegate(private val iconShape: IconShape) : ShapeDelegate {
+data class PathShapeDelegate(val iconShape: IconShape) : ShapeDelegate {
 
     private val basePath: Path = iconShape.getMaskPath()
     private val tmpPath = Path()

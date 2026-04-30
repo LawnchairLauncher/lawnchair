@@ -198,7 +198,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         } else {
             info.runtimeStatusFlags &= ~FLAG_DISABLED_SUSPENDED;
         }
-        if (Flags.enableSupportForArchiving()) {
+        if (Utilities.ATLEAST_V && Flags.enableSupportForArchiving()) {
             try {
                 if (lai.getActivityInfo().isArchived) {
                     info.runtimeStatusFlags |= FLAG_ARCHIVED;

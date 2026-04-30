@@ -73,7 +73,6 @@ import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
 import com.android.launcher3.util.Themes
 import com.android.launcher3.util.TouchController
-import com.android.launcher3.util.WallpaperThemeManager
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.views.OptionsPopupView.OptionItem
@@ -277,7 +276,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (themeProvider.colorScheme != colorScheme) {
             recreate()
         } else {
-            WallpaperThemeManager(this).updateTheme()
+            mWallpaperThemeManager.updateTheme()
         }
     }
 

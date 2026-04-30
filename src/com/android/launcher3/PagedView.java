@@ -1145,7 +1145,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         float displacement = mOrientationHandler.getSecondaryValue(ev.getX(), ev.getY())
                 / mOrientationHandler.getSecondaryValue(getWidth(), getHeight());
         if (!mEdgeGlowLeft.isFinished()) {
-            mEdgeGlowLeft.onPullDistance(0f, 1f - displacement);
+            mEdgeGlowLeft.onPullDistance(0f, 1f - displacement, ev);
         }
         if (!mEdgeGlowRight.isFinished()) {
             mEdgeGlowRight.onPullDistance(0f, displacement, ev);

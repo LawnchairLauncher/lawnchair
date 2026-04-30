@@ -38,6 +38,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -113,47 +114,51 @@ fun ShapePreference(
     modifier: Modifier = Modifier,
     currentTab: ShapeRoute = ShapeRoute.APP_SHAPE,
 ) {
-    val prefs2 = preferenceManager2()
-    if (prefs2.enableFolderIconShapeCustomization.getAdapter().state.value) {
-        TwoTabPreferenceLayout(
-            label = stringResource(id = R.string.icon_shape_label),
-            backArrowVisible = !LocalIsExpandedScreen.current,
-            defaultPage = currentTab.ordinal,
-            firstPageLabel = stringResource(id = R.string.app_icon_shape_label),
-            firstPageContent = {
-                AppIconShapeContent()
-            },
-            secondPageLabel = stringResource(id = R.string.folder_shape_label),
-            secondPageContent = {
-                FolderShapeContent()
-            },
-            modifier = modifier,
-        )
-    } else {
-        IconShapePreference()
-    }
+    TwoTabPreferenceLayout(
+        label = stringResource(id = R.string.icon_shape_label),
+        backArrowVisible = !LocalIsExpandedScreen.current,
+        defaultPage = currentTab.ordinal,
+        firstPageLabel = stringResource(id = R.string.app_icon_shape_label),
+        firstPageContent = {
+            ShapeTabContent(currentTab = ShapeRoute.APP_SHAPE)
+        },
+        secondPageLabel = stringResource(id = R.string.folder_label),
+        secondPageContent = {
+            ShapeTabContent(currentTab = ShapeRoute.FOLDER_SHAPE)
+        },
+        modifier = modifier,
+    )
 }
 
 @Composable
-private fun AppIconShapeContent() {
+private fun ShapeTabContent(currentTab: ShapeRoute) {
     val context = LocalContext.current
     val preferenceManager2 = preferenceManager2()
     val entries = remember { iconShapeEntries(context) }
-    val iconShapeAdapter = preferenceManager2.iconShape.getAdapter()
-    val customIconShape = preferenceManager2.customIconShape.asState()
+    val shapeAdapter = when (currentTab) {
+        ShapeRoute.APP_SHAPE -> preferenceManager2.iconShape.getAdapter()
+        ShapeRoute.FOLDER_SHAPE -> preferenceManager2.folderShape.getAdapter()
+    }
+    val customShape by when (currentTab) {
+        ShapeRoute.APP_SHAPE -> preferenceManager2.customIconShape.asState()
+        ShapeRoute.FOLDER_SHAPE -> preferenceManager2.customFolderShape.asState()
+    }
 
     PreferenceGroup(
         heading = stringResource(id = R.string.custom),
     ) {
-        Item(visible = customIconShape.value != null) {
-            CustomIconShapePreferenceOption(
-                iconShapeAdapter = iconShapeAdapter,
-                customIconShape = customIconShape.value!!,
-            )
+        customShape?.let { shape ->
+            Item {
+                CustomIconShapePreferenceOption(
+                    iconShapeAdapter = shapeAdapter,
+                    customIconShape = shape,
+                )
+            }
         }
         Item {
             ModifyCustomIconShapePreference(
-                customIconShape = customIconShape.value,
+                customIconShape = customShape,
+                currentTab = currentTab,
             )
         }
     }
@@ -166,11 +171,11 @@ private fun AppIconShapeContent() {
                     enabled = item.enabled,
                     title = { Text(item.label()) },
                     modifier = Modifier.clickable(item.enabled) {
-                        iconShapeAdapter.onChange(newValue = item.value)
+                        shapeAdapter.onChange(newValue = item.value)
                     },
                     startWidget = {
                         RadioButton(
-                            selected = item.value == iconShapeAdapter.state.value,
+                            selected = item.value == shapeAdapter.state.value,
                             onClick = null,
                             enabled = item.enabled,
                         )
@@ -179,97 +184,6 @@ private fun AppIconShapeContent() {
                         IconShapePreview(iconShape = item.value)
                     },
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun FolderShapeContent() {
-    val context = LocalContext.current
-    val preferenceManager2 = preferenceManager2()
-    val entries = remember { iconShapeEntries(context) }
-    val folderShapeAdapter = preferenceManager2.folderShape.getAdapter()
-
-    PreferenceGroup(
-        heading = stringResource(id = R.string.presets),
-    ) {
-        entries.forEach { item ->
-            Item {
-                PreferenceTemplate(
-                    enabled = item.enabled,
-                    title = { Text(item.label()) },
-                    modifier = Modifier.clickable(item.enabled) {
-                        folderShapeAdapter.onChange(newValue = item.value)
-                    },
-                    startWidget = {
-                        RadioButton(
-                            selected = item.value == folderShapeAdapter.state.value,
-                            onClick = null,
-                            enabled = item.enabled,
-                        )
-                    },
-                    endWidget = {
-                        IconShapePreview(iconShape = item.value)
-                    },
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun IconShapePreference(
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    val preferenceManager2 = preferenceManager2()
-    val entries = remember { iconShapeEntries(context) }
-    val iconShapeAdapter = preferenceManager2.iconShape.getAdapter()
-    val customIconShape = preferenceManager2.customIconShape.asState()
-
-    PreferenceLayout(
-        label = stringResource(id = R.string.icon_shape_label),
-        modifier = modifier,
-    ) {
-        PreferenceGroup(
-            heading = stringResource(id = R.string.custom),
-        ) {
-            Item(visible = customIconShape.value != null) {
-                CustomIconShapePreferenceOption(
-                    iconShapeAdapter = iconShapeAdapter,
-                    customIconShape = customIconShape.value!!,
-                )
-            }
-            Item {
-                ModifyCustomIconShapePreference(
-                    customIconShape = customIconShape.value,
-                )
-            }
-        }
-        PreferenceGroup(
-            heading = stringResource(id = R.string.presets),
-        ) {
-            entries.forEach { item ->
-                Item {
-                    PreferenceTemplate(
-                        enabled = item.enabled,
-                        title = { Text(item.label()) },
-                        modifier = Modifier.clickable(item.enabled) {
-                            iconShapeAdapter.onChange(newValue = item.value)
-                        },
-                        startWidget = {
-                            RadioButton(
-                                selected = item.value == iconShapeAdapter.state.value,
-                                onClick = null,
-                                enabled = item.enabled,
-                            )
-                        },
-                        endWidget = {
-                            IconShapePreview(iconShape = item.value)
-                        },
-                    )
-                }
             }
         }
     }
@@ -301,18 +215,20 @@ private fun CustomIconShapePreferenceOption(
 @Composable
 private fun ModifyCustomIconShapePreference(
     customIconShape: IconShape?,
+    currentTab: ShapeRoute,
     modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
-    val route = GeneralCustomIconShapeCreator
+    val route = GeneralCustomIconShapeCreator(selectedId = currentTab)
 
     val created = customIconShape != null
 
-    val text = if (created) {
-        stringResource(id = R.string.custom_icon_shape_edit)
-    } else {
-        stringResource(id = R.string.custom_icon_shape_create)
-    }
+    val text = stringResource(
+        when (currentTab) {
+            ShapeRoute.APP_SHAPE -> if (created) R.string.custom_icon_shape_edit else R.string.custom_icon_shape_create
+            ShapeRoute.FOLDER_SHAPE -> if (created) R.string.custom_folder_shape_edit else R.string.custom_folder_shape_create
+        },
+    )
 
     val icon = if (created) Icons.Rounded.Edit else Icons.Rounded.Add
 

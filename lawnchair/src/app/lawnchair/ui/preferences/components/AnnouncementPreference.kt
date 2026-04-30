@@ -153,15 +153,19 @@ private fun AnnouncementItemContent(
         },
     )
 
+    val alpha = if (state.targetValue == SwipeToDismissBoxValue.Settled) {
+        1f
+    } else {
+        calculateAlpha(state.progress)
+    }
+
     SwipeToDismissBox(
         state = state,
         enableDismissFromEndToStart = false,
         backgroundContent = {
             Surface(
                 modifier = modifier
-                    .alpha(
-                        if (state.dismissDirection != SwipeToDismissBoxValue.StartToEnd) 1f else calculateAlpha(state.progress),
-                    )
+                    .alpha(alpha)
                     .fillMaxSize()
                     .padding(16.dp, 0.dp, 16.dp, 0.dp),
                 shape = MaterialTheme.shapes.large,
@@ -178,9 +182,7 @@ private fun AnnouncementItemContent(
     ) {
         Surface(
             modifier = modifier
-                .alpha(
-                    if (state.dismissDirection != SwipeToDismissBoxValue.StartToEnd) 1f else calculateAlpha(state.progress),
-                )
+                .alpha(alpha)
                 .padding(16.dp, 0.dp, 16.dp, 0.dp),
             shape = MaterialTheme.shapes.large,
             color = MaterialTheme.colorScheme.surfaceVariant,

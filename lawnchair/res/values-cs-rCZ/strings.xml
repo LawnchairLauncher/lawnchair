@@ -209,6 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Styl ikon</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Tvar ikon</string>
     <string name="icon_sizes">Velikost ikon</string>
     <string name="show_labels">Zobrazit popisky</string>
@@ -485,6 +486,11 @@
     <string name="recents_screen_a11y_hint">otevřít obrazovku nedávných aplikací</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting
@@ -746,7 +752,7 @@
     <string name="grant_requested_permissions_tap">Klepnutím udělíte oprávnění</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">Domovská obrazovka byla vymazána</string>
-    <string name="lawnchair_actions">Actions</string>
-    <string name="lawnchair_action_failed">Failed to trigger action</string>
-    <string name="please_wait">Please wait…</string>
+    <string name="lawnchair_actions">Akce</string>
+    <string name="lawnchair_action_failed">Spuštění akce se nezdařilo</string>
+    <string name="please_wait">Počkejte prosím…</string>
 </resources>

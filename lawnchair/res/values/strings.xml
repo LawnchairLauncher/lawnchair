@@ -231,8 +231,8 @@
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
 
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Folder</string>
     <string name="app_icon_shape_label">App</string>
 
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
@@ -340,6 +340,9 @@
     <string name="custom_icon_shape">Custom icon shape</string>
     <string name="custom_icon_shape_create">Create custom icon shape</string>
     <string name="custom_icon_shape_edit">Edit custom icon shape</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Corner shape</string>
     <string name="custom_icon_shape_corner_round">Round</string>
     <string name="custom_icon_shape_corner_squircle">Smooth</string>
@@ -615,6 +618,12 @@
 
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
 
     <!--
 

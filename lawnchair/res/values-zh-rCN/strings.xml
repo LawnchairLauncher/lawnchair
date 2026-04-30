@@ -209,6 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">图标样式</string>
+    <string name="apply_icon_pack_title">应用图标包</string>
     <string name="icon_shape_label">图标形状</string>
     <string name="icon_sizes">图标大小</string>
     <string name="show_labels">显示标签</string>
@@ -254,15 +255,15 @@
     <string name="icon_shape_seven_sided_cookie">七瓣花形</string>
     <string name="icon_shape_arch">拱形</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
-    <string name="icon_shape_meow">Meow</string>
-    <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded Hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
-    <string name="icon_shape_vessel">Vessel</string>
+    <string name="icon_shape_cloudy">云</string>
+    <string name="icon_shape_flower">花</string>
+    <string name="icon_shape_heart">心</string>
+    <string name="icon_shape_leaf">叶</string>
+    <string name="icon_shape_meow">喵</string>
+    <string name="icon_shape_pebble">卵石</string>
+    <string name="icon_shape_roundedhexagon">圆角六边形</string>
+    <string name="icon_shape_stretched">拉伸</string>
+    <string name="icon_shape_vessel">血管</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">自定义图标形状</string>
     <string name="custom_icon_shape_create">创建自定义图标形状</string>
@@ -457,8 +458,8 @@
     <string name="gesture_double_tap">双击</string>
     <string name="gesture_swipe_up">上滑</string>
     <string name="gesture_swipe_down">下滑</string>
-    <string name="gesture_two_finger_swipe_down">Two-finger swipe down</string>
-    <string name="gesture_two_finger_swipe_up">Two-finger swipe up</string>
+    <string name="gesture_two_finger_swipe_down">双指向下滑动</string>
+    <string name="gesture_two_finger_swipe_up">双指向上滑动</string>
     <string name="gesture_home_tap">主屏键</string>
     <string name="gesture_back_tap">返回键</string>
     <string name="gesture_swipe_left">向左滑动</string>
@@ -485,6 +486,11 @@
     <string name="recents_screen_a11y_hint">打开最近应用屏幕</string>
     <string name="generic_a11y_hint">要%1$s, 启用 Lawnchair 无障碍服务，请点击“打开设置”，选择“Lawnchair”，然后开启“使用 Lawnchair”。</string>
     <string name="generic_a11y_disclaimer">Lawnchair 使用辅助功能的 `performGlobalAction` 方法来执行此操作。这是一个敏感权限，允许监控其他应用。但是，Lawnchair 未配置此功能，因此不会收到任何事件。</string>
+    <string name="sleep_mode_label">睡眠模式</string>
+    <string name="sleep_mode_auto">自动</string>
+    <string name="sleep_mode_root">耕</string>
+    <string name="sleep_mode_accessibility">铺助服务</string>
+    <string name="sleep_mode_device_admin">管理员设备</string>
     <!--
 
     Bug reporting
@@ -743,7 +749,7 @@
     <string name="grant_requested_permissions_tap">点击此处授权</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">主屏幕已清除</string>
-    <string name="lawnchair_actions">Actions</string>
-    <string name="lawnchair_action_failed">Failed to trigger action</string>
-    <string name="please_wait">Please wait…</string>
+    <string name="lawnchair_actions">操作</string>
+    <string name="lawnchair_action_failed">未能触发操作</string>
+    <string name="please_wait">请稍等…</string>
 </resources>

@@ -1,6 +1,7 @@
 package app.lawnchair.icons
 
 import android.content.Context
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.concurrent.annotations.Ui
@@ -24,6 +25,7 @@ class ThemeManagerModule {
         lifecycle: DaggerSingletonTracker,
         iconControllerFactory: ThemeManager.IconControllerFactory,
         prefs2: PreferenceManager2,
+        prefs1: PreferenceManager,
     ): ThemeManager {
         return LawnchairThemeManager(
             context = context,
@@ -32,6 +34,7 @@ class ThemeManagerModule {
             lifecycle = lifecycle,
             iconControllerFactory = iconControllerFactory,
             prefs2 = prefs2,
+            prefs1 = prefs1,
         )
     }
 }
