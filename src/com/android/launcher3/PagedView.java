@@ -1266,7 +1266,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
             int scrollOffset = mIsRtl ? getPaddingRight() : getPaddingLeft();
             int baselineX = mPageScrolls[index] + scrollOffset;
-            return (int) (child.getX() - baselineX);
+            float childX = child.getX();
+            // Wrap-scroll's translationX isn't a layout transition; don't let it skew parallax offset.
+            if (isWrapScrolling() && index == mWrapToPage) {
+                childX -= child.getTranslationX();
+            }
+            return (int) (childX - baselineX);
         }
     }
 
@@ -1871,6 +1876,33 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
         if (scroll < mSavedMinScroll) {
             return scroll + totalRange;
+        }
+        return scroll;
+    }
+
+    /**
+     * Returns the scroll value to use for wallpaper parallax during wrap scrolling.
+     * While the page wraps one page distance via translationX, the wallpaper sweeps the full
+     * scroll range in the opposite direction so it slides continuously from one edge to the
+     * other (matching the pre-wrap-animation behavior and other launchers like Nova).
+     */
+    public int getScrollForWallpaper() {
+        int scroll = getScrollX();
+        if (!isWrapScrolling() || !isPageScrollsInitialized() || getChildCount() < 2) {
+            return scroll;
+        }
+        int onePageDistance = getOnePageDistance();
+        if (onePageDistance == 0) {
+            return scroll;
+        }
+        int scrollRange = mSavedMaxScroll - mSavedMinScroll;
+        if (scroll > mSavedMaxScroll) {
+            float progress = (float) (scroll - mSavedMaxScroll) / onePageDistance;
+            return Math.round(mSavedMaxScroll - progress * scrollRange);
+        }
+        if (scroll < mSavedMinScroll) {
+            float progress = (float) (mSavedMinScroll - scroll) / onePageDistance;
+            return Math.round(mSavedMinScroll + progress * scrollRange);
         }
         return scroll;
     }

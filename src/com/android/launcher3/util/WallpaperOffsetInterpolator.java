@@ -167,7 +167,7 @@ public class WallpaperOffsetInterpolator {
 
     public void syncWithScroll() {
         int numScreens = getNumScrollableScreensExcludingEmpty();
-        wallpaperOffsetForScroll(mWorkspace.getScrollX(), numScreens, sTempInt);
+        wallpaperOffsetForScroll(mWorkspace.getScrollForWallpaper(), numScreens, sTempInt);
         Message msg = Message.obtain(mHandler, MSG_UPDATE_OFFSET, sTempInt[0], sTempInt[1],
                 mWindowToken);
         if (numScreens != mNumScreens) {
