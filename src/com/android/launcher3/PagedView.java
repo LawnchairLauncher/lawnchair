@@ -138,6 +138,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private int mWrapToPage = INVALID_PAGE;
     private int mSavedMinScroll;
     private int mSavedMaxScroll;
+    private boolean mCachedEnableFeed;
 
     private boolean isWrapScrolling() {
         return mWrapToPage != INVALID_PAGE;
@@ -1329,6 +1330,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             mTotalMotion = 0;
             mAllowEasyFling = false;
             mActivePointerId = ev.getPointerId(0);
+            mCachedEnableFeed = PreferenceCacheExtensionsKt.firstCached(prefs2.getEnableFeed());
             if (mIsBeingDragged) {
                 pageBeginTransition();
             }
@@ -1381,7 +1383,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                 if (delta != 0) {
                     if (prefs.getInfiniteScrolling().get() && !mFreeScroll && getChildCount() > 1) {
-                        boolean enableFeed = PreferenceExtensionsKt.firstBlocking(prefs2.getEnableFeed());
+                        boolean enableFeed = mCachedEnableFeed;
                         float pulledTo = oldScroll + delta;
                         if (!isWrapScrolling() && mCurrentPage == getChildCount() - 1) {
                             boolean pastEnd = mIsRtl ? pulledTo < mMinScroll : pulledTo > mMaxScroll;
@@ -1476,7 +1478,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     // move to the left and fling to the right will register as a fling to the right.
 
                     boolean infiniteScroll = prefs.getInfiniteScrolling().get();
-                    boolean enableFeed = PreferenceCacheExtensionsKt.firstCached(prefs2.getEnableFeed());
+                    boolean enableFeed = mCachedEnableFeed;
 
                     if (((isSignificantMove && !isDeltaLeft && !isFling) ||
                             (isFling && !isVelocityLeft)) && mCurrentPage > 0) {
@@ -1853,6 +1855,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             targetView.setTranslationX(0);
         }
         mWrapToPage = INVALID_PAGE;
+        int clamped = Utilities.boundToRange(
+                mOrientationHandler.getPrimaryScroll(this), mSavedMinScroll, mSavedMaxScroll);
+        mOrientationHandler.setPrimary(this, VIEW_SCROLL_TO, clamped);
         mMinScroll = mSavedMinScroll;
         mMaxScroll = mSavedMaxScroll;
     }
