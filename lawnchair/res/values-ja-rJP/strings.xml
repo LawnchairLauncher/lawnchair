@@ -176,10 +176,8 @@
     <string name="show_deck_layout_description">アプリドロワーを非表示にし、自動的に新しいアプリをホーム画面に追加するためのレイアウトオプションを表示します</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">ワークスペースでMaterial 3 Expressive の変更を有効にします</string>
-    <string name="experimental_folder_shape_modify_label">カスタマイズ可能なフォルダーの形状　
-
-実験フォルダの形状変更ラベル</string>
-    <string name="folder_shape_label">フォルダ</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">フォルダ</string>
     <string name="app_icon_shape_label">アプリ</string>
     <string name="gesturenavcontract_label">GestureNavContract API</string>
     <string name="gesturenavcontract_description">Android のジェスチャーナビゲーション使用時に、強化されたアニメーションを使用します。一部非対応のデバイスがあります。また、使用中にアニメーションの不具合が発生する場合があります。</string>
@@ -270,6 +268,9 @@
     <string name="custom_icon_shape">カスタムアイコン形状</string>
     <string name="custom_icon_shape_create">カスタムアイコン形状を作成します</string>
     <string name="custom_icon_shape_edit">カスタムアイコンの形状を編集します</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">角の形状</string>
     <string name="custom_icon_shape_corner_round">丸める</string>
     <string name="custom_icon_shape_corner_squircle">滑らか</string>

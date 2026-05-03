@@ -176,8 +176,8 @@
     <string name="show_deck_layout_description">Affichez une option de disposition permettant de masquer le tiroir des applis et d\'ajouter automatiquement les nouvelles applis à l\'écran d\'accueil</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Activez les modifications Material 3 Expressive dans l\'espace de travail</string>
-    <string name="experimental_folder_shape_modify_label">Forme de dossier personnalisable</string>
-    <string name="folder_shape_label">Dossier</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Dossier</string>
     <string name="app_icon_shape_label">Application</string>
     <string name="gesturenavcontract_label">Utiliser l\'API GestureNavContract</string>
     <string name="gesturenavcontract_description">Activez la prise en charge des animations Android améliorées lors de l\'utilisation de la navigation par gestes. Incompatible avec certains appareils. Peut causer des bugs d\'animation lorsque activé.</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">Forme d\'icône personnalisée</string>
     <string name="custom_icon_shape_create">Créer une forme d\'icône personnalisée</string>
     <string name="custom_icon_shape_edit">Modifier la forme d\'icône personnalisée</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Type d\'angle</string>
     <string name="custom_icon_shape_corner_round">Arrondi</string>
     <string name="custom_icon_shape_corner_squircle">Lisse</string>

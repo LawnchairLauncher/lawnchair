@@ -176,8 +176,8 @@
     <string name="show_deck_layout_description">Hiện một tùy chọn tắt ngăn chứa ứng dụng và tự động thêm ứng dụng mới vào màn hình chính</string>
     <string name="material_expressive_label">Material 3 Biểu cảm</string>
     <string name="material_expressive_description">Cho phép thay đổi biểu cảm trong không gian làm việc của Material 3.</string>
-    <string name="experimental_folder_shape_modify_label">Hình dạng thư mục có thể tùy chỉnh</string>
-    <string name="folder_shape_label">Thư mục</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Thư mục</string>
     <string name="app_icon_shape_label">Ứng dụng</string>
     <string name="gesturenavcontract_label">Sử dụng API GestureNavContract</string>
     <string name="gesturenavcontract_description">Hỗ trợ hiệu ứng hoạt ảnh nâng cao của Android khi sử dụng điều hướng bằng cử chỉ. Không phải tất cả thiết bị đều hỗ trợ tính năng này. Có thể gây ra lỗi hoạt ảnh khi sử dụng.</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">Tùy chỉnh hình dạng biểu tượng</string>
     <string name="custom_icon_shape_create">Tạo hình dạng biểu tượng tùy chỉnh</string>
     <string name="custom_icon_shape_edit">Chỉnh sửa hình dạng biểu tượng tùy chỉnh</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Hình dạng góc</string>
     <string name="custom_icon_shape_corner_round">Tròn</string>
     <string name="custom_icon_shape_corner_squircle">Trơn</string>

@@ -176,8 +176,8 @@
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Folder</string>
     <string name="app_icon_shape_label">செயலி</string>
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">தனிப்பயன் ஐகான் வடிவம்</string>
     <string name="custom_icon_shape_create">தனிப்பயன் ஐகான் வடிவத்தை உருவாக்கவும்</string>
     <string name="custom_icon_shape_edit">தனிப்பயன் ஐகான் வடிவத்தைத் திருத்து</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">மூலை வடிவம்</string>
     <string name="custom_icon_shape_corner_round">சுற்று</string>
     <string name="custom_icon_shape_corner_squircle">மென்மையான</string>

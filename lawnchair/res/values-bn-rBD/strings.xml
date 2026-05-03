@@ -103,7 +103,7 @@
     <string name="caddy">ক্যাডি</string>
     <string name="app_drawer_folder">অ্যাপ ড্রয়ার ফোল্ডার</string>
     <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="add_apps">অ্যাপ যোগ করুন</string>
     <string name="app_drawer_folder_settings">ড্রয়ার ফোল্ডার</string>
     <string name="add_folder">ফোল্ডার তৈরি করুন</string>
     <string name="edit_folder">ফোল্ডার সম্পাদনা করুন</string>
@@ -150,7 +150,7 @@
     <string name="gestures_description">ট্যাপ এবং সোয়াইপ</string>
     <string name="quickstep_label">সাম্প্রতিক স্ক্রিনগুলি</string>
     <string name="quickstep_description">সব মুছে ফেলার বোতাম, কোণার ব্যাসার্ধ</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_label">ব্যাকআপ ও পুনরুদ্ধার</string>
     <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">সম্পর্কে</string>
     <string name="app_info_drop_target_label">অ্যাপের তথ্য</string>
@@ -176,13 +176,13 @@
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">ফোল্ডারের আকার</string>
+    <string name="folder_label">ফোল্ডার</string>
     <string name="app_icon_shape_label">অ্যাপ</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
+    <string name="gesturenavcontract_label">GestureNavContract API ব্যাবহার করুন</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
+    <string name="recents_lock_unlock">লক করুন/আনলক করুন</string>
     <string name="recents_lock_unlock_description"></string>
     <!--Overlay-->
     <string name="overlay_fade_in">Fade In</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">Custom icon shape</string>
     <string name="custom_icon_shape_create">Create custom icon shape</string>
     <string name="custom_icon_shape_edit">Edit custom icon shape</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Corner shape</string>
     <string name="custom_icon_shape_corner_round">গোল</string>
     <string name="custom_icon_shape_corner_squircle">মসৃণ</string>

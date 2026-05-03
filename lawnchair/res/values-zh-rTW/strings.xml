@@ -176,8 +176,8 @@
     <string name="show_deck_layout_description">顯示版面選項以隱藏應用程式抽屜並自動將項目加到主畫面</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Folder</string>
     <string name="app_icon_shape_label">應用程式</string>
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">自訂圖示形狀</string>
     <string name="custom_icon_shape_create">建立自訂圖示形狀</string>
     <string name="custom_icon_shape_edit">編輯自訂圖示形狀</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">邊角形狀</string>
     <string name="custom_icon_shape_corner_round">圓角</string>
     <string name="custom_icon_shape_corner_squircle">方圓角</string>

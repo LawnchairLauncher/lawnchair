@@ -176,8 +176,8 @@
     <string name="show_deck_layout_description">앱 서랍을 가리고 홈 화면에 새 앱을 자동으로 추가하는 레이아웃 옵션을 표시합니다</string>
     <string name="material_expressive_label">Material 3 표현</string>
     <string name="material_expressive_description">워크스페이스에서 Material 3 표현 변경을 활성화합니다</string>
-    <string name="experimental_folder_shape_modify_label">폴더 모양 사용자 정의</string>
-    <string name="folder_shape_label">폴더</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">폴더</string>
     <string name="app_icon_shape_label">앱</string>
     <string name="gesturenavcontract_label">GestureNavContract API 사용</string>
     <string name="gesturenavcontract_description">제스처 내비게이션 사용 시 안드로이드의 향상된 애니메이션을 지원하세요. 모든 장치가 이것을 지원하는 것은 아닙니다. 사용 중 애니메이션 버그를 유발할 수 있습니다.</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">사용자 정의 아이콘 모양</string>
     <string name="custom_icon_shape_create">사용자 정의 아이콘 모양 만들기</string>
     <string name="custom_icon_shape_edit">사용자 정의 아이콘 모양 편집</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">모서리 모양</string>
     <string name="custom_icon_shape_corner_round">원호</string>
     <string name="custom_icon_shape_corner_squircle">곡선</string>

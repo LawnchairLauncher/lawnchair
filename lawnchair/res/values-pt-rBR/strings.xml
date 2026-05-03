@@ -176,8 +176,8 @@
     <string name="show_deck_layout_description">Mostrar uma opção de layout para ocultar a gaveta de aplicativos e adicionar automaticamente novos aplicativos à tela inicial</string>
     <string name="material_expressive_label">Material 3 expressivo</string>
     <string name="material_expressive_description">Ativar alterações expressivas do Material 3 no espaço de trabalho</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Folder</string>
     <string name="app_icon_shape_label">Aplicativo</string>
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">Formato de Ícone Personalizado</string>
     <string name="custom_icon_shape_create">Criar forma de ícone personalizada</string>
     <string name="custom_icon_shape_edit">Editar formato dos ícones personalizados</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Formato dos Cantos</string>
     <string name="custom_icon_shape_corner_round">Arredondado</string>
     <string name="custom_icon_shape_corner_squircle">Suave</string>

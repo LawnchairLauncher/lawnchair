@@ -176,8 +176,8 @@
     <string name="show_deck_layout_description">De optie Opmaak weergeven om de app-lade te verbergen en nieuwe apps automatisch toe te voegen aan het startscherm</string>
     <string name="material_expressive_label">Material 3 Expressief</string>
     <string name="material_expressive_description">Material 3 Expressief inschakelen wijzigt de werkruimte</string>
-    <string name="experimental_folder_shape_modify_label">Aanpasbare mapsvorm</string>
-    <string name="folder_shape_label">Map</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Map</string>
     <string name="app_icon_shape_label">App</string>
     <string name="gesturenavcontract_label">GestureNavContract-API gebruiken</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">Aangepaste pictogramvorm</string>
     <string name="custom_icon_shape_create">Aangepaste pictogramvorm aanmaken</string>
     <string name="custom_icon_shape_edit">Aangepaste pictogramvorm bewerken</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Hoekvorm</string>
     <string name="custom_icon_shape_corner_round">Rond</string>
     <string name="custom_icon_shape_corner_squircle">Glad</string>

@@ -176,8 +176,8 @@
     <string name="show_deck_layout_description">Tampilkan opsi tata letak untuk menyembunyikan laci aplikasi dan secara otomatis menambahkan aplikasi baru ke layar beranda</string>
     <string name="material_expressive_label">Material 3 Ekspresif</string>
     <string name="material_expressive_description">Aktifkan perubahan Material 3 Ekspresif pada ruang kerja</string>
-    <string name="experimental_folder_shape_modify_label">Bentuk folder kustom</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Folder</string>
     <string name="app_icon_shape_label">Aplikasi</string>
     <string name="gesturenavcontract_label">Gunakan API GestureNavContract</string>
     <string name="gesturenavcontract_description">Mendukung animasi android yang disempurnakan saat menggunakan lokasi gerakan. Tidak semua perangkat mendukung ini. Dapat menyebabkan kerusakan animasi saat digunakan.</string>
@@ -268,6 +268,9 @@
     <string name="custom_icon_shape">Bentuk ikon kustom</string>
     <string name="custom_icon_shape_create">Buat bentuk ikon kustom</string>
     <string name="custom_icon_shape_edit">Edit bentuk ikon kustom</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Bentuk sudut</string>
     <string name="custom_icon_shape_corner_round">Bulat</string>
     <string name="custom_icon_shape_corner_squircle">Halus</string>
