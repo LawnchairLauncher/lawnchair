@@ -49,7 +49,7 @@ androidx-datastore-preferences = "androidx.datastore:datastore-preferences:1.2.1
 androidx-dynamicanimation = "androidx.dynamicanimation:dynamicanimation:1.1.0"
 androidx-espresso-core = "androidx.test.espresso:espresso-core:3.7.0"
 androidx-graphics-core = "androidx.graphics:graphics-core:1.0.4"
-androidx-graphics-path = "androidx.graphics:graphics-path:1.0.1"
+androidx-graphics-path = "androidx.graphics:graphics-path:1.1.0"
 androidx-graphics-shapes = "androidx.graphics:graphics-shapes:1.1.0"
 androidx-junit = "androidx.test.ext:junit:1.3.0"
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle" }
