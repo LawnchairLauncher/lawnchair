@@ -627,7 +627,7 @@
     <string name="folder_preview_bg_opacity_label">Simge ön izlemesi arka plan opaklığı</string>
     <string name="folder_bg_opacity_label">Klasör arka plan opaklığı</string>
     <string name="folder_preview_bg_color_label">Simge arka plan rengi</string>
-    <string name="max_folder_columns">Maksimum klasör sütunları</string>
+    <string name="max_folder_columns">Maksimum klasör sütunu</string>
     <string name="max_folder_rows">Maksimum klasör satırı</string>
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">Bu ayarlar Lawnchair Son Kullanılanlar sağlayıcısı olmadığı sürece yok sayılacak</string>

@@ -176,7 +176,7 @@
     <string name="show_deck_layout_description">Affichez une option de disposition permettant de masquer le tiroir des applis et d\'ajouter automatiquement les nouvelles applis à l\'écran d\'accueil</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Activez les modifications Material 3 Expressive dans l\'espace de travail</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_shape_label">Forme de dossier</string>
     <string name="folder_label">Dossier</string>
     <string name="app_icon_shape_label">Application</string>
     <string name="gesturenavcontract_label">Utiliser l\'API GestureNavContract</string>
@@ -268,9 +268,9 @@
     <string name="custom_icon_shape">Forme d\'icône personnalisée</string>
     <string name="custom_icon_shape_create">Créer une forme d\'icône personnalisée</string>
     <string name="custom_icon_shape_edit">Modifier la forme d\'icône personnalisée</string>
-    <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape">Forme de dossier personnalisée</string>
+    <string name="custom_folder_shape_create">Créer une forme de dossier personnalisée</string>
+    <string name="custom_folder_shape_edit">Modifier la forme de dossier personnalisée</string>
     <string name="custom_icon_shape_corner">Type d\'angle</string>
     <string name="custom_icon_shape_corner_round">Arrondi</string>
     <string name="custom_icon_shape_corner_squircle">Lisse</string>
@@ -489,11 +489,11 @@
     <string name="recents_screen_a11y_hint">ouvrir l\'écran Récents</string>
     <string name="generic_a11y_hint">Pour %1$s, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » puis activez « Utiliser Lawnchair. »</string>
     <string name="generic_a11y_disclaimer">Lawnchair utilise la méthode d\'accessibilité `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applis, mais Lawnchair n\'est pas configuré de manière à utiliser ces fonctionnalités et ne reçoit donc aucun événement.</string>
-    <string name="sleep_mode_label">Sleep mode</string>
-    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_label">Mode Veille</string>
+    <string name="sleep_mode_auto">Automatique</string>
     <string name="sleep_mode_root">Root</string>
-    <string name="sleep_mode_accessibility">Accessibility service</string>
-    <string name="sleep_mode_device_admin">Device admin</string>
+    <string name="sleep_mode_accessibility">Service d\'accessibilité</string>
+    <string name="sleep_mode_device_admin">Administration de l\'appareil</string>
     <!--
 
     Bug reporting

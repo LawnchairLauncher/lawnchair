@@ -55,7 +55,7 @@
     <string name="changes_dialog_commit_info">von %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">gerade eben</string>
-    <string name="time_minutes_ago">%dMin.</string>
+    <string name="time_minutes_ago">%dMin</string>
     <string name="time_hours_ago">%dStd.</string>
     <string name="time_days_ago">%dT.</string>
     <string name="time_weeks_ago">%dW.</string>
@@ -489,11 +489,11 @@
     <string name="recents_screen_a11y_hint">den Anwendungsverlauf öffnen</string>
     <string name="generic_a11y_hint">Um %1$s, aktiviere die Bedienungshilfe für Lawnchair. Tippe auf \"Einstellungen öffnen\", wähle \"Lawnchair\" aus und aktiviere \"Lawnchair verwenden\".</string>
     <string name="generic_a11y_disclaimer">Lawnchair verwendet die \"performGlobalAction\"-Bedienungshilfe, um diese Aktion auszuführen. Dies ist eine sensible Berechtigung, die die Überwachung anderer Apps erlaubt. Lawnchair ist jedoch nicht für diese Funktionalität konfiguriert und empfängt keine Ereignisse.</string>
-    <string name="sleep_mode_label">Sleep mode</string>
-    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_label">Ruhemodus</string>
+    <string name="sleep_mode_auto">Automatisch</string>
     <string name="sleep_mode_root">Root</string>
-    <string name="sleep_mode_accessibility">Accessibility service</string>
-    <string name="sleep_mode_device_admin">Device admin</string>
+    <string name="sleep_mode_accessibility">Bedienungshilfeeinstellung</string>
+    <string name="sleep_mode_device_admin">Geräteadmin</string>
     <!--
 
     Bug reporting
@@ -755,5 +755,5 @@
     <string name="home_screen_all_views_removed_msg">Startbildschirm geleert</string>
     <string name="lawnchair_actions">Aktionen</string>
     <string name="lawnchair_action_failed">Aktion fehlgeschlagen</string>
-    <string name="please_wait">Please wait…</string>
+    <string name="please_wait">Bitte warten…</string>
 </resources>
