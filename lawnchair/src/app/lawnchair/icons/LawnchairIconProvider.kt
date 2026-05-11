@@ -182,6 +182,17 @@ class LawnchairIconProvider @Inject constructor(
         return themedIcon ?: iconPackIcon ?: super.getIcon(info, appInfo, iconDpi)
     }
 
+    override fun getStateForApp(info: ApplicationInfo?): String {
+        val base = super.getStateForApp(info)
+        return "$base|lc:" +
+            "ip=${iconPackPref.get()}," +
+            "tip=${themedIconSourcePref.get()}," +
+            "ti=${prefs.themedIcons.get()}," +
+            "dti=${prefs.drawerThemedIcons.get()}," +
+            "fm=${prefs.forceIconMonochrome.get()}," +
+            "tb=${prefs.tintIconPackBackgrounds.get()}"
+    }
+
     override fun getThemeDataForPackage(packageName: String?): ThemeData? {
         return themeMap[packageName]
     }
