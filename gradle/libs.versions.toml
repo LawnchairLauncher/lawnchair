@@ -110,8 +110,8 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
 
 # KotlinX
-kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
-kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2"
+kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0"
+kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 
 protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
