@@ -38,8 +38,8 @@
     <string name="action_copy">Kopier</string>
     <string name="action_paste">Indsæt</string>
     <string name="action_done">Færdig</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
+    <string name="select_all">Alles selecteren</string>
+    <string name="deselect_all">Alles deselecteren</string>
     <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Indlæser…</string>
     <string name="dismiss">Dismiss</string>
