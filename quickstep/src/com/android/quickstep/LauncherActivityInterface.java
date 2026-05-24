@@ -49,6 +49,7 @@ import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.ScalingWorkspaceRevealAnim;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.wm.shell.shared.desktopmode.DesktopState;
@@ -91,7 +92,10 @@ public final class LauncherActivityInterface extends
         // of the animation, we should ensure recents is at the correct position for NORMAL state.
         // For example, when doing a long swipe to home, RecentsView may be scaled down. This is
         // relatively expensive, so do it on the next frame instead of critical path.
-        MAIN_EXECUTOR.getHandler().post(launcher.getStateManager()::reapplyState);
+        MAIN_EXECUTOR.getHandler().post(() -> {
+            launcher.getStateManager().reapplyState();
+            ScalingWorkspaceRevealAnim.ensureHomeContentVisible(launcher);
+        });
 
         launcher.getRootView().setForceHideBackArrow(false);
         notifyRecentsOfOrientation();
