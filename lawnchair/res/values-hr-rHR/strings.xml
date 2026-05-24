@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
     <string name="folders_filter_duplicates">Samo prikaži određene aplikacije</string>
     <string name="my_folder_label">Moja mapa</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Da izvedete određene stavke (poput zaključavanja zaslona) dok izvodite gestu, Lawnchair-u je potreban pristup postavki za pristupačnost.\n\nLawnchair ne prati korisničke radnje, iako je odobrenje za to potrebno za sve usluge pristupačnosti. Lawnchair odbija svaki događaj poslan od sustava.\n\nDa zaključate zaslon, ili da otvorite Nedavno, Lawnchair koristi pristupačnu uslugu preformGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>

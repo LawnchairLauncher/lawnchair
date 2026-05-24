@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">ফোল্ডারগুলিতে নির্ধারিত অ্যাপগুলি অ্যাপ তালিকা থেকে বাদ দেওয়া হয়েছে</string>
     <string name="folders_filter_duplicates">শুধুমাত্র অনন্য অ্যাপগুলি দেখান</string>
     <string name="my_folder_label">আমার ফোল্ডার</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">অঙ্গভঙ্গি করার সময় নির্দিষ্ট কিছু কাজ (যেমন আপনার ফোন লক করা) করার জন্য, লনচেয়ারের অ্যাক্সেসিবিলিটি অ্যাক্সেস প্রয়োজন. \n\nলনচেয়ার ব্যবহারকারীর কোনও ক্রিয়াকলাপ পর্যবেক্ষণ করে না, যদিও সমস্ত অ্যাক্সেসিবিলিটি পরিষেবার জন্য এটি করার অধিকার প্রয়োজন। লনচেয়ার সিস্টেম দ্বারা প্রেরিত যেকোনো ইভেন্ট বাতিল করে দেয়।\n\nআপনার ফোন লক করতে, অথবা Recents স্ক্রিন খুলতে, Lawnchair performGlobalAction অ্যাক্সেসিবিলিটি পরিষেবা ব্যবহার করে।.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">আবহাওয়া</string>
     <string name="smartspace_battery_status">ব্যাটারির অবস্থা</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">এখন চলছে</string>
     <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>

@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Klasörlere koyulan uygulamalar uygulama listelerinden hariç tutulur</string>
     <string name="folders_filter_duplicates">Sadece farklı uygulamaları göster</string>
     <string name="my_folder_label">Benim klasörüm</string>
+    <string name="sort_active_items_action">Etkin öğeleri sırala</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Belirli eylemleri (örneğin telefonunuzu kilitlemek) bir hareketle gerçekleştirebilmek için, Lawnchair erişilebilirlik iznine ihtiyaç duyar.\n\nLawnchair hiçbir kullanıcı etkinliğini izlemez; ancak tüm erişilebilirlik servislerinde bu ayrıcalık gereklidir. Lawnchair, sistem tarafından gönderilen tüm olayları yok sayar.\n\nTelefonunuzu kilitlemek veya Son uygulamalar ekranını açmak için Lawnchair, performGlobalAction Erişilebilirlik servisini kullanır.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Hava durumu</string>
     <string name="smartspace_battery_status">Pil durumu</string>
+    <string name="smartspace_torch">El feneri durumu</string>
     <string name="smartspace_now_playing">Şimdi Oynatılıyor</string>
     <string name="smartspace_onboarding">Başlangıç</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">El feneri açık</string>
+    <string name="torch_action_off">Kapatmak için dokunun</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Lawnchair\'inizi yapılandırın</string>
     <string name="onboarding_open_settings_subtitle">Ayarları açmak için Ana Ekrana uzun basın</string>

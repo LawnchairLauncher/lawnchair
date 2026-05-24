@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">分配至資料夾的應用程式將會從抽屜中排除</string>
     <string name="folders_filter_duplicates">僅顯示單一應用程式</string>
     <string name="my_folder_label">我的資料夾</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Lawnchair 需要存取無障礙服務，才能透過手勢執行特定動作 (例如鎖定您的裝置)。\n\n存取所有無障礙服務都需要這項權限，但 Lawnchair 不會監視任何使用者操作，並會捨棄任何系統發送的事件。\n\nLawnchair 使用 performGlobalAction (執行全域動作)無障礙服務以鎖定您的裝置或開啟最近使用畫面。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天氣</string>
     <string name="smartspace_battery_status">電池狀況</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">聽聲辨曲</string>
     <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>

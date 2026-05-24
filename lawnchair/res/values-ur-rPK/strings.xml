@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">فولڈرز کو تفویض کردہ ایپس کو ایپ کی فہرستوں سے خارج کر دیا گیا ہے۔</string>
     <string name="folders_filter_duplicates">صرف منفرد ایپس دکھائیں۔</string>
     <string name="my_folder_label">میرا فولڈر</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">موسم</string>
     <string name="smartspace_battery_status">بیٹری کی حیثیت</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">اب چل رہا ہے۔</string>
     <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>

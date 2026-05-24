@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用程序列表之外</string>
     <string name="folders_filter_duplicates">仅显示唯一应用</string>
     <string name="my_folder_label">我的文件夹</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">为了在您执行手势时进行某些操作（例如锁定手机），Lawnchair 需要获取无障碍服务权限。\n\nLawnchair 不会监视您的任何用户操作，尽管所有无障碍服务都必须申请该权限。Lawnchair 会丢弃系统发送的任何事件。\n\n为了锁定您的手机或打开最近任务界面，Lawnchair 使用 performGlobalAction 无障碍服务。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">正在播放</string>
     <string name="smartspace_onboarding">入职</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">设置你的 Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">长按主屏幕打开设置</string>

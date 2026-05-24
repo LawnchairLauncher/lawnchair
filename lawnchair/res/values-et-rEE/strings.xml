@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Kaustadesse määratud rakendusi rakenduste loendis ei kuvata</string>
     <string name="folders_filter_duplicates">Kuva ainult unikaalsed rakendused</string>
     <string name="my_folder_label">Minu kaust</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Teatud toimingute (näiteks telefoni lukustamise) sooritamiseks viipe abil vajab Lawnchair luba juurdepääsetavuse teenuse kautamiseks.\n\nLawnchair ei jälgi kasutaja toiminguid, kuigi juurdepääsetavuse teenus annab selleks vajaliku õiguse. Lawnchair hülgab kõik süsteemi saadetud sündmused.\n\nTelefoni lukustamiseks või hiljutiste toimingute ekraani avamiseks kasutab Lawnchair performGlobalAction juurdepääsetavuse teenust.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Ilm</string>
     <string name="smartspace_battery_status">Aku olek</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Esitamisel</string>
     <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
