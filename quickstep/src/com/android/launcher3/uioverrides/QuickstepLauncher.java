@@ -1017,8 +1017,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
             return false;
         }
 
-        // Lawnchair-TODO-Merge: LC disabled this, 16r2 enabled it.
-//        getOnBackAnimationCallback().onBackInvoked();
+        getOnBackAnimationCallback().onBackInvoked();
         return true;
     }
 
@@ -1075,6 +1074,18 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                             mActiveOnBackAnimationCallback.onBackCancelled();
                             mActiveOnBackAnimationCallback = null;
                         }
+                    });
+        } else if (Utilities.ATLEAST_T) {
+            // On Android 13 the API 34 OnBackAnimationCallback interface used by
+            // FlingOnBackAnimationCallback cannot be instantiated, but a plain
+            // OnBackInvokedCallback works. Registering it is required because
+            // android:enableOnBackInvokedCallback="true" disables legacy key dispatch
+            // on Android 13+; without a callback the system would finish the Launcher.
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        onBackPressed();
+                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
                     });
         }
     }
