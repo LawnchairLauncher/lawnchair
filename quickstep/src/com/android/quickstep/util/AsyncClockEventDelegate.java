@@ -81,6 +81,17 @@ public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable 
     @Nullable
     private ClockEventDelegate mDelegate;
 
+    /**
+     * Initializes the AsyncClockEventDelegate, registers for system time and timezone broadcasts,
+     * and registers this instance with the provided singleton tracker for automatic closing.
+     *
+     * <p>Constructs the internal broadcast receiver that will forward time/timezone events to
+     * this delegate and stores the provided SettingsCache for later format-change registration.
+     *
+     * @param context the application context used for registering receivers and event dispatch
+     * @param tracker a lifecycle tracker used to ensure this instance is closed when the app shuts down
+     * @param settingsCache settings cache used to observe 12/24-hour format changes
+     */
     @Inject
     AsyncClockEventDelegate(@ApplicationContext Context context,
             DaggerSingletonTracker tracker,
@@ -94,10 +105,12 @@ public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable 
     }
 
     /**
-     * Lazily creates and returns a {@link ClockEventDelegate} that forwards to this singleton.
+     * Lazily creates a delegate that forwards clock event registration and callbacks to this singleton.
      *
-     * <p>Must only be called on Android 14+; on older platforms loading the nested {@link Delegate}
-     * class would fail because its superclass does not exist.
+     * <p>Must be called only on Android 14 (Upside Down Cake) or newer; loading the nested {@link Delegate}
+     * on older platforms will fail because its superclass is unavailable.
+     *
+     * @return the {@link ClockEventDelegate} instance that forwards to this singleton
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public ClockEventDelegate asClockEventDelegate() {
@@ -107,18 +120,43 @@ public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable 
         return mDelegate;
     }
 
+    /**
+     * Registers a BroadcastReceiver to be notified when the system time or timezone changes.
+     *
+     * The receiver will be invoked on the provided Handler; if {@code handler} is {@code null} a new default
+     * Handler will be created and used.
+     *
+     * @param receiver the BroadcastReceiver to notify on time/timezone change events
+     * @param handler  the Handler on which to invoke the receiver, or {@code null} to use a newly created default Handler
+     */
     void registerTimeChangeReceiver(BroadcastReceiver receiver, Handler handler) {
         synchronized (mTimeEventReceivers) {
             mTimeEventReceivers.put(receiver, handler == null ? new Handler() : handler);
         }
     }
 
+    /**
+     * Stops delivering time and timezone change events to the given receiver.
+     *
+     * @param receiver the BroadcastReceiver previously registered for time/timezone events;
+     *                 if the receiver is not registered this method has no effect
+     */
     void unregisterTimeChangeReceiver(BroadcastReceiver receiver) {
         synchronized (mTimeEventReceivers) {
             mTimeEventReceivers.remove(receiver);
         }
     }
 
+    /**
+     * Registers a ContentObserver to be notified when the system 12/24-hour time format changes.
+     *
+     * If this delegate has been destroyed, the observer is not registered. The method ensures
+     * the underlying settings change source for TIME_12_24 is registered once before adding
+     * the observer.
+     *
+     * @param observer the ContentObserver to notify on format changes
+     * @param userHandle an integer user identifier; currently accepted but ignored by this implementation
+     */
     void registerFormatChangeObserver(ContentObserver observer, int userHandle) {
         if (mDestroyed) {
             return;
@@ -132,6 +170,14 @@ public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable 
         }
     }
 
+    /**
+     * Stops dispatching time format change notifications to the given ContentObserver.
+     *
+     * Removes the observer from the internal list of format-change observers. Safe to call
+     * if the observer is not currently registered; this method is thread-safe.
+     *
+     * @param observer the ContentObserver to unregister
+     */
     void unregisterFormatChangeObserver(ContentObserver observer) {
         synchronized (mFormatObservers) {
             mFormatObservers.remove(observer);
@@ -157,6 +203,11 @@ public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable 
         }
     }
 
+    /**
+     * Releases internal resources and stops future clock and format event delivery.
+     *
+     * Sets the delegate to a destroyed state, unregisters the time-format listener from the settings cache, and unregisters the internal broadcast receiver.
+     */
     @Override
     public void close() {
         mDestroyed = true;
@@ -174,26 +225,57 @@ public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable 
 
         private final AsyncClockEventDelegate mOwner;
 
+        /**
+         * Creates a ClockEventDelegate that forwards delegate calls to the given owner.
+         *
+         * @param owner the AsyncClockEventDelegate that will receive forwarded registrations and events
+         */
         Delegate(AsyncClockEventDelegate owner) {
             super(owner.mContext);
             mOwner = owner;
         }
 
+        /**
+         * Registers a BroadcastReceiver to receive time and timezone change events.
+         *
+         * @param receiver the receiver that will be notified when time or timezone changes occur
+         * @param handler  the handler on which to invoke the receiver; if null, the receiver's
+         *                 onReceive may be invoked on a default handler
+         */
         @Override
         public void registerTimeChangeReceiver(BroadcastReceiver receiver, Handler handler) {
             mOwner.registerTimeChangeReceiver(receiver, handler);
         }
 
+        /**
+         * Stops delivering time and timezone change events to the given receiver.
+         *
+         * @param receiver the BroadcastReceiver previously registered to receive time change events
+         */
         @Override
         public void unregisterTimeChangeReceiver(BroadcastReceiver receiver) {
             mOwner.unregisterTimeChangeReceiver(receiver);
         }
 
+        /**
+         * Registers a ContentObserver to be notified when the system 12/24-hour time format changes.
+         *
+         * <p>The provided `observer` will receive change notifications for the
+         * Settings.System.TIME_12_24 setting.</p>
+         *
+         * @param observer the observer to notify when the time format changes
+         * @param userHandle ignored; kept for API compatibility
+         */
         @Override
         public void registerFormatChangeObserver(ContentObserver observer, int userHandle) {
             mOwner.registerFormatChangeObserver(observer, userHandle);
         }
 
+        /**
+         * Unregisters a ContentObserver previously registered for time format (12/24-hour) changes.
+         *
+         * @param observer the ContentObserver to unregister; if the observer was not registered this is a no-op
+         */
         @Override
         public void unregisterFormatChangeObserver(ContentObserver observer) {
             mOwner.unregisterFormatChangeObserver(observer);

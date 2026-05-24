@@ -1606,6 +1606,13 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         predictionRowView.dump(prefix, writer);
     }
 
+    /**
+     * Creates a TextClock or AnalogClock with an asynchronous ClockEventDelegate on Android U (API 34) and newer;
+     * on older platforms delegates to the framework's view creation.
+     *
+     * @return the created View for the given name when handled (TextClock or AnalogClock with delegate),
+     *         or the view returned by the superclass when not handled
+     */
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
         // ClockEventDelegate / setClockEventDelegate were added in Android 14 (API 34); on older
