@@ -1608,16 +1608,23 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        switch (name) {
-            case "TextClock", "android.widget.TextClock" -> {
-                TextClock tc = new TextClock(context, attrs);
-                tc.setClockEventDelegate(AsyncClockEventDelegate.INSTANCE.get(this));
-                return tc;
-            }
-            case "AnalogClock", "android.widget.AnalogClock" -> {
-                AnalogClock ac = new AnalogClock(context, attrs);
-                ac.setClockEventDelegate(AsyncClockEventDelegate.INSTANCE.get(this));
-                return ac;
+        // ClockEventDelegate / setClockEventDelegate were added in Android 14 (API 34); on older
+        // platforms we must fall back to the framework default to avoid loading classes that do
+        // not exist on the device (b/353166316, lawnchair issue #6781).
+        if (Utilities.ATLEAST_U) {
+            switch (name) {
+                case "TextClock", "android.widget.TextClock" -> {
+                    TextClock tc = new TextClock(context, attrs);
+                    tc.setClockEventDelegate(
+                            AsyncClockEventDelegate.INSTANCE.get(this).asClockEventDelegate());
+                    return tc;
+                }
+                case "AnalogClock", "android.widget.AnalogClock" -> {
+                    AnalogClock ac = new AnalogClock(context, attrs);
+                    ac.setClockEventDelegate(
+                            AsyncClockEventDelegate.INSTANCE.get(this).asClockEventDelegate());
+                    return ac;
+                }
             }
         }
         return super.onCreateView(parent, name, context, attrs);
