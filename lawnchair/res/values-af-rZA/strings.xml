@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">My folder</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -176,8 +177,8 @@
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Folder</string>
     <string name="app_icon_shape_label">App</string>
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
@@ -209,6 +210,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Icon style</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Icon shape</string>
     <string name="icon_sizes">Icon size</string>
     <string name="show_labels">Show labels</string>
@@ -267,6 +269,9 @@
     <string name="custom_icon_shape">Custom icon shape</string>
     <string name="custom_icon_shape_create">Create custom icon shape</string>
     <string name="custom_icon_shape_edit">Edit custom icon shape</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Corner shape</string>
     <string name="custom_icon_shape_corner_round">Round</string>
     <string name="custom_icon_shape_corner_squircle">Smooth</string>
@@ -377,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Weer</string>
     <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Speel nou</string>
     <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
@@ -485,6 +494,11 @@
     <string name="recents_screen_a11y_hint">open the Recents screen</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

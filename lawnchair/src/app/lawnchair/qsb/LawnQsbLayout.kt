@@ -40,9 +40,6 @@ import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.firstBlocking
-import com.patrykmichalik.opto.core.onEach
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
@@ -59,7 +56,6 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private lateinit var preferenceManager: PreferenceManager
     private lateinit var preferenceManager2: PreferenceManager2
     private var searchPendingIntent: PendingIntent? = null
-    private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     private var strokeColor: ColorOption? = null
 
@@ -74,19 +70,19 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         preferenceManager = PreferenceManager.getInstance(context)
         preferenceManager2 = PreferenceManager2.getInstance(context)
 
-        preferenceManager2.strokeColorStyle.onEach(launchIn = coroutineScope) {
+        val attachedScope = viewAttachedScope
+        preferenceManager2.strokeColorStyle.subscribeBlocking(scope = attachedScope) {
             strokeColor = it
             setUpBackground()
         }
 
-        setUpBackground()
         clipIconRipples()
 
         val searchProvider = getSearchProvider(context, preferenceManager2)
         val isGoogle = searchProvider == Google || searchProvider == GoogleGo || searchProvider == PixelSearch
         val supportsLens = searchProvider == Google || searchProvider == PixelSearch
 
-        preferenceManager2.themedHotseatQsb.subscribeBlocking(scope = viewAttachedScope) { themed ->
+        preferenceManager2.themedHotseatQsb.subscribeBlocking(scope = attachedScope) { themed ->
             setUpBackground(themed)
 
             val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
@@ -129,8 +125,8 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             subscribeGoogleSearchWidget()
         }
 
-        preferenceManager.hotseatQsbAlpha.subscribeChanges(this::setUpBackground)
-        preferenceManager.hotseatQsbStrokeWidth.subscribeChanges(this::setUpBackground)
+        preferenceManager.hotseatQsbAlpha.subscribeChanges(this, ::setUpBackground)
+        preferenceManager.hotseatQsbStrokeWidth.subscribeChanges(this, ::setUpBackground)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

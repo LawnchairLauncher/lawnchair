@@ -111,7 +111,6 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         val wrapper = ViewCompat.requireViewById<View>(this, R.id.search_wrapper)
         wrapper.background = bg
         setupPadding()
-        launcher.deviceProfile.inv.addOnChangeListener(this)
         bgAlphaAnimator.addUpdateListener { updateBgAlpha() }
 
         hint = ViewCompat.requireViewById(this, R.id.hint)
@@ -324,13 +323,19 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        appsView.appsStore?.addUpdateListener(this)
+        launcher.deviceProfile.inv.addOnChangeListener(this)
+        if (::appsView.isInitialized) {
+            appsView.appsStore?.addUpdateListener(this)
+        }
         input.viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        appsView.appsStore?.removeUpdateListener(this)
+        launcher.deviceProfile.inv.removeOnChangeListener(this)
+        if (::appsView.isInitialized) {
+            appsView.appsStore?.removeUpdateListener(this)
+        }
         input.viewTreeObserver.removeOnGlobalLayoutListener(this)
     }
 

@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">フォルダーに割り当てられたアプリはアプリリストから除外されます</string>
     <string name="folders_filter_duplicates">固有のアプリのみ表示</string>
     <string name="my_folder_label">自分のフォルダー</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">ジェスチャー操作時に特定の操作（スマートフォンのロックなど）を実行するには、Lawnchair にユーザー補助機能へのアクセスが必要です。\n\nLawnchair はユーザーの操作を監視しませんが、すべてのユーザー補助サービスにはユーザー補助機能へのアクセス権限が必要です。Lawnchair はシステムから送信されたイベントをすべて破棄します。\n\nLawnchair はスマートフォンをロックしたり、「最近」画面を開いたりするために、performGlobalAction ユーザー補助機能サービスを使用します。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -176,10 +177,8 @@
     <string name="show_deck_layout_description">アプリドロワーを非表示にし、自動的に新しいアプリをホーム画面に追加するためのレイアウトオプションを表示します</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">ワークスペースでMaterial 3 Expressive の変更を有効にします</string>
-    <string name="experimental_folder_shape_modify_label">カスタマイズ可能なフォルダーの形状　
-
-実験フォルダの形状変更ラベル</string>
-    <string name="folder_shape_label">フォルダ</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">フォルダ</string>
     <string name="app_icon_shape_label">アプリ</string>
     <string name="gesturenavcontract_label">GestureNavContract API</string>
     <string name="gesturenavcontract_description">Android のジェスチャーナビゲーション使用時に、強化されたアニメーションを使用します。一部非対応のデバイスがあります。また、使用中にアニメーションの不具合が発生する場合があります。</string>
@@ -211,6 +210,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">アイコンのスタイル</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">アイコンの形状</string>
     <string name="icon_sizes">アイコンのサイズ</string>
     <string name="show_labels">ラベルの表示</string>
@@ -269,6 +269,9 @@
     <string name="custom_icon_shape">カスタムアイコン形状</string>
     <string name="custom_icon_shape_create">カスタムアイコン形状を作成します</string>
     <string name="custom_icon_shape_edit">カスタムアイコンの形状を編集します</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">角の形状</string>
     <string name="custom_icon_shape_corner_round">丸める</string>
     <string name="custom_icon_shape_corner_squircle">滑らか</string>
@@ -379,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天気</string>
     <string name="smartspace_battery_status">バッテリーの状態</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_onboarding">初期画面</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Lawnchair の設定</string>
     <string name="onboarding_open_settings_subtitle">ホーム画面長押しして設定を開く</string>
@@ -487,6 +494,11 @@
     <string name="recents_screen_a11y_hint">タスク管理画面を開く</string>
     <string name="generic_a11y_hint">%1$s を行うには、Lawnchair のユーザー補助サービスを有効にしてください。「設定を開く」をタップし、「Lawnchair」を選択して「Lawnchair の使用」をオンにしてください。</string>
     <string name="generic_a11y_disclaimer">Lawnchair はこの操作を実行するために、ユーザー補助の performGlobalAction メソッドを使用します。これは他のアプリの監視を許可する機密性の高い権限ですが、Lawnchair にはその機能は実装されておらず、いかなるイベントも受信しません。</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

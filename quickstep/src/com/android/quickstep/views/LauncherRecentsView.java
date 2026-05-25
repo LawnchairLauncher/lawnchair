@@ -16,7 +16,6 @@
 package com.android.quickstep.views;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-import static android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY;
 
 import static com.android.launcher3.LauncherState.ADD_DESK_BUTTON;
 import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
@@ -273,7 +272,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     @Override
     public void onGestureAnimationStart(GroupedTaskInfo groupedTaskInfo) {
         super.onGestureAnimationStart(groupedTaskInfo);
-        if (!ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue()) {
+        if (!false) {
             // TODO: b/333533253 - Remove after flag rollout
             DesktopVisibilityController.INSTANCE.get(mContainer).setRecentsGestureStart();
         }
@@ -293,7 +292,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
             showDesktopApps = true;
         }
         super.onGestureAnimationEnd();
-        if (!ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue()) {
+        if (!false) {
             // TODO: b/333533253 - Remove after flag rollout
             desktopVisibilityController.setRecentsGestureEnd(endTarget);
         }

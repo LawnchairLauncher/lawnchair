@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Скрывать приложения в папках из общего списка приложений</string>
     <string name="folders_filter_duplicates">Показывать только неповторяющиеся приложения</string>
     <string name="my_folder_label">Моя папка</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Для выполнения определённых действий (например, блокировки телефона) с помощью жестов, Lawnchair требуется доступ к спец. возможностям.\n\nLawnchair не отслеживает действий пользователя, хотя это требуется для всех служб спец. возможностей. Lawnchair не учитывает любые системные события.\n\nЧтобы заблокировать телефон или открыть Экран недавних приложений, Lawnchair использует службу спец. возможностей PerformGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -176,8 +177,8 @@
     <string name="show_deck_layout_description">Показывать опцию для скрытия Меню приложений и автоматического добавления новых приложений на главный экран</string>
     <string name="material_expressive_label">Стиль Material 3 Expressive</string>
     <string name="material_expressive_description">Включить Material 3 Expressive стиль в рабочем пространстве</string>
-    <string name="experimental_folder_shape_modify_label">Настраиваемая форма папок</string>
-    <string name="folder_shape_label">Папка</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Папка</string>
     <string name="app_icon_shape_label">Приложение</string>
     <string name="gesturenavcontract_label">Использовать API GestureNavContract</string>
     <string name="gesturenavcontract_description">Поддерживает улучшенные анимации Android когда использована навигация жестами. Не все устройства поддерживают это. Может вызывать ошибки анимации если в использовании.</string>
@@ -209,6 +210,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Стиль иконок</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Форма иконок</string>
     <string name="icon_sizes">Размер иконок</string>
     <string name="show_labels">Показывать подписи</string>
@@ -267,6 +269,9 @@
     <string name="custom_icon_shape">Польз. форма иконок</string>
     <string name="custom_icon_shape_create">Создать свою форму иконок</string>
     <string name="custom_icon_shape_edit">Редактировать польз. форму иконок</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Форма углов</string>
     <string name="custom_icon_shape_corner_round">Круглая</string>
     <string name="custom_icon_shape_corner_squircle">Сглаженная</string>
@@ -377,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Состояние батареи</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Сейчас играет</string>
     <string name="smartspace_onboarding">Конфигурация</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Настроить ваш Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Зажмите и удерживайте главный экран, что бы открыть настройки</string>
@@ -485,6 +494,11 @@
     <string name="recents_screen_a11y_hint">открыть Экран недавних приложений</string>
     <string name="generic_a11y_hint">Чтобы использовать функционал \" %1$s \", включите Lawnchair в меню спец. возможностей. Для этого откройте Настройки, затем выберите \"Lawnchair\" и нажмите \"Использовать Lawnchair\".</string>
     <string name="generic_a11y_disclaimer">Lawnchair использует метод спец. возможностей «performGlobalAction» для выполнения этого действия. Это чувствительное разрешение, позволяющее отслеживать другие приложения. Однако, Lawnchair не настроен на такой мониторинг и не регистрирует никакие события.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

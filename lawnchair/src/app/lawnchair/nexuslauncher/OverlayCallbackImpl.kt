@@ -100,7 +100,6 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
 
     override fun onActivityDestroyed() {
         mClient.onDestroy()
-        mClient.mDestroyed = true
     }
 
     override fun onOverlayScrollChanged(progress: Float) {

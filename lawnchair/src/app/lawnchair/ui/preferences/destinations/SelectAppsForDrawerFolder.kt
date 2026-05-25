@@ -108,6 +108,7 @@ fun SelectAppsForDrawerFolder(
                         val sorted = PositionalMapper.sortInactiveItems(newList, newCount) { it.label }
                         updateViewModel(sorted, newCount, apps, context, viewModel, folderInfoId, folderInfo?.title.toString())
                     },
+                    labelSelector = { it.label },
                     additionalContent = { hideMenu ->
                         DropdownMenuItem(
                             onClick = {

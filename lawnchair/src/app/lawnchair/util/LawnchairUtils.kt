@@ -42,18 +42,22 @@ import android.util.Log
 import android.util.Size
 import android.view.View
 import android.widget.TextView
+import androidx.compose.ui.util.lerp
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.luminance
 import androidx.core.os.UserManagerCompat
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.tokens.ColorTokens
+import com.android.launcher3.BaseActivity
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
+import com.android.launcher3.views.ActivityContext
 import com.android.systemui.shared.system.QuickStepContract
 import com.patrykmichalik.opto.core.firstBlocking
 import java.io.ByteArrayOutputStream
@@ -145,8 +149,9 @@ fun supportsRoundedCornersOnWindows(context: Context): Boolean {
 
 fun overrideAllAppsTextColor(textView: TextView) {
     val context = textView.context
+    val luminance = getAllAppsBaseColor(context, ColorTokens.AllAppsScrimColor.resolveColor(context)).luminance
     val opacity = PreferenceManager.getInstance(context).drawerOpacity.get()
-    if (opacity <= 0.3f) {
+    if (luminance > 0.5f || opacity <= 0.3f) {
         textView.setTextColor(Themes.getAttrColor(context, R.attr.allAppsAlternateTextColor))
     }
 }
@@ -180,17 +185,20 @@ fun getFolderBackgroundAlpha(context: Context): Int {
     return (prefs2.folderBackgroundOpacity.firstBlocking() * 255).toInt()
 }
 
-fun getAllAppsScrimColor(context: Context): Int {
-    val opacity = PreferenceManager.getInstance(context).drawerOpacity.get()
+/** Apply Lawnchair custom allapps colour to the provided colour */
+private fun getAllAppsBaseColor(context: Context, defaultColor: Int): Int {
     val prefs2 = PreferenceManager2.getInstance(context)
-    var scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context)
     val colorOptions: ColorOption = prefs2.appDrawerBackgroundColor.firstBlocking()
     val color = colorOptions.colorPreferenceEntry.lightColor.invoke(context)
-    if (color != 0) {
-        scrimColor = color
-    }
-    val alpha = (opacity * 255).roundToInt()
-    return ColorUtils.setAlphaComponent(scrimColor, alpha)
+    val baseColor = if (color != 0) color else defaultColor
+    return ColorUtils.setAlphaComponent(baseColor, 255)
+}
+
+/** Apply Lawnchair custom allapps opacity and colour to the provided colour */
+fun getAllAppsBackgroundColor(context: Context, defaultColor: Int): Int {
+    val prefs = PreferenceManager.getInstance(context)
+    val userOpacity = prefs.drawerOpacity.get()
+    return ColorUtils.setAlphaComponent(getAllAppsBaseColor(context, defaultColor), (userOpacity * 255).roundToInt())
 }
 
 fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {

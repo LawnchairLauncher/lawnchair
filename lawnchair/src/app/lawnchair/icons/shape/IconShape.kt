@@ -282,6 +282,8 @@ sealed class IconShape {
         // Format: v1|<topLeft>|<topRight>|<bottomLeft>|<bottomRight>
         override fun toString(): String = "v$version|$topLeft|$topRight|$bottomLeft|$bottomRight"
 
+        override fun getHashString(): String = toString()
+
         companion object {
             /** Parses [value], returning null for invalid or unsupported serialized input. */
             fun fromStringOrNull(value: String): CustomCornerBased? {

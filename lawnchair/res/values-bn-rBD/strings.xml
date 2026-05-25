@@ -103,7 +103,7 @@
     <string name="caddy">ক্যাডি</string>
     <string name="app_drawer_folder">অ্যাপ ড্রয়ার ফোল্ডার</string>
     <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="add_apps">অ্যাপ যোগ করুন</string>
     <string name="app_drawer_folder_settings">ড্রয়ার ফোল্ডার</string>
     <string name="add_folder">ফোল্ডার তৈরি করুন</string>
     <string name="edit_folder">ফোল্ডার সম্পাদনা করুন</string>
@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">ফোল্ডারগুলিতে নির্ধারিত অ্যাপগুলি অ্যাপ তালিকা থেকে বাদ দেওয়া হয়েছে</string>
     <string name="folders_filter_duplicates">শুধুমাত্র অনন্য অ্যাপগুলি দেখান</string>
     <string name="my_folder_label">আমার ফোল্ডার</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">অঙ্গভঙ্গি করার সময় নির্দিষ্ট কিছু কাজ (যেমন আপনার ফোন লক করা) করার জন্য, লনচেয়ারের অ্যাক্সেসিবিলিটি অ্যাক্সেস প্রয়োজন. \n\nলনচেয়ার ব্যবহারকারীর কোনও ক্রিয়াকলাপ পর্যবেক্ষণ করে না, যদিও সমস্ত অ্যাক্সেসিবিলিটি পরিষেবার জন্য এটি করার অধিকার প্রয়োজন। লনচেয়ার সিস্টেম দ্বারা প্রেরিত যেকোনো ইভেন্ট বাতিল করে দেয়।\n\nআপনার ফোন লক করতে, অথবা Recents স্ক্রিন খুলতে, Lawnchair performGlobalAction অ্যাক্সেসিবিলিটি পরিষেবা ব্যবহার করে।.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -150,7 +151,7 @@
     <string name="gestures_description">ট্যাপ এবং সোয়াইপ</string>
     <string name="quickstep_label">সাম্প্রতিক স্ক্রিনগুলি</string>
     <string name="quickstep_description">সব মুছে ফেলার বোতাম, কোণার ব্যাসার্ধ</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_label">ব্যাকআপ ও পুনরুদ্ধার</string>
     <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">সম্পর্কে</string>
     <string name="app_info_drop_target_label">অ্যাপের তথ্য</string>
@@ -176,13 +177,13 @@
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="experimental_folder_shape_modify_label">Customizable folder shape</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">ফোল্ডারের আকার</string>
+    <string name="folder_label">ফোল্ডার</string>
     <string name="app_icon_shape_label">অ্যাপ</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
+    <string name="gesturenavcontract_label">GestureNavContract API ব্যাবহার করুন</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
+    <string name="recents_lock_unlock">লক করুন/আনলক করুন</string>
     <string name="recents_lock_unlock_description"></string>
     <!--Overlay-->
     <string name="overlay_fade_in">Fade In</string>
@@ -209,6 +210,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Icon style</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">আইকনের আকৃতি</string>
     <string name="icon_sizes">আইকনের আকার</string>
     <string name="show_labels">Show labels</string>
@@ -267,6 +269,9 @@
     <string name="custom_icon_shape">Custom icon shape</string>
     <string name="custom_icon_shape_create">Create custom icon shape</string>
     <string name="custom_icon_shape_edit">Edit custom icon shape</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Corner shape</string>
     <string name="custom_icon_shape_corner_round">গোল</string>
     <string name="custom_icon_shape_corner_squircle">মসৃণ</string>
@@ -377,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">আবহাওয়া</string>
     <string name="smartspace_battery_status">ব্যাটারির অবস্থা</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">এখন চলছে</string>
     <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
@@ -485,6 +494,11 @@
     <string name="recents_screen_a11y_hint">open the Recents screen</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

@@ -22,15 +22,13 @@ plugins {
 allprojects {
     plugins.withType(AndroidBasePlugin).configureEach {
         android {
-            buildToolsVersion "36.1.0"
+            buildToolsVersion "37.0.0"
             compileSdk {
-                version = release(36) {
-                    minorApiLevel = 1
-                }
+                version = release(37)
             }
             defaultConfig {
                 minSdk = 26
-                targetSdk = 36
+                targetSdk = 37
                 vectorDrawables.useSupportLibrary = true
             }
             lint {
@@ -489,6 +487,7 @@ dependencies {
     implementation libs.androidx.exifinterface
 
     debugImplementation libs.leakcanary.android
+    debugImplementation libs.leakcanary.androidstudio
 }
 
 ksp {

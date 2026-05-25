@@ -95,6 +95,19 @@ object PositionalMapper {
         return active + inactive
     }
 
+    /**
+     * Re-sorts the active section alphabetically while maintaining the inactive section's order.
+     */
+    fun <T> sortActiveItems(
+        items: List<PositionalListItem<T>>,
+        activeCount: Int,
+        labelSelector: (T) -> String,
+    ): List<PositionalListItem<T>> {
+        val active = items.take(activeCount).sortedBy { labelSelector(it.data) }
+        val inactive = items.drop(activeCount)
+        return active + inactive
+    }
+
     fun <T> swapCategories(
         items: List<PositionalListItem<T>>,
         activeCount: Int,
@@ -432,6 +445,7 @@ fun <T> PositionalOrderMenu(
     items: List<PositionalListItem<T>>,
     activeCount: Int,
     onUpdate: (newList: List<PositionalListItem<T>>, newCount: Int) -> Unit,
+    labelSelector: (T) -> String,
     modifier: Modifier = Modifier,
     additionalContent: @Composable OverflowMenuScope.(hideMenu: () -> Unit) -> Unit = {},
 ) {
@@ -455,6 +469,16 @@ fun <T> PositionalOrderMenu(
             onClick = {
                 val newCount = if (allSelected) 0 else items.size
                 onUpdate(items, newCount)
+                hideMenu()
+            },
+        )
+
+        // Sort Active Items alphabetically
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.sort_active_items_action)) },
+            onClick = {
+                val newList = PositionalMapper.sortActiveItems(items, activeCount, labelSelector)
+                onUpdate(newList, activeCount)
                 hideMenu()
             },
         )

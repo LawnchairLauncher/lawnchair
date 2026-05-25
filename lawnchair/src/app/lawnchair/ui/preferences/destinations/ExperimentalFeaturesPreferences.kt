@@ -73,49 +73,6 @@ fun ExperimentalFeaturesPreferences(
             stringResource(R.string.workspace_label),
         ) {
             Item {
-                // LC-Note: The feature is pretty much ready,
-                // we just need some minor UI planning then we should be good to promote the feature
-                // to stable.
-                val getFolderIconShapeCustomizationAdapter = prefs2.enableFolderIconShapeCustomization.getAdapter()
-                val enableFolderIconShapeCustomizationAdapter = remember(prefs2) {
-                    getFolderIconShapeCustomizationAdapter
-                }
-
-                val folderShapeAdapter = prefs2.folderShape.getAdapter()
-                val folderShapeDefault = prefs2.folderShape.defaultValue
-
-                val enabled = enableFolderIconShapeCustomizationAdapter.state.value
-
-                NavigationActionPreference(
-                    label = stringResource(id = R.string.experimental_folder_shape_modify_label),
-                    destination = if (enabled) GeneralIconShape(ShapeRoute.FOLDER_SHAPE) else null,
-                    subtitle = folderIconShapeSubtitle,
-                    endWidget = {
-                        if (enabled) {
-                            VerticalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-                        }
-                        Switch(
-                            checked = enabled,
-                            onCheckedChange = {
-                                mMSDLPlayerWrapper.playToken(if (it) MSDLToken.SWITCH_ON else MSDLToken.SWITCH_OFF)
-                                enableFolderIconShapeCustomizationAdapter.onChange(it)
-                                // Clean-up when user disables folder shape customisation.
-                                if (!it) {
-                                    folderShapeAdapter.onChange(folderShapeDefault)
-                                }
-                            },
-                            thumbContent = {
-                                Icon(
-                                    imageVector = if (enabled) Icons.Filled.Check else Icons.Filled.Close,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                )
-                            },
-                        )
-                    },
-                )
-            }
-            Item {
                 SwitchPreference(
                     adapter = prefs2.enableFontSelection.getAdapter(),
                     label = stringResource(id = R.string.font_picker_label),

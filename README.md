@@ -13,7 +13,7 @@
 > This branch contains major changes from the rebase of Launcher3, including changes that can cause
 > Lawnchair to crash or break.
 >
-> For regular users, we recommend staying on **Lawnchair 15 Beta 2.1**.
+> For regular users, we recommend staying on **Lawnchair 15 Beta 3**.
 
 <picture>
     <!-- Avoid image being clickable with slight workaround -->

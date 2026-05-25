@@ -4,6 +4,7 @@ import android.os.CancellationSignal
 import android.view.WindowInsets
 import android.view.animation.Interpolator
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.app.animation.Interpolators
 import com.android.launcher3.LauncherState
@@ -15,17 +16,14 @@ import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.states.StateAnimationConfig
 import com.patrykmichalik.opto.core.onEach
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 class SearchBarStateHandler(private val launcher: LawnchairLauncher) : StateManager.StateHandler<LauncherState> {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val preferenceManager2 = PreferenceManager2.getInstance(launcher)
     private var autoShowKeyboard = false
 
     init {
-        preferenceManager2.autoShowKeyboardInDrawer.onEach(launchIn = coroutineScope) {
+        preferenceManager2.autoShowKeyboardInDrawer.onEach(launchIn = launcher.lifecycleScope) {
             autoShowKeyboard = it
         }
     }

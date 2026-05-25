@@ -1,51 +1,20 @@
-### 🥞 Development 4 Release 1 (Snapshot 10)
+Lawnchair 15 Beta 3 is here!
 
-~~Bug fixes only~~ You may see duplicated changelogs in this release because of merged diverged timeline.
+As many of you know, the Android launcher landscape is changing rapidly over the past few months. To welcome users looking for a new, open-source home, this release now <b>supports importing backups from Nova Launcher</b>!
 
-In this release, the initial 16-dev branch has now merged to QPR1 branch,
-meaning you'll have tons of improvements from upstream Launcher3 source.
+What it imports
+• Home screen and dock grid layout
+• Widgets and folders
+• Selected icon pack
 
-Build: BD4.2412 (latest), BD4.2112, BD4.2012, BD4.2311, BS10.2111, BS10.2011
+How to use it
+1. Open Lawnchair Settings
+2. Tap the three dots (⋮) in the top right corner
+3. Select "Restore Nova backup" and choose your file
 
-Compatibility list:
+<b>Note:</b> Other Nova features not mentioned (like app drawer categories and icon swipe gestures) are not yet supported and won't be imported. You may need to do a little manual tweaking after the import.
 
-| 🏗️ Crash   | 🥞 Fully supported |
-|-------------|--------------------|
-| Android 8.1 | Android 12.0       |
-| Android 9   | Android 12.1       |
-| Android 10  | Android 13         |
-| Android 11  | Android 14         |
-|             | Android 15         |
-|             | Android 16         |
+While this is a major milestone for Lawnchair 15, our team is still working hard to improve and polish the Lawnchair 16 experience. Stay tuned for updates!
 
-
-#### Features
-
-* [Launcher] Move to Google Sans Flex font (TODO)*
-* [Lawnchair] Material 3 Expressive Settings (Phase 2, TODO)*
-* ~~[Lawnchair] Better At-a-Glance perceptive wallpaper colour luminance detection*~~
-    * ~~Big word that means Lawnchair will take system default hint bright/dark theme and fallback to luminosity detection for bright/dark mode detection in At a Glance.*~~
-* ~~[Launcher] Enable Material Expressive Folder Expansion animation flag~~*
-    * Disabled due to rendering bugs*
-* [Launcher/Font] Variable font for Launcher3 (????????)*
-* [Launcher/Popup] Dynamically get app widget popup icon*
-* [Launcher] Foldable support (actually real)*
-* [Launcher] Google Sans Flex font uses almost the exact same configuration as Pixel*
-* [Launcher] Enable bulk loading by default*
-* [Launcher] Tablet support (ish)*
-
-#### Fixes
-* [Launcher] Fix a lot of internal basic functionality*
-* [Lawnchair] Re-added some Lawnchair-specific code*
-* [Launcher] Fix workspace navigation*
-* [Launcher] Fix allapps navigation*
-* [Launcher] Fix folder navigation*
-* [Launcher] Support Android 12.0/12.1/13/14/15*
-* [Lawnchair/Smartspace] At-a-Glance can't launch activity due to background startup restrictions on Android 14 and above*
-* [Launcher] Use Lawnchair theming colour for allapps*
-* [WM-Shell] Fix conflict with prebuilts aidl, make Release build work again*
-* [Launcher/Desktop] Correct deviceHasLargeScreen check for Baklava*
-* [Lawnchair/Search] Make search layout changes work*
-* [Lawnchair/Smartspace] Allow disabling the smartspace feature*
-* [Launcher3] Widget preview crash for no reason at all on compatible Android version*
-* [Launcher3] Correct fallback (blur unsupported) allapps colour
+<a href="https://opencollective.com/lawnchair">Donate on Open Collective</a> &bull;
+<a href="https://github.com/LawnchairLauncher/lawnchair/releases/tag/v15.0.0-beta3">View full changelog on GitHub</a>

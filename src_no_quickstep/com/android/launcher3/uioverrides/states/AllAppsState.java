@@ -19,10 +19,12 @@ import static com.android.app.animation.Interpolators.DECELERATE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 
 import android.graphics.Color;
+
+import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.util.LawnchairUtilsKt;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimColors;
 
@@ -101,8 +103,9 @@ public class AllAppsState extends LauncherState {
     public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
         return new ScrimColors(
                 /* backgroundColor */ launcher.getDeviceProfile().getDeviceProperties().isTablet()
-                ? launcher.getResources().getColor(R.color.widgets_picker_scrim)
-                : Themes.getAttrColor(launcher, R.attr.allAppsScrimColor),
+                ? LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, 
+                        ColorTokens.WidgetsPickerScrim.resolveColor(launcher))
+                : ColorTokens.AllAppsScrimColor.resolveColor(launcher),
                 /* foregroundColor */ Color.TRANSPARENT);
     }
 }

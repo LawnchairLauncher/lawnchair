@@ -42,7 +42,7 @@
     <string name="deselect_all">Bỏ chọn tất cả</string>
     <string name="inverse_selection">Lựa chọn ngược</string>
     <string name="loading">Đang tải…</string>
-    <string name="dismiss">Miễn nhiệm</string>
+    <string name="dismiss">Dismiss</string>
     <string name="download_update">Tải xuống bản cập nhật</string>
     <string name="install_update">Cài đặt bản cập nhật</string>
     <string name="view_changes">Xem các thay đổi</string>
@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Các ứng dụng được gán vào thư mục sẽ bị loại khỏi danh sách ứng dụng</string>
     <string name="folders_filter_duplicates">Chỉ hiển thị các ứng dụng duy nhất</string>
     <string name="my_folder_label">Thư mục của tôi</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Để thực hiện một số hành động nhất định (chẳng hạn như khóa điện thoại) khi thực hiện cử chỉ, Lawnchair cần có quyền truy cập trợ năng.\n\nLawnchair không theo dõi bất kỳ hành động nào của người dùng, mặc dù quyền làm như vậy là bắt buộc đối với tất cả các dịch vụ trợ năng. Lawnchair loại bỏ bất kỳ sự kiện nào được hệ thống gửi đi.\n\nĐể khóa điện thoại hoặc mở màn hình Gần đây, Lawnchair sử dụng dịch vụ Trợ năng performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -176,8 +177,8 @@
     <string name="show_deck_layout_description">Hiện một tùy chọn tắt ngăn chứa ứng dụng và tự động thêm ứng dụng mới vào màn hình chính</string>
     <string name="material_expressive_label">Material 3 Biểu cảm</string>
     <string name="material_expressive_description">Cho phép thay đổi biểu cảm trong không gian làm việc của Material 3.</string>
-    <string name="experimental_folder_shape_modify_label">Hình dạng thư mục có thể tùy chỉnh</string>
-    <string name="folder_shape_label">Thư mục</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Thư mục</string>
     <string name="app_icon_shape_label">Ứng dụng</string>
     <string name="gesturenavcontract_label">Sử dụng API GestureNavContract</string>
     <string name="gesturenavcontract_description">Hỗ trợ hiệu ứng hoạt ảnh nâng cao của Android khi sử dụng điều hướng bằng cử chỉ. Không phải tất cả thiết bị đều hỗ trợ tính năng này. Có thể gây ra lỗi hoạt ảnh khi sử dụng.</string>
@@ -209,6 +210,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Phong cách biểu tượng</string>
+    <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Hình dạng biểu tượng</string>
     <string name="icon_sizes">Kích thước biểu tượng</string>
     <string name="show_labels">Hiển thị tên</string>
@@ -267,6 +269,9 @@
     <string name="custom_icon_shape">Tùy chỉnh hình dạng biểu tượng</string>
     <string name="custom_icon_shape_create">Tạo hình dạng biểu tượng tùy chỉnh</string>
     <string name="custom_icon_shape_edit">Chỉnh sửa hình dạng biểu tượng tùy chỉnh</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Hình dạng góc</string>
     <string name="custom_icon_shape_corner_round">Tròn</string>
     <string name="custom_icon_shape_corner_squircle">Trơn</string>
@@ -377,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Thời tiết</string>
     <string name="smartspace_battery_status">Tình trạng pin</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Đang phát</string>
     <string name="smartspace_onboarding">Quy trình hội nhập</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Tùy chỉnh Lawnchair của bạn</string>
     <string name="onboarding_open_settings_subtitle">Nhấn-giữ trên màn hình chính để mở Tùy chỉnh</string>
@@ -485,6 +494,11 @@
     <string name="recents_screen_a11y_hint">mở màn hình Gần đây</string>
     <string name="generic_a11y_hint">Để %1$s, bật dịch vụ hỗ trợ tiếp cận Lawnchair, hãy nhấn vào \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair\".</string>
     <string name="generic_a11y_disclaimer">Lawnchair sử dụng phương thức `performGlobalAction` của Trợ năng để thực hiện hành động này. Đây là một quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho chức năng đó.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_device_admin">Device admin</string>
     <!--
 
     Bug reporting

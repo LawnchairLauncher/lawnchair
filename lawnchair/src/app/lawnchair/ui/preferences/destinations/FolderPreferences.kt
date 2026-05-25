@@ -18,16 +18,19 @@ package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.ui.preferences.navigation.GeneralIconShape
 import com.android.launcher3.R
 
 @Composable
@@ -39,9 +42,25 @@ fun FolderPreferences(
         backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
+        val context = LocalContext.current
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
+        val folderIconShapeAdapter = prefs2.folderShape.getAdapter()
+        val folderIconShapeSubtitle = iconShapeEntries(context)
+            .firstOrNull { it.value == folderIconShapeAdapter.state.value }
+            ?.label?.invoke()
+            ?: stringResource(id = R.string.custom)
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
+            Item {
+                NavigationActionPreference(
+                    label = stringResource(id = R.string.folder_shape_label),
+                    destination = GeneralIconShape(ShapeRoute.FOLDER_SHAPE),
+                    subtitle = folderIconShapeSubtitle,
+                    endWidget = {
+                        IconShapePreview(iconShape = folderIconShapeAdapter.state.value)
+                    },
+                )
+            }
             Item { ColorPreference(preference = prefs2.folderColor) }
             Item {
                 SliderPreference(

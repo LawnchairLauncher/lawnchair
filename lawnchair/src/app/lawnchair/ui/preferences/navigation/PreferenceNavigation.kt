@@ -42,7 +42,6 @@ import app.lawnchair.ui.preferences.destinations.HomeScreenGridPreferences
 import app.lawnchair.ui.preferences.destinations.HomeScreenPreferences
 import app.lawnchair.ui.preferences.destinations.IconPackPreferences
 import app.lawnchair.ui.preferences.destinations.IconPickerPreference
-import app.lawnchair.ui.preferences.destinations.IconShapePreference
 import app.lawnchair.ui.preferences.destinations.LauncherPopupPreference
 import app.lawnchair.ui.preferences.destinations.PickAppForGesture
 import app.lawnchair.ui.preferences.destinations.PreferencesDashboard
@@ -122,8 +121,11 @@ fun PreferenceNavigation(
             ShapePreference(currentTab = route.selectedId)
         }
         composable<GeneralCustomIconShapeCreator>(
-            deepLinks = getDeepLink(GeneralCustomIconShapeCreator),
-        ) { CustomIconShapePreference() }
+            deepLinks = getDeepLink(GeneralCustomIconShapeCreator()),
+        ) { backStackEntry ->
+            val route: GeneralCustomIconShapeCreator = backStackEntry.toRoute()
+            CustomIconShapePreference(currentTab = route.selectedId)
+        }
 
         composable<HomeScreen>(
             deepLinks = getDeepLink(HomeScreen),
