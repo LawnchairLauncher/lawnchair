@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:enterFadeDuration="100"
+    android:exitFadeDuration="100">
+    <item
+        android:drawable="@drawable/bg_edit_mode_page_strip_item_default"
+        android:state_selected="true" />
+    <item android:drawable="@drawable/bg_edit_mode_page_strip_item_unselected" />
+</selector>
