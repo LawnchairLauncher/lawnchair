@@ -86,11 +86,24 @@ fun HomeScreenPreferences(
                 !isDeckLayoutAdapter.state.value,
             ) {
                 SwitchPreference(
-                    checked = (!lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value) || isDeckLayoutAdapter.state.value,
+                    checked = !lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value,
                     onCheckedChange = addIconToHomeAdapter::onChange,
                     label = stringResource(id = R.string.auto_add_shortcuts_label),
                     description = if (lockHomeScreenAdapter.state.value) stringResource(id = R.string.home_screen_locked) else null,
                     enabled = lockHomeScreenAdapter.state.value.not(),
+                )
+            }
+            Item(
+                "deck_allow_sorts",
+                isDeckLayoutAdapter.state.value,
+            ) {
+                val allowDeckSorting = prefs2.allowDeckSorting.getAdapter()
+                SwitchPreference(
+                    checked = allowDeckSorting.state.value,
+                    onCheckedChange = allowDeckSorting::onChange,
+                    label = stringResource(id = R.string.deck_allow_sorts),
+                    description = null,
+                    enabled = true,
                 )
             }
             Item {

@@ -6,6 +6,7 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
@@ -44,7 +45,7 @@ class LawndeckManager(private val context: Context) {
             restoreBackup("lawndeck")
             completionDeferred.complete(Unit)
         } else {
-            onProgress?.invoke("Categorizing apps...")
+            onProgress?.invoke("Lawndeck is enabled. Doing what it does...")
             addAllAppsToWorkspace(onProgress) {
                 completionDeferred.complete(Unit)
             }
@@ -100,17 +101,12 @@ class LawndeckManager(private val context: Context) {
         onComplete: (() -> Unit)?,
     ) {
         val apps = launcher?.mAppsView?.appsStore?.apps ?: return
+        val allowDeckSorting = prefs2.allowDeckSorting.getAdapter().state.value
+
         if (apps.isEmpty()) {
             onComplete?.invoke()
             return
         }
-
-        onProgress?.invoke("Categorizing apps...")
-
-        val validApps = apps.mapNotNull { it as? AppInfo }
-        val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
-
-        onProgress?.invoke("Adding apps to workspace...")
 
         val launcher = this.launcher ?: return
         val model = launcher.model
@@ -119,12 +115,17 @@ class LawndeckManager(private val context: Context) {
         val foldersToAdd = mutableListOf<FolderInfo>()
         var singleAppCount = 0
 
+        onProgress?.invoke("Adding apps to workspace...")
+
         // Process each category
+        val validApps = apps.mapNotNull { it as? AppInfo }
+        val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
         finalCategorizedApps.forEach { (category, categoryApps) ->
             if (categoryApps.isEmpty()) return@forEach
 
-            if (categoryApps.size == 1) {
+            if ((categoryApps.size == 1) || !allowDeckSorting) {
                 // Single app - add directly to workspace
+                // Or we are not allowed to create folders
                 val app = categoryApps.first()
                 ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
                 singleAppCount++
