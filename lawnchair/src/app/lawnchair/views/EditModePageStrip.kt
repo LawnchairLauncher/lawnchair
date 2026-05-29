@@ -254,6 +254,8 @@ class EditModePageStrip @JvmOverloads constructor(
             val item = items.removeAt(from)
             items.add(to, item)
             notifyItemMoved(from, to)
+            val start = minOf(from, to)
+            notifyItemRangeChanged(start, maxOf(from, to) - start + 1)
         }
 
         fun indexOfDefault(): Int = items.indexOfFirst { it.isDefault }
