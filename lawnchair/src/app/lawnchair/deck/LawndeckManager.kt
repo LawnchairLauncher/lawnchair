@@ -9,23 +9,19 @@ import app.lawnchair.launcherNullable
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
 import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherSettings
+import com.android.launcher3.Launcher
 import com.android.launcher3.model.ItemInstallQueue
 import com.android.launcher3.model.ModelDbController
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.FolderInfo
-import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.provider.RestoreDbTask
 import com.android.launcher3.util.ApplicationInfoWrapper
-import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.util.PackageManagerHelper
 import java.io.File
-import java.util.Locale
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class LawndeckManager(private val context: Context) {
@@ -92,7 +88,7 @@ class LawndeckManager(private val context: Context) {
     private fun postRestoreActions() {
         ModelDbController(context).let { RestoreDbTask.performRestore(context, it) }
         MainScope().launch(Dispatchers.Main) {
-            LauncherAppState.getInstance(context).model.forceReload()
+            Launcher.getLauncher(context).model.forceReload()
         }
     }
 
@@ -102,7 +98,13 @@ class LawndeckManager(private val context: Context) {
     ) {
         val apps = launcher?.mAppsView?.appsStore?.apps ?: return
         val prefs2 = PreferenceManager2.getInstance(context)
-        val allowDeckSorting = prefs2.allowDeckSorting.getAdapter().state.value
+        var allowDeckSorting = false /* Doesn't look good? */
+
+        runBlocking {
+            prefs2.allowDeckSorting.get().collect { value ->
+                allowDeckSorting = value
+            }
+        }
 
         if (apps.isEmpty()) {
             onComplete?.invoke()
@@ -141,6 +143,16 @@ class LawndeckManager(private val context: Context) {
         }
 
         // Add all folders with their items to workspace using custom task
+        val invokeCmpl = {
+            if (singleAppCount > 0) {
+                // Post to handler to give ItemInstallQueue time to process
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    onComplete?.invoke()
+                }, 800) // Wait for queue to process
+            } else {
+                onComplete?.invoke()
+            }
+        }
         if (foldersToAdd.isNotEmpty()) {
             // Wait for folder task to complete
             model.enqueueModelUpdateTask(
@@ -148,26 +160,12 @@ class LawndeckManager(private val context: Context) {
                     // Callback runs on UI thread from model task
                     // Also wait for ItemInstallQueue to finish for single apps
                     // ItemInstallQueue processes asynchronously, so we need to wait a bit
-                    if (singleAppCount > 0) {
-                        // Post to handler to give ItemInstallQueue time to process
-                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                            onComplete?.invoke()
-                        }, 800) // Wait for queue to process
-                    } else {
-                        onComplete?.invoke()
-                    }
+                    invokeCmpl()
                 },
             )
         } else {
             // No folders, but may have single apps
-            if (singleAppCount > 0) {
-                // Give ItemInstallQueue time to process
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    onComplete?.invoke()
-                }, 800) // Wait for queue to process
-            } else {
-                onComplete?.invoke()
-            }
+            invokeCmpl()
         }
     }
 
