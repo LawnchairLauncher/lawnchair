@@ -6,7 +6,7 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
-import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
