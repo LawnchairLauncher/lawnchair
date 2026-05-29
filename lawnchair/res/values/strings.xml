@@ -692,6 +692,14 @@
 
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">Default</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
 
     <string name="popup_menu">Pop-up menu</string>
     <string name="popup_menu_items">Pop-up menu items</string>
@@ -777,6 +785,7 @@
     <string name="search_provider_firefox" translatable="false">Firefox</string>
     <string name="search_provider_iceraven" translatable="false">Iceraven</string>
     <string name="search_provider_ironfox" translatable="false">IronFox</string>
+    <string name="search_provider_waterfox" translatable="false">Waterfox</string>
     <string name="search_provider_kagi" translatable="false">Kagi</string>
     <string name="search_provider_cromite" translatable="false">Cromite</string>
     <string name="search_provider_vivaldi" translatable="false">Vivaldi</string>
