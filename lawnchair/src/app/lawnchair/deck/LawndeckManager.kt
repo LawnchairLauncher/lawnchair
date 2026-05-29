@@ -101,6 +101,7 @@ class LawndeckManager(private val context: Context) {
         onComplete: (() -> Unit)?,
     ) {
         val apps = launcher?.mAppsView?.appsStore?.apps ?: return
+        val prefs2 = PreferenceManager2.getInstance(context)
         val allowDeckSorting = prefs2.allowDeckSorting.getAdapter().state.value
 
         if (apps.isEmpty()) {
