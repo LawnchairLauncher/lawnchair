@@ -26,16 +26,16 @@ testRunner = "1.7.0"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp" }
-androidx-baselineprofile = "androidx.baselineprofile:1.4.1"
+androidx-baselineprofile = "androidx.baselineprofile:1.5.0-alpha06"
 
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-google-ksp = "com.google.devtools.ksp:2.3.4"
+google-ksp = "com.google.devtools.ksp:2.3.9"
 google-protobuf = "com.google.protobuf:0.10.0"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.5.1"
+diffplug-spotless = "com.diffplug.spotless:8.6.0"
 
 [libraries]
 # AndroidX

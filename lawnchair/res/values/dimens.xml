@@ -28,6 +28,11 @@
 
     <dimen name="lawnchair_dialog_corner_radius">24dp</dimen>
 
+    <!-- Edit Mode page strip (bottom of DragLayer) -->
+    <dimen name="edit_mode_page_strip_height">88dp</dimen>
+    <dimen name="edit_mode_workspace_bottom_gap">8dp</dimen>
+    <dimen name="edit_mode_page_strip_tip_margin">8dp</dimen>
+
     <!-- qsb -->
     <dimen name="all_apps_search_bar_bottom_padding">36dp</dimen>
     <dimen name="all_apps_search_vertical_offset">30dp</dimen>

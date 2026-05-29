@@ -24,6 +24,7 @@ import androidx.core.util.valueIterator
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.BuildConfigs
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.Workspace
 import com.android.launcher3.model.data.WorkspaceChangeEvent.AddEvent
@@ -54,7 +55,8 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
         if (smartspaceEnabled || screenSet.isEmpty) {
             screenSet.add(Workspace.FIRST_SCREEN_ID)
         }
-        return screenSet.array
+        val persistedOrder = LauncherPrefs.get(context).get(LauncherPrefs.WORKSPACE_SCREEN_ORDER)
+        return mergeWorkspaceScreens(screenSet.array, persistedOrder)
     }
 
     /** Returns the [ItemInfo] associated with the [id] or null */
@@ -187,5 +189,28 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
         @VisibleForTesting const val MAX_HISTORY_SIZE = 4
 
         private val VERSION_COUNTER = AtomicInteger()
+
+        @VisibleForTesting
+        fun mergeWorkspaceScreens(itemScreens: IntArray, persistedOrder: String): IntArray {
+            if (persistedOrder.isBlank()) return itemScreens
+
+            val merged = IntArray()
+            val persistedScreens =
+                persistedOrder
+                    .split(",")
+                    .mapNotNull { it.trim().toIntOrNull() }
+                    .filter { it >= 0 }
+            persistedScreens.forEach { screenId ->
+                if (!merged.contains(screenId)) {
+                    merged.add(screenId)
+                }
+            }
+            itemScreens.forEach { screenId ->
+                if (!merged.contains(screenId)) {
+                    merged.add(screenId)
+                }
+            }
+            return merged
+        }
     }
 }

@@ -23,7 +23,9 @@ import com.android.launcher3.model.data.WorkspaceChangeEvent.AddEvent
 import com.android.launcher3.model.data.WorkspaceChangeEvent.RemoveEvent
 import com.android.launcher3.model.data.WorkspaceChangeEvent.UpdateEvent
 import com.android.launcher3.model.data.WorkspaceData.Companion.MAX_HISTORY_SIZE
+import com.android.launcher3.model.data.WorkspaceData.Companion.mergeWorkspaceScreens
 import com.android.launcher3.model.data.WorkspaceData.MutableWorkspaceData
+import com.android.launcher3.util.IntArray
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -125,6 +127,36 @@ class WorkspaceDataTest {
 
         data.removeItems(listOf(createItemInfo(0)), null)
         assertThat(data.diff(start)).isNull()
+    }
+
+    @Test
+    fun mergeWorkspaceScreens_usesPersistedOrder_first() {
+        val merged = mergeWorkspaceScreens(IntArray.wrap(0, 1, 2), "2,0,1")
+        assertThat(merged.toArray().asList()).containsExactly(2, 0, 1).inOrder()
+    }
+
+    @Test
+    fun mergeWorkspaceScreens_keepsPersistedEmptyScreens() {
+        val merged = mergeWorkspaceScreens(IntArray.wrap(0, 2), "9,2,0")
+        assertThat(merged.toArray().asList()).containsExactly(9, 2, 0).inOrder()
+    }
+
+    @Test
+    fun mergeWorkspaceScreens_appendsMissingItemScreens() {
+        val merged = mergeWorkspaceScreens(IntArray.wrap(0, 1, 2, 3), "2,0")
+        assertThat(merged.toArray().asList()).containsExactly(2, 0, 1, 3).inOrder()
+    }
+
+    @Test
+    fun mergeWorkspaceScreens_preservesFirstScreenPositionFromPersistedOrder() {
+        val merged = mergeWorkspaceScreens(IntArray.wrap(0, 1, 2), "1,0,2")
+        assertThat(merged.toArray().asList()).containsExactly(1, 0, 2).inOrder()
+    }
+
+    @Test
+    fun mergeWorkspaceScreens_emptyPersistedFallsBackToItemOrder() {
+        val merged = mergeWorkspaceScreens(IntArray.wrap(0, 1, 2), "")
+        assertThat(merged.toArray().asList()).containsExactly(0, 1, 2).inOrder()
     }
 
     private fun createItemSparseArray(size: Int) =

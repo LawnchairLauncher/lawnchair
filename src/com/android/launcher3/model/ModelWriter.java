@@ -24,11 +24,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseIntArray;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
@@ -44,6 +46,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.widget.LauncherWidgetHolder;
@@ -216,6 +219,105 @@ public class ModelWriter {
             contentValues.add(values);
         }
         enqueueDeleteRunnable(new UpdateItemsRunnable(items, contentValues));
+    }
+
+    /**
+     * Remaps workspace screen ids for all desktop items using the provided mapping.
+     */
+    public void moveWorkspaceScreensInDatabase(SparseIntArray screenIdMap) {
+        moveWorkspaceScreensInDatabase(screenIdMap, null);
+    }
+
+    /**
+     * Remaps workspace screen ids for all desktop items using the provided mapping.
+     *
+     * @param onComplete optional runnable executed on the main thread after item callbacks are
+     *                   dispatched (always runs, including when there are no item updates).
+     */
+    public void moveWorkspaceScreensInDatabase(SparseIntArray screenIdMap, Runnable onComplete) {
+        if (screenIdMap == null || screenIdMap.size() == 0) {
+            if (onComplete != null) {
+                mUiExecutor.execute(onComplete);
+            }
+            return;
+        }
+        ModelVerifier verifier = new ModelVerifier();
+        enqueueDeleteRunnable(newModelTask(() -> {
+            try (SQLiteTransaction t = mModel.getModelDbController().newTransaction()) {
+                // First pass to temporary ids to avoid collisions in cycles.
+                for (int i = 0; i < screenIdMap.size(); i++) {
+                    int fromScreenId = screenIdMap.keyAt(i);
+                    int tempScreenId = Integer.MIN_VALUE + i;
+                    ContentValues tempValues = new ContentValues();
+                    tempValues.put(Favorites.SCREEN, tempScreenId);
+                    mModel.getModelDbController().update(
+                            tempValues,
+                            Favorites.CONTAINER + "=" + Favorites.CONTAINER_DESKTOP + " AND "
+                                    + Favorites.SCREEN + "=" + fromScreenId,
+                            null);
+                }
+                // Second pass to final ids.
+                for (int i = 0; i < screenIdMap.size(); i++) {
+                    int toScreenId = screenIdMap.valueAt(i);
+                    int tempScreenId = Integer.MIN_VALUE + i;
+                    ContentValues finalValues = new ContentValues();
+                    finalValues.put(Favorites.SCREEN, toScreenId);
+                    mModel.getModelDbController().update(
+                            finalValues,
+                            Favorites.CONTAINER + "=" + Favorites.CONTAINER_DESKTOP + " AND "
+                                    + Favorites.SCREEN + "=" + tempScreenId,
+                            null);
+                }
+                t.commit();
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to remap workspace screens", e);
+                if (onComplete != null) {
+                    mUiExecutor.execute(onComplete);
+                }
+                return;
+            }
+
+            ArrayList<ItemInfo> updatedItems = new ArrayList<>();
+            synchronized (mBgDataModel) {
+                for (ItemInfo item : mBgDataModel.itemsIdMap) {
+                    if (item.container != Favorites.CONTAINER_DESKTOP) {
+                        continue;
+                    }
+                    int newScreenId = screenIdMap.get(item.screenId, item.screenId);
+                    if (newScreenId != item.screenId) {
+                        item.screenId = newScreenId;
+                        updatedItems.add(item);
+                    }
+                }
+                if (!updatedItems.isEmpty()) {
+                    mBgDataModel.updateItems(updatedItems, mOwner);
+                }
+                verifier.verifyModel();
+            }
+            final HashSet<ItemInfo> updates = new HashSet<>(updatedItems);
+            mUiExecutor.execute(() -> {
+                if (!updates.isEmpty()) {
+                    if (mOwner != null) {
+                        mOwner.bindItemsUpdated(updates);
+                    }
+                    notifyOtherCallbacks(c -> c.bindItemsUpdated(updates));
+                }
+                if (onComplete != null) {
+                    onComplete.run();
+                }
+            });
+        }));
+    }
+
+    /**
+     * Persists explicit workspace screen order synchronously.
+     */
+    public void persistWorkspaceScreenOrderSync(IntArray screenOrder) {
+        if (screenOrder == null || screenOrder.isEmpty()) {
+            return;
+        }
+        String serialized = screenOrder.toConcatString();
+        LauncherPrefs.get(mContext).putSync(LauncherPrefs.WORKSPACE_SCREEN_ORDER.to(serialized));
     }
 
     /**
