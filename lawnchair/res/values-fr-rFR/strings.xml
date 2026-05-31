@@ -547,6 +547,14 @@
     <string name="home_screen_lock_description">Empêcher les changements d\'agencement de l\'écran d\'accueil</string>
     <string name="set_default_home_page">Définir comme page par défaut</string>
     <string name="default_home_page_set">Page par défaut mise à jour</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">Par défaut</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Menu pop-up</string>
     <string name="popup_menu_items">Éléments du menu pop-up</string>
     <string name="edit_menu_items">Modifier les éléments du menu pop-up</string>

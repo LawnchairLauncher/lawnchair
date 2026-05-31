@@ -547,6 +547,14 @@
     <string name="home_screen_lock_description">Предотвращать изменения макета глав. экрана</string>
     <string name="set_default_home_page">Установить как страницу по умолчанию</string>
     <string name="default_home_page_set">Домашняя страница по умолчанию обновлена</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">По умолчанию</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Всплывающее меню</string>
     <string name="popup_menu_items">Пункты всплывающего меню</string>
     <string name="edit_menu_items">Редактировать пункты всплыв. меню</string>

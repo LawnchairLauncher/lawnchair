@@ -547,6 +547,14 @@
     <string name="home_screen_lock_description">Verhindert Änderungen am Startbildschirm-Layout</string>
     <string name="set_default_home_page">Als Standard-Startseite festlegen</string>
     <string name="default_home_page_set">Standard-Startseite aktualisiert</string>
+    <string name="move_page_left">Seite nach links verschieben</string>
+    <string name="move_page_right">Seite nach rechts verschieben</string>
+    <string name="page_order_updated">Seitenanordnung aktualisiert</string>
+    <string name="edit_mode_page_strip_default">Standard</string>
+    <string name="edit_mode_page_strip_page">Seite %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Als Startseite festlegen</string>
+    <string name="edit_mode_page_strip_home_selected">Standard-Startseite</string>
+    <string name="edit_mode_page_strip_tip">Seiten zur Neuanordnung ziehen. Tippe auf das Haus-Symbol um Deine Standard-Startseite festzulegen.</string>
     <string name="popup_menu">Pop-up-Menü</string>
     <string name="popup_menu_items">Pop-up-Menü-Einträge</string>
     <string name="edit_menu_items">Pop-up-Menü-Einträge bearbeiten</string>

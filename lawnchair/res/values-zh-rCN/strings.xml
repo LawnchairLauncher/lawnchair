@@ -547,6 +547,14 @@
     <string name="home_screen_lock_description">固定主屏幕布局</string>
     <string name="set_default_home_page">设置为默认页面</string>
     <string name="default_home_page_set">默认主页面已更新</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">默认</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="popup_menu_items">弹窗目录项目</string>
     <string name="edit_menu_items">编辑弹窗目录项目</string>
