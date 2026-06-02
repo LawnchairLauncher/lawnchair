@@ -548,6 +548,14 @@
     <string name="home_screen_lock_description">홈 화면 레이아웃 변경 방지</string>
     <string name="set_default_home_page">기본 페이지로 설정</string>
     <string name="default_home_page_set">기본 홈페이지 업데이트</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">기본</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">팝업 메뉴</string>
     <string name="popup_menu_items">팝업 메뉴 항목</string>
     <string name="edit_menu_items">팝업 메뉴 항목 편집</string>

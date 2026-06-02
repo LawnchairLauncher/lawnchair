@@ -547,6 +547,14 @@
     <string name="home_screen_lock_description">Khoá bố cục màn hình chính</string>
     <string name="set_default_home_page">Đặt làm trang mặc định</string>
     <string name="default_home_page_set">Trang chủ mặc định đã được cập nhật</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">Mặc định</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Menu Pop-up</string>
     <string name="popup_menu_items">Các mục menu Pop-up</string>
     <string name="edit_menu_items">Chỉnh sửa các mục menu Pop-up</string>
