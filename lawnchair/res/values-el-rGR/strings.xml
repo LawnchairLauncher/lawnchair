@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Οι εφαρμογές που έχουν εκχωρηθεί σε φακέλους εξαιρούνται από τις λίστες εφαρμογών</string>
     <string name="folders_filter_duplicates">Εμφάνιση μόνο ιδιαίτερων εφαρμογών</string>
     <string name="my_folder_label">Ο φάκελός μου</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Για την εκτέλεση ορισμένων ενεργειών (όπως το κλείδωμα του τηλεφώνου σας) κατά την εκτέλεση μιας χειρονομίας, ο εκκινητής Lawnchair απαιτεί δικαιώματα προσβασιμότητας.\n\nΟ εκκινητής Lawnchair δεν παρακολουθεί καμία ενέργεια χρήστη, αν και το δικαίωμα αυτό απαιτείται για όλες τις υπηρεσίες προσβασιμότητας. Ο εκκινητής Lawnchair απορρίπτει οποιοδήποτε συμβάν αποστέλλεται από το σύστημα.\n\nΓια να κλειδώσετε το τηλέφωνό σας ή για να ανοίξετε την οθόνη Πρόσφατων εφαρμογών, ο εκκινητής Lawnchair χρησιμοποιεί την υπηρεσία προσβασιμότητας performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Καιρός</string>
     <string name="smartspace_battery_status">Κατάσταση μπαταρίας</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Παίζει Τώρα</string>
     <string name="smartspace_onboarding">Ενσωμάτωση</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Διαμορφώστε τον εκκινητή Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Πατήστε παρατεταμένα στην Αρχική Οθόνη για να ανοίξετε τις Ρυθμίσεις</string>
@@ -542,6 +547,14 @@
     <string name="home_screen_lock_description">Αποτροπή αλλαγών στη διάταξη της αρχικής οθόνης</string>
     <string name="set_default_home_page">Ορισμός ως προεπιλεγμένη σελίδα</string>
     <string name="default_home_page_set">Η προεπιλεγμένη αρχική σελίδα ενημερώθηκε</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">Προεπιλογή</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Αναδυόμενο μενού</string>
     <string name="popup_menu_items">Στοιχεία αναδυόμενου μενού</string>
     <string name="edit_menu_items">Επεξεργασία στοιχείων αναδυόμενου μενού</string>

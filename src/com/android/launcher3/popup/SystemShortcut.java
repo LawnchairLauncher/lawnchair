@@ -134,7 +134,16 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
         SystemShortcut<T> getShortcut(T context, ItemInfo itemInfo, @NonNull View originalView);
     }
 
+    private static boolean isHomeLocked(ActivityContext context) {
+        PreferenceManager2 prefs = PreferenceManager2.getInstance(context.asContext());
+        return PreferenceExtensionsKt.firstBlocking(prefs.getLockHomeScreen());
+    }
+
     public static final Factory<ActivityContext> WIDGETS = (context, itemInfo, originalView) -> {
+        if (isHomeLocked(context)) {
+            return null;
+        }
+
         final PackageUserKey packageUserKey = PackageUserKey.fromItemInfo(itemInfo);
         if (packageUserKey == null) return null;
 
@@ -254,7 +263,12 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
         }
     }
 
-    public static final Factory<ActivityContext> REMOVE = RemoveApp::new;
+    public static final Factory<ActivityContext> REMOVE = (context, itemInfo, originalView) -> {
+        if (isHomeLocked(context)) {
+            return null;
+        }
+        return new RemoveApp<>(context, itemInfo, originalView);
+    };
 
     public static class RemoveApp<T extends ActivityContext> extends SystemShortcut<T> {
 
@@ -275,6 +289,9 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
 
     public static final Factory<ActivityContext> PRIVATE_PROFILE_INSTALL =
             (context, itemInfo, originalView) -> {
+                if (isHomeLocked(context)) {
+                    return null;
+                }
                 if (originalView == null) {
                     return null;
                 }
@@ -381,6 +398,9 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
 
     public static final Factory<ActivityContext> DONT_SUGGEST_APP =
             (activity, itemInfo, originalView) -> {
+                if (isHomeLocked(activity)) {
+                    return null;
+                }
                 if (!itemInfo.isPredictedItem()) {
                     return null;
                 }
@@ -412,6 +432,9 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
 
     public static final Factory<ActivityContext> UNINSTALL_APP =
             (activityContext, itemInfo, originalView) -> {
+                if (isHomeLocked(activityContext)) {
+                    return null;
+                }
                 if (originalView == null) {
                     return null;
                 }

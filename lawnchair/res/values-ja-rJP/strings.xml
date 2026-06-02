@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">フォルダーに割り当てられたアプリはアプリリストから除外されます</string>
     <string name="folders_filter_duplicates">固有のアプリのみ表示</string>
     <string name="my_folder_label">自分のフォルダー</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">ジェスチャー操作時に特定の操作（スマートフォンのロックなど）を実行するには、Lawnchair にユーザー補助機能へのアクセスが必要です。\n\nLawnchair はユーザーの操作を監視しませんが、すべてのユーザー補助サービスにはユーザー補助機能へのアクセス権限が必要です。Lawnchair はシステムから送信されたイベントをすべて破棄します。\n\nLawnchair はスマートフォンをロックしたり、「最近」画面を開いたりするために、performGlobalAction ユーザー補助機能サービスを使用します。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天気</string>
     <string name="smartspace_battery_status">バッテリーの状態</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_onboarding">初期画面</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Lawnchair の設定</string>
     <string name="onboarding_open_settings_subtitle">ホーム画面長押しして設定を開く</string>
@@ -542,6 +547,14 @@
     <string name="home_screen_lock_description">ホーム画面のレイアウトを固定する</string>
     <string name="set_default_home_page">デフォルトのページに設定</string>
     <string name="default_home_page_set">デフォルトのホームページを更新しました</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">デフォルト</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">ポップアップメニュー</string>
     <string name="popup_menu_items">ポップアップメニューの項目</string>
     <string name="edit_menu_items">ポップアップメニューの項目を編集</string>

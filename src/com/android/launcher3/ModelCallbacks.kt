@@ -231,7 +231,6 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
                     bindItems(it, false)
                 }
             }
-        workspace.stripEmptyScreens()
     }
 
     /**
@@ -292,15 +291,15 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             /*pause=*/ true,
             launcher.deviceProfile.deviceProperties.isTwoPanels,
         )
-        val firstScreenPosition = 0
-        if (orderedScreenIds.indexOf(FIRST_SCREEN_ID) != firstScreenPosition) {
-            orderedScreenIds.removeValue(FIRST_SCREEN_ID)
-            orderedScreenIds.add(firstScreenPosition, FIRST_SCREEN_ID)
-        } else if (orderedScreenIds.isEmpty) {
+        if (orderedScreenIds.isEmpty) {
             // If there are no screens, we need to have an empty screen
             launcher.workspace.addExtraEmptyScreens()
+        } else if (orderedScreenIds.indexOf(FIRST_SCREEN_ID) < 0) {
+            // Keep persisted order stable; only add FIRST_SCREEN_ID if missing.
+            orderedScreenIds.add(0, FIRST_SCREEN_ID)
         }
         bindAddScreens(orderedScreenIds)
+        launcher.workspace.reorderBoundWorkspaceScreens(orderedScreenIds)
 
         // After we have added all the screens, if the wallpaper was locked to the default state,
         // then notify to indicate that it can be released and a proper wallpaper offset can be

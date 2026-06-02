@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Le app assegnate alle cartelle sono escluse dagli elenchi delle app</string>
     <string name="folders_filter_duplicates">Mostra solo app uniche</string>
     <string name="my_folder_label">La mia cartella</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Per eseguire determinate azioni (come bloccare il telefono) quando si esegue un gesto, Lawnchair richiede l\'accesso all\'accessibilità.\n\nLawnchair non traccia nessuna azione dell\'utente, sebbene il privilegio di farlo sia richiesto per tutti i servizi di accessibilità. Lawnchair scarta qualsiasi evento inviato dal sistema.\n\nPer bloccare il telefono, o per aprire la schermata Recenti, Lawnchair utilizza il servizio di accessibilità performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -255,15 +256,15 @@
     <string name="icon_shape_seven_sided_cookie">Biscotto a sette</string>
     <string name="icon_shape_arch">Arco</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
-    <string name="icon_shape_meow">Meow</string>
-    <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded Hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
-    <string name="icon_shape_vessel">Vessel</string>
+    <string name="icon_shape_cloudy">Nuvoloso</string>
+    <string name="icon_shape_flower">Fiore</string>
+    <string name="icon_shape_heart">Cuore</string>
+    <string name="icon_shape_leaf">Foglia</string>
+    <string name="icon_shape_meow">Miagolio</string>
+    <string name="icon_shape_pebble">Ciottolo</string>
+    <string name="icon_shape_roundedhexagon">Esagono arrotondato</string>
+    <string name="icon_shape_stretched">Allungato</string>
+    <string name="icon_shape_vessel">Nave</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Forma personalizzata per le icone</string>
     <string name="custom_icon_shape_create">Crea una forma personalizzata per le icone</string>
@@ -381,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Meteo</string>
     <string name="smartspace_battery_status">Stato della batteria</string>
+    <string name="smartspace_torch">Stato della torcia</string>
     <string name="smartspace_now_playing">In riproduzione</string>
     <string name="smartspace_onboarding">Benvenuto</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Torcia accesa </string>
+    <string name="torch_action_off">Tocca per spegnere</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configura Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Premi a lungo sulla Schermata Home per aprire le impostazioni</string>
@@ -489,11 +494,11 @@
     <string name="recents_screen_a11y_hint">apri la schermata delle app recenti</string>
     <string name="generic_a11y_hint">Per %1$s, attiva il servizio di accessibilità di Lawnchair. Tocca \"Apri impostazioni\", seleziona \"Lawnchair\" e attiva \"Usa Lawnchair\".</string>
     <string name="generic_a11y_disclaimer">Lawnchair usa il metodo di Accessibilità `performGlobalAction` per compiere questa azione. Questo è un permesso sensibile che permette di monitorare le altre app. In ogni caso, Lawnchair non è configurato per questo tipo di funzionalità e non riceve eventi.</string>
-    <string name="sleep_mode_label">Sleep mode</string>
-    <string name="sleep_mode_auto">Automatic</string>
-    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_label">Modalità sonno</string>
+    <string name="sleep_mode_auto">Automatico</string>
+    <string name="sleep_mode_root">Radice</string>
     <string name="sleep_mode_accessibility">Accessibility service</string>
-    <string name="sleep_mode_device_admin">Device admin</string>
+    <string name="sleep_mode_device_admin">Amministratore del dispositivo</string>
     <!--
 
     Bug reporting
@@ -542,6 +547,14 @@
     <string name="home_screen_lock_description">Impedisci modifiche al layout della schermata Home</string>
     <string name="set_default_home_page">Imposta come pagina iniziale predefinita</string>
     <string name="default_home_page_set">Pagina iniziale predefinita aggiornata</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">Predefinito</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Menu a comparsa</string>
     <string name="popup_menu_items">Voci del menu a comparsa</string>
     <string name="edit_menu_items">Modifica le voci del menu a comparsa</string>
@@ -755,5 +768,5 @@
     <string name="home_screen_all_views_removed_msg">Schermata Home svuotata</string>
     <string name="lawnchair_actions">Azioni</string>
     <string name="lawnchair_action_failed">Impossibile attivare l\'azione</string>
-    <string name="please_wait">Please wait…</string>
+    <string name="please_wait">Per favore attendere</string>
 </resources>

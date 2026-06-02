@@ -77,12 +77,13 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             LayoutParams.MATCH_PARENT,
             heightRes,
         )
-        layoutParams.leftMargin = grid.allAppsPadding.left
-        layoutParams.rightMargin = grid.allAppsPadding.right
+        layoutParams.leftMargin = 0
+        layoutParams.rightMargin = 0
         this.layoutParams = layoutParams
     }
 
-    override val isQuickLaunch: Boolean get() = hasFlag(flags, SearchResultView.FLAG_QUICK_LAUNCH)
+    override val isQuickLaunch: Boolean
+        get() = hasFlag(flags, SearchResultView.FLAG_QUICK_LAUNCH)
 
     override val titleText: CharSequence? get() = title.text
 
@@ -97,6 +98,7 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
         target: SearchTargetCompat,
         shortcuts: List<SearchTargetCompat>,
     ) {
+        flags = getFlags(target.extras)
         title.text = target.searchAction?.title
         val isNewFile = target.resultType == SearchTargetCompat.RESULT_TYPE_FILE_TILE &&
             target.layoutType == LayoutType.THUMBNAIL

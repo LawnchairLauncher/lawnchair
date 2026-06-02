@@ -1,6 +1,7 @@
 package app.lawnchair.search.adapter
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.ShapeDrawable
@@ -8,6 +9,7 @@ import android.graphics.drawable.shapes.RoundRectShape
 import android.view.View
 import app.lawnchair.allapps.views.SearchItemBackground
 import app.lawnchair.search.LawnchairSearchAdapterProvider
+import com.android.launcher3.R
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 
 data class SearchAdapterItem(
@@ -28,26 +30,13 @@ data class SearchAdapterItem(
 
     fun setRippleEffect(child: View) {
         val shape = RoundRectShape(background?.cornerRadii, null, null)
-        val shapeDrawable = ShapeDrawable(shape)
-        val colorDefault = background?.groupHighlight ?: 0
-        val colorPressed = background?.focusHighlight ?: 0
-
-        val colorStateList = ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_pressed),
-                intArrayOf(-android.R.attr.state_pressed),
-            ),
-            intArrayOf(
-                colorPressed,
-                colorDefault,
-            ),
-        )
-
-        shapeDrawable.paint.color = colorDefault
-        val inset = 3
-        val insetDrawable = InsetDrawable(shapeDrawable, 0, inset, 0, inset)
-        val rippleDrawable = RippleDrawable(colorStateList, insetDrawable, null)
-        child.background = rippleDrawable
+        val maskDrawable = ShapeDrawable(shape).apply {
+            paint.color = Color.WHITE
+        }
+        val rippleColor = background?.focusHighlight ?: background?.groupHighlight ?: 0
+        val inset = child.resources.getDimensionPixelSize(R.dimen.search_decoration_padding)
+        val insetMask = InsetDrawable(maskDrawable, 0, inset, 0, inset)
+        child.background = RippleDrawable(ColorStateList.valueOf(rippleColor), null, insetMask)
     }
 
     companion object {

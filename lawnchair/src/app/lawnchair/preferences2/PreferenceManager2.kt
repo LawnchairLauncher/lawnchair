@@ -682,6 +682,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = true,
     )
 
+    val smartspaceTorch = preference(
+        key = booleanPreferencesKey("enable_smartspace_torch"),
+        defaultValue = true,
+    )
+
     val smartspaceNowPlaying = preference(
         key = booleanPreferencesKey("enable_smartspace_now_playing"),
         defaultValue = true,

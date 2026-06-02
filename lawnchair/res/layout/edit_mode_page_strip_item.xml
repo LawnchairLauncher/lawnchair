@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="112dp"
+    android:layout_height="72dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
+    android:background="@drawable/bg_edit_mode_page_strip_item"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp">
+
+    <TextView
+        android:id="@+id/page_strip_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:duplicateParentState="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="14sp" />
+
+    <ImageButton
+        android:id="@+id/page_strip_home_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/edit_mode_page_strip_set_home"
+        android:duplicateParentState="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_home_pin"
+        android:tint="@color/edit_mode_page_strip_home_tint" />
+
+</LinearLayout>

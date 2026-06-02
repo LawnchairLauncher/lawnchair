@@ -289,12 +289,6 @@ class LawnchairLauncher : QuickstepLauncher() {
         gestureController.onHomePressed()
     }
 
-    override fun registerBackDispatcher() {
-        if (LawnchairApp.isAtleastT) {
-            super.registerBackDispatcher()
-        }
-    }
-
     fun bindItems(items: List<ItemInfo>, forceAnimateIcons: Boolean) {
         // pE-TODO(QPR1): Note: null is modelWriter + bindItems override something
         val inflatedItems = items.map { i ->

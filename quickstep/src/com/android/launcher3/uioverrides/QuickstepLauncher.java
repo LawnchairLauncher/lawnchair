@@ -19,7 +19,6 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEASURE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
-import static android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.internal.jank.Cuj.CUJ_LAUNCHER_LAUNCH_APP_PAIR_FROM_WORKSPACE;
@@ -1018,8 +1017,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
             return false;
         }
 
-        // Lawnchair-TODO-Merge: LC disabled this, 16r2 enabled it.
-//        getOnBackAnimationCallback().onBackInvoked();
+        getOnBackAnimationCallback().onBackInvoked();
         return true;
     }
 
@@ -1077,6 +1075,18 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                             mActiveOnBackAnimationCallback = null;
                         }
                     });
+        } else if (Utilities.ATLEAST_T) {
+            // On Android 13 the API 34 OnBackAnimationCallback interface used by
+            // FlingOnBackAnimationCallback cannot be instantiated, but a plain
+            // OnBackInvokedCallback works. Registering it is required because
+            // android:enableOnBackInvokedCallback="true" disables legacy key dispatch
+            // on Android 13+; without a callback the system would finish the Launcher.
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        onBackPressed();
+                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
+                    });
         }
     }
 
@@ -1127,7 +1137,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         DesktopVisibilityController desktopVisibilityController =
                 DesktopVisibilityController.INSTANCE.get(this);
         if (ATLEAST_BAKLAVA) {
-            if (!ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue()
+            if (!false
                 && desktopVisibilityController.isInDesktopModeAndNotInOverview(getDisplayId())
                 && !desktopVisibilityController.isRecentsGestureInProgress()) {
                 // Return early to skip setting activity to appear as resumed
@@ -1607,18 +1617,32 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         predictionRowView.dump(prefix, writer);
     }
 
+    /**
+     * Creates a TextClock or AnalogClock with an asynchronous ClockEventDelegate on Android U (API 34) and newer;
+     * on older platforms delegates to the framework's view creation.
+     *
+     * @return the created View for the given name when handled (TextClock or AnalogClock with delegate),
+     *         or the view returned by the superclass when not handled
+     */
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        switch (name) {
-            case "TextClock", "android.widget.TextClock" -> {
-                TextClock tc = new TextClock(context, attrs);
-                tc.setClockEventDelegate(AsyncClockEventDelegate.INSTANCE.get(this));
-                return tc;
-            }
-            case "AnalogClock", "android.widget.AnalogClock" -> {
-                AnalogClock ac = new AnalogClock(context, attrs);
-                ac.setClockEventDelegate(AsyncClockEventDelegate.INSTANCE.get(this));
-                return ac;
+        // ClockEventDelegate / setClockEventDelegate were added in Android 14 (API 34); on older
+        // platforms we must fall back to the framework default to avoid loading classes that do
+        // not exist on the device (b/353166316, lawnchair issue #6781).
+        if (Utilities.ATLEAST_U) {
+            switch (name) {
+                case "TextClock", "android.widget.TextClock" -> {
+                    TextClock tc = new TextClock(context, attrs);
+                    tc.setClockEventDelegate(
+                            AsyncClockEventDelegate.INSTANCE.get(this).asClockEventDelegate());
+                    return tc;
+                }
+                case "AnalogClock", "android.widget.AnalogClock" -> {
+                    AnalogClock ac = new AnalogClock(context, attrs);
+                    ac.setClockEventDelegate(
+                            AsyncClockEventDelegate.INSTANCE.get(this).asClockEventDelegate());
+                    return ac;
+                }
             }
         }
         return super.onCreateView(parent, name, context, attrs);

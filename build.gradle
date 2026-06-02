@@ -22,15 +22,13 @@ plugins {
 allprojects {
     plugins.withType(AndroidBasePlugin).configureEach {
         android {
-            buildToolsVersion "36.1.0"
+            buildToolsVersion "37.0.0"
             compileSdk {
-                version = release(36) {
-                    minorApiLevel = 1
-                }
+                version = release(37)
             }
             defaultConfig {
                 minSdk = 26
-                targetSdk = 36
+                targetSdk = 37
                 vectorDrawables.useSupportLibrary = true
             }
             lint {
@@ -163,13 +161,6 @@ android {
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
 
-    applicationVariants.configureEach { variant ->
-        variant.outputs.configureEach {
-            def channel = variant.productFlavors.last().name
-            outputFileName = "Lawnchair.${variant.versionName}.$channel.${variant.buildType.name}.apk"
-        }
-    }
-
     androidResources {
         generateLocaleConfig true
     }
@@ -222,16 +213,6 @@ android {
     buildTypes {
         all {
             signingConfig releaseSigning
-
-            applicationVariants.configureEach { variant ->
-                variant.outputs.configureEach {
-                    def channel = variant.productFlavors.last().name
-                    // Override signingConfig to debug if the "nightly" flavor is selected
-                    if (channel.any { it == "nightly" }) {
-                        signingConfig = signingConfigs.debug
-                    }
-                }
-            }
             pseudoLocalesEnabled true
         }
 
@@ -350,6 +331,15 @@ android {
             java.srcDirs = ['quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog']
             kotlin.directories.addAll('quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog')
             manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def channel = variant.productFlavors.last().second
+        variant.outputs.forEach { output ->
+            output.outputFileName.set("Lawnchair.${output.versionName.get()}.$channel.${variant.buildType}.apk")
         }
     }
 }
@@ -489,6 +479,7 @@ dependencies {
     implementation libs.androidx.exifinterface
 
     debugImplementation libs.leakcanary.android
+    debugImplementation libs.leakcanary.androidstudio
 }
 
 ksp {
