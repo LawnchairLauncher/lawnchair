@@ -25,16 +25,31 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.topjohnwu.superuser.Shell
+import kotlinx.coroutines.flow.first
 
 class SleepGestureHandler(context: Context) : GestureHandler(context) {
 
     override suspend fun onTrigger(launcher: LawnchairLauncher) {
-        methods.first { it.isSupported() }.sleep(launcher)
+        val pref = PreferenceManager2.getInstance(context).sleepMode.get().first()
+        val method = when (pref) {
+            SleepMode.AUTO -> methods.first { it.isSupported() }
+            SleepMode.ROOT -> methods.filterIsInstance<SleepMethodRoot>().first()
+            SleepMode.ACCESSIBILITY -> methods.filterIsInstance<SleepMethodPieAccessibility>().first()
+            SleepMode.DEVICE_ADMIN -> methods.filterIsInstance<SleepMethodDeviceAdmin>().first()
+        }
+
+        if (pref != SleepMode.AUTO && !method.isSupported()) {
+            methods.first { it.isSupported() }.sleep(launcher)
+            return
+        }
+
+        method.sleep(launcher)
     }
 
     private val methods = listOf(

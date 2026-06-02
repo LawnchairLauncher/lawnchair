@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Domovská obrazovka založená na Launcher3 z AOSP

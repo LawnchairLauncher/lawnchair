@@ -4,6 +4,7 @@ import android.graphics.PointF
 import android.view.MotionEvent
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherState
@@ -26,12 +27,15 @@ class VerticalSwipeTouchController(
 
     private var overrideSwipeUp = false
     private var overrideSwipeDown = false
+    private var overrideTwoFingerSwipeUp = false
+    private var overrideTwoFingerSwipeDown = false
 
     private var noIntercept = false
     private var currentMillis = 0L
     private var currentVelocity = 0f
     private var currentDisplacement = 0f
 
+    private var pointerCount = 0
     private var triggered = false
 
     init {
@@ -41,6 +45,13 @@ class VerticalSwipeTouchController(
                 .launchIn(this)
             prefs.swipeDownGestureHandler.get()
                 .onEach { overrideSwipeDown = it != prefs.swipeDownGestureHandler.defaultValue }
+                .launchIn(this)
+            // Override when a custom gesture handler is configured, as launcher does not handle these by default
+            prefs.twoFingerSwipeUpGestureHandler.get()
+                .onEach { overrideTwoFingerSwipeUp = it !is GestureHandlerConfig.NoOp }
+                .launchIn(this)
+            prefs.twoFingerSwipeDownGestureHandler.get()
+                .onEach { overrideTwoFingerSwipeDown = it !is GestureHandlerConfig.NoOp }
                 .launchIn(this)
         }
     }
@@ -61,6 +72,8 @@ class VerticalSwipeTouchController(
     }
 
     override fun onControllerTouchEvent(ev: MotionEvent): Boolean {
+        // We don't need to check when the pointer count changes during a swipe
+        pointerCount = ev.pointerCount
         return detector.onTouchEvent(ev)
     }
 
@@ -82,9 +95,17 @@ class VerticalSwipeTouchController(
         if (velocity.absoluteValue > TRIGGER_VELOCITY) {
             triggered = true
             if (velocity < 0) {
-                gestureController.onSwipeUp()
+                if (pointerCount == 1) {
+                    gestureController.onSwipeUp()
+                } else if (pointerCount == 2) {
+                    gestureController.onTwoFingerSwipeUp()
+                }
             } else {
-                gestureController.onSwipeDown()
+                if (pointerCount == 1) {
+                    gestureController.onSwipeDown()
+                } else if (pointerCount == 2) {
+                    gestureController.onTwoFingerSwipeDown()
+                }
             }
         }
         return true
@@ -96,10 +117,10 @@ class VerticalSwipeTouchController(
 
     private fun getSwipeDirection(): Int {
         var directions = 0
-        if (overrideSwipeUp) {
+        if (overrideSwipeUp || overrideTwoFingerSwipeUp) {
             directions = directions or BothAxesSwipeDetector.DIRECTION_UP
         }
-        if (overrideSwipeDown) {
+        if (overrideSwipeDown || overrideTwoFingerSwipeDown) {
             directions = directions or BothAxesSwipeDetector.DIRECTION_DOWN
         }
         return directions

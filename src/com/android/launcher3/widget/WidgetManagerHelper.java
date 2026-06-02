@@ -174,6 +174,9 @@ public class WidgetManagerHelper {
         } catch (NoSuchMethodError | NoClassDefFoundError e) {
             Log.w("LC_"+TAG, "loadGeneratedPreview: Error loading widget preview");
             return null;
+        } catch (IllegalStateException e) {
+            Log.w("LC_"+TAG, "loadGeneratedPreview: Invalid state fetching preview.", e);
+            return null;
         }
     }
 

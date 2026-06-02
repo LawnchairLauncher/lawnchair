@@ -1,76 +1,64 @@
 # Lawnchair contributing guidelines
 
 <picture>
-    <!-- Avoid image being clickable with slight workaround --->
+    <!-- Workaround to prevent the image from being clickable -->
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/lawnchair-round.webp" width="100">
     <img alt="" src="docs/assets/lawnchair-round.webp" width="100">
 </picture>
 
-Welcome to the **Lawnchair** project. We appreciate your interest in contributing. For questions,
+Welcome to the **Lawnchair** project. We appreciate your interest in contributing. If you have
+questions,
 feel free to reach out on [Telegram][telegram] or [Discord][discord].
 
 ## No-code contributions
-
-### Bug reports and feature requests
-
-> [!TIP]
-> Use the [Lawnchair Nightly builds][nightly] when reporting bugs, as your issue may have already
-> been fixed.
-
-> [!WARNING]
-> For [security vulnerability][security-report], please do not open an issue. Instead, follow
-> the instructions in our [Security Policy][security-policy].
 
 - For **[bug reports][bug-reports]**, please be as detailed as possible and provide clear steps to
   reproduce the issue.
 - For **[feature requests][feature-requests]**, clearly describe the feature and its potential
   benefits.
+- For security vulnerabilities, follow the instructions in our [Security Policy][security-policy]
+- For translations, visit **[Lawnchair on Crowdin][crowdin]**.
+- For documentation, follow
+  the [developer documentation style guide](https://developers.google.com/style) of Google.
 
-Please be civil, as outlined in our [Code of Conduct][code-of-conduct].
+**Tips for contributing**
 
-### Translations
-
-For translations, please visit **[Lawnchair on Crowdin][crowdin]**.
+- Follow our [Code of Conduct][code-of-conduct].
+- Use Lawnchair's [Nightly builds][nightly] before creating issues.
 
 ## Contributing code
 
 ### Getting started
 
-1. Clone the repository with the `--recursive` flag to include the project's
-   submodules.
+1. Clone the repository with the `--recursive` flag to include the project's submodules:
    ```bash
    git clone --recursive https://github.com/LawnchairLauncher/lawnchair.git
    ```
 2. Open the project in Android Studio.
 3. Select the `lawnWithQuickstepGithubDebug` build variant.
 
-If you encounter errors with modules that ends with `lib` suffix like `iconloaderlib` or `searchuilib`,
-run `git submodule update --init --recursive`.
+If you encounter errors with modules that end with the `lib` suffix, such as `iconloaderlib` or
+`searchuilib`, run `git submodule update --init --recursive`.
 
 Here are some contribution tips to help you get started:
 
-- Always make sure that you're up-to-date with **Lawnchair** by setting your base branch to
-  `16-dev`.
-- Make sure your code is logical and well-formatted. If using Kotlin,
-  see [“Coding conventions” in the Kotlin documentation][kotlin-coding-conventions];
-- [The `lawnchair` package][lawnchair-package]
-  houses Lawnchair’s own code, whereas [the `src` package][src-package] includes a clone of
-  the Launcher3 codebase with modifications. Generally, place new files in the former,
-  keeping changes to the latter to a minimum.
+- Ensure you are up to date with **Lawnchair** by setting your base branch to `16-dev`.
+- Make sure your code is logical and formatted correctly. For Kotlin, see
+  the [Kotlin coding conventions][kotlin-coding-conventions].
+- [The `lawnchair` package][lawnchair-package] houses Lawnchair’s own code, whereas [the
+  `src` package][src-package] includes a clone of the Launcher3 codebase with modifications.
+  Generally, place new files in the former and keep changes to the latter to a minimum.
 
 ### Additional documentation
 
-- [Lawnchair roadmap](ROADMAP.md)
-- [Lawnchair verification](VERIFICATION.md)
-- [The Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki)
-- [Lawnchair Visual Guidelines](/docs/assets/README.md)
-- [Lawnchair Quickstep Compat Library](compatLib/README.md)
-- [Lawnchair Preferences Components](lawnchair/src/app/lawnchair/ui/preferences/components/README.md)
-- [Lawnchair Platform Frameworks Library SystemUI](platform_frameworks_libs_systemui/README.md)
-- [SystemUI Module](systemUI/README.md)
-    - [ViewCapture](systemUI/viewcapture/README.md)
-    - [Common](systemUI/common/README.md)
-- [Prebuilt Library](prebuilts/libs/README.md)
+- [Roadmap](ROADMAP.md)
+- [Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki)
+- [Visual guidelines](/docs/assets/README.md)
+- [`compatLib` module](compatLib/README.md)
+- [`preferences` directory](lawnchair/src/app/lawnchair/ui/preferences/components/README.md)
+- [`libs/systemui` framework module](platform_frameworks_libs_systemui/README.md)
+- [`packages/SystemUI` app](systemUI/README.md)
+- [Prebuilt libraries](prebuilts/libs/README.md)
 
 ### Development workflow
 
@@ -90,7 +78,7 @@ We follow the **[Conventional Commits specification][conventional-commits]**.
 
 * **Format:** `type(scope): subject`
 * **Example:** `feat(settings): Add toggle for new feature`
-* **Allowed Types:** `feat`, `fix`, `style`, `refactor`, `perf`, `docs`, `test`, `chore`.
+* **Allowed types:** `feat`, `fix`, `style`, `refactor`, `perf`, `docs`, `test`, `chore`.
 
 ### Versioning scheme
 
@@ -110,9 +98,9 @@ Lawnchair’s version code is composed of five parts, separated by underscores:
 4. Lawnchair development version
 5. Revision/Release number
 
-#### Lawnchair development stage
+#### Lawnchair development stages
 
-This table show list of development stages in use by Lawnchair:
+The following table lists the development stages used by Lawnchair:
 
 | Stage             | Denote |
 |-------------------|--------|
@@ -122,38 +110,32 @@ This table show list of development stages in use by Lawnchair:
 | Release Candidate | 03     |
 | Release           | 04     |
 
-### String naming
+### `strings.xml` naming
 
-Strings `names` in `strings.xml` should follow this format:
+String `name` attributes in `strings.xml` should follow this format:
 
-| Type                                             | Format            | Example usage              | Actual string        | Other information                                                                                                   |
-|--------------------------------------------------|-------------------|----------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------|
-| Generic word                                     | $1                | `disagree_or_agree`        | Disagree or agree    | Should only be used if it doesn't fit the below categories                                                          |
-| Action                                           | $1_action         | `apply_action`             | Apply                | Any generic action verb can fit here                                                                                |
-| Preference or popup label<br/>Preference headers | $1_label          | `folders_label`            | Folders              |                                                                                                                     |
-| Preference or popup description                  | $1_description    | `folders_description`      | Row and column count |                                                                                                                     |
-| Preference choice                                | $1_choice         | `off_choice`               | Off                  |                                                                                                                     |
-| Feature string                                   | (feature_name)_$1 | `colorpicker_hsb`          | HSB                  | Feature strings are strings that are confined to a specific feature. Examples include the gesture and color picker. |
-| Launcher string                                  | $1_launcher       | `device_contacts_launcher` | Contacts from device | Strings that are specific to the Launcher area                                                                      |
+| Type                                             | Format            | Example usage              | Actual string        | Other information                                                                                  |
+|--------------------------------------------------|-------------------|----------------------------|----------------------|----------------------------------------------------------------------------------------------------|
+| Generic word                                     | $1                | `disagree_or_agree`        | Disagree or agree    | Should only be used if it doesn't fit the categories below.                                        |
+| Action                                           | $1_action         | `apply_action`             | Apply                | Any generic action verb fits here.                                                                 |
+| Preference or popup label<br/>Preference headers | $1_label          | `folders_label`            | Folders              |                                                                                                    |
+| Preference or popup description                  | $1_description    | `folders_description`      | Row and column count |                                                                                                    |
+| Preference choice                                | $1_choice         | `off_choice`               | Off                  |                                                                                                    |
+| Feature string                                   | (feature_name)_$1 | `colorpicker_hsb`          | HSB                  | Feature strings are confined to a specific feature. Examples include the gesture and color picker. |
+| Launcher string                                  | $1_launcher       | `device_contacts_launcher` | Contacts from device | Strings that are specific to the Launcher area.                                                    |
 
-### Updating locally stored font listing
+### Updating the locally stored Google Fonts listing
 
 Lawnchair uses a locally stored JSON file (`google_fonts.json`) to list available fonts from Google
-Fonts. This file should be updated periodically or before release to include the latest fonts.
+Fonts. This file should be updated periodically or before a release.
 
-To update Lawnchair’s font listing, follow these steps:
+To update the font listing, follow these steps:
 
-1. Get
-   a [Google Fonts Developer API key][google-fonts-api-key].
+1. Obtain a [Google Fonts Developer API key][google-fonts-api-key].
 2. Download the JSON file from `https://www.googleapis.com/webfonts/v1/webfonts?key=API_KEY`,
-   replacing `API_KEY` with the API key from step 1.
+   replacing `API_KEY` with your key.
 3. Replace the content of [`google_fonts.json`](lawnchair/assets/google_fonts.json) with the API
    response.
-
-#### Writing or updating Lawnchair documentation
-
-Lawnchair’s documentations are written in Markdown and follow a style guides from 
-[Google developer documentation style guide](https://developers.google.com/style).
 
 <!-- Links -->
 [telegram]: https://t.me/lccommunity
@@ -170,4 +152,3 @@ Lawnchair’s documentations are written in Markdown and follow a style guides f
 [src-package]: https://github.com/LawnchairLauncher/lawnchair/tree/16-dev/src
 [conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/
 [google-fonts-api-key]: https://developers.google.com/fonts/docs/developer_api#APIKey
-

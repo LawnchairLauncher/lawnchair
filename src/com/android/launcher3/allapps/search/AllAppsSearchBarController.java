@@ -96,7 +96,7 @@ public class AllAppsSearchBarController
 
     @Override
     public void afterTextChanged(final Editable s) {
-        mQuery = s.toString();
+        mQuery = Utilities.trim(s);
         if (mQuery.isEmpty()) {
             mCallback.clearSearchResult();
         } else {

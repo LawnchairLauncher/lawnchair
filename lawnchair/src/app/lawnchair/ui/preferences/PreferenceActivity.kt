@@ -54,6 +54,7 @@ class PreferenceActivity : ComponentActivity() {
                     windowSizeClass = calculateWindowSizeClass(this),
                     displayFeatures = calculateDisplayFeatures(this),
                     startDestination = initialRoute,
+                    intent = intent,
                 )
             }
         }

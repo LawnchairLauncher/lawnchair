@@ -368,10 +368,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
         }
+        // Clear touch/press state and FastBitmapDrawable press/hover scale so recycled views
+        // (e.g. All Apps) do not keep inconsistent icon sizes (see issue #6575).
+        clearPressedBackground();
+        resetIconScale();
         // Reset any shifty arrangements in case animation is disrupted.
         setPivotY(0);
         setAlpha(1);
-        setScaleY(1);
+        setReorderBounceScale(1f);
         setTranslationY(0);
         setMaxLines(1);
         setVisibility(VISIBLE);
@@ -720,9 +724,28 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        // Resume callbacks can run before the window is focused again (e.g. back / predictive
+        // back). Clearing when focus returns covers that ordering gap.
+        if (hasWindowFocus) {
+            clearPressedIconState();
+        }
+    }
+
     public void clearPressedBackground() {
         setPressed(false);
         setStayPressed(false);
+    }
+
+    /**
+     * Clears framework pressed state, synthetic stay-pressed, and {@link FastBitmapDrawable} tap
+     * scale. Use when a launch transition ends so the icon matches neighbors again.
+     */
+    public void clearPressedIconState() {
+        clearPressedBackground();
+        resetIconScale();
     }
 
     @Override
@@ -1374,6 +1397,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         // same as before.
         mDisableRelayout = mIcon != null;
 
+        if (icon instanceof FastBitmapDrawable fbd) {
+            fbd.resetScale();
+        }
         icon.setBounds(0, 0, mIconSize, mIconSize);
 
         updateIcon(icon);

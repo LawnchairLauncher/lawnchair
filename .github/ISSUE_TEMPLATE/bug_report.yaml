@@ -1,6 +1,5 @@
 name: Bug report
 description: Create a report to help us address issues you are facing with the app.
-title: "[BUG] "
 labels: [bug, 'status: needs triage']
 type: Bug
 body:
@@ -8,9 +7,9 @@ body:
     attributes:
       value: |
         > [!IMPORTANT]
-        > Lawnchair's issue tracker is maintained on a best-effort basis — due to limited resources, we do not guarantee that all issues will be triaged or checked by the developers.
-        > If you wish to help triage Lawnchair's issues, visit [#4232](https://github.com/LawnchairLauncher/lawnchair/issues/4232) for more information.
-        
+        > Lawnchair's issue tracker is maintained on a best-effort basis.
+        > Due to limited resources, we do not guarantee that all issues will be triaged or checked by the developers.
+
         Thanks for taking the time to file this issue! Here are a few things to do before submitting:
         1. Use the [**latest nightly version**](https://github.com/LawnchairLauncher/lawnchair#development-builds) when reporting bugs.
         2. [**Read the FAQ**](https://lawnchair.app/faq/#common-issues) for common issues; if it is, please don't create an issue about it.
@@ -70,7 +69,7 @@ body:
       label: App version
       description: |
         Open Lawnchair settings > About to view the app version.
-        
+
         On nightly builds, **long-press** the version name and paste the GitHub link here.
       placeholder: |
         15 Beta 1
@@ -83,7 +82,7 @@ body:
       label: Additional context
       description: |
         Add any other context about the problem here.
-        
+
         If this is a crash report, paste or link the crash message here.
       placeholder: |
         Crash log: https://katb.in/examplelink

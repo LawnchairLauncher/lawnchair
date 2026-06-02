@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Οι εφαρμογές που έχουν εκχωρηθεί σε φακέλους εξαιρούνται από τις λίστες εφαρμογών</string>
     <string name="folders_filter_duplicates">Εμφάνιση μόνο ιδιαίτερων εφαρμογών</string>
     <string name="my_folder_label">Ο φάκελός μου</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Για την εκτέλεση ορισμένων ενεργειών (όπως το κλείδωμα του τηλεφώνου σας) κατά την εκτέλεση μιας χειρονομίας, ο εκκινητής Lawnchair απαιτεί δικαιώματα προσβασιμότητας.\n\nΟ εκκινητής Lawnchair δεν παρακολουθεί καμία ενέργεια χρήστη, αν και το δικαίωμα αυτό απαιτείται για όλες τις υπηρεσίες προσβασιμότητας. Ο εκκινητής Lawnchair απορρίπτει οποιοδήποτε συμβάν αποστέλλεται από το σύστημα.\n\nΓια να κλειδώσετε το τηλέφωνό σας ή για να ανοίξετε την οθόνη Πρόσφατων εφαρμογών, ο εκκινητής Lawnchair χρησιμοποιεί την υπηρεσία προσβασιμότητας performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -176,8 +177,8 @@
     <string name="show_deck_layout_description">Εμφάνιση μιας επιλογής διάταξης για την απόκρυψη του συρταριού εφαρμογών και την αυτόματη προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
     <string name="material_expressive_label">Σχεδιασμός Material 3 Expressive</string>
     <string name="material_expressive_description">Ενεργοποίηση αλλαγών σχεδιασμού Material 3 Expressive στο χώρο εργασίας</string>
-    <string name="experimental_folder_shape_modify_label">Προσαρμόσιμο σχήμα φακέλου</string>
-    <string name="folder_shape_label">Φάκελος</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">Φάκελος</string>
     <string name="app_icon_shape_label">Εφαρμογή</string>
     <string name="gesturenavcontract_label">Χρήση του API GestureNavContract</string>
     <string name="gesturenavcontract_description">Υποστηρίξτε τις βελτιωμένες κινούμενες εικόνες του Android κατά τη χρήση της πλοήγησης με κινήσεις. Δεν υποστηρίζουν όλες οι συσκευές αυτήν την επιλογή. Ενδέχεται να προκληθούν σφάλματα κινούμενης εικόνας κατά τη χρήση.</string>
@@ -209,6 +210,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Στυλ εικονιδίων</string>
+    <string name="apply_icon_pack_title">Εφαρμογή πακέτου εικονιδίων</string>
     <string name="icon_shape_label">Σχήμα εικονιδίων</string>
     <string name="icon_sizes">Μέγεθος εικονιδίων</string>
     <string name="show_labels">Εμφάνιση ετικετών εικονιδίων</string>
@@ -253,10 +255,23 @@
     <string name="icon_shape_four_sided_cookie">Τετράπλευρο μπισκότο</string>
     <string name="icon_shape_seven_sided_cookie">Επτάπλευρο μπισκότο</string>
     <string name="icon_shape_arch">Αψίδα</string>
+    <!-- Additional icon shapes -->
+    <string name="icon_shape_cloudy">Σύννεφο</string>
+    <string name="icon_shape_flower">Λουλούδι</string>
+    <string name="icon_shape_heart">Καρδιά</string>
+    <string name="icon_shape_leaf">Φύλλο</string>
+    <string name="icon_shape_meow">Meow</string>
+    <string name="icon_shape_pebble">Βότσαλο</string>
+    <string name="icon_shape_roundedhexagon">Στρογγυλεμένο Εξάγωνο</string>
+    <string name="icon_shape_stretched">Τεντωμένο</string>
+    <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Προσαρμοσμένο σχήμα εικονιδίων</string>
     <string name="custom_icon_shape_create">Δημιουργία προσαρμοσμένου σχήματος εικονιδίων</string>
     <string name="custom_icon_shape_edit">Επεξεργασία προσαρμοσμένου σχήματος εικονιδίων</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">Σχήμα γωνίας</string>
     <string name="custom_icon_shape_corner_round">Στρογγυλό</string>
     <string name="custom_icon_shape_corner_squircle">Λείο</string>
@@ -367,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Καιρός</string>
     <string name="smartspace_battery_status">Κατάσταση μπαταρίας</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Παίζει Τώρα</string>
     <string name="smartspace_onboarding">Ενσωμάτωση</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Διαμορφώστε τον εκκινητή Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Πατήστε παρατεταμένα στην Αρχική Οθόνη για να ανοίξετε τις Ρυθμίσεις</string>
@@ -447,6 +466,8 @@
     <string name="gesture_double_tap">Διπλό πάτημα</string>
     <string name="gesture_swipe_up">Σύρετε προς τα επάνω</string>
     <string name="gesture_swipe_down">Σύρετε προς τα κάτω</string>
+    <string name="gesture_two_finger_swipe_down">Σύρσιμο δύο δακτύλων κάτω</string>
+    <string name="gesture_two_finger_swipe_up">Σύρσιμο δύο δακτύλων πάνω</string>
     <string name="gesture_home_tap">Κουμπί αρχικής οθόνης</string>
     <string name="gesture_back_tap">Κουμπί επιστροφής</string>
     <string name="gesture_swipe_left">Σύρετε προς τα αριστερά</string>
@@ -473,6 +494,11 @@
     <string name="recents_screen_a11y_hint">άνοιγμα της οθόνης πρόσφατων εφαρμογών</string>
     <string name="generic_a11y_hint">Για να %1$s, ενεργοποιήστε την υπηρεσία προσβασιμότητας του εκκινητή Lawnchair. Πατήστε \"Άνοιγμα ρυθμίσεων\", επιλέξτε \"Lawnchair\" και ενεργοποιήστε την επιλογή \"Χρήση Lawnchair\".</string>
     <string name="generic_a11y_disclaimer">Ο εκκινητής Lawnchair χρησιμοποιεί τη μέθοδο `performGlobalAction` της Προσβασιμότητας Εφαρμογών για την εκτέλεση αυτής της ενέργειας. Πρόκειται για ένα ευαίσθητο δικαίωμα που επιτρέπει την παρακολούθηση άλλων εφαρμογών. Ωστόσο, ο εκκινητής Lawnchair δεν έχει ρυθμιστεί για αυτήν τη λειτουργικότητα και δεν λαμβάνει συμβάντα.</string>
+    <string name="sleep_mode_label">Λειτουργία ύπνου</string>
+    <string name="sleep_mode_auto">Αυτόματο</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Υπηρεσία προσβασιμότητας</string>
+    <string name="sleep_mode_device_admin">Διαχειριστής συσκευής</string>
     <!--
 
     Bug reporting
@@ -521,6 +547,14 @@
     <string name="home_screen_lock_description">Αποτροπή αλλαγών στη διάταξη της αρχικής οθόνης</string>
     <string name="set_default_home_page">Ορισμός ως προεπιλεγμένη σελίδα</string>
     <string name="default_home_page_set">Η προεπιλεγμένη αρχική σελίδα ενημερώθηκε</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">Προεπιλογή</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Αναδυόμενο μενού</string>
     <string name="popup_menu_items">Στοιχεία αναδυόμενου μενού</string>
     <string name="edit_menu_items">Επεξεργασία στοιχείων αναδυόμενου μενού</string>
@@ -732,4 +766,7 @@
     <string name="grant_requested_permissions_tap">Πατήστε για εκχώρηση δικαιωμάτων</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">Έγινε εκκαθάριση της αρχικής οθόνης</string>
+    <string name="lawnchair_actions">Ενέργειες</string>
+    <string name="lawnchair_action_failed">Απέτυχε η ενεργοποίηση ενέργειας</string>
+    <string name="please_wait">Παρακαλώ περιμένετε…</string>
 </resources>

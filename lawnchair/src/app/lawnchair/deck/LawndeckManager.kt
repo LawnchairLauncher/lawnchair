@@ -7,7 +7,6 @@ import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
-import app.lawnchair.util.restartLauncher
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
@@ -24,6 +23,8 @@ import java.io.File
 import java.util.Locale
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LawndeckManager(private val context: Context) {
@@ -89,7 +90,9 @@ class LawndeckManager(private val context: Context) {
 
     private fun postRestoreActions() {
         ModelDbController(context).let { RestoreDbTask.performRestore(context, it) }
-        restartLauncher(context)
+        MainScope().launch(Dispatchers.Main) {
+            LauncherAppState.getInstance(context).model.forceReload()
+        }
     }
 
     private fun addAllAppsToWorkspace(

@@ -3,6 +3,7 @@ package app.lawnchair.allapps
 import android.content.Context
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.data.folder.model.FolderOrderUtils
@@ -31,7 +32,8 @@ class LawnchairAlphabeticalAppsList<T>(
     workProfileManager: WorkProfileManager?,
     privateProfileManager: PrivateProfileManager?,
 ) : AlphabeticalAppsList<T>(context, appsStore, workProfileManager, privateProfileManager),
-    OnIDPChangeListener
+    OnIDPChangeListener,
+    DefaultLifecycleObserver
     where T : Context, T : ActivityContext {
 
     private var hiddenApps: Set<String> = setOf()
@@ -48,6 +50,7 @@ class LawnchairAlphabeticalAppsList<T>(
 
     init {
         context.launcher.deviceProfile.inv.addOnChangeListener(this)
+        (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
         try {
             prefs2.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
                 hiddenApps = it
@@ -57,6 +60,10 @@ class LawnchairAlphabeticalAppsList<T>(
             Log.w(TAG, "Failed to initialize hidden apps", t)
         }
         observeFolders()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        context.launcher.deviceProfile.inv.removeOnChangeListener(this)
     }
 
     private fun observeFolders() {

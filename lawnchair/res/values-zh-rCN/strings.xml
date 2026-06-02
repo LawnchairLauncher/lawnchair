@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用程序列表之外</string>
     <string name="folders_filter_duplicates">仅显示唯一应用</string>
     <string name="my_folder_label">我的文件夹</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">为了在您执行手势时进行某些操作（例如锁定手机），Lawnchair 需要获取无障碍服务权限。\n\nLawnchair 不会监视您的任何用户操作，尽管所有无障碍服务都必须申请该权限。Lawnchair 会丢弃系统发送的任何事件。\n\n为了锁定您的手机或打开最近任务界面，Lawnchair 使用 performGlobalAction 无障碍服务。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -176,8 +177,8 @@
     <string name="show_deck_layout_description">显示一个外观选项，开启时隐藏抽屉，并将 App 显示到桌面上</string>
     <string name="material_expressive_label">Material 3 表现力</string>
     <string name="material_expressive_description">在工作区中启用 Material 3 的表达性更改</string>
-    <string name="experimental_folder_shape_modify_label">可自定义文件夹形状</string>
-    <string name="folder_shape_label">文件夹</string>
+    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_label">文件夹</string>
     <string name="app_icon_shape_label">应用</string>
     <string name="gesturenavcontract_label">使用手势导航合同API</string>
     <string name="gesturenavcontract_description">支持 Android 手势导航时的增强动画效果。并非所有设备都支持此功能。使用时可能会出现动画错误。</string>
@@ -209,6 +210,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">图标样式</string>
+    <string name="apply_icon_pack_title">应用图标包</string>
     <string name="icon_shape_label">图标形状</string>
     <string name="icon_sizes">图标大小</string>
     <string name="show_labels">显示标签</string>
@@ -253,10 +255,23 @@
     <string name="icon_shape_four_sided_cookie">四瓣花形</string>
     <string name="icon_shape_seven_sided_cookie">七瓣花形</string>
     <string name="icon_shape_arch">拱形</string>
+    <!-- Additional icon shapes -->
+    <string name="icon_shape_cloudy">云</string>
+    <string name="icon_shape_flower">花</string>
+    <string name="icon_shape_heart">心</string>
+    <string name="icon_shape_leaf">叶</string>
+    <string name="icon_shape_meow">喵</string>
+    <string name="icon_shape_pebble">卵石</string>
+    <string name="icon_shape_roundedhexagon">圆角六边形</string>
+    <string name="icon_shape_stretched">拉伸</string>
+    <string name="icon_shape_vessel">血管</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">自定义图标形状</string>
     <string name="custom_icon_shape_create">创建自定义图标形状</string>
     <string name="custom_icon_shape_edit">编辑自定义图标形状</string>
+    <string name="custom_folder_shape">Custom folder shape</string>
+    <string name="custom_folder_shape_create">Create custom folder shape</string>
+    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
     <string name="custom_icon_shape_corner">边角形状</string>
     <string name="custom_icon_shape_corner_round">圆形</string>
     <string name="custom_icon_shape_corner_squircle">方圆形</string>
@@ -367,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">正在播放</string>
     <string name="smartspace_onboarding">入职</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">设置你的 Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">长按主屏幕打开设置</string>
@@ -447,6 +466,8 @@
     <string name="gesture_double_tap">双击</string>
     <string name="gesture_swipe_up">上滑</string>
     <string name="gesture_swipe_down">下滑</string>
+    <string name="gesture_two_finger_swipe_down">双指向下滑动</string>
+    <string name="gesture_two_finger_swipe_up">双指向上滑动</string>
     <string name="gesture_home_tap">主屏键</string>
     <string name="gesture_back_tap">返回键</string>
     <string name="gesture_swipe_left">向左滑动</string>
@@ -473,6 +494,11 @@
     <string name="recents_screen_a11y_hint">打开最近应用屏幕</string>
     <string name="generic_a11y_hint">要%1$s, 启用 Lawnchair 无障碍服务，请点击“打开设置”，选择“Lawnchair”，然后开启“使用 Lawnchair”。</string>
     <string name="generic_a11y_disclaimer">Lawnchair 使用辅助功能的 `performGlobalAction` 方法来执行此操作。这是一个敏感权限，允许监控其他应用。但是，Lawnchair 未配置此功能，因此不会收到任何事件。</string>
+    <string name="sleep_mode_label">睡眠模式</string>
+    <string name="sleep_mode_auto">自动</string>
+    <string name="sleep_mode_root">耕</string>
+    <string name="sleep_mode_accessibility">铺助服务</string>
+    <string name="sleep_mode_device_admin">管理员设备</string>
     <!--
 
     Bug reporting
@@ -521,6 +547,14 @@
     <string name="home_screen_lock_description">固定主屏幕布局</string>
     <string name="set_default_home_page">设置为默认页面</string>
     <string name="default_home_page_set">默认主页面已更新</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">默认</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="popup_menu_items">弹窗目录项目</string>
     <string name="edit_menu_items">编辑弹窗目录项目</string>
@@ -731,4 +765,7 @@
     <string name="grant_requested_permissions_tap">点击此处授权</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">主屏幕已清除</string>
+    <string name="lawnchair_actions">操作</string>
+    <string name="lawnchair_action_failed">未能触发操作</string>
+    <string name="please_wait">请稍等…</string>
 </resources>

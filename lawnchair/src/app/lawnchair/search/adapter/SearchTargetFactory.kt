@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +18,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.exifinterface.media.ExifInterface
 import app.lawnchair.allapps.views.SearchResultView
 import app.lawnchair.search.algorithms.data.Calculation
 import app.lawnchair.search.algorithms.data.ContactInfo
@@ -305,7 +308,6 @@ class SearchTargetFactory(
 
         val fileIntent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             .setDataAndType(fileUri, mimeType)
 
         val action = SearchActionCompat.Builder(info.path, info.name)
@@ -401,6 +403,15 @@ class SearchTargetFactory(
 
 object FilesTarget {
     private const val MAX_PREVIEW_SIZE_PX = 256
+    private const val MAX_RAW_DIMENSION_PX = 16_384
+    private const val MAX_ASPECT_RATIO = 5
+
+    private fun isValidPreviewSize(width: Int, height: Int): Boolean {
+        if (width <= 0 || height <= 0) return false
+        if (maxOf(width, height) > MAX_RAW_DIMENSION_PX) return false
+        if (maxOf(width, height) > minOf(width, height) * MAX_ASPECT_RATIO) return false
+        return true
+    }
 
     fun getPreviewIcon(
         context: Context,
@@ -420,6 +431,10 @@ object FilesTarget {
             val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeFile(path, options)
 
+            val w = options.outWidth
+            val h = options.outHeight
+            if (!isValidPreviewSize(w, h)) return null
+
             options.inSampleSize = calculateInSampleSize(
                 options.outWidth,
                 options.outHeight,
@@ -428,10 +443,55 @@ object FilesTarget {
             )
             options.inJustDecodeBounds = false
 
-            val bitmap = BitmapFactory.decodeFile(path, options)
-            bitmap?.let { Icon.createWithBitmap(it) }
+            val bitmap = BitmapFactory.decodeFile(path, options) ?: return null
+
+            val orientation = try {
+                ExifInterface(path).getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED,
+                )
+            } catch (_: IOException) {
+                ExifInterface.ORIENTATION_UNDEFINED
+            }
+
+            val matrix = Matrix()
+            when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+
+                ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+
+                ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+
+                ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.postScale(-1f, 1f)
+
+                ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.postScale(1f, -1f)
+
+                ExifInterface.ORIENTATION_TRANSPOSE -> {
+                    matrix.postRotate(90f)
+                    matrix.postScale(-1f, 1f)
+                }
+
+                ExifInterface.ORIENTATION_TRANSVERSE -> {
+                    matrix.postRotate(270f)
+                    matrix.postScale(-1f, 1f)
+                }
+
+                else -> return Icon.createWithBitmap(bitmap) // ORIENTATION_NORMAL or ORIENTATION_UNDEFINED
+            }
+
+            val oriented = Bitmap.createBitmap(
+                bitmap,
+                0,
+                0,
+                bitmap.width,
+                bitmap.height,
+                matrix,
+                true,
+            )
+            bitmap.recycle() // Recycle instantly without waiting for GC
+            Icon.createWithBitmap(oriented)
         } catch (e: Exception) {
-            Log.w("FilesTarget", "Failed to decode thumbnail for $path", e)
+            Log.w("FilesTarget", "Failed to decode thumbnail", e)
             null
         }
     }

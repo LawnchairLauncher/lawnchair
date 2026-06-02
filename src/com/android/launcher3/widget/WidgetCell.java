@@ -70,8 +70,6 @@ import java.util.function.Consumer;
 import app.lawnchair.LawnchairAppWidgetHostView;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.drawable.DrawableTokens;
-import app.lawnchair.preferences2.PreferenceManager2;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
@@ -83,8 +81,6 @@ import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
  * consider the appropriate scaling factor.
  */
 public class WidgetCell extends LinearLayout {
-
-    PreferenceManager2 prefs2 = PreferenceManager2.INSTANCE.get(getContext());
 
     private static final String TAG = "WidgetCell";
     private static final boolean DEBUG = false;
@@ -615,7 +611,6 @@ public class WidgetCell extends LinearLayout {
      * @param callback Callback to be set on the button.
      */
     public void showAddButton(View.OnClickListener callback) {
-        if (PreferenceExtensionsKt.firstBlocking(prefs2.getLockHomeScreen())) return;
         if (mIsShowingAddButton) return;
         mIsShowingAddButton = true;
 

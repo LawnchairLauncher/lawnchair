@@ -38,6 +38,7 @@ import app.lawnchair.data.wallpaper.service.WallpaperService
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.gestures.ui.LawnchairShortcutActivity
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -72,7 +73,6 @@ import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
 import com.android.launcher3.util.Themes
 import com.android.launcher3.util.TouchController
-import com.android.launcher3.util.WallpaperThemeManager
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.views.OptionsPopupView.OptionItem
@@ -247,6 +247,18 @@ class LawnchairLauncher : QuickstepLauncher() {
         AppDatabase.INSTANCE.get(this).checkpointSync()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        if (intent != null && intent.action == LawnchairShortcutActivity.START_ACTION) {
+            val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
+            val config = handlerString?.let { GestureHandlerConfig.fromString(it) }
+            if (config != null && config.isExternallyInvokable()) {
+                gestureController.handle(config)
+            }
+        }
+
+        super.onNewIntent(intent)
+    }
+
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {
         super.collectStateHandlers(out)
         out.add(SearchBarStateHandler(this))
@@ -264,7 +276,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (themeProvider.colorScheme != colorScheme) {
             recreate()
         } else {
-            WallpaperThemeManager(this).updateTheme()
+            mWallpaperThemeManager.updateTheme()
         }
     }
 
@@ -275,12 +287,6 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     override fun handleHomeTap() {
         gestureController.onHomePressed()
-    }
-
-    override fun registerBackDispatcher() {
-        if (LawnchairApp.isAtleastT) {
-            super.registerBackDispatcher()
-        }
     }
 
     fun bindItems(items: List<ItemInfo>, forceAnimateIcons: Boolean) {

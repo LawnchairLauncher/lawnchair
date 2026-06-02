@@ -1,6 +1,5 @@
 name: Feature request
 description: Suggest features you want the developers (or contributors) to make for the launcher.
-title: "[FEATURE] "
 labels: [feature-request, 'status: needs triage']
 type: Feature
 body:
@@ -9,8 +8,7 @@ body:
       value: |
         > [!IMPORTANT]
         > Lawnchair's issue tracker is maintained on a best-effort basis — due to limited resources, we do not guarantee that all issues will be triaged or checked by the developers.
-        > If you wish to help triage Lawnchair's issues, visit [#4232](https://github.com/LawnchairLauncher/lawnchair/issues/4232) for more information.
-        
+
         Thanks for taking the time to file this issue! Here are a few things to do before submitting:
         1. Use the [**latest nightly version**](https://github.com/LawnchairLauncher/lawnchair#development-builds) when requesting.
         2. [**Read the FAQ**](https://lawnchair.app/faq) to check if your request is already planned by the developers.
@@ -41,7 +39,7 @@ body:
       description: |
         See [this FAQ page](https://lawnchair.app/faq/#what-happened-to-lawnchair-legacy) for more info about Lawnchair Legacy, previously
         known as Lawnchair 2.
-        
+
       options:
         - "Yes"
         - "No"

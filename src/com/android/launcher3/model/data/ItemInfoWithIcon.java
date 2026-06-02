@@ -182,6 +182,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * Returns true if the app corresponding to the item is archived.
      */
     public boolean isArchived() {
+        if (!Utilities.ATLEAST_V) return false;
         if (!Flags.enableSupportForArchiving()) {
             return false;
         }

@@ -453,7 +453,7 @@ public class LoaderTask implements Runnable {
 
             final HashMap<PackageUserKey, SessionInfo> installingPkgs =
                     mSessionHelper.getActiveSessions();
-            if (Flags.enableSupportForArchiving()) {
+            if (Utilities.ATLEAST_V && Flags.enableSupportForArchiving()) {
                 mInstallingPkgsCached = installingPkgs;
             }
             installingPkgs.forEach(mIconCache::updateSessionCache);
@@ -642,7 +642,7 @@ public class LoaderTask implements Runnable {
                 AppInfo appInfo = new AppInfo(app, mUserCache.getUserInfo(user),
                         ApiWrapper.INSTANCE.get(mContext), mPmHelper, quietMode);
                 try {
-                    if (Flags.enableSupportForArchiving()) {
+                    if (Utilities.ATLEAST_V && Flags.enableSupportForArchiving()) {
                         if (app.getApplicationInfo().isArchived) {
                             // For archived apps, include progress info in case there is a pending
                             // install session post restart of device.

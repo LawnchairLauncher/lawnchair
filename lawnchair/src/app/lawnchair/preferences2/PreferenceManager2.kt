@@ -31,6 +31,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.Converters
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.gestures.handlers.SleepMode
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
@@ -154,11 +155,26 @@ class PreferenceManager2 @Inject constructor(
         key = stringPreferencesKey(name = "custom_icon_shape"),
         defaultValue = null,
         parse = {
-            IconShape.fromString(value = it, context = context)
-                ?: IconShapeManager.getSystemIconShape(context)
+            IconShape.CustomCornerBased.fromStringOrNull(value = it)
+                ?: IconShape.CustomCornerBased(
+                    IconShapeManager.getSystemIconShape(context).findNearestShape(),
+                )
         },
         save = { it.toString() },
         onSet = { it?.let(iconShape::setBlocking) },
+    )
+
+    val customFolderShape = preference(
+        key = stringPreferencesKey(name = "custom_folder_shape"),
+        defaultValue = null,
+        parse = {
+            IconShape.CustomCornerBased.fromStringOrNull(value = it)
+                ?: IconShape.CustomCornerBased(
+                    IconShapeManager.getSystemIconShape(context).findNearestShape(),
+                )
+        },
+        save = { it.toString() },
+        onSet = { it?.let(folderShape::setBlocking) },
     )
 
     val alwaysReloadIcons = preference(
@@ -420,12 +436,6 @@ class PreferenceManager2 @Inject constructor(
         },
     )
 
-    val enableFolderIconShapeCustomization = preference(
-        key = booleanPreferencesKey(name = "enable_folder_icon_shape_customization"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_folder_icon_shape_customization),
-        onSet = { reloadHelper.reloadIcons() },
-    )
-
     val autoShowKeyboardInDrawer = preference(
         key = booleanPreferencesKey(name = "auto_show_keyboard_in_drawer"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
@@ -672,6 +682,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = true,
     )
 
+    val smartspaceTorch = preference(
+        key = booleanPreferencesKey("enable_smartspace_torch"),
+        defaultValue = true,
+    )
+
     val smartspaceNowPlaying = preference(
         key = booleanPreferencesKey("enable_smartspace_now_playing"),
         defaultValue = true,
@@ -745,6 +760,13 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = GestureHandlerConfig.Sleep,
     )
 
+    val sleepMode = preference(
+        key = stringPreferencesKey(name = "sleep_mode"),
+        defaultValue = SleepMode.AUTO,
+        parse = { SleepMode.fromString(it) ?: SleepMode.AUTO },
+        save = { it.toString() },
+    )
+
     val swipeUpGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("swipe_up_gesture_handler"),
         defaultValue = GestureHandlerConfig.OpenAppDrawer,
@@ -753,6 +775,16 @@ class PreferenceManager2 @Inject constructor(
     val swipeDownGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("swipe_down_gesture_handler"),
         defaultValue = GestureHandlerConfig.OpenNotifications,
+    )
+
+    val twoFingerSwipeUpGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("two_finger_swipe_up_gesture_handler"),
+        defaultValue = GestureHandlerConfig.NoOp,
+    )
+
+    val twoFingerSwipeDownGestureHandler = serializablePreference<GestureHandlerConfig>(
+        key = stringPreferencesKey("two_finger_swipe_down_gesture_handler"),
+        defaultValue = GestureHandlerConfig.OpenQuickSettings,
     )
 
     val homePressGestureHandler = serializablePreference<GestureHandlerConfig>(

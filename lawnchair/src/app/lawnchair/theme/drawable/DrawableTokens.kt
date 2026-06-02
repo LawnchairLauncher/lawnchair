@@ -69,6 +69,13 @@ object DrawableTokens {
         }
 
     @JvmField
+    val SearchInputFgBlur = ResourceDrawableToken<LayerDrawable>(R.drawable.search_input_fg)
+        .mutate { context, scheme, darkTheme ->
+            val shape = getDrawable(0) as GradientDrawable
+            shape.setColor(ColorTokens.SearchboxHighlightBlur.resolveColor(context, scheme, darkTheme))
+        }
+
+    @JvmField
     val SingleItemPrimary = ResourceDrawableToken<GradientDrawable>(R.drawable.single_item_primary)
         .setColor(ColorTokens.PopupColorPrimary)
 

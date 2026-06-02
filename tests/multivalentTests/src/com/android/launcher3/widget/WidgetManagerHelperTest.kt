@@ -125,4 +125,16 @@ class WidgetManagerHelperTest {
             verify(appWidgetManager).getWidgetPreview(provider, profile, widgetCategory)
         }
     }
+
+    @Test
+    fun loadGeneratedPreview_returnsNull_whenAppWidgetManagerThrowsIllegalStateException() {
+        val widgetCategory = 130
+
+        whenever(appWidgetManager.getWidgetPreview(info.provider, info.profile, widgetCategory))
+            .thenThrow(IllegalStateException("User must be unlocked for widgets to be available"))
+
+        val result = underTest.loadGeneratedPreview(info, widgetCategory)
+
+        Truth.assertThat(result).isNull()
+    }
 }

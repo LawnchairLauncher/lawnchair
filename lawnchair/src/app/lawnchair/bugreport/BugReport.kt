@@ -1,5 +1,6 @@
 package app.lawnchair.bugreport
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -49,13 +50,20 @@ data class BugReport(
         val sendIntent: Intent = Intent(Intent.ACTION_SEND).apply {
             val fileUri = getFileUri(context)
             if (fileUri != null) {
+                clipData = ClipData.newRawUri(null, fileUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 putExtra(Intent.EXTRA_STREAM, fileUri)
             } else {
                 putExtra(Intent.EXTRA_TEXT, link ?: contents)
             }
             type = "text/plain"
         }
-        return Intent.createChooser(sendIntent, context.getText(R.string.lawnchair_bug_report))
+        val chooser = Intent.createChooser(sendIntent, context.getText(R.string.lawnchair_bug_report))
+        if (sendIntent.clipData != null) {
+            chooser.clipData = sendIntent.clipData
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        return chooser
     }
 
     companion object {

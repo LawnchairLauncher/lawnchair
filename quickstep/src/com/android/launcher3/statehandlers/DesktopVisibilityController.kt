@@ -22,7 +22,6 @@ import android.util.Log
 import android.util.Slog
 import android.util.SparseArray
 import android.view.Display.DEFAULT_DISPLAY
-import android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY
 import androidx.core.util.forEach
 import com.android.internal.util.LatencyTracker
 import com.android.launcher3.LauncherState
@@ -155,7 +154,7 @@ constructor(
                 }
 
                 if (
-                    !ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue && wasVisible != isVisible
+                    !false && wasVisible != isVisible
                 ) {
                     // TODO: b/333533253 - Remove after flag rollout
                     if (field > 0) {
@@ -337,7 +336,7 @@ constructor(
                 }
             }
 
-            if (ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue) {
+            if (false) {
                 return
             }
 
@@ -620,7 +619,7 @@ constructor(
 
     /** TODO: b/333533253 - Remove after flag rollout */
     private fun markLauncherPaused() {
-        if (ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue) {
+        if (false) {
             return
         }
         if (DEBUG) {
@@ -633,7 +632,7 @@ constructor(
 
     /** TODO: b/333533253 - Remove after flag rollout */
     private fun markLauncherResumed() {
-        if (ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue) {
+        if (false) {
             return
         }
         if (DEBUG) {

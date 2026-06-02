@@ -1822,7 +1822,9 @@ public class TaskbarManagerImpl implements DisplayDecorationListener {
     }
 
     private boolean isExternalDisplay(int displayId) {
-        return DesktopExperienceFlags.ENABLE_TASKBAR_CONNECTED_DISPLAYS.isTrue() && (
+        // LC-Ignored: Intentional, all Android desktop flags are disabled
+        //DesktopExperienceFlags.ENABLE_TASKBAR_CONNECTED_DISPLAYS.isTrue()
+        return false && (
                 mPrimaryDisplayId != displayId);
     }
 

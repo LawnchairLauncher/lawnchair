@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY;
-
 import static com.android.launcher3.Flags.syncAppLaunchWithTaskbarStash;
 import static com.android.launcher3.QuickstepTransitionManager.TASKBAR_TO_APP_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.TRANSIENT_TASKBAR_TRANSITION_DURATION;
@@ -272,7 +270,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             return null;
         }
 
-        if (!ENABLE_DESKTOP_WINDOWING_WALLPAPER_ACTIVITY.isTrue()
+        if (!false
                 && mControllers.taskbarDesktopModeController.isInDesktopModeAndNotInOverview(
                 mControllers.taskbarActivityContext.getDisplayId())) {
             // TODO: b/333533253 - Remove after flag rollout

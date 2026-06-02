@@ -409,8 +409,14 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     }
 
     public int getDesiredHeight()  {
-        return  getPageCount() > 0 ?
-                (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
+        if (getPageCount() <= 0) {
+            return 0;
+        }
+        int maxPageHeight = 0;
+        for (int i = 0; i < getPageCount(); i++) {
+            maxPageHeight = Math.max(maxPageHeight, getPageAt(i).getDesiredHeightForOccupiedRows());
+        }
+        return maxPageHeight + getPaddingTop() + getPaddingBottom();
     }
 
     /**

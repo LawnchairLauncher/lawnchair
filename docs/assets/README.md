@@ -1,4 +1,4 @@
-# Lawnchair Assets Guidelines
+# Lawnchair assets guidelines
 
 This directory lists all the decoration & visual explainers used in the Lawnchair Documentation.
 

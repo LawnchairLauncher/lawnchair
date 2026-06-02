@@ -43,15 +43,15 @@
     <string name="inverse_selection">Balik pilihan</string>
     <string name="loading">Memuat…</string>
     <string name="dismiss">Menolak</string>
-    <string name="download_update">Unduh pembaruan</string>
+    <string name="download_update">Unduh pembaruan </string>
     <string name="install_update">Pasang pembaruan</string>
     <string name="view_changes">Tampilkan perubahan</string>
-    <string name="pro_updated">Sudah versi terbaru!</string>
+    <string name="pro_updated">Anda sudah menggunakan versi terbaru!</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Pembaruan</string>
-    <string name="changes_dialog_error">Gagal untuk memproses pembaruan</string>
-    <string name="changes_dialog_no_changes">Tidak ditemukan pembaruan</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_error">Gagal memuat perubahan</string>
+    <string name="changes_dialog_no_changes">Tidak ditemukan perubahan</string>
+    <string name="changes_dialog_build_format">Buatan #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">oleh %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">baru saja</string>
@@ -87,14 +87,14 @@
     <string name="grid">Kisi</string>
     <string name="layout">Tata Letak</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Tampilkan wallpaper</string>
+    <string name="show_wallpaper">Tampilkan wallpaper </string>
     <string name="wallpaper">Wallpaper</string>
     <string name="style">Gaya</string>
-    <string name="background_opacity">Tingkat transparan latar belakang</string>
-    <string name="pref_all_apps_search_bar_background">Pisahkan latar Bilah pencari</string>
+    <string name="background_opacity">Tingkat transparansi latar belakang</string>
+    <string name="pref_all_apps_search_bar_background">Pisahkan latar kolom pencarian</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Disalin ke papan klip</string>
-    <string name="calculator_search_result_copied_toast">Hasil disalin ke papan klip</string>
+    <string name="copied_toast">Disalin ke klip salinan</string>
+    <string name="calculator_search_result_copied_toast">Hasil disalin ke klip</string>
     <string name="item_removed">Butir dihapus</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Yang ditampilkan</string>
@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Aplikasi yang dimasukkan ke dalam folder tidak akan ditampilkan di daftar aplikasi</string>
     <string name="folders_filter_duplicates">Tunjukkan aplikasi yang unik saja</string>
     <string name="my_folder_label">Folder saya</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Agar dapat melakukan suatu aksi (misalnya mengunci ponsel) saat melakukan gesture, Lawnchair butuh izin aksesibilitas.\n\nLawnchair tidak melihat aksi pengguna apa pun, meskipun kemampuan tersebut dibutuhkan untuk semua layanan aksesibilitas. Lawnchair mengabaikan event yang dikirim oleh sistem.\n\nAgar dapat mengunci ponsel Anda, atau membuka layar terbaru, Lawnchair memakai API aksesibilitas \"performGlobalAction\".</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -176,8 +177,8 @@
     <string name="show_deck_layout_description">Tampilkan opsi tata letak untuk menyembunyikan laci aplikasi dan secara otomatis menambahkan aplikasi baru ke layar beranda</string>
     <string name="material_expressive_label">Material 3 Ekspresif</string>
     <string name="material_expressive_description">Aktifkan perubahan Material 3 Ekspresif pada ruang kerja</string>
-    <string name="experimental_folder_shape_modify_label">Bentuk folder kustom</string>
-    <string name="folder_shape_label">Folder</string>
+    <string name="folder_shape_label">Bentuk folder</string>
+    <string name="folder_label">Folder</string>
     <string name="app_icon_shape_label">Aplikasi</string>
     <string name="gesturenavcontract_label">Gunakan API GestureNavContract</string>
     <string name="gesturenavcontract_description">Mendukung animasi android yang disempurnakan saat menggunakan lokasi gerakan. Tidak semua perangkat mendukung ini. Dapat menyebabkan kerusakan animasi saat digunakan.</string>
@@ -209,6 +210,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Gaya ikon</string>
+    <string name="apply_icon_pack_title">Pasang pak ikon</string>
     <string name="icon_shape_label">Bentuk ikon</string>
     <string name="icon_sizes">Ukuran lambang</string>
     <string name="show_labels">Tampilkan label</string>
@@ -253,10 +255,23 @@
     <string name="icon_shape_four_sided_cookie">Cookie empat sisi</string>
     <string name="icon_shape_seven_sided_cookie">Cookie tujuh sisi</string>
     <string name="icon_shape_arch">Lengkungan</string>
+    <!-- Additional icon shapes -->
+    <string name="icon_shape_cloudy">Awan</string>
+    <string name="icon_shape_flower">Bunga</string>
+    <string name="icon_shape_heart">Hati</string>
+    <string name="icon_shape_leaf">Daun</string>
+    <string name="icon_shape_meow">Meong</string>
+    <string name="icon_shape_pebble">Kerikil</string>
+    <string name="icon_shape_roundedhexagon">Segi enam rounded</string>
+    <string name="icon_shape_stretched">Diregangkan</string>
+    <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Bentuk ikon kustom</string>
     <string name="custom_icon_shape_create">Buat bentuk ikon kustom</string>
     <string name="custom_icon_shape_edit">Edit bentuk ikon kustom</string>
+    <string name="custom_folder_shape">Bentuk folder kostum</string>
+    <string name="custom_folder_shape_create">Buat bentuk folder kostum</string>
+    <string name="custom_folder_shape_edit">Edit bentuk folder kostum</string>
     <string name="custom_icon_shape_corner">Bentuk sudut</string>
     <string name="custom_icon_shape_corner_round">Bulat</string>
     <string name="custom_icon_shape_corner_squircle">Halus</string>
@@ -367,8 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Cuaca</string>
     <string name="smartspace_battery_status">Status baterai</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Sedang Memutar</string>
     <string name="smartspace_onboarding">Orientasi</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Konfigurasikan Lawnchair Anda</string>
     <string name="onboarding_open_settings_subtitle">Tekan lama pada beranda untuk membuka pengaturan</string>
@@ -447,6 +466,8 @@
     <string name="gesture_double_tap">Ketuk dua kali</string>
     <string name="gesture_swipe_up">Geser ke atas</string>
     <string name="gesture_swipe_down">Geser ke bawah</string>
+    <string name="gesture_two_finger_swipe_down">Geser kebawah dengan dua jari</string>
+    <string name="gesture_two_finger_swipe_up">Geser ke atas dengan dua jari</string>
     <string name="gesture_home_tap">Tombol beranda</string>
     <string name="gesture_back_tap">Tombol kembali</string>
     <string name="gesture_swipe_left">Geser ke kiri</string>
@@ -473,6 +494,11 @@
     <string name="recents_screen_a11y_hint">buka layar Terbaru</string>
     <string name="generic_a11y_hint">Untuk %1$s, aktifkan aksesibilitas Lawnchair.</string>
     <string name="generic_a11y_disclaimer">Lawnchair menggunakan metode `performGlobalAction` dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Lawnchair tidak dikonfigurasi untuk fungsi tersebut.</string>
+    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_auto">Otomatis</string>
+    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_accessibility">Layanan aksesibilitas</string>
+    <string name="sleep_mode_device_admin">Admin perangkat</string>
     <!--
 
     Bug reporting
@@ -521,6 +547,14 @@
     <string name="home_screen_lock_description">Mencegah perubahan pada tata letak layar utama</string>
     <string name="set_default_home_page">Tetapkan sebagai halaman default</string>
     <string name="default_home_page_set">Halaman beranda default telah diperbarui</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">Standar</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Gaya pop-up</string>
     <string name="popup_menu_items">Item di menu pop-up</string>
     <string name="edit_menu_items">Sunting item di menu pop-up</string>
@@ -731,4 +765,7 @@
     <string name="grant_requested_permissions_tap">Ketuk untuk memberikan izin</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">Layar beranda dibersihkan</string>
+    <string name="lawnchair_actions">Aksi</string>
+    <string name="lawnchair_action_failed">Gagal untuk memicu aksi</string>
+    <string name="please_wait">Mohon tunggu…</string>
 </resources>
