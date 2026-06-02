@@ -53,7 +53,7 @@ class LawnchairIconProvider @Inject constructor(
     themeManager,
 ) {
     private val prefs = PreferenceManager.getInstance(context)
-    private val themedIconsEnabled = prefs.themedIcons.get()
+    private val themedIconsEnabled get() = prefs.themedIcons.get()
 
     private val iconPackPref = prefs.iconPackPackage
     private val themedIconSourcePref = prefs.themedIconPackPackage
