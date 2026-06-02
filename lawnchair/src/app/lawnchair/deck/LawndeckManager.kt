@@ -88,7 +88,7 @@ class LawndeckManager(private val context: Context) {
     private fun postRestoreActions() {
         ModelDbController(context).let { RestoreDbTask.performRestore(context, it) }
         MainScope().launch(Dispatchers.Main) {
-            Launcher.getLauncher(context).model.forceReload()
+            launcher?.model.forceReload()
         }
     }
 
@@ -98,7 +98,7 @@ class LawndeckManager(private val context: Context) {
     ) {
         val apps = launcher?.mAppsView?.appsStore?.apps ?: return
         val prefs2 = PreferenceManager2.getInstance(context)
-        var allowDeckSorting = false /* Doesn't look good? */
+        var allowDeckSorting = false
 
         runBlocking {
             prefs2.allowDeckSorting.get().collect { value ->

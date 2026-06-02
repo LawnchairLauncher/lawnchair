@@ -94,8 +94,7 @@ fun HomeScreenPreferences(
                 )
             }
             Item(
-                "deck_allow_sorts",
-                isDeckLayoutAdapter.state.value,
+                visible = isDeckLayoutAdapter.state.value,
             ) {
                 val allowDeckSorting = prefs2.allowDeckSorting.getAdapter()
                 SwitchPreference(
@@ -103,7 +102,7 @@ fun HomeScreenPreferences(
                     onCheckedChange = allowDeckSorting::onChange,
                     label = stringResource(id = R.string.deck_allow_sorts),
                     description = null,
-                    enabled = true,
+                    enabled = false,
                 )
             }
             Item {
