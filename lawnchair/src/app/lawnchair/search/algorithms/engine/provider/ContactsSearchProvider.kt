@@ -68,9 +68,6 @@ object ContactsSearchProvider : SearchProvider, SearchPermission {
                     ContactsContract.Data.DATA1,
                     ContactsContract.Data.DATA3,
                     ContactsContract.Data.DATA5,
-                    "phonebook_label",
-                    "account_type",
-                    "account_name",
                     ContactsContract.Data.MIMETYPE,
                     ContactsContract.Data.PHOTO_URI,
                 )
@@ -91,9 +88,6 @@ object ContactsSearchProvider : SearchProvider, SearchPermission {
                         val data1Index = it.getColumnIndex(ContactsContract.Data.DATA1)
                         val data3Index = it.getColumnIndex(ContactsContract.Data.DATA3)
                         val data5Index = it.getColumnIndex(ContactsContract.Data.DATA5)
-                        val phonebookLabelIndex = it.getColumnIndex("phonebook_label")
-                        val accountTypeIndex = it.getColumnIndex("account_type")
-                        val accountNameIndex = it.getColumnIndex("account_name")
                         val mimeTypeIndex = it.getColumnIndex(ContactsContract.Data.MIMETYPE)
                         val photoUriIndex = it.getColumnIndex(ContactsContract.Data.PHOTO_URI)
                         val contactId = it.getString(contactIdIndex)
@@ -101,22 +95,17 @@ object ContactsSearchProvider : SearchProvider, SearchPermission {
                         val data1 = it.getString(data1Index)
                         val data3 = it.getString(data3Index)
                         val data5 = it.getString(data5Index)
-                        val phonebookLabel = it.getString(phonebookLabelIndex)
-                        val accountType = it.getString(accountTypeIndex)
-                        val accountName = it.getString(accountNameIndex)
                         val mimeType = it.getString(mimeTypeIndex)
                         val photoUri = it.getString(photoUriIndex)
                         val phoneNumber = data3 ?: data5 ?: data1
                         val key = contactId ?: phoneNumber
                         val imageUri = photoUri ?: ""
-                        val phonebookLabel2 = phonebookLabel ?: ""
                         val pkg = contactId + displayName + phoneNumber
                         if (key != null && !EXCLUDED_MIME_TYPES.contains(mimeType)) {
                             contactMap[key] = ContactInfo(
                                 contactId,
                                 displayName,
                                 phoneNumber,
-                                phonebookLabel2,
                                 imageUri,
                                 pkg,
                             )
@@ -128,8 +117,6 @@ object ContactsSearchProvider : SearchProvider, SearchPermission {
                                         buildJsonObject {
                                             put(CONTACT_ACCOUNT_ID, key)
                                             put(CONTACT_ACCOUNT_TITLE, data5)
-                                            put(CONTACT_ACCOUNT_NAME, accountName)
-                                            put(CONTACT_ACCOUNT_TYPE, accountType)
                                             put(CONTACT_ACCOUNT_MIME, mimeType)
                                         },
                                     )
@@ -149,9 +136,7 @@ object ContactsSearchProvider : SearchProvider, SearchPermission {
 
     private const val CONTACT_ACCOUNT_ID = "contact.id"
     private const val CONTACT_ACCOUNT_MIME = "contact.mime"
-    private const val CONTACT_ACCOUNT_NAME = "contact.account.name"
     private const val CONTACT_ACCOUNT_TITLE = "contact.title"
-    private const val CONTACT_ACCOUNT_TYPE = "contact.account.type"
 
     private val EXCLUDED_MIME_TYPES = arrayOf(
         "vnd.android.cursor.item/name",
