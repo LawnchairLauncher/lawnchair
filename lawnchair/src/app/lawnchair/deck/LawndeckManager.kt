@@ -45,9 +45,9 @@ class LawndeckManager(private val context: Context) {
             val prefs2 = PreferenceManager2.getInstance(context)
             prefs2.allowDeckSorting.get().collect { value ->
                 allowDeckSorting = value
-            }
-            addAllAppsToWorkspace(onProgress) {
-                completionDeferred.complete(Unit)
+                addAllAppsToWorkspace(onProgress) {
+                    completionDeferred.complete(Unit)
+                }
             }
         }
 
@@ -122,6 +122,7 @@ class LawndeckManager(private val context: Context) {
                     // Single app - add directly to workspace
                     val app = categoryApps.first()
                     ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
+                    onProgress?.invoke("Adding ${app.targetPackage}...")
                     singleAppCount++
                 } else {
                     // Multiple apps - create folder
@@ -135,6 +136,7 @@ class LawndeckManager(private val context: Context) {
         } else {
             validApps.forEach { app ->
                 ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
+                onProgress?.invoke("Adding ${app.targetPackage}...")
                 singleAppCount++
             }
         }
