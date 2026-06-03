@@ -8,6 +8,7 @@ import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
+import com.android.launcher3.R
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Launcher
 import com.android.launcher3.model.ItemInstallQueue
@@ -21,14 +22,13 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.cancel
 
 class LawndeckManager(private val context: Context) {
 
-    // TODO
-
     private val launcher = context.launcherNullable ?: LawnchairLauncher.instance?.launcher
+    private var allowDeckSorting = false
 
     suspend fun enableLawndeck(
         onProgress: ((String) -> Unit)? = null,
@@ -37,11 +37,15 @@ class LawndeckManager(private val context: Context) {
 
         if (!backupExists("bk")) createBackup("bk")
         if (backupExists("lawndeck")) {
-            onProgress?.invoke("Restoring previous layout...")
+            onProgress?.invoke(context.getString(R.string.restore_previous_layout))
             restoreBackup("lawndeck")
             completionDeferred.complete(Unit)
         } else {
-            onProgress?.invoke("Lawndeck is enabled. Doing what it does...")
+            onProgress?.invoke(context.getString(R.string.adding_apps_to_workspace))
+            val prefs2 = PreferenceManager2.getInstance(context)
+            prefs2.allowDeckSorting.get().collect { value ->
+                allowDeckSorting = value
+            }
             addAllAppsToWorkspace(onProgress) {
                 completionDeferred.complete(Unit)
             }
@@ -88,7 +92,7 @@ class LawndeckManager(private val context: Context) {
     private fun postRestoreActions() {
         ModelDbController(context).let { RestoreDbTask.performRestore(context, it) }
         MainScope().launch(Dispatchers.Main) {
-            launcher?.model.forceReload()
+            launcher?.model?.forceReload()
         }
     }
 
@@ -97,48 +101,41 @@ class LawndeckManager(private val context: Context) {
         onComplete: (() -> Unit)?,
     ) {
         val apps = launcher?.mAppsView?.appsStore?.apps ?: return
-        val prefs2 = PreferenceManager2.getInstance(context)
-        var allowDeckSorting = false
-
-        runBlocking {
-            prefs2.allowDeckSorting.get().collect { value ->
-                allowDeckSorting = value
-            }
-        }
 
         if (apps.isEmpty()) {
             onComplete?.invoke()
             return
         }
 
-        val launcher = this.launcher ?: return
-        val model = launcher.model
-
         // Collect folders to add and count single apps
         val foldersToAdd = mutableListOf<FolderInfo>()
         var singleAppCount = 0
 
-        onProgress?.invoke("Adding apps to workspace...")
-
         // Process each category
         val validApps = apps.mapNotNull { it as? AppInfo }
-        val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
-        finalCategorizedApps.forEach { (category, categoryApps) ->
-            if (categoryApps.isEmpty()) return@forEach
+        if (allowDeckSorting) {
+            val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
+            finalCategorizedApps.forEach { (category, categoryApps) ->
+                if (categoryApps.isEmpty()) return@forEach
 
-            if ((categoryApps.size == 1) || !allowDeckSorting) {
-                // Single app - add directly to workspace
-                // Or we are not allowed to create folders
-                val app = categoryApps.first()
+                if (categoryApps.size == 1) {
+                    // Single app - add directly to workspace
+                    val app = categoryApps.first()
+                    ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
+                    singleAppCount++
+                } else {
+                    // Multiple apps - create folder
+                    onProgress?.invoke("Creating folder: $category...")
+                    val folderInfo = createFolderInfo(category, categoryApps)
+                    if (folderInfo != null) {
+                        foldersToAdd.add(folderInfo)
+                    }
+                }
+            }
+        } else {
+            validApps.forEach { app ->
                 ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
                 singleAppCount++
-            } else {
-                // Multiple apps - create folder
-                onProgress?.invoke("Creating folder: $category...")
-                val folderInfo = createFolderInfo(category, categoryApps)
-                if (folderInfo != null) {
-                    foldersToAdd.add(folderInfo)
-                }
             }
         }
 
@@ -153,9 +150,10 @@ class LawndeckManager(private val context: Context) {
                 onComplete?.invoke()
             }
         }
+
         if (foldersToAdd.isNotEmpty()) {
             // Wait for folder task to complete
-            model.enqueueModelUpdateTask(
+            this@LawndeckManager.launcher.model?.enqueueModelUpdateTask(
                 AddFoldersWithItemsTask(foldersToAdd) {
                     // Callback runs on UI thread from model task
                     // Also wait for ItemInstallQueue to finish for single apps
@@ -206,7 +204,7 @@ class LawndeckManager(private val context: Context) {
                 val potsManager = Flowerpot.Manager.getInstance(context)
                 val categorizedApps = potsManager.categorizeApps(listOf(appInfo))
 
-                if (categorizedApps.isEmpty()) {
+                if (categorizedApps.isEmpty() || !allowDeckSorting) {
                     // No category found, add directly to workspace
                     ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
                     return
