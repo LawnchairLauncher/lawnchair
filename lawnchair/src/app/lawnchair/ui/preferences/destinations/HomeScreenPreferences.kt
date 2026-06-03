@@ -102,7 +102,7 @@ fun HomeScreenPreferences(
                     onCheckedChange = allowDeckSorting::onChange,
                     label = stringResource(id = R.string.deck_allow_sorts),
                     description = null,
-                    enabled = false,
+                    enabled = true,
                 )
             }
             Item {
