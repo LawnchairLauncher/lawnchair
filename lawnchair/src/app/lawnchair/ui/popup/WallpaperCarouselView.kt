@@ -15,10 +15,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.cardview.widget.CardView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.data.wallpaper.model.WallpaperViewModel
 import app.lawnchair.launcher
 import app.lawnchair.util.observeOnce
