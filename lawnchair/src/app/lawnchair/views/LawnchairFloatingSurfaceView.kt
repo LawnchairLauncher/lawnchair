@@ -397,7 +397,7 @@ class LawnchairFloatingSurfaceView @JvmOverloads constructor(
          */
         fun show(launcher: LawnchairLauncher, contract: GestureNavContract?) {
             val view: LawnchairFloatingSurfaceView =
-                launcher.viewCache.getView<LawnchairFloatingSurfaceView?>(
+                launcher.viewCache.getView(
                     R.layout.floating_surface_view,
                     launcher,
                     launcher.dragLayer,

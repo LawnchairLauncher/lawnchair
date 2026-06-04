@@ -3,8 +3,6 @@
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.data.folder.service.FolderService
 import app.lawnchair.preferences2.ReloadHelper
@@ -13,7 +11,6 @@ import com.android.launcher3.model.data.FolderInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
@@ -36,17 +33,15 @@ class FolderViewModel(
             initialValue = emptyList(),
         )
 
-    val foldersLiveData: LiveData<List<FolderInfo>> = folders.asLiveData(viewModelScope.coroutineContext)
-
-    private val _folderInfo = MutableStateFlow<FolderInfo?>(null)
-    val folderInfo = _folderInfo.asStateFlow()
+    val folderInfo: StateFlow<FolderInfo?>
+        field = MutableStateFlow<FolderInfo?>(null)
 
     private val reloadHelper = ReloadHelper(application)
 
     // yeah these should be separate UI actions
     fun setFolderInfo(folderInfoId: Int, hasId: Boolean) {
         viewModelScope.launch {
-            _folderInfo.value = repository.getFolderInfo(folderInfoId, hasId)
+            folderInfo.value = repository.getFolderInfo(folderInfoId, hasId)
         }
     }
 
@@ -63,7 +58,7 @@ class FolderViewModel(
             // Update the local state flow so UI can observe changes without full reload if needed,
             // though for now we just rely on reloadGrid to refresh the launcher.
             // We call reloadGrid *after* the DB update is complete.
-            _folderInfo.value = repository.getFolderInfo(id, true)
+            folderInfo.value = repository.getFolderInfo(id, true)
             reloadHelper.reloadGrid()
         }
     }

@@ -11,7 +11,6 @@ import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 sealed interface FileAccessState {
     data object Full : FileAccessState
@@ -50,27 +49,22 @@ sealed interface FileAccessState {
  * @param context The application context, used for checking permissions.
  */
 class FileAccessManager private constructor(private val context: Context) : SafeCloseable {
-    private val _visualMediaAccessState = MutableStateFlow(getCurrentVisualMediaState())
-    private val _audioAccessState = MutableStateFlow(getCurrentAudioState())
-    private val _allFilesAccessState = MutableStateFlow(getCurrentAllFilesAccessState())
-    private val _hasAnyPermission = MutableStateFlow(hasAnyPermissions())
-
-    private val _wallpaperAccessState = MutableStateFlow(getCurrentWallpaperAccessState())
-
     /**
      * Represents the state of access to Photos & Videos.
      * On API < 33, this is controlled by READ_EXTERNAL_STORAGE.
      * On API 33, this is READ_MEDIA_IMAGES + READ_MEDIA_VIDEO.
      * On API 34+, this can be Full or Partial.
      */
-    val visualMediaAccessState: StateFlow<FileAccessState> = _visualMediaAccessState.asStateFlow()
+    val visualMediaAccessState: StateFlow<FileAccessState>
+        field = MutableStateFlow(getCurrentVisualMediaState())
 
     /**
      * Represents the state of access to Music & Audio.
      * On API < 33, this is controlled by READ_EXTERNAL_STORAGE.
      * On API 33+, this is READ_MEDIA_AUDIO.
      */
-    val audioAccessState: StateFlow<FileAccessState> = _audioAccessState.asStateFlow()
+    val audioAccessState: StateFlow<FileAccessState>
+        field = MutableStateFlow(getCurrentAudioState())
 
     /**
      * Represents the state of "All Files Access". Having All Files Access bypasses the need to request visual and audio access.
@@ -78,14 +72,16 @@ class FileAccessManager private constructor(private val context: Context) : Safe
      * On API 33+, this is controlled by MANAGE_EXTERNAL_STORAGE.
      * If on API 33+, this should always be `false` for Play Store builds.
      */
-    val allFilesAccessState: StateFlow<FileAccessState> = _allFilesAccessState.asStateFlow()
+    val allFilesAccessState: StateFlow<FileAccessState>
+        field = MutableStateFlow(getCurrentAllFilesAccessState())
 
     /**
      * A [StateFlow] indicating if the app has any level of file access permission.
      * This is true if access to "All Files", "Visual Media", or "Audio Media" is not `Denied`.
      * Useful for determining if it's worth showing any file-related features or permission requests.
      */
-    val hasAnyPermission: StateFlow<Boolean> = _hasAnyPermission.asStateFlow()
+    val hasAnyPermission: StateFlow<Boolean>
+        field = MutableStateFlow(hasAnyPermissions())
 
     /**
      * Determines the current access state for reading the device wallpaper.
@@ -109,7 +105,8 @@ class FileAccessManager private constructor(private val context: Context) : Safe
      * it needs full `visualMediaAccessState` to read the wallpaper.
      * `Partial` visual media access is insufficient.
      */
-    val wallpaperAccessState: StateFlow<FileAccessState> = _wallpaperAccessState.asStateFlow()
+    val wallpaperAccessState: StateFlow<FileAccessState>
+        field = MutableStateFlow(getCurrentWallpaperAccessState())
 
     /**
      * Re-evaluates the current permission status and updates all StateFlows.
@@ -118,17 +115,17 @@ class FileAccessManager private constructor(private val context: Context) : Safe
      */
     fun refresh() {
         // We must re-check all files first, as the media states depend on it.
-        _allFilesAccessState.value = getCurrentAllFilesAccessState()
-        _visualMediaAccessState.value = getCurrentVisualMediaState()
-        _audioAccessState.value = getCurrentAudioState()
-        _wallpaperAccessState.value = getCurrentWallpaperAccessState()
-        _hasAnyPermission.value = hasAnyPermissions()
+        allFilesAccessState.value = getCurrentAllFilesAccessState()
+        visualMediaAccessState.value = getCurrentVisualMediaState()
+        audioAccessState.value = getCurrentAudioState()
+        wallpaperAccessState.value = getCurrentWallpaperAccessState()
+        hasAnyPermission.value = hasAnyPermissions()
     }
 
     private fun hasAnyPermissions(): Boolean {
-        return _visualMediaAccessState.value != FileAccessState.Denied ||
-            _audioAccessState.value != FileAccessState.Denied ||
-            _allFilesAccessState.value != FileAccessState.Denied
+        return visualMediaAccessState.value != FileAccessState.Denied ||
+            audioAccessState.value != FileAccessState.Denied ||
+            allFilesAccessState.value != FileAccessState.Denied
     }
 
     private fun getCurrentWallpaperAccessState(): FileAccessState {
