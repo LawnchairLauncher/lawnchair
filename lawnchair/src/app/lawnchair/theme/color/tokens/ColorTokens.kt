@@ -131,6 +131,8 @@ object ColorTokens {
 
     @JvmField val SearchboxHighlight = DayNightColorToken(Neutral2_600.setLStar(98.0), Neutral1_800)
 
+    @JvmField val SearchboxHighlightBlur = SearchboxHighlight.setAlpha(.54f)
+
     @JvmField val FolderDotColor = Accent3_100
 
     @JvmField val DotColor = Accent3_200

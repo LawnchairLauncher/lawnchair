@@ -9,6 +9,7 @@ import android.view.View
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 import com.android.systemui.shared.system.BlurUtils
+import com.android.systemui.util.dpToPx
 
 class SearchItemBackground(
     context: Context,
@@ -66,10 +67,27 @@ class SearchItemBackground(
 
         paint.color = color
 
-        val left = child.left.toFloat() + searchDecorationPadding
-        val top = child.top.toFloat() + searchDecorationPadding
-        val right = child.right.toFloat() - searchDecorationPadding
-        val bottom = child.bottom.toFloat() - searchDecorationPadding
+        var left = child.left.toFloat() + searchDecorationPadding
+        var top = child.top.toFloat() + searchDecorationPadding
+        var right = child.right.toFloat() - searchDecorationPadding
+        var bottom = child.bottom.toFloat() - searchDecorationPadding
+
+        if (child is SearchResultIcon) {
+            val iconSize = child.iconSize.toFloat()
+            val desiredWidth = iconSize + 48.dpToPx(resources)
+            val cellWidth = child.width.toFloat()
+            if (desiredWidth < cellWidth) {
+                val inset = (cellWidth - desiredWidth) / 2
+                left += inset
+                right -= inset
+            }
+            val isTwoLine = child.lineCount > 1
+            val insetTop = 6.dpToPx(resources)
+            val insetBottom = if (isTwoLine) 6.dpToPx(resources) else 0.dpToPx(resources)
+            top += insetTop
+            bottom -= insetBottom
+        }
+
         tmpRect.set(left, top, right, bottom)
 
         tmpPath.reset()

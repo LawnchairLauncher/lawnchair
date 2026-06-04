@@ -547,6 +547,14 @@
     <string name="home_screen_lock_description">Megakadályozza a Kezdőképernyő elrendezésének változásait</string>
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">Alapértelmezett</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Felugró menü</string>
     <string name="popup_menu_items">Felugrómenü-elemek</string>
     <string name="edit_menu_items">A felugrómenü-elemek szerkesztése</string>

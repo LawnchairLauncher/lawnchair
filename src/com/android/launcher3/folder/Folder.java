@@ -64,6 +64,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
@@ -267,6 +268,15 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private boolean mItemAddedBackToSelfViaIcon = false;
     private boolean mIsEditingName = false;
 
+    // Outside-touch deferred close state. Close the folder on ACTION_UP of a
+    // confirmed single-finger tap rather than on ACTION_DOWN, so multi-finger
+    // gestures (e.g. 3-finger / palm screenshot) don't accidentally dismiss it.
+    private boolean mPendingOutsideClose = false;
+    private boolean mPendingOutsideKeyboardDismiss = false;
+    private float mOutsideDownX;
+    private float mOutsideDownY;
+    private final int mTouchSlop;
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDestroyed;
 
@@ -299,6 +309,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         mActivityContext = ActivityContext.lookupContext(context);
         mLauncherDelegate = LauncherDelegate.from(mActivityContext);
+        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
         mStatsLogManager = StatsLogManager.newInstance(context);
         // We need this view to be focusable in touch mode so that when text editing of the folder
@@ -1920,21 +1931,76 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             BaseDragLayer dl = (BaseDragLayer) getParent();
+            mPendingOutsideClose = false;
+            mPendingOutsideKeyboardDismiss = false;
 
             if (mIsEditingName) {
                 if (!dl.isEventOverView(mFolderName, ev)) {
-                    mFolderName.dispatchBackKey();
+                    // Defer keyboard dismiss to ACTION_UP so a multi-finger
+                    // gesture (e.g. 3-finger screenshot) doesn't cancel the
+                    // in-progress rename.
+                    mPendingOutsideKeyboardDismiss = true;
+                    mOutsideDownX = ev.getX();
+                    mOutsideDownY = ev.getY();
                     return true;
                 }
                 return false;
-            } else if (!dl.isEventOverView(this, ev)
-                    && mLauncherDelegate.interceptOutsideTouch(ev, dl, this)) {
+            } else if (!dl.isEventOverView(this, ev)) {
+                // Defer folder close to ACTION_UP so multi-finger gestures
+                // (e.g. 3-finger screenshot, palm swipe) don't dismiss the
+                // folder before they're recognized by the system. See issue
+                // #6764.
+                mPendingOutsideClose = true;
+                mOutsideDownX = ev.getX();
+                mOutsideDownY = ev.getY();
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean onControllerTouchEvent(MotionEvent ev) {
+        if (!mPendingOutsideClose && !mPendingOutsideKeyboardDismiss) {
+            return false;
+        }
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_POINTER_DOWN:
+                // Multi-finger gesture in progress (e.g. screenshot).
+                mPendingOutsideClose = false;
+                mPendingOutsideKeyboardDismiss = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (Math.hypot(ev.getX() - mOutsideDownX,
+                        ev.getY() - mOutsideDownY) > mTouchSlop) {
+                    mPendingOutsideClose = false;
+                    mPendingOutsideKeyboardDismiss = false;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (ev.getPointerCount() == 1) {
+                    BaseDragLayer dl = (BaseDragLayer) getParent();
+                    if (mPendingOutsideKeyboardDismiss
+                            && !dl.isEventOverView(mFolderName, ev)) {
+                        mFolderName.dispatchBackKey();
+                    } else if (mPendingOutsideClose
+                            && !dl.isEventOverView(this, ev)) {
+                        mLauncherDelegate.interceptOutsideTouch(ev, dl, this);
+                    }
+                }
+                mPendingOutsideClose = false;
+                mPendingOutsideKeyboardDismiss = false;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mPendingOutsideClose = false;
+                mPendingOutsideKeyboardDismiss = false;
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override

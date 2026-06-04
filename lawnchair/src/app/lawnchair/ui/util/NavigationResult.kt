@@ -3,11 +3,11 @@ package app.lawnchair.ui.util
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.ui.preferences.LocalNavController
 
 @Composable
@@ -28,7 +28,7 @@ fun <T> OnResult(callback: (result: T) -> Unit) {
     var fired by remember { mutableStateOf(false) }
 
     val handle = LocalNavController.current.currentBackStackEntry?.savedStateHandle
-    val result = handle?.getLiveData<T>("result")?.observeAsState()
+    val result = handle?.getStateFlow<T?>("result", null)?.collectAsStateWithLifecycle()
 
     SideEffect {
         result?.value?.let {
@@ -36,7 +36,6 @@ fun <T> OnResult(callback: (result: T) -> Unit) {
             fired = true
             currentCallback.value(it)
             handle.remove<T>("result")
-            Unit
         }
     }
 }

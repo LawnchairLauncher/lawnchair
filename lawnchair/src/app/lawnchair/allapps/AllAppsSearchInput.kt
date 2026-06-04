@@ -53,6 +53,7 @@ import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
+import com.android.systemui.shared.system.BlurUtils
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import kotlin.math.max
@@ -91,7 +92,12 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private var focusedResultTitle = ""
     private var canShowHint = false
 
-    private val bg = DrawableTokens.SearchInputFg.resolve(context)
+    private val supportBlur = BlurUtils.supportsBlursOnWindows()
+    private val bg = if (supportBlur) {
+        DrawableTokens.SearchInputFgBlur.resolve(context)
+    } else {
+        DrawableTokens.SearchInputFg.resolve(context)
+    }
     private val bgAlphaAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         duration = 300
         interpolator = DecelerateInterpolator()
@@ -212,6 +218,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 focusedResultTitle = ""
                 input.setHint("")
                 hint.text = ""
+            }
+
+            if (::appsView.isInitialized) {
+                appsView.mSearchRecyclerView.invalidate()
             }
         }
 

@@ -2,60 +2,34 @@
 
 # Optimization options.
 -allowaccessmodification
--dontoptimize
--dontpreverify
 -dontusemixedcaseclassnames
--dontskipnonpubliclibraryclasses
--verbose
+-allowaccessmodification
 -keepattributes InnerClasses, *Annotation*, Signature, SourceFile, LineNumberTable
 
-
-# This is generated automatically by the Android Gradle plugin.
--dontwarn android.appwidget.AppWidgetHost$AppWidgetHostListener
--dontwarn android.util.StatsEvent$Builder
--dontwarn android.util.StatsEvent
--dontwarn androidx.window.extensions.**
--dontwarn androidx.window.sidecar.**
--dontwarn com.android.org.conscrypt.TrustManagerImpl
--dontwarn com.android.wm.shell.**
--dontwarn com.skydoves.balloon.**
--dontwarn dalvik.system.CloseGuard
--dontwarn lineageos.providers.LineageSettings$System
--dontwarn androidx.compose.runtime.PrimitiveSnapshotStateKt
--dontwarn androidx.renderscript.Allocation
--dontwarn androidx.renderscript.BaseObj
--dontwarn androidx.renderscript.Element
--dontwarn androidx.renderscript.FieldPacker
--dontwarn androidx.renderscript.RSRuntimeException
--dontwarn androidx.renderscript.RenderScript
--dontwarn androidx.renderscript.Script$LaunchOptions
--dontwarn androidx.renderscript.ScriptC
--dontwarn androidx.renderscript.ScriptIntrinsicBlur
--dontwarn androidx.renderscript.Type
-
+# Remove some Kotlin overhead
+-processkotlinnullchecks remove
 
 # Common rules.
--keep class com.android.** { *; }
--keep class android.window.** { *; }
--keepclasseswithmembernames class * {
-    native <methods>;
-}
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
+-keep,allowshrinking,allowoptimization class android.window.** { *; }
+-keep,allowshrinking,allowoptimization class android.view.** { *; }
+-keep,allowshrinking,allowoptimization class com.android.systemui.** { *; }
+-keep,allowshrinking,allowoptimization class com.android.wm.shell.** { *; }
+
 -keepclassmembers class * implements android.os.Parcelable {
   public static final ** CREATOR;
 }
 
 # Lawnchair specific rules.
--keep class app.lawnchair.LawnchairProto$* { *; }
--keep class app.lawnchair.LawnchairApp { *; }
--keep class app.lawnchair.LawnchairLauncher { *; }
--keep class app.lawnchair.compatlib.** { *; }
--keep class android.view.** { *; }
+-keep,allowshrinking,allowoptimization class app.lawnchair.LawnchairProto$* { *; }
+-keep,allowshrinking,allowoptimization class app.lawnchair.LawnchairApp { *; }
+-keep,allowshrinking,allowoptimization class app.lawnchair.LawnchairLauncher { *; }
+-keep,allowshrinking,allowoptimization class app.lawnchair.compatlib.** { *; }
 
--keep class com.google.protobuf.Timestamp { *; }
+-keep,allowshrinking,allowoptimization class com.google.protobuf.Timestamp { *; }
 
-# TODO: Remove this after the change in https://github.com/ChickenHook/RestrictionBypass/pull/9 has been released.
--keep class org.chickenhook.restrictionbypass.** { *; }
+# We intentionally remove it to replace Smartspacer's widget popup with our own Launcher3 popup
+-dontwarn com.skydoves.balloon.*
+
+# This shouldn't concern us much
+-dontwarn androidx.window.extensions.**
+-dontwarn androidx.window.sidecar.**

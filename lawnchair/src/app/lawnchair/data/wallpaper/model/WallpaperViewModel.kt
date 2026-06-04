@@ -3,11 +3,11 @@ package app.lawnchair.data.wallpaper.model
 import android.app.Application
 import android.app.WallpaperManager
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.wallpaper.WallpaperManagerCompat
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -15,8 +15,8 @@ import kotlinx.coroutines.sync.withLock
 class WallpaperViewModel(application: Application) : AndroidViewModel(application) {
     private val wallpaperManagerCompat = WallpaperManagerCompat.INSTANCE.get(application)
 
-    private val _wallpapers = MutableLiveData<List<Wallpaper>>()
-    val wallpapers: LiveData<List<Wallpaper>> = _wallpapers
+    val wallpapers: StateFlow<List<Wallpaper>>
+        field = MutableStateFlow<List<Wallpaper>>(emptyList())
 
     private val mutex = Mutex()
 
@@ -42,7 +42,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     private suspend fun refreshWallpapers() {
         val topWallpapers = wallpaperManagerCompat.service.dao.getTopWallpapers()
-        _wallpapers.postValue(topWallpapers)
+        wallpapers.value = topWallpapers
     }
 
     private fun loadTopWallpapers() {
