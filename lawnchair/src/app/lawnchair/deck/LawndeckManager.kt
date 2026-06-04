@@ -8,9 +8,9 @@ import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
-import com.android.launcher3.R
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Launcher
+import com.android.launcher3.R
 import com.android.launcher3.model.ItemInstallQueue
 import com.android.launcher3.model.ModelDbController
 import com.android.launcher3.model.data.AppInfo
@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 
 class LawndeckManager(private val context: Context) {
 
@@ -43,11 +43,9 @@ class LawndeckManager(private val context: Context) {
         } else {
             onProgress?.invoke(context.getString(R.string.adding_apps_to_workspace))
             val prefs2 = PreferenceManager2.getInstance(context)
-            prefs2.allowDeckSorting.get().collect { value ->
-                allowDeckSorting = value
-                addAllAppsToWorkspace(onProgress) {
-                    completionDeferred.complete(Unit)
-                }
+            allowDeckSorting = prefs2.allowDeckSorting.get().first()
+            addAllAppsToWorkspace(onProgress) {
+                completionDeferred.complete(Unit)
             }
         }
 
@@ -117,16 +115,17 @@ class LawndeckManager(private val context: Context) {
             val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
             finalCategorizedApps.forEach { (category, categoryApps) ->
                 if (categoryApps.isEmpty()) return@forEach
-
+                
+                // TODO(Prefs UI): Unpassed onProgress
                 if (categoryApps.size == 1) {
                     // Single app - add directly to workspace
                     val app = categoryApps.first()
                     ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
-                    onProgress?.invoke("Adding ${app.targetPackage}...")
+                    onProgress?.invoke(context.getString(R.string.adding_app_name_to_workspace, app.targetPackage))
                     singleAppCount++
                 } else {
                     // Multiple apps - create folder
-                    onProgress?.invoke("Creating folder: $category...")
+                    onProgress?.invoke(context.getString(R.string.creating_workspace_folder, category))
                     val folderInfo = createFolderInfo(category, categoryApps)
                     if (folderInfo != null) {
                         foldersToAdd.add(folderInfo)
@@ -135,8 +134,11 @@ class LawndeckManager(private val context: Context) {
             }
         } else {
             validApps.forEach { app ->
-                ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
-                onProgress?.invoke("Adding ${app.targetPackage}...")
+                onProgress?.invoke(context.getString(R.string.adding_app_name_to_workspace, app.targetPackage))
+                // Add a small delay so that Lawnchair can allocale spaces instead of freaking out
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
+                }, 800)
                 singleAppCount++
             }
         }
@@ -155,7 +157,7 @@ class LawndeckManager(private val context: Context) {
 
         if (foldersToAdd.isNotEmpty()) {
             // Wait for folder task to complete
-            this@LawndeckManager.launcher.model?.enqueueModelUpdateTask(
+            this.launcher.model?.enqueueModelUpdateTask(
                 AddFoldersWithItemsTask(foldersToAdd) {
                     // Callback runs on UI thread from model task
                     // Also wait for ItemInstallQueue to finish for single apps
@@ -195,51 +197,54 @@ class LawndeckManager(private val context: Context) {
 
         val intent = appInfo.intent
 
-        // Determine category: Google Apps > System Apps > Flowerpot categories
-        val category = when {
-            packageName.startsWith("com.google.") -> "Google Apps"
+        if (!allowDeckSorting) {
+            // Determine category: Google Apps > System Apps > Flowerpot categories
+            val category = when {
+                packageName.startsWith("com.google.") -> "Google Apps"
 
-            intent != null && ApplicationInfoWrapper(context, intent).isSystem() -> "System Apps"
+                intent != null && ApplicationInfoWrapper(context, intent).isSystem() -> "System Apps"
 
-            else -> {
-                // Use flowerpot to categorize the app
-                val potsManager = Flowerpot.Manager.getInstance(context)
-                val categorizedApps = potsManager.categorizeApps(listOf(appInfo))
+                else -> {
+                    // Use flowerpot to categorize the app
+                    val potsManager = Flowerpot.Manager.getInstance(context)
+                    val categorizedApps = potsManager.categorizeApps(listOf(appInfo))
 
-                if (categorizedApps.isEmpty() || !allowDeckSorting) {
-                    // No category found, add directly to workspace
-                    ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
-                    return
+                    if (categorizedApps.isEmpty()) {
+                        // No category found, add directly to workspace
+                        ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
+                        return
+                    }
+
+                    // Get the category from flowerpot
+                    categorizedApps.entries.firstOrNull()?.key ?: run {
+                        ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
+                        return
+                    }
                 }
+            }
 
-                // Get the category from flowerpot
-                categorizedApps.entries.firstOrNull()?.key ?: run {
-                    ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
-                    return
-                }
+            // Check if there's already a folder for this category on workspace
+            val existingFolder = findFolderByCategory(category, dataModel)
+
+            if (existingFolder != null) {
+                // Add app to existing folder
+                val workspaceItem = appInfo.makeWorkspaceItem(context) ?: return
+                existingFolder.add(workspaceItem)
+                // Update folder in database
+                modelWriter.addOrMoveItemInDatabase(
+                    workspaceItem,
+                    existingFolder.id,
+                    0,
+                    existingFolder.getContents().size % 4,
+                    existingFolder.getContents().size / 4,
+                )
+                return
             }
         }
 
-        // Check if there's already a folder for this category on workspace
-        val existingFolder = findFolderByCategory(category, dataModel)
-
-        if (existingFolder != null) {
-            // Add app to existing folder
-            val workspaceItem = appInfo.makeWorkspaceItem(context) ?: return
-            existingFolder.add(workspaceItem)
-            // Update folder in database
-            modelWriter.addOrMoveItemInDatabase(
-                workspaceItem,
-                existingFolder.id,
-                0,
-                existingFolder.getContents().size % 4,
-                existingFolder.getContents().size / 4,
-            )
-        } else {
-            // Single app in category, add directly to workspace
-            // The app will be categorized properly when added
-            ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
-        }
+        // Single app in category, add directly to workspace
+        // The app will be categorized properly when added
+        ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
     }
 
     private fun findFolderByCategory(category: String, dataModel: com.android.launcher3.model.BgDataModel): FolderInfo? {
