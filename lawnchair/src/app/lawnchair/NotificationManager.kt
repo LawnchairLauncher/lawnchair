@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -25,8 +26,9 @@ class NotificationManager @Inject constructor(
 
     private val scope = MainScope()
     private val notificationsMap = mutableMapOf<String, StatusBarNotification>()
-    private val _notifications = MutableStateFlow(emptyList<StatusBarNotification>())
-    val notifications: Flow<List<StatusBarNotification>> get() = _notifications
+
+    val notifications: StateFlow<List<StatusBarNotification>>
+        field = MutableStateFlow(emptyList<StatusBarNotification>())
 
     fun onNotificationPosted(sbn: StatusBarNotification) {
         notificationsMap[sbn.key] = sbn
@@ -54,7 +56,7 @@ class NotificationManager @Inject constructor(
     }
 
     private fun onChange() {
-        _notifications.value = notificationsMap.values.toList()
+        notifications.value = notificationsMap.values.toList()
     }
 
     override fun close() {

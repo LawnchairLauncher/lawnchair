@@ -18,7 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -28,8 +28,8 @@ class NightlyBuildsRepository(
 ) {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val _updateState = MutableStateFlow<UpdateState>(UpdateState.UpToDate)
-    val updateState = _updateState.asStateFlow()
+    val updateState: StateFlow<UpdateState>
+        field = MutableStateFlow<UpdateState>(UpdateState.UpToDate)
 
     private var currentBuildNumber: Int = 0
     private var latestBuildNumber: Int = 0
@@ -37,7 +37,7 @@ class NightlyBuildsRepository(
 
     fun checkForUpdate() {
         coroutineScope.launch(Dispatchers.Default) {
-            _updateState.update { UpdateState.Checking }
+            updateState.update { UpdateState.Checking }
             try {
                 val releases = api.getReleases()
                 val nightly = releases.firstOrNull { it.tagName == "nightly" }
@@ -48,7 +48,7 @@ class NightlyBuildsRepository(
 
                 if (nightly != null && nightly.targetCommitish != expectedBranch) {
                     Log.d(TAG, "Skipping update from branch ${nightly.targetCommitish}, expected $expectedBranch")
-                    _updateState.update { UpdateState.Disabled(UpdateDisabledReason.MAJOR_IS_NEWER) }
+                    updateState.update { UpdateState.Disabled(UpdateDisabledReason.MAJOR_IS_NEWER) }
                     return@launch
                 }
 
@@ -66,7 +66,7 @@ class NightlyBuildsRepository(
                 if (asset != null && latestBuildNumber > currentBuildNumber) {
                     val commitList = getCommitsSinceCurrentVersion()
 
-                    _updateState.update {
+                    updateState.update {
                         UpdateState.Available(
                             asset.name,
                             asset.browserDownloadUrl,
@@ -83,7 +83,7 @@ class NightlyBuildsRepository(
                         )
                     }
                 } else {
-                    _updateState.update { UpdateState.UpToDate }
+                    updateState.update { UpdateState.UpToDate }
                 }
             } catch (e: Exception) {
                 when (e) {
@@ -95,37 +95,37 @@ class NightlyBuildsRepository(
                         Log.e(TAG, "Failed to check for update", e)
                     }
                 }
-                _updateState.update { UpdateState.Failed }
+                updateState.update { UpdateState.Failed }
             }
         }
     }
 
     fun downloadUpdate() {
-        val currentState = _updateState.value
+        val currentState = updateState.value
         if (currentState !is UpdateState.Available) return
 
         coroutineScope.launch(Dispatchers.IO) {
-            _updateState.update { UpdateState.Downloading(0f) }
+            updateState.update { UpdateState.Downloading(0f) }
             try {
                 val file = downloadApk(currentState.url, currentState.expectedSha256) { progress ->
-                    _updateState.update { UpdateState.Downloading(progress) }
+                    updateState.update { UpdateState.Downloading(progress) }
                 }
                 if (file != null) {
-                    _updateState.update { UpdateState.Downloaded(file) }
+                    updateState.update { UpdateState.Downloaded(file) }
                 } else {
                     Log.e(TAG, "Downloaded file is null")
-                    _updateState.update { UpdateState.Failed }
+                    updateState.update { UpdateState.Failed }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Download failed", e)
-                _updateState.update { UpdateState.Failed }
+                updateState.update { UpdateState.Failed }
             }
         }
     }
 
     fun installUpdate(file: File, forceInstall: Boolean = false) {
         if (!forceInstall && applicationContext.isApkMajorVersionNewer(file)) {
-            _updateState.update { UpdateState.MajorUpdate(file) }
+            updateState.update { UpdateState.MajorUpdate(file) }
             return
         }
         if (!applicationContext.hasInstallPermission()) {
@@ -146,7 +146,7 @@ class NightlyBuildsRepository(
     }
 
     fun resetToDownloaded(file: File) {
-        _updateState.update { UpdateState.Downloaded(file) }
+        updateState.update { UpdateState.Downloaded(file) }
     }
 
     private suspend fun getCommitsSinceCurrentVersion(): List<GitHubCommit>? {

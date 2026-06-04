@@ -15,8 +15,8 @@ import kotlinx.coroutines.sync.withLock
 class WallpaperViewModel(application: Application) : AndroidViewModel(application) {
     private val wallpaperManagerCompat = WallpaperManagerCompat.INSTANCE.get(application)
 
-    private val _wallpapers = MutableLiveData<List<Wallpaper>>()
-    val wallpapers: LiveData<List<Wallpaper>> = _wallpapers
+    val wallpapers: LiveData<List<Wallpaper>>
+        field = MutableLiveData<List<Wallpaper>>()
 
     private val mutex = Mutex()
 
@@ -42,7 +42,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     private suspend fun refreshWallpapers() {
         val topWallpapers = wallpaperManagerCompat.service.dao.getTopWallpapers()
-        _wallpapers.postValue(topWallpapers)
+        wallpapers.postValue(topWallpapers)
     }
 
     private fun loadTopWallpapers() {
