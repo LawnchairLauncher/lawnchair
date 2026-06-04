@@ -21,9 +21,9 @@ import java.io.File
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.flow.first
 
 class LawndeckManager(private val context: Context) {
 
@@ -115,7 +115,7 @@ class LawndeckManager(private val context: Context) {
             val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
             finalCategorizedApps.forEach { (category, categoryApps) ->
                 if (categoryApps.isEmpty()) return@forEach
-                
+
                 // TODO(Prefs UI): Unpassed onProgress
                 if (categoryApps.size == 1) {
                     // Single app - add directly to workspace
