@@ -53,7 +53,7 @@ fun <T> Flow<T>.subscribeBlocking(
         .launchIn(scope = scope)
 }
 
-fun <T : Any> Flow<T>.observeOnce(lifecycleOwner: LifecycleOwner, collector: kotlinx.coroutines.flow.FlowCollector<T>) {
+fun <T> Flow<T>.observeOnce(lifecycleOwner: LifecycleOwner, collector: kotlinx.coroutines.flow.FlowCollector<T>) {
     lifecycleOwner.lifecycleScope.launch {
         collect(collector = collector)
     }
