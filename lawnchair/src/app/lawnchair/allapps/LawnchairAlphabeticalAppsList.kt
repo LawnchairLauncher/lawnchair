@@ -24,6 +24,7 @@ import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.onEach
 import java.util.function.Predicate
+import kotlinx.coroutines.launch
 
 @Suppress("SYNTHETIC_PROPERTY_WITHOUT_JAVA_ORIGIN")
 class LawnchairAlphabeticalAppsList<T>(
@@ -67,11 +68,13 @@ class LawnchairAlphabeticalAppsList<T>(
     }
 
     private fun observeFolders() {
-        viewModel.foldersLiveData.observe(context as LifecycleOwner) { folders ->
-            folderList = folders
-                .sortedBy { folderOrder.indexOf(it.id) }
-                .toMutableList()
-            updateAdapterItems()
+        (context as LifecycleOwner).lifecycleScope.launch {
+            viewModel.folders.collect { folders ->
+                folderList = folders
+                    .sortedBy { folderOrder.indexOf(it.id) }
+                    .toMutableList()
+                updateAdapterItems()
+            }
         }
     }
 

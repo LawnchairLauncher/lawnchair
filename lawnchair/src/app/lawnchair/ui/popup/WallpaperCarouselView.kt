@@ -16,6 +16,8 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.data.wallpaper.model.WallpaperViewModel
 import app.lawnchair.launcher
@@ -51,10 +53,12 @@ class WallpaperCarouselView @JvmOverloads constructor(
     }
 
     private fun observeWallpapers() {
-        viewModel.wallpapers.observe(launcher) { wallpapers ->
-            visibility = if (wallpapers.isEmpty()) GONE else VISIBLE
-            loadingView.visibility = if (wallpapers.isEmpty()) GONE else VISIBLE
-            if (wallpapers.isNotEmpty()) displayWallpapers(wallpapers)
+        (context as LifecycleOwner).lifecycleScope.launch {
+            viewModel.wallpapers.collect { wallpapers ->
+                visibility = if (wallpapers.isEmpty()) GONE else VISIBLE
+                loadingView.visibility = if (wallpapers.isEmpty()) GONE else VISIBLE
+                if (wallpapers.isNotEmpty()) displayWallpapers(wallpapers)
+            }
         }
     }
 
