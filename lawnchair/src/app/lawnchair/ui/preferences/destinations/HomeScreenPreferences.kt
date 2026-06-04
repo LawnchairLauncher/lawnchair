@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.LawnchairApp
 import app.lawnchair.data.iconoverride.IconOverrideRepository
+import app.lawnchair.deck.LawndeckManager
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -66,6 +67,7 @@ fun HomeScreenPreferences(
     val prefs2 = preferenceManager2()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
     PreferenceLayout(
         label = stringResource(id = R.string.home_screen_label),
         backArrowVisible = !LocalIsExpandedScreen.current,
@@ -73,6 +75,7 @@ fun HomeScreenPreferences(
     ) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()
         val showDeckLayout = prefs2.showDeckLayout.getAdapter().state.value
+        val deckManager = remember { LawndeckManager(context) }
 
         if (showDeckLayout) {
             HomeLayoutSettings()
@@ -99,7 +102,15 @@ fun HomeScreenPreferences(
                 val allowDeckSorting = prefs2.allowDeckSorting.getAdapter()
                 SwitchPreference(
                     checked = allowDeckSorting.state.value,
-                    onCheckedChange = allowDeckSorting::onChange,
+                    onCheckedChange = { newValue ->
+                        scope.launch {
+                            prefs2.allowDeckSorting.set(newValue)
+                            // This switch is only visible when Deck mode is enabled,
+                            // which adds new apps to the home screen by default.
+                            // Thus no need to re-enable it here.
+                            deckManager.enableLawndeck()
+                        }
+                    },
                     label = stringResource(id = R.string.deck_allow_sorts),
                     description = null,
                     enabled = true,
