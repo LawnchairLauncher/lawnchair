@@ -197,7 +197,7 @@ class LawndeckManager(private val context: Context) {
 
         val intent = appInfo.intent
 
-        if (!allowDeckSorting) {
+        if (allowDeckSorting) {
             // Determine category: Google Apps > System Apps > Flowerpot categories
             val category = when {
                 packageName.startsWith("com.google.") -> "Google Apps"
