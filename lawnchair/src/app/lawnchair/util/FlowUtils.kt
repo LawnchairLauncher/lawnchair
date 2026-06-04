@@ -55,9 +55,9 @@ fun <T> Flow<T>.subscribeBlocking(
 
 fun <T> Flow<T>.observeOnce(
     lifecycleOwner: LifecycleOwner,
-    collector: suspend (T) -> Unit,
+    collector: kotlinx.coroutines.flow.FlowCollector<T>,
 ) {
     lifecycleOwner.lifecycleScope.launch {
-        collector(first())
+        collect(collector = collector)
     }
 }
