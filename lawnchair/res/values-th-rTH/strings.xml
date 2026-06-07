@@ -151,7 +151,7 @@
     <string name="gestures_description">การแตะและการปัด</string>
     <string name="quickstep_label">แอปล่าสุด</string>
     <string name="quickstep_description">ล้างปุ่มทั้งหมด, รัศมีมุม</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_label">สำรองและกู้คืน</string>
     <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">เกี่ยวกับ</string>
     <string name="app_info_drop_target_label">ข้อมูลแอป</string>
@@ -177,10 +177,10 @@
     <string name="show_deck_layout_description">แสดงตัวเลือกเค้าโครงเพื่อซ่อนหน้ารวมแอปและเพิ่มแอปใหม่ไปยังหน้าจอหลักโดยอัตโนมัติ</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">เปิดใช้งานดีไซน์ Material 3 Expressive ในหน้าแรก</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_shape_label">รูปร่างโฟลเดอร์</string>
     <string name="folder_label">โฟลเดอร์</string>
     <string name="app_icon_shape_label">แอป</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
+    <string name="gesturenavcontract_label">ใช้ API ของ GestureNavContract</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract อาจทำให้เกิดแอปแอนิเมชั่นที่ผิดปกติ</string>
     <string name="recents_lock_unlock">ล็อก/ปลดล็อก</string>
@@ -257,21 +257,21 @@
     <string name="icon_shape_arch">ทรงโค้ง</string>
     <!-- Additional icon shapes -->
     <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
-    <string name="icon_shape_meow">Meow</string>
-    <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded Hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
-    <string name="icon_shape_vessel">Vessel</string>
+    <string name="icon_shape_flower">ดอกไม้</string>
+    <string name="icon_shape_heart">หัวใจ</string>
+    <string name="icon_shape_leaf">ใบไม้</string>
+    <string name="icon_shape_meow">แมว</string>
+    <string name="icon_shape_pebble">กรวด</string>
+    <string name="icon_shape_roundedhexagon">หกเหลี่ยมโค้งมน</string>
+    <string name="icon_shape_stretched">ยืด</string>
+    <string name="icon_shape_vessel">เรือ</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">กำหนดรูปร่างไอคอน</string>
     <string name="custom_icon_shape_create">สร้างรูปแบบไอคอนที่กำหนดเอง</string>
     <string name="custom_icon_shape_edit">แก้ไขรูปแบบไอคอนที่กำหนดเอง</string>
     <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape_create">สร้างรูปแบบโฟลเดอร์ที่กำหนดเอง</string>
+    <string name="custom_folder_shape_edit">แก้ไขรูปร่างโฟลเดอร์ที่กำหนดเอง</string>
     <string name="custom_icon_shape_corner">รูปร่างขอบมุม</string>
     <string name="custom_icon_shape_corner_round">กลม</string>
     <string name="custom_icon_shape_corner_squircle">เรียบ</string>
@@ -382,12 +382,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">สภาพอากาศ</string>
     <string name="smartspace_battery_status">สถานะแบตเตอรี่</string>
-    <string name="smartspace_torch">Flashlight status</string>
+    <string name="smartspace_torch">สถานะของไฟฉาย</string>
     <string name="smartspace_now_playing">กำลังเล่น</string>
-    <string name="smartspace_onboarding">Onboarding</string>
+    <string name="smartspace_onboarding">ต้อนรับและสอนใช้งาน</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
-    <string name="torch_action_off">Tap to turn off</string>
+    <string name="torch_status_on">ไฟฉายเปิดอยู่</string>
+    <string name="torch_action_off">แตะเพื่อปิด</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">ตั้งค่า Lawnchair ของคุณ</string>
     <string name="onboarding_open_settings_subtitle">กดค้างที่หน้าจอหลักเพื่อเปิดการตั้งค่า</string>
@@ -494,11 +494,11 @@
     <string name="recents_screen_a11y_hint">เปิดแอปล่าสุด</string>
     <string name="generic_a11y_hint">เพื่อ %1$s ให้เปิดบริการการช่วยเหลือพิเศษของ Lawnchair แตะ \"เปิดการตั้งค่า\" เลือก \"Lawnchair\" และเปิด ใช้ \"Lawnchair\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair ใช้วิธี performGlobalAction ของการช่วยเหลือพิเศษเพื่อดำเนินการนี้ นี่เป็นสิทธิ์ที่ละเอียดอ่อนที่อนุญาตให้ตรวจสอบแอปอื่นได้ อย่างไรก็ตาม Lawnchair ไม่ได้ตั้งค่ามาเพื่อฟังก์ชันดังกล่าวและจะไม่ได้รับข้อมูลเหตุการณ์ใด ๆ</string>
-    <string name="sleep_mode_label">Sleep mode</string>
-    <string name="sleep_mode_auto">Automatic</string>
-    <string name="sleep_mode_root">Root</string>
-    <string name="sleep_mode_accessibility">Accessibility service</string>
-    <string name="sleep_mode_device_admin">Device admin</string>
+    <string name="sleep_mode_label">โหมดสลีป</string>
+    <string name="sleep_mode_auto">อัตโนมัติ</string>
+    <string name="sleep_mode_root">รูท</string>
+    <string name="sleep_mode_accessibility">บริการการเข้าถึง</string>
+    <string name="sleep_mode_device_admin">ผู้ดูแลระบบอุปกรณ์</string>
     <!--
 
     Bug reporting
@@ -545,13 +545,13 @@
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
     <string name="home_screen_locked">หน้าจอหลักถูกล็อคแล้ว</string>
     <string name="home_screen_lock_description">ป้องกันการเปลี่ยนแปลงของวัตถุบนหน้าจอหลัก</string>
-    <string name="set_default_home_page">Set as default page</string>
+    <string name="set_default_home_page">ตั้งเป็นหน้าเริ่มต้น</string>
     <string name="default_home_page_set">Default home page updated</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
-    <string name="page_order_updated">Page order updated</string>
+    <string name="move_page_left">ย้ายหน้าไปทางซ้าย</string>
+    <string name="move_page_right">ย้ายหน้าไปทางขวา</string>
+    <string name="page_order_updated">อัปเดตลำดับของหน้าแล้ว</string>
     <string name="edit_mode_page_strip_default">ค่าเริ่มต้น</string>
-    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_page">หน้า %1$d</string>
     <string name="edit_mode_page_strip_set_home">Set as home page</string>
     <string name="edit_mode_page_strip_home_selected">Default home page</string>
     <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
@@ -767,5 +767,5 @@
     <string name="home_screen_all_views_removed_msg">หน้าจอหลักถูกล้างแล้ว</string>
     <string name="lawnchair_actions">Actions</string>
     <string name="lawnchair_action_failed">Failed to trigger action</string>
-    <string name="please_wait">Please wait…</string>
+    <string name="please_wait">โปรดรอ…</string>
 </resources>
