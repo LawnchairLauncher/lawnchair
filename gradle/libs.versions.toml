@@ -138,7 +138,7 @@ reorderable = "sh.calvin.reorderable:reorderable:3.1.0"
 rikka-annotation = { module = "dev.rikka.tools.refine:annotation", version.ref = "refine" }
 rikka-annotation-processor = { module = "dev.rikka.tools.refine:annotation-processor", version.ref = "refine" }
 rikka-refine-runtime = { group = "dev.rikka.tools.refine", name = "runtime", version.ref = "refine" }
-smartspacer-sdk = "com.kieronquinn.smartspacer:sdk-client:1.1.2"
+smartspacer-sdk = "com.kieronquinn.smartspacer:sdk-client:1.2"
 xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
 errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.49.0"
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
