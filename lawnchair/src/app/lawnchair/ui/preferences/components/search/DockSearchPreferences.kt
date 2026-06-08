@@ -2,7 +2,10 @@ package app.lawnchair.ui.preferences.components.search
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.TipsAndUpdates
@@ -11,8 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.hotseat.DisabledHotseat
@@ -22,7 +27,17 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.qsb.AssistantIconView
+import app.lawnchair.qsb.LawnQsbLayout
+import app.lawnchair.qsb.LawnQsbUi
+import app.lawnchair.qsb.QsbActions
+import app.lawnchair.qsb.buildQsbStyle
+import app.lawnchair.qsb.getThemedQsbBackgroundColor
+import app.lawnchair.qsb.providers.Google
+import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
+import app.lawnchair.qsb.rememberQsbState
+import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
@@ -32,7 +47,6 @@ import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.destinations.DockPreferencesPreview
 import app.lawnchair.ui.preferences.navigation.DockSearchProvider
 import com.android.launcher3.R
 
@@ -49,6 +63,8 @@ fun DockSearchPreference(
     val qsbCornerAdapter = prefs.hotseatQsbCornerRadius.getAdapter()
     val qsbAlphaAdapter = prefs.hotseatQsbAlpha.getAdapter()
     val qsbHotseatStrokeWidth = prefs.hotseatQsbStrokeWidth.getAdapter()
+    val strokeColorStyleAdapter = prefs2.strokeColorStyle.getAdapter()
+    val hotseatQsbProviderAdapter by prefs2.hotseatQsbProvider.getAdapter()
 
     Crossfade(isHotseatEnabled.state.value, label = "transition", modifier = modifier) { hotseatEnabled ->
         val isLawnchairHotseat = hotseatModeAdapter.state.value == LawnchairHotseat
@@ -63,12 +79,18 @@ fun DockSearchPreference(
                 }
                 ExpandAndShrink(visible = hotseatModeAdapter.state.value != DisabledHotseat) {
                     Column {
-                        DockPreferencesPreview()
+                        DockSearchBarPreview(
+                            provider = hotseatQsbProviderAdapter,
+                            themed = themeQsbAdapter.state.value,
+                            cornerRadiusFactor = qsbCornerAdapter.state.value,
+                            transparency = qsbAlphaAdapter.state.value,
+                            strokeWidth = qsbHotseatStrokeWidth.state.value,
+                            strokeColor = strokeColorStyleAdapter.state.value,
+                        )
                     }
                 }
                 ExpandAndShrink(visible = isLawnchairHotseat) {
                     Column {
-                        val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
                         PreferenceGroup(
                             heading = stringResource(R.string.search_bar_settings),
                         ) {
@@ -149,6 +171,64 @@ fun DockSearchPreference(
                     )
                 },
             )
+        }
+    }
+}
+
+@Composable
+private fun DockSearchBarPreview(
+    provider: QsbSearchProvider,
+    themed: Boolean,
+    cornerRadiusFactor: Float,
+    transparency: Int,
+    strokeWidth: Float,
+    strokeColor: ColorOption,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val searchProvider = provider
+    val supportsLens = searchProvider == Google || searchProvider == PixelSearch
+    val voiceIntent = remember(searchProvider, context) {
+        AssistantIconView.getVoiceIntent(searchProvider, context)
+    }
+    val lensIntent = remember(supportsLens, context) {
+        if (supportsLens) LawnQsbLayout.getLensIntent(context) else null
+    }
+
+    PreferenceGroup(
+        heading = stringResource(id = R.string.preview_label),
+    ) {
+        Item {
+            Box(
+                modifier = modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = R.dimen.qsb_widget_height) + 24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                LawnQsbUi(
+                    state = rememberQsbState(
+                        searchProvider,
+                        themed,
+                        showMic = voiceIntent != null,
+                        showLens = lensIntent != null,
+                    ),
+                    style = buildQsbStyle(
+                        context = context,
+                        themed = themed,
+                        cornerRadius = cornerRadiusFactor,
+                        transparency = transparency,
+                        strokeWidth = strokeWidth,
+                        strokeColor = strokeColor.colorPreferenceEntry.lightColor.invoke(context),
+                        themedBackgroundColor = getThemedQsbBackgroundColor(),
+                    ),
+                    actions = QsbActions(
+                        onQsbClick = {},
+                        onEndIconClick = {},
+                    ),
+                    modifier = Modifier.height(48.dp),
+                )
+            }
         }
     }
 }
