@@ -102,7 +102,7 @@ opto-domain = { group = "com.patrykmichalik.opto", name = "domain", version.ref 
 # Retrofit & OkHttp
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-kotlinx = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
-okhttp = "com.squareup.okhttp3:okhttp:5.3.2"
+okhttp = "com.squareup.okhttp3:okhttp:5.4.0"
 
 # Room
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
