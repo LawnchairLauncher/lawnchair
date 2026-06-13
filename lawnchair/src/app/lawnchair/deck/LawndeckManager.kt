@@ -31,6 +31,8 @@ class LawndeckManager(private val context: Context) {
 
     private val launcher = context.launcherNullable ?: LawnchairLauncher.instance?.launcher
     private var allowDeckSorting = false
+
+    @Suppress("ktlint:standard:property-naming")
     private val TAG = "LawndeckManager"
 
     suspend fun enableLawndeck(
@@ -39,12 +41,13 @@ class LawndeckManager(private val context: Context) {
         val completionDeferred = CompletableDeferred<Unit>()
         val prefs2 = PreferenceManager2.getInstance(context)
         allowDeckSorting = prefs2.allowDeckSorting.get().first()
-        val layout_name = if (allowDeckSorting) "lawndeck_organized" else "lawndeck"
+        val layoutName = if (allowDeckSorting) "lawndeck_organized" else "lawndeck"
 
         if (!backupExists("bk")) createBackup("bk")
-        if (backupExists(layout_name)) {
+
+        if (backupExists(layoutName)) {
             onProgress?.invoke(context.getString(R.string.restore_previous_layout))
-            restoreBackup(layout_name)
+            restoreBackup(layoutName)
             completionDeferred.complete(Unit)
         } else {
             onProgress?.invoke(context.getString(R.string.adding_apps_to_workspace))
