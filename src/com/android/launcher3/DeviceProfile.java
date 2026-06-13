@@ -338,6 +338,10 @@ public class DeviceProfile {
 
     private final TextFactors mTextFactors;
     private float allAppsCellHeightMultiplier;
+    private float workspacePaddingHorizontalFactor;
+    private float workspacePaddingVerticalFactor;
+    private float widgetPaddingFactor;
+    private float drawerPaddingVerticalFactor;
     private PreferenceManager2 preferenceManager2 = null;
 
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
@@ -353,6 +357,14 @@ public class DeviceProfile {
         preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
         allAppsCellHeightMultiplier = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getDrawerCellHeightFactor());
+        workspacePaddingHorizontalFactor = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getWorkspacePaddingHorizontalFactor());
+        workspacePaddingVerticalFactor = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getWorkspacePaddingVerticalFactor());
+        widgetPaddingFactor = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getWidgetPaddingFactor());
+        drawerPaddingVerticalFactor = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getDrawerPaddingVerticalFactor());
         this.inv = inv;
 
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(
@@ -636,6 +648,11 @@ public class DeviceProfile {
         }
 
         desiredWorkspaceHorizontalMarginPx = getHorizontalMarginPx(inv, res);
+        // Lawnchair: scale the horizontal workspace margin at the source so the cell layout
+        // width calculation uses the scaled value too. Otherwise cells keep their original
+        // width and get centered, leaving a visible side gap even at factor 0.
+        desiredWorkspaceHorizontalMarginPx =
+                Math.round(desiredWorkspaceHorizontalMarginPx * workspacePaddingHorizontalFactor);
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
         splitPlaceholderInset = res.getDimensionPixelSize(R.dimen.split_placeholder_inset);
@@ -684,6 +701,8 @@ public class DeviceProfile {
             allAppsShiftRange =
                     res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
         }
+        // Lawnchair: extra user-configurable app drawer vertical padding (additive, default 0).
+        allAppsPadding.top += Math.round(iconSizePx * drawerPaddingVerticalFactor);
         allAppsOpenDuration = res.getInteger(R.integer.config_allAppsOpenDuration);
         allAppsCloseDuration = res.getInteger(R.integer.config_allAppsCloseDuration);
 
@@ -1350,6 +1369,11 @@ public class DeviceProfile {
         } else {
             widgetPadding.setEmpty();
         }
+        // Lawnchair: scale widget padding by user factor (0 = remove, 1 = default).
+        widgetPadding.left = Math.round(widgetPadding.left * widgetPaddingFactor);
+        widgetPadding.right = Math.round(widgetPadding.right * widgetPaddingFactor);
+        widgetPadding.top = Math.round(widgetPadding.top * widgetPaddingFactor);
+        widgetPadding.bottom = Math.round(widgetPadding.bottom * widgetPaddingFactor);
     }
 
     /**
@@ -1718,6 +1742,16 @@ public class DeviceProfile {
                 paddingLeft = isSeascape() ? desiredWorkspaceHorizontalMarginPx : 0;
                 paddingRight = isSeascape() ? 0 : desiredWorkspaceHorizontalMarginPx;
             }
+
+            // Lawnchair: scale vertical workspace padding by user factor.
+            // (Horizontal is applied at the source margin so the cells fill the freed space.)
+            // The dock (hotseatBarSizePx) reservation in the bottom padding must be preserved,
+            // otherwise reducing the factor pulls the last row into the dock and clips it.
+            paddingTop = Math.round(paddingTop * workspacePaddingVerticalFactor);
+            int bottomHotseatReserve = Math.min(hotseatBarSizePx, paddingBottom);
+            paddingBottom = bottomHotseatReserve
+                    + Math.round((paddingBottom - bottomHotseatReserve) * workspacePaddingVerticalFactor);
+
             padding.set(paddingLeft, paddingTop, paddingRight, paddingBottom);
         }
         insetPadding(workspacePadding, cellLayoutPaddingPx);

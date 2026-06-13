@@ -533,6 +533,30 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val workspacePaddingHorizontalFactor = preference(
+        key = floatPreferencesKey(name = "workspace_padding_horizontal"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_workspace_padding_horizontal),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val workspacePaddingVerticalFactor = preference(
+        key = floatPreferencesKey(name = "workspace_padding_vertical"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_workspace_padding_vertical),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val widgetPaddingFactor = preference(
+        key = floatPreferencesKey(name = "widget_padding_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_widget_padding_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val drawerPaddingVerticalFactor = preference(
+        key = floatPreferencesKey(name = "drawer_padding_vertical"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_padding_vertical),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val enableFuzzySearch = preference(
         key = booleanPreferencesKey(name = "enable_fuzzy_search"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),

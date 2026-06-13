@@ -188,6 +188,24 @@ fun HomeScreenPreferences(
                     description = stringResource(id = R.string.home_screen_lock_description),
                 )
             }
+            Item {
+                SliderPreference(
+                    label = stringResource(id = R.string.workspace_padding_horizontal_label),
+                    adapter = prefs2.workspacePaddingHorizontalFactor.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true,
+                )
+            }
+            Item {
+                SliderPreference(
+                    label = stringResource(id = R.string.workspace_padding_vertical_label),
+                    adapter = prefs2.workspacePaddingVerticalFactor.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true,
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.popup_menu)) {
             Item { LauncherPopupPreferenceItem() }
@@ -288,6 +306,15 @@ fun HomeScreenPreferences(
                     adapter = prefs2.forceWidgetResize.getAdapter(),
                     label = stringResource(id = R.string.force_widget_resize_label),
                     description = stringResource(id = R.string.force_widget_resize_description),
+                )
+            }
+            Item {
+                SliderPreference(
+                    label = stringResource(id = R.string.widget_padding_label),
+                    adapter = prefs2.widgetPaddingFactor.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..2F,
+                    showAsPercentage = true,
                 )
             }
         }

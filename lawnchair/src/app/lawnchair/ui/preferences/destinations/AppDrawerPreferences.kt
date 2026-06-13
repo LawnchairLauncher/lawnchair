@@ -143,6 +143,15 @@ fun AppDrawerPreferences(
                     showAsPercentage = true,
                 )
             }
+            Item {
+                SliderPreference(
+                    adapter = prefs2.drawerPaddingVerticalFactor.getAdapter(),
+                    label = stringResource(id = R.string.app_drawer_padding_vertical_label),
+                    valueRange = 0.0F..1.0F,
+                    step = 0.05F,
+                    showAsPercentage = true,
+                )
+            }
         }
         val showDrawerLabels = prefs2.showIconLabelsInDrawer.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
