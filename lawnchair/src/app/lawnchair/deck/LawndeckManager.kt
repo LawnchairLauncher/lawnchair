@@ -1,6 +1,8 @@
 package app.lawnchair.deck
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.flowerpot.Flowerpot
@@ -29,21 +31,23 @@ class LawndeckManager(private val context: Context) {
 
     private val launcher = context.launcherNullable ?: LawnchairLauncher.instance?.launcher
     private var allowDeckSorting = false
+    private val TAG = "LawndeckManager"
 
     suspend fun enableLawndeck(
         onProgress: ((String) -> Unit)? = null,
     ) = withContext(Dispatchers.IO) {
         val completionDeferred = CompletableDeferred<Unit>()
+        val prefs2 = PreferenceManager2.getInstance(context)
+        allowDeckSorting = prefs2.allowDeckSorting.get().first()
+        val layout_name = if (allowDeckSorting) "lawndeck_organized" else "lawndeck"
 
         if (!backupExists("bk")) createBackup("bk")
-        if (backupExists("lawndeck")) {
+        if (backupExists(layout_name)) {
             onProgress?.invoke(context.getString(R.string.restore_previous_layout))
-            restoreBackup("lawndeck")
+            restoreBackup(layout_name)
             completionDeferred.complete(Unit)
         } else {
             onProgress?.invoke(context.getString(R.string.adding_apps_to_workspace))
-            val prefs2 = PreferenceManager2.getInstance(context)
-            allowDeckSorting = prefs2.allowDeckSorting.get().first()
             addAllAppsToWorkspace(onProgress) {
                 completionDeferred.complete(Unit)
             }
@@ -54,7 +58,7 @@ class LawndeckManager(private val context: Context) {
 
     suspend fun disableLawndeck() = withContext(Dispatchers.IO) {
         if (backupExists("bk")) {
-            createBackup("lawndeck")
+            createBackup(if (allowDeckSorting) "lawndeck_organized" else "lawndeck")
             restoreBackup("bk")
         }
     }
@@ -64,7 +68,7 @@ class LawndeckManager(private val context: Context) {
             db.copyTo(backupDb, overwrite = true)
             if (journal.exists()) journal.copyTo(backupJournal, overwrite = true)
         }
-    }.onFailure { Log.e("LawndeckManager", "Failed to create backup: $suffix", it) }
+    }.onFailure { Log.e(TAG, "Failed to create backup: $suffix", it) }
 
     private fun restoreBackup(suffix: String) = runCatching {
         getDatabaseFiles(suffix).apply {
@@ -72,7 +76,7 @@ class LawndeckManager(private val context: Context) {
             if (backupJournal.exists()) backupJournal.copyTo(journal, overwrite = true)
         }
         postRestoreActions()
-    }.onFailure { Log.e("LawndeckManager", "Failed to restore backup: $suffix", it) }
+    }.onFailure { Log.e(TAG, "Failed to restore backup: $suffix", it) }
 
     private fun getDatabaseFiles(suffix: String): DatabaseFiles {
         val idp = InvariantDeviceProfile.INSTANCE.get(context)
@@ -108,6 +112,8 @@ class LawndeckManager(private val context: Context) {
         // Collect folders to add and count single apps
         val foldersToAdd = mutableListOf<FolderInfo>()
         var singleAppCount = 0
+        val launcher = this.launcher ?: return
+        val model = launcher.model
 
         // Process each category
         val validApps = apps.mapNotNull { it as? AppInfo }
@@ -121,7 +127,7 @@ class LawndeckManager(private val context: Context) {
                     // Single app - add directly to workspace
                     val app = categoryApps.first()
                     ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
-                    onProgress?.invoke(context.getString(R.string.adding_app_name_to_workspace, app.targetPackage))
+                    Log.d(TAG, "Adding ${app.targetPackage} to the workspace")
                     singleAppCount++
                 } else {
                     // Multiple apps - create folder
@@ -134,9 +140,9 @@ class LawndeckManager(private val context: Context) {
             }
         } else {
             validApps.forEach { app ->
-                onProgress?.invoke(context.getString(R.string.adding_app_name_to_workspace, app.targetPackage))
+                Log.d(TAG, "Adding ${app.targetPackage} to the workspace")
                 // Add a small delay so that Lawnchair can allocale spaces instead of freaking out
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
                 }, 800)
                 singleAppCount++
@@ -144,10 +150,10 @@ class LawndeckManager(private val context: Context) {
         }
 
         // Add all folders with their items to workspace using custom task
-        val invokeCmpl = {
+        val invokeOnCompletion = {
             if (singleAppCount > 0) {
                 // Post to handler to give ItemInstallQueue time to process
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     onComplete?.invoke()
                 }, 800) // Wait for queue to process
             } else {
@@ -157,17 +163,17 @@ class LawndeckManager(private val context: Context) {
 
         if (foldersToAdd.isNotEmpty()) {
             // Wait for folder task to complete
-            this.launcher.model?.enqueueModelUpdateTask(
+            model.enqueueModelUpdateTask(
                 AddFoldersWithItemsTask(foldersToAdd) {
                     // Callback runs on UI thread from model task
                     // Also wait for ItemInstallQueue to finish for single apps
                     // ItemInstallQueue processes asynchronously, so we need to wait a bit
-                    invokeCmpl()
+                    invokeOnCompletion()
                 },
             )
         } else {
             // No folders, but may have single apps
-            invokeCmpl()
+            invokeOnCompletion()
         }
     }
 

@@ -570,6 +570,5 @@
     <!-- Strings for Deck mode -->
     <string name="adding_apps_to_workspace">Adding apps to the home screen...</string>
     <string name="restore_previous_layout">Restoring previous layout...</string>
-    <string name="adding_app_name_to_workspace">Adding %1$s...</string>
     <string name="creating_workspace_folder">Creating folder: %1$s...</string>
 </resources>
