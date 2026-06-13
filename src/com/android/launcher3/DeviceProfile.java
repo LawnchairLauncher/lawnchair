@@ -357,14 +357,16 @@ public class DeviceProfile {
         preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
         allAppsCellHeightMultiplier = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getDrawerCellHeightFactor());
-        workspacePaddingHorizontalFactor = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getWorkspacePaddingHorizontalFactor());
-        workspacePaddingVerticalFactor = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getWorkspacePaddingVerticalFactor());
-        widgetPaddingFactor = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getWidgetPaddingFactor());
-        drawerPaddingVerticalFactor = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getDrawerPaddingVerticalFactor());
+        // Lawnchair: clamp the user padding factors to their slider ranges so a restored or
+        // manually edited preference can't feed out-of-range values into the layout math.
+        workspacePaddingHorizontalFactor = Utilities.boundToRange(PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getWorkspacePaddingHorizontalFactor()), 0f, 1f);
+        workspacePaddingVerticalFactor = Utilities.boundToRange(PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getWorkspacePaddingVerticalFactor()), 0f, 1f);
+        widgetPaddingFactor = Utilities.boundToRange(PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getWidgetPaddingFactor()), 0f, 2f);
+        drawerPaddingVerticalFactor = Utilities.boundToRange(PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getDrawerPaddingVerticalFactor()), 0f, 1f);
         this.inv = inv;
 
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(

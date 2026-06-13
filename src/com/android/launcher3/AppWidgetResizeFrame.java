@@ -319,6 +319,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         // on font / display change, the dp/px size of a cell changes, which means, existing spans
         // may be invalid. User should be able to resize to the correct widget size.
         boolean isWidgetHSpanInvalid = widgetInfoOnView.spanX < mMinHSpan;
+        // Lawnchair: use the (possibly overridden) resizeMode so force/unlimited resize can
+        // show handles even for widgets whose provider declares limited/no resizing.
         mHorizontalResizeActive =
                 (resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0 && (
                         (mMinHSpan < idp.numColumns && mMaxHSpan > 1 && mMinHSpan < mMaxHSpan)
