@@ -673,10 +673,13 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            // Lawnchair: Subgrid free placement allows items to share a base cell, so don't drop them.
-            return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getAllowWidgetOverlap())
-                    || PreferenceExtensionsKt.firstBlocking(
+            // Lawnchair: Subgrid free placement lets icons/widgets share a base cell, so don't drop
+            // them. Folders stay on the unchanged integer grid, so keep their overlap check strict.
+            boolean allowSubgridOverlap = item.itemType != Favorites.ITEM_TYPE_FOLDER
+                    && PreferenceExtensionsKt.firstBlocking(
                             preferenceManager2.getEnableSubgridPositioning());
+            return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getAllowWidgetOverlap())
+                    || allowSubgridOverlap;
         }
     }
 

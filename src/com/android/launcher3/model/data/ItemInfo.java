@@ -317,7 +317,8 @@ public class ItemInfo {
     public static int decodeSubgridStep(@Nullable Float value) {
         if (value == null) return 0;
         float frac = value - (float) Math.floor(value);
-        return frac >= 0.25f ? 1 : 0;
+        // The writer only ever emits a whole number or base + 0.5, so match .5 exactly (with epsilon).
+        return Math.abs(frac - 0.5f) <= 0.01f ? 1 : 0;
     }
 
     /**

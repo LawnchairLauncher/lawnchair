@@ -678,8 +678,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         if (!onDismiss) {
             // Report the widget's host size ranges using the same base spans the layout uses, so the
-            // framework's size info matches the rendered cell span.
+            // framework's size info matches the rendered cell span. (The widget size-options API is
+            // integer-cell based, so a half-cell span is reported as its whole-cell part.)
             WidgetSizes.updateWidgetSizeRanges(mWidgetView, mLauncher, newSpanX, newSpanY);
+            // Lawnchair: Subgrid positioning — mirror the integer path's resize announcement for a11y.
+            if (mStateAnnouncer != null) {
+                mStateAnnouncer.announce(
+                        mLauncher.getString(R.string.widget_resized, newSpanX, newSpanY));
+            }
         } else {
             // Free placement: persist directly (the reorder/commit path is skipped for subgrid).
             mCellLayout.persistViewGeometry(mWidgetView);
