@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">Selalu muat ulang lambang</string>
     <string name="always_reload_icons_description">Hindari menggunakan ikon yang telah di tembolok dari paket lambang</string>
     <string name="always_reload_icons_warning">Dapat menyebabkan ikon untuk memuat ulang secara berkala, ini tidak diperlukan apabila pak ikon tidak update secara berkala</string>
-    <string name="icon_swipe_gestures">Gerakan menggeser ikon</string>
-    <string name="icon_swipe_gestures_description">Lakukan tindakan saat menggeser ke kiri atau kanan pada ikon alih-alih memindahkan layar beranda</string>
     <string name="show_deck_layout">Tata letak dek</string>
     <string name="show_deck_layout_description">Tampilkan opsi tata letak untuk menyembunyikan laci aplikasi dan secara otomatis menambahkan aplikasi baru ke layar beranda</string>
     <string name="material_expressive_label">Material 3 Ekspresif</string>
@@ -601,6 +599,7 @@
     <string name="paused_apps_dialog_title">Apl dijeda</string>
     <string name="paused_apps_dialog_message">%1$s dijeda langsung dari peluncur</string>
     <string name="paused_apps_drop_target_label">Jeda apl</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Ikon dok</string>
     <string name="hotseat_bottom_space_label">Padding bawah</string>
     <string name="page_indicator_height">Ketinggian indikator halaman</string>

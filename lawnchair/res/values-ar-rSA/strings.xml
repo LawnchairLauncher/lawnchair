@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">إعادة تحميل الأيقونات دائماً</string>
     <string name="always_reload_icons_description">تجنب استخدام الأيقونات المخزنة مؤقتًا من حزم الأيقونات</string>
     <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
-    <string name="icon_swipe_gestures">إيماءات السحب للأيقونة</string>
-    <string name="icon_swipe_gestures_description">تنفيذ الإجراءات عند السحب لليسار أو لليمين على الأيقونات بدلاً من نقل الشاشة الرئيسية</string>
     <string name="show_deck_layout">تخطيط المجموعة</string>
     <string name="show_deck_layout_description">إظهار خيار التخطيط لإخفاء صفحة التطبيقات وإضافة التطبيقات الجديدة تلقائياً إلى الشاشة الرئيسية</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -601,6 +599,7 @@
     <string name="paused_apps_dialog_title">تم إيقاف التطبيق مؤقتًاتم إيقاف التطبيق مؤقتًا</string>
     <string name="paused_apps_dialog_message">تم إيقاف %1$s مؤقتًا مباشرةً من المشغل</string>
     <string name="paused_apps_drop_target_label">ايقاف التطبيق مؤقتا</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">أيقونات شريط Dock</string>
     <string name="hotseat_bottom_space_label">المساحة السفلية</string>
     <string name="page_indicator_height">ارتفاع مؤشر الصفحة</string>

@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">常にアイコンを再読み込みします</string>
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにします</string>
     <string name="always_reload_icons_warning">アイコンを定期的に再読込します。アイコンパックが頻繁に更新されない場合は不要です</string>
-    <string name="icon_swipe_gestures">アイコンのスワイプジェスチャー</string>
-    <string name="icon_swipe_gestures_description">アイコンを左右にスワイプした時にホーム画面の移動の代わりにアクションを実行します</string>
     <string name="show_deck_layout">ドックのレイアウト</string>
     <string name="show_deck_layout_description">アプリドロワーを非表示にし、自動的に新しいアプリをホーム画面に追加するためのレイアウトオプションを表示します</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -601,6 +599,7 @@
     <string name="paused_apps_dialog_title">アプリを一時停止中</string>
     <string name="paused_apps_dialog_message">%1$s はランチャーから直接一時停止しました</string>
     <string name="paused_apps_drop_target_label">アプリを一時停止</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">ドックアイコン</string>
     <string name="hotseat_bottom_space_label">下の余白</string>
     <string name="page_indicator_height">ページインジケーターの高さ</string>

@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">Sempre recarregar ícones</string>
     <string name="always_reload_icons_description">Evite usar ícones guardados no cache dos pacotes de ícones</string>
     <string name="always_reload_icons_warning">Fará com que os ícones sejam atualizados regularmente, não é necessário se o pacote de ícones não é atualizado regularmente</string>
-    <string name="icon_swipe_gestures">Gestos de deslizamento de ícones</string>
-    <string name="icon_swipe_gestures_description">Realizar ações ao deslizar para a esquerda ou à direita dos ícones em vez de mover para a tela inicial</string>
     <string name="show_deck_layout">Layout do deck</string>
     <string name="show_deck_layout_description">Mostrar uma opção de layout para ocultar a gaveta de aplicativos e adicionar automaticamente novos aplicativos à tela inicial</string>
     <string name="material_expressive_label">Material 3 expressivo</string>
@@ -601,6 +599,7 @@
     <string name="paused_apps_dialog_title">Aplicativo foi pausado</string>
     <string name="paused_apps_dialog_message">%1$s Foi diretamente pausado pela launcher</string>
     <string name="paused_apps_drop_target_label">Pausar aplicativo</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Ícones da dock</string>
     <string name="hotseat_bottom_space_label">Preenchimento inferior</string>
     <string name="page_indicator_height">Altura do indicador de página</string>

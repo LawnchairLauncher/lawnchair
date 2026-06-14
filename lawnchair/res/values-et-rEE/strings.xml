@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">Laadi ikoonid alati uuesti</string>
     <string name="always_reload_icons_description">Väldi ikoonipakettidest vahemällu salvestatud ikoonide kasutamist</string>
     <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
-    <string name="icon_swipe_gestures">Ikoonide nipsamisliigutused</string>
-    <string name="icon_swipe_gestures_description">Toimingute tegemiseks nipsa ikoonil paremale või vasakule, mitte avakuva liigutades</string>
     <string name="show_deck_layout">Doki paigutus</string>
     <string name="show_deck_layout_description">Rakenduste sahtli peitmiseks ja uute rakenduste automaatseks lisamiseks avakuvale kuva paigutuse valik</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -601,6 +599,7 @@
     <string name="paused_apps_dialog_title">Rakendus peatati</string>
     <string name="paused_apps_dialog_message">%1$s peatati otse käivitajast</string>
     <string name="paused_apps_drop_target_label">Peata rakendus</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Doki ikoonid</string>
     <string name="hotseat_bottom_space_label">Alumise serva kaugus</string>
     <string name="page_indicator_height">Lehekülje indikaatori kõrgus</string>

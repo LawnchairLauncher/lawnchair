@@ -49,7 +49,7 @@
     <string name="pro_updated">You\'re up-to-date!</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Atualizações</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_error">Erro ao carregar alterações</string>
     <string name="changes_dialog_no_changes">No changes found</string>
     <string name="changes_dialog_build_format">Versão %1$d - %2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
@@ -142,7 +142,7 @@
     <string name="dock_label">Doca</string>
     <string name="dock_description">Barra de pesquisa, contagem de ícones</string>
     <string name="app_drawer_label">Menu de aplicações</string>
-    <string name="app_drawer_description">Apps ocultos, contagem de colunas, ícones</string>
+    <string name="app_drawer_description">Apps ocultas, contagem de colunas, ícones</string>
     <string name="drawer_search_label">Pesquisa de menu</string>
     <string name="drawer_search_description">Sugestões da web, pesquisa global</string>
     <string name="folders_label">Pastas</string>
@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">Recarregar sempre os ícones</string>
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
     <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
-    <string name="icon_swipe_gestures">Gesto de deslizar no ícone</string>
-    <string name="icon_swipe_gestures_description">Fazer uma ação quando faz um gesto para a esquerda ou direita sobre um ícone em vez de o mover para o ecrã principal</string>
     <string name="show_deck_layout">Ambiente do Deck</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -497,7 +495,7 @@ Transparentes</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="sleep_mode_label">Sleep mode</string>
     <string name="sleep_mode_auto">Automatic</string>
-    <string name="sleep_mode_root">Root</string>
+    <string name="sleep_mode_root">Raíz</string>
     <string name="sleep_mode_accessibility">Accessibility service</string>
     <string name="sleep_mode_device_admin">Device admin</string>
     <!--
@@ -602,6 +600,7 @@ Transparentes</string>
     <string name="paused_apps_dialog_title">Aplicação em pausa</string>
     <string name="paused_apps_dialog_message">%1$s foi colocada em pausa a partir do launcher</string>
     <string name="paused_apps_drop_target_label">Pausar aplicação</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Ícones da doca</string>
     <string name="hotseat_bottom_space_label">Preenchimento inferior</string>
     <string name="page_indicator_height">Altura do indicador de página</string>
@@ -665,8 +664,8 @@ Transparentes</string>
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search web and more</string>
-    <string name="all_apps_search_bar_hint">Pesquisar aplicações</string>
+    <string name="all_apps_device_search_hint">Pesquisa inteligente</string>
+    <string name="all_apps_search_bar_hint">Procurar aplicações</string>
     <string name="all_apps_no_search_results">Nenhum aplicativo encontrado correspondente a \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Da web</string>
     <string name="all_apps_search_result_contacts_from_device">Contactos do dispositivo</string>
@@ -679,7 +678,7 @@ Transparentes</string>
     <string name="clear_history">Limpar histórico de pesquisas</string>
     <string name="search_input_action_clear_results">Limpar caixa de pesquisa</string>
     <!-- Search settings -->
-    <string name="pref_category_search">Pesquisar</string>
+    <string name="pref_category_search">Procurar</string>
     <string name="show_app_search_bar">Mostrar barra de pesquisa</string>
     <string name="pref_search_auto_show_keyboard">Mostrar teclado automaticamente</string>
     <string name="fuzzy_search_title">Pesquisa aproximada</string>
@@ -713,7 +712,7 @@ Transparentes</string>
     <string name="search_pref_result_files_title">Ficheiros</string>
     <string name="search_pref_result_visual_media_title">Fotos e Videos</string>
     <string name="search_pref_result_audio_media_title">Ficheiros de Audio</string>
-    <string name="search_pref_result_all_files_title"></string>
+    <string name="search_pref_result_all_files_title">Todos os ficheiros</string>
     <string name="search_pref_result_web_title">Sugestões da Web</string>
     <string name="search_pref_result_history_title">Histórico de pesquisa</string>
     <string name="all_apps_search_result_calculator">Calculadora</string>
