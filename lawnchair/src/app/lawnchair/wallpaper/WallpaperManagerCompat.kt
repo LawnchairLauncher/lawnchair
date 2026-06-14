@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 sealed class WallpaperManagerCompat(val context: Context) {
 
     private val listeners = mutableListOf<OnColorsChangedListener>()
+    private val scope = CoroutineScope(Dispatchers.IO)
     private val colorHints: Int get() = wallpaperColors?.colorHints ?: 0
     val wallpaperManager: WallpaperManager = context.requireSystemService()
     val service = WallpaperService(context)
@@ -31,8 +32,10 @@ sealed class WallpaperManagerCompat(val context: Context) {
     }
 
     protected fun notifyChange() {
-        if (service.getTopWallpapers().isEmpty()) {
-            CoroutineScope(Dispatchers.IO).launch {
+        // Querying/saving wallpapers touches Room, so keep it off the main thread
+        // (notifyChange is invoked from the WallpaperManager color callback on the main looper).
+        scope.launch {
+            if (service.getTopWallpapers().isEmpty()) {
                 service.saveWallpaper(wallpaperManager)
             }
         }
