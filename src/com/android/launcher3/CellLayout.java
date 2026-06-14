@@ -31,6 +31,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -164,6 +165,11 @@ public class CellLayout extends ViewGroup {
     private boolean mVisualizeDropLocation = true;
     private RectF mVisualizeGridRect = new RectF();
     private Paint mVisualizeGridPaint = new Paint();
+    // Lawnchair: Subgrid positioning — paint for the faint MAIN-cell grid shown during a drag, plus a
+    // dashed stroke for the drop preview when the target is a half-cell position/size.
+    private final Paint mSubgridGuidePaint = new Paint();
+    private final DashPathEffect mSubgridDashEffect =
+            new DashPathEffect(new float[]{18f, 12f}, 0f);
     private int mGridVisualizationRoundingRadius;
     private float mGridAlpha = 0f;
     private int mGridColor = 0;
@@ -173,6 +179,9 @@ public class CellLayout extends ViewGroup {
     // When a drag operation is in progress, holds the nearest cell to the touch point
     private final int[] mDragCell = new int[2];
     private final int[] mDragCellSpan = new int[2];
+    // Lawnchair: Subgrid positioning — half-cell offset/size of the current drop preview.
+    private final int[] mDragCellSub = new int[2];
+    private final int[] mDragCellSubSpan = new int[2];
 
     private boolean mDragging = false;
     public boolean mHasOnLayoutBeenCalled = false;
@@ -638,13 +647,19 @@ public class CellLayout extends ViewGroup {
             }
         }
 
+        // Lawnchair: Subgrid positioning — reveal the MAIN cell grid while a drag/edit is active. Driven
+        // by the steady spring-loaded progress (not the per-outline animation) so it doesn't flicker
+        // as the item moves between cells.
+        drawSubgridGuides(canvas);
+
         if (mVisualizeDropLocation) {
             for (int i = 0; i < mDragOutlines.length; i++) {
                 final float alpha = mDragOutlineAlphas[i];
                 if (alpha <= 0) continue;
                 CellLayoutLayoutParams params = mDragOutlines[i];
                 cellToRect(params.getCellX(), params.getCellY(), params.cellHSpan, params.cellVSpan,
-                        mTempOnDrawCellToRect);
+                        params.getSubX(), params.getSubY(), params.getSubSpanX(),
+                        params.getSubSpanY(), mTempOnDrawCellToRect);
                 mVisualizeGridRect.set(mTempOnDrawCellToRect);
                 mVisualizeGridRect.inset(paddingX, paddingY);
 
@@ -652,12 +667,49 @@ public class CellLayout extends ViewGroup {
                 mVisualizeGridPaint.setStyle(Paint.Style.STROKE);
                 mVisualizeGridPaint.setColor(Color.argb((int) (alpha),
                         Color.red(mGridColor), Color.green(mGridColor), Color.blue(mGridColor)));
+                // Lawnchair: Subgrid positioning — dash the preview when the target is a half-cell
+                // position/size, so a half placement reads differently from an on-grid one.
+                boolean isHalfTarget = params.getSubX() != 0 || params.getSubY() != 0
+                        || params.getSubSpanX() != 0 || params.getSubSpanY() != 0;
+                mVisualizeGridPaint.setPathEffect(isHalfTarget ? mSubgridDashEffect : null);
 
                 canvas.save();
                 canvas.translate(getMarginForGivenCellParams(params), 0);
                 canvas.drawRoundRect(mVisualizeGridRect, mGridVisualizationRoundingRadius,
                         mGridVisualizationRoundingRadius, mVisualizeGridPaint);
                 canvas.restore();
+                mVisualizeGridPaint.setPathEffect(null);
+            }
+        }
+    }
+
+    /**
+     * Lawnchair: Subgrid positioning. Draws the faint MAIN (whole) cell grid while an item is being
+     * dragged, so the user has the real grid as a reference. A half placement is then obvious because
+     * the (dashed) drop preview sits offset from these whole cells. No-op unless subgrid is enabled.
+     */
+    private void drawSubgridGuides(Canvas canvas) {
+        // Driven by the steady spring-loaded progress so the grid stays put while the item moves.
+        if (!isSubgridEnabled() || mSpringLoadedProgress <= 0f) {
+            return;
+        }
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int paddingX = Math.min((mCellWidth - dp.iconSizePx) / 2, dp.gridVisualizationPaddingX);
+        int paddingY = Math.min((mCellHeight - dp.iconSizePx) / 2, dp.gridVisualizationPaddingY);
+
+        mSubgridGuidePaint.setStyle(Paint.Style.STROKE);
+        mSubgridGuidePaint.setStrokeWidth(3);
+        // Fainter than the drop outline so the grid reads as a subtle reference.
+        mSubgridGuidePaint.setColor(Color.argb((int) (mSpringLoadedProgress * 0.3f * 255),
+                Color.red(mGridColor), Color.green(mGridColor), Color.blue(mGridColor)));
+
+        for (int c = 0; c < mCountX; c++) {
+            for (int r = 0; r < mCountY; r++) {
+                cellToRect(c, r, 1, 1, mTempOnDrawCellToRect);
+                mVisualizeGridRect.set(mTempOnDrawCellToRect);
+                mVisualizeGridRect.inset(paddingX, paddingY);
+                canvas.drawRoundRect(mVisualizeGridRect, mGridVisualizationRoundingRadius,
+                        mGridVisualizationRoundingRadius, mSubgridGuidePaint);
             }
         }
     }
@@ -751,6 +803,17 @@ public class CellLayout extends ViewGroup {
 
     public int getCountY() {
         return mCountY;
+    }
+
+    /**
+     * Lawnchair: Subgrid (half-cell) positioning. Honored only on the workspace and only when the
+     * preference is enabled. In this mode items are placed freely (the reorder/occupancy engine is
+     * short-circuited, like {@link PreferenceManager2#getAllowWidgetOverlap()}), so half-cell
+     * placement and sizing never fight the integer grid.
+     */
+    public boolean isSubgridEnabled() {
+        return mContainerType == WORKSPACE
+                && PreferenceExtensionsKt.firstBlocking(pref.getEnableSubgridPositioning());
     }
 
     public boolean acceptsWidget() {
@@ -878,6 +941,79 @@ public class CellLayout extends ViewGroup {
         if (result[0] >= xAxis) result[0] = xAxis - 1;
         if (result[1] < 0) result[1] = 0;
         if (result[1] >= yAxis) result[1] = yAxis - 1;
+    }
+
+    /**
+     * Lawnchair: Subgrid positioning. Refines an integer drop target to the nearest half-cell.
+     * Given the base {@code targetCell} chosen by the normal drop logic and the drag visual center
+     * (in this layout's coordinates), writes the possibly-adjusted base cell back into
+     * {@code targetCell} and the half-step (0 or 1) for each axis into {@code outSub}. No-op (sub = 0)
+     * unless subgrid positioning is enabled for this layout.
+     */
+    public void computeSubgridTarget(int[] targetCell, int[] outSub, int spanX, int spanY,
+            int subSpanX, int subSpanY, float visualCenterX, float visualCenterY) {
+        outSub[0] = 0;
+        outSub[1] = 0;
+        if (!isSubgridEnabled()) {
+            return;
+        }
+        Rect rect = new Rect();
+        cellToRect(targetCell[0], targetCell[1], spanX, spanY, rect);
+        float pitchX = mCellWidth + mBorderSpace.x;
+        float pitchY = mCellHeight + mBorderSpace.y;
+        // Desired top-left of the item if its actual (possibly half-sized) footprint were centered on
+        // the drag point — matches the rendered width/height from CellLayoutLayoutParams.setup.
+        float actualSpanX = spanX + subSpanX * 0.5f;
+        float actualSpanY = spanY + subSpanY * 0.5f;
+        float idealLeft = visualCenterX
+                - (actualSpanX * mCellWidth + (actualSpanX - 1) * mBorderSpace.x) / 2f;
+        float idealTop = visualCenterY
+                - (actualSpanY * mCellHeight + (actualSpanY - 1) * mBorderSpace.y) / 2f;
+        outSub[0] = halfSnapAxis((idealLeft - rect.left) / pitchX, targetCell, 0, spanX, subSpanX,
+                mCountX);
+        outSub[1] = halfSnapAxis((idealTop - rect.top) / pitchY, targetCell, 1, spanY, subSpanY,
+                mCountY);
+    }
+
+    /**
+     * Lawnchair: Subgrid positioning. Resolves a fractional offset (in cell units) from a base cell into
+     * a (possibly adjusted) base cell plus a half-step. The whole computation is done in HALF-cells so
+     * that a half-SIZED item ({@code subSpan != 0}, e.g. a 2.5-cell-wide widget) is included in the
+     * fit — otherwise such an item could be placed where its trailing edge spills half a cell past the
+     * page. The item is always kept fully on the page and is snapped flush to the trailing edge rather
+     * than being left a half-cell short of it (no half-cell gap at the boundary). Interior halves and a
+     * half against the leading edge are preserved.
+     */
+    private static int halfSnapAxis(float delta, int[] base, int idx, int span, int subSpan,
+            int count) {
+        int sub;
+        if (delta >= 0.25f) {
+            sub = 1;
+        } else if (delta <= -0.25f) {
+            base[idx] -= 1;
+            sub = 1;
+        } else {
+            sub = 0;
+        }
+
+        final int countHalf = count * 2;
+        final int sizeHalf = span * 2 + subSpan;          // actual extent of the item in half-cells
+        final int maxPosHalf = countHalf - sizeHalf;       // furthest the leading edge can sit (flush)
+        int posHalf = base[idx] * 2 + sub;                 // desired leading edge in half-cells
+
+        // Keep the item fully on the page: clamp the leading edge to the page start and never let the
+        // trailing edge overflow. A half-cell GAP against the trailing edge (e.g. column 4.5 in a
+        // 5-column grid) is a valid interior position and is intentionally kept — only an edge that
+        // would spill past the page (e.g. 5.5) is snapped back flush.
+        if (posHalf > maxPosHalf) {
+            posHalf = maxPosHalf;
+        }
+        if (posHalf < 0) {
+            posHalf = 0;
+        }
+
+        base[idx] = Math.floorDiv(posHalf, 2);
+        return posHalf - base[idx] * 2;
     }
 
     /**
@@ -1178,8 +1314,19 @@ public class CellLayout extends ViewGroup {
 
     void visualizeDropLocation(int cellX, int cellY, int spanX, int spanY,
                                DropTarget.DragObject dragObject) {
+        visualizeDropLocation(cellX, cellY, spanX, spanY, 0, 0, 0, 0, dragObject);
+    }
+
+    /**
+     * Lawnchair: Subgrid positioning. Draws the drop preview at a half-cell offset/size so the user
+     * sees that the item will land "in the middle" (half a column/row) before dropping.
+     */
+    void visualizeDropLocation(int cellX, int cellY, int spanX, int spanY,
+                               int subX, int subY, int subSpanX, int subSpanY,
+                               DropTarget.DragObject dragObject) {
         if (mDragCell[0] != cellX || mDragCell[1] != cellY || mDragCellSpan[0] != spanX
-                || mDragCellSpan[1] != spanY) {
+                || mDragCellSpan[1] != spanY || mDragCellSub[0] != subX || mDragCellSub[1] != subY
+                || mDragCellSubSpan[0] != subSpanX || mDragCellSubSpan[1] != subSpanY) {
             determineIfDragHapticsPlay();
             if (mPlayDragHaptics && Flags.msdlFeedback()) {
                 mMSDLPlayerWrapper.playToken(MSDLToken.DRAG_INDICATOR_DISCRETE);
@@ -1188,6 +1335,10 @@ public class CellLayout extends ViewGroup {
             mDragCell[1] = cellY;
             mDragCellSpan[0] = spanX;
             mDragCellSpan[1] = spanY;
+            mDragCellSub[0] = subX;
+            mDragCellSub[1] = subY;
+            mDragCellSubSpan[0] = subSpanX;
+            mDragCellSubSpan[1] = subSpanY;
 
             final int oldIndex = mDragOutlineCurrent;
             mDragOutlineAnims[oldIndex].animateOut();
@@ -1198,6 +1349,10 @@ public class CellLayout extends ViewGroup {
             cell.setCellY(cellY);
             cell.cellHSpan = spanX;
             cell.cellVSpan = spanY;
+            cell.setSubX(subX);
+            cell.setSubY(subY);
+            cell.setSubSpanX(subSpanX);
+            cell.setSubSpanY(subSpanY);
 
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
             invalidate();
@@ -1497,6 +1652,42 @@ public class CellLayout extends ViewGroup {
                             screenId, lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan);
                 }
             }
+        }
+    }
+
+    /**
+     * Lawnchair: Subgrid positioning. Persists a single view's final geometry (including half-cell
+     * offsets/sizes) to the model. Used by the subgrid widget-resize path, which skips the
+     * reorder-based {@link #createAreaForResize} (and therefore {@link #commitTempPlacement}) because
+     * subgrid placement is free. Mirrors the presenter coordinates that {@code commitTempPlacement}
+     * passes to {@link com.android.launcher3.model.ModelWriter#modifyItemInDatabase}.
+     */
+    public void persistViewGeometry(View view) {
+        ItemInfo info = (ItemInfo) view.getTag();
+        if (info == null || view.getParent() != mShortcutsAndWidgets) return;
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) view.getLayoutParams();
+
+        int screenId = mCellLayoutContainer.getCellLayoutId(this);
+        int container = Favorites.CONTAINER_DESKTOP;
+        if (mContainerType == HOTSEAT) {
+            screenId = -1;
+            container = Favorites.CONTAINER_HOTSEAT;
+        }
+
+        lp.setCellX(lp.getTmpCellX());
+        lp.setCellY(lp.getTmpCellY());
+        lp.useTmpCoords = false;
+        info.subX = lp.getSubX();
+        info.subY = lp.getSubY();
+        info.subSpanX = lp.getSubSpanX();
+        info.subSpanY = lp.getSubSpanY();
+
+        mActivity.getModelWriter().modifyItemInDatabase(info, container, screenId,
+                lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan);
+        // Lawnchair: Subgrid free placement bypasses occupancy (and integer marking would ignore the
+        // half-cell offset and could clobber an overlapping neighbour's base cell), so skip it.
+        if (!isSubgridEnabled()) {
+            markCellsAsOccupiedForView(view);
         }
     }
 
@@ -1856,6 +2047,25 @@ public class CellLayout extends ViewGroup {
         resultRect.set(x, y, x + width, y + height);
     }
 
+    /**
+     * Lawnchair: Subgrid positioning. Like {@link #cellToRect(int, int, int, int, Rect)} but offset by
+     * the given half-cell position step and extended by the given half-cell span step (each 0 or 1).
+     * Matches the geometry produced by {@link CellLayoutLayoutParams#setup} so the drop preview lines
+     * up with where the item will actually render.
+     */
+    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, int subX, int subY,
+            int subSpanX, int subSpanY, Rect resultRect) {
+        cellToRect(cellX, cellY, cellHSpan, cellVSpan, resultRect);
+        if (subX == 0 && subY == 0 && subSpanX == 0 && subSpanY == 0) {
+            return;
+        }
+        final float pitchX = mCellWidth + mBorderSpace.x;
+        final float pitchY = mCellHeight + mBorderSpace.y;
+        resultRect.offset(Math.round(subX * 0.5f * pitchX), Math.round(subY * 0.5f * pitchY));
+        resultRect.right += Math.round(subSpanX * 0.5f * pitchX);
+        resultRect.bottom += Math.round(subSpanY * 0.5f * pitchY);
+    }
+
     /** Enables successors to provide an X adjustment for the cell. */
     protected int getTranslationXForCell(int cellX, int cellY) {
         return 0;
@@ -1926,7 +2136,9 @@ public class CellLayout extends ViewGroup {
 
     public boolean isOccupied(int x, int y) {
         if (x >= 0 && x < mCountX && y >= 0 && y < mCountY) {
-            return mOccupied.cells[x][y] && !PreferenceExtensionsKt.firstBlocking(pref.getAllowWidgetOverlap());
+            return mOccupied.cells[x][y]
+                    && !PreferenceExtensionsKt.firstBlocking(pref.getAllowWidgetOverlap())
+                    && !isSubgridEnabled();
         }
         if (BuildConfigs.IS_STUDIO_BUILD) {
             throw new RuntimeException("Position exceeds the bound of this CellLayout");
@@ -1946,7 +2158,11 @@ public class CellLayout extends ViewGroup {
 
     @Override
     protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-        return new CellLayoutLayoutParams(p);
+        // Lawnchair: Use the copy constructor for CellLayoutLayoutParams so subgrid half-cell fields
+        // (and tmp coords) are preserved; the ViewGroup.LayoutParams ctor would drop them.
+        return p instanceof CellLayoutLayoutParams
+                ? new CellLayoutLayoutParams((CellLayoutLayoutParams) p)
+                : new CellLayoutLayoutParams(p);
     }
 
     /**
@@ -2009,7 +2225,9 @@ public class CellLayout extends ViewGroup {
     }
 
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
-        return mOccupied.isRegionVacant(x, y, spanX, spanY) || PreferenceExtensionsKt.firstBlocking(pref.getAllowWidgetOverlap());
+        return mOccupied.isRegionVacant(x, y, spanX, spanY)
+                || PreferenceExtensionsKt.firstBlocking(pref.getAllowWidgetOverlap())
+                || isSubgridEnabled();
     }
 
     public void setSpaceBetweenCellLayoutsPx(@Px int spaceBetweenCellLayoutsPx) {

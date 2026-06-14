@@ -536,6 +536,12 @@ public class LoaderCursor extends CursorWrapper {
         info.screenId = getInt(mScreenIndex);
         info.cellX = getInt(mCellXIndex);
         info.cellY = getInt(mCellYIndex);
+        // Lawnchair: Subgrid positioning — recover half-cell offsets/sizes from the (possibly REAL)
+        // columns. Base reads above stay integer (getInt truncates), so legacy behavior is unchanged.
+        info.subX = ItemInfo.decodeSubgridStep(getFloat(mCellXIndex));
+        info.subY = ItemInfo.decodeSubgridStep(getFloat(mCellYIndex));
+        info.subSpanX = ItemInfo.decodeSubgridStep(getFloat(mSpanXIndex));
+        info.subSpanY = ItemInfo.decodeSubgridStep(getFloat(mSpanYIndex));
     }
 
     /**
@@ -667,7 +673,10 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getAllowWidgetOverlap());
+            // Lawnchair: Subgrid free placement allows items to share a base cell, so don't drop them.
+            return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getAllowWidgetOverlap())
+                    || PreferenceExtensionsKt.firstBlocking(
+                            preferenceManager2.getEnableSubgridPositioning());
         }
     }
 

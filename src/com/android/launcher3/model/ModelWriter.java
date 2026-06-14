@@ -187,10 +187,11 @@ public class ModelWriter {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
         notifyItemModified(item);
 
+        // Lawnchair: Subgrid positioning — preserve half-cell offsets when moving items.
         enqueueDeleteRunnable(new UpdateItemRunnable(item, () -> new ContentWriter(mContext)
                 .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
+                .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
+                .putSubgrid(Favorites.CELLY, item.cellY, item.subY)
                 .put(Favorites.RANK, item.rank)
                 .put(Favorites.SCREEN, item.screenId)));
     }
@@ -210,11 +211,13 @@ public class ModelWriter {
             updateItemInfoProps(item, container, screen, item.cellX, item.cellY);
 
             final ContentValues values = new ContentValues();
-            values.put(Favorites.CONTAINER, item.container);
-            values.put(Favorites.CELLX, item.cellX);
-            values.put(Favorites.CELLY, item.cellY);
-            values.put(Favorites.RANK, item.rank);
-            values.put(Favorites.SCREEN, item.screenId);
+            // Lawnchair: Subgrid positioning — preserve half-cell offsets when bulk-moving items.
+            new ContentWriter(values, mContext)
+                    .put(Favorites.CONTAINER, item.container)
+                    .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
+                    .putSubgrid(Favorites.CELLY, item.cellY, item.subY)
+                    .put(Favorites.RANK, item.rank)
+                    .put(Favorites.SCREEN, item.screenId);
 
             contentValues.add(values);
         }
@@ -330,13 +333,14 @@ public class ModelWriter {
         item.spanX = spanX;
         item.spanY = spanY;
         notifyItemModified(item);
+        // Lawnchair: Subgrid positioning — persist half-cell offsets/sizes as REAL when present.
         new UpdateItemRunnable(item, () -> new ContentWriter(mContext)
                 .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
+                .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
+                .putSubgrid(Favorites.CELLY, item.cellY, item.subY)
                 .put(Favorites.RANK, item.rank)
-                .put(Favorites.SPANX, item.spanX)
-                .put(Favorites.SPANY, item.spanY)
+                .putSubgrid(Favorites.SPANX, item.spanX, item.subSpanX)
+                .putSubgrid(Favorites.SPANY, item.spanY, item.subSpanY)
                 .put(Favorites.SCREEN, item.screenId))
                 .executeOnModelThread();
     }
