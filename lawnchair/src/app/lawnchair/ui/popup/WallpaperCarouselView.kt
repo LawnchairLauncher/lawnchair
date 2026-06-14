@@ -27,6 +27,8 @@ import com.android.launcher3.util.Themes
 import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -45,6 +47,7 @@ class WallpaperCarouselView @JvmOverloads constructor(
         setBackgroundWithRadius(Themes.getColorAccent(context), 100F)
     }
     private val loadingView = ProgressBar(context).apply { isIndeterminate = true }
+    private val viewScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     init {
         orientation = HORIZONTAL
@@ -113,10 +116,40 @@ class WallpaperCarouselView @JvmOverloads constructor(
     }
 
     private fun loadWallpaperImage(wallpaper: Wallpaper, cardView: CardView, isCurrent: Boolean) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val bitmap = File(wallpaper.imagePath).takeIf { it.exists() }?.let { BitmapFactory.decodeFile(it.path) }
-            withContext(Dispatchers.Main) { addImageView(cardView, bitmap, isCurrent) }
+        viewScope.launch {
+            val bitmap = withContext(Dispatchers.IO) {
+                decodeSampledWallpaper(wallpaper.imagePath, cardView.layoutParams?.width ?: 0)
+            }
+            addImageView(cardView, bitmap, isCurrent)
         }
+    }
+
+    /**
+     * Decode the wallpaper roughly at the size it is shown at. Carousel thumbnails are small, so
+     * decoding full-resolution wallpapers (which can be several megabytes each) risks OutOfMemory.
+     */
+    private fun decodeSampledWallpaper(path: String, reqWidth: Int): Bitmap? {
+        val file = File(path).takeIf { it.exists() } ?: return null
+        if (reqWidth <= 0) return BitmapFactory.decodeFile(file.path)
+        val reqHeight = height.takeIf { it > 0 } ?: reqWidth
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(file.path, bounds)
+        val options = BitmapFactory.Options().apply {
+            inSampleSize = calculateInSampleSize(bounds.outWidth, bounds.outHeight, reqWidth, reqHeight)
+        }
+        return BitmapFactory.decodeFile(file.path, options)
+    }
+
+    private fun calculateInSampleSize(srcWidth: Int, srcHeight: Int, reqWidth: Int, reqHeight: Int): Int {
+        var inSampleSize = 1
+        if (srcHeight > reqHeight || srcWidth > reqWidth) {
+            val halfHeight = srcHeight / 2
+            val halfWidth = srcWidth / 2
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+        return inSampleSize
     }
 
     private fun addImageView(cardView: CardView, bitmap: Bitmap?, isCurrent: Boolean) {
@@ -176,6 +209,11 @@ class WallpaperCarouselView @JvmOverloads constructor(
                 gravity = Gravity.CENTER
             },
         )
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        viewScope.cancel()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
