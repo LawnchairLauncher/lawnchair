@@ -117,9 +117,12 @@ class WallpaperCarouselView @JvmOverloads constructor(
     }
 
     private fun loadWallpaperImage(wallpaper: Wallpaper, cardView: CardView, isCurrent: Boolean) {
+        // Read view dimensions on the main thread before decoding off-thread.
+        val reqWidth = cardView.layoutParams?.width ?: 0
+        val reqHeight = height.takeIf { it > 0 } ?: reqWidth
         viewScope.launch {
             val bitmap = withContext(Dispatchers.IO) {
-                decodeSampledWallpaper(wallpaper.imagePath, cardView.layoutParams?.width ?: 0)
+                decodeSampledWallpaper(wallpaper.imagePath, reqWidth, reqHeight)
             }
             addImageView(cardView, bitmap, isCurrent)
         }
@@ -129,10 +132,9 @@ class WallpaperCarouselView @JvmOverloads constructor(
      * Decode the wallpaper roughly at the size it is shown at. Carousel thumbnails are small, so
      * decoding full-resolution wallpapers (which can be several megabytes each) risks OutOfMemory.
      */
-    private fun decodeSampledWallpaper(path: String, reqWidth: Int): Bitmap? {
+    private fun decodeSampledWallpaper(path: String, reqWidth: Int, reqHeight: Int): Bitmap? {
         val file = File(path).takeIf { it.exists() } ?: return null
         if (reqWidth <= 0) return BitmapFactory.decodeFile(file.path)
-        val reqHeight = height.takeIf { it > 0 } ?: reqWidth
         return decodeSampledBitmapFromFile(file.path, reqWidth, reqHeight)
     }
 
