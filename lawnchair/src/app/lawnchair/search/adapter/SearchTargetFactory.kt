@@ -30,6 +30,7 @@ import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
 import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
 import app.lawnchair.theme.color.tokens.ColorTokens
+import app.lawnchair.util.calculateInSampleSize
 import app.lawnchair.util.createTextBitmap
 import app.lawnchair.util.file2Uri
 import app.lawnchair.util.mimeCompat
@@ -494,29 +495,6 @@ object FilesTarget {
             Log.w("FilesTarget", "Failed to decode thumbnail", e)
             null
         }
-    }
-
-    /**
-     * We calculate the In Sample Size by a power of 2 so that the decoded bitmap will be as small as
-     * possible while both dimensions remain >= [reqWidth] / [reqHeight]
-     */
-    private fun calculateInSampleSize(
-        rawWidth: Int,
-        rawHeight: Int,
-        reqWidth: Int,
-        reqHeight: Int,
-    ): Int {
-        var inSampleSize = 1
-        if (rawHeight > reqHeight || rawWidth > reqWidth) {
-            // If so we calculate the image at half the dimensions
-            val halfHeight = rawHeight / 2
-            val halfWidth = rawWidth / 2
-            // Then we loop until we find the right sample size by the power of 2
-            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
-                inSampleSize *= 2
-            }
-        }
-        return inSampleSize
     }
 }
 

@@ -20,6 +20,7 @@ import androidx.lifecycle.LifecycleOwner
 import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.data.wallpaper.model.WallpaperViewModel
 import app.lawnchair.launcher
+import app.lawnchair.util.decodeSampledBitmapFromFile
 import app.lawnchair.util.observeOnce
 import app.lawnchair.views.component.IconFrame
 import com.android.launcher3.R
@@ -132,24 +133,7 @@ class WallpaperCarouselView @JvmOverloads constructor(
         val file = File(path).takeIf { it.exists() } ?: return null
         if (reqWidth <= 0) return BitmapFactory.decodeFile(file.path)
         val reqHeight = height.takeIf { it > 0 } ?: reqWidth
-        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(file.path, bounds)
-        val options = BitmapFactory.Options().apply {
-            inSampleSize = calculateInSampleSize(bounds.outWidth, bounds.outHeight, reqWidth, reqHeight)
-        }
-        return BitmapFactory.decodeFile(file.path, options)
-    }
-
-    private fun calculateInSampleSize(srcWidth: Int, srcHeight: Int, reqWidth: Int, reqHeight: Int): Int {
-        var inSampleSize = 1
-        if (srcHeight > reqHeight || srcWidth > reqWidth) {
-            val halfHeight = srcHeight / 2
-            val halfWidth = srcWidth / 2
-            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
-                inSampleSize *= 2
-            }
-        }
-        return inSampleSize
+        return decodeSampledBitmapFromFile(file.path, reqWidth, reqHeight)
     }
 
     private fun addImageView(cardView: CardView, bitmap: Bitmap?, isCurrent: Boolean) {

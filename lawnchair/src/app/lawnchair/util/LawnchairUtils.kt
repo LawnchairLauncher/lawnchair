@@ -29,6 +29,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
@@ -418,3 +419,32 @@ inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>
 fun String.toTitleCase(): String = splitToSequence(" ")
     .map { word -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
     .joinToString(" ")
+
+/**
+ * Calculate an `inSampleSize` as a power of 2 so that a decoded bitmap stays as small as possible
+ * while both dimensions remain >= [reqWidth] / [reqHeight].
+ */
+fun calculateInSampleSize(rawWidth: Int, rawHeight: Int, reqWidth: Int, reqHeight: Int): Int {
+    var inSampleSize = 1
+    if (rawHeight > reqHeight || rawWidth > reqWidth) {
+        val halfHeight = rawHeight / 2
+        val halfWidth = rawWidth / 2
+        while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+            inSampleSize *= 2
+        }
+    }
+    return inSampleSize
+}
+
+/**
+ * Decode a bitmap from [path] downsampled to roughly [reqWidth] x [reqHeight] to avoid loading
+ * full-resolution images into small views. Returns null if the file cannot be decoded.
+ */
+fun decodeSampledBitmapFromFile(path: String, reqWidth: Int, reqHeight: Int): Bitmap? {
+    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    BitmapFactory.decodeFile(path, bounds)
+    val options = BitmapFactory.Options().apply {
+        inSampleSize = calculateInSampleSize(bounds.outWidth, bounds.outHeight, reqWidth, reqHeight)
+    }
+    return BitmapFactory.decodeFile(path, options)
+}
