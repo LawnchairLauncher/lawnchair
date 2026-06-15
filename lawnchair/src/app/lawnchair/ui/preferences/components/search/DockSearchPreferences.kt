@@ -27,17 +27,18 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.qsb.AssistantIconView
 import app.lawnchair.qsb.LawnQsbLayout
 import app.lawnchair.qsb.LawnQsbUi
 import app.lawnchair.qsb.QsbActions
 import app.lawnchair.qsb.buildQsbStyle
-import app.lawnchair.qsb.getThemedQsbBackgroundColor
+import app.lawnchair.qsb.getHotseatBackgroundColor
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
-import app.lawnchair.qsb.rememberQsbState
+import app.lawnchair.qsb.rememberHotseatQsbState
+import app.lawnchair.theme.UiColorMode
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
@@ -48,6 +49,7 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.DockSearchProvider
+import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 
 @Composable
@@ -189,7 +191,7 @@ private fun DockSearchBarPreview(
     val searchProvider = provider
     val supportsLens = searchProvider == Google || searchProvider == PixelSearch
     val voiceIntent = remember(searchProvider, context) {
-        AssistantIconView.getVoiceIntent(searchProvider, context)
+        LawnQsbLayout.getVoiceIntent(searchProvider, context)
     }
     val lensIntent = remember(supportsLens, context) {
         if (supportsLens) LawnQsbLayout.getLensIntent(context) else null
@@ -207,7 +209,7 @@ private fun DockSearchBarPreview(
                 contentAlignment = Alignment.Center,
             ) {
                 LawnQsbUi(
-                    state = rememberQsbState(
+                    state = rememberHotseatQsbState(
                         searchProvider,
                         themed,
                         showMic = voiceIntent != null,
@@ -216,11 +218,15 @@ private fun DockSearchBarPreview(
                     style = buildQsbStyle(
                         context = context,
                         themed = themed,
+                        backgroundColor = getHotseatBackgroundColor(
+                            context,
+                            themed,
+                            getThemedQsbBackgroundColor(),
+                        ),
                         cornerRadius = cornerRadiusFactor,
-                        transparency = transparency,
+                        backgroundAlpha = transparency,
                         strokeWidth = strokeWidth,
                         strokeColor = strokeColor.colorPreferenceEntry.lightColor.invoke(context),
-                        themedBackgroundColor = getThemedQsbBackgroundColor(),
                     ),
                     actions = QsbActions(
                         onQsbClick = {},
@@ -255,5 +261,13 @@ private fun HotseatModePreference(
         entries = entries,
         label = stringResource(id = R.string.hotseat_mode_label),
         modifier = modifier,
+    )
+}
+
+@Composable
+private fun getThemedQsbBackgroundColor(): Int {
+    return ColorTokens.ColorBackground.resolveColor(
+        LocalContext.current,
+        if (isSelectedThemeDark) UiColorMode.Dark else UiColorMode.Light,
     )
 }

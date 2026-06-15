@@ -6,26 +6,25 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.animateToAllApps
 import app.lawnchair.launcher
-import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences.observeAsState
+import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.preferences2.subscribeBlocking
+import app.lawnchair.preferences2.asState
 import app.lawnchair.qsb.providers.AppSearch
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
-import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.ProvideLifecycleState
 import app.lawnchair.util.repeatOnAttached
-import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.views.ActivityContext
@@ -56,7 +55,68 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             setContent {
                 LawnchairTheme {
                     ProvideLifecycleState {
-                        LawnQsbUi()
+                        val context = LocalContext.current
+
+                        val prefs = preferenceManager()
+                        val prefs2 = preferenceManager2
+
+                        val searchProvider by prefs2.hotseatQsbProvider.asState()
+                        val themed by prefs2.themedHotseatQsb.asState()
+
+                        val supportsLens = searchProvider == Google || searchProvider == PixelSearch
+                        val voiceIntent = remember(searchProvider, context) {
+                            getVoiceIntent(searchProvider, context)
+                        }
+                        val lensIntent = remember(supportsLens, context) {
+                            if (supportsLens) getLensIntent(context) else null
+                        }
+
+                        val state = rememberHotseatQsbState(
+                            searchProvider = getSearchProvider(context, prefs2),
+                            themed = themed,
+                            showMic = voiceIntent != null,
+                            showLens = lensIntent != null,
+                        )
+
+                        val style = buildQsbStyle(
+                            context = LocalContext.current,
+                            themed = themed,
+                            backgroundColor = getHotseatBackgroundColor(context, themed),
+                            backgroundAlpha = prefs.hotseatQsbAlpha.observeAsState().value,
+                            cornerRadius = prefs.hotseatQsbCornerRadius.observeAsState().value,
+                            strokeColor = prefs2.strokeColorStyle.asState().value.colorPreferenceEntry.lightColor.invoke(context),
+                            strokeWidth = prefs.hotseatQsbStrokeWidth.observeAsState().value,
+                        )
+
+                        val actions = QsbActions(
+                            onQsbClick = {
+                                val launcher = context.launcher
+                                launcher.lifecycleScope.launch {
+                                    if (prefs2.matchHotseatQsbStyle.firstBlocking()) {
+                                        launcher.appsView.searchUiManager.editText?.showKeyboard()
+                                        launcher.animateToAllApps()
+                                    } else {
+                                        searchProvider.launch(launcher)
+                                    }
+                                }
+                            },
+                            onStartIconClick = null,
+                            onEndIconClick = { id ->
+                                runCatching {
+                                    when (id) {
+                                        QsbIconId.MIC -> voiceIntent?.let { context.startActivity(it) }
+                                        QsbIconId.LENS -> lensIntent?.let { context.startActivity(it) }
+                                        else -> null
+                                    }
+                                }
+                            },
+                        )
+
+                        LawnQsbUi(
+                            state = state,
+                            style = style,
+                            actions = actions,
+                        )
                     }
                 }
             }
@@ -107,6 +167,19 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     companion object {
         private const val LENS_PACKAGE = "com.google.ar.lens"
         private const val LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
+
+        fun getVoiceIntent(
+            provider: QsbSearchProvider,
+            context: Context,
+        ): Intent? {
+            val intent = if (provider.supportVoiceIntent) provider.createVoiceIntent() else null
+
+            return if (intent == null || !resolveIntent(context, intent)) {
+                null
+            } else {
+                intent
+            }
+        }
 
         fun getLensIntent(context: Context): Intent? {
             val lensIntent = Intent.makeMainActivity(ComponentName(LENS_PACKAGE, LENS_ACTIVITY))

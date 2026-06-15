@@ -1,6 +1,7 @@
 package app.lawnchair.qsb
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.widget.ImageView
@@ -10,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.res.ResourcesCompat
+import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
