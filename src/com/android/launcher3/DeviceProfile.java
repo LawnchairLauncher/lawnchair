@@ -360,13 +360,13 @@ public class DeviceProfile {
         // Lawnchair: clamp the user padding factors to their slider ranges so a restored or
         // manually edited preference can't feed out-of-range values into the layout math.
         workspacePaddingHorizontalFactor = Utilities.boundToRange(PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getWorkspacePaddingHorizontalFactor()), 0f, 1f);
+                .firstBlocking(preferenceManager2.getWorkspacePaddingHorizontalFactor()), 0f, 2f);
         workspacePaddingVerticalFactor = Utilities.boundToRange(PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getWorkspacePaddingVerticalFactor()), 0f, 1f);
+                .firstBlocking(preferenceManager2.getWorkspacePaddingVerticalFactor()), 0f, 2f);
         widgetPaddingFactor = Utilities.boundToRange(PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getWidgetPaddingFactor()), 0f, 2f);
         drawerPaddingVerticalFactor = Utilities.boundToRange(PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getDrawerPaddingVerticalFactor()), 0f, 1f);
+                .firstBlocking(preferenceManager2.getDrawerPaddingVerticalFactor()), 1f, 2f);
         this.inv = inv;
 
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(
@@ -703,8 +703,9 @@ public class DeviceProfile {
             allAppsShiftRange =
                     res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
         }
-        // Lawnchair: extra user-configurable app drawer vertical padding (additive, default 0).
-        allAppsPadding.top += Math.round(iconSizePx * drawerPaddingVerticalFactor);
+        // Lawnchair: extra user-configurable app drawer vertical padding. The factor is additive
+        // and slider-ranged 100%-200% (default 100%), so subtract 1f to keep 100% as no change.
+        allAppsPadding.top += Math.round(iconSizePx * (drawerPaddingVerticalFactor - 1f));
         allAppsOpenDuration = res.getInteger(R.integer.config_allAppsOpenDuration);
         allAppsCloseDuration = res.getInteger(R.integer.config_allAppsCloseDuration);
 

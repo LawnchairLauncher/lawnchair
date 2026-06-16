@@ -278,12 +278,8 @@
     <string name="twoline_label">Use multiple lines</string>
 
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">Remove the automatic white background added behind icons with transparent areas</string>
-    <string name="workspace_padding_horizontal_label">Horizontal padding</string>
-    <string name="workspace_padding_vertical_label">Vertical padding</string>
-    <string name="widget_padding_label">Widget padding</string>
-    <string name="app_drawer_padding_vertical_label">Vertical padding</string>
+    <string name="transparent_background_icons_label">Transparent themed icons</string>
+    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
 
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
@@ -690,6 +686,10 @@
     <string name="home_screen_unlock">Unlock home screen</string>
     <string name="home_screen_locked">Home screen is locked</string>
     <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+
+    <string name="horizontal_padding_label">Horizontal padding</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="widget_padding_label">Widget padding</string>
 
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>

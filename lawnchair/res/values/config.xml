@@ -177,7 +177,7 @@
     <item name="config_default_workspace_padding_horizontal" type="dimen" format="float">1.0</item>
     <item name="config_default_workspace_padding_vertical" type="dimen" format="float">1.0</item>
     <item name="config_default_widget_padding_factor" type="dimen" format="float">1.0</item>
-    <item name="config_default_drawer_padding_vertical" type="dimen" format="float">0.0</item>
+    <item name="config_default_drawer_padding_vertical" type="dimen" format="float">1.0</item>
 
 
     <!-- The max scale for the wallpaper when it's zoomed in -->

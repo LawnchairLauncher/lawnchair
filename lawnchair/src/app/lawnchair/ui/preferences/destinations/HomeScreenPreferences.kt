@@ -182,28 +182,28 @@ fun HomeScreenPreferences(
                 )
             }
             Item {
+                SliderPreference(
+                    label = stringResource(id = R.string.horizontal_padding_label),
+                    adapter = prefs2.workspacePaddingHorizontalFactor.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..2F,
+                    showAsPercentage = true,
+                )
+            }
+            Item {
+                SliderPreference(
+                    label = stringResource(id = R.string.vertical_padding_label),
+                    adapter = prefs2.workspacePaddingVerticalFactor.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..2F,
+                    showAsPercentage = true,
+                )
+            }
+            Item {
                 SwitchPreference(
                     adapter = lockHomeScreenAdapter,
                     label = stringResource(id = R.string.home_screen_lock),
                     description = stringResource(id = R.string.home_screen_lock_description),
-                )
-            }
-            Item {
-                SliderPreference(
-                    label = stringResource(id = R.string.workspace_padding_horizontal_label),
-                    adapter = prefs2.workspacePaddingHorizontalFactor.getAdapter(),
-                    step = 0.05f,
-                    valueRange = 0F..1F,
-                    showAsPercentage = true,
-                )
-            }
-            Item {
-                SliderPreference(
-                    label = stringResource(id = R.string.workspace_padding_vertical_label),
-                    adapter = prefs2.workspacePaddingVerticalFactor.getAdapter(),
-                    step = 0.05f,
-                    valueRange = 0F..1F,
-                    showAsPercentage = true,
                 )
             }
         }
