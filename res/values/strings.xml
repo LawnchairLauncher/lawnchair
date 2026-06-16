@@ -333,11 +333,9 @@
     <string name="search_provider_firefox_beta">Firefox Beta</string>
     <string name="search_provider_firefox_nightly">Firefox Nightly</string>
 
+    
     <!-- Strings for settings -->
     <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
-    <string name="allow_rotation_title">Allow home screen rotation</string>
-    <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
-    <string name="allow_rotation_desc">When phone is rotated</string>
 
     <!-- Title for Landscape Mode setting. [CHAR LIMIT=50] -->
     <string name="landscape_mode_title">Landscape mode</string>
@@ -362,6 +360,8 @@
 
     <!-- Title for Developer Options setting. [CHAR LIMIT=50] -->
     <string name="developer_options_title">Developer Options</string>
+    <string name="resume_exploration_title">Resume exploration after reconnect</string>
+    <string name="resume_exploration_summary">Automatically resume exploration when connection is restored</string>
 
     <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=60] -->
     <string name="auto_add_shortcuts_label">Add app icons to home screen</string>
@@ -570,11 +570,5 @@
     <string name="seven_sided_cookie_shape_title">7-sided cookie</string>
     <!-- label for arch shape option in customization picker -->
     <string name="arch_shape_title">Arch</string>
-    <string name="search_provider_firefox_beta">
-    Firefox Beta
-     </string>
-
-   <string name="search_provider_firefox_nightly">
-    Firefox Nightly
-   </string>
+    
 </resources>
