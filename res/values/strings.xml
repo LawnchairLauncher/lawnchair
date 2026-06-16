@@ -570,4 +570,11 @@
     <string name="seven_sided_cookie_shape_title">7-sided cookie</string>
     <!-- label for arch shape option in customization picker -->
     <string name="arch_shape_title">Arch</string>
+    <string name="search_provider_firefox_beta">
+    Firefox Beta
+     </string>
+
+   <string name="search_provider_firefox_nightly">
+    Firefox Nightly
+   </string>
 </resources>
