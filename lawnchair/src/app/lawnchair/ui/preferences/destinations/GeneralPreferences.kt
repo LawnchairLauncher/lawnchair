@@ -158,10 +158,7 @@ fun GeneralPreferences() {
                     subtitle = iconStyleSubtitle,
                 )
             }
-            Item(
-                "themed_icon",
-                themedIconsEnabled,
-            ) {
+            Item {
                 SwitchPreference(
                     adapter = prefs.transparentIconBackground.getAdapter(),
                     label = stringResource(id = R.string.transparent_background_icons_label),
