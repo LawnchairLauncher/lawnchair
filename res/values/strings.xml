@@ -331,14 +331,13 @@
     <string name="search_provider_firefox_beta">Firefox Beta</string>
     <string name="search_provider_firefox_nightly">Firefox Nightly</string>
 
-    
-<!-- Strings for settings -->
-<!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
-<!-- Strings for settings -->
-<!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
-<string name="allow_rotation_title">Allow home screen rotation</string>
-<!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
-<string name="allow_rotation_desc">When phone is rotated</string>
+    <!-- Strings for settings -->
+    <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
+    <!-- Strings for settings -->
+    <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
+    <string name="allow_rotation_title">Allow home screen rotation</string>
+    <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
+    <string name="allow_rotation_desc">When phone is rotated</string>
 
     <!-- Title for Landscape Mode setting. [CHAR LIMIT=50] -->
     <string name="landscape_mode_title">Landscape mode</string>
