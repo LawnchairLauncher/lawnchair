@@ -742,7 +742,6 @@ class PreferenceManager2 @Inject constructor(
     val showDeckLayout = preference(
         key = booleanPreferencesKey(name = "show_deck_layout"),
         defaultValue = false,
-        onSet = { reloadHelper.reloadIcons() },
     )
 
     val allowDeckSorting = preference(

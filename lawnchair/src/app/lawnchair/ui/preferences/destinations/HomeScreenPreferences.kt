@@ -52,7 +52,9 @@ import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.celllayout.CellPosMapper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 object HomeScreenRoutes {
     const val GRID = "grid"
@@ -104,11 +106,12 @@ fun HomeScreenPreferences(
                     checked = allowDeckSorting.state.value,
                     onCheckedChange = { newValue ->
                         scope.launch {
+                            deckManager.backupLawndeck()
+                            delay(200)
+                            clearAllViewsFromHomeScreen(context, LauncherSettings.Favorites.CONTAINER_DESKTOP, false)
+                            delay(200)
                             prefs2.allowDeckSorting.set(newValue)
-                            // This switch is only visible when Deck mode is enabled,
-                            // which adds new apps to the home screen by default.
-                            // Thus no need to re-enable it here.
-                            deckManager.enableLawndeck()
+                            deckManager.enableLawndeck(newValue)
                         }
                     },
                     label = stringResource(id = R.string.deck_allow_sorts),
@@ -317,7 +320,7 @@ fun HomeScreenPreferences(
     }
 }
 
-private fun clearAllViewsFromHomeScreen(context: Context, type: Int) {
+private fun clearAllViewsFromHomeScreen(context: Context, type: Int, reload: Boolean = true) {
     val launcherModel = LauncherAppState.getInstance(context).model
     val modelWriter = launcherModel.getWriter(
         verifyChanges = false,
@@ -326,7 +329,9 @@ private fun clearAllViewsFromHomeScreen(context: Context, type: Int) {
     )
     val isViewsRemoved = modelWriter.clearAllHomeScreenViewsByType(type)
     if (isViewsRemoved) {
-        launcherModel.forceReload()
+        if (reload) {
+            launcherModel.forceReload()
+        }
         Toast.makeText(
             context,
             R.string.home_screen_all_views_removed_msg,

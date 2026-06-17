@@ -8,11 +8,11 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
-import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
+import com.android.launcher3.model.AddWorkspaceItemsTask
 import com.android.launcher3.model.ItemInstallQueue
 import com.android.launcher3.model.ModelDbController
 import com.android.launcher3.model.data.AppInfo
@@ -23,6 +23,7 @@ import java.io.File
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,28 +32,34 @@ class LawndeckManager(private val context: Context) {
 
     private val launcher = context.launcherNullable ?: LawnchairLauncher.instance?.launcher
     private var allowDeckSorting = false
+    private var isEnabled = false
 
     @Suppress("ktlint:standard:property-naming")
     private val TAG = "LawndeckManager"
 
+    private fun getDeckLayoutName() = if (allowDeckSorting) "lawndeck_organized" else "lawndeck"
+    
     suspend fun enableLawndeck(
+        sortByCategory: Boolean = false,
         onProgress: ((String) -> Unit)? = null,
     ) = withContext(Dispatchers.IO) {
         val completionDeferred = CompletableDeferred<Unit>()
-        val prefs2 = PreferenceManager2.getInstance(context)
-        allowDeckSorting = prefs2.allowDeckSorting.get().first()
-        val layoutName = if (allowDeckSorting) "lawndeck_organized" else "lawndeck"
+        allowDeckSorting = sortByCategory
 
         if (!backupExists("bk")) createBackup("bk")
+
+        val layoutName = getDeckLayoutName()
 
         if (backupExists(layoutName)) {
             onProgress?.invoke(context.getString(R.string.restore_previous_layout))
             restoreBackup(layoutName)
             completionDeferred.complete(Unit)
+            isEnabled = true
         } else {
             onProgress?.invoke(context.getString(R.string.adding_apps_to_workspace))
             addAllAppsToWorkspace(onProgress) {
                 completionDeferred.complete(Unit)
+                isEnabled = true
             }
         }
 
@@ -61,9 +68,14 @@ class LawndeckManager(private val context: Context) {
 
     suspend fun disableLawndeck() = withContext(Dispatchers.IO) {
         if (backupExists("bk")) {
-            createBackup(if (allowDeckSorting) "lawndeck_organized" else "lawndeck")
+            createBackup(getDeckLayoutName())
             restoreBackup("bk")
+            isEnabled = false
         }
+    }
+    
+    suspend fun backupLawndeck() = withContext(Dispatchers.IO) {
+        if (isEnabled) createBackup(getDeckLayoutName())
     }
 
     private fun createBackup(suffix: String) = runCatching {
@@ -123,10 +135,10 @@ class LawndeckManager(private val context: Context) {
         if (allowDeckSorting) {
             val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
             finalCategorizedApps.forEach { (category, categoryApps) ->
-                if (categoryApps.isEmpty()) return@forEach
-
-                // TODO(Prefs UI): Unpassed onProgress
-                if (categoryApps.size == 1) {
+                if (categoryApps.isEmpty()) {
+                    return@forEach
+                }
+                else if (categoryApps.size == 1) {
                     // Single app - add directly to workspace
                     val app = categoryApps.first()
                     ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
@@ -144,10 +156,7 @@ class LawndeckManager(private val context: Context) {
         } else {
             validApps.forEach { app ->
                 Log.d(TAG, "Adding ${app.targetPackage} to the workspace")
-                // Add a small delay so that Lawnchair can allocale spaces instead of freaking out
-                Handler(Looper.getMainLooper()).postDelayed({
-                    ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
-                }, 800)
+                ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
                 singleAppCount++
             }
         }
@@ -158,7 +167,7 @@ class LawndeckManager(private val context: Context) {
                 // Post to handler to give ItemInstallQueue time to process
                 Handler(Looper.getMainLooper()).postDelayed({
                     onComplete?.invoke()
-                }, 800) // Wait for queue to process
+                }, 800)
             } else {
                 onComplete?.invoke()
             }
