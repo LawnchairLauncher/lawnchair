@@ -341,7 +341,7 @@ public class DeviceProfile {
     private float workspacePaddingHorizontalFactor;
     private float workspacePaddingVerticalFactor;
     private float widgetPaddingFactor;
-    private float drawerPaddingVerticalFactor;
+    private float drawerPaddingTopFactor;
     private PreferenceManager2 preferenceManager2 = null;
 
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
@@ -365,8 +365,8 @@ public class DeviceProfile {
                 .firstBlocking(preferenceManager2.getWorkspacePaddingVerticalFactor()), 0f, 2f);
         widgetPaddingFactor = Utilities.boundToRange(PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getWidgetPaddingFactor()), 0f, 2f);
-        drawerPaddingVerticalFactor = Utilities.boundToRange(PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getDrawerPaddingVerticalFactor()), 1f, 2f);
+        drawerPaddingTopFactor = Utilities.boundToRange(PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getDrawerPaddingTopFactor()), 1f, 2f);
         this.inv = inv;
 
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(
@@ -703,9 +703,9 @@ public class DeviceProfile {
             allAppsShiftRange =
                     res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
         }
-        // Lawnchair: extra user-configurable app drawer vertical padding. The factor is additive
+        // Lawnchair: extra user-configurable app drawer top padding. The factor is additive
         // and slider-ranged 100%-200% (default 100%), so subtract 1f to keep 100% as no change.
-        allAppsPadding.top += Math.round(iconSizePx * (drawerPaddingVerticalFactor - 1f));
+        allAppsPadding.top += Math.round(iconSizePx * (drawerPaddingTopFactor - 1f));
         allAppsOpenDuration = res.getInteger(R.integer.config_allAppsOpenDuration);
         allAppsCloseDuration = res.getInteger(R.integer.config_allAppsCloseDuration);
 

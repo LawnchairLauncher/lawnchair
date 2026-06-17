@@ -551,9 +551,9 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
-    val drawerPaddingVerticalFactor = preference(
-        key = floatPreferencesKey(name = "drawer_padding_vertical"),
-        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_padding_vertical),
+    val drawerPaddingTopFactor = preference(
+        key = floatPreferencesKey(name = "drawer_padding_top"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_padding_top),
         onSet = { reloadHelper.reloadGrid() },
     )
 
