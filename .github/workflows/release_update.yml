@@ -27,7 +27,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - uses: actions/setup-java@v5
@@ -68,7 +68,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-release-apk
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
