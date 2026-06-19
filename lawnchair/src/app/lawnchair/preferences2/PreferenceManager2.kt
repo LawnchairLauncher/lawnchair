@@ -319,6 +319,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val enableSubgridPositioning = preference(
+        key = booleanPreferencesKey(name = "enable_subgrid_positioning"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_subgrid_positioning),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val forceWidgetResize = preference(
         key = booleanPreferencesKey(name = "force_widget_resize"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_force_widget_resize),

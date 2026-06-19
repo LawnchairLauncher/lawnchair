@@ -147,6 +147,17 @@ public interface WorkspaceLayoutManager {
         }
         int childId = info.getViewId();
 
+        // Lawnchair: Subgrid positioning — only the workspace honors half-cell offsets/sizes, and only
+        // when the preference is enabled. Hotseat/folder containers and the disabled state keep 0.
+        boolean subgridEnabled = container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                && PreferenceExtensionsKt.firstBlocking(
+                        PreferenceManager2.getInstance(child.getContext())
+                                .getEnableSubgridPositioning());
+        lp.setSubX(subgridEnabled ? info.subX : 0);
+        lp.setSubY(subgridEnabled ? info.subY : 0);
+        lp.setSubSpanX(subgridEnabled ? info.subSpanX : 0);
+        lp.setSubSpanY(subgridEnabled ? info.subSpanY : 0);
+
         boolean markCellsAsOccupied = !(child instanceof Folder);
         if (!layout.addViewToCellLayout(child, -1, childId, lp, markCellsAsOccupied)) {
             // TODO: This branch occurs when the workspace is adding views

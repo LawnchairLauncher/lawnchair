@@ -40,6 +40,19 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
     private int mTmpCellY;
 
     /**
+     * Lawnchair: Subgrid positioning. Half-cell offsets (0 or 1) added to the cell position, and
+     * extra half-cells (0 or 1) added to the span. Non-zero only on the workspace when the
+     * subgrid-positioning preference is enabled; see {@link #setup}.
+     */
+    private int mSubX;
+
+    private int mSubY;
+
+    private int mSubSpanX;
+
+    private int mSubSpanY;
+
+    /**
      * Indicates that the temporary coordinates should be used to layout the items
      */
     public boolean useTmpCoords;
@@ -98,6 +111,10 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
         this.mTmpCellX = source.getTmpCellX();
         this.mTmpCellY = source.getTmpCellY();
         this.useTmpCoords = source.useTmpCoords;
+        this.mSubX = source.mSubX;
+        this.mSubY = source.mSubY;
+        this.mSubSpanX = source.mSubSpanX;
+        this.mSubSpanY = source.mSubSpanY;
     }
 
     public CellLayoutLayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan) {
@@ -129,25 +146,28 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
             int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
             @Nullable Rect inset) {
         if (isLockedToGrid) {
-            final int myCellHSpan = cellHSpan;
-            final int myCellVSpan = cellVSpan;
-            int myCellX = useTmpCoords ? getTmpCellX() : getCellX();
-            int myCellY = useTmpCoords ? getTmpCellY() : getCellY();
+            // Lawnchair: Subgrid positioning — half-cell offsets/spans are folded in as floats and
+            // rounded once at the end. When all sub-values are 0 (feature off / non-workspace) this
+            // is byte-identical to the original integer arithmetic.
+            final float myCellHSpan = cellHSpan + mSubSpanX * 0.5f;
+            final float myCellVSpan = cellVSpan + mSubSpanY * 0.5f;
+            float myCellX = (useTmpCoords ? getTmpCellX() : getCellX()) + mSubX * 0.5f;
+            float myCellY = (useTmpCoords ? getTmpCellY() : getCellY()) + mSubY * 0.5f;
 
             if (invertHorizontally) {
-                myCellX = colCount - myCellX - cellHSpan;
+                myCellX = colCount - myCellX - myCellHSpan;
             }
 
-            int hBorderSpacing = (myCellHSpan - 1) * borderSpace.x;
-            int vBorderSpacing = (myCellVSpan - 1) * borderSpace.y;
+            float hBorderSpacing = (myCellHSpan - 1) * borderSpace.x;
+            float vBorderSpacing = (myCellVSpan - 1) * borderSpace.y;
 
             float myCellWidth = ((myCellHSpan * cellWidth) + hBorderSpacing) / cellScaleX;
             float myCellHeight = ((myCellVSpan * cellHeight) + vBorderSpacing) / cellScaleY;
 
             width = Math.round(myCellWidth) - leftMargin - rightMargin;
             height = Math.round(myCellHeight) - topMargin - bottomMargin;
-            x = leftMargin + (myCellX * cellWidth) + (myCellX * borderSpace.x);
-            y = topMargin + (myCellY * cellHeight) + (myCellY * borderSpace.y);
+            x = leftMargin + Math.round((myCellX * cellWidth) + (myCellX * borderSpace.x));
+            y = topMargin + Math.round((myCellY * cellHeight) + (myCellY * borderSpace.y));
 
             if (inset != null) {
                 x += inset.left;
@@ -215,5 +235,38 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
 
     public void setTmpCellY(int tmpCellY) {
         this.mTmpCellY = tmpCellY;
+    }
+
+    /** Lawnchair: Subgrid positioning — half-cell offsets/spans (each 0 or 1). */
+    public int getSubX() {
+        return mSubX;
+    }
+
+    public void setSubX(int subX) {
+        this.mSubX = subX;
+    }
+
+    public int getSubY() {
+        return mSubY;
+    }
+
+    public void setSubY(int subY) {
+        this.mSubY = subY;
+    }
+
+    public int getSubSpanX() {
+        return mSubSpanX;
+    }
+
+    public void setSubSpanX(int subSpanX) {
+        this.mSubSpanX = subSpanX;
+    }
+
+    public int getSubSpanY() {
+        return mSubSpanY;
+    }
+
+    public void setSubSpanY(int subSpanY) {
+        this.mSubSpanY = subSpanY;
     }
 }

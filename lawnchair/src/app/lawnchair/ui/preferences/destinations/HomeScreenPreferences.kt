@@ -183,6 +183,13 @@ fun HomeScreenPreferences(
             }
             Item {
                 SwitchPreference(
+                    adapter = prefs2.enableSubgridPositioning.getAdapter(),
+                    label = stringResource(id = R.string.enable_subgrid_positioning_label),
+                    description = stringResource(id = R.string.enable_subgrid_positioning_description),
+                )
+            }
+            Item {
+                SwitchPreference(
                     adapter = lockHomeScreenAdapter,
                     label = stringResource(id = R.string.home_screen_lock),
                     description = stringResource(id = R.string.home_screen_lock_description),

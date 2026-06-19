@@ -717,6 +717,9 @@
     <string name="force_rounded_widgets">Rounded corners</string>
     <string name="allow_widget_overlap">Allow overlap</string>
 
+    <string name="enable_subgrid_positioning_label">Subgrid positioning</string>
+    <string name="enable_subgrid_positioning_description">Place and resize items at half-cell positions on the home screen. Items are placed freely and may overlap</string>
+
     <string name="force_widget_resize_label">Enforce widget resizing</string>
     <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
 

@@ -59,6 +59,23 @@ public class ContentWriter {
         return this;
     }
 
+    public ContentWriter put(String key, Float value) {
+        mValues.put(key, value);
+        return this;
+    }
+
+    /**
+     * Lawnchair: Subgrid positioning. Stores {@code base + 0.5} as a float (REAL) when a half-step is
+     * present, otherwise the plain integer. Legacy/integer readers truncate the REAL back to the base
+     * cell, so this is backward compatible with no schema change.
+     */
+    public ContentWriter putSubgrid(String key, int base, int sub) {
+        if (sub != 0) {
+            return put(key, base + sub * 0.5f);
+        }
+        return put(key, base);
+    }
+
     public ContentWriter put(String key, Long value) {
         mValues.put(key, value);
         return this;

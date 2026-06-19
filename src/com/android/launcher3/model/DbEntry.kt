@@ -66,6 +66,10 @@ class DbEntry : ItemInfo(), Comparable<DbEntry> {
     fun updateContentValues(values: ContentValues) =
         values.apply {
             put(SCREEN, screenId)
+            // Lawnchair: Subgrid positioning is intentionally NOT preserved across a grid-size
+            // migration: the migration re-solves placement in integer cells, so writing the base
+            // (already truncated to an int via the DbReader's getInt) yields clean integer positions.
+            // Half-cell offsets are reset when the grid changes; live placement keeps them.
             put(CELLX, cellX)
             put(CELLY, cellY)
             put(SPANX, spanX)
