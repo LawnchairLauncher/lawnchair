@@ -19,6 +19,7 @@ import android.widget.TextView
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -40,6 +41,8 @@ import app.lawnchair.qsb.LawnQsbUi
 import app.lawnchair.qsb.QsbActions
 import app.lawnchair.qsb.QsbIconId
 import app.lawnchair.qsb.buildQsbStyle
+import app.lawnchair.qsb.providers.Google
+import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.rememberAllAppsQsbState
 import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
@@ -124,12 +127,20 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
 
             setContent {
-                val searchProvider = getSearchProvider(context, prefs2)
-                val lensIntent = getLensIntent(context)
-                val voiceIntent = getVoiceIntent(searchProvider, context)
-
-                val shouldShowIcons by prefs2.matchHotseatQsbStyle.asState()
+                val searchProviderPref by prefs2.hotseatQsbProvider.asState()
+                val searchProvider = remember(searchProviderPref, context) {
+                    getSearchProvider(context, searchProviderPref)
+                }
                 val themedQsb by prefs2.themedHotseatQsb.asState()
+                val shouldShowIcons by prefs2.matchHotseatQsbStyle.asState()
+
+                val supportsLens = searchProvider == Google || searchProvider == PixelSearch
+                val voiceIntent = remember(searchProvider, context) {
+                    getVoiceIntent(searchProvider, context)
+                }
+                val lensIntent = remember(supportsLens, context) {
+                    if (supportsLens) getLensIntent(context) else null
+                }
 
                 val state = rememberAllAppsQsbState(
                     searchProvider = searchProvider,
@@ -146,7 +157,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     ColorTokens.SearchboxHighlight.resolveColor(context)
                 }
 
-                // As of now, we keep the background in views to simplify state management
+                // Ignore other theme attributes to preserve existing behavior
                 val style = buildQsbStyle(
                     context = context,
                     themed = themedQsb,
@@ -162,12 +173,14 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                         input.requestFocus()
                         input.showKeyboard()
                     },
-                    onStartIconClick = {
-                        val launcher = context.launcher
-                        launcher.lifecycleScope.launch {
-                            searchProvider.launch(launcher)
+                    onStartIconClick = if (shouldShowIcons) {
+                        {
+                            val launcher = context.launcher
+                            launcher.lifecycleScope.launch {
+                                searchProvider.launch(launcher)
+                            }
                         }
-                    },
+                    } else null,
                     onEndIconClick = { id ->
                         when (id) {
                             QsbIconId.MIC -> voiceIntent?.let { context.startActivity(it) }

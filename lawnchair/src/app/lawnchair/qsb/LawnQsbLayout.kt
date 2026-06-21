@@ -61,7 +61,10 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                         val prefs = preferenceManager()
                         val prefs2 = preferenceManager2
 
-                        val searchProvider by prefs2.hotseatQsbProvider.asState()
+                        val searchProviderPref by prefs2.hotseatQsbProvider.asState()
+                        val searchProvider = remember(searchProviderPref, context) {
+                            getSearchProvider(context, searchProviderPref)
+                        }
                         val themed by prefs2.themedHotseatQsb.asState()
 
                         val supportsLens = searchProvider == Google || searchProvider == PixelSearch
@@ -73,7 +76,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                         }
 
                         val state = rememberHotseatQsbState(
-                            searchProvider = getSearchProvider(context, prefs2),
+                            searchProvider = searchProvider,
                             themed = themed,
                             showMic = voiceIntent != null,
                             showLens = lensIntent != null,
@@ -85,6 +88,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             backgroundColor = getHotseatBackgroundColor(context, themed),
                             backgroundAlpha = prefs.hotseatQsbAlpha.observeAsState().value,
                             cornerRadius = prefs.hotseatQsbCornerRadius.observeAsState().value,
+                            // Use light color as strokeColor is a static color that doesn't use darkColor
                             strokeColor = prefs2.strokeColorStyle.asState().value.colorPreferenceEntry.lightColor.invoke(context),
                             strokeWidth = prefs.hotseatQsbStrokeWidth.observeAsState().value,
                         )
@@ -192,10 +196,8 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
         fun getSearchProvider(
             context: Context,
-            preferenceManager: PreferenceManager2,
+            provider: QsbSearchProvider,
         ): QsbSearchProvider {
-            val provider = preferenceManager.hotseatQsbProvider.firstCached()
-
             return if (provider == AppSearch ||
                 resolveIntent(context, provider.createSearchIntent()) ||
                 resolveIntent(context, provider.createWebsiteIntent())
@@ -204,6 +206,13 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             } else {
                 AppSearch
             }
+        }
+
+        fun getSearchProvider(
+            context: Context,
+            preferenceManager: PreferenceManager2,
+        ): QsbSearchProvider {
+            return getSearchProvider(context, preferenceManager.hotseatQsbProvider.firstCached())
         }
 
         fun resolveIntent(context: Context, intent: Intent): Boolean = context.packageManager.resolveActivity(intent, 0) != null

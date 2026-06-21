@@ -178,7 +178,7 @@ fun rememberAllAppsQsbState(
     val lensLabel = stringResource(R.string.label_lens)
     val clearLabel = stringResource(R.string.search_input_action_clear_results)
 
-    return remember(searchProvider, themed, shouldShowIcons, queryEmpty, showMic, showLens) {
+    return remember(searchProvider, themed, shouldShowIcons, queryEmpty, showMic, showLens, searchLabel, voiceSearchLabel, lensLabel, clearLabel) {
         val iconRes = if (themed && shouldShowIcons) searchProvider.themedIcon else searchProvider.icon
         val resId = if (shouldShowIcons) iconRes else R.drawable.ic_qsb_search
         val isGoogleProvider = searchProvider == Google || searchProvider == GoogleGo || searchProvider == PixelSearch
@@ -296,6 +296,9 @@ fun LawnQsbUi(
         Spacer(Modifier.weight(1f))
 
         state.endIcons.forEachIndexed { index, icon ->
+            val isLastVisible = remember(state.endIcons, index) {
+                state.endIcons.drop(index + 1).none { it.visible }
+            }
             AnimatedVisibility(
                 visible = icon.visible,
                 enter = fadeIn(),
@@ -305,7 +308,7 @@ fun LawnQsbUi(
                     icon = icon,
                     shape = shape,
                     onClick = { actions.onEndIconClick(icon.id) },
-                    modifier = Modifier.addIf(index == state.endIcons.lastIndex) {
+                    modifier = Modifier.addIf(isLastVisible) {
                         offset(x = (-6).dp)
                     },
                 )
@@ -340,7 +343,7 @@ fun QsbIcon(
                 method = icon.method,
             ),
             contentDescription = icon.contentDescription,
-            tint = null,
+            tint = ComposeColor.Unspecified,
             modifier = Modifier.fillMaxSize(),
         )
     }

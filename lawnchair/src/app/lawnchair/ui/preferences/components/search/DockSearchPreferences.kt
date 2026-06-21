@@ -226,6 +226,7 @@ private fun DockSearchBarPreview(
                         cornerRadius = cornerRadiusFactor,
                         backgroundAlpha = transparency,
                         strokeWidth = strokeWidth,
+                        // Use light color as strokeColor is a static color that doesn't use darkColor
                         strokeColor = strokeColor.colorPreferenceEntry.lightColor.invoke(context),
                     ),
                     actions = QsbActions(
