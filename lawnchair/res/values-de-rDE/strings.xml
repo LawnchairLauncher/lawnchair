@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">Startbildschirm entsperren</string>
     <string name="home_screen_locked">Startbildschirm ist gesperrt</string>
     <string name="home_screen_lock_description">Verhindert Änderungen am Startbildschirm-Layout</string>
+    <string name="horizontal_padding_label">Horizontaler Abstand</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Als Standard-Startseite festlegen</string>
     <string name="default_home_page_set">Standard-Startseite aktualisiert</string>
     <string name="move_page_left">Seite nach links verschieben</string>

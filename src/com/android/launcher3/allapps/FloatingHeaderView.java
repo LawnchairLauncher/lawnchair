@@ -42,7 +42,7 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
 import com.android.systemui.plugins.PluginListener;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -405,7 +405,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         mHeaderCollapsed = false;
         mSnappedScrolledY = -mMaxTranslation;
-        if (!PreferenceExtensionsKt.firstBlocking (pref2.getRememberPosition ())) {
+        if (!PreferenceCacheExtensionsKt.firstCached(pref2.getRememberPosition())) {
             mCurrentRV.scrollToTop();
         }
     }

@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Trình khởi chạy dựa trên Launcher3 từ AOSP

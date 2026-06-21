@@ -7,7 +7,6 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.util.firstBlocking
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.VibratorWrapper
 import kotlinx.coroutines.launch
@@ -61,7 +60,7 @@ class IconGestureListener(
      * @param gestureType The type of gesture to resolve for the current component */
     private fun resolveGesture(gestureType: GestureType): GestureHandlerConfig? {
         val currentComponentKey = componentKey ?: return null
-        val gesture = prefs.getGestureForApp(currentComponentKey, gestureType).firstBlocking()
+        val gesture = prefs.getGestureForAppCached(currentComponentKey, gestureType)
         return gesture.takeUnless { it is GestureHandlerConfig.NoOp }
     }
 }

@@ -44,7 +44,7 @@ import com.android.launcher3.provider.LauncherDbUtils.shiftWorkspaceByXCells
 import com.android.launcher3.util.CellAndSpan
 import com.android.launcher3.util.GridOccupancy
 import com.android.launcher3.util.IntArray
-import com.patrykmichalik.opto.core.firstBlocking
+import app.lawnchair.preferences2.firstCached
 
 class GridSizeMigrationLogic {
     /**
@@ -507,7 +507,7 @@ class GridSizeMigrationLogic {
         val prefs2 = PreferenceManager2.INSTANCE.get(context)
 
         val next: Point =
-            if (screenId == 0 && prefs2.enableSmartspace.firstBlocking()) {
+            if (screenId == 0 && prefs2.enableSmartspace.firstCached()) {
                 Point(0, 1 /* smartspace */)
             } else {
                 Point(0, 0)

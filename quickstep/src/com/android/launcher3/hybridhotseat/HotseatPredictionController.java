@@ -66,7 +66,7 @@ import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.views.Snackbar;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -394,7 +394,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     public SystemShortcut<QuickstepLauncher> getShortcut(QuickstepLauncher activity,
             ItemInfo itemInfo, View originalView) {
         PreferenceManager2 prefs = PreferenceManager2.getInstance(activity);
-        if (PreferenceExtensionsKt.firstBlocking(prefs.getLockHomeScreen())) {
+        if (PreferenceCacheExtensionsKt.firstCached(prefs.getLockHomeScreen())) {
             return null;
         }
         if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {

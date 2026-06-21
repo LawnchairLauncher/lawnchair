@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">Ξεκλείδωμα Αρχ. Οθ.</string>
     <string name="home_screen_locked">Η Αρχ. Οθ. είναι κλειδωμένη</string>
     <string name="home_screen_lock_description">Αποτροπή αλλαγών στη διάταξη της αρχικής οθόνης</string>
+    <string name="horizontal_padding_label">Οριζόντιο περιθώριο</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Ορισμός ως προεπιλεγμένη σελίδα</string>
     <string name="default_home_page_set">Η προεπιλεγμένη αρχική σελίδα ενημερώθηκε</string>
     <string name="move_page_left">Move page left</string>

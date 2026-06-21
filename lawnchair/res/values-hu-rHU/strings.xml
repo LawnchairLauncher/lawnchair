@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">A Kezdőképernyő feloldása</string>
     <string name="home_screen_locked">Zárolt Kezdőképernyő</string>
     <string name="home_screen_lock_description">Megakadályozza a Kezdőképernyő elrendezésének változásait</string>
+    <string name="horizontal_padding_label">Vízszintes kitöltés</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
     <string name="move_page_left">Move page left</string>

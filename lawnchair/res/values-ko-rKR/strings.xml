@@ -544,6 +544,10 @@
     <string name="home_screen_unlock">홈 화면 잠금해제</string>
     <string name="home_screen_locked">홈 화면이 잠겨 있습니다.</string>
     <string name="home_screen_lock_description">홈 화면 레이아웃 변경 방지</string>
+    <string name="horizontal_padding_label">가로 패딩</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">기본 페이지로 설정</string>
     <string name="default_home_page_set">기본 홈페이지 업데이트</string>
     <string name="move_page_left">Move page left</string>

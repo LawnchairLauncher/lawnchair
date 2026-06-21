@@ -53,7 +53,7 @@ import com.android.launcher3.graphics.ThemeManager;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.androidinternal.graphics.ColorUtils;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.List;
 
@@ -197,7 +197,7 @@ public class FolderAnimationManager implements FolderAnimationCreator {
         int initialColor = ColorUtils.setAlphaComponent(previewColor, LawnchairUtilsKt.getFolderPreviewAlpha(mContext));
         int finalColor = ColorTokens.FolderBackgroundColor.resolveColor(mContext);
 
-        ColorOption colorOption = PreferenceExtensionsKt.firstBlocking(mFolder.preferenceManager2.getFolderColor());
+        ColorOption colorOption = PreferenceCacheExtensionsKt.firstCached(mFolder.preferenceManager2.getFolderColor(), mFolder.preferenceManager2);
         int folderColor = colorOption.getColorPreferenceEntry().getLightColor().invoke(mContext);
 
         if (folderColor != 0) {

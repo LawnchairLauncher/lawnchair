@@ -145,7 +145,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
@@ -612,7 +612,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public void updateStatusbarClock() {
-        if (mCurrentPage == 0 && PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getStatusBarClock())) {
+        if (mCurrentPage == 0 && PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getStatusBarClock())) {
             LawnchairAppKt.getLawnchairApp(mLauncher).hideClockInStatusBar();
         } else {
             LawnchairAppKt.getLawnchairApp(mLauncher).restoreClockInStatusBar();
@@ -662,18 +662,18 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void bindAndInitFirstWorkspaceScreen() {
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
-        if (!PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getEnableSmartspace())) {
+        if (!PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getEnableSmartspace())) {
             mFirstPagePinnedItem = null;
             return;
         }
         if (mFirstPagePinnedItem == null) {
-            SmartspaceMode smartspaceMode = PreferenceExtensionsKt
-                .firstBlocking(mPreferenceManager2.getSmartspaceMode());
+            SmartspaceMode smartspaceMode = PreferenceCacheExtensionsKt
+                .firstCached(mPreferenceManager2.getSmartspaceMode());
             if (!smartspaceMode.isAvailable(this.mLauncher)) {
                 // The current smartspace mode is not available,
                 // setting the smartspace mode to one that is always available
                 smartspaceMode = LawnchairSmartspace.INSTANCE;
-                PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
+                com.patrykmichalik.opto.core.PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
             }
             // In transposed layout, we add the first page pinned widget in the Grid.
             // As workspace does not touch the edges, we do not need a full
@@ -1113,7 +1113,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     id, persistedScreenIds, isExtraEmptyScreen(id))) {
                 continue;
             }
-            if ((!PreferenceExtensionsKt.firstBlocking(PreferenceManager2.INSTANCE.get(getContext()).getEnableSmartspace()) || id > FIRST_SCREEN_ID)
+            if ((!PreferenceCacheExtensionsKt.firstCached(PreferenceManager2.INSTANCE.get(getContext()).getEnableSmartspace(), PreferenceManager2.INSTANCE.get(getContext())) || id > FIRST_SCREEN_ID)
                     && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
@@ -1174,7 +1174,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         updateAccessibilityViewPageDescription();
 
         // Reset default home page if it's now out of range after page removal
-        int storedDefault = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getDefaultHomePage());
+        int storedDefault = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
         if (storedDefault >= getChildCount()) {
             setDefaultPage(DEFAULT_PAGE);
         }
@@ -1494,7 +1494,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void showPageIndicatorAtCurrentScroll() {
         if (mPageIndicator != null) {
             mPageIndicator.setScroll(getScrollX(), computeMaxScroll());
-            var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.isHotseatEnabled());
+            var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.isHotseatEnabled());
             mPageIndicator.setVisibility(isHotseatEnabled ? VISIBLE : INVISIBLE);
         }
     }
@@ -1940,7 +1940,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
-        boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getLockHomeScreen());
+        boolean lockHomeScreen = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getLockHomeScreen());
         if (lockHomeScreen) {
             child.setVisibility(View.VISIBLE);
 
@@ -2226,7 +2226,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         boolean snappedToNewPage = false;
         boolean resizeOnDrop = false;
         Runnable onCompleteRunnable = null;
-        boolean forceWidgetResize = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getForceWidgetResize());
+        boolean forceWidgetResize = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getForceWidgetResize());
         if (d.dragSource != this || mDragInfo == null) {
             final int[] touchXY = new int[]{(int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1]};
@@ -3862,7 +3862,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Falls back to {@link #DEFAULT_PAGE} if the stored page is out of range.
      */
     public int getDefaultPage() {
-        int storedPage = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getDefaultHomePage());
+        int storedPage = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
         int pageCount = getChildCount();
         if (storedPage >= 0 && storedPage < pageCount) {
             return storedPage;
@@ -3874,7 +3874,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Sets the given page index as the default home page.
      */
     public void setDefaultPage(int pageIndex) {
-        PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getDefaultHomePage(), pageIndex);
+        com.patrykmichalik.opto.core.PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getDefaultHomePage(), pageIndex);
     }
 
     /**

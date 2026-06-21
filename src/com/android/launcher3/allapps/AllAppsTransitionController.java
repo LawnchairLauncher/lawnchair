@@ -67,7 +67,7 @@ import com.android.launcher3.views.ScrimView;
 import com.google.android.msdl.data.model.MSDLToken;
 
 import app.lawnchair.preferences2.PreferenceManager2;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 /**
  * Handles AllApps view transition.
@@ -404,8 +404,9 @@ public class AllAppsTransitionController
         setAlphas(toState, config, builder);
         // This controls both haptics for tapping on QSB and going to all apps.
         if (ALL_APPS.equals(toState) && mLauncher.isInState(NORMAL)) {
-            boolean hapticEnabled = PreferenceExtensionsKt.firstBlocking(
-                    PreferenceManager2.getInstance(mLauncher).getAppDrawerHapticFeedback());
+            PreferenceManager2 prefs = PreferenceManager2.getInstance(mLauncher);
+            boolean hapticEnabled = PreferenceCacheExtensionsKt.firstCached(
+                    prefs.getAppDrawerHapticFeedback(), prefs);
 
             if (hapticEnabled) {
                 if (Flags.msdlFeedback()) {

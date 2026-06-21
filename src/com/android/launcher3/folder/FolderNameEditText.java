@@ -27,7 +27,7 @@ import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.ExtendedEditText;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.List;
 
@@ -139,7 +139,7 @@ public class FolderNameEditText extends ExtendedEditText {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getLockHomeScreen())) return true;
+        if (PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getLockHomeScreen())) return true;
         return super.onTouchEvent(event);
     }
 }

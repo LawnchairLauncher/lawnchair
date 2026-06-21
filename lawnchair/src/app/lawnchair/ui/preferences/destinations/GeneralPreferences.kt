@@ -53,7 +53,6 @@ import app.lawnchair.ui.preferences.navigation.GeneralIconShape
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.patrykmichalik.opto.core.firstBlocking
 
 @Composable
 fun GeneralPreferences() {

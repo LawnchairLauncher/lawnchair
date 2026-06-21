@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">Lås opp hjemskjerm</string>
     <string name="home_screen_locked">Hjemskjerm er låst</string>
     <string name="home_screen_lock_description">Forhindre endringer på hjemmeskjermlayout</string>
+    <string name="horizontal_padding_label">Horisontalt fyll</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
     <string name="move_page_left">Move page left</string>

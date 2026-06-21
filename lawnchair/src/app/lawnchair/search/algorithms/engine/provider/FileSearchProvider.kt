@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.algorithms.data.FileInfo
 import app.lawnchair.search.algorithms.data.FolderInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
@@ -22,7 +23,6 @@ import app.lawnchair.util.isHidden
 import app.lawnchair.util.isRegularFile
 import app.lawnchair.util.mimeType2Extension
 import app.lawnchair.util.videoFileTypes
-import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -54,7 +54,7 @@ object FileSearchProvider : SearchProvider {
         }
 
         val prefs2 = PreferenceManager2.getInstance(context)
-        val maxResults = prefs2.maxFileResultCount.firstBlocking()
+        val maxResults = prefs2.maxFileResultCount.firstCached()
 
         // check for permissions:
         val fileAccessManager = FileAccessManager.getInstance(context)

@@ -31,6 +31,7 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.preferences2.asState
 import app.lawnchair.qsb.LawnQsbLayout.Companion.getLensIntent
 import app.lawnchair.qsb.LawnQsbLayout.Companion.getSearchProvider
@@ -58,7 +59,6 @@ import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.BlurUtils
-import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import kotlin.math.max
 import kotlinx.coroutines.launch
@@ -202,7 +202,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         input.onFocusChangeListener = { _, hasFocus ->
             if (hasFocus) {
-                if (prefs2.searchAlgorithm.firstBlocking() != LawnchairSearchAlgorithm.APP_SEARCH) {
+                if (prefs2.searchAlgorithm.firstCached() != LawnchairSearchAlgorithm.APP_SEARCH) {
                     input.setHint(R.string.all_apps_device_search_hint)
                 } else {
                     input.setHint(R.string.all_apps_search_bar_hint)
@@ -256,7 +256,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             },
         )
 
-        val hide = prefs2.hideAppDrawerSearchBar.firstBlocking()
+        val hide = prefs2.hideAppDrawerSearchBar.firstCached()
         if (hide) {
             isInvisible = true
             layoutParams.height = 0

@@ -5,6 +5,7 @@ import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.views.SearchItemBackground
 import app.lawnchair.allapps.views.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.START_PAGE
 import app.lawnchair.search.adapter.SearchAdapterItem
@@ -31,7 +32,6 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchAlgorithm
 import com.android.launcher3.search.SearchCallback
-import com.patrykmichalik.opto.core.firstBlocking
 
 sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
@@ -237,7 +237,7 @@ sealed class LawnchairSearchAlgorithm(
 
         fun create(context: Context): LawnchairSearchAlgorithm {
             val prefs = PreferenceManager2.getInstance(context)
-            val searchAlgorithm = prefs.searchAlgorithm.firstBlocking()
+            val searchAlgorithm = prefs.searchAlgorithm.firstCached()
 
             return when {
                 searchAlgorithm == ASI_SEARCH && isASISearchEnabled(context) -> LawnchairASISearchAlgorithm(

@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
-import com.patrykmichalik.opto.core.firstBlocking
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
@@ -29,9 +29,9 @@ object WebSuggestionProvider : SearchProvider {
             return flow { emit(emptyList()) }
         }
 
-        val provider = prefs2.webSuggestionProvider.firstBlocking()
-        val timeout = prefs2.maxWebSuggestionDelay.firstBlocking()
-        val maxResults = prefs2.maxWebSuggestionResultCount.firstBlocking()
+        val provider = prefs2.webSuggestionProvider.firstCached()
+        val timeout = prefs2.maxWebSuggestionDelay.firstCached()
+        val maxResults = prefs2.maxWebSuggestionResultCount.firstCached()
 
         val webProvider = provider
             .configure(context)

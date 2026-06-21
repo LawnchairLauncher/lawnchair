@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">ホーム画面のロックを解除</string>
     <string name="home_screen_locked">ホーム画面はロックされています</string>
     <string name="home_screen_lock_description">ホーム画面のレイアウトを固定する</string>
+    <string name="horizontal_padding_label">左右の余白</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">デフォルトのページに設定</string>
     <string name="default_home_page_set">デフォルトのホームページを更新しました</string>
     <string name="move_page_left">Move page left</string>

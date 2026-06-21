@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
@@ -34,7 +35,6 @@ import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.views.ActivityContext
-import com.patrykmichalik.opto.core.firstBlocking
 import java.net.URISyntaxException
 
 class LawnchairShortcut {
@@ -43,7 +43,8 @@ class LawnchairShortcut {
 
         val CUSTOMIZE =
             SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo, originalView ->
-                if (PreferenceManager2.getInstance(activity).lockHomeScreen.firstBlocking()) {
+                val prefs2 = PreferenceManager2.getInstance(activity)
+                if (prefs2.lockHomeScreen.firstCached()) {
                     null
                 } else {
                     getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo, originalView) }
@@ -59,7 +60,8 @@ class LawnchairShortcut {
 
         val UNINSTALL =
             SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, view: View ->
-                if (PreferenceManager2.INSTANCE.get(activity.asContext()).lockHomeScreen.firstBlocking()) {
+                val prefs2 = PreferenceManager2.INSTANCE.get(activity.asContext())
+                if (prefs2.lockHomeScreen.firstCached()) {
                     return@Factory null
                 }
                 if (itemInfo.targetComponent == null) {

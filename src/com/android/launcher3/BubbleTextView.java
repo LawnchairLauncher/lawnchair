@@ -110,7 +110,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.gestures.IconGestureListener;
@@ -1186,7 +1186,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         ItemInfo info = tag instanceof ItemInfo ? (ItemInfo) tag : null;
         return info == null || info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT
                 && info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION
-                || PreferenceExtensionsKt.firstBlocking(pref2.getEnableLabelInDock());
+                || PreferenceCacheExtensionsKt.firstCached(pref2.getEnableLabelInDock());
     }
 
     /**

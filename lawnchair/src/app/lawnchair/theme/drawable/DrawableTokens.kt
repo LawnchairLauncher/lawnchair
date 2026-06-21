@@ -8,9 +8,9 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import androidx.appcompat.content.res.AppCompatResources
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
-import com.patrykmichalik.opto.core.firstBlocking
 
 object DrawableTokens {
 
@@ -143,7 +143,7 @@ object DrawableTokens {
 
         // Get custom color from preferences
         val prefs2 = PreferenceManager2.getInstance(context)
-        val colorOption = prefs2.workProfileTabBackgroundColor.firstBlocking()
+        val colorOption = prefs2.workProfileTabBackgroundColor.firstCached()
         val customColor = colorOption.colorPreferenceEntry.lightColor.invoke(context)
 
         val selectedColor = if (customColor != 0) {

@@ -78,7 +78,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.tokens.ColorTokens;
@@ -167,7 +167,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
-        HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
+        HotseatMode hotseatMode = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatMode());
         mActivityContext = ActivityContext.lookupContext(context);
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
         Resources resources = getResources();

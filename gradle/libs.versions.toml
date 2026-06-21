@@ -4,7 +4,7 @@ jdkRelease = "21"
 agp = "9.2.1"
 kotlin = "2.4.0"
 androidx-room = "2.8.4"
-androidx-lifecycle = "2.10.0"
+androidx-lifecycle = "2.11.0"
 accompanist = "0.37.3"
 opto = "1.0.18"
 protobuf = "4.35.1"
@@ -35,7 +35,7 @@ google-ksp = "com.google.devtools.ksp:2.3.9"
 google-protobuf = "com.google.protobuf:0.10.0"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.6.0"
+diffplug-spotless = "com.diffplug.spotless:8.7.0"
 
 [libraries]
 # AndroidX
@@ -66,11 +66,11 @@ androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
-compose-bom = "androidx.compose:compose-bom:2026.05.01"
+compose-bom = "androidx.compose:compose-bom:2026.06.00"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha21"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha22"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
@@ -143,7 +143,7 @@ xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
 errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.50.0"
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.8.0"
-composeRules = "io.nlopez.compose.rules:ktlint:0.6.1"
+composeRules = "io.nlopez.compose.rules:ktlint:0.6.2"
 google-guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 
