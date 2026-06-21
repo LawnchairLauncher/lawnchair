@@ -1,21 +1,25 @@
 package app.lawnchair.qsb
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.res.ResourcesCompat
-import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
+/**
+ * Loads a drawable resource and applies theming based on the specified [ThemingMethod].
+ *
+ * If [themed] is true, the function will apply colors based on the chosen method:
+ * - [ThemingMethod.THEME_BY_LAYER_ID]: If the drawable is a [LayerDrawable], it searches for specific
+ *   layer IDs (e.g., `R.id.qsbIconTintPrimary`) and applies corresponding QSB color tokens.
+ */
 fun setThemedIconResource(
     context: Context,
     @DrawableRes resId: Int,
@@ -55,14 +59,14 @@ fun setThemedIconResource(
     return drawable
 }
 
-fun ImageView.setThemedIconResource(
-    @DrawableRes resId: Int,
-    themed: Boolean,
-    method: ThemingMethod = ThemingMethod.THEME_BY_LAYER_ID,
-) {
-    setImageDrawable(setThemedIconResource(context, resId, themed, method))
-}
-
+/**
+ * Remembers a [Painter] for a themed icon resource.
+ *
+ * @param resId The drawable resource ID to load.
+ * @param themed Whether the icon should have theming applied.
+ * @param method The strategy to use for applying theme colors.
+ * @return A [Painter] that draws the (potentially themed) drawable resource.
+ */
 @Composable
 fun rememberThemedIconPainter(
     @DrawableRes resId: Int,

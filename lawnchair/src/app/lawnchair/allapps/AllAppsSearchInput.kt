@@ -180,7 +180,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                                 searchProvider.launch(launcher)
                             }
                         }
-                    } else null,
+                    } else {
+                        null
+                    },
                     onEndIconClick = { id ->
                         when (id) {
                             QsbIconId.MIC -> voiceIntent?.let { context.startActivity(it) }

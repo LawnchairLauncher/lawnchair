@@ -52,6 +52,9 @@ import app.lawnchair.ui.util.preview.PreviewLawnchair
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 
+/**
+ * Enum representing the unique identifiers for icons displayed within the Quick Search Bar (QSB).
+ */
 enum class QsbIconId {
     SEARCH,
     MIC,
@@ -59,6 +62,16 @@ enum class QsbIconId {
     CLEAR,
 }
 
+/**
+ * Represents the state and visual configuration of an individual icon within the Quick Search Bar (QSB).
+ *
+ * @property id The unique identifier for the icon (e.g., SEARCH, MIC, LENS).
+ * @property resId The drawable resource ID used for the icon's imagery.
+ * @property themed Whether the icon should adapt its colors based on the current system or launcher theme.
+ * @property contentDescription The accessibility label for the icon.
+ * @property method The specific [ThemingMethod] to apply when rendering the icon (e.g., tinting or layer-based theming).
+ * @property visible Whether the icon should be displayed in the UI.
+ */
 @Immutable
 data class QsbIconState(
     val id: QsbIconId,
@@ -69,6 +82,16 @@ data class QsbIconState(
     val visible: Boolean = true,
 )
 
+/**
+ * Defines the visual appearance and styling of the Quick Search Bar (QSB).
+ *
+ * @property themed Whether the background and stroke should follow the system or launcher theme colors.
+ * @property backgroundAlpha The transparency level of the QSB background, ranging from 0.0 to 1.0.
+ * @property backgroundColor The color value used for the QSB background fill.
+ * @property strokeColor The color value used for the QSB's outline/border.
+ * @property strokeWidthPx The thickness of the QSB's border in pixels.
+ * @property cornerRadiusPx The radius used for the rounded corners of the QSB in pixels.
+ */
 @Immutable
 data class QsbStyle(
     val themed: Boolean,
@@ -79,6 +102,13 @@ data class QsbStyle(
     val cornerRadiusPx: Float,
 )
 
+/**
+ * Represents the complete visual state of the Quick Search Bar (QSB).
+ *
+ * @property contentDescription The accessibility label for the entire search bar container.
+ * @property startIcon The state of the primary icon displayed at the beginning of the bar (usually the search provider logo).
+ * @property endIcons A list of icons to be displayed at the end of the bar (e.g., Microphone, Lens, or Clear).
+ */
 @Immutable
 data class QsbState(
     val contentDescription: String,
@@ -86,6 +116,14 @@ data class QsbState(
     val endIcons: List<QsbIconState>,
 )
 
+/**
+ * Defines the click handlers for the various interactive elements within the Quick Search Bar (QSB).
+ *
+ * @property onQsbClick Callback invoked when the main body of the search bar is clicked.
+ * @property onStartIconClick Optional callback invoked when the leading icon (e.g., search provider logo) is clicked.
+ * @property onEndIconClick Callback invoked when one of the trailing icons (e.g., Mic, Lens, or Clear) is clicked,
+ * passing the specific [QsbIconId] of the clicked icon.
+ */
 @Immutable
 data class QsbActions(
     val onQsbClick: () -> Unit,
@@ -93,6 +131,18 @@ data class QsbActions(
     val onEndIconClick: ((id: QsbIconId) -> Unit),
 )
 
+/**
+ * Builds a [QsbStyle] instance based on the provided parameters.
+ *
+ * @param context The context used to resolve colors and dimensions.
+ * @param themed Whether the search bar background and components should follow the system theme.
+ * @param backgroundAlpha The background opacity, provided as a percentage (0-100).
+ * @param backgroundColor The integer color value for the search bar background.
+ * @param cornerRadius A factor used to calculate the final corner radius.
+ * @param strokeColor The color of the search bar border. If null, the theme's accent color is used.
+ * @param strokeWidth The width of the search bar border in pixels.
+ * @return A [QsbStyle] object containing the processed styling configuration.
+ */
 fun buildQsbStyle(
     context: Context,
     themed: Boolean,
@@ -110,14 +160,18 @@ fun buildQsbStyle(
     cornerRadiusPx = getHotseatQsbCornerRadius(context, cornerRadius),
 )
 
-fun getHotseatBackgroundColor(context: Context, themed: Boolean, themedBackgroundColor: Int? = null): Int {
-    return if (themed) {
-        themedBackgroundColor ?: Themes.getColorBackgroundFloating(context)
-    } else {
-        Themes.getAttrColor(context, R.attr.qsbFillColor)
-    }
-}
-
+/**
+ * Creates and remembers a [QsbState] tailored for the Hotseat (dock) search bar.
+ *
+ * This function handles the logic for selecting appropriate icons and theming based on the
+ * chosen [searchProvider] and visibility settings for the microphone and lens icons.
+ *
+ * @param searchProvider The search engine provider currently selected.
+ * @param themed Whether the icons should use themed (monochrome) variants if available.
+ * @param showMic Whether the voice search (microphone) icon should be visible.
+ * @param showLens Whether the Google Lens icon should be visible.
+ * @return A remembered [QsbState] containing the configuration for the Hotseat QSB.
+ */
 @Composable
 fun rememberHotseatQsbState(
     searchProvider: QsbSearchProvider,
@@ -164,6 +218,20 @@ fun rememberHotseatQsbState(
     }
 }
 
+/**
+ * Creates and remembers a [QsbState] tailored for the All Apps search bar.
+ *
+ * This function handles the logic for selecting appropriate icons and theming based on the
+ * chosen [searchProvider] and visibility settings for the microphone, lens, and clear icons.
+ *
+ * @param searchProvider The search engine provider currently selected.
+ * @param themed Whether the icons should use themed (monochrome) variants if available.
+ * @param shouldShowIcons Whether the icons should be visible.
+ * @param queryEmpty Whether the search query is empty.
+ * @param showMic Whether the voice search (microphone) icon should be visible.
+ * @param showLens Whether the Google Lens icon should be visible.
+ * @return A remembered [QsbState] containing the configuration for the All Apps QSB.
+ */
 @Composable
 fun rememberAllAppsQsbState(
     searchProvider: QsbSearchProvider,
@@ -222,6 +290,9 @@ fun rememberAllAppsQsbState(
     }
 }
 
+/**
+ * Calculates the corner radius for the Hotseat Quick Search Bar (QSB) based on a scaling factor.
+ */
 fun getHotseatQsbCornerRadius(context: Context, cornerRadiusFactor: Float): Float {
     val resources = context.resources
     val qsbWidgetHeight = resources.getDimension(R.dimen.qsb_widget_height)
@@ -230,6 +301,29 @@ fun getHotseatQsbCornerRadius(context: Context, cornerRadiusFactor: Float): Floa
     return innerHeight / 2 * cornerRadiusFactor
 }
 
+/**
+ * Calculates the default background color for the Hotseat Quick Search Bar (QSB).
+ */
+fun getHotseatBackgroundColor(context: Context, themed: Boolean, themedBackgroundColor: Int? = null): Int {
+    return if (themed) {
+        themedBackgroundColor ?: Themes.getColorBackgroundFloating(context)
+    } else {
+        Themes.getAttrColor(context, R.attr.qsbFillColor)
+    }
+}
+
+/**
+ * A Composable that represents the UI for the Quick Search Bar (QSB).
+ *
+ * This component renders a search bar with a customizable background, optional border,
+ * a starting icon (typically the search provider logo), and a set of trailing icons
+ * (such as microphone or lens) based on the provided state.
+ *
+ * @param state The visual state of the QSB, including the icons and content descriptions.
+ * @param style The styling configuration, including colors, transparency, and corner radius.
+ * @param actions The click handlers for the main bar and individual icons.
+ * @param modifier The [Modifier] to be applied to the QSB container.
+ */
 @Composable
 fun LawnQsbUi(
     state: QsbState,
@@ -317,6 +411,14 @@ fun LawnQsbUi(
     }
 }
 
+/**
+ * A composable representing an icon button within the Quick Search Bar (QSB).
+ *
+ * @param icon the state defining the icon's resource, theming, and accessibility description.
+ * @param shape the shape used for clipping and the ripple indication.
+ * @param onClick the callback to be invoked when the icon is clicked.
+ * @param modifier the [Modifier] to be applied to this icon container.
+ */
 @Composable
 fun QsbIcon(
     icon: QsbIconState,
