@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">Buka kunci layar beranda</string>
     <string name="home_screen_locked">Layar beranda dikunci</string>
     <string name="home_screen_lock_description">Mencegah perubahan pada tata letak layar utama</string>
+    <string name="horizontal_padding_label">Padding horizontal</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Tetapkan sebagai halaman default</string>
     <string name="default_home_page_set">Halaman beranda default telah diperbarui</string>
     <string name="move_page_left">Move page left</string>

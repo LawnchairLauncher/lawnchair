@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">Sblocca la schermata Home</string>
     <string name="home_screen_locked">La schermata Home è bloccata</string>
     <string name="home_screen_lock_description">Impedisci modifiche al layout della schermata Home</string>
+    <string name="horizontal_padding_label">Margine orizzontale</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Imposta come pagina iniziale predefinita</string>
     <string name="default_home_page_set">Pagina iniziale predefinita aggiornata</string>
     <string name="move_page_left">Move page left</string>

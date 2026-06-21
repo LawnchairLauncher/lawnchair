@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">Otključaj početni ekran</string>
     <string name="home_screen_locked">Početni ekran je zaključan</string>
     <string name="home_screen_lock_description">Sprečite promenu rasporeda početnog ekrana</string>
+    <string name="horizontal_padding_label">Horizontalni razmak</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
     <string name="move_page_left">Move page left</string>

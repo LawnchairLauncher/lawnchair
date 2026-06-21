@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">Odemknout domovskou obrazovku</string>
     <string name="home_screen_locked">Domovská obrazovka je uzamčena</string>
     <string name="home_screen_lock_description">Zabránit změnám rozvržení domovské obrazovky</string>
+    <string name="horizontal_padding_label">Vodorovná mezera</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Nastavit jako výchozí stránku</string>
     <string name="default_home_page_set">Výchozí domovská stránka byla aktualizována</string>
     <string name="move_page_left">Move page left</string>

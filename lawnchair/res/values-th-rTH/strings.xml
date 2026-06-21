@@ -254,7 +254,7 @@
     <string name="icon_shape_seven_sided_cookie">คุกกี้ 7 เหลี่ยม</string>
     <string name="icon_shape_arch">ทรงโค้ง</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
+    <string name="icon_shape_cloudy">เมฆมาก</string>
     <string name="icon_shape_flower">ดอกไม้</string>
     <string name="icon_shape_heart">หัวใจ</string>
     <string name="icon_shape_leaf">ใบไม้</string>
@@ -380,9 +380,9 @@
     <!-- Available targets -->
     <string name="smartspace_weather">สภาพอากาศ</string>
     <string name="smartspace_battery_status">สถานะแบตเตอรี่</string>
-    <string name="smartspace_torch">สถานะของไฟฉาย</string>
+    <string name="smartspace_torch">สถานะไฟฉาย</string>
     <string name="smartspace_now_playing">กำลังเล่น</string>
-    <string name="smartspace_onboarding">ต้อนรับและสอนใช้งาน</string>
+    <string name="smartspace_onboarding">สอนใช้งาน</string>
     <!-- Torch strings -->
     <string name="torch_status_on">ไฟฉายเปิดอยู่</string>
     <string name="torch_action_off">แตะเพื่อปิด</string>
@@ -543,6 +543,10 @@
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
     <string name="home_screen_locked">หน้าจอหลักถูกล็อคแล้ว</string>
     <string name="home_screen_lock_description">ป้องกันการเปลี่ยนแปลงของวัตถุบนหน้าจอหลัก</string>
+    <string name="horizontal_padding_label">เว้นขอบข้าง</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">ตั้งเป็นหน้าเริ่มต้น</string>
     <string name="default_home_page_set">Default home page updated</string>
     <string name="move_page_left">ย้ายหน้าไปทางซ้าย</string>
