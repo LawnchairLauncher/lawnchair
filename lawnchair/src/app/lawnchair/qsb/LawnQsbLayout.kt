@@ -18,6 +18,7 @@ import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.asState
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.qsb.providers.AppSearch
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.PixelSearch
@@ -92,7 +93,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             onQsbClick = {
                                 val launcher = context.launcher
                                 launcher.lifecycleScope.launch {
-                                    if (prefs2.matchHotseatQsbStyle.firstBlocking()) {
+                                    if (prefs2.matchHotseatQsbStyle.firstCached()) {
                                         launcher.appsView.searchUiManager.editText?.showKeyboard()
                                         launcher.animateToAllApps()
                                     } else {
@@ -193,7 +194,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             context: Context,
             preferenceManager: PreferenceManager2,
         ): QsbSearchProvider {
-            val provider = preferenceManager.hotseatQsbProvider.firstBlocking()
+            val provider = preferenceManager.hotseatQsbProvider.firstCached()
 
             return if (provider == AppSearch ||
                 resolveIntent(context, provider.createSearchIntent()) ||

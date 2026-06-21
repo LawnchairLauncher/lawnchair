@@ -31,8 +31,8 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.preferences2.firstCached
 import app.lawnchair.preferences2.asState
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.qsb.LawnQsbLayout.Companion.getLensIntent
 import app.lawnchair.qsb.LawnQsbLayout.Companion.getSearchProvider
 import app.lawnchair.qsb.LawnQsbLayout.Companion.getVoiceIntent
