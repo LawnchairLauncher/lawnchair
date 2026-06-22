@@ -19,6 +19,7 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
  * If [themed] is true, the function will apply colors based on the chosen method:
  * - [ThemingMethod.THEME_BY_LAYER_ID]: If the drawable is a [LayerDrawable], it searches for specific
  *   layer IDs (e.g., `R.id.qsbIconTintPrimary`) and applies corresponding QSB color tokens.
+ * - [ThemingMethod.TINT]: Applies accent color tinting to the entire drawable.
  */
 fun setThemedIconResource(
     context: Context,
