@@ -1201,6 +1201,10 @@ public class DeviceProfile {
         final boolean isVerticalLayout = isVerticalBarLayout();
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
 
+        // Get initial text size before calculating layout
+        // This scales offset with text sizing, all the way down to zero
+        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
+
         if (mIsResponsiveGrid) {
             cellWidthPx = mResponsiveWorkspaceWidthSpec.getCellSizePx();
             cellHeightPx = mResponsiveWorkspaceHeightSpec.getCellSizePx();
@@ -1313,8 +1317,6 @@ public class DeviceProfile {
                 iconDrawablePaddingPx = cellPaddingY;
             }
         }
-
-        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
 
         // All apps
         if (mIsResponsiveGrid) {
