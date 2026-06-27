@@ -116,7 +116,7 @@
     <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用程序列表之外</string>
     <string name="folders_filter_duplicates">仅显示唯一应用</string>
     <string name="my_folder_label">我的文件夹</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">排序活跃项目</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">为了在您执行手势时进行某些操作（例如锁定手机），Lawnchair 需要获取无障碍服务权限。\n\nLawnchair 不会监视您的任何用户操作，尽管所有无障碍服务都必须申请该权限。Lawnchair 会丢弃系统发送的任何事件。\n\n为了锁定您的手机或打开最近任务界面，Lawnchair 使用 performGlobalAction 无障碍服务。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -171,13 +171,11 @@
     <string name="always_reload_icons_label">始终重载图标</string>
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
     <string name="always_reload_icons_warning">这将导致图标定期重新加载，如果图标包不定期更新，则无需这样做</string>
-    <string name="icon_swipe_gestures">图标滑动手势</string>
-    <string name="icon_swipe_gestures_description">左滑或右滑图标以执行操作，而非移动主屏幕</string>
     <string name="show_deck_layout">桌面模式</string>
     <string name="show_deck_layout_description">显示一个外观选项，开启时隐藏抽屉，并将 App 显示到桌面上</string>
     <string name="material_expressive_label">Material 3 表现力</string>
     <string name="material_expressive_description">在工作区中启用 Material 3 的表达性更改</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_shape_label">文件夹形状</string>
     <string name="folder_label">文件夹</string>
     <string name="app_icon_shape_label">应用</string>
     <string name="gesturenavcontract_label">使用手势导航合同API</string>
@@ -269,9 +267,9 @@
     <string name="custom_icon_shape">自定义图标形状</string>
     <string name="custom_icon_shape_create">创建自定义图标形状</string>
     <string name="custom_icon_shape_edit">编辑自定义图标形状</string>
-    <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape">自定义文件夹形状</string>
+    <string name="custom_folder_shape_create">创建自定义文件夹形状</string>
+    <string name="custom_folder_shape_edit">编辑自定义文件夹形状</string>
     <string name="custom_icon_shape_corner">边角形状</string>
     <string name="custom_icon_shape_corner_round">圆形</string>
     <string name="custom_icon_shape_corner_squircle">方圆形</string>
@@ -382,12 +380,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
-    <string name="smartspace_torch">Flashlight status</string>
+    <string name="smartspace_torch">手电筒状态</string>
     <string name="smartspace_now_playing">正在播放</string>
     <string name="smartspace_onboarding">入职</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
-    <string name="torch_action_off">Tap to turn off</string>
+    <string name="torch_status_on">手电筒已开启</string>
+    <string name="torch_action_off">点击以关闭</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">设置你的 Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">长按主屏幕打开设置</string>
@@ -545,16 +543,20 @@
     <string name="home_screen_unlock">解锁主屏幕</string>
     <string name="home_screen_locked">主屏幕已被锁定</string>
     <string name="home_screen_lock_description">固定主屏幕布局</string>
+    <string name="horizontal_padding_label">水平边距</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">设置为默认页面</string>
     <string name="default_home_page_set">默认主页面已更新</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
-    <string name="page_order_updated">Page order updated</string>
+    <string name="move_page_left">将页面左移</string>
+    <string name="move_page_right">将页面右移</string>
+    <string name="page_order_updated">页面顺序已更新</string>
     <string name="edit_mode_page_strip_default">默认</string>
-    <string name="edit_mode_page_strip_page">Page %1$d</string>
-    <string name="edit_mode_page_strip_set_home">Set as home page</string>
-    <string name="edit_mode_page_strip_home_selected">Default home page</string>
-    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
+    <string name="edit_mode_page_strip_page">第 %1$d 页</string>
+    <string name="edit_mode_page_strip_set_home">设置为首页</string>
+    <string name="edit_mode_page_strip_home_selected">默认主页</string>
+    <string name="edit_mode_page_strip_tip">拖动页面重新排序。点击主屏幕图标设置默认页面。</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="popup_menu_items">弹窗目录项目</string>
     <string name="edit_menu_items">编辑弹窗目录项目</string>
@@ -601,6 +603,7 @@
     <string name="paused_apps_dialog_title">应用已暂停</string>
     <string name="paused_apps_dialog_message">%1$s 直接从启动器暂停</string>
     <string name="paused_apps_drop_target_label">暂停应用</string>
+    <string name="open_in_store_drop_target_label">在商店中打开</string>
     <string name="dock_icons">Dock 栏图标</string>
     <string name="hotseat_bottom_space_label">底部边距</string>
     <string name="page_indicator_height">页面指​​示器高度</string>

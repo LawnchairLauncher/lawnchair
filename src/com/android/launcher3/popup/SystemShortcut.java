@@ -52,7 +52,7 @@ import com.android.launcher3.widget.picker.model.data.WidgetPickerData;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
@@ -136,7 +136,7 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
 
     private static boolean isHomeLocked(ActivityContext context) {
         PreferenceManager2 prefs = PreferenceManager2.getInstance(context.asContext());
-        return PreferenceExtensionsKt.firstBlocking(prefs.getLockHomeScreen());
+        return PreferenceCacheExtensionsKt.firstCached(prefs.getLockHomeScreen());
     }
 
     public static final Factory<ActivityContext> WIDGETS = (context, itemInfo, originalView) -> {

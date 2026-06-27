@@ -26,6 +26,7 @@
 -keep,allowshrinking,allowoptimization class app.lawnchair.compatlib.** { *; }
 
 -keep,allowshrinking,allowoptimization class com.google.protobuf.Timestamp { *; }
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
 
 # We intentionally remove it to replace Smartspacer's widget popup with our own Launcher3 popup
 -dontwarn com.skydoves.balloon.*

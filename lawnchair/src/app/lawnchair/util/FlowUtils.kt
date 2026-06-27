@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.annotation.Discouraged
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+@Discouraged("This is a blocking read, use firstCached() for non-blocking reads")
 fun <T> Flow<T>.firstBlocking() = runBlocking { first() }
 
 @Composable

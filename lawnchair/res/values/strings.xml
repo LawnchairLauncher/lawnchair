@@ -223,9 +223,6 @@
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
     <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
 
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
 
@@ -281,8 +278,8 @@
     <string name="twoline_label">Use multiple lines</string>
 
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
 
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
@@ -691,6 +688,11 @@
     <string name="home_screen_locked">Home screen is locked</string>
     <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
 
+    <string name="horizontal_padding_label">Horizontal padding</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
+
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
     <string name="move_page_left">Move page left</string>
@@ -761,6 +763,7 @@
     <string name="paused_apps_dialog_title">App paused</string>
     <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
     <string name="paused_apps_drop_target_label">Pause app</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
 
     <string name="dock_icons">Dock icons</string>
     <string name="hotseat_bottom_space_label">Bottom padding</string>

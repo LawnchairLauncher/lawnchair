@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    buildToolsVersion "36.1.0"
+    buildToolsVersion "37.0.0"
     namespace "com.android.systemui.plugins"
     buildFeatures {
         aidl true

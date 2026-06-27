@@ -4,7 +4,7 @@ plugins {
 
 // TODO: Pull out surfaceeffects outside of src and have separate build files there.
 android {
-    buildToolsVersion "36.1.0"
+    buildToolsVersion "37.0.0"
     namespace "com.android.systemui.animation"
     buildFeatures {
         aidl true

@@ -130,7 +130,11 @@ final def buildCommit = providers.exec {
 final def ciBuild = System.getenv("CI") == "true"
 final def ciRef = System.getenv("GITHUB_REF") ?: ""
 final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
-final def isReleaseBuild = ciBuild && ciRef.contains("beta")
+final def isReleaseBuild = ciBuild
+        && (ciRef.endsWith("-alpha")
+        || ciRef.endsWith("-beta")
+        || ciRef.endsWith("-rc")
+        || ciRef.endsWith("-stable"))
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 
 final def version = "16"

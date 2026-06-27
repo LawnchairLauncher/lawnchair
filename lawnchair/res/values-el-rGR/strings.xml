@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">Επαναφόρτωση εικονιδίων πάντοτε</string>
     <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
     <string name="always_reload_icons_warning">Θα προκαλέσει την τακτική επαναφόρτωση του εικονιδίου, αυτό δεν απαιτείται εάν το πακέτο εικονιδίων δεν ενημερώνεται τακτικά</string>
-    <string name="icon_swipe_gestures">Χειρονομίες σάρωσης εικονιδίων</string>
-    <string name="icon_swipe_gestures_description">Εκτελέστε ενέργειες όταν σύρετε αριστερά ή δεξιά στα εικονίδια αντί να μετακινείτε την αρχική οθόνη</string>
     <string name="show_deck_layout">Διάταξη τράπουλας</string>
     <string name="show_deck_layout_description">Εμφάνιση μιας επιλογής διάταξης για την απόκρυψη του συρταριού εφαρμογών και την αυτόματη προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
     <string name="material_expressive_label">Σχεδιασμός Material 3 Expressive</string>
@@ -545,6 +543,10 @@
     <string name="home_screen_unlock">Ξεκλείδωμα Αρχ. Οθ.</string>
     <string name="home_screen_locked">Η Αρχ. Οθ. είναι κλειδωμένη</string>
     <string name="home_screen_lock_description">Αποτροπή αλλαγών στη διάταξη της αρχικής οθόνης</string>
+    <string name="horizontal_padding_label">Οριζόντιο περιθώριο</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Ορισμός ως προεπιλεγμένη σελίδα</string>
     <string name="default_home_page_set">Η προεπιλεγμένη αρχική σελίδα ενημερώθηκε</string>
     <string name="move_page_left">Move page left</string>
@@ -601,6 +603,7 @@
     <string name="paused_apps_dialog_title">Η εφαρμογή τέθηκε σε παύση</string>
     <string name="paused_apps_dialog_message">Το %1$s τέθηκε απευθείας σε παύση από τον εκκινητή</string>
     <string name="paused_apps_drop_target_label">Παύση εφαρμογής</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Εικονίδια μπάρας εφαρμογών</string>
     <string name="hotseat_bottom_space_label">Κάτω περιθώριο</string>
     <string name="page_indicator_height">Ύψος ένδειξης σελίδας</string>

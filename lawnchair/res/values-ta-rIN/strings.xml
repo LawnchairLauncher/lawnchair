@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">எப்போதும் சின்னங்களை மீண்டும் ஏற்று</string>
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
     <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -545,6 +543,10 @@
     <string name="home_screen_unlock">முகப்பு திரையைத் திறக்கவும்</string>
     <string name="home_screen_locked">முகப்புத் திரை பூட்டப்பட்டுள்ளது</string>
     <string name="home_screen_lock_description">முகப்புத் திரை தளவமைப்பில் மாற்றங்களைத் தடுக்கவும்</string>
+    <string name="horizontal_padding_label">கிடைமட்ட திணிப்பு</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
     <string name="move_page_left">Move page left</string>
@@ -601,6 +603,7 @@
     <string name="paused_apps_dialog_title">App paused</string>
     <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
     <string name="paused_apps_drop_target_label">Pause app</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">டாக் சின்னங்கள்</string>
     <string name="hotseat_bottom_space_label">அடி திணிப்பு</string>
     <string name="page_indicator_height">Page indicator height</string>

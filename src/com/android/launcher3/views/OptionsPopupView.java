@@ -57,7 +57,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.ui.popup.LauncherOptionsPopup;
 
@@ -274,8 +274,8 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
     private static boolean toggleHomeScreenLock(View v) {
         Context context = v.getContext();
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
-        boolean oldValue = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
-        PreferenceExtensionsKt.setBlocking(preferenceManager2.getLockHomeScreen(), !oldValue);
+        boolean oldValue = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getLockHomeScreen());
+        com.patrykmichalik.opto.core.PreferenceExtensionsKt.setBlocking(preferenceManager2.getLockHomeScreen(), !oldValue);
         return true;
     }
 

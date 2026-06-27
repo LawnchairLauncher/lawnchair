@@ -116,7 +116,7 @@
     <string name="apps_in_folder_description">Les applis assignées à un dossier sont exclues des listes d\'applis</string>
     <string name="folders_filter_duplicates">Afficher seulement les applis uniques</string>
     <string name="my_folder_label">Mon dossier</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">Trier les éléments actifs</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Pour effectuer certaines actions (telles que verrouiller votre téléphone) en un seul geste, Lawnchair a besoin des droits d\'accessibilité.\n\nBien que le privilège soit accordé de force à tous les services d\'accessibilité, Lawnchair n\'observe pas les actions de l\'utilisateur et ignore tous les événements envoyés par le système.\n\nAfin de verrouiller votre téléphone ou ouvrir l\'écran Récents, Lawnchair utilise le service d\'accessibilité performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">Toujours recharger les icônes</string>
     <string name="always_reload_icons_description">Éviter d\'utiliser les icônes en cache provenant des packs d\'icônes</string>
     <string name="always_reload_icons_warning">Entraînera le rechargement régulier des icônes, il n\'est pas nécessaire de l\'activer si le pack d\'icônes n\'est pas mis à jour régulièrement</string>
-    <string name="icon_swipe_gestures">Gestes de balayage des icônes</string>
-    <string name="icon_swipe_gestures_description">Effectuez des actions en balayant les icônes vers la gauche ou vers la droite</string>
     <string name="show_deck_layout">Disposition Deck</string>
     <string name="show_deck_layout_description">Affichez une option de disposition permettant de masquer le tiroir des applis et d\'ajouter automatiquement les nouvelles applis à l\'écran d\'accueil</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -382,12 +380,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Météo</string>
     <string name="smartspace_battery_status">État de la batterie</string>
-    <string name="smartspace_torch">Flashlight status</string>
+    <string name="smartspace_torch">État de la lampe de poche</string>
     <string name="smartspace_now_playing">En écoute</string>
     <string name="smartspace_onboarding">Configuration</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
-    <string name="torch_action_off">Tap to turn off</string>
+    <string name="torch_status_on">Lampe de poche activée</string>
+    <string name="torch_action_off">Appuyez pour l\'éteindre</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configurez votre Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Appui long sur l\'écran d\'accueil pour ouvrir les paramètres</string>
@@ -545,16 +543,20 @@
     <string name="home_screen_unlock">Déverrouiller l\'écran d\'accueil</string>
     <string name="home_screen_locked">L\'écran d\'accueil est verrouillé</string>
     <string name="home_screen_lock_description">Empêcher les changements d\'agencement de l\'écran d\'accueil</string>
+    <string name="horizontal_padding_label">Décalage vers le centre</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Définir comme page par défaut</string>
     <string name="default_home_page_set">Page par défaut mise à jour</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
-    <string name="page_order_updated">Page order updated</string>
+    <string name="move_page_left">Déplacer la page vers la gauche</string>
+    <string name="move_page_right">Déplacer la page vers la droite</string>
+    <string name="page_order_updated">Ordre des pages mis à jour</string>
     <string name="edit_mode_page_strip_default">Par défaut</string>
     <string name="edit_mode_page_strip_page">Page %1$d</string>
-    <string name="edit_mode_page_strip_set_home">Set as home page</string>
-    <string name="edit_mode_page_strip_home_selected">Default home page</string>
-    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
+    <string name="edit_mode_page_strip_set_home">Définir comme page d\'accueil</string>
+    <string name="edit_mode_page_strip_home_selected">Page d\'accueil par défaut</string>
+    <string name="edit_mode_page_strip_tip">Faites glisser les pages pour les réorganiser. Appuyez sur l\'icône d\'accueil pour choisir votre page par défaut.</string>
     <string name="popup_menu">Menu pop-up</string>
     <string name="popup_menu_items">Éléments du menu pop-up</string>
     <string name="edit_menu_items">Modifier les éléments du menu pop-up</string>
@@ -601,6 +603,7 @@
     <string name="paused_apps_dialog_title">Appli suspendue</string>
     <string name="paused_apps_dialog_message">%1$s a été suspendu à partir du lanceur d\'applications</string>
     <string name="paused_apps_drop_target_label">Suspendre l\'appli</string>
+    <string name="open_in_store_drop_target_label">Ouvrir dans magasin</string>
     <string name="dock_icons">Icônes dans le dock</string>
     <string name="hotseat_bottom_space_label">Décalage vers le haut</string>
     <string name="page_indicator_height">Hauteur de l\'indicateur de page</string>

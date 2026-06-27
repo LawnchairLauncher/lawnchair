@@ -36,7 +36,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.views.ActivityContext;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorMode;
@@ -68,7 +68,7 @@ public class Themes {
 
     public static int getActivityThemeRes(Context context, int wallpaperColorHints) {
         PreferenceManager2 prefs2 = PreferenceManager2.getInstance(context);
-        ColorMode colorMode = PreferenceExtensionsKt.firstBlocking(prefs2.getWorkspaceTextColor());
+        ColorMode colorMode = PreferenceCacheExtensionsKt.firstCached(prefs2.getWorkspaceTextColor());
         boolean supportsDarkText = (wallpaperColorHints & HINT_SUPPORTS_DARK_TEXT) != 0;
         boolean isMainColorDark = (wallpaperColorHints & HINT_SUPPORTS_DARK_THEME) != 0;
 

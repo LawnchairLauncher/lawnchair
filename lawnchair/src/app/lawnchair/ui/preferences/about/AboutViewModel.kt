@@ -5,9 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
-import com.patrykmichalik.opto.core.firstBlocking
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,7 +62,7 @@ class AboutViewModel(
         // Check if the build variant is Nightly
         // AND check if user has enabled auto updater (available to Nightly variant)
         // OR check if user has overridden it in debug flags (available to All variant)
-        if (BuildConfig.APPLICATION_ID.contains("nightly") && prefs2.autoUpdaterNightly.firstBlocking()) {
+        if (BuildConfig.APPLICATION_ID.contains("nightly") && prefs2.autoUpdaterNightly.firstCached()) {
             nightlyBuildsRepository.checkForUpdate()
             viewModelScope.launch {
                 nightlyBuildsRepository.updateState.collect { state ->
@@ -98,7 +98,7 @@ class AboutViewModel(
                 name = "Amogh Lele",
                 role = Role.Development,
                 photoUrl = "https://avatars.githubusercontent.com/u/31761843",
-                socialUrl = "https://www.linkedin.com/in/amogh-lele/",
+                socialUrl = "https://github.com/sphericalkat",
             ),
             TeamMember(
                 name = "Antonio J. Roa Valverde",
@@ -235,7 +235,7 @@ class AboutViewModel(
                 name = "Daniel Souza",
                 role = Role.Support,
                 photoUrl = "https://avatars.githubusercontent.com/u/32078304",
-                socialUrl = "https://github.com/DanGLES3",
+                socialUrl = "https://github.com/DanGLVK",
             ),
             TeamMember(
                 name = "Giuseppe Longobardo",
@@ -247,7 +247,7 @@ class AboutViewModel(
                 name = "Rik Koedoot",
                 role = Role.SupportAndPr,
                 photoUrl = "https://avatars.githubusercontent.com/u/29402532",
-                socialUrl = "https://x.com/rikkoedoot",
+                socialUrl = "https://github.com/RikKoedoot",
             ),
         )
     }

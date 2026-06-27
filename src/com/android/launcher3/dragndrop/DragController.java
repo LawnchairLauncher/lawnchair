@@ -44,7 +44,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -558,7 +558,7 @@ public abstract class DragController<T extends ActivityContext>
                     dropTarget.onDrop(mDragObject, mOptions);
                 }
                 accepted = true;
-                if (PreferenceExtensionsKt.firstBlocking(pref2.getDeckLayout()) && dropTarget instanceof DeleteDropTarget &&
+                if (PreferenceCacheExtensionsKt.firstCached(pref2.getDeckLayout()) && dropTarget instanceof DeleteDropTarget &&
                         isNeedCancelDrag(mDragObject.dragInfo)) {
                     cancelDrag();
                 }

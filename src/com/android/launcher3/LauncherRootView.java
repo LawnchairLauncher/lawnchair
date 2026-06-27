@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.hoko.blur.HokoBlur;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.FileAccessManager;
@@ -61,7 +61,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         pref = PreferenceManager.getInstance(context);
         PreferenceManager2 prefs2 = PreferenceManager2.getInstance(context);
         
-        mEnableTaskbarOnPhone = PreferenceExtensionsKt.firstBlocking(prefs2.getEnableTaskbarOnPhone());
+        mEnableTaskbarOnPhone = PreferenceCacheExtensionsKt.firstCached(prefs2.getEnableTaskbarOnPhone());
 
         FileAccessManager fileAccessManager = FileAccessManager.getInstance(context);
         FileAccessState wallpaperAccessState = fileAccessManager.getWallpaperAccessState().getValue();

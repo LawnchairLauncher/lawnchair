@@ -79,7 +79,7 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -345,7 +345,7 @@ public class LauncherPreviewRenderer extends BaseContext
         populateHotseatPredictions(itemIdMap);
 
         // Add first page QSB
-        if (PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getEnableSmartspace())) {
+        if (PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getEnableSmartspace())) {
             CellLayout firstScreen = mWorkspaceScreens.get(FIRST_SCREEN_ID);
             if (firstScreen != null) {
                 View qsb = mHomeElementInflater.inflate(mWorkspaceSearchContainer, firstScreen, false);

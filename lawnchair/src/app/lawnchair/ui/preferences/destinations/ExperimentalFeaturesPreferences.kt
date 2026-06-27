@@ -88,13 +88,6 @@ fun ExperimentalFeaturesPreferences(
             }
             Item {
                 SwitchPreference(
-                    adapter = prefs2.iconSwipeGestures.getAdapter(),
-                    label = stringResource(R.string.icon_swipe_gestures),
-                    description = stringResource(R.string.icon_swipe_gestures_description),
-                )
-            }
-            Item {
-                SwitchPreference(
                     adapter = prefs2.showDeckLayout.getAdapter(),
                     label = stringResource(R.string.show_deck_layout),
                     description = stringResource(R.string.show_deck_layout_description),

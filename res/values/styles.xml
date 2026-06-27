@@ -378,7 +378,9 @@
         <item name="android:importantForAccessibility">no</item>
     </style>
 
-    <style name="BaseIconRoot" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
+    <style name="BaseIconRoot" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
+        <item name="customFontType">@id/font_base_icon</item>
+    </style>
 
     <style name="BaseIconUnBounded" parent="BaseIconRoot">
         <item name="android:layout_width">match_parent</item>
@@ -390,6 +392,7 @@
         <item name="android:defaultFocusHighlightEnabled">false</item>
         <!-- No shadows in the base theme -->
         <item name="android:shadowRadius">0</item>
+        <item name="customFontType">@id/font_base_icon</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->
@@ -452,11 +455,15 @@
         <item name="android:fontFamily" android:featureFlag="com.android.launcher3.gsf_res">variable-title-medium</item>
     </style>
 
-    <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
+    <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
+        <item name="customFontType">@id/font_body_medium</item>
+    </style>
 
     <style name="PrimaryHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
 
-    <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
+    <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault">
+        <item name="customFontType">@id/font_heading</item>
+    </style>
 
     <style name="Button.TopRounded.Bordered" parent="@android:style/Widget.Material.Button">
         <item name="android:background">@drawable/button_top_rounded_bordered_ripple</item>
@@ -517,6 +524,7 @@
     <style name="PrivateSpaceHeaderTextStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/materialColorOnSurface</item>
+        <item name="customFontType">@id/font_heading</item>
         <item name="android:fontFamily" android:featureFlag="com.android.launcher3.gsf_res">
             variable-title-medium
         </item>

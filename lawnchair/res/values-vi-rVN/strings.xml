@@ -116,7 +116,7 @@
     <string name="apps_in_folder_description">Các ứng dụng được gán vào thư mục sẽ bị loại khỏi danh sách ứng dụng</string>
     <string name="folders_filter_duplicates">Chỉ hiển thị các ứng dụng duy nhất</string>
     <string name="my_folder_label">Thư mục của tôi</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">Sắp xếp các mục đang hoạt động</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Để thực hiện một số hành động nhất định (chẳng hạn như khóa điện thoại) khi thực hiện cử chỉ, Lawnchair cần có quyền truy cập trợ năng.\n\nLawnchair không theo dõi bất kỳ hành động nào của người dùng, mặc dù quyền làm như vậy là bắt buộc đối với tất cả các dịch vụ trợ năng. Lawnchair loại bỏ bất kỳ sự kiện nào được hệ thống gửi đi.\n\nĐể khóa điện thoại hoặc mở màn hình Gần đây, Lawnchair sử dụng dịch vụ Trợ năng performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -171,8 +171,6 @@
     <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
     <string name="always_reload_icons_warning">Việc này sẽ khiến biểu tượng tải lại thường xuyên, tuy nhiên không cần thiết nếu gói biểu tượng không được cập nhật thường xuyên.</string>
-    <string name="icon_swipe_gestures">Cử chỉ vuốt biểu tượng</string>
-    <string name="icon_swipe_gestures_description">Thực hiện các hành động khi vuốt sang trái hoặc phải trên các biểu tượng thay vì di chuyển màn hình chính</string>
     <string name="show_deck_layout">Bố cục Cổ điển</string>
     <string name="show_deck_layout_description">Hiện một tùy chọn tắt ngăn chứa ứng dụng và tự động thêm ứng dụng mới vào màn hình chính</string>
     <string name="material_expressive_label">Material 3 Biểu cảm</string>
@@ -382,12 +380,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Thời tiết</string>
     <string name="smartspace_battery_status">Tình trạng pin</string>
-    <string name="smartspace_torch">Flashlight status</string>
+    <string name="smartspace_torch">Trạng thái đèn pin</string>
     <string name="smartspace_now_playing">Đang phát</string>
     <string name="smartspace_onboarding">Quy trình hội nhập</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
-    <string name="torch_action_off">Tap to turn off</string>
+    <string name="torch_status_on">Đèn pin đang bật</string>
+    <string name="torch_action_off">Chạm để tắt</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Tùy chỉnh Lawnchair của bạn</string>
     <string name="onboarding_open_settings_subtitle">Nhấn-giữ trên màn hình chính để mở Tùy chỉnh</string>
@@ -545,16 +543,20 @@
     <string name="home_screen_unlock">Mở khóa trang chủ</string>
     <string name="home_screen_locked">Trang chủ đã bị khóa</string>
     <string name="home_screen_lock_description">Khoá bố cục màn hình chính</string>
+    <string name="horizontal_padding_label">Khoản trống ngang</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Đặt làm trang mặc định</string>
     <string name="default_home_page_set">Trang chủ mặc định đã được cập nhật</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
-    <string name="page_order_updated">Page order updated</string>
+    <string name="move_page_left">Di chuyển trang sang trái</string>
+    <string name="move_page_right">Di chuyển trang sang phải</string>
+    <string name="page_order_updated">Thứ tự trang đã được cập nhật</string>
     <string name="edit_mode_page_strip_default">Mặc định</string>
-    <string name="edit_mode_page_strip_page">Page %1$d</string>
-    <string name="edit_mode_page_strip_set_home">Set as home page</string>
-    <string name="edit_mode_page_strip_home_selected">Default home page</string>
-    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
+    <string name="edit_mode_page_strip_page">Trang %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Đặt làm trang chủ</string>
+    <string name="edit_mode_page_strip_home_selected">Trang chủ mặc định</string>
+    <string name="edit_mode_page_strip_tip">Kéo thả trang để sắp xếp. Nhấn biểu tượng ngôi nhà để thiết lập trang mặc định.</string>
     <string name="popup_menu">Menu Pop-up</string>
     <string name="popup_menu_items">Các mục menu Pop-up</string>
     <string name="edit_menu_items">Chỉnh sửa các mục menu Pop-up</string>
@@ -601,6 +603,7 @@
     <string name="paused_apps_dialog_title">Ứng dụng đã tạm dừng</string>
     <string name="paused_apps_dialog_message">%1$s đã được tạm dừng trực tiếp từ trình chạy</string>
     <string name="paused_apps_drop_target_label">Tạm dừng ứng dụng</string>
+    <string name="open_in_store_drop_target_label">Mở trong cửa hàng</string>
     <string name="dock_icons">Ứng dụng ở khay</string>
     <string name="hotseat_bottom_space_label">Khoản trống phía dưới</string>
     <string name="page_indicator_height">Chiều cao của trang chủ</string>

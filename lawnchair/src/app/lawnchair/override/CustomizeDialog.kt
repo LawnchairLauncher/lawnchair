@@ -193,8 +193,7 @@ fun CustomizeAppDialog(
                 )
             }
         }
-
-        if (preferenceManager2.iconSwipeGestures.asState().value && context.launcher.stateManager.state != LauncherState.ALL_APPS) {
+        if (context.launcher.stateManager.state != LauncherState.ALL_APPS) {
             PreferenceGroup(heading = stringResource(R.string.gestures_label)) {
                 listOf(
                     GestureType.SWIPE_LEFT,

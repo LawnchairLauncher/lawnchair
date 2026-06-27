@@ -16,7 +16,6 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
 import com.android.launcher3.R
-import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.launch
 
 @Composable
