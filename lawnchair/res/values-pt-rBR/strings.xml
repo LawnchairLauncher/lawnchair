@@ -176,7 +176,7 @@
     <string name="material_expressive_label">Material 3 expressivo</string>
     <string name="material_expressive_description">Ativar alterações expressivas do Material 3 no espaço de trabalho</string>
     <string name="folder_shape_label">Folder shape</string>
-    <string name="folder_label">Folder</string>
+    <string name="folder_label">Pasta</string>
     <string name="app_icon_shape_label">Aplicativo</string>
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
@@ -215,8 +215,8 @@
     <string name="label_size">Tamanho da etiqueta</string>
     <string name="twoline_label">Usar múltiplas linhas</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Ícones transparentes tematizados</string>
-    <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Ícones adaptativos automáticos</string>
     <string name="auto_adaptive_icons_description">Para todos os ícones não-adaptativos</string>
     <string name="shadow_bg_icons_label">Mostrar sombra atrás dos ícones</string>

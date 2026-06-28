@@ -897,8 +897,12 @@ public class DeviceProfile {
                     + space;
         } else if (isQsbInline) {
             hotseatBarSizePx = Math.max(hotseatIconSizePx, getHotseatProfile().getQsbVisualHeight())
-                    + hotseatBarBottomSpacePx
-                    + space;
+                    + hotseatBarBottomSpacePx;
+        } else if (isQsbOnTop()) { // LC-Note: isQsbOnTop, this usually is a foldable device, not a tablet
+            hotseatBarSizePx = hotseatIconSizePx
+                    + hotseatQsbSpace
+                    + getHotseatProfile().getQsbVisualHeight()
+                    + hotseatBarBottomSpacePx;
         } else {
             hotseatBarSizePx = hotseatIconSizePx
                     + hotseatQsbSpace
@@ -1201,6 +1205,10 @@ public class DeviceProfile {
         final boolean isVerticalLayout = isVerticalBarLayout();
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
 
+        // Lawnchair: Get initial text size before calculating layout
+        // This scales offset with text sizing, all the way down to zero
+        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
+
         if (mIsResponsiveGrid) {
             cellWidthPx = mResponsiveWorkspaceWidthSpec.getCellSizePx();
             cellHeightPx = mResponsiveWorkspaceHeightSpec.getCellSizePx();
@@ -1314,8 +1322,6 @@ public class DeviceProfile {
             }
         }
 
-        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
-
         // All apps
         if (mIsResponsiveGrid) {
             mAllAppsProfile = AllAppsProfile.Factory.createAllAppsWithResponsive(
@@ -1415,7 +1421,7 @@ public class DeviceProfile {
         }
         var allAppLeftRightMarginMultiplier = PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getDrawerLeftRightMarginFactor());
-        var marginMultiplier = allAppLeftRightMarginMultiplier * (!getDeviceProperties().isTablet() ? 100 : 2);
+        var marginMultiplier = allAppLeftRightMarginMultiplier * (!getDeviceProperties().isTablet() ? 100 : 10);
         allAppsLeftRightMargin = (int) (allAppsLeftRightMargin * marginMultiplier);
 
         // todo fix how drawer padding values are calculated in responsive grid type
@@ -1879,8 +1885,8 @@ public class DeviceProfile {
             } else {
                 hotseatBarPadding.left += qsbWidth;
             }
-        } else if (isTaskbarPresent || isQsbInline) {
-            // Center the QSB vertically with hotseat
+        } else if (isQsbOnTop() || isQsbInline) {
+            // Keep the hotseat icons in the lower section so the QSB can sit above them.
             int hotseatBarBottomPadding = getHotseatBarBottomPadding();
             int hotseatBarTopPadding =
                     hotseatBarSizePx - hotseatBarBottomPadding - hotseatCellHeightPx;
@@ -1984,6 +1990,11 @@ public class DeviceProfile {
                 + additionalQsbSpace;
     }
 
+    /** LC-Note: For ID'ing tablet/foldable mode */
+    private boolean isQsbOnTop() {
+        return isTaskbarPresent || mDeviceProperties.isTwoPanels();
+    }
+
     /**
      * Returns the number of pixels the QSB is translated from the bottom of the screen.
      */
@@ -1991,7 +2002,7 @@ public class DeviceProfile {
         if (mDeviceProperties.isPhone() && isQsbInline) {
             return getHotseatBarBottomPadding()
                     - ((getHotseatProfile().getQsbHeight() - hotseatCellHeightPx) / 2);
-        } else if (isTaskbarPresent || (mDeviceProperties.isLandscape() && isQsbInline)) { // QSB on top
+        } else if (isQsbOnTop() || (mDeviceProperties.isLandscape() && isQsbInline)) { // LC-Note: isQsbOnTop
             return hotseatBarSizePx - getHotseatProfile().getQsbHeight()
                     + getHotseatProfile().getQsbShadowHeight();
         } else {
@@ -2003,7 +2014,7 @@ public class DeviceProfile {
      * Returns the number of pixels the hotseat is translated from the bottom of the screen.
      */
     private int getHotseatBarBottomPadding() {
-        if (isTaskbarPresent || isQsbInline) { // QSB on top or inline
+        if (isQsbOnTop() || isQsbInline) { // LC-Note: isQsbOnTop
             return hotseatBarBottomSpacePx - (Math.abs(hotseatCellHeightPx - iconSizePx) / 2);
         } else {
             return hotseatBarSizePx - hotseatCellHeightPx;

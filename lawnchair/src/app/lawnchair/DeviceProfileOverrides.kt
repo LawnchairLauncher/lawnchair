@@ -55,10 +55,16 @@ class DeviceProfileOverrides @Inject constructor(
         prefs.hotseatColumns.set(gridInfo.numHotseatColumns)
     }
 
-    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) = Options(
+    fun getOverrides(
+        defaultGrid: InvariantDeviceProfile.GridOption,
+        deviceType: Int,
+        previewOverrides: PreviewOverrides? = null,
+    ) = Options(
         prefs = prefs,
         prefs2 = preferenceManager2,
         defaultGrid = defaultGrid,
+        deviceType = deviceType,
+        previewOverrides = previewOverrides ?: PreviewOverrides(),
     )
 
     fun getTextFactors() = TextFactors(preferenceManager2)
@@ -80,6 +86,11 @@ class DeviceProfileOverrides @Inject constructor(
         )
     }
 
+    /** Override for any other value that's not a DBGridInfo, extends this value when needed */
+    data class PreviewOverrides(
+        val foldableDatabaseHotseatIcons: Int? = null,
+    )
+
     data class Options(
         val numAllAppsColumns: Int,
         val numFolderRows: Int,
@@ -90,11 +101,18 @@ class DeviceProfileOverrides @Inject constructor(
         val allAppsIconTextSizeFactor: Float,
 
         val enableTaskbarOnPhone: Boolean,
+
+        // Foldable overrides (-1 means don't override)
+        val foldableShownHotseatIcons: Int = -1,
+        val foldableDatabaseHotseatIcons: Int = -1,
+        val foldableDatabaseAllAppsColumns: Int = -1,
     ) {
         constructor(
             prefs: PreferenceManager,
             prefs2: PreferenceManager2,
             defaultGrid: InvariantDeviceProfile.GridOption,
+            deviceType: Int,
+            previewOverrides: PreviewOverrides,
         ) : this(
             numAllAppsColumns = prefs2.drawerColumns.firstCached(gridOption = defaultGrid),
             numFolderRows = prefs.folderRows.get(defaultGrid),
@@ -110,6 +128,26 @@ class DeviceProfileOverrides @Inject constructor(
             },
 
             enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstCached(),
+
+            foldableShownHotseatIcons = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
+                val folded = prefs.hotseatColumns.get()
+                val unfolded = previewOverrides.foldableDatabaseHotseatIcons ?: prefs.hotseatColumnsUnfolded.get()
+                folded.coerceAtMost(unfolded)
+            } else {
+                -1
+            },
+            foldableDatabaseHotseatIcons = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
+                previewOverrides.foldableDatabaseHotseatIcons ?: prefs.hotseatColumnsUnfolded.get()
+            } else {
+                -1
+            },
+            foldableDatabaseAllAppsColumns = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
+                val folded = prefs2.drawerColumns.firstCached(gridOption = defaultGrid)
+                val unfolded = prefs2.drawerColumnsUnfolded.firstCached(gridOption = defaultGrid)
+                folded.coerceAtLeast(unfolded)
+            } else {
+                -1
+            },
         )
 
         fun applyUi(idp: InvariantDeviceProfile) {
@@ -118,6 +156,17 @@ class DeviceProfileOverrides @Inject constructor(
             idp.numDatabaseAllAppsColumns = numAllAppsColumns
             idp.numFolderRows[INDEX_DEFAULT] = numFolderRows
             idp.numFolderColumns[INDEX_DEFAULT] = numFolderColumns
+
+            // Foldable overrides for hotseat and allapps columns
+            if (foldableShownHotseatIcons > 0) {
+                idp.numShownHotseatIcons = foldableShownHotseatIcons
+            }
+            if (foldableDatabaseHotseatIcons > 0) {
+                idp.numDatabaseHotseatIcons = foldableDatabaseHotseatIcons
+            }
+            if (foldableDatabaseAllAppsColumns > 0) {
+                idp.numDatabaseAllAppsColumns = foldableDatabaseAllAppsColumns
+            }
 
             // apply icon and text size
             idp.iconSize[INDEX_DEFAULT] *= iconSizeFactor

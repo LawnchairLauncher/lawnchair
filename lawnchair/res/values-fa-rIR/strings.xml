@@ -215,8 +215,8 @@
     <string name="label_size">اندازه نام‌</string>
     <string name="twoline_label">استفاده از چندخطی</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">آیکون‌های خاص شفاف</string>
-    <string name="transparent_background_icons_description">استفاده از پس زمینه شفاف در آیکون‌های خاص</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">آیکون‌های انطباقی خودکار</string>
     <string name="auto_adaptive_icons_description">برای تمام آیکون‌های غیر انطباقی</string>
     <string name="shadow_bg_icons_label">نمایش سایه پشت آیکون ها</string>

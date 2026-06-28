@@ -116,7 +116,7 @@
     <string name="apps_in_folder_description">Las aplicaciones asignadas a carpetas están excluidas de la lista de aplicaciones</string>
     <string name="folders_filter_duplicates">Mostrar solo aplicaciones únicas</string>
     <string name="my_folder_label">Mi carpeta</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">Ordenar elementos activos</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Para realizar ciertas acciones (como bloquear tu dispositivo al realizar un gesto) Lawnchair necesita añadirse como proveedor de accesibilidad.\n\nLawnchair no rastrea ni graba ninguna acción del usuario, aunque entre dentro de los privilegios concedidos, descartando cualquier evento enviado por el sistema.\n\nPara realizar la acción de bloquear la pantalla Lawnchair solo utiliza un servicio de accesibilidad llamado performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -151,8 +151,8 @@
     <string name="gestures_description">Toques y gestos</string>
     <string name="quickstep_label">Aplicaciones recientes</string>
     <string name="quickstep_description">Botón de «borrar todo» y curvatura</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="backup_and_restore_label">Copia de seguridad y restauración</string>
+    <string name="backup_and_restore_description">Guardar configuración actual, restaurar copias de seguridad</string>
     <string name="about_label">Acerca de</string>
     <string name="app_info_drop_target_label">Información de la aplicación</string>
     <string name="debug_restart_launcher">Reiniciar Lawnchair</string>
@@ -175,11 +175,11 @@
     <string name="show_deck_layout_description">Mostrar una opción de diseño para ocultar el cajón de aplicaciones y agregar automáticamente nuevas aplicaciones a la pantalla de inicio</string>
     <string name="material_expressive_label">Material 3 Expresivo</string>
     <string name="material_expressive_description">Habilitar Material 3 Cambios expresivos en el espacio de trabajo</string>
-    <string name="folder_shape_label">Folder shape</string>
-    <string name="folder_label">Folder</string>
+    <string name="folder_shape_label">Forma de carpeta</string>
+    <string name="folder_label">Carpeta</string>
     <string name="app_icon_shape_label">Aplicación</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
+    <string name="gesturenavcontract_label">Usar API GestureNavContract</string>
+    <string name="gesturenavcontract_description">Soportar las animaciones mejoradas de Android al usar la navegación de gestos. No todos los dispositivos soportan esto. Puede causar errores de animación cuando está en uso.</string>
     <string name="gesturenavcontract_warning_incompatibility">GestureNavContract puede causar artefactos durante las animaciones</string>
     <string name="recents_lock_unlock">Bloqueo/desbloqueo</string>
     <string name="recents_lock_unlock_description">Evita que la aplicación seleccionada se cierre al presionar «Borrar todo»</string>
@@ -215,8 +215,8 @@
     <string name="label_size">Tamaño de la etiqueta</string>
     <string name="twoline_label">Usar varias líneas</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Iconos transparentes del tema</string>
-    <string name="transparent_background_icons_description">Usar fondo transparente en iconos temáticos</string>
+    <string name="transparent_background_icons_label">Fondos de iconos transparentes</string>
+    <string name="transparent_background_icons_description">Para iconos temáticos e iconos autoadaptativos</string>
     <string name="auto_adaptive_icons_label">Iconos adaptables</string>
     <string name="auto_adaptive_icons_description">Para todos los iconos que no se adapten</string>
     <string name="shadow_bg_icons_label">Mostrar sombra tras los iconos</string>
@@ -254,22 +254,22 @@
     <string name="icon_shape_seven_sided_cookie">Galleta (7 lados)</string>
     <string name="icon_shape_arch">Arco</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
-    <string name="icon_shape_meow">Meow</string>
-    <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded Hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
+    <string name="icon_shape_cloudy">Nublado</string>
+    <string name="icon_shape_flower">Flor</string>
+    <string name="icon_shape_heart">Corazón</string>
+    <string name="icon_shape_leaf">Hoja</string>
+    <string name="icon_shape_meow">Miau</string>
+    <string name="icon_shape_pebble">Guijarro</string>
+    <string name="icon_shape_roundedhexagon">Hexágono redondeado</string>
+    <string name="icon_shape_stretched">Estirado</string>
     <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Forma de icono propia</string>
     <string name="custom_icon_shape_create">Crear forma de icono Propia</string>
     <string name="custom_icon_shape_edit">Editar forma de icono Propia</string>
-    <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape">Forma de carpeta personalizada</string>
+    <string name="custom_folder_shape_create">Crear forma de carpeta personalizada</string>
+    <string name="custom_folder_shape_edit">Editar forma de carpeta personalizada</string>
     <string name="custom_icon_shape_corner">Forma de esquina</string>
     <string name="custom_icon_shape_corner_round">Redondo</string>
     <string name="custom_icon_shape_corner_squircle">Suavizado</string>
@@ -286,8 +286,8 @@
     <string name="themed_icon_pack">Fuente de iconos temáticos</string>
     <string name="themed_icon_pack_tint">Tinte con color de acento</string>
     <string name="system_icons">Iconos del sistema</string>
-    <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
+    <string name="force_monochrome_label">Forzar monocromo</string>
+    <string name="force_monochrome_description">Tintar aplicaciones no soportadas con el color de acento. Requiere reiniciar</string>
     <string name="themed_icon_title">Iconos temáticos</string>
     <string name="themed_icons_off_label">Desactivados</string>
     <string name="themed_icons_home_label">Pantalla principal</string>
@@ -380,19 +380,19 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Clima actual</string>
     <string name="smartspace_battery_status">Estado de la batería</string>
-    <string name="smartspace_torch">Flashlight status</string>
+    <string name="smartspace_torch">Estado de la linterna</string>
     <string name="smartspace_now_playing">Música en reproducción</string>
-    <string name="smartspace_onboarding">Onboarding</string>
+    <string name="smartspace_onboarding">Introducción</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
-    <string name="torch_action_off">Tap to turn off</string>
+    <string name="torch_status_on">Linterna encendida</string>
+    <string name="torch_action_off">Toque para apagarla</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
-    <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new!</string>
-    <string name="onboarding_welcome">Welcome to Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the App Drawer</string>
+    <string name="onboarding_open_settings_title">Configure su Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Mantenga pulsado en la pantalla de inicio para abrir los ajustes</string>
+    <string name="onboarding_major_upgrade_title">¡Bienvenido a Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
+    <string name="onboarding_major_upgrade_subtitle">¡Vea las novedades!</string>
+    <string name="onboarding_welcome">¡Bienvenido a Lawnchair!</string>
+    <string name="onboarding_swipe_up">Deslice hacia arriba para abrir el cajón de aplicaciones</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Cantidad máxima de objetivos</string>
     <string name="open_smartspacer_settings">Abrir la configuración de Espacio Inteligente</string>
@@ -435,9 +435,9 @@
     <string name="update_check_failed">Error al buscar actualizaciones</string>
     <string name="major_update_label">¡Cambio radical!</string>
     <string name="major_update_description">Estás a punto de actualizar de Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> a Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, ten cuidado.</string>
-    <string name="pro_disabled_by_unknown">Cannot update!</string>
-    <string name="pro_disabled_by_major_is_newer">Cannot update, This build is way too new!</string>
-    <string name="updater">Updater</string>
+    <string name="pro_disabled_by_unknown">¡No se puede actualizar!</string>
+    <string name="pro_disabled_by_major_is_newer">No se puede actualizar, ¡esta versión es muy nueva!</string>
+    <string name="updater">Actualizador</string>
     <!--
 
     Backup and restore
@@ -454,8 +454,8 @@
     <string name="backup_restore_success">Copia de seguridad restaurada</string>
     <string name="backup_restore_error">No se pudo restaurar la copia de seguridad</string>
     <string name="invalid_backup_file">Archivo de copia de seguridad inválido</string>
-    <string name="create_backup_description">Export settings and launcher layout</string>
-    <string name="restore_backup_description">Import a previously created backup</string>
+    <string name="create_backup_description">Exportar configuración y diseño del lanzador</string>
+    <string name="restore_backup_description">Importar una copia de seguridad creada previamente</string>
     <!--
 
     Gesture settings
@@ -464,8 +464,8 @@
     <string name="gesture_double_tap">Doble toque</string>
     <string name="gesture_swipe_up">Deslizar hacia arriba</string>
     <string name="gesture_swipe_down">Deslizar hacia abajo</string>
-    <string name="gesture_two_finger_swipe_down">Two-finger swipe down</string>
-    <string name="gesture_two_finger_swipe_up">Two-finger swipe up</string>
+    <string name="gesture_two_finger_swipe_down">Deslizar dos dedos hacia abajo</string>
+    <string name="gesture_two_finger_swipe_up">Deslizar dos dedos hacia arriba</string>
     <string name="gesture_home_tap">Botón de inicio</string>
     <string name="gesture_back_tap">Botón de volver</string>
     <string name="gesture_swipe_left">Deslizar a la izquierda</string>
@@ -492,11 +492,11 @@
     <string name="recents_screen_a11y_hint">abrir la pantalla Recientes</string>
     <string name="generic_a11y_hint">Para %1$s, activa el servicio de accesibilidad de Lawnchair. Pulsa \"Abrir configuración\", selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
     <string name="generic_a11y_disclaimer">Lawnchair utiliza el método `performGlobalAction` de Accesibilidad para realizar esta acción. Este es un permiso confidencial que permite supervisar otras aplicaciones. Sin embargo, Lawnchair no está configurado para esa función.</string>
-    <string name="sleep_mode_label">Sleep mode</string>
-    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_label">Modo de suspensión</string>
+    <string name="sleep_mode_auto">Automático</string>
     <string name="sleep_mode_root">Root</string>
-    <string name="sleep_mode_accessibility">Accessibility service</string>
-    <string name="sleep_mode_device_admin">Device admin</string>
+    <string name="sleep_mode_accessibility">Servicio de accesibilidad</string>
+    <string name="sleep_mode_device_admin">Administrador del dispositivo</string>
     <!--
 
     Bug reporting
@@ -519,8 +519,8 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Girar pantalla de inicio</string>
     <string name="home_screen_rotation_description">Permitir que la pantalla de inicio gire al hacerlo el dispositivo</string>
-    <string name="auto_updater_label">Auto updater</string>
-    <string name="auto_updater_description">Automatically check for Nightly update when going to About section</string>
+    <string name="auto_updater_label">Actualizador automático</string>
+    <string name="auto_updater_description">Comprobar automáticamente actualizaciones nocturnas cuando se vaya a la sección Acerca de</string>
     <string name="wallpaper_blur">Desenfocar fondo de pantalla (experimental)</string>
     <string name="wallpaper_background_blur">Intensidad del desenfoque</string>
     <string name="wallpaper_background_blur_factor">Cantidad de desenfoque</string>
@@ -544,19 +544,19 @@
     <string name="home_screen_locked">La pantalla de inicio está bloqueada</string>
     <string name="home_screen_lock_description">Evita cambiar sin querer la disposición de la pantalla de inicio</string>
     <string name="horizontal_padding_label">Relleno horizontal</string>
-    <string name="vertical_padding_label">Vertical padding</string>
-    <string name="top_padding_label">Top padding</string>
-    <string name="widget_padding_label">Widget padding</string>
-    <string name="set_default_home_page">Set as default page</string>
-    <string name="default_home_page_set">Default home page updated</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
-    <string name="page_order_updated">Page order updated</string>
+    <string name="vertical_padding_label">Relleno vertical</string>
+    <string name="top_padding_label">Relleno superior</string>
+    <string name="widget_padding_label">Relleno de los widgets</string>
+    <string name="set_default_home_page">Establecer como página predeterminada</string>
+    <string name="default_home_page_set">Página de inicio predeterminada actualizada</string>
+    <string name="move_page_left">Mover página a la izquierda</string>
+    <string name="move_page_right">Mover página a la derecha</string>
+    <string name="page_order_updated">Orden de páginas actualizado</string>
     <string name="edit_mode_page_strip_default">Predeterminado</string>
-    <string name="edit_mode_page_strip_page">Page %1$d</string>
-    <string name="edit_mode_page_strip_set_home">Set as home page</string>
-    <string name="edit_mode_page_strip_home_selected">Default home page</string>
-    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
+    <string name="edit_mode_page_strip_page">Página %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Establecer como página de inicio</string>
+    <string name="edit_mode_page_strip_home_selected">Página de inicio predeterminada</string>
+    <string name="edit_mode_page_strip_tip">Arrastre las páginas para reordenarlas. Pulse el icono de inicio para establecer su página predeterminada.</string>
     <string name="popup_menu">Menú emergente</string>
     <string name="popup_menu_items">Elementos del menú emergente</string>
     <string name="edit_menu_items">Editar los elementos del menú emergente</string>
@@ -603,7 +603,7 @@
     <string name="paused_apps_dialog_title">Aplicación en pausa</string>
     <string name="paused_apps_dialog_message">%1$s se ha pausado directamente desde el lanzador</string>
     <string name="paused_apps_drop_target_label">Pausar aplicación</string>
-    <string name="open_in_store_drop_target_label">Open in store</string>
+    <string name="open_in_store_drop_target_label">Abrir en la tienda</string>
     <string name="dock_icons">Iconos del dock</string>
     <string name="hotseat_bottom_space_label">Relleno inferior</string>
     <string name="page_indicator_height">Altura del indicador de página</string>
@@ -627,11 +627,11 @@
     <string name="pref_all_apps_show_scrollbar_title">Ver barra de desplazamiento</string>
     <string name="app_drawer_columns">Columnas del cajón de aplicaciones</string>
     <string name="row_height_label">Altura de fila</string>
-    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
+    <string name="app_drawer_haptic_feedback_label">Respuesta háptica</string>
     <string name="app_drawer_indent_label">Relleno horizontal</string>
     <string name="app_drawer_bg_color_label">Color de fondo</string>
-    <string name="work_profile_tab_background_label">Tabs background color</string>
-    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
+    <string name="work_profile_tab_background_label">Color del fondo de las pestañas</string>
+    <string name="work_profile_tab_container_background_label">Fondo del contenedor de pestañas separado</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Ocultar del cajón de aplicaciones</string>
     <string name="hidden_apps_label_with_count">Aplicaciones ocultas (%1$d)</string>
@@ -770,7 +770,7 @@
     <string name="grant_requested_permissions_tap">Pulse para conceder permisos</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">Pantalla de inicio borrada</string>
-    <string name="lawnchair_actions">Actions</string>
-    <string name="lawnchair_action_failed">Failed to trigger action</string>
-    <string name="please_wait">Please wait…</string>
+    <string name="lawnchair_actions">Acciones</string>
+    <string name="lawnchair_action_failed">No se pudo activar la acción</string>
+    <string name="please_wait">Por favor, espere…</string>
 </resources>

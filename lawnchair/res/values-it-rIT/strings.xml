@@ -215,8 +215,8 @@
     <string name="label_size">Dimensioni delle etichette</string>
     <string name="twoline_label">Permetti di andare a capo</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Icone a tema trasparente</string>
-    <string name="transparent_background_icons_description">Usa sfondo trasparente per le icone a tema</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Icone auto-adattabili</string>
     <string name="auto_adaptive_icons_description">Per tutte le icone non auto-adattabili</string>
     <string name="shadow_bg_icons_label">Mostra ombra dietro le icone</string>

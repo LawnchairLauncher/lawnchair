@@ -215,8 +215,8 @@
     <string name="label_size">Etikettstorlek</string>
     <string name="twoline_label">Använd flera rader</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparenta tematiserade ikoner</string>
-    <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Autoadaptiva ikoner</string>
     <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner</string>
     <string name="shadow_bg_icons_label">Visa skugga bakom ikoner</string>

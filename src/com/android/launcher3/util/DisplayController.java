@@ -729,6 +729,7 @@ public class DisplayController implements DesktopVisibilityListener {
 
         public @DeviceType int getDeviceType() {
             if (mIsDesktopFormFactor) {
+                Log.d("LC-DisplayController", "Device has desktop profile (Desktop)");
                 return TYPE_DESKTOP;
             }
 

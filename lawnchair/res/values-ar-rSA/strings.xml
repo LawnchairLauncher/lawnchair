@@ -215,8 +215,8 @@
     <string name="label_size">حجم العلامة</string>
     <string name="twoline_label">استخدام خطوط متعددة</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">أيقونات ذات خلفية شفافة</string>
-    <string name="transparent_background_icons_description">استخدم خلفيه شفافه مع تغير مظهر الأيقونات</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">أيقونات متكيفة تلقائيًا</string>
     <string name="auto_adaptive_icons_description">لجميع الأيقونات غير المتكيفة</string>
     <string name="shadow_bg_icons_label">إظهار الظل خلف الأيقونات</string>

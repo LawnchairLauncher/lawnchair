@@ -145,10 +145,16 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val dp = activity.deviceProfile
+        // Unlike Phone, for Foldable/Tablet we let the original onMeasure do that instead since it
+        // matched what we need. It perfectly fit the QSB with the grid.
+        if (!dp.deviceProperties.isPhone) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+            return
+        }
+
         val requestedWidth = MeasureSpec.getSize(widthMeasureSpec)
         val height = MeasureSpec.getSize(heightMeasureSpec)
-
-        val dp = activity.deviceProfile
         val cellWidth = DeviceProfile.calculateCellWidth(
             requestedWidth,
             dp.cellLayoutBorderSpacePx.x,

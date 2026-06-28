@@ -47,10 +47,12 @@ import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreferenceWithPreview
+import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.AppDrawerHiddenApps
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 
 object AppDrawerRoutes {
@@ -65,6 +67,7 @@ fun AppDrawerPreferences(
     val prefs2 = preferenceManager2()
     val context = LocalContext.current
     val resources = context.resources
+    val isFoldable = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY
 
     PreferenceLayout(
         label = stringResource(id = R.string.app_drawer_label),
@@ -117,13 +120,41 @@ fun AppDrawerPreferences(
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-            Item {
-                SliderPreference(
-                    label = stringResource(id = R.string.app_drawer_columns),
-                    adapter = prefs2.drawerColumns.getAdapter(),
-                    step = 1,
-                    valueRange = 3..10,
-                )
+            val drawerColumnsAdapter = prefs2.drawerColumns.getAdapter()
+            val drawerColumnsUnfoldedAdapter = prefs2.drawerColumnsUnfolded.getAdapter()
+            if (isFoldable) {
+                Item {
+                    SliderPreference(
+                        label = stringResource(id = R.string.state_folded, stringResource(id = R.string.app_drawer_columns)),
+                        adapter = drawerColumnsAdapter,
+                        step = 1,
+                        valueRange = 3..10,
+                    )
+                }
+                Item {
+                    SliderPreference(
+                        label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.app_drawer_columns)),
+                        adapter = drawerColumnsUnfoldedAdapter,
+                        step = 1,
+                        valueRange = 3..10,
+                    )
+                }
+                Item(
+                    visible = drawerColumnsAdapter.state.value > drawerColumnsUnfoldedAdapter.state.value,
+                ) {
+                    WarningPreference(
+                        text = stringResource(id = R.string.foldable_columns_error),
+                    )
+                }
+            } else {
+                Item {
+                    SliderPreference(
+                        label = stringResource(id = R.string.app_drawer_columns),
+                        adapter = drawerColumnsAdapter,
+                        step = 1,
+                        valueRange = 3..10,
+                    )
+                }
             }
             Item {
                 SliderPreference(
