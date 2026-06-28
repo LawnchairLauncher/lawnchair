@@ -215,8 +215,8 @@
     <string name="label_size">Veličina oznaka</string>
     <string name="twoline_label">Koristi više linija</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Providne tematske ikone</string>
-    <string name="transparent_background_icons_description">Koristi providnu pozadinu na tematskim ikonama</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automatski prilagodljive ikone</string>
     <string name="auto_adaptive_icons_description">Za sve neadaptivne ikone</string>
     <string name="shadow_bg_icons_label">Prikaži sjenu iza ikona</string>

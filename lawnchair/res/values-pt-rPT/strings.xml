@@ -158,7 +158,7 @@
     <string name="debug_restart_launcher">Reiniciar o Lawnchair</string>
     <string name="experimental_features_label">Funcionalidades experimentais</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
+    <string name="workspace_label">Área de trabalho</string>
     <string name="smartspace_label">Smartspace</string>
     <string name="internal_label">Internal</string>
     <string name="internal_description">Internal may be more unstable than other experimental group</string>
@@ -173,7 +173,7 @@
     <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="show_deck_layout">Ambiente do Deck</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_label">Tema Google Material 3</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
     <string name="folder_shape_label">Forma da pasta</string>
     <string name="folder_label">Pasta </string>
@@ -215,8 +215,8 @@
     <string name="label_size">Tamanho dos rótulos</string>
     <string name="twoline_label">Usa múltiplas linhas</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Ícones temáticos transparentes</string>
-    <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Ícones auto-adaptáveis</string>
     <string name="auto_adaptive_icons_description">Para todos os ícones não adaptáveis</string>
     <string name="shadow_bg_icons_label">Mostrar sombra atrás dos ícones</string>
@@ -360,7 +360,7 @@
     <string name="smartspace_calendar_lunar">Lunar</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Carregamento rápido </string>
+    <string name="smartspace_battery_fast_charging">Carregamento rápido</string>
     <string name="smartspace_battery_slow_charging">Carregamento lento</string>
     <string name="smartspace_battery_charging">A carregar</string>
     <string name="smartspace_battery_full">Carregado</string>
@@ -486,13 +486,13 @@
     <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Ativar o serviço de acessibilidade</string>
-    <string name="sleep_a11y_hint">Duplo toque para hibernar</string>
+    <string name="sleep_a11y_hint">Duplo toque para Suspender</string>
     <string name="notifications_fallback_a11y_hint">Abrir o painel de notificações</string>
     <string name="quick_settings_a11y_hint">Abrir o painel de definições rápidas</string>
     <string name="recents_screen_a11y_hint">Abrir os recentes</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="sleep_mode_label">Hibernar</string>
+    <string name="sleep_mode_label">Suspender</string>
     <string name="sleep_mode_auto">Automático</string>
     <string name="sleep_mode_root">Raíz</string>
     <string name="sleep_mode_accessibility">Acessibilidade</string>
@@ -668,7 +668,7 @@
     -->
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">Pesquisar no telefone e web</string>
-    <string name="all_apps_search_bar_hint">Pesquisar</string>
+    <string name="all_apps_search_bar_hint">Pesquisa de aplicações</string>
     <string name="all_apps_no_search_results">Nenhum aplicativo encontrado correspondente a \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Da web</string>
     <string name="all_apps_search_result_contacts_from_device">Contactos do dispositivo</string>

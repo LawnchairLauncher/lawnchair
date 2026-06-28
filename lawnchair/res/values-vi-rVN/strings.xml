@@ -215,8 +215,8 @@
     <string name="label_size">Kích thước tên</string>
     <string name="twoline_label">Dùng nhiều dòng</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Biểu tượng theo theme trong suốt</string>
-    <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo theme</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Biểu tượng tự động thích ứng</string>
     <string name="auto_adaptive_icons_description">Đối với tất cả các biểu tượng không thích ứng</string>
     <string name="shadow_bg_icons_label">Hiển thị bóng đổ phía sau biểu tượng</string>
