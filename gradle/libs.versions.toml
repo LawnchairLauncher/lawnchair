@@ -62,7 +62,7 @@ androidx-recyclerview = "androidx.recyclerview:recyclerview:1.4.0"
 androidx-slice-core = "androidx.slice:slice-core:1.1.0-alpha02"
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
-androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
+androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.0"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
