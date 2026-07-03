@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.destinations
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.window.layout.WindowMetricsCalculator
 import app.lawnchair.DeviceProfileOverrides
 import app.lawnchair.preferences.asPreferenceAdapter
 import app.lawnchair.preferences.getAdapter
@@ -45,6 +47,51 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
+
+/** The fewest rows the slider ever allows, regardless of screen size. */
+private const val MIN_MAX_ROWS = 10
+
+/** The most rows the slider ever allows, even on very tall/large devices. */
+private const val ABSOLUTE_MAX_ROWS = 20
+
+/**
+ * Approximate minimum comfortable height, in dp, of a single workspace cell (an icon plus its
+ * label and the spacing around it). Dividing the available dp height by this gives roughly how
+ * many rows can be packed in before cells stop being usable. Android's minimum touch target is
+ * 48dp; the rest of this budget accounts for the label and inter-row spacing.
+ */
+private const val MIN_ROW_HEIGHT_DP = 60
+
+/**
+ * Works out how many home screen rows the device is allowed to have based on how much vertical
+ * space it actually has.
+ *
+ * Deliberately works in density-independent pixels (dp), not raw pixels: Android lays out UI in
+ * dp, and the same pixel count maps to very different physical sizes depending on screen density
+ * (a low-density 720x1600 phone has more usable dp height than a high-density 1080x2400 one). A
+ * raw-pixel ladder would therefore hand the most rows to the wrong devices. The longer screen
+ * edge is used so the result stays stable regardless of the current orientation.
+ *
+ * The size comes from the display's *maximum* window metrics rather than the resources'
+ * [android.util.DisplayMetrics], so a transient split-screen/multi-window state (which the
+ * settings screen may be in) doesn't shrink the value — the home screen workspace is always
+ * shown fullscreen, so its row capacity should be based on the whole display.
+ *
+ * The result is how many [MIN_ROW_HEIGHT_DP]-tall rows fit in that dp height, clamped between
+ * [MIN_MAX_ROWS] and [ABSOLUTE_MAX_ROWS]. This is only the *upper bound* the user can pick; the
+ * default grid stays small and Lawnchair scales the cells to fit whatever they choose.
+ */
+private fun calculateDynamicMaxRows(context: Context): Int {
+    val bounds = WindowMetricsCalculator.getOrCreate()
+        .computeMaximumWindowMetrics(context)
+        .bounds
+    // density == dpi / 160, so dp = px / density.
+    val density = context.resources.displayMetrics.density
+    val longerEdgePx = maxOf(bounds.height(), bounds.width())
+    val longerEdgeDp = longerEdgePx / density
+    val fittableRows = (longerEdgeDp / MIN_ROW_HEIGHT_DP).toInt()
+    return fittableRows.coerceIn(MIN_MAX_ROWS, ABSOLUTE_MAX_ROWS)
+}
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -60,6 +107,7 @@ fun HomeScreenGridPreferences(
         scrollState = null,
     ) {
         val controlsScrollState = rememberScrollState()
+        val context = LocalContext.current
         val prefs = preferenceManager()
         val columnsAdapter = prefs.workspaceColumns.getAdapter()
         val rowsAdapter = prefs.workspaceRows.getAdapter()
@@ -87,6 +135,27 @@ fun HomeScreenGridPreferences(
         }
 
         val maxGridSize = if (increaseMaxGridSize.state.value) 20 else 10
+
+        // The number of rows is allowed to grow beyond the regular max on tall devices,
+        // so users with lots of vertical space can fit more rows on the home screen.
+        // Turning on the experimental "increase max grid size" toggle unlocks the full range
+        // regardless of the device height.
+        val maxRows = remember(increaseMaxGridSize.state.value) {
+            if (increaseMaxGridSize.state.value) {
+                ABSOLUTE_MAX_ROWS
+            } else {
+                calculateDynamicMaxRows(context)
+            }
+        }
+
+        // A previously persisted row count can exceed the (now possibly lower) dynamic max, e.g.
+        // after disabling the experimental toggle on a smaller device. Clamp it so the slider never
+        // starts outside its own 3..maxRows range and can't silently truncate on the first nudge.
+        LaunchedEffect(maxRows) {
+            if (rows.intValue > maxRows) {
+                rows.intValue = maxRows
+            }
+        }
 
         BoxWithConstraints(
             modifier = Modifier
@@ -165,7 +234,7 @@ fun HomeScreenGridPreferences(
                                             label = stringResource(id = R.string.rows),
                                             adapter = rows.asPreferenceAdapter(),
                                             step = 1,
-                                            valueRange = 3..maxGridSize,
+                                            valueRange = 3..maxRows,
                                         )
                                     }
                                     Item {
@@ -213,7 +282,7 @@ fun HomeScreenGridPreferences(
                                         label = stringResource(id = R.string.rows),
                                         adapter = rows.asPreferenceAdapter(),
                                         step = 1,
-                                        valueRange = 3..maxGridSize,
+                                        valueRange = 3..maxRows,
                                     )
                                 }
                                 Item {
@@ -229,7 +298,6 @@ fun HomeScreenGridPreferences(
                     }
 
                     val navController = LocalNavController.current
-                    val context = LocalContext.current
                     val applyOverrides = {
                         prefs.batchEdit {
                             columnsAdapter.onChange(columns.intValue)
