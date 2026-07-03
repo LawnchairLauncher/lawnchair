@@ -216,7 +216,7 @@
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
 
     <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20&#xd7; 20</string>
+    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
 
     <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
