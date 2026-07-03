@@ -489,8 +489,7 @@
     <string name="onboarding_open_settings_title">Set up Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
 
-    <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!
-    </string>
+    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
     <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
 
     <string name="onboarding_welcome">Welcome to Lawnchair!</string>
