@@ -68,7 +68,7 @@ fun ClickablePreference(
                 onClick()
             }
         },
-        colors = colors
+        colors = colors,
     )
 }
 

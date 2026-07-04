@@ -307,7 +307,7 @@ fun FolderEditSheet(
                     ),
                     modifier = Modifier
                         .padding(horizontal = 8.dp),
-                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                 ) {
                     onNavigate(folderInfo.id)
                 }
