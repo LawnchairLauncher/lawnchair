@@ -21,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
@@ -35,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -58,6 +60,7 @@ import app.lawnchair.ui.util.LocalBottomSheetHandler
 import app.lawnchair.util.copyToClipboard
 import app.lawnchair.util.getClipboardContent
 import com.android.launcher3.R
+
 import kotlin.math.roundToInt
 import kotlin.toString
 
@@ -383,6 +386,7 @@ private fun CornerSlider(
                                                 bottomSheetHandler.hide()
                                                 onCornerShapeChange(option)
                                             },
+                                            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                                         )
                                     }
                                 }

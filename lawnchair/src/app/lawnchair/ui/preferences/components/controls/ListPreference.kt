@@ -17,17 +17,18 @@
 package app.lawnchair.ui.preferences.components.controls
 
 import android.R as AndroidR
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
@@ -50,9 +51,10 @@ fun <T> ListPreference(
     description: String? = null,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
+    val value = adapter.state.value
     ListPreference(
         entries = entries,
-        value = adapter.state.value,
+        value = value,
         onValueChange = adapter::onChange,
         label = label,
         modifier = modifier,
@@ -107,9 +109,11 @@ fun <T> ListPreference(
                                 PreferenceTemplate(
                                     enabled = item.enabled,
                                     title = { Text(item.label()) },
-                                    modifier = Modifier.clickable(item.enabled) {
-                                        onValueChange(item.value)
-                                        bottomSheetHandler.hide()
+                                    onClick = {
+                                        if (item.enabled) {
+                                            onValueChange(item.value)
+                                            bottomSheetHandler.hide()
+                                        }
                                     },
                                     startWidget = {
                                         RadioButton(
@@ -119,6 +123,7 @@ fun <T> ListPreference(
                                         )
                                     },
                                     endWidget = item.endWidget,
+                                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                                 )
                             }
                         }
