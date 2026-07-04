@@ -23,6 +23,7 @@ import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedListItem
@@ -60,7 +61,7 @@ fun PreferenceTemplate(
     interactionSource: MutableInteractionSource? = null,
 ) {
     val localInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
-    Column(modifier) {
+    val listItem = @Composable {
         SegmentedListItem(
 //            selected = TODO(),
             onClick = { onClick?.invoke() },
@@ -94,6 +95,15 @@ fun PreferenceTemplate(
             ) {
                 title()
             }
+        }
+    }
+    Column(modifier) {
+        if (onClick == null) {
+            CompositionLocalProvider(LocalRippleConfiguration provides null) {
+                listItem()
+            }
+        } else {
+            listItem()
         }
     }
 }
