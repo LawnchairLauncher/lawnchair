@@ -65,7 +65,6 @@ fun getProviderName(provider: SearchProviderId): Int {
     }
 }
 
-
 @Composable
 fun SearchProviderPreferenceScreen(
     provider: SearchProviderId,
