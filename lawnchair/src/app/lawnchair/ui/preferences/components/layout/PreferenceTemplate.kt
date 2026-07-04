@@ -18,13 +18,6 @@ package app.lawnchair.ui.preferences.components.layout
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
@@ -38,51 +31,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.util.addIf
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun NewPreferenceTemplate(
-    title: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
-    contentModifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
-    description: @Composable () -> Unit = {},
-    startWidget: (@Composable () -> Unit)? = null,
-    endWidget: (@Composable () -> Unit)? = null,
-    overlineContent: (@Composable () -> Unit)? = null,
-    shapes: ListItemShapes = ListItemDefaults.segmentedShapes(index = 0, count = 1),
-    onClick: (() -> Unit)? = null,
-    onLongClick: (() -> Unit)? = null,
-    onLongClickLabel: String? = null,
-    colors: ListItemColors = ListItemDefaults.segmentedColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    ),
-    interactionSource: MutableInteractionSource? = null,
-) {
-    PreferenceTemplate(
-        title,
-        modifier,
-        contentModifier,
-        enabled,
-        verticalAlignment,
-        description,
-        startWidget,
-        endWidget,
-        overlineContent,
-        shapes,
-        onClick,
-        onLongClick,
-        onLongClickLabel,
-        colors,
-        interactionSource,
-    )
-}
 
 /***
  * A template used to create most preference-related components in the Preference UI.

@@ -49,7 +49,6 @@ import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.controls.getSteps
 import app.lawnchair.ui.preferences.components.controls.snapSliderValue
 import app.lawnchair.ui.preferences.components.layout.BottomSpacer
-import app.lawnchair.ui.preferences.components.layout.NewPreferenceTemplate
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -307,7 +306,7 @@ private fun CornerSlider(
     val step = 0.1f
     val valueRange = 0f..1f
 
-    NewPreferenceTemplate(
+    PreferenceTemplate(
         modifier = modifier,
         title = {
             Row(

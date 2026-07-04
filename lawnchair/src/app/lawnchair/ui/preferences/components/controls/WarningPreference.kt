@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import app.lawnchair.ui.preferences.components.layout.NewPreferenceTemplate
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
@@ -51,7 +50,7 @@ fun WarningPreference(
     iconTint: Color = MaterialTheme.colorScheme.error,
     textColor: Color = MaterialTheme.colorScheme.error,
 ) {
-    NewPreferenceTemplate(
+    PreferenceTemplate(
         modifier = modifier,
         title = {},
         description = {
