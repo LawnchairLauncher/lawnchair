@@ -17,7 +17,6 @@
 package app.lawnchair.ui.preferences.components.controls
 
 import android.R as AndroidR
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ButtonDefaults
@@ -36,7 +35,6 @@ import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
-import app.lawnchair.ui.util.addIf
 import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
@@ -83,7 +81,7 @@ fun <T> ListPreference(
 
     PreferenceTemplate(
         title = { Text(text = label) },
-        modifier = modifier.addIf(endWidget != null) { padding(end = 16.dp) },
+        modifier = modifier,
         enabled = enabled,
         description = { currentDescription?.let { Text(text = it) } },
         endWidget = endWidget,
