@@ -61,6 +61,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.HapticFeedbackConstants;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -144,7 +145,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
@@ -253,6 +254,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     boolean mChildrenLayersEnabled = true;
 
     private boolean mStripScreensOnPageStopMoving = false;
+
+    private boolean mDeferStripEmptyScreensForScreenRemap = false;
     public boolean mHasOnLayoutBeenCalled = false;
 
     private boolean mWorkspaceFadeInAdjacentScreens;
@@ -268,6 +271,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
+    private boolean mDisallowPagedViewInterceptForIconSwipe = false;
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -608,7 +612,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public void updateStatusbarClock() {
-        if (mCurrentPage == 0 && PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getStatusBarClock())) {
+        if (mCurrentPage == 0 && PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getStatusBarClock())) {
             LawnchairAppKt.getLawnchairApp(mLauncher).hideClockInStatusBar();
         } else {
             LawnchairAppKt.getLawnchairApp(mLauncher).restoreClockInStatusBar();
@@ -658,18 +662,18 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void bindAndInitFirstWorkspaceScreen() {
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
-        if (!PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getEnableSmartspace())) {
+        if (!PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getEnableSmartspace())) {
             mFirstPagePinnedItem = null;
             return;
         }
         if (mFirstPagePinnedItem == null) {
-            SmartspaceMode smartspaceMode = PreferenceExtensionsKt
-                .firstBlocking(mPreferenceManager2.getSmartspaceMode());
+            SmartspaceMode smartspaceMode = PreferenceCacheExtensionsKt
+                .firstCached(mPreferenceManager2.getSmartspaceMode());
             if (!smartspaceMode.isAvailable(this.mLauncher)) {
                 // The current smartspace mode is not available,
                 // setting the smartspace mode to one that is always available
                 smartspaceMode = LawnchairSmartspace.INSTANCE;
-                PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
+                com.patrykmichalik.opto.core.PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
             }
             // In transposed layout, we add the first page pinned widget in the Grid.
             // As workspace does not touch the edges, we do not need a full
@@ -702,7 +706,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
 
-        // Ensure that the first page is always present
+        // Ensure there is always at least one page during bind lifecycle.
         bindAndInitFirstWorkspaceScreen();
 
         // Re-enable the layout transitions
@@ -938,6 +942,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             stripEmptyScreens();
         }
 
+        persistCurrentScreenOrderSync();
+
         if (onComplete != null) {
             onComplete.run();
         }
@@ -985,6 +991,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         mWorkspaceScreens.put(newScreenId, cl);
         mScreenOrder.add(newScreenId);
+        persistCurrentScreenOrderSync();
 
         return newScreenId;
     }
@@ -1081,11 +1088,20 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             return;
         }
 
+        if (mDeferStripEmptyScreensForScreenRemap) {
+            return;
+        }
+
+        if (mLauncher.isInState(EDIT_MODE)) {
+            return;
+        }
+
         if (isPageInTransition()) {
             mStripScreensOnPageStopMoving = true;
             return;
         }
 
+        IntSet persistedScreenIds = getPersistedWorkspaceScreenIds();
         int currentPage = getNextPage();
         IntArray removeScreens = new IntArray();
         int total = mWorkspaceScreens.size();
@@ -1093,7 +1109,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             int id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
-            if ((!PreferenceExtensionsKt.firstBlocking(PreferenceManager2.INSTANCE.get(getContext()).getEnableSmartspace()) || id > FIRST_SCREEN_ID)
+            if (shouldPreserveEmptyScreenWhenStripping(
+                    id, persistedScreenIds, isExtraEmptyScreen(id))) {
+                continue;
+            }
+            if ((!PreferenceCacheExtensionsKt.firstCached(PreferenceManager2.INSTANCE.get(getContext()).getEnableSmartspace(), PreferenceManager2.INSTANCE.get(getContext())) || id > FIRST_SCREEN_ID)
                     && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
@@ -1154,10 +1174,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         updateAccessibilityViewPageDescription();
 
         // Reset default home page if it's now out of range after page removal
-        int storedDefault = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getDefaultHomePage());
+        int storedDefault = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
         if (storedDefault >= getChildCount()) {
             setDefaultPage(DEFAULT_PAGE);
         }
+        persistCurrentScreenOrderSync();
     }
 
     /**
@@ -1165,52 +1186,91 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // pE-TODO(Reimpl): Check Icon Swipe Gesture
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
-            View touchedView = findViewAtPosition(ev.getX(), ev.getY());
-            Boolean iconSwipeGestures = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getIconSwipeGestures());
-
-            if (iconSwipeGestures && touchedView instanceof ShortcutAndWidgetContainer container) {
-                container.onTouchEvent(ev);
-                return false;
-            }
-        }
-        
+        if (shouldSkipPagedViewInterceptionForIconSwipe(ev)) {
+            return false;
+        } // Lawnchair: Icon swipe gesture feature
         if (isTrackpadMultiFingerSwipe(ev)) {
             return false;
         }
         return super.onInterceptTouchEvent(ev);
     }
 
-    private View findViewAtPosition(float x, float y) {
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            if (child instanceof CellLayout) {
-                CellLayout cellLayout = (CellLayout) child;
-                View foundView = findViewInCellLayout(cellLayout, x - child.getLeft(), y - child.getTop());
-                if (foundView != null) {
-                    return foundView;
+    // Lawnchair: Icon swipe gesture feature
+    private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mDisallowPagedViewInterceptForIconSwipe = isTouchOnIconWithHorizontalSwipeGesture(
+                        ev.getX(), ev.getY());
+                if (mDisallowPagedViewInterceptForIconSwipe) {
+                    resetTouchState();
+                    return true;
                 }
+                return false;
+
+            case MotionEvent.ACTION_MOVE:
+                return mDisallowPagedViewInterceptForIconSwipe;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                boolean shouldSkip = mDisallowPagedViewInterceptForIconSwipe;
+                mDisallowPagedViewInterceptForIconSwipe = false;
+                if (shouldSkip) {
+                    resetTouchState();
+                }
+                return shouldSkip;
+
+            default:
+                return false;
+        }
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    private boolean isTouchOnIconWithHorizontalSwipeGesture(float x, float y) {
+        BubbleTextView touchedIcon = findIconAtPosition(x, y);
+        return touchedIcon != null && touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    private BubbleTextView findIconAtPosition(float x, float y) {
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+            View child = getChildAt(i);
+            if (!(child instanceof CellLayout cellLayout)) {
+                continue;
+            }
+            float localX = x - child.getLeft();
+            float localY = y - child.getTop();
+            if (!Utilities.pointInView(cellLayout, localX, localY, 0)) {
+                continue;
+            }
+            BubbleTextView foundView = findIconInCellLayout(cellLayout, localX, localY);
+            if (foundView != null) {
+                return foundView;
             }
         }
         return null;
     }
 
-    private View findViewInCellLayout(CellLayout cellLayout, float x, float y) {
-        final int count = cellLayout.getChildCount();
-        for (int i = count - 1; i >= 0; i--) {
-            View child = cellLayout.getChildAt(i);
-            if (child.getVisibility() == VISIBLE && isPointInsideView(x, y, child)) {
-                return child;
+    // Lawnchair: Icon swipe gesture feature
+    private BubbleTextView findIconInCellLayout(CellLayout cellLayout, float x, float y) {
+        ShortcutAndWidgetContainer container = cellLayout.getShortcutsAndWidgets();
+        float containerX = x - container.getLeft();
+        float containerY = y - container.getTop();
+        for (int i = container.getChildCount() - 1; i >= 0; i--) {
+            View child = container.getChildAt(i);
+            if (!(child instanceof BubbleTextView bubbleTextView)
+                    || child.getVisibility() != VISIBLE) {
+                continue;
+            }
+            if (Utilities.pointInView(child,
+                    containerX - child.getLeft(),
+                    containerY - child.getTop(),
+                    0)) {
+                return bubbleTextView;
             }
         }
         return null;
     }
 
-    private boolean isPointInsideView(float x, float y, View view) {
-        return x >= view.getLeft() && x <= view.getRight() &&
-                y >= view.getTop() && y <= view.getBottom();
-    }
 
     /**
      * Needed here because launcher has a fullscreen exclusion rect and doesn't pilfer the pointers.
@@ -1434,7 +1494,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void showPageIndicatorAtCurrentScroll() {
         if (mPageIndicator != null) {
             mPageIndicator.setScroll(getScrollX(), computeMaxScroll());
-            var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.isHotseatEnabled());
+            var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.isHotseatEnabled());
             mPageIndicator.setVisibility(isHotseatEnabled ? VISIBLE : INVISIBLE);
         }
     }
@@ -1880,7 +1940,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
-        boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getLockHomeScreen());
+        boolean lockHomeScreen = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getLockHomeScreen());
         if (lockHomeScreen) {
             child.setVisibility(View.VISIBLE);
 
@@ -2166,7 +2226,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         boolean snappedToNewPage = false;
         boolean resizeOnDrop = false;
         Runnable onCompleteRunnable = null;
-        boolean forceWidgetResize = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getForceWidgetResize());
+        boolean forceWidgetResize = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getForceWidgetResize());
         if (d.dragSource != this || mDragInfo == null) {
             final int[] touchXY = new int[]{(int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1]};
@@ -3264,6 +3324,240 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         updateChildrenLayersEnabled();
     }
 
+    private boolean isExtraEmptyScreen(int screenId) {
+        return screenId == EXTRA_EMPTY_SCREEN_ID || screenId == EXTRA_EMPTY_SCREEN_SECOND_ID;
+    }
+
+    private boolean isPageGroupMovable(int pageGroupStart) {
+        int panelCount = getPanelCount();
+        if (pageGroupStart < 0 || pageGroupStart + panelCount > mScreenOrder.size()) {
+            return false;
+        }
+        for (int i = 0; i < panelCount; i++) {
+            if (isExtraEmptyScreen(mScreenOrder.get(pageGroupStart + i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean canMovePageGroup(int pageGroupStart, int direction) {
+        int panelCount = getPanelCount();
+        int targetStart = pageGroupStart + direction * panelCount;
+        return isPageGroupMovable(pageGroupStart) && isPageGroupMovable(targetStart);
+    }
+
+    private boolean movePageGroup(int pageIndex, int direction) {
+        int panelCount = getPanelCount();
+        int fromStart = getLeftmostVisiblePageForIndex(pageIndex);
+        int targetStart = fromStart + direction * panelCount;
+        if (!canMovePageGroup(fromStart, direction)) {
+            return false;
+        }
+        int defaultPage = getDefaultPage();
+        int defaultScreenId = getScreenIdForPageIndex(defaultPage);
+        IntArray screenOrderSnapshot = new IntArray();
+        for (int i = 0; i < mScreenOrder.size(); i++) {
+            screenOrderSnapshot.add(mScreenOrder.get(i));
+        }
+        SparseIntArray screenSwapMap =
+                createPageGroupSwapMap(screenOrderSnapshot, fromStart, targetStart, panelCount);
+        if (screenSwapMap.size() == 0) {
+            return false;
+        }
+        for (int i = 0; i < panelCount; i++) {
+            int fromIndex = fromStart + i;
+            int targetIndex = targetStart + i;
+            int fromScreenId = mScreenOrder.get(fromIndex);
+            int targetScreenId = mScreenOrder.get(targetIndex);
+            mScreenOrder.set(fromIndex, targetScreenId);
+            mScreenOrder.set(targetIndex, fromScreenId);
+        }
+        applyScreenOrderToChildViews();
+        if (screenSwapMap.size() > 0) {
+            mLauncher.getModelWriter().persistWorkspaceScreenOrderSync(getPersistableScreenOrder());
+            mDeferStripEmptyScreensForScreenRemap = true;
+            mLauncher.getModelWriter().moveWorkspaceScreensInDatabase(
+                    screenSwapMap, this::onWorkspaceScreenRemapFinished);
+        }
+        int remappedDefaultPage = mScreenOrder.indexOf(defaultScreenId);
+        if (remappedDefaultPage >= 0 && remappedDefaultPage != defaultPage) {
+            setDefaultPage(remappedDefaultPage);
+        }
+        updateAccessibilityViewPageDescription();
+        int pageOffset = pageIndex - fromStart;
+        int destinationPage = targetStart + pageOffset;
+        setCurrentPage(destinationPage, destinationPage);
+        showPageIndicatorAtCurrentScroll();
+        return true;
+    }
+
+    public IntArray getReorderablePageGroupStarts() {
+        IntArray starts = new IntArray();
+        int panelCount = getPanelCount();
+        IntArray candidateStarts = getPageGroupStarts(mScreenOrder, panelCount);
+        for (int i = 0; i < candidateStarts.size(); i++) {
+            int start = candidateStarts.get(i);
+            if (isPageGroupMovable(start)) {
+                starts.add(start);
+            }
+        }
+        return starts;
+    }
+
+    @VisibleForTesting
+    static IntArray getPageGroupStarts(IntArray screenOrder, int panelCount) {
+        IntArray starts = new IntArray();
+        for (int i = 0; i < screenOrder.size(); i += panelCount) {
+            starts.add(i);
+        }
+        return starts;
+    }
+
+    public boolean moveReorderablePageGroup(int fromGroupIndex, int toGroupIndex) {
+        if (fromGroupIndex == toGroupIndex) {
+            return true;
+        }
+        IntArray starts = getReorderablePageGroupStarts();
+        if (fromGroupIndex < 0 || fromGroupIndex >= starts.size()
+                || toGroupIndex < 0 || toGroupIndex >= starts.size()) {
+            return false;
+        }
+        int fromPage = starts.get(fromGroupIndex);
+        int currentGroup = fromGroupIndex;
+        int direction = toGroupIndex > fromGroupIndex ? 1 : -1;
+        while (currentGroup != toGroupIndex) {
+            if (!movePageGroup(fromPage, direction)) {
+                return false;
+            }
+            currentGroup += direction;
+            fromPage += direction * getPanelCount();
+        }
+        return true;
+    }
+
+    public boolean setDefaultPageForReorderableGroup(int groupIndex) {
+        IntArray starts = getReorderablePageGroupStarts();
+        if (groupIndex < 0 || groupIndex >= starts.size()) {
+            return false;
+        }
+        int pageIndex = starts.get(groupIndex);
+        setDefaultPage(pageIndex);
+        Toast.makeText(mLauncher, R.string.default_home_page_set, Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    public int getDefaultPageGroupIndex() {
+        IntArray starts = getReorderablePageGroupStarts();
+        int defaultPage = getDefaultPage();
+        int leftmostPage = getLeftmostVisiblePageForIndex(defaultPage);
+        return starts.indexOf(leftmostPage);
+    }
+
+    private IntArray getPersistableScreenOrder() {
+        IntArray persistableOrder = new IntArray();
+        for (int i = 0; i < mScreenOrder.size(); i++) {
+            int screenId = mScreenOrder.get(i);
+            if (!isExtraEmptyScreen(screenId)) {
+                persistableOrder.add(screenId);
+            }
+        }
+        return persistableOrder;
+    }
+
+    private IntSet getPersistedWorkspaceScreenIds() {
+        return getPersistedWorkspaceScreenIds(
+                LauncherPrefs.get(getContext()).get(LauncherPrefs.WORKSPACE_SCREEN_ORDER));
+    }
+
+    @VisibleForTesting
+    static IntSet getPersistedWorkspaceScreenIds(String persistedOrder) {
+        IntSet ids = new IntSet();
+        if (persistedOrder == null || persistedOrder.isBlank()) {
+            return ids;
+        }
+        for (String part : persistedOrder.split(",")) {
+            try {
+                int id = Integer.parseInt(part.trim());
+                if (id >= 0) {
+                    ids.add(id);
+                }
+            } catch (NumberFormatException ignored) {
+                // Skip invalid entries.
+            }
+        }
+        return ids;
+    }
+
+    @VisibleForTesting
+    static boolean shouldPreserveEmptyScreenWhenStripping(
+            int screenId, IntSet persistedScreenIds, boolean isExtraEmptyScreen) {
+        return persistedScreenIds.contains(screenId) && !isExtraEmptyScreen;
+    }
+
+    private void onWorkspaceScreenRemapFinished() {
+        mDeferStripEmptyScreensForScreenRemap = false;
+    }
+
+    private void persistCurrentScreenOrderSync() {
+        if (mLauncher.isWorkspaceLoading()) {
+            return;
+        }
+        mLauncher.getModelWriter().persistWorkspaceScreenOrderSync(getPersistableScreenOrder());
+    }
+
+    private void applyScreenOrderToChildViews() {
+        for (int i = 0; i < mScreenOrder.size(); i++) {
+            CellLayout layout = mWorkspaceScreens.get(mScreenOrder.get(i));
+            if (layout == null) {
+                continue;
+            }
+            int currentIndex = indexOfChild(layout);
+            if (currentIndex != i) {
+                removeView(layout);
+                addView(layout, i);
+            }
+        }
+        updatePageScrollValues();
+    }
+
+    public void reorderBoundWorkspaceScreens(IntArray orderedScreenIds) {
+        if (orderedScreenIds == null || orderedScreenIds.isEmpty()) {
+            return;
+        }
+        IntArray reordered = new IntArray();
+        for (int i = 0; i < orderedScreenIds.size(); i++) {
+            int screenId = orderedScreenIds.get(i);
+            if (mWorkspaceScreens.containsKey(screenId) && !reordered.contains(screenId)) {
+                reordered.add(screenId);
+            }
+        }
+        for (int i = 0; i < mScreenOrder.size(); i++) {
+            int existingId = mScreenOrder.get(i);
+            if (!reordered.contains(existingId)) {
+                reordered.add(existingId);
+            }
+        }
+        mScreenOrder.clear();
+        mScreenOrder.addAll(reordered);
+        applyScreenOrderToChildViews();
+    }
+
+    @VisibleForTesting
+    static SparseIntArray createPageGroupSwapMap(
+            IntArray screenOrder, int fromStart, int targetStart, int panelCount) {
+        SparseIntArray swapMap = new SparseIntArray(panelCount * 2);
+        for (int i = 0; i < panelCount; i++) {
+            int fromScreen = screenOrder.get(fromStart + i);
+            int targetScreen = screenOrder.get(targetStart + i);
+            if (fromScreen != targetScreen) {
+                swapMap.put(fromScreen, targetScreen);
+                swapMap.put(targetScreen, fromScreen);
+            }
+        }
+        return swapMap;
+    }
+
     /**
      * Called at the end of a drag which originated on the workspace.
      */
@@ -3568,7 +3862,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Falls back to {@link #DEFAULT_PAGE} if the stored page is out of range.
      */
     public int getDefaultPage() {
-        int storedPage = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getDefaultHomePage());
+        int storedPage = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
         int pageCount = getChildCount();
         if (storedPage >= 0 && storedPage < pageCount) {
             return storedPage;
@@ -3580,7 +3874,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Sets the given page index as the default home page.
      */
     public void setDefaultPage(int pageIndex) {
-        PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getDefaultHomePage(), pageIndex);
+        com.patrykmichalik.opto.core.PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getDefaultHomePage(), pageIndex);
     }
 
     /**

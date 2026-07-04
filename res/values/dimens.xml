@@ -528,7 +528,7 @@
 
     <!-- Search results related parameters -->
     <dimen name="search_row_icon_size">48dp</dimen>
-    <dimen name="search_row_small_icon_size">32dp</dimen>
+    <dimen name="search_row_small_icon_size">38dp</dimen> <!-- LC-Note: Intentional raise from 32dp to 38dp -->
     <dimen name="padded_rounded_button_padding">8dp</dimen>
 
     <!-- Bottom sheet related parameters -->

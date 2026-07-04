@@ -88,7 +88,7 @@ import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
@@ -338,6 +338,10 @@ public class DeviceProfile {
 
     private final TextFactors mTextFactors;
     private float allAppsCellHeightMultiplier;
+    private float workspacePaddingHorizontalFactor;
+    private float workspacePaddingVerticalFactor;
+    private float widgetPaddingFactor;
+    private float drawerPaddingTopFactor;
     private PreferenceManager2 preferenceManager2 = null;
 
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
@@ -351,8 +355,18 @@ public class DeviceProfile {
         mTextFactors = DeviceProfileOverrides.INSTANCE.get(context).getTextFactors();
 
         preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
-        allAppsCellHeightMultiplier = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getDrawerCellHeightFactor());
+        allAppsCellHeightMultiplier = PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getDrawerCellHeightFactor());
+        // Lawnchair: clamp the user padding factors to their slider ranges so a restored or
+        // manually edited preference can't feed out-of-range values into the layout math.
+        workspacePaddingHorizontalFactor = Utilities.boundToRange(PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getWorkspacePaddingHorizontalFactor()), 0f, 2f);
+        workspacePaddingVerticalFactor = Utilities.boundToRange(PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getWorkspacePaddingVerticalFactor()), 0f, 2f);
+        widgetPaddingFactor = Utilities.boundToRange(PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getWidgetPaddingFactor()), 0f, 2f);
+        drawerPaddingTopFactor = Utilities.boundToRange(PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getDrawerPaddingTopFactor()), 1f, 2f);
         this.inv = inv;
 
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(
@@ -378,7 +392,7 @@ public class DeviceProfile {
         mIsScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
         // Determine device posture.
         mInfo = info;
-        boolean isTaskBarEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableTaskbarOnPhone());
+        boolean isTaskBarEnabled = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableTaskbarOnPhone());
         boolean taskbarOrBubbleBarOnPhones = enableTinyTaskbar()
                 || (enableBubbleBar() && enableBubbleBarOnPhones());
         isTaskbarPresent = isTaskBarEnabled && (mDeviceProperties.isTablet() || (taskbarOrBubbleBarOnPhones && isGestureMode))
@@ -395,8 +409,8 @@ public class DeviceProfile {
 
         workspacePageIndicatorHeight = res.getDimensionPixelSize(
                 R.dimen.workspace_page_indicator_height);
-        workspacePageIndicatorHeight *= PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getPageIndicatorHeightFactor());
+        workspacePageIndicatorHeight *= PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getPageIndicatorHeightFactor());
         mWorkspacePageIndicatorOverlapWorkspace =
                 res.getDimensionPixelSize(R.dimen.workspace_page_indicator_overlap_workspace);
 
@@ -493,7 +507,7 @@ public class DeviceProfile {
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
-        HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
+        HotseatMode hotseatMode = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatMode());
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
 
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
@@ -636,6 +650,11 @@ public class DeviceProfile {
         }
 
         desiredWorkspaceHorizontalMarginPx = getHorizontalMarginPx(inv, res);
+        // Lawnchair: scale the horizontal workspace margin at the source so the cell layout
+        // width calculation uses the scaled value too. Otherwise cells keep their original
+        // width and get centered, leaving a visible side gap even at factor 0.
+        desiredWorkspaceHorizontalMarginPx =
+                Math.round(desiredWorkspaceHorizontalMarginPx * workspacePaddingHorizontalFactor);
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
         splitPlaceholderInset = res.getDimensionPixelSize(R.dimen.split_placeholder_inset);
@@ -684,6 +703,9 @@ public class DeviceProfile {
             allAppsShiftRange =
                     res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
         }
+        // Lawnchair: extra user-configurable app drawer top padding. The factor is additive
+        // and slider-ranged 100%-200% (default 100%), so subtract 1f to keep 100% as no change.
+        allAppsPadding.top += Math.round(iconSizePx * (drawerPaddingTopFactor - 1f));
         allAppsOpenDuration = res.getInteger(R.integer.config_allAppsOpenDuration);
         allAppsCloseDuration = res.getInteger(R.integer.config_allAppsCloseDuration);
 
@@ -695,8 +717,8 @@ public class DeviceProfile {
         dimensionOverrideProvider.accept(this);
 
         // Check if notification dots should show the notification count
-        boolean showNotificationCount = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getShowNotificationCount());
+        boolean showNotificationCount = PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getShowNotificationCount());
 
         // Load the default font to use on notification dots
         Typeface typeface = null;
@@ -705,12 +727,12 @@ public class DeviceProfile {
         }
 
         // Load dot color
-        ColorOption dotColorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getNotificationDotColor());
+        ColorOption dotColorOption = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getNotificationDotColor());
         int dotColor = dotColorOption.getColorPreferenceEntry().getLightColor().invoke(context);
 
         // Load counter color
-        ColorOption counterColorOption = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getNotificationDotTextColor());
+        ColorOption counterColorOption = PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getNotificationDotTextColor());
         int countColor = counterColorOption.getColorPreferenceEntry().getLightColor().invoke(context);
 
         // This is done last, after iconSizePx is calculated above.
@@ -858,7 +880,7 @@ public class DeviceProfile {
     /** Updates hotseatCellHeightPx and hotseatBarSizePx */
     private void updateHotseatSizes(int hotseatIconSizePx) {
         int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
-        boolean isLabelInDock = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableLabelInDock());
+        boolean isLabelInDock = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableLabelInDock());
         // Ensure there is enough space for folder icons, which have a slightly larger radius.
         hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 2;
         hotseatCellHeightPx += isLabelInDock ? iconTextHeight : 0;
@@ -866,8 +888,8 @@ public class DeviceProfile {
         
         int space = Math.abs(hotseatCellHeightPx / 2) - 16;
 
-        hotseatBarBottomSpacePx *= PreferenceExtensionsKt
-            .firstBlocking(preferenceManager2.getHotseatBottomFactor());
+        hotseatBarBottomSpacePx *= PreferenceCacheExtensionsKt
+            .firstCached(preferenceManager2.getHotseatBottomFactor());
 
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + getHotseatProfile().getBarEdgePaddingPx()
@@ -875,8 +897,12 @@ public class DeviceProfile {
                     + space;
         } else if (isQsbInline) {
             hotseatBarSizePx = Math.max(hotseatIconSizePx, getHotseatProfile().getQsbVisualHeight())
-                    + hotseatBarBottomSpacePx
-                    + space;
+                    + hotseatBarBottomSpacePx;
+        } else if (isQsbOnTop()) { // LC-Note: isQsbOnTop, this usually is a foldable device, not a tablet
+            hotseatBarSizePx = hotseatIconSizePx
+                    + hotseatQsbSpace
+                    + getHotseatProfile().getQsbVisualHeight()
+                    + hotseatBarBottomSpacePx;
         } else {
             hotseatBarSizePx = hotseatIconSizePx
                     + hotseatQsbSpace
@@ -884,7 +910,7 @@ public class DeviceProfile {
                     + hotseatBarBottomSpacePx
                     + space;
         }
-        var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.isHotseatEnabled());
+        var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.isHotseatEnabled());
         if (!isHotseatEnabled) {
             hotseatBarSizePx = 0;
         }
@@ -1179,6 +1205,10 @@ public class DeviceProfile {
         final boolean isVerticalLayout = isVerticalBarLayout();
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
 
+        // Lawnchair: Get initial text size before calculating layout
+        // This scales offset with text sizing, all the way down to zero
+        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
+
         if (mIsResponsiveGrid) {
             cellWidthPx = mResponsiveWorkspaceWidthSpec.getCellSizePx();
             cellHeightPx = mResponsiveWorkspaceHeightSpec.getCellSizePx();
@@ -1292,8 +1322,6 @@ public class DeviceProfile {
             }
         }
 
-        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
-
         // All apps
         if (mIsResponsiveGrid) {
             mAllAppsProfile = AllAppsProfile.Factory.createAllAppsWithResponsive(
@@ -1350,6 +1378,11 @@ public class DeviceProfile {
         } else {
             widgetPadding.setEmpty();
         }
+        // Lawnchair: scale widget padding by user factor (0 = remove, 1 = default).
+        widgetPadding.left = Math.round(widgetPadding.left * widgetPaddingFactor);
+        widgetPadding.right = Math.round(widgetPadding.right * widgetPaddingFactor);
+        widgetPadding.top = Math.round(widgetPadding.top * widgetPaddingFactor);
+        widgetPadding.bottom = Math.round(widgetPadding.bottom * widgetPaddingFactor);
     }
 
     /**
@@ -1386,9 +1419,9 @@ public class DeviceProfile {
                     Math.max(0, desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding
                             - (getAllAppsProfile().getBorderSpacePx().x / 2));
         }
-        var allAppLeftRightMarginMultiplier = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getDrawerLeftRightMarginFactor());
-        var marginMultiplier = allAppLeftRightMarginMultiplier * (!getDeviceProperties().isTablet() ? 100 : 2);
+        var allAppLeftRightMarginMultiplier = PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getDrawerLeftRightMarginFactor());
+        var marginMultiplier = allAppLeftRightMarginMultiplier * (!getDeviceProperties().isTablet() ? 100 : 10);
         allAppsLeftRightMargin = (int) (allAppsLeftRightMargin * marginMultiplier);
 
         // todo fix how drawer padding values are calculated in responsive grid type
@@ -1718,6 +1751,16 @@ public class DeviceProfile {
                 paddingLeft = isSeascape() ? desiredWorkspaceHorizontalMarginPx : 0;
                 paddingRight = isSeascape() ? 0 : desiredWorkspaceHorizontalMarginPx;
             }
+
+            // Lawnchair: scale vertical workspace padding by user factor.
+            // (Horizontal is applied at the source margin so the cells fill the freed space.)
+            // The dock (hotseatBarSizePx) reservation in the bottom padding must be preserved,
+            // otherwise reducing the factor pulls the last row into the dock and clips it.
+            paddingTop = Math.round(paddingTop * workspacePaddingVerticalFactor);
+            int bottomHotseatReserve = Math.min(hotseatBarSizePx, paddingBottom);
+            paddingBottom = bottomHotseatReserve
+                    + Math.round((paddingBottom - bottomHotseatReserve) * workspacePaddingVerticalFactor);
+
             padding.set(paddingLeft, paddingTop, paddingRight, paddingBottom);
         }
         insetPadding(workspacePadding, cellLayoutPaddingPx);
@@ -1842,8 +1885,8 @@ public class DeviceProfile {
             } else {
                 hotseatBarPadding.left += qsbWidth;
             }
-        } else if (isTaskbarPresent || isQsbInline) {
-            // Center the QSB vertically with hotseat
+        } else if (isQsbOnTop() || isQsbInline) {
+            // Keep the hotseat icons in the lower section so the QSB can sit above them.
             int hotseatBarBottomPadding = getHotseatBarBottomPadding();
             int hotseatBarTopPadding =
                     hotseatBarSizePx - hotseatBarBottomPadding - hotseatCellHeightPx;
@@ -1947,6 +1990,11 @@ public class DeviceProfile {
                 + additionalQsbSpace;
     }
 
+    /** LC-Note: For ID'ing tablet/foldable mode */
+    private boolean isQsbOnTop() {
+        return isTaskbarPresent || mDeviceProperties.isTwoPanels();
+    }
+
     /**
      * Returns the number of pixels the QSB is translated from the bottom of the screen.
      */
@@ -1954,7 +2002,7 @@ public class DeviceProfile {
         if (mDeviceProperties.isPhone() && isQsbInline) {
             return getHotseatBarBottomPadding()
                     - ((getHotseatProfile().getQsbHeight() - hotseatCellHeightPx) / 2);
-        } else if (isTaskbarPresent || (mDeviceProperties.isLandscape() && isQsbInline)) { // QSB on top
+        } else if (isQsbOnTop() || (mDeviceProperties.isLandscape() && isQsbInline)) { // LC-Note: isQsbOnTop
             return hotseatBarSizePx - getHotseatProfile().getQsbHeight()
                     + getHotseatProfile().getQsbShadowHeight();
         } else {
@@ -1966,7 +2014,7 @@ public class DeviceProfile {
      * Returns the number of pixels the hotseat is translated from the bottom of the screen.
      */
     private int getHotseatBarBottomPadding() {
-        if (isTaskbarPresent || isQsbInline) { // QSB on top or inline
+        if (isQsbOnTop() || isQsbInline) { // LC-Note: isQsbOnTop
             return hotseatBarBottomSpacePx - (Math.abs(hotseatCellHeightPx - iconSizePx) / 2);
         } else {
             return hotseatBarSizePx - hotseatCellHeightPx;

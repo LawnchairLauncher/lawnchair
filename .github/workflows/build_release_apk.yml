@@ -6,9 +6,10 @@ on:
 jobs:
   build-release-apk:
     runs-on: ubuntu-latest
+    if: endsWith(github.ref, '-alpha') || endsWith(github.ref, '-beta') || endsWith(github.ref, '-rc') || endsWith(github.ref, '-stable')
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - uses: actions/setup-java@v5
@@ -35,4 +36,4 @@ jobs:
         with:
           name: Release APK
           path: build/outputs/*
-          
+

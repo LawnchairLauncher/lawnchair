@@ -157,6 +157,20 @@ fun HomeScreenPreferences(
                 destination = HomeScreenGrid,
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )
+            SliderPreference(
+                label = stringResource(id = R.string.horizontal_padding_label),
+                adapter = prefs2.workspacePaddingHorizontalFactor.getAdapter(),
+                step = 0.05f,
+                valueRange = 0F..2F,
+                showAsPercentage = true,
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.vertical_padding_label),
+                adapter = prefs2.workspacePaddingVerticalFactor.getAdapter(),
+                step = 0.05f,
+                valueRange = 0F..2F,
+                showAsPercentage = true,
+            )
             SwitchPreference(
                 adapter = lockHomeScreenAdapter,
                 label = stringResource(id = R.string.home_screen_lock),
@@ -238,6 +252,13 @@ fun HomeScreenPreferences(
                 adapter = prefs2.forceWidgetResize.getAdapter(),
                 label = stringResource(id = R.string.force_widget_resize_label),
                 description = stringResource(id = R.string.force_widget_resize_description),
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.widget_padding_label),
+                adapter = prefs2.widgetPaddingFactor.getAdapter(),
+                step = 0.05f,
+                valueRange = 0F..2F,
+                showAsPercentage = true,
             )
         }
     }

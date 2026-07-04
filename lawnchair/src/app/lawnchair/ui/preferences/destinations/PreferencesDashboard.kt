@@ -59,6 +59,7 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenuGrouped
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
@@ -89,7 +90,6 @@ import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
-import com.patrykmichalik.opto.core.firstBlocking
 
 @Composable
 fun PreferencesDashboard(
@@ -145,7 +145,7 @@ fun PreferencesDashboard(
                 isSelected = currentRoute is HomeScreen,
             )
 
-            val isSmartspaceEnabled = prefs2.enableSmartspace.firstBlocking()
+            val isSmartspaceEnabled = prefs2.enableSmartspace.firstCached()
             PreferenceCategory(
                 label = stringResource(id = R.string.smartspace_widget),
                 description = stringResource(R.string.smartspace_widget_description),

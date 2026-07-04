@@ -282,6 +282,7 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
             nonRestorableItem(FIRST_LOAD_AFTER_RESTORE_KEY, false, EncryptionType.ENCRYPTED)
         @JvmField val APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_IDS, "")
         @JvmField val OLD_APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_OLD_IDS, "")
+        @JvmField val WORKSPACE_SCREEN_ORDER = backedUpItem("workspace_screen_order", "")
 
         @JvmField
         val GRID_NAME =

@@ -56,6 +56,8 @@ object ColorTokens {
     val Accent3_600 = SwatchColorToken(Swatch.Accent3, Shade.S600)
     val Accent3_800 = SwatchColorToken(Swatch.Accent3, Shade.S800)
 
+    @JvmField val SearchResultSmallIcon = DayNightColorToken(Accent1_100, Accent2_800)
+
     @JvmField val SurfaceContainerHighest = DayNightColorToken(Neutral1_500.setLStar(90.0), Neutral1_500.setLStar(22.0))
 
     @JvmField val SurfaceContainerLow = DayNightColorToken(Neutral1_500.setLStar(96.0), Neutral1_500.setLStar(10.0))
@@ -131,7 +133,7 @@ object ColorTokens {
 
     @JvmField val SearchboxHighlight = DayNightColorToken(Neutral2_600.setLStar(98.0), Neutral1_800)
 
-    @JvmField val FolderDotColor = Accent3_100
+    @JvmField val SearchboxHighlightBlur = SearchboxHighlight.setAlpha(.54f)
 
     @JvmField val DotColor = Accent3_200
 

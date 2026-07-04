@@ -3,7 +3,7 @@ package app.lawnchair
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.preferences2.firstBlocking
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE
@@ -14,7 +14,6 @@ import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
-import com.patrykmichalik.opto.core.firstBlocking
 import javax.inject.Inject
 
 @LauncherAppSingleton
@@ -56,10 +55,16 @@ class DeviceProfileOverrides @Inject constructor(
         prefs.hotseatColumns.set(gridInfo.numHotseatColumns)
     }
 
-    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) = Options(
+    fun getOverrides(
+        defaultGrid: InvariantDeviceProfile.GridOption,
+        deviceType: Int,
+        previewOverrides: PreviewOverrides? = null,
+    ) = Options(
         prefs = prefs,
         prefs2 = preferenceManager2,
         defaultGrid = defaultGrid,
+        deviceType = deviceType,
+        previewOverrides = previewOverrides ?: PreviewOverrides(),
     )
 
     fun getTextFactors() = TextFactors(preferenceManager2)
@@ -81,6 +86,11 @@ class DeviceProfileOverrides @Inject constructor(
         )
     }
 
+    /** Override for any other value that's not a DBGridInfo, extends this value when needed */
+    data class PreviewOverrides(
+        val foldableDatabaseHotseatIcons: Int? = null,
+    )
+
     data class Options(
         val numAllAppsColumns: Int,
         val numFolderRows: Int,
@@ -91,26 +101,53 @@ class DeviceProfileOverrides @Inject constructor(
         val allAppsIconTextSizeFactor: Float,
 
         val enableTaskbarOnPhone: Boolean,
+
+        // Foldable overrides (-1 means don't override)
+        val foldableShownHotseatIcons: Int = -1,
+        val foldableDatabaseHotseatIcons: Int = -1,
+        val foldableDatabaseAllAppsColumns: Int = -1,
     ) {
         constructor(
             prefs: PreferenceManager,
             prefs2: PreferenceManager2,
             defaultGrid: InvariantDeviceProfile.GridOption,
+            deviceType: Int,
+            previewOverrides: PreviewOverrides,
         ) : this(
-            numAllAppsColumns = prefs2.drawerColumns.firstBlocking(gridOption = defaultGrid),
+            numAllAppsColumns = prefs2.drawerColumns.firstCached(gridOption = defaultGrid),
             numFolderRows = prefs.folderRows.get(defaultGrid),
-            numFolderColumns = prefs2.folderColumns.firstBlocking(gridOption = defaultGrid),
+            numFolderColumns = prefs2.folderColumns.firstCached(gridOption = defaultGrid),
 
-            iconSizeFactor = prefs2.homeIconSizeFactor.firstBlocking(),
-            allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstBlocking(),
+            iconSizeFactor = prefs2.homeIconSizeFactor.firstCached(),
+            allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstCached(),
             allAppsIconTextSizeFactor =
-            if (prefs2.showIconLabelsInDrawer.firstBlocking()) {
-                prefs2.drawerIconLabelSizeFactor.firstBlocking()
+            if (prefs2.showIconLabelsInDrawer.firstCached()) {
+                prefs2.drawerIconLabelSizeFactor.firstCached()
             } else {
                 0f
             },
 
-            enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstBlocking(),
+            enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstCached(),
+
+            foldableShownHotseatIcons = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
+                val folded = prefs.hotseatColumns.get()
+                val unfolded = previewOverrides.foldableDatabaseHotseatIcons ?: prefs.hotseatColumnsUnfolded.get()
+                folded.coerceAtMost(unfolded)
+            } else {
+                -1
+            },
+            foldableDatabaseHotseatIcons = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
+                previewOverrides.foldableDatabaseHotseatIcons ?: prefs.hotseatColumnsUnfolded.get()
+            } else {
+                -1
+            },
+            foldableDatabaseAllAppsColumns = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
+                val folded = prefs2.drawerColumns.firstCached(gridOption = defaultGrid)
+                val unfolded = prefs2.drawerColumnsUnfolded.firstCached(gridOption = defaultGrid)
+                folded.coerceAtLeast(unfolded)
+            } else {
+                -1
+            },
         )
 
         fun applyUi(idp: InvariantDeviceProfile) {
@@ -119,6 +156,17 @@ class DeviceProfileOverrides @Inject constructor(
             idp.numDatabaseAllAppsColumns = numAllAppsColumns
             idp.numFolderRows[INDEX_DEFAULT] = numFolderRows
             idp.numFolderColumns[INDEX_DEFAULT] = numFolderColumns
+
+            // Foldable overrides for hotseat and allapps columns
+            if (foldableShownHotseatIcons > 0) {
+                idp.numShownHotseatIcons = foldableShownHotseatIcons
+            }
+            if (foldableDatabaseHotseatIcons > 0) {
+                idp.numDatabaseHotseatIcons = foldableDatabaseHotseatIcons
+            }
+            if (foldableDatabaseAllAppsColumns > 0) {
+                idp.numDatabaseAllAppsColumns = foldableDatabaseAllAppsColumns
+            }
 
             // apply icon and text size
             idp.iconSize[INDEX_DEFAULT] *= iconSizeFactor
@@ -146,12 +194,12 @@ class DeviceProfileOverrides @Inject constructor(
         constructor(
             prefs2: PreferenceManager2,
         ) : this(
-            enableIconText = prefs2.showIconLabelsOnHomeScreen.firstBlocking(),
-            iconTextSizeFactor = prefs2.homeIconLabelSizeFactor.firstBlocking(),
-            enableIconTextFolder = prefs2.showIconLabelsOnHomeScreenFolder.firstBlocking(),
-            iconFolderTextSizeFactor = prefs2.homeIconLabelFolderSizeFactor.firstBlocking(),
-            enableAllAppsIconText = prefs2.showIconLabelsInDrawer.firstBlocking(),
-            allAppsIconTextSizeFactor = prefs2.drawerIconLabelSizeFactor.firstBlocking(),
+            enableIconText = prefs2.showIconLabelsOnHomeScreen.firstCached(),
+            iconTextSizeFactor = prefs2.homeIconLabelSizeFactor.firstCached(),
+            enableIconTextFolder = prefs2.showIconLabelsOnHomeScreenFolder.firstCached(),
+            iconFolderTextSizeFactor = prefs2.homeIconLabelFolderSizeFactor.firstCached(),
+            enableAllAppsIconText = prefs2.showIconLabelsInDrawer.firstCached(),
+            allAppsIconTextSizeFactor = prefs2.drawerIconLabelSizeFactor.firstCached(),
         )
 
         constructor(

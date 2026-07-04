@@ -2,11 +2,11 @@ package app.lawnchair.search.algorithms.engine
 
 import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
 import com.android.launcher3.R
-import com.patrykmichalik.opto.core.firstBlocking
 
 sealed interface SectionBuilder {
     /**
@@ -131,7 +131,8 @@ data object HistorySectionBuilder : SectionBuilder {
         factory: SearchTargetFactory,
         results: List<SearchResult>,
     ): List<SearchTargetCompat> {
-        val webSuggestion = PreferenceManager2.getInstance(context).webSuggestionProvider.firstBlocking()
+        val prefs = PreferenceManager2.getInstance(context)
+        val webSuggestion = prefs.webSuggestionProvider.firstCached()
 
         val history = results.filterIsInstance<SearchResult.History>()
         if (history.isEmpty()) {

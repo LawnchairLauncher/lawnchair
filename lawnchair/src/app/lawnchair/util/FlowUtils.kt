@@ -4,8 +4,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.annotation.Discouraged
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +20,10 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+@Discouraged("This is a blocking read, use firstCached() for non-blocking reads")
 fun <T> Flow<T>.firstBlocking() = runBlocking { first() }
 
 @Composable
@@ -48,4 +53,13 @@ fun <T> Flow<T>.subscribeBlocking(
         .drop(1)
         .distinctUntilChanged()
         .launchIn(scope = scope)
+}
+
+fun <T> Flow<T>.observeOnce(
+    lifecycleOwner: LifecycleOwner,
+    collector: kotlinx.coroutines.flow.FlowCollector<T>,
+) {
+    lifecycleOwner.lifecycleScope.launch {
+        collect(collector = collector)
+    }
 }

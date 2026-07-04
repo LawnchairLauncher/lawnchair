@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">フォルダーに割り当てられたアプリはアプリリストから除外されます</string>
     <string name="folders_filter_duplicates">固有のアプリのみ表示</string>
     <string name="my_folder_label">自分のフォルダー</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">ジェスチャー操作時に特定の操作（スマートフォンのロックなど）を実行するには、Lawnchair にユーザー補助機能へのアクセスが必要です。\n\nLawnchair はユーザーの操作を監視しませんが、すべてのユーザー補助サービスにはユーザー補助機能へのアクセス権限が必要です。Lawnchair はシステムから送信されたイベントをすべて破棄します。\n\nLawnchair はスマートフォンをロックしたり、「最近」画面を開いたりするために、performGlobalAction ユーザー補助機能サービスを使用します。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -170,8 +171,6 @@
     <string name="always_reload_icons_label">常にアイコンを再読み込みします</string>
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにします</string>
     <string name="always_reload_icons_warning">アイコンを定期的に再読込します。アイコンパックが頻繁に更新されない場合は不要です</string>
-    <string name="icon_swipe_gestures">アイコンのスワイプジェスチャー</string>
-    <string name="icon_swipe_gestures_description">アイコンを左右にスワイプした時にホーム画面の移動の代わりにアクションを実行します</string>
     <string name="show_deck_layout">ドックのレイアウト</string>
     <string name="show_deck_layout_description">アプリドロワーを非表示にし、自動的に新しいアプリをホーム画面に追加するためのレイアウトオプションを表示します</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -216,8 +215,8 @@
     <string name="label_size">ラベルのサイズ</string>
     <string name="twoline_label">複数行を使用する</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">透明なテーマアイコン</string>
-    <string name="transparent_background_icons_description">テーマアイコンの背景を透明にします</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">自動アダプティブアイコン</string>
     <string name="auto_adaptive_icons_description">すべての非アダプティブアイコンが対象</string>
     <string name="shadow_bg_icons_label">アイコンの影を表示</string>
@@ -381,8 +380,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天気</string>
     <string name="smartspace_battery_status">バッテリーの状態</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_onboarding">初期画面</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Lawnchair の設定</string>
     <string name="onboarding_open_settings_subtitle">ホーム画面長押しして設定を開く</string>
@@ -540,8 +543,20 @@
     <string name="home_screen_unlock">ホーム画面のロックを解除</string>
     <string name="home_screen_locked">ホーム画面はロックされています</string>
     <string name="home_screen_lock_description">ホーム画面のレイアウトを固定する</string>
+    <string name="horizontal_padding_label">左右の余白</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">デフォルトのページに設定</string>
     <string name="default_home_page_set">デフォルトのホームページを更新しました</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">デフォルト</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">ポップアップメニュー</string>
     <string name="popup_menu_items">ポップアップメニューの項目</string>
     <string name="edit_menu_items">ポップアップメニューの項目を編集</string>
@@ -588,6 +603,7 @@
     <string name="paused_apps_dialog_title">アプリを一時停止中</string>
     <string name="paused_apps_dialog_message">%1$s はランチャーから直接一時停止しました</string>
     <string name="paused_apps_drop_target_label">アプリを一時停止</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">ドックアイコン</string>
     <string name="hotseat_bottom_space_label">下の余白</string>
     <string name="page_indicator_height">ページインジケーターの高さ</string>

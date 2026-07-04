@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
@@ -32,8 +33,8 @@ import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.views.ActivityContext
-import com.patrykmichalik.opto.core.firstBlocking
 import java.net.URISyntaxException
 
 class LawnchairShortcut {
@@ -42,7 +43,8 @@ class LawnchairShortcut {
 
         val CUSTOMIZE =
             SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo, originalView ->
-                if (PreferenceManager2.getInstance(activity).lockHomeScreen.firstBlocking()) {
+                val prefs2 = PreferenceManager2.getInstance(activity)
+                if (prefs2.lockHomeScreen.firstCached()) {
                     null
                 } else {
                     getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo, originalView) }
@@ -58,7 +60,8 @@ class LawnchairShortcut {
 
         val UNINSTALL =
             SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, view: View ->
-                if (PreferenceManager2.INSTANCE.get(activity.asContext()).lockHomeScreen.firstBlocking()) {
+                val prefs2 = PreferenceManager2.INSTANCE.get(activity.asContext())
+                if (prefs2.lockHomeScreen.firstCached()) {
                     return@Factory null
                 }
                 if (itemInfo.targetComponent == null) {
@@ -73,6 +76,26 @@ class LawnchairShortcut {
                     return@Factory null
                 }
                 UnInstall(activity, itemInfo, view)
+            }
+
+        private val SUPPORTED_STORES = setOf(
+            "com.android.vending",
+            "com.aurora.store",
+            "org.fdroid.fdroid",
+            "org.gdroid.gdroid",
+            "com.looker.droidify",
+            "com.github.librecaptcha.apps.fdroidclient",
+        )
+
+        val OPEN_IN_STORE =
+            SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, originalView: View ->
+                if (itemInfo.itemType != ITEM_TYPE_APPLICATION) return@Factory null
+                val packageName = itemInfo.targetComponent?.packageName ?: return@Factory null
+                val context = activity.asContext()
+                val installer = PackageManagerHelper.INSTANCE.get(context)
+                    .getAppInstallerPackage(packageName) ?: return@Factory null
+                if (installer !in SUPPORTED_STORES) return@Factory null
+                OpenInStore(activity, itemInfo, originalView, packageName, installer)
             }
 
         val PAUSE_APPS = SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
@@ -239,6 +262,44 @@ class LawnchairShortcut {
             } catch (e: URISyntaxException) {
                 // Do nothing.
             }
+        }
+    }
+
+    class OpenInStore(
+        target: ActivityContext,
+        itemInfo: ItemInfo,
+        originalView: View,
+        private val packageName: String,
+        private val installerPackage: String,
+    ) : SystemShortcut<ActivityContext>(
+        R.drawable.ic_open_in_store,
+        R.string.open_in_store_drop_target_label,
+        target,
+        itemInfo,
+        originalView,
+    ) {
+        override fun onClick(v: View) {
+            dismissTaskMenuView()
+            val intent = buildIntent() ?: return
+            mTarget.startActivitySafely(v, intent, mItemInfo)
+        }
+
+        private fun buildIntent(): Intent? {
+            val uri = when (installerPackage) {
+                "com.android.vending",
+                "org.gdroid.gdroid",
+                "com.aurora.store",
+                -> "market://details?id=$packageName"
+
+                "org.fdroid.fdroid" -> "https://f-droid.org/packages/$packageName/"
+
+                "com.github.librecaptcha.apps.fdroidclient",
+                "com.looker.droidify",
+                -> "droidify://details?id=$packageName"
+
+                else -> return null
+            }
+            return Intent(Intent.ACTION_VIEW, Uri.parse(uri)).setPackage(installerPackage)
         }
     }
 }

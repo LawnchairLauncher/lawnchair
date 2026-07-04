@@ -252,6 +252,7 @@ import com.android.launcher3.util.WallpaperThemeManager;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingSurfaceView;
 import com.android.launcher3.views.OptionsPopupView;
+import app.lawnchair.views.EditModePageStrip;
 import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -364,6 +365,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     // UI and state for the overview panel
     private View mOverviewPanel;
+    private EditModePageStrip mEditModePageStrip;
 
     // Used to notify when an activity launch has been deferred because launcher is not yet resumed
     // TODO: See if we can remove this later
@@ -1307,6 +1309,28 @@ public class Launcher extends StatefulActivity<LauncherState>
         mDragLayer = findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
+        mEditModePageStrip = mDragLayer.findViewById(R.id.edit_mode_page_strip);
+        if (mEditModePageStrip != null) {
+            mStateManager.addStateListener(new StateManager.StateListener<LauncherState>() {
+                @Override
+                public void onStateTransitionStart(LauncherState toState) {
+                    if (toState == EDIT_MODE) {
+                        long duration = EDIT_MODE.getTransitionDuration(Launcher.this, true);
+                        mEditModePageStrip.showForEditMode(mWorkspace, duration);
+                    } else if (mStateManager.getCurrentStableState() == EDIT_MODE) {
+                        long duration = EDIT_MODE.getTransitionDuration(Launcher.this, false);
+                        mEditModePageStrip.hideForEditMode(duration);
+                    }
+                }
+
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    if (finalState == EDIT_MODE) {
+                        mEditModePageStrip.maybeShowEducationTip(Launcher.this);
+                    }
+                }
+            });
+        }
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
         mHotseat = findViewById(R.id.hotseat);

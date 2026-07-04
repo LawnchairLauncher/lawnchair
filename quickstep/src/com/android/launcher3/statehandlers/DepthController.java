@@ -44,7 +44,7 @@ import com.android.quickstep.util.BaseDepthController;
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.preferences2.PreferenceManager2;
 
@@ -74,8 +74,9 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     public DepthController(QuickstepLauncher launcher) {
         super(launcher);
-        var pref = PreferenceManager2.getInstance(launcher).getWallpaperDepthEffect();
-        mEnableDepth = PreferenceExtensionsKt.firstBlocking(pref);
+        var prefs = PreferenceManager2.getInstance(launcher);
+        var pref = prefs.getWallpaperDepthEffect();
+        mEnableDepth = PreferenceCacheExtensionsKt.firstCached(pref);
     }
 
     private void onLauncherDraw() {

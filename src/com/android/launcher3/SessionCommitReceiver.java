@@ -32,8 +32,7 @@ import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.Executors;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
-
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 
 import java.util.Locale;
@@ -112,10 +111,12 @@ public class SessionCommitReceiver extends BroadcastReceiver {
      */
     public static boolean isEnabled(Context context, UserHandle user) {
         if (Flags.privateSpaceRestrictItemDrag() 
-            && PreferenceExtensionsKt.firstBlocking(PreferenceManager2.getInstance(context).getLockHomeScreen())
-            && user != null
-            && UserCache.getInstance(context).getUserInfo(user).isPrivate()) {
-            return false;
+            && user != null) {
+            PreferenceManager2 prefs2 = PreferenceManager2.getInstance(context);
+            if (PreferenceCacheExtensionsKt.firstCached(prefs2.getLockHomeScreen())
+                && UserCache.getInstance(context).getUserInfo(user).isPrivate()) {
+                return false;
+            }
         }
         return LauncherPrefs.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY, true);
     }

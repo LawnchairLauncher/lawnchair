@@ -29,12 +29,13 @@ import com.android.launcher3.LauncherAppState
 fun DummyLauncherBox(
     modifier: Modifier = Modifier,
     darkText: Boolean = wallpaperSupportsDarkText(),
+    aspectRatio: Float? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val context = LocalContext.current
     val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
     val dp = idp.getDeviceProfile(context)
-    val ratio = dp.deviceProperties.widthPx.toFloat() / dp.deviceProperties.heightPx.toFloat()
+    val ratio = aspectRatio ?: (dp.deviceProperties.widthPx.toFloat() / dp.deviceProperties.heightPx.toFloat())
 
     Box(modifier = modifier.aspectRatio(ratio, matchHeightConstraintsFirst = true)) {
         LawnchairTheme(darkTheme = !darkText) {

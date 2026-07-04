@@ -15,22 +15,31 @@
   -->
 
 <app.lawnchair.allapps.AllAppsSearchInput xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/search_container_all_apps"
     android:layout_width="match_parent"
     android:layout_height="@dimen/search_box_container_height"
     android:clickable="true"
     android:focusable="true">
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/qsb_shell"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_box_height"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:padding="0dp" />
+
     <FrameLayout
         android:id="@+id/search_wrapper"
         android:layout_width="match_parent"
         android:layout_height="@dimen/search_box_height"
         android:layout_gravity="center"
-        android:background="@drawable/search_input_fg"
+        android:background="@android:color/transparent"
         android:clickable="false"
         android:focusable="true"
-        android:padding="0dp">
+        android:padding="0dp"
+        android:paddingStart="@dimen/qsb_g_icon_marginStart"
+        android:paddingEnd="@dimen/search_result_padding">
         <TextView
             android:id="@+id/hint"
             android:layout_width="fill_parent"
@@ -67,63 +76,5 @@
             android:textSize="20sp" />
 
     </FrameLayout>
-
-    <ImageButton
-        android:id="@+id/search_icon"
-        android:layout_width="@dimen/search_box_height"
-        android:layout_height="@dimen/search_box_height"
-        android:layout_gravity="center|start"
-        android:background="@drawable/pill_ripple"
-        android:layout_marginEnd="6dp"
-        android:clickable="true"
-        android:contentDescription="@string/search_bar_label"
-        android:scaleType="center"
-        android:src="@drawable/ic_allapps_search"
-        app:tint="?android:textColorSecondary" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/search_box_height"
-        android:layout_gravity="end|center"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        tools:ignore="RtlSymmetry">
-
-        <app.lawnchair.qsb.AssistantIconView
-            android:id="@+id/mic_btn"
-            android:layout_width="@dimen/qsb_icon_width"
-            android:layout_height="@dimen/search_box_height"
-            android:background="@drawable/pill_ripple"
-            android:clickable="true"
-            android:contentDescription="@string/label_voice_search"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/qsb_icon_padding"
-            android:src="@drawable/ic_remove_no_shadow"
-            app:tint="?android:textColorSecondary" />
-
-        <ImageButton
-            android:id="@+id/lens_btn"
-            android:layout_width="@dimen/qsb_icon_width"
-            android:layout_height="@dimen/search_box_height"
-            android:background="@drawable/pill_ripple"
-            android:clickable="true"
-            android:layout_marginStart="-6dp"
-            android:contentDescription="@string/label_lens"
-            android:scaleType="fitCenter"
-            android:padding="@dimen/qsb_icon_padding"
-            android:src="@drawable/ic_remove_no_shadow"
-            app:tint="?android:textColorSecondary" />
-
-        <ImageButton
-            android:id="@+id/action_btn"
-            android:layout_width="@dimen/search_box_height"
-            android:layout_height="@dimen/search_box_height"
-            android:background="@drawable/pill_ripple"
-            android:clickable="true"
-            android:contentDescription="@string/search_input_action_clear_results"
-            android:scaleType="center"
-            android:src="@drawable/ic_remove_no_shadow"
-            app:tint="?android:textColorSecondary" />
-    </LinearLayout>
 
 </app.lawnchair.allapps.AllAppsSearchInput>

@@ -130,7 +130,11 @@ final def buildCommit = providers.exec {
 final def ciBuild = System.getenv("CI") == "true"
 final def ciRef = System.getenv("GITHUB_REF") ?: ""
 final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
-final def isReleaseBuild = ciBuild && ciRef.contains("beta")
+final def isReleaseBuild = ciBuild
+        && (ciRef.endsWith("-alpha")
+        || ciRef.endsWith("-beta")
+        || ciRef.endsWith("-rc")
+        || ciRef.endsWith("-stable"))
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 
 final def version = "16"
@@ -159,13 +163,6 @@ android {
         manifestPlaceholders.quickstepMaxSdk = quickstepMaxSdk
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
-    }
-
-    applicationVariants.configureEach { variant ->
-        variant.outputs.configureEach {
-            def channel = variant.productFlavors.last().name
-            outputFileName = "Lawnchair.${variant.versionName}.$channel.${variant.buildType.name}.apk"
-        }
     }
 
     androidResources {
@@ -198,10 +195,13 @@ android {
     ]
 
     // Load all proguard configs from AOSP
-    def proguardFilesFromAosp = allprojects
-        .collect { it.file("proguard.flags") }
-        .findAll { it.exists() }
-        .toArray()
+    def proguardFilesFromAosp = allprojects.collect { proj ->
+        [
+            'proguard.flags',
+            'proguard_flags.flags',
+            'proguard_plugins.flags'
+        ].collect { proj.file(it) }
+    }.flatten().findAll { it.exists() }.toArray()
 
     def releaseSigning
     try {
@@ -220,16 +220,6 @@ android {
     buildTypes {
         all {
             signingConfig releaseSigning
-
-            applicationVariants.configureEach { variant ->
-                variant.outputs.configureEach {
-                    def channel = variant.productFlavors.last().name
-                    // Override signingConfig to debug if the "nightly" flavor is selected
-                    if (channel.any { it == "nightly" }) {
-                        signingConfig = signingConfigs.debug
-                    }
-                }
-            }
             pseudoLocalesEnabled true
         }
 
@@ -348,6 +338,15 @@ android {
             java.srcDirs = ['quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog']
             kotlin.directories.addAll('quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog')
             manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def channel = variant.productFlavors.last().second
+        variant.outputs.forEach { output ->
+            output.outputFileName.set("Lawnchair.${output.versionName.get()}.$channel.${variant.buildType}.apk")
         }
     }
 }

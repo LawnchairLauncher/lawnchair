@@ -456,23 +456,34 @@ public class PreviewItemManager {
         p.anim = anim;
     }
 
+    /** Lawnchair: Find the correct folder size depending on which parent owned them 
+     * @return Icon size that's typically use for workspace or size that's for allapps page */
+    private int getChildIconSize() {
+        if (mIcon.isInAppDrawer()) {
+            return ActivityContext.lookupContext(mContext).getDeviceProfile().getAllAppsProfile().getIconSizePx();
+        }
+        return mIconSize;
+    }
+
     @VisibleForTesting
     public void setDrawable(PreviewItemDrawingParams p, ItemInfo item) {
+        // Lawnchair: Find the correct folder size depending on which parent owned them
+        int iconSize = getChildIconSize();
         if (item instanceof WorkspaceItemInfo wii) {
             if (isActivePendingIcon(wii)) {
                 p.drawable = newPendingIcon(mContext, wii);
             } else {
                 p.drawable = wii.newIcon(mContext, FLAG_THEMED);
             }
-            p.drawable.setBounds(0, 0, mIconSize, mIconSize);
+            p.drawable.setBounds(0, 0, iconSize, iconSize);
         } else if (item instanceof AppPairInfo api) {
             AppPairIconDrawingParams appPairParams = new AppPairIconDrawingParams(mContext, DISPLAY_FOLDER);
             p.drawable = AppPairIconGraphic.composeDrawable(api, appPairParams);
-            p.drawable.setBounds(0, 0, mIconSize, mIconSize);
+            p.drawable.setBounds(0, 0, iconSize, iconSize);
         } else if (item instanceof ItemInfoWithIcon withIcon){
             var isThemed = PreferenceManager.getInstance(mContext).getDrawerThemedIcons().get() ? FLAG_THEMED : 0;
             p.drawable = withIcon.newIcon(mContext, isThemed);
-            p.drawable.setBounds(0, 0, mIconSize, mIconSize);
+            p.drawable.setBounds(0, 0, iconSize, iconSize);
         }
 
         p.item = item;

@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Klasörlere koyulan uygulamalar uygulama listelerinden hariç tutulur</string>
     <string name="folders_filter_duplicates">Sadece farklı uygulamaları göster</string>
     <string name="my_folder_label">Benim klasörüm</string>
+    <string name="sort_active_items_action">Etkin öğeleri sırala</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Belirli eylemleri (örneğin telefonunuzu kilitlemek) bir hareketle gerçekleştirebilmek için, Lawnchair erişilebilirlik iznine ihtiyaç duyar.\n\nLawnchair hiçbir kullanıcı etkinliğini izlemez; ancak tüm erişilebilirlik servislerinde bu ayrıcalık gereklidir. Lawnchair, sistem tarafından gönderilen tüm olayları yok sayar.\n\nTelefonunuzu kilitlemek veya Son uygulamalar ekranını açmak için Lawnchair, performGlobalAction Erişilebilirlik servisini kullanır.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -165,13 +166,11 @@
     <string name="font_picker_description">Bazı metinler değişmeden kalır</string>
     <string name="smartspace_calendar_label">Bir Bakışta takvim özelleştirme</string>
     <string name="smartspace_calendar_description">Gregoryen olmayan takvim sistemlerinde tarihin gösterilmesine izin ver</string>
-    <string name="workspace_increase_max_grid_size_label">Maksimum ızgara sayısını yükselt</string>
+    <string name="workspace_increase_max_grid_size_label">Maksimum ızgara boyutu sınırını artır</string>
     <string name="workspace_increase_max_grid_size_description">İzin verilen maksimum ana ekran ızgara boyutunu 10 x 10\'dan 20 x 20\'ye artırın</string>
     <string name="always_reload_icons_label">Simgeleri her zaman yeniden yükle</string>
     <string name="always_reload_icons_description">Ön belleklenmiş simgeleri kullanmaktan kaçın</string>
     <string name="always_reload_icons_warning">Bu işlem simgenin düzenli olarak yeniden yüklenmesine neden olur, simge paketi düzenli olarak güncellenmiyorsa bu gerekli değildir</string>
-    <string name="icon_swipe_gestures">Simge kaydırma hareketleri</string>
-    <string name="icon_swipe_gestures_description">Ana ekranda kaydırmak yerine simgeleri sola ya da sağa kaydırarak işlemler yap</string>
     <string name="show_deck_layout">Deck düzeni</string>
     <string name="show_deck_layout_description">Uygulama çekmecesini gizle ve yeni uygulamaları ana ekrana ekle seçeneğini göster</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -216,8 +215,8 @@
     <string name="label_size">Etiket boyutu</string>
     <string name="twoline_label">Birden fazla satır kullan</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Saydam temalı simgeler</string>
-    <string name="transparent_background_icons_description">Temalı simgelerde saydam arka plan kullan</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Otomatik uyarlanabilir simgeler</string>
     <string name="auto_adaptive_icons_description">Uyarlanabilir olmayan tüm simgeler için</string>
     <string name="shadow_bg_icons_label">Simgelerin arkasında gölge göster</string>
@@ -381,8 +380,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Hava durumu</string>
     <string name="smartspace_battery_status">Pil durumu</string>
+    <string name="smartspace_torch">El feneri durumu</string>
     <string name="smartspace_now_playing">Şimdi Oynatılıyor</string>
     <string name="smartspace_onboarding">Başlangıç</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">El feneri açık</string>
+    <string name="torch_action_off">Kapatmak için dokunun</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Lawnchair\'inizi yapılandırın</string>
     <string name="onboarding_open_settings_subtitle">Ayarları açmak için Ana Ekrana uzun basın</string>
@@ -540,8 +543,20 @@
     <string name="home_screen_unlock">Ana ekranın kilidini aç</string>
     <string name="home_screen_locked">Ana ekran kilitli</string>
     <string name="home_screen_lock_description">Ana Ekran düzeninde değişiklik yapılmasının önle</string>
+    <string name="horizontal_padding_label">Yatay dolgu</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Varsayılan sayfa olarak ayarla</string>
     <string name="default_home_page_set">Varsayılan ana sayfa güncellendi</string>
+    <string name="move_page_left">Sayfayı sola taşı</string>
+    <string name="move_page_right">Sayfayı sağa taşı</string>
+    <string name="page_order_updated">Sayfa sıralaması güncellendi</string>
+    <string name="edit_mode_page_strip_default">Varsayılan</string>
+    <string name="edit_mode_page_strip_page">Sayfa %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Ana sayfa olarak ayarla</string>
+    <string name="edit_mode_page_strip_home_selected">Varsayılan ana sayfa</string>
+    <string name="edit_mode_page_strip_tip">Sayfaların sırasını değiştirmek için sürükleyin. Varsayılan sayfanızı ayarlamak için ana sayfa simgesine dokunun.</string>
     <string name="popup_menu">Açılır menü</string>
     <string name="popup_menu_items">Açılır menü öğeleri</string>
     <string name="edit_menu_items">Açılır menü öğelerini düzenle</string>
@@ -588,6 +603,7 @@
     <string name="paused_apps_dialog_title">Uygulama duraklatıldı</string>
     <string name="paused_apps_dialog_message">%1$s doğrudan başlatıcıdan duraklatıldı</string>
     <string name="paused_apps_drop_target_label">Uygulamayı duraklat,</string>
+    <string name="open_in_store_drop_target_label">Mağazada aç</string>
     <string name="dock_icons">Alt sıra simgeleri</string>
     <string name="hotseat_bottom_space_label">Alt dolgu</string>
     <string name="page_indicator_height">Sayfa gösterge yüksekliği</string>

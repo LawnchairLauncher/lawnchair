@@ -33,7 +33,7 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
     private var targetCount = 5
 
     init {
-        prefs2.smartspacerMaxCount.subscribeBlocking(coroutineScope) {
+        prefs2.smartspacerMaxCount.subscribeBlocking(prefs2 = prefs2, scope = coroutineScope) {
             targetCount = it
         }
 

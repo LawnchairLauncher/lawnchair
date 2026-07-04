@@ -12,8 +12,8 @@ import androidx.core.content.ContextCompat
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import java.util.LinkedList
 import java.util.Queue
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,9 +23,12 @@ import kotlinx.coroutines.plus
 
 class UploaderService : Service() {
 
-    private var job: Job? = null
+    private val lock = Any()
+
+    @Volatile private var job: Job? = null
+    private var latestStartId = 0
     private val scope = CoroutineScope(Dispatchers.IO) + CoroutineName("UploaderService")
-    private val uploadQueue: Queue<BugReport> = LinkedList()
+    private val uploadQueue: Queue<BugReport> = ConcurrentLinkedQueue()
 
     override fun onBind(intent: Intent): IBinder {
         TODO("not implemented")
@@ -33,19 +36,27 @@ class UploaderService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null) return START_REDELIVER_INTENT
-        uploadQueue.offer(intent.getParcelableExtra("report"))
-        if (job == null) {
-            job = scope.launch {
-                startUpload()
-                stopSelf()
+        val report = intent.getParcelableExtra<BugReport>("report") ?: return START_STICKY
+        synchronized(lock) {
+            uploadQueue.offer(report)
+            latestStartId = startId
+            if (job == null) {
+                job = scope.launch { startUpload() }
             }
         }
         return START_STICKY
     }
 
     private suspend fun startUpload() {
-        while (uploadQueue.isNotEmpty()) {
-            var report = uploadQueue.poll()!!
+        while (true) {
+            // Atomically take the next report, or clear the job and stop looping once
+            // the queue is drained, so a report enqueued concurrently is never dropped.
+            var report = synchronized(lock) {
+                uploadQueue.poll() ?: run {
+                    job = null
+                    null
+                }
+            } ?: break
             try {
                 report = report.copy(link = UploaderUtils.upload(report))
             } catch (e: Throwable) {
@@ -57,6 +68,12 @@ class UploaderService : Service() {
                         .setAction(BugReportReceiver.UPLOAD_COMPLETE_ACTION)
                         .putExtra("report", report),
                 )
+            }
+        }
+        // Only stop the service if no new worker was started while draining.
+        synchronized(lock) {
+            if (job == null) {
+                stopSelf(latestStartId)
             }
         }
     }

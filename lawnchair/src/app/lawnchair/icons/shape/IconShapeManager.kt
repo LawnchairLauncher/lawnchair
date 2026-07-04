@@ -22,13 +22,13 @@ package app.lawnchair.icons.shape
 import android.content.Context
 import android.graphics.drawable.AdaptiveIconDrawable
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.Utilities
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
-import com.patrykmichalik.opto.core.firstBlocking
 import javax.inject.Inject
 
 @LauncherAppSingleton
@@ -56,6 +56,9 @@ class IconShapeManager @Inject constructor(
         fun getSystemIconShape(context: Context) = INSTANCE.get(context).systemIconShape
 
         @JvmStatic
-        fun getWindowTransitionRadius(context: Context) = PreferenceManager2.getInstance(context).iconShape.firstBlocking().windowTransitionRadius
+        fun getWindowTransitionRadius(context: Context): Float {
+            val prefs = PreferenceManager2.getInstance(context)
+            return prefs.iconShape.firstCached().windowTransitionRadius
+        }
     }
 }

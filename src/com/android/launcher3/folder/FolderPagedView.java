@@ -30,6 +30,7 @@ import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 
@@ -104,6 +105,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     private boolean mViewsBound = false;
 
     private boolean mCanAnnouncePageDescription;
+    private boolean mDisallowPagedViewInterceptForIconSwipe; // Lawnchair: Icon swipe gesture feature
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         this(
@@ -162,6 +164,91 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             mFocusIndicatorHelper.draw(canvas);
             super.dispatchDraw(canvas);
         }
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (shouldSkipPagedViewInterceptionForIconSwipe(ev)) {
+            return false;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mDisallowPagedViewInterceptForIconSwipe = isTouchOnIconWithHorizontalSwipeGesture(
+                        ev.getX(), ev.getY());
+                if (mDisallowPagedViewInterceptForIconSwipe) {
+                    resetTouchState();
+                    return true;
+                }
+                return false;
+
+            case MotionEvent.ACTION_MOVE:
+                return mDisallowPagedViewInterceptForIconSwipe;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                boolean shouldSkip = mDisallowPagedViewInterceptForIconSwipe;
+                mDisallowPagedViewInterceptForIconSwipe = false;
+                if (shouldSkip) {
+                    resetTouchState();
+                }
+                return shouldSkip;
+
+            default:
+                return false;
+        }
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    private boolean isTouchOnIconWithHorizontalSwipeGesture(float x, float y) {
+        BubbleTextView touchedIcon = findIconAtPosition(x, y);
+        return touchedIcon != null && touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
+    }
+
+    /** Lawnchair: Find icon at specific position */
+    private BubbleTextView findIconAtPosition(float x, float y) {
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+            View page = getChildAt(i);
+            if (!(page instanceof CellLayout cellLayout)) {
+                continue;
+            }
+            float localX = x - page.getLeft();
+            float localY = y - page.getTop();
+            if (!Utilities.pointInView(cellLayout, localX, localY, 0)) {
+                continue;
+            }
+            BubbleTextView foundView = findIconInCellLayout(cellLayout, localX, localY);
+            if (foundView != null) {
+                return foundView;
+            }
+        }
+        return null;
+    }
+
+    /** Lawnchair: Find icon in cell layout */
+    private BubbleTextView findIconInCellLayout(CellLayout cellLayout, float x, float y) {
+        ShortcutAndWidgetContainer container = cellLayout.getShortcutsAndWidgets();
+        float containerX = x - container.getLeft();
+        float containerY = y - container.getTop();
+        for (int i = container.getChildCount() - 1; i >= 0; i--) {
+            View child = container.getChildAt(i);
+            if (!(child instanceof BubbleTextView bubbleTextView)
+                    || child.getVisibility() != View.VISIBLE) {
+                continue;
+            }
+            if (Utilities.pointInView(child,
+                    containerX - child.getLeft(),
+                    containerY - child.getTop(),
+                    0)) {
+                return bubbleTextView;
+            }
+        }
+        return null;
     }
 
     /**
@@ -294,7 +381,12 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     private CellLayout createAndAddNewPage() {
         DeviceProfile grid = mFolder.mActivityContext.getDeviceProfile();
         CellLayout page = mViewCache.getView(R.layout.folder_page, getContext(), this);
-        page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
+        // Lawnchair: Find the correct folder size depending on which parent owned them
+        if (mFolder.isInAppDrawer()) {
+            page.setCellDimensions(grid.getAllAppsProfile().getCellWidthPx(), grid.getAllAppsProfile().getCellHeightPx());
+        } else {
+            page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
+        }
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
         page.setInvertIfRtl(true);
         page.setGridSize(mGridCountX, mGridCountY);

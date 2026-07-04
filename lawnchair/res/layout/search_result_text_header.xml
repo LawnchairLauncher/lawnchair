@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/search_result_text_height"
-    android:orientation="horizontal"
-    android:paddingStart="8dp">
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
 
     <LinearLayout
         android:id="@+id/text_rows"
@@ -15,9 +15,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1.0"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dynamic_grid_edge_margin"
         android:paddingTop="@dimen/dynamic_grid_edge_margin"
-        android:paddingEnd="@dimen/dynamic_grid_edge_margin"
         android:paddingBottom="@dimen/dynamic_grid_edge_margin"
         android:singleLine="true">
         <TextView

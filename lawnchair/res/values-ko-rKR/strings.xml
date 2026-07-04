@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">폴더에 지정한 앱을 앱 목록에서 제외</string>
     <string name="folders_filter_duplicates">중복 앱 숨기기</string>
     <string name="my_folder_label">내 폴더</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">특정 액션들(휴대전화 잠그기 같은 액션)을 제스처로 작동시키려면, Lawnchair가 접근성 기능에 접근해야 합니다. \n\nLawnchair는 접근성 기능을 필요로 하지만 사용자의 활동을 감시하지 않으며, 시스템에서 발송된 모든 이벤트는 삭제됩니다. \n\nLawnchair는 휴대전화를 잠그거나 최근 앱을 보기 위해서 GlobalActionAccessbility 서비스를 사용합니다.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -170,13 +171,11 @@
     <string name="always_reload_icons_label">항상 아이콘 새로고침</string>
     <string name="always_reload_icons_description">아이콘 팩에서 캐시된 아이콘 사용 안 함</string>
     <string name="always_reload_icons_warning">아이콘 팩이 정기적으로 업데이트되지 않으면 아이콘이 정기적으로 업데이트 되도록 할 것이며, 이는 필요하지 않습니다</string>
-    <string name="icon_swipe_gestures">아이콘 스와이프 제스처</string>
-    <string name="icon_swipe_gestures_description">홈 화면을 움직이는 대신 아이콘을 왼쪽이나 오른쪽으로 스와이프 할때 액션을 실행합니다</string>
     <string name="show_deck_layout">독 레이아웃</string>
     <string name="show_deck_layout_description">앱 서랍을 가리고 홈 화면에 새 앱을 자동으로 추가하는 레이아웃 옵션을 표시합니다</string>
     <string name="material_expressive_label">Material 3 표현</string>
     <string name="material_expressive_description">워크스페이스에서 Material 3 표현 변경을 활성화합니다</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_shape_label">폴더 모양</string>
     <string name="folder_label">폴더</string>
     <string name="app_icon_shape_label">앱</string>
     <string name="gesturenavcontract_label">GestureNavContract API 사용</string>
@@ -209,15 +208,15 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">아이콘 스타일</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
+    <string name="apply_icon_pack_title">아이콘팩 적용</string>
     <string name="icon_shape_label">아이콘 모양</string>
     <string name="icon_sizes">아이콘 크기</string>
     <string name="show_labels">라벨 표시</string>
     <string name="label_size">라벨 크기</string>
     <string name="twoline_label">여러 줄 사용</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">테마 아이콘 투명화</string>
-    <string name="transparent_background_icons_description">테마 아이콘에 투명한 배경 사용</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">적응형 아이콘 자동 적용</string>
     <string name="auto_adaptive_icons_description">적응형이 아닌 아이콘을 위한 기능입니다.</string>
     <string name="shadow_bg_icons_label">아이콘 뒤에 그림자 표시</string>
@@ -268,9 +267,9 @@
     <string name="custom_icon_shape">사용자 정의 아이콘 모양</string>
     <string name="custom_icon_shape_create">사용자 정의 아이콘 모양 만들기</string>
     <string name="custom_icon_shape_edit">사용자 정의 아이콘 모양 편집</string>
-    <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape">사용자 정의 폴더 모양</string>
+    <string name="custom_folder_shape_create">사용자 정의 폴더 모양 만들기</string>
+    <string name="custom_folder_shape_edit">사용자 정의 폴더 모양 수정</string>
     <string name="custom_icon_shape_corner">모서리 모양</string>
     <string name="custom_icon_shape_corner_round">원호</string>
     <string name="custom_icon_shape_corner_squircle">곡선</string>
@@ -381,8 +380,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">날씨</string>
     <string name="smartspace_battery_status">배터리 상태</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">현재 재생 중</string>
     <string name="smartspace_onboarding">온보딩</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Lawnchair 구성</string>
     <string name="onboarding_open_settings_subtitle">홈 화면에서 길게 누르면 설정을 열 수 있습니다</string>
@@ -490,11 +493,11 @@
     <string name="generic_a11y_hint">%1$s로, Lawnchair 접근성 서비스를 켜세요. \"설정 열기\"를 탭하고, \"Lawnchair\"를 선택한 다음 \"Lawnchair 사용\"을 켜세요.</string>
     <string name="generic_a11y_disclaimer">Lawnchair는 접근성의
 \'performGlobalAction\' 메서드를 사용하여 이 작업을 수행합니다. 이는 다른 앱을 모니터링할 수 있는 민감한 권한입니다. 그러나 Lawnchair는 해당 기능을 위해 구성되어 있지 않으며 이벤트를 수신하지 않습니다</string>
-    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_mode_label">절전 모드</string>
     <string name="sleep_mode_auto">Automatic</string>
     <string name="sleep_mode_root">Root</string>
-    <string name="sleep_mode_accessibility">Accessibility service</string>
-    <string name="sleep_mode_device_admin">Device admin</string>
+    <string name="sleep_mode_accessibility">접근성 서비스</string>
+    <string name="sleep_mode_device_admin">기기 관리자</string>
     <!--
 
     Bug reporting
@@ -541,8 +544,20 @@
     <string name="home_screen_unlock">홈 화면 잠금해제</string>
     <string name="home_screen_locked">홈 화면이 잠겨 있습니다.</string>
     <string name="home_screen_lock_description">홈 화면 레이아웃 변경 방지</string>
+    <string name="horizontal_padding_label">가로 패딩</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">기본 페이지로 설정</string>
     <string name="default_home_page_set">기본 홈페이지 업데이트</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">기본</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">팝업 메뉴</string>
     <string name="popup_menu_items">팝업 메뉴 항목</string>
     <string name="edit_menu_items">팝업 메뉴 항목 편집</string>
@@ -589,6 +604,7 @@
     <string name="paused_apps_dialog_title">앱 일시정지됨</string>
     <string name="paused_apps_dialog_message">%1$s 앱을 직접 일시정지했습니다.</string>
     <string name="paused_apps_drop_target_label">앱 일시정지</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">독 아이콘</string>
     <string name="hotseat_bottom_space_label">하단 패딩</string>
     <string name="page_indicator_height">페이지 표시기 높이</string>

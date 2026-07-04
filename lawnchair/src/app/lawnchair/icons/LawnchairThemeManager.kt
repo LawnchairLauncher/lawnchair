@@ -7,6 +7,7 @@ import app.lawnchair.icons.shape.PathShapeDelegate
 import app.lawnchair.preferences.PreferenceChangeListener
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.concurrent.annotations.Ui
 import com.android.launcher3.dagger.ApplicationContext
@@ -14,7 +15,6 @@ import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.util.DaggerSingletonTracker
 import com.android.launcher3.util.LooperExecutor
-import com.patrykmichalik.opto.core.firstBlocking
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
@@ -86,14 +86,14 @@ constructor(
 
     private fun parseIconStateV2(oldState: IconState?): IconState {
         val currentAppShape: IconShape = try {
-            prefs2.iconShape.firstBlocking()
+            prefs2.iconShape.firstCached()
         } catch (e: Exception) {
             Log.d(TAG, "Error getting icon shape", e)
             IconShape.Circle
         }
 
         val currentFolderShape: IconShape = try {
-            prefs2.folderShape.firstBlocking()
+            prefs2.folderShape.firstCached()
         } catch (e: Exception) {
             Log.d(TAG, "Error getting folder shape", e)
             IconShape.Circle

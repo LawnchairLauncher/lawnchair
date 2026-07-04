@@ -12,10 +12,17 @@ import kotlin.math.abs
 
 abstract class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
     private val mGestureDetector = GestureDetector(ctx, GestureListener())
+    private var handledGesture = false
+
+    fun onTouchEvent(event: MotionEvent): Boolean {
+        handledGesture = false
+        mGestureDetector.onTouchEvent(event)
+        return handledGesture
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
-        return mGestureDetector.onTouchEvent(event)
+        return onTouchEvent(event)
     }
 
     inner class GestureListener : SimpleOnGestureListener() {
@@ -38,7 +45,7 @@ abstract class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
             Log.d("GESTURE_DETECTION", "onFling: y " + shouldReactToSwipe(diffY, velocityY))
             Log.d("GESTURE_DETECTION", "onFling: X " + shouldReactToSwipe(diffX, velocityX))
 
-            return when {
+            handledGesture = when {
                 shouldReactToSwipe(diffY, velocityY) -> {
                     if (diffY < 0) {
                         Log.d("GESTURE_DETECTION", "Swipe Up Detected")
@@ -47,7 +54,6 @@ abstract class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
                         Log.d("GESTURE_DETECTION", "Swipe Down Detected")
                         onSwipeDown()
                     }
-                    true
                 }
 
                 shouldReactToSwipe(diffX, velocityX) -> {
@@ -58,18 +64,18 @@ abstract class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
                         Log.d("GESTURE_DETECTION", "Swipe Left Detected")
                         onSwipeLeft()
                     }
-                    true
                 }
 
                 else -> false
             }
+            return handledGesture
         }
     }
 
-    abstract fun onSwipeRight()
-    abstract fun onSwipeLeft()
-    abstract fun onSwipeTop()
-    abstract fun onSwipeDown()
+    abstract fun onSwipeRight(): Boolean
+    abstract fun onSwipeLeft(): Boolean
+    abstract fun onSwipeTop(): Boolean
+    abstract fun onSwipeDown(): Boolean
 
     companion object {
         private const val SWIPE_THRESHOLD = 100

@@ -60,6 +60,7 @@ fun SliderPreference(
     step: Int,
     showAsPercentage: Boolean = false,
     showUnit: String = "",
+    enabled: Boolean = true,
 ) {
     val transformedAdapter = rememberTransformAdapter(
         adapter = adapter,
@@ -75,6 +76,7 @@ fun SliderPreference(
         step = step.toFloat(),
         showAsPercentage = showAsPercentage,
         showUnit = showUnit,
+        enabled = enabled,
     )
 }
 
@@ -87,6 +89,7 @@ fun SliderPreference(
     modifier: Modifier = Modifier,
     showAsPercentage: Boolean = false,
     showUnit: String = "",
+    enabled: Boolean = true,
 ) {
     var adapterValue by adapter
 
@@ -101,6 +104,7 @@ fun SliderPreference(
         modifier = modifier,
         showAsPercentage = showAsPercentage,
         showUnit = showUnit,
+        enabled = enabled,
     )
 }
 
@@ -115,6 +119,7 @@ private fun SliderPreference(
     modifier: Modifier = Modifier,
     showAsPercentage: Boolean = false,
     showUnit: String = "",
+    enabled: Boolean = true,
 ) {
     var sliderValue by remember { mutableFloatStateOf(value) }
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
@@ -175,6 +180,7 @@ private fun SliderPreference(
                 modifier = Modifier
                     .padding(top = 2.dp, bottom = 8.dp)
                     .height(24.dp),
+                enabled = enabled,
             )
         },
     )

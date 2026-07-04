@@ -116,6 +116,7 @@
     <string name="apps_in_folder_description">Додатки, які призначені до тек, виключені зі списків додатків</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">Моя папка</string>
+    <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -170,8 +171,6 @@
     <string name="always_reload_icons_label">Завжди перезавантажувати значки</string>
     <string name="always_reload_icons_description">Уникати використання кешованих значків з наборів значків</string>
     <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
@@ -216,8 +215,8 @@
     <string name="label_size">Розмір назви</string>
     <string name="twoline_label">Використовувати декілька рядків</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Прозорі тематичні значки</string>
-    <string name="transparent_background_icons_description">Використовувати прозорий фон на тематичних значках</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Автоматичні адаптивні значки</string>
     <string name="auto_adaptive_icons_description">Для всіх неадаптивних значків</string>
     <string name="shadow_bg_icons_label">Показати тінь позаду значків</string>
@@ -381,8 +380,12 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Стан акумулятора</string>
+    <string name="smartspace_torch">Flashlight status</string>
     <string name="smartspace_now_playing">Зараз грає</string>
     <string name="smartspace_onboarding">Onboarding</string>
+    <!-- Torch strings -->
+    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
@@ -540,8 +543,20 @@
     <string name="home_screen_unlock">Розблокувати головний екран</string>
     <string name="home_screen_locked">Головний екран заблокований</string>
     <string name="home_screen_lock_description">Заборонити зміну макета головного екрана</string>
+    <string name="horizontal_padding_label">Горизонтальний відступ</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
+    <string name="move_page_left">Move page left</string>
+    <string name="move_page_right">Move page right</string>
+    <string name="page_order_updated">Page order updated</string>
+    <string name="edit_mode_page_strip_default">За замовчуванням</string>
+    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Set as home page</string>
+    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">Спливаюче меню</string>
     <string name="popup_menu_items">Пункти спливаючого меню</string>
     <string name="edit_menu_items">Редагувати елементи спливаючого меню</string>
@@ -588,6 +603,7 @@
     <string name="paused_apps_dialog_title">Додаток призупинено</string>
     <string name="paused_apps_dialog_message">%1$s був безпосередньо призупинений з лаунчера</string>
     <string name="paused_apps_drop_target_label">Призупинити додаток</string>
+    <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Значки нижньої панелі</string>
     <string name="hotseat_bottom_space_label">Нижній відступ</string>
     <string name="page_indicator_height">Висота індикатора сторінки</string>

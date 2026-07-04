@@ -44,12 +44,14 @@ import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.createPreviewIdp
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 
 @Composable
@@ -133,13 +135,39 @@ fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManage
 
 @Composable
 fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
+    val isFoldable = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY
+    val hotseatColumnsAdapter = prefs.hotseatColumns.getAdapter()
+    val hotseatColumnsUnfoldedAdapter = prefs.hotseatColumnsUnfolded.getAdapter()
+
     PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-        SliderPreference(
-            label = stringResource(id = R.string.dock_icons),
-            adapter = prefs.hotseatColumns.getAdapter(),
-            step = 1,
-            valueRange = 3..10,
-        )
+        if (isFoldable) {
+            SliderPreference(
+                label = stringResource(id = R.string.state_folded, stringResource(id = R.string.dock_icons)),
+                adapter = hotseatColumnsAdapter,
+                step = 1,
+                valueRange = 3..10,
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.dock_icons)),
+                adapter = hotseatColumnsUnfoldedAdapter,
+                step = 1,
+                valueRange = 3..10,
+            )
+            ExpandAndShrink(
+                visible = hotseatColumnsAdapter.state.value > hotseatColumnsUnfoldedAdapter.state.value,
+            ) {
+                WarningPreference(
+                    text = stringResource(id = R.string.foldable_columns_error),
+                )
+            }
+        } else {
+            SliderPreference(
+                label = stringResource(id = R.string.dock_icons),
+                adapter = hotseatColumnsAdapter,
+                step = 1,
+                valueRange = 3..10,
+            )
+        }
         SliderPreference(
             adapter = prefs2.hotseatBottomFactor.getAdapter(),
             label = stringResource(id = R.string.hotseat_bottom_space_label),
@@ -166,6 +194,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
         val adapters = listOf(
             prefs2.hotseatMode.getAdapter(),
             prefs.hotseatColumns.getAdapter(),
+            prefs.hotseatColumnsUnfolded.getAdapter(),
             prefs2.themedHotseatQsb.getAdapter(),
             prefs.hotseatQsbCornerRadius.getAdapter(),
             prefs.hotseatQsbAlpha.getAdapter(),

@@ -53,7 +53,7 @@ class LawnchairIconProvider @Inject constructor(
     themeManager,
 ) {
     private val prefs = PreferenceManager.getInstance(context)
-    private val themedIconsEnabled = prefs.themedIcons.get()
+    private val themedIconsEnabled get() = prefs.themedIcons.get()
 
     private val iconPackPref = prefs.iconPackPackage
     private val themedIconSourcePref = prefs.themedIconPackPackage
@@ -180,6 +180,17 @@ class LawnchairIconProvider @Inject constructor(
         val iconPackIcon = iconPackEntry?.let { iconPackProvider.getDrawable(it, iconDpi, user) }
 
         return themedIcon ?: iconPackIcon ?: super.getIcon(info, appInfo, iconDpi)
+    }
+
+    override fun getStateForApp(info: ApplicationInfo?): String {
+        val base = super.getStateForApp(info)
+        return "$base|lc:" +
+            "ip=${iconPackPref.get()}," +
+            "tip=${themedIconSourcePref.get()}," +
+            "ti=${prefs.themedIcons.get()}," +
+            "dti=${prefs.drawerThemedIcons.get()}," +
+            "fm=${prefs.forceIconMonochrome.get()}," +
+            "tb=${prefs.tintIconPackBackgrounds.get()}"
     }
 
     override fun getThemeDataForPackage(packageName: String?): ThemeData? {

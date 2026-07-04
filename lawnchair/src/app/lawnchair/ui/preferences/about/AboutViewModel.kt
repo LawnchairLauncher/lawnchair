@@ -5,13 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
-import com.patrykmichalik.opto.core.firstBlocking
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.create
@@ -29,12 +29,13 @@ class AboutViewModel(
         api = api,
     )
 
-    private val _uiState = MutableStateFlow(AboutUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState: StateFlow<AboutUiState>
+        field = MutableStateFlow(AboutUiState())
+
     val updateState = nightlyBuildsRepository.updateState
 
     init {
-        _uiState.update {
+        uiState.update {
             it.copy(
                 versionName = if (prefs.hideVersionInfo.get()) {
                     prefs.pseudonymVersion.get() + " (pseudonym)"
@@ -51,21 +52,21 @@ class AboutViewModel(
 
         viewModelScope.launch(Dispatchers.Default) {
             val activeContributors = fetchActiveContributors()
-            val updatedCoreTeam = _uiState.value.coreTeam.map { member ->
+            val updatedCoreTeam = uiState.value.coreTeam.map { member ->
                 val status = if (member.githubUsername != null && activeContributors.contains(member.githubUsername.lowercase())) ContributorStatus.Active else ContributorStatus.Idle
                 member.copy(status = status)
             }
-            _uiState.update { it.copy(coreTeam = updatedCoreTeam) }
+            uiState.update { it.copy(coreTeam = updatedCoreTeam) }
         }
 
         // Check if the build variant is Nightly
         // AND check if user has enabled auto updater (available to Nightly variant)
         // OR check if user has overridden it in debug flags (available to All variant)
-        if (BuildConfig.APPLICATION_ID.contains("nightly") && prefs2.autoUpdaterNightly.firstBlocking()) {
+        if (BuildConfig.APPLICATION_ID.contains("nightly") && prefs2.autoUpdaterNightly.firstCached()) {
             nightlyBuildsRepository.checkForUpdate()
             viewModelScope.launch {
                 nightlyBuildsRepository.updateState.collect { state ->
-                    _uiState.update { it.copy(updateState = state) }
+                    uiState.update { it.copy(updateState = state) }
                 }
             }
         }
@@ -97,7 +98,7 @@ class AboutViewModel(
                 name = "Amogh Lele",
                 role = Role.Development,
                 photoUrl = "https://avatars.githubusercontent.com/u/31761843",
-                socialUrl = "https://www.linkedin.com/in/amogh-lele/",
+                socialUrl = "https://github.com/sphericalkat",
             ),
             TeamMember(
                 name = "Antonio J. Roa Valverde",
@@ -234,7 +235,7 @@ class AboutViewModel(
                 name = "Daniel Souza",
                 role = Role.Support,
                 photoUrl = "https://avatars.githubusercontent.com/u/32078304",
-                socialUrl = "https://github.com/DanGLES3",
+                socialUrl = "https://github.com/DanGLVK",
             ),
             TeamMember(
                 name = "Giuseppe Longobardo",
@@ -246,7 +247,7 @@ class AboutViewModel(
                 name = "Rik Koedoot",
                 role = Role.SupportAndPr,
                 photoUrl = "https://avatars.githubusercontent.com/u/29402532",
-                socialUrl = "https://x.com/rikkoedoot",
+                socialUrl = "https://github.com/RikKoedoot",
             ),
         )
     }

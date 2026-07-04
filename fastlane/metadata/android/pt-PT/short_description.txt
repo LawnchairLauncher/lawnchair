@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Baseado no launcher do Google Pixel

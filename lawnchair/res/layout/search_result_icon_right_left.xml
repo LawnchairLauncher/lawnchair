@@ -12,6 +12,7 @@
         style="@style/BaseIcon"
         android:layout_width="@dimen/search_row_files_preview_width"
         android:layout_height="@dimen/search_row_files_preview_height"
+        android:layout_marginStart="8dp"
         android:drawableTint="?android:textColorPrimary"
         android:ellipsize="end"
         launcher:iconDisplay="search_result_small"
@@ -23,6 +24,7 @@
         style="@style/BaseIcon"
         android:layout_width="@dimen/search_row_medium_icon_size"
         android:layout_height="@dimen/search_row_medium_icon_size"
+        android:layout_marginStart="8dp"
         android:drawableTint="?android:textColorPrimary"
         android:ellipsize="end"
         launcher:iconDisplay="search_result_small"
@@ -84,9 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:paddingTop="@dimen/dynamic_grid_edge_margin"
-        android:paddingEnd="@dimen/dynamic_grid_edge_margin"
-        android:paddingBottom="@dimen/dynamic_grid_edge_margin"
+        android:paddingEnd="16dp"
         android:orientation="horizontal"
         android:singleLine="true">
 

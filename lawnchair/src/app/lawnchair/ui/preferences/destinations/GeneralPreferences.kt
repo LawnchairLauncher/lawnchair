@@ -130,6 +130,7 @@ fun GeneralPreferences() {
             }
         }
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
+        val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
 
         PreferenceGroup(
             modifier = Modifier,
@@ -144,7 +145,7 @@ fun GeneralPreferences() {
             )
             ExpandAndShrink(visible = themedIconsEnabled) {
                 SwitchPreference(
-                    adapter = prefs.transparentIconBackground.getAdapter(),
+                    adapter = transparentIconBackground,
                     label = stringResource(id = R.string.transparent_background_icons_label),
                     description = stringResource(id = R.string.transparent_background_icons_description),
                 )
@@ -166,7 +167,7 @@ fun GeneralPreferences() {
                 adapter = prefs.shadowBGIcons.getAdapter(),
                 label = stringResource(id = R.string.shadow_bg_icons_label),
             )
-            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
+            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value && !transparentIconBackground.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.background_lightness_label),
                     adapter = prefs.coloredBackgroundLightness.getAdapter(),

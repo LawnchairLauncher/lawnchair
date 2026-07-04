@@ -174,7 +174,7 @@
         launcher:devicePaddingId="@xml/paddings_6x5"
         launcher:dbFile="launcher_6_by_5.db"
         launcher:defaultLayoutId="@xml/default_workspace_6x5"
-        launcher:deviceCategory="tablet" >
+        launcher:deviceCategory="tablet|desktop" >
 
         <display-option
             launcher:name="Tablet"

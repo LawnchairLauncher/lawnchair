@@ -33,7 +33,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.Preconditions;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import app.lawnchair.preferences2.PreferenceManager2;
 
@@ -125,7 +125,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     private boolean canRemove(ItemInfo item) {
-        boolean isDeckLayoutFirst = PreferenceExtensionsKt.firstBlocking(pref2.getDeckLayout());
+        boolean isDeckLayoutFirst = PreferenceCacheExtensionsKt.firstCached(pref2.getDeckLayout());
         return isDeckLayoutFirst ? isCanDrop(item) : item.id != ItemInfo.NO_ID;
     }
 
@@ -169,7 +169,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // because we already remove the drag view from the folder (if the drag originated from
         // a folder) in Folder.beginDrag()
         CharSequence announcement = getContext().getString(R.string.item_removed);
-        if (!PreferenceExtensionsKt.firstBlocking(pref2.getDeckLayout())) {
+        if (!PreferenceCacheExtensionsKt.firstCached(pref2.getDeckLayout())) {
             mDropTargetHandler.onAccessibilityDelete(view, item, announcement);
         }
     }

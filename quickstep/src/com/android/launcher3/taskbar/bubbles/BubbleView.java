@@ -40,7 +40,7 @@ import com.android.wm.shell.shared.animation.Interpolators;
 import com.android.wm.shell.shared.bubbles.BubbleBarLocation;
 import com.android.wm.shell.shared.bubbles.BubbleInfo;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 
@@ -262,10 +262,10 @@ public class BubbleView extends ConstraintLayout {
             mAppIcon.setVisibility(GONE);
         }
         mDotColor = bubble.getDotColor();
-        ColorOption dotColorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getNotificationDotColor());
+        ColorOption dotColorOption = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getNotificationDotColor());
         int dotColor = dotColorOption.getColorPreferenceEntry().getLightColor().invoke(getContext());
-        ColorOption counterColorOption = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getNotificationDotTextColor());
+        ColorOption counterColorOption = PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getNotificationDotTextColor(), preferenceManager2);
         int countColor = counterColorOption.getColorPreferenceEntry().getLightColor().invoke(getContext());
         mDotRenderer = new DotRenderer(mBubbleSize, bubble.getDotPath(), DEFAULT_PATH_SIZE, false, null, dotColor,
                 countColor);

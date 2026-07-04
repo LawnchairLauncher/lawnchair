@@ -30,6 +30,7 @@ import com.android.launcher3.touch.ItemClickHandler
 import com.android.launcher3.touch.ItemLongClickListener
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
+import com.android.systemui.util.dpToPx
 
 class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     BubbleTextView(context, attrs),
@@ -44,6 +45,8 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     private var callback: ((info: ItemInfoWithIcon) -> Unit)? = null
 
     private val searchResultMargin = resources.getDimensionPixelSize(R.dimen.search_result_margin)
+    private var defaultPaddingLeft = -1
+    private var defaultPaddingRight = -1
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -55,6 +58,35 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
             ViewGroup.LayoutParams.MATCH_PARENT,
             launcher.deviceProfile.allAppsProfile.cellHeightPx,
         )
+        defaultPaddingLeft = paddingLeft
+        defaultPaddingRight = paddingRight
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        if (defaultPaddingLeft == -1) {
+            defaultPaddingLeft = paddingLeft
+            defaultPaddingRight = paddingRight
+        }
+        val isLayoutHorizontal = compoundDrawablesRelative[0] != null || compoundDrawablesRelative[2] != null
+        if (isLayoutHorizontal) {
+            if (paddingLeft != defaultPaddingLeft || paddingRight != defaultPaddingRight) {
+                setPadding(defaultPaddingLeft, paddingTop, defaultPaddingRight, paddingBottom)
+            }
+        } else if (width > 0) {
+            val desiredWidth = iconSize + 48.dpToPx(resources)
+            if (desiredWidth < width) {
+                val inset = ((width - desiredWidth) / 2).toInt()
+                if (paddingLeft != inset || paddingRight != inset) {
+                    setPadding(inset, paddingTop, inset, paddingBottom)
+                }
+            } else {
+                if (paddingLeft != defaultPaddingLeft || paddingRight != defaultPaddingRight) {
+                    setPadding(defaultPaddingLeft, paddingTop, defaultPaddingRight, paddingBottom)
+                }
+            }
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
     override val isQuickLaunch get() = hasFlag(flags, SearchResultView.FLAG_QUICK_LAUNCH)
@@ -66,7 +98,6 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     }
 
     override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
-        if (boundId == target.id) return
         boundId = target.id
         flags = getFlags(target.extras)
         reset()
@@ -83,7 +114,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
 
             target.shortcutInfo != null -> {
                 allowLongClick = true
-                bindFromShortcutInfo(target.shortcutInfo)
+                bindFromShortcutInfo(target.id, target.shortcutInfo)
             }
 
             else -> {
@@ -150,9 +181,14 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         }
         notifyApplied(info)
         if (bindIcon) {
+            val targetId = boundId
             Executors.MODEL_EXECUTOR.handler.postAtFrontOfQueue {
                 populateSearchActionItemInfo(target, info)
-                runOnMainThread { applyFromItemInfoWithIcon(info) }
+                runOnMainThread {
+                    if (boundId == targetId) {
+                        applyFromItemInfoWithIcon(info)
+                    }
+                }
             }
         }
     }
@@ -176,7 +212,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         notifyApplied(appInfo)
     }
 
-    private fun bindFromShortcutInfo(shortcutInfo: ShortcutInfo) {
+    private fun bindFromShortcutInfo(targetId: String, shortcutInfo: ShortcutInfo) {
         val si = WorkspaceItemInfo(shortcutInfo, launcher)
         si.container = LauncherSettings.Favorites.CONTAINER_ALL_APPS
         applyFromWorkspaceItem(si)
@@ -184,7 +220,11 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         val cache = LauncherAppState.getInstance(launcher).iconCache
         Executors.MODEL_EXECUTOR.handler.postAtFrontOfQueue {
             cache.getShortcutIcon(si, shortcutInfo)
-            runOnMainThread { applyFromWorkspaceItem(si) }
+            runOnMainThread {
+                if (boundId == targetId) {
+                    applyFromWorkspaceItem(si)
+                }
+            }
         }
     }
 
