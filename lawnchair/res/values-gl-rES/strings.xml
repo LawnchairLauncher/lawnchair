@@ -215,8 +215,8 @@
     <string name="label_size">Tamaño da etiqueta</string>
     <string name="twoline_label">Usar varias liñas</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Iconas temáticas transparentes</string>
-    <string name="transparent_background_icons_description">Usar fondo transparente nas iconas temáticas</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
     <string name="shadow_bg_icons_label">Show shadow behind icons</string>

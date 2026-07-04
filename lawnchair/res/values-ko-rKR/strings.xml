@@ -215,8 +215,8 @@
     <string name="label_size">라벨 크기</string>
     <string name="twoline_label">여러 줄 사용</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">테마 아이콘 투명화</string>
-    <string name="transparent_background_icons_description">테마 아이콘에 투명한 배경 사용</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">적응형 아이콘 자동 적용</string>
     <string name="auto_adaptive_icons_description">적응형이 아닌 아이콘을 위한 기능입니다.</string>
     <string name="shadow_bg_icons_label">아이콘 뒤에 그림자 표시</string>

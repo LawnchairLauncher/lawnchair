@@ -215,8 +215,8 @@
     <string name="label_size">Etiket boyutu</string>
     <string name="twoline_label">Birden fazla satır kullan</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Saydam temalı simgeler</string>
-    <string name="transparent_background_icons_description">Temalı simgelerde saydam arka plan kullan</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Otomatik uyarlanabilir simgeler</string>
     <string name="auto_adaptive_icons_description">Uyarlanabilir olmayan tüm simgeler için</string>
     <string name="shadow_bg_icons_label">Simgelerin arkasında gölge göster</string>

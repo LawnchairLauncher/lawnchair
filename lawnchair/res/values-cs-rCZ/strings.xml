@@ -208,15 +208,15 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Styl ikon</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
+    <string name="apply_icon_pack_title">Použít balíček ikon</string>
     <string name="icon_shape_label">Tvar ikon</string>
     <string name="icon_sizes">Velikost ikon</string>
     <string name="show_labels">Zobrazit popisky</string>
     <string name="label_size">Velikost popisku</string>
     <string name="twoline_label">Dvouřádkový popisek</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Popisek ikon na průhledném pozadí</string>
-    <string name="transparent_background_icons_description">Použít průhledné pozadí u ikon s tématem</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automaticky adaptivní ikony</string>
     <string name="auto_adaptive_icons_description">Pro všechny neadaptivní ikony</string>
     <string name="shadow_bg_icons_label">Zobrazit stín za ikonami</string>

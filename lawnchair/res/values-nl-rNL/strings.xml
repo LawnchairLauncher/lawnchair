@@ -215,8 +215,8 @@
     <string name="label_size">Labelgrootte</string>
     <string name="twoline_label">Meerdere regels gebruiken</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparante themapictogrammen</string>
-    <string name="transparent_background_icons_description">Transparante achtergrond gebruiken bij themapictogrammen</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automatische adaptieve pictogrammen</string>
     <string name="auto_adaptive_icons_description">Voor alle niet-adaptieve pictogrammen</string>
     <string name="shadow_bg_icons_label">Schaduw achter pictogrammen weergeven</string>

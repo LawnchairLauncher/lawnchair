@@ -33,25 +33,25 @@
         launcher:packageName="com.android.vending"
         launcher:screen="0"
         launcher:x="0"
-        launcher:y="4"/>
+        launcher:y="5"/>
     <favorite
         launcher:className="com.google.android.gm.ConversationListActivityGmail"
         launcher:packageName="com.google.android.gm"
         launcher:screen="0"
         launcher:x="1"
-        launcher:y="4"/>
+        launcher:y="5"/>
     <favorite
         launcher:className="com.google.android.apps.photos.home.HomeActivity"
         launcher:packageName="com.google.android.apps.photos"
         launcher:screen="0"
         launcher:x="2"
-        launcher:y="4"/>
+        launcher:y="5"/>
     <favorite
         launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity"
         launcher:packageName="com.google.android.youtube"
         launcher:screen="0"
         launcher:x="3"
-        launcher:y="4"/>
+        launcher:y="5"/>
     <appwidget
         launcher:className="com.google.android.apps.search.assistant.verticals.snapshot.widgets.weather.WeatherWidget_Receiver"
         launcher:packageName="com.google.android.googlequicksearchbox"
@@ -69,7 +69,7 @@
         launcher:packageName="com.google.android.calendar"
         launcher:screen="1"
         launcher:spanX="4"
-        launcher:spanY="2"
+        launcher:spanY="3"
         launcher:x="0"
         launcher:y="3"/>
 </favorites>

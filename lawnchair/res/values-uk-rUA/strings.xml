@@ -215,8 +215,8 @@
     <string name="label_size">Розмір назви</string>
     <string name="twoline_label">Використовувати декілька рядків</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Прозорі тематичні значки</string>
-    <string name="transparent_background_icons_description">Використовувати прозорий фон на тематичних значках</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Автоматичні адаптивні значки</string>
     <string name="auto_adaptive_icons_description">Для всіх неадаптивних значків</string>
     <string name="shadow_bg_icons_label">Показати тінь позаду значків</string>

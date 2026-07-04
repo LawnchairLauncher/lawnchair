@@ -215,8 +215,8 @@
     <string name="label_size">Sildi suurus</string>
     <string name="twoline_label">Kasuta mitut rida</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Läbipaistvad temaatilised ikoonid</string>
-    <string name="transparent_background_icons_description">Kasutage temaatilistel ikoonidel läbipaistvat tausta</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automaatselt kohanduvad ikoonid</string>
     <string name="auto_adaptive_icons_description">Kõigile mittekohanduvatele ikoonidele</string>
     <string name="shadow_bg_icons_label">Kuva ikoonide taga vari</string>

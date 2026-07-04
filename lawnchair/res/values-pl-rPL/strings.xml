@@ -215,8 +215,8 @@
     <string name="label_size">Rozmiar etykiety</string>
     <string name="twoline_label">Używaj wielu linijek</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Przezroczyste ikony z motywu</string>
-    <string name="transparent_background_icons_description">Użyj przezroczystego tła na ikonach motywu</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automatyczne ikony adaptacyjne</string>
     <string name="auto_adaptive_icons_description">Dla wszystkich ikon nieadaptacyjnych</string>
     <string name="shadow_bg_icons_label">Pokazuj cień za ikonami</string>

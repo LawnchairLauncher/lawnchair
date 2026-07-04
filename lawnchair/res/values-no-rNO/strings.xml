@@ -215,8 +215,8 @@
     <string name="label_size">Etikettstørrelse</string>
     <string name="twoline_label">Bruk flere linjer</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Gjennomsiktige temaikoner</string>
-    <string name="transparent_background_icons_description">Bruk gjennomsiktig bakgrunn på temaikoner</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automatisk adaptive ikoner</string>
     <string name="auto_adaptive_icons_description">For alle ikke-adaptive ikoner</string>
     <string name="shadow_bg_icons_label">Vis skygge bak ikoner</string>

@@ -370,7 +370,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean enableScalabilityForDesktopExperience() {
-        return false;
+        return true;
     }
 
     @Override

@@ -215,8 +215,8 @@
     <string name="label_size">ラベルのサイズ</string>
     <string name="twoline_label">複数行を使用する</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">透明なテーマアイコン</string>
-    <string name="transparent_background_icons_description">テーマアイコンの背景を透明にします</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">自動アダプティブアイコン</string>
     <string name="auto_adaptive_icons_description">すべての非アダプティブアイコンが対象</string>
     <string name="shadow_bg_icons_label">アイコンの影を表示</string>

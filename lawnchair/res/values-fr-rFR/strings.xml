@@ -215,8 +215,8 @@
     <string name="label_size">Taille du nom des éléments</string>
     <string name="twoline_label">Utiliser plusieurs lignes</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Icônes à thème transparentes</string>
-    <string name="transparent_background_icons_description">Appliquer un arrière-plan transparent aux icônes à thème</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Icônes adaptatives automatiques</string>
     <string name="auto_adaptive_icons_description">Pour toutes les icônes non adaptatives</string>
     <string name="shadow_bg_icons_label">Afficher une ombre derrière les icônes</string>

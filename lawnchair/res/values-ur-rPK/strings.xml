@@ -215,8 +215,8 @@
     <string name="label_size">لیبل کا سائز</string>
     <string name="twoline_label">متعدد لائنوں کا استعمال کریں۔</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">شفاف تھیم والے آئیکنز</string>
-    <string name="transparent_background_icons_description">تھیم والے شبیہیں پر شفاف پس منظر کا استعمال کریں۔</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">خودکار انکولی شبیہیں</string>
     <string name="auto_adaptive_icons_description">تمام غیر انکولی شبیہیں کے لیے</string>
     <string name="shadow_bg_icons_label">شبیہیں کے پیچھے سایہ دکھائیں۔</string>

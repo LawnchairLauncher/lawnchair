@@ -157,12 +157,10 @@ fun GeneralPreferences() {
                     subtitle = iconStyleSubtitle,
                 )
             }
-            Item(
-                "themed_icon",
-                themedIconsEnabled,
-            ) {
+            val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
+            Item {
                 SwitchPreference(
-                    adapter = prefs.transparentIconBackground.getAdapter(),
+                    adapter = transparentIconBackground,
                     label = stringResource(id = R.string.transparent_background_icons_label),
                     description = stringResource(id = R.string.transparent_background_icons_description),
                 )
@@ -192,7 +190,7 @@ fun GeneralPreferences() {
             }
             Item(
                 "wrap_adaptive_icons",
-                wrapAdaptiveIcons.state.value,
+                wrapAdaptiveIcons.state.value && !transparentIconBackground.state.value,
             ) {
                 SliderPreference(
                     label = stringResource(id = R.string.background_lightness_label),

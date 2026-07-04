@@ -215,8 +215,8 @@
     <string name="label_size">Veľkosť štítkov</string>
     <string name="twoline_label">Viacerých riadkov</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Priehľadné tematické ikony</string>
-    <string name="transparent_background_icons_description">Použiť priehľadné pozadie na tematických ikonách</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automaticky Adaptívne Ikony</string>
     <string name="auto_adaptive_icons_description">Pre všetky neadaptívne ikony</string>
     <string name="shadow_bg_icons_label">Pridať tieň ikony</string>

@@ -26,6 +26,10 @@ on:
   workflow_dispatch:
   workflow_call:
 
+env:
+  # Lawnchair-TODO(Configuration): https://github.com/LawnchairLauncher/lawnchair/issues/6442
+  PUBLISH_NIGHTLY: false
+
 jobs:
   build-debug-apk:
     strategy:
@@ -126,6 +130,8 @@ jobs:
       - check-style
     runs-on: ubuntu-slim
     if: always()
+    outputs:
+      publish_nightly: ${{ steps.publishing-status.outputs.publish_nightly }}
     steps:
       - name: Check
         run: |
@@ -135,13 +141,13 @@ jobs:
             exit 1
           fi
           echo "All required jobs completed successfully."
+      - id: publishing-status
+        run: echo "publish_nightly=${{ env.PUBLISH_NIGHTLY }}" >> "$GITHUB_OUTPUT"
 
   nightly-release:
     runs-on: ubuntu-latest
-    # Lawnchair-TODO(Configuration): Don't publish nightly build until Android 8.0, 8.1 is stable, and (probably) stable to match Lawnchair 15 Beta 1 or 2
-    if: false
-    # if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/15-dev'
     needs: final-status
+    if: needs.final-status.outputs.publish_nightly == 'true' && github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && endsWith(github.ref, '-dev')
     permissions:
       contents: write
     steps:

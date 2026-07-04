@@ -215,8 +215,8 @@
     <string name="label_size">Nimen koko</string>
     <string name="twoline_label">Käytä useampia rivejä</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Läpinäkyvät tyylitellyt kuvakkeet</string>
-    <string name="transparent_background_icons_description">Käytä läpinäkyvää taustaa teemojen kuvakkeissa</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automaattisesti sopeutuvat kuvakkeet</string>
     <string name="auto_adaptive_icons_description">Kaikille ei mukautuville kuvakkeille</string>
     <string name="shadow_bg_icons_label">Näytä varjot kuvakkeiden takana</string>
