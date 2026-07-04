@@ -250,7 +250,7 @@ open class SystemApiWrapper @Inject constructor(@ApplicationContext context: Con
     }
 
     override fun isFileDrawable(shortcutInfo: ShortcutInfo) =
-        shortcutInfo.hasIconFile() || shortcutInfo.hasIconUri()
+        shortcutInfo.hasIconFile() || (Utilities.ATLEAST_U && shortcutInfo.hasIconUri())
 
     override fun captureSnapshot(host: SurfaceControlViewHost, width: Int, height: Int): Bitmap =
         ScreenCapture.captureLayers(
