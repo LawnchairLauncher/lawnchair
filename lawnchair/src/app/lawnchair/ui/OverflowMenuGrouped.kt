@@ -10,8 +10,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -33,7 +31,6 @@ fun OverflowMenuGrouped(
         DropdownMenuPopup(
             expanded = showMenu.value,
             onDismissRequest = { showMenu.value = false },
-            offset = DpOffset(x = (-2).dp, y = (-48).dp),
         ) {
             block(overflowMenuGroupedScope)
         }
