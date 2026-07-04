@@ -253,6 +253,7 @@ fun HomeScreenGridPreferences(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun FakeExpandedGridPreference(
     columns: Int,
