@@ -70,11 +70,6 @@ fun ExperimentalFeaturesPreferences(
                 description = stringResource(id = R.string.workspace_increase_max_grid_size_description),
             )
             SwitchPreference(
-                adapter = prefs2.iconSwipeGestures.getAdapter(),
-                label = stringResource(R.string.icon_swipe_gestures),
-                description = stringResource(R.string.icon_swipe_gestures_description),
-            )
-            SwitchPreference(
                 adapter = prefs2.showDeckLayout.getAdapter(),
                 label = stringResource(R.string.show_deck_layout),
                 description = stringResource(R.string.show_deck_layout_description),

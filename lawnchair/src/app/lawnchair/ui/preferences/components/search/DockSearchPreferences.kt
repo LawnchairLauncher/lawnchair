@@ -189,42 +189,40 @@ private fun DockSearchBarPreview(
     PreferenceGroup(
         heading = stringResource(id = R.string.preview_label),
     ) {
-        Item {
-            Box(
-                modifier = modifier
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.qsb_widget_height) + 24.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                LawnQsbUi(
-                    state = rememberHotseatQsbState(
-                        searchProvider,
+        Box(
+            modifier = modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .height(dimensionResource(id = R.dimen.qsb_widget_height) + 24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            LawnQsbUi(
+                state = rememberHotseatQsbState(
+                    searchProvider,
+                    themed,
+                    showMic = voiceIntent != null,
+                    showLens = lensIntent != null,
+                ),
+                style = buildQsbStyle(
+                    context = context,
+                    themed = themed,
+                    backgroundColor = getHotseatBackgroundColor(
+                        context,
                         themed,
-                        showMic = voiceIntent != null,
-                        showLens = lensIntent != null,
+                        getThemedQsbBackgroundColor(),
                     ),
-                    style = buildQsbStyle(
-                        context = context,
-                        themed = themed,
-                        backgroundColor = getHotseatBackgroundColor(
-                            context,
-                            themed,
-                            getThemedQsbBackgroundColor(),
-                        ),
-                        cornerRadius = cornerRadiusFactor,
-                        backgroundAlpha = transparency,
-                        strokeWidth = strokeWidth,
-                        // Use light color as strokeColor is a static color that doesn't use darkColor
-                        strokeColor = strokeColor.colorPreferenceEntry.lightColor.invoke(context),
-                    ),
-                    actions = QsbActions(
-                        onQsbClick = {},
-                        onEndIconClick = {},
-                    ),
-                    modifier = Modifier.height(48.dp),
-                )
-            }
+                    cornerRadius = cornerRadiusFactor,
+                    backgroundAlpha = transparency,
+                    strokeWidth = strokeWidth,
+                    // Use light color as strokeColor is a static color that doesn't use darkColor
+                    strokeColor = strokeColor.colorPreferenceEntry.lightColor.invoke(context),
+                ),
+                actions = QsbActions(
+                    onQsbClick = {},
+                    onEndIconClick = {},
+                ),
+                modifier = Modifier.height(48.dp),
+            )
         }
     }
 }
