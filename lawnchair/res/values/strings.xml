@@ -368,6 +368,10 @@
     <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">No supported icon packs</string>
 
+    <string name="separate_drawer_icon_pack_label">Different app drawer icons</string>
+    <string name="separate_drawer_icon_pack_description">Use a separate icon pack for the app drawer</string>
+    <string name="home_and_drawer_icon_pack_subtitle">%1$s (home), %2$s (drawer)</string>
+
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Add fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>

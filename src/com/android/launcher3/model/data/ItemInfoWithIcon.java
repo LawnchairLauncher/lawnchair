@@ -331,11 +331,22 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * Returns a FastBitmapDrawable with the icon and context theme applied
      */
     public FastBitmapDrawable newIcon(Context context, @DrawableCreationFlags int creationFlags) {
+        return newIcon(context, creationFlags, null);
+    }
+
+    /**
+     * Returns a FastBitmapDrawable built from {@code overrideBitmap} instead of {@link #bitmap} when
+     * it is non-null (used by the app drawer to render a separate icon pack), otherwise identical to
+     * {@link #newIcon(Context, int)}.
+     */
+    public FastBitmapDrawable newIcon(Context context, @DrawableCreationFlags int creationFlags,
+            @Nullable BitmapInfo overrideBitmap) {
         var shouldTheme = PreferenceManager.getInstance(context).getThemedIcons().get();
         if (!shouldTheme) {
             creationFlags &= ~FLAG_THEMED;
         }
-        FastBitmapDrawable drawable = bitmap.newIcon(
+        BitmapInfo source = overrideBitmap != null ? overrideBitmap : bitmap;
+        FastBitmapDrawable drawable = source.newIcon(
                 context, creationFlags, Utilities.getIconShapeOrNull(context));
         drawable.setDisabled(isDisabled());
         return drawable;

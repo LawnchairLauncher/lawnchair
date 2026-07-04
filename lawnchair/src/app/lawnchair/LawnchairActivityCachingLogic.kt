@@ -7,7 +7,9 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.UserHandle
 import android.util.Log
+import app.lawnchair.icons.LawnchairIconProvider
 import app.lawnchair.icons.getCustomAppNameForComponent
+import app.lawnchair.icons.iconpack.IconPack
 import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.Flags.useNewIconForArchivedApps
 import com.android.launcher3.dagger.ApplicationContext
@@ -52,6 +54,20 @@ class LawnchairActivityCachingLogic @Inject constructor(
         context: Context,
         cache: BaseIconCache,
         info: LauncherActivityInfo,
+    ): BitmapInfo = loadIconForPack(context, cache, info, null)
+
+    /**
+     * Bakes a [BitmapInfo] for [info]. When [pack] is null the normal home/global icon pack is used
+     * (this is the standard cache path). When [pack] is non-null that pack is used instead, letting
+     * the app drawer produce icons from a separate pack while reusing the exact same badging /
+     * adaptive / archived / source-hint pipeline. The result is NOT written into the shared icon
+     * cache (which is keyed by component only); the caller is responsible for storing it.
+     */
+    fun loadIconForPack(
+        context: Context,
+        cache: BaseIconCache,
+        info: LauncherActivityInfo,
+        pack: IconPack?,
     ): BitmapInfo {
         // LC-Note: LauncherActivityInfo.getActivityInfo or known as info.getActivityInfo in the code requires Android 12
         val activityInfo = if (VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -68,7 +84,12 @@ class LawnchairActivityCachingLogic @Inject constructor(
                         activityInfo.isArchived,
                 )
                 .setSourceHint(getSourceHint(info, cache))
-            val iconDrawable = cache.iconProvider.getIcon(activityInfo, li.fullResIconDpi)
+            val iconProvider = cache.iconProvider
+            val iconDrawable = if (pack != null && iconProvider is LawnchairIconProvider) {
+                iconProvider.getIconForPack(activityInfo, activityInfo.applicationInfo, li.fullResIconDpi, pack)
+            } else {
+                iconProvider.getIcon(activityInfo, li.fullResIconDpi)
+            }
             if (VERSION.SDK_INT >= 30 && context.packageManager.isDefaultApplicationIcon(
                     iconDrawable,
                 )

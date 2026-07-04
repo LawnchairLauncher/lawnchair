@@ -51,6 +51,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.apppairs.AppPairIconDrawingParams;
 import com.android.launcher3.apppairs.AppPairIconGraphic;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -62,6 +63,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import app.lawnchair.icons.DrawerIconCache;
 import app.lawnchair.preferences.PreferenceManager;
 
 /**
@@ -469,11 +471,19 @@ public class PreviewItemManager {
     public void setDrawable(PreviewItemDrawingParams p, ItemInfo item) {
         // Lawnchair: Find the correct folder size depending on which parent owned them
         int iconSize = getChildIconSize();
+        // Lawnchair: closed drawer-folder preview mini-icons bypass BubbleTextView, so apply the
+        // separate drawer icon pack here too when this folder lives in the app drawer. The lookup
+        // (which may queue a background bake) is deferred to the branches that actually render an
+        // app icon, so pending/promise icons and app pairs don't trigger it.
+        boolean useDrawerPack = mIcon.isInAppDrawer()
+                && PreferenceManager.getInstance(mContext).getUseSeparateDrawerIcons().get();
         if (item instanceof WorkspaceItemInfo wii) {
             if (isActivePendingIcon(wii)) {
                 p.drawable = newPendingIcon(mContext, wii);
             } else {
-                p.drawable = wii.newIcon(mContext, FLAG_THEMED);
+                BitmapInfo drawerBitmap = useDrawerPack
+                        ? DrawerIconCache.INSTANCE.get(mContext).getBitmapInfoOrNull(wii) : null;
+                p.drawable = wii.newIcon(mContext, FLAG_THEMED, drawerBitmap);
             }
             p.drawable.setBounds(0, 0, iconSize, iconSize);
         } else if (item instanceof AppPairInfo api) {
@@ -482,7 +492,9 @@ public class PreviewItemManager {
             p.drawable.setBounds(0, 0, iconSize, iconSize);
         } else if (item instanceof ItemInfoWithIcon withIcon){
             var isThemed = PreferenceManager.getInstance(mContext).getDrawerThemedIcons().get() ? FLAG_THEMED : 0;
-            p.drawable = withIcon.newIcon(mContext, isThemed);
+            BitmapInfo drawerBitmap = useDrawerPack
+                    ? DrawerIconCache.INSTANCE.get(mContext).getBitmapInfoOrNull(withIcon) : null;
+            p.drawable = withIcon.newIcon(mContext, isThemed, drawerBitmap);
             p.drawable.setBounds(0, 0, iconSize, iconSize);
         }
 
