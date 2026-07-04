@@ -47,16 +47,13 @@ fun RgbColorSlider(
     val rgbRange = 0f..255f
 
     PreferenceTemplate(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 12.dp),
+        modifier = modifier,
         title = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .fillMaxWidth(),
             ) {
                 Text(text = label)
                 CompositionLocalProvider(
@@ -70,7 +67,8 @@ fun RgbColorSlider(
         },
         description = {
             Row(
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier
+                    .padding(top = 4.dp, bottom = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
@@ -132,9 +130,7 @@ fun HsbColorSlider(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .fillMaxWidth(),
             ) {
                 Text(text = label)
                 CompositionLocalProvider(
@@ -156,7 +152,7 @@ fun HsbColorSlider(
         },
         description = {
             Column(
-                modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
+                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
             ) {
                 if (type == HsbSliderType.HUE) {
                     val brushColors = arrayListOf<Color>()
@@ -173,7 +169,6 @@ fun HsbColorSlider(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
-                            .padding(horizontal = 16.dp)
                             .requiredHeight(24.dp)
                             .clip(RoundedCornerShape(6.dp))
                             .background(brush = Brush.horizontalGradient(brushColors)),
@@ -188,7 +183,6 @@ fun HsbColorSlider(
                     colors = SliderDefaults.colors(),
                     modifier = Modifier
                         .height(24.dp)
-                        .padding(horizontal = 8.dp)
                         .fillMaxWidth(),
                 )
             }

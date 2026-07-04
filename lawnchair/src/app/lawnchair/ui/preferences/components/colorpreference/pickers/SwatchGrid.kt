@@ -52,7 +52,11 @@ fun <T> SwatchGrid(
         heading = stringResource(id = R.string.swatches),
         modifier = modifier,
     ) {
-        Column(modifier = contentModifier) {
+        Column(
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                .then(contentModifier),
+        ) {
             for (rowNo in 1..rowCount) {
                 val firstIndex = (rowNo - 1) * columnCount
                 val lastIndex = firstIndex + columnCount - 1
