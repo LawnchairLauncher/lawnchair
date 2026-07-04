@@ -55,7 +55,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @Composable
-fun GeneralPreferences() {
+fun GeneralPreferences(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
@@ -88,6 +88,7 @@ fun GeneralPreferences() {
     PreferenceLayout(
         backArrowVisible = !LocalIsExpandedScreen.current,
         label = stringResource(id = R.string.general_label),
+        modifier = modifier,
     ) {
         PreferenceGroup {
             SwitchPreference(
