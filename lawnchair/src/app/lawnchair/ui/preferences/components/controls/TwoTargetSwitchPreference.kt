@@ -108,7 +108,7 @@ fun TwoTargetSwitchPreference(
                 }
                 Switch(
                     modifier = Modifier
-                        .padding(all = 12.dp)
+                        .padding(start = 12.dp)
                         .height(24.dp),
                     checked = checked,
                     onCheckedChange = wrappedOnCheckedChange,

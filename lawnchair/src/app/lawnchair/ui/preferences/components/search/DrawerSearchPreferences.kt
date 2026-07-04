@@ -156,7 +156,7 @@ private fun LocalSearchSettings(
     val webSuggestionProvider =
         stringResource(prefs2.webSuggestionProvider.getAdapter().state.value.label)
 
-    SearchProviderPreferenceItem(
+    TwoTargetSwitchPreference(
         adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
         label = stringResource(id = R.string.search_pref_result_web_title),
         description = if (webSuggestionProvider == stringResource(CustomWebSearchProvider.label)) {
@@ -171,32 +171,38 @@ private fun LocalSearchSettings(
             navController.navigate(SearchProviderPreference(SearchProviderId.WEB))
         },
     )
-    SearchProviderPreferenceItem(
-        adapter = prefs.searchResultPeople.getAdapter(),
+    val peopleAdapter = prefs.searchResultPeople.getAdapter()
+    val peopleEnabled = rememberPermissionState(android.Manifest.permission.READ_CONTACTS).status.isGranted
+    TwoTargetSwitchPreference(
+        checked = peopleEnabled && peopleAdapter.state.value,
+        onCheckedChange = peopleAdapter::onChange,
+        enabled = peopleEnabled,
         label = stringResource(id = R.string.search_pref_result_people_title),
         description = stringResource(id = R.string.search_pref_result_contacts_description),
         onClick = {
             navController.navigate(SearchProviderPreference(SearchProviderId.CONTACTS))
         },
-        enabled = rememberPermissionState(android.Manifest.permission.READ_CONTACTS).status.isGranted,
     )
-    SearchProviderPreferenceItem(
-        adapter = prefs.searchResultFilesToggle.getAdapter(),
+    val filesAdapter = prefs.searchResultFilesToggle.getAdapter()
+    val filesEnabled = remember { FileAccessManager.getInstance(context) }.hasAnyPermission.collectAsStateWithLifecycle().value
+    TwoTargetSwitchPreference(
+        checked = filesEnabled && filesAdapter.state.value,
+        onCheckedChange = filesAdapter::onChange,
+        enabled = filesEnabled,
         label = stringResource(R.string.search_pref_result_files_title),
         description = stringResource(R.string.search_pref_result_files_description),
         onClick = {
             navController.navigate(SearchProviderPreference(SearchProviderId.FILES))
         },
-        enabled = remember { FileAccessManager.getInstance(context) }.hasAnyPermission.collectAsStateWithLifecycle().value,
     )
-    SearchProviderPreferenceItem(
+    TwoTargetSwitchPreference(
         adapter = prefs.searchResultSettingsEntry.getAdapter(),
         label = stringResource(id = R.string.search_pref_result_settings_title),
         onClick = {
             navController.navigate(SearchProviderPreference(SearchProviderId.SETTINGS))
         },
     )
-    SearchProviderPreferenceItem(
+    TwoTargetSwitchPreference(
         adapter = prefs.searchResulRecentSuggestion.getAdapter(),
         label = stringResource(id = R.string.search_pref_result_history_title),
         onClick = {
