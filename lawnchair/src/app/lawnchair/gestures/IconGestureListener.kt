@@ -33,6 +33,12 @@ class IconGestureListener(
             hasGestureConfigured(GestureType.SWIPE_RIGHT)
     }
 
+    /** Check if there's a vertical gesture configured for this entry. (Swipe up/down) */
+    fun hasVerticalGestureConfigured(): Boolean {
+        return hasGestureConfigured(GestureType.SWIPE_UP) ||
+            hasGestureConfigured(GestureType.SWIPE_DOWN)
+    }
+
     /** Check if there's a specific gesture configured for this entry
      * @param gestureType The type of gesture to check */
     private fun hasGestureConfigured(gestureType: GestureType): Boolean {
