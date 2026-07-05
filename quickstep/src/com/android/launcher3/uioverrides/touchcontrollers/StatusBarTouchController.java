@@ -215,8 +215,10 @@ public class StatusBarTouchController implements TouchController {
             if (launcher.getWorkspace() != null && launcher.getDragLayer() != null) {
                 float[] coord = new float[]{ev.getX(), ev.getY()};
                 launcher.getDragLayer().mapCoordInSelfToDescendant(launcher.getWorkspace(), coord);
-                return !launcher.getWorkspace()
-                    .isTouchOnIconWithSwipeGesture(coord[0], coord[1], true);
+                if (launcher.getWorkspace()
+                        .isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)) {
+                    return false;
+                }
             }
         }
         if (isTrackpadScroll(ev) || !mIsEnabledCheck.get()

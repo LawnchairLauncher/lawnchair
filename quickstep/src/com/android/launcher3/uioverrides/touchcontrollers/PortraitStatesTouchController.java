@@ -62,8 +62,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         if (mLauncher.getWorkspace() != null && mLauncher.getDragLayer() != null) {
             float[] coord = new float[]{ev.getX(), ev.getY()};
             mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(), coord);
-            return !mLauncher.getWorkspace()
-                .isTouchOnIconWithSwipeGesture(coord[0], coord[1], true);
+                if (mLauncher.getWorkspace()
+                        .isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)) {
+                    return false;
+                }
         }
         // If we are swiping to all apps instead of overview, allow it from anywhere.
         boolean interceptAnywhere = mLauncher.isInState(NORMAL);
