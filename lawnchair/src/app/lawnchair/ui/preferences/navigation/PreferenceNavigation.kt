@@ -15,6 +15,7 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import app.lawnchair.backup.ui.CreateBackupScreen
 import app.lawnchair.backup.ui.restoreBackupGraph
+import app.lawnchair.backup.ui.restoreNovaBackupGraph
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
@@ -233,5 +234,6 @@ fun PreferenceNavigation(
         ) { CreateBackupScreen(viewModel()) }
 
         restoreBackupGraph()
+        restoreNovaBackupGraph()
     }
 }
