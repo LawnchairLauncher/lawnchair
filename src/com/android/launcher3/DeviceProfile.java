@@ -541,6 +541,10 @@ public class DeviceProfile {
             hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
         }
 
+        if (!isQsbEnable) {
+            hotseatQsbSpace = 0;
+        }
+
         hotseatProfile = HotseatProfile.Factory.createHotseatProfile(
                 getDeviceProperties(),
                 res,
