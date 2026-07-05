@@ -273,7 +273,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         val hide = prefs2.hideAppDrawerSearchBar.firstCached()
         if (hide) {
-            isInvisible = true
+            isVisible = false
             layoutParams.height = 0
         }
     }
