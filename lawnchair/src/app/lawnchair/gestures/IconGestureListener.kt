@@ -68,9 +68,9 @@ class IconGestureListener(
         }
     }
 
-    override fun onActionUp() {
+    override fun onActionUp(handled: Boolean) {
         scrollLock = ScrollLock.NONE
-        if (view.translationX != 0f || view.translationY != 0f) {
+        if (!handled && (view.translationX != 0f || view.translationY != 0f)) {
             isAnimating = true
             PhysicsAnimator.getInstance(view)
                 .spring(DynamicAnimation.TRANSLATION_X, 0f, 0f, SpringForce.STIFFNESS_HIGH, SpringForce.DAMPING_RATIO_NO_BOUNCY)

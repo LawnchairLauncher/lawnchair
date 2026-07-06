@@ -20,7 +20,7 @@ abstract class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
 
         val action = event.actionMasked
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-            onActionUp()
+            onActionUp(handledGesture)
         }
 
         return handledGesture
@@ -96,7 +96,7 @@ abstract class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
     abstract fun onSwipeDown(velocity: Float): Boolean
 
     open fun onScroll(diffX: Float, diffY: Float) {}
-    open fun onActionUp() {}
+    open fun onActionUp(handled: Boolean) {}
 
     companion object {
         /**  We dampen the velocity slightly so the icon doesn't fly off-screen */
