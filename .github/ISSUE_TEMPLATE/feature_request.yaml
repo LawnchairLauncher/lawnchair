@@ -11,7 +11,7 @@ body:
 
         Thanks for taking the time to file this issue! Here are a few things to do before submitting:
         1. Use the [**latest nightly version**](https://github.com/LawnchairLauncher/lawnchair#development-builds) when requesting.
-        2. [**Read the FAQ**](https://lawnchair.app/faq) to check if your request is already planned by the developers.
+        2. [**Read the docs**](https://docs.lawnchair.app/) to check if your request is already planned by the developers.
         3. Search **both [open and closed issues](https://github.com/LawnchairLauncher/lawnchair/issues?q=is%3Aissue+sort%3Aupdated-desc+)** for your feature request.
 
         Please keep in mind that **we may not always implement this feature request**.
@@ -37,8 +37,7 @@ body:
     attributes:
       label: Did the feature exist in Lawnchair Legacy?
       description: |
-        See [this FAQ page](https://lawnchair.app/faq/#what-happened-to-lawnchair-legacy) for more info about Lawnchair Legacy, previously
-        known as Lawnchair 2.
+        See [this documentation page](https://docs.lawnchair.app/community/about/project-history#what-happened-to-lawnchair-legacy) for more info about Lawnchair Legacy, previously known as Lawnchair 2.
 
       options:
         - "Yes"
