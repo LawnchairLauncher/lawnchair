@@ -78,10 +78,6 @@ These builds offer the latest features and bug fixes at a cost of performance an
 
 Download: [Obtainium][Obtainium link] • [GitHub][GitHub link] • [nightly.link][Nightly link]
 
-## Contribute
-
-Visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
-
 ## Sponsors
 
 <p align="left">
@@ -105,6 +101,10 @@ A huge thank you to our Core Backers ($5+):
 [![Core Backers](https://opencollective.com/lawnchair/tiers/backer.svg?avatarHeight=64&width=890&button=false)](https://opencollective.com/lawnchair)
 
 [Become a supporter](https://opencollective.com/lawnchair) to help us cover our operational costs, or become a Core Backer to be featured here!
+
+## Contribute
+
+Visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
 
 ## Quick links
 
