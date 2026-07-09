@@ -25,11 +25,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.rememberBottomSheetState
-import androidx.compose.runtime.rememberCoroutineScope
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.ui.util.rememberCloseSheet
+import app.lawnchair.ui.util.rememberSheetState
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
@@ -108,17 +107,8 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
                     launcher.getString(R.string.dt2s_admin_hint),
                 )
             ComposeBottomSheet.show(launcher) {
-                val sheetState = rememberBottomSheetState(
-                    initialValue = SheetValue.Hidden,
-                    enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
-                )
-                val coroutineScope = rememberCoroutineScope()
-                val closeSheet = {
-                    coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
-                        close(true)
-                    }
-                    Unit
-                }
+                val sheetState = rememberSheetState()
+                val closeSheet = rememberCloseSheet(sheetState)
                 ServiceWarningDialog(
                     title = R.string.dt2s_admin_hint_title,
                     action = R.string.dt2s_admin_hint,

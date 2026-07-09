@@ -18,7 +18,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindowProvider
 import app.lawnchair.ui.preferences.components.layout.BottomSpacer
 import app.lawnchair.ui.util.bottomSheetHandler
+import app.lawnchair.ui.util.rememberSheetState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.systemui.shared.system.BlurUtils
@@ -58,10 +58,7 @@ fun ModalBottomSheetContent(
     } else {
         { handler.hide() }
     }
-    val bottomSheetState = sheetState ?: handler.sheetState ?: rememberBottomSheetState(
-        initialValue = SheetValue.Hidden,
-        enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
-    )
+    val bottomSheetState = sheetState ?: handler.sheetState ?: rememberSheetState()
     val animatedFraction by animateFloatAsState(
         targetValue = if (
             bottomSheetState.targetValue == SheetValue.PartiallyExpanded ||

@@ -13,11 +13,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -25,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.lawnchairApp
 import app.lawnchair.ui.ModalBottomSheetContent
+import app.lawnchair.ui.util.rememberCloseSheet
+import app.lawnchair.ui.util.rememberSheetState
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 import kotlinx.coroutines.launch
@@ -38,17 +37,8 @@ object GestureWithAccessibilityHandler {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             ComposeBottomSheet.show(launcher) {
-                val sheetState = rememberBottomSheetState(
-                    initialValue = SheetValue.Hidden,
-                    enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
-                )
-                val coroutineScope = rememberCoroutineScope()
-                val closeSheet = {
-                    coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
-                        close(true)
-                    }
-                    Unit
-                }
+                val sheetState = rememberSheetState()
+                val closeSheet = rememberCloseSheet(sheetState)
                 ServiceWarningDialog(
                     title = R.string.d2ts_recents_a11y_hint_title,
                     action = stringAction,
@@ -72,10 +62,7 @@ fun ServiceWarningDialog(
     settingsIntent: Intent,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberBottomSheetState(
-        initialValue = SheetValue.Hidden,
-        enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
-    ),
+    sheetState: SheetState = rememberSheetState(),
     handleClose: () -> Unit,
 ) {
     val context = LocalContext.current
