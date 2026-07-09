@@ -21,8 +21,7 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
+import android.os.ResultReceiver
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -71,9 +70,19 @@ class LawnchairShortcutActivity : ComponentActivity() {
                             modifier = Modifier.addIf(isExpandedScreen) { requiredWidth(640.dp) },
                         ) {
                             val context = LocalContext.current
+
+                            @Suppress("DEPRECATION")
+                            val resultReceiver = intent.getParcelableExtra<ResultReceiver>(EXTRA_RESULT_RECEIVER)
                             CreateActionsScreen(
                                 onSelect = {
-                                    saveChanges(context, it)
+                                    if (resultReceiver != null) {
+                                        val bundle = Bundle().apply {
+                                            putString(EXTRA_HANDLER, GestureHandlerConfig.toString(it))
+                                        }
+                                        resultReceiver.send(RESULT_OK, bundle)
+                                    } else {
+                                        saveChanges(context, it)
+                                    }
                                     finish()
                                 },
                             )
@@ -112,6 +121,7 @@ class LawnchairShortcutActivity : ComponentActivity() {
     companion object {
         const val START_ACTION = "app.lawnchair.START_ACTION"
         const val EXTRA_HANDLER = "app.lawnchair.EXTRA_HANDLER"
+        const val EXTRA_RESULT_RECEIVER = "app.lawnchair.EXTRA_RESULT_RECEIVER"
         const val GESTURE_SHORTCUT_ID_PREFIX = "gesture:"
 
         fun shouldSkipShortcutBadge(context: Context, si: ShortcutInfo): Boolean {

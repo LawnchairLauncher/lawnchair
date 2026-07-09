@@ -9,7 +9,7 @@ accompanist = "0.37.3"
 opto = "1.0.18"
 protobuf = "4.35.1"
 retrofit = "3.0.0"
-dagger = "2.60"
+dagger = "2.60.1"
 libsu = "6.0.0"
 refine = "4.4.0"
 exifinterface = "1.4.2"
@@ -70,7 +70,7 @@ compose-bom = "androidx.compose:compose-bom:2026.06.01"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha22"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha23"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }

@@ -236,6 +236,8 @@ fun CustomizeAppDialog(
             if (context.launcher.stateManager.state != LauncherState.ALL_APPS) {
                 PreferenceGroup(heading = stringResource(R.string.gestures_label)) {
                     listOf(
+                        GestureType.SWIPE_UP,
+                        GestureType.SWIPE_DOWN,
                         GestureType.SWIPE_LEFT,
                         GestureType.SWIPE_RIGHT,
                     ).map { gestureType ->
