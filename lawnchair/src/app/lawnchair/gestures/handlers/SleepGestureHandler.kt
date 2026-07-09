@@ -113,8 +113,6 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
                     title = R.string.dt2s_admin_hint_title,
                     action = R.string.dt2s_admin_hint,
                     settingsIntent = intent,
-                    sheetState = sheetState,
-                    onDismissRequest = { close(false) },
                     handleClose = closeSheet,
                 )
             }

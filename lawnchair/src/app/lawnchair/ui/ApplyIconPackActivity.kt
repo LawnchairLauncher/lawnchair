@@ -30,6 +30,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -123,40 +124,44 @@ private fun ApplyIconPackSheet(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    ModalBottomSheetContent(
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberSheetState(),
-        title = { Text(text = stringResource(id = R.string.apply_icon_pack_title)) },
-        content = {
-            PreferenceGroup {
-                Item {
-                    PreferenceTemplate(
-                        title = { Text(text = packName) },
-                        startWidget = {
-                            Image(
-                                painter = rememberDrawablePainter(drawable = packIcon),
-                                contentDescription = packName,
-                                modifier = Modifier.size(36.dp),
-                            )
-                        },
-                    )
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        ModalBottomSheetContent(
+            title = { Text(text = stringResource(id = R.string.apply_icon_pack_title)) },
+            content = {
+                PreferenceGroup {
+                    Item {
+                        PreferenceTemplate(
+                            title = { Text(text = packName) },
+                            startWidget = {
+                                Image(
+                                    painter = rememberDrawablePainter(drawable = packIcon),
+                                    contentDescription = packName,
+                                    modifier = Modifier.size(36.dp),
+                                )
+                            },
+                        )
+                    }
                 }
-            }
-        },
-        buttons = {
-            OutlinedButton(
-                onClick = onDismiss,
-                shapes = ButtonDefaults.shapes(),
-            ) {
-                Text(text = stringResource(id = android.R.string.cancel))
-            }
-            Spacer(modifier = Modifier.requiredWidth(8.dp))
-            Button(
-                onClick = onConfirm,
-                shapes = ButtonDefaults.shapes(),
-            ) {
-                Text(text = stringResource(id = R.string.action_apply))
-            }
-        },
-    )
+            },
+            buttons = {
+                OutlinedButton(
+                    onClick = onDismiss,
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(id = android.R.string.cancel))
+                }
+                Spacer(modifier = Modifier.requiredWidth(8.dp))
+                Button(
+                    onClick = onConfirm,
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(id = R.string.action_apply))
+                }
+            },
+        )
+    }
 }

@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -43,8 +44,6 @@ object GestureWithAccessibilityHandler {
                     title = R.string.d2ts_recents_a11y_hint_title,
                     action = stringAction,
                     settingsIntent = intent,
-                    sheetState = sheetState,
-                    onDismissRequest = { close(false) },
                     handleClose = closeSheet,
                 )
             }
@@ -60,15 +59,11 @@ fun ServiceWarningDialog(
     title: Int,
     action: Int,
     settingsIntent: Intent,
-    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberSheetState(),
     handleClose: () -> Unit,
 ) {
     val context = LocalContext.current
     ModalBottomSheetContent(
-        onDismissRequest = onDismissRequest,
-        sheetState = sheetState,
         modifier = modifier.padding(top = 16.dp),
         title = { Text(text = stringResource(id = title)) },
         text = {

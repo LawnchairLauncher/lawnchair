@@ -251,8 +251,6 @@ class LawnchairApp : LauncherApplication() {
                 val sheetState = rememberSheetState()
                 val closeSheet = rememberCloseSheet(sheetState)
                 ModalBottomSheetContent(
-                    sheetState = sheetState,
-                    onDismissRequest = { close(false) },
                     title = { Text(text = stringResource(id = R.string.quickstep_incompatible)) },
                     text = {
                         val description = stringResource(
