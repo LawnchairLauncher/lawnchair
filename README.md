@@ -93,6 +93,8 @@ Visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information a
   </a>
 </p>
 
+[CodeRabbit](https://coderabbit.link/lawnchair) is an AI-powered code review platform that integrates directly into pull-request workflows and IDEs, examining code changes in context and suggesting improvements.
+
 ## Support Lawnchair
 
 If you love what we do, consider [supporting us on Open Collective](https://opencollective.com/lawnchair)! Your contributions help keep Lawnchair independent and enable us to develop faster.
