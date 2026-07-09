@@ -9,7 +9,7 @@ accompanist = "0.37.3"
 opto = "1.0.18"
 protobuf = "4.35.1"
 retrofit = "3.0.0"
-dagger = "2.59.2"
+dagger = "2.60.1"
 libsu = "6.0.0"
 refine = "4.4.0"
 exifinterface = "1.4.2"
@@ -26,7 +26,7 @@ testRunner = "1.7.0"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp" }
-androidx-baselineprofile = "androidx.baselineprofile:1.5.0-alpha06"
+androidx-baselineprofile = "androidx.baselineprofile:1.5.0-alpha07"
 
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
@@ -35,7 +35,7 @@ google-ksp = "com.google.devtools.ksp:2.3.9"
 google-protobuf = "com.google.protobuf:0.10.0"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.7.0"
+diffplug-spotless = "com.diffplug.spotless:8.8.0"
 
 [libraries]
 # AndroidX
@@ -62,15 +62,15 @@ androidx-recyclerview = "androidx.recyclerview:recyclerview:1.4.0"
 androidx-slice-core = "androidx.slice:slice-core:1.1.0-alpha02"
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
-androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
+androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.0"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
-compose-bom = "androidx.compose:compose-bom:2026.06.00"
+compose-bom = "androidx.compose:compose-bom:2026.06.01"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha22"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha23"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
@@ -130,7 +130,7 @@ hoko-blur = "io.github.hokofly:hoko-blur:1.5.5"
 javax-inject = "javax.inject:javax.inject:1"
 kdrag0n-colorkt = "dev.kdrag0n:colorkt:1.0.5"
 leakcanary-android = "com.squareup.leakcanary:leakcanary-android:2.14"
-leakcanary-androidstudio = "com.android.tools.studio.leakcanary:leakcanary:1.0.0-alpha03"
+leakcanary-androidstudio = "com.android.tools.studio.leakcanary:leakcanary:1.0.0"
 libsu-core = { group = "com.github.topjohnwu.libsu", name = "core", version.ref = "libsu" }
 libsu-service = { group = "com.github.topjohnwu.libsu", name = "service", version.ref = "libsu" }
 material-motion-compose = "io.github.fornewid:material-motion-compose-core:2.0.1"
@@ -152,8 +152,8 @@ google-truth = { group = "com.google.truth", name = "truth", version.ref = "trut
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 mockito-robolectric = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
-mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.10"
-mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.10"
+mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.11"
+mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.11"
 
 [bundles]
 accompanist = ["accompanist-adaptive", "accompanist-drawablepainter", "accompanist-permissions"]

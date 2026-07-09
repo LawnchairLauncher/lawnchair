@@ -680,6 +680,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val drawerColumnsUnfolded = idpPreference(
+        key = intPreferencesKey(name = "drawer_columns_unfolded"),
+        defaultSelector = { numAllAppsColumns + 2 },
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val folderColumns = idpPreference(
         key = intPreferencesKey(name = "folder_columns"),
         defaultSelector = { numFolderColumns[INDEX_DEFAULT] },

@@ -58,6 +58,15 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        // Lawnchair: Icon Swipe Gestures (For vertical up gestures)
+        if (mLauncher.getWorkspace() != null && mLauncher.getDragLayer() != null) {
+            float[] coord = new float[]{ev.getX(), ev.getY()};
+            mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(), coord);
+                if (mLauncher.getWorkspace()
+                        .isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)) {
+                    return false;
+                }
+        }
         // If we are swiping to all apps instead of overview, allow it from anywhere.
         boolean interceptAnywhere = mLauncher.isInState(NORMAL);
         if (mCurrentAnimation != null) {

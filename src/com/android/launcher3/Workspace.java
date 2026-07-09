@@ -1199,8 +1199,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                mDisallowPagedViewInterceptForIconSwipe = isTouchOnIconWithHorizontalSwipeGesture(
-                        ev.getX(), ev.getY());
+                mDisallowPagedViewInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(
+                        ev.getX(), ev.getY(), false);
                 if (mDisallowPagedViewInterceptForIconSwipe) {
                     resetTouchState();
                     return true;
@@ -1225,9 +1225,17 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     // Lawnchair: Icon swipe gesture feature
-    private boolean isTouchOnIconWithHorizontalSwipeGesture(float x, float y) {
+    public boolean isTouchOnIconWithSwipeGesture(float x, float y, boolean vertical) {
+        boolean hasConfiguredIconSwipeGesture = false;
         BubbleTextView touchedIcon = findIconAtPosition(x, y);
-        return touchedIcon != null && touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
+        if (touchedIcon != null) {
+            if (vertical) {
+                hasConfiguredIconSwipeGesture = touchedIcon.hasConfiguredVerticalIconSwipeGesture();
+            } else {
+                hasConfiguredIconSwipeGesture = touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
+            }
+        }
+        return hasConfiguredIconSwipeGesture;
     }
 
     // Lawnchair: Icon swipe gesture feature

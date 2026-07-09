@@ -46,10 +46,10 @@
     <string name="download_update">업데이트 다운로드</string>
     <string name="install_update">업데이트 설치</string>
     <string name="view_changes">변경사항 보기</string>
-    <string name="pro_updated">최신 버전입니다!</string>
+    <string name="pro_updated">You\'re up-to-date</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">업데이트</string>
-    <string name="changes_dialog_error">변경 사항을 불러오는데 실패하였습니다.</string>
+    <string name="changes_dialog_error">Couldn\'t load updates</string>
     <string name="changes_dialog_no_changes">변경 사항이 없습니다</string>
     <string name="changes_dialog_build_format">빌드 #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">%1$s • %2$s • %3$s</string>
@@ -91,7 +91,6 @@
     <string name="wallpaper">배경화면</string>
     <string name="style">스타일</string>
     <string name="background_opacity">배경 투명도</string>
-    <string name="pref_all_apps_search_bar_background">검색 창 배경 분리</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">클립보드에 복사했습니다</string>
     <string name="calculator_search_result_copied_toast">결과를 클립보드에 복사했습니다</string>
@@ -99,12 +98,12 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">표시할 항목</string>
     <string name="wallpapers">배경화면</string>
-    <string name="caddy_beta">Caddy (베타)</string>
+    <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">앱 서랍 폴더</string>
     <string name="selected_apps">선택된 앱</string>
     <string name="add_apps">앱 추가</string>
-    <string name="app_drawer_folder_settings">서랍 폴더</string>
+    <string name="app_drawer_folder_settings">App drawer folder</string>
     <string name="add_folder">폴더 만들기</string>
     <string name="edit_folder">폴더 편집</string>
     <string name="add_label">추가</string>
@@ -118,16 +117,16 @@
     <string name="my_folder_label">내 폴더</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">특정 액션들(휴대전화 잠그기 같은 액션)을 제스처로 작동시키려면, Lawnchair가 접근성 기능에 접근해야 합니다. \n\nLawnchair는 접근성 기능을 필요로 하지만 사용자의 활동을 감시하지 않으며, 시스템에서 발송된 모든 이벤트는 삭제됩니다. \n\nLawnchair는 휴대전화를 잠그거나 최근 앱을 보기 위해서 GlobalActionAccessbility 서비스를 사용합니다.</string>
+    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
-    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">고급</string>
     <!-- Draggable -->
     <string name="reorderable_active_items">활성 항목</string>
     <string name="reorderable_disabled_items">다른 항목</string>
-    <string name="reorderable_disabled_hint">여기에 문제가 있는 항목이 나타납니다. 항목을 여기로 드래그하거나 제거 버튼을 눌러 항목을 활성화하세요.</string>
-    <string name="reorderable_add_hint_items">활성 항목이 여기에 나타납니다. 항목을 여기에 드래그하거나 추가 버튼을 눌러 항목을 활성화하세요.</string>
+    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
+    <string name="reorderable_add_hint_items">Active items will appear here</string>
     <!--
 
     Preference Dashboard
@@ -150,7 +149,7 @@
     <string name="gestures_label">제스처</string>
     <string name="gestures_description">탭 및 스와이프</string>
     <string name="quickstep_label">최근 앱</string>
-    <string name="quickstep_description">모두 닫기 버튼, 가장자리 둥글기</string>
+    <string name="quickstep_description">Clear all button, corner radius</string>
     <string name="backup_and_restore_label">백업 및 복원</string>
     <string name="backup_and_restore_description">현재 설정 저장, 백업 복원</string>
     <string name="about_label">더 보기</string>
@@ -161,32 +160,32 @@
     <string name="workspace_label">워크스페이스</string>
     <string name="smartspace_label">스마트스페이스</string>
     <string name="internal_label">내부</string>
-    <string name="internal_description">내부가 다른 실험군보다 더 불안정할 수 있습니다</string>
+    <string name="internal_description">Internal may be less stable than other experimental groups</string>
     <string name="font_picker_label">글꼴 사용자 정의</string>
     <string name="font_picker_description">일부 텍스트는 변경되지 않습니다.</string>
     <string name="smartspace_calendar_label">한눈에 보기 달력 사용자 정의</string>
     <string name="smartspace_calendar_description">그레고리력을 사용하지 않는 달력 시스템에서 날짜 표시 허용</string>
     <string name="workspace_increase_max_grid_size_label">최대 그리드 크기 제한 늘리기</string>
-    <string name="workspace_increase_max_grid_size_description">허용되는 최대 홈 화면 그리드 크기를 10 x 10에서 20 x 20으로 늘립니다.</string>
+    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">항상 아이콘 새로고침</string>
     <string name="always_reload_icons_description">아이콘 팩에서 캐시된 아이콘 사용 안 함</string>
-    <string name="always_reload_icons_warning">아이콘 팩이 정기적으로 업데이트되지 않으면 아이콘이 정기적으로 업데이트 되도록 할 것이며, 이는 필요하지 않습니다</string>
+    <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">독 레이아웃</string>
     <string name="show_deck_layout_description">앱 서랍을 가리고 홈 화면에 새 앱을 자동으로 추가하는 레이아웃 옵션을 표시합니다</string>
     <string name="material_expressive_label">Material 3 표현</string>
-    <string name="material_expressive_description">워크스페이스에서 Material 3 표현 변경을 활성화합니다</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
     <string name="folder_shape_label">폴더 모양</string>
     <string name="folder_label">폴더</string>
     <string name="app_icon_shape_label">앱</string>
     <string name="gesturenavcontract_label">GestureNavContract API 사용</string>
-    <string name="gesturenavcontract_description">제스처 내비게이션 사용 시 안드로이드의 향상된 애니메이션을 지원하세요. 모든 장치가 이것을 지원하는 것은 아닙니다. 사용 중 애니메이션 버그를 유발할 수 있습니다.</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract는 애니메이션 중 아티팩트를 유발할 수 있습니다.</string>
-    <string name="recents_lock_unlock">잠금/잠금 해제</string>
-    <string name="recents_lock_unlock_description">\"모두 지우기\" 사용 시 선택한 앱이 지워지지 않도록 방지</string>
+    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
+    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
+    <string name="recents_lock_unlock">App locking</string>
+    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">페이드 인</string>
-    <string name="overlay_suck_in">빨아들이기</string>
     <string name="app_closing_animation">앱 닫기 애니메이션</string>
+    <string name="overlay_fade_in">Fade in</string>
+    <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">오버레이</string>
     <string name="overlay_none">없음</string>
     <!--
@@ -199,8 +198,8 @@
     <string name="show_notification_count">알림 개수 표시</string>
     <string name="notification_dots_color">알림 배지 색상</string>
     <string name="notification_dots_text_color">알림 개수 색상</string>
-    <string name="notification_dots_color_contrast_warning_always">경고: 알림 배지 및 알림 개수 색상의 대비가 충분하지 않습니다.</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">경고: 알림 배지와 알림 개수의 색상 대비가 충분하지 않습니다.</string>
+    <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
     <!--
 
     Icons
@@ -215,8 +214,8 @@
     <string name="label_size">라벨 크기</string>
     <string name="twoline_label">여러 줄 사용</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">테마 아이콘 투명화</string>
-    <string name="transparent_background_icons_description">테마 아이콘에 투명한 배경 사용</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">적응형 아이콘 자동 적용</string>
     <string name="auto_adaptive_icons_description">적응형이 아닌 아이콘을 위한 기능입니다.</string>
     <string name="shadow_bg_icons_label">아이콘 뒤에 그림자 표시</string>
@@ -260,7 +259,7 @@
     <string name="icon_shape_leaf">Leaf</string>
     <string name="icon_shape_meow">Meow</string>
     <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded Hexagon</string>
+    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
     <string name="icon_shape_stretched">Stretched</string>
     <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
@@ -287,7 +286,7 @@
     <string name="themed_icon_pack_tint">강조 색상으로 칠하기</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="force_monochrome_label">Material You 단색 아이콘 강제 적용</string>
-    <string name="force_monochrome_description">재시작이 필요합니다. 지원되지 않는 앱 아이콘이 강조 색상으로 표시됩니다.</string>
+    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
     <string name="themed_icon_title">테마 아이콘</string>
     <string name="themed_icons_off_label">사용 안함</string>
     <string name="themed_icons_home_label">홈 화면</string>
@@ -381,28 +380,28 @@
     <string name="smartspace_weather">날씨</string>
     <string name="smartspace_battery_status">배터리 상태</string>
     <string name="smartspace_torch">Flashlight status</string>
-    <string name="smartspace_now_playing">현재 재생 중</string>
+    <string name="smartspace_now_playing">Now playing</string>
     <string name="smartspace_onboarding">온보딩</string>
     <!-- Torch strings -->
     <string name="torch_status_on">Flashlight on</string>
     <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Lawnchair 구성</string>
-    <string name="onboarding_open_settings_subtitle">홈 화면에서 길게 누르면 설정을 열 수 있습니다</string>
-    <string name="onboarding_major_upgrade_title">Lawnchair에 오신것을 환영합니다 <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
-    <string name="onboarding_major_upgrade_subtitle">새로운 기능을 확인하세요!</string>
+    <string name="onboarding_open_settings_title">Set up Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
+    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
+    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
     <string name="onboarding_welcome">Lawnchair에 오신것을 환영합니다!</string>
-    <string name="onboarding_swipe_up">위로 스와이프하여 앱 서랍을 여세요.</string>
+    <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">최대 타겟 수</string>
     <string name="open_smartspacer_settings">Smartspacer 설정 열기</string>
     <string name="smartspacer_settings">Smartspacer 설정</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">여기를 눌러 설정</string>
-    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>를 사용하려면 알림 배지를 활성화하세요.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">홈 화면에 표시</string>
-    <string name="smartspace_widget_toggle_description">한눈에 보기는 Lawnchair 위젯을 배치하여 수동으로 홈 화면에 추가할 수 있습니다</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">한 눈에 보기 제공자</string>
     <string name="smartspace_mode_google">Google</string>
@@ -433,11 +432,11 @@
     <string name="privacy_policy">개인정보 처리방침</string>
     <string name="contributor_status_active">작동 중</string>
     <string name="update_check_failed">업데이트를 확인하는데 실패하였습니다</string>
-    <string name="major_update_label">변화를 깨뜨립니다!</string>
-    <string name="major_update_description">곧 Lawnchair에서 업데이트할 것입니다 <xliff:g example="15" id="current_major_version">%1$s</xliff:g> 에서 Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, 최신 정식 버전이 현재 버전보다 불안정할 수 있으므로 신중하게 고려하십시오.</string>
-    <string name="pro_disabled_by_unknown">업데이트 할 수 없음!</string>
-    <string name="pro_disabled_by_major_is_newer">업데이트할 수 없습니다. 이 빌드는 너무 최신입니다!</string>
-    <string name="updater">업데이터</string>
+    <string name="major_update_label">Update to major version?</string>
+    <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
+    <string name="pro_disabled_by_unknown">Updates are not available</string>
+    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
+    <string name="updater">업데이트</string>
     <!--
 
     Backup and restore
@@ -490,7 +489,7 @@
     <string name="notifications_fallback_a11y_hint">알림창 열기</string>
     <string name="quick_settings_a11y_hint">빠른 설정창 열기</string>
     <string name="recents_screen_a11y_hint">최근 앱 열기</string>
-    <string name="generic_a11y_hint">%1$s로, Lawnchair 접근성 서비스를 켜세요. \"설정 열기\"를 탭하고, \"Lawnchair\"를 선택한 다음 \"Lawnchair 사용\"을 켜세요.</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair는 접근성의
 \'performGlobalAction\' 메서드를 사용하여 이 작업을 수행합니다. 이는 다른 앱을 모니터링할 수 있는 민감한 권한입니다. 그러나 Lawnchair는 해당 기능을 위해 구성되어 있지 않으며 이벤트를 수신하지 않습니다</string>
     <string name="sleep_mode_label">절전 모드</string>
@@ -519,15 +518,15 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">홈 화면 회전</string>
-    <string name="home_screen_rotation_description">기기 회전 때 홈 화면 회전 허용</string>
-    <string name="auto_updater_label">자동 업데이터</string>
-    <string name="auto_updater_description">About 섹션으로 이동할 때 Nightly 업데이트를 자동으로 확인</string>
+    <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
+    <string name="auto_updater_label">Automatically check for updates</string>
+    <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
     <string name="wallpaper_blur">배경화면 흐림 효과 (실험적 기능)</string>
     <string name="wallpaper_background_blur">흐림 강도</string>
     <string name="wallpaper_background_blur_factor">인자 임계값</string>
     <string name="home_lawn_deck_label">덱</string>
     <string name="home_lawn_deck_label_beta">덱 (베타)</string>
-    <string name="home_lawn_deck_description">간편함과 자연스러운 구성을 위해 설계된 궁극의 서랍 없는 환경인 독을 사용하여 손쉽게 애플리케이션에 액세스 할 수 있습니다</string>
+    <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">홈 화면에 새로운 앱 바로가기 추가</string>
     <string name="minus_one_enable">피드 활성화</string>
     <string name="minus_one_unavailable">설치된 피드 앱이 없습니다.</string>
@@ -544,6 +543,10 @@
     <string name="home_screen_unlock">홈 화면 잠금해제</string>
     <string name="home_screen_locked">홈 화면이 잠겨 있습니다.</string>
     <string name="home_screen_lock_description">홈 화면 레이아웃 변경 방지</string>
+    <string name="horizontal_padding_label">가로 패딩</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">기본 페이지로 설정</string>
     <string name="default_home_page_set">기본 홈페이지 업데이트</string>
     <string name="move_page_left">Move page left</string>
@@ -562,7 +565,7 @@
     <string name="show_status_bar">상태 표시줄 표시</string>
     <string name="dark_status_bar_label">어두운 상태 표시줄</string>
     <string name="status_bar_clock_label">상태 표시줄 시계</string>
-    <string name="status_bar_clock_description">능동적으로 첫 화면에서 상태 표시줄에 있는 시계를 가립니다</string>
+    <string name="status_bar_clock_description">Dynamically hide the status bar clock on the first screen</string>
     <string name="home_screen_text_color">텍스트 색상</string>
     <string name="color_light">라이트</string>
     <string name="color_dark">다크</string>
@@ -574,12 +577,12 @@
     <string name="widget_unlimited_size_description">위젯의 최소 및 최대 크기 제한 제거</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">독 표시</string>
-    <string name="enable_dock_to_access_qsb_settings">검색 바 설정은 독을 볼 수 있도록 설정해야 가능합니다. 탭 하면 독을 보이게 합니다.</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the dock is visible. Tap to show the dock</string>
     <string name="search_bar_label">검색 표시줄</string>
     <string name="search_bar_settings">검색 표시줄 설정</string>
     <string name="hotseat_mode_label">검색 표시줄 위젯</string>
     <string name="hotseat_mode_disabled">비활성화됨</string>
-    <string name="hotseat_mode_google_search">Google 검색 표시줄</string>
+    <string name="hotseat_mode_google_search">Google search bar</string>
     <string name="qsb_hotseat_background_transparency">백그라운드 투명도</string>
     <string name="qsb_hotseat_stroke_width">외곽선 너비</string>
     <string name="qsb_hotseat_stroke_color">외곽선 색</string>
@@ -602,6 +605,14 @@
     <string name="paused_apps_drop_target_label">앱 일시정지</string>
     <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">독 아이콘</string>
+    <string name="state_folded">%1$s (folded)</string>
+    <string name="state_unfolded">%1$s (unfolded)</string>
+    <string name="folded_label">Folded</string>
+    <string name="unfolded_label">Unfolded</string>
+    <string name="when_folded_label">When folded</string>
+    <string name="when_unfolded_label">When unfolded</string>
+    <string name="unfolded_grid_description">Lawnchair pairs two pages together to fill the larger display</string>
+    <string name="foldable_columns_error">The folded value must be less than or equal to the unfolded value. It will be automatically adjusted if needed.</string>
     <string name="hotseat_bottom_space_label">하단 패딩</string>
     <string name="page_indicator_height">페이지 표시기 높이</string>
     <!-- Search providers -->
@@ -619,16 +630,17 @@
     <string name="hidden_apps_label">숨겨진 앱</string>
     <string name="pref_all_apps_bulk_icon_loading_title">앱 한꺼번에 불러오기</string>
     <string name="pref_all_apps_bulk_icon_loading_description">아이콘을 개별적으로 불러오는 대신 한꺼번에 불러와서 표시</string>
-    <string name="pref_all_apps_remember_position_title">위치 기억</string>
-    <string name="pref_all_apps_remember_position_description">앱 서랍 종료 시 앱 서랍 위치를 기억</string>
+    <string name="pref_all_apps_remember_position_title">Remember scroll position</string>
+    <string name="pref_all_apps_remember_position_description">Save the last scrolled location when closing the app drawer</string>
     <string name="pref_all_apps_show_scrollbar_title">스크롤바 표시</string>
     <string name="app_drawer_columns">앱 서랍 아이콘 가로 배치 수</string>
     <string name="row_height_label">가로 행 높이</string>
     <string name="app_drawer_haptic_feedback_label">햅틱 피드백</string>
     <string name="app_drawer_indent_label">가로 패딩</string>
     <string name="app_drawer_bg_color_label">배경색</string>
-    <string name="work_profile_tab_background_label">탭 배경색</string>
-    <string name="work_profile_tab_container_background_label">분리된 탭 컨테이너 배경</string>
+    <string name="work_profile_tab_background_label">Tab background color</string>
+    <string name="pref_all_apps_search_bar_background">Show background behind search bar</string>
+    <string name="work_profile_tab_container_background_label">Show background behind tabs</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">앱 서랍에서 숨기기</string>
     <string name="hidden_apps_label_with_count">숨겨진 앱 (%1$d)</string>
@@ -642,9 +654,9 @@
     <string name="max_folder_columns">최대 폴더 열</string>
     <string name="max_folder_rows">최대 폴더 행</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Lawnchair 가 최근 앱 보기 화면 제공자로 지정되지 않았으므로 이 설정은 무시됩니다</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">호환되지 않는 시스템 통합</string>
-    <string name="quickstep_incompatible_description">기기가 %1$s에서 제공하는 시스템 제스처(Quickstep으로 알려져 있음)가 설정되어 있지만 %1$s의 이 버전은 사용하고 계신 Android 버전과 호환되지 않습니다. 장치를 계속 사용하려면 %1$s 업데이트를 제거하거나 %1$s을(를) 시스템 제스처 공급자에서 비활성화하십시오.</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
     <string name="translucent_background">반투명 배경</string>
     <string name="translucent_background_alpha">배경 투명도</string>
     <string name="recents_actions_label">빠른 바로가기</string>
@@ -665,13 +677,15 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">웹 등을 검색하세요</string>
     <string name="all_apps_search_bar_hint">앱 검색</string>
-    <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\"(와)과 일치는 앱 없습니다.</string>
+    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"
+    </string>
     <string name="all_apps_search_result_suggestions">웹으로부터</string>
     <string name="all_apps_search_result_contacts_from_device">기기의 연락처</string>
     <string name="all_apps_search_result_files">기기의 파일</string>
     <string name="all_apps_search_result_settings_entry_from_device">기기의 설정</string>
     <string name="all_apps_search_market_message">더 많은 앱 검색</string>
-    <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>에서 검색</string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>
+    </string>
     <string name="error_no_market_or_browser_installed">앱 스토어나 브라우저가 설치되어 있지 않습니다</string>
     <string name="all_apps_search_on_web_general">웹에서 찾기</string>
     <string name="clear_history">검색기록 삭제</string>
@@ -689,9 +703,9 @@
     <string name="show_hidden_apps_in_search_results">검색 결과에 숨겨진 앱 표시</string>
     <string name="hidden_apps_show_name_typed">전체 이름을 입력한 경우</string>
     <string name="allapps_web_suggestion_provider_label">웹 제안 제공자</string>
-    <string name="allapps_use_web_suggestion_icon_label">검색 표시줄에 웹 제안 제공자 아이콘 표시</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show the web suggestion provider icon in the search bar</string>
     <string name="allapps_match_qsb_style_label">독 검색 표시줄 동작에 따르기</string>
-    <string name="allapps_match_qsb_style_description">이제 독 검색 표시줄을 누르면 앱 서랍 검색 UI가 열립니다.</string>
+    <string name="allapps_match_qsb_style_description">Tapping the dock search bar opens the app drawer search view</string>
     <string name="app_search_algorithm">검색 알고리즘</string>
     <string name="search_algorithm_app_search">앱 검색</string>
     <string name="search_algorithm_global_search_on_device">글로벌 검색(기기 내)</string>
@@ -717,12 +731,13 @@
     <string name="all_apps_search_result_calculator">계산기</string>
     <string name="search_empty_state_title">검색 시작</string>
     <string name="search_empty_state_no_history_subtitle">앱, 연락처 등을 찾아보세요. 최근 검색 결과가 여기에 표시됩니다.</string>
-    <string name="search_empty_state_history_disabled_subtitle">앱, 연락처 등을 검색</string>
+    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">검색</string>
     <string name="search_pref_result_files_description">미디어, 파일 등</string>
     <string name="search_pref_result_contacts_description">연락처 등</string>
-    <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g> 제공</string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g>
+    </string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">최대 앱 수</string>
     <string name="max_people_result_count_title">최대 연락처 수</string>
@@ -733,21 +748,23 @@
     <string name="max_web_suggestion_delay">최대 웹 제안</string>
     <!-- Permission management -->
     <string name="missing_notification_access_label">알림 액세스가 필요합니다.</string>
-    <string name="missing_notification_access_desc">알림 점을 표시하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 대한 앱 알림을 켜세요.</string>
+    <string name="missing_notification_access_desc">To show notification dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>
+    </string>
     <string name="warn_contact_permission_title">연락처 권한이 필요합니다</string>
-    <string name="warn_contact_permission_content">연락처를 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 연락처 권한을 부여하세요</string>
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g>
+    </string>
     <string name="permissions_music_audio">음악과 오디오 권한이 필요합니다</string>
-    <string name="permissions_music_audio_description">음악 및 기타 오디오 파일을 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 미디어 라이브러리에 대한 액세스 권한이 필요합니다.</string>
+    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">사진과 비디오 권한이 필요합니다</string>
-    <string name="permissions_photos_videos_description">사진 및 비디오 파일을 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 미디어 라이브러리에 대한 액세스 권한이 필요합니다.</string>
+    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
     <string name="permissions_photos_videos_full">전체 미디어 라이브러리에 액세스 하시겠습니까?</string>
-    <string name="permissions_photos_videos_full_description">모든 사진과 동영상을 검색하려면 <xliff:g id="name" example="my app">%1$s</xliff:g>에서 미디어 라이브러리에 대한 전체 액세스 권한이 필요합니다.</string>
+    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library</string>
     <string name="permissions_photos_videos_grant_full">전체 미디어 권한</string>
     <string name="permissions_photos_videos_manage_selected">선택한 항목 관리</string>
     <!-- External storage -->
     <string name="permissions_external_storage">외부 스토리지 엑세스 권한이 필요합니다</string>
-    <string name="permissions_external_storage_description">파일을 검색하려면 <xliff:g id="name" example="My app">%1$s</xliff:g>에 기기의 외부 저장소에 대한 액세스 권한이 필요합니다.</string>
+    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage</string>
     <string name="permissions_manage_storage">스토리지 관리 권한이 필요합니다</string>
     <string name="permissions_manage_storage_description">검색 결과에 파일을 표시하려면 <xliff:g id="name" example="My app">%1$s</xliff:g>에 기기의 모든 파일을 관리할 수 있는 권한이 필요합니다. 이 권한은 파일 목록을 표시하는 데만 사용되며 개인 파일의 내용을 읽거나 변경하는 데는 사용되지 않습니다.</string>
     <string name="permission_desc_wallpaper_base">배경화면 미리보기를 표시하고 백업에 포함하려면 <xliff:g id="name" example="my app">%1$s</xliff:g>에 %2$s 권한이 필요합니다. 이는 배경화면 데이터 접근에 대한 시스템 제한으로 인해 발생합니다.</string>
@@ -757,7 +774,7 @@
     <string name="permission_desc_wallpaper_multiple_desc">배경화면 미리보기를 표시하고 백업에 포함하려면 <xliff:g id="name" example="my app">%1$s</xliff:g>에 다음 권한이 필요합니다. 이는 배경화면 데이터 접근에 대한 시스템 제한으로 인해 발생합니다.</string>
     <string name="permission_label_manage_all_files">기기의 모든 파일 관리</string>
     <string name="permission_label_read_photos_videos">사진과 비디오 읽기</string>
-    <string name="manage_storage_access_denied_title">저장소 액세스 관리를 활성화할 수 없습니다</string>
+    <string name="manage_storage_access_denied_title">Cannot turn on manage storage access</string>
     <string name="manage_storage_access_denied_description">Play 스토어 정책으로 인해 <xliff:g id="name" example="My App">%1$s</xliff:g>은(는) 여기에서 전체 저장 공간 접근 권한을 요청할 수 없습니다. 모든 파일에 접근하려면 GitHub에서 <xliff:g id="name" example="My App">%1$s</xliff:g>을(를) 다운로드하세요. 또는 설정에서 사진, 동영상, 오디오 파일에 대한 접근 권한을 개별적으로 부여할 수 있습니다.</string>
     <string name="open_permission_settings">설정 열기</string>
     <string name="grant_requested_permissions">권한 부여</string>

@@ -10,10 +10,10 @@
 -processkotlinnullchecks remove
 
 # Common rules.
--keep,allowshrinking,allowoptimization class android.window.** { *; }
--keep,allowshrinking,allowoptimization class android.view.** { *; }
--keep,allowshrinking,allowoptimization class com.android.systemui.** { *; }
--keep,allowshrinking,allowoptimization class com.android.wm.shell.** { *; }
+-keep,allowshrinking class android.window.** { *; }
+-keep,allowshrinking class android.view.** { *; }
+-keep,allowshrinking class com.android.systemui.** { *; }
+-keep,allowshrinking class com.android.wm.shell.** { *; }
 
 -keepclassmembers class * implements android.os.Parcelable {
   public static final ** CREATOR;

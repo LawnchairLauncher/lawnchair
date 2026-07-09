@@ -517,7 +517,9 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         List<SystemShortcut.Factory> shortcuts = new ArrayList(Arrays.asList(
                 APP_INFO, WellbeingModel.SHORTCUT_FACTORY, mHotseatPredictionController));
 
-        shortcuts.addAll(getSplitShortcuts());
+        if (LawnchairApp.isRecentsEnabled()) {
+            shortcuts.addAll(getSplitShortcuts());
+        }
         shortcuts.add(WIDGETS);
         shortcuts.add(INSTALL);
         if (Flags.enableLongPressRemoveShortcut()
@@ -1017,7 +1019,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
             return false;
         }
 
-        getOnBackAnimationCallback().onBackInvoked();
+        if (Utilities.ATLEAST_U) getOnBackAnimationCallback().onBackInvoked();
         return true;
     }
 

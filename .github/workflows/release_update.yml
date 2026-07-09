@@ -23,6 +23,7 @@ on:
 jobs:
   build-release-apk:
     runs-on: ubuntu-latest
+    if: endsWith(github.ref, '-alpha') || endsWith(github.ref, '-beta') || endsWith(github.ref, '-rc') || endsWith(github.ref, '-stable')
     permissions:
       id-token: write
       attestations: write

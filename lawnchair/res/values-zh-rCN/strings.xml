@@ -46,10 +46,10 @@
     <string name="download_update">下载更新</string>
     <string name="install_update">安装更新</string>
     <string name="view_changes">查看更新</string>
-    <string name="pro_updated">你已经是最新版！</string>
+    <string name="pro_updated">You\'re up-to-date</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">更新</string>
-    <string name="changes_dialog_error">无法载入更改</string>
+    <string name="changes_dialog_error">Couldn\'t load updates</string>
     <string name="changes_dialog_no_changes">没有发现更改</string>
     <string name="changes_dialog_build_format">构建 #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">由 %1$s • %2$s • %3$s</string>
@@ -91,7 +91,6 @@
     <string name="wallpaper">壁纸</string>
     <string name="style">样式</string>
     <string name="background_opacity">背景遮罩不透明度</string>
-    <string name="pref_all_apps_search_bar_background">单独的搜索栏背景</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">已复制到剪贴板</string>
     <string name="calculator_search_result_copied_toast">内容已经复制到粘贴板</string>
@@ -99,12 +98,12 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
     <string name="wallpapers">背景</string>
-    <string name="caddy_beta">资源库（测试版）</string>
+    <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">资源库</string>
     <string name="app_drawer_folder">应用抽屉文件夹</string>
     <string name="selected_apps">已选择应用</string>
     <string name="add_apps">添加应用</string>
-    <string name="app_drawer_folder_settings">抽屉文件夹</string>
+    <string name="app_drawer_folder_settings">应用抽屉文件夹</string>
     <string name="add_folder">新建文件夹</string>
     <string name="edit_folder">编辑文件夹</string>
     <string name="add_label">添加</string>
@@ -116,18 +115,18 @@
     <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用程序列表之外</string>
     <string name="folders_filter_duplicates">仅显示唯一应用</string>
     <string name="my_folder_label">我的文件夹</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">排序活跃项目</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">为了在您执行手势时进行某些操作（例如锁定手机），Lawnchair 需要获取无障碍服务权限。\n\nLawnchair 不会监视您的任何用户操作，尽管所有无障碍服务都必须申请该权限。Lawnchair 会丢弃系统发送的任何事件。\n\n为了锁定您的手机或打开最近任务界面，Lawnchair 使用 performGlobalAction 无障碍服务。</string>
+    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
-    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">高级</string>
     <!-- Draggable -->
     <string name="reorderable_active_items">活跃项目</string>
     <string name="reorderable_disabled_items">其他项目</string>
-    <string name="reorderable_disabled_hint">已禁用的项目将显示在此处。将项目拖到此处或点击移除按钮即可启用该项目。</string>
-    <string name="reorderable_add_hint_items">已激活的项目将显示在此处。将项目拖到此处或点击添加按钮即可激活项目。</string>
+    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
+    <string name="reorderable_add_hint_items">Active items will appear here</string>
     <!--
 
     Preference Dashboard
@@ -150,7 +149,7 @@
     <string name="gestures_label">手势</string>
     <string name="gestures_description">点击和滑动</string>
     <string name="quickstep_label">最近任务界面</string>
-    <string name="quickstep_description">全部清除按钮，圆角半径</string>
+    <string name="quickstep_description">Clear all button, corner radius</string>
     <string name="backup_and_restore_label">备份和还原</string>
     <string name="backup_and_restore_description">保存当前设置，恢复备份</string>
     <string name="about_label">关于</string>
@@ -161,32 +160,32 @@
     <string name="workspace_label">工作区</string>
     <string name="smartspace_label">智能区</string>
     <string name="internal_label">内部</string>
-    <string name="internal_description">内部实验组可能比其他实验组更不稳定</string>
+    <string name="internal_description">Internal may be less stable than other experimental groups</string>
     <string name="font_picker_label">自定义字体</string>
     <string name="font_picker_description">部分文字保持不变</string>
     <string name="smartspace_calendar_label">自定义资讯一览日历</string>
     <string name="smartspace_calendar_description">允许显示非公历系统的日期</string>
     <string name="workspace_increase_max_grid_size_label">增加最大网格大小限制</string>
-    <string name="workspace_increase_max_grid_size_description">将主屏幕网格大小限制从 10 × 10 提升到 20 × 20</string>
+    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">始终重载图标</string>
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
-    <string name="always_reload_icons_warning">这将导致图标定期重新加载，如果图标包不定期更新，则无需这样做</string>
+    <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">桌面模式</string>
     <string name="show_deck_layout_description">显示一个外观选项，开启时隐藏抽屉，并将 App 显示到桌面上</string>
     <string name="material_expressive_label">Material 3 表现力</string>
-    <string name="material_expressive_description">在工作区中启用 Material 3 的表达性更改</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
+    <string name="folder_shape_label">文件夹形状</string>
     <string name="folder_label">文件夹</string>
     <string name="app_icon_shape_label">应用</string>
     <string name="gesturenavcontract_label">使用手势导航合同API</string>
-    <string name="gesturenavcontract_description">支持 Android 手势导航时的增强动画效果。并非所有设备都支持此功能。使用时可能会出现动画错误。</string>
-    <string name="gesturenavcontract_warning_incompatibility">手势导航合约 可能会导致动画过程中出现瑕疵</string>
-    <string name="recents_lock_unlock">锁定/解锁</string>
-    <string name="recents_lock_unlock_description">按“全部清除”时防止所选应用关闭</string>
+    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
+    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
+    <string name="recents_lock_unlock">App locking</string>
+    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">淡入</string>
-    <string name="overlay_suck_in">吸入</string>
     <string name="app_closing_animation">应用关闭动画</string>
+    <string name="overlay_fade_in">Fade in</string>
+    <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">覆盖</string>
     <string name="overlay_none">无</string>
     <!--
@@ -199,8 +198,8 @@
     <string name="show_notification_count">显示通知数量</string>
     <string name="notification_dots_color">通知圆点颜色</string>
     <string name="notification_dots_text_color">通知计数颜色</string>
-    <string name="notification_dots_color_contrast_warning_always">警告：通知圆点和计数颜色彼此之间对比度不够</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">警告：通知圆点和计数颜色可能并不总是具有足够的对比度</string>
+    <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
     <!--
 
     Icons
@@ -215,8 +214,8 @@
     <string name="label_size">标签大小</string>
     <string name="twoline_label">使用多行</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">透明主题图标</string>
-    <string name="transparent_background_icons_description">在主题图标上使用透明背景</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">自适应图标</string>
     <string name="auto_adaptive_icons_description">用于全部非自适应图标</string>
     <string name="shadow_bg_icons_label">在图标后显示阴影</string>
@@ -260,16 +259,16 @@
     <string name="icon_shape_leaf">叶</string>
     <string name="icon_shape_meow">喵</string>
     <string name="icon_shape_pebble">卵石</string>
-    <string name="icon_shape_roundedhexagon">圆角六边形</string>
+    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
     <string name="icon_shape_stretched">拉伸</string>
-    <string name="icon_shape_vessel">血管</string>
+    <string name="icon_shape_vessel">器皿</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">自定义图标形状</string>
     <string name="custom_icon_shape_create">创建自定义图标形状</string>
     <string name="custom_icon_shape_edit">编辑自定义图标形状</string>
-    <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape">自定义文件夹形状</string>
+    <string name="custom_folder_shape_create">创建自定义文件夹形状</string>
+    <string name="custom_folder_shape_edit">编辑自定义文件夹形状</string>
     <string name="custom_icon_shape_corner">边角形状</string>
     <string name="custom_icon_shape_corner_round">圆形</string>
     <string name="custom_icon_shape_corner_squircle">方圆形</string>
@@ -287,7 +286,7 @@
     <string name="themed_icon_pack_tint">用强调色进行着色</string>
     <string name="system_icons">系统图标</string>
     <string name="force_monochrome_label">强制单色</string>
-    <string name="force_monochrome_description">需要重启，为不支持的应用着色，使用强调色</string>
+    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
     <string name="themed_icon_title">主题图标</string>
     <string name="themed_icons_off_label">关</string>
     <string name="themed_icons_home_label">主屏幕</string>
@@ -380,29 +379,29 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
-    <string name="smartspace_torch">Flashlight status</string>
-    <string name="smartspace_now_playing">正在播放</string>
+    <string name="smartspace_torch">手电筒状态</string>
+    <string name="smartspace_now_playing">Now playing</string>
     <string name="smartspace_onboarding">入职</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
-    <string name="torch_action_off">Tap to turn off</string>
+    <string name="torch_status_on">手电筒已开启</string>
+    <string name="torch_action_off">点击以关闭</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">设置你的 Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">长按主屏幕打开设置</string>
-    <string name="onboarding_major_upgrade_title">欢迎来到 Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>！</string>
-    <string name="onboarding_major_upgrade_subtitle">查看什么是新的！</string>
+    <string name="onboarding_open_settings_title">Set up Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
+    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
+    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
     <string name="onboarding_welcome">欢迎来到 Lawnchair！</string>
-    <string name="onboarding_swipe_up">上滑用来打开应用抽屉</string>
+    <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">目标数量上限</string>
     <string name="open_smartspacer_settings">打开 Smartspacer 设置</string>
     <string name="smartspacer_settings">Smartspacer设置</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">点击以设置</string>
-    <string name="event_provider_missing_notification_dots">要使用<xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请打开通知圆点</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">在主屏幕显示</string>
-    <string name="smartspace_widget_toggle_description">资讯一览可以通过将 Lawnchair 小部件放置在主屏幕上来手动添加</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">资讯一览提供程序</string>
     <string name="smartspace_mode_google">Google</string>
@@ -433,11 +432,11 @@
     <string name="privacy_policy">隐私政策</string>
     <string name="contributor_status_active">活跃</string>
     <string name="update_check_failed">检查更新失败</string>
-    <string name="major_update_label">颠覆性变革！</string>
-    <string name="major_update_description">您即将从 Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> 更新到 Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>，请谨慎考虑，因为较新的主版本可能比当前版本不稳定。</string>
-    <string name="pro_disabled_by_unknown">无法更新！</string>
-    <string name="pro_disabled_by_major_is_newer">无法更新，此构建太新！</string>
-    <string name="updater">更新器</string>
+    <string name="major_update_label">Update to major version?</string>
+    <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
+    <string name="pro_disabled_by_unknown">Updates are not available</string>
+    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
+    <string name="updater">更新</string>
     <!--
 
     Backup and restore
@@ -490,7 +489,7 @@
     <string name="notifications_fallback_a11y_hint">打开通知面板</string>
     <string name="quick_settings_a11y_hint">打开快速设置面板</string>
     <string name="recents_screen_a11y_hint">打开最近应用屏幕</string>
-    <string name="generic_a11y_hint">要%1$s, 启用 Lawnchair 无障碍服务，请点击“打开设置”，选择“Lawnchair”，然后开启“使用 Lawnchair”。</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair 使用辅助功能的 `performGlobalAction` 方法来执行此操作。这是一个敏感权限，允许监控其他应用。但是，Lawnchair 未配置此功能，因此不会收到任何事件。</string>
     <string name="sleep_mode_label">睡眠模式</string>
     <string name="sleep_mode_auto">自动</string>
@@ -518,15 +517,15 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
-    <string name="home_screen_rotation_description">允许在设备旋转时旋转主屏幕</string>
-    <string name="auto_updater_label">自动更新器</string>
-    <string name="auto_updater_description">进入关于部分时自动检查每日更新</string>
+    <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
+    <string name="auto_updater_label">Automatically check for updates</string>
+    <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
     <string name="wallpaper_blur">壁纸模糊 (实验性)</string>
     <string name="wallpaper_background_blur">模糊强度</string>
     <string name="wallpaper_background_blur_factor">因素阈值</string>
     <string name="home_lawn_deck_label">甲板</string>
     <string name="home_lawn_deck_label_beta">甲板 (测试版)</string>
-    <string name="home_lawn_deck_description">使用 Deck 轻松访问您的应用程序，这是专为简单和无缝组织而设计的终极无抽屉体验</string>
+    <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">添加新应用到主屏</string>
     <string name="minus_one_enable">显示订阅</string>
     <string name="minus_one_unavailable">未安装订阅源。</string>
@@ -543,16 +542,20 @@
     <string name="home_screen_unlock">解锁主屏幕</string>
     <string name="home_screen_locked">主屏幕已被锁定</string>
     <string name="home_screen_lock_description">固定主屏幕布局</string>
+    <string name="horizontal_padding_label">水平边距</string>
+    <string name="vertical_padding_label">垂直边距</string>
+    <string name="top_padding_label">顶部边距</string>
+    <string name="widget_padding_label">小部件边距</string>
     <string name="set_default_home_page">设置为默认页面</string>
     <string name="default_home_page_set">默认主页面已更新</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
-    <string name="page_order_updated">Page order updated</string>
+    <string name="move_page_left">将页面左移</string>
+    <string name="move_page_right">将页面右移</string>
+    <string name="page_order_updated">页面顺序已更新</string>
     <string name="edit_mode_page_strip_default">默认</string>
-    <string name="edit_mode_page_strip_page">Page %1$d</string>
-    <string name="edit_mode_page_strip_set_home">Set as home page</string>
-    <string name="edit_mode_page_strip_home_selected">Default home page</string>
-    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
+    <string name="edit_mode_page_strip_page">第 %1$d 页</string>
+    <string name="edit_mode_page_strip_set_home">设置为首页</string>
+    <string name="edit_mode_page_strip_home_selected">默认主页</string>
+    <string name="edit_mode_page_strip_tip">拖动页面重新排序。点击主屏幕图标设置默认页面。</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="popup_menu_items">弹窗目录项目</string>
     <string name="edit_menu_items">编辑弹窗目录项目</string>
@@ -561,7 +564,7 @@
     <string name="show_status_bar">显示状态栏</string>
     <string name="dark_status_bar_label">深色状态栏</string>
     <string name="status_bar_clock_label">状态栏时钟</string>
-    <string name="status_bar_clock_description">在第一个屏幕中动态隐藏状态栏时钟</string>
+    <string name="status_bar_clock_description">Dynamically hide the status bar clock on the first screen</string>
     <string name="home_screen_text_color">文本颜色</string>
     <string name="color_light">浅色</string>
     <string name="color_dark">深色</string>
@@ -573,12 +576,12 @@
     <string name="widget_unlimited_size_description">删除小部件的最小和最大大小限制</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">显示 Dock 栏</string>
-    <string name="enable_dock_to_access_qsb_settings">当 Dock 可见时，搜索栏设置可用。点击可显示 Dock。</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the dock is visible. Tap to show the dock</string>
     <string name="search_bar_label">搜索栏</string>
     <string name="search_bar_settings">搜索栏设置</string>
     <string name="hotseat_mode_label">搜索栏小部件</string>
     <string name="hotseat_mode_disabled">已禁用</string>
-    <string name="hotseat_mode_google_search">Google 搜索栏</string>
+    <string name="hotseat_mode_google_search">Google search bar</string>
     <string name="qsb_hotseat_background_transparency">背景不透明度</string>
     <string name="qsb_hotseat_stroke_width">轮廓宽度</string>
     <string name="qsb_hotseat_stroke_color">轮廓颜色</string>
@@ -599,8 +602,16 @@
     <string name="paused_apps_dialog_title">应用已暂停</string>
     <string name="paused_apps_dialog_message">%1$s 直接从启动器暂停</string>
     <string name="paused_apps_drop_target_label">暂停应用</string>
-    <string name="open_in_store_drop_target_label">Open in store</string>
+    <string name="open_in_store_drop_target_label">在商店中打开</string>
     <string name="dock_icons">Dock 栏图标</string>
+    <string name="state_folded">%1$s (folded)</string>
+    <string name="state_unfolded">%1$s (unfolded)</string>
+    <string name="folded_label">Folded</string>
+    <string name="unfolded_label">Unfolded</string>
+    <string name="when_folded_label">When folded</string>
+    <string name="when_unfolded_label">When unfolded</string>
+    <string name="unfolded_grid_description">Lawnchair pairs two pages together to fill the larger display</string>
+    <string name="foldable_columns_error">The folded value must be less than or equal to the unfolded value. It will be automatically adjusted if needed.</string>
     <string name="hotseat_bottom_space_label">底部边距</string>
     <string name="page_indicator_height">页面指​​示器高度</string>
     <!-- Search providers -->
@@ -618,16 +629,17 @@
     <string name="hidden_apps_label">隐藏的应用</string>
     <string name="pref_all_apps_bulk_icon_loading_title">批量加载应用</string>
     <string name="pref_all_apps_bulk_icon_loading_description">批量加载和显示图标，而不是单独加载和显示图标</string>
-    <string name="pref_all_apps_remember_position_title">记住位置</string>
-    <string name="pref_all_apps_remember_position_description">离开抽屉后记住应用抽屉位置</string>
+    <string name="pref_all_apps_remember_position_title">Remember scroll position</string>
+    <string name="pref_all_apps_remember_position_description">Save the last scrolled location when closing the app drawer</string>
     <string name="pref_all_apps_show_scrollbar_title">显示滚动条</string>
     <string name="app_drawer_columns">应用程序抽屉列数</string>
     <string name="row_height_label">行高</string>
     <string name="app_drawer_haptic_feedback_label">触觉反馈</string>
     <string name="app_drawer_indent_label">水平边距</string>
     <string name="app_drawer_bg_color_label">背景颜色</string>
-    <string name="work_profile_tab_background_label">标签页背景颜色</string>
-    <string name="work_profile_tab_container_background_label">分隔符标签页容器背景</string>
+    <string name="work_profile_tab_background_label">Tab background color</string>
+    <string name="pref_all_apps_search_bar_background">Show background behind search bar</string>
+    <string name="work_profile_tab_container_background_label">Show background behind tabs</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">从应用抽屉中隐藏</string>
     <string name="hidden_apps_label_with_count">隐藏的应用 (%1$d)</string>
@@ -641,9 +653,9 @@
     <string name="max_folder_columns">最大文件夹列数</string>
     <string name="max_folder_rows">最大文件夹行数</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">由于 Lawnchair 未被设为最近任务应用，这些设置将不会生效</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
-    <string name="quickstep_incompatible_description">您的设备已配置为使用 %1$s 提供的系统手势 (称为 Quickstep)，但此版本的 %1$s 与您的 Android 版本不兼容。要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供程序。</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
     <string name="translucent_background">半透明背景</string>
     <string name="translucent_background_alpha">背景不透明度</string>
     <string name="recents_actions_label">快捷操作</string>
@@ -664,13 +676,15 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">搜索本机与互联网</string>
     <string name="all_apps_search_bar_hint">搜索应用</string>
-    <string name="all_apps_no_search_results">未找到与“<xliff:g example="Android" id="query">%1$s</xliff:g>”匹配的应用</string>
+    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"
+    </string>
     <string name="all_apps_search_result_suggestions">来自网络</string>
     <string name="all_apps_search_result_contacts_from_device">设备上的联系人</string>
     <string name="all_apps_search_result_files">设备上的文件</string>
     <string name="all_apps_search_result_settings_entry_from_device">设备上的设置</string>
     <string name="all_apps_search_market_message">搜索更多应用</string>
-    <string name="all_apps_search_on_web_message">在 <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g> 上搜索</string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>
+    </string>
     <string name="error_no_market_or_browser_installed">应用商店或浏览器没安装</string>
     <string name="all_apps_search_on_web_general">在网络上搜索</string>
     <string name="clear_history">清除搜索记录</string>
@@ -688,9 +702,9 @@
     <string name="show_hidden_apps_in_search_results">在搜索结果中显示隐藏的应用</string>
     <string name="hidden_apps_show_name_typed">如果输入全名</string>
     <string name="allapps_web_suggestion_provider_label">网络建议提供程序</string>
-    <string name="allapps_use_web_suggestion_icon_label">在搜索栏中显示网络建议提供程序图标</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show the web suggestion provider icon in the search bar</string>
     <string name="allapps_match_qsb_style_label">匹配dock搜索栏操作</string>
-    <string name="allapps_match_qsb_style_description">现在，点击 dock 搜索栏将打开应用程序抽屉</string>
+    <string name="allapps_match_qsb_style_description">Tapping the dock search bar opens the app drawer search view</string>
     <string name="app_search_algorithm">搜索算法</string>
     <string name="search_algorithm_app_search">应用搜索</string>
     <string name="search_algorithm_global_search_on_device">全局搜索 (设备上)</string>
@@ -716,12 +730,13 @@
     <string name="all_apps_search_result_calculator">计算器</string>
     <string name="search_empty_state_title">开始搜索</string>
     <string name="search_empty_state_no_history_subtitle">查找应用、联系人等。您最近的搜索结果将显示在这里。</string>
-    <string name="search_empty_state_history_disabled_subtitle">查找应用、联系人等。</string>
+    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">搜索内容</string>
     <string name="search_pref_result_files_description">媒体、文件和更多</string>
     <string name="search_pref_result_contacts_description">联系人及更多</string>
-    <string name="search_pref_result_web_provider_description">通过 <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g>
+    </string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">最大应用数量</string>
     <string name="max_people_result_count_title">最多人数</string>
@@ -732,21 +747,23 @@
     <string name="max_web_suggestion_delay">网络建议超时时长</string>
     <!-- Permission management -->
     <string name="missing_notification_access_label">需要通知使用权来读取内容</string>
-    <string name="missing_notification_access_desc">要显示通知圆点，请为 <xliff:g id="name" example="My App">%1$s</xliff:g> 开启应用通知</string>
+    <string name="missing_notification_access_desc">To show notification dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>
+    </string>
     <string name="warn_contact_permission_title">需要通讯录权限</string>
-    <string name="warn_contact_permission_content">要搜索联系人，请授予<xliff:g id="name" example="My App">%1$s</xliff:g>联系人和电话权限</string>
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g>
+    </string>
     <string name="permissions_music_audio">需要音乐和音频访问权限</string>
-    <string name="permissions_music_audio_description">要搜索您的音乐和音频， <xliff:g id="name" example="My App">%1$s</xliff:g> 需要拥有访问您设备上音乐和音频的权限。</string>
+    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">需要照片和视频访问权限</string>
-    <string name="permissions_photos_videos_description">要搜索您的照片和视频， <xliff:g id="name" example="My App">%1$s</xliff:g> 需要拥有访问您设备上照片和视频的权限。</string>
+    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
     <string name="permissions_photos_videos_full">能否访问您的完整媒体库？</string>
-    <string name="permissions_photos_videos_full_description">要搜索您的所有照片和视频， <xliff:g id="name" example="My App">%1$s</xliff:g> 需要拥有访问您设备上照片和视频的权限。</string>
+    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library</string>
     <string name="permissions_photos_videos_grant_full">获取完整媒体权限</string>
     <string name="permissions_photos_videos_manage_selected">管理已选择项目</string>
     <!-- External storage -->
     <string name="permissions_external_storage">需要外储存权限</string>
-    <string name="permissions_external_storage_description">为了搜索文件，<xliff:g id="name" example="My App">%1$s</xliff:g> 需要拥有访问您设备外部存储的权限。</string>
+    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage</string>
     <string name="permissions_manage_storage">需要管理储存权限</string>
     <string name="permissions_manage_storage_description">为了在搜索结果中显示你的文件，<xliff:g id="name" example="My App">%1$s</xliff:g> 需要拥有管理您设备上所有文件的权限。这一权限只用于列出文件，而不用于读取或更改您的文件。</string>
     <string name="permission_desc_wallpaper_base">为了显示壁纸预览并将其包含于备份中，<xliff:g id="name" example="My App">%1$s</xliff:g> 需要 %2$s 权限。这是由于系统对访问壁纸数据的限制。</string>
@@ -756,7 +773,7 @@
     <string name="permission_desc_wallpaper_multiple_desc">为了显示壁纸预览并将其包含于备份中，<xliff:g id="name" example="My App">%1$s</xliff:g> 需要下列权限。这是由于系统对访问壁纸数据的限制。</string>
     <string name="permission_label_manage_all_files">管理设备上所有的文件</string>
     <string name="permission_label_read_photos_videos">读取照片和视频</string>
-    <string name="manage_storage_access_denied_title">无法启用存储管理权限</string>
+    <string name="manage_storage_access_denied_title">Cannot turn on manage storage access</string>
     <string name="manage_storage_access_denied_description">由于 Play 商店政策，<xliff:g id="name" example="My App">%1$s</xliff:g> 不能在此请求完整的存储访问权。要访问所有文件，请从 GitHub 下载 <xliff:g id="name" example="My App">%1$s</xliff:g>。或者，你可以在设置里分别授权访问图片、视频和音频文件。</string>
     <string name="open_permission_settings">打开设置</string>
     <string name="grant_requested_permissions">授予权限</string>

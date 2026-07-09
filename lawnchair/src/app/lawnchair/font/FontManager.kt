@@ -29,6 +29,8 @@ class FontManager @Inject constructor(
 
     private val specMap = createFontMap()
 
+    private val variableFonts = mutableMapOf<String, FontCache.Font>()
+
     private fun createFontMap(): Map<Int, FontSpec> {
         val sansSerif = Typeface.SANS_SERIF
         val sansSerifMedium = Typeface.create("sans-serif-medium", Typeface.NORMAL)
@@ -50,6 +52,7 @@ class FontManager @Inject constructor(
             var fontType = -1
             var fontWeight = -1
             var ap = -1
+            var fontFamily: String? = null
             context.obtainStyledAttributes(
                 attrs,
                 R.styleable.CustomFont,
@@ -57,6 +60,9 @@ class FontManager @Inject constructor(
                 fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
                 fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
                 ap = a.getResourceId(R.styleable.CustomFont_android_textAppearance, -1)
+            }
+            context.obtainStyledAttributes(attrs, FONT_FAMILY_ATTR).use { a ->
+                fontFamily = a.getString(0)
             }
 
             if (ap != -1) {
@@ -68,6 +74,20 @@ class FontManager @Inject constructor(
                         fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
                     }
                 }
+                if (fontFamily == null) {
+                    context.obtainStyledAttributes(ap, FONT_FAMILY_ATTR).use { a ->
+                        fontFamily = a.getString(0)
+                    }
+                }
+            }
+
+            val gsfAxes = GoogleSansFlexVariableFont.axesFor(fontFamily)
+            if (gsfAxes != null) {
+                val font = variableFonts.getOrPut(fontFamily!!) {
+                    fontCache.googleSansFlexVariable(gsfAxes)
+                }
+                applyFont(textView, font)
+                return
             }
 
             if (fontType != -1) {
@@ -80,9 +100,13 @@ class FontManager @Inject constructor(
     @JvmOverloads
     fun setCustomFont(textView: TextView, @IdRes type: Int, style: Int = -1) {
         val spec = specMap[type] ?: return
-        val lifecycleOwner = textView.context.lookupLifecycleOwner()
-        lifecycleOwner?.lifecycleScope?.launch {
-            val typeface = fontCache.getTypeface(spec.font.createWithWeight(style)) ?: spec.fallback
+        applyFont(textView, spec.font.createWithWeight(style), spec.fallback)
+    }
+
+    private fun applyFont(textView: TextView, font: FontCache.Font, fallback: Typeface? = null) {
+        val lifecycleOwner = textView.context.lookupLifecycleOwner() ?: return
+        lifecycleOwner.lifecycleScope.launch {
+            val typeface = fontCache.getTypeface(font) ?: fallback ?: return@launch
             runOnMainThread {
                 textView.typeface = typeface
             }
@@ -102,5 +126,7 @@ class FontManager @Inject constructor(
     companion object {
         @JvmField
         val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getFontManager)
+
+        private val FONT_FAMILY_ATTR = intArrayOf(android.R.attr.fontFamily)
     }
 }

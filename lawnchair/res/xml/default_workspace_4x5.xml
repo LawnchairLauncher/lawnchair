@@ -151,7 +151,7 @@
         launcher:packageName="com.google.android.deskclock"
         launcher:screen="0"
         launcher:spanX="2"
-        launcher:spanY="3"
+        launcher:spanY="2"
         launcher:x="2"
         launcher:y="1"/>
 

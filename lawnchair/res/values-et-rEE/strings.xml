@@ -46,10 +46,10 @@
     <string name="download_update">Laadi värskendus alla</string>
     <string name="install_update">Paigalda värskendus</string>
     <string name="view_changes">Kuva muudatused</string>
-    <string name="pro_updated">Rohkem uuendusi pole!</string>
+    <string name="pro_updated">You\'re up-to-date</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Uuendused</string>
-    <string name="changes_dialog_error">Muudatuste laadimine nurjus</string>
+    <string name="changes_dialog_error">Couldn\'t load updates</string>
     <string name="changes_dialog_no_changes">Muudatusi ei leitud</string>
     <string name="changes_dialog_build_format">Järk #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">autorilt %1$s • %2$s • %3$s</string>
@@ -91,7 +91,6 @@
     <string name="wallpaper">Taustapilt</string>
     <string name="style">Stiil</string>
     <string name="background_opacity">Tausta läbipaistmatus</string>
-    <string name="pref_all_apps_search_bar_background">Eraldatud otsinguriba taust</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopeeriti lõikelauale</string>
     <string name="calculator_search_result_copied_toast">Tulemus kopeeriti lõikelauale</string>
@@ -99,12 +98,12 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Mida kuvada</string>
     <string name="wallpapers">Taustapildid</string>
-    <string name="caddy_beta">Caddy (beeta)</string>
+    <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Rühmitamine</string>
     <string name="app_drawer_folder">Rakenduste sahtli kaustad</string>
     <string name="selected_apps">Valitud rakendused</string>
     <string name="add_apps">Lisa rakendusi</string>
-    <string name="app_drawer_folder_settings">Sahtli kaust</string>
+    <string name="app_drawer_folder_settings">App drawer folder</string>
     <string name="add_folder">Loo kaust</string>
     <string name="edit_folder">Muuda kausta</string>
     <string name="add_label">Lisa</string>
@@ -118,16 +117,16 @@
     <string name="my_folder_label">Minu kaust</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Teatud toimingute (näiteks telefoni lukustamise) sooritamiseks viipe abil vajab Lawnchair luba juurdepääsetavuse teenuse kautamiseks.\n\nLawnchair ei jälgi kasutaja toiminguid, kuigi juurdepääsetavuse teenus annab selleks vajaliku õiguse. Lawnchair hülgab kõik süsteemi saadetud sündmused.\n\nTelefoni lukustamiseks või hiljutiste toimingute ekraani avamiseks kasutab Lawnchair performGlobalAction juurdepääsetavuse teenust.</string>
+    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
-    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Täpsemalt</string>
     <!-- Draggable -->
     <string name="reorderable_active_items">Active items</string>
     <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here. Drag an item here or tap the remove button to make an item active.</string>
-    <string name="reorderable_add_hint_items">Active items will appear here. Drag an item here or tap the add button to make an item active.</string>
+    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
+    <string name="reorderable_add_hint_items">Active items will appear here</string>
     <!--
 
     Preference Dashboard
@@ -150,7 +149,7 @@
     <string name="gestures_label">Viiped</string>
     <string name="gestures_description">Puudutused ja nipsamine</string>
     <string name="quickstep_label">Hiljutised rakendused</string>
-    <string name="quickstep_description">Nupp Kustuta kõik, nurgaraadius</string>
+    <string name="quickstep_description">Clear all button, corner radius</string>
     <string name="backup_and_restore_label">Backup and restore</string>
     <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">Teave</string>
@@ -161,32 +160,32 @@
     <string name="workspace_label">Workspace</string>
     <string name="smartspace_label">Smartspace</string>
     <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
+    <string name="internal_description">Internal may be less stable than other experimental groups</string>
     <string name="font_picker_label">Fondi kohandamine</string>
     <string name="font_picker_description">Osa tekstist jääb muutmata</string>
     <string name="smartspace_calendar_label">Ülevaate vidina kalendri kohandamine</string>
     <string name="smartspace_calendar_description">Luba kuupäeva kuvamine mitte-Gregoriuse kalendrisüsteemides</string>
     <string name="workspace_increase_max_grid_size_label">Suurenda ruudustiku maksimaalse suuruse limiiti</string>
-    <string name="workspace_increase_max_grid_size_description">Suurenda avakuva maksimaalset lubatud ruudustiku suurust 10 x 10 > 20 x 20</string>
+    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Laadi ikoonid alati uuesti</string>
     <string name="always_reload_icons_description">Väldi ikoonipakettidest vahemällu salvestatud ikoonide kasutamist</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
+    <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">Doki paigutus</string>
     <string name="show_deck_layout_description">Rakenduste sahtli peitmiseks ja uute rakenduste automaatseks lisamiseks avakuvale kuva paigutuse valik</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
-    <string name="folder_label">Folder</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
+    <string name="folder_shape_label">Kausta kuju</string>
+    <string name="folder_label">Kaust</string>
     <string name="app_icon_shape_label">Rakendus</string>
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation. Not all devices support this. May cause animation bugs when in use.</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
-    <string name="recents_lock_unlock">Lukusta/ava</string>
-    <string name="recents_lock_unlock_description">Takista valitud rakenduse sulgemine, kui vajutada nuppu \"Kustuta kõik\"</string>
+    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
+    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
+    <string name="recents_lock_unlock">App locking</string>
+    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">Hääbumine</string>
-    <string name="overlay_suck_in">Tagasitõmbamine</string>
     <string name="app_closing_animation">Rakenduse sulgemise animatsioon</string>
+    <string name="overlay_fade_in">Fade in</string>
+    <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">Ülekate</string>
     <string name="overlay_none">Pole</string>
     <!--
@@ -199,8 +198,8 @@
     <string name="show_notification_count">Kuva märguandeloendur</string>
     <string name="notification_dots_color">Märguandetäpi värv</string>
     <string name="notification_dots_text_color">Mäguandeloenduri värv</string>
-    <string name="notification_dots_color_contrast_warning_always">Hoiatus: märguandetäpi ja loenduri värvid ei eristu piisavalt</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Hoiatus: märguandetäpi ja loenduri värvid ei pruugi alati piisavalt eristuda</string>
+    <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
     <!--
 
     Icons
@@ -208,15 +207,15 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Ikoonide stiil</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
+    <string name="apply_icon_pack_title">Rakenda ikoonipakett</string>
     <string name="icon_shape_label">Ikoonide kuju</string>
     <string name="icon_sizes">Ikoonide suurus</string>
     <string name="show_labels">Kuva nimesildid</string>
     <string name="label_size">Sildi suurus</string>
     <string name="twoline_label">Kasuta mitut rida</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Läbipaistvad temaatilised ikoonid</string>
-    <string name="transparent_background_icons_description">Kasutage temaatilistel ikoonidel läbipaistvat tausta</string>
+    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automaatselt kohanduvad ikoonid</string>
     <string name="auto_adaptive_icons_description">Kõigile mittekohanduvatele ikoonidele</string>
     <string name="shadow_bg_icons_label">Kuva ikoonide taga vari</string>
@@ -260,7 +259,7 @@
     <string name="icon_shape_leaf">Leaf</string>
     <string name="icon_shape_meow">Meow</string>
     <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded Hexagon</string>
+    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
     <string name="icon_shape_stretched">Stretched</string>
     <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
@@ -287,7 +286,7 @@
     <string name="themed_icon_pack_tint">Tooni aktsentvärviga</string>
     <string name="system_icons">Süsteemi ikoonid</string>
     <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Require restart, tint unsupported apps with accent color</string>
+    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
     <string name="themed_icon_title">Temaatilised ikoonid</string>
     <string name="themed_icons_off_label">Väljas</string>
     <string name="themed_icons_home_label">Avakuva</string>
@@ -381,28 +380,28 @@
     <string name="smartspace_weather">Ilm</string>
     <string name="smartspace_battery_status">Aku olek</string>
     <string name="smartspace_torch">Flashlight status</string>
-    <string name="smartspace_now_playing">Esitamisel</string>
+    <string name="smartspace_now_playing">Now playing</string>
     <string name="smartspace_onboarding">Onboarding</string>
     <!-- Torch strings -->
     <string name="torch_status_on">Flashlight on</string>
     <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Configure your Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the Home Screen to open Settings</string>
-    <string name="onboarding_major_upgrade_title">Welcome to Lawnchair <xliff:g example="16" id="next_major_version">%1$d</xliff:g>!</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new!</string>
+    <string name="onboarding_open_settings_title">Set up Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
+    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
+    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
     <string name="onboarding_welcome">Welcome to Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the App Drawer</string>
+    <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maksimaalne sihtmärkide arv</string>
     <string name="open_smartspacer_settings">Avage rakenduse Smartspacer seaded</string>
     <string name="smartspacer_settings">Rakenduse Smartspacer seaded</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Seadistamiseks puuduta</string>
-    <string name="event_provider_missing_notification_dots">Et kasutada <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, luba Märguandetäpid.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Kuva avakuval</string>
-    <string name="smartspace_widget_toggle_description">Ülevaate saab avakuvale lisada käsitsi, paigutades sinna Lawnchair vidina</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">Ülevaate pakkuja</string>
     <string name="smartspace_mode_google">Google</string>
@@ -433,11 +432,11 @@
     <string name="privacy_policy">Privaatsuspoliitika</string>
     <string name="contributor_status_active">Aktiivne</string>
     <string name="update_check_failed">Uuenduste kontrollimine nurjus</string>
-    <string name="major_update_label">Breaking change!</string>
-    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
-    <string name="pro_disabled_by_unknown">Cannot update!</string>
-    <string name="pro_disabled_by_major_is_newer">Cannot update, This build is way too new!</string>
-    <string name="updater">Updater</string>
+    <string name="major_update_label">Update to major version?</string>
+    <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
+    <string name="pro_disabled_by_unknown">Updates are not available</string>
+    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
+    <string name="updater">Uuendused</string>
     <!--
 
     Backup and restore
@@ -490,7 +489,7 @@
     <string name="notifications_fallback_a11y_hint">open the notification panel</string>
     <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
     <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="sleep_mode_label">Sleep mode</string>
     <string name="sleep_mode_auto">Automatic</string>
@@ -518,15 +517,15 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Avakuva pööramine</string>
-    <string name="home_screen_rotation_description">Luba seadme pööramisel avakuva pööramine</string>
-    <string name="auto_updater_label">Auto updater</string>
-    <string name="auto_updater_description">Automatically check for Nightly update when going to About section</string>
+    <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
+    <string name="auto_updater_label">Automatically check for updates</string>
+    <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
     <string name="wallpaper_blur">Hägusta taustapilt (katseline)</string>
     <string name="wallpaper_background_blur">Hägususe aste</string>
     <string name="wallpaper_background_blur_factor">Hägususteguri piirang</string>
     <string name="home_lawn_deck_label">Rakenduste tekk</string>
     <string name="home_lawn_deck_label_beta">Rakenduste tekk (beeta)</string>
-    <string name="home_lawn_deck_description">Vahetu juurdepääs rakendustele teki abil. Rakenduste menüü puudub, eesmärgiks lihtsus ja sujuv kasutus</string>
+    <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Lisa uued rakendused avakuvale</string>
     <string name="minus_one_enable">Kuva uudistevoog</string>
     <string name="minus_one_unavailable">Uudistevoo rakendusi pole paigaldatud</string>
@@ -543,6 +542,10 @@
     <string name="home_screen_unlock">Ava avakuva lukk</string>
     <string name="home_screen_locked">Avakuva on lukustatud</string>
     <string name="home_screen_lock_description">Väldi avakuva paigutuse muutmist</string>
+    <string name="horizontal_padding_label">Horisontaalne kaugus</string>
+    <string name="vertical_padding_label">Vertical padding</string>
+    <string name="top_padding_label">Top padding</string>
+    <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
     <string name="move_page_left">Move page left</string>
@@ -561,7 +564,7 @@
     <string name="show_status_bar">Kuva olekuriba</string>
     <string name="dark_status_bar_label">Tume olekuriba</string>
     <string name="status_bar_clock_label">Olekuriba kell</string>
-    <string name="status_bar_clock_description">Peida dünaamiliselt olekuriba kell avakuval</string>
+    <string name="status_bar_clock_description">Dynamically hide the status bar clock on the first screen</string>
     <string name="home_screen_text_color">Teksti värv</string>
     <string name="color_light">Hele</string>
     <string name="color_dark">Tume</string>
@@ -573,12 +576,12 @@
     <string name="widget_unlimited_size_description">Eemalda vidinate minimaalse ja maksimaalse suuruse piirangud</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Kuva dokk</string>
-    <string name="enable_dock_to_access_qsb_settings">Otsinguriba seaded on saadaval, kui dokk on nähtav. Puuduta doki kuvamiseks.</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the dock is visible. Tap to show the dock</string>
     <string name="search_bar_label">Otsinguriba</string>
     <string name="search_bar_settings">Otsinguriba seaded</string>
     <string name="hotseat_mode_label">Otsinguriba vidin</string>
     <string name="hotseat_mode_disabled">Keelatud</string>
-    <string name="hotseat_mode_google_search">Google otsinguriba</string>
+    <string name="hotseat_mode_google_search">Google search bar</string>
     <string name="qsb_hotseat_background_transparency">Tausta läbipaistmatus</string>
     <string name="qsb_hotseat_stroke_width">Kontuuri laius</string>
     <string name="qsb_hotseat_stroke_color">Kontuuri värv</string>
@@ -601,6 +604,14 @@
     <string name="paused_apps_drop_target_label">Peata rakendus</string>
     <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Doki ikoonid</string>
+    <string name="state_folded">%1$s (folded)</string>
+    <string name="state_unfolded">%1$s (unfolded)</string>
+    <string name="folded_label">Folded</string>
+    <string name="unfolded_label">Unfolded</string>
+    <string name="when_folded_label">When folded</string>
+    <string name="when_unfolded_label">When unfolded</string>
+    <string name="unfolded_grid_description">Lawnchair pairs two pages together to fill the larger display</string>
+    <string name="foldable_columns_error">The folded value must be less than or equal to the unfolded value. It will be automatically adjusted if needed.</string>
     <string name="hotseat_bottom_space_label">Alumise serva kaugus</string>
     <string name="page_indicator_height">Lehekülje indikaatori kõrgus</string>
     <!-- Search providers -->
@@ -618,16 +629,17 @@
     <string name="hidden_apps_label">Peidetud rakendused</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Laadi rakendusi hulgi</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Laadi ja kuva ikoone hulgi, mitte eraldi</string>
-    <string name="pref_all_apps_remember_position_title">Jäta asukoht meelde</string>
-    <string name="pref_all_apps_remember_position_description">Sahtlist väljumisel jäta asukoht rakenduse sahtlis meelde</string>
+    <string name="pref_all_apps_remember_position_title">Remember scroll position</string>
+    <string name="pref_all_apps_remember_position_description">Save the last scrolled location when closing the app drawer</string>
     <string name="pref_all_apps_show_scrollbar_title">Kuva kerimisriba</string>
     <string name="app_drawer_columns">Rakenduse sahtli tulbad</string>
     <string name="row_height_label">Rea kõrgus</string>
     <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">Horisontaalne kaugus</string>
     <string name="app_drawer_bg_color_label">Tausta värv</string>
-    <string name="work_profile_tab_background_label">Tabs background color</string>
-    <string name="work_profile_tab_container_background_label">Separated Tab container background</string>
+    <string name="work_profile_tab_background_label">Tab background color</string>
+    <string name="pref_all_apps_search_bar_background">Show background behind search bar</string>
+    <string name="work_profile_tab_container_background_label">Show background behind tabs</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Peida rakenduste sahtlist</string>
     <string name="hidden_apps_label_with_count">Peidetud rakendused (%1$d)</string>
@@ -642,9 +654,9 @@
     <string name="max_folder_columns">Maksimaalne tulpade arv kaustas</string>
     <string name="max_folder_rows">Maksimaalne ridade arv kaustas</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Neid sätteid eiratakse, kuna Lawnchair ei ole määratud hiljutiste rakenduste pakkujaks</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Ühildumatu süsteemiintegratsioon</string>
-    <string name="quickstep_incompatible_description">See seade on määratud kasutama süsteemiliigutusi (tuntud kui Quickstep), mida pakub %1$s, kuid see %1$s versioon ei ühildu Androidi versiooniga. Seadme kasutamise jätkamiseks eemalda %1$s värskendus või keela %1$s süsteemiliigutuse pakkujana.</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
     <string name="translucent_background">Läbipaistev taust</string>
     <string name="translucent_background_alpha">Tausta läbipaistmatus</string>
     <string name="recents_actions_label">Kiirtoimingud</string>
@@ -665,13 +677,15 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">Search web and more</string>
     <string name="all_apps_search_bar_hint">Otsi rakendusi</string>
-    <string name="all_apps_no_search_results">Otsingule \"<xliff:g example="Android" id="query">%1$s</xliff:g>\" vastavaid rakendusi ei leitud</string>
+    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"
+    </string>
     <string name="all_apps_search_result_suggestions">Veebist</string>
     <string name="all_apps_search_result_contacts_from_device">Kontaktid seadmest</string>
     <string name="all_apps_search_result_files">Failid seadmest</string>
     <string name="all_apps_search_result_settings_entry_from_device">Seaded seadmest</string>
     <string name="all_apps_search_market_message">Otsi rohkem rakendusi</string>
-    <string name="all_apps_search_on_web_message">Otsi kasutades <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>
+    </string>
     <string name="error_no_market_or_browser_installed">Rakendustepoodi ega brauserit pole paigaldatud</string>
     <string name="all_apps_search_on_web_general">Otsi veebist</string>
     <string name="clear_history">Tühjenda otsinguajalugu</string>
@@ -689,9 +703,9 @@
     <string name="show_hidden_apps_in_search_results">Kuva peidetud rakendused otsingutulemustes</string>
     <string name="hidden_apps_show_name_typed">Kui sisestatakse täisnimi</string>
     <string name="allapps_web_suggestion_provider_label">Veebisoovituste pakkuja</string>
-    <string name="allapps_use_web_suggestion_icon_label">Kuva veebisoovituste pakkuja ikoon otsinguribal</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show the web suggestion provider icon in the search bar</string>
     <string name="allapps_match_qsb_style_label">Sobita dokk otsinguriba toimingutega</string>
-    <string name="allapps_match_qsb_style_description">Doki otsinguribal klõpsamine avab nüüd rakenduste sahtli otsingu</string>
+    <string name="allapps_match_qsb_style_description">Tapping the dock search bar opens the app drawer search view</string>
     <string name="app_search_algorithm">Otsingu algorütm</string>
     <string name="search_algorithm_app_search">Rakenduse otsing</string>
     <string name="search_algorithm_global_search_on_device">Globaalne otsing (seadmes)</string>
@@ -717,12 +731,13 @@
     <string name="all_apps_search_result_calculator">Kalkulaator</string>
     <string name="search_empty_state_title">Alusta otsimist</string>
     <string name="search_empty_state_no_history_subtitle">Leia rakendusi, kontakte ja muud. Sinu hiljutised otsingud kuvatakse siin.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Leia rakendusi, kontakte ja muud.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">Otsi</string>
     <string name="search_pref_result_files_description">Meedia, failid ja palju muud</string>
     <string name="search_pref_result_contacts_description">Kontaktid ja muud</string>
-    <string name="search_pref_result_web_provider_description">Kasutades <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g>
+    </string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maksimaalne rakenduste arv</string>
     <string name="max_people_result_count_title">Maksimaalne inimeste arv</string>
@@ -733,21 +748,23 @@
     <string name="max_web_suggestion_delay">Maksimaalne veebisoovituste viivitus</string>
     <!-- Permission management -->
     <string name="missing_notification_access_label">Vajab juurdepääsu märguannetele</string>
-    <string name="missing_notification_access_desc">Märguandetäppide kuvamiseks lülita rakenduse <xliff:g id="name" example="My App">%1$s</xliff:g> jaoks sisse rakenduse märguanded</string>
+    <string name="missing_notification_access_desc">To show notification dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>
+    </string>
     <string name="warn_contact_permission_title">Nõutav on juurdeipääs kontaktidele</string>
-    <string name="warn_contact_permission_content">Kontaktide otsimiseks anna rakendusele <xliff:g id="name" example="My App">%1$s</xliff:g> kontaktide ja telefoni juurdepääsu load</string>
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g>
+    </string>
     <string name="permissions_music_audio">Nõutav on juurdepääs muusikale ja helile</string>
-    <string name="permissions_music_audio_description">Muusika ja muude helifailide otsimiseks vajab <xliff:g id="name" example="My App">%1$s</xliff:g> luba meediakogule juurdepääsuks.</string>
+    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">Vajalik on juurdepääs fotodele ja videotele</string>
-    <string name="permissions_photos_videos_description">Fotode ja videote otsimiseks vajab <xliff:g id="name" example="My App">%1$s</xliff:g> luba meediakogule juurdepääsuks.</string>
+    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
     <string name="permissions_photos_videos_full">Kas anda juurdepääs kogu meediakogule?</string>
-    <string name="permissions_photos_videos_full_description">Fotode ja videote otsimiseks vajab <xliff:g id="name" example="My App">%1$s</xliff:g> luba juurdepääsuks kogu meediakogule.</string>
+    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library</string>
     <string name="permissions_photos_videos_grant_full">Anna täielik ligipääs meediafailidele</string>
     <string name="permissions_photos_videos_manage_selected">Halda valitud üksusi</string>
     <!-- External storage -->
     <string name="permissions_external_storage">Vajalik on juurdepääs välisele salvestusruumile</string>
-    <string name="permissions_external_storage_description">Failide otsimiseks vajab <xliff:g id="name" example="My App">%1$s</xliff:g> luba juurdepääsuks seadme välisele andmeruumile.</string>
+    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage</string>
     <string name="permissions_manage_storage">Vajalik on luba salvestusruumi haldamiseks</string>
     <string name="permissions_manage_storage_description">Failide kuvamiseks otsingutulemustes vajab <xliff:g id="name" example="My App">%1$s</xliff:g> luba kõigi seadmes olevate failide haldamiseks. Seda luba kasutatakse ainult failide loetlemiseks ja seda ei kasutata teie isiklike failide sisu lugemiseks ega muutmiseks.</string>
     <string name="permission_desc_wallpaper_base">Taustapiltide eelvaadete kuvamiseks ja varukoopiatesse lisamiseks vajab <xliff:g id="name" example="My App">%1$s</xliff:g> luba %2$s. Selle põhjuseks on süsteemi piirangud taustapiltide andmetele juurdepääsuks.</string>
@@ -757,7 +774,7 @@
     <string name="permission_desc_wallpaper_multiple_desc">Taustapiltide eelvaadete kuvamiseks ja varukoopiatesse lisamiseks vajab <xliff:g id="name" example="My App">%1$s</xliff:g> järgneivaid lubasi. Selle põhjuseks on süsteemi piirangud taustapiltide andmetele juurdepääsuks.</string>
     <string name="permission_label_manage_all_files">Halda kõiki seadmes olevaid faile</string>
     <string name="permission_label_read_photos_videos">Loe fotosid ja videoid</string>
-    <string name="manage_storage_access_denied_title">Juurdepääsu kõigile failidele ei õnnestunud anda</string>
+    <string name="manage_storage_access_denied_title">Cannot turn on manage storage access</string>
     <string name="manage_storage_access_denied_description">Play poe eeskirjade tõttu ei saa <xliff:g id="name" example="My App">%1$s</xliff:g> siin täielikku juurdepääsu salvestusruumile taotleda. Kõikidele failidele juurdepääsuks laadi alla <xliff:g id="name" example="My App">%1$s</xliff:g> GitHubist. Teise võimalusena saab anda juurdepääsu fotodele, videotele ja helifailidele seadetes eraldi.</string>
     <string name="open_permission_settings">Ava seaded</string>
     <string name="grant_requested_permissions">Lubade andmine</string>
