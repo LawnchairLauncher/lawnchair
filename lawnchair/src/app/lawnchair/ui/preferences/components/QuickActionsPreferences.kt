@@ -73,8 +73,6 @@ fun QuickActionsPreferences(
                 ReorderableDragHandle(
                     interactionSource = interactionSource,
                     scope = scope,
-                    onDragStop = {
-                    },
                 )
             },
         )

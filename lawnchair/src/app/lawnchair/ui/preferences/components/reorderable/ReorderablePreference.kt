@@ -59,12 +59,6 @@ fun <T> ReorderablePreferenceGroup(
         }
     }
 
-    LaunchedEffect(items) {
-        if (localItems != items) {
-            localItems = items
-        }
-    }
-
     val view = LocalView.current
 
     Column(modifier) {
