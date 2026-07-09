@@ -19,6 +19,7 @@ package app.lawnchair.ui.preferences.components
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredWidth
@@ -139,11 +140,13 @@ private fun AppItemLayout(
         title = title,
         modifier = modifier,
         startWidget = {
-            widget?.let {
-                it()
-                Spacer(modifier = Modifier.requiredWidth(16.dp))
+            Row {
+                widget?.let {
+                    it()
+                    Spacer(modifier = Modifier.requiredWidth(16.dp))
+                }
+                icon()
             }
-            icon()
         },
         endWidget = endWidget,
     )

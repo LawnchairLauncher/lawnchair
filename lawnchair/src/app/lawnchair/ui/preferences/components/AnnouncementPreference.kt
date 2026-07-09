@@ -20,6 +20,8 @@ import androidx.compose.material.icons.automirrored.rounded.Launch
 import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
@@ -28,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -230,14 +233,17 @@ private fun AnnouncementPreferenceItemContent(
                 }
             }
         },
-        title = {},
-        description = {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = text,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-            )
+        title = {
+            CompositionLocalProvider(
+                LocalContentColor provides MaterialTheme.colorScheme.primary,
+                LocalTextStyle provides MaterialTheme.typography.bodyMedium,
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = text,
+                    textAlign = TextAlign.Center,
+                )
+            }
         },
         startWidget = {
             Icon(

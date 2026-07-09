@@ -58,6 +58,7 @@ import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
@@ -231,34 +232,19 @@ private fun ModifyCustomIconShapePreference(
 
     val icon = if (created) Icons.Rounded.Edit else Icons.Rounded.Add
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                navController.navigate(route = route)
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.secondary,
-                LocalTextStyle provides MaterialTheme.typography.bodyMedium,
-            ) {
-                Text(
-                    text = text,
-                )
-            }
-            Spacer(modifier = Modifier.requiredWidth(12.dp))
+    PreferenceTemplate(
+        onClick = { navController.navigate(route = route) },
+        modifier = modifier,
+        title = {
+            Text(text = text)
+        },
+        startWidget = {
             Icon(
                 imageVector = icon,
-                tint = MaterialTheme.colorScheme.secondary,
                 contentDescription = null,
             )
-        }
-    }
+        },
+    )
 }
 
 /**

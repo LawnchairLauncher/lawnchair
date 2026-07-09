@@ -41,7 +41,7 @@ fun NavigationActionPreference(
     PreferenceTemplate(
         title = { Text(text = label) },
         modifier = modifier,
-        description = { subtitle?.let { Text(text = it) } },
+        description = subtitle?.let { { Text(text = it) } },
         endWidget = endWidget,
         onClick = if (destination != null) {
             {

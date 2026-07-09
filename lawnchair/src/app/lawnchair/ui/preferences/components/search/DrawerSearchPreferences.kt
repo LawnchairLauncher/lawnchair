@@ -176,7 +176,7 @@ private fun LocalSearchSettings(
     TwoTargetSwitchPreference(
         checked = peopleEnabled && peopleAdapter.state.value,
         onCheckedChange = peopleAdapter::onChange,
-        enabled = peopleEnabled,
+        switchEnabled = peopleEnabled,
         label = stringResource(id = R.string.search_pref_result_people_title),
         description = stringResource(id = R.string.search_pref_result_contacts_description),
         onClick = {
@@ -188,7 +188,7 @@ private fun LocalSearchSettings(
     TwoTargetSwitchPreference(
         checked = filesEnabled && filesAdapter.state.value,
         onCheckedChange = filesAdapter::onChange,
-        enabled = filesEnabled,
+        switchEnabled = filesEnabled,
         label = stringResource(R.string.search_pref_result_files_title),
         description = stringResource(R.string.search_pref_result_files_description),
         onClick = {

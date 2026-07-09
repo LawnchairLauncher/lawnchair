@@ -70,6 +70,7 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.layout.ProvideDescriptionTextStyle
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
 import app.lawnchair.ui.preferences.navigation.About
 import app.lawnchair.ui.preferences.navigation.AppDrawer
@@ -356,12 +357,13 @@ fun PreferencesSetDefaultLauncherWarning(
                     .let { context.startActivity(it) }
                 (context as? Activity)?.finish()
             },
-            title = {},
-            description = {
-                Text(
-                    text = stringResource(id = R.string.set_default_launcher_tip),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            title = {
+                ProvideDescriptionTextStyle {
+                    Text(
+                        text = stringResource(id = R.string.set_default_launcher_tip),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             },
             startWidget = {
                 Icon(

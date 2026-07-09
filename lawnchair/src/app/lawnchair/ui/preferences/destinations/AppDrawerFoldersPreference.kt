@@ -162,8 +162,7 @@ fun AppDrawerFoldersPreference(
             }
             PreferenceGroup(heading = stringResource(R.string.folders_label)) {
                 PreferenceTemplate(
-                    title = {},
-                    description = {
+                    title = {
                         Text(
                             text = stringResource(R.string.add_folder),
                             color = MaterialTheme.colorScheme.onSurface,
@@ -203,7 +202,7 @@ fun AppDrawerFoldersPreference(
                     )
                     sortedDisplayList = folders
                 },
-            ) { folderInfo, _, _, onDraggingChange ->
+            ) { folderInfo, _, _ ->
                 val interactionSource = remember { MutableInteractionSource() }
                 FolderItem(
                     folderInfo = folderInfo,
@@ -238,9 +237,6 @@ fun AppDrawerFoldersPreference(
                         ReorderableDragHandle(
                             interactionSource = interactionSource,
                             scope = this,
-                            onDragStop = {
-                                onDraggingChange(false)
-                            },
                         )
                     },
                     interactionSource = interactionSource,

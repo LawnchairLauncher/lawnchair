@@ -252,7 +252,7 @@ private fun ClipboardButton(
         title = { Text(text = label) },
         modifier = modifier,
         enabled = enabled,
-        description = { description?.let { Text(text = it) } },
+        description = description?.let { { Text(text = it) } },
         startWidget = {
             val tint = LocalContentColor.current
             val contentAlpha = if (enabled) tint.alpha else 0.38f

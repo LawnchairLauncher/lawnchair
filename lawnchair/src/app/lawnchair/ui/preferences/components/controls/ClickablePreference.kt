@@ -46,6 +46,7 @@ fun ClickablePreference(
     confirmationText: String? = null,
     colors: ListItemColors = ListItemDefaults.segmentedColors(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
     ),
     onClick: () -> Unit,
 ) {
@@ -53,7 +54,7 @@ fun ClickablePreference(
     PreferenceTemplate(
         title = { Text(text = label) },
         modifier = modifier,
-        description = { subtitle?.let { Text(text = it) } },
+        description = subtitle?.let { { Text(text = it) } },
         onClick = {
             if (confirmationText != null) {
                 bottomSheetHandler.show {

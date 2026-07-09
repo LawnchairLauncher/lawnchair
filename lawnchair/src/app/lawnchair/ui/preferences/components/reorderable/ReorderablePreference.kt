@@ -2,9 +2,14 @@ package app.lawnchair.ui.preferences.components.reorderable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -44,7 +49,6 @@ fun <T> ReorderablePreferenceGroup(
         item: T,
         index: Int,
         isDragging: Boolean,
-        onDraggingChange: (Boolean) -> Unit,
     ) -> Unit,
 ) {
     var localItems by remember { mutableStateOf(items) }
@@ -55,8 +59,6 @@ fun <T> ReorderablePreferenceGroup(
         }
     }
 
-    var isAnyDragging by remember { mutableStateOf(false) }
-
     LaunchedEffect(items) {
         if (localItems != items) {
             localItems = items
@@ -65,11 +67,6 @@ fun <T> ReorderablePreferenceGroup(
 
     val view = LocalView.current
 
-    val color by animateColorAsState(
-        targetValue = if (!isAnyDragging) preferenceGroupColor() else MaterialTheme.colorScheme.surface,
-        label = "card background animation",
-    )
-
     Column(modifier) {
         PreferenceGroupHeading(
             label,
@@ -77,7 +74,6 @@ fun <T> ReorderablePreferenceGroup(
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = MaterialTheme.shapes.large,
-            color = color,
         ) {
             ReorderableColumn(
                 list = localItems,
@@ -90,10 +86,8 @@ fun <T> ReorderablePreferenceGroup(
                     if (onSettle != null) {
                         onSettle(newItems)
                     }
-                    isAnyDragging = false
                 },
                 onMove = {
-                    isAnyDragging = true
                     if (Utilities.ATLEAST_U) {
                         view.performHapticFeedback(HapticFeedbackConstantsCompat.SEGMENT_FREQUENT_TICK)
                     }
@@ -128,12 +122,14 @@ fun <T> ReorderablePreferenceGroup(
                                     item,
                                     index,
                                     isDragging,
-                                ) { isAnyDragging = it }
+                                )
                             }
 
-                            AnimatedVisibility(!isAnyDragging && index != localItems.lastIndex) {
-                                HorizontalDivider(
-                                    Modifier.padding(start = 50.dp, end = 16.dp),
+                            AnimatedVisibility(index != localItems.lastIndex) {
+                                Box(
+                                    Modifier
+                                        .background(MaterialTheme.colorScheme.surface)
+                                        .height(ListItemDefaults.SegmentedGap),
                                 )
                             }
                         }

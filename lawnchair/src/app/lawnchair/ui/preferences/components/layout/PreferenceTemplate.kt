@@ -35,11 +35,8 @@ import androidx.compose.ui.Modifier
 
 /***
  * A template used to create most preference-related components in the Preference UI.
- *
- * Material Expressive
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Suppress("ktlint:compose:modifier-not-used-at-root")
 @Composable
 fun PreferenceTemplate(
     title: @Composable () -> Unit,
@@ -47,63 +44,75 @@ fun PreferenceTemplate(
     contentModifier: Modifier = Modifier,
     enabled: Boolean = true,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
-    description: @Composable () -> Unit = {},
+    description: (@Composable () -> Unit)? = null,
     startWidget: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
-    overlineContent: (@Composable () -> Unit)? = null,
     shapes: ListItemShapes = ListItemDefaults.segmentedShapes(index = 0, count = 1),
     onClick: (() -> Unit)? = null,
-    onLongClick: (() -> Unit)? = null,
-    onLongClickLabel: String? = null,
     colors: ListItemColors = ListItemDefaults.segmentedColors(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
     ),
     interactionSource: MutableInteractionSource? = null,
 ) {
-    val localInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val listItem = @Composable {
-        SegmentedListItem(
-//            selected = TODO(),
-            onClick = { onClick?.invoke() },
-            // Since we don't know the position of the list, we assume it's in a middle position,
-            // then we clip or round the column make the list round instead.
-            shapes = shapes,
-            modifier = contentModifier,
-            enabled = enabled,
-            leadingContent = startWidget,
-            trailingContent = endWidget,
-            overlineContent = overlineContent,
-            supportingContent = {
-                CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
-                    LocalTextStyle provides MaterialTheme.typography.bodyMedium,
-                ) {
-                    description()
-                }
-            },
-            verticalAlignment = verticalAlignment,
-            onLongClick = onLongClick,
-            onLongClickLabel = onLongClickLabel,
-            colors = colors,
-            elevation = ListItemDefaults.elevation(),
-            contentPadding = ListItemDefaults.ContentPadding,
-            interactionSource = localInteractionSource,
-        ) {
-            CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.onSurface,
-                LocalTextStyle provides MaterialTheme.typography.titleMedium,
-            ) {
-                title()
+    val titleContent = @Composable {
+        ProvideTitleTextStyle {
+            title()
+        }
+    }
+
+    val descriptionContent = description?.let {
+        @Composable {
+            ProvideDescriptionTextStyle {
+                description()
             }
         }
     }
+
     Column(modifier) {
         if (onClick == null) {
-            CompositionLocalProvider(LocalRippleConfiguration provides null) {
-                listItem()
-            }
+            SegmentedListItem(
+                content = titleContent,
+                shapes = shapes,
+                modifier = contentModifier,
+                enabled = enabled,
+                leadingContent = startWidget,
+                trailingContent = endWidget,
+                supportingContent = descriptionContent,
+                verticalAlignment = verticalAlignment,
+                colors = colors,
+            )
         } else {
-            listItem()
+            SegmentedListItem(
+                onClick = onClick,
+                content = titleContent,
+                shapes = shapes,
+                modifier = contentModifier,
+                enabled = enabled,
+                leadingContent = startWidget,
+                trailingContent = endWidget,
+                supportingContent = descriptionContent,
+                verticalAlignment = verticalAlignment,
+                colors = colors,
+                interactionSource = interactionSource,
+            )
         }
     }
+}
+
+@Composable
+fun ProvideTitleTextStyle(content: @Composable () -> Unit) {
+    CompositionLocalProvider(
+        LocalTextStyle provides MaterialTheme.typography.titleMedium,
+        content = content,
+    )
+}
+
+@Composable
+fun ProvideDescriptionTextStyle(content: @Composable () -> Unit) {
+    CompositionLocalProvider(
+        LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
+        LocalTextStyle provides MaterialTheme.typography.bodyMedium,
+        content = content,
+    )
 }

@@ -59,7 +59,7 @@ fun TextPreference(
         title = { Text(text = label) },
         modifier = modifier,
         enabled = enabled,
-        description = { description(value)?.let { Text(text = it) } },
+        description = description(value)?.let { { Text(text = it) } },
         onClick = if (enabled) {
             {
                 bottomSheetHandler.show {

@@ -33,6 +33,8 @@ fun BackupAndRestorePreference(
                 subtitle = stringResource(R.string.restore_backup_description),
                 onClick = restoreBackupOpener(),
             )
+        }
+        PreferenceGroup {
             ClickablePreference(
                 label = stringResource(R.string.restore_nova_backup),
                 subtitle = stringResource(R.string.restore_nova_backup_description),

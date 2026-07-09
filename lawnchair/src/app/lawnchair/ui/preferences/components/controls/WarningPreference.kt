@@ -7,12 +7,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ListItemShapes
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.layout.ProvideDescriptionTextStyle
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
@@ -52,12 +56,13 @@ fun WarningPreference(
 ) {
     PreferenceTemplate(
         modifier = modifier,
-        title = {},
-        description = {
-            Text(
-                text = text,
-                color = textColor,
-            )
+        title = {
+            ProvideDescriptionTextStyle {
+                Text(
+                    text = text,
+                    color = textColor,
+                )
+            }
         },
         startWidget = {
             Icon(

@@ -83,7 +83,7 @@ fun <T> ListPreference(
         title = { Text(text = label) },
         modifier = modifier,
         enabled = enabled,
-        description = { currentDescription?.let { Text(text = it) } },
+        description = currentDescription?.let { { Text(text = it) } },
         endWidget = endWidget,
         onClick = if (enabled) {
             {
@@ -121,7 +121,10 @@ fun <T> ListPreference(
                                         )
                                     },
                                     endWidget = item.endWidget,
-                                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                                    colors = ListItemDefaults.colors(
+                                        containerColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent,
+                                    ),
                                 )
                             }
                         }

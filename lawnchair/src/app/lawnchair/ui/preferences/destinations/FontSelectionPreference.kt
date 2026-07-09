@@ -151,7 +151,6 @@ fun FontSelection(
                         cutBottom = customFonts.isNotEmpty(),
                     ) {
                         PreferenceTemplate(
-                            modifier = Modifier,
                             onClick = {
                                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                                 intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -218,7 +217,7 @@ private fun FontSelectionItem(
         modifier = modifier
             .clickable { adapter.onChange(family.default) },
         title = {
-            Box(modifier = Modifier.height(52.dp)) {
+            Box {
                 Text(
                     text = family.displayName,
                     modifier = Modifier
@@ -232,8 +231,6 @@ private fun FontSelectionItem(
             RadioButton(
                 selected = selected,
                 onClick = null,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp),
             )
         },
         endWidget = when {
@@ -247,7 +244,6 @@ private fun FontSelectionItem(
                 {
                     IconButton(
                         onClick = onDelete,
-                        modifier = Modifier.padding(end = 8.dp),
                         shapes = IconButtonDefaults.shapes(),
                     ) {
                         Icon(
@@ -263,13 +259,6 @@ private fun FontSelectionItem(
         },
     )
 }
-
-private val VariantButtonContentPadding = PaddingValues(
-    start = 8.dp,
-    top = 8.dp,
-    end = 0.dp,
-    bottom = 8.dp,
-)
 
 private fun removeFamilyPrefix(
     familyName: CharSequence,
@@ -289,8 +278,7 @@ private fun VariantDropdown(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .wrapContentWidth()
-            .padding(end = 16.dp),
+            .wrapContentWidth(),
     ) {
         val selectedFont = adapter.state.value
         var showVariants by remember { mutableStateOf(false) }
@@ -305,7 +293,6 @@ private fun VariantDropdown(
         TextButton(
             onClick = { showVariants = true },
             colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
-            contentPadding = VariantButtonContentPadding,
             shapes = ButtonDefaults.shapes(),
         ) {
             AndroidText(

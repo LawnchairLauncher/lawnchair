@@ -93,7 +93,7 @@ fun DockPreferences(modifier: Modifier = Modifier) {
 
 @Composable
 fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
-    DividerColumn(thickness = 0.dp) {
+    DividerColumn {
         ColorPreference(preference = prefs2.hotseatBackgroundColor)
         SliderPreference(
             label = stringResource(id = R.string.hotseat_bg_alpha),

@@ -2,9 +2,12 @@ package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -46,7 +49,9 @@ fun SearchProviderPreferences(
         label = stringResource(R.string.search_provider),
         modifier = modifier,
     ) {
-        PreferenceGroup {
+        PreferenceGroup(
+            itemSpacing = 0.dp,
+        ) {
             QsbSearchProvider.values().forEach { qsbSearchProvider ->
                 val appInstalled = qsbSearchProvider.isDownloaded(context)
                 val selected = adapter.state.value == qsbSearchProvider
@@ -84,6 +89,7 @@ fun SearchProviderPreferences(
                             showAppDownloadButton = !appInstalled,
                         )
                     }
+                    Spacer(Modifier.height(ListItemDefaults.SegmentedGap))
                 }
             }
         }
@@ -109,7 +115,11 @@ private fun ListItem(
         PreferenceTemplate(
             title = { Text(text = title) },
             enabled = enabled,
-            description = { if (description != null) Text(text = description) },
+            description = if (description != null) {
+                { Text(text = description) }
+            } else {
+                null
+            },
             startWidget = {
                 RadioButton(
                     selected = selected,

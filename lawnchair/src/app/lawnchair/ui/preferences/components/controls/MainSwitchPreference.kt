@@ -105,22 +105,19 @@ fun MainSwitchPreference(
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
-        modifier
-            .padding(horizontal = contentPadding),
+        modifier.padding(horizontal = contentPadding),
     ) {
         SegmentedListItem(
             onClick = { onCheckedChange(!checked) },
-            shapes = ListItemDefaults.shapes(
-                shape = CircleShape,
-                selectedShape = MaterialTheme.shapes.medium,
-                pressedShape = MaterialTheme.shapes.medium,
-                focusedShape = MaterialTheme.shapes.extraLarge,
-                hoveredShape = MaterialTheme.shapes.large,
-                draggedShape = MaterialTheme.shapes.extraLarge,
+            selected = checked,
+            shapes = ListItemDefaults.shapes().copy(
+                shape = MaterialTheme.shapes.medium,
+                selectedShape = MaterialTheme.shapes.extraLarge,
+                pressedShape = CircleShape,
+                focusedShape = CircleShape,
+                hoveredShape = CircleShape,
             ),
-            modifier = Modifier,
             enabled = enabled,
-            leadingContent = { Text(text = label, style = MaterialTheme.typography.titleMedium) },
             trailingContent = {
                 Switch(
                     modifier = Modifier
@@ -148,18 +145,12 @@ fun MainSwitchPreference(
                 )
             },
             colors = ListItemDefaults.colors(
-                containerColor = if (checked && enabled) {
-                    MaterialTheme.colorScheme.primaryContainer
-                } else if (enabled) {
-                    MaterialTheme.colorScheme.surfaceVariant
-                } else {
-                    MaterialTheme.colorScheme.surfaceContainer
-                },
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             ),
-            elevation = ListItemDefaults.elevation(),
-            contentPadding = ListItemDefaults.ContentPadding,
-            interactionSource = remember { MutableInteractionSource() },
         ) {
+            Text(text = label, style = MaterialTheme.typography.titleMedium)
         }
     }
 }

@@ -93,7 +93,7 @@ fun SwitchPreference(
         title = { Text(text = label) },
         modifier = modifier,
         enabled = enabled,
-        description = { description?.let { Text(text = it) } },
+        description = description?.let { { Text(text = it) } },
         endWidget = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

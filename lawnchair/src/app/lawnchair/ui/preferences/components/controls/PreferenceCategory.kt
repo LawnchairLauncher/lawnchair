@@ -57,11 +57,7 @@ fun PreferenceCategory(
             .background(
                 if (isSelected) MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp) else Color.Transparent,
             ),
-        description = {
-            if (description != null) {
-                Text(text = description)
-            }
-        },
+        description = description?.let { { Text(text = description) } },
         startWidget = {
             Box(
                 contentAlignment = Alignment.Center,

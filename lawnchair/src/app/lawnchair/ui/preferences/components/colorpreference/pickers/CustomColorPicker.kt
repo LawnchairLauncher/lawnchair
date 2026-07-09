@@ -323,7 +323,7 @@ private fun HsvColorPicker(
         }
     }
 
-    Column(
+    DividerColumn(
         modifier = modifier
             .clip(MaterialTheme.shapes.large)
             .background(color = MaterialTheme.colorScheme.surfaceContainer),
@@ -397,7 +397,7 @@ private fun RgbColorPicker(
         }
     }
 
-    Column(
+    DividerColumn(
         modifier = modifier
             .clip(MaterialTheme.shapes.large)
             .background(color = MaterialTheme.colorScheme.surfaceContainer),
