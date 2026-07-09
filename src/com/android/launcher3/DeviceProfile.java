@@ -269,7 +269,7 @@ public class DeviceProfile {
     // DragController
     public int flingToDeleteThresholdVelocity;
 
-    private int mHotseatQsbSpaceBase; // LC-Note: This is to kept QSB space as reference to be use later
+    private int mHotseatQsbSpaceBase; // LC-Note: This is to keep QSB space as a reference to be used later.
 
     /** Used only as an alternative to mocking when null values cannot be used. */
     @VisibleForTesting
