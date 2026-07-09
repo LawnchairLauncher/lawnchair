@@ -269,6 +269,8 @@ public class DeviceProfile {
     // DragController
     public int flingToDeleteThresholdVelocity;
 
+    private int mHotseatQsbSpaceBase; // LC-Note: This is to kept QSB space as reference to be use later
+
     /** Used only as an alternative to mocking when null values cannot be used. */
     @VisibleForTesting
     public DeviceProfile() {
@@ -587,6 +589,8 @@ public class DeviceProfile {
             }
         }
 
+        mHotseatQsbSpaceBase = hotseatQsbSpace;
+
         if (mIsResponsiveGrid) {
             updateHotseatSizes(mResponsiveWorkspaceCellSpec.getIconSize());
         } else {
@@ -885,10 +889,13 @@ public class DeviceProfile {
     private void updateHotseatSizes(int hotseatIconSizePx) {
         int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
         boolean isLabelInDock = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableLabelInDock());
+        HotseatMode hotseatMode = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatMode());
+        boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
         // Ensure there is enough space for folder icons, which have a slightly larger radius.
         hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 2;
         hotseatCellHeightPx += isLabelInDock ? iconTextHeight : 0;
-        hotseatQsbSpace += isLabelInDock ? (iconTextHeight / 2) : 0;
+        hotseatQsbSpace = mHotseatQsbSpaceBase;
+        hotseatQsbSpace += isQsbEnable && isLabelInDock ? (iconTextHeight / 2) : 0;
         
         int space = Math.abs(hotseatCellHeightPx / 2) - 16;
 
