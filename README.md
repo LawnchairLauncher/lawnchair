@@ -82,6 +82,17 @@ Download: [Obtainium][Obtainium link] • [GitHub][GitHub link] • [nightly.lin
 
 Visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
 
+## Sponsors
+
+<p align="left">
+  <a href="https://coderabbit.link/lawnchair">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/sponsor-coderabbit-dark.svg" width="300">
+      <img alt="CodeRabbit" src="docs/assets/sponsor-coderabbit-light.svg" width="300">
+    </picture>
+  </a>
+</p>
+
 ## Support Lawnchair
 
 If you love what we do, consider [supporting us on Open Collective](https://opencollective.com/lawnchair)! Your contributions help keep Lawnchair independent and enable us to develop faster.
