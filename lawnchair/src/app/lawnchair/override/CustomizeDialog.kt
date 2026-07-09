@@ -147,8 +147,6 @@ fun CustomizeAppDialog(
     icon: Drawable,
     defaultTitle: String,
     componentKey: ComponentKey,
-    modifier: Modifier = Modifier,
-    onClose: () -> Unit,
 ) {
     val prefs = preferenceManager()
     val preferenceManager2 = preferenceManager2()
@@ -182,72 +180,44 @@ fun CustomizeAppDialog(
             }
         }
     }
-
-    val bottomSheetState = rememberBottomSheetState(
-        initialValue = SheetValue.Hidden,
-        enabledValues = setOf(SheetValue.Hidden, SheetValue.PartiallyExpanded, SheetValue.Expanded),
-    )
-    val animatedFraction by animateFloatAsState(
-        targetValue = if (
-            bottomSheetState.targetValue == SheetValue.PartiallyExpanded ||
-            bottomSheetState.targetValue == SheetValue.Expanded
-        ) {
-            1f
-        } else {
-            0f
-        },
-        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-        label = "BottomSheetBlurFraction",
-    )
-    val scrimAlpha = .32f * animatedFraction
-
-    ModalBottomSheet(
-        onDismissRequest = onClose,
-        sheetState = bottomSheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
-        scrimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = scrimAlpha),
-        contentWindowInsets = { WindowInsets(0.dp) },
-        modifier = modifier,
+    CustomizeDialog(
+        icon = icon,
+        title = title,
+        onTitleChange = { title = it },
+        defaultTitle = defaultTitle,
+        launchSelectIcon = openIconPicker,
     ) {
-        CustomizeDialog(
-            icon = icon,
-            title = title,
-            onTitleChange = { title = it },
-            defaultTitle = defaultTitle,
-            launchSelectIcon = openIconPicker,
+        PreferenceGroup(
+            description = componentKey.componentName.flattenToString(),
+            showDescription = showComponentNames,
         ) {
-            PreferenceGroup(
-                description = componentKey.componentName.flattenToString(),
-                showDescription = showComponentNames,
-            ) {
-                val stringKey = componentKey.toString()
-                Item {
-                    SwitchPreference(
-                        checked = hiddenApps.contains(stringKey),
-                        label = stringResource(id = R.string.hide_from_drawer),
-                        onCheckedChange = { newValue ->
-                            val newSet = hiddenApps.toMutableSet()
-                            if (newValue) newSet.add(stringKey) else newSet.remove(stringKey)
-                            adapter.onChange(newSet)
-                        },
-                    )
-                }
+            val stringKey = componentKey.toString()
+            Item {
+                SwitchPreference(
+                    checked = hiddenApps.contains(stringKey),
+                    label = stringResource(id = R.string.hide_from_drawer),
+                    onCheckedChange = { newValue ->
+                        val newSet = hiddenApps.toMutableSet()
+                        if (newValue) newSet.add(stringKey) else newSet.remove(stringKey)
+                        adapter.onChange(newSet)
+                    },
+                )
             }
-            if (context.launcher.stateManager.state != LauncherState.ALL_APPS) {
-                PreferenceGroup(heading = stringResource(R.string.gestures_label)) {
-                    listOf(
-                        GestureType.SWIPE_UP,
-                        GestureType.SWIPE_DOWN,
-                        GestureType.SWIPE_LEFT,
-                        GestureType.SWIPE_RIGHT,
-                    ).map { gestureType ->
-                        Item {
-                            AppGesturePreference(
-                                componentKey,
-                                gestureType,
-                                stringResource(id = gestureType.labelResId),
-                            )
-                        }
+        }
+        if (context.launcher.stateManager.state != LauncherState.ALL_APPS) {
+            PreferenceGroup(heading = stringResource(R.string.gestures_label)) {
+                listOf(
+                    GestureType.SWIPE_UP,
+                    GestureType.SWIPE_DOWN,
+                    GestureType.SWIPE_LEFT,
+                    GestureType.SWIPE_RIGHT,
+                ).map { gestureType ->
+                    Item {
+                        AppGesturePreference(
+                            componentKey,
+                            gestureType,
+                            stringResource(id = gestureType.labelResId),
+                        )
                     }
                 }
             }
