@@ -111,12 +111,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import app.lawnchair.LawnchairApp;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.gestures.IconGestureListener;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.LawnchairUtilsKt;
+import app.lawnchair.animation.PhysicsAnimator;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -505,7 +505,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         setTag(itemInfo);
         // Lawnchair: Icon swipe gesture feature
         mGestureListener = shouldSupportIconSwipeGestures()
-                ? new IconGestureListener(getContext(), pref2, itemInfo.getComponentKey())
+                ? new IconGestureListener(this, pref2, itemInfo.getComponentKey())
                 : null;
     }
 
@@ -783,6 +783,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         return mGestureListener != null
                 && isIconSwipeGestureEnabledForCurrentState()
                 && mGestureListener.hasHorizontalGestureConfigured();
+    }
+
+    /** Lawnchair: Check if icon swipe feature is enabled, 
+     * and has a vertical gesture configured for it */
+    public boolean hasConfiguredVerticalIconSwipeGesture() {
+        return mGestureListener != null
+            && isIconSwipeGestureEnabledForCurrentState()
+            && mGestureListener.hasVerticalGestureConfigured();
     }
 
     /** Lawnchair: Get supported swipe target which are within workspace or within folder */
@@ -1598,6 +1606,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (mIcon != null) {
             mIcon.resetScale();
         }
+        // LC-Note: Cancel physics animator for icon swipe gesture
+        PhysicsAnimator.getInstance(this).cancel();
+        setTranslationX(0);
+        setTranslationY(0);
     }
 
     private void updateIcon(Drawable newIcon) {
