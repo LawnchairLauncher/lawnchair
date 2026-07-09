@@ -1,6 +1,7 @@
 package app.lawnchair.views
 
 import android.content.Context
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.material3.LocalContentColor
@@ -10,20 +11,20 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.ComposeView
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.ProvideLifecycleState
+import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Launcher
-import com.android.launcher3.views.AbstractSlideInView
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
 
-class ComposeBottomSheet<T>(context: Context) : AbstractSlideInView<T>(context, null, 0) where T : Context, T : ActivityContext {
+class ComposeBottomSheet<T>(context: Context) : AbstractFloatingView(context, null, 0) where T : Context, T : ActivityContext {
 
+    private val mActivityContext: T = ActivityContext.lookupContext(context)
     private val container = ComposeView(context)
 
     init {
         layoutParams = BaseDragLayer.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             .apply { ignoreInsets = true }
-        mContent = container
-        mNoIntercept = true
+        addView(container)
     }
 
     fun show() {
@@ -31,9 +32,7 @@ class ComposeBottomSheet<T>(context: Context) : AbstractSlideInView<T>(context, 
         if (parent is ViewGroup) {
             parent.removeView(this)
         }
-        removeAllViews()
-        addView(container)
-        attachToContainer()
+        mActivityContext.dragLayer.addView(this)
         mIsOpen = true
     }
 
@@ -57,6 +56,8 @@ class ComposeBottomSheet<T>(context: Context) : AbstractSlideInView<T>(context, 
             parent.removeView(this)
         }
     }
+
+    override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean = false
 
     override fun isOfType(type: Int): Boolean {
         return type and TYPE_COMPOSE_VIEW != 0
