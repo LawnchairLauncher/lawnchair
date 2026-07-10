@@ -38,7 +38,7 @@ class LawndeckManager(private val context: Context) {
     private val TAG = "LawndeckManager"
 
     private fun getDeckLayoutName() = if (allowDeckSorting) "lawndeck_organized" else "lawndeck"
-    
+
     suspend fun enableLawndeck(
         sortByCategory: Boolean = false,
         onProgress: ((String) -> Unit)? = null,
@@ -73,7 +73,7 @@ class LawndeckManager(private val context: Context) {
             isEnabled = false
         }
     }
-    
+
     suspend fun backupLawndeck() = withContext(Dispatchers.IO) {
         if (isEnabled) createBackup(getDeckLayoutName())
     }
@@ -137,8 +137,7 @@ class LawndeckManager(private val context: Context) {
             finalCategorizedApps.forEach { (category, categoryApps) ->
                 if (categoryApps.isEmpty()) {
                     return@forEach
-                }
-                else if (categoryApps.size == 1) {
+                } else if (categoryApps.size == 1) {
                     // Single app - add directly to workspace
                     val app = categoryApps.first()
                     ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
