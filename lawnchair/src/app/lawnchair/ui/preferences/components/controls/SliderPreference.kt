@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -107,6 +108,7 @@ fun SliderPreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SliderPreference(
     label: String,
@@ -137,10 +139,7 @@ private fun SliderPreference(
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
                     text = label,
@@ -167,6 +166,7 @@ private fun SliderPreference(
                 }
             }
         },
+        modifier = modifier,
         description = {
             Slider(
                 value = sliderValue,
@@ -178,14 +178,11 @@ private fun SliderPreference(
                 valueRange = valueRange,
                 steps = getSteps(valueRange, step),
                 modifier = Modifier
-                    .padding(top = 2.dp, bottom = 12.dp)
-                    .padding(horizontal = 14.dp)
+                    .padding(top = 2.dp, bottom = 8.dp)
                     .height(24.dp),
                 enabled = enabled,
             )
         },
-        modifier = modifier,
-        applyPaddings = false,
     )
 }
 
@@ -216,16 +213,14 @@ private fun SliderPreferencePreview(
 ) {
     LawnchairTheme {
         PreferenceGroupPreviewContainer {
-            Item {
-                SliderPreference(
-                    label = "Label",
-                    value = sliderValue,
-                    onValueChangeFinished = {},
-                    valueRange = 0f..1f,
-                    step = 0.1f,
-                    showAsPercentage = true,
-                )
-            }
+            SliderPreference(
+                label = "Label",
+                value = sliderValue,
+                onValueChangeFinished = {},
+                valueRange = 0f..1f,
+                step = 0.1f,
+                showAsPercentage = true,
+            )
         }
     }
 }

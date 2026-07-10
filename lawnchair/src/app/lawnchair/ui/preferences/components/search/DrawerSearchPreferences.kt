@@ -21,8 +21,8 @@ import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.controls.TwoTargetSwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
-import app.lawnchair.ui.preferences.components.layout.PreferenceGroupScope
 import app.lawnchair.ui.preferences.navigation.SearchProviderPreference
 import app.lawnchair.util.FileAccessManager
 import com.android.launcher3.R
@@ -48,26 +48,20 @@ fun DrawerSearchPreference(
     ) {
         PreferenceGroup(heading = stringResource(R.string.general_label)) {
             if (hiddenApps.isNotEmpty()) {
-                Item { HiddenAppsInSearchPreference() }
+                HiddenAppsInSearchPreference()
             }
-            Item {
-                SwitchPreference(
-                    adapter = prefs2.autoShowKeyboardInDrawer.getAdapter(),
-                    label = stringResource(id = R.string.pref_search_auto_show_keyboard),
-                )
-            }
-            Item {
-                SearchProvider(
-                    context = context,
-                )
-            }
-            Item {
-                SwitchPreference(
-                    label = stringResource(R.string.allapps_match_qsb_style_label),
-                    description = stringResource(R.string.allapps_match_qsb_style_description),
-                    adapter = prefs2.matchHotseatQsbStyle.getAdapter(),
-                )
-            }
+            SwitchPreference(
+                adapter = prefs2.autoShowKeyboardInDrawer.getAdapter(),
+                label = stringResource(id = R.string.pref_search_auto_show_keyboard),
+            )
+            SearchProvider(
+                context = context,
+            )
+            SwitchPreference(
+                label = stringResource(R.string.allapps_match_qsb_style_label),
+                description = stringResource(R.string.allapps_match_qsb_style_description),
+                adapter = prefs2.matchHotseatQsbStyle.getAdapter(),
+            )
         }
 
         val searchAlgorithm = preferenceManager2().searchAlgorithm.getAdapter().state.value
@@ -77,17 +71,15 @@ fun DrawerSearchPreference(
                 val canDisable = searchAlgorithm != LawnchairSearchAlgorithm.APP_SEARCH
                 val adapter = prefs.searchResultApps.getAdapter()
 
-                Item {
-                    TwoTargetSwitchPreference(
-                        checked = if (canDisable) adapter.state.value else true,
-                        onCheckedChange = if (canDisable) adapter::onChange else ({}),
-                        enabled = canDisable,
-                        label = stringResource(R.string.search_pref_result_apps_and_shortcuts_title),
-                        onClick = {
-                            navController.navigate(SearchProviderPreference(SearchProviderId.APPS))
-                        },
-                    )
-                }
+                TwoTargetSwitchPreference(
+                    checked = if (canDisable) adapter.state.value else true,
+                    onCheckedChange = if (canDisable) adapter::onChange else ({}),
+                    enabled = canDisable,
+                    label = stringResource(R.string.search_pref_result_apps_and_shortcuts_title),
+                    onClick = {
+                        navController.navigate(SearchProviderPreference(SearchProviderId.APPS))
+                    },
+                )
             }
             when (searchAlgorithm) {
                 LawnchairSearchAlgorithm.LOCAL_SEARCH -> {
@@ -107,31 +99,23 @@ fun DrawerSearchPreference(
 }
 
 @Composable
-private fun PreferenceGroupScope.ASISearchSettings(prefs: PreferenceManager) {
-    Item {
-        SwitchPreference(
-            adapter = prefs.searchResultShortcuts.getAdapter(),
-            label = stringResource(id = R.string.search_pref_result_shortcuts_title),
-        )
-    }
-    Item {
-        SwitchPreference(
-            adapter = prefs.searchResultPeople.getAdapter(),
-            label = stringResource(id = R.string.search_pref_result_people_title),
-        )
-    }
-    Item {
-        SwitchPreference(
-            adapter = prefs.searchResultPixelTips.getAdapter(),
-            label = stringResource(id = R.string.search_pref_result_tips_title),
-        )
-    }
-    Item {
-        SwitchPreference(
-            adapter = prefs.searchResultSettings.getAdapter(),
-            label = stringResource(id = R.string.search_pref_result_settings_title),
-        )
-    }
+private fun ASISearchSettings(prefs: PreferenceManager) {
+    SwitchPreference(
+        adapter = prefs.searchResultShortcuts.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_shortcuts_title),
+    )
+    SwitchPreference(
+        adapter = prefs.searchResultPeople.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_people_title),
+    )
+    SwitchPreference(
+        adapter = prefs.searchResultPixelTips.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_tips_title),
+    )
+    SwitchPreference(
+        adapter = prefs.searchResultSettings.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_settings_title),
+    )
 }
 
 @Composable
@@ -163,7 +147,7 @@ private fun SearchProvider(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun PreferenceGroupScope.LocalSearchSettings(
+private fun LocalSearchSettings(
     prefs: PreferenceManager,
     prefs2: PreferenceManager2,
     context: Context,
@@ -172,67 +156,61 @@ private fun PreferenceGroupScope.LocalSearchSettings(
     val webSuggestionProvider =
         stringResource(prefs2.webSuggestionProvider.getAdapter().state.value.label)
 
-    Item {
-        SearchProviderPreferenceItem(
-            adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
-            label = stringResource(id = R.string.search_pref_result_web_title),
-            description = if (webSuggestionProvider == stringResource(CustomWebSearchProvider.label)) {
-                webSuggestionProvider
-            } else {
-                stringResource(
-                    id = R.string.search_pref_result_web_provider_description,
-                    webSuggestionProvider,
-                )
-            },
-            onClick = {
-                navController.navigate(SearchProviderPreference(SearchProviderId.WEB))
-            },
-        )
-    }
-    Item {
-        SearchProviderPreferenceItem(
-            adapter = prefs.searchResultPeople.getAdapter(),
-            label = stringResource(id = R.string.search_pref_result_people_title),
-            description = stringResource(id = R.string.search_pref_result_contacts_description),
-            onClick = {
-                navController.navigate(SearchProviderPreference(SearchProviderId.CONTACTS))
-            },
-            enabled = rememberPermissionState(android.Manifest.permission.READ_CONTACTS).status.isGranted,
-        )
-    }
-    Item {
-        SearchProviderPreferenceItem(
-            adapter = prefs.searchResultFilesToggle.getAdapter(),
-            label = stringResource(R.string.search_pref_result_files_title),
-            description = stringResource(R.string.search_pref_result_files_description),
-            onClick = {
-                navController.navigate(SearchProviderPreference(SearchProviderId.FILES))
-            },
-            enabled = remember { FileAccessManager.getInstance(context) }.hasAnyPermission.collectAsStateWithLifecycle().value,
-        )
-    }
-    Item {
-        SearchProviderPreferenceItem(
-            adapter = prefs.searchResultSettingsEntry.getAdapter(),
-            label = stringResource(id = R.string.search_pref_result_settings_title),
-            onClick = {
-                navController.navigate(SearchProviderPreference(SearchProviderId.SETTINGS))
-            },
-        )
-    }
-    Item {
-        SearchProviderPreferenceItem(
-            adapter = prefs.searchResulRecentSuggestion.getAdapter(),
-            label = stringResource(id = R.string.search_pref_result_history_title),
-            onClick = {
-                navController.navigate(SearchProviderPreference(SearchProviderId.HISTORY))
-            },
-        )
-    }
-    Item {
-        SwitchPreference(
-            adapter = prefs.searchResultCalculator.getAdapter(),
-            label = stringResource(R.string.all_apps_search_result_calculator),
-        )
-    }
+    TwoTargetSwitchPreference(
+        adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_web_title),
+        description = if (webSuggestionProvider == stringResource(CustomWebSearchProvider.label)) {
+            webSuggestionProvider
+        } else {
+            stringResource(
+                id = R.string.search_pref_result_web_provider_description,
+                webSuggestionProvider,
+            )
+        },
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.WEB))
+        },
+    )
+    val peopleAdapter = prefs.searchResultPeople.getAdapter()
+    val peopleEnabled = rememberPermissionState(android.Manifest.permission.READ_CONTACTS).status.isGranted
+    TwoTargetSwitchPreference(
+        checked = peopleEnabled && peopleAdapter.state.value,
+        onCheckedChange = peopleAdapter::onChange,
+        switchEnabled = peopleEnabled,
+        label = stringResource(id = R.string.search_pref_result_people_title),
+        description = stringResource(id = R.string.search_pref_result_contacts_description),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.CONTACTS))
+        },
+    )
+    val filesAdapter = prefs.searchResultFilesToggle.getAdapter()
+    val filesEnabled = remember { FileAccessManager.getInstance(context) }.hasAnyPermission.collectAsStateWithLifecycle().value
+    TwoTargetSwitchPreference(
+        checked = filesEnabled && filesAdapter.state.value,
+        onCheckedChange = filesAdapter::onChange,
+        switchEnabled = filesEnabled,
+        label = stringResource(R.string.search_pref_result_files_title),
+        description = stringResource(R.string.search_pref_result_files_description),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.FILES))
+        },
+    )
+    TwoTargetSwitchPreference(
+        adapter = prefs.searchResultSettingsEntry.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_settings_title),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.SETTINGS))
+        },
+    )
+    TwoTargetSwitchPreference(
+        adapter = prefs.searchResulRecentSuggestion.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_history_title),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.HISTORY))
+        },
+    )
+    SwitchPreference(
+        adapter = prefs.searchResultCalculator.getAdapter(),
+        label = stringResource(R.string.all_apps_search_result_calculator),
+    )
 }

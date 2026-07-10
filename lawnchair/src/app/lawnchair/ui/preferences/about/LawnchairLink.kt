@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -83,6 +84,7 @@ fun LawnchairLink(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HorizontalLawnchairLink(
     @DrawableRes iconResId: Int,
@@ -93,7 +95,8 @@ fun HorizontalLawnchairLink(
     val context = LocalContext.current
 
     PreferenceTemplate(
-        modifier = modifier.clickable {
+        modifier = modifier,
+        onClick = {
             val webpage = url.toUri()
             val intent = Intent(Intent.ACTION_VIEW, webpage)
             if (intent.resolveActivity(context.packageManager) != null) {

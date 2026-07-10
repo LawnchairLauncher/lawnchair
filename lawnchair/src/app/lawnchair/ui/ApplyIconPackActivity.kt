@@ -133,18 +133,16 @@ private fun ApplyIconPackSheet(
             title = { Text(text = stringResource(id = R.string.apply_icon_pack_title)) },
             content = {
                 PreferenceGroup {
-                    Item {
-                        PreferenceTemplate(
-                            title = { Text(text = packName) },
-                            startWidget = {
-                                Image(
-                                    painter = rememberDrawablePainter(drawable = packIcon),
-                                    contentDescription = packName,
-                                    modifier = Modifier.size(36.dp),
-                                )
-                            },
-                        )
-                    }
+                    PreferenceTemplate(
+                        title = { Text(text = packName) },
+                        startWidget = {
+                            Image(
+                                painter = rememberDrawablePainter(drawable = packIcon),
+                                contentDescription = packName,
+                                modifier = Modifier.size(36.dp),
+                            )
+                        },
+                    )
                 }
             },
             buttons = {
