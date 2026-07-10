@@ -78,9 +78,18 @@ These builds offer the latest features and bug fixes at a cost of performance an
 
 Download: [Obtainium][Obtainium link] • [GitHub][GitHub link] • [nightly.link][Nightly link]
 
-## Contribute
+## Sponsors
 
-Visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
+<p align="left">
+  <a href="https://coderabbit.link/lawnchair">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/sponsor-coderabbit-dark.svg" width="300">
+      <img alt="CodeRabbit" src="docs/assets/sponsor-coderabbit-light.svg" width="300">
+    </picture>
+  </a>
+</p>
+
+[CodeRabbit](https://coderabbit.link/lawnchair) is an AI-powered code review platform that integrates directly into pull-request workflows and IDEs, examining code changes in context and suggesting improvements.
 
 ## Support Lawnchair
 
@@ -92,6 +101,10 @@ A huge thank you to our Core Backers ($5+):
 [![Core Backers](https://opencollective.com/lawnchair/tiers/backer.svg?avatarHeight=64&width=890&button=false)](https://opencollective.com/lawnchair)
 
 [Become a supporter](https://opencollective.com/lawnchair) to help us cover our operational costs, or become a Core Backer to be featured here!
+
+## Contribute
+
+Visit the [Lawnchair contributing guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
 
 ## Quick links
 
