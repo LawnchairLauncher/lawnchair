@@ -104,7 +104,7 @@ fun AppDrawerFoldersPreference(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AppDrawerFoldersPreference(
-    folders: List<FolderEntry>,
+    folders: List<FolderEntry>?,
     onCreateFolder: (String) -> Unit,
     onEditFolderItems: (Int) -> Unit,
     onRenameFolder: (Int, String) -> Unit,
@@ -118,8 +118,8 @@ fun AppDrawerFoldersPreference(
     val folderOrderString by folderOrderAdapter.state
 
     var sortedDisplayList = remember(folders, folderOrderString) {
-        Log.d("AppDrawerFolders", "Recalculating sortedDisplayList. Folders count: ${folders.size}")
-        folders.sortedWith(
+        Log.d("AppDrawerFolders", "Recalculating sortedDisplayList. Folders count: ${folders?.size}")
+        folders?.sortedWith(
             compareBy { folderEntry ->
                 val index = FolderOrderUtils
                     .stringToIntList(folderOrderString)
@@ -131,14 +131,11 @@ fun AppDrawerFoldersPreference(
                     index
                 }
             },
-        )
+        ) ?: emptyList()
     }
 
-    // proxy for detecting if all apps have been loaded, todo change
-    val apps by appsState()
-
     LoadingScreen(
-        isLoading = apps.isEmpty(),
+        isLoading = folders == null,
         modifier = modifier.fillMaxWidth(),
     ) {
         PreferenceLayout(

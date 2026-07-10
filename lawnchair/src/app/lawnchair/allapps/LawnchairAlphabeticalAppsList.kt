@@ -71,10 +71,12 @@ class LawnchairAlphabeticalAppsList<T>(
 
     private fun observeFolders() {
         viewModel.folders.observeOnce(context as LifecycleOwner) { folders ->
-            folderList = folders
-                .sortedBy { folderOrder.indexOf(it.id) }
-                .toMutableList()
-            updateAdapterItems()
+            if (folders != null) {
+                folderList = folders
+                    .sortedBy { folderOrder.indexOf(it.id) }
+                    .toMutableList()
+                updateAdapterItems()
+            }
         }
     }
 

@@ -21,7 +21,7 @@ class FolderViewModel(
 ) : AndroidViewModel(application) {
     private val repository: FolderService = FolderService.INSTANCE.get(application)
 
-    val folders: StateFlow<List<FolderEntry>> = repository.getFoldersFlow()
+    val folders: StateFlow<List<FolderEntry>?> = repository.getFoldersFlow()
         .distinctUntilChanged()
         .catch { exception ->
             Log.e("FolderViewModel", "Error in folders flow", exception)
@@ -30,7 +30,7 @@ class FolderViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList(),
+            initialValue = null,
         )
 
     private val _folderEntry = MutableStateFlow<FolderEntry?>(null)

@@ -77,16 +77,18 @@ fun SelectAppsForDrawerFolder(
     }
 
     LaunchedEffect(folders) {
-        allFolderPackages = folders.flatMap { it.itemComponentKeys }
-            .map { key -> key.substringBefore("/") }
-            .toSet()
+        folders?.let {
+            allFolderPackages = it.flatMap { folder -> folder.itemComponentKeys }
+                .map { key -> key.substringBefore("/") }
+                .toSet()
+        }
     }
 
     LaunchedEffect(folderInfoId) {
         viewModel.setFolderEntry(folderInfoId)
     }
 
-    val loading = folderEntry == null && apps.isEmpty()
+    val loading = folderEntry == null || apps.isEmpty()
 
     PreferenceScaffold(
         label = if (loading) {
