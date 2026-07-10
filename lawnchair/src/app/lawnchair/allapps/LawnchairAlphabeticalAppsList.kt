@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.model.FolderOrderUtils
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.launcher
@@ -22,6 +23,7 @@ import com.android.launcher3.allapps.WorkProfileManager
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.onEach
 import java.util.function.Predicate
@@ -44,10 +46,10 @@ class LawnchairAlphabeticalAppsList<T>(
     private val viewModel = FolderViewModel(
         (context as? ComponentActivity)?.application ?: context.launcher.application,
     )
-    private var folderList = mutableListOf<FolderInfo>()
+    private var folderList = mutableListOf<FolderEntry>()
     private val filteredList = mutableListOf<AppInfo>()
 
-    private val folderOrder = FolderOrderUtils.stringToIntList(prefs.drawerListOrder.get())
+    private val folderOrder get() = FolderOrderUtils.stringToIntList(prefs.drawerListOrder.get())
 
     init {
         context.launcher.deviceProfile.inv.addOnChangeListener(this)
@@ -111,19 +113,26 @@ class LawnchairAlphabeticalAppsList<T>(
                 position++
             }
         } else {
-            folderList.forEach { folder ->
-                if (folder.getContents().size > 1) {
+            folderList.forEach { folderEntry ->
+                if (folderEntry.itemComponentKeys.size > 1) {
                     val folderInfo = FolderInfo()
-                    folderInfo.title = folder.title
-                    mAdapterItems.add(AdapterItem.asFolder(folderInfo))
-                    folder.getContents().forEach { app ->
-                        (appsStore.getApp(app.componentKey) as? AppInfo)?.let {
-                            folderInfo.add(it)
-                            if (prefs.folderApps.get()) filteredList.add(it)
+                    folderInfo.title = folderEntry.title
+                    folderEntry.itemComponentKeys.forEach { keyString ->
+                        val componentKey = ComponentKey.fromString(keyString)
+                        if (componentKey != null) {
+                            (appsStore.getApp(componentKey) as? AppInfo)?.let { appInfo ->
+                                folderInfo.add(appInfo)
+                                if (prefs.folderApps.get()) {
+                                    filteredList.add(appInfo)
+                                }
+                            }
                         }
                     }
+                    if (folderInfo.getContents().size > 1) {
+                        mAdapterItems.add(AdapterItem.asFolder(folderInfo))
+                        position++
+                    }
                 }
-                position++
             }
             val remainingApps = appList.filterNot { app -> filteredList.contains(app) && prefs.folderApps.get() }
             position = super.addAppsWithSections(remainingApps, position)

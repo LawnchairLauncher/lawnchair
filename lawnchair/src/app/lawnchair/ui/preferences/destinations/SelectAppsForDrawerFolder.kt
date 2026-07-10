@@ -1,6 +1,5 @@
 ﻿package app.lawnchair.ui.preferences.destinations
 
-import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,7 +36,6 @@ import app.lawnchair.ui.preferences.components.reorderable.PositionalReorderer
 import app.lawnchair.util.App
 import app.lawnchair.util.appsState
 import com.android.launcher3.R
-import com.android.launcher3.util.ComponentKey
 
 @Composable
 fun SelectAppsForDrawerFolder(
@@ -52,16 +49,15 @@ fun SelectAppsForDrawerFolder(
         return
     }
 
-    val context = LocalContext.current
     val apps by appsState()
     val folders by viewModel.folders.collectAsStateWithLifecycle()
-    val folderInfo by viewModel.folderInfo.collectAsStateWithLifecycle()
+    val folderEntry by viewModel.folderEntry.collectAsStateWithLifecycle()
 
     var allFolderPackages by remember { mutableStateOf(emptySet<String>()) }
     var filterNonUniqueItems by remember { mutableStateOf(true) }
 
-    val activeIds = remember(folderInfo) {
-        folderInfo?.getContents()?.map { ComponentKey(it.targetComponent, it.user).toString() } ?: emptyList()
+    val activeIds = remember(folderEntry) {
+        folderEntry?.itemComponentKeys ?: emptyList()
     }
 
     val (positionalItems, activeCount) = remember(apps, activeIds, filterNonUniqueItems, allFolderPackages) {
@@ -81,22 +77,22 @@ fun SelectAppsForDrawerFolder(
     }
 
     LaunchedEffect(folders) {
-        allFolderPackages = folders.flatMap { it.getContents() }
-            .mapNotNull { it.targetPackage }
+        allFolderPackages = folders.flatMap { it.itemComponentKeys }
+            .map { key -> key.substringBefore("/") }
             .toSet()
     }
 
     LaunchedEffect(folderInfoId) {
-        viewModel.setFolderInfo(folderInfoId, false)
+        viewModel.setFolderEntry(folderInfoId)
     }
 
-    val loading = folderInfo == null && apps.isEmpty()
+    val loading = folderEntry == null && apps.isEmpty()
 
     PreferenceScaffold(
         label = if (loading) {
             stringResource(R.string.loading)
         } else {
-            stringResource(R.string.x_with_y_count, folderInfo?.title.toString(), activeCount)
+            stringResource(R.string.x_with_y_count, folderEntry?.title.toString(), activeCount)
         },
         modifier = modifier,
         actions = {
@@ -106,7 +102,7 @@ fun SelectAppsForDrawerFolder(
                     activeCount = activeCount,
                     onUpdate = { newList, newCount ->
                         val sorted = PositionalMapper.sortInactiveItems(newList, newCount) { it.label }
-                        updateViewModel(sorted, newCount, apps, context, viewModel, folderInfoId, folderInfo?.title.toString())
+                        updateViewModel(sorted, newCount, viewModel, folderInfoId, folderEntry?.title.toString())
                     },
                     labelSelector = { it.label },
                     additionalContent = { hideMenu ->
@@ -144,7 +140,7 @@ fun SelectAppsForDrawerFolder(
                     activeCount = activeCount,
                     onOrderChange = { newList, newCount ->
                         val sorted = PositionalMapper.sortInactiveItems(newList, newCount) { it.label }
-                        updateViewModel(sorted, newCount, apps, context, viewModel, folderInfoId, folderInfo?.title.toString())
+                        updateViewModel(sorted, newCount, viewModel, folderInfoId, folderEntry?.title.toString())
                     },
                     contentPadding = it,
                 )
@@ -182,20 +178,10 @@ private fun PositionalAppListPreference(
 private fun updateViewModel(
     newList: List<PositionalListItem<App>>,
     newCount: Int,
-    apps: List<App>,
-    context: Context,
     viewModel: FolderViewModel,
     folderId: Int,
     title: String,
 ) {
-    val activePackageNames = PositionalMapper.getEnabledKeys(newList, newCount).toSet()
-
-    val newSelection = activePackageNames.mapNotNull { keyString ->
-        val app = apps.find { it.key.toString() == keyString }
-        app?.toAppInfo(context)?.apply {
-            rank = activePackageNames.indexOf(keyString)
-        }
-    }
-
-    viewModel.updateFolderItems(folderId, title, newSelection)
+    val activeKeys = PositionalMapper.getEnabledKeys(newList, newCount)
+    viewModel.updateFolderItems(folderId, title, activeKeys)
 }

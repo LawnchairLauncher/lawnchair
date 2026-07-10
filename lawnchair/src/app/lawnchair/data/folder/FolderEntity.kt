@@ -35,3 +35,10 @@ data class FolderItemEntity(
     @ColumnInfo(name = "item_info") val componentKey: String?,
     val timestamp: Long = System.currentTimeMillis(),
 )
+
+data class FolderEntry(
+    val id: Int,
+    val title: String,
+    val hide: Boolean = false,
+    val itemComponentKeys: List<String> = emptyList(),
+)
