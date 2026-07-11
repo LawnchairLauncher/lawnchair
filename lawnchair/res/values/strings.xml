@@ -739,6 +739,11 @@
 
     <string name="widget_unlimited_size_label">Remove size constraints</string>
     <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    
+    <!-- Deck mode -->
+    <string name="adding_apps_to_workspace">Adding apps to the home screen...</string>
+    <string name="restore_previous_layout">Restoring previous layout...</string>
+    <string name="creating_workspace_folder">Creating folder: %1$s...</string>
 
     <!-- Dock settings -->
     <string name="show_hotseat_title">Show dock</string>
