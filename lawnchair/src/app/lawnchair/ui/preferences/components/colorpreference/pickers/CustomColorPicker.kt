@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -102,7 +104,10 @@ fun CustomColorPicker(
             modifier = Modifier.padding(top = 8.dp),
         ) {
             Row(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
@@ -146,7 +151,7 @@ fun CustomColorPicker(
                     horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .padding(top = 16.dp),
+                        .padding(top = 8.dp, bottom = 16.dp),
                 ) {
                     Chip(
                         label = stringResource(id = R.string.hsb),
@@ -319,7 +324,9 @@ private fun HsvColorPicker(
     }
 
     DividerColumn(
-        modifier = modifier,
+        modifier = modifier
+            .clip(MaterialTheme.shapes.large)
+            .background(color = MaterialTheme.colorScheme.surfaceContainer),
     ) {
         HsbColorSlider(
             type = HsbSliderType.HUE,
@@ -391,7 +398,9 @@ private fun RgbColorPicker(
     }
 
     DividerColumn(
-        modifier = modifier,
+        modifier = modifier
+            .clip(MaterialTheme.shapes.large)
+            .background(color = MaterialTheme.colorScheme.surfaceContainer),
     ) {
         RgbColorSlider(
             label = stringResource(id = R.string.rgb_red),

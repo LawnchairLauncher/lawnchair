@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences.components.layout
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -52,15 +53,16 @@ fun LazyListScope.preferenceGroupItems(
     }
     items(count, key, contentType) {
         PreferenceGroupItem(cutTop = it > 0, cutBottom = it < count - 1) {
-            if (showDividers && it > 0) {
-                HorizontalDivider(
-                    modifier = Modifier,
-//                        .padding(start = dividerStartIndent + 16.dp, end = dividerEndIndent + 16.dp)
-                    thickness = 3.dp,
-                    color = MaterialTheme.colorScheme.surface,
-                )
+            Column {
+                if (showDividers && it > 0) {
+                    HorizontalDivider(
+                        modifier = Modifier,
+                        thickness = 3.dp,
+                        color = MaterialTheme.colorScheme.surface,
+                    )
+                }
+                itemContent(it)
             }
-            itemContent(it)
         }
     }
 }
@@ -98,14 +100,13 @@ fun PreferenceGroupItem(
     content: @Composable () -> Unit,
 ) {
     val shape = remember(cutTop, cutBottom) {
-        val top = if (cutTop) 0.dp else 28.dp
-        val bottom = if (cutBottom) 0.dp else 28.dp
+        val top = if (cutTop) 0.dp else 16.dp
+        val bottom = if (cutBottom) 0.dp else 16.dp
         RoundedCornerShape(top, top, bottom, bottom)
     }
     Surface(
         modifier = modifier.padding(horizontal = 16.dp),
         shape = shape,
-        color = preferenceGroupColor(),
     ) {
         content()
     }

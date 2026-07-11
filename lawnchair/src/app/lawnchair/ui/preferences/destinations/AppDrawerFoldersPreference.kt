@@ -1,7 +1,6 @@
 package app.lawnchair.ui.preferences.destinations
 
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,17 +17,18 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -65,15 +65,13 @@ fun AppDrawerFolderPreferenceItem(
     PreferenceGroup(
         modifier = modifier,
     ) {
-        Item {
-            ClickablePreference(
-                label = stringResource(R.string.app_drawer_folder),
-                modifier = Modifier,
-                onClick = {
-                    navController.navigate(route = AppDrawerFolder)
-                },
-            )
-        }
+        ClickablePreference(
+            label = stringResource(R.string.app_drawer_folder),
+            modifier = Modifier,
+            onClick = {
+                navController.navigate(route = AppDrawerFolder)
+            },
+        )
     }
 }
 
@@ -110,6 +108,7 @@ fun AppDrawerFoldersPreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AppDrawerFoldersPreference(
     folders: List<FolderInfo>,
@@ -155,44 +154,39 @@ fun AppDrawerFoldersPreference(
             PreferenceGroup(
                 heading = stringResource(R.string.settings),
             ) {
-                Item {
-                    SwitchPreference(
-                        adapter = prefs.folderApps.getAdapter(),
-                        label = stringResource(id = R.string.apps_in_folder_label),
-                        description = stringResource(id = R.string.apps_in_folder_description),
-                    )
-                }
+                SwitchPreference(
+                    adapter = prefs.folderApps.getAdapter(),
+                    label = stringResource(id = R.string.apps_in_folder_label),
+                    description = stringResource(id = R.string.apps_in_folder_description),
+                )
             }
             PreferenceGroup(heading = stringResource(R.string.folders_label)) {
-                Item {
-                    PreferenceTemplate(
-                        title = {},
-                        description = {
-                            Text(
-                                text = stringResource(R.string.add_folder),
-                                color = MaterialTheme.colorScheme.onSurface,
+                PreferenceTemplate(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.add_folder),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    },
+                    startWidget = {
+                        Icon(Icons.Rounded.Add, contentDescription = null)
+                    },
+                    onClick = {
+                        bottomSheetHandler.show {
+                            FolderEditSheet(
+                                FolderInfo().apply {
+                                    title = stringResource(R.string.my_folder_label)
+                                },
+                                onRename = onCreateFolder,
+                                onNavigate = {},
+                                onDismiss = {
+                                    bottomSheetHandler.hide()
+                                },
+                                hideAppPicker = true,
                             )
-                        },
-                        modifier = Modifier.clickable {
-                            bottomSheetHandler.show {
-                                FolderEditSheet(
-                                    FolderInfo().apply {
-                                        title = stringResource(R.string.my_folder_label)
-                                    },
-                                    onRename = onCreateFolder,
-                                    onNavigate = {},
-                                    onDismiss = {
-                                        bottomSheetHandler.hide()
-                                    },
-                                    hideAppPicker = true,
-                                )
-                            }
-                        },
-                        startWidget = {
-                            Icon(Icons.Rounded.Add, contentDescription = null)
-                        },
-                    )
-                }
+                        }
+                    },
+                )
             }
             ReorderablePreferenceGroup(
                 label = null,
@@ -208,7 +202,7 @@ fun AppDrawerFoldersPreference(
                     )
                     sortedDisplayList = folders
                 },
-            ) { folderInfo, _, _, onDraggingChange ->
+            ) { folderInfo, _, _ ->
                 val interactionSource = remember { MutableInteractionSource() }
                 FolderItem(
                     folderInfo = folderInfo,
@@ -243,9 +237,6 @@ fun AppDrawerFoldersPreference(
                         ReorderableDragHandle(
                             interactionSource = interactionSource,
                             scope = this,
-                            onDragStop = {
-                                onDraggingChange(false)
-                            },
                         )
                     },
                     interactionSource = interactionSource,
@@ -312,6 +303,7 @@ fun FolderEditSheet(
                     ),
                     modifier = Modifier
                         .padding(horizontal = 8.dp),
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                 ) {
                     onNavigate(folderInfo.id)
                 }
@@ -337,6 +329,7 @@ fun FolderItem(
                 text = folderInfo.title.toString(),
             )
         },
+        modifier = modifier,
         description = {
             Text(
                 text = resources.getQuantityString(R.plurals.apps_count, folderInfo.getContents().size, folderInfo.getContents().size),
@@ -357,10 +350,7 @@ fun FolderItem(
                 }
             }
         },
-        modifier = modifier.clickable(
-            interactionSource = interactionSource,
-            indication = ripple(),
-        ) {
+        onClick = {
             onItemClick(folderInfo)
         },
     )

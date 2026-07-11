@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -170,6 +171,7 @@ object PositionalMapper {
  * @param labelSelector Used to sort the inactive section alphabetically when an item is disabled.
  * @param contentPadding Padding applied to the inner [PreferenceLazyColumn].
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun <T> PositionalReorderer(
     items: List<PositionalListItem<T>>,

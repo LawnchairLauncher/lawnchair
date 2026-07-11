@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -21,6 +21,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -66,8 +67,9 @@ fun GestureHandlerPreference(
 
     PreferenceTemplate(
         title = { Text(text = label) },
+        modifier = modifier,
         description = { Text(text = currentConfig.getLabel(context)) },
-        modifier = modifier.clickable {
+        onClick = {
             bottomSheetHandler.show {
                 ModalBottomSheetContent(
                     title = { Text(label) },
@@ -88,7 +90,7 @@ fun GestureHandlerPreference(
                             val selected = currentConfig::class.java == option.configClass
                             PreferenceTemplate(
                                 title = { Text(option.getLabel(context)) },
-                                modifier = Modifier.clickable {
+                                onClick = {
                                     bottomSheetHandler.hide()
                                     onSelect(option)
                                 },
@@ -98,6 +100,7 @@ fun GestureHandlerPreference(
                                         onClick = null,
                                     )
                                 },
+                                colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                             )
                         }
                     }
@@ -107,6 +110,7 @@ fun GestureHandlerPreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AppGesturePreference(
     cmp: ComponentKey,
@@ -141,13 +145,12 @@ fun AppGesturePreference(
     PreferenceTemplate(
         title = { Text(text = label) },
         description = { Text(text = currentConfig.getLabel(context)) },
-        modifier = modifier
-            .clickable {
-                val intent = Intent(context, LawnchairShortcutActivity::class.java).apply {
-                    putExtra(LawnchairShortcutActivity.EXTRA_RESULT_RECEIVER, resultReceiver)
-                }
-                context.startActivity(intent)
+        modifier = modifier.fillMaxWidth(),
+        onClick = {
+            val intent = Intent(context, LawnchairShortcutActivity::class.java).apply {
+                putExtra(LawnchairShortcutActivity.EXTRA_RESULT_RECEIVER, resultReceiver)
             }
-            .fillMaxWidth(),
+            context.startActivity(intent)
+        },
     )
 }

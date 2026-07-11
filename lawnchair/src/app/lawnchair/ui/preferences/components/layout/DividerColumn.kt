@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.components.layout
 
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,7 +22,7 @@ import kotlin.math.roundToInt
 fun DividerColumn(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.surface,
-    thickness: Dp = 3.dp,
+    thickness: Dp = ListItemDefaults.SegmentedGap,
     startIndent: Dp = 0.dp,
     endIndent: Dp = 0.dp,
     dividersToSkip: Int = 0,

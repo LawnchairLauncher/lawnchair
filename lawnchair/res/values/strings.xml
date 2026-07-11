@@ -776,6 +776,7 @@
     <string name="open_in_store_drop_target_label">Open in store</string>
 
     <string name="dock_icons">Dock icons</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
