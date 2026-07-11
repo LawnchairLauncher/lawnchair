@@ -27,13 +27,19 @@ import java.util.Objects;
  */
 public class CellPosMapper {
 
-    public static final CellPosMapper DEFAULT = new CellPosMapper(false, -1);
+    public static final CellPosMapper DEFAULT = new CellPosMapper(false, -1, 1);
     private final boolean mHasVerticalHotseat;
     private final int mNumOfHotseat;
+    private final int mNumHotseatRows;
 
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat) {
+        this(hasVerticalHotseat, numOfHotseat, 1);
+    }
+
+    public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat, int numHotseatRows) {
         mHasVerticalHotseat = hasVerticalHotseat;
         mNumOfHotseat = numOfHotseat;
+        mNumHotseatRows = numHotseatRows;
     }
 
     /**
@@ -49,8 +55,12 @@ public class CellPosMapper {
     public CellPos mapPresenterToModel(int presenterX, int presenterY, int presenterScreen,
             int container) {
         if (container == Favorites.CONTAINER_HOTSEAT) {
-            presenterScreen = mHasVerticalHotseat
-                    ? mNumOfHotseat - presenterY - 1 : presenterX;
+            if (mHasVerticalHotseat) {
+                presenterScreen = mNumOfHotseat - presenterY - 1;
+            } else {
+                // For multi-row hotseat, screenId (rank) = row * numColumns + column
+                presenterScreen = presenterY * mNumOfHotseat + presenterX;
+            }
         }
         return new CellPos(presenterX, presenterY, presenterScreen);
     }

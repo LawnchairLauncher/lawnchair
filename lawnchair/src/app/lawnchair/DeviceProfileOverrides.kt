@@ -102,6 +102,8 @@ class DeviceProfileOverrides @Inject constructor(
 
         val enableTaskbarOnPhone: Boolean,
 
+        val numHotseatRows: Int = 1,
+
         // Foldable overrides (-1 means don't override)
         val foldableShownHotseatIcons: Int = -1,
         val foldableDatabaseHotseatIcons: Int = -1,
@@ -128,6 +130,8 @@ class DeviceProfileOverrides @Inject constructor(
             },
 
             enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstCached(),
+
+            numHotseatRows = prefs.hotseatRows.get().coerceAtLeast(1),
 
             foldableShownHotseatIcons = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
                 val folded = prefs.hotseatColumns.get()
@@ -166,6 +170,12 @@ class DeviceProfileOverrides @Inject constructor(
             }
             if (foldableDatabaseAllAppsColumns > 0) {
                 idp.numDatabaseAllAppsColumns = foldableDatabaseAllAppsColumns
+            }
+
+            // Ensure database can hold enough icons for multi-row dock
+            val requiredSlots = idp.numShownHotseatIcons * numHotseatRows
+            if (idp.numDatabaseHotseatIcons < requiredSlots) {
+                idp.numDatabaseHotseatIcons = requiredSlots
             }
 
             // apply icon and text size

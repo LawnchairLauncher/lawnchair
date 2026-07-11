@@ -138,6 +138,7 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
     val isFoldable = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY
     val hotseatColumnsAdapter = prefs.hotseatColumns.getAdapter()
     val hotseatColumnsUnfoldedAdapter = prefs.hotseatColumnsUnfolded.getAdapter()
+    val hotseatRowsAdapter = prefs.hotseatRows.getAdapter()
 
     PreferenceGroup(heading = stringResource(id = R.string.grid)) {
         if (isFoldable) {
@@ -169,6 +170,12 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
             )
         }
         SliderPreference(
+            label = stringResource(id = R.string.dock_rows),
+            adapter = hotseatRowsAdapter,
+            step = 1,
+            valueRange = 1..2,
+        )
+        SliderPreference(
             adapter = prefs2.hotseatBottomFactor.getAdapter(),
             label = stringResource(id = R.string.hotseat_bottom_space_label),
             valueRange = 0.0F..1.7F,
@@ -195,6 +202,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
             prefs2.hotseatMode.getAdapter(),
             prefs.hotseatColumns.getAdapter(),
             prefs.hotseatColumnsUnfolded.getAdapter(),
+            prefs.hotseatRows.getAdapter(),
             prefs2.themedHotseatQsb.getAdapter(),
             prefs.hotseatQsbCornerRadius.getAdapter(),
             prefs.hotseatQsbAlpha.getAdapter(),
