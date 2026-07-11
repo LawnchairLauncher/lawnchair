@@ -148,7 +148,6 @@ class PreferenceManager @Inject constructor(
     val searchResultTextClassifierUrl = BoolPref("pref_searchResultTextClassifierUrl", true)
     val searchResultTextClassifierDate = BoolPref("pref_searchResultTextClassifierDate", true)
     val searchResultTextClassifierFlight = BoolPref("pref_searchResultTextClassifierFlight", true)
-    val searchResultTextClassifierOtp = BoolPref("pref_searchResultTextClassifierOtp", true)
     val searchResultTextClassifierOthers = BoolPref("pref_searchResultTextClassifierOthers", true)
 
     val searchResultApps = BoolPref("pref_searchResultApps", true, recreate)

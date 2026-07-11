@@ -153,63 +153,33 @@ fun TextClassifierSearchProviderSettings(
         modifier = modifier,
     ) {
         PreferenceGroup {
-            Item(
-                visible = Utilities.ATLEAST_O,
-            ) {
+            if (Utilities.ATLEAST_O) {
                 SwitchPreference(
                     adapter = prefs.searchResultTextClassifierEmail.getAdapter(),
                     label = stringResource(id = R.string.search_pref_result_textclassifier_email),
                 )
             }
-            Item(
-                visible = Utilities.ATLEAST_P,
-            ) {
-                SwitchPreference(
-                    adapter = prefs.searchResultTextClassifierPhone.getAdapter(),
-                    label = stringResource(id = R.string.search_pref_result_textclassifier_phone),
-                )
-            }
-            Item(
-                visible = Utilities.ATLEAST_O,
-            ) {
-                SwitchPreference(
-                    adapter = prefs.searchResultTextClassifierAddress.getAdapter(),
-                    label = stringResource(id = R.string.search_pref_result_textclassifier_address),
-                )
-            }
-            Item(
-                visible = Utilities.ATLEAST_O,
-            ) {
-                SwitchPreference(
-                    adapter = prefs.searchResultTextClassifierUrl.getAdapter(),
-                    label = stringResource(id = R.string.search_pref_result_textclassifier_url),
-                )
-            }
-            Item(
-                visible = Utilities.ATLEAST_P,
-            ) {
-                SwitchPreference(
-                    adapter = prefs.searchResultTextClassifierDate.getAdapter(),
-                    label = stringResource(id = R.string.search_pref_result_textclassifier_date),
-                )
-            }
-            Item(
-                visible = Utilities.ATLEAST_P,
-            ) {
-                SwitchPreference(
-                    adapter = prefs.searchResultTextClassifierFlight.getAdapter(),
-                    label = stringResource(id = R.string.search_pref_result_textclassifier_flight),
-                )
-            }
-            Item {
-                SwitchPreference(
-                    adapter = prefs.searchResultTextClassifierOtp.getAdapter(),
-                    label = stringResource(id = R.string.search_pref_result_textclassifier_otp),
-                )
-            }
-            Item(
-                visible = Utilities.ATLEAST_O,
-            ) {
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierPhone.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_phone),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierAddress.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_address),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierUrl.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_url),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierDate.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_date),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierFlight.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_flight),
+            )
+            if (Utilities.ATLEAST_O) {
                 SwitchPreference(
                     adapter = prefs.searchResultTextClassifierOthers.getAdapter(),
                     label = stringResource(id = R.string.search_pref_result_textclassifier_others),

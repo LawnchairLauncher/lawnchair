@@ -103,16 +103,10 @@ object TextClassifierSearchProvider : SearchProvider {
 
             TextClassifier.TYPE_FLIGHT_NUMBER -> prefs.searchResultTextClassifierFlight.get()
 
-            // SDK 36
-            TextClassifier.TYPE_OTP -> prefs.searchResultTextClassifierOtp.get()
-
             // SDK 28
             TextClassifier.TYPE_OTHER -> prefs.searchResultTextClassifierOthers.get()
 
-            // Note: TYPE_SMS_WEB_OTP and TYPE_SMS_RETRIEVER_OTP are not included because Lawnchair
-            // prioritised frameworks jar which at the time of writing stuck at 36.0 meaning we
-            // can't use them because they're from 37 and 36.1...
-            else -> true // TYPE_UNKNOWN
+            else -> false // TYPE_UNKNOWN and OTP related
         }
     }
 
