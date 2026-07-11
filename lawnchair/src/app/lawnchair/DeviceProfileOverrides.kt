@@ -131,7 +131,7 @@ class DeviceProfileOverrides @Inject constructor(
 
             enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstCached(),
 
-            numHotseatRows = prefs.hotseatRows.get().coerceAtLeast(1),
+            numHotseatRows = prefs.hotseatRows.get().coerceIn(1, 2),
 
             foldableShownHotseatIcons = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
                 val folded = prefs.hotseatColumns.get()

@@ -27,19 +27,13 @@ import java.util.Objects;
  */
 public class CellPosMapper {
 
-    public static final CellPosMapper DEFAULT = new CellPosMapper(false, -1, 1);
+    public static final CellPosMapper DEFAULT = new CellPosMapper(false, -1);
     private final boolean mHasVerticalHotseat;
     private final int mNumOfHotseat;
-    private final int mNumHotseatRows;
 
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat) {
-        this(hasVerticalHotseat, numOfHotseat, 1);
-    }
-
-    public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat, int numHotseatRows) {
         mHasVerticalHotseat = hasVerticalHotseat;
         mNumOfHotseat = numOfHotseat;
-        mNumHotseatRows = numHotseatRows;
     }
 
     /**
