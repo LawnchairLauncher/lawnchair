@@ -962,7 +962,7 @@
     <string name="search_pref_result_web_title">Web suggestions</string>
     <string name="search_pref_result_history_title">Search history</string>
     <string name="all_apps_search_result_calculator">Calculator</string>
-    <string name="search_pref_result_textclassifier_title">Entity extraction</string>
+    <string name="search_pref_result_textclassifier_title">Microresults</string>
     <string name="search_pref_result_textclassifier_description">Suggest actions from your search query on-device</string>
     <string name="search_pref_result_textclassifier_email">Email</string>
     <string name="search_pref_result_textclassifier_phone">Phone</string>
