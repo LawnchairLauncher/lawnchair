@@ -1,0 +1,4 @@
+// Update the androidx-lib dependency to include the fallback implementation for ViewTreeLifecycleOwner
+dependencies {
+    implementation 'androidx-lib:androidx-lib:1.0.0'
+}
