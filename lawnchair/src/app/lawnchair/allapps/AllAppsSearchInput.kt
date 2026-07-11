@@ -441,7 +441,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     override fun setInsets(insets: Rect) {
         (layoutParams as MarginLayoutParams).apply {
-            topMargin = if (isInvisible) {
+            topMargin = if (isGone) {
                 insets.top - allAppsSearchVerticalOffset
             } else {
                 max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
