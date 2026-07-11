@@ -49,8 +49,12 @@ public class CellPosMapper {
     public CellPos mapPresenterToModel(int presenterX, int presenterY, int presenterScreen,
             int container) {
         if (container == Favorites.CONTAINER_HOTSEAT) {
-            presenterScreen = mHasVerticalHotseat
-                    ? mNumOfHotseat - presenterY - 1 : presenterX;
+            if (mHasVerticalHotseat) {
+                presenterScreen = mNumOfHotseat - presenterY - 1;
+            } else {
+                // For multi-row hotseat, screenId (rank) = row * numColumns + column
+                presenterScreen = presenterY * mNumOfHotseat + presenterX;
+            }
         }
         return new CellPos(presenterX, presenterY, presenterScreen);
     }

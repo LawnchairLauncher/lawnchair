@@ -8,22 +8,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
-import app.lawnchair.ui.preferences.components.layout.PreferenceGroupScope
 
 @Composable
 fun PreferenceGroupPreviewContainer(
     modifier: Modifier = Modifier,
-    content: @Composable (PreferenceGroupScope.() -> Unit),
+    content: @Composable (() -> Unit),
 ) {
     Box(
         modifier = modifier.background(MaterialTheme.colorScheme.surfaceDim),
     ) {
         PreferenceGroup(
+            modifier = Modifier.padding(vertical = 16.dp),
             heading = "Group Heading",
             description = "Group description",
-            showDescription = true,
             content = content,
-            modifier = Modifier.padding(vertical = 16.dp),
         )
     }
 }

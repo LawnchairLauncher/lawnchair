@@ -200,14 +200,24 @@ public class Hotseat extends CellLayout implements Insettable {
      * Returns orientation specific cell X given invariant order in the hotseat
      */
     public int getCellXFromOrder(int rank) {
-        return mHasVerticalHotseat ? 0 : rank;
+        if (mHasVerticalHotseat) {
+            return 0;
+        }
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int numColumns = dp.numShownHotseatIcons;
+        return rank % numColumns;
     }
 
     /**
      * Returns orientation specific cell Y given invariant order in the hotseat
      */
     public int getCellYFromOrder(int rank) {
-        return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : 0;
+        if (mHasVerticalHotseat) {
+            return getCountY() - (rank + 1);
+        }
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int numColumns = dp.numShownHotseatIcons;
+        return rank / numColumns;
     }
 
     boolean isHasVerticalHotseat() {
@@ -245,7 +255,7 @@ public class Hotseat extends CellLayout implements Insettable {
         if (hasVerticalHotseat) {
             setGridSize(1, dp.numShownHotseatIcons);
         } else {
-            setGridSize(dp.numShownHotseatIcons, 1);
+            setGridSize(dp.numShownHotseatIcons, dp.numHotseatRows);
         }
     }
 

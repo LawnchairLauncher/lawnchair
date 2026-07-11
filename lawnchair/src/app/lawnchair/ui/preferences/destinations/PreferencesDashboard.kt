@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021, Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app.lawnchair.ui.preferences.destinations
 
 import android.app.Activity
@@ -15,16 +31,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Science
-import androidx.compose.material.icons.rounded.SettingsBackupRestore
 import androidx.compose.material.icons.rounded.TipsAndUpdates
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Surface
@@ -41,26 +56,25 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.backup.ui.restoreBackupOpener
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenuGrouped
-import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
+import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.layout.ProvideDescriptionTextStyle
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
 import app.lawnchair.ui.preferences.navigation.About
 import app.lawnchair.ui.preferences.navigation.AppDrawer
 import app.lawnchair.ui.preferences.navigation.BackupAndRestore
-import app.lawnchair.ui.preferences.navigation.CreateBackup
 import app.lawnchair.ui.preferences.navigation.DebugMenu
 import app.lawnchair.ui.preferences.navigation.Dock
 import app.lawnchair.ui.preferences.navigation.ExperimentalFeatures
@@ -116,57 +130,40 @@ fun PreferencesDashboard(
 
         val deckLayout = prefs2.deckLayout.getAdapter()
         PreferenceGroup {
-            Item {
-                PreferenceCategory(
-                    label = stringResource(R.string.general_label),
-                    description = stringResource(R.string.general_description),
-                    iconResource = R.drawable.ic_general,
-                    onNavigate = { onNavigate(General) },
-                    isSelected = currentRoute is General,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
+            PreferenceCategory(
+                label = stringResource(R.string.general_label),
+                description = stringResource(R.string.general_description),
+                iconResource = R.drawable.ic_general,
+                onNavigate = { onNavigate(General) },
+                isSelected = currentRoute is General,
+            )
 
-            Item {
-                PreferenceCategory(
-                    label = stringResource(R.string.home_screen_label),
-                    description = stringResource(R.string.home_screen_description),
-                    iconResource = R.drawable.ic_home_screen,
-                    onNavigate = { onNavigate(HomeScreen) },
-                    isSelected = currentRoute is HomeScreen,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
+            PreferenceCategory(
+                label = stringResource(R.string.home_screen_label),
+                description = stringResource(R.string.home_screen_description),
+                iconResource = R.drawable.ic_home_screen,
+                onNavigate = { onNavigate(HomeScreen) },
+                isSelected = currentRoute is HomeScreen,
+            )
 
             val isSmartspaceEnabled = prefs2.enableSmartspace.firstCached()
-            Item {
-                PreferenceCategory(
-                    label = stringResource(id = R.string.smartspace_widget),
-                    description = stringResource(R.string.smartspace_widget_description),
-                    iconResource = if (isSmartspaceEnabled) R.drawable.ic_smartspace else R.drawable.ic_smartspace_off,
-                    onNavigate = { onNavigate(Smartspace) },
-                    isSelected = currentRoute is Smartspace,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
+            PreferenceCategory(
+                label = stringResource(id = R.string.smartspace_widget),
+                description = stringResource(R.string.smartspace_widget_description),
+                iconResource = if (isSmartspaceEnabled) R.drawable.ic_smartspace else R.drawable.ic_smartspace_off,
+                onNavigate = { onNavigate(Smartspace) },
+                isSelected = currentRoute is Smartspace,
+            )
 
-            Item {
-                PreferenceCategory(
-                    label = stringResource(R.string.dock_label),
-                    description = stringResource(R.string.dock_description),
-                    iconResource = R.drawable.ic_dock,
-                    onNavigate = { onNavigate(Dock) },
-                    isSelected = currentRoute is Dock,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
+            PreferenceCategory(
+                label = stringResource(R.string.dock_label),
+                description = stringResource(R.string.dock_description),
+                iconResource = R.drawable.ic_dock,
+                onNavigate = { onNavigate(Dock) },
+                isSelected = currentRoute is Dock,
+            )
 
-            Item(
-                key = "app_drawer",
+            ExpandAndShrink(
                 visible = !deckLayout.state.value,
             ) {
                 PreferenceCategory(
@@ -175,49 +172,35 @@ fun PreferencesDashboard(
                     iconResource = R.drawable.ic_apps,
                     onNavigate = { onNavigate(AppDrawer) },
                     isSelected = currentRoute is AppDrawer,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
                 )
             }
 
-            Item {
-                PreferenceCategory(
-                    label = stringResource(R.string.search_bar_label),
-                    description = stringResource(R.string.drawer_search_description),
-                    iconResource = R.drawable.ic_search,
-                    onNavigate = { onNavigate(Search()) },
-                    isSelected = currentRoute is Search,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
+            PreferenceCategory(
+                label = stringResource(R.string.search_bar_label),
+                description = stringResource(R.string.drawer_search_description),
+                iconResource = R.drawable.ic_search,
+                onNavigate = { onNavigate(Search()) },
+                isSelected = currentRoute is Search,
+            )
 
-            Item {
-                PreferenceCategory(
-                    label = stringResource(R.string.folders_label),
-                    description = stringResource(R.string.folders_description),
-                    iconResource = R.drawable.ic_folder,
-                    onNavigate = { onNavigate(Folders) },
-                    isSelected = currentRoute is Folders,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
+            PreferenceCategory(
+                label = stringResource(R.string.folders_label),
+                description = stringResource(R.string.folders_description),
+                iconResource = R.drawable.ic_folder,
+                onNavigate = { onNavigate(Folders) },
+                isSelected = currentRoute is Folders,
+            )
 
-            Item {
-                PreferenceCategory(
-                    label = stringResource(id = R.string.gestures_label),
-                    description = stringResource(R.string.gestures_description),
-                    iconResource = R.drawable.ic_gestures,
-                    onNavigate = { onNavigate(Gestures) },
-                    isSelected = currentRoute is Gestures,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
-            Item(
-                "quickstep",
-                LawnchairApp.isRecentsEnabled || BuildConfig.DEBUG,
+            PreferenceCategory(
+                label = stringResource(id = R.string.gestures_label),
+                description = stringResource(R.string.gestures_description),
+                iconResource = R.drawable.ic_gestures,
+                onNavigate = { onNavigate(Gestures) },
+                isSelected = currentRoute is Gestures,
+            )
+
+            ExpandAndShrink(
+                visible = LawnchairApp.isRecentsEnabled || BuildConfig.DEBUG,
             ) {
                 PreferenceCategory(
                     label = stringResource(id = R.string.quickstep_label),
@@ -225,34 +208,24 @@ fun PreferencesDashboard(
                     iconResource = R.drawable.ic_quickstep,
                     onNavigate = { onNavigate(Quickstep) },
                     isSelected = currentRoute is Quickstep,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
                 )
             }
 
-            Item {
-                PreferenceCategory(
-                    label = stringResource(R.string.backup_and_restore_label),
-                    description = stringResource(R.string.backup_and_restore_description),
-                    iconResource = R.drawable.backup_restore,
-                    onNavigate = { onNavigate(BackupAndRestore) },
-                    isSelected = currentRoute is BackupAndRestore,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
+            PreferenceCategory(
+                label = stringResource(R.string.backup_and_restore_label),
+                description = stringResource(R.string.backup_and_restore_description),
+                iconResource = R.drawable.backup_restore,
+                onNavigate = { onNavigate(BackupAndRestore) },
+                isSelected = currentRoute is BackupAndRestore,
+            )
 
-            Item {
-                PreferenceCategory(
-                    label = stringResource(R.string.about_label),
-                    description = aboutDescrption,
-                    iconResource = R.drawable.ic_about,
-                    onNavigate = { onNavigate(About) },
-                    isSelected = currentRoute is About,
-                    isFirst = it.isFirst,
-                    isLast = it.isLast,
-                )
-            }
+            PreferenceCategory(
+                label = stringResource(R.string.about_label),
+                description = aboutDescrption,
+                iconResource = R.drawable.ic_about,
+                onNavigate = { onNavigate(About) },
+                isSelected = currentRoute is About,
+            )
         }
     }
 }
@@ -349,22 +322,23 @@ fun RowScope.PreferencesOverflowMenu(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferencesDebugWarning(
     modifier: Modifier = Modifier,
 ) {
-    Surface(
+    WarningPreference(
+        // Don't move to strings.xml, no need to translate this warning
+        text = "You are using a development build, which may contain bugs and broken features. Use at your own risk!",
         modifier = modifier.padding(horizontal = 16.dp),
-        shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.errorContainer,
-    ) {
-        WarningPreference(
-            // Don't move to strings.xml, no need to translate this warning
-            text = "You are using a development build, which may contain bugs and broken features. Use at your own risk!",
-        )
-    }
+        standalone = true,
+        colors = ListItemDefaults.segmentedColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+        ),
+    )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferencesSetDefaultLauncherWarning(
     modifier: Modifier = Modifier,
@@ -376,18 +350,20 @@ fun PreferencesSetDefaultLauncherWarning(
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         PreferenceTemplate(
-            modifier = Modifier.clickable {
+            modifier = Modifier,
+            onClick = {
                 Intent(Settings.ACTION_HOME_SETTINGS)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .let { context.startActivity(it) }
                 (context as? Activity)?.finish()
             },
-            title = {},
-            description = {
-                Text(
-                    text = stringResource(id = R.string.set_default_launcher_tip),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            title = {
+                ProvideDescriptionTextStyle {
+                    Text(
+                        text = stringResource(id = R.string.set_default_launcher_tip),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             },
             startWidget = {
                 Icon(

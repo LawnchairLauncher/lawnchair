@@ -23,27 +23,23 @@ fun BackupAndRestorePreference(
         modifier = modifier,
     ) {
         PreferenceGroup {
-            Item {
-                NavigationActionPreference(
-                    label = stringResource(R.string.create_backup),
-                    subtitle = stringResource(R.string.create_backup_description),
-                    destination = CreateBackup,
-                )
-            }
-            Item {
-                ClickablePreference(
-                    label = stringResource(R.string.restore_backup),
-                    subtitle = stringResource(R.string.restore_backup_description),
-                    onClick = restoreBackupOpener(),
-                )
-            }
-            Item {
-                ClickablePreference(
-                    label = stringResource(R.string.restore_nova_backup),
-                    subtitle = stringResource(R.string.restore_nova_backup_description),
-                    onClick = restoreNovaBackupOpener(),
-                )
-            }
+            NavigationActionPreference(
+                label = stringResource(R.string.create_backup),
+                subtitle = stringResource(R.string.create_backup_description),
+                destination = CreateBackup,
+            )
+            ClickablePreference(
+                label = stringResource(R.string.restore_backup),
+                subtitle = stringResource(R.string.restore_backup_description),
+                onClick = restoreBackupOpener(),
+            )
+        }
+        PreferenceGroup {
+            ClickablePreference(
+                label = stringResource(R.string.restore_nova_backup),
+                subtitle = stringResource(R.string.restore_nova_backup_description),
+                onClick = restoreNovaBackupOpener(),
+            )
         }
     }
 }
