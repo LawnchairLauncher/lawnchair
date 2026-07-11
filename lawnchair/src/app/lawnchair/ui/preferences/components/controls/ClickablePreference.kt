@@ -16,13 +16,15 @@
 
 package app.lawnchair.ui.preferences.components.controls
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,33 +38,39 @@ import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ClickablePreference(
     label: String,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     confirmationText: String? = null,
+    colors: ListItemColors = ListItemDefaults.segmentedColors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+    ),
     onClick: () -> Unit,
 ) {
     val bottomSheetHandler = bottomSheetHandler
     PreferenceTemplate(
         title = { Text(text = label) },
-        modifier = modifier
-            .clickable {
-                if (confirmationText != null) {
-                    bottomSheetHandler.show {
-                        PreferenceClickConfirmation(
-                            title = label,
-                            text = confirmationText,
-                            onDismissRequest = { bottomSheetHandler.hide() },
-                            onConfirm = onClick,
-                        )
-                    }
-                } else {
-                    onClick()
+        modifier = modifier,
+        description = subtitle?.let { { Text(text = it) } },
+        onClick = {
+            if (confirmationText != null) {
+                bottomSheetHandler.show {
+                    PreferenceClickConfirmation(
+                        title = label,
+                        text = confirmationText,
+                        onDismissRequest = { bottomSheetHandler.hide() },
+                        onConfirm = onClick,
+                    )
                 }
-            },
-        description = { subtitle?.let { Text(text = it) } },
+            } else {
+                onClick()
+            }
+        },
+        colors = colors,
     )
 }
 
@@ -105,13 +113,11 @@ fun PreferenceClickConfirmation(
 private fun ClickablePreferencePreview() {
     LawnchairTheme {
         PreferenceGroupPreviewContainer {
-            Item {
-                ClickablePreference(
-                    label = "Label",
-                    subtitle = "Subtitle",
-                    onClick = {},
-                )
-            }
+            ClickablePreference(
+                label = "Label",
+                subtitle = "Subtitle",
+                onClick = {},
+            )
         }
     }
 }

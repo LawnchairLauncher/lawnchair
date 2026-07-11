@@ -47,6 +47,7 @@ import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.createPreviewIdp
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
+import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -68,14 +69,11 @@ fun DockPreferences(modifier: Modifier = Modifier) {
         MainSwitchPreference(adapter = prefs2.isHotseatEnabled.getAdapter(), label = stringResource(id = R.string.show_hotseat_title)) {
             DockPreferencesPreview()
             PreferenceGroup(heading = stringResource(id = R.string.style)) {
-                Item {
-                    SwitchPreference(
-                        adapter = hotseatBgAdapter,
-                        label = stringResource(id = R.string.hotseat_background),
-                    )
-                }
-                Item(
-                    key = "feed_pref",
+                SwitchPreference(
+                    adapter = hotseatBgAdapter,
+                    label = stringResource(id = R.string.hotseat_background),
+                )
+                ExpandAndShrink(
                     visible = hotseatBgAdapter.state.value,
                 ) {
                     HotseatBackgroundSettings(prefs, prefs2)
@@ -84,12 +82,10 @@ fun DockPreferences(modifier: Modifier = Modifier) {
             SearchBarPreference(SearchRoute.DOCK_SEARCH)
             GridSettings(prefs, prefs2)
             PreferenceGroup(heading = stringResource(id = R.string.icons)) {
-                Item {
-                    SwitchPreference(
-                        adapter = prefs2.enableLabelInDock.getAdapter(),
-                        label = stringResource(id = R.string.show_labels),
-                    )
-                }
+                SwitchPreference(
+                    adapter = prefs2.enableLabelInDock.getAdapter(),
+                    label = stringResource(id = R.string.show_labels),
+                )
             }
         }
     }
@@ -97,7 +93,7 @@ fun DockPreferences(modifier: Modifier = Modifier) {
 
 @Composable
 fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
-    DividerColumn(thickness = 0.dp) {
+    DividerColumn {
         ColorPreference(preference = prefs2.hotseatBackgroundColor)
         SliderPreference(
             label = stringResource(id = R.string.hotseat_bg_alpha),
@@ -142,26 +138,23 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
     val isFoldable = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY
     val hotseatColumnsAdapter = prefs.hotseatColumns.getAdapter()
     val hotseatColumnsUnfoldedAdapter = prefs.hotseatColumnsUnfolded.getAdapter()
+    val hotseatRowsAdapter = prefs.hotseatRows.getAdapter()
 
     PreferenceGroup(heading = stringResource(id = R.string.grid)) {
         if (isFoldable) {
-            Item {
-                SliderPreference(
-                    label = stringResource(id = R.string.state_folded, stringResource(id = R.string.dock_icons)),
-                    adapter = hotseatColumnsAdapter,
-                    step = 1,
-                    valueRange = 3..10,
-                )
-            }
-            Item {
-                SliderPreference(
-                    label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.dock_icons)),
-                    adapter = hotseatColumnsUnfoldedAdapter,
-                    step = 1,
-                    valueRange = 3..10,
-                )
-            }
-            Item(
+            SliderPreference(
+                label = stringResource(id = R.string.state_folded, stringResource(id = R.string.dock_icons)),
+                adapter = hotseatColumnsAdapter,
+                step = 1,
+                valueRange = 3..10,
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.dock_icons)),
+                adapter = hotseatColumnsUnfoldedAdapter,
+                step = 1,
+                valueRange = 3..10,
+            )
+            ExpandAndShrink(
                 visible = hotseatColumnsAdapter.state.value > hotseatColumnsUnfoldedAdapter.state.value,
             ) {
                 WarningPreference(
@@ -169,33 +162,33 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
                 )
             }
         } else {
-            Item {
-                SliderPreference(
-                    label = stringResource(id = R.string.dock_icons),
-                    adapter = hotseatColumnsAdapter,
-                    step = 1,
-                    valueRange = 3..10,
-                )
-            }
-        }
-        Item {
             SliderPreference(
-                adapter = prefs2.hotseatBottomFactor.getAdapter(),
-                label = stringResource(id = R.string.hotseat_bottom_space_label),
-                valueRange = 0.0F..1.7F,
-                step = 0.1F,
-                showAsPercentage = true,
+                label = stringResource(id = R.string.dock_icons),
+                adapter = hotseatColumnsAdapter,
+                step = 1,
+                valueRange = 3..10,
             )
         }
-        Item {
-            SliderPreference(
-                adapter = prefs2.pageIndicatorHeightFactor.getAdapter(),
-                label = stringResource(id = R.string.page_indicator_height),
-                valueRange = 0.0F..1.0F,
-                step = 0.1F,
-                showAsPercentage = true,
-            )
-        }
+        SliderPreference(
+            label = stringResource(id = R.string.dock_rows),
+            adapter = hotseatRowsAdapter,
+            step = 1,
+            valueRange = 1..2,
+        )
+        SliderPreference(
+            adapter = prefs2.hotseatBottomFactor.getAdapter(),
+            label = stringResource(id = R.string.hotseat_bottom_space_label),
+            valueRange = 0.0F..1.7F,
+            step = 0.1F,
+            showAsPercentage = true,
+        )
+        SliderPreference(
+            adapter = prefs2.pageIndicatorHeightFactor.getAdapter(),
+            label = stringResource(id = R.string.page_indicator_height),
+            valueRange = 0.0F..1.0F,
+            step = 0.1F,
+            showAsPercentage = true,
+        )
     }
 }
 
@@ -209,6 +202,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
             prefs2.hotseatMode.getAdapter(),
             prefs.hotseatColumns.getAdapter(),
             prefs.hotseatColumnsUnfolded.getAdapter(),
+            prefs.hotseatRows.getAdapter(),
             prefs2.themedHotseatQsb.getAdapter(),
             prefs.hotseatQsbCornerRadius.getAdapter(),
             prefs.hotseatQsbAlpha.getAdapter(),

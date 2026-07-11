@@ -4,10 +4,13 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -26,6 +29,7 @@ import com.android.launcher3.util.OnboardingPrefs.HOTSEAT_DISCOVERY_TIP_COUNT
 import com.android.launcher3.util.OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FeatureFlagsPreference(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -125,6 +129,7 @@ fun OnboardingPreference(
         label = title,
         subtitle = "Tap to reset",
         modifier = modifier,
+        colors = ListItemDefaults.colors().copy(containerColor = Color.Transparent),
     ) {
         onEdit()
     }
@@ -173,11 +178,13 @@ private fun IntentPreference(
     ClickablePreference(
         label = label,
         modifier = modifier,
+        colors = ListItemDefaults.colors().copy(containerColor = Color.Transparent),
     ) {
         context.startActivity(intent)
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun LazyListScope.preferenceCategory(heading: String, description: String? = null) {
     item(key = heading) {
         PreferenceTemplate(
@@ -189,9 +196,8 @@ private fun LazyListScope.preferenceCategory(heading: String, description: Strin
                     modifier = Modifier.semantics { this.heading() },
                 )
             },
-            description = {
-                description?.let { Text(description) }
-            },
+            description = description?.let { { Text(description) } },
+            colors = ListItemDefaults.colors().copy(containerColor = Color.Transparent),
         )
     }
 }
