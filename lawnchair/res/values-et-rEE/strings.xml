@@ -453,8 +453,19 @@
     <string name="backup_restore_success">Varukoopia taastatud</string>
     <string name="backup_restore_error">Varukoopia taastamine nurjus</string>
     <string name="invalid_backup_file">Vigane varukoopiafail</string>
+    <string name="restore_nova_backup">Restore Nova backup</string>
+    <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
+    <string name="nova_grid_label">Võrgustik</string>
+    <string name="nova_grid_value">%1$d x %2$d</string>
+    <string name="nova_dock_label">Dokk</string>
+    <string name="nova_app_label">Apps</string>
+    <string name="nova_widget_label">Widgets</string>
+    <string name="nova_folder_label">Kaustad</string>
+    <string name="nova_shortcut_label">Shortcuts</string>
+    <string name="nova_icon_pack_label">Ikoonipakett</string>
     <string name="create_backup_description">Export settings and launcher layout</string>
     <string name="restore_backup_description">Import a previously created backup</string>
+    <string name="restore_nova_backup_description">Import layout from a Nova Launcher backup</string>
     <!--
 
     Gesture settings
@@ -604,6 +615,7 @@
     <string name="paused_apps_drop_target_label">Peata rakendus</string>
     <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Doki ikoonid</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
