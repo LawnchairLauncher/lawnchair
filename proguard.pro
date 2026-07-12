@@ -13,7 +13,6 @@
 -keep class android.window.** { *; }
 -keep class android.view.** { *; }
 -keep class com.android.systemui.** { *; }
--keep class com.android.wm.shell.** { *; }
 
 -keepclassmembers class * implements android.os.Parcelable {
   public static final ** CREATOR;
