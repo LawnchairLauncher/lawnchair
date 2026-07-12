@@ -373,7 +373,8 @@ public class LauncherPreviewRenderer extends BaseContext
     private void populateHotseatPredictions(WorkspaceData itemIdMap) {
         List<ItemInfo> predictions = itemIdMap.getPredictedContents(CONTAINER_HOTSEAT_PREDICTION);
         int predictionIndex = 0;
-        for (int rank = 0; rank < mDp.numShownHotseatIcons; rank++) {
+        int totalHotseatSlots = mDp.numShownHotseatIcons * mDp.numHotseatRows;
+        for (int rank = 0; rank < totalHotseatSlots; rank++) {
             if (predictions.size() <= predictionIndex) continue;
 
             int cellX = mHotseat.getCellXFromOrder(rank);

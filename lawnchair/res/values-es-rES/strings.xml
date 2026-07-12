@@ -46,10 +46,10 @@
     <string name="download_update">Descargar actualización</string>
     <string name="install_update">Instalar actualización</string>
     <string name="view_changes">Ver cambios</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">Estás actualizado</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Actualizaciones</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">No se pudo buscar actualizaciones</string>
     <string name="changes_dialog_no_changes">No se encontraron cambios</string>
     <string name="changes_dialog_build_format">Compilar #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
@@ -103,7 +103,7 @@
     <string name="app_drawer_folder">Carpetas del cajón de aplicaciones</string>
     <string name="selected_apps">Aplicaciones Seleccionadas</string>
     <string name="add_apps">Agregar aplicaciones</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Carpeta del cajón de aplicaciones</string>
     <string name="add_folder">Crear carpeta</string>
     <string name="edit_folder">Editar carpeta</string>
     <string name="add_label">Agregar</string>
@@ -125,8 +125,8 @@
     <!-- Draggable -->
     <string name="reorderable_active_items">Elementos activos</string>
     <string name="reorderable_disabled_items">Otros artículos</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_disabled_hint">Los elementos deshabilitados aparecerán aquí</string>
+    <string name="reorderable_add_hint_items">Los elementos activados aparecerán aquí</string>
     <!--
 
     Preference Dashboard
@@ -180,7 +180,7 @@
     <string name="gesturenavcontract_label">Usar API GestureNavContract</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
     <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="recents_lock_unlock">App locking</string>
+    <string name="recents_lock_unlock">Bloqueo de aplicaciones</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
     <string name="app_closing_animation">Animación al cerrar aplicaciones</string>
@@ -259,7 +259,7 @@
     <string name="icon_shape_leaf">Hoja</string>
     <string name="icon_shape_meow">Miau</string>
     <string name="icon_shape_pebble">Guijarro</string>
-    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
+    <string name="icon_shape_roundedhexagon">Hexágono redondeado</string>
     <string name="icon_shape_stretched">Estirado</string>
     <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
@@ -386,7 +386,7 @@
     <string name="torch_status_on">Linterna encendida</string>
     <string name="torch_action_off">Toque para apagarla</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Set up Lawnchair</string>
+    <string name="onboarding_open_settings_title">Configurar Lawnchair</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
     <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
     <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
@@ -453,8 +453,19 @@
     <string name="backup_restore_success">Copia de seguridad restaurada</string>
     <string name="backup_restore_error">No se pudo restaurar la copia de seguridad</string>
     <string name="invalid_backup_file">Archivo de copia de seguridad inválido</string>
+    <string name="restore_nova_backup">Restore Nova backup</string>
+    <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
+    <string name="nova_grid_label">Cuadrícula</string>
+    <string name="nova_grid_value">%1$d x %2$d</string>
+    <string name="nova_dock_label">Dock</string>
+    <string name="nova_app_label">Aplicaciones</string>
+    <string name="nova_widget_label">Widgets</string>
+    <string name="nova_folder_label">Carpetas</string>
+    <string name="nova_shortcut_label">Atajos</string>
+    <string name="nova_icon_pack_label">Paquete de iconos</string>
     <string name="create_backup_description">Exportar configuración y diseño del lanzador</string>
     <string name="restore_backup_description">Importar una copia de seguridad creada previamente</string>
+    <string name="restore_nova_backup_description">Importar disposición desde una copia de seguridad de Nova Launcher</string>
     <!--
 
     Gesture settings
@@ -518,7 +529,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Girar pantalla de inicio</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
-    <string name="auto_updater_label">Automatically check for updates</string>
+    <string name="auto_updater_label">Buscar actualizaciones automáticamente</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
     <string name="wallpaper_blur">Desenfocar fondo de pantalla (experimental)</string>
     <string name="wallpaper_background_blur">Intensidad del desenfoque</string>
@@ -604,6 +615,7 @@
     <string name="paused_apps_drop_target_label">Pausar aplicación</string>
     <string name="open_in_store_drop_target_label">Abrir en la tienda</string>
     <string name="dock_icons">Iconos del dock</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>

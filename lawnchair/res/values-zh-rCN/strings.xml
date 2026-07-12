@@ -453,8 +453,19 @@
     <string name="backup_restore_success">备份已恢复</string>
     <string name="backup_restore_error">恢复备份失败</string>
     <string name="invalid_backup_file">无效的备份文件</string>
+    <string name="restore_nova_backup">恢复Nova备份</string>
+    <string name="invalid_nova_backup_file">无效的Nova备份文件</string>
+    <string name="nova_grid_label">网格</string>
+    <string name="nova_grid_value">%1$d x %2$d</string>
+    <string name="nova_dock_label">Dock 栏</string>
+    <string name="nova_app_label">应用</string>
+    <string name="nova_widget_label">微件</string>
+    <string name="nova_folder_label">文件夹</string>
+    <string name="nova_shortcut_label">快捷方式</string>
+    <string name="nova_icon_pack_label">图标包</string>
     <string name="create_backup_description">导出设置和启动器局部</string>
     <string name="restore_backup_description">导入之前创建的备份</string>
+    <string name="restore_nova_backup_description">Import layout from a Nova Launcher backup</string>
     <!--
 
     Gesture settings
@@ -604,6 +615,7 @@
     <string name="paused_apps_drop_target_label">暂停应用</string>
     <string name="open_in_store_drop_target_label">在商店中打开</string>
     <string name="dock_icons">Dock 栏图标</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>

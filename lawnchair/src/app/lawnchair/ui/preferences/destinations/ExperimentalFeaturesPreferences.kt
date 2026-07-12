@@ -1,14 +1,5 @@
 package app.lawnchair.ui.preferences.destinations
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,29 +8,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
-import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.WallpaperAccessPermissionDialog
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
+import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.navigation.GeneralIconShape
 import app.lawnchair.util.FileAccessManager
 import app.lawnchair.util.FileAccessState
 import app.lawnchair.util.isGestureNavContractCompatible
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MSDLPlayerWrapper
-import com.android.systemui.shared.system.BlurUtils
-import com.google.android.msdl.data.model.MSDLToken
 
 @Composable
 fun ExperimentalFeaturesPreferences(
@@ -69,49 +56,38 @@ fun ExperimentalFeaturesPreferences(
             ?: stringResource(id = R.string.custom)
 
         PreferenceGroup(
-            Modifier,
-            stringResource(R.string.workspace_label),
+            modifier = Modifier,
+            heading = stringResource(R.string.workspace_label),
         ) {
-            Item {
-                SwitchPreference(
-                    adapter = prefs2.enableFontSelection.getAdapter(),
-                    label = stringResource(id = R.string.font_picker_label),
-                    description = stringResource(id = R.string.font_picker_description),
-                )
-            }
-            Item {
-                SwitchPreference(
-                    adapter = prefs.workspaceIncreaseMaxGridSize.getAdapter(),
-                    label = stringResource(id = R.string.workspace_increase_max_grid_size_label),
-                    description = stringResource(id = R.string.workspace_increase_max_grid_size_description),
-                )
-            }
-            Item {
-                SwitchPreference(
-                    adapter = prefs2.showDeckLayout.getAdapter(),
-                    label = stringResource(R.string.show_deck_layout),
-                    description = stringResource(R.string.show_deck_layout_description),
-                )
-            }
-            Item {
-                SwitchPreference(
-                    checked = hasPermission && enableWallpaperBlur.state.value,
-                    onCheckedChange = {
-                        if (!hasPermission) {
-                            showPermissionDialog = true
-                        } else {
-                            enableWallpaperBlur.onChange(it)
-                        }
-                    },
-                    label = stringResource(id = R.string.wallpaper_blur),
-                )
-            }
+            SwitchPreference(
+                adapter = prefs2.enableFontSelection.getAdapter(),
+                label = stringResource(id = R.string.font_picker_label),
+                description = stringResource(id = R.string.font_picker_description),
+            )
+            SwitchPreference(
+                adapter = prefs.workspaceIncreaseMaxGridSize.getAdapter(),
+                label = stringResource(id = R.string.workspace_increase_max_grid_size_label),
+                description = stringResource(id = R.string.workspace_increase_max_grid_size_description),
+            )
+            SwitchPreference(
+                adapter = prefs2.showDeckLayout.getAdapter(),
+                label = stringResource(R.string.show_deck_layout),
+                description = stringResource(R.string.show_deck_layout_description),
+            )
+            SwitchPreference(
+                checked = hasPermission && enableWallpaperBlur.state.value,
+                onCheckedChange = {
+                    if (!hasPermission) {
+                        showPermissionDialog = true
+                    } else {
+                        enableWallpaperBlur.onChange(it)
+                    }
+                },
+                label = stringResource(id = R.string.wallpaper_blur),
+            )
 
             val canBlur = hasPermission && enableWallpaperBlur.state.value
-            Item(
-                "wallpaper_background_blur",
-                canBlur,
-            ) {
+            ExpandAndShrink(visible = canBlur) {
                 SliderPreference(
                     label = stringResource(id = R.string.wallpaper_background_blur),
                     adapter = prefs.wallpaperBlur.getAdapter(),
@@ -120,10 +96,7 @@ fun ExperimentalFeaturesPreferences(
                     showUnit = "%",
                 )
             }
-            Item(
-                "wallpaper_background_blur",
-                canBlur,
-            ) {
+            ExpandAndShrink(visible = canBlur) {
                 SliderPreference(
                     label = stringResource(id = R.string.wallpaper_background_blur_factor),
                     adapter = prefs.wallpaperBlurFactorThreshold.getAdapter(),
@@ -151,36 +124,26 @@ fun ExperimentalFeaturesPreferences(
         val enableGncAdapter = prefs.enableGnc.getAdapter()
 
         PreferenceGroup(
-            Modifier,
-            stringResource(R.string.internal_label),
-            stringResource(R.string.internal_description),
+            modifier = Modifier,
+            heading = stringResource(R.string.internal_label),
+            description = stringResource(R.string.internal_description),
         ) {
-            Item {
-                SwitchPreference(
-                    adapter = alwaysReloadIconsAdapter,
-                    label = stringResource(id = R.string.always_reload_icons_label),
-                    description = stringResource(id = R.string.always_reload_icons_description),
-                )
-            }
-            Item(
-                "always_reload_icons_warning",
-                alwaysReloadIconsAdapter.state.value,
-            ) {
+            SwitchPreference(
+                adapter = alwaysReloadIconsAdapter,
+                label = stringResource(id = R.string.always_reload_icons_label),
+                description = stringResource(id = R.string.always_reload_icons_description),
+            )
+            ExpandAndShrink(visible = alwaysReloadIconsAdapter.state.value) {
                 WarningPreference(stringResource(R.string.always_reload_icons_warning))
             }
 
-            Item {
-                SwitchPreference(
-                    adapter = enableGncAdapter,
-                    label = stringResource(id = R.string.gesturenavcontract_label),
-                    description = stringResource(id = R.string.gesturenavcontract_description),
-                    enabled = Utilities.ATLEAST_Q,
-                )
-            }
-            Item(
-                "gesturenavcontract_warning",
-                enableGncAdapter.state.value && !isGestureNavContractCompatible,
-            ) {
+            SwitchPreference(
+                adapter = enableGncAdapter,
+                label = stringResource(id = R.string.gesturenavcontract_label),
+                description = stringResource(id = R.string.gesturenavcontract_description),
+                enabled = Utilities.ATLEAST_Q,
+            )
+            ExpandAndShrink(visible = enableGncAdapter.state.value && !isGestureNavContractCompatible) {
                 WarningPreference(stringResource(R.string.gesturenavcontract_warning_incompatibility))
             }
         }

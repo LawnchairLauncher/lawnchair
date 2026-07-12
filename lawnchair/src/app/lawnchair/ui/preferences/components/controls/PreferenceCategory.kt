@@ -18,10 +18,9 @@ package app.lawnchair.ui.preferences.components.controls
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,17 +28,15 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.preferences.components.layout.PreferenceGroupItemPosition
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.layout.preferenceGroupItemShape
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreviewLawnchair
 import com.android.launcher3.R
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferenceCategory(
     label: String,
@@ -48,30 +45,19 @@ fun PreferenceCategory(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
     description: String? = null,
-    isFirst: Boolean = false,
-    isLast: Boolean = false,
 ) {
-    val shape = preferenceGroupItemShape(PreferenceGroupItemPosition(isFirst, isLast))
-
     PreferenceTemplate(
-        modifier = modifier
-            .clip(shape)
-            .clickable { onNavigate() }
-            .background(
-                if (isSelected) MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp) else Color.Transparent,
-            ),
-        verticalPadding = 14.dp,
         title = {
             Text(
                 text = label,
                 color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
             )
         },
-        description = {
-            if (description != null) {
-                Text(text = description)
-            }
-        },
+        modifier = modifier
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp) else Color.Transparent,
+            ),
+        description = description?.let { { Text(text = description) } },
         startWidget = {
             Box(
                 contentAlignment = Alignment.Center,
@@ -85,6 +71,7 @@ fun PreferenceCategory(
                 )
             }
         },
+        onClick = onNavigate,
     )
 }
 

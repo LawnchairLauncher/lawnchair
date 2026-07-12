@@ -23,6 +23,7 @@ import android.app.WallpaperManager.OnColorsChangedListener
 import android.content.Context
 import androidx.annotation.MainThread
 import androidx.annotation.VisibleForTesting
+import com.android.launcher3.Utilities
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
@@ -47,30 +48,34 @@ constructor(@ApplicationContext private val context: Context, tracker: DaggerSin
     private val onColorHintsChangedListeners = mutableListOf<OnColorHintListener>()
 
     init {
-        hints = wallpaperManager.getWallpaperColors(FLAG_SYSTEM)?.colorHints ?: 0
-        val onColorsChangedListener = OnColorsChangedListener { colors, which ->
-            onColorsChanged(colors, which)
-        }
-        UI_HELPER_EXECUTOR.execute {
-            wallpaperManager.addOnColorsChangedListener(
-                onColorsChangedListener,
-                MAIN_EXECUTOR.handler,
-            )
-        }
-        tracker.addCloseable {
+        if (Utilities.ATLEAST_S) {
+            hints = wallpaperManager.getWallpaperColors(FLAG_SYSTEM)?.colorHints ?: 0
+            val onColorsChangedListener = OnColorsChangedListener { colors, which ->
+                onColorsChanged(colors, which)
+            }
             UI_HELPER_EXECUTOR.execute {
-                wallpaperManager.removeOnColorsChangedListener(onColorsChangedListener)
+                wallpaperManager.addOnColorsChangedListener(
+                    onColorsChangedListener,
+                    MAIN_EXECUTOR.handler,
+                )
+            }
+            tracker.addCloseable {
+                UI_HELPER_EXECUTOR.execute {
+                    wallpaperManager.removeOnColorsChangedListener(onColorsChangedListener)
+                }
             }
         }
     }
 
     @MainThread
     private fun onColorsChanged(colors: WallpaperColors?, which: Int) {
-        if ((which and FLAG_SYSTEM) != 0) {
-            val newHints = colors?.colorHints ?: 0
-            if (newHints != hints) {
-                hints = newHints
-                onColorHintsChangedListeners.forEach { it.onColorHintsChanged(newHints) }
+        if (Utilities.ATLEAST_S) {
+            if ((which and FLAG_SYSTEM) != 0) {
+                val newHints = colors?.colorHints ?: 0
+                if (newHints != hints) {
+                    hints = newHints
+                    onColorHintsChangedListeners.forEach { it.onColorHintsChanged(newHints) }
+                }
             }
         }
     }

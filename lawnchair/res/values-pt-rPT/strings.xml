@@ -44,17 +44,18 @@
     <string name="loading">A carregar</string>
     <string name="dismiss">Esquecer</string>
     <string name="download_update">Descarregar atualização</string>
-    <string name="install_update">Instalar atualização</string>
+    <string name="install_update">Instalar atualização
+</string>
     <string name="view_changes">Ver alterações</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">Está atualizado</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Atualizações</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">Não é possível carregar a atualização</string>
     <string name="changes_dialog_no_changes">Sem alterações</string>
     <string name="changes_dialog_build_format">Versão %1$d - %2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">Agora</string>
+    <string name="time_just_now">agora</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -125,8 +126,8 @@
     <!-- Draggable -->
     <string name="reorderable_active_items">Arquivar itens</string>
     <string name="reorderable_disabled_items">Outros itens</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_disabled_hint">Itens desativados vão aparecer aqui</string>
+    <string name="reorderable_add_hint_items">Itens ativos vão aparecer aqui</string>
     <!--
 
     Preference Dashboard
@@ -137,7 +138,7 @@
     <string name="general_description">Cores, pacotes de ícones, pontos de notificação</string>
     <string name="home_screen_label">Ecrã principal</string>
     <string name="home_screen_description">Feed, grelha, ícones</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">Acções do ecrã inicial</string>
     <string name="dock_label">Doca</string>
     <string name="dock_description">Barra de pesquisa, contagem de ícones</string>
     <string name="app_drawer_label">Menu de aplicações</string>
@@ -180,7 +181,7 @@
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
     <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="recents_lock_unlock">App locking</string>
+    <string name="recents_lock_unlock">Bloqueio de aplicações</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
     <string name="app_closing_animation">Animação de fecho</string>
@@ -380,17 +381,17 @@
     <string name="smartspace_weather">Meteorologia</string>
     <string name="smartspace_battery_status">Estado da bateria</string>
     <string name="smartspace_torch">Lanterna </string>
-    <string name="smartspace_now_playing">Now playing</string>
+    <string name="smartspace_now_playing">A tocar</string>
     <string name="smartspace_onboarding">Guia rápido </string>
     <!-- Torch strings -->
     <string name="torch_status_on">Lanterna ligada</string>
     <string name="torch_action_off">Tocar para desligar</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Set up Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
-    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
-    <string name="onboarding_welcome">Bem-vindo ao Lawnchair! </string>
+    <string name="onboarding_open_settings_title">Configurar Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Pressionar o ecrã principal para abrir as configurações do launcher</string>
+    <string name="onboarding_major_upgrade_title">Conheça o novo Lawnchair</string>
+    <string name="onboarding_major_upgrade_subtitle">Ver o que há de novo</string>
+    <string name="onboarding_welcome">Bem-vindo ao Lawnchair!</string>
     <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Número máximo de alvos</string>
@@ -432,10 +433,10 @@
     <string name="privacy_policy">Política de privacidade</string>
     <string name="contributor_status_active">Ativo</string>
     <string name="update_check_failed">Falha na procura de atualizações</string>
-    <string name="major_update_label">Update to major version?</string>
-    <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
-    <string name="pro_disabled_by_unknown">Updates are not available</string>
-    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
+    <string name="major_update_label">Atualizar para uma versão superior?</string>
+    <string name="major_update_description">Está a atualizar a partir da versão <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. Esta nova versão é menos estável e contém bastantes alterações.</string>
+    <string name="pro_disabled_by_unknown">Atualizações não disponíveis</string>
+    <string name="pro_disabled_by_major_is_newer">Já está a utilizar uma nova versão</string>
     <string name="updater">Atualizações</string>
     <!--
 
@@ -453,8 +454,19 @@
     <string name="backup_restore_success">Cópia de Segurança restaurada</string>
     <string name="backup_restore_error">Falha ao restaurar cópia de segurança</string>
     <string name="invalid_backup_file">Ficheiro de cópia de segurança inválido</string>
+    <string name="restore_nova_backup">Restaurar uma cópia de segurança do Nova Launcher</string>
+    <string name="invalid_nova_backup_file">Cópia de segurança inválida do Nova Launcher</string>
+    <string name="nova_grid_label">Grelha</string>
+    <string name="nova_grid_value">%1$d x %2$d</string>
+    <string name="nova_dock_label">Doca</string>
+    <string name="nova_app_label">Aplicações</string>
+    <string name="nova_widget_label">Widgets</string>
+    <string name="nova_folder_label">Pastas</string>
+    <string name="nova_shortcut_label">Atalhos</string>
+    <string name="nova_icon_pack_label">Pacote de ícones</string>
     <string name="create_backup_description">Exportar definições e o esquema do launcher</string>
     <string name="restore_backup_description">Importar cópia de segurança antiga</string>
+    <string name="restore_nova_backup_description">Importar definições do Nova Launcher</string>
     <!--
 
     Gesture settings
@@ -473,7 +485,7 @@
     <string name="gesture_handler_sleep">Suspender</string>
     <string name="gesture_handler_recents">Abrir ecrã de aplicações abertas</string>
     <string name="gesture_handler_open_notifications">Abrir painel de notificações</string>
-    <string name="gesture_handler_open_quick_settings">Abrir definições rápidas </string>
+    <string name="gesture_handler_open_quick_settings">Abrir definições rápidas</string>
     <string name="gesture_handler_open_app_option">Abrir aplicação</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
     <string name="gesture_handler_open_app_drawer">Abrir gaveta de aplicações</string>
@@ -485,10 +497,10 @@
     <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Ativar o serviço de acessibilidade</string>
-    <string name="sleep_a11y_hint">Duplo toque para Suspender</string>
-    <string name="notifications_fallback_a11y_hint">Abrir o painel de notificações</string>
-    <string name="quick_settings_a11y_hint">Abrir o painel de definições rápidas</string>
-    <string name="recents_screen_a11y_hint">Abrir os recentes</string>
+    <string name="sleep_a11y_hint">duplo toque para Suspender</string>
+    <string name="notifications_fallback_a11y_hint">abrir o painel de notificações</string>
+    <string name="quick_settings_a11y_hint">abrir o painel de definições rápidas</string>
+    <string name="recents_screen_a11y_hint">abrir os recentes</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="sleep_mode_label">Suspender</string>
@@ -548,7 +560,7 @@
     <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Marcar como principal</string>
     <string name="default_home_page_set">Página principal atualizada</string>
-    <string name="move_page_left">Mover para a esquerda </string>
+    <string name="move_page_left">Mover para a esquerda</string>
     <string name="move_page_right">Mover para a direita</string>
     <string name="page_order_updated">Ordem das páginas atualizada</string>
     <string name="edit_mode_page_strip_default">Predefinido</string>
@@ -601,9 +613,10 @@
     <string name="pause_apps_dialog_message">As notificações para %1$s serão pausadas</string>
     <string name="paused_apps_dialog_title">Aplicação em pausa</string>
     <string name="paused_apps_dialog_message">%1$s foi colocada em pausa a partir do launcher</string>
-    <string name="paused_apps_drop_target_label">Pausar aplicação</string>
+    <string name="paused_apps_drop_target_label">Pausar app</string>
     <string name="open_in_store_drop_target_label">Abrir na loja</string>
     <string name="dock_icons">Ícones da doca</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
@@ -631,7 +644,7 @@
     <string name="pref_all_apps_bulk_icon_loading_description">Carregar e exibir ícones em massa em vez de individualmente</string>
     <string name="pref_all_apps_remember_position_title">Remember scroll position</string>
     <string name="pref_all_apps_remember_position_description">Save the last scrolled location when closing the app drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Mostrar barra de rolagem</string>
+    <string name="pref_all_apps_show_scrollbar_title">Mostrar barra de deslocamento</string>
     <string name="app_drawer_columns">Colunas do menu de aplicações</string>
     <string name="row_height_label">Altura da linha</string>
     <string name="app_drawer_haptic_feedback_label">Feedback hepático </string>
@@ -675,8 +688,8 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Pesquise ficheiros, apps e muito mais</string>
-    <string name="all_apps_search_bar_hint">Pesquisa de aplicações</string>
+    <string name="all_apps_device_search_hint">Pesquisar no dispositivo</string>
+    <string name="all_apps_search_bar_hint">Pesquisar aplicações</string>
     <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"
     </string>
     <string name="all_apps_search_result_suggestions">Da web</string>
@@ -784,5 +797,5 @@
     <string name="home_screen_all_views_removed_msg">Área de trabalho limpa</string>
     <string name="lawnchair_actions">Ações</string>
     <string name="lawnchair_action_failed">Failed to trigger action</string>
-    <string name="please_wait">Por favor, aguarde...</string>
+    <string name="please_wait">Por favor, aguarde…</string>
 </resources>

@@ -90,15 +90,16 @@ class PinToTaskbarShortcut<T>(
         val dp: DeviceProfile = mTarget.deviceProfile
         var targetIdx = -1
 
-        for (i in 0 until dp.numShownHotseatIcons) {
+        val totalSlots = dp.numShownHotseatIcons * dp.numHotseatRows
+        for (i in 0 until totalSlots) {
             if (mPinnedInfoList[i] == null) {
                 targetIdx = i
                 break
             }
         }
 
-        val cellX = if (dp.isVerticalBarLayout()) 0 else targetIdx
-        val cellY = if (dp.isVerticalBarLayout()) (dp.numShownHotseatIcons - (targetIdx + 1)) else 0
+        val cellX = if (dp.isVerticalBarLayout()) 0 else targetIdx % dp.numShownHotseatIcons
+        val cellY = if (dp.isVerticalBarLayout()) (dp.numShownHotseatIcons - (targetIdx + 1)) else targetIdx / dp.numShownHotseatIcons
 
         writer.addItemToDatabase(newInfo, CONTAINER_HOTSEAT, mItemInfo.screenId, cellX, cellY)
     }

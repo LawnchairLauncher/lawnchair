@@ -44,11 +44,9 @@ import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.WallpaperAccessPermissionDialog
 import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.WithWallpaper
-import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.FlagSwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.navigation.AppDrawerFolder
 import app.lawnchair.util.BackHandler
 import app.lawnchair.util.FileAccessState
 import app.lawnchair.util.hasFlag
@@ -156,29 +154,25 @@ fun CreateBackupScreen(
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.what_to_backup)) {
-            Item {
-                FlagSwitchPreference(
-                    flags = contents,
-                    setFlags = viewModel::setBackupContents,
-                    mask = LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS,
-                    label = stringResource(id = R.string.backup_content_layout_and_settings),
-                )
-            }
-            Item {
-                FlagSwitchPreference(
-                    flags = contents,
-                    setFlags = {
-                        if (it.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER) && !hasWallpaperPermission) {
-                            showPermissionDialog = true
-                        } else {
-                            viewModel.setBackupContents(it)
-                        }
-                    },
-                    mask = LawnchairBackup.INCLUDE_WALLPAPER,
-                    label = stringResource(id = R.string.backup_content_wallpaper),
-                    enabled = !hasLiveWallpaper,
-                )
-            }
+            FlagSwitchPreference(
+                flags = contents,
+                setFlags = viewModel::setBackupContents,
+                mask = LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS,
+                label = stringResource(id = R.string.backup_content_layout_and_settings),
+            )
+            FlagSwitchPreference(
+                flags = contents,
+                setFlags = {
+                    if (it.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER) && !hasWallpaperPermission) {
+                        showPermissionDialog = true
+                    } else {
+                        viewModel.setBackupContents(it)
+                    }
+                },
+                mask = LawnchairBackup.INCLUDE_WALLPAPER,
+                label = stringResource(id = R.string.backup_content_wallpaper),
+                enabled = !hasLiveWallpaper,
+            )
         }
         Box(
             modifier = Modifier
