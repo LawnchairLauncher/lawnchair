@@ -1415,7 +1415,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         } else {
             getSearchRecyclerView().setVisibility(GONE);
             getAppsRecyclerViewContainer().setVisibility(VISIBLE);
-            mHeader.setVisibility(VISIBLE);
+            // Keep the empty header shell hidden when search is off and there are no tabs.
+            mHeader.setVisibility(
+                    (isAppDrawerSearchBarHidden() && !mUsingTabs) ? View.GONE : View.VISIBLE);
         }
         if (mHeader.isSetUp()) {
             mHeader.setActiveRV(getCurrentPage());
