@@ -96,9 +96,7 @@ fun HomeScreenPreferences(
                     enabled = lockHomeScreenAdapter.state.value.not(),
                 )
             }
-            Item(
-                visible = isDeckLayoutAdapter.state.value,
-            ) {
+            ExpandAndShrink(visible = isDeckLayoutAdapter.state.value) {
                 val allowDeckSorting = prefs2.allowDeckSorting.getAdapter()
                 SwitchPreference(
                     checked = allowDeckSorting.state.value,
