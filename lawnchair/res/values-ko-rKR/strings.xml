@@ -453,8 +453,19 @@
     <string name="backup_restore_success">백업을 복원했습니다.</string>
     <string name="backup_restore_error">백업을 복원하지 못했습니다</string>
     <string name="invalid_backup_file">잘못된 백업 파일입니다</string>
+    <string name="restore_nova_backup">Nova 백업 복원</string>
+    <string name="invalid_nova_backup_file">유효하지 않은 Nova 백업 파일</string>
+    <string name="nova_grid_label">그리드</string>
+    <string name="nova_grid_value">%1$d x %2$d</string>
+    <string name="nova_dock_label">독</string>
+    <string name="nova_app_label">앱스</string>
+    <string name="nova_widget_label">위젯</string>
+    <string name="nova_folder_label">폴더</string>
+    <string name="nova_shortcut_label">바로가기</string>
+    <string name="nova_icon_pack_label">아이콘 팩</string>
     <string name="create_backup_description">설정 내보내기 및 런처 레이아웃</string>
     <string name="restore_backup_description">이전에 생성된 백업을 가져오기</string>
+    <string name="restore_nova_backup_description">Import layout from a Nova Launcher backup</string>
     <!--
 
     Gesture settings
@@ -605,6 +616,7 @@
     <string name="paused_apps_drop_target_label">앱 일시정지</string>
     <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">독 아이콘</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
