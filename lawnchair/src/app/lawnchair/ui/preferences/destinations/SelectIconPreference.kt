@@ -113,12 +113,13 @@ private fun resolveAppLabel(launcherApps: LauncherApps, componentKey: ComponentK
         Log.w(TAG, "resolveActivity failed for $componentKey", t)
     }
     try {
-        launcherApps.getActivityList(componentName.packageName, user)
+        val activities = launcherApps.getActivityList(componentName.packageName, user)
+        activities
             .firstOrNull { it.componentName == componentName }
             ?.label
             ?.toString()
             ?.let { return it }
-        launcherApps.getActivityList(componentName.packageName, user)
+        activities
             .firstOrNull()
             ?.label
             ?.toString()
