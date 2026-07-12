@@ -14,6 +14,8 @@ import android.content.Intent.ACTION_TIME_CHANGED
 import android.content.Intent.ACTION_TIME_TICK
 import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
+import android.content.pm.ComponentInfo
+import android.content.pm.LauncherApps
 import android.content.pm.PackageItemInfo
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
@@ -32,6 +34,7 @@ import app.lawnchair.icons.picker.IconType
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.MultiSafeCloseable
 import app.lawnchair.util.isPackageInstalled
+import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppSingleton
@@ -107,14 +110,42 @@ class LawnchairIconProvider @Inject constructor(
         return iconPack.getIcon(componentName)
     }
 
+    /**
+     * Resolves the launch component for icon-pack lookup.
+     *
+     * Avoid [android.content.pm.PackageManager.getLaunchIntentForPackage], which only sees the
+     * current user — work/private profile apps would otherwise fall back to the system icon.
+     * Prefer the real component from [ComponentInfo], then [LauncherApps] for the app's user.
+     */
+    private fun resolveComponentName(
+        info: PackageItemInfo,
+        appInfo: ApplicationInfo,
+        user: UserHandle,
+    ): ComponentName? {
+        if (info is ComponentInfo && !info.name.isNullOrEmpty()) {
+            return ComponentName(info.packageName ?: appInfo.packageName, info.name)
+        }
+        return resolveLaunchComponent(appInfo.packageName, user)
+    }
+
+    private fun resolveLaunchComponent(packageName: String, user: UserHandle): ComponentName? {
+        return try {
+            val launcherApps: LauncherApps = context.requireSystemService()
+            launcherApps.getActivityList(packageName, user).firstOrNull()?.componentName
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to resolve launch component for $packageName user=$user", t)
+            null
+        }
+    }
+
     override fun getIcon(
         info: PackageItemInfo,
         appInfo: ApplicationInfo,
         iconDpi: Int,
     ): Drawable {
         val packageName = appInfo.packageName
-        val componentName = context.packageManager.getLaunchIntentForPackage(packageName)?.component
         val user = UserHandle.getUserHandleForUid(appInfo.uid)
+        val componentName = resolveComponentName(info, appInfo, user)
 
         var iconEntry: IconEntry? = null
         if (componentName != null) {

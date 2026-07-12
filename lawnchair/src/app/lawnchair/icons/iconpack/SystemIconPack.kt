@@ -26,7 +26,13 @@ class SystemIconPack(context: Context, pkg: String) : IconPack(context, pkg) {
         val profiles = UserCache.INSTANCE.get(context).userProfiles
         val launcherApps: LauncherApps = context.requireSystemService()
         profiles
-            .flatMap { launcherApps.getActivityList(null, Process.myUserHandle()) }
+            .flatMap { profile ->
+                try {
+                    launcherApps.getActivityList(null, profile)
+                } catch (_: Throwable) {
+                    emptyList()
+                }
+            }
             .associateBy { ComponentKey(it.componentName, it.user) }
     }
 
@@ -34,7 +40,11 @@ class SystemIconPack(context: Context, pkg: String) : IconPack(context, pkg) {
         startLoad()
     }
 
-    override fun getIcon(componentName: ComponentName) = IconEntry(packPackageName, ComponentKey(componentName, Process.myUserHandle()).toString(), IconType.Normal)
+    override fun getIcon(componentName: ComponentName): IconEntry {
+        val matching = appMap.keys.firstOrNull { it.componentName == componentName }
+        val key = matching ?: ComponentKey(componentName, Process.myUserHandle())
+        return IconEntry(packPackageName, key.toString(), IconType.Normal)
+    }
     override fun getCalendar(componentName: ComponentName): IconEntry? = null
     override fun getClock(entry: IconEntry): ClockMetadata? = null
 
