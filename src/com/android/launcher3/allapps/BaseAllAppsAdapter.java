@@ -287,9 +287,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 // Work/Private contexts already imply the profile; skip redundant user badges.
                 // Keep badges on home, search, and personal icons (including clones).
                 PrivateProfileManager privateProfileManager = mApps.getPrivateProfileManager();
-                boolean skipUserBadge = mApps.isWorkAppsList()
-                        || (privateProfileManager != null
-                                && privateProfileManager.isPrivateSpaceItem(adapterItem));
+                boolean skipUserBadge = !mApps.hasSearchResults()
+                        && (mApps.isWorkAppsList()
+                                || (privateProfileManager != null
+                                        && privateProfileManager.isPrivateSpaceItem(adapterItem)));
                 icon.setSkipUserBadge(skipUserBadge);
                 icon.applyFromApplicationInfo(adapterItem.itemInfo);
                 icon.setOnFocusChangeListener(mIconFocusListener);
