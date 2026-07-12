@@ -445,10 +445,12 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         (layoutParams as MarginLayoutParams).apply {
             topMargin = when {
                 hideSearchBar -> 0
+
                 // Sheet mode already pads the container with status-bar insets; only clear the
                 // drag handle. Re-applying insets.top here created the large empty band under it.
                 launcher.deviceProfile.shouldShowAllAppsOnSheet() ->
                     resources.getDimensionPixelSize(R.dimen.bottom_sheet_handle_area_height)
+
                 else -> max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
             }
         }
