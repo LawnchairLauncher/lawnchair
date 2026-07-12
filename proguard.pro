@@ -12,7 +12,6 @@
 # Common rules.
 -keep class android.window.** { *; }
 -keep class android.view.** { *; }
--keep class com.android.systemui.** { *; }
 
 -keepclassmembers class * implements android.os.Parcelable {
   public static final ** CREATOR;
