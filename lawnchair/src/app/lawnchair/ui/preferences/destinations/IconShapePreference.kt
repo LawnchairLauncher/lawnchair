@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
@@ -57,9 +58,9 @@ import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
-import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.layout.TwoTabPreferenceLayout
 import app.lawnchair.ui.preferences.navigation.GeneralCustomIconShapeCreator
@@ -130,6 +131,7 @@ fun ShapePreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ShapeTabContent(currentTab: ShapeRoute) {
     val context = LocalContext.current
@@ -148,47 +150,44 @@ private fun ShapeTabContent(currentTab: ShapeRoute) {
         heading = stringResource(id = R.string.custom),
     ) {
         customShape?.let { shape ->
-            Item {
-                CustomIconShapePreferenceOption(
-                    iconShapeAdapter = shapeAdapter,
-                    customIconShape = shape,
-                )
-            }
-        }
-        Item {
-            ModifyCustomIconShapePreference(
-                customIconShape = customShape,
-                currentTab = currentTab,
+            CustomIconShapePreferenceOption(
+                iconShapeAdapter = shapeAdapter,
+                customIconShape = shape,
             )
         }
+        ModifyCustomIconShapePreference(
+            customIconShape = customShape,
+            currentTab = currentTab,
+        )
     }
     PreferenceGroup(
         heading = stringResource(id = R.string.presets),
     ) {
         entries.forEach { item ->
-            Item {
-                PreferenceTemplate(
-                    enabled = item.enabled,
-                    title = { Text(item.label()) },
-                    modifier = Modifier.clickable(item.enabled) {
-                        shapeAdapter.onChange(newValue = item.value)
-                    },
-                    startWidget = {
-                        RadioButton(
-                            selected = item.value == shapeAdapter.state.value,
-                            onClick = null,
-                            enabled = item.enabled,
-                        )
-                    },
-                    endWidget = {
-                        IconShapePreview(iconShape = item.value)
-                    },
-                )
-            }
+            PreferenceTemplate(
+                title = { Text(item.label()) },
+                enabled = item.enabled,
+                startWidget = {
+                    RadioButton(
+                        selected = item.value == shapeAdapter.state.value,
+                        onClick = null,
+                        enabled = item.enabled,
+                    )
+                },
+                endWidget = {
+                    IconShapePreview(iconShape = item.value)
+                },
+                onClick = if (item.enabled) {
+                    { shapeAdapter.onChange(newValue = item.value) }
+                } else {
+                    null
+                },
+            )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CustomIconShapePreferenceOption(
     iconShapeAdapter: PreferenceAdapter<IconShape>,
@@ -197,9 +196,7 @@ private fun CustomIconShapePreferenceOption(
 ) {
     PreferenceTemplate(
         title = { Text(stringResource(id = R.string.custom)) },
-        modifier = modifier.clickable {
-            iconShapeAdapter.onChange(newValue = customIconShape)
-        },
+        modifier = modifier,
         startWidget = {
             RadioButton(
                 selected = IconShape.isCustomShape(iconShapeAdapter.state.value),
@@ -208,6 +205,9 @@ private fun CustomIconShapePreferenceOption(
         },
         endWidget = {
             IconShapePreview(iconShape = customIconShape)
+        },
+        onClick = {
+            iconShapeAdapter.onChange(newValue = customIconShape)
         },
     )
 }
@@ -232,34 +232,19 @@ private fun ModifyCustomIconShapePreference(
 
     val icon = if (created) Icons.Rounded.Edit else Icons.Rounded.Add
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                navController.navigate(route = route)
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            CompositionLocalProvider(
-                LocalContentColor provides MaterialTheme.colorScheme.secondary,
-                LocalTextStyle provides MaterialTheme.typography.bodyMedium,
-            ) {
-                Text(
-                    text = text,
-                )
-            }
-            Spacer(modifier = Modifier.requiredWidth(12.dp))
+    PreferenceTemplate(
+        onClick = { navController.navigate(route = route) },
+        modifier = modifier,
+        title = {
+            Text(text = text)
+        },
+        startWidget = {
             Icon(
                 imageVector = icon,
-                tint = MaterialTheme.colorScheme.secondary,
                 contentDescription = null,
             )
-        }
-    }
+        },
+    )
 }
 
 /**

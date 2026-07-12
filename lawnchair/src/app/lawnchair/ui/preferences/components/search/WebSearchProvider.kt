@@ -27,6 +27,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import com.android.launcher3.R
 
@@ -47,7 +48,7 @@ fun WebSearchProvider(
         }
     }
 
-    Column(modifier) {
+    DividerColumn(modifier) {
         ListPreference(
             adapter = adapter,
             entries = entries,
@@ -144,15 +145,17 @@ fun SearchPopupPreference(
     }
 
     PreferenceTemplate(
-        modifier = modifier.clickable {
+        modifier = modifier,
+        onClick = {
             showPopup = true
         },
         contentModifier = Modifier
-            .fillMaxHeight()
-            .padding(vertical = 16.dp)
-            .padding(start = 16.dp),
+            .fillMaxHeight(),
         title = { Text(text = title) },
-        description = { Text(initialValue) },
-        applyPaddings = false,
+        description = if (value.text.isNotEmpty()) {
+            { Text(initialValue) }
+        } else {
+            null
+        },
     )
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Lawnchair
+ * Copyright 2024, Lawnchair
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,16 +47,17 @@ import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
 
 @Composable
-fun SwitchPreference(
+fun TwoTargetSwitchPreference(
     adapter: PreferenceAdapter<Boolean>,
     label: String,
     modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
+    switchEnabled: Boolean = enabled,
     onClick: (() -> Unit)? = null,
 ) {
     val checked = adapter.state.value
-    SwitchPreference(
+    TwoTargetSwitchPreference(
         checked = checked,
         onCheckedChange = adapter::onChange,
         label = label,
@@ -64,21 +65,23 @@ fun SwitchPreference(
         description = description,
         onClick = onClick,
         enabled = enabled,
+        switchEnabled = switchEnabled,
     )
 }
 
 /**
- * A Preference that provides a two-state toggleable option.
+ * A Preference that provides a two-state toggleable option with two click targets.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SwitchPreference(
+fun TwoTargetSwitchPreference(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
     description: String? = null,
     enabled: Boolean = true,
+    switchEnabled: Boolean = enabled,
     onClick: (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -105,11 +108,11 @@ fun SwitchPreference(
                 }
                 Switch(
                     modifier = Modifier
-                        .padding(start = if (onClick != null) 12.dp else 0.dp)
+                        .padding(start = 12.dp)
                         .height(24.dp),
                     checked = checked,
                     onCheckedChange = wrappedOnCheckedChange,
-                    enabled = enabled,
+                    enabled = switchEnabled,
                     interactionSource = interactionSource,
                     thumbContent = {
                         if (checked) {
@@ -142,26 +145,12 @@ fun SwitchPreference(
 
 @PreviewLawnchair
 @Composable
-private fun SwitchPreferencePreview(
-    @PreviewParameter(SwitchPreferencePreviewParameterProvider::class) checked: Boolean,
+private fun TwoTargetSwitchPreferencePreview(
+    @PreviewParameter(TwoTargetSwitchPreferencePreviewParameterProvider::class) checked: Boolean,
 ) {
     LawnchairTheme {
         PreferenceGroupPreviewContainer {
-            SwitchPreference(
-                checked = checked,
-                onCheckedChange = {},
-                label = "Label",
-                description = "Description",
-                onClick = { },
-            )
-            SwitchPreference(
-                checked = checked,
-                onCheckedChange = {},
-                label = "Label",
-                description = "Description",
-                onClick = { },
-            )
-            SwitchPreference(
+            TwoTargetSwitchPreference(
                 checked = checked,
                 onCheckedChange = {},
                 label = "Label",
@@ -172,6 +161,6 @@ private fun SwitchPreferencePreview(
     }
 }
 
-private class SwitchPreferencePreviewParameterProvider : PreviewParameterProvider<Boolean> {
+private class TwoTargetSwitchPreferencePreviewParameterProvider : PreviewParameterProvider<Boolean> {
     override val values = sequenceOf(true, false)
 }

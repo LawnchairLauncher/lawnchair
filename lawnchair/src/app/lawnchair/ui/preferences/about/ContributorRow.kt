@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -84,6 +85,7 @@ fun ContributorRow(
  * @param onClick The action to perform when the row is clicked.
  * @param modifier Optional [Modifier] for customization.
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ContributorRow(
     name: String,
@@ -94,8 +96,8 @@ fun ContributorRow(
 ) {
     PreferenceTemplate(
         title = { Text(text = name) },
-        modifier = modifier
-            .clickable(onClick = onClick),
+        modifier = modifier,
+        onClick = onClick,
         description = {
             Text(
                 text = description,

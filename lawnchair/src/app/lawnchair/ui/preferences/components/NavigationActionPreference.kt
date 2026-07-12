@@ -16,15 +16,18 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.PreferenceRoute
-import app.lawnchair.ui.util.addIf
+import app.lawnchair.ui.theme.LawnchairTheme
+import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
+import app.lawnchair.ui.util.preview.PreviewLawnchair
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun NavigationActionPreference(
     label: String,
@@ -33,21 +36,37 @@ fun NavigationActionPreference(
     subtitle: String? = null,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
-    val navController = LocalNavController.current
+    val navController = if (destination != null) LocalNavController.current else null
 
     PreferenceTemplate(
-        modifier = modifier.addIf(destination != null) {
-            clickable {
-                // LC-Note: We probably shouldn't do this, but IDE/Kotlin won't stop complaining even if there's addIf condition
-                destination?.let {
-                    navController.navigate(
-                        route = it,
-                    )
-                }
-            }
-        },
         title = { Text(text = label) },
-        description = { subtitle?.let { Text(text = it) } },
+        modifier = modifier,
+        description = subtitle?.let { { Text(text = it) } },
         endWidget = endWidget,
+        onClick = if (destination != null) {
+            {
+                navController?.navigate(
+                    route = destination,
+                )
+            }
+        } else {
+            null
+        },
     )
+}
+
+@PreviewLawnchair
+@Composable
+private fun SliderPreferencePreview() {
+    LawnchairTheme {
+        PreferenceGroupPreviewContainer {
+            NavigationActionPreference(
+                label = "Label",
+                modifier = Modifier,
+                destination = null,
+                subtitle = "Subtitle",
+                endWidget = { Text("End") },
+            )
+        }
+    }
 }

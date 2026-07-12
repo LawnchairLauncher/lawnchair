@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences.components.controls
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredWidth
@@ -45,6 +44,7 @@ fun TextPreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TextPreference(
     value: String,
@@ -57,9 +57,11 @@ fun TextPreference(
     val bottomSheetHandler = bottomSheetHandler
     PreferenceTemplate(
         title = { Text(text = label) },
-        description = { description(value)?.let { Text(text = it) } },
-        modifier = modifier
-            .clickable(enabled) {
+        modifier = modifier,
+        enabled = enabled,
+        description = description(value)?.let { { Text(text = it) } },
+        onClick = if (enabled) {
+            {
                 bottomSheetHandler.show {
                     TextPreferenceDialog(
                         title = label,
@@ -68,8 +70,10 @@ fun TextPreference(
                         onConfirm = onChange,
                     )
                 }
-            },
-        enabled = enabled,
+            }
+        } else {
+            null
+        },
     )
 }
 
@@ -120,13 +124,11 @@ fun TextPreferenceDialog(
 private fun TextPreferencePreview() {
     LawnchairTheme {
         PreferenceGroupPreviewContainer {
-            Item {
-                TextPreference(
-                    value = "Value",
-                    onChange = {},
-                    label = "Label",
-                )
-            }
+            TextPreference(
+                value = "Value",
+                onChange = {},
+                label = "Label",
+            )
         }
     }
 }

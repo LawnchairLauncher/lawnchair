@@ -317,7 +317,6 @@ class PreferenceManager2 @Inject constructor(
     val hiddenApps = preference(
         key = stringSetPreferencesKey(name = "hidden_apps"),
         defaultValue = setOf(),
-        onSet = { reloadHelper.reloadGrid() },
     )
 
     val roundedWidgets = preference(

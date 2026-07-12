@@ -11,22 +11,19 @@ import androidx.compose.ui.res.stringResource
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
-import app.lawnchair.ui.preferences.components.layout.PreferenceGroupScope
 import com.android.launcher3.Flags
 import com.android.launcher3.R
 
 @Composable
-fun PreferenceGroupScope.AppDrawerHapticFeedbackPreference() {
+fun AppDrawerHapticFeedbackPreference() {
     val context = LocalContext.current
     val isSupported = remember { isDrawerHapticFeedbackSupported(context) }
 
     if (isSupported) {
-        Item {
-            SwitchPreference(
-                adapter = preferenceManager2().appDrawerHapticFeedback.getAdapter(),
-                label = stringResource(id = R.string.app_drawer_haptic_feedback_label),
-            )
-        }
+        SwitchPreference(
+            adapter = preferenceManager2().appDrawerHapticFeedback.getAdapter(),
+            label = stringResource(id = R.string.app_drawer_haptic_feedback_label),
+        )
     }
 }
 

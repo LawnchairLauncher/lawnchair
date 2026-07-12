@@ -120,6 +120,7 @@ fun ChangesDialog(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CommitItem(
     commit: GitHubCommit,
@@ -163,7 +164,8 @@ private fun CommitItem(
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
             )
         },
-        modifier = modifier.clickable {
+        modifier = modifier,
+        onClick = {
             openCommitInBrowser(context, commit.sha)
         },
     )

@@ -45,23 +45,25 @@ object LawnchairQuickstepCompat {
     val ATLEAST_BAKLAVA: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA
 
     @JvmStatic
-    val factory: QuickstepCompatFactory = when {
-        ATLEAST_BAKLAVA -> QuickstepCompatFactoryVBaklava()
-        ATLEAST_V -> QuickstepCompatFactoryVV()
-        ATLEAST_U -> QuickstepCompatFactoryVU()
-        ATLEAST_T -> QuickstepCompatFactoryVT()
-        ATLEAST_S -> QuickstepCompatFactoryVS()
-        ATLEAST_R -> QuickstepCompatFactoryVR()
-        ATLEAST_Q -> QuickstepCompatFactoryVQ()
-        else -> error("Unsupported SDK version")
+    val factory: QuickstepCompatFactory by lazy {
+        when {
+            ATLEAST_BAKLAVA -> QuickstepCompatFactoryVBaklava()
+            ATLEAST_V -> QuickstepCompatFactoryVV()
+            ATLEAST_U -> QuickstepCompatFactoryVU()
+            ATLEAST_T -> QuickstepCompatFactoryVT()
+            ATLEAST_S -> QuickstepCompatFactoryVS()
+            ATLEAST_R -> QuickstepCompatFactoryVR()
+            ATLEAST_Q -> QuickstepCompatFactoryVQ()
+            else -> error("Unsupported SDK version")
+        }
     }
 
     @JvmStatic
-    val activityManagerCompat: ActivityManagerCompat = factory.activityManagerCompat
+    val activityManagerCompat: ActivityManagerCompat by lazy { factory.activityManagerCompat }
 
     @JvmStatic
-    val activityOptionsCompat: ActivityOptionsCompat = factory.activityOptionsCompat
+    val activityOptionsCompat: ActivityOptionsCompat by lazy { factory.activityOptionsCompat }
 
     @JvmStatic
-    val remoteTransitionCompat: RemoteTransitionCompat = factory.remoteTransitionCompat
+    val remoteTransitionCompat: RemoteTransitionCompat by lazy { factory.remoteTransitionCompat }
 }
