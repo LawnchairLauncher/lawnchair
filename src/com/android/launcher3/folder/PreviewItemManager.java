@@ -81,9 +81,6 @@ public class PreviewItemManager {
 
     // These hold the first page preview items
     private ArrayList<PreviewItemDrawingParams> mFirstPageParams = new ArrayList<>();
-    // These hold the current page preview items. It is empty if the current page is
-    // the first page.
-    private ArrayList<PreviewItemDrawingParams> mCurrentPageParams = new ArrayList<>();
 
     static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
     private static final int FINAL_ITEM_ANIMATION_DURATION = 200;
@@ -281,7 +278,6 @@ public class PreviewItemManager {
     void onFolderClose(int currentPage) {
         // Snap back to the first-page preview immediately. The previous slide animation
         // showed a solid preview background while icons rearranged for ~400ms after close.
-        mCurrentPageParams.clear();
         if (currentPage != 0) {
             updatePreviewItems(false);
         }
@@ -297,13 +293,6 @@ public class PreviewItemManager {
     void updatePreviewItems(Predicate<ItemInfo> itemCheck) {
         boolean modified = false;
         for (PreviewItemDrawingParams param : mFirstPageParams) {
-            if (itemCheck.test(param.item)
-                    || (param.item instanceof AppPairInfo api && api.anyMatch(itemCheck))) {
-                setDrawable(param, param.item);
-                modified = true;
-            }
-        }
-        for (PreviewItemDrawingParams param : mCurrentPageParams) {
             if (itemCheck.test(param.item)
                     || (param.item instanceof AppPairInfo api && api.anyMatch(itemCheck))) {
                 setDrawable(param, param.item);
