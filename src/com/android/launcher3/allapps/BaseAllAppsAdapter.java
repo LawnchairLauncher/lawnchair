@@ -284,9 +284,15 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
+                // Work/Private contexts already imply the profile; skip redundant user badges.
+                // Keep badges on home, search, and personal icons (including clones).
+                PrivateProfileManager privateProfileManager = mApps.getPrivateProfileManager();
+                boolean skipUserBadge = mApps.isWorkAppsList()
+                        || (privateProfileManager != null
+                                && privateProfileManager.isPrivateSpaceItem(adapterItem));
+                icon.setSkipUserBadge(skipUserBadge);
                 icon.applyFromApplicationInfo(adapterItem.itemInfo);
                 icon.setOnFocusChangeListener(mIconFocusListener);
-                PrivateProfileManager privateProfileManager = mApps.getPrivateProfileManager();
                 if (privateProfileManager != null) {
                     // Set the alpha of the private space icon to 0 upon expanding the header so the
                     // alpha can animate -> 1. This should only be in effect when doing a
