@@ -51,11 +51,11 @@ class FolderViewModel(
         return folders.map { list -> list?.find { it.id == folderId } }
     }
 
-    fun renameFolder(folderId: Int, title: String, hide: Boolean = false) {
+    fun renameFolder(folderId: Int, title: String) {
         viewModelScope.launch {
-            repository.updateFolderInfo(folderId, title, hide)
+            repository.renameFolderInfo(folderId, title)
+            reloadHelper.reloadGrid()
         }
-        reloadHelper.reloadGrid()
     }
 
     fun updateFolderItems(id: Int, title: String, componentKeys: List<String>) {

@@ -13,7 +13,6 @@ import com.android.launcher3.util.SafeCloseable
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -25,58 +24,42 @@ class FolderService @Inject constructor(
     private val folderDao = AppDatabase.INSTANCE.get(context).folderDao()
 
     fun getFoldersFlow(): Flow<List<FolderEntry>> {
-        return folderDao.getAllFolders().map { folderEntities ->
-            folderEntities.mapNotNull { folderEntity ->
-                getFolderEntry(folderEntity.id)
-            }
+        return folderDao.getAllFoldersWithItems().map { list ->
+            list.map { it.toFolderEntry() }
         }
     }
 
     suspend fun updateFolderWithItems(folderInfoId: Int, title: String, componentKeys: List<String>) = withContext(Dispatchers.IO) {
-        folderDao.deleteFolderItemsByFolderId(folderInfoId)
-        folderDao.insertFolderWithItems(
-            FolderInfoEntity(id = folderInfoId, title = title),
-            componentKeys.mapIndexed { index, componentKey ->
-                FolderItemEntity(
-                    folderId = folderInfoId,
-                    rank = index,
-                    componentKey = componentKey,
-                )
-            },
-        )
+        val items = componentKeys.mapIndexed { index, componentKey ->
+            FolderItemEntity(
+                folderId = folderInfoId,
+                rank = index,
+                componentKey = componentKey,
+            )
+        }
+        folderDao.replaceFolderItems(folderInfoId, title, items)
     }
 
     suspend fun saveFolderInfo(title: String) = withContext(Dispatchers.IO) {
         folderDao.insertFolder(FolderInfoEntity(title = title))
     }
 
-    suspend fun updateFolderInfo(folderId: Int, title: String, hide: Boolean = false) = withContext(Dispatchers.IO) {
-        folderDao.updateFolderInfo(folderId, title, hide)
+    suspend fun renameFolderInfo(folderId: Int, title: String) = withContext(Dispatchers.IO) {
+        folderDao.updateFolderTitle(folderId, title)
     }
 
     suspend fun deleteFolderInfo(id: Int) = withContext(Dispatchers.IO) {
         folderDao.deleteFolder(id)
     }
 
-    suspend fun getFolderEntry(folderId: Int): FolderEntry? = withContext(Dispatchers.IO) {
-        folderDao.getFolderWithItems(folderId)?.let { folderWithItems ->
-            FolderEntry(
-                id = folderWithItems.folder.id,
-                title = folderWithItems.folder.title,
-                hide = folderWithItems.folder.hide,
-                itemComponentKeys = folderWithItems.items
-                    .sortedBy { it.rank }
-                    .mapNotNull { it.componentKey },
-            )
-        }
-    }
-
-    suspend fun getAllFolders(): List<FolderEntry> = withContext(Dispatchers.IO) {
-        val folderEntities = folderDao.getAllFolders().firstOrNull() ?: emptyList()
-        folderEntities.mapNotNull { folderEntity ->
-            getFolderEntry(folderEntity.id)
-        }
-    }
+    private fun FolderWithItems.toFolderEntry() = FolderEntry(
+        id = folder.id,
+        title = folder.title,
+        hide = folder.hide,
+        itemComponentKeys = items
+            .sortedBy { it.rank }
+            .mapNotNull { it.componentKey },
+    )
 
     override fun close() {
     }

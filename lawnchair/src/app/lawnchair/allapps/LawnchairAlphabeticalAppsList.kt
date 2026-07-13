@@ -73,7 +73,10 @@ class LawnchairAlphabeticalAppsList<T>(
         viewModel.folders.observeOnce(context as LifecycleOwner) { folders ->
             if (folders != null) {
                 folderList = folders
-                    .sortedBy { folderOrder.indexOf(it.id) }
+                    .sortedBy {
+                        val index = folderOrder.indexOf(it.id)
+                        if (index == -1) Int.MAX_VALUE else index
+                    }
                     .toMutableList()
                 updateAdapterItems()
             }
@@ -116,23 +119,21 @@ class LawnchairAlphabeticalAppsList<T>(
             }
         } else {
             folderList.forEach { folderEntry ->
-                if (folderEntry.itemComponentKeys.size > 1) {
-                    val folderInfo = FolderInfo()
-                    folderInfo.title = folderEntry.title
-                    folderEntry.itemComponentKeys.forEach { keyString ->
-                        val componentKey = ComponentKey.fromString(keyString)
-                        if (componentKey != null) {
-                            (appsStore.getApp(componentKey) as? AppInfo)?.let { appInfo ->
-                                folderInfo.add(appInfo)
-                                if (prefs.folderApps.get()) {
-                                    filteredList.add(appInfo)
-                                }
-                            }
-                        }
+                val resolvedApps = folderEntry.itemComponentKeys.mapNotNull { keyString ->
+                    val componentKey = ComponentKey.fromString(keyString) ?: return@mapNotNull null
+                    appsStore.getApp(componentKey) as? AppInfo
+                }
+
+                if (resolvedApps.size > 1) {
+                    val folderInfo = FolderInfo().apply {
+                        title = folderEntry.title
+                        resolvedApps.forEach { add(it) }
                     }
-                    if (folderInfo.getContents().size > 1) {
-                        mAdapterItems.add(AdapterItem.asFolder(folderInfo))
-                        position++
+                    mAdapterItems.add(AdapterItem.asFolder(folderInfo))
+                    position++
+
+                    if (prefs.folderApps.get()) {
+                        filteredList.addAll(resolvedApps)
                     }
                 }
             }
