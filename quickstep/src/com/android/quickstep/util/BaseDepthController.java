@@ -336,6 +336,10 @@ public class BaseDepthController {
     /** @return {@code true} if the workspace should be blurred. */
     @VisibleForTesting
     public boolean blurWorkspaceDepthTargets() {
+        // RenderEffect / createBlurEffect require API 31+.
+        if (!Utilities.ATLEAST_S) {
+            return false;
+        }
         if (!Flags.allAppsBlur()) {
             // Still clear any leftover effect if the flag flips or blur was applied earlier.
             mLauncher.getDepthBlurTargets().forEach(target -> target.setRenderEffect(null));
