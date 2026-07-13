@@ -67,7 +67,16 @@
     <dimen name="search_result_text_height">52dp</dimen>
     <dimen name="search_result_subtitle_padding_start">4dp</dimen>
 
+    <!-- Header is aligned to the search container top with this margin. 60dp search
+         container + a small gap; keep in sync with search_box_container_height. -->
     <dimen name="all_apps_header_top_margin">64dp</dimen>
+    <!-- AOSP uses 36dp to clear an overlapping search bar; Lawnchair's larger
+         top_margin already clears the search, so keep this tight. -->
+    <dimen name="all_apps_header_top_padding">4dp</dimen>
+    <dimen name="all_apps_tabs_margin_top">4dp</dimen>
+    <!-- Match the search→tabs gap so the app grid sits equally close under the tabs. -->
+    <dimen name="all_apps_paged_view_top_padding">8dp</dimen>
+    <dimen name="all_apps_header_bottom_padding">4dp</dimen>
 
     <!-- smartspace -->
     <dimen name="smartspaceAmbientShadowBlur">1.5dp</dimen>
