@@ -88,6 +88,8 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.FloatingIconViewCompanion;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import app.lawnchair.ui.popup.DrawerFolderPopupKt;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -138,6 +140,17 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     private Animator mDotScaleAnim;
 
     private Rect mTouchArea = new Rect();
+
+    // LC: Custom icon override for drawer folders
+    private Drawable mOverrideIcon;
+    private final Rect mOverrideBounds = new Rect();
+    private Drawable mFolderBadge;
+    private boolean mShowFolderBadge = true;
+    private int mLastBadgeTint;
+    public void setShowFolderBadge(boolean show) {
+        mShowFolderBadge = show;
+        invalidate();
+    }
 
     private float mScaleForReorderBounce = 1f;
 
@@ -219,6 +232,13 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         icon.setTag(folderInfo);
         icon.setOnClickListener(activity.getItemOnClickListener());
+        // LC: Only enable customization for drawer folders with a persistent DB id
+        if (folderInfo.container == ItemInfo.NO_ID && folderInfo.id > 0) {
+            icon.setOnLongClickListener(v -> {
+                DrawerFolderPopupKt.showDrawerFolderPopup((FolderIcon) v);
+                return true;
+            });
+        }
         icon.mInfo = folderInfo;
         icon.mActivity = activity;
         icon.mDotRenderer = grid.mDotRendererWorkSpace;
@@ -231,6 +251,14 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         icon.mPreviewVerifier = createFolderGridOrganizer(activity.getDeviceProfile());
         icon.mPreviewVerifier.setFolderInfo(folderInfo);
         icon.updatePreviewItems(false);
+
+        // LC: Load custom icon override for drawer folders
+        if (folderInfo.container == ItemInfo.NO_ID && folderInfo.id > 0) {
+            DrawerFolderPopupKt.loadFolderOverrideIconAsync(activity.asContext(), folderInfo.id,
+                    drawable -> { icon.mOverrideIcon = drawable; icon.invalidate(); return kotlin.Unit.INSTANCE; });
+            icon.mShowFolderBadge = DrawerFolderPopupKt.isFolderBadgeVisible(activity.asContext(), folderInfo.id);
+            icon.mFolderBadge = DrawerFolderPopupKt.loadFolderBadgeDrawable(activity.asContext());
+        }
 
         return icon;
     }
@@ -429,6 +457,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         return mInfo.container == ItemInfo.NO_ID;
     }
 
+    /** LC: Whether this folder icon has a custom override icon set. */
+    public boolean hasOverrideIcon() {
+        return mOverrideIcon != null;
+    }
+
     /**
      * Set the suggested folder name.
      */
@@ -599,6 +632,39 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         if (!mBackgroundIsVisible) return;
 
         mPreviewItemManager.recomputePreviewDrawingParams();
+
+        if (mOverrideIcon != null && !mBackground.drawingDelegated()) {
+            // LC: Draw custom icon clipped to folder background shape
+            mBackground.drawBackground(canvas);
+
+            Rect previewBounds = mOverrideBounds;
+            mBackground.getBounds(previewBounds);
+
+            int savedCount = canvas.save();
+            canvas.clipPath(mBackground.getClipPath());
+            mOverrideIcon.setBounds(previewBounds);
+            mOverrideIcon.draw(canvas);
+            canvas.restoreToCount(savedCount);
+
+            mBackground.drawBackgroundStroke(canvas);
+
+            // LC: Draw folder badge at bottom-right
+            if (mShowFolderBadge && mFolderBadge != null) {
+                int bgColor = mBackground.getBgColor();
+                if (mLastBadgeTint != bgColor) {
+                    mFolderBadge.setTint(bgColor);
+                    mLastBadgeTint = bgColor;
+                }
+                int badgeSize = previewBounds.width() / 4;
+                int bLeft = previewBounds.right - badgeSize;
+                int bTop = previewBounds.bottom - badgeSize;
+                mFolderBadge.setBounds(bLeft, bTop, bLeft + badgeSize, bTop + badgeSize);
+                mFolderBadge.draw(canvas);
+            }
+
+            drawDot(canvas);
+            return;
+        }
 
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackground(canvas);
@@ -818,5 +884,15 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
          * Tells the FolderIconParent to stop drawing the "leave-behind" as the Folder is closed.
          */
         void clearFolderLeaveBehind(FolderIcon child);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        if (hasWindowFocus && isInAppDrawer() && mInfo.id > 0) {
+            mShowFolderBadge = DrawerFolderPopupKt.isFolderBadgeVisible(getContext(), mInfo.id);
+            DrawerFolderPopupKt.loadFolderOverrideIconAsync(getContext(), mInfo.id,
+                    drawable -> { mOverrideIcon = drawable; invalidate(); return kotlin.Unit.INSTANCE; });
+        }
     }
 }
