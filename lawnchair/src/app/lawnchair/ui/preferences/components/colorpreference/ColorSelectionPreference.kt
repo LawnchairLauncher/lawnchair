@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.CustomColorPicker
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.PresetsList
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGrid
@@ -48,6 +49,7 @@ fun ColorSelection(
     val adapter = preference.getAdapter()
     val appliedColor = adapter.state.value
     val context = LocalContext.current
+    val navController = LocalNavController.current
     val selectedColor = remember { mutableIntStateOf(appliedColor.forCustomPicker(context)) }
     val selectedColorApplied = remember {
         derivedStateOf {
@@ -83,7 +85,10 @@ fun ColorSelection(
             ) {
                 Button(
                     enabled = !selectedColorApplied.value,
-                    onClick = { adapter.onChange(newValue = ColorOption.CustomColor(selectedColor.intValue)) },
+                    onClick = {
+                        adapter.onChange(newValue = ColorOption.CustomColor(selectedColor.intValue))
+                        navController.popBackStack()
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 16.dp),

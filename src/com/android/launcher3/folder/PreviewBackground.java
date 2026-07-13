@@ -45,8 +45,6 @@ import android.view.animation.Interpolator;
 
 import androidx.annotation.VisibleForTesting;
 
-import androidx.core.graphics.ColorUtils;
-
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
@@ -191,20 +189,11 @@ public class PreviewBackground extends DelegatedCellDrawing {
 
         PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
 
-        // Load folder color
-        ColorOption colorOption = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getFolderColor());
-        int folderColor = colorOption.getColorPreferenceEntry().getLightColor().invoke(context);
-
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
         ColorOption dotColorOption = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getNotificationDotColor());
         mDotColor = dotColorOption.getColorPreferenceEntry().getLightColor().invoke(context);
         mStrokeColor = ColorTokens.FolderIconBorderColor.resolveColor(context);
-        if (folderColor != 0) {
-            mBgColor = folderColor;
-        } else {
-            mBgColor = ColorTokens.FolderPreviewColor.resolveColor(context);
-        }
-        mBgColor = ColorUtils.setAlphaComponent(mBgColor, LawnchairUtilsKt.getFolderPreviewAlpha(context));
+        mBgColor = LawnchairUtilsKt.resolveFolderPreviewColor(context);
         ta.recycle();
 
         DeviceProfile grid = activity.getDeviceProfile();
