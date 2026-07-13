@@ -198,6 +198,10 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             cancelLongPress();
         }
         if (action == ACTION_UP && isInAllAppsBottomSheet) {
+            // NORMAL has no FLAG_CLOSE_POPUPS, so drawer folders (Lawnchair) would stay open
+            // on the workspace after dismissing All Apps via the sheet's upper edge.
+            AbstractFloatingView.closeOpenViews(
+                    mLauncher, true /* animate */, AbstractFloatingView.TYPE_FOLDER);
             mLauncher.getStateManager().goToState(NORMAL);
             mLauncher.getStatsLogManager().logger()
                     .withSrcState(ALL_APPS.statsLogOrdinal)
