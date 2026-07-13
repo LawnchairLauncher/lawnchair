@@ -89,7 +89,6 @@ fun AppDrawerFoldersPreference(
             viewModel.createFolder(label)
         },
         onEditFolderItems = {
-            viewModel.setFolderEntry(it)
             navController.navigate(AppDrawerAppListToFolder(it))
         },
         onRenameFolder = { folderId, newTitle ->

@@ -7,12 +7,12 @@ import androidx.lifecycle.viewModelScope
 import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.service.FolderService
 import app.lawnchair.preferences2.ReloadHelper
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -33,15 +33,22 @@ class FolderViewModel(
             initialValue = null,
         )
 
-    private val _folderEntry = MutableStateFlow<FolderEntry?>(null)
-    val folderEntry: StateFlow<FolderEntry?> = _folderEntry.asStateFlow()
+    val allFolderPackages: StateFlow<Set<String>?> = folders
+        .map { folderList ->
+            folderList?.flatMap { folder -> folder.itemComponentKeys }
+                ?.map { key -> key.substringBefore("/") }
+                ?.toSet()
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null,
+        )
 
     private val reloadHelper = ReloadHelper(application)
 
-    fun setFolderEntry(folderId: Int) {
-        viewModelScope.launch {
-            _folderEntry.value = repository.getFolderEntry(folderId)
-        }
+    fun getFolderFlowForId(folderId: Int): Flow<FolderEntry?> {
+        return folders.map { list -> list?.find { it.id == folderId } }
     }
 
     fun renameFolder(folderId: Int, title: String, hide: Boolean = false) {
@@ -54,7 +61,6 @@ class FolderViewModel(
     fun updateFolderItems(id: Int, title: String, componentKeys: List<String>) {
         viewModelScope.launch {
             repository.updateFolderWithItems(id, title, componentKeys)
-            _folderEntry.value = repository.getFolderEntry(id)
             reloadHelper.reloadGrid()
         }
     }

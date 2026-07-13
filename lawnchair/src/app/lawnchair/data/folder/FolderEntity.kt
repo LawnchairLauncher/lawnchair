@@ -1,5 +1,6 @@
 ﻿package app.lawnchair.data.folder
 
+import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -36,6 +37,7 @@ data class FolderItemEntity(
     val timestamp: Long = System.currentTimeMillis(),
 )
 
+@Immutable
 data class FolderEntry(
     val id: Int,
     val title: String,
