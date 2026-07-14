@@ -1147,6 +1147,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
         SCALE_PROPERTY.set(launcher.getWorkspace(), 1f);
         SCALE_PROPERTY.set(launcher.getHotseat(), 1f);
+        // Clear any stuck workspace/hotseat RenderEffect if we are not in a depth-blur state.
+        // Expressive folder open/close can race with All Apps depth blur and leave icons blurred.
+        if (Utilities.ATLEAST_S
+                && launcher.getStateManager().getState().getDepth(launcher) == 0f) {
+            for (View target : launcher.getDepthBlurTargets()) {
+                target.setRenderEffect(null);
+            }
+        }
     }
 
     @Override

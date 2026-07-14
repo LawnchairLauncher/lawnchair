@@ -184,6 +184,11 @@ public class DepthController extends BaseDepthController implements StateHandler
         if (toState == LauncherState.BACKGROUND_APP) {
             addOnDrawListener();
         }
+        // Re-apply even when depth is already 0 so an interrupted All Apps / depth transition
+        // cannot leave workspace RenderEffect or surface blur stuck until the next resume.
+        if (toState == LauncherState.NORMAL) {
+            applyDepthAndBlur();
+        }
     }
 
     @Override
