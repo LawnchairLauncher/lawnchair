@@ -155,6 +155,8 @@
     <string name="advanced">Advanced</string>
 
     <!-- Draggable -->
+    <string name="reorderable_move_up">Move up</string>
+    <string name="reorderable_move_down">Move down</string>
     <string name="reorderable_active_items">Active items</string>
     <string name="reorderable_disabled_items">Other items</string>
     <string name="reorderable_disabled_hint">Disabled items will appear here</string>
