@@ -59,7 +59,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
  * @property id The unique key used to track this item's identity during reordering and animations.
  */
 @Immutable
-data class PositionalListItem<T, K>(
+data class PositionalListItem<T, K : Any>(
     val data: T,
     val id: K,
 )
@@ -77,7 +77,7 @@ data class PositionalListItem<T, K>(
  * @param haptic Provider for haptic feedback during reorder operations.
  */
 @Stable
-class PositionalListState<T, K>(
+class PositionalListState<T, K : Any>(
     initialItems: List<PositionalListItem<T, K>>,
     initialActiveCount: Int,
     internal val onOrderChange: (newList: List<PositionalListItem<T, K>>, newEnabledCount: Int) -> Unit,
@@ -191,8 +191,8 @@ class PositionalListState<T, K>(
 
     internal fun reorder(fromKey: Any, toKey: Any): Boolean {
         // Early exits for safety
-        if (fromKey == "ghost_active" || fromKey == "ghost_disabled") return false
-        if (toKey == "header_enabled" || toKey == "header_disabled") return false
+        if (fromKey == ReorderableKey.GHOST_ACTIVE || fromKey == ReorderableKey.GHOST_DISABLED) return false
+        if (toKey == ReorderableKey.HEADER_ENABLED || toKey == ReorderableKey.HEADER_DISABLED) return false
 
         val fromUiIndex = itemIndices[fromKey] ?: return false
         val toUiIndex = itemIndices[toKey] ?: return false
@@ -206,9 +206,9 @@ class PositionalListState<T, K>(
         }
 
         val toDataIndex = when (toKey) {
-            "ghost_active" -> 0
+            ReorderableKey.GHOST_ACTIVE -> 0
 
-            "ghost_disabled" -> items.size - 1
+            ReorderableKey.GHOST_DISABLED -> items.size - 1
 
             else -> {
                 if (activeCount == 0) (toUiIndex - 1) else toUiIndex
@@ -232,20 +232,21 @@ class PositionalListState<T, K>(
             newCount++
         }
         notifyChange(newList, newCount.coerceIn(0, newList.size))
+        haptic.performHapticFeedback(ReorderHapticFeedbackType.MOVE)
         return true
     }
 
     private val itemIndices by derivedStateOf {
         buildMap {
             var uiIndex = 0
-            if (activeCount == 0) put("ghost_active", uiIndex++)
+            if (activeCount == 0) put(ReorderableKey.GHOST_ACTIVE, uiIndex++)
 
             items.forEach { item ->
                 put(item.id as Any, uiIndex++)
             }
 
             if (activeCount == items.size) {
-                put("ghost_disabled", uiIndex)
+                put(ReorderableKey.GHOST_DISABLED, uiIndex)
             }
         }
     }
@@ -254,7 +255,6 @@ class PositionalListState<T, K>(
         items = newList
         activeCount = newCount
         onOrderChange(newList, newCount)
-        haptic.performHapticFeedback(ReorderHapticFeedbackType.MOVE)
     }
 
     companion object {
@@ -263,7 +263,7 @@ class PositionalListState<T, K>(
          * @param allItems All available items
          * @param enabledIds IDs of items that are currently "Enabled"
          */
-        fun <T, K> prepareCategorizedItems(
+        fun <T, K : Any> prepareCategorizedItems(
             allItems: List<T>,
             enabledIds: List<K>,
             idSelector: (T) -> K,
@@ -282,7 +282,7 @@ class PositionalListState<T, K>(
         /**
          * Converts the UI state back to the enabled IDs list for saving.
          */
-        fun <T, K> getEnabledKeys(
+        fun <T, K : Any> getEnabledKeys(
             uiItems: List<PositionalListItem<T, K>>,
             enabledCount: Int,
         ): List<K> {
@@ -292,7 +292,7 @@ class PositionalListState<T, K>(
         /**
          * Re-sorts the disabled section alphabetically while maintaining the active section's order.
          */
-        fun <T, K> sortInactiveItems(
+        fun <T, K : Any> sortInactiveItems(
             items: List<PositionalListItem<T, K>>,
             activeCount: Int,
             labelSelector: (T) -> String,
@@ -317,7 +317,7 @@ class PositionalListState<T, K>(
  * @return A remembered [PositionalListState] instance.
  */
 @Composable
-fun <T, K> rememberPositionalListState(
+fun <T, K : Any> rememberPositionalListState(
     items: List<PositionalListItem<T, K>>,
     activeCount: Int,
     onOrderChange: (newList: List<PositionalListItem<T, K>>, newEnabledCount: Int) -> Unit,
@@ -339,6 +339,13 @@ fun <T, K> rememberPositionalListState(
     }
 
     return state
+}
+
+enum class ReorderableKey {
+    GHOST_ACTIVE,
+    GHOST_DISABLED,
+    HEADER_ENABLED,
+    HEADER_DISABLED,
 }
 
 object PositionalListDefaults {
@@ -374,7 +381,7 @@ object PositionalListDefaults {
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun <T, K> PositionalList(
+fun <T, K : Any> PositionalList(
     state: PositionalListState<T, K>,
     itemContent: @Composable ReorderableCollectionItemScope.(
         item: T,
@@ -394,14 +401,14 @@ fun <T, K> PositionalList(
         contentPadding = contentPadding,
         modifier = modifier,
     ) {
-        item(key = "header_enabled") {
+        item(key = ReorderableKey.HEADER_ENABLED) {
             PreferenceGroupHeading(heading = stringResource(R.string.reorderable_active_items))
         }
 
         if (state.activeCount == 0) {
-            item(key = "ghost_active") {
+            item(key = ReorderableKey.GHOST_ACTIVE) {
                 // We treat this hint as a REORDERABLE ITEM so it can be swapped with
-                ReorderableItem(reorderableState, key = "ghost_active") {
+                ReorderableItem(reorderableState, key = ReorderableKey.GHOST_ACTIVE) {
                     PreferenceTemplate(
                         title = { Text(text = stringResource(R.string.reorderable_add_hint_items)) },
                         modifier = Modifier.padding(horizontal = 16.dp),
@@ -424,8 +431,13 @@ fun <T, K> PositionalList(
 
             ReorderableItem(
                 state = reorderableState,
-                key = item.id as Any,
-                modifier = Modifier.semanticReorderActions(index, state),
+                key = item.id,
+                modifier = Modifier.semanticReorderActions(
+                    index,
+                    state,
+                    stringResource(R.string.reorderable_move_up),
+                    stringResource(R.string.reorderable_move_down),
+                ),
             ) {
                 ReorderableItemContainer(
                     item = item,
@@ -443,8 +455,8 @@ fun <T, K> PositionalList(
 
         // Handle trailing header if all items are enabled
         if (state.activeCount == state.items.size) {
-            item(key = "ghost_disabled") {
-                ReorderableItem(reorderableState, key = "ghost_disabled") {
+            item(key = ReorderableKey.GHOST_DISABLED) {
+                ReorderableItem(reorderableState, key = ReorderableKey.GHOST_DISABLED) {
                     PreferenceGroup(heading = stringResource(R.string.reorderable_disabled_items)) {
                         PreferenceTemplate(title = { Text(text = stringResource(R.string.reorderable_disabled_hint)) })
                     }
@@ -454,20 +466,22 @@ fun <T, K> PositionalList(
     }
 }
 
-private fun <T, K> Modifier.semanticReorderActions(
+private fun <T, K : Any> Modifier.semanticReorderActions(
     index: Int,
     state: PositionalListState<T, K>,
+    moveUpLabel: String,
+    moveDownLabel: String,
 ) = this.semantics {
     customActions = listOfNotNull(
         if (index > 0) {
-            CustomAccessibilityAction("Move up") {
+            CustomAccessibilityAction(moveUpLabel) {
                 state.moveUp(index)
             }
         } else {
             null
         },
         if (index < state.items.size - 1) {
-            CustomAccessibilityAction("Move down") {
+            CustomAccessibilityAction(moveDownLabel) {
                 state.moveDown(index)
             }
         } else {
@@ -477,7 +491,7 @@ private fun <T, K> Modifier.semanticReorderActions(
 }
 
 @Composable
-private fun <T, K> ReorderableCollectionItemScope.ReorderableItemContainer(
+private fun <T, K : Any> ReorderableCollectionItemScope.ReorderableItemContainer(
     item: PositionalListItem<T, K>,
     active: Boolean,
     onActiveChange: (Boolean) -> Unit,
@@ -531,7 +545,7 @@ private fun <T, K> ReorderableCollectionItemScope.ReorderableItemContainer(
 }
 
 @Composable
-fun <T, K> PositionalListOverflowMenu(
+fun <T, K : Any> PositionalListOverflowMenu(
     state: PositionalListState<T, K>,
     modifier: Modifier = Modifier,
     extraItems: @Composable OverflowMenuScope.(hideMenu: () -> Unit) -> Unit = {},
