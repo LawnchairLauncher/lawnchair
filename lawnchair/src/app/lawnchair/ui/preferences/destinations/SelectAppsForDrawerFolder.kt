@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,10 +30,10 @@ import app.lawnchair.ui.preferences.components.AppItemPlaceholder
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceScaffold
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
-import app.lawnchair.ui.preferences.components.reorderable.PositionalListItem
-import app.lawnchair.ui.preferences.components.reorderable.PositionalListMapper
-import app.lawnchair.ui.preferences.components.reorderable.PositionalListOveflowMenu
 import app.lawnchair.ui.preferences.components.reorderable.PositionalList
+import app.lawnchair.ui.preferences.components.reorderable.PositionalListOverflowMenu
+import app.lawnchair.ui.preferences.components.reorderable.PositionalListState
+import app.lawnchair.ui.preferences.components.reorderable.rememberPositionalListState
 import app.lawnchair.util.App
 import app.lawnchair.util.appsState
 import com.android.launcher3.R
@@ -88,7 +89,7 @@ fun SelectAppsForDrawerFolder(
                 true
             }
         }
-        PositionalListMapper.prepareCategorizedItems(
+        PositionalListState.prepareCategorizedItems(
             allItems = filtered,
             enabledIds = activeIds,
             idSelector = { it.key.toString() },
@@ -97,24 +98,30 @@ fun SelectAppsForDrawerFolder(
 
     val loading = folderEntry == null || apps.isEmpty()
 
+    val state = key(loading) {
+        rememberPositionalListState(
+            items = positionalItems,
+            activeCount = activeCount,
+            onOrderChange = { newList, newCount ->
+                val sorted = PositionalListState.sortInactiveItems(newList, newCount) { it.label }
+                val activeKeys = PositionalListState.getEnabledKeys(sorted, newCount)
+                onUpdate(folderEntry?.title.toString(), activeKeys)
+            },
+            labelSelector = { it.label },
+        )
+    }
+
     PreferenceScaffold(
         label = if (loading) {
             stringResource(R.string.loading)
         } else {
-            stringResource(R.string.x_with_y_count, folderEntry.title, activeCount)
+            stringResource(R.string.x_with_y_count, folderEntry.title, state.activeCount)
         },
         modifier = modifier,
         actions = {
             if (!loading) {
-                PositionalListOveflowMenu(
-                    items = positionalItems,
-                    activeCount = activeCount,
-                    onUpdate = { newList, newCount ->
-                        val sorted = PositionalListMapper.sortInactiveItems(newList, newCount) { it.label }
-                        val activeKeys = PositionalListMapper.getEnabledKeys(sorted, newCount)
-                        onUpdate(folderEntry.title, activeKeys)
-                    },
-                    labelSelector = { it.label },
+                PositionalListOverflowMenu(
+                    state = state,
                 ) { hideMenu ->
                     DropdownMenuItem(
                         onClick = {
@@ -145,13 +152,7 @@ fun SelectAppsForDrawerFolder(
                 }
             } else {
                 PositionalAppListPreference(
-                    items = positionalItems,
-                    activeCount = activeCount,
-                    onOrderChange = { newList, newCount ->
-                        val sorted = PositionalListMapper.sortInactiveItems(newList, newCount) { it.label }
-                        val activeKeys = PositionalListMapper.getEnabledKeys(sorted, newCount)
-                        onUpdate(folderEntry?.title.toString(), activeKeys)
-                    },
+                    state = state,
                     contentPadding = contentPadding,
                 )
             }
@@ -161,16 +162,12 @@ fun SelectAppsForDrawerFolder(
 
 @Composable
 private fun PositionalAppListPreference(
-    items: List<PositionalListItem<App, String>>,
-    activeCount: Int,
-    onOrderChange: (newList: List<PositionalListItem<App, String>>, newEnabledCount: Int) -> Unit,
+    state: PositionalListState<App, String>,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
     PositionalList(
-        items = items,
-        activeCount = activeCount,
-        onOrderChange = onOrderChange,
+        state = state,
         itemContent = { app, dragHandle, toggle ->
             AppItem(
                 app = app,
@@ -179,7 +176,6 @@ private fun PositionalAppListPreference(
                 endWidget = toggle,
             )
         },
-        labelSelector = { it.label },
         contentPadding = contentPadding,
         modifier = modifier,
     )
