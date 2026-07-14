@@ -30,9 +30,9 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceScaffold
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
 import app.lawnchair.ui.preferences.components.reorderable.PositionalListItem
-import app.lawnchair.ui.preferences.components.reorderable.PositionalMapper
-import app.lawnchair.ui.preferences.components.reorderable.PositionalOrderMenu
-import app.lawnchair.ui.preferences.components.reorderable.PositionalReorderer
+import app.lawnchair.ui.preferences.components.reorderable.PositionalListMapper
+import app.lawnchair.ui.preferences.components.reorderable.PositionalListOveflowMenu
+import app.lawnchair.ui.preferences.components.reorderable.PositionalList
 import app.lawnchair.util.App
 import app.lawnchair.util.appsState
 import com.android.launcher3.R
@@ -88,7 +88,7 @@ fun SelectAppsForDrawerFolder(
                 true
             }
         }
-        PositionalMapper.prepareCategorizedItems(
+        PositionalListMapper.prepareCategorizedItems(
             allItems = filtered,
             enabledIds = activeIds,
             idSelector = { it.key.toString() },
@@ -106,28 +106,27 @@ fun SelectAppsForDrawerFolder(
         modifier = modifier,
         actions = {
             if (!loading) {
-                PositionalOrderMenu(
+                PositionalListOveflowMenu(
                     items = positionalItems,
                     activeCount = activeCount,
                     onUpdate = { newList, newCount ->
-                        val sorted = PositionalMapper.sortInactiveItems(newList, newCount) { it.label }
-                        val activeKeys = PositionalMapper.getEnabledKeys(sorted, newCount)
+                        val sorted = PositionalListMapper.sortInactiveItems(newList, newCount) { it.label }
+                        val activeKeys = PositionalListMapper.getEnabledKeys(sorted, newCount)
                         onUpdate(folderEntry.title, activeKeys)
                     },
                     labelSelector = { it.label },
-                    additionalContent = { hideMenu ->
-                        DropdownMenuItem(
-                            onClick = {
-                                filterNonUniqueItems = !filterNonUniqueItems
-                                hideMenu()
-                            },
-                            trailingIcon = {
-                                if (filterNonUniqueItems) Icon(Icons.Rounded.Check, null)
-                            },
-                            text = { Text(stringResource(R.string.folders_filter_duplicates)) },
-                        )
-                    },
-                )
+                ) { hideMenu ->
+                    DropdownMenuItem(
+                        onClick = {
+                            filterNonUniqueItems = !filterNonUniqueItems
+                            hideMenu()
+                        },
+                        trailingIcon = {
+                            if (filterNonUniqueItems) Icon(Icons.Rounded.Check, null)
+                        },
+                        text = { Text(stringResource(R.string.folders_filter_duplicates)) },
+                    )
+                }
             }
         },
         isExpandedScreen = LocalIsExpandedScreen.current,
@@ -149,8 +148,8 @@ fun SelectAppsForDrawerFolder(
                     items = positionalItems,
                     activeCount = activeCount,
                     onOrderChange = { newList, newCount ->
-                        val sorted = PositionalMapper.sortInactiveItems(newList, newCount) { it.label }
-                        val activeKeys = PositionalMapper.getEnabledKeys(sorted, newCount)
+                        val sorted = PositionalListMapper.sortInactiveItems(newList, newCount) { it.label }
+                        val activeKeys = PositionalListMapper.getEnabledKeys(sorted, newCount)
                         onUpdate(folderEntry?.title.toString(), activeKeys)
                     },
                     contentPadding = contentPadding,
@@ -162,13 +161,13 @@ fun SelectAppsForDrawerFolder(
 
 @Composable
 private fun PositionalAppListPreference(
-    items: List<PositionalListItem<App>>,
+    items: List<PositionalListItem<App, String>>,
     activeCount: Int,
-    onOrderChange: (newList: List<PositionalListItem<App>>, newEnabledCount: Int) -> Unit,
+    onOrderChange: (newList: List<PositionalListItem<App, String>>, newEnabledCount: Int) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-    PositionalReorderer(
+    PositionalList(
         items = items,
         activeCount = activeCount,
         onOrderChange = onOrderChange,

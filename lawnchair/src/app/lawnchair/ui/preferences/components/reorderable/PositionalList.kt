@@ -27,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
@@ -46,22 +48,30 @@ import sh.calvin.reorderable.ReorderableCollectionItemScope
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
-data class PositionalListItem<T>(
+/**
+ * A wrapper class used by [PositionalList] to represent an item in a reorderable list.
+ *
+ * @param T The type of the actual data object.
+ * @param K The type of the unique identifier for the item.
+ * @property data The underlying data object being displayed.
+ * @property id The unique key used to track this item's identity during reordering and animations.
+ */
+data class PositionalListItem<T, K>(
     val data: T,
-    val id: String,
+    val id: K,
 )
 
-object PositionalMapper {
+object PositionalListMapper {
     /**
      * Converts raw data into a single list for the Reorderable UI.
-     * @param allItems All available items (e.g., all apps)
+     * @param allItems All available items
      * @param enabledIds IDs of items that are currently "Enabled"
      */
-    fun <T> prepareCategorizedItems(
+    fun <T, K> prepareCategorizedItems(
         allItems: List<T>,
-        enabledIds: List<String>,
-        idSelector: (T) -> String,
-    ): Pair<List<PositionalListItem<T>>, Int> {
+        enabledIds: List<K>,
+        idSelector: (T) -> K,
+    ): Pair<List<PositionalListItem<T, K>>, Int> {
         val enabledItems = allItems.filter { idSelector(it) in enabledIds }
             // Ensure enabled items follow the order defined in enabledIds
             .sortedBy { enabledIds.indexOf(idSelector(it)) }
@@ -76,21 +86,21 @@ object PositionalMapper {
     /**
      * Converts the UI state back to the enabled IDs list for saving.
      */
-    fun <T> getEnabledKeys(
-        uiItems: List<PositionalListItem<T>>,
+    fun <T, K> getEnabledKeys(
+        uiItems: List<PositionalListItem<T, K>>,
         enabledCount: Int,
-    ): List<String> {
+    ): List<K> {
         return uiItems.take(enabledCount).map { it.id }
     }
 
     /**
      * Re-sorts the disabled section alphabetically while maintaining the active section's order.
      */
-    fun <T> sortInactiveItems(
-        items: List<PositionalListItem<T>>,
+    fun <T, K> sortInactiveItems(
+        items: List<PositionalListItem<T, K>>,
         activeCount: Int,
         labelSelector: (T) -> String,
-    ): List<PositionalListItem<T>> {
+    ): List<PositionalListItem<T, K>> {
         val active = items.take(activeCount)
         val inactive = items.drop(activeCount).sortedBy { labelSelector(it.data) }
         return active + inactive
@@ -99,32 +109,42 @@ object PositionalMapper {
     /**
      * Re-sorts the active section alphabetically while maintaining the inactive section's order.
      */
-    fun <T> sortActiveItems(
-        items: List<PositionalListItem<T>>,
+    fun <T, K> sortActiveItems(
+        items: List<PositionalListItem<T, K>>,
         activeCount: Int,
         labelSelector: (T) -> String,
-    ): List<PositionalListItem<T>> {
+    ): List<PositionalListItem<T, K>> {
         val active = items.take(activeCount).sortedBy { labelSelector(it.data) }
         val inactive = items.drop(activeCount)
         return active + inactive
     }
 
-    fun <T> swapCategories(
-        items: List<PositionalListItem<T>>,
+    /**
+     * Swaps the positions of the active and inactive sections.
+     */
+    fun <T, K> swapCategories(
+        items: List<PositionalListItem<T, K>>,
         activeCount: Int,
-    ): Pair<List<PositionalListItem<T>>, Int> {
+    ): Pair<List<PositionalListItem<T, K>>, Int> {
         val newActive = items.drop(activeCount)
         val newInactive = items.take(activeCount)
         return (newActive + newInactive) to newActive.size
     }
 
-    fun <T> toggleItemStatus(
-        items: List<PositionalListItem<T>>,
+    /**
+     * Toggles the status of an item between active (enabled) and inactive (disabled).
+     *
+     * When an item is made active, it is moved to the top of the active list (index 0).
+     * When an item is made inactive, it is moved to the inactive section and the section is re-sorted
+     * alphabetically using the provided [labelSelector].
+     */
+    internal fun <T, K> toggleItemStatus(
+        items: List<PositionalListItem<T, K>>,
         activeCount: Int,
-        itemId: String,
+        itemId: K,
         makeActive: Boolean,
         labelSelector: (T) -> String,
-    ): Pair<List<PositionalListItem<T>>, Int> {
+    ): Pair<List<PositionalListItem<T, K>>, Int> {
         val currentIndex = items.indexOfFirst { it.id == itemId }
         if (currentIndex == -1) return items to activeCount
 
@@ -132,7 +152,6 @@ object PositionalMapper {
         val item = mutable.removeAt(currentIndex)
 
         return if (makeActive) {
-            // Move to the very top of the active list
             mutable.add(0, item)
             mutable to activeCount + 1
         } else {
@@ -146,37 +165,128 @@ object PositionalMapper {
             result to newActiveCount
         }
     }
+
+    /**
+     * Calculates the mapping of item keys to their visual UI indices, including ghost/hint items.
+     *
+     * Ghost items are inserted when a section (active or disabled) is empty to provide
+     * a visual drop target or hint.
+     */
+    internal fun <K> calculateIndices(
+        items: List<PositionalListItem<*, K>>,
+        activeCount: Int,
+    ): Map<Any, Int> = buildMap {
+        var uiIndex = 0
+        if (activeCount == 0) put("ghost_active", uiIndex++)
+
+        items.forEach { item ->
+            put(item.id as Any, uiIndex++)
+        }
+
+        if (activeCount == items.size) {
+            put("ghost_disabled", uiIndex)
+        }
+    }
+
+    /**
+     * Computes the new state of the list and active count after a reorder drag-and-drop event.
+     *
+     * This logic handles the transformation from UI-level indices (which may include ghost/header items)
+     * back to data-level indices, and updates [activeCount] if an item is dragged across the
+     * boundary between the active and inactive sections.
+     *
+     * @return A [Pair] containing the updated list and the new active count, or `null` if the move is invalid.
+     */
+    internal fun <T, K> calculateReorder(
+        items: List<PositionalListItem<T, K>>,
+        activeCount: Int,
+        fromKey: Any,
+        toKey: Any,
+        itemIndices: Map<Any, Int>,
+    ): Pair<List<PositionalListItem<T, K>>, Int>? {
+        // 1. Safety early exits
+        if (fromKey == "ghost_active" || fromKey == "ghost_disabled") return null
+        if (toKey == "header_enabled" || toKey == "header_disabled") return null
+
+        val fromUiIndex = itemIndices[fromKey] ?: return null
+        val toUiIndex = itemIndices[toKey] ?: return null
+        if (fromUiIndex == toUiIndex) return null
+
+        // 2. Map UI indices back to Data indices correctly
+        val fromDataIndex = if (activeCount == 0) {
+            fromUiIndex - 1
+        } else {
+            fromUiIndex
+        }
+
+        val toDataIndex = when (toKey) {
+            "ghost_active" -> 0
+            "ghost_disabled" -> items.size - 1
+            else -> {
+                if (activeCount == 0) (toUiIndex - 1) else toUiIndex
+            }
+        }.coerceIn(0, items.size - 1)
+
+        // 3. Perform the Move
+        val newList = items.toMutableList().apply {
+            if (fromDataIndex in indices) {
+                add(toDataIndex, removeAt(fromDataIndex))
+            }
+        }
+
+        // 4. Boundary Logic
+        val uiThreshold = if (activeCount == 0) 1 else activeCount
+
+        var newCount = activeCount
+        if (uiThreshold in (fromUiIndex + 1)..toUiIndex) {
+            newCount--
+        } else if (uiThreshold in (toUiIndex + 1)..fromUiIndex) {
+            newCount++
+        }
+        return newList to newCount.coerceIn(0, newList.size)
+    }
 }
 
+object PositionalListDefaults {
+    @Composable
+    fun containerColor(isSelfDragging: Boolean, isAnyDragging: Boolean): Color {
+        return when {
+            isSelfDragging -> MaterialTheme.colorScheme.surfaceContainer
+            isAnyDragging -> MaterialTheme.colorScheme.surface
+            else -> preferenceGroupColor()
+        }
+    }
+
+    fun containerShape(isFirst: Boolean, isLast: Boolean, isSelfDragging: Boolean): Shape {
+        val top = if (!isFirst) 0.dp else 12.dp
+        val bottom = if (!isLast) 0.dp else 12.dp
+        return if (isSelfDragging) RoundedCornerShape(12.dp) else RoundedCornerShape(top, top, bottom, bottom)
+    }
+}
+
+
 /**
- * A UI component for managing a list where items can be toggled between "Enabled" and "Disabled"
- * and reordered via drag-and-drop within and across those categories.
+ * A UI component for managing a list of items toggled between "Enabled" and "Disabled" states.
+ * Uses a single flat list to prevent animation jumping during state transitions.
  *
- * Instead of using two separate lists (which causes "jumping" animations when moving items),
- * this component treats all items as a single flat list. A "divider" is virtually placed
- * at the index defined by [activeCount].
- * - Indices `< activeCount`: "Enabled" items (e.g., Apps in folder).
- * - Indices `>= activeCount`: "Disabled" items (e.g., Other apps).
+ * - Indices `< activeCount` represent "Enabled" items.
+ * - Indices `>= activeCount` represent "Disabled" items.
  *
- * Moving an item across this boundary automatically increments or decrements the [activeCount],
- * effectively changing the item's status while maintaining a smooth animation.
+ * Moving an item across this boundary updates [activeCount] and changes the item's status.
  *
- * @param T The type of data being displayed.
- * @param items The flattened list of items, where enabled items must come first.
- * @param activeCount The number of items at the start of the list that are considered "active/enabled".
- * @param onOrderChange Callback triggered when an item is moved or toggled. Provides the new
- * full list and the updated count of active items.
- * @param itemContent The UI for an individual item. Provides a `dragHandle` for reordering
- * and a `toggle` for switching status without dragging.
- * @param labelSelector Used to sort the inactive section alphabetically when an item is disabled.
- * @param contentPadding Padding applied to the inner [PreferenceLazyColumn].
+ * @param items The flattened list of items, with enabled items positioned first.
+ * @param activeCount The number of enabled items at the start of the list.
+ * @param onOrderChange Callback triggered on item move or toggle. Returns the updated list and active count.
+ * @param itemContent The UI builder for an individual item, exposing a drag handle and status toggle.
+ * @param labelSelector Property selector used to sort the inactive section alphabetically.
+ * @param contentPadding Padding applied to the underlying scrollable container.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun <T> PositionalReorderer(
-    items: List<PositionalListItem<T>>,
+fun <T, K> PositionalList(
+    items: List<PositionalListItem<T, K>>,
     activeCount: Int,
-    onOrderChange: (newList: List<PositionalListItem<T>>, newEnabledCount: Int) -> Unit,
+    onOrderChange: (newList: List<PositionalListItem<T, K>>, newEnabledCount: Int) -> Unit,
     itemContent: @Composable ReorderableCollectionItemScope.(
         item: T,
         dragHandle: @Composable () -> Unit,
@@ -191,18 +301,7 @@ fun <T> PositionalReorderer(
 
     val itemIndices by remember {
         derivedStateOf {
-            buildMap {
-                var uiIndex = 0
-                if (localActiveCount == 0) put("ghost_active", uiIndex++)
-
-                localItems.forEachIndexed { _, item ->
-                    put(item.id, uiIndex++)
-                }
-
-                if (localActiveCount == localItems.size) {
-                    put("ghost_disabled", uiIndex)
-                }
-            }
+            PositionalListMapper.calculateIndices(localItems, localActiveCount)
         }
     }
 
@@ -214,7 +313,7 @@ fun <T> PositionalReorderer(
     val lazyListState = rememberLazyListState()
     val haptic = rememberReorderHapticFeedback()
 
-    val updateState: (List<PositionalListItem<T>>, Int) -> Unit = { list, count ->
+    val updateState: (List<PositionalListItem<T, K>>, Int) -> Unit = { list, count ->
         localItems = list
         localActiveCount = count
         onOrderChange(list, count)
@@ -222,55 +321,15 @@ fun <T> PositionalReorderer(
     }
 
     val reorderableState = rememberReorderableLazyListState(lazyListState) { from, to ->
-        val fromKey = from.key as String
-        val toKey = to.key as String
-
-        // 1. Safety early exits
-        if (fromKey == "ghost_active" || fromKey == "ghost_disabled") return@rememberReorderableLazyListState
-        if (toKey == "header_enabled" || toKey == "header_disabled") return@rememberReorderableLazyListState
-
-        val fromUiIndex = itemIndices[fromKey] ?: return@rememberReorderableLazyListState
-        val toUiIndex = itemIndices[toKey] ?: return@rememberReorderableLazyListState
-        if (fromUiIndex == toUiIndex) return@rememberReorderableLazyListState
-
-        // 2. Map UI indices back to Data indices correctly
-        // We subtract 1 ONLY if the item we are looking at is AFTER the active ghost
-        val fromDataIndex = if (localActiveCount == 0) {
-            fromUiIndex - 1
-        } else {
-            fromUiIndex
+        PositionalListMapper.calculateReorder(
+            localItems,
+            localActiveCount,
+            from.key,
+            to.key,
+            itemIndices,
+        )?.let { (newList, newCount) ->
+            updateState(newList, newCount)
         }
-
-        val toDataIndex = when (toKey) {
-            "ghost_active" -> 0
-
-            "ghost_disabled" -> localItems.size - 1
-
-            else -> {
-                // If there's an active ghost at the start, all real items are shifted by 1
-                if (localActiveCount == 0) (toUiIndex - 1) else toUiIndex
-            }
-        }.coerceIn(0, localItems.size - 1)
-
-        // 3. Perform the Move
-        val newList = localItems.toMutableList().apply {
-            if (fromDataIndex in indices) {
-                add(toDataIndex, removeAt(fromDataIndex))
-            }
-        }
-
-        // 4. Boundary Logic
-        // The threshold is the physical boundary in the UI list
-        val uiThreshold = if (localActiveCount == 0) 1 else localActiveCount
-
-        var newCount = localActiveCount
-        if (uiThreshold in (fromUiIndex + 1)..toUiIndex) {
-            newCount--
-        } else if (uiThreshold in (toUiIndex + 1)..fromUiIndex) {
-            newCount++
-        }
-
-        updateState(newList, newCount.coerceIn(0, newList.size))
     }
 
     PreferenceLazyColumn(
@@ -296,7 +355,7 @@ fun <T> PositionalReorderer(
 
         itemsIndexed(
             items = localItems,
-            key = { _, item -> item.id },
+            key = { _, item -> item.id as Any },
         ) { index, item ->
             val isActive = index < localActiveCount
 
@@ -308,14 +367,14 @@ fun <T> PositionalReorderer(
 
             ReorderableItem(
                 state = reorderableState,
-                key = item.id,
+                key = item.id as Any,
                 modifier = Modifier.semanticReorderActions(index, localItems, localActiveCount, onOrderChange),
             ) {
                 ReorderableItemContainer(
                     item = item,
                     active = isActive,
                     onActiveChange = { makeActive ->
-                        val (newList, newCount) = PositionalMapper.toggleItemStatus(
+                        val (newList, newCount) = PositionalListMapper.toggleItemStatus(
                             localItems,
                             localActiveCount,
                             item.id,
@@ -332,7 +391,7 @@ fun <T> PositionalReorderer(
             }
         }
 
-        // Handle trailing header if all apps are enabled
+        // Handle trailing header if all items are enabled
         if (localActiveCount == localItems.size) {
             item(key = "ghost_disabled") {
                 ReorderableItem(reorderableState, key = "ghost_disabled") {
@@ -345,11 +404,11 @@ fun <T> PositionalReorderer(
     }
 }
 
-private fun <T> Modifier.semanticReorderActions(
+private fun <T, K> Modifier.semanticReorderActions(
     index: Int,
-    items: List<PositionalListItem<T>>,
+    items: List<PositionalListItem<T, K>>,
     activeCount: Int,
-    onUpdate: (newList: List<PositionalListItem<T>>, newEnabledCount: Int) -> Unit,
+    onUpdate: (newList: List<PositionalListItem<T, K>>, newEnabledCount: Int) -> Unit,
 ) = this.semantics {
     customActions = listOfNotNull(
         if (index > 0) {
@@ -380,8 +439,8 @@ private fun <T> Modifier.semanticReorderActions(
 }
 
 @Composable
-private fun <T> ReorderableCollectionItemScope.ReorderableItemContainer(
-    item: PositionalListItem<T>,
+private fun <T, K> ReorderableCollectionItemScope.ReorderableItemContainer(
+    item: PositionalListItem<T, K>,
     active: Boolean,
     onActiveChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -396,18 +455,9 @@ private fun <T> ReorderableCollectionItemScope.ReorderableItemContainer(
 ) {
     var isSelfDragging by remember { mutableStateOf(false) }
 
-    val shape = remember(isFirst, isLast) {
-        val top = if (!isFirst) 0.dp else 12.dp
-        val bottom = if (!isLast) 0.dp else 12.dp
-        if (isSelfDragging) RoundedCornerShape(12.dp) else RoundedCornerShape(top, top, bottom, bottom)
-    }
-
+    val shape = PositionalListDefaults.containerShape(isFirst, isLast, isSelfDragging)
     val color by animateColorAsState(
-        when {
-            isSelfDragging -> MaterialTheme.colorScheme.surfaceContainer
-            isAnyDragging -> MaterialTheme.colorScheme.surface
-            else -> preferenceGroupColor()
-        },
+        PositionalListDefaults.containerColor(isSelfDragging, isAnyDragging),
     )
 
     Surface(
@@ -443,26 +493,24 @@ private fun <T> ReorderableCollectionItemScope.ReorderableItemContainer(
 }
 
 @Composable
-fun <T> PositionalOrderMenu(
-    items: List<PositionalListItem<T>>,
+fun <T, K> PositionalListOveflowMenu(
+    items: List<PositionalListItem<T, K>>,
     activeCount: Int,
-    onUpdate: (newList: List<PositionalListItem<T>>, newCount: Int) -> Unit,
+    onUpdate: (newList: List<PositionalListItem<T, K>>, newCount: Int) -> Unit,
     labelSelector: (T) -> String,
     modifier: Modifier = Modifier,
-    additionalContent: @Composable OverflowMenuScope.(hideMenu: () -> Unit) -> Unit = {},
+    extraItems: @Composable OverflowMenuScope.(hideMenu: () -> Unit) -> Unit = {},
 ) {
     OverflowMenu(modifier) {
-        // Inverse Selection
         DropdownMenuItem(
             text = { Text(stringResource(R.string.inverse_selection)) },
             onClick = {
-                val (newList, newCount) = PositionalMapper.swapCategories(items, activeCount)
+                val (newList, newCount) = PositionalListMapper.swapCategories(items, activeCount)
                 onUpdate(newList, newCount)
                 hideMenu()
             },
         )
 
-        // Select / Deselect All
         val allSelected = activeCount == items.size
         DropdownMenuItem(
             text = {
@@ -475,22 +523,19 @@ fun <T> PositionalOrderMenu(
             },
         )
 
-        // Sort Active Items alphabetically
         DropdownMenuItem(
             text = { Text(stringResource(R.string.sort_active_items_action)) },
             onClick = {
-                val newList = PositionalMapper.sortActiveItems(items, activeCount, labelSelector)
+                val newList = PositionalListMapper.sortActiveItems(items, activeCount, labelSelector)
                 onUpdate(newList, activeCount)
                 hideMenu()
             },
         )
 
-        // Custom Slots (e.g., Filter Duplicates toggle)
-        additionalContent(::hideMenu)
+        extraItems(::hideMenu)
 
         PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-        // Reset (Same as Deselect All in this context)
         DropdownMenuItem(
             text = { Text(stringResource(R.string.action_reset)) },
             onClick = {
