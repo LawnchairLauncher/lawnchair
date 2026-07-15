@@ -121,6 +121,7 @@ data class QsbState(
  * Defines the click handlers for the various interactive elements within the Quick Search Bar (QSB).
  *
  * @property onQsbClick Callback invoked when the main body of the search bar is clicked.
+ * @property onQsbLongClick Callback invoked when the main body of the search bar is long clicked.
  * @property onStartIconClick Optional callback invoked when the leading icon (e.g., search provider logo) is clicked.
  * @property onEndIconClick Callback invoked when one of the trailing icons (e.g., Mic, Lens, or Clear) is clicked,
  * passing the specific [QsbIconId] of the clicked icon.
