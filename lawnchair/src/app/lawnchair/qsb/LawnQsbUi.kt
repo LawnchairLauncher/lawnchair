@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -120,6 +121,7 @@ data class QsbState(
  * Defines the click handlers for the various interactive elements within the Quick Search Bar (QSB).
  *
  * @property onQsbClick Callback invoked when the main body of the search bar is clicked.
+ * @property onQsbLongClick Callback invoked when the main body of the search bar is long clicked.
  * @property onStartIconClick Optional callback invoked when the leading icon (e.g., search provider logo) is clicked.
  * @property onEndIconClick Callback invoked when one of the trailing icons (e.g., Mic, Lens, or Clear) is clicked,
  * passing the specific [QsbIconId] of the clicked icon.
@@ -127,6 +129,7 @@ data class QsbState(
 @Immutable
 data class QsbActions(
     val onQsbClick: () -> Unit,
+    val onQsbLongClick: (() -> Unit)? = null,
     val onStartIconClick: (() -> Unit)? = null,
     val onEndIconClick: ((id: QsbIconId) -> Unit),
 )
@@ -342,8 +345,9 @@ fun LawnQsbUi(
         .semantics { contentDescription = state.contentDescription }
         .clip(shape)
         .background(ComposeColor(style.backgroundColor).copy(alpha = style.backgroundAlpha), shape)
-        .clickable(
+        .combinedClickable(
             onClick = actions.onQsbClick,
+            onLongClick = actions.onQsbLongClick,
             interactionSource = remember { MutableInteractionSource() },
             indication = ripple(
                 color = MaterialTheme.colorScheme.onSurface,
