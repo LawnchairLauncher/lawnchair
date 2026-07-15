@@ -129,7 +129,7 @@ data class QsbState(
 @Immutable
 data class QsbActions(
     val onQsbClick: () -> Unit,
-    val onQsbLongClick: () -> Unit,
+    val onQsbLongClick: (() -> Unit)? = null,
     val onStartIconClick: (() -> Unit)? = null,
     val onEndIconClick: ((id: QsbIconId) -> Unit),
 )
@@ -510,7 +510,6 @@ private fun LawnQsbUiPreview() {
             ),
             actions = QsbActions(
                 onQsbClick = {},
-                onQsbLongClick = {},
                 onStartIconClick = {},
                 onEndIconClick = {},
             ),

@@ -218,7 +218,6 @@ private fun DockSearchBarPreview(
                 ),
                 actions = QsbActions(
                     onQsbClick = {},
-                    onQsbLongClick = {},
                     onEndIconClick = {},
                 ),
                 modifier = Modifier.height(48.dp),
