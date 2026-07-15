@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -127,6 +128,7 @@ data class QsbState(
 @Immutable
 data class QsbActions(
     val onQsbClick: () -> Unit,
+    val onQsbLongClick: () -> Unit,
     val onStartIconClick: (() -> Unit)? = null,
     val onEndIconClick: ((id: QsbIconId) -> Unit),
 )
@@ -342,8 +344,9 @@ fun LawnQsbUi(
         .semantics { contentDescription = state.contentDescription }
         .clip(shape)
         .background(ComposeColor(style.backgroundColor).copy(alpha = style.backgroundAlpha), shape)
-        .clickable(
+        .combinedClickable(
             onClick = actions.onQsbClick,
+            onLongClick = actions.onQsbLongClick,
             interactionSource = remember { MutableInteractionSource() },
             indication = ripple(
                 color = MaterialTheme.colorScheme.onSurface,
@@ -506,6 +509,7 @@ private fun LawnQsbUiPreview() {
             ),
             actions = QsbActions(
                 onQsbClick = {},
+                onQsbLongClick = {},
                 onStartIconClick = {},
                 onEndIconClick = {},
             ),

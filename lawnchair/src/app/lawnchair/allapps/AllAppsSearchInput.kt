@@ -175,6 +175,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                         input.requestFocus()
                         input.showKeyboard()
                     },
+                    onQsbLongClick = {},
                     onStartIconClick = if (shouldShowIcons) {
                         {
                             val launcher = context.launcher

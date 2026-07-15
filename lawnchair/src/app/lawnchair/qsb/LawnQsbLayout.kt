@@ -3,6 +3,8 @@ package app.lawnchair.qsb
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.compose.runtime.getValue
@@ -12,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.animateToAllApps
 import app.lawnchair.launcher
 import app.lawnchair.preferences.observeAsState
@@ -23,13 +26,17 @@ import app.lawnchair.qsb.providers.AppSearch
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
+import app.lawnchair.ui.preferences.PreferenceActivity
+import app.lawnchair.ui.preferences.navigation.Search
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.ProvideLifecycleState
 import app.lawnchair.util.repeatOnAttached
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.R
+import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.views.ActivityContext
-import com.patrykmichalik.opto.core.firstBlocking
+import com.android.launcher3.views.OptionsPopupView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
@@ -105,6 +112,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                                     }
                                 }
                             },
+                            onQsbLongClick = ::openOptions,
                             onStartIconClick = null,
                             onEndIconClick = { id ->
                                 runCatching {
@@ -142,6 +150,23 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                     .collect()
             }
         }
+    }
+
+    private fun openOptions() {
+        val launcher = context.launcher
+        val pos = Rect()
+        launcher.dragLayer.getDescendantRectRelativeToSelf(composeView, pos)
+        OptionsPopupView.show<LawnchairLauncher>(launcher, RectF(pos), listOf(getCustomizeOption()), true)
+    }
+
+    private fun getCustomizeOption() = OptionsPopupView.OptionItem(
+        context,
+        R.string.action_customize,
+        R.drawable.ic_setting,
+        StatsLogManager.LauncherEvent.IGNORE,
+    ) {
+        context.startActivity(PreferenceActivity.createIntent(context, Search()))
+        true
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
