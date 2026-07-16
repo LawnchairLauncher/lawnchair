@@ -149,7 +149,7 @@ android {
     namespace "com.android.launcher3"
     defaultConfig {
         /*
-         * Lawnchair Launcher 16.0 Development 5.1
+         * patalix Launcher 1.0 Development 1
          * see CONTRIBUTING.md#versioning-scheme
          */
         versionCode 16_00_01_05_01
@@ -225,7 +225,7 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+            resValue("string", "derived_app_name", "patalix (Debug)")
 
             manifestPlaceholders.quickstepMinSdk = "0"
             manifestPlaceholders.quickstepMaxSdk = "100000"
@@ -234,7 +234,7 @@ android {
         }
 
         release {
-            resValue("string", "derived_app_name", "Lawnchair")
+            resValue("string", "derived_app_name", "patalix")
             minifyEnabled true
             shrinkResources true
             pseudoLocalesEnabled false
@@ -264,24 +264,13 @@ android {
             minSdk = 26
         }
 
-        github {
-            applicationId 'app.lawnchair'
+       patalix {
+            applicationId 'com.patalix.patalix'
             dimension "channel"
-        }
-
-        nightly {
-            applicationId 'app.lawnchair.nightly'
-            dimension "channel"
-        }
-
-        play {
-            applicationId "app.lawnchair.play"
-            dimension "channel"
-            isDefault true
         }
 
         configureEach {
-            resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
+            resValue("string", "launcher_component", "${applicationId}/com.patalix.patalix")
         }
     }
 
@@ -289,7 +278,7 @@ android {
         main {
             res.srcDirs = ['res']
 
-            // Lawnchair-TODO: Don't include Compose Disabled, but there's has to be another way of making this NOT long
+            // patalix-TODO: Don't include Compose Disabled, but there's has to be another way of making this NOT long
             java.srcDirs = ['src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features']
             kotlin.directories.addAll('src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features')
 
@@ -300,16 +289,16 @@ android {
         }
 
         lawn {
-            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
-            kotlin.directories.addAll('src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared')
-            aidl.srcDirs = ['lawnchair/aidl']
-            res.srcDirs = ['lawnchair/res', 'platform_frameworks_libs_systemui/animationlib/res']
-            manifest.srcFile "lawnchair/AndroidManifest.xml"
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'patalix/src', 'tests/shared']
+            kotlin.directories.addAll('src_flags', 'src_shortcuts_overrides', 'patalix/src', 'tests/shared')
+            aidl.srcDirs = ['patalix/aidl']
+            res.srcDirs = ['patalix/res', 'platform_frameworks_libs_systemui/animationlib/res']
+            manifest.srcFile "patalix/AndroidManifest.xml"
             assets {
-                srcDirs 'lawnchair/assets'
+                srcDirs 'patalix/assets'
             }
             proto {
-                srcDirs = ['lawnchair/protos/']
+                srcDirs = ['patalix/protos/']
             }
         }
 
@@ -347,7 +336,7 @@ androidComponents {
     onVariants(selector().all()) { variant ->
         def channel = variant.productFlavors.last().second
         variant.outputs.forEach { output ->
-            output.outputFileName.set("Lawnchair.${output.versionName.get()}.$channel.${variant.buildType}.apk")
+            output.outputFileName.set("patalix?.${output.versionName.get()}.$channel.${variant.buildType}.apk")
         }
     }
 }
@@ -504,7 +493,7 @@ spotless {
         removeUnusedImports()
     }
     kotlin {
-        target("lawnchair/src/**/*.kt")
+        target("patalix/src/**/*.kt")
         ktlint(libs.ktlint.get().version).customRuleSets([
             libs.composeRules.get().toString()
         ]).editorConfigOverride([
