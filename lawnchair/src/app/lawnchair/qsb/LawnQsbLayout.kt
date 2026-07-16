@@ -174,6 +174,11 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         // Unlike Phone, for Foldable/Tablet we let the original onMeasure do that instead since it
         // matched what we need. It perfectly fit the QSB with the grid.
         if (!dp.deviceProperties.isPhone) {
+            if (!composeView.isAttachedToWindow) {
+                setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
+                return
+            }
+
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
