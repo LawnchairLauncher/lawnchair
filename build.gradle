@@ -48,7 +48,6 @@ allprojects {
 
     plugins.withId('com.google.protobuf') {
         protobuf {
-            // Configure the protoc executable
             protoc {
                 artifact = libs.protobuf.protoc.get().toString()
             }
@@ -91,11 +90,9 @@ allprojects {
             }
             gradle.projectsEvaluated {
                 tasks.withType(JavaCompile).configureEach {
-                    // Make sure the frameworkJar is always first in the classpath.
                     classpath = files(frameworkJar, classpath)
                 }
                 tasks.withType(KotlinCompile).configureEach {
-                    // Make sure the frameworkJar is always first in the classpath.
                     libraries.setFrom files(frameworkJar, libraries)
                 }
             }
@@ -146,12 +143,8 @@ final def quickstepMinSdk = "29"
 final def quickstepMaxSdk = "36"
 
 android {
-    namespace "com.android.launcher3"
+    namespace "com.patalix.launcher"
     defaultConfig {
-        /*
-         * Lawnchair Launcher 16.0 Development 5.1
-         * see CONTRIBUTING.md#versioning-scheme
-         */
         versionCode 16_00_01_05_01
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
@@ -194,7 +187,6 @@ android {
         "META-INF/LGPL2.1",
     ]
 
-    // Load all proguard configs from AOSP
     def proguardFilesFromAosp = allprojects.collect { proj ->
         [
             'proguard.flags',
@@ -225,7 +217,7 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+            resValue("string", "derived_app_name", "Patalix (Debug)")
 
             manifestPlaceholders.quickstepMinSdk = "0"
             manifestPlaceholders.quickstepMaxSdk = "100000"
@@ -234,7 +226,7 @@ android {
         }
 
         release {
-            resValue("string", "derived_app_name", "Lawnchair")
+            resValue("string", "derived_app_name", "Patalix")
             minifyEnabled true
             shrinkResources true
             pseudoLocalesEnabled false
@@ -251,7 +243,6 @@ android {
         includeInBundle = false
     }
 
-    // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
     flavorDimensions += ["app", "recents", "channel"]
 
     productFlavors {
@@ -265,34 +256,31 @@ android {
         }
 
         github {
-            applicationId 'app.lawnchair'
+            applicationId 'com.patalix.launcher'
             dimension "channel"
         }
 
         nightly {
-            applicationId 'app.lawnchair.nightly'
+            applicationId 'com.patalix.launcher.nightly'
             dimension "channel"
         }
 
         play {
-            applicationId "app.lawnchair.play"
+            applicationId "com.patalix.launcher.play"
             dimension "channel"
             isDefault true
         }
 
         configureEach {
-            resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
+            resValue("string", "launcher_component", "${applicationId}/com.patalix.launcher.PatalixLauncher")
         }
     }
 
     sourceSets {
         main {
             res.srcDirs = ['res']
-
-            // Lawnchair-TODO: Don't include Compose Disabled, but there's has to be another way of making this NOT long
             java.srcDirs = ['src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features']
             kotlin.directories.addAll('src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features')
-
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
                 srcDirs = ['protos/', 'quickstep/protos_overrides/']
@@ -347,7 +335,7 @@ androidComponents {
     onVariants(selector().all()) { variant ->
         def channel = variant.productFlavors.last().second
         variant.outputs.forEach { output ->
-            output.outputFileName.set("Lawnchair.${output.versionName.get()}.$channel.${variant.buildType}.apk")
+            output.outputFileName.set("Patalix.${output.versionName.get()}.$channel.${variant.buildType}.apk")
         }
     }
 }
@@ -376,8 +364,6 @@ dependencies {
     implementation projects.viewcapturelib
     implementation projects.displaylib
     implementation projects.mechanics
-
-    // Recents lib dependency
     withQuickstepCompileOnly projects.hiddenApi
     withQuickstepImplementation projects.shared
     withQuickstepImplementation projects.animation
@@ -387,8 +373,6 @@ dependencies {
     withQuickstepImplementation projects.plugincore
     withQuickstepCompileOnly projects.common
     withQuickstepCompileOnly projects.utils
-
-    // QuickSwitch Compat
     withQuickstepImplementation projects.compatLib
     withQuickstepImplementation projects.compatLib.compatLibVQ
     withQuickstepImplementation projects.compatLib.compatLibVR
@@ -401,33 +385,25 @@ dependencies {
     withQuickstepImplementation projects.flags
     withQuickstepImplementation projects.dagger
     withQuickstepImplementation projects.concurrent
-//    withQuickstepImplementation projects.compose
     withQuickstepImplementation projects.modules.widgetpicker
     implementation libs.androidx.dynamicanimation
-
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-16.jar')
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-16.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-16.jar')
     baselineProfile projects.baselineProfile
-
     coreLibraryDesugaring libs.android.desugarJdkLibs
-
     implementation libs.androidx.profileinstaller
     baselineProfile projects.baselineProfile
-
     implementation libs.androidx.recyclerview
     implementation libs.androidx.preference.ktx
-
     implementation libs.javax.inject
     implementation libs.kotlinx.coroutines.android
     implementation libs.kotlinx.serialization.json
     implementation libs.chickenhook.restrictionbypass
     implementation libs.rikka.refine.runtime
-
     implementation libs.androidx.activity.compose
     implementation libs.androidx.constraintlayout
     implementation libs.androidx.datastore.preferences
-
     implementation platform(libs.compose.bom)
     implementation libs.compose.ui
     implementation libs.compose.ui.util
@@ -453,39 +429,24 @@ dependencies {
     implementation libs.kdrag0n.colorkt
     implementation libs.coil.compose
     implementation libs.xdrop.fuzzywuzzy
-
     implementation libs.bundles.opto
     implementation libs.androidx.datastore.preferences
-
     implementation libs.bundles.retrofit
-
     implementation libs.bundles.room
     ksp libs.room.compiler
-
     implementation libs.libsu.service
-
     implementation libs.airbnb.lottie
-
-    // Compose drag and drop library
     implementation libs.reorderable
-
-    // Smartspacer
     implementation(libs.smartspacer.sdk) {
         exclude group: "com.github.skydoves", module: "balloon"
     }
-
     implementation libs.hoko.blur
-
     implementation libs.androidx.window
-
     ksp libs.dagger.compiler
     implementation libs.dagger.hilt.android
     ksp libs.dagger.hilt.compiler
-
     implementation libs.google.guava
-
     implementation libs.androidx.exifinterface
-
     debugImplementation libs.leakcanary.android
     debugImplementation libs.leakcanary.androidstudio
 }
@@ -495,11 +456,8 @@ ksp {
     arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
 }
 
-
 spotless {
     java {
-        // LC-Note: Don't spotless AOSP code in compatlib
-        // target("compatLib/**/src/**/*.java")
         googleJavaFormat().aosp()
         removeUnusedImports()
     }
@@ -525,7 +483,6 @@ licensee {
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
     allowUrl("https://opensource.org/licenses/mit-license.php")
-
     bundleAndroidAsset = true
     androidAssetReportPath = 'licenses.json'
 }
