@@ -18,7 +18,6 @@ package com.android.launcher3.folder;
 
 import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
 import static com.android.launcher3.LauncherSettings.Favorites.DESKTOP_ICON_FLAG;
-import static com.android.launcher3.Utilities.dpToPx;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
@@ -27,17 +26,12 @@ import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.FloatProperty;
 import android.util.Log;
 import android.view.View;
 
@@ -70,20 +64,6 @@ import app.lawnchair.preferences.PreferenceManager;
  */
 public class PreviewItemManager {
 
-    private static final FloatProperty<PreviewItemManager> CURRENT_PAGE_ITEMS_TRANS_X = new FloatProperty<PreviewItemManager>(
-            "currentPageItemsTransX") {
-        @Override
-        public void setValue(PreviewItemManager manager, float v) {
-            manager.mCurrentPageItemsTransX = v;
-            manager.onParamsChanged();
-        }
-
-        @Override
-        public Float get(PreviewItemManager manager) {
-            return manager.mCurrentPageItemsTransX;
-        }
-    };
-
     private final Context mContext;
     private final FolderIcon mIcon;
     @VisibleForTesting
@@ -101,32 +81,15 @@ public class PreviewItemManager {
 
     // These hold the first page preview items
     private ArrayList<PreviewItemDrawingParams> mFirstPageParams = new ArrayList<>();
-    // These hold the current page preview items. It is empty if the current page is
-    // the first page.
-    private ArrayList<PreviewItemDrawingParams> mCurrentPageParams = new ArrayList<>();
-
-    // We clip the preview items during the middle of the animation, so that it does
-    // not go outside
-    // of the visual shape. We stop clipping at this threshold, since the preview
-    // items ultimately
-    // do not get cropped in their resting state.
-    private final float mClipThreshold;
-    private float mCurrentPageItemsTransX = 0;
-    private boolean mShouldSlideInFirstPage;
 
     static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
     private static final int FINAL_ITEM_ANIMATION_DURATION = 200;
-
-    private static final int SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION_DELAY = 100;
-    private static final int SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION = 300;
-    private static final int ITEM_SLIDE_IN_OUT_DISTANCE_PX = 200;
 
     public PreviewItemManager(FolderIcon icon) {
         mContext = icon.getContext();
         mIcon = icon;
         mIconSize = ActivityContext.lookupContext(
                 mContext).getDeviceProfile().folderChildIconSizePx;
-        mClipThreshold = dpToPx(1f);
     }
 
     /**
@@ -220,19 +183,8 @@ public class PreviewItemManager {
         // The items are drawn in coordinates relative to the preview offset
         PreviewBackground bg = mIcon.getFolderBackground();
         Path clipPath = bg.getClipPath();
-        float firstPageItemsTransX = 0;
-        if (mShouldSlideInFirstPage) {
-            PointF firstPageOffset = new PointF(bg.basePreviewOffsetX + mCurrentPageItemsTransX,
-                    bg.basePreviewOffsetY);
-            boolean shouldClip = mCurrentPageItemsTransX > mClipThreshold;
-            drawParams(canvas, mCurrentPageParams, firstPageOffset, shouldClip, clipPath);
-            firstPageItemsTransX = -ITEM_SLIDE_IN_OUT_DISTANCE_PX + mCurrentPageItemsTransX;
-        }
-
-        PointF firstPageOffset = new PointF(bg.basePreviewOffsetX + firstPageItemsTransX,
-                bg.basePreviewOffsetY);
-        boolean shouldClipFirstPage = firstPageItemsTransX < -mClipThreshold;
-        drawParams(canvas, mFirstPageParams, firstPageOffset, shouldClipFirstPage, clipPath);
+        PointF firstPageOffset = new PointF(bg.basePreviewOffsetX, bg.basePreviewOffsetY);
+        drawParams(canvas, mFirstPageParams, firstPageOffset, /* shouldClipPath */ false, clipPath);
         canvas.restoreToCount(saveCount);
     }
 
@@ -324,27 +276,12 @@ public class PreviewItemManager {
     }
 
     void onFolderClose(int currentPage) {
-        // If we are not closing on the first page, we animate the current page preview
-        // items
-        // out, and animate the first page preview items in.
-        mShouldSlideInFirstPage = currentPage != 0;
-        if (mShouldSlideInFirstPage) {
-            mCurrentPageItemsTransX = 0;
-            buildParamsForPage(currentPage, mCurrentPageParams, false);
-            onParamsChanged();
-
-            ValueAnimator slideAnimator = ObjectAnimator
-                    .ofFloat(this, CURRENT_PAGE_ITEMS_TRANS_X, 0, ITEM_SLIDE_IN_OUT_DISTANCE_PX);
-            slideAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mCurrentPageParams.clear();
-                }
-            });
-            slideAnimator.setStartDelay(SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION_DELAY);
-            slideAnimator.setDuration(SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION);
-            slideAnimator.start();
+        // Snap back to the first-page preview immediately. The previous slide animation
+        // showed a solid preview background while icons rearranged for ~400ms after close.
+        if (currentPage != 0) {
+            updatePreviewItems(false);
         }
+        onParamsChanged();
     }
 
     void updatePreviewItems(boolean animate) {
@@ -356,13 +293,6 @@ public class PreviewItemManager {
     void updatePreviewItems(Predicate<ItemInfo> itemCheck) {
         boolean modified = false;
         for (PreviewItemDrawingParams param : mFirstPageParams) {
-            if (itemCheck.test(param.item)
-                    || (param.item instanceof AppPairInfo api && api.anyMatch(itemCheck))) {
-                setDrawable(param, param.item);
-                modified = true;
-            }
-        }
-        for (PreviewItemDrawingParams param : mCurrentPageParams) {
             if (itemCheck.test(param.item)
                     || (param.item instanceof AppPairInfo api && api.anyMatch(itemCheck))) {
                 setDrawable(param, param.item);

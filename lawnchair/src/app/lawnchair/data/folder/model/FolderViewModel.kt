@@ -4,15 +4,15 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.service.FolderService
 import app.lawnchair.preferences2.ReloadHelper
-import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.model.data.FolderInfo
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -21,7 +21,7 @@ class FolderViewModel(
 ) : AndroidViewModel(application) {
     private val repository: FolderService = FolderService.INSTANCE.get(application)
 
-    val folders: StateFlow<List<FolderInfo>> = repository.getFoldersFlow()
+    val folders: StateFlow<List<FolderEntry>?> = repository.getFoldersFlow()
         .distinctUntilChanged()
         .catch { exception ->
             Log.e("FolderViewModel", "Error in folders flow", exception)
@@ -30,42 +30,44 @@ class FolderViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList(),
+            initialValue = null,
         )
 
-    val folderInfo: StateFlow<FolderInfo?>
-        field = MutableStateFlow<FolderInfo?>(null)
+    val allFolderPackages: StateFlow<Set<String>?> = folders
+        .map { folderList ->
+            folderList?.flatMap { folder -> folder.itemComponentKeys }
+                ?.map { key -> key.substringBefore("/") }
+                ?.toSet()
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null,
+        )
 
     private val reloadHelper = ReloadHelper(application)
 
-    // yeah these should be separate UI actions
-    fun setFolderInfo(folderInfoId: Int, hasId: Boolean) {
-        viewModelScope.launch {
-            folderInfo.value = repository.getFolderInfo(folderInfoId, hasId)
-        }
+    fun getFolderFlowForId(folderId: Int): Flow<FolderEntry?> {
+        return folders.map { list -> list?.find { it.id == folderId } }
     }
 
-    fun renameFolder(folderInfo: FolderInfo, hide: Boolean) {
+    fun renameFolder(folderId: Int, title: String) {
         viewModelScope.launch {
-            repository.updateFolderInfo(folderInfo, hide)
-        }
-        reloadHelper.reloadGrid()
-    }
-
-    fun updateFolderItems(id: Int, title: String, appInfo: List<AppInfo>) {
-        viewModelScope.launch {
-            repository.updateFolderWithItems(id, title, appInfo)
-            // Update the local state flow so UI can observe changes without full reload if needed,
-            // though for now we just rely on reloadGrid to refresh the launcher.
-            // We call reloadGrid *after* the DB update is complete.
-            folderInfo.value = repository.getFolderInfo(id, true)
+            repository.renameFolderInfo(folderId, title)
             reloadHelper.reloadGrid()
         }
     }
 
-    fun createFolder(folderInfo: FolderInfo) {
+    fun updateFolderItems(id: Int, title: String, componentKeys: List<String>) {
         viewModelScope.launch {
-            repository.saveFolderInfo(folderInfo)
+            repository.updateFolderWithItems(id, title, componentKeys)
+            reloadHelper.reloadGrid()
+        }
+    }
+
+    fun createFolder(title: String) {
+        viewModelScope.launch {
+            repository.saveFolderInfo(title)
         }
     }
 

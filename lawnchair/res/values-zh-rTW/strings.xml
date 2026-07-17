@@ -46,10 +46,10 @@
     <string name="download_update">下載更新</string>
     <string name="install_update">安裝更新</string>
     <string name="view_changes">檢視更新</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">已更新至最新</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">更新</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">無法載入更新</string>
     <string name="changes_dialog_no_changes">沒有發現變更</string>
     <string name="changes_dialog_build_format">組建 #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">由 %1$s  · %2$s · %3$s</string>
@@ -103,7 +103,7 @@
     <string name="app_drawer_folder">應用程式抽屜資料夾</string>
     <string name="selected_apps">已選取應用程式</string>
     <string name="add_apps">增加應用程式</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
+    <string name="app_drawer_folder_settings">應用程式抽屜資料夾</string>
     <string name="add_folder">建立資料夾</string>
     <string name="edit_folder">編輯資料夾</string>
     <string name="add_label">新增</string>
@@ -125,8 +125,8 @@
     <!-- Draggable -->
     <string name="reorderable_active_items">啟動項目</string>
     <string name="reorderable_disabled_items">其他項目</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_disabled_hint">已關閉的物件會顯示在此</string>
+    <string name="reorderable_add_hint_items">開通的物件會顯示在此</string>
     <!--
 
     Preference Dashboard
@@ -174,17 +174,17 @@
     <string name="show_deck_layout_description">顯示版面選項以隱藏應用程式抽屜並自動將項目加到主畫面</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
-    <string name="folder_label">Folder</string>
+    <string name="folder_shape_label">資料夾形狀</string>
+    <string name="folder_label">資料夾</string>
     <string name="app_icon_shape_label">應用程式</string>
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
     <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
     <string name="recents_lock_unlock">App locking</string>
-    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
+    <string name="recents_lock_unlock_description">所選應用不會在按下全部清除時被清除</string>
     <!--Overlay-->
     <string name="app_closing_animation">應用程式關閉動畫</string>
-    <string name="overlay_fade_in">Fade in</string>
+    <string name="overlay_fade_in">淡入</string>
     <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">覆蓋</string>
     <string name="overlay_none">無</string>
@@ -379,19 +379,19 @@
     <!-- Available targets -->
     <string name="smartspace_weather">天氣</string>
     <string name="smartspace_battery_status">電池狀況</string>
-    <string name="smartspace_torch">Flashlight status</string>
-    <string name="smartspace_now_playing">Now playing</string>
+    <string name="smartspace_torch">閃光燈狀態</string>
+    <string name="smartspace_now_playing">正在播放</string>
     <string name="smartspace_onboarding">Onboarding</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
-    <string name="torch_action_off">Tap to turn off</string>
+    <string name="torch_status_on">閃光燈開啟</string>
+    <string name="torch_action_off">點擊關閉</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Set up Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
+    <string name="onboarding_open_settings_subtitle">在桌面長按空白處以開啟設定</string>
     <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
     <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
     <string name="onboarding_welcome">Welcome to Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
+    <string name="onboarding_swipe_up">向上滑動開啟應用抽屜</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">目標數量上限</string>
     <string name="open_smartspacer_settings">開啟 Smartspacer 設定</string>
@@ -434,8 +434,8 @@
     <string name="update_check_failed">檢查更新失敗</string>
     <string name="major_update_label">Update to major version?</string>
     <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
-    <string name="pro_disabled_by_unknown">Updates are not available</string>
-    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
+    <string name="pro_disabled_by_unknown">沒有可用更新</string>
+    <string name="pro_disabled_by_major_is_newer">你已安裝較新的版本</string>
     <string name="updater">更新</string>
     <!--
 
@@ -453,8 +453,19 @@
     <string name="backup_restore_success">已還原備份</string>
     <string name="backup_restore_error">還原備份失敗</string>
     <string name="invalid_backup_file">無效的備份檔案</string>
+    <string name="restore_nova_backup">從Nova恢復備份</string>
+    <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
+    <string name="nova_grid_label">網格</string>
+    <string name="nova_grid_value">%1$d × %2$d</string>
+    <string name="nova_dock_label">底欄</string>
+    <string name="nova_app_label">應用程式</string>
+    <string name="nova_widget_label">小工具</string>
+    <string name="nova_folder_label">資料夾</string>
+    <string name="nova_shortcut_label">捷徑</string>
+    <string name="nova_icon_pack_label">圖示套件</string>
     <string name="create_backup_description">Export settings and launcher layout</string>
     <string name="restore_backup_description">Import a previously created backup</string>
+    <string name="restore_nova_backup_description">從Nova Launcher備份匯入佈局</string>
     <!--
 
     Gesture settings
@@ -463,8 +474,8 @@
     <string name="gesture_double_tap">輕觸兩次</string>
     <string name="gesture_swipe_up">向上滑動</string>
     <string name="gesture_swipe_down">向下滑動</string>
-    <string name="gesture_two_finger_swipe_down">Two-finger swipe down</string>
-    <string name="gesture_two_finger_swipe_up">Two-finger swipe up</string>
+    <string name="gesture_two_finger_swipe_down">雙指下滑</string>
+    <string name="gesture_two_finger_swipe_up">雙指上滑</string>
     <string name="gesture_home_tap">首頁鍵</string>
     <string name="gesture_back_tap">返回鍵</string>
     <string name="gesture_swipe_left">向左滑動</string>
@@ -486,8 +497,8 @@
     <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">啟用無障礙服務</string>
     <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="notifications_fallback_a11y_hint">開啟通知面板</string>
+    <string name="quick_settings_a11y_hint">開啟快速設定面板</string>
     <string name="recents_screen_a11y_hint">open the Recents screen</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
@@ -519,7 +530,7 @@
     <string name="home_screen_rotation_label">旋轉主畫面</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
     <string name="auto_updater_label">Automatically check for updates</string>
-    <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
+    <string name="auto_updater_description">開啟關於時檢查Nightly更新</string>
     <string name="wallpaper_blur">模糊桌布 (實驗性)</string>
     <string name="wallpaper_background_blur">模糊強度</string>
     <string name="wallpaper_background_blur_factor">係數閥值</string>
@@ -548,13 +559,13 @@
     <string name="widget_padding_label">Widget padding</string>
     <string name="set_default_home_page">Set as default page</string>
     <string name="default_home_page_set">Default home page updated</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
+    <string name="move_page_left">往左移</string>
+    <string name="move_page_right">往右移</string>
     <string name="page_order_updated">Page order updated</string>
     <string name="edit_mode_page_strip_default">預設</string>
     <string name="edit_mode_page_strip_page">Page %1$d</string>
-    <string name="edit_mode_page_strip_set_home">Set as home page</string>
-    <string name="edit_mode_page_strip_home_selected">Default home page</string>
+    <string name="edit_mode_page_strip_set_home">設為主畫面</string>
+    <string name="edit_mode_page_strip_home_selected">預設主畫面</string>
     <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
     <string name="popup_menu">彈出選單</string>
     <string name="popup_menu_items">彈出選單項目</string>
@@ -581,7 +592,7 @@
     <string name="search_bar_settings">搜尋列設定</string>
     <string name="hotseat_mode_label">搜尋列小工具</string>
     <string name="hotseat_mode_disabled">關閉</string>
-    <string name="hotseat_mode_google_search">Google search bar</string>
+    <string name="hotseat_mode_google_search">Google搜尋欄</string>
     <string name="qsb_hotseat_background_transparency">背景透明度</string>
     <string name="qsb_hotseat_stroke_width">外框寬度</string>
     <string name="qsb_hotseat_stroke_color">外框顏色</string>
@@ -602,8 +613,9 @@
     <string name="paused_apps_dialog_title">已暫停應用程式</string>
     <string name="paused_apps_dialog_message">已直接從啟動器暫停 %1$s</string>
     <string name="paused_apps_drop_target_label">暫停應用程式</string>
-    <string name="open_in_store_drop_target_label">Open in store</string>
+    <string name="open_in_store_drop_target_label">在商店中開啟</string>
     <string name="dock_icons">底欄圖示</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
@@ -634,7 +646,7 @@
     <string name="pref_all_apps_show_scrollbar_title">顯示捲軸</string>
     <string name="app_drawer_columns">應用程式抽屜列數</string>
     <string name="row_height_label">清單高度</string>
-    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
+    <string name="app_drawer_haptic_feedback_label">震動回饋</string>
     <string name="app_drawer_indent_label">水平間距</string>
     <string name="app_drawer_bg_color_label">背景顏色</string>
     <string name="work_profile_tab_background_label">Tab background color</string>

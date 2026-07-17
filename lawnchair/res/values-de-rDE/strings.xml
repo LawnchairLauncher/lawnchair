@@ -453,8 +453,19 @@
     <string name="backup_restore_success">Sicherung wiederhergestellt</string>
     <string name="backup_restore_error">Fehler beim Wiederherstellen der Sicherung</string>
     <string name="invalid_backup_file">Ungültige Sicherungsdatei</string>
+    <string name="restore_nova_backup">Nova-Sicherung wiederherstellen</string>
+    <string name="invalid_nova_backup_file">Ungültige Nova-Sicherungsdatei</string>
+    <string name="nova_grid_label">Raster</string>
+    <string name="nova_grid_value">%1$d × %2$d</string>
+    <string name="nova_dock_label">Dock</string>
+    <string name="nova_app_label">Apps</string>
+    <string name="nova_widget_label">Widgets</string>
+    <string name="nova_folder_label">Ordner</string>
+    <string name="nova_shortcut_label">Verknüpfungen</string>
+    <string name="nova_icon_pack_label">Symbol-Paket</string>
     <string name="create_backup_description">Einstellungen und Launcher-Layout exportieren</string>
     <string name="restore_backup_description">Eine zuvor erstellte Sicherung importieren</string>
+    <string name="restore_nova_backup_description">Layout aus einer Nova-Launcher-Sicherung importieren</string>
     <!--
 
     Gesture settings
@@ -604,6 +615,7 @@
     <string name="paused_apps_drop_target_label">App anhalten</string>
     <string name="open_in_store_drop_target_label">Im Store öffnen</string>
     <string name="dock_icons">Dock-Symbole</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>

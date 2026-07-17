@@ -28,7 +28,17 @@ class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : Extended
 
     override fun hideKeyboard() {
         super.hideKeyboard()
-        this.appsView?.requestFocus()
+        // Prefer the active apps list over appsView itself. appsView has
+        // focusable=false and its search container is focusedByDefault, so
+        // requestFocus() on appsView would re-focus the search field (e.g. when
+        // switching Personal/Work tabs triggers resetSearch).
+        val appsView = this.appsView
+        val activeList = appsView?.activeRecyclerView
+        if (activeList != null) {
+            activeList.requestFocus()
+        } else {
+            appsView?.requestFocus()
+        }
     }
 
     override fun onAttachedToWindow() {

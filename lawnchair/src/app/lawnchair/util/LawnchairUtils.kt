@@ -186,6 +186,40 @@ fun getFolderBackgroundAlpha(context: Context): Int {
     return (prefs2.folderBackgroundOpacity.firstCached() * 255).toInt()
 }
 
+/**
+ * Custom folder color from preferences, or `0` when the theme default should be used.
+ *
+ * Note: pure black (`#FF000000`) is a valid custom color and is not treated as default.
+ */
+fun getCustomFolderColor(context: Context): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    return prefs2.folderColor.firstCached().colorPreferenceEntry.lightColor(context)
+}
+
+/** Closed-folder preview circle color (includes preview opacity). */
+fun resolveFolderPreviewColor(context: Context): Int {
+    val custom = getCustomFolderColor(context)
+    val base = if (custom != 0) {
+        custom
+    } else {
+        ColorTokens.FolderPreviewColor.resolveColor(context)
+    }
+    return ColorUtils.setAlphaComponent(base, getFolderPreviewAlpha(context))
+}
+
+/**
+ * Open-folder background fill color.
+ * Opacity is applied separately via [getFolderBackgroundAlpha] on the drawable.
+ */
+fun resolveFolderBackgroundColor(context: Context): Int {
+    val custom = getCustomFolderColor(context)
+    return if (custom != 0) {
+        custom
+    } else {
+        ColorTokens.FolderBackgroundColor.resolveColor(context)
+    }
+}
+
 /** Apply Lawnchair custom allapps colour to the provided colour */
 private fun getAllAppsBaseColor(context: Context, defaultColor: Int): Int {
     val prefs2 = PreferenceManager2.getInstance(context)

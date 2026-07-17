@@ -7,8 +7,7 @@ import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import androidx.appcompat.content.res.AppCompatResources
-import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.preferences2.firstCached
+import app.lawnchair.theme.color.tokens.AllAppsTabColors
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 
@@ -141,16 +140,8 @@ object DrawableTokens {
             R.drawable.all_apps_tabs_background,
         )
 
-        // Get custom color from preferences
-        val prefs2 = PreferenceManager2.getInstance(context)
-        val colorOption = prefs2.workProfileTabBackgroundColor.firstCached()
-        val customColor = colorOption.colorPreferenceEntry.lightColor.invoke(context)
-
-        val selectedColor = if (customColor != 0) {
-            customColor
-        } else {
-            ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode)
-        }
+        // Prefer the user-selected tab color when set; otherwise the themed default.
+        val selectedColor = AllAppsTabColors.selectedBackground(context, scheme, uiColorMode)
 
         selected?.setTint(selectedColor)
 
