@@ -3,12 +3,11 @@ package app.lawnchair.ui.preferences.data.liveinfo
 import android.util.Log
 import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
 import app.lawnchair.util.kotlinxJson
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -31,12 +30,10 @@ suspend fun getLiveInformation(endpoint: String): LiveInformation? = withContext
             return@withContext null
         }
 
-        val response: Response<ResponseBody> = liveInformationService.getLiveInformation(endpoint)
+        val response: Response<LiveInformation> = liveInformationService.getLiveInformation(endpoint)
 
         if (response.isSuccessful) {
-            val responseBody = response.body()?.string() ?: return@withContext null
-
-            val liveInformation = Json.decodeFromString<LiveInformation>(responseBody)
+            val liveInformation = response.body() ?: return@withContext null
             Log.v(TAG, "getLiveInformation: $liveInformation")
 
             return@withContext liveInformation
@@ -44,6 +41,8 @@ suspend fun getLiveInformation(endpoint: String): LiveInformation? = withContext
             Log.d(TAG, "getLiveInformation: response code ${response.code()}")
             return@withContext null
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         Log.e(TAG, "getLiveInformation: Error during news retrieval: ${e.message}")
         return@withContext null
