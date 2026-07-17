@@ -6,12 +6,15 @@ import app.lawnchair.util.kotlinxJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.create
+
+private const val TAG = "LiveInformationRequest"
 
 private val retrofit = Retrofit.Builder()
     .baseUrl("https://lawnchair.app/")
@@ -20,23 +23,29 @@ private val retrofit = Retrofit.Builder()
 
 val liveInformationService: LiveInformationService = retrofit.create()
 
-suspend fun getLiveInformation(): LiveInformation? = withContext(Dispatchers.IO) {
+suspend fun getLiveInformation(endpoint: String): LiveInformation? = withContext(Dispatchers.IO) {
     try {
-        val response: Response<ResponseBody> = liveInformationService.getLiveInformation()
+        val parsedEndpoint = endpoint.toHttpUrlOrNull()
+        if (parsedEndpoint == null || parsedEndpoint.scheme !in setOf("http", "https")) {
+            Log.w(TAG, "getLiveInformation: Invalid endpoint")
+            return@withContext null
+        }
+
+        val response: Response<ResponseBody> = liveInformationService.getLiveInformation(endpoint)
 
         if (response.isSuccessful) {
             val responseBody = response.body()?.string() ?: return@withContext null
 
             val liveInformation = Json.decodeFromString<LiveInformation>(responseBody)
-            Log.v("LiveInformation", "getLiveInformation: $liveInformation")
+            Log.v(TAG, "getLiveInformation: $liveInformation")
 
             return@withContext liveInformation
         } else {
-            Log.d("LiveInformation", "getLiveInformation: response code ${response.code()}")
+            Log.d(TAG, "getLiveInformation: response code ${response.code()}")
             return@withContext null
         }
     } catch (e: Exception) {
-        Log.e("LiveInformation", "getLiveInformation: Error during news retrieval: ${e.message}")
+        Log.e(TAG, "getLiveInformation: Error during news retrieval: ${e.message}")
         return@withContext null
     }
 }

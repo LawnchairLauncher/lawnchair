@@ -48,6 +48,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.notificationDotsEnabled
 import app.lawnchair.ui.preferences.components.notificationServiceEnabled
+import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.ui.preferences.navigation.GeneralIconPack
 import app.lawnchair.ui.preferences.navigation.GeneralIconShape
 import com.android.launcher3.BuildConfig
@@ -59,6 +60,7 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
+    val liveInfoManager = liveInformationManager()
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
     val themedIconsAdapter = prefs.themedIcons.getAdapter()
     val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
@@ -103,6 +105,11 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
                     adapter = prefs2.autoUpdaterNightly.getAdapter(),
                     label = stringResource(id = R.string.auto_updater_label),
                     description = stringResource(id = R.string.auto_updater_description),
+                )
+                SwitchPreference(
+                    adapter = liveInfoManager.enabled.getAdapter(),
+                    label = stringResource(id = R.string.live_information_label),
+                    description = stringResource(id = R.string.live_information_description),
                 )
             }
         }
