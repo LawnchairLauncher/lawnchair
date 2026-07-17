@@ -245,7 +245,8 @@ public class LoaderCursor extends CursorWrapper {
 
     public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
             WorkspaceItemInfo wai, boolean useLowResIcon) {
-        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT || restoreFlag != 0
+        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_SHORTCUT
+                || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT || restoreFlag != 0
                 || (wai.isInactiveArchive() && Flags.restoreArchivedAppIconsFromDb())
                 ? getIconBlob() : null;
         return new IconRequestInfo<>(wai, mActivityInfo, iconBlob,
