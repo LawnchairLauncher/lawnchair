@@ -99,19 +99,19 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
                 description = stringResource(id = R.string.home_screen_rotation_description),
             )
         }
-        if (BuildConfig.APPLICATION_ID.contains("nightly")) {
-            PreferenceGroup(heading = stringResource(id = R.string.updater)) {
+        PreferenceGroup(heading = stringResource(id = R.string.updater)) {
+            if (BuildConfig.APPLICATION_ID.contains("nightly")) {
                 SwitchPreference(
                     adapter = prefs2.autoUpdaterNightly.getAdapter(),
                     label = stringResource(id = R.string.auto_updater_label),
                     description = stringResource(id = R.string.auto_updater_description),
                 )
-                SwitchPreference(
-                    adapter = liveInfoManager.enabled.getAdapter(),
-                    label = stringResource(id = R.string.live_information_label),
-                    description = stringResource(id = R.string.live_information_description),
-                )
             }
+            SwitchPreference(
+                adapter = liveInfoManager.enabled.getAdapter(),
+                label = stringResource(id = R.string.live_information_label),
+                description = stringResource(id = R.string.live_information_description),
+            )
         }
         ExpandAndShrink(visible = prefs2.enableFontSelection.asState().value) {
             PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
