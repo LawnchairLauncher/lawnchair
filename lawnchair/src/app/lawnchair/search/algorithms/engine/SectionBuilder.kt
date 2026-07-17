@@ -199,11 +199,7 @@ data object TextClassifierSectionBuilder : SectionBuilder {
 
         val targets = mutableListOf<SearchTargetCompat>()
         targets.add(factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_action_suggestions)))
-        targets.addAll(
-            textActions.map { action ->
-                factory.createTextActionTarget(action)
-            },
-        )
+        targets.addAll(textActions.map(factory::createTextActionTarget))
         targets.add(factory.createHeaderTarget(SPACE))
         return targets
     }
