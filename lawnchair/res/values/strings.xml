@@ -972,7 +972,6 @@
     <string name="search_pref_result_textclassifier_url">URL</string>
     <string name="search_pref_result_textclassifier_date">Date and time</string>
     <string name="search_pref_result_textclassifier_flight">Flight number</string>
-    <string name="search_pref_result_textclassifier_otp">One-time password</string>
     <string name="search_pref_result_textclassifier_others">Others</string>
 
     <string name="search_empty_state_title">Start searching</string>
