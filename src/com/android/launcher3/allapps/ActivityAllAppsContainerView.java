@@ -812,7 +812,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
         removeCustomRules(rvContainer);
         removeCustomRules(getSearchRecyclerView());
-        if (isSearchBarFloating()) {
+        if (isAppDrawerSearchBarHidden()) {
+            layoutWithoutSearchContainer(rvContainer, showTabs);
+            layoutWithoutSearchContainer(getSearchRecyclerView(), /* tabs= */ false);
+        } else if (isSearchBarFloating()) {
             alignParentTop(rvContainer, showTabs);
             alignParentTop(getSearchRecyclerView(), /* tabs= */ false);
         } else {
@@ -826,8 +829,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     void setupHeader() {
         mAdditionalHeaderRows.forEach(row -> mHeader.onPluginDisconnected(row));
 
-        var hideHeader = PreferenceCacheExtensionsKt.firstCached(pref2.getHideAppDrawerSearchBar());
-        mHeader.setVisibility(hideHeader ? View.GONE : View.VISIBLE);
+        boolean hideSearchBar = isAppDrawerSearchBarHidden();
+        // Keep personal/work tabs visible when search is off; only hide the empty header shell.
+        mHeader.setVisibility((hideSearchBar && !mUsingTabs) ? View.GONE : View.VISIBLE);
         boolean tabsHidden = !mUsingTabs;
         mHeader.setup(
                 mAH.get(AdapterHolder.MAIN).mRecyclerView,
@@ -836,7 +840,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 getCurrentPage(),
                 tabsHidden);
 
-        int padding = mHeader.getMaxTranslation();
+        int padding = (hideSearchBar && !mUsingTabs) ? 0 : mHeader.getMaxTranslation();
         mAH.forEach(adapterHolder -> {
             adapterHolder.mPadding.top = padding;
             adapterHolder.applyPadding();
@@ -847,7 +851,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mAdditionalHeaderRows.forEach(row -> mHeader.onPluginConnected(row, mActivityContext));
 
         removeCustomRules(mHeader);
-        if (isSearchBarFloating()) {
+        if (hideSearchBar) {
+            layoutWithoutSearchContainer(mHeader, false /* includeTabsMargin */);
+        } else if (isSearchBarFloating()) {
             alignParentTop(mHeader, false /* includeTabsMargin */);
         } else {
             layoutBelowSearchContainer(mHeader, false /* includeTabsMargin */);
@@ -879,7 +885,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     protected void updateHeaderScroll(int scrolledOffset) {
-        if (PreferenceCacheExtensionsKt.firstCached(pref2.getHideAppDrawerSearchBar()))
+        if (isAppDrawerSearchBarHidden() && !mUsingTabs)
             return;
         
         // Check if tab container background should be shown
@@ -1024,6 +1030,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin(mActivityContext);
     }
 
+    private boolean isAppDrawerSearchBarHidden() {
+        return PreferenceCacheExtensionsKt.firstCached(pref2.getHideAppDrawerSearchBar());
+    }
+
     private void layoutBelowSearchContainer(View v, boolean includeTabsMargin) {
         if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
             return;
@@ -1042,8 +1052,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     private void alignParentTop(View v, boolean includeTabsMargin) {
-        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)
-                || PreferenceCacheExtensionsKt.firstCached(pref2.getHideAppDrawerSearchBar())) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
             return;
         }
 
@@ -1057,8 +1066,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     private void removeCustomRules(View v) {
-        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)
-                || PreferenceCacheExtensionsKt.firstCached(pref2.getHideAppDrawerSearchBar())) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
             return;
         }
 
@@ -1066,6 +1074,26 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         layoutParams.removeRule(RelativeLayout.ABOVE);
         layoutParams.removeRule(RelativeLayout.ALIGN_TOP);
         layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_TOP);
+    }
+
+    private void layoutWithoutSearchContainer(View v, boolean includeTabsMargin) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
+            return;
+        }
+
+        RelativeLayout.LayoutParams layoutParams = (LayoutParams) v.getLayoutParams();
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        int topMargin = 0;
+        if (mActivityContext.getDeviceProfile().shouldShowAllAppsOnSheet()) {
+            // Clear the bottom-sheet drag handle when search is not reserving that space.
+            topMargin = getContext().getResources().getDimensionPixelSize(
+                    R.dimen.bottom_sheet_handle_area_height);
+        }
+        if (includeTabsMargin) {
+            topMargin += getContext().getResources().getDimensionPixelSize(
+                    R.dimen.all_apps_header_pill_height);
+        }
+        layoutParams.topMargin = topMargin;
     }
 
     protected BaseAllAppsAdapter<T> createAdapter(AlphabeticalAppsList<T> appsList) {
@@ -1387,7 +1415,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         } else {
             getSearchRecyclerView().setVisibility(GONE);
             getAppsRecyclerViewContainer().setVisibility(VISIBLE);
-            mHeader.setVisibility(VISIBLE);
+            // Keep the empty header shell hidden when search is off and there are no tabs.
+            mHeader.setVisibility(
+                    (isAppDrawerSearchBarHidden() && !mUsingTabs) ? View.GONE : View.VISIBLE);
         }
         if (mHeader.isSetUp()) {
             mHeader.setActiveRV(getCurrentPage());

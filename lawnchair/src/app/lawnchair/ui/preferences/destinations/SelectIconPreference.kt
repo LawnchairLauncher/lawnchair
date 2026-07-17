@@ -3,6 +3,7 @@ package app.lawnchair.ui.preferences.destinations
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.LauncherApps
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,14 +28,13 @@ import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import kotlinx.coroutines.launch
 
+private const val TAG = "SelectIconPreference"
+
 @Composable
 fun SelectIconPreference(componentKey: ComponentKey) {
     val context = LocalContext.current
     val label = remember(componentKey) {
-        val launcherApps: LauncherApps = context.requireSystemService()
-        val intent = Intent().setComponent(componentKey.componentName)
-        val activity = launcherApps.resolveActivity(intent, componentKey.user)
-        activity.label.toString()
+        resolveAppLabel(context.requireSystemService(), componentKey)
     }
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
@@ -95,4 +95,37 @@ fun SelectIconPreference(componentKey: ComponentKey) {
             )
         }
     }
+}
+
+/**
+ * Resolves a display label for [componentKey], including work/private profiles.
+ *
+ * [LauncherApps.resolveActivity] can return null or throw for non-current users; fall back to
+ * [LauncherApps.getActivityList] and finally the activity class name.
+ */
+private fun resolveAppLabel(launcherApps: LauncherApps, componentKey: ComponentKey): String {
+    val componentName = componentKey.componentName
+    val user = componentKey.user
+    try {
+        val intent = Intent().setComponent(componentName)
+        launcherApps.resolveActivity(intent, user)?.label?.toString()?.let { return it }
+    } catch (t: Throwable) {
+        Log.w(TAG, "resolveActivity failed for $componentKey", t)
+    }
+    try {
+        val activities = launcherApps.getActivityList(componentName.packageName, user)
+        activities
+            .firstOrNull { it.componentName == componentName }
+            ?.label
+            ?.toString()
+            ?.let { return it }
+        activities
+            .firstOrNull()
+            ?.label
+            ?.toString()
+            ?.let { return it }
+    } catch (t: Throwable) {
+        Log.w(TAG, "getActivityList failed for $componentKey", t)
+    }
+    return componentName.shortClassName?.trimStart('.') ?: componentName.packageName
 }

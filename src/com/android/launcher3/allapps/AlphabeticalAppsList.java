@@ -572,6 +572,11 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         return mPrivateProviderManager;
     }
 
+    /** Returns true when this list is the Work tab (work-only apps). */
+    public boolean isWorkAppsList() {
+        return mWorkProviderManager != null;
+    }
+
     public void dump(String prefix, PrintWriter writer) {
         writer.println(prefix + "SectionInfo[] size: " + mFastScrollerSections.size());
         for (int i = 0; i < mFastScrollerSections.size(); i++) {

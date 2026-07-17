@@ -453,8 +453,19 @@
     <string name="backup_restore_success">Yedekleme geri yüklendi</string>
     <string name="backup_restore_error">Yedek oluşturulamadı</string>
     <string name="invalid_backup_file">Geçersiz yedekleme dosyası</string>
+    <string name="restore_nova_backup">Restore Nova backup</string>
+    <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
+    <string name="nova_grid_label">Izgara</string>
+    <string name="nova_grid_value">%1$d x %2$d</string>
+    <string name="nova_dock_label">Alt Sıra</string>
+    <string name="nova_app_label">Apps</string>
+    <string name="nova_widget_label">Widgets</string>
+    <string name="nova_folder_label">Klasörler</string>
+    <string name="nova_shortcut_label">Shortcuts</string>
+    <string name="nova_icon_pack_label">Simge paketi</string>
     <string name="create_backup_description">Ayarları ve başlatıcı düzenini yedekle</string>
     <string name="restore_backup_description">Önceden oluşturulan bir yedeği geri yükle</string>
+    <string name="restore_nova_backup_description">Import layout from a Nova Launcher backup</string>
     <!--
 
     Gesture settings
@@ -604,6 +615,7 @@
     <string name="paused_apps_drop_target_label">Uygulamayı duraklat,</string>
     <string name="open_in_store_drop_target_label">Mağazada aç</string>
     <string name="dock_icons">Alt sıra simgeleri</string>
+    <string name="dock_rows">Dock rows</string>
     <string name="state_folded">%1$s (katlanmış)</string>
     <string name="state_unfolded">%1$s (açılmış)</string>
     <string name="folded_label">katlanmış</string>
