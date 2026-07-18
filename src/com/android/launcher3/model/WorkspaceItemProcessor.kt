@@ -621,7 +621,7 @@ class WorkspaceItemProcessor(
      */
     private fun processFolderItems() {
         // Sort the folder items, update ranks, and make sure all preview items are high res.
-        val verifiers = idp.supportedProfiles.map { createFolderGridOrganizer(it) }
+        val verifiers = idp.supportedProfiles.map { createFolderGridOrganizer(context, it) }
         for (itemInfo in loadedItems) {
             if (itemInfo !is FolderInfo) {
                 continue
