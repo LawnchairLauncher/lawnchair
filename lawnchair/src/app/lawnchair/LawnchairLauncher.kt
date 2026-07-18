@@ -457,8 +457,9 @@ class LawnchairLauncher : QuickstepLauncher() {
 
                     dragLayer.post {
                         dragLayer.viewTreeObserver.removeOnDrawListener(this)
+                        // Drop stuck All Apps RenderEffect on icons after returning home.
+                        depthController.clearStuckBlurOnResumeIfHome()
                     }
-                    depthController
                 }
             },
         )

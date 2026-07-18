@@ -340,24 +340,50 @@ public class BaseDepthController {
         if (!Utilities.ATLEAST_S) {
             return false;
         }
-        if (!Flags.allAppsBlur()) {
-            // Still clear any leftover effect if the flag flips or blur was applied earlier.
-            mLauncher.getDepthBlurTargets().forEach(target -> target.setRenderEffect(null));
+        StateManager<LauncherState, Launcher> stateManager = mLauncher.getStateManager();
+        LauncherState settledState = stateManager.getState();
+
+        // Stuck-blur bug: AllAppsState.shouldBlurWorkspace(NORMAL) is true during close, and a
+        // skipped/interrupted apply can leave RenderEffect on workspace/hotseat icons after home
+        // is settled. Always clear once we are on NORMAL with no active transition, or depth is 0.
+        if (!Flags.allAppsBlur()
+                || mDepth <= 0f
+                || mCurrentBlur <= 0
+                || (settledState == LauncherState.NORMAL && !stateManager.isInTransition())) {
+            clearWorkspaceRenderEffects();
             return false;
         }
-        StateManager<LauncherState, Launcher> stateManager = mLauncher.getStateManager();
+
         LauncherState targetState = stateManager.getTargetState() != null
-                ? stateManager.getTargetState() : stateManager.getState();
+                ? stateManager.getTargetState() : settledState;
         // Only blur workspace if the current state wants to blur based on the target state.
         boolean shouldBlurWorkspace =
                 stateManager.getCurrentStableState().shouldBlurWorkspace(targetState);
 
-        RenderEffect blurEffect = shouldBlurWorkspace && mCurrentBlur > 0
+        RenderEffect blurEffect = shouldBlurWorkspace
                 ? RenderEffect.createBlurEffect(mCurrentBlur, mCurrentBlur, Shader.TileMode.DECAL)
-                // If blur is not desired, clear the blur effect from the depth targets.
                 : null;
-        mLauncher.getDepthBlurTargets().forEach(target -> target.setRenderEffect(blurEffect));
-        return shouldBlurWorkspace;
+        mLauncher.getDepthBlurTargets().forEach(target -> {
+            target.setRenderEffect(blurEffect);
+            if (blurEffect == null) {
+                target.invalidate();
+            }
+        });
+        return shouldBlurWorkspace && blurEffect != null;
+    }
+
+    /**
+     * Clears {@link RenderEffect} from workspace/hotseat. Public so callers can drop a stuck
+     * icon blur without going through SurfaceControl apply.
+     */
+    public void clearWorkspaceRenderEffects() {
+        if (!Utilities.ATLEAST_S) {
+            return;
+        }
+        mLauncher.getDepthBlurTargets().forEach(target -> {
+            target.setRenderEffect(null);
+            target.invalidate();
+        });
     }
 
     private void setDepth(float depth) {

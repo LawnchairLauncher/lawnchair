@@ -187,6 +187,7 @@ public class DepthController extends BaseDepthController implements StateHandler
         // Re-apply even when depth is already 0 so an interrupted All Apps / depth transition
         // cannot leave workspace RenderEffect or surface blur stuck until the next resume.
         if (toState == LauncherState.NORMAL) {
+            clearWorkspaceRenderEffects();
             applyDepthAndBlur();
         }
     }
@@ -196,12 +197,34 @@ public class DepthController extends BaseDepthController implements StateHandler
             PendingAnimation animation) {
         if (config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)
                 || mIgnoreStateChangesDuringMultiWindowAnimation) {
+            if (toState == LauncherState.NORMAL) {
+                clearWorkspaceRenderEffects();
+            }
             return;
         }
 
         float toDepth = toState.getDepth(mLauncher);
         animation.setFloat(stateDepth, MULTI_PROPERTY_VALUE, toDepth,
                 config.getInterpolator(ANIM_DEPTH, LINEAR));
+        if (toState == LauncherState.NORMAL) {
+            animation.addEndListener(success -> {
+                if (mLauncher.getStateManager().getState() == LauncherState.NORMAL) {
+                    clearWorkspaceRenderEffects();
+                    applyDepthAndBlur();
+                }
+            });
+        }
+    }
+
+    /**
+     * Clears a stuck workspace icon blur after resume when settled on home.
+     */
+    public void clearStuckBlurOnResumeIfHome() {
+        if (mLauncher.getStateManager().getState() == LauncherState.NORMAL
+                && !mLauncher.getStateManager().isInTransition()) {
+            clearWorkspaceRenderEffects();
+            applyDepthAndBlur();
+        }
     }
 
     @Override
@@ -210,9 +233,19 @@ public class DepthController extends BaseDepthController implements StateHandler
             if (LawnchairQuickstepCompat.ATLEAST_R && mEnableDepth) {
                 ensureDependencies();
                 super.applyDepthAndBlur();
+            } else if (mLauncher.getStateManager().getState() == LauncherState.NORMAL
+                    && !mLauncher.getStateManager().isInTransition()) {
+                clearWorkspaceRenderEffects();
             }
         } catch (Throwable t) {
             // LC-Ignored
+            if (mLauncher.getStateManager().getState() == LauncherState.NORMAL) {
+                try {
+                    clearWorkspaceRenderEffects();
+                } catch (Throwable ignored) {
+                    // LC-Ignored
+                }
+            }
         }
     }
 
