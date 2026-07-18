@@ -357,19 +357,15 @@ public class BaseDepthController {
         LauncherState targetState = stateManager.getTargetState() != null
                 ? stateManager.getTargetState() : settledState;
         // Only blur workspace if the current state wants to blur based on the target state.
-        boolean shouldBlurWorkspace =
-                stateManager.getCurrentStableState().shouldBlurWorkspace(targetState);
+        if (!stateManager.getCurrentStableState().shouldBlurWorkspace(targetState)) {
+            clearWorkspaceRenderEffects();
+            return false;
+        }
 
-        RenderEffect blurEffect = shouldBlurWorkspace
-                ? RenderEffect.createBlurEffect(mCurrentBlur, mCurrentBlur, Shader.TileMode.DECAL)
-                : null;
-        mLauncher.getDepthBlurTargets().forEach(target -> {
-            target.setRenderEffect(blurEffect);
-            if (blurEffect == null) {
-                target.invalidate();
-            }
-        });
-        return shouldBlurWorkspace && blurEffect != null;
+        RenderEffect blurEffect = RenderEffect.createBlurEffect(
+                mCurrentBlur, mCurrentBlur, Shader.TileMode.DECAL);
+        mLauncher.getDepthBlurTargets().forEach(target -> target.setRenderEffect(blurEffect));
+        return true;
     }
 
     /**
