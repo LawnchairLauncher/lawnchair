@@ -104,14 +104,15 @@ class FolderPagedViewTest {
     @Test
     fun isItemInPreview() {
         val folderGridOrganizer = FolderGridOrganizer(5, 8)
-        folderGridOrganizer.setContentSize(ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW - 1)
+        val fewItems = ClippedFolderIconLayoutRule.DEFAULT_NUM_ITEMS_IN_PREVIEW - 1
+        folderGridOrganizer.setContentSize(fewItems)
         // Very few items
         for (i in 0..3) {
             assertItemsInPreview(
                 TestCase(
                     maxCountX = 5,
                     maxCountY = 8,
-                    totalItems = ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW - 1
+                    totalItems = fewItems
                 ),
                 expectedIsInPreview = true,
                 page = 0,
@@ -123,37 +124,38 @@ class FolderPagedViewTest {
                 TestCase(
                     maxCountX = 5,
                     maxCountY = 8,
-                    totalItems = ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW - 1
+                    totalItems = fewItems
                 ),
                 expectedIsInPreview = false,
                 page = 0,
                 rank = i
             )
         }
-        // Full of items
+        // Full of items: preview is the first N items in reading order, not the
+        // upper-left corner of the opened folder grid.
         assertItemsInPreview(
             TestCase(maxCountX = 5, maxCountY = 8, totalItems = 40),
-            expectedIsInPreview = false,
+            expectedIsInPreview = true,
             page = 0,
-            rank = 2
-        )
-        assertItemsInPreview(
-            TestCase(maxCountX = 5, maxCountY = 8, totalItems = 40),
-            expectedIsInPreview = false,
-            page = 0,
-            rank = 2
+            rank = 0
         )
         assertItemsInPreview(
             TestCase(maxCountX = 5, maxCountY = 8, totalItems = 40),
             expectedIsInPreview = true,
+            page = 0,
+            rank = 3
+        )
+        assertItemsInPreview(
+            TestCase(maxCountX = 5, maxCountY = 8, totalItems = 40),
+            expectedIsInPreview = false,
+            page = 0,
+            rank = 4
+        )
+        assertItemsInPreview(
+            TestCase(maxCountX = 5, maxCountY = 8, totalItems = 40),
+            expectedIsInPreview = false,
             page = 0,
             rank = 5
-        )
-        assertItemsInPreview(
-            TestCase(maxCountX = 5, maxCountY = 8, totalItems = 40),
-            expectedIsInPreview = true,
-            page = 0,
-            rank = 6
         )
     }
 
