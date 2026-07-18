@@ -810,7 +810,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             title = getContext().getString(R.string.unnamed_folder);
         }
         int size = mInfo.getContents().size();
-        int activePreviewCount = mPreviewLayoutRule.getActivePreviewItemCount();
+        // Prefer the preference over mPreviewLayoutRule: title can be set during inflation
+        // before the layout rule is initialized.
+        int activePreviewCount =
+                app.lawnchair.folder.FolderPreviewConfig.getActiveItemCount(getContext());
         if (size < activePreviewCount) {
             return getContext().getString(R.string.folder_name_format_exact, title, size);
         } else {

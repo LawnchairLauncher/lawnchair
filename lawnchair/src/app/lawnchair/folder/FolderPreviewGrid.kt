@@ -39,12 +39,9 @@ enum class FolderPreviewGrid(
     ;
 
     companion object {
-        fun valuesList() = entries.toList()
+        fun fromString(value: String?): FolderPreviewGrid = entries.firstOrNull { it.name == value } ?: TWO_BY_TWO
 
-        fun fromString(value: String?): FolderPreviewGrid =
-            valuesList().firstOrNull { it.name == value } ?: TWO_BY_TWO
-
-        fun preferenceEntries(): List<ListPreferenceEntry<FolderPreviewGrid>> = valuesList().map {
+        fun preferenceEntries(): List<ListPreferenceEntry<FolderPreviewGrid>> = entries.map {
             ListPreferenceEntry(value = it) { stringResource(id = it.labelResourceId) }
         }
     }

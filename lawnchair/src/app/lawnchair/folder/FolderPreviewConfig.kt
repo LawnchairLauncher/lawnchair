@@ -27,12 +27,10 @@ import com.android.launcher3.util.Executors
 object FolderPreviewConfig {
 
     @JvmStatic
-    fun getActiveItemCount(context: Context): Int =
-        PreferenceManager2.getInstance(context).folderPreviewGridSize.firstCached().itemCount
+    fun getActiveItemCount(context: Context): Int = PreferenceManager2.getInstance(context).folderPreviewGridSize.firstCached().itemCount
 
     @JvmStatic
-    fun getGridSide(context: Context): Int =
-        PreferenceManager2.getInstance(context).folderPreviewGridSize.firstCached().sideLength
+    fun getGridSide(context: Context): Int = PreferenceManager2.getInstance(context).folderPreviewGridSize.firstCached().sideLength
 
     /**
      * Reapplies the preview grid on workspace/hotseat folder icons and rebinds the app drawer
