@@ -216,9 +216,7 @@ public class ClippedFolderIconLayoutRule {
     }
 
     private float radiusDilationForItems(int numItems) {
-        if (numItems == 3) {
-            return 0.15f;
-        } else if (numItems == MAX_NUM_ITEMS_IN_PREVIEW) {
+        if (numItems == MAX_NUM_ITEMS_IN_PREVIEW) {
             return 0.12f;
         } else {
             return 0;
