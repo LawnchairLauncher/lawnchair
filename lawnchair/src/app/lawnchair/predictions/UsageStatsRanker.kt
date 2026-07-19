@@ -83,7 +83,7 @@ class UsageStatsRanker(private val context: Context) {
             }
 
             val score =
-                window.launchWeight +
+                window.presenceWeight +
                     (foregroundMinutes * window.foregroundMinutesWeight) +
                     (recencyScore * window.recencyWeight)
             if (score <= 0.0) return@forEach
@@ -93,9 +93,13 @@ class UsageStatsRanker(private val context: Context) {
     }
 
     private data class UsageStatsWindow(
+        /** Weight period */
         val durationMs: Long,
-        val launchWeight: Double,
+        /** Weight for when the app is presence in the usage window. It is merely just is this app appeared in the window, nothing more. */
+        val presenceWeight: Double,
+        /** Weight for when the app is being in foreground */
         val foregroundMinutesWeight: Double,
+        /** Weight for when was the app being used recently */
         val recencyWeight: Double,
     )
 
@@ -106,19 +110,19 @@ class UsageStatsRanker(private val context: Context) {
         private val USAGE_WINDOWS = listOf(
             UsageStatsWindow(
                 durationMs = TimeUnit.HOURS.toMillis(6),
-                launchWeight = 12.0,
+                presenceWeight = 12.0,
                 foregroundMinutesWeight = 0.25,
                 recencyWeight = 4.0,
             ),
             UsageStatsWindow(
                 durationMs = TimeUnit.DAYS.toMillis(1),
-                launchWeight = 4.0,
+                presenceWeight = 4.0,
                 foregroundMinutesWeight = 0.1,
                 recencyWeight = 1.5,
             ),
             UsageStatsWindow(
                 durationMs = TimeUnit.DAYS.toMillis(7),
-                launchWeight = 1.0,
+                presenceWeight = 1.0,
                 foregroundMinutesWeight = 0.02,
                 recencyWeight = 0.5,
             ),
