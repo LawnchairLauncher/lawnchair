@@ -123,6 +123,8 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">ขึ้นสูง</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">Move up</string>
+    <string name="reorderable_move_down">Move down</string>
     <string name="reorderable_active_items">รายการที่ใช้งานอยู่</string>
     <string name="reorderable_disabled_items">รายการอื่น ๆ</string>
     <string name="reorderable_disabled_hint">Disabled items will appear here</string>
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">ย้อมด้วยสีเน้น</string>
     <string name="system_icons">ไอคอนระบบ</string>
     <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
+    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
     <string name="themed_icon_title">ธีมไอคอน</string>
     <string name="themed_icons_off_label">ปิด</string>
     <string name="themed_icons_home_label">หน้าแรก</string>

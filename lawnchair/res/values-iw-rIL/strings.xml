@@ -123,6 +123,8 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Advanced</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">Move up</string>
+    <string name="reorderable_move_down">Move down</string>
     <string name="reorderable_active_items">Active items</string>
     <string name="reorderable_disabled_items">Other items</string>
     <string name="reorderable_disabled_hint">Disabled items will appear here</string>
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">System icons</string>
     <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
+    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">כבוי</string>
     <string name="themed_icons_home_label">Home screen</string>
