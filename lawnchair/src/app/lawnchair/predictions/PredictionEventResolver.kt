@@ -26,16 +26,11 @@ import com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__USER
 import com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_WORK
 
 /**
- * Resolves raw [ItemInfo] atoms into structured [ResolvedEvent] instances.
- *
- * Encapsulates container-to-location mapping and user type resolution,
- * keeping this logic out of the main predictor orchestrator.
+ * Turn [ItemInfo] into [ResolvedEvent] instances.
  */
 class PredictionEventResolver(private val userCache: UserCache) {
 
     /**
-     * A resolved representation of a launcher atom event.
-     *
      * @param location Human-readable location string (e.g. "workspace", "all-apps", "folder/hotseat").
      * @param componentName The component that was interacted with, if resolvable.
      * @param user The user profile the event belongs to.
@@ -47,8 +42,7 @@ class PredictionEventResolver(private val userCache: UserCache) {
     )
 
     /**
-     * Resolves an [ItemInfo] atom into a [ResolvedEvent], or returns `null`
-     * if [atomInfo] is `null`.
+     * Resolves an [ItemInfo] atom into a [ResolvedEvent], or `null`.
      */
     fun resolve(atomInfo: ItemInfo?): ResolvedEvent? {
         if (atomInfo == null) return null

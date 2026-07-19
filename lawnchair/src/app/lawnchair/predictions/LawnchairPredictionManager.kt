@@ -13,7 +13,7 @@ import javax.inject.Inject
 /**
  * [PreferenceManager] for prediction-related data.
  *
- * Exposes three [LawnchairPredictionStore] instances for hotseat, allapps usage, and dismissed apps.
+ * Exposes three [LawnchairPredictionStore] for hotseat, allapps usage, and dismissed apps.
  */
 @LauncherAppSingleton
 class LawnchairPredictionManager @Inject constructor(
@@ -36,7 +36,7 @@ class LawnchairPredictionManager @Inject constructor(
 
     override val preferencesDataStore = context.predictionDataStore
 
-    /** Ordered store tracking hotseat app launches (most recent). */
+    /** Ordered store tracking hotseat app launches. */
     val hotseatStore = LawnchairPredictionStore(
         preference = preference(
             key = stringPreferencesKey("hotseat_usage"),
@@ -47,7 +47,7 @@ class LawnchairPredictionManager @Inject constructor(
         isOrdered = true,
     )
 
-    /** Ordered store tracking allapps app launches (most recent). */
+    /** Ordered store tracking allapps app launches. */
     val allAppsStore = LawnchairPredictionStore(
         preference = preference(
             key = stringPreferencesKey("all_apps_usage"),

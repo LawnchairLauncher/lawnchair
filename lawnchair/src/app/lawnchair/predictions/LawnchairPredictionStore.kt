@@ -7,12 +7,10 @@ import com.patrykmichalik.opto.core.setBlocking
 import com.patrykmichalik.opto.domain.Preference
 
 /**
- * Prediction store that supports both ordered (usage tracking) and unordered (dismissed apps) modes.
+ * Prediction store that supports both ordered and unordered modes.
  *
- * @param preference The opto preference used for DataStore read/write.
- * @param isOrdered When `true`, entries are recorded in insertion order
- *   (most-recent-first) and duplicates are allowed for frequency ranking.
- *   When `false`, entries form a distinct set.
+ * @param preference Opto preference.
+ * @param isOrdered Should the entries be recorded in most recent order or form a distinct set. (Note: Duplicates are ignored in unordered mode)
  * @param maxSize Maximum number of entries stored (only enforced in ordered mode).
  */
 class LawnchairPredictionStore(
@@ -26,8 +24,9 @@ class LawnchairPredictionStore(
     /**
      * Adds a key to the store.
      *
-     * In ordered mode, the key is prepended (most-recent-first) and the list
-     * is trimmed to [maxSize]. In unordered mode, duplicates are ignored.
+     * In ordered mode, the key is prepended by most recent order and the list is trimmed to [maxSize].
+     *
+     * In unordered mode, duplicates are ignored.
      */
     fun add(key: String) {
         if (key.isEmpty()) return
@@ -47,6 +46,7 @@ class LawnchairPredictionStore(
 
     /**
      * Removes a key from the store.
+     *
      * @return `true` if the key was present and removed.
      */
     fun remove(key: String): Boolean = synchronized(lock) {
@@ -57,16 +57,19 @@ class LawnchairPredictionStore(
 
     /**
      * Returns the current entries.
+     *
+     * In ordered mode, this is the raw list.
+     *
      * In unordered mode, this is the distinct set of entries.
-     * In ordered mode, this is the raw list (may contain duplicates).
      */
     fun getEntries(): List<String> = synchronized(lock) {
         cache.filter { it.isNotEmpty() }
     }
 
     /**
-     * Returns entries ranked by frequency (most-frequent first).
-     * Only meaningful for ordered stores.
+     * Returns entries ranked by most recent order.
+     *
+     * This is only useful for store with ordered mode.
      */
     fun getRanked(): List<String> = synchronized(lock) {
         cache
@@ -92,8 +95,9 @@ class LawnchairPredictionStore(
     }
 
     /**
-     * Replaces all entries with the given set. Useful for bulk updates
-     * (e.g. resetting dismissed apps from the UI).
+     * Replaces all entries with the given set.
+     *
+     * Useful for bulk updates (e.g. resetting dismissed apps from the UI).
      */
     fun setEntries(entries: Collection<String>) {
         synchronized(lock) {

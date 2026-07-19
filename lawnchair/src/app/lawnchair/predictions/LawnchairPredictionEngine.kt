@@ -17,9 +17,8 @@ import com.android.launcher3.model.WidgetItem
 import com.android.launcher3.pm.UserCache
 
 /**
- * Compiles ranked store keys into [AppTarget] lists for all-apps and widget
- * predictions. Holds merging, fallback, and target-building logic, but does
- * **not** hold any system state or stores.
+ * Compiles ranked store keys into [AppTarget] lists for all-apps and widget predictions. Holds
+ * merging, fallback, and target-building logic, but does **not** hold any system state or stores.
  */
 class LawnchairPredictionEngine(
     private val context: Context,
@@ -29,10 +28,10 @@ class LawnchairPredictionEngine(
     private val prefs2: PreferenceManager2 by lazy { PreferenceManager2.getInstance(context) }
 
     /**
-     * Compiles a ranked list of store keys into resolved [AppTarget] entries,
-     * filtering out excluded keys and unresolvable activities.
+     * Compiles a ranked list of store keys into resolved [AppTarget] entries, filtering out
+     * excluded keys and unresolvable activities.
      *
-     * @param ranked Store keys sorted by priority (highest first).
+     * @param ranked Store keys sorted by highest priority.
      * @param count Maximum number of targets to return.
      * @param excludedKeys Store keys that should be skipped (e.g. occupied hotseat slots).
      */
@@ -73,8 +72,8 @@ class LawnchairPredictionEngine(
     }
 
     /**
-     * Compiles a ranked list of store keys into widget [AppTarget] entries
-     * by matching packages to available widget providers.
+     * Compiles a ranked list of store keys into widget [AppTarget] entries by matching packages to
+     * available widget providers.
      */
     fun compileWidgetTargets(
         ranked: List<String>,
@@ -112,8 +111,8 @@ class LawnchairPredictionEngine(
     }
 
     /**
-     * Returns a fallback ranking by merging weighted usage stats (if enabled
-     * and permitted) with a randomised activity list.
+     * Returns a fallback ranking by merging weighted usage stats (if enabled and permitted) with a
+     * randomised activity list.
      */
     fun getFallbackRanked(): List<String> {
         val usageStatsRanked =
@@ -123,8 +122,7 @@ class LawnchairPredictionEngine(
     }
 
     /**
-     * Merges multiple ranked lists into one, preserving order and removing
-     * duplicates (first occurrence wins).
+     * Merges multiple ranked lists into one, preserving order and removing duplicates.
      */
     fun mergeRanked(vararg rankedLists: List<String>): List<String> = buildList {
         val seen = LinkedHashSet<String>()
