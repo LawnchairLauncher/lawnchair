@@ -4,6 +4,7 @@ import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.LauncherApps
+import android.util.Log
 import com.android.launcher3.AppFilter
 import java.util.concurrent.TimeUnit
 
@@ -45,7 +46,8 @@ class UsageStatsRanker(private val context: Context) {
                     window = window,
                 )
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to query usage stats", e)
             return emptyList()
         }
 
@@ -98,6 +100,7 @@ class UsageStatsRanker(private val context: Context) {
     )
 
     companion object {
+        private const val TAG = "UsageStatsRanker"
         private val RECENCY_HOUR_MS = TimeUnit.HOURS.toMillis(1).toDouble()
 
         private val USAGE_WINDOWS = listOf(
