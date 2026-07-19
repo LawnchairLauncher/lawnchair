@@ -123,6 +123,8 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">進階</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">Move up</string>
+    <string name="reorderable_move_down">Move down</string>
     <string name="reorderable_active_items">啟動項目</string>
     <string name="reorderable_disabled_items">其他項目</string>
     <string name="reorderable_disabled_hint">已關閉的物件會顯示在此</string>
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">用強調色進行著色</string>
     <string name="system_icons">系統圖示</string>
     <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
+    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
     <string name="themed_icon_title">主題圖示</string>
     <string name="themed_icons_off_label">關閉</string>
     <string name="themed_icons_home_label">主畫面</string>

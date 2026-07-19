@@ -1,1 +1,2 @@
-Homescreen based on Launcher3 from AOSP
+AOSP-dəki Launcher3 əsasında hazırlanan əsas ekran
+Show more lines
