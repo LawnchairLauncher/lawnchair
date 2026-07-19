@@ -861,6 +861,8 @@
     <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
     <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Icon background color</string>
+    <string name="folder_preview_grid_for_three_label">2×2 preview for 3-app folders</string>
+    <string name="folder_preview_grid_for_three_description">Lay out three preview icons on a grid instead of a triangle</string>
 
     <string name="max_folder_columns">Maximum folder columns</string>
     <string name="max_folder_rows">Maximum folder rows</string>

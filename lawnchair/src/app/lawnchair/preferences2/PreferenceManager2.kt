@@ -479,6 +479,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val folderPreviewGridForThreeItems = preference(
+        key = booleanPreferencesKey(name = "folder_preview_grid_for_three_items"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_folder_preview_grid_for_three_items),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showIconLabelsOnHomeScreen = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),

@@ -159,6 +159,7 @@
     <item name="config_default_home_icon_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_folder_preview_background_opacity" type="dimen" format="float">1.0</item>
     <item name="config_default_folder_background_opacity" type="dimen" format="float">1.0</item>
+    <bool name="config_default_folder_preview_grid_for_three_items">false</bool>
     <item name="config_default_drawer_icon_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_home_icon_label_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_home_icon_label_folder_size_factor" type="dimen" format="float">1.0</item>

@@ -28,12 +28,24 @@ public class ClippedFolderIconLayoutRule {
     private boolean mIsRtl;
     private float mBaselineIconScale;
     private int mNumFolderColumns;
+    // LC-Note: Optional 2x2 grid for 3-item previews; default keeps Launcher3 triangle.
+    private boolean mUseGridForThreeItems;
 
     /**
      * initialize the layout rule
      */
     public void init(int availableSpace, float intrinsicIconSize, boolean rtl,
             int numFolderColumns) {
+        init(availableSpace, intrinsicIconSize, rtl, numFolderColumns, false);
+    }
+
+    /**
+     * initialize the layout rule
+     *
+     * @param useGridForThreeItems LC-Note: when true, 3-item previews use the 2x2 grid
+     */
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl,
+            int numFolderColumns, boolean useGridForThreeItems) {
         mAvailableSpace = availableSpace;
         mRadius = (
                 Flags.enableLauncherIconShapes()
@@ -43,6 +55,12 @@ public class ClippedFolderIconLayoutRule {
         mIsRtl = rtl;
         mBaselineIconScale = availableSpace / intrinsicIconSize;
         mNumFolderColumns = numFolderColumns;
+        mUseGridForThreeItems = useGridForThreeItems;
+    }
+
+    /** LC-Note: Whether 3-item previews currently use the 2x2 grid. */
+    public boolean useGridForThreeItems() {
+        return mUseGridForThreeItems;
     }
 
     /**
@@ -141,11 +159,10 @@ public class ClippedFolderIconLayoutRule {
         // The case of two items is homomorphic to the case of one.
         curNumItems = Math.max(curNumItems, 2);
 
-        // Lay out 3 items on the same 2x2 grid used by 4-item previews, filling
-        // left-to-right / top-to-bottom (and mirrored for RTL):
+        // LC-Note: Optional 2x2 grid for 3-item previews (default: circular triangle):
         // 0 1
         // 2
-        if (curNumItems == 3) {
+        if (curNumItems == 3 && mUseGridForThreeItems) {
             getGridPosition(index / 2, index % 2, result);
             return;
         }
@@ -158,12 +175,14 @@ public class ClippedFolderIconLayoutRule {
         int direction = mIsRtl ? 1 : -1;
 
         double thetaShift = 0;
-        if (curNumItems == 4) {
+        if (curNumItems == 3) {
+            thetaShift = Math.PI / 2;
+        } else if (curNumItems == 4) {
             thetaShift = Math.PI / 4;
         }
         theta0 += direction * thetaShift;
 
-        // We want the items to appear in reading order. For the case of 1 and 2 items, this
+        // We want the items to appear in reading order. For the case of 1, 2 and 3 items, this
         // is natural for the circular model. With 4 items, however, we need to swap the 3rd and
         // 4th indices to achieve reading order.
         if (curNumItems == 4 && index == 3) {
@@ -207,7 +226,7 @@ public class ClippedFolderIconLayoutRule {
         if (page > 0) {
             scale = MIN_SCALE;
         } else if (numItems <= 2) {
-            // 1–2 items stay larger; 3+ share the 2x2 preview grid and use the smaller scale.
+            // LC-Note: Match 3-item preview icon scale to 4-item folders (was MAX_SCALE for <= 3).
             scale = MAX_SCALE;
         } else {
             scale = MIN_SCALE;
@@ -216,7 +235,9 @@ public class ClippedFolderIconLayoutRule {
     }
 
     private float radiusDilationForItems(int numItems) {
-        if (numItems == MAX_NUM_ITEMS_IN_PREVIEW) {
+        if (numItems == 3) {
+            return 0.15f;
+        } else if (numItems == MAX_NUM_ITEMS_IN_PREVIEW) {
             return 0.12f;
         } else {
             return 0;
