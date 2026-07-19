@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.ViewCompat
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -110,6 +111,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     private var initialPaddingLeft: Int = 0
     private var initialPaddingRight: Int = 0
+    private var hideSearchBar = false
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -271,9 +273,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             },
         )
 
-        val hide = prefs2.hideAppDrawerSearchBar.firstCached()
-        if (hide) {
-            isInvisible = true
+        hideSearchBar = prefs2.hideAppDrawerSearchBar.firstCached()
+        if (hideSearchBar) {
+            // GONE so top margin/height do not reserve empty space above the app list.
+            isGone = true
             layoutParams.height = 0
         }
     }
@@ -440,18 +443,18 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     override fun setInsets(insets: Rect) {
         (layoutParams as MarginLayoutParams).apply {
-            topMargin = if (isInvisible) {
-                insets.top - allAppsSearchVerticalOffset
-            } else {
-                max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
+            topMargin = when {
+                hideSearchBar -> 0
+
+                // Sheet mode already pads the container with status-bar insets; only clear the
+                // drag handle. Re-applying insets.top here created the large empty band under it.
+                launcher.deviceProfile.shouldShowAllAppsOnSheet() ->
+                    resources.getDimensionPixelSize(R.dimen.bottom_sheet_handle_area_height)
+
+                else -> max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
             }
         }
         requestLayout()
-    }
-
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        super.onLayout(changed, l, t, r, b)
-        offsetTopAndBottom(allAppsSearchVerticalOffset)
     }
 
     override fun getEditText() = input

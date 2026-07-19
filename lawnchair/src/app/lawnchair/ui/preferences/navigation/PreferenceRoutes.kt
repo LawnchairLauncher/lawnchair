@@ -211,3 +211,6 @@ data object CreateBackup : PreferenceRoute, PreferenceDeepLink {
 
 @Serializable
 data class RestoreBackup(val base64Uri: String) : PreferenceRoute
+
+@Serializable
+data class RestoreNovaBackup(val base64Uri: String) : PreferenceRoute

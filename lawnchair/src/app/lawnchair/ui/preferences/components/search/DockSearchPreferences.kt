@@ -1,7 +1,6 @@
 package app.lawnchair.ui.preferences.components.search
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.TipsAndUpdates
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -52,6 +52,7 @@ import app.lawnchair.ui.preferences.navigation.DockSearchProvider
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun DockSearchPreference(
     modifier: Modifier = Modifier,
@@ -73,11 +74,9 @@ fun DockSearchPreference(
         if (hotseatEnabled) {
             Column {
                 PreferenceGroup {
-                    Item {
-                        HotseatModePreference(
-                            adapter = hotseatModeAdapter,
-                        )
-                    }
+                    HotseatModePreference(
+                        adapter = hotseatModeAdapter,
+                    )
                 }
                 ExpandAndShrink(visible = hotseatModeAdapter.state.value != DisabledHotseat) {
                     Column {
@@ -96,56 +95,46 @@ fun DockSearchPreference(
                         PreferenceGroup(
                             heading = stringResource(R.string.search_bar_settings),
                         ) {
-                            Item {
-                                NavigationActionPreference(
-                                    label = stringResource(R.string.search_provider),
-                                    destination = DockSearchProvider,
-                                    subtitle = stringResource(
-                                        id = QsbSearchProvider.values()
-                                            .first { it == hotseatQsbProviderAdapter }
-                                            .name,
-                                    ),
-                                )
-                            }
+                            NavigationActionPreference(
+                                label = stringResource(R.string.search_provider),
+                                destination = DockSearchProvider,
+                                subtitle = stringResource(
+                                    id = QsbSearchProvider.values()
+                                        .first { it == hotseatQsbProviderAdapter }
+                                        .name,
+                                ),
+                            )
                         }
                         PreferenceGroup(
                             heading = stringResource(R.string.style),
                         ) {
-                            Item {
-                                SwitchPreference(
-                                    adapter = themeQsbAdapter,
-                                    label = stringResource(id = R.string.apply_accent_color_label),
-                                )
-                            }
-                            Item {
-                                SliderPreference(
-                                    label = stringResource(id = R.string.corner_radius_label),
-                                    adapter = qsbCornerAdapter,
-                                    step = 0.05F,
-                                    valueRange = 0F..1F,
-                                    showAsPercentage = true,
-                                )
-                            }
-                            Item {
-                                SliderPreference(
-                                    label = stringResource(id = R.string.qsb_hotseat_background_transparency),
-                                    adapter = qsbAlphaAdapter,
-                                    step = 5,
-                                    valueRange = 0..100,
-                                    showUnit = "%",
-                                )
-                            }
-                            Item {
-                                SliderPreference(
-                                    label = stringResource(id = R.string.qsb_hotseat_stroke_width),
-                                    adapter = qsbHotseatStrokeWidth,
-                                    step = 1f,
-                                    valueRange = 0f..10f,
-                                    showUnit = "vw",
-                                )
-                            }
+                            SwitchPreference(
+                                adapter = themeQsbAdapter,
+                                label = stringResource(id = R.string.apply_accent_color_label),
+                            )
+                            SliderPreference(
+                                label = stringResource(id = R.string.corner_radius_label),
+                                adapter = qsbCornerAdapter,
+                                step = 0.05F,
+                                valueRange = 0F..1F,
+                                showAsPercentage = true,
+                            )
+                            SliderPreference(
+                                label = stringResource(id = R.string.qsb_hotseat_background_transparency),
+                                adapter = qsbAlphaAdapter,
+                                step = 5,
+                                valueRange = 0..100,
+                                showUnit = "%",
+                            )
+                            SliderPreference(
+                                label = stringResource(id = R.string.qsb_hotseat_stroke_width),
+                                adapter = qsbHotseatStrokeWidth,
+                                step = 1f,
+                                valueRange = 0f..10f,
+                                showUnit = "vw",
+                            )
                             if (qsbHotseatStrokeWidth.state.value > 0f) {
-                                Item { ColorPreference(preference = prefs2.strokeColorStyle) }
+                                ColorPreference(preference = prefs2.strokeColorStyle)
                             }
                         }
                     }
@@ -153,11 +142,10 @@ fun DockSearchPreference(
             }
         } else {
             PreferenceTemplate(
-                modifier = Modifier
-                    .clickable {
-                        isHotseatEnabled.onChange(true)
-                    }
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp),
+                onClick = {
+                    isHotseatEnabled.onChange(true)
+                },
                 title = {},
                 description = {
                     Text(
@@ -200,42 +188,40 @@ private fun DockSearchBarPreview(
     PreferenceGroup(
         heading = stringResource(id = R.string.preview_label),
     ) {
-        Item {
-            Box(
-                modifier = modifier
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.qsb_widget_height) + 24.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                LawnQsbUi(
-                    state = rememberHotseatQsbState(
-                        searchProvider,
+        Box(
+            modifier = modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .height(dimensionResource(id = R.dimen.qsb_widget_height) + 24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            LawnQsbUi(
+                state = rememberHotseatQsbState(
+                    searchProvider,
+                    themed,
+                    showMic = voiceIntent != null,
+                    showLens = lensIntent != null,
+                ),
+                style = buildQsbStyle(
+                    context = context,
+                    themed = themed,
+                    backgroundColor = getHotseatBackgroundColor(
+                        context,
                         themed,
-                        showMic = voiceIntent != null,
-                        showLens = lensIntent != null,
+                        getThemedQsbBackgroundColor(),
                     ),
-                    style = buildQsbStyle(
-                        context = context,
-                        themed = themed,
-                        backgroundColor = getHotseatBackgroundColor(
-                            context,
-                            themed,
-                            getThemedQsbBackgroundColor(),
-                        ),
-                        cornerRadius = cornerRadiusFactor,
-                        backgroundAlpha = transparency,
-                        strokeWidth = strokeWidth,
-                        // Use light color as strokeColor is a static color that doesn't use darkColor
-                        strokeColor = strokeColor.colorPreferenceEntry.lightColor.invoke(context),
-                    ),
-                    actions = QsbActions(
-                        onQsbClick = {},
-                        onEndIconClick = {},
-                    ),
-                    modifier = Modifier.height(48.dp),
-                )
-            }
+                    cornerRadius = cornerRadiusFactor,
+                    backgroundAlpha = transparency,
+                    strokeWidth = strokeWidth,
+                    // Use light color as strokeColor is a static color that doesn't use darkColor
+                    strokeColor = strokeColor.colorPreferenceEntry.lightColor.invoke(context),
+                ),
+                actions = QsbActions(
+                    onQsbClick = {},
+                    onEndIconClick = {},
+                ),
+                modifier = Modifier.height(48.dp),
+            )
         }
     }
 }

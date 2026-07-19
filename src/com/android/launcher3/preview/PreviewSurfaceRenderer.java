@@ -52,6 +52,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.dagger.LauncherComponentProvider;
 import com.android.launcher3.graphics.GridCustomizationsProxy;
 import com.android.launcher3.preview.PreviewContext.PreviewAppComponent;
@@ -321,8 +322,9 @@ public class PreviewSurfaceRenderer {
             wallpaperColorResources = LocalColorExtractor.newInstance(context)
                     .generateColorsOverride(mWallpaperColors);
         } else {
-            WallpaperColors wallpaperColors =
-                    WallpaperManager.getInstance(context).getWallpaperColors(FLAG_SYSTEM);
+            WallpaperColors wallpaperColors = Utilities.ATLEAST_O_MR1
+                    ? WallpaperManager.getInstance(context).getWallpaperColors(FLAG_SYSTEM)
+                    : null;
             wallpaperColorResources = wallpaperColors == null ? null
                     : LocalColorExtractor.newInstance(context)
                             .generateColorsOverride(wallpaperColors);

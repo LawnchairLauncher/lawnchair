@@ -93,6 +93,7 @@ import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.hotseat.HotseatMode;
+import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 
@@ -219,6 +220,7 @@ public class DeviceProfile {
     // Hotseat
     private final HotseatProfile hotseatProfile;
     public int numShownHotseatIcons;
+    public int numHotseatRows;
     public int hotseatCellHeightPx;
     private int mHotseatColumnSpan;
     private int mHotseatWidthPx; // not used in vertical bar layout
@@ -268,6 +270,8 @@ public class DeviceProfile {
     public boolean isTaskbarPresentInApps;
     // DragController
     public int flingToDeleteThresholdVelocity;
+
+    private int mHotseatQsbSpaceBase; // LC-Note: This is to keep QSB space as a reference to be used later.
 
     /** Used only as an alternative to mocking when null values cannot be used. */
     @VisibleForTesting
@@ -326,6 +330,7 @@ public class DeviceProfile {
         folderLabelTextScale = 0;
         hotseatQsbWidth = 0;
         hotseatBorderSpace = 0;
+        numHotseatRows = 1;
         mBubbleBarSpaceThresholdPx = 0;
         numShownAllAppsColumns = 0;
         mViewScaleProvider = null;
@@ -511,6 +516,7 @@ public class DeviceProfile {
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
 
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
+        numHotseatRows = Math.max(1, Math.min(2, PreferenceManager.getInstance(context).getHotseatRows().get()));
         mHotseatColumnSpan = inv.numColumns;
 
         numShownAllAppsColumns = displayOptionSpec.numAllAppsColumns;
@@ -539,6 +545,10 @@ public class DeviceProfile {
         } else {
             hotseatQsbSpace = pxFromDp(inv.hotseatQsbSpace[mTypeIndex], mMetrics);
             hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
+        }
+
+        if (!isQsbEnable) {
+            hotseatQsbSpace = 0;
         }
 
         hotseatProfile = HotseatProfile.Factory.createHotseatProfile(
@@ -582,6 +592,8 @@ public class DeviceProfile {
                 hotseatBarBottomSpacePx = hotseatBarBottomSpace;
             }
         }
+
+        mHotseatQsbSpaceBase = hotseatQsbSpace;
 
         if (mIsResponsiveGrid) {
             updateHotseatSizes(mResponsiveWorkspaceCellSpec.getIconSize());
@@ -881,15 +893,21 @@ public class DeviceProfile {
     private void updateHotseatSizes(int hotseatIconSizePx) {
         int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
         boolean isLabelInDock = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableLabelInDock());
+        HotseatMode hotseatMode = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatMode());
+        boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
         // Ensure there is enough space for folder icons, which have a slightly larger radius.
         hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 2;
         hotseatCellHeightPx += isLabelInDock ? iconTextHeight : 0;
-        hotseatQsbSpace += isLabelInDock ? (iconTextHeight / 2) : 0;
+        hotseatQsbSpace = mHotseatQsbSpaceBase;
+        hotseatQsbSpace += isQsbEnable && isLabelInDock ? (iconTextHeight / 2) : 0;
         
         int space = Math.abs(hotseatCellHeightPx / 2) - 16;
 
         hotseatBarBottomSpacePx *= PreferenceCacheExtensionsKt
             .firstCached(preferenceManager2.getHotseatBottomFactor());
+
+        // Extra height needed for additional dock rows
+        int extraRowsHeight = (numHotseatRows - 1) * hotseatCellHeightPx;
 
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + getHotseatProfile().getBarEdgePaddingPx()
@@ -897,18 +915,21 @@ public class DeviceProfile {
                     + space;
         } else if (isQsbInline) {
             hotseatBarSizePx = Math.max(hotseatIconSizePx, getHotseatProfile().getQsbVisualHeight())
-                    + hotseatBarBottomSpacePx;
+                    + hotseatBarBottomSpacePx
+                    + extraRowsHeight;
         } else if (isQsbOnTop()) { // LC-Note: isQsbOnTop, this usually is a foldable device, not a tablet
             hotseatBarSizePx = hotseatIconSizePx
                     + hotseatQsbSpace
                     + getHotseatProfile().getQsbVisualHeight()
-                    + hotseatBarBottomSpacePx;
+                    + hotseatBarBottomSpacePx
+                    + extraRowsHeight;
         } else {
             hotseatBarSizePx = hotseatIconSizePx
                     + hotseatQsbSpace
                     + getHotseatProfile().getQsbVisualHeight()
                     + hotseatBarBottomSpacePx
-                    + space;
+                    + space
+                    + extraRowsHeight;
         }
         var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.isHotseatEnabled());
         if (!isHotseatEnabled) {
@@ -1875,7 +1896,7 @@ public class DeviceProfile {
             hotseatBarPadding.set(
                     remainingSpaceOnSide + mInsets.left + workspacePadding.left
                             + cellLayoutPaddingPx.left,
-                    hotseatBarSizePx - hotseatBarBottomPadding - hotseatCellHeightPx,
+                    hotseatBarSizePx - hotseatBarBottomPadding - hotseatCellHeightPx * numHotseatRows,
                     remainingSpaceOnSide + mInsets.right + workspacePadding.right
                             + cellLayoutPaddingPx.right,
                     hotseatBarBottomPadding
@@ -1889,7 +1910,7 @@ public class DeviceProfile {
             // Keep the hotseat icons in the lower section so the QSB can sit above them.
             int hotseatBarBottomPadding = getHotseatBarBottomPadding();
             int hotseatBarTopPadding =
-                    hotseatBarSizePx - hotseatBarBottomPadding - hotseatCellHeightPx;
+                    hotseatBarSizePx - hotseatBarBottomPadding - hotseatCellHeightPx * numHotseatRows;
 
             int hotseatWidth = getHotseatRequiredWidth();
             int startSpacing;
@@ -2017,7 +2038,7 @@ public class DeviceProfile {
         if (isQsbOnTop() || isQsbInline) { // LC-Note: isQsbOnTop
             return hotseatBarBottomSpacePx - (Math.abs(hotseatCellHeightPx - iconSizePx) / 2);
         } else {
-            return hotseatBarSizePx - hotseatCellHeightPx;
+            return hotseatBarSizePx - hotseatCellHeightPx * numHotseatRows;
         }
     }
 

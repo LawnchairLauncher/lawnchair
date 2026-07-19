@@ -50,15 +50,10 @@ import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.graphics.ShapeDelegate;
 import com.android.launcher3.graphics.ThemeManager;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
-import com.androidinternal.graphics.ColorUtils;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.List;
 
-import app.lawnchair.theme.color.ColorOption;
-import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
@@ -192,18 +187,9 @@ public class FolderAnimationManager implements FolderAnimationCreator {
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
 
-        // Set up the Folder background.
-        int previewColor = ColorTokens.FolderPreviewColor.resolveColor(mContext);
-        int initialColor = ColorUtils.setAlphaComponent(previewColor, LawnchairUtilsKt.getFolderPreviewAlpha(mContext));
-        int finalColor = ColorTokens.FolderBackgroundColor.resolveColor(mContext);
-
-        ColorOption colorOption = PreferenceCacheExtensionsKt.firstCached(mFolder.preferenceManager2.getFolderColor(), mFolder.preferenceManager2);
-        int folderColor = colorOption.getColorPreferenceEntry().getLightColor().invoke(mContext);
-
-        if (folderColor != 0) {
-            initialColor = folderColor;
-            finalColor = folderColor;
-        }
+        // Set up the Folder background (respects Lawnchair folder color pref).
+        int initialColor = LawnchairUtilsKt.resolveFolderPreviewColor(mContext);
+        int finalColor = LawnchairUtilsKt.resolveFolderBackgroundColor(mContext);
 
         mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);

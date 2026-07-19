@@ -201,8 +201,7 @@ public class BaseDepthController {
             boolean applyImmediately, boolean skipSimilarBlur) {
         float depth = mDepth;
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
-        if (windowToken != null) {
-            if (!Utilities.ATLEAST_R) return;
+        if (windowToken != null && Utilities.ATLEAST_R) {
             if (enableScalingRevealHomeAnimation()) {
                 mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
             } else {
@@ -212,6 +211,32 @@ public class BaseDepthController {
                 // Launcher's concept of full depth unchanged, we divide the depth by 3 here.
                 mWallpaperManager.setWallpaperZoomOut(windowToken, depth / 3);
             }
+        }
+
+        boolean hasOpaqueBg = mLauncher.getScrimView().isFullyOpaque();
+        boolean isSurfaceOpaque = !mHasContentBehindLauncher && hasOpaqueBg && !mPauseBlurs;
+
+        float blurAmount;
+        if (enableScalingRevealHomeAnimation()) {
+            blurAmount = mapDepthToBlur(depth);
+        } else {
+            blurAmount = depth;
+        }
+
+        int previousBlur = mCurrentBlur;
+        int newBlur = BlurUtils.supportsBlursOnWindows() && mCrossWindowBlursEnabled
+                && !hasOpaqueBg && !mPauseBlurs
+                ? (int) (blurAmount * mMaxBlurRadius) : 0;
+        int delta = Math.abs(newBlur - previousBlur);
+        boolean skipUpdate = skipSimilarBlur && delta < Utilities.dpToPx(1) && newBlur != 0
+                && previousBlur != 0 && blurAmount != 1f;
+
+        // Always keep mCurrentBlur and workspace RenderEffects in sync with depth, even when the
+        // SurfaceControl is temporarily unavailable. Otherwise setDepth(0) can early-return later
+        // (same depth) and leave workspace/hotseat stuck blurred until the activity restarts.
+        if (!skipUpdate) {
+            mCurrentBlur = newBlur;
+            blurWorkspaceDepthTargets();
         }
 
         if (!BlurUtils.supportsBlursOnWindows()) {
@@ -228,44 +253,29 @@ public class BaseDepthController {
             return;
         }
         mWaitingOnSurfaceValidity = false;
-        boolean hasOpaqueBg = mLauncher.getScrimView().isFullyOpaque();
-        boolean isSurfaceOpaque = !mHasContentBehindLauncher && hasOpaqueBg && !mPauseBlurs;
 
-        float blurAmount;
-        if (enableScalingRevealHomeAnimation()) {
-            blurAmount = mapDepthToBlur(depth);
-        } else {
-            blurAmount = depth;
-        }
         SurfaceControl blurSurface =
                 enableOverviewBackgroundWallpaperBlur() && mBlurSurface != null ? mBlurSurface
                         : mBaseSurface;
 
-        int previousBlur = mCurrentBlur;
-        int newBlur = mCrossWindowBlursEnabled && !hasOpaqueBg && !mPauseBlurs ? (int) (blurAmount
-                * mMaxBlurRadius) : 0;
-        int delta = Math.abs(newBlur - previousBlur);
-        if (skipSimilarBlur && delta < Utilities.dpToPx(1) && newBlur != 0 && previousBlur != 0
-                && blurAmount != 1f) {
+        if (skipUpdate) {
             Log.d(TAG, "Skipping small blur delta. newBlur: " + newBlur + " previousBlur: "
                     + previousBlur + " delta: " + delta + " surface: " + blurSurface);
             return;
         }
-        mCurrentBlur = newBlur;
+
         Log.v(TAG, "Applying blur: " + mCurrentBlur + " to " + blurSurface);
 
         final SurfaceControl.Transaction finalTransaction =
                 transaction == null ? createTransaction() : transaction;
-        
+
         // LC: Fix blur effect on Android 12.1/12.0
         try (finalTransaction) {
-            if (blurSurface != null && blurSurface.isValid()) {
-                finalTransaction.setBackgroundBlurRadius(blurSurface, mCurrentBlur)
-                        .setOpaque(blurSurface, isSurfaceOpaque);
-            } else {
-                // GRASP
+            if (blurSurface == null || !blurSurface.isValid()) {
                 return;
             }
+            finalTransaction.setBackgroundBlurRadius(blurSurface, mCurrentBlur)
+                    .setOpaque(blurSurface, isSurfaceOpaque);
 
             boolean wantsEarlyWakeUp = blurAmount > 0 && blurAmount < 1;
             if (wantsEarlyWakeUp && !mInEarlyWakeUp) {
@@ -285,8 +295,6 @@ public class BaseDepthController {
             // LC: Always apply immediately.
             finalTransaction.apply();
         }
-
-        blurWorkspaceDepthTargets();
     }
 
     /**
@@ -328,7 +336,13 @@ public class BaseDepthController {
     /** @return {@code true} if the workspace should be blurred. */
     @VisibleForTesting
     public boolean blurWorkspaceDepthTargets() {
+        // RenderEffect / createBlurEffect require API 31+.
+        if (!Utilities.ATLEAST_S) {
+            return false;
+        }
         if (!Flags.allAppsBlur()) {
+            // Still clear any leftover effect if the flag flips or blur was applied earlier.
+            mLauncher.getDepthBlurTargets().forEach(target -> target.setRenderEffect(null));
             return false;
         }
         StateManager<LauncherState, Launcher> stateManager = mLauncher.getStateManager();
@@ -361,6 +375,11 @@ public class BaseDepthController {
             depthF = depthI / 256f;
         }
         if (Float.compare(mDepth, depthF) == 0) {
+            // Depth is unchanged, but a previous apply may have returned early (invalid surface)
+            // leaving blur stuck. Force a re-apply when clearing.
+            if (depthF == 0f && mCurrentBlur != 0) {
+                applyDepthAndBlur();
+            }
             return;
         }
         mDepth = depthF;

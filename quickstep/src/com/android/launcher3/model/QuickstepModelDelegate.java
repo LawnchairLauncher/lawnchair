@@ -111,7 +111,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
     private final PredictedItemFactory.Factory mItemParserFactory;
     private final AppEventProducer mAppEventProducer;
 
-    private final StatsManager mStatsManager;
+    private final Object mStatsManager;
 
     protected boolean mActive = false;
 
@@ -133,8 +133,12 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
         // Only register for launcher snapshot logging if this is the primary ModelDelegate
         // instance, as there will be additional instances that may be destroyed at any time.
-        mStatsManager = TextUtils.isEmpty(dbFileName)
-                ? null : context.getSystemService(StatsManager.class);
+        // StatsManager was added in API 28, so guard against NoClassDefFoundError on older devices.
+        if (Utilities.ATLEAST_P && !TextUtils.isEmpty(dbFileName)) {
+            mStatsManager = context.getSystemService(StatsManager.class);
+        } else {
+            mStatsManager = null;
+        }
     }
 
     @Override
@@ -219,7 +223,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
         }
 
         try {
-            mStatsManager.setPullAtomCallback(
+            ((StatsManager) mStatsManager).setPullAtomCallback(
                     SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT,
                     null /* PullAtomMetadata */,
                     MODEL_EXECUTOR,
@@ -286,7 +290,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
         StatsLogCompatManager.LOGS_CONSUMER.remove(mAppEventProducer);
         if (mStatsManager != null && LawnchairQuickstepCompat.ATLEAST_R) {
             try {
-                mStatsManager.clearPullAtomCallback(SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT);
+                ((StatsManager) mStatsManager).clearPullAtomCallback(SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT);
             } catch (Throwable e) {
                 Log.e(TAG, "Failed to unregister snapshot logging callback with StatsManager", e);
             }

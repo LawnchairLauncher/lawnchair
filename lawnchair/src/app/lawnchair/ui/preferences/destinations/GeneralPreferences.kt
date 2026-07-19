@@ -56,7 +56,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 @Composable
-fun GeneralPreferences() {
+fun GeneralPreferences(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
@@ -90,110 +90,87 @@ fun GeneralPreferences() {
     PreferenceLayout(
         backArrowVisible = !LocalIsExpandedScreen.current,
         label = stringResource(id = R.string.general_label),
+        modifier = modifier,
     ) {
         PreferenceGroup {
-            Item {
-                SwitchPreference(
-                    adapter = prefs.allowRotation.getAdapter(),
-                    label = stringResource(id = R.string.home_screen_rotation_label),
-                    description = stringResource(id = R.string.home_screen_rotation_description),
-                )
-            }
+            SwitchPreference(
+                adapter = prefs.allowRotation.getAdapter(),
+                label = stringResource(id = R.string.home_screen_rotation_label),
+                description = stringResource(id = R.string.home_screen_rotation_description),
+            )
         }
         if (BuildConfig.APPLICATION_ID.contains("nightly")) {
             PreferenceGroup(heading = stringResource(id = R.string.updater)) {
-                Item {
-                    SwitchPreference(
-                        adapter = prefs2.autoUpdaterNightly.getAdapter(),
-                        label = stringResource(id = R.string.auto_updater_label),
-                        description = stringResource(id = R.string.auto_updater_description),
-                    )
-                }
+                SwitchPreference(
+                    adapter = prefs2.autoUpdaterNightly.getAdapter(),
+                    label = stringResource(id = R.string.auto_updater_label),
+                    description = stringResource(id = R.string.auto_updater_description),
+                )
             }
         }
         ExpandAndShrink(visible = prefs2.enableFontSelection.asState().value) {
             PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
-                Item {
-                    FontPreference(
-                        fontPref = prefs.fontWorkspace,
-                        label = stringResource(R.string.fontWorkspace),
-                    )
-                }
-                Item {
-                    FontPreference(
-                        fontPref = prefs.fontHeading,
-                        label = stringResource(R.string.fontHeading),
-                    )
-                }
-                Item {
-                    FontPreference(
-                        fontPref = prefs.fontHeadingMedium,
-                        label = stringResource(R.string.fontHeadingMedium),
-                    )
-                }
-                Item {
-                    FontPreference(
-                        fontPref = prefs.fontBody,
-                        label = stringResource(R.string.fontBody),
-                    )
-                }
-                Item {
-                    FontPreference(
-                        fontPref = prefs.fontBodyMedium,
-                        label = stringResource(R.string.fontBodyMedium),
-                    )
-                }
+                FontPreference(
+                    fontPref = prefs.fontWorkspace,
+                    label = stringResource(R.string.fontWorkspace),
+                )
+                FontPreference(
+                    fontPref = prefs.fontHeading,
+                    label = stringResource(R.string.fontHeading),
+                )
+                FontPreference(
+                    fontPref = prefs.fontHeadingMedium,
+                    label = stringResource(R.string.fontHeadingMedium),
+                )
+                FontPreference(
+                    fontPref = prefs.fontBody,
+                    label = stringResource(R.string.fontBody),
+                )
+                FontPreference(
+                    fontPref = prefs.fontBodyMedium,
+                    label = stringResource(R.string.fontBodyMedium),
+                )
             }
         }
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
+        val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
 
         PreferenceGroup(
+            modifier = Modifier,
             heading = stringResource(id = R.string.icons),
             description = stringResource(id = (R.string.adaptive_icon_background_description)),
             showDescription = wrapAdaptiveIcons.state.value,
         ) {
-            Item {
-                NavigationActionPreference(
-                    label = stringResource(id = R.string.icon_style_label),
-                    destination = GeneralIconPack,
-                    subtitle = iconStyleSubtitle,
-                )
-            }
-            val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
-            Item {
+            NavigationActionPreference(
+                label = stringResource(id = R.string.icon_style_label),
+                destination = GeneralIconPack,
+                subtitle = iconStyleSubtitle,
+            )
+            ExpandAndShrink(visible = themedIconsEnabled) {
                 SwitchPreference(
                     adapter = transparentIconBackground,
                     label = stringResource(id = R.string.transparent_background_icons_label),
                     description = stringResource(id = R.string.transparent_background_icons_description),
                 )
             }
-            Item {
-                NavigationActionPreference(
-                    label = stringResource(id = R.string.icon_shape_label),
-                    destination = GeneralIconShape(ShapeRoute.APP_SHAPE),
-                    subtitle = iconShapeSubtitle,
-                    endWidget = {
-                        IconShapePreview(iconShape = iconShapeAdapter.state.value)
-                    },
-                )
-            }
-            Item {
-                SwitchPreference(
-                    adapter = wrapAdaptiveIcons,
-                    label = stringResource(id = R.string.auto_adaptive_icons_label),
-                    description = stringResource(id = R.string.auto_adaptive_icons_description),
-                )
-            }
-            Item {
-                SwitchPreference(
-                    adapter = prefs.shadowBGIcons.getAdapter(),
-                    label = stringResource(id = R.string.shadow_bg_icons_label),
-                )
-            }
-            Item(
-                "wrap_adaptive_icons",
-                wrapAdaptiveIcons.state.value && !transparentIconBackground.state.value,
-            ) {
+            NavigationActionPreference(
+                label = stringResource(id = R.string.icon_shape_label),
+                destination = GeneralIconShape(ShapeRoute.APP_SHAPE),
+                subtitle = iconShapeSubtitle,
+                endWidget = {
+                    IconShapePreview(iconShape = iconShapeAdapter.state.value)
+                },
+            )
+            SwitchPreference(
+                adapter = wrapAdaptiveIcons,
+                label = stringResource(id = R.string.auto_adaptive_icons_label),
+                description = stringResource(id = R.string.auto_adaptive_icons_description),
+            )
+            SwitchPreference(
+                adapter = prefs.shadowBGIcons.getAdapter(),
+                label = stringResource(id = R.string.shadow_bg_icons_label),
+            )
+            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value && !transparentIconBackground.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.background_lightness_label),
                     adapter = prefs.coloredBackgroundLightness.getAdapter(),
@@ -209,12 +186,11 @@ fun GeneralPreferences() {
             !Utilities.ATLEAST_S
 
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
-            Item { ThemePreference() }
-            Item { ColorPreference(preference = prefs2.accentColor) }
-            Item(
-                "color_style",
-                showColorStyle,
-            ) { ColorStylePreference(prefs2.colorStyle.getAdapter()) }
+            ThemePreference()
+            ColorPreference(preference = prefs2.accentColor)
+            ExpandAndShrink(visible = showColorStyle) {
+                ColorStylePreference(prefs2.colorStyle.getAdapter())
+            }
         }
 
         val notificationEnabled by remember { notificationDotsEnabled(context) }.collectAsStateWithLifecycle(initialValue = false)
@@ -225,29 +201,21 @@ fun GeneralPreferences() {
         val dotTextColor = prefs2.notificationDotTextColor.asState().value
 
         PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
-            Item { NotificationDotsPreference(enabled = notificationEnabled, serviceEnabled = serviceEnabled) }
+            NotificationDotsPreference(enabled = notificationEnabled, serviceEnabled = serviceEnabled)
             val canDisplayNotificationDot = notificationEnabled && serviceEnabled
-            Item(
-                "notification_dot_color",
-                canDisplayNotificationDot,
-            ) { ColorPreference(preference = prefs2.notificationDotColor) }
-            Item(
-                "notification_dot_counter_toggle",
-                canDisplayNotificationDot,
-            ) {
+            ExpandAndShrink(visible = canDisplayNotificationDot) {
+                ColorPreference(preference = prefs2.notificationDotColor)
+            }
+            ExpandAndShrink(visible = canDisplayNotificationDot) {
                 SwitchPreference(
                     adapter = showNotificationCountAdapter,
                     label = stringResource(id = R.string.show_notification_count),
                 )
             }
-            Item(
-                "notification_dot_text_color",
-                canDisplayNotificationDot && showNotificationCount,
-            ) { ColorPreference(preference = prefs2.notificationDotTextColor) }
-            Item(
-                "notification_dot_color_contrast_warning",
-                canDisplayNotificationDot && showNotificationCount,
-            ) {
+            ExpandAndShrink(visible = canDisplayNotificationDot && showNotificationCount) {
+                ColorPreference(preference = prefs2.notificationDotTextColor)
+            }
+            ExpandAndShrink(visible = canDisplayNotificationDot && showNotificationCount) {
                 NotificationDotColorContrastWarnings(
                     dotColor = dotColor,
                     dotTextColor = dotTextColor,

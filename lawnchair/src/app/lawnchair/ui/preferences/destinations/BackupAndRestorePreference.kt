@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.backup.ui.restoreBackupOpener
+import app.lawnchair.backup.ui.restoreNovaBackupOpener
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -22,20 +23,23 @@ fun BackupAndRestorePreference(
         modifier = modifier,
     ) {
         PreferenceGroup {
-            Item {
-                NavigationActionPreference(
-                    label = stringResource(R.string.create_backup),
-                    subtitle = stringResource(R.string.create_backup_description),
-                    destination = CreateBackup,
-                )
-            }
-            Item {
-                ClickablePreference(
-                    label = stringResource(R.string.restore_backup),
-                    subtitle = stringResource(R.string.restore_backup_description),
-                    onClick = restoreBackupOpener(),
-                )
-            }
+            NavigationActionPreference(
+                label = stringResource(R.string.create_backup),
+                subtitle = stringResource(R.string.create_backup_description),
+                destination = CreateBackup,
+            )
+            ClickablePreference(
+                label = stringResource(R.string.restore_backup),
+                subtitle = stringResource(R.string.restore_backup_description),
+                onClick = restoreBackupOpener(),
+            )
+        }
+        PreferenceGroup {
+            ClickablePreference(
+                label = stringResource(R.string.restore_nova_backup),
+                subtitle = stringResource(R.string.restore_nova_backup_description),
+                onClick = restoreNovaBackupOpener(),
+            )
         }
     }
 }

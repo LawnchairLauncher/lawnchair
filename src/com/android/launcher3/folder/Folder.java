@@ -337,6 +337,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         final int paddingLeftRight = dp.folderContentPaddingLeftRight;
 
         mBackground = DrawableTokens.RoundRectFolder.resolve(getContext());
+        mBackground.setColor(LawnchairUtilsKt.resolveFolderBackgroundColor(getContext()));
         var alpha = LawnchairUtilsKt.getFolderBackgroundAlpha(getContext());
         mBackground.setAlpha(alpha);
 
@@ -1091,12 +1092,15 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mActivityContext.getDragController().removeDropTarget(this);
         clearFocus();
         if (mFolderIcon != null) {
+            // Settle first-page preview before revealing the icon to avoid a rearrange flash.
+            if (wasAnimated) {
+                mFolderIcon.onFolderClose(mContent.getCurrentPage());
+            }
             mFolderIcon.setVisibility(View.VISIBLE);
             mFolderIcon.setIconVisible(true);
             mFolderIcon.mFolderName.setTextVisibility(true);
             if (wasAnimated) {
                 mFolderIcon.animateBgShadowAndStroke();
-                mFolderIcon.onFolderClose(mContent.getCurrentPage());
                 if (mFolderIcon.hasDot()) {
                     mFolderIcon.animateDotScale(0f, 1f);
                 }
@@ -1143,6 +1147,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
         SCALE_PROPERTY.set(launcher.getWorkspace(), 1f);
         SCALE_PROPERTY.set(launcher.getHotseat(), 1f);
+        // Clear any stuck workspace/hotseat RenderEffect if we are not in a depth-blur state.
+        // Expressive folder open/close can race with All Apps depth blur and leave icons blurred.
+        if (Utilities.ATLEAST_S
+                && launcher.getStateManager().getState().getDepth(launcher) == 0f) {
+            for (View target : launcher.getDepthBlurTargets()) {
+                target.setRenderEffect(null);
+            }
+        }
     }
 
     @Override

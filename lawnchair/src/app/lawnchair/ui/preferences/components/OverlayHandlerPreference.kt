@@ -4,12 +4,15 @@ import android.R as AndroidR
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
@@ -26,6 +29,7 @@ val overlayOptions = listOf(
     FullScreenOverlayMode.FADE_IN,
 )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun OverlayHandlerPreference(
     adapter: PreferenceAdapter<FullScreenOverlayMode>,
@@ -45,8 +49,9 @@ fun OverlayHandlerPreference(
 
     PreferenceTemplate(
         title = { Text(text = label) },
+        modifier = modifier,
         description = { Text(text = stringResource(currentConfig.labelRes)) },
-        modifier = modifier.clickable {
+        onClick = {
             bottomSheetHandler.show {
                 ModalBottomSheetContent(
                     title = { Text(label) },
@@ -64,7 +69,7 @@ fun OverlayHandlerPreference(
                             val selected = currentConfig == option
                             PreferenceTemplate(
                                 title = { Text(text = stringResource(option.labelRes)) },
-                                modifier = Modifier.clickable {
+                                onClick = {
                                     bottomSheetHandler.hide()
                                     onSelect(option)
                                 },
@@ -74,6 +79,7 @@ fun OverlayHandlerPreference(
                                         onClick = null,
                                     )
                                 },
+                                colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                             )
                         }
                     }
