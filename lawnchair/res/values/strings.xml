@@ -219,11 +219,14 @@
     <string name="prediction_mode_system">System</string>
     <string name="prediction_mode_lawnchair">Lawnchair</string>
     <string name="prediction_mode_none">Off</string>
-    <string name="prediction_weighted_usage_stats_label">Use system predictions</string>
+    <string name="prediction_weighted_usage_stats_label">Improve suggestions with usage data</string>
     <string name="prediction_weighted_usage_stats_description">Learns from your system usage habits to provide better app suggestions</string>
     <string name="prediction_weighted_usage_stats_permission_description">Use usage stats to influence ranking suggestions. Requires usage access to enable</string>
     <string name="dismissed_prediction_apps_label">Dismissed apps</string>
     <string name="dismissed_prediction_apps_label_with_count">Dismissed apps (%1$d)</string>
+
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To use usage data, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
 
     <string name="font_picker_label">Font customization</string>
     <string name="font_picker_description">Some text remains unchanged</string>

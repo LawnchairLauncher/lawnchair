@@ -6,17 +6,22 @@ import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Process
+import android.provider.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
 import app.lawnchair.predictions.LawnchairPredictionManager
 import app.lawnchair.predictions.LawnchairPredictor
 import app.lawnchair.predictions.NoPredictor
@@ -28,15 +33,16 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.PermissionDialog
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
-import app.lawnchair.ui.preferences.components.layout.PreferenceGroupScope
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.DismissedPredictionApps
+import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R
 
 @Composable
@@ -67,19 +73,29 @@ private fun AppPredictionsFeature(
     prefs2: PreferenceManager2,
 ) {
     val resources = LocalResources.current
-    val appOps = context.getSystemService(AppOpsManager::class.java)
-
-    val predictionModeAdapter = prefs2.predictionMode.getAdapter()
-    val weightedUsageStatsAdapter = prefs2.lawnchairPredictorUseWeightedUsageStats.getAdapter()
-    val hasUsageStatsPermission = appOps.checkOpNoThrow(
+    val appOps = remember { context.getSystemService(AppOpsManager::class.java) }
+    fun checkPermission() = appOps.checkOpNoThrow(
         AppOpsManager.OPSTR_GET_USAGE_STATS,
         Process.myUid(),
         context.packageName,
     ) == AppOpsManager.MODE_ALLOWED
+
+    val hasUsageStatsPermission = remember { mutableStateOf(checkPermission()) }
+    val resumed = lifecycleState().isAtLeast(Lifecycle.State.RESUMED)
+
+    if (resumed) {
+        DisposableEffect(context) {
+            hasUsageStatsPermission.value = checkPermission()
+            onDispose {}
+        }
+    }
+
+    val predictionModeAdapter = prefs2.predictionMode.getAdapter()
+    val weightedUsageStatsAdapter = prefs2.lawnchairPredictorUseWeightedUsageStats.getAdapter()
     val predictionModeEntries = rememberPredictionModeEntries(context)
     val dismissedPredictionAppsCount = rememberDismissedPredictionAppsCount(context)
     val weightedUsageStatsDescription = stringResource(
-        if (hasUsageStatsPermission) {
+        if (hasUsageStatsPermission.value) {
             R.string.prediction_weighted_usage_stats_description
         } else {
             R.string.prediction_weighted_usage_stats_permission_description
@@ -94,20 +110,18 @@ private fun AppPredictionsFeature(
     PreferenceGroup(
         heading = stringResource(R.string.app_predictions_label),
     ) {
-        Item {
-            ListPreference(
-                adapter = predictionModeAdapter,
-                entries = predictionModeEntries,
-                label = stringResource(R.string.prediction_mode_label),
-            )
-        }
+        ListPreference(
+            adapter = predictionModeAdapter,
+            entries = predictionModeEntries,
+            label = stringResource(R.string.prediction_mode_label),
+        )
         when (predictionModeAdapter.state.value) {
             SystemPredictor -> SystemSuggestionsPreference()
 
             LawnchairPredictor -> LawnchairPredictionSettings(
                 weightedUsageStatsAdapter = weightedUsageStatsAdapter,
                 weightedUsageStatsDescription = weightedUsageStatsDescription,
-                hasUsageStatsPermission = hasUsageStatsPermission,
+                hasUsageStatsPermission = hasUsageStatsPermission.value,
                 dismissedPredictionAppsSubtitle = dismissedPredictionAppsSubtitle,
             )
 
@@ -117,27 +131,54 @@ private fun AppPredictionsFeature(
 }
 
 @Composable
-private fun PreferenceGroupScope.LawnchairPredictionSettings(
+private fun LawnchairPredictionSettings(
     weightedUsageStatsAdapter: PreferenceAdapter<Boolean>,
     weightedUsageStatsDescription: String,
     hasUsageStatsPermission: Boolean,
     dismissedPredictionAppsSubtitle: String,
 ) {
-    Item {
-        SwitchPreference(
-            adapter = weightedUsageStatsAdapter,
-            label = stringResource(R.string.prediction_weighted_usage_stats_label),
-            description = weightedUsageStatsDescription,
-            enabled = hasUsageStatsPermission,
+    var showPermissionDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    SwitchPreference(
+        checked = weightedUsageStatsAdapter.state.value && hasUsageStatsPermission,
+        onCheckedChange = { newValue ->
+            if (hasUsageStatsPermission) {
+                weightedUsageStatsAdapter.onChange(newValue)
+            } else {
+                showPermissionDialog = true
+            }
+        },
+        label = stringResource(R.string.prediction_weighted_usage_stats_label),
+        description = weightedUsageStatsDescription,
+    )
+    if (showPermissionDialog) {
+        PermissionDialog(
+            title = stringResource(id = R.string.missing_usage_access_label),
+            text = stringResource(id = R.string.missing_usage_access_desc, stringResource(id = R.string.derived_app_name)),
+            isPermanentlyDenied = true,
+            onConfirm = {},
+            onDismiss = { showPermissionDialog = false },
+            onGoToSettings = {
+                showPermissionDialog = false
+                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                try {
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    try {
+                        context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                    } catch (_: Exception) {}
+                }
+            },
         )
     }
-    Item {
-        NavigationActionPreference(
-            label = stringResource(R.string.dismissed_prediction_apps_label),
-            destination = DismissedPredictionApps,
-            subtitle = dismissedPredictionAppsSubtitle,
-        )
-    }
+    NavigationActionPreference(
+        label = stringResource(R.string.dismissed_prediction_apps_label),
+        destination = DismissedPredictionApps,
+        subtitle = dismissedPredictionAppsSubtitle,
+    )
 }
 
 @Composable
@@ -173,7 +214,7 @@ private fun rememberDismissedPredictionAppsCount(context: Context): Int {
 
 @SuppressLint("WrongConstant")
 @Composable
-fun PreferenceGroupScope.SystemSuggestionsPreference() {
+fun SystemSuggestionsPreference() {
     val context = LocalContext.current
     val intent = Intent("android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS")
     val hasPkgUsagePermission = context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
@@ -181,13 +222,11 @@ fun PreferenceGroupScope.SystemSuggestionsPreference() {
     val suggestionSettingsAvailable = hasPkgUsagePermission && canResolveToSuggestionPreference
 
     if (suggestionSettingsAvailable) {
-        Item {
-            ClickablePreference(
-                label = stringResource(id = R.string.suggestion_pref_screen_title),
-                onClick = {
-                    context.startActivity(intent)
-                },
-            )
-        }
+        ClickablePreference(
+            label = stringResource(id = R.string.suggestion_pref_screen_title),
+            onClick = {
+                context.startActivity(intent)
+            },
+        )
     }
 }
