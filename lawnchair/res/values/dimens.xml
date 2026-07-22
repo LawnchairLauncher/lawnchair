@@ -98,9 +98,9 @@
     <dimen name="enhanced_smartspace_secondary_card_corner_radius">28dp</dimen>
     <dimen name="enhanced_smartspace_secondary_card_end_margin">1dp</dimen>
     <dimen name="enhanced_smartspace_secondary_card_start_margin">8dp</dimen>
-    <dimen name="enhanced_smartspace_subtitle_margin_top">9dp</dimen>
-    <dimen name="enhanced_smartspace_subtitle_size">16sp</dimen>
-    <dimen name="enhanced_smartspace_title_size">20sp</dimen>
+    <dimen name="enhanced_smartspace_subtitle_margin_top">5dp</dimen>
+    <dimen name="enhanced_smartspace_subtitle_size">14sp</dimen>
+    <dimen name="enhanced_smartspace_title_size">18sp</dimen>
     <dimen name="key_text_shadow_dx">0.5dp</dimen>
     <dimen name="key_text_shadow_dy">0.5dp</dimen>
     <dimen name="key_text_shadow_radius">0.5dp</dimen>
