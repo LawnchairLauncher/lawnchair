@@ -1,6 +1,7 @@
 package app.lawnchair.allapps.views
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.util.AttributeSet
@@ -10,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import app.lawnchair.font.FontManager
-import app.lawnchair.launcher
+import app.lawnchair.launcherNullable
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.util.AppInfo
 import app.lawnchair.util.AppInfoHelper
@@ -18,13 +19,15 @@ import app.lawnchair.util.ImageViewWrapper
 import com.android.app.search.LayoutType
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
+import com.android.launcher3.views.ActivityContext
 
 class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
     LinearLayout(context, attrs),
     SearchResultView {
 
-    private val launcher = context.launcher
-    private var grid: DeviceProfile = launcher.deviceProfile
+    private val activityContext = findActivityContext(context)
+    private val launcher = context.launcherNullable
+    private var grid: DeviceProfile = activityContext.getDeviceProfile()
     private lateinit var title: TextView
     private lateinit var avatar: SearchResultIcon
     private lateinit var call: ImageView
@@ -42,7 +45,7 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
         isSmall = id == R.id.search_result_small_icon_row_left_right
         defPhoneAppInfo = appInfoHelper.getDefaultPhoneAppInfo()
         defSmsAppInfo = appInfoHelper.getDefaultMessageAppInfo()
-        onFocusChangeListener = launcher.focusHandler
+        onFocusChangeListener = launcher?.focusHandler
         title = ViewCompat.requireViewById(this, R.id.title)
         avatar = ViewCompat.requireViewById(this, R.id.avatar)
         call = ViewCompat.requireViewById(this, R.id.icon2)
@@ -152,5 +155,13 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             phoneIntent.data = Uri.parse("tel:$phoneNumber")
             handleSearchTargetClick(context, phoneIntent)
         }
+    }
+}
+
+private tailrec fun findActivityContext(context: Context): ActivityContext {
+    return when (context) {
+        is ActivityContext -> context
+        is ContextWrapper -> findActivityContext(context.baseContext)
+        else -> throw IllegalArgumentException("Cannot find ActivityContext in parent tree")
     }
 }

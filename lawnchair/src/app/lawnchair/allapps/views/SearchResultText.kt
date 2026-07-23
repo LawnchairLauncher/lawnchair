@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import app.lawnchair.font.FontManager
-import app.lawnchair.launcher
+import app.lawnchair.launcherNullable
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SPACE_MINI
 import app.lawnchair.search.adapter.SearchTargetCompat
@@ -18,12 +18,12 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
     LinearLayout(context, attrs),
     SearchResultView {
 
-    private val launcher = context.launcher
+    private val launcher = context.launcherNullable
     private lateinit var title: TextView
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        onFocusChangeListener = launcher.focusHandler
+        onFocusChangeListener = launcher?.focusHandler
         title = ViewCompat.requireViewById(this, R.id.title)
         if (BlurUtils.supportsBlursOnWindows()) {
             title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(context))

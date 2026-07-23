@@ -2,6 +2,7 @@ package app.lawnchair.allapps
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Color
 import android.graphics.Rect
 import android.provider.SearchRecentSuggestions
@@ -30,7 +31,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
-import app.lawnchair.launcher
+import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.asState
@@ -62,6 +63,7 @@ import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
+import com.android.launcher3.views.ActivityContext
 import com.android.systemui.shared.system.BlurUtils
 import java.util.Locale
 import kotlin.math.max
@@ -83,7 +85,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private val qsbMarginTopAdjusting = resources.getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting)
     private val allAppsSearchVerticalOffset = resources.getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset)
 
-    private val launcher = context.launcher
+    private val activityContext = findActivityContext(context)
+    private val launcher = context.launcherNullable
     private val searchBarController = AllAppsSearchBarController()
     private val searchQueryBuilder = SpannableStringBuilder().apply {
         Selection.setSelection(this, 0)
@@ -105,9 +108,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     }
     private var bgVisible = true
     private var bgAlpha = 1f
-    private val suggestionsRecent = SearchRecentSuggestions(launcher, LawnchairRecentSuggestionProvider.AUTHORITY, LawnchairRecentSuggestionProvider.MODE)
-    private val prefs = PreferenceManager.getInstance(launcher)
-    private val prefs2 = PreferenceManager2.getInstance(launcher)
+    private val suggestionsRecent = SearchRecentSuggestions(context, LawnchairRecentSuggestionProvider.AUTHORITY, LawnchairRecentSuggestionProvider.MODE)
+    private val prefs = PreferenceManager.getInstance(context)
+    private val prefs2 = PreferenceManager2.getInstance(context)
 
     private var initialPaddingLeft: Int = 0
     private var initialPaddingRight: Int = 0
@@ -177,9 +180,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     },
                     onStartIconClick = if (shouldShowIcons) {
                         {
-                            val launcher = context.launcher
-                            launcher.lifecycleScope.launch {
-                                searchProvider.launch(launcher)
+                            launcher?.let { launcher ->
+                                launcher.lifecycleScope.launch {
+                                    searchProvider.launch(launcher)
+                                }
                             }
                         }
                     } else {
@@ -266,7 +270,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 if (input.text.toString() == "/lawnchairdebug") {
                     val enableDebugMenu = prefs.enableDebugMenu
                     enableDebugMenu.set(!enableDebugMenu.get())
-                    launcher.stateManager.goToState(LauncherState.NORMAL)
+                    launcher?.stateManager?.goToState(LauncherState.NORMAL)
                 }
 
                 queryEmpty = it.isNullOrEmpty()
@@ -282,7 +286,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     }
 
     private fun setupPadding() {
-        launcher.deviceProfile.let { dp ->
+        activityContext.getDeviceProfile().let { dp ->
             val padding = dp.getAllAppsIconStartMargin(context)
             initialPaddingLeft = padding
             initialPaddingRight = padding
@@ -361,7 +365,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        launcher.deviceProfile.inv.addOnChangeListener(this)
+        activityContext.getDeviceProfile().inv.addOnChangeListener(this)
         if (::appsView.isInitialized) {
             appsView.appsStore?.addUpdateListener(this)
         }
@@ -370,7 +374,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        launcher.deviceProfile.inv.removeOnChangeListener(this)
+        activityContext.getDeviceProfile().inv.removeOnChangeListener(this)
         if (::appsView.isInitialized) {
             appsView.appsStore?.removeUpdateListener(this)
         }
@@ -389,7 +393,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         searchBarController.initialize(
             algorithm,
             input,
-            launcher,
+            activityContext,
             this,
         )
         input.initialize(appsView)
@@ -448,7 +452,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
                 // Sheet mode already pads the container with status-bar insets; only clear the
                 // drag handle. Re-applying insets.top here created the large empty band under it.
-                launcher.deviceProfile.shouldShowAllAppsOnSheet() ->
+                activityContext.getDeviceProfile().shouldShowAllAppsOnSheet() ->
                     resources.getDimensionPixelSize(R.dimen.bottom_sheet_handle_area_height)
 
                 else -> max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
@@ -488,5 +492,13 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         setupPadding()
         invalidate()
         requestLayout()
+    }
+}
+
+private tailrec fun findActivityContext(context: Context): ActivityContext {
+    return when (context) {
+        is ActivityContext -> context
+        is ContextWrapper -> findActivityContext(context.baseContext)
+        else -> throw IllegalArgumentException("Cannot find ActivityContext in parent tree")
     }
 }

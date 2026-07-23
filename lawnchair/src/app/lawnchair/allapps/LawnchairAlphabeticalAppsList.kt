@@ -1,5 +1,6 @@
 package app.lawnchair.allapps
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -10,6 +11,7 @@ import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.model.FolderOrderUtils
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.launcher
+import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
@@ -39,12 +41,18 @@ class LawnchairAlphabeticalAppsList<T>(
     DefaultLifecycleObserver
     where T : Context, T : ActivityContext {
 
+    private val launcher = context.launcherNullable
     private var hiddenApps: Set<String> = setOf()
     private val prefs2 = PreferenceManager2.getInstance(context)
     private val prefs = PreferenceManager.getInstance(context)
 
+    private val application =
+        (context as? ComponentActivity)?.application
+            ?: launcher?.application
+            ?: context.applicationContext as Application
+
     private val viewModel = FolderViewModel(
-        (context as? ComponentActivity)?.application ?: context.launcher.application,
+        application,
     )
     private var folderList = mutableListOf<FolderEntry>()
     private val filteredList = mutableListOf<AppInfo>()
@@ -52,21 +60,23 @@ class LawnchairAlphabeticalAppsList<T>(
     private val folderOrder get() = FolderOrderUtils.stringToIntList(prefs.drawerListOrder.get())
 
     init {
-        context.launcher.deviceProfile.inv.addOnChangeListener(this)
+        context.deviceProfile.inv.addOnChangeListener(this)
         (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
-        try {
-            prefs2.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
-                hiddenApps = it
-                onAppsUpdated()
+        launcher?.let { launcher ->
+            try {
+                prefs2.hiddenApps.onEach(launchIn = launcher.lifecycleScope) {
+                    hiddenApps = it
+                    onAppsUpdated()
+                }
+            } catch (t: Throwable) {
+                Log.w(TAG, "Failed to initialize hidden apps", t)
             }
-        } catch (t: Throwable) {
-            Log.w(TAG, "Failed to initialize hidden apps", t)
         }
         observeFolders()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        context.launcher.deviceProfile.inv.removeOnChangeListener(this)
+        context.deviceProfile.inv.removeOnChangeListener(this)
     }
 
     private fun observeFolders() {
