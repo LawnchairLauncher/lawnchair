@@ -196,6 +196,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     /** {@code true} when rendered view is in search state instead of the scroll state. */
     private boolean mIsSearching;
+    private boolean mSearchExitInProgress;
     boolean showFastScroller;
     private boolean mRebindAdaptersAfterSearchAnimation;
     private int mNavBarScrimHeight = 0;
@@ -469,6 +470,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         if (!mSearchTransitionController.isRunning() && goingToSearch == isSearching()) {
             return;
         }
+        mSearchExitInProgress = !goingToSearch;
         mFastScroller.setVisibility(goingToSearch ? INVISIBLE : VISIBLE);
         if (goingToSearch) {
             // Fade out the button to pause work apps.
@@ -490,12 +492,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
                     if (goingToSearch) {
                         mSearchUiDelegate.onAnimateToSearchStateCompleted();
+                        mSearchExitInProgress = false;
                     } else {
                         setSearchResults(null);
                         if (mViewPager != null) {
                             mViewPager.setCurrentPage(previousPage);
                         }
                         onActivePageChanged(previousPage);
+                        mSearchExitInProgress = false;
                     }
                 });
     }
@@ -916,9 +920,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // LC-Note: Match Pixel Launcher behavior by focusing
             // and showing the keyboard on scroll to top
             if (PreferenceCacheExtensionsKt.firstCached(pref2.getAutoShowKeyboardInDrawer())) {
-                boolean isTransitioning = mAllAppsTransitionController != null
-                    && mAllAppsTransitionController.getProgress() > 0f;
-                if (!isTransitioning) {
+                boolean isControllerAnimating = mAllAppsTransitionController != null
+                        && (mAllAppsTransitionController.getProgress() > 0f
+                        || mAllAppsTransitionController.getAllAppScale().isAnimating());
+                boolean isSearchTransitioning = mSearchTransitionController.isRunning()
+                        || mSearchExitInProgress;
+                if (!isControllerAnimating && !isSearchTransitioning) {
                     ExtendedEditText editText = mSearchUiManager.getEditText();
                     if (editText != null && !editText.isFocused()) {
                         editText.showKeyboard();
