@@ -1859,18 +1859,31 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     private boolean shouldLaunchInDesktop(int displayId, ItemInfo info) {
-        if (!DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX.isTrue()) {
+        // Some platform builds omit desktop flag fields that are present in the stubs this code
+        // compiles against. Treat missing flags as disabled instead of crashing on first access.
+        if (!isFlagTrueSafe(() -> DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX
+                .isTrue())) {
             return false;
         }
-        if (DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_FULLSCREEN_REFOCUS_BUGFIX.isTrue()
+        if (isFlagTrueSafe(() -> DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_FULLSCREEN_REFOCUS_BUGFIX
+                        .isTrue())
                 && DisplayController.isInDesktopFirstMode(this)
                 && mControllers.taskbarRecentAppsController.hasSingleTask(info)) {
             // Keep the fullscreen mode in desktop-first mode.
             return false;
         }
         // Always launch in freeform if in external display.
-        return (DesktopExperienceFlags.ENABLE_FREEFORM_DISPLAY_LAUNCH_PARAMS.isTrue()
+        return (isFlagTrueSafe(() -> DesktopExperienceFlags.ENABLE_FREEFORM_DISPLAY_LAUNCH_PARAMS
+                        .isTrue())
                 && isExternalDisplay(displayId)) || isTaskbarShowingDesktopTasks();
+    }
+
+    private static boolean isFlagTrueSafe(java.util.function.BooleanSupplier flagRead) {
+        try {
+            return flagRead.getAsBoolean();
+        } catch (NoSuchFieldError e) {
+            return false;
+        }
     }
 
     private void launchDesktopApp(Intent intent, ItemInfo info, int displayId) {

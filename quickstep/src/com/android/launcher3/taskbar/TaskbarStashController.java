@@ -44,7 +44,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.app.ActivityManager;
 import android.app.RemoteAction;
+import android.content.ComponentName;
 import android.graphics.drawable.Icon;
 import android.os.SystemClock;
 import android.util.Log;
@@ -67,9 +69,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.settings.SettingsActivity;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.SystemUiFlagUtils;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
@@ -111,6 +115,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_STASHED_BUBBLE_BAR_ON_PHONE = 1 << 15;
 
     public static final int FLAG_IGNORE_IN_APP = 1 << 16; // used to sync with app launch animation
+    public static final int FLAG_STASHED_IN_LAUNCHER_SETTINGS = 1 << 17;
 
     // If any of these flags are enabled, isInApp should return true.
     private static final int FLAGS_IN_APP = FLAG_IN_APP | FLAG_IN_SETUP;
@@ -118,7 +123,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_SYSUI
             | FLAG_STASHED_IN_APP_SETUP | FLAG_STASHED_IN_TASKBAR_ALL_APPS
-            | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IN_APP_AUTO | FLAG_STASHED_IME;
+            | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IN_APP_AUTO | FLAG_STASHED_IME
+            | FLAG_STASHED_IN_LAUNCHER_SETTINGS;
 
     // If we're in overview and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_OVERVIEW = FLAG_STASHED_IME;
@@ -437,6 +443,27 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      */
     public boolean isStashed() {
         return mIsStashed;
+    }
+
+    public boolean shouldForcePinnedInAppTaskbarVisible() {
+        return mActivity.isPinnedTaskbar()
+                && hasAnyFlag(FLAG_IN_APP)
+                && !hasAnyFlag(FLAG_IGNORE_IN_APP)
+                && !hasAnyFlag(FLAG_IN_OVERVIEW)
+                && !hasAnyFlag(FLAG_TASKBAR_HIDDEN)
+                && !isLauncherSettingsTopTask()
+                && !mIsStashedPredicate.test(mState);
+    }
+
+    public boolean isLauncherSettingsTopTask() {
+        ActivityManager.RunningTaskInfo taskInfo =
+                ActivityManagerWrapper.getInstance().getRunningTask();
+        ComponentName topActivity = taskInfo == null ? null : taskInfo.topActivity;
+        String className = topActivity == null ? null : topActivity.getClassName();
+        return topActivity != null
+                && mActivity.getPackageName().equals(topActivity.getPackageName())
+                && (SettingsActivity.class.getName().equals(className)
+                        || "app.lawnchair.ui.preferences.PreferenceActivity".equals(className));
     }
 
     public boolean isDeviceLocked() {
@@ -1156,6 +1183,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             // animator was not created, just execute the action
             postApplyAction.run();
         }
+        syncPinnedInAppIconAlpha();
     }
 
     public void applyState(long duration, long startDelay) {
@@ -1164,6 +1192,18 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             animator.setStartDelay(startDelay);
             animator.start();
         }
+        syncPinnedInAppIconAlpha();
+    }
+
+    private void syncPinnedInAppIconAlpha() {
+        if (!shouldForcePinnedInAppTaskbarVisible()) {
+            return;
+        }
+        // App-entry can initialize FLAG_IN_APP before launcher-state animation runs. Keep the Home
+        // alpha channel from hiding otherwise-present pinned taskbar icons.
+        mControllers.taskbarViewController.getTaskbarIconAlpha()
+                .get(TaskbarViewController.ALPHA_INDEX_HOME)
+                .setValue(1f);
     }
 
     /**
@@ -1175,6 +1215,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         if (mActivity.isPhoneMode()) {
             return null;
         }
+        updateStateForFlag(FLAG_STASHED_IN_LAUNCHER_SETTINGS, isLauncherSettingsTopTask());
         return mStatePropertyHolder.createSetStateAnimator(mState, duration);
     }
 
@@ -1482,6 +1523,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         appendFlag(sj, flags, FLAG_STASHED_IN_TASKBAR_ALL_APPS, "FLAG_STASHED_IN_TASKBAR_ALL_APPS");
         appendFlag(sj, flags, FLAG_IN_SETUP, "FLAG_IN_SETUP");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_AUTO, "FLAG_STASHED_IN_APP_AUTO");
+        appendFlag(sj, flags, FLAG_STASHED_IN_LAUNCHER_SETTINGS,
+                "FLAG_STASHED_IN_LAUNCHER_SETTINGS");
         appendFlag(sj, flags, FLAG_STASHED_SYSUI, "FLAG_STASHED_SYSUI");
         appendFlag(sj, flags, FLAG_STASHED_DEVICE_LOCKED, "FLAG_STASHED_DEVICE_LOCKED");
         appendFlag(sj, flags, FLAG_IN_OVERVIEW, "FLAG_IN_OVERVIEW");
