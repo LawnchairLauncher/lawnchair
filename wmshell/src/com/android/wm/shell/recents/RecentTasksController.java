@@ -1115,7 +1115,6 @@ public class RecentTasksController implements TaskStackListenerCallback,
 
         @Override
         public void startRecentsTransition(PendingIntent intent, Intent fillIn, Bundle options,
-                @Nullable WindowContainerTransaction wct,
                 IApplicationThread appThread, IRecentsAnimationRunner listener) {
             if (mController.mTransitionHandler == null) {
                 Slog.e(TAG, "Used shell-transitions startRecentsTransition without"
@@ -1124,7 +1123,7 @@ public class RecentTasksController implements TaskStackListenerCallback,
             }
             executeRemoteCallWithTaskPermission(mController, "startRecentsTransition",
                     (controller) -> controller.mTransitionHandler.startRecentsTransition(
-                            intent, fillIn, options, wct, appThread, listener));
+                            intent, fillIn, options, null, appThread, listener));
         }
     }
 }

@@ -39,14 +39,16 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
     private volatile boolean mLogToProto;
     private volatile boolean mLogToLogcat;
     private final @NonNull String mTag;
+    private static boolean sHasLoggedPreInitWarning;
 
     public static boolean isProtoLogInitialized() {
         if (!Utilities.ATLEAST_R) return false;
 
         if (!Variables.sIsInitialized) {
-            Log.w(Constants.TAG,
-                    "Attempting to log to ProtoLog before initializing it.",
-                    new IllegalStateException());
+            if (!sHasLoggedPreInitWarning) {
+                sHasLoggedPreInitWarning = true;
+                Log.w(Constants.TAG, "Attempting to log to ProtoLog before initializing it.");
+            }
         }
         return Variables.sIsInitialized;
     }

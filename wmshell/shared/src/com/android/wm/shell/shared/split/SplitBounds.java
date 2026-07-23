@@ -167,21 +167,42 @@ public class SplitBounds implements Parcelable {
         topTaskPercent = parcel.readFloat();
         leftTaskPercent = parcel.readFloat();
         appsStackedVertically = parcel.readBoolean();
-        initiatedFromSeascape = parcel.readBoolean();
-        dividerWidthPercent = parcel.readFloat();
-        dividerHeightPercent = parcel.readFloat();
-        snapPosition = parcel.readInt();
-        leftTopTaskId = parcel.readInt();
-        rightBottomTaskId = parcel.readInt();
-        int size = parcel.readInt();
-        leftTopTaskIds = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            leftTopTaskIds.add(parcel.readInt());
-        }
-        size = parcel.readInt();
-        rightBottomTaskIds = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            rightBottomTaskIds.add(parcel.readInt());
+
+        /*
+         * Older Android 16 Shell builds write:
+         *   leftTopTaskId, rightBottomTaskId, dividerWidth, dividerHeight, snapPosition
+         * Newer Launcher3 expects:
+         *   initiatedFromSeascape, dividerWidth, dividerHeight, snapPosition,
+         *   leftTopTaskId, rightBottomTaskId, leftTopTaskIds, rightBottomTaskIds
+         */
+        final int initiatedFromSeascapeOrLeftTopTaskId = parcel.readInt();
+        if (initiatedFromSeascapeOrLeftTopTaskId == 0
+                || initiatedFromSeascapeOrLeftTopTaskId == 1) {
+            initiatedFromSeascape = initiatedFromSeascapeOrLeftTopTaskId != 0;
+            dividerWidthPercent = parcel.readFloat();
+            dividerHeightPercent = parcel.readFloat();
+            snapPosition = parcel.readInt();
+            leftTopTaskId = parcel.readInt();
+            rightBottomTaskId = parcel.readInt();
+            int size = parcel.readInt();
+            leftTopTaskIds = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                leftTopTaskIds.add(parcel.readInt());
+            }
+            size = parcel.readInt();
+            rightBottomTaskIds = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                rightBottomTaskIds.add(parcel.readInt());
+            }
+        } else {
+            initiatedFromSeascape = false;
+            leftTopTaskId = initiatedFromSeascapeOrLeftTopTaskId;
+            rightBottomTaskId = parcel.readInt();
+            dividerWidthPercent = parcel.readFloat();
+            dividerHeightPercent = parcel.readFloat();
+            snapPosition = parcel.readInt();
+            leftTopTaskIds = Collections.singletonList(leftTopTaskId);
+            rightBottomTaskIds = Collections.singletonList(rightBottomTaskId);
         }
     }
 

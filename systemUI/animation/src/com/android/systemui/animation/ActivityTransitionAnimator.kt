@@ -948,7 +948,11 @@ constructor(
                     override fun onAnimationFinished() {
                         leashMap.clear()
                         val finishTransaction = SurfaceControl.Transaction()
-                        finishCallback?.onTransitionFinished(null, finishTransaction)
+                        RemoteTransitionFinishCompat.finish(
+                            finishCallback,
+                            null,
+                            finishTransaction,
+                        )
                         finishTransaction.close()
                     }
                 }

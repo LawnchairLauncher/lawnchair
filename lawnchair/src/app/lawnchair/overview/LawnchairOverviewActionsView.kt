@@ -1,6 +1,7 @@
 package app.lawnchair.overview
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Button
@@ -19,9 +20,14 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : OverviewActionsView<TaskOverlayFactoryImpl.OverlayUICallbacks>(context, attrs, defStyleAttr) {
 
+    private companion object {
+        private const val FORCE_NATIVE_TABLET_QUICKSWITCH_ACTIONS = true
+    }
+
     private val prefs = PreferenceManager.getInstance(context)
     private lateinit var container: LinearLayout
     private lateinit var screenshotAction: Button
+    private lateinit var splitAction: Button
     private lateinit var shareAction: Button
     private lateinit var lensAction: Button
     private lateinit var clearAllAction: Button
@@ -35,6 +41,7 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
         shareAction = ViewCompat.requireViewById(this, R.id.action_share)
         lensAction = ViewCompat.requireViewById(this, R.id.action_lens)
         screenshotAction = ViewCompat.requireViewById(this, R.id.action_screenshot)
+        splitAction = ViewCompat.requireViewById(this, R.id.action_split)
         lockedAction = ViewCompat.requireViewById(this, R.id.action_locked)
 
         shareAction.setOnClickListener { mCallbacks?.onShare() }
@@ -51,6 +58,18 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
     }
 
     private fun updateVisibilities() {
+        if (shouldUseNativeTabletActions()) {
+            listOf(screenshotAction, shareAction, lensAction, clearAllAction, lockedAction).forEach {
+                it.isVisible = false
+            }
+            splitAction.isVisible = true
+            container.removeAllViews()
+            container.addView(createSpace())
+            container.addView(splitAction)
+            container.addView(createSpace())
+            return
+        }
+
         val order = prefs.recentActionOrder.get().split(",").map { it.toInt() }
 
         val buttonMap = mutableMapOf<Int, View>()
@@ -79,6 +98,15 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
             container.addView(view)
             container.addView(createSpace())
         }
+    }
+
+    private fun shouldUseNativeTabletActions(): Boolean {
+        if (!FORCE_NATIVE_TABLET_QUICKSWITCH_ACTIONS) return false
+        val dpSaysTablet = mDp?.deviceProperties?.isTablet == true
+        val configSaysTablet =
+            resources.configuration.smallestScreenWidthDp >= Configuration.SMALLEST_SCREEN_WIDTH_DP_UNDEFINED &&
+                resources.configuration.smallestScreenWidthDp >= 600
+        return dpSaysTablet || configSaysTablet
     }
 
     private fun isLensAvailable(): Boolean {

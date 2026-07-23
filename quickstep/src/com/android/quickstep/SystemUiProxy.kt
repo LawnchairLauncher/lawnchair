@@ -18,6 +18,7 @@ package com.android.quickstep
 import android.app.ActivityManager
 import android.app.ActivityManager.RunningTaskInfo
 import android.app.ActivityOptions
+import android.app.ActivityTaskManager
 import android.app.ActivityTaskManager.INVALID_TASK_ID
 import android.app.PendingIntent
 import android.content.ComponentName
@@ -181,7 +182,7 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
      * process). It is bare-bones, so it's expected that the component and options will be provided
      * via fill-in intent.
      */
-    private fun getRecentsPendingIntent(displayId: Int) =
+    private fun getRecentsPendingIntent() =
         PendingIntent.getActivity(
             context,
             0,
@@ -193,7 +194,6 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
                 .setPendingIntentCreatorBackgroundActivityStartMode(
                     ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
                 )
-                .setLaunchDisplayId(displayId)
                 .toBundle(),
         )
 
@@ -1092,8 +1092,26 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
         } catch (e: RemoteException) {
             Log.e(TAG, "Failed call getRecentTasks", e)
             throw GetRecentTasksException("Failed call getRecentTasks", e)
+        } catch (e: Throwable) {
+            if (e is ThreadDeath) {
+                throw e
+            }
+            Log.e(TAG, "Failed to read Shell grouped recent tasks; falling back to ATM", e)
+            return getRecentTasksFallback(numTasks, userId)
         } finally {
             traceEnd(Trace.TRACE_TAG_APP)
+        }
+    }
+
+    private fun getRecentTasksFallback(numTasks: Int, userId: Int): ArrayList<GroupedTaskInfo> {
+        try {
+            val rawTasks =
+                ActivityTaskManager.getInstance()
+                    .getRecentTasks(numTasks, ActivityManager.RECENT_IGNORE_UNAVAILABLE, userId)
+            return ArrayList(rawTasks.map { GroupedTaskInfo.forFullscreenTasks(it) })
+        } catch (fallbackError: RuntimeException) {
+            Log.e(TAG, "Failed fallback call getRecentTasks", fallbackError)
+            throw GetRecentTasksException("Failed fallback call getRecentTasks", fallbackError)
         }
     }
 
@@ -1272,14 +1290,17 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
     ): Boolean {
         executeWithErrorLog({ "Error starting recents via shell" }) {
             recentTasks?.startRecentsTransition(
-                getRecentsPendingIntent(displayId),
+                // Android 16 Shell expects a bare recents PendingIntent here and handles
+                // display selection from the transition options.
+                getRecentsPendingIntent(),
                 intent,
                 options.toBundle().apply {
                     if (useSyntheticRecentsTransition) {
                         putBoolean("is_synthetic_recents_transition", true)
                     }
                 },
-                wct,
+                // Some Android 16 SystemUI builds expose the pre-WCT IRecentTasks ABI.
+                // Keep the public parameter for local callers, but do not marshal it here.
                 context.iApplicationThread,
                 RecentsAnimationListenerStub(listener),
             )
@@ -1303,7 +1324,7 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
             minimizedHomeBounds: Rect?,
             extras: Bundle?,
             transitionInfo: TransitionInfo?,
-        ) =
+        ) {
             listener.onAnimationStart(
                 RecentsAnimationControllerCompat(controller),
                 apps,
@@ -1317,6 +1338,7 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
                 },
                 transitionInfo,
             )
+        }
 
         override fun onAnimationCanceled(taskIds: IntArray?, taskSnapshots: Array<TaskSnapshot?>?) {
             listener.onAnimationCanceled(wrap(taskIds, taskSnapshots))
