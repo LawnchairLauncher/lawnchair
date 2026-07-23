@@ -696,6 +696,18 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = "",
     )
 
+    val enableTaskbarRecents = preference(
+        key = booleanPreferencesKey("enable_taskbar_recents"),
+        defaultValue = true,
+        onSet = { reloadHelper.reloadTaskbar() },
+    )
+
+    val taskbarRecentsMaxCount = preference(
+        key = intPreferencesKey("taskbar_recents_max_count"),
+        defaultValue = 2,
+        onSet = { reloadHelper.reloadTaskbar() },
+    )
+
     val enableTaskbarOnPhone = preference(
         key = booleanPreferencesKey("enable_taskbar_on_phone"),
         defaultValue = false,

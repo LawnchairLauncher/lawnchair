@@ -46,6 +46,20 @@ public class TaskbarSharedState {
     private static int INDEX_LEFT = 0;
     private static int INDEX_RIGHT = 1;
 
+    private static InsetsFrameProvider withDisplaySource(InsetsFrameProvider provider) {
+        try {
+            InsetsFrameProvider.class.getMethod("setSource", int.class)
+                    .invoke(provider, SOURCE_DISPLAY);
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            try {
+                InsetsFrameProvider.class.getMethod("setSource").invoke(provider);
+            } catch (ReflectiveOperationException | RuntimeException ignored) {
+                // Keep the provider usable if this framework exposes neither hidden signature.
+            }
+        }
+        return provider;
+    }
+
     // TaskbarManager#onSystemUiFlagsChanged
     @SystemUiStateFlags
     public long sysuiStateFlags;
@@ -114,10 +128,8 @@ public class TaskbarSharedState {
             new InsetsFrameProvider(mInsetsOwner, 0, navigationBars()),
             new InsetsFrameProvider(mInsetsOwner, 0, tappableElement()),
             new InsetsFrameProvider(mInsetsOwner, 0, mandatorySystemGestures()),
-            new InsetsFrameProvider(mInsetsOwner, INDEX_LEFT, systemGestures())
-                    .setSource(SOURCE_DISPLAY),
-            new InsetsFrameProvider(mInsetsOwner, INDEX_RIGHT, systemGestures())
-                    .setSource(SOURCE_DISPLAY)
+            withDisplaySource(new InsetsFrameProvider(mInsetsOwner, INDEX_LEFT, systemGestures())),
+            withDisplaySource(new InsetsFrameProvider(mInsetsOwner, INDEX_RIGHT, systemGestures()))
     };
 
     // Allows us to shift translation logic when doing taskbar pinning animation.
