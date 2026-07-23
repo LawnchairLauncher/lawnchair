@@ -29,6 +29,7 @@ import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.graphics.ThemeManager
+import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
@@ -126,14 +127,18 @@ class LawnchairShortcut {
         override fun onClick(v: View) {
             val outObj = Array<Any?>(1) { null }
             var icon = Utilities.loadFullDrawableWithoutTheme(launcher, appInfo, 0, 0, outObj)
-            if (mItemInfo.screenId != NO_ID) {
-                val themeController = ThemeManager.INSTANCE.get(launcher).themeController
-                themeController?.createThemedAdaptiveIcon(
-                    launcher,
-                    icon as AdaptiveIconDrawable,
-                    appInfo.bitmap,
-                )?.let {
-                    icon = it
+            if (mItemInfo.screenId != NO_ID && Utilities.ATLEAST_T) {
+                val adaptiveIcon = icon as? AdaptiveIconDrawable
+                    ?: LauncherIcons.obtain(launcher).use { it.wrapToAdaptiveIcon(icon) }
+                if (adaptiveIcon != null) {
+                    val themeController = ThemeManager.INSTANCE.get(launcher).themeController
+                    themeController?.createThemedAdaptiveIcon(
+                        launcher,
+                        adaptiveIcon,
+                        appInfo.bitmap,
+                    )?.let {
+                        icon = it
+                    }
                 }
             }
             val launcherActivityInfo = outObj[0] as LauncherActivityInfo?
