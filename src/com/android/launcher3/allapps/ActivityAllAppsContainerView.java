@@ -77,6 +77,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
@@ -908,8 +909,22 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
 
         boolean bgVisible = mSearchUiManager.getBackgroundVisibility();
-        if (scrolledOffset == 0 && !isSearching()) {
-            bgVisible = true;
+        if (scrolledOffset == 0) {
+            if (!isSearching()) {
+                bgVisible = true;
+            }
+            // LC-Note: Match Pixel Launcher behavior by focusing
+            // and showing the keyboard on scroll to top
+            if (PreferenceCacheExtensionsKt.firstCached(pref2.getAutoShowKeyboardInDrawer())) {
+                boolean isTransitioning = mAllAppsTransitionController != null
+                    && mAllAppsTransitionController.getProgress() > 0f;
+                if (!isTransitioning) {
+                    ExtendedEditText editText = mSearchUiManager.getEditText();
+                    if (editText != null && !editText.isFocused()) {
+                        editText.showKeyboard();
+                    }
+                }
+            }
         } else if (scrolledOffset > mHeaderThreshold) {
             bgVisible = false;
         }
