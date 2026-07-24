@@ -35,6 +35,7 @@ import java.util.Objects;
  */
 public class SplitBounds implements Parcelable {
     public static final String KEY_EXTRA_SPLIT_BOUNDS = "key_SplitBounds";
+    private static final int PARCEL_FORMAT_SENTINEL = INVALID_TASK_ID;
 
     public final Rect leftTopBounds;
     public final Rect rightBottomBounds;
@@ -172,13 +173,12 @@ public class SplitBounds implements Parcelable {
          * Older Android 16 Shell builds write:
          *   leftTopTaskId, rightBottomTaskId, dividerWidth, dividerHeight, snapPosition
          * Newer Launcher3 expects:
-         *   initiatedFromSeascape, dividerWidth, dividerHeight, snapPosition,
+         *   format sentinel, initiatedFromSeascape, dividerWidth, dividerHeight, snapPosition,
          *   leftTopTaskId, rightBottomTaskId, leftTopTaskIds, rightBottomTaskIds
          */
-        final int initiatedFromSeascapeOrLeftTopTaskId = parcel.readInt();
-        if (initiatedFromSeascapeOrLeftTopTaskId == 0
-                || initiatedFromSeascapeOrLeftTopTaskId == 1) {
-            initiatedFromSeascape = initiatedFromSeascapeOrLeftTopTaskId != 0;
+        final int parcelFormatOrLeftTopTaskId = parcel.readInt();
+        if (parcelFormatOrLeftTopTaskId == PARCEL_FORMAT_SENTINEL) {
+            initiatedFromSeascape = parcel.readBoolean();
             dividerWidthPercent = parcel.readFloat();
             dividerHeightPercent = parcel.readFloat();
             snapPosition = parcel.readInt();
@@ -196,7 +196,7 @@ public class SplitBounds implements Parcelable {
             }
         } else {
             initiatedFromSeascape = false;
-            leftTopTaskId = initiatedFromSeascapeOrLeftTopTaskId;
+            leftTopTaskId = parcelFormatOrLeftTopTaskId;
             rightBottomTaskId = parcel.readInt();
             dividerWidthPercent = parcel.readFloat();
             dividerHeightPercent = parcel.readFloat();
@@ -214,6 +214,7 @@ public class SplitBounds implements Parcelable {
         parcel.writeFloat(topTaskPercent);
         parcel.writeFloat(leftTaskPercent);
         parcel.writeBoolean(appsStackedVertically);
+        parcel.writeInt(PARCEL_FORMAT_SENTINEL);
         parcel.writeBoolean(initiatedFromSeascape);
         parcel.writeFloat(dividerWidthPercent);
         parcel.writeFloat(dividerHeightPercent);

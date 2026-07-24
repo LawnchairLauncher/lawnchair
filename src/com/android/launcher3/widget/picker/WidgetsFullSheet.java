@@ -91,6 +91,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -1163,12 +1164,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         void setup(WidgetsRecyclerView recyclerView) {
-            if (recyclerView == null) {
-                Log.w(TAG, "Skipping missing widgets recycler view for adapter type "
-                        + mAdapterType);
-                return;
-            }
-            mWidgetsRecyclerView = recyclerView;
+            mWidgetsRecyclerView = Objects.requireNonNull(recyclerView,
+                    "Missing widgets recycler view for adapter type " + mAdapterType);
             mWidgetsRecyclerView.setOutlineProvider(mViewOutlineProvider);
             mWidgetsRecyclerView.setClipToOutline(true);
             mWidgetsRecyclerView.setClipChildren(false);

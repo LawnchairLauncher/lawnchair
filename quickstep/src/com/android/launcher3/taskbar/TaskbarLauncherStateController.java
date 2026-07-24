@@ -995,7 +995,7 @@ public class TaskbarLauncherStateController {
     private void onIconAlignmentRatioChanged() {
         float currentValue = mTaskbarAlphaForHome.getValue();
         boolean taskbarWillBeVisible = mIconAlignment.value < 1
-                && !mControllers.taskbarStashController.isLauncherSettingsTopTask();
+                && !mControllers.taskbarStashController.isStashedInLauncherSettings();
         boolean firstFrameVisChanged = (taskbarWillBeVisible && Float.compare(currentValue, 1) != 0)
                 || (!taskbarWillBeVisible && Float.compare(currentValue, 0) != 0);
 

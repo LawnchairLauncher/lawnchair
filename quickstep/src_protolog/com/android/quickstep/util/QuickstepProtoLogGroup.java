@@ -25,6 +25,7 @@ import com.android.internal.protolog.common.IProtoLogGroup;
 
 import com.android.launcher3.Utilities;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Enums used to interface with the ProtoLog API. */
 public enum QuickstepProtoLogGroup implements IProtoLogGroup {
@@ -39,14 +40,13 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
     private volatile boolean mLogToProto;
     private volatile boolean mLogToLogcat;
     private final @NonNull String mTag;
-    private static boolean sHasLoggedPreInitWarning;
+    private static final AtomicBoolean sHasLoggedPreInitWarning = new AtomicBoolean();
 
     public static boolean isProtoLogInitialized() {
         if (!Utilities.ATLEAST_R) return false;
 
         if (!Variables.sIsInitialized) {
-            if (!sHasLoggedPreInitWarning) {
-                sHasLoggedPreInitWarning = true;
+            if (sHasLoggedPreInitWarning.compareAndSet(false, true)) {
                 Log.w(Constants.TAG, "Attempting to log to ProtoLog before initializing it.");
             }
         }

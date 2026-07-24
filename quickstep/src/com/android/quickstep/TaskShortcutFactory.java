@@ -33,6 +33,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Process;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.util.Log;
@@ -270,6 +271,9 @@ public interface TaskShortcutFactory {
         }
 
         private boolean startBaseIntentInFreeform(Task.TaskKey taskKey, ActivityOptions options) {
+            if (taskKey.userId != Process.myUserHandle().getIdentifier()) {
+                return false;
+            }
             try {
                 Intent intent = new Intent(taskKey.baseIntent);
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);

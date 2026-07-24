@@ -114,6 +114,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 InsetsFrameProvider::class.java
                     .getMethod("setInsetsSize", Insets::class.java)
                     .invoke(this, insets)
+            }.recoverCatching {
+                this.insetsSize = insets
             }
             return this
         }
@@ -128,6 +130,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                         Array<InsetsFrameProvider.InsetsSizeOverride>::class.java,
                     )
                     .invoke(this, overrides)
+            }.recoverCatching {
+                this.insetsSizeOverrides = overrides
             }
             return this
         }

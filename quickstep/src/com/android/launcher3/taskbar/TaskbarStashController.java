@@ -495,6 +495,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         return hasAnyFlag(FLAGS_STASHED_IN_APP);
     }
 
+    /** Returns whether the taskbar is stashed because Launcher settings is the top task. */
+    public boolean isStashedInLauncherSettings() {
+        return hasAnyFlag(FLAG_STASHED_IN_LAUNCHER_SETTINGS);
+    }
+
     /**
      * Returns whether the taskbar should be stashed in the current LauncherState.
      */
