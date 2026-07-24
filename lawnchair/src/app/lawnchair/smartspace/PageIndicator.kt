@@ -38,12 +38,17 @@ class PageIndicator @JvmOverloads constructor(
     }
 
     fun setPageOffset(position: Int, positionOffset: Float) {
-        if (this.currentPageIndex == position && this.positionOffset == positionOffset) return
-        this.currentPageIndex = position
-        this.positionOffset = positionOffset
+        val clampedPosition = if (numPages > 0) position.coerceIn(0, numPages - 1) else position
+        val clampedOffset = positionOffset.coerceIn(0f, 1f)
+
+        if (this.currentPageIndex == clampedPosition && this.positionOffset == clampedOffset) return
+        this.currentPageIndex = clampedPosition
+        this.positionOffset = clampedOffset
+
         if (numPages > 0) {
             val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
-            val activePos = if (positionOffset < 0.5f) position else position + 1
+            val rawActivePos = if (clampedOffset < 0.5f) clampedPosition else clampedPosition + 1
+            val activePos = rawActivePos.coerceIn(0, numPages - 1)
             val displayPage = if (isRtl) numPages - activePos else activePos + 1
             contentDescription = context.getString(
                 R.string.accessibility_smartspace_page,
