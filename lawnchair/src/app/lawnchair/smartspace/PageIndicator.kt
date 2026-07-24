@@ -1,101 +1,122 @@
 package app.lawnchair.smartspace
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
-import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.appcompat.content.res.AppCompatResources
+import android.view.View
 import androidx.core.view.isVisible
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
+import kotlin.math.roundToInt
 
 class PageIndicator @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-) : LinearLayout(context, attrs) {
+) : View(context, attrs) {
 
-    private val primaryColor = Themes.getAttrColor(context, R.attr.workspaceTextColor)
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+    }
+    private val rect = RectF()
+
+    private var primaryColor = Themes.getAttrColor(context, R.attr.workspaceTextColor)
     private var currentPageIndex = -1
+    private var positionOffset = 0f
     private var numPages = -1
 
     fun setNumPages(numPages: Int) {
-        if (numPages <= 0) {
-            setNumPages(1)
-            return
-        }
-        if (numPages < 2) {
-            isVisible = false
-            return
-        }
-        isVisible = true
         if (this.numPages != numPages) {
             this.numPages = numPages
-            initializePageIndicators()
+            currentPageIndex = if (numPages > 0) currentPageIndex.coerceIn(0 until numPages) else -1
+            requestLayout()
+            invalidate()
         }
+        isVisible = numPages >= 2
     }
 
     fun setPageOffset(position: Int, positionOffset: Float) {
-        val zeroOffset = positionOffset == 0f
-        if (zeroOffset && position == currentPageIndex) return
-        if (position !in 0 until childCount) return
-
-        val currentDot = getChildAt(position) as? ImageView
-        val nextDot = getChildAt(position + 1) as? ImageView
-        if (currentDot == null || nextDot == null) return
-        currentDot.alpha = (1f - positionOffset) * 0.6f + 0.4f
-        nextDot.alpha = 0.6f * positionOffset + 0.4f
-        contentDescription = context.getString(
-            R.string.accessibility_smartspace_page,
-            if (positionOffset.toDouble() < 0.5) position + 1 else position + 2,
-            numPages,
-        )
-        if (zeroOffset) {
-            currentPageIndex = position
-        } else if (positionOffset >= 0.99f) {
-            currentPageIndex = position + 1
+        if (this.currentPageIndex == position && this.positionOffset == positionOffset) return
+        this.currentPageIndex = position
+        this.positionOffset = positionOffset
+        if (numPages > 0) {
+            val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
+            val activePos = if (positionOffset < 0.5f) position else position + 1
+            val displayPage = if (isRtl) numPages - activePos else activePos + 1
+            contentDescription = context.getString(
+                R.string.accessibility_smartspace_page,
+                displayPage,
+                numPages,
+            )
         }
+        invalidate()
     }
 
-    private fun initializePageIndicators() {
-        val childCount = childCount
-        for (i in 0 until childCount - numPages) {
-            removeViewAt(0)
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        if (numPages < 2) {
+            setMeasuredDimension(0, 0)
+            return
         }
-        val dotMargin =
-            context.resources.getDimensionPixelSize(R.dimen.page_indicator_dot_margin)
-        currentPageIndex = currentPageIndex.coerceIn(0 until numPages)
+        val dotRadius = resources.getDimension(R.dimen.page_indicator_dot_size) / 2f
+        val diameter = 2f * dotRadius
+        val gapWidth = resources.getDimension(R.dimen.page_indicator_gap_width)
+
+        val contentWidth = (numPages + 1) * diameter + (numPages - 1) * gapWidth
+        val contentHeight = diameter
+
+        val width = resolveSize((contentWidth + paddingLeft + paddingRight).toInt(), widthMeasureSpec)
+        val height = resolveSize((contentHeight + paddingTop + paddingBottom).toInt(), heightMeasureSpec)
+        setMeasuredDimension(width, height)
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        if (numPages < 2) return
+
+        val dotRadius = resources.getDimension(R.dimen.page_indicator_dot_size) / 2f
+        val diameter = 2f * dotRadius
+        val gapWidth = resources.getDimension(R.dimen.page_indicator_gap_width)
+
+        val contentWidth = (numPages + 1) * diameter + (numPages - 1) * gapWidth
+        val contentHeight = diameter
+
+        val startX = paddingLeft + (width - paddingLeft - paddingRight - contentWidth) / 2f
+        val startY = paddingTop + (height - paddingTop - paddingBottom - contentHeight) / 2f
+
+        val pos = currentPageIndex.coerceIn(0, numPages - 1)
+        val offset = positionOffset.coerceIn(0f, 1f)
+
+        val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
+        val activeIndex = if (isRtl) numPages - 1 - pos else pos
+        val nextActiveIndex = if (isRtl) activeIndex - 1 else activeIndex + 1
+
+        paint.color = primaryColor
+        val baseAlpha = Color.alpha(primaryColor)
+
+        var currentX = startX
         for (i in 0 until numPages) {
-            val reuse = i < getChildCount()
-            val imageView = if (reuse) getChildAt(i) as ImageView else ImageView(context)
-            val layoutParams = if (reuse) {
-                imageView.layoutParams as LayoutParams
-            } else {
-                LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            val activeFraction = when (i) {
+                activeIndex -> 1f - offset
+                nextActiveIndex -> offset
+                else -> 0f
             }
-            if (i == 0) {
-                layoutParams.marginStart = 0
-            } else {
-                layoutParams.marginStart = dotMargin
-            }
-            if (i == numPages - 1) {
-                layoutParams.marginEnd = 0
-            } else {
-                layoutParams.marginEnd = dotMargin
-            }
-            if (reuse) {
-                imageView.layoutParams = layoutParams
-            } else {
-                val drawable = AppCompatResources.getDrawable(context, R.drawable.page_indicator_dot)!!
-                drawable.setTint(primaryColor)
-                imageView.setImageDrawable(drawable)
-                addView(imageView, layoutParams)
-            }
-            imageView.alpha = if (i == currentPageIndex) 1f else 0.4f
+
+            val alphaFraction = 0.5f + 0.5f * activeFraction
+            val dotWidth = diameter * (1f + activeFraction)
+
+            rect.set(
+                currentX,
+                startY,
+                currentX + dotWidth,
+                startY + diameter,
+            )
+            paint.alpha = (baseAlpha * alphaFraction).roundToInt()
+
+            canvas.drawRoundRect(rect, dotRadius, dotRadius, paint)
+
+            currentX += dotWidth + gapWidth
         }
-        contentDescription = context.getString(
-            R.string.accessibility_smartspace_page,
-            1,
-            Integer.valueOf(numPages),
-        )
     }
 }
