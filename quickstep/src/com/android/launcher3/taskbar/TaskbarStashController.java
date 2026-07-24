@@ -451,7 +451,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 && !hasAnyFlag(FLAG_IGNORE_IN_APP)
                 && !hasAnyFlag(FLAG_IN_OVERVIEW)
                 && !hasAnyFlag(FLAG_TASKBAR_HIDDEN)
-                && !isLauncherSettingsTopTask()
+                && !isStashedInLauncherSettings()
                 && !mIsStashedPredicate.test(mState);
     }
 
