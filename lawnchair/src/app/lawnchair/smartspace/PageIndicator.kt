@@ -26,6 +26,9 @@ class PageIndicator @JvmOverloads constructor(
     private var currentPageIndex = -1
     private var positionOffset = 0f
     private var numPages = -1
+    private var dotRadius = 0f
+    private var diameter = 0f
+    private var gapWidth = 0f
 
     fun setNumPages(numPages: Int) {
         if (this.numPages != numPages) {
@@ -59,14 +62,18 @@ class PageIndicator @JvmOverloads constructor(
         invalidate()
     }
 
+    private fun updateDotMetrics() {
+        dotRadius = resources.getDimension(R.dimen.page_indicator_dot_size) / 2f
+        diameter = 2f * dotRadius
+        gapWidth = resources.getDimension(R.dimen.page_indicator_gap_width)
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (numPages < 2) {
             setMeasuredDimension(0, 0)
             return
         }
-        val dotRadius = resources.getDimension(R.dimen.page_indicator_dot_size) / 2f
-        val diameter = 2f * dotRadius
-        val gapWidth = resources.getDimension(R.dimen.page_indicator_gap_width)
+        updateDotMetrics()
 
         val contentWidth = (numPages + 1) * diameter + (numPages - 1) * gapWidth
         val contentHeight = diameter
@@ -79,10 +86,6 @@ class PageIndicator @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (numPages < 2) return
-
-        val dotRadius = resources.getDimension(R.dimen.page_indicator_dot_size) / 2f
-        val diameter = 2f * dotRadius
-        val gapWidth = resources.getDimension(R.dimen.page_indicator_gap_width)
 
         val contentWidth = (numPages + 1) * diameter + (numPages - 1) * gapWidth
         val contentHeight = diameter
