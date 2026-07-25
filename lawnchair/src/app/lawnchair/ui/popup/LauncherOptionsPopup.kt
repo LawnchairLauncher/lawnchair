@@ -24,7 +24,7 @@ object LauncherOptionsPopup {
         LauncherOptionPopupItem("all_apps", true),
         LauncherOptionPopupItem("home_settings", true),
         LauncherOptionPopupItem("sys_settings", false),
-        LauncherOptionPopupItem("default_page", true),
+        LauncherOptionPopupItem("default_page", false),
     )
 
     fun restoreMissingPopupOptions(
