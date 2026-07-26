@@ -533,6 +533,8 @@
     <string name="home_screen_rotation_description">Permitir a rotação do ecrã inicial quando rodar o dispositivo</string>
     <string name="auto_updater_label">Verificar atualizações automaticamente</string>
     <string name="auto_updater_description">Verificar atualizações automáticamente ao abrir o ecrã Sobre</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">Desfocar o papel de parede (experimental)</string>
     <string name="wallpaper_background_blur">Intensidade do desfoque</string>
     <string name="wallpaper_background_blur_factor">Limite do fator</string>

@@ -533,6 +533,8 @@
     <string name="home_screen_rotation_description">Startscherm-rotatie toestaan wanneer het apparaat wordt gedraaid</string>
     <string name="auto_updater_label">Automatisch op updates controleren</string>
     <string name="auto_updater_description">Controleert op Nightly-updates bij het openen van het Over scherm</string>
+    <string name="live_information_label">Huidige informatie</string>
+    <string name="live_information_description">Geeft aankondiging weer en stelt de standaard functievlaggen in</string>
     <string name="wallpaper_blur">Achtergrond vervagen (experimenteel)</string>
     <string name="wallpaper_background_blur">Intensiteit van vervaging</string>
     <string name="wallpaper_background_blur_factor">Factor-drempelwaarde</string>

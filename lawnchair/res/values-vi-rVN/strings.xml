@@ -42,7 +42,7 @@
     <string name="deselect_all">Bỏ chọn tất cả</string>
     <string name="inverse_selection">Lựa chọn ngược</string>
     <string name="loading">Đang tải…</string>
-    <string name="dismiss">Dismiss </string>
+    <string name="dismiss">Bỏ qua</string>
     <string name="download_update">Tải xuống bản cập nhật</string>
     <string name="install_update">Cài đặt bản cập nhật</string>
     <string name="view_changes">Xem các thay đổi</string>
@@ -152,8 +152,8 @@
     <string name="gestures_description">Cử chỉ và chạm</string>
     <string name="quickstep_label">Màn hình gần đây</string>
     <string name="quickstep_description">Clear all button, corner radius</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="backup_and_restore_label">Sao lưu và khôi phục</string>
+    <string name="backup_and_restore_description">Lưu cấu hình hiện tại, khôi phục từ bản sao lưu</string>
     <string name="about_label">Giới thiệu</string>
     <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
     <string name="debug_restart_launcher">Khởi chạy lại Lawnchair</string>
@@ -176,7 +176,7 @@
     <string name="show_deck_layout_description">Hiện một tùy chọn tắt ngăn chứa ứng dụng và tự động thêm ứng dụng mới vào màn hình chính</string>
     <string name="material_expressive_label">Material 3 Biểu cảm</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_shape_label">Hình của tệp</string>
     <string name="folder_label">Thư mục</string>
     <string name="app_icon_shape_label">Ứng dụng</string>
     <string name="gesturenavcontract_label">Sử dụng API GestureNavContract</string>
@@ -209,7 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Phong cách biểu tượng</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
+    <string name="apply_icon_pack_title">Sử dụng tập icon này</string>
     <string name="icon_shape_label">Hình dạng biểu tượng</string>
     <string name="icon_sizes">Kích thước biểu tượng</string>
     <string name="show_labels">Hiển thị tên</string>
@@ -435,9 +435,9 @@
     <string name="contributor_status_active">Kích hoạt</string>
     <string name="update_check_failed">Không kiểm tra được bản cập nhật</string>
     <string name="major_update_label">Update to major version?</string>
-    <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
+    <string name="major_update_description">Bạn đang cập nhật từ phiên bản <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. Phiên bản mới hơn kia là bản cập nhật lớn và có thể sẽ giảm ổn định.</string>
     <string name="pro_disabled_by_unknown">Cập nhật không có sẵn</string>
-    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
+    <string name="pro_disabled_by_major_is_newer">Bạn đã đang sử dụng phiên bản mới hơn</string>
     <string name="updater">Cập nhật</string>
     <!--
 
@@ -455,7 +455,7 @@
     <string name="backup_restore_success">Đã khôi phục bản sao lưu</string>
     <string name="backup_restore_error">Khôi phục bản sao lưu thất bại</string>
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ</string>
-    <string name="restore_nova_backup">Restore Nova backup</string>
+    <string name="restore_nova_backup">Khôi phục từ bản sao lưu Nova</string>
     <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
     <string name="nova_grid_label">Lưới</string>
     <string name="nova_grid_value">%1$d x %2$d</string>
@@ -504,8 +504,8 @@
     <string name="recents_screen_a11y_hint">mở màn hình Gần đây</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair sử dụng phương thức `performGlobalAction` của Trợ năng để thực hiện hành động này. Đây là một quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho chức năng đó.</string>
-    <string name="sleep_mode_label">Sleep mode</string>
-    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_label">Chế độ ngủ</string>
+    <string name="sleep_mode_auto">Tự động</string>
     <string name="sleep_mode_root">Root</string>
     <string name="sleep_mode_accessibility">Accessibility service</string>
     <string name="sleep_mode_device_admin">Device admin</string>
@@ -533,6 +533,8 @@
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
     <string name="auto_updater_label">Tự động kiểm tra cập nhật</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">Làm mờ hình nền (thử nghiệm)</string>
     <string name="wallpaper_background_blur">Cường độ mờ</string>
     <string name="wallpaper_background_blur_factor">Ngưỡng yếu tố</string>
