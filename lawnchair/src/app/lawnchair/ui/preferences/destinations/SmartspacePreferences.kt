@@ -53,6 +53,7 @@ import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.controls.TextPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -238,6 +239,9 @@ fun SmartspaceDateAndTimePreferences(
         ExpandAndShrink(visible = supportCustomizationFormat && showDateAdapter.state.value) {
             SmartspaceCalendarPreference()
         }
+        ExpandAndShrink(visible = calendar is SmartspaceCalendar.Custom) {
+            SmartspaceCustomDateTimePreference()
+        }
         ExpandAndShrink(visible = supportCustomizationFormat) {
             SwitchPreference(
                 adapter = showTimeAdapter,
@@ -248,6 +252,33 @@ fun SmartspaceDateAndTimePreferences(
         ExpandAndShrink(visible = supportCustomizationFormat && showTimeAdapter.state.value) {
             SmartspaceTimeFormatPreference()
         }
+    }
+}
+
+@Composable
+fun SmartspaceCustomDateTimePreference(
+    modifier: Modifier = Modifier,
+) {
+    val preferenceManager2 = preferenceManager2()
+    PreferenceGroup(
+        heading = stringResource(id = R.string.smartspace_custom_date_header),
+        modifier = modifier,
+    ) {
+        TextPreference(
+            adapter = preferenceManager2.smartspaceCustomTimeFormat.getAdapter(),
+            label = stringResource(id = R.string.smartspace_time_custom_format),
+            modifier = modifier,
+        )
+        TextPreference(
+            adapter = preferenceManager2.smartspaceCustomDate.getAdapter(),
+            label = stringResource(id = R.string.smartspace_date_custom_format),
+            modifier = modifier,
+        )
+        TextPreference(
+            adapter = preferenceManager2.smartspaceCustomDateWithoutYear.getAdapter(),
+            label = stringResource(id = R.string.smartspace_time_custom_format),
+            modifier = modifier,
+        )
     }
 }
 
