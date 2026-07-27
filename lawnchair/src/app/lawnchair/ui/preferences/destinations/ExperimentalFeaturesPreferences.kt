@@ -120,6 +120,17 @@ fun ExperimentalFeaturesPreferences(
             onPauseOrDispose { }
         }
 
+        PreferenceGroup(
+            modifier = Modifier,
+            heading = stringResource(R.string.smartspace_label),
+        ) {
+            SwitchPreference(
+                adapter = prefs2.enableCustomSmartspaceDateFormat.getAdapter(),
+                label = stringResource(id = R.string.enable_custom_smartspace_date_format_label),
+                description = stringResource(id = R.string.enable_custom_smartspace_date_format_description),
+            )
+        }
+
         val alwaysReloadIconsAdapter = prefs2.alwaysReloadIcons.getAdapter()
         val enableGncAdapter = prefs.enableGnc.getAdapter()
 

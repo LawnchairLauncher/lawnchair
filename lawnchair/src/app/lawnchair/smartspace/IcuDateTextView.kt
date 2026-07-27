@@ -88,7 +88,7 @@ class IcuDateTextView @JvmOverloads constructor(
         val formatter = when (calendar) {
             SmartspaceCalendar.Persian -> createPersianFormatter()
             SmartspaceCalendar.Lunar -> createLunarFormatter()
-            SmartspaceCalendar.Custom -> createCustomFormatter()
+            SmartspaceCalendar.Custom if prefs.enableCustomSmartspaceDateFormat.get().firstBlocking() -> createCustomFormatter()
             else -> createGregorianFormatter()
         }
         formatterFunction = formatter

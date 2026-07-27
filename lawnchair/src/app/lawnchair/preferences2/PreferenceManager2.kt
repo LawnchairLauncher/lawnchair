@@ -71,6 +71,7 @@ import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.PreferenceManager
 import com.patrykmichalik.opto.core.firstBlocking
+import com.patrykmichalik.opto.core.resetBlocking
 import com.patrykmichalik.opto.core.setBlocking
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -776,6 +777,21 @@ class PreferenceManager2 @Inject constructor(
     val smartspaceCustomDateWithoutYear = preference(
         key = stringPreferencesKey(name = "smartspace_custom_date_wmd"),
         defaultValue = context.getString(R.string.smartspace_icu_date_pattern_custom_wday_month_day_no_year),
+    )
+
+    val enableCustomSmartspaceDateFormat = preference(
+        key = booleanPreferencesKey(name = "enable_custom_smartspace_date_format"),
+        defaultValue = false,
+        onSet = { value ->
+            if (!value) {
+                if (smartspaceCalendar.firstCached() == SmartspaceCalendar.Custom) {
+                    smartspaceCalendar.setBlocking(SmartspaceCalendar.Gregorian)
+                }
+                smartspaceCustomTimeFormat.resetBlocking()
+                smartspaceCustomDate.resetBlocking()
+                smartspaceCustomDateWithoutYear.resetBlocking()
+            }
+        },
     )
 
     val smartspacerMaxCount = preference(

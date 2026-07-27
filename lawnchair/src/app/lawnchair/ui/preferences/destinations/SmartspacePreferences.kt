@@ -236,10 +236,11 @@ fun SmartspaceDateAndTimePreferences(
                 enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
             )
         }
+        val enableCustomSmartspaceDateFormat = preferenceManager2.enableCustomSmartspaceDateFormat.getAdapter()
         ExpandAndShrink(visible = supportCustomizationFormat && showDateAdapter.state.value) {
             SmartspaceCalendarPreference()
         }
-        ExpandAndShrink(visible = calendar is SmartspaceCalendar.Custom) {
+        ExpandAndShrink(visible = calendar is SmartspaceCalendar.Custom && enableCustomSmartspaceDateFormat.state.value) {
             SmartspaceCustomDateTimePreference()
         }
         ExpandAndShrink(visible = supportCustomizationFormat) {
@@ -306,10 +307,13 @@ fun SmartspaceTimeFormatPreference(
 fun SmartspaceCalendarPreference(
     modifier: Modifier = Modifier,
 ) {
-    val entries = remember {
-        SmartspaceCalendar.values().map { calendar ->
-            ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
-        }
+    val enableCustomSmartspaceDateFormat by preferenceManager2().enableCustomSmartspaceDateFormat.getAdapter()
+    val entries = remember(enableCustomSmartspaceDateFormat) {
+        SmartspaceCalendar.values()
+            .filter { calendar -> calendar !is SmartspaceCalendar.Custom || enableCustomSmartspaceDateFormat }
+            .map { calendar ->
+                ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
+            }
     }
 
     val adapter = preferenceManager2().smartspaceCalendar.getAdapter()
