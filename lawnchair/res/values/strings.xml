@@ -478,8 +478,8 @@
     <string name="smartspace_time_follow_system">Follow system</string>
     <string name="smartspace_time_12_hour_format">12-hour format</string>
     <string name="smartspace_time_24_hour_format">24-hour format</string>
-    <string name="enable_custom_smartspace_date_format_label">Custom datetime format for At a Glance widget</string>
-    <string name="enable_custom_smartspace_date_format_description">Allow setting custom date and time formats for At a Glance using Java datetime format</string>
+    <string name="enable_custom_smartspace_date_format_label">Custom datetime format</string>
+    <string name="enable_custom_smartspace_date_format_description">Allow setting custom date and time formats using Java datetime format</string>
     <string name="smartspace_datetime_custom_format">Format</string>
     <string name="smartspace_datetime_custom_locale">Locale</string>
     <string name="smartspace_custom_datetime_preview">Preview: %1$s</string>
