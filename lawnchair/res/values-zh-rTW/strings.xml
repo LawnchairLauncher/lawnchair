@@ -533,6 +533,8 @@
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
     <string name="auto_updater_label">Automatically check for updates</string>
     <string name="auto_updater_description">開啟關於時檢查Nightly更新</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">模糊桌布 (實驗性)</string>
     <string name="wallpaper_background_blur">模糊強度</string>
     <string name="wallpaper_background_blur_factor">係數閥值</string>
