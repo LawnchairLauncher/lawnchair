@@ -23,8 +23,6 @@ import android.window.DesktopExperienceFlags;
 
 import androidx.annotation.NonNull;
 
-import com.android.internal.protolog.ProtoLog;
-import com.android.internal.protolog.common.IProtoLogGroup;
 import com.android.launcher3.Flags;
 
 /**
@@ -46,22 +44,22 @@ public class RecentsWindowProtoLogProxy {
 
     public static void logOnStateSetStart(@NonNull String stateName) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW, "onStateSetStart: %s", stateName);
+        ProtoLogCompat.d(RECENTS_WINDOW, "onStateSetStart: %s", stateName);
     }
 
     public static void logOnStateSetEnd(@NonNull String stateName) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW, "onStateSetEnd: %s", stateName);
+        ProtoLogCompat.d(RECENTS_WINDOW, "onStateSetEnd: %s", stateName);
     }
 
     public static void logOnRepeatStateSetAborted(@NonNull String stateName) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW, "onRepeatStateSetAborted: %s", stateName);
+        ProtoLogCompat.d(RECENTS_WINDOW, "onRepeatStateSetAborted: %s", stateName);
     }
 
     public static void logStartRecentsWindow(boolean isShown, boolean windowViewIsNull) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW,
+        ProtoLogCompat.d(RECENTS_WINDOW,
                 "Starting recents window: isShow= %b, windowViewIsNull=%b",
                 isShown,
                 windowViewIsNull);
@@ -69,6 +67,6 @@ public class RecentsWindowProtoLogProxy {
 
     public static void logCleanup(boolean isShown) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW, "Cleaning up recents window: isShow= %b", isShown);
+        ProtoLogCompat.d(RECENTS_WINDOW, "Cleaning up recents window: isShow= %b", isShown);
     }
 }

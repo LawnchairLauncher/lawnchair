@@ -698,7 +698,7 @@ class PreferenceManager2 @Inject constructor(
 
     val enableTaskbarRecents = preference(
         key = booleanPreferencesKey("enable_taskbar_recents"),
-        defaultValue = true,
+        defaultValue = false,
         onSet = { reloadHelper.reloadTaskbar() },
     )
 

@@ -20,15 +20,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.android.internal.protolog.ProtoLog;
-import com.android.internal.protolog.common.IProtoLogGroup;
-
 import com.android.launcher3.Utilities;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Enums used to interface with the ProtoLog API. */
-public enum QuickstepProtoLogGroup implements IProtoLogGroup {
+public enum QuickstepProtoLogGroup {
 
     ACTIVE_GESTURE_LOG(true, true, Constants.DEBUG_ACTIVE_GESTURE, "ActiveGestureLog"),
     RECENTS_WINDOW(true, true, Constants.DEBUG_RECENTS_WINDOW, "RecentsWindow"),
@@ -68,7 +65,7 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
         }
         Log.i(Constants.TAG, "Initializing ProtoLog.");
         Variables.sIsInitialized = true;
-        ProtoLog.init(QuickstepProtoLogGroup.values());
+        ProtoLogCompat.init(QuickstepProtoLogGroup.values());
     }
 
     /**
@@ -87,42 +84,34 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
         this.mTag = tag;
     }
 
-    @Override
     public boolean isEnabled() {
         return mEnabled;
     }
 
-    @Override
     public boolean isLogToProto() {
         return mLogToProto;
     }
 
-    @Override
     public boolean isLogToLogcat() {
         return mLogToLogcat;
     }
 
-    @Override
     public boolean isLogToAny() {
         return mLogToLogcat || mLogToProto;
     }
 
-    @Override
     public int getId() {
         return Constants.LOG_START_ID + this.ordinal();
     }
 
-    @Override
     public @NonNull String getTag() {
         return mTag;
     }
 
-    @Override
     public void setLogToProto(boolean logToProto) {
         this.mLogToProto = logToProto;
     }
 
-    @Override
     public void setLogToLogcat(boolean logToLogcat) {
         this.mLogToLogcat = logToLogcat;
     }
