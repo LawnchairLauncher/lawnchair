@@ -9,6 +9,7 @@ import android.os.SystemClock
 import android.text.format.DateFormat.is24HourFormat
 import android.util.AttributeSet
 import android.util.Log
+import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
@@ -88,7 +89,7 @@ class IcuDateTextView @JvmOverloads constructor(
         val formatter = when (calendar) {
             SmartspaceCalendar.Persian -> createPersianFormatter()
             SmartspaceCalendar.Lunar -> createLunarFormatter()
-            SmartspaceCalendar.Custom if prefs.enableCustomSmartspaceDateFormat.get().firstBlocking() -> createCustomFormatter()
+            SmartspaceCalendar.Custom -> if (prefs.enableCustomSmartspaceDateFormat.get().firstBlocking()) createCustomFormatter() else createGregorianFormatter()
             else -> createGregorianFormatter()
         }
         formatterFunction = formatter
@@ -96,21 +97,21 @@ class IcuDateTextView @JvmOverloads constructor(
     }
 
     private fun createCustomFormatter(): FormatterFunction {
-        val tag = "createCustomFormatter"
+        val format: String = prefs.smartspaceCustomDateTime.get().firstBlocking()
+        val localeTag: String = prefs.smartspaceCustomDateTimeLocale.get().firstBlocking()
 
-        var format: String
-        if (dateTimeOptions.showTime) {
-            format = prefs.smartspaceCustomTimeFormat.get().firstBlocking()
-            if (dateTimeOptions.showDate) format = prefs.smartspaceCustomDate.get().firstBlocking() + format
-        } else {
-            format = prefs.smartspaceCustomDateWithoutYear.get().firstBlocking()
-        }
         try {
-            val formatter = DateFormat.getInstanceForSkeleton(format, Locale.getDefault())
+            val locale = if (localeTag.isBlank() || localeTag.equals("default", ignoreCase = true)) {
+                Locale.getDefault()
+            } else {
+                val parsed = Locale.forLanguageTag(localeTag)
+                if (parsed.language.isEmpty()) Locale.getDefault() else parsed
+            }
+            val formatter = DateFormat.getInstanceForSkeleton(format, locale)
             formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
             return { formatter.format(it) }
         } catch (t: Throwable) {
-            Log.w(tag, "Fallback to Gregorian formatter", t)
+            Log.w("IcuDateTextView", "Custom formatter is falling back to the Gregorian formatter due to ${t.cause}", t)
             return createGregorianFormatter()
         }
     }

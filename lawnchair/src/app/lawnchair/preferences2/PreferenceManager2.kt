@@ -73,6 +73,7 @@ import com.patrykmichalik.opto.core.PreferenceManager
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.resetBlocking
 import com.patrykmichalik.opto.core.setBlocking
+import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,10 +83,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.invoke
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @LauncherAppSingleton
 class PreferenceManager2 @Inject constructor(
@@ -764,19 +768,14 @@ class PreferenceManager2 @Inject constructor(
         save = { it.toString() },
     )
 
-    val smartspaceCustomTimeFormat = preference(
-        key = stringPreferencesKey(name = "smartspace_custom_time_format"),
-        defaultValue = context.getString(R.string.smartspace_icu_date_pattern_custom_time),
-    )
-
-    val smartspaceCustomDate = preference(
-        key = stringPreferencesKey(name = "smartspace_custom_date"),
-        defaultValue = context.getString(R.string.smartspace_icu_date_pattern_custom_date),
-    )
-
-    val smartspaceCustomDateWithoutYear = preference(
-        key = stringPreferencesKey(name = "smartspace_custom_date_wmd"),
+    val smartspaceCustomDateTime = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_datetime"),
         defaultValue = context.getString(R.string.smartspace_icu_date_pattern_custom_wday_month_day_no_year),
+    )
+
+    val smartspaceCustomDateTimeLocale = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_datetime_locale"),
+        defaultValue = Locale.getDefault().toLanguageTag(),
     )
 
     val enableCustomSmartspaceDateFormat = preference(
@@ -787,9 +786,8 @@ class PreferenceManager2 @Inject constructor(
                 if (smartspaceCalendar.firstCached() == SmartspaceCalendar.Custom) {
                     smartspaceCalendar.setBlocking(SmartspaceCalendar.Gregorian)
                 }
-                smartspaceCustomTimeFormat.resetBlocking()
-                smartspaceCustomDate.resetBlocking()
-                smartspaceCustomDateWithoutYear.resetBlocking()
+                smartspaceCustomDateTime.resetBlocking()
+                smartspaceCustomDateTimeLocale.resetBlocking()
             }
         },
     )

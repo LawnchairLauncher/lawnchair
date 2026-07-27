@@ -1,7 +1,9 @@
 package app.lawnchair.ui.preferences.components.controls
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,6 +34,7 @@ fun TextPreference(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     description: (String) -> String? = { it },
+    fieldOverline: (@Composable (String) -> Unit)? = null,
 ) {
     val value = adapter.state.value
     TextPreference(
@@ -41,6 +44,7 @@ fun TextPreference(
         description = description,
         enabled = enabled,
         modifier = modifier,
+        fieldOverline = fieldOverline,
     )
 }
 
@@ -53,6 +57,7 @@ fun TextPreference(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     description: (String) -> String? = { it },
+    fieldOverline: (@Composable (String) -> Unit)? = null,
 ) {
     val bottomSheetHandler = bottomSheetHandler
     PreferenceTemplate(
@@ -68,6 +73,7 @@ fun TextPreference(
                         initialValue = value,
                         onDismissRequest = { bottomSheetHandler.hide() },
                         onConfirm = onChange,
+                        fieldOverline = fieldOverline,
                     )
                 }
             }
@@ -85,18 +91,25 @@ fun TextPreferenceDialog(
     onDismissRequest: () -> Unit,
     onConfirm: (String) -> Unit,
     modifier: Modifier = Modifier,
+    fieldOverline: (@Composable (String) -> Unit)? = null,
 ) {
     var value by remember { mutableStateOf(initialValue) }
     ModalBottomSheetContent(
         modifier = modifier,
         title = { Text(text = title) },
         text = {
-            OutlinedTextField(
-                value = value,
-                onValueChange = { value = it },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-            )
+            Column {
+                if (fieldOverline != null) {
+                    fieldOverline(value)
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                OutlinedTextField(
+                    value = value,
+                    onValueChange = { value = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+            }
         },
         buttons = {
             OutlinedButton(

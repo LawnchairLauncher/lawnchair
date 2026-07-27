@@ -39,7 +39,7 @@ sealed class SmartspaceTimeFormat(@StringRes val nameResourceId: Int) {
     }
 
     object CustomHourFormat : SmartspaceTimeFormat(
-        nameResourceId = R.string.smartspace_time_custom_format,
+        nameResourceId = R.string.smartspace_datetime_custom_format,
     ) {
         override fun toString() = "custom"
     }
