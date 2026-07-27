@@ -533,6 +533,8 @@
     <string name="home_screen_rotation_description">Cihaz döndərildikdə əsas ekranın da döndərilməsinə icazə ver</string>
     <string name="auto_updater_label">Yeniləmələri avtomatik yoxla</string>
     <string name="auto_updater_description">Haqqında səhifəsi açıldıqda Nightly yeniləmələrini yoxlayır</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">Divar kağızını bulanıqlaşdır (eksperimental)</string>
     <string name="wallpaper_background_blur">Bulanıqlıq səviyyəsi</string>
     <string name="wallpaper_background_blur_factor">Faktor həddi</string>

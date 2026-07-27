@@ -43,7 +43,10 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
     private static final AtomicBoolean sHasLoggedPreInitWarning = new AtomicBoolean();
 
     public static boolean isProtoLogInitialized() {
-        if (!Utilities.ATLEAST_R) return false;
+        // LC-Note: This is workaround for skipping Android 11 Release 41. 
+        //          Not the best solutions but this is not significant enough to Lawnchair.
+        if (!Utilities.ATLEAST_S) return false;
+
 
         if (!Variables.sIsInitialized) {
             if (sHasLoggedPreInitWarning.compareAndSet(false, true)) {
@@ -54,6 +57,10 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
     }
 
     public static void initProtoLog() {
+        // LC-Note: This is workaround for skipping Android 11 Release 41. 
+        //          Not the best solutions but this is not significant enough to Lawnchair.
+        if (!Utilities.ATLEAST_S) return;
+        
         if (Variables.sIsInitialized) {
             Log.e(Constants.TAG,
                     "Attempting to re-initialize ProtoLog.", new IllegalStateException());

@@ -849,9 +849,9 @@ class PreferenceManager2 @Inject constructor(
     val autoUpdaterNightly = preference(
         key = booleanPreferencesKey(name = "enable_nightly_auto_updater"),
         defaultValue = if (BuildConfig.APPLICATION_ID.contains("nightly")) {
-            false
-        } else {
             context.resources.getBoolean(R.bool.config_default_enable_nightly_auto_updater)
+        } else {
+            false
         },
     )
 

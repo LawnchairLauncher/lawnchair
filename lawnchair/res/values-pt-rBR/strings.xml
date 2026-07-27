@@ -534,6 +534,8 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="home_screen_rotation_description">Permitir a rotação da tela inicial quando o dispositivo for girado</string>
     <string name="auto_updater_label">Automaticamente procurar por atualizações</string>
     <string name="auto_updater_description">Procura por atualizações Nightly quando abrir a tela de sobre</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">Desfoque no papel de parede (experimental)</string>
     <string name="wallpaper_background_blur">Intensidade do desfoque</string>
     <string name="wallpaper_background_blur_factor">Limite de fator</string>
