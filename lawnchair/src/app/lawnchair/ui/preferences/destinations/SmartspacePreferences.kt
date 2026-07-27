@@ -231,38 +231,39 @@ fun SmartspaceDateAndTimePreferences(
     val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
     val calendar = calendarAdapter.state.value
 
-    PreferenceGroup(
-        heading = stringResource(id = R.string.smartspace_date_and_time),
-        modifier = modifier.padding(top = 8.dp),
-    ) {
-        val supportCustomizationFormat = calendar.formatCustomizationSupport
-        ExpandAndShrink(visible = supportCustomizationFormat) {
-            SwitchPreference(
-                adapter = showDateAdapter,
-                label = stringResource(id = R.string.smartspace_date),
-                enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
-            )
-        }
-        ExpandAndShrink(visible = supportCustomizationFormat && showDateAdapter.state.value) {
-            SmartspaceCalendarPreference()
-        }
-        ExpandAndShrink(visible = supportCustomizationFormat) {
-            SwitchPreference(
-                adapter = showTimeAdapter,
-                label = stringResource(id = R.string.smartspace_time),
-                enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
-            )
-        }
-        ExpandAndShrink(visible = supportCustomizationFormat && showTimeAdapter.state.value) {
-            SmartspaceTimeFormatPreference()
-        }
-    }
-    val enableCustomSmartspaceDateFormat = preferenceManager2.enableCustomSmartspaceDateFormat.getAdapter()
-    ExpandAndShrink(visible = calendar is SmartspaceCalendar.Custom && enableCustomSmartspaceDateFormat.state.value) {
+    Column(modifier = modifier) {
         PreferenceGroup(
-            heading = stringResource(id = R.string.smartspace_custom_date_header),
-            modifier = modifier,
-        ) { SmartspaceCustomDateTimePreference() }
+            heading = stringResource(id = R.string.smartspace_date_and_time),
+            modifier = Modifier.padding(top = 8.dp),
+        ) {
+            val supportCustomizationFormat = calendar.formatCustomizationSupport
+            ExpandAndShrink(visible = supportCustomizationFormat) {
+                SwitchPreference(
+                    adapter = showDateAdapter,
+                    label = stringResource(id = R.string.smartspace_date),
+                    enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
+                )
+            }
+            ExpandAndShrink(visible = supportCustomizationFormat && showDateAdapter.state.value) {
+                SmartspaceCalendarPreference()
+            }
+            ExpandAndShrink(visible = supportCustomizationFormat) {
+                SwitchPreference(
+                    adapter = showTimeAdapter,
+                    label = stringResource(id = R.string.smartspace_time),
+                    enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
+                )
+            }
+            ExpandAndShrink(visible = supportCustomizationFormat && showTimeAdapter.state.value) {
+                SmartspaceTimeFormatPreference()
+            }
+        }
+        val enableCustomSmartspaceDateFormat = preferenceManager2.enableCustomSmartspaceDateFormat.getAdapter()
+        ExpandAndShrink(visible = calendar is SmartspaceCalendar.Custom && enableCustomSmartspaceDateFormat.state.value) {
+            PreferenceGroup(
+                heading = stringResource(id = R.string.smartspace_custom_date_header),
+            ) { SmartspaceCustomDateTimePreference() }
+        }
     }
 }
 
@@ -285,9 +286,7 @@ private fun formatCustomSkeleton(context: Context, pattern: String, localeTag: S
 }
 
 @Composable
-fun SmartspaceCustomDateTimePreference(
-    modifier: Modifier = Modifier,
-) {
+fun SmartspaceCustomDateTimePreference() {
     val context = LocalContext.current
     val prefs2 = preferenceManager2()
     val customDateTimePatternState by prefs2.smartspaceCustomDateTime.getAdapter()
@@ -314,18 +313,15 @@ fun SmartspaceCustomDateTimePreference(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
-
     TextPreference(
         adapter = prefs2.smartspaceCustomDateTime.getAdapter(),
         label = stringResource(id = R.string.smartspace_datetime_custom_format),
         fieldOverline = patternOverline,
-        modifier = modifier,
     )
     TextPreference(
         adapter = prefs2.smartspaceCustomDateTimeLocale.getAdapter(),
         label = stringResource(id = R.string.smartspace_datetime_custom_locale),
         fieldOverline = localeOverline,
-        modifier = modifier,
     )
 }
 
