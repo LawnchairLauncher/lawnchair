@@ -304,10 +304,10 @@ public class DesktopModeStatus {
      * of the display's root [TaskDisplayArea] is set to WINDOWING_MODE_FREEFORM.
      */
     public static boolean enterDesktopByDefaultOnFreeformDisplay(@NonNull Context context) {
-        if (DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_BASED_DEFAULT_TO_DESKTOP_BUGFIX.isTrue()) {
+        if (isDesktopFirstDefaultToDesktopBugfixEnabled()) {
             return true;
         }
-        if (!DesktopExperienceFlags.ENTER_DESKTOP_BY_DEFAULT_ON_FREEFORM_DISPLAYS.isTrue()) {
+        if (!isEnterDesktopByDefaultOnFreeformDisplaysEnabled()) {
             return false;
         }
         return SystemProperties.getBoolean(ENTER_DESKTOP_BY_DEFAULT_ON_FREEFORM_DISPLAY_SYS_PROP,
@@ -358,6 +358,23 @@ public class DesktopModeStatus {
     private static boolean isMultipleDesktopsBackendFlagEnabled() {
         try {
             return DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isDesktopFirstDefaultToDesktopBugfixEnabled() {
+        try {
+            return DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_BASED_DEFAULT_TO_DESKTOP_BUGFIX
+                    .isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isEnterDesktopByDefaultOnFreeformDisplaysEnabled() {
+        try {
+            return DesktopExperienceFlags.ENTER_DESKTOP_BY_DEFAULT_ON_FREEFORM_DISPLAYS.isTrue();
         } catch (Throwable ignored) {
             return false;
         }
