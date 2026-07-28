@@ -46,10 +46,10 @@
     <string name="download_update">下载更新</string>
     <string name="install_update">安装更新</string>
     <string name="view_changes">查看更新</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">您的内容已是最新版本</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">更新</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">无法加载更新</string>
     <string name="changes_dialog_no_changes">没有发现更改</string>
     <string name="changes_dialog_build_format">构建 #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">由 %1$s • %2$s • %3$s</string>
@@ -90,15 +90,15 @@
     <string name="show_wallpaper">显示壁纸</string>
     <string name="wallpaper">壁纸</string>
     <string name="style">样式</string>
-    <string name="background_opacity">背景遮罩不透明度</string>
+    <string name="background_opacity">背景不透明度</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">已复制到剪贴板</string>
-    <string name="calculator_search_result_copied_toast">内容已经复制到粘贴板</string>
+    <string name="calculator_search_result_copied_toast">结果已复制到剪贴板</string>
     <string name="item_removed">项目已移除</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
     <string name="wallpapers">背景</string>
-    <string name="caddy_beta">Caddy (beta)</string>
+    <string name="caddy_beta">凯迪（测试版）</string>
     <string name="caddy">资源库</string>
     <string name="app_drawer_folder">应用抽屉文件夹</string>
     <string name="selected_apps">已选择应用</string>
@@ -117,16 +117,18 @@
     <string name="my_folder_label">我的文件夹</string>
     <string name="sort_active_items_action">排序活跃项目</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">当您使用手势执行某些操作（如锁定手机）时，Lawnchair 需要辅助功能权限。\n\nLawnchair 不会监视您的操作，尽管所有辅助功能服务都要求此项权限。Lawnchair 会丢弃系统发送的任何事件。\n\n要锁定手机或打开最近任务屏幕，Lawnchair 会使用 performGlobalAction 辅助功能服务。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">高级</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">Move up</string>
+    <string name="reorderable_move_down">Move down</string>
     <string name="reorderable_active_items">活跃项目</string>
     <string name="reorderable_disabled_items">其他项目</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_disabled_hint">已禁用项将显示于此</string>
+    <string name="reorderable_add_hint_items">活动项目将显示于此</string>
     <!--
 
     Preference Dashboard
@@ -149,7 +151,7 @@
     <string name="gestures_label">手势</string>
     <string name="gestures_description">点击和滑动</string>
     <string name="quickstep_label">最近任务界面</string>
-    <string name="quickstep_description">Clear all button, corner radius</string>
+    <string name="quickstep_description">全部清除按钮的圆角半径</string>
     <string name="backup_and_restore_label">备份和还原</string>
     <string name="backup_and_restore_description">保存当前设置，恢复备份</string>
     <string name="about_label">关于</string>
@@ -160,32 +162,32 @@
     <string name="workspace_label">工作区</string>
     <string name="smartspace_label">智能区</string>
     <string name="internal_label">内部</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_description">内部版本稳定性可能低于其他实验版本</string>
     <string name="font_picker_label">自定义字体</string>
     <string name="font_picker_description">部分文字保持不变</string>
     <string name="smartspace_calendar_label">自定义资讯一览日历</string>
     <string name="smartspace_calendar_description">允许显示非公历系统的日期</string>
     <string name="workspace_increase_max_grid_size_label">增加最大网格大小限制</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
+    <string name="workspace_increase_max_grid_size_description">主屏幕网格最大尺寸从 10 &#xd7; 10 提升至 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">始终重载图标</string>
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
-    <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
+    <string name="always_reload_icons_warning">开启后图标会定期刷新，可能影响性能。如果您的图标包更新不频繁，建议关闭此功能。</string>
     <string name="show_deck_layout">桌面模式</string>
     <string name="show_deck_layout_description">显示一个外观选项，开启时隐藏抽屉，并将 App 显示到桌面上</string>
     <string name="material_expressive_label">Material 3 表现力</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
+    <string name="material_expressive_description">在工作区中启用 Material 3 的视觉增强效果</string>
     <string name="folder_shape_label">文件夹形状</string>
     <string name="folder_label">文件夹</string>
     <string name="app_icon_shape_label">应用</string>
     <string name="gesturenavcontract_label">使用手势导航合同API</string>
-    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
-    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="recents_lock_unlock">App locking</string>
-    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
+    <string name="gesturenavcontract_description">在使用手势导航时支持 Android 增强动画</string>
+    <string name="gesturenavcontract_warning_incompatibility">您的设备未获得完全支持，这可能导致部分动画出现视觉问题。</string>
+    <string name="recents_lock_unlock">锁定应用</string>
+    <string name="recents_lock_unlock_description">开启后，点击‘全部清除’时，所选应用不会被关闭</string>
     <!--Overlay-->
     <string name="app_closing_animation">应用关闭动画</string>
-    <string name="overlay_fade_in">Fade in</string>
-    <string name="overlay_suck_in">Suck in</string>
+    <string name="overlay_fade_in">淡入</string>
+    <string name="overlay_suck_in">缩放</string>
     <string name="overlay_label">覆盖</string>
     <string name="overlay_none">无</string>
     <!--
@@ -198,8 +200,8 @@
     <string name="show_notification_count">显示通知数量</string>
     <string name="notification_dots_color">通知圆点颜色</string>
     <string name="notification_dots_text_color">通知计数颜色</string>
-    <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">通知圆点与计数数字的颜色对比度不够</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">通知圆点与计数数字的颜色有时可能对比度不够</string>
     <!--
 
     Icons
@@ -214,8 +216,8 @@
     <string name="label_size">标签大小</string>
     <string name="twoline_label">使用多行</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
+    <string name="transparent_background_icons_label">透明图标背景</string>
+    <string name="transparent_background_icons_description">用于主题图标和自适应图标</string>
     <string name="auto_adaptive_icons_label">自适应图标</string>
     <string name="auto_adaptive_icons_description">用于全部非自适应图标</string>
     <string name="shadow_bg_icons_label">在图标后显示阴影</string>
@@ -224,7 +226,7 @@
     <string name="reset_custom_icons">重置自定义图标</string>
     <string name="reset_custom_icons_confirmation">所有自定义图标将被重置。您想要继续吗？</string>
     <string name="remove_all_views_from_home_screen">清除主屏幕</string>
-    <string name="remove_all_views_from_home_screen_desc">主屏幕将被清空。是否继续？</string>
+    <string name="remove_all_views_from_home_screen_desc">主屏幕将被清除。您确定要继续吗？</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">图标</string>
     <string name="icon_picker_reset_to_default">重置为默认</string>
@@ -259,7 +261,7 @@
     <string name="icon_shape_leaf">叶</string>
     <string name="icon_shape_meow">喵</string>
     <string name="icon_shape_pebble">卵石</string>
-    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
+    <string name="icon_shape_roundedhexagon">圆角六边形</string>
     <string name="icon_shape_stretched">拉伸</string>
     <string name="icon_shape_vessel">器皿</string>
     <!-- Custom icon shapes -->
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">用强调色进行着色</string>
     <string name="system_icons">系统图标</string>
     <string name="force_monochrome_label">强制单色</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
+    <string name="force_monochrome_description">使用当前主题色给不支持的图标重新着色。</string>
     <string name="themed_icon_title">主题图标</string>
     <string name="themed_icons_off_label">关</string>
     <string name="themed_icons_home_label">主屏幕</string>
@@ -380,18 +382,18 @@
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
     <string name="smartspace_torch">手电筒状态</string>
-    <string name="smartspace_now_playing">Now playing</string>
+    <string name="smartspace_now_playing">正在播放</string>
     <string name="smartspace_onboarding">入职</string>
     <!-- Torch strings -->
     <string name="torch_status_on">手电筒已开启</string>
     <string name="torch_action_off">点击以关闭</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Set up Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
-    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
+    <string name="onboarding_open_settings_title">设置 Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">长按主屏幕打开设置</string>
+    <string name="onboarding_major_upgrade_title">全新 Lawnchair 来了</string>
+    <string name="onboarding_major_upgrade_subtitle">看看新变化</string>
     <string name="onboarding_welcome">欢迎来到 Lawnchair！</string>
-    <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
+    <string name="onboarding_swipe_up">上滑打开应用抽屉</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">目标数量上限</string>
     <string name="open_smartspacer_settings">打开 Smartspacer 设置</string>
@@ -401,7 +403,7 @@
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">在主屏幕显示</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">资讯一览可以通过 Lawnchair 小部件添加到主屏幕</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">资讯一览提供程序</string>
     <string name="smartspace_mode_google">Google</string>
@@ -423,7 +425,7 @@
     <string name="development">开发</string>
     <string name="quickswitch_maintenance">QuickSwitch 维护</string>
     <string name="devops">运维</string>
-    <string name="support_and_pr">支持和PR</string>
+    <string name="support_and_pr">支持和 PR</string>
     <string name="community">社区</string>
     <string name="telegram">电报</string>
     <string name="news">新闻</string>
@@ -432,9 +434,9 @@
     <string name="privacy_policy">隐私政策</string>
     <string name="contributor_status_active">活跃</string>
     <string name="update_check_failed">检查更新失败</string>
-    <string name="major_update_label">Update to major version?</string>
+    <string name="major_update_label">更新到大版本？</string>
     <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
-    <string name="pro_disabled_by_unknown">Updates are not available</string>
+    <string name="pro_disabled_by_unknown">更新不可用</string>
     <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
     <string name="updater">更新</string>
     <!--
@@ -465,15 +467,15 @@
     <string name="nova_icon_pack_label">图标包</string>
     <string name="create_backup_description">导出设置和启动器局部</string>
     <string name="restore_backup_description">导入之前创建的备份</string>
-    <string name="restore_nova_backup_description">Import layout from a Nova Launcher backup</string>
+    <string name="restore_nova_backup_description">从 Nova Launcher 备份导入布局</string>
     <!--
 
     Gesture settings
 
     -->
     <string name="gesture_double_tap">双击</string>
-    <string name="gesture_swipe_up">上滑</string>
-    <string name="gesture_swipe_down">下滑</string>
+    <string name="gesture_swipe_up">向上滑动</string>
+    <string name="gesture_swipe_down">向下滑动</string>
     <string name="gesture_two_finger_swipe_down">双指向下滑动</string>
     <string name="gesture_two_finger_swipe_up">双指向上滑动</string>
     <string name="gesture_home_tap">主屏键</string>
@@ -528,9 +530,11 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
-    <string name="auto_updater_label">Automatically check for updates</string>
+    <string name="home_screen_rotation_description">允许在设备旋转时旋转主屏幕</string>
+    <string name="auto_updater_label">自动检查更新</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
+    <string name="live_information_label">实时信息</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">壁纸模糊 (实验性)</string>
     <string name="wallpaper_background_blur">模糊强度</string>
     <string name="wallpaper_background_blur_factor">因素阈值</string>
@@ -539,7 +543,7 @@
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">添加新应用到主屏</string>
     <string name="minus_one_enable">显示订阅</string>
-    <string name="minus_one_unavailable">未安装订阅源。</string>
+    <string name="minus_one_unavailable">未安装订阅应用</string>
     <string name="minus_one">订阅内容</string>
     <string name="feed_provider">订阅提供</string>
     <string name="wallpaper_scrolling_label">壁纸滚动</string>
@@ -575,7 +579,7 @@
     <string name="show_status_bar">显示状态栏</string>
     <string name="dark_status_bar_label">深色状态栏</string>
     <string name="status_bar_clock_label">状态栏时钟</string>
-    <string name="status_bar_clock_description">Dynamically hide the status bar clock on the first screen</string>
+    <string name="status_bar_clock_description">在主屏幕上动态隐藏状态栏时钟</string>
     <string name="home_screen_text_color">文本颜色</string>
     <string name="color_light">浅色</string>
     <string name="color_dark">深色</string>
@@ -587,24 +591,24 @@
     <string name="widget_unlimited_size_description">删除小部件的最小和最大大小限制</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">显示 Dock 栏</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the dock is visible. Tap to show the dock</string>
+    <string name="enable_dock_to_access_qsb_settings">Dock 栏可见时，搜索栏设置可用。点击显示 dock 栏</string>
     <string name="search_bar_label">搜索栏</string>
     <string name="search_bar_settings">搜索栏设置</string>
     <string name="hotseat_mode_label">搜索栏小部件</string>
     <string name="hotseat_mode_disabled">已禁用</string>
-    <string name="hotseat_mode_google_search">Google search bar</string>
+    <string name="hotseat_mode_google_search">Google 搜索栏</string>
     <string name="qsb_hotseat_background_transparency">背景不透明度</string>
     <string name="qsb_hotseat_stroke_width">轮廓宽度</string>
     <string name="qsb_hotseat_stroke_color">轮廓颜色</string>
     <string name="corner_radius_label">圆角半径</string>
     <string name="apply_accent_color_label">应用强调色</string>
-    <string name="search_provider">搜索提供程序</string>
-    <string name="hotseat_background">背景遮罩</string>
+    <string name="search_provider">搜索提供方</string>
+    <string name="hotseat_background">显示背景</string>
     <string name="hotseat_bg_horizontal_inset_left">左距</string>
     <string name="hotseat_bg_horizontal_inset_right">右距</string>
     <string name="hotseat_bg_vertical_inset_top">上距</string>
     <string name="hotseat_bg_vertical_inset_bottom">下距</string>
-    <string name="hotseat_bg_color_label">背景遮罩颜色</string>
+    <string name="hotseat_bg_color_label">背景颜色</string>
     <string name="hotseat_bg_alpha">背景不透明度</string>
     <!-- Pause apps shortcut -->
     <string name="pause">暂停</string>
@@ -615,11 +619,11 @@
     <string name="paused_apps_drop_target_label">暂停应用</string>
     <string name="open_in_store_drop_target_label">在商店中打开</string>
     <string name="dock_icons">Dock 栏图标</string>
-    <string name="dock_rows">Dock rows</string>
+    <string name="dock_rows">底部栏行数</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
-    <string name="folded_label">Folded</string>
-    <string name="unfolded_label">Unfolded</string>
+    <string name="folded_label">折叠</string>
+    <string name="unfolded_label">展开</string>
     <string name="when_folded_label">When folded</string>
     <string name="when_unfolded_label">When unfolded</string>
     <string name="unfolded_grid_description">Lawnchair pairs two pages together to fill the larger display</string>
@@ -641,7 +645,7 @@
     <string name="hidden_apps_label">隐藏的应用</string>
     <string name="pref_all_apps_bulk_icon_loading_title">批量加载应用</string>
     <string name="pref_all_apps_bulk_icon_loading_description">批量加载和显示图标，而不是单独加载和显示图标</string>
-    <string name="pref_all_apps_remember_position_title">Remember scroll position</string>
+    <string name="pref_all_apps_remember_position_title">记住滚动位置</string>
     <string name="pref_all_apps_remember_position_description">Save the last scrolled location when closing the app drawer</string>
     <string name="pref_all_apps_show_scrollbar_title">显示滚动条</string>
     <string name="app_drawer_columns">应用程序抽屉列数</string>
@@ -651,7 +655,7 @@
     <string name="app_drawer_bg_color_label">背景颜色</string>
     <string name="work_profile_tab_background_label">Tab background color</string>
     <string name="pref_all_apps_search_bar_background">Show background behind search bar</string>
-    <string name="work_profile_tab_container_background_label">Show background behind tabs</string>
+    <string name="work_profile_tab_container_background_label">在标签后显示背景</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">从应用抽屉中隐藏</string>
     <string name="hidden_apps_label_with_count">隐藏的应用 (%1$d)</string>
@@ -665,7 +669,7 @@
     <string name="max_folder_columns">最大文件夹列数</string>
     <string name="max_folder_rows">最大文件夹行数</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">这些设置将被忽略，因为 Lawnchair 未被设置为“最近任务”屏幕提供方</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
     <string name="translucent_background">半透明背景</string>
@@ -742,7 +746,7 @@
     <string name="all_apps_search_result_calculator">计算器</string>
     <string name="search_empty_state_title">开始搜索</string>
     <string name="search_empty_state_no_history_subtitle">查找应用、联系人等。您最近的搜索结果将显示在这里。</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more</string>
+    <string name="search_empty_state_history_disabled_subtitle">查找应用、联系人等</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">搜索内容</string>
     <string name="search_pref_result_files_description">媒体、文件和更多</string>
@@ -775,7 +779,7 @@
     <string name="permissions_photos_videos_manage_selected">管理已选择项目</string>
     <!-- External storage -->
     <string name="permissions_external_storage">需要外储存权限</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage</string>
+    <string name="permissions_external_storage_description">为了搜索文件，<xliff:g id="name" example="My App">%1$s</xliff:g> 需要拥有访问您设备外部存储的权限</string>
     <string name="permissions_manage_storage">需要管理储存权限</string>
     <string name="permissions_manage_storage_description">为了在搜索结果中显示你的文件，<xliff:g id="name" example="My App">%1$s</xliff:g> 需要拥有管理您设备上所有文件的权限。这一权限只用于列出文件，而不用于读取或更改您的文件。</string>
     <string name="permission_desc_wallpaper_base">为了显示壁纸预览并将其包含于备份中，<xliff:g id="name" example="My App">%1$s</xliff:g> 需要 %2$s 权限。这是由于系统对访问壁纸数据的限制。</string>
@@ -792,7 +796,7 @@
     <string name="permissions_needed">需要权限</string>
     <string name="grant_requested_permissions_tap">点击此处授权</string>
     <!-- Message shown when all home screen views are removed -->
-    <string name="home_screen_all_views_removed_msg">主屏幕已清除</string>
+    <string name="home_screen_all_views_removed_msg">已清空主屏幕</string>
     <string name="lawnchair_actions">操作</string>
     <string name="lawnchair_action_failed">未能触发操作</string>
     <string name="please_wait">请稍等…</string>

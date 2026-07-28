@@ -41,6 +41,11 @@ class LiveInformationManager@Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_live_information_enabled),
     )
 
+    val endpoint = preference(
+        key = stringPreferencesKey(name = "endpoint"),
+        defaultValue = context.resources.getString(R.string.config_default_live_information_endpoint),
+    )
+
     val showAnnouncements = preference(
         key = booleanPreferencesKey(name = "show_announcements"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_live_information_show_announcements),

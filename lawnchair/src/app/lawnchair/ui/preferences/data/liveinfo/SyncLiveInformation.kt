@@ -12,13 +12,12 @@ fun SyncLiveInformation(
     liveInformationManager: LiveInformationManager = liveInformationManager(),
 ) {
     val enabled by liveInformationManager.enabled.asState()
+    val endpoint by liveInformationManager.endpoint.asState()
 
-    LaunchedEffect(enabled) {
+    LaunchedEffect(enabled, endpoint) {
         if (enabled) {
-            withContext(Dispatchers.IO) {
-                getLiveInformation()?.let { liveInformation ->
-                    liveInformationManager.liveInformation.set(liveInformation)
-                }
+            getLiveInformation(endpoint)?.let { liveInformation ->
+                liveInformationManager.liveInformation.set(liveInformation)
             }
         }
     }

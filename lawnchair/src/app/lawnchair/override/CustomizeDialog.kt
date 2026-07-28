@@ -1,5 +1,6 @@
 package app.lawnchair.override
 
+import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.animation.core.Spring
@@ -42,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.lawnchair.BlankActivity
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.launcher
 import app.lawnchair.preferences.getAdapter
@@ -163,10 +165,16 @@ fun CustomizeAppDialog(
 
     Log.d("CustomizeDialog", route.toString())
 
+    val scope = rememberCoroutineScope()
     val openIconPicker = {
         val intent = PreferenceActivity.createIntent(context, route)
-            .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
+        scope.launch {
+            val result = BlankActivity.startBlankActivityForResult(context as Activity, intent)
+            if (result.resultCode == Activity.RESULT_OK) {
+                onClose()
+            }
+        }
+        Unit
     }
 
     DisposableEffect(Unit) {

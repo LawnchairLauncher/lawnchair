@@ -123,6 +123,8 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">高度な設定</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">上へ移動</string>
+    <string name="reorderable_move_down">下へ移動</string>
     <string name="reorderable_active_items">追加されたアプリ</string>
     <string name="reorderable_disabled_items">追加されていないアプリ</string>
     <string name="reorderable_disabled_hint">無効な項目がここに表示されます</string>
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">アクセントカラーで染色する</string>
     <string name="system_icons">システムアイコン</string>
     <string name="force_monochrome_label">モノクロを強制</string>
-    <string name="force_monochrome_description">現在のアクセントカラーでサポートされていないアプリを再起動させる必要があります。</string>
+    <string name="force_monochrome_description">現在のアクセントカラーで未対応アプリのアイコンを再配色します。</string>
     <string name="themed_icon_title">テーマアイコン</string>
     <string name="themed_icons_off_label">オフ</string>
     <string name="themed_icons_home_label">ホーム画面</string>
@@ -531,6 +533,8 @@
     <string name="home_screen_rotation_description">デバイスが回転したときホーム画面も回転することを許可する</string>
     <string name="auto_updater_label">自動的にアップデートを確認</string>
     <string name="auto_updater_description">「このアプリについて」の画面を開くときNightlyのアップデートを確認します</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">ぼやけた壁紙 (実験的な機能)</string>
     <string name="wallpaper_background_blur">ぼかしの強さ</string>
     <string name="wallpaper_background_blur_factor">因子のしきい値</string>
@@ -615,7 +619,7 @@
     <string name="paused_apps_drop_target_label">アプリを一時停止</string>
     <string name="open_in_store_drop_target_label">ストアで開く</string>
     <string name="dock_icons">ドックアイコン</string>
-    <string name="dock_rows">Dock rows</string>
+    <string name="dock_rows">ドックの行数</string>
     <string name="state_folded">%1$s(折りたたまれた)</string>
     <string name="state_unfolded">%1$s(展開)</string>
     <string name="folded_label">折りたたまれた</string>
