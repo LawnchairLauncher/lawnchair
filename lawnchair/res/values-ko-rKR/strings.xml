@@ -123,6 +123,8 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">고급</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">Move up</string>
+    <string name="reorderable_move_down">Move down</string>
     <string name="reorderable_active_items">활성 항목</string>
     <string name="reorderable_disabled_items">다른 항목</string>
     <string name="reorderable_disabled_hint">Disabled items will appear here</string>
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">강조 색상으로 칠하기</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="force_monochrome_label">Material You 단색 아이콘 강제 적용</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
+    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
     <string name="themed_icon_title">테마 아이콘</string>
     <string name="themed_icons_off_label">사용 안함</string>
     <string name="themed_icons_home_label">홈 화면</string>
@@ -532,6 +534,8 @@
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
     <string name="auto_updater_label">Automatically check for updates</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">배경화면 흐림 효과 (실험적 기능)</string>
     <string name="wallpaper_background_blur">흐림 강도</string>
     <string name="wallpaper_background_blur_factor">인자 임계값</string>

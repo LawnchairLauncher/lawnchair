@@ -123,6 +123,8 @@
     <string name="x_and_y">%1$s и %2$s</string>
     <string name="advanced">Расширенные настройки</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">Поднять выше</string>
+    <string name="reorderable_move_down">Опустить ниже</string>
     <string name="reorderable_active_items">Активные элементы</string>
     <string name="reorderable_disabled_items">Прочие элементы</string>
     <string name="reorderable_disabled_hint">Отключенные элементы будут отображаться здесь</string>
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">Тонировка в цвет акцента</string>
     <string name="system_icons">Системные иконки</string>
     <string name="force_monochrome_label">Включить монохром</string>
-    <string name="force_monochrome_description">Использовать текущий цветовой акцент для перекраски неподдерживаемых приложений. Требуется перезапуск.</string>
+    <string name="force_monochrome_description">Использовать текущий цветовой акцент для перекраски неподдерживаемых приложений.</string>
     <string name="themed_icon_title">Тематические иконки</string>
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Главный экран</string>
@@ -531,6 +533,8 @@
     <string name="home_screen_rotation_description">Разрешить поворот главного экрана при повороте устройства</string>
     <string name="auto_updater_label">Автоматически проверять обновления</string>
     <string name="auto_updater_description">Проверять обновление \"ночных\" сборок приложения при открытии экрана \"О программе\"</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">Размытие обоев (эксперимент.)</string>
     <string name="wallpaper_background_blur">Степень размытия</string>
     <string name="wallpaper_background_blur_factor">Предел фактора размытия</string>
@@ -615,7 +619,7 @@
     <string name="paused_apps_drop_target_label">Приостановить приложение</string>
     <string name="open_in_store_drop_target_label">Открыть в магазине приложений</string>
     <string name="dock_icons">Иконки док-панели</string>
-    <string name="dock_rows">Dock rows</string>
+    <string name="dock_rows">Строки док-панели</string>
     <string name="state_folded">%1$s (сложено)</string>
     <string name="state_unfolded">%1$s (разложено)</string>
     <string name="folded_label">Сложено</string>

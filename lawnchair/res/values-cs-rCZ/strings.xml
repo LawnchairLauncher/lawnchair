@@ -46,10 +46,10 @@
     <string name="download_update">Stáhnout aktualizaci</string>
     <string name="install_update">Instalovat aktualizaci</string>
     <string name="view_changes">Zobrazit změny</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">Vše je aktuální</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Aktualizace</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">Nepodařilo se načíst aktualizace</string>
     <string name="changes_dialog_no_changes">Nebyly nalezeny žádné změny</string>
     <string name="changes_dialog_build_format">Sestavení č. %1$d → č. %2$d</string>
     <string name="changes_dialog_commit_info">od %1$s • %2$s • %3$s</string>
@@ -103,7 +103,7 @@
     <string name="app_drawer_folder">Složky seznamu aplikací</string>
     <string name="selected_apps">Vybrané aplikace</string>
     <string name="add_apps">Přidat aplikace</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Složka v šuplíku aplikací</string>
     <string name="add_folder">Vytvořit složku</string>
     <string name="edit_folder">Editovat složku</string>
     <string name="add_label">Přidat</string>
@@ -111,22 +111,24 @@
     <string name="apply_label">Použít</string>
     <string name="delete_label">Odstranit</string>
     <string name="folder_list_note">Přejeďte doleva pro editaci, přejeďte doprava pro odstranění, nebo klepněte pro aktualizaci položek</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_label">Skrýt aplikace ve složkách</string>
     <string name="apps_in_folder_description">Aplikace zařazené do složek jsou vyloučeny ze seznamů aplikací</string>
     <string name="folders_filter_duplicates">Zobrazit pouze unikátní aplikace</string>
     <string name="my_folder_label">Moje složka</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">Seřadit aktivní položky</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">Pro provedení určitých akcí když použijete gesto, Lawnchair vyžaduje nastavení přístupnosti.\n\nLawnchair vaše akce nesleduje, ačkoli všechny služby přístupnosti toto oprávnění vyžadují. Lawnchair zahazuje jakékoli události od systému.\n\nPro uzamčení telefonu nebo otevření posledních aplikací, Lawnchair využívá službu přístupnosti performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s a %2$s</string>
     <string name="advanced">Pokročilé</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">Posunout nahoru</string>
+    <string name="reorderable_move_down">Posunout dolů</string>
     <string name="reorderable_active_items">Aktivní položky</string>
     <string name="reorderable_disabled_items">Ostatní položky</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_disabled_hint">Zakázané položky se objeví zde</string>
+    <string name="reorderable_add_hint_items">Aktivní položky se objeví zde</string>
     <!--
 
     Preference Dashboard
@@ -149,7 +151,7 @@
     <string name="gestures_label">Gesta</string>
     <string name="gestures_description">Poklepání a přejetí</string>
     <string name="quickstep_label">Obrazovka nedávných aplikací</string>
-    <string name="quickstep_description">Clear all button, corner radius</string>
+    <string name="quickstep_description">Tlačítko Zavřít vše, poloměr rohů</string>
     <string name="backup_and_restore_label">Zálohovat a obnovit</string>
     <string name="backup_and_restore_description">Uložit aktuální nastavení, obnovit zálohy</string>
     <string name="about_label">O aplikaci</string>
@@ -160,34 +162,34 @@
     <string name="workspace_label">Workspace</string>
     <string name="smartspace_label">Smartspace</string>
     <string name="internal_label">Interní</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_description">Interní může výt méně stabilní než ostatní experimentální skupiny</string>
     <string name="font_picker_label">Přizpůsobení písma</string>
     <string name="font_picker_description">Některý text zůstává beze změny</string>
     <string name="smartspace_calendar_label">Přizpůsobení kalendáře na Přehledu událostí</string>
     <string name="smartspace_calendar_description">Povolit zobrazení data v kalendářích ne-Gregoriánských systémů</string>
     <string name="workspace_increase_max_grid_size_label">Zvýšit maximální limit velikosti mřížky</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
+    <string name="workspace_increase_max_grid_size_description">Zvýšit maximální povolenou velikost mřížky na domovské obrazovce z 10 &#xd7; 10 na 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Vždy znovu načíst ikony</string>
     <string name="always_reload_icons_description">Vyhnout se používání uložených ikon z balíčků ikon</string>
-    <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
+    <string name="always_reload_icons_warning">Toto způsobí pravidelné obnovování ikon, což ovlivňuje výkon. Vypněte pokud se balíček ikon neaktualizuje pravidelně.</string>
     <string name="show_deck_layout">Rozvržení Decku</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_shape_label">Tvar složek</string>
     <string name="folder_label">Složka</string>
     <string name="app_icon_shape_label">Aplikace</string>
     <string name="gesturenavcontract_label">Použít API GestureNavContract</string>
-    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
-    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="recents_lock_unlock">App locking</string>
-    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
+    <string name="gesturenavcontract_description">Povolit vylepšené animace Androidu při používání gestové navigace</string>
+    <string name="gesturenavcontract_warning_incompatibility">Tvé zařízení není podporováno. Můžou se objevit vizuální chyby pro některé animace.</string>
+    <string name="recents_lock_unlock">Zamykání aplikací</string>
+    <string name="recents_lock_unlock_description">Zabraňuje zavření vypraných aplikací když kliknete na \"Zavřít vše\"</string>
     <!--Overlay-->
     <string name="app_closing_animation">Animace zavření aplikace</string>
     <string name="overlay_fade_in">Fade in</string>
     <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="overlay_none">Žádné</string>
     <!--
 
     Notifications
@@ -198,8 +200,8 @@
     <string name="show_notification_count">Zobrazit počet oznámení</string>
     <string name="notification_dots_color">Barva tečky oznámení</string>
     <string name="notification_dots_text_color">Barva počítadla oznámení</string>
-    <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">Barvy notifikační tečky a počítadla nemají mezi sebou dostatečný kontrast</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Barvy notifikační tečky a počítadla nemusí mít vždy mezi sebou dostatečný kontrast</string>
     <!--
 
     Icons
@@ -214,8 +216,8 @@
     <string name="label_size">Velikost popisku</string>
     <string name="twoline_label">Dvouřádkový popisek</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
+    <string name="transparent_background_icons_label">Průhledné pozadí ikon</string>
+    <string name="transparent_background_icons_description">Pro tématické a automaticky adaptivní ikony</string>
     <string name="auto_adaptive_icons_label">Automaticky adaptivní ikony</string>
     <string name="auto_adaptive_icons_description">Pro všechny neadaptivní ikony</string>
     <string name="shadow_bg_icons_label">Zobrazit stín za ikonami</string>
@@ -253,22 +255,22 @@
     <string name="icon_shape_seven_sided_cookie">Sedmistranný koláček</string>
     <string name="icon_shape_arch">Oblouk</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
-    <string name="icon_shape_meow">Meow</string>
-    <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
-    <string name="icon_shape_vessel">Vessel</string>
+    <string name="icon_shape_cloudy">Mrak</string>
+    <string name="icon_shape_flower">Květina</string>
+    <string name="icon_shape_heart">Srdce</string>
+    <string name="icon_shape_leaf">List</string>
+    <string name="icon_shape_meow">Mňau</string>
+    <string name="icon_shape_pebble">Oblázek</string>
+    <string name="icon_shape_roundedhexagon">Zakulacený šestiúhelník</string>
+    <string name="icon_shape_stretched">Roztáhlé</string>
+    <string name="icon_shape_vessel">Plavidlo</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Vlastní tvar ikon</string>
     <string name="custom_icon_shape_create">Vytvořit vlastní tvar ikon</string>
     <string name="custom_icon_shape_edit">Upravit vlastní tvar ikon</string>
-    <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape">Vlastní tvar složek</string>
+    <string name="custom_folder_shape_create">Vytvořit vlastní tvar složky</string>
+    <string name="custom_folder_shape_edit">Upravit vlastní tvar složky</string>
     <string name="custom_icon_shape_corner">Tvar rohů ikon</string>
     <string name="custom_icon_shape_corner_round">Kulatý</string>
     <string name="custom_icon_shape_corner_squircle">Hladký</string>
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">Obarvit doplňkovou barvou</string>
     <string name="system_icons">Systémové ikony</string>
     <string name="force_monochrome_label">Vynutit černobílý</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
+    <string name="force_monochrome_description">Přebarvit nepodporované aplikace aktuální barvou zvýraznění.</string>
     <string name="themed_icon_title">Ikony s motivy</string>
     <string name="themed_icons_off_label">Vyp.</string>
     <string name="themed_icons_home_label">Domovská obrazovka</string>
@@ -331,7 +333,7 @@
     <string name="color_style_expressive">Výrazný</string>
     <string name="color_style_rainbow">Duha</string>
     <string name="color_style_fruit_salad">Ovocný salát</string>
-    <string name="color_style_content">Content</string>
+    <string name="color_style_content">Obsah</string>
     <string name="color_style_monochromatic">Monochromatický</string>
     <!-- Accent color and color picker -->
     <string name="colors">Barvy</string>
@@ -379,11 +381,11 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Počasí</string>
     <string name="smartspace_battery_status">Stav baterie</string>
-    <string name="smartspace_torch">Flashlight status</string>
-    <string name="smartspace_now_playing">Now playing</string>
+    <string name="smartspace_torch">Stav baterky</string>
+    <string name="smartspace_now_playing">Nyní hraje</string>
     <string name="smartspace_onboarding">Onboarding</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
+    <string name="torch_status_on">Baterka zapnuta</string>
     <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Set up Lawnchair</string>
@@ -531,6 +533,8 @@
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
     <string name="auto_updater_label">Automatically check for updates</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">Rozostřit tapetu (experimentální)</string>
     <string name="wallpaper_background_blur">Intenzita rozostření</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
