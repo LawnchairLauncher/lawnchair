@@ -450,6 +450,15 @@
     <string name="smartspace_calendar_lunar">Lunar</string>
     <string name="smartspace_calendar_custom">Custom</string>
 
+    <!-- Choice indicating that At a Glance should capitalize the date by whatever is the default for the user's locale -->
+    <string name="smartspace_capitalization_default">Default</string>
+    <!-- Choice indicating that At a Glance should capitalize the date in titlecase -->
+    <string name="smartspace_capitalization_titlecase">Titlecase</string>
+    <!-- Choice indicating that At a Glance should capitalize the date in uppercase -->
+    <string name="smartspace_capitalization_uppercase">Uppercase</string>
+    <!-- Choice indicating that At a Glance should capitalize the date in lowercase -->
+    <string name="smartspace_capitalization_lowercase">Lowercase</string>
+
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_icu_date_pattern_gregorian_wday_month_day_no_year" translatable="false">EEEMMMd</string>
     <string name="smartspace_icu_date_pattern_gregorian_time" translatable="false">HH:mm</string>
@@ -482,6 +491,7 @@
     <string name="enable_custom_smartspace_date_format_description">Allow setting custom date and time formats using Java datetime format</string>
     <string name="smartspace_datetime_custom_format">Format</string>
     <string name="smartspace_datetime_custom_locale">Locale</string>
+    <string name="smartspace_datetime_custom_capitalization">Capitalization</string>
     <string name="smartspace_custom_datetime_preview">Preview: %1$s</string>
     <string name="smartspace_custom_datetime_invalid_format_warning_description">Fall back to Gregorian because the format is invalid</string>
 

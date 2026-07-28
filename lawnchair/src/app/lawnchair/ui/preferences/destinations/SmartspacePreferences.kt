@@ -45,6 +45,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
 import app.lawnchair.smartspace.model.LawnchairSmartspace
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceCapitalization
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.smartspace.model.Smartspacer
@@ -306,6 +307,15 @@ fun SmartspaceCustomDateTimePreference(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
+    val smartspaceCapitalizationEntries = remember {
+        SmartspaceCapitalization.values().map { mode ->
+            ListPreferenceEntry(
+                value = mode,
+                label = { stringResource(id = mode.nameResourceId) },
+            )
+        }.toList()
+    }
+
     TextPreference(
         adapter = prefs2.smartspaceCustomDateTime.getAdapter(),
         label = stringResource(id = R.string.smartspace_datetime_custom_format),
@@ -315,6 +325,11 @@ fun SmartspaceCustomDateTimePreference(
         adapter = prefs2.smartspaceCustomDateTimeLocale.getAdapter(),
         label = stringResource(id = R.string.smartspace_datetime_custom_locale),
         fieldOverline = localeOverline,
+    )
+    ListPreference(
+        adapter = prefs2.smartspaceCustomDateTimeCapitalization.getAdapter(),
+        label = stringResource(id = R.string.smartspace_datetime_custom_capitalization),
+        entries = smartspaceCapitalizationEntries,
     )
 }
 

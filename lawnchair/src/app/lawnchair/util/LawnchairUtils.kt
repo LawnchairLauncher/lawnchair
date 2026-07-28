@@ -452,8 +452,8 @@ inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>
     }
 }
 
-fun String.toTitleCase(): String = splitToSequence(" ")
-    .map { word -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+fun String.toTitleCase(locale: Locale = Locale.getDefault()): String = splitToSequence(" ")
+    .map { word -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() } }
     .joinToString(" ")
 
 /**

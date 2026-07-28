@@ -42,6 +42,7 @@ import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceCapitalization
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorMode
@@ -778,6 +779,13 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = Locale.getDefault().toLanguageTag(),
     )
 
+    val smartspaceCustomDateTimeCapitalization = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_datetime_capitalization"),
+        defaultValue = SmartspaceCapitalization.fromString(context.getString(R.string.config_default_smartspace_capitalization)),
+        parse = { SmartspaceCapitalization.fromString(it) },
+        save = { it.toString() },
+    )
+
     val enableCustomSmartspaceDateFormat = preference(
         key = booleanPreferencesKey(name = "enable_custom_smartspace_date_format"),
         defaultValue = false, // TODO: Promote feature to stable, and remove this preference
@@ -788,6 +796,7 @@ class PreferenceManager2 @Inject constructor(
                 }
                 smartspaceCustomDateTime.resetBlocking()
                 smartspaceCustomDateTimeLocale.resetBlocking()
+                smartspaceCustomDateTimeCapitalization.resetBlocking()
             }
         },
     )

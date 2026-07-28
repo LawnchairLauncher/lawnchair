@@ -11,12 +11,14 @@ import android.util.AttributeSet
 import android.util.Log
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceCapitalization
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.util.broadcastReceiverFlow
 import app.lawnchair.util.createCustomDateTimeFormat
 import app.lawnchair.util.firstBlocking
 import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.subscribeBlocking
+import app.lawnchair.util.toTitleCase
 import com.android.launcher3.R
 import java.util.Locale
 import kotlinx.coroutines.flow.combine
@@ -99,10 +101,19 @@ class IcuDateTextView @JvmOverloads constructor(
     private fun createCustomFormatter(): FormatterFunction {
         val format: String = prefs.smartspaceCustomDateTime.get().firstBlocking()
         val localeTag: String = prefs.smartspaceCustomDateTimeLocale.get().firstBlocking()
+        val capitalization: SmartspaceCapitalization = prefs.smartspaceCustomDateTimeCapitalization.get().firstBlocking()
 
         try {
             val formatter = createCustomDateTimeFormat(format, localeTag)
-            return { formatter.format(it) }
+            return {
+                val rawDate = formatter.format(it)
+                when (capitalization) {
+                    SmartspaceCapitalization.Default -> rawDate
+                    SmartspaceCapitalization.Titlecase -> rawDate.toTitleCase(Locale.forLanguageTag(localeTag))
+                    SmartspaceCapitalization.Uppercase -> rawDate.uppercase(Locale.forLanguageTag(localeTag))
+                    SmartspaceCapitalization.Lowercase -> rawDate.lowercase(Locale.forLanguageTag(localeTag))
+                }
+            }
         } catch (t: Throwable) {
             Log.w("IcuDateTextView", "Custom formatter is falling back to the Gregorian formatter due to ${t.message}", t)
             return createGregorianFormatter()
