@@ -37,7 +37,7 @@ sealed class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCu
         override fun toString() = "lunar"
     }
 
-    object Custom : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_custom) {
+    object Custom : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_custom, formatCustomizationSupport = false) {
         override fun toString() = "custom"
     }
 }

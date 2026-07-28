@@ -244,7 +244,7 @@ fun SmartspaceDateAndTimePreferences(
                     enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
                 )
             }
-            ExpandAndShrink(visible = supportCustomizationFormat && showDateAdapter.state.value) {
+            ExpandAndShrink(visible = showDateAdapter.state.value) {
                 SmartspaceCalendarPreference()
             }
             ExpandAndShrink(visible = supportCustomizationFormat) {

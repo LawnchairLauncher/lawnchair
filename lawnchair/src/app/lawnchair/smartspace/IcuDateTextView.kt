@@ -111,7 +111,7 @@ class IcuDateTextView @JvmOverloads constructor(
             formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
             return { formatter.format(it) }
         } catch (t: Throwable) {
-            Log.w("IcuDateTextView", "Custom formatter is falling back to the Gregorian formatter due to ${t.cause}", t)
+            Log.w("IcuDateTextView", "Custom formatter is falling back to the Gregorian formatter due to ${t.message}", t)
             return createGregorianFormatter()
         }
     }
