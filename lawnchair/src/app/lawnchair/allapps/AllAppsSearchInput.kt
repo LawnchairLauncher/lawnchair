@@ -1,6 +1,7 @@
 package app.lawnchair.allapps
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
@@ -12,6 +13,7 @@ import android.text.method.TextKeyListener
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnGlobalFocusChangeListener
 import android.view.animation.DecelerateInterpolator
@@ -248,11 +250,13 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         val currentPaddingLeft = initialPaddingLeft
         val currentPaddingRight = initialPaddingRight
 
-        // Activate zero search on click
-        input.setOnClickListener {
-            if (input.text.isNullOrEmpty()) {
-                searchAlgorithm?.doZeroStateSearch(this)
+        // Activate zero search on tap
+        @SuppressLint("ClickableViewAccessibility")
+        input.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && !input.hasFocus()) {
+                setDirectFocus(true)
             }
+            false
         }
 
         input.onFocusChangeListener = { _, hasFocus ->
@@ -307,7 +311,11 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     launcher.stateManager.goToState(LauncherState.NORMAL)
                 }
 
-                queryEmpty = it.isNullOrEmpty()
+                val isEmpty = it.isNullOrEmpty()
+                if (isEmpty && !input.hasFocus()) {
+                    animatePadding(currentPaddingLeft, currentPaddingRight)
+                }
+                queryEmpty = isEmpty
             },
         )
 
@@ -413,6 +421,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             appsView.appsStore?.removeUpdateListener(this)
         }
         input.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        setDirectFocus(false)
     }
 
     override fun onAppsUpdated() {
