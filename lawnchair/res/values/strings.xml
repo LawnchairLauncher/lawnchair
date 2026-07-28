@@ -495,7 +495,7 @@
     <string name="enable_custom_smartspace_date_format_label">Custom datetime format</string>
     <!-- Experimental settings (strings may be temporary) -->
     <!-- Allow user to create their own datetime format for At a Glance widget (description) -->
-    <string name="enable_custom_smartspace_date_format_description">Allow setting custom date and time formats using Java datetime format</string>
+    <string name="enable_custom_smartspace_date_format_description">Allow setting custom date and time formats using ICU datetime format</string>
     <!-- Data and time format settings -->
     <!-- Will be shown when user is choosing their own datetime format -->
     <string name="smartspace_datetime_custom_format">Format</string>
