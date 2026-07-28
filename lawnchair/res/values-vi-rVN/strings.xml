@@ -42,14 +42,14 @@
     <string name="deselect_all">Bỏ chọn tất cả</string>
     <string name="inverse_selection">Lựa chọn ngược</string>
     <string name="loading">Đang tải…</string>
-    <string name="dismiss">Dismiss </string>
+    <string name="dismiss">Bỏ qua</string>
     <string name="download_update">Tải xuống bản cập nhật</string>
     <string name="install_update">Cài đặt bản cập nhật</string>
     <string name="view_changes">Xem các thay đổi</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">Bạn đã được cập nhật</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Cập nhật</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">Không thể tải Cập Nhật</string>
     <string name="changes_dialog_no_changes">Không tìm thấy thay đổi nào</string>
     <string name="changes_dialog_build_format">Bản dựng #%1$d -> #%2$d</string>
     <string name="changes_dialog_commit_info">từ %1$s • %2$s • %3$s</string>
@@ -123,6 +123,8 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Nâng cao</string>
     <!-- Draggable -->
+    <string name="reorderable_move_up">Move up</string>
+    <string name="reorderable_move_down">Move down</string>
     <string name="reorderable_active_items">Các mục đang hoạt động</string>
     <string name="reorderable_disabled_items">Các mục khác</string>
     <string name="reorderable_disabled_hint">Disabled items will appear here</string>
@@ -150,8 +152,8 @@
     <string name="gestures_description">Cử chỉ và chạm</string>
     <string name="quickstep_label">Màn hình gần đây</string>
     <string name="quickstep_description">Clear all button, corner radius</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="backup_and_restore_label">Sao lưu và khôi phục</string>
+    <string name="backup_and_restore_description">Lưu cấu hình hiện tại, khôi phục từ bản sao lưu</string>
     <string name="about_label">Giới thiệu</string>
     <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
     <string name="debug_restart_launcher">Khởi chạy lại Lawnchair</string>
@@ -174,12 +176,12 @@
     <string name="show_deck_layout_description">Hiện một tùy chọn tắt ngăn chứa ứng dụng và tự động thêm ứng dụng mới vào màn hình chính</string>
     <string name="material_expressive_label">Material 3 Biểu cảm</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="folder_shape_label">Hình của tệp</string>
     <string name="folder_label">Thư mục</string>
     <string name="app_icon_shape_label">Ứng dụng</string>
     <string name="gesturenavcontract_label">Sử dụng API GestureNavContract</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
-    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
+    <string name="gesturenavcontract_warning_incompatibility">Thiết bị của bạn không hoàn toàn hỗ trợ. Điều này có thể gây ra lỗi hiển thị đối với một số hoạt ảnh.</string>
     <string name="recents_lock_unlock">App locking</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
@@ -207,7 +209,7 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Phong cách biểu tượng</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
+    <string name="apply_icon_pack_title">Sử dụng tập icon này</string>
     <string name="icon_shape_label">Hình dạng biểu tượng</string>
     <string name="icon_sizes">Kích thước biểu tượng</string>
     <string name="show_labels">Hiển thị tên</string>
@@ -286,7 +288,7 @@
     <string name="themed_icon_pack_tint">Pha màu với màu nhấn</string>
     <string name="system_icons">Biểu tượng từ hệ thống</string>
     <string name="force_monochrome_label">Buộc đơn sắc</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color. Requires restart.</string>
+    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
     <string name="themed_icon_title">Biểu tượng theo chủ đề</string>
     <string name="themed_icons_off_label">Tắt</string>
     <string name="themed_icons_home_label">Trang chủ</string>
@@ -387,9 +389,9 @@
     <string name="torch_action_off">Chạm để tắt</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Set up Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
+    <string name="onboarding_open_settings_subtitle">Nhấn giữ trên màn hình chính để mở cài đặt</string>
     <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
+    <string name="onboarding_major_upgrade_subtitle">Xem có gì mới</string>
     <string name="onboarding_welcome">Chào mừng tới Lawnchair!</string>
     <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
     <!-- Smartspacer strings -->
@@ -433,9 +435,9 @@
     <string name="contributor_status_active">Kích hoạt</string>
     <string name="update_check_failed">Không kiểm tra được bản cập nhật</string>
     <string name="major_update_label">Update to major version?</string>
-    <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
-    <string name="pro_disabled_by_unknown">Updates are not available</string>
-    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
+    <string name="major_update_description">Bạn đang cập nhật từ phiên bản <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. Phiên bản mới hơn kia là bản cập nhật lớn và có thể sẽ giảm ổn định.</string>
+    <string name="pro_disabled_by_unknown">Cập nhật không có sẵn</string>
+    <string name="pro_disabled_by_major_is_newer">Bạn đã đang sử dụng phiên bản mới hơn</string>
     <string name="updater">Cập nhật</string>
     <!--
 
@@ -453,7 +455,7 @@
     <string name="backup_restore_success">Đã khôi phục bản sao lưu</string>
     <string name="backup_restore_error">Khôi phục bản sao lưu thất bại</string>
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ</string>
-    <string name="restore_nova_backup">Restore Nova backup</string>
+    <string name="restore_nova_backup">Khôi phục từ bản sao lưu Nova</string>
     <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
     <string name="nova_grid_label">Lưới</string>
     <string name="nova_grid_value">%1$d x %2$d</string>
@@ -502,8 +504,8 @@
     <string name="recents_screen_a11y_hint">mở màn hình Gần đây</string>
     <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="generic_a11y_disclaimer">Lawnchair sử dụng phương thức `performGlobalAction` của Trợ năng để thực hiện hành động này. Đây là một quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho chức năng đó.</string>
-    <string name="sleep_mode_label">Sleep mode</string>
-    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_mode_label">Chế độ ngủ</string>
+    <string name="sleep_mode_auto">Tự động</string>
     <string name="sleep_mode_root">Root</string>
     <string name="sleep_mode_accessibility">Accessibility service</string>
     <string name="sleep_mode_device_admin">Device admin</string>
@@ -529,8 +531,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Xoay màn hình chính</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
-    <string name="auto_updater_label">Automatically check for updates</string>
+    <string name="auto_updater_label">Tự động kiểm tra cập nhật</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
+    <string name="live_information_label">Live information</string>
+    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">Làm mờ hình nền (thử nghiệm)</string>
     <string name="wallpaper_background_blur">Cường độ mờ</string>
     <string name="wallpaper_background_blur_factor">Ngưỡng yếu tố</string>
@@ -592,7 +596,7 @@
     <string name="search_bar_settings">Cài đặt thanh tìm kiếm</string>
     <string name="hotseat_mode_label">Thanh tìm kiếm tiện ích</string>
     <string name="hotseat_mode_disabled">Đã vô hiệu hoá</string>
-    <string name="hotseat_mode_google_search">Google search bar</string>
+    <string name="hotseat_mode_google_search">Thanh tìm kiếm Google</string>
     <string name="qsb_hotseat_background_transparency">Độ mờ nền</string>
     <string name="qsb_hotseat_stroke_width">Độ dày viền</string>
     <string name="qsb_hotseat_stroke_color">Màu đường viền</string>
@@ -641,8 +645,8 @@
     <string name="hidden_apps_label">Ẩn ứng dụng</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Tải biểu tượng hàng loạt</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Tải và hiển thị biểu tượng hàng loạt thay vì riêng lẻ từng cái</string>
-    <string name="pref_all_apps_remember_position_title">Remember scroll position</string>
-    <string name="pref_all_apps_remember_position_description">Save the last scrolled location when closing the app drawer</string>
+    <string name="pref_all_apps_remember_position_title">Nhớ vị trí cuộn</string>
+    <string name="pref_all_apps_remember_position_description">Lưu lại vị trí cuộn cuối cùng khi đóng ngăn kéo ứng dụng</string>
     <string name="pref_all_apps_show_scrollbar_title">Hiển thị thanh kéo</string>
     <string name="app_drawer_columns">Cột của ngăn ứng dụng</string>
     <string name="row_height_label">Chiều cao hàng</string>
@@ -742,7 +746,7 @@
     <string name="all_apps_search_result_calculator">Máy tính toán</string>
     <string name="search_empty_state_title">Bắt đầu tìm kiếm</string>
     <string name="search_empty_state_no_history_subtitle">Tìm ứng dụng, danh bạ và nhiều nội dung khác. Các tìm kiếm gần đây của bạn sẽ hiển thị ở đây.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more</string>
+    <string name="search_empty_state_history_disabled_subtitle">Tìm ứng dụng, liên hệ, và hơn thế nữa</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">Tìm kiếm trên</string>
     <string name="search_pref_result_files_description">Phương tiện, tệp và nhiều hơn nữa</string>
@@ -762,7 +766,7 @@
     <string name="missing_notification_access_desc">To show notification dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>
     </string>
     <string name="warn_contact_permission_title">Cần có quyền liên hệ</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g>
+    <string name="warn_contact_permission_content">Để tìm kiếm liên hệ, cấp quyền truy cập danh bạ và điện thoại cho <xliff:g id="name" example="My App">%1$s</xliff:g>
     </string>
     <string name="permissions_music_audio">Cần có quyền truy cập âm nhạc và âm thanh</string>
     <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>

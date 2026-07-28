@@ -1,6 +1,7 @@
 package app.lawnchair.data.iconoverride
 
 import android.content.Context
+import android.os.UserHandle
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.icons.picker.IconPickerItem
 import com.android.launcher3.LauncherAppState
@@ -52,11 +53,15 @@ class IconOverrideRepository @Inject constructor(
 
     suspend fun setOverride(target: ComponentKey, item: IconPickerItem) {
         dao.insert(IconOverride(target, item))
+        // Keep the in-memory map in sync before any icon reload. The Room Flow update is
+        // async and can race with onAppIconChanged / forceReload, leaving stale icons cached.
+        _overridesMap = _overridesMap + (target to item)
         updatePackageQueue.offer(target)
     }
 
     suspend fun deleteOverride(target: ComponentKey) {
         dao.delete(target)
+        _overridesMap = _overridesMap - target
         updatePackageQueue.offer(target)
     }
 
@@ -64,8 +69,24 @@ class IconOverrideRepository @Inject constructor(
 
     fun observeCount() = dao.observeCount()
 
+    /**
+     * Returns a persistable fingerprint of per-app icon overrides for [packageName]/[user].
+     * Used as part of icon-cache freshness so clearing an override invalidates the cache entry.
+     */
+    fun getPackageOverrideState(packageName: String, user: UserHandle): String {
+        return overridesMap.asSequence()
+            .filter {
+                it.key.componentName.packageName == packageName && it.key.user == user
+            }
+            .sortedBy { it.key.componentName.className }
+            .joinToString(";") { (key, item) ->
+                "${key.componentName.className}:${item.packPackageName}/${item.drawableName}/${item.type}"
+            }
+    }
+
     suspend fun deleteAll() {
         dao.deleteAll()
+        _overridesMap = emptyMap()
         LauncherAppState.getInstance(context).model.reloadIfActive()
     }
 

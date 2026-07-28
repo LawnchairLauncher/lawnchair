@@ -258,6 +258,10 @@ public class DeviceProfile {
     // Additional padding added to the widget inside its cellSpace. It is applied outside
     // the widgetView, such that the actual view size is same as the widget size.
     public final Rect widgetPadding = new Rect();
+    // Lawnchair: extra horizontal inset applied only to widgets touching the left/right
+    // edge of the grid, so that widget edges align closer to icon centers without
+    // inflating the gap between adjacent widgets.
+    public int widgetEdgeInsetPx;
 
     // Notification dots
     public final DotRenderer mDotRendererWorkSpace;
@@ -1399,9 +1403,11 @@ public class DeviceProfile {
         } else {
             widgetPadding.setEmpty();
         }
+        // Lawnchair: extra inset for edge widgets to align closer to icon centre.
+        widgetEdgeInsetPx = widgetPadding.left;
         // Lawnchair: scale widget padding by user factor (0 = remove, 1 = default).
-        widgetPadding.left = Math.round(widgetPadding.left * widgetPaddingFactor);
-        widgetPadding.right = Math.round(widgetPadding.right * widgetPaddingFactor);
+        widgetPadding.left = widgetPadding.right =
+                Math.round(widgetPadding.left * widgetPaddingFactor);
         widgetPadding.top = Math.round(widgetPadding.top * widgetPaddingFactor);
         widgetPadding.bottom = Math.round(widgetPadding.bottom * widgetPaddingFactor);
     }

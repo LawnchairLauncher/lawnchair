@@ -27,8 +27,7 @@ on:
   workflow_call:
 
 env:
-  # Lawnchair-TODO(Configuration): https://github.com/LawnchairLauncher/lawnchair/issues/6442
-  PUBLISH_NIGHTLY: false
+  PUBLISH_NIGHTLY: true
 
 jobs:
   build-debug-apk:
@@ -87,7 +86,7 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
       - name: Install Python packages
