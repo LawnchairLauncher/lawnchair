@@ -112,6 +112,9 @@
     <string name="pref_key_swipe_right" translatable="false">pref_swipe_right</string>
     <string name="pref_key_swipe_left" translatable="false">pref_swipe_left</string>
 
+    <!-- Live information endpoint -->
+    <string name="config_default_live_information_endpoint" translatable="false">https://lawnchair.app/live-information.json</string>
+
     <bool name="config_default_show_hotseat">true</bool>
     <bool name="config_default_always_reload_icons">true</bool>
     <bool name="config_default_dark_status_bar">false</bool>
