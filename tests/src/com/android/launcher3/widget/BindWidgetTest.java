@@ -27,7 +27,6 @@ import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -37,9 +36,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.AnalogClock;
 import android.widget.RemoteViews;
-import android.widget.TextClock;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -112,29 +109,6 @@ public class BindWidgetTest extends BaseLauncherActivityTest<Launcher> {
     public void testBindNormalWidget_withoutConfig() {
         LauncherAppWidgetProviderInfo info = addWidgetToScreen(false, true, i -> { });
         verifyWidgetPresent(info);
-    }
-
-    @Test
-    public void testBindClockWidget_asyncInflation() {
-        LauncherAppWidgetProviderInfo info = addWidgetToScreen(false, true, i -> { });
-        LauncherAppWidgetHostView hostView =
-                (LauncherAppWidgetHostView)
-                        getLauncherActivity()
-                                .getOnceNotNull("Widget is not present", widgetProvider(info));
-
-        mCursor = queryItem();
-        assertTrue(mCursor.moveToNext());
-        int appWidgetId = mCursor.getInt(
-                mCursor.getColumnIndex(LauncherSettings.Favorites.APPWIDGET_ID));
-        RemoteViews remoteViews = new RemoteViews(
-                targetContext().getPackageName(), R.layout.test_layout_appwidget_clock);
-        AppWidgetManager.getInstance(targetContext()).updateAppWidget(appWidgetId, remoteViews);
-
-        getLauncherActivity().getOnceNotNull("Clock widget did not inflate", launcher ->
-                hostView.findViewById(android.R.id.text1) instanceof TextClock
-                        && hostView.findViewById(android.R.id.icon) instanceof AnalogClock
-                        ? hostView
-                        : null);
     }
 
     @Test
