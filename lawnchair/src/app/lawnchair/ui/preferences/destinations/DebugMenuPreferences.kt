@@ -88,6 +88,14 @@ fun DebugMenuPreferences(
                     label = "Crash launcher",
                     onClick = { throw RuntimeException("User triggered crash") },
                 )
+                SwitchPreference(
+                    adapter = liveInfoManager.enabled.getAdapter(),
+                    label = "Enable live information",
+                )
+                TextPreference(
+                    adapter = liveInfoManager.endpoint.getAdapter(),
+                    label = "Live information endpoint",
+                )
                 ClickablePreference(
                     label = "Reset live information",
                     onClick = {

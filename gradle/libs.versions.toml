@@ -1,7 +1,7 @@
 [versions]
 jdkRelease = "21"
 
-agp = "9.3.0"
+agp = "9.3.1"
 kotlin = "2.4.10"
 androidx-room = "2.8.4"
 androidx-lifecycle = "2.11.0"
@@ -35,7 +35,7 @@ google-ksp = "com.google.devtools.ksp:2.3.10"
 google-protobuf = "com.google.protobuf:0.10.0"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.8.0"
+diffplug-spotless = "com.diffplug.spotless:8.9.0"
 
 [libraries]
 # AndroidX
