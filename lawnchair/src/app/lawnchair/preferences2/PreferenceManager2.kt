@@ -780,7 +780,7 @@ class PreferenceManager2 @Inject constructor(
 
     val enableCustomSmartspaceDateFormat = preference(
         key = booleanPreferencesKey(name = "enable_custom_smartspace_date_format"),
-        defaultValue = false,
+        defaultValue = false, // TODO: Promote feature to stable, and remove this preference
         onSet = { value ->
             if (!value) {
                 if (smartspaceCalendar.firstCached() == SmartspaceCalendar.Custom) {
