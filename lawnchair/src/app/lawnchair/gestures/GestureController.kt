@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 class GestureController(private val launcher: LawnchairLauncher) {
     private val prefs = PreferenceManager2.getInstance(launcher)
-    private val scope = MainScope()
+    private val scope = launcher.lifecycleScope
 
     private val doubleTapHandler = handler(prefs.doubleTapGestureHandler)
     private val swipeUpHandler = handler(prefs.swipeUpGestureHandler)
