@@ -18,8 +18,6 @@ package app.lawnchair.ui.preferences.destinations
 
 import android.app.Activity
 import android.content.Context
-import android.icu.text.DateFormat
-import android.icu.text.DisplayContext
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
@@ -64,10 +62,10 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import app.lawnchair.ui.theme.preferenceGroupColor
+import app.lawnchair.util.createCustomDateTimeFormat
 import com.android.launcher3.R
 import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
 import java.util.Date
-import java.util.Locale
 
 @Composable
 fun SmartspacePreferences(
@@ -270,14 +268,7 @@ fun SmartspaceDateAndTimePreferences(
 private fun formatCustomSkeleton(context: Context, pattern: String, localeTag: String = ""): String {
     if (pattern.isBlank()) return ""
     return try {
-        val locale = if (localeTag.isBlank()) {
-            Locale.getDefault()
-        } else {
-            val parsed = Locale.forLanguageTag(localeTag)
-            if (parsed.language.isEmpty()) Locale.getDefault() else parsed
-        }
-        val formatter = DateFormat.getInstanceForSkeleton(pattern, locale)
-        formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
+        val formatter = createCustomDateTimeFormat(pattern, localeTag)
         formatter.format(Date())
     } catch (e: Throwable) {
         Log.w("SmartspaceDateTime", "Invalid format", e)

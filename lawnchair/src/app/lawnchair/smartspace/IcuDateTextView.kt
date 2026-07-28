@@ -9,11 +9,11 @@ import android.os.SystemClock
 import android.text.format.DateFormat.is24HourFormat
 import android.util.AttributeSet
 import android.util.Log
-import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.util.broadcastReceiverFlow
+import app.lawnchair.util.createCustomDateTimeFormat
 import app.lawnchair.util.firstBlocking
 import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.subscribeBlocking
@@ -101,14 +101,7 @@ class IcuDateTextView @JvmOverloads constructor(
         val localeTag: String = prefs.smartspaceCustomDateTimeLocale.get().firstBlocking()
 
         try {
-            val locale = if (localeTag.isBlank() || localeTag.equals("default", ignoreCase = true)) {
-                Locale.getDefault()
-            } else {
-                val parsed = Locale.forLanguageTag(localeTag)
-                if (parsed.language.isEmpty()) Locale.getDefault() else parsed
-            }
-            val formatter = DateFormat.getInstanceForSkeleton(format, locale)
-            formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
+            val formatter = createCustomDateTimeFormat(format, localeTag)
             return { formatter.format(it) }
         } catch (t: Throwable) {
             Log.w("IcuDateTextView", "Custom formatter is falling back to the Gregorian formatter due to ${t.message}", t)
