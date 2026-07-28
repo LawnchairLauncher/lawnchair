@@ -278,7 +278,7 @@ private fun formatCustomSkeleton(context: Context, pattern: String, localeTag: S
 
 @Composable
 fun SmartspaceCustomDateTimePreference(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier, // This being unused is to shut spotless from complaining
 ) {
     val context = LocalContext.current
     val prefs2 = preferenceManager2()
@@ -306,18 +306,16 @@ fun SmartspaceCustomDateTimePreference(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
-    Column(modifier) {
-        TextPreference(
-            adapter = prefs2.smartspaceCustomDateTime.getAdapter(),
-            label = stringResource(id = R.string.smartspace_datetime_custom_format),
-            fieldOverline = patternOverline,
-        )
-        TextPreference(
-            adapter = prefs2.smartspaceCustomDateTimeLocale.getAdapter(),
-            label = stringResource(id = R.string.smartspace_datetime_custom_locale),
-            fieldOverline = localeOverline,
-        )
-    }
+    TextPreference(
+        adapter = prefs2.smartspaceCustomDateTime.getAdapter(),
+        label = stringResource(id = R.string.smartspace_datetime_custom_format),
+        fieldOverline = patternOverline,
+    )
+    TextPreference(
+        adapter = prefs2.smartspaceCustomDateTimeLocale.getAdapter(),
+        label = stringResource(id = R.string.smartspace_datetime_custom_locale),
+        fieldOverline = localeOverline,
+    )
 }
 
 @Composable
