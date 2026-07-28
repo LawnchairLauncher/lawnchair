@@ -15,7 +15,7 @@ import app.lawnchair.smartspace.model.SmartspaceCapitalization
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.util.broadcastReceiverFlow
 import app.lawnchair.util.createCustomDateTimeFormat
-import app.lawnchair.util.firstBlocking
+import app.lawnchair.util.firstCached
 import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.subscribeBlocking
 import app.lawnchair.util.toTitleCase
@@ -91,7 +91,7 @@ class IcuDateTextView @JvmOverloads constructor(
         val formatter = when (calendar) {
             SmartspaceCalendar.Persian -> createPersianFormatter()
             SmartspaceCalendar.Lunar -> createLunarFormatter()
-            SmartspaceCalendar.Custom -> if (prefs.enableCustomSmartspaceDateFormat.get().firstBlocking()) createCustomFormatter() else createGregorianFormatter()
+            SmartspaceCalendar.Custom -> if (prefs.enableCustomSmartspaceDateFormat.firstCached()) createCustomFormatter() else createGregorianFormatter()
             else -> createGregorianFormatter()
         }
         formatterFunction = formatter
@@ -99,9 +99,9 @@ class IcuDateTextView @JvmOverloads constructor(
     }
 
     private fun createCustomFormatter(): FormatterFunction {
-        val format: String = prefs.smartspaceCustomDateTime.get().firstBlocking()
-        val localeTag: String = prefs.smartspaceCustomDateTimeLocale.get().firstBlocking()
-        val capitalization: SmartspaceCapitalization = prefs.smartspaceCustomDateTimeCapitalization.get().firstBlocking()
+        val format: String = prefs.smartspaceCustomDateTime.firstCached()
+        val localeTag: String = prefs.smartspaceCustomDateTimeLocale.firstCached()
+        val capitalization: SmartspaceCapitalization = prefs.smartspaceCustomDateTimeCapitalization.firstCached()
 
         try {
             val formatter = createCustomDateTimeFormat(format, localeTag)
