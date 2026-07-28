@@ -464,6 +464,7 @@
     <string name="smartspace_icu_date_pattern_gregorian_time" translatable="false">HH:mm</string>
     <string name="smartspace_icu_date_pattern_gregorian_time_12h" translatable="false">hh:mm aa</string>
     <string name="smartspace_icu_date_pattern_gregorian_date" translatable="false"> dd MMMM</string>
+    <!-- Default ICU pattern for custom config -->
     <string name="smartspace_icu_date_pattern_custom_wday_month_day_no_year" translatable="false">EEEMMMd</string>
 
     <!-- Battery labels -->
@@ -480,6 +481,8 @@
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_date_and_time">Date and time</string>
+    <!-- Data and time format settings -->
+    <!-- Custom datetime format category -->
     <string name="smartspace_custom_date_header">Custom Date</string>
     <string name="smartspace_date">Date</string>
     <string name="smartspace_time">Time</string>
@@ -487,12 +490,26 @@
     <string name="smartspace_time_follow_system">Follow system</string>
     <string name="smartspace_time_12_hour_format">12-hour format</string>
     <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <!-- Experimental settings (strings may be temporary) -->
+    <!-- Allow user to create their own datetime format for At a Glance widget (title) -->
     <string name="enable_custom_smartspace_date_format_label">Custom datetime format</string>
+    <!-- Experimental settings (strings may be temporary) -->
+    <!-- Allow user to create their own datetime format for At a Glance widget (description) -->
     <string name="enable_custom_smartspace_date_format_description">Allow setting custom date and time formats using Java datetime format</string>
+    <!-- Data and time format settings -->
+    <!-- Will be shown when user is choosing their own datetime format -->
     <string name="smartspace_datetime_custom_format">Format</string>
+    <!-- Data and time format settings -->
+    <!-- Will be shown when user is choosing their own datetime locale (in other word, language) -->
     <string name="smartspace_datetime_custom_locale">Locale</string>
+    <!-- Data and time format settings -->
+    <!-- Will be shown when user is choosing their own datetime capitalization -->
     <string name="smartspace_datetime_custom_capitalization">Capitalization</string>
-    <string name="smartspace_custom_datetime_preview">Preview: %1$s</string>
+    <!-- Data and time format settings -->
+    <!-- Will be shown when user is creating their own datetime format. -->
+    <string name="smartspace_custom_datetime_preview">Preview: <xliff:g example="July 10th 2026">%1$s</xliff:g></string>
+    <!-- Data and time format settings -->
+    <!-- Will be shown when user has made a mistake when creating their own datetime format. -->
     <string name="smartspace_custom_datetime_invalid_format_warning_description">Fall back to Gregorian because the format is invalid</string>
 
     <!-- Available targets -->
