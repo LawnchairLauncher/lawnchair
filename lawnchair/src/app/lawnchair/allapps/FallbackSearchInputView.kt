@@ -14,12 +14,23 @@ import com.android.launcher3.allapps.ActivityAllAppsContainerView
 class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : ExtendedEditText(context, attrs) {
 
     private var appsView: ActivityAllAppsContainerView<*>? = null
+    var isResetting = false
+        private set
 
     init {
         val accentColor = ColorTokens.ColorAccent.resolveColor(context)
         setCursorColor(accentColor)
         setTextSelectHandleColor(accentColor)
         highlightColor = ColorUtils.setAlphaComponent(accentColor, 82)
+    }
+
+    override fun reset() {
+        isResetting = true
+        try {
+            super.reset()
+        } finally {
+            isResetting = false
+        }
     }
 
     fun initialize(appsView: ActivityAllAppsContainerView<*>?) {

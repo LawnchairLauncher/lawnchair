@@ -280,6 +280,17 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
     }
 
+    override fun onStateBack() {
+        val searchInput = mAppsView?.searchUiManager?.editText
+        val isSearching = mAppsView?.isSearching == true || searchInput?.hasFocus() == true
+        if (isSearching) {
+            mAppsView?.searchUiManager?.resetSearch()
+            allAppsController.animateAllAppsToNoScale()
+        } else {
+            super.onStateBack()
+        }
+    }
+
     override fun createTouchControllers(): Array<TouchController> {
         val verticalSwipeController = VerticalSwipeTouchController(this, gestureController)
         return arrayOf<TouchController>(verticalSwipeController) + super.createTouchControllers()
