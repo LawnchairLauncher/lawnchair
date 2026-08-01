@@ -40,6 +40,7 @@ import com.android.launcher3.BaseActivity
 import com.android.launcher3.LauncherAnimationRunner
 import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.compat.AccessibilityManagerCompat
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.dagger.WindowContext
@@ -271,7 +272,7 @@ constructor(
     }
 
     fun startRecentsWindow(callbacks: RecentsAnimationCallbacks? = null) {
-        RecentsWindowProtoLogProxy.logStartRecentsWindow(isShowing(), windowView == null)
+        if (Utilities.ATLEAST_S) RecentsWindowProtoLogProxy.logStartRecentsWindow(isShowing(), windowView == null)
         if (isShowing()) {
             return
         }
@@ -364,7 +365,7 @@ constructor(
     }
 
     fun cleanupRecentsWindow() {
-        RecentsWindowProtoLogProxy.logCleanup(isShowing())
+        if (Utilities.ATLEAST_S) RecentsWindowProtoLogProxy.logCleanup(isShowing())
         if (isShowing()) {
             AbstractFloatingView.closeAllOpenViews(this, /* animate= */ false)
             windowManager.removeViewImmediate(windowView)
@@ -422,12 +423,12 @@ constructor(
 
     override fun onStateSetStart(state: RecentsState) {
         super.onStateSetStart(state)
-        RecentsWindowProtoLogProxy.logOnStateSetStart(state.toString())
+        if (Utilities.ATLEAST_S) RecentsWindowProtoLogProxy.logOnStateSetStart(state.toString())
     }
 
     override fun onStateSetEnd(state: RecentsState) {
         super.onStateSetEnd(state)
-        RecentsWindowProtoLogProxy.logOnStateSetEnd(state.toString())
+        if (Utilities.ATLEAST_S) RecentsWindowProtoLogProxy.logOnStateSetEnd(state.toString())
         if (!state.isRecentsViewVisible) {
             cleanupRecentsWindow()
         }
@@ -436,7 +437,7 @@ constructor(
 
     override fun onRepeatStateSetAborted(state: RecentsState) {
         super.onRepeatStateSetAborted(state)
-        RecentsWindowProtoLogProxy.logOnRepeatStateSetAborted(state.toString())
+        if (Utilities.ATLEAST_S) RecentsWindowProtoLogProxy.logOnRepeatStateSetAborted(state.toString())
         if (!state.isRecentsViewVisible) {
             cleanupRecentsWindow()
         }

@@ -33,6 +33,7 @@ import android.util.Log;
 
 import androidx.annotation.FloatRange;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
@@ -250,7 +251,7 @@ public class StateManager<S extends BaseState<S>, T extends StatefulContainer<S>
 
     private void goToState(
             S state, boolean animated, long delay, AnimatorListener listener) {
-        if (enableStateManagerProtoLog()) {
+        if (enableStateManagerProtoLog() && Utilities.ATLEAST_S) {
             StateManagerProtoLogProxy.logGoToState(
                     mState, state, getTrimmedStackTrace("StateManager.goToState"));
         } else if (DEBUG) {
@@ -343,7 +344,7 @@ public class StateManager<S extends BaseState<S>, T extends StatefulContainer<S>
      */
     public AnimatorSet createAtomicAnimation(
             S fromState, S toState, StateAnimationConfig config) {
-        if (enableStateManagerProtoLog()) {
+        if (enableStateManagerProtoLog() && Utilities.ATLEAST_S) {
             StateManagerProtoLogProxy.logCreateAtomicAnimation(
                     mState, toState, getTrimmedStackTrace("StateManager.createAtomicAnimation"));
         } else if (DEBUG) {
@@ -423,7 +424,7 @@ public class StateManager<S extends BaseState<S>, T extends StatefulContainer<S>
         mState = state;
         mContainer.onStateSetStart(mState);
 
-        if (enableStateManagerProtoLog()) {
+        if (enableStateManagerProtoLog() && Utilities.ATLEAST_S) {
             StateManagerProtoLogProxy.logOnStateTransitionStart(state);
         } else if (DEBUG) {
             Log.d(TAG, "onStateTransitionStart - state: " + state);
@@ -445,7 +446,7 @@ public class StateManager<S extends BaseState<S>, T extends StatefulContainer<S>
             setRestState(null);
         }
 
-        if (enableStateManagerProtoLog()) {
+        if (enableStateManagerProtoLog() && Utilities.ATLEAST_S) {
             StateManagerProtoLogProxy.logOnStateTransitionEnd(state);
         } else if (DEBUG) {
             Log.d(TAG, "onStateTransitionEnd - state: " + state);
@@ -456,7 +457,7 @@ public class StateManager<S extends BaseState<S>, T extends StatefulContainer<S>
     }
 
     private void onRepeatStateSetAborted(S state) {
-        if (enableStateManagerProtoLog()) {
+        if (enableStateManagerProtoLog() && Utilities.ATLEAST_S) {
             StateManagerProtoLogProxy.logOnRepeatStateSetAborted(state);
         } else if (DEBUG) {
             Log.d(TAG, "onRepeatStateSetAborted - state: " + state);
@@ -496,7 +497,7 @@ public class StateManager<S extends BaseState<S>, T extends StatefulContainer<S>
      * Cancels the current animation.
      */
     public void cancelAnimation() {
-        if (enableStateManagerProtoLog()) {
+        if (enableStateManagerProtoLog() && Utilities.ATLEAST_S) {
             StateManagerProtoLogProxy.logCancelAnimation(
                     mConfig.currentAnimation != null,
                     getTrimmedStackTrace("StateManager.cancelAnimation"));

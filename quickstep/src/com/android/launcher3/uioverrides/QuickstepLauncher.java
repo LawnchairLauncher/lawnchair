@@ -677,7 +677,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                     TaskView taskToLaunch = currentPageTask;
                     if (currentPageTask == null) {
                         taskToLaunch = fallbackTask;
-                        ActiveGestureProtoLogProxy.logQuickSwitchFromHomeFallback(
+                        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logQuickSwitchFromHomeFallback(
                                 rv.getCurrentPage());
                     }
                     taskToLaunch.launchWithoutAnimation(success -> {
@@ -689,7 +689,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                         return Unit.INSTANCE;
                     });
                 } else {
-                    ActiveGestureProtoLogProxy.logQuickSwitchFromHomeFailed(rv.getCurrentPage());
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logQuickSwitchFromHomeFailed(rv.getCurrentPage());
                     getStateManager().goToState(NORMAL);
                 }
                 break;
@@ -942,6 +942,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
     @Override
     protected void logOnNewIntent(boolean alreadyOnHome, boolean shouldMoveToDefaultScreen,
             String action, boolean internalStateHandled) {
+        if (!Utilities.ATLEAST_S) return;
         OverviewCommandHelperProtoLogProxy.logOnNewIntent(alreadyOnHome, shouldMoveToDefaultScreen,
                 action, internalStateHandled);
     }

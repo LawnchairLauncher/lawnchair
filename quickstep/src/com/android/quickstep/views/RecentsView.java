@@ -1737,7 +1737,7 @@ public abstract class RecentsView<
     @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
-        ActiveGestureProtoLogProxy.logOnPageEndTransition(getNextPage());
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnPageEndTransition(getNextPage());
         if (!mContainer.getDeviceProfile().getDeviceProperties().isTablet()) {
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
         }
@@ -1934,7 +1934,7 @@ public abstract class RecentsView<
 
     @Override
     protected void onScrollerAnimationAborted() {
-        ActiveGestureProtoLogProxy.logOnScrollerAnimationAborted();
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnScrollerAnimationAborted();
     }
 
     @Override
