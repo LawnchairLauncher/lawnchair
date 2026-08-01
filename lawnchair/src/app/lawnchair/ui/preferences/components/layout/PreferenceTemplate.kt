@@ -47,7 +47,7 @@ fun PreferenceTemplate(
     description: (@Composable () -> Unit)? = null,
     startWidget: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
-    shapes: ListItemShapes = ListItemDefaults.segmentedShapes(index = 0, count = 1),
+    shapes: ListItemShapes = ListItemDefaults.shapes(),
     onClick: (() -> Unit)? = null,
     colors: ListItemColors = ListItemDefaults.segmentedColors(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
