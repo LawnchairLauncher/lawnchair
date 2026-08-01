@@ -81,7 +81,7 @@ fun WarningPreference(
                 draggedShape = MaterialTheme.shapes.large,
             )
         } else {
-            ListItemDefaults.segmentedShapes(index = 0, count = 1)
+            ListItemDefaults.shapes()
         },
         colors = colors,
     )
