@@ -533,8 +533,8 @@
     <string name="home_screen_rotation_description">Разрешить поворот главного экрана при повороте устройства</string>
     <string name="auto_updater_label">Автоматически проверять обновления</string>
     <string name="auto_updater_description">Проверять обновление \"ночных\" сборок приложения при открытии экрана \"О программе\"</string>
-    <string name="live_information_label">Live information</string>
-    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
+    <string name="live_information_label">Информация в реальном времени</string>
+    <string name="live_information_description">Отображает сообщение и задает флаги функции по умолчанию</string>
     <string name="wallpaper_blur">Размытие обоев (эксперимент.)</string>
     <string name="wallpaper_background_blur">Степень размытия</string>
     <string name="wallpaper_background_blur_factor">Предел фактора размытия</string>

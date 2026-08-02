@@ -617,7 +617,7 @@
     <string name="paused_apps_dialog_title">App gepauzeerd</string>
     <string name="paused_apps_dialog_message">%1$s is direct gepauzeerd vanuit de Launcher</string>
     <string name="paused_apps_drop_target_label">App pauzeren</string>
-    <string name="open_in_store_drop_target_label">Open in de winkel</string>
+    <string name="open_in_store_drop_target_label">Openen in winkel</string>
     <string name="dock_icons">Dok-iconen</string>
     <string name="dock_rows">Dokrijen</string>
     <string name="state_folded">%1$s (gevouwen)</string>
@@ -700,7 +700,7 @@
     <string name="all_apps_search_result_settings_entry_from_device">Instellingen van apparaat</string>
     <string name="all_apps_search_market_message">Meer apps zoeken</string>
     <string name="all_apps_search_on_web_message">Zoeken op <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>    </string>
-    <string name="error_no_market_or_browser_installed">Geen appwikel of browser geïnstalleerd</string>
+    <string name="error_no_market_or_browser_installed">Geen appwinkel of browser geïnstalleerd</string>
     <string name="all_apps_search_on_web_general">Zoeken op het web</string>
     <string name="clear_history">Zoekgeschiedenis wissen</string>
     <string name="search_input_action_clear_results">Zoekveld wissen</string>

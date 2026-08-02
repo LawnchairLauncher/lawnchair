@@ -46,7 +46,7 @@
     <string name="download_update">ดาวน์โหลดอัปเดต</string>
     <string name="install_update">ติดตั้งอัปเดต</string>
     <string name="view_changes">ดูการเปลี่ยนแปลง</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">คุณใช้เวอร์ชันล่าสุดแล้ว</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">อัปเดต</string>
     <string name="changes_dialog_error">Couldn\'t load updates</string>
@@ -186,8 +186,8 @@
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
     <string name="app_closing_animation">แอนิเมชันการปิดแอป</string>
-    <string name="overlay_fade_in">Fade in</string>
-    <string name="overlay_suck_in">Suck in</string>
+    <string name="overlay_fade_in">เฟดอิน</string>
+    <string name="overlay_suck_in">ดูดเข้า</string>
     <string name="overlay_label">หน้าจอซ้อนทับ</string>
     <string name="overlay_none">ไม่มี</string>
     <!--
@@ -382,7 +382,7 @@
     <string name="smartspace_weather">สภาพอากาศ</string>
     <string name="smartspace_battery_status">สถานะแบตเตอรี่</string>
     <string name="smartspace_torch">สถานะไฟฉาย</string>
-    <string name="smartspace_now_playing">Now playing</string>
+    <string name="smartspace_now_playing">กำลังเล่น</string>
     <string name="smartspace_onboarding">สอนใช้งาน</string>
     <!-- Torch strings -->
     <string name="torch_status_on">ไฟฉายเปิดอยู่</string>
@@ -393,7 +393,7 @@
     <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
     <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
     <string name="onboarding_welcome">ยินดีต้อนรับเข้าสู่ Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
+    <string name="onboarding_swipe_up">ปัดขึ้นเพื่อเปิดรายการแอป</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">จำนวนผลลัพธ์สูงสุดของทาร์เก็ต</string>
     <string name="open_smartspacer_settings">เปิดการตั้งค่าของ Smartspacer</string>
@@ -460,7 +460,7 @@
     <string name="nova_grid_label">กริด</string>
     <string name="nova_grid_value">%1$d x %2$d</string>
     <string name="nova_dock_label">แถบรายการโปรด</string>
-    <string name="nova_app_label">Apps</string>
+    <string name="nova_app_label">แอป</string>
     <string name="nova_widget_label">Widgets</string>
     <string name="nova_folder_label">โฟลเดอร์</string>
     <string name="nova_shortcut_label">Shortcuts</string>
