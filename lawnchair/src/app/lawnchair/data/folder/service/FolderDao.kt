@@ -21,7 +21,7 @@ interface FolderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFolderItems(items: List<FolderItemEntity>)
 
-    @Query("SELECT * FROM Folders")
+    @Query("SELECT * FROM Folders ORDER BY rank ASC")
     @Transaction
     fun getAllFoldersWithItems(): Flow<List<FolderWithItems>>
 
@@ -53,6 +53,19 @@ interface FolderDao {
 
     @Query("DELETE FROM Folders WHERE id = :folderId")
     suspend fun deleteFolder(folderId: Int)
+
+    @Query("UPDATE Folders SET rank = :rank WHERE id = :id")
+    suspend fun updateFolderRank(id: Int, rank: Int)
+
+    @Transaction
+    suspend fun updateFolderRanks(orderedIds: List<Int>) {
+        orderedIds.forEachIndexed { index, id ->
+            updateFolderRank(id, index)
+        }
+    }
+
+    @Query("SELECT COUNT(*) FROM Folders")
+    suspend fun getFolderCount(): Int
 
     @RawQuery
     suspend fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery): Int
