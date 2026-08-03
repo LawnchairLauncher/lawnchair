@@ -387,7 +387,7 @@ public abstract class AbsSwipeUpHandler<
         mContextInitListener =
                 mContainerInterface.createActivityInitListener(this::onActivityInit);
         mLauncherOnDestroyCallback = () -> {
-            ActiveGestureProtoLogProxy.logLauncherDestroyed();
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logLauncherDestroyed();
             mContextInitListener.unregister("AbsSwipeUpHandler.mLauncherOnDestroyCallback");
             if (mRecentsView != null) {
                 mRecentsView.removeOnScrollChangedListener(mOnRecentsScrollListener);
@@ -1045,7 +1045,7 @@ public abstract class AbsSwipeUpHandler<
 
     @Override
     public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
-        ActiveGestureProtoLogProxy.logAbsSwipeUpHandlerOnRecentsAnimationCanceled();
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logAbsSwipeUpHandlerOnRecentsAnimationCanceled();
         mContextInitListener.unregister("AbsSwipeUpHandler.onRecentsAnimationCanceled");
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
         // Defer clearing the controller and the targets until after we've updated the state
@@ -1265,7 +1265,7 @@ public abstract class AbsSwipeUpHandler<
             // Resets this value as the gesture is now complete.
             mContainerInterface.getTaskbarController().setUserIsNotGoingHome(false);
         }
-        ActiveGestureProtoLogProxy.logOnSettledOnEndTarget(endTarget.name());
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnSettledOnEndTarget(endTarget.name());
     }
 
     /** @return Whether this was the task we were waiting to appear, and thus handled it. */
@@ -1301,7 +1301,7 @@ public abstract class AbsSwipeUpHandler<
             boolean isFlingY,
             boolean isCancel,
             boolean horizontalTouchSlopPassed) {
-        ActiveGestureProtoLogProxy.logOnCalculateEndTarget(
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnCalculateEndTarget(
                 dpiFromPx(velocityPxPerMs.x),
                 dpiFromPx(velocityPxPerMs.y),
                 Math.toDegrees(Math.atan2(-velocityPxPerMs.y, velocityPxPerMs.x)));
@@ -1866,7 +1866,7 @@ public abstract class AbsSwipeUpHandler<
                         mRemoteTargetHandles, timestamp, velocityPxPerMs);
         mRecentsAnimationController.handOffAnimation(
                 targetsAndStates.first, targetsAndStates.second);
-        ActiveGestureProtoLogProxy.logHandOffAnimation();
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logHandOffAnimation();
     }
 
     private int calculateWindowRotation(RemoteAnimationTarget runningTaskTarget,
@@ -2144,7 +2144,7 @@ public abstract class AbsSwipeUpHandler<
      * handler (in case of quick switch).
      */
     private void cancelCurrentAnimation() {
-        ActiveGestureProtoLogProxy.logAbsSwipeUpHandlerCancelCurrentAnimation();
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logAbsSwipeUpHandlerCancelCurrentAnimation();
         mCanceled = true;
         mCurrentShift.cancelAnimation();
 
@@ -2476,7 +2476,7 @@ public abstract class AbsSwipeUpHandler<
                 if (!hasTaskPreviouslyAppeared) {
                     ActiveGestureLog.INSTANCE.trackEvent(EXPECTING_TASK_APPEARED);
                 }
-                ActiveGestureProtoLogProxy.logStartNewTask(nextTaskLog);
+                if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logStartNewTask(nextTaskLog);
                 nextTask.launchWithoutAnimation(true, success -> {
                     resultCallback.accept(success);
                     if (success) {
@@ -2555,7 +2555,7 @@ public abstract class AbsSwipeUpHandler<
             return;
         }
         final Runnable onFinishComplete = () -> {
-            ActiveGestureProtoLogProxy.logAbsSwipeUpHandlerOnTasksAppeared();
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logAbsSwipeUpHandlerOnTasksAppeared();
             mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
         };
         ActiveGestureLog.CompoundString forceFinishReason =
@@ -2566,7 +2566,7 @@ public abstract class AbsSwipeUpHandler<
             // previous quickswitch task launch, then cancel the animation back to the app
             RemoteAnimationTarget appearedTaskTarget = appearedTaskTargets[0];
             TaskInfo taskInfo = appearedTaskTarget.taskInfo;
-            ActiveGestureProtoLogProxy.logUnexpectedTaskAppeared(
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logUnexpectedTaskAppeared(
                     taskInfo.taskId,
                     taskInfo.baseIntent.getComponent().getPackageName());
             finishRecentsAnimationOnTasksAppeared(onFinishComplete);
@@ -2576,7 +2576,7 @@ public abstract class AbsSwipeUpHandler<
                 ActiveGestureLog.CompoundString.newEmptyString();
         if (!handleTaskAppeared(appearedTaskTargets, handleTaskFailureReason)) {
             forceFinishReason.append(handleTaskFailureReason);
-            ActiveGestureProtoLogProxy.logHandleTaskAppearedFailed(forceFinishReason);
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logHandleTaskAppearedFailed(forceFinishReason);
             finishRecentsAnimationOnTasksAppeared(onFinishComplete);
             return;
         }
@@ -2585,7 +2585,7 @@ public abstract class AbsSwipeUpHandler<
                 .toArray(RemoteAnimationTarget[]::new);
         if (taskTargets.length == 0) {
             forceFinishReason.append("No appeared task matching started task id");
-            ActiveGestureProtoLogProxy.logHandleTaskAppearedFailed(forceFinishReason);
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logHandleTaskAppearedFailed(forceFinishReason);
             finishRecentsAnimationOnTasksAppeared(onFinishComplete);
             return;
         }
@@ -2595,13 +2595,13 @@ public abstract class AbsSwipeUpHandler<
         if (taskView == null || taskView.getTaskContainers().stream().noneMatch(
                 TaskContainer::getShouldShowSplashView)) {
             forceFinishReason.append("Splash not needed");
-            ActiveGestureProtoLogProxy.logHandleTaskAppearedFailed(forceFinishReason);
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logHandleTaskAppearedFailed(forceFinishReason);
             finishRecentsAnimationOnTasksAppeared(onFinishComplete);
             return;
         }
         if (mContainer == null) {
             forceFinishReason.append("Activity destroyed");
-            ActiveGestureProtoLogProxy.logHandleTaskAppearedFailed(forceFinishReason);
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logHandleTaskAppearedFailed(forceFinishReason);
             finishRecentsAnimationOnTasksAppeared(onFinishComplete);
             return;
         }
@@ -2657,7 +2657,7 @@ public abstract class AbsSwipeUpHandler<
         if (mRecentsAnimationController != null) {
             mRecentsAnimationController.finish(false /* toRecents */, onFinishComplete);
         }
-        ActiveGestureProtoLogProxy.logFinishRecentsAnimationOnTasksAppeared();
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logFinishRecentsAnimationOnTasksAppeared();
     }
 
     /**

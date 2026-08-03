@@ -131,7 +131,7 @@ public class RecentsAnimationCallbacks implements
                 .count() > 0;
         if (appCount == 0 && (!(mContainer instanceof RecentsWindowManager)
                 || isOpeningHome)) {
-            ActiveGestureProtoLogProxy.logOnRecentsAnimationStartCancelled();
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnRecentsAnimationStartCancelled();
             // Edge case, if there are no closing app targets, then Launcher has nothing to handle
             notifyAnimationCanceled();
             animationController.finish(false /* toHome */, false /* sendUserLeaveHint */,
@@ -159,7 +159,7 @@ public class RecentsAnimationCallbacks implements
                     extras);
 
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
-                ActiveGestureProtoLogProxy.logOnRecentsAnimationStart(targets.apps.length);
+                if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnRecentsAnimationStart(targets.apps.length);
                 for (RecentsAnimationListener listener : getListeners()) {
                     listener.onRecentsAnimationStart(mController, targets, transitionInfo);
                 }
@@ -171,7 +171,7 @@ public class RecentsAnimationCallbacks implements
     @Override
     public final void onAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
-            ActiveGestureProtoLogProxy.logRecentsAnimationCallbacksOnAnimationCancelled();
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logRecentsAnimationCallbacksOnAnimationCancelled();
             for (RecentsAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationCanceled(thumbnailDatas);
             }
@@ -183,7 +183,7 @@ public class RecentsAnimationCallbacks implements
     public void onTasksAppeared(
             RemoteAnimationTarget[] apps, @Nullable TransitionInfo transitionInfo) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
-            ActiveGestureProtoLogProxy.logRecentsAnimationCallbacksOnTasksAppeared();
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logRecentsAnimationCallbacksOnTasksAppeared();
             for (RecentsAnimationListener listener : getListeners()) {
                 listener.onTasksAppeared(apps, transitionInfo);
             }
@@ -192,7 +192,7 @@ public class RecentsAnimationCallbacks implements
 
     private void onAnimationFinished(RecentsAnimationController controller) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
-            ActiveGestureProtoLogProxy.logAbsSwipeUpHandlerOnRecentsAnimationFinished();
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logAbsSwipeUpHandlerOnRecentsAnimationFinished();
             for (RecentsAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationFinished(controller);
             }

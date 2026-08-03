@@ -26,6 +26,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.Utilities;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsViewContainer;
 
@@ -98,7 +99,7 @@ public class TaskRemovedDuringLaunchListener {
             final Runnable taskLaunchFailedCallback = mTaskLaunchFailedCallback;
             RecentsModel.INSTANCE.get(mContext).isTaskRemoved(mLaunchedTaskId, (taskRemoved) -> {
                 if (taskRemoved) {
-                    ActiveGestureProtoLogProxy.logTaskLaunchFailed(launchedTaskId);
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logTaskLaunchFailed(launchedTaskId);
                     taskLaunchFailedCallback.run();
                 }
             }, (task) -> true /* filter */);

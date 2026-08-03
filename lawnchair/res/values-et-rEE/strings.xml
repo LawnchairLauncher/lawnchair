@@ -434,10 +434,10 @@
     <string name="privacy_policy">Privaatsuspoliitika</string>
     <string name="contributor_status_active">Aktiivne</string>
     <string name="update_check_failed">Uuenduste kontrollimine nurjus</string>
-    <string name="major_update_label">Update to major version?</string>
-    <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
-    <string name="pro_disabled_by_unknown">Updates are not available</string>
-    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
+    <string name="major_update_label">Kas uuendada põhiversioonile?</string>
+    <string name="major_update_description">Uuendad versioonilt <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. See uus versioon on suur põhiversiooni värskendus ja võib olla vähem stabiilne.</string>
+    <string name="pro_disabled_by_unknown">Uuendusi pole saadaval</string>
+    <string name="pro_disabled_by_major_is_newer">Kasutad juba uuemat versiooni</string>
     <string name="updater">Uuendused</string>
     <!--
 
@@ -465,9 +465,9 @@
     <string name="nova_folder_label">Kaustad</string>
     <string name="nova_shortcut_label">Otseteed</string>
     <string name="nova_icon_pack_label">Ikoonipakett</string>
-    <string name="create_backup_description">Export settings and launcher layout</string>
-    <string name="restore_backup_description">Import a previously created backup</string>
-    <string name="restore_nova_backup_description">Import layout from a Nova Launcher backup</string>
+    <string name="create_backup_description">Expordi oma sätted ja käivitaja paigutus</string>
+    <string name="restore_backup_description">Impordi oma varem loodud varukoopia</string>
+    <string name="restore_nova_backup_description">Impordi oma paigutus Nova Launcheri varukoopiast</string>
     <!--
 
     Gesture settings
@@ -486,7 +486,7 @@
     <string name="gesture_handler_sleep">Ooteseisund</string>
     <string name="gesture_handler_recents">Kuva hiljutised rakendused</string>
     <string name="gesture_handler_open_notifications">Ava märguannete paneel</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
+    <string name="gesture_handler_open_quick_settings">Ava kiirsätted</string>
     <string name="gesture_handler_open_app_option">Ava rakendus</string>
     <string name="gesture_handler_open_app_config">Ava %1$s</string>
     <string name="gesture_handler_open_app_drawer">Ava rakendusesahtel</string>
@@ -495,19 +495,19 @@
     <string name="gesture_handler_open_assistant">Ava assistent</string>
     <string name="pick_app_for_gesture">Vali rakendus</string>
     <string name="dt2s_admin_hint_title">Vaja on administraatori õigusi</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">Seadme unerežiimile viimiseks määra Lawnchair seadmeadministraatori rakenduseks. Puuduta valikut \"Ava sätted\" ja seejärel valikut \"Aktiviseeri seadme administraatori rakendus\".</string>
+    <string name="dt2s_admin_warning">Seadme unerežiimi viimiseks mõeldud viiped lülitatakse välja.</string>
     <string name="d2ts_recents_a11y_hint_title">Lülita juurdepääsetavuse teenus sisse</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="sleep_mode_label">Sleep mode</string>
+    <string name="sleep_a11y_hint">vii seade unerežiimi</string>
+    <string name="notifications_fallback_a11y_hint">ava märguannete paneel</string>
+    <string name="quick_settings_a11y_hint">ava kiirseadete paneel</string>
+    <string name="recents_screen_a11y_hint">ava viimaste rakenduste ekraan</string>
+    <string name="generic_a11y_hint">Mõiste %1$s jaoks lülita sisse Lawnchairi juurdepääsetavuse teenus. Puuduta valikut „Ava seaded”, vali „Lawnchair” ja lülita sisse „Kasuta Lawnchairi”.</string>
+    <string name="generic_a11y_disclaimer">Lawnchair kasutab selle toimingu tegemiseks juurdepääsetavuse meetodit `performGlobalAction`. See on tundlik luba, mis võimaldab jälgida teisi rakendusi. Lawnchair pole aga selle funktsiooni jaoks seadistatud ega saa ühtegi sündmust.</string>
+    <string name="sleep_mode_label">Unerežiim</string>
     <string name="sleep_mode_auto">Automaatne</string>
     <string name="sleep_mode_root">Root</string>
-    <string name="sleep_mode_accessibility">Accessibility service</string>
+    <string name="sleep_mode_accessibility">Juurdepääsetavuse teenus</string>
     <string name="sleep_mode_device_admin">Seadme administraator</string>
     <!--
 
@@ -531,10 +531,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Avakuva pööramine</string>
     <string name="home_screen_rotation_description">Luba seadme pööramisel avakuva pööramine</string>
-    <string name="auto_updater_label">Automatically check for updates</string>
-    <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
-    <string name="live_information_label">Live information</string>
-    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
+    <string name="auto_updater_label">Otsi uuendusi automaatselt</string>
+    <string name="auto_updater_description">Otsib teavituskuva avamisel Nightly-versioonivärskendusi</string>
+    <string name="live_information_label">Reaalajas teave</string>
+    <string name="live_information_description">Kuvab teadaande ja määrab vaikefunktsioonilipud</string>
     <string name="wallpaper_blur">Hägusta taustapilt (katseline)</string>
     <string name="wallpaper_background_blur">Hägususe aste</string>
     <string name="wallpaper_background_blur_factor">Hägususteguri piirang</string>
@@ -558,19 +558,19 @@
     <string name="home_screen_locked">Avakuva on lukustatud</string>
     <string name="home_screen_lock_description">Väldi avakuva paigutuse muutmist</string>
     <string name="horizontal_padding_label">Horisontaalne kaugus</string>
-    <string name="vertical_padding_label">Vertical padding</string>
-    <string name="top_padding_label">Top padding</string>
-    <string name="widget_padding_label">Widget padding</string>
-    <string name="set_default_home_page">Set as default page</string>
-    <string name="default_home_page_set">Default home page updated</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
-    <string name="page_order_updated">Page order updated</string>
+    <string name="vertical_padding_label">Vertikaalne vahe</string>
+    <string name="top_padding_label">Ülemine vahe</string>
+    <string name="widget_padding_label">Vidina vahe</string>
+    <string name="set_default_home_page">Määra vaikeleheks</string>
+    <string name="default_home_page_set">Vaikeavalehte uuendati</string>
+    <string name="move_page_left">Liiguta leht vasakule</string>
+    <string name="move_page_right">Liiguta leht paremale</string>
+    <string name="page_order_updated">Lehekülgede järjestus uuendati</string>
     <string name="edit_mode_page_strip_default">Vaikimisi</string>
-    <string name="edit_mode_page_strip_page">Page %1$d</string>
+    <string name="edit_mode_page_strip_page">Leht %1$d</string>
     <string name="edit_mode_page_strip_set_home">Määra avakuvaks</string>
     <string name="edit_mode_page_strip_home_selected">Vaikimisi avakuva</string>
-    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
+    <string name="edit_mode_page_strip_tip">Järjestuse muutmiseks lohista lehti. Vaikelehe määramiseks puuduta kodukuva ikooni.</string>
     <string name="popup_menu">Hüpikmenüü</string>
     <string name="popup_menu_items">Hüpikmenüü üksused</string>
     <string name="edit_menu_items">Muuda hüpikmenüü üksusi</string>
@@ -579,7 +579,7 @@
     <string name="show_status_bar">Kuva olekuriba</string>
     <string name="dark_status_bar_label">Tume olekuriba</string>
     <string name="status_bar_clock_label">Olekuriba kell</string>
-    <string name="status_bar_clock_description">Dynamically hide the status bar clock on the first screen</string>
+    <string name="status_bar_clock_description">Peida olekuriba kell esimesel lehel dünaamiliselt</string>
     <string name="home_screen_text_color">Teksti värv</string>
     <string name="color_light">Hele</string>
     <string name="color_dark">Tume</string>
@@ -591,12 +591,12 @@
     <string name="widget_unlimited_size_description">Eemalda vidinate minimaalse ja maksimaalse suuruse piirangud</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Kuva dokk</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the dock is visible. Tap to show the dock</string>
+    <string name="enable_dock_to_access_qsb_settings">Otsinguriba seaded on saadaval, kui dokk on nähtav. Doki kuvamiseks puuduta</string>
     <string name="search_bar_label">Otsinguriba</string>
     <string name="search_bar_settings">Otsinguriba seaded</string>
     <string name="hotseat_mode_label">Otsinguriba vidin</string>
     <string name="hotseat_mode_disabled">Keelatud</string>
-    <string name="hotseat_mode_google_search">Google search bar</string>
+    <string name="hotseat_mode_google_search">Google otsinguriba</string>
     <string name="qsb_hotseat_background_transparency">Tausta läbipaistmatus</string>
     <string name="qsb_hotseat_stroke_width">Kontuuri laius</string>
     <string name="qsb_hotseat_stroke_color">Kontuuri värv</string>
@@ -617,15 +617,15 @@
     <string name="paused_apps_dialog_title">Rakendus peatati</string>
     <string name="paused_apps_dialog_message">%1$s peatati otse käivitajast</string>
     <string name="paused_apps_drop_target_label">Peata rakendus</string>
-    <string name="open_in_store_drop_target_label">Open in store</string>
+    <string name="open_in_store_drop_target_label">Ava poes</string>
     <string name="dock_icons">Doki ikoonid</string>
-    <string name="dock_rows">Dock rows</string>
-    <string name="state_folded">%1$s (folded)</string>
-    <string name="state_unfolded">%1$s (unfolded)</string>
-    <string name="folded_label">Folded</string>
-    <string name="unfolded_label">Unfolded</string>
-    <string name="when_folded_label">When folded</string>
-    <string name="when_unfolded_label">When unfolded</string>
+    <string name="dock_rows">Doki read</string>
+    <string name="state_folded">%1$s (kokkuvolditud)</string>
+    <string name="state_unfolded">%1$s (lahtivolditud)</string>
+    <string name="folded_label">Kokkuvolditud</string>
+    <string name="unfolded_label">Lahtivolditud</string>
+    <string name="when_folded_label">Kokkuvoldituna</string>
+    <string name="when_unfolded_label">Lahtivoldituna</string>
     <string name="unfolded_grid_description">Lawnchair ühendab suurema ekraani täitmiseks kaks lehte paari</string>
     <string name="foldable_columns_error">Kokkuvolditud väärtus peab olema väiksem või võrdne lahtivolditud väärtusega. Vajaduse korral kohandatakse seda automaatselt.</string>
     <string name="hotseat_bottom_space_label">Alumise serva kaugus</string>
@@ -653,9 +653,9 @@
     <string name="app_drawer_haptic_feedback_label">Kompimistagasiside</string>
     <string name="app_drawer_indent_label">Horisontaalne kaugus</string>
     <string name="app_drawer_bg_color_label">Tausta värv</string>
-    <string name="work_profile_tab_background_label">Tab background color</string>
-    <string name="pref_all_apps_search_bar_background">Show background behind search bar</string>
-    <string name="work_profile_tab_container_background_label">Show background behind tabs</string>
+    <string name="work_profile_tab_background_label">Vahekaardi taustavärv</string>
+    <string name="pref_all_apps_search_bar_background">Kuva otsinguriba taga taust</string>
+    <string name="work_profile_tab_container_background_label">Kuva vahekaartide taga taust</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Peida rakendusesahtlist</string>
     <string name="hidden_apps_label_with_count">Peidetud rakendused (%1$d)</string>
@@ -670,7 +670,7 @@
     <string name="max_folder_columns">Maksimaalne tulpade arv kaustas</string>
     <string name="max_folder_rows">Maksimaalne ridade arv kaustas</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Neid sätteid eiratakse, kuna Lawnchair ei ole seatud viimaste rakenduste akna pakkujaks</string>
     <string name="quickstep_incompatible">Ühildumatu süsteemiintegratsioon</string>
     <string name="quickstep_incompatible_description">See seade on seadistatud kasutama süsteemi viipeid (Quickstep), mida pakub %1$s, kuid see %1$s versioon ei ühildu seadme Androidi versiooniga. Seadme kasutamise jätkamiseks eemalda rakenduse %1$s värskendused või keela %1$s süsteemi viipete pakkujana.</string>
     <string name="translucent_background">Läbipaistev taust</string>
