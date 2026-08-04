@@ -32,10 +32,6 @@ class IconGestureListener(
      */
     private enum class ScrollLock { NONE, HORIZONTAL, VERTICAL }
 
-    private val configuredGestures by lazy {
-        GestureType.entries.filter { resolveGesture(it) != null }.toSet()
-    }
-
     override fun onSwipeRight(velocity: Float) = handleGesture(GestureType.SWIPE_RIGHT, velocity)
     override fun onSwipeLeft(velocity: Float) = handleGesture(GestureType.SWIPE_LEFT, velocity)
     override fun onSwipeTop(velocity: Float) = handleGesture(GestureType.SWIPE_UP, velocity)
@@ -81,7 +77,7 @@ class IconGestureListener(
 
     /** Check if there's any gesture configured for this entry */
     fun hasAnyGestureConfigured(): Boolean {
-        return configuredGestures.isNotEmpty()
+        return GestureType.entries.any(::hasGestureConfigured)
     }
 
     /** Check if there's a horizontal gesture configured for this entry. (Swipe left/right) */
@@ -99,7 +95,10 @@ class IconGestureListener(
     /** Check if there's a specific gesture configured for this entry
      * @param gestureType The type of gesture to check */
     private fun hasGestureConfigured(gestureType: GestureType): Boolean {
-        return configuredGestures.contains(gestureType)
+        // Per-app gesture settings may change while this icon view stays attached to the
+        // workspace. Resolve from PreferenceManager2's in-memory cache so an existing icon
+        // immediately observes new settings instead of requiring it to be recreated.
+        return resolveGesture(gestureType) != null
     }
 
     /** Launch gesture configured operation for a specific gesture type
