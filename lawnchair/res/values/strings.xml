@@ -921,6 +921,9 @@
     <string name="show_app_search_bar">Show search bar</string>
     <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
 
+    <string name="pref_search_keep_keyboard_open_label">Keep keyboard open on clear</string>
+    <string name="pref_search_keep_keyboard_open_description">Keyboard won\'t close when you clear the search field</string>
+
     <string name="fuzzy_search_title">Fuzzy search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches</string>
 
