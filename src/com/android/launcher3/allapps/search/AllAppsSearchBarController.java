@@ -33,6 +33,10 @@ import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
 import com.android.launcher3.views.ActivityContext;
 
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.lawnchair.LawnchairApp;
+import app.lawnchair.preferences2.PreferenceManager2;
+
 /**
  * An interface to a search box that AllApps can command.
  */
@@ -48,6 +52,12 @@ public class AllAppsSearchBarController
 
     protected SearchAlgorithm<AdapterItem> mSearchAlgorithm;
 
+    private final PreferenceManager2 pref2;
+    
+    public AllAppsSearchBarController() {
+        pref2 = PreferenceManager2.getInstance(LawnchairApp.getInstance());
+    }
+    
     public void setVisibility(int visibility) {
         mInput.setVisibility(visibility);
     }
@@ -148,8 +158,10 @@ public class AllAppsSearchBarController
     public void reset() {
         mCallback.clearSearchResult();
         mInput.reset();
-        mInput.clearFocus();
-        mInput.hideKeyboard();
+        if (!PreferenceCacheExtensionsKt.firstCached(pref2.getKeepKeyboardOpenOnClear())) {
+            mInput.clearFocus();
+            mInput.hideKeyboard();
+        }
         mQuery = null;
     }
 
