@@ -79,7 +79,7 @@ class FolderService @Inject constructor(
     suspend fun removeItemsByPackages(packageNames: Collection<String>) = withContext(Dispatchers.IO) {
         packageNames.forEach { packageName ->
             if (packageName.isNotEmpty()) {
-                folderDao.deleteFolderItemsByPackagePattern("$packageName/%")
+                folderDao.deleteFolderItemsByPackageName(packageName)
             }
         }
     }

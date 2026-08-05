@@ -83,19 +83,16 @@ class LawnchairAlphabeticalAppsList<T>(
     }
 
     /**
-     * Drops folder DB rows for apps that are hidden or no longer present in the apps store.
-     * Keeps preference counts and folder membership consistent after uninstall/hide.
+     * Drops folder DB rows for hidden or malformed component keys.
+     * Uninstall cleanup is handled by PackageUpdatedTask; missing apps-store entries
+     * are not pruned here so temporarily unavailable apps (e.g. unmounted media) stay.
      */
     private fun pruneInvalidFolderMembership(alsoHidden: Set<String>) {
         if (folderList.isEmpty()) return
-        // Avoid wiping membership before All Apps has loaded.
-        val appsLoaded = appsStore.apps.isNotEmpty()
         val staleKeys = folderList.flatMap { folder ->
             folder.itemComponentKeys.filter { keyString ->
                 if (alsoHidden.contains(keyString)) return@filter true
-                if (!appsLoaded) return@filter false
-                val componentKey = ComponentKey.fromString(keyString) ?: return@filter true
-                appsStore.getApp(componentKey) == null
+                ComponentKey.fromString(keyString) == null
             }
         }.toSet()
         if (staleKeys.isEmpty()) return
