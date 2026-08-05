@@ -98,7 +98,15 @@ class LawnchairAlphabeticalAppsList<T>(
         if (staleKeys.isEmpty()) return
         context.launcher.lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                FolderService.INSTANCE.get(context).removeItemsByComponentKeys(staleKeys)
+                // Recheck at delete time: membership may have been rewritten after the snapshot
+                // (e.g. unhide + re-add), and removeItemsByComponentKeys matches any folder.
+                val currentlyHidden = hiddenApps
+                val stillStale = staleKeys.filter { keyString ->
+                    currentlyHidden.contains(keyString) || ComponentKey.fromString(keyString) == null
+                }
+                if (stillStale.isNotEmpty()) {
+                    FolderService.INSTANCE.get(context).removeItemsByComponentKeys(stillStale)
+                }
             }
         }
     }
