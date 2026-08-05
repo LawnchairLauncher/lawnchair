@@ -2,6 +2,7 @@ package app.lawnchair.gestures
 
 import android.util.Log
 import android.view.ViewConfiguration
+import androidx.datastore.preferences.core.Preferences
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +28,8 @@ class IconGestureListener(
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private var scrollLock = ScrollLock.NONE
     private var isAnimating = false
+    private var cachedPreferences: Preferences? = null
+    private var configuredGestures = emptySet<GestureType>()
 
     /** Represents the axis on which the current scroll gesture is locked.
      */
@@ -77,7 +80,7 @@ class IconGestureListener(
 
     /** Check if there's any gesture configured for this entry */
     fun hasAnyGestureConfigured(): Boolean {
-        return GestureType.entries.any(::hasGestureConfigured)
+        return getConfiguredGestures().isNotEmpty()
     }
 
     /** Check if there's a horizontal gesture configured for this entry. (Swipe left/right) */
@@ -95,10 +98,21 @@ class IconGestureListener(
     /** Check if there's a specific gesture configured for this entry
      * @param gestureType The type of gesture to check */
     private fun hasGestureConfigured(gestureType: GestureType): Boolean {
-        // Per-app gesture settings may change while this icon view stays attached to the
-        // workspace. Resolve from PreferenceManager2's in-memory cache so an existing icon
-        // immediately observes new settings instead of requiring it to be recreated.
-        return resolveGesture(gestureType) != null
+        return gestureType in getConfiguredGestures()
+    }
+
+    /**
+     * Refreshes this listener's gesture cache whenever DataStore publishes a new preferences
+     * snapshot. This keeps an existing icon in sync without parsing its JSON configuration on
+     * every scroll event.
+     */
+    private fun getConfiguredGestures(): Set<GestureType> {
+        val preferences = prefs.getCachedPreferences()
+        if (preferences !== cachedPreferences) {
+            cachedPreferences = preferences
+            configuredGestures = GestureType.entries.filter { resolveGesture(it) != null }.toSet()
+        }
+        return configuredGestures
     }
 
     /** Launch gesture configured operation for a specific gesture type
