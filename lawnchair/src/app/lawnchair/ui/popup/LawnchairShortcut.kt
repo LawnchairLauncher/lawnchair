@@ -10,6 +10,8 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.content.pm.SuspendDialogInfo
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.net.Uri
 import android.os.UserHandle
@@ -22,14 +24,18 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
+import app.lawnchair.ui.preferences.PreferenceActivity
+import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.icons.LauncherIcons
+import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
@@ -37,11 +43,47 @@ import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.views.ActivityContext
+import com.android.launcher3.views.OptionsPopupView
 import java.net.URISyntaxException
 
 class LawnchairShortcut {
 
     companion object {
+
+        fun showAppDrawerFolderPopup(
+            launcher: LawnchairLauncher,
+            folderIcon: FolderIcon,
+        ): Boolean {
+            val folderId = folderIcon.mInfo.id
+            if (folderId == ItemInfo.NO_ID) return false
+
+            val bounds = Rect()
+            launcher.dragLayer.getDescendantRectRelativeToSelf(folderIcon, bounds)
+            // Unlike regular app, folder does not have any code that would allow it to be showing any popup
+            // In the future we should perhaps move this entire code to a dedicated file like
+            // LawnchairFolderShortcut.kt
+            return OptionsPopupView.show<LawnchairLauncher>(
+                launcher,
+                RectF(bounds),
+                listOf(
+                    OptionsPopupView.OptionItem(
+                        launcher,
+                        R.string.edit_folder,
+                        R.drawable.ic_edit,
+                        StatsLogManager.LauncherEvent.IGNORE,
+                    ) {
+                        launcher.startActivity(
+                            PreferenceActivity.createIntent(
+                                launcher,
+                                AppDrawerAppListToFolder(folderId),
+                            ),
+                        )
+                        true
+                    },
+                ),
+                true,
+            ) != null
+        }
 
         val CUSTOMIZE =
             SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo, originalView ->
