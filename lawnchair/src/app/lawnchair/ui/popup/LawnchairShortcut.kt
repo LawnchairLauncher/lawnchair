@@ -59,7 +59,9 @@ class LawnchairShortcut {
 
             val bounds = Rect()
             launcher.dragLayer.getDescendantRectRelativeToSelf(folderIcon, bounds)
-            // Unlike regular app, folder does not have any code that would allow it to be showing any popup
+            // Unlike regular app, folder does not have any code that would allow it to be showing
+            // any popup we have to create our own.
+            //
             // In the future we should perhaps move this entire code to a dedicated file like
             // LawnchairFolderShortcut.kt
             return OptionsPopupView.show<LawnchairLauncher>(
