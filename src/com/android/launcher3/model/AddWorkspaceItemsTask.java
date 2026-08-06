@@ -44,6 +44,8 @@ import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 
+import app.lawnchair.util.PrivateSpaceUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -95,6 +97,14 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
             List<ItemInfo> filteredItems = new ArrayList<>();
             for (Pair<ItemInfo, Object> entry : mItemList) {
                 ItemInfo item = entry.first;
+                // Installing an app into the private space must not put it on the home screen
+                // against the user's wishes. This path never consults FLAG_NOT_PINNABLE, so
+                // without this the auto-add would overrule the preference and leave behind an
+                // icon that cannot be dragged - and therefore cannot be dragged off either.
+                if (PrivateSpaceUtils.isPrivateSpaceItem(context, item)
+                        && !PrivateSpaceUtils.isPinningAllowed(context)) {
+                    continue;
+                }
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                     // Short-circuit this logic if the icon exists somewhere on the workspace
                     if (shortcutExists(dataModel, item.getIntent(), item.user)) {

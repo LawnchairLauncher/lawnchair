@@ -25,8 +25,11 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.UserHandle;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -44,10 +47,12 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.PrivateProfileTracker;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
@@ -303,10 +308,30 @@ public class GridSizeMigrationUtil {
         // cause
         // any extra data loss and gives us more free space on the grid for better
         // migration.
+        //
+        // That justification does not hold for other profiles, and both work and private
+        // space were affected. The set below was built from the calling user alone, so an
+        // app installed only in another profile was never in it and its row was dropped on
+        // every grid change. For private space the loader no longer removes those items
+        // either, which left this the one remaining path that deleted them silently.
         HashSet<String> validPackages = new HashSet<>();
         for (PackageInfo info : context.getPackageManager()
                 .getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
             validPackages.add(info.packageName);
+        }
+        // Collect the other profiles the calling user cannot see, so that work and private
+        // space apps are recognised as valid.
+        LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
+        if (launcherApps != null) {
+            for (UserHandle user : UserCache.INSTANCE.get(context).getUserProfiles()) {
+                try {
+                    for (LauncherActivityInfo lai : launcherApps.getActivityList(null, user)) {
+                        validPackages.add(lai.getComponentName().getPackageName());
+                    }
+                } catch (Throwable t) {
+                    Log.w(TAG, "Unable to list packages for user " + user, t);
+                }
+            }
         }
         InstallSessionHelper.INSTANCE.get(context)
                 .getActiveSessions().keySet()
@@ -478,7 +503,8 @@ public class GridSizeMigrationUtil {
                             LauncherSettings.Favorites._ID, // 0
                             LauncherSettings.Favorites.ITEM_TYPE, // 1
                             LauncherSettings.Favorites.INTENT, // 2
-                            LauncherSettings.Favorites.SCREEN }, // 3
+                            LauncherSettings.Favorites.SCREEN, // 3
+                            LauncherSettings.Favorites.PROFILE_ID }, // 4
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 
@@ -486,6 +512,8 @@ public class GridSizeMigrationUtil {
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
             final int indexIntent = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
             final int indexScreen = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
+            final int indexHotseatProfileId = c.getColumnIndexOrThrow(
+                    LauncherSettings.Favorites.PROFILE_ID);
 
             IntArray entriesToRemove = new IntArray();
             while (c.moveToNext()) {
@@ -500,7 +528,7 @@ public class GridSizeMigrationUtil {
                         case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION: {
                             entry.mIntent = c.getString(indexIntent);
-                            verifyIntent(c.getString(indexIntent));
+                            verifyIntent(c.getString(indexIntent), c.getLong(indexHotseatProfileId));
                             break;
                         }
                         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
@@ -547,7 +575,8 @@ public class GridSizeMigrationUtil {
                             LauncherSettings.Favorites.SPANY, // 6
                             LauncherSettings.Favorites.INTENT, // 7
                             LauncherSettings.Favorites.APPWIDGET_PROVIDER, // 8
-                            LauncherSettings.Favorites.APPWIDGET_ID }, // 9
+                            LauncherSettings.Favorites.APPWIDGET_ID, // 9
+                            LauncherSettings.Favorites.PROFILE_ID }, // 10
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_DESKTOP);
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
@@ -562,6 +591,8 @@ public class GridSizeMigrationUtil {
                     LauncherSettings.Favorites.APPWIDGET_PROVIDER);
             final int indexAppWidgetId = c.getColumnIndexOrThrow(
                     LauncherSettings.Favorites.APPWIDGET_ID);
+            final int indexProfileId = c.getColumnIndexOrThrow(
+                    LauncherSettings.Favorites.PROFILE_ID);
 
             IntArray entriesToRemove = new IntArray();
             WidgetManagerHelper widgetManagerHelper = new WidgetManagerHelper(mContext);
@@ -582,13 +613,13 @@ public class GridSizeMigrationUtil {
                         case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION: {
                             entry.mIntent = c.getString(indexIntent);
-                            verifyIntent(entry.mIntent);
+                            verifyIntent(entry.mIntent, c.getLong(indexProfileId));
                             break;
                         }
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET: {
                             entry.mProvider = c.getString(indexAppWidgetProvider);
                             ComponentName cn = ComponentName.unflattenFromString(entry.mProvider);
-                            verifyPackage(cn.getPackageName());
+                            verifyPackage(cn.getPackageName(), c.getLong(indexProfileId));
 
                             int widgetId = c.getInt(indexAppWidgetId);
                             LauncherAppWidgetProviderInfo pInfo = widgetManagerHelper
@@ -644,7 +675,9 @@ public class GridSizeMigrationUtil {
 
         private int getFolderItemsCount(DbEntry entry) {
             Cursor c = queryWorkspace(
-                    new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.INTENT },
+                    new String[] { LauncherSettings.Favorites._ID,
+                            LauncherSettings.Favorites.INTENT,
+                            LauncherSettings.Favorites.PROFILE_ID },
                     LauncherSettings.Favorites.CONTAINER + " = " + entry.id);
 
             int total = 0;
@@ -652,7 +685,7 @@ public class GridSizeMigrationUtil {
                 try {
                     int id = c.getInt(0);
                     String intent = c.getString(1);
-                    verifyIntent(intent);
+                    verifyIntent(intent, c.getLong(2));
                     total++;
                     if (!entry.mFolderItems.containsKey(intent)) {
                         entry.mFolderItems.put(intent, new HashSet<>());
@@ -671,21 +704,28 @@ public class GridSizeMigrationUtil {
         }
 
         /** Verifies if the mIntent should be restored. */
-        private void verifyIntent(String intentStr)
+        private void verifyIntent(String intentStr, long profileId)
                 throws Exception {
             Intent intent = Intent.parseUri(intentStr, 0);
             if (intent.getComponent() != null) {
-                verifyPackage(intent.getComponent().getPackageName());
+                verifyPackage(intent.getComponent().getPackageName(), profileId);
             } else if (intent.getPackage() != null) {
                 // Only verify package if the component was null.
-                verifyPackage(intent.getPackage());
+                verifyPackage(intent.getPackage(), profileId);
             }
         }
 
         /** Verifies if the package should be restored */
-        private void verifyPackage(String packageName)
+        private void verifyPackage(String packageName, long profileId)
                 throws Exception {
             if (!mValidPackages.contains(packageName)) {
+                // A locked or otherwise hidden private profile cannot be enumerated at all, so its
+                // packages are never in the valid set and every row would be dropped here. Dropping
+                // is only an optimisation to free grid space - the loader is the authority on what
+                // is really gone - so leave these rows for it to judge once the profile is back.
+                if (PrivateProfileTracker.isInaccessiblePrivateProfile(mContext, profileId)) {
+                    return;
+                }
                 // TODO(b/151468819): Handle promise app icon restoration during grid migration.
                 throw new Exception("Package not available");
             }

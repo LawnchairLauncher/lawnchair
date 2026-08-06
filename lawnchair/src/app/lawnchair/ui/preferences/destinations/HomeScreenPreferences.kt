@@ -164,6 +164,28 @@ fun HomeScreenPreferences(
                 description = stringResource(id = R.string.show_dot_pagination_description),
             )
         }
+        // Always offered, never withheld while the space is locked. The section is shown on every
+        // Android 15 device whether or not a private space exists, so its presence reveals nothing
+        // - but its absence would, marking out exactly the devices that have one and have it
+        // locked. Hiding it would have been the leak, not the protection.
+        if (Utilities.ATLEAST_V) {
+            PreferenceGroup(heading = stringResource(id = R.string.private_space_group_label)) {
+                val allowPinningPrivateSpaceAdapter =
+                    prefs2.allowPinningPrivateSpaceApps.getAdapter()
+                SwitchPreference(
+                    adapter = allowPinningPrivateSpaceAdapter,
+                    label = stringResource(id = R.string.private_space_pinning_label),
+                    description = stringResource(id = R.string.private_space_pinning_description),
+                )
+                SwitchPreference(
+                    adapter = prefs2.hidePrivateSpaceAppBadge.getAdapter(),
+                    label = stringResource(id = R.string.private_space_hide_badge_label),
+                    description = stringResource(
+                        id = R.string.private_space_hide_badge_description,
+                    ),
+                )
+            }
+        }
         PreferenceGroup(heading = stringResource(id = R.string.popup_menu)) {
             SwitchPreference(
                 adapter = prefs2.enableMaterialUPopUp.getAdapter(),

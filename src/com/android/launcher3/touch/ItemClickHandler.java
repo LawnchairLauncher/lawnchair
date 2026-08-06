@@ -75,6 +75,8 @@ import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
+import app.lawnchair.util.PrivateSpaceUtils;
+
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -292,6 +294,15 @@ public class ItemClickHandler {
         // Handle the case where the disabled reason is DISABLED_REASON_VERSION_LOWER.
         // Show an AlertDialog for the user to choose either updating the app or cancel the launch.
         if (maybeCreateAlertDialogForShortcut(shortcut, context)) {
+            return true;
+        }
+
+        // A pinned private space app whose only problem is that the space is locked: unlocking is
+        // the action the user is asking for. Launching would fail, and a toast would be a dead end.
+        if ((disabledFlags & ~FLAG_DISABLED_QUIET_USER) == 0
+                && (disabledFlags & FLAG_DISABLED_QUIET_USER) != 0
+                && PrivateSpaceUtils.isPrivateSpaceItem(context, shortcut)) {
+            PrivateSpaceUtils.requestUnlock(context, shortcut.user);
             return true;
         }
 

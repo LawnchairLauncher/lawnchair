@@ -40,6 +40,8 @@ import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.UserIconInfo;
 
+import app.lawnchair.util.PrivateSpaceUtils;
+
 import java.util.Comparator;
 
 /**
@@ -217,7 +219,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
                 : FLAG_SYSTEM_YES;
 
         if (Flags.privateSpaceRestrictAccessibilityDrag()) {
-            if (userIconInfo.isPrivate()) {
+            if (userIconInfo.isPrivate()
+                    && !PrivateSpaceUtils.isPinningAllowed()) {
                 info.runtimeStatusFlags |= FLAG_NOT_PINNABLE;
             } else {
                 info.runtimeStatusFlags &= ~FLAG_NOT_PINNABLE;

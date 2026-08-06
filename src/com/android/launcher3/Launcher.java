@@ -288,6 +288,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.util.PrivateSpaceUtils;
 
 /**
  * Default launcher application.
@@ -2354,6 +2355,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         int index = 0;
         for (Pair<ItemInfo, View> e : shortcuts) {
             final ItemInfo item = e.first;
+
+            // A pinned private space app whose space is locked gets no view, leaving its cell
+            // genuinely empty rather than invisibly occupied. Filtered here rather than in
+            // bindItems because model-side inflation calls this method directly, and that is the
+            // path actually taken while enableWorkspaceInflation is on.
+            if (PrivateSpaceUtils.shouldSkipWorkspaceBinding(this, item)) {
+                continue;
+            }
 
             // Remove colliding items.
             CellPos presenterPos = getCellPosMapper().mapModelToPresenter(item);

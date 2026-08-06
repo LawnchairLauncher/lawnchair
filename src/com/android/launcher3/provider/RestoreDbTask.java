@@ -76,6 +76,7 @@ import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
+import com.android.launcher3.util.PrivateProfileTracker;
 
 import java.io.File;
 import java.io.InvalidObjectException;
@@ -253,6 +254,15 @@ public class RestoreDbTask {
                 profileMapping.put(oldManagedProfileId, newManagedProfileId);
                 FileLog.d(TAG, "sanitizeDB: managed profile id=" + oldManagedProfileId
                         + " should be mapped to new id=" + newManagedProfileId);
+            } else if (PrivateProfileTracker.isRestorablePrivateProfileSerial(
+                    context, oldManagedProfileId)) {
+                // Private profiles are never part of backup & restore, so BackupManager cannot map
+                // them and every private space item would be deleted below. When the serial still
+                // belongs to a private profile on this device - always the case for a local
+                // Lawnchair backup - the rows are still valid, so map the id to itself.
+                profileMapping.put(oldManagedProfileId, oldManagedProfileId);
+                FileLog.d(TAG, "sanitizeDB: keeping items of private profile id="
+                        + oldManagedProfileId);
             } else {
                 FileLog.e(TAG, "sanitizeDB: No User found for old profileId, Ancestral Serial "
                         + "Number: " + oldManagedProfileId);

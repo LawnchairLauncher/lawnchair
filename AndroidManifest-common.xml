@@ -43,7 +43,14 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.ACCESS_RESTRICTED_SETTINGS" />
-    
+
+    <!--
+    Required to see the private profile at all. This is an appop permission granted only while this
+    app holds the home role, so it comes and goes as the default launcher changes. Declared here
+    rather than only in the quickstep manifest so that every flavour can observe the profile.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES" />
+
     <!-- for rotating surface by arbitrary degree -->
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ROTATE_SURFACE_FLINGER" />

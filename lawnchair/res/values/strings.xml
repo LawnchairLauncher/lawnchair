@@ -645,6 +645,15 @@
     <string name="color_light">Light</string>
     <string name="color_dark">Dark</string>
 
+    <string name="private_space_group_label">Private space</string>
+    <string name="private_space_check_failed">Couldn\'t check private space state — some icons may be shown or hidden incorrectly</string>
+    <string name="private_space_pinning_label">Allow on home screen</string>
+    <string name="private_space_pinning_description">Let private space apps be added to the home screen and dock. Their names and icons will be visible outside the private space</string>
+    <string name="private_space_item_relocated">Moved %1$s to a free spot — its place on the home screen was taken</string>
+    <string name="private_space_items_relocated">Moved %1$d private space apps to free spots — their places on the home screen were taken</string>
+    <string name="private_space_hide_badge_label">Hide app badge</string>
+    <string name="private_space_hide_badge_description">Remove the private space badge from these app icons, wherever they appear</string>
+
     <string name="force_rounded_widgets">Rounded corners</string>
     <string name="allow_widget_overlap">Allow overlap</string>
 

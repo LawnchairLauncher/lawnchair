@@ -265,6 +265,35 @@ class PreferenceManager2 private constructor(private val context: Context) :
         defaultValue = context.resources.getBoolean(R.bool.config_default_force_widget_resize),
     )
 
+    /**
+     * Allows private space apps to be pinned to the home screen and hotseat.
+     *
+     * Off by default: pinning puts the app's name and icon outside the locked container, and records
+     * its component name in the launcher database, so it is a deliberate trade of privacy for
+     * convenience. Changing it reloads the model, which is what recomputes the pinnable flag.
+     */
+    val allowPinningPrivateSpaceApps = preference(
+        key = booleanPreferencesKey(name = "allow_pinning_private_space_apps"),
+        defaultValue = context.resources.getBoolean(
+            R.bool.config_default_allow_pinning_private_space_apps,
+        ),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    /**
+     * Removes the private profile badge from private space app icons, everywhere they appear.
+     *
+     * The badge is the only thing marking a pinned private app as private, so hiding it makes such
+     * an icon indistinguishable from an ordinary one on the home screen.
+     */
+    val hidePrivateSpaceAppBadge = preference(
+        key = booleanPreferencesKey(name = "hide_private_space_app_badge"),
+        defaultValue = context.resources.getBoolean(
+            R.bool.config_default_hide_private_space_app_badge,
+        ),
+        onSet = { reloadHelper.reloadIcons() },
+    )
+
     val widgetUnlimitedSize = preference(
         key = booleanPreferencesKey(name = "widget_unlimited_size"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_widget_unlimited_size),

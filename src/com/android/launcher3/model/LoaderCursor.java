@@ -64,6 +64,8 @@ import com.android.launcher3.util.UserIconInfo;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -86,6 +88,7 @@ public class LoaderCursor extends CursorWrapper {
 
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
+    private final ArrayList<ItemInfo> mDeferredPlacements = new ArrayList<>();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
 
     private final int mIconIndex;
@@ -493,6 +496,29 @@ public class LoaderCursor extends CursorWrapper {
 
     public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
         checkAndAddItem(info, dataModel, null);
+    }
+
+    /**
+     * Adds the item to the model without claiming its cell. See {@link PrivateSpacePlacement},
+     * which owns the reasoning and places these items once the cursor pass is done.
+     */
+    public void addItemDeferringPlacement(
+            ItemInfo info, BgDataModel dataModel, LoaderMemoryLogger logger) {
+        if (info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            // Same guard as checkAndAddItem: an invalid intent must throw here so the item is
+            // skipped, rather than reaching the model and failing somewhere less recoverable.
+            ShortcutKey.fromItemInfo(info);
+        }
+        mDeferredPlacements.add(info);
+        dataModel.addItem(mContext, info, false, logger);
+        if (mRestoreEventLogger != null) {
+            mRestoreEventLogger.logSingleFavoritesItemRestored(itemType);
+        }
+    }
+
+    /** Items added via {@link #addItemDeferringPlacement}, in the order they were read. */
+    public List<ItemInfo> getDeferredPlacements() {
+        return mDeferredPlacements;
     }
 
     /**

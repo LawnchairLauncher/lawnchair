@@ -207,7 +207,7 @@ public class PackageUpdatedTask implements ModelUpdateTask {
             case OP_USER_AVAILABILITY_CHANGE: {
                 UserManagerState ums = new UserManagerState();
                 UserManager userManager = context.getSystemService(UserManager.class);
-                ums.init(UserCache.INSTANCE.get(context), userManager);
+                ums.init(UserCache.INSTANCE.get(context), userManager, context);
                 boolean isUserQuiet =  ums.isUserQuiet(mUser);
                 flagOp = FlagOp.NO_OP.setFlag(
                         WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER, isUserQuiet);

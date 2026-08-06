@@ -77,6 +77,9 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.PrivateProfileTracker;
+
+import app.lawnchair.util.PrivateSpaceUtils;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -285,6 +288,12 @@ public class LauncherModel implements InstallSessionTracker.Callback {
                     user, UserCache.ACTION_PROFILE_UNLOCKED.equals(action)));
         } else if (UserCache.ACTION_PROFILE_ADDED.equals(action)
                 || UserCache.ACTION_PROFILE_REMOVED.equals(action)) {
+            if (UserCache.ACTION_PROFILE_REMOVED.equals(action)) {
+                // Removal is the only signal that reliably distinguishes a deleted private space
+                // from one that is merely hidden from us. Forget it before reloading, so that the
+                // loader is free to clean up the items it left behind.
+                PrivateProfileTracker.onProfileRemoved(mApp.getContext(), user);
+            }
             forceReload();
         } else if (ACTION_PROFILE_AVAILABLE.equals(action)
                 || ACTION_PROFILE_UNAVAILABLE.equals(action)) {
@@ -295,8 +304,15 @@ public class LauncherModel implements InstallSessionTracker.Callback {
              * ACTION_MANAGED_PROFILE_AVAILABLE/UNAVAILABLE.
              * So effectively, this if block only handles the non-work profile case.
              */
-            enqueueModelUpdateTask(new PackageUpdatedTask(
-                    PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
+            if (UserCache.INSTANCE.get(mApp.getContext()).getUserInfo(user).isPrivate()) {
+                // Hidden private items have no views at all, so locking and unlocking has to add
+                // and remove them - a flag update over existing views cannot do that. It is also
+                // what runs the placement pass that relocates any icon whose cell was taken.
+                forceReload();
+            } else {
+                enqueueModelUpdateTask(new PackageUpdatedTask(
+                        PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
+            }
         }
         if (Intent.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
             LauncherPrefs.get(mApp.getContext()).put(WORK_EDU_STEP, 0);
