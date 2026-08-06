@@ -362,6 +362,10 @@ object FirstScreenBroadcastHelper {
     }
 
     private fun getPackageName(info: ItemInfo): String? {
+        // Only ever report the current user's items. This path resolves an installer for every
+        // first-screen item, so without the check a pinned private space app would disclose its
+        // package name - and therefore its presence - to that app's installer.
+        if (Process.myUserHandle() != info.user) return null
         var packageName: String? = null
         if (info is LauncherAppWidgetInfo) {
             info.providerName?.let { packageName = info.providerName.packageName }

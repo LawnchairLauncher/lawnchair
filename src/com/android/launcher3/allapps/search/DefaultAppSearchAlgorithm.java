@@ -26,6 +26,8 @@ import androidx.annotation.AnyThread;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.model.data.AppInfo;
+
+import app.lawnchair.util.PrivateSpaceUtils;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
 import com.android.launcher3.search.StringMatcherUtility;
@@ -41,6 +43,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
     protected static final int MAX_RESULTS_COUNT = 5;
 
     private final LauncherAppState mAppState;
+    private final Context mContext;
     private final Handler mResultHandler;
     private final boolean mAddNoResultsMessage;
 
@@ -50,6 +53,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
 
     public DefaultAppSearchAlgorithm(Context context, boolean addNoResultsMessage) {
         mAppState = LauncherAppState.getInstance(context);
+        mContext = context;
         mResultHandler = new Handler(MAIN_EXECUTOR.getLooper());
         mAddNoResultsMessage = addNoResultsMessage;
     }
@@ -64,7 +68,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
     @Override
     public void doSearch(String query, SearchCallback<AdapterItem> callback) {
         mAppState.getModel().enqueueModelUpdateTask((taskController, dataModel, apps) ->  {
-            ArrayList<AdapterItem> result = getTitleMatchResult(apps.data, query);
+            ArrayList<AdapterItem> result = getTitleMatchResult(mContext, apps.data, query);
             if (mAddNoResultsMessage && result.isEmpty()) {
                 result.add(getEmptyMessageAdapterItem(query));
             }
@@ -85,7 +89,8 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
      * Filters {@link AppInfo}s matching specified query
      */
     @AnyThread
-    private static ArrayList<AdapterItem> getTitleMatchResult(List<AppInfo> apps, String query) {
+    private static ArrayList<AdapterItem> getTitleMatchResult(
+            Context context, List<AppInfo> apps, String query) {
         // Do an intersection of the words in the query and each title, and filter out
         // all the
         // apps that don't match all of the words in the query.
@@ -97,6 +102,11 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
         int total = apps.size();
         for (int i = 0; i < total && resultCount < MAX_RESULTS_COUNT; i++) {
             AppInfo info = apps.get(i);
+            // Private space apps stay loaded in the all apps list across a lock, so without this
+            // a locked space remains fully enumerable by typing an app's name.
+            if (PrivateSpaceUtils.isHiddenWhileLocked(context, info)) {
+                continue;
+            }
             if (StringMatcherUtility.matches(queryTextLower, info.title.toString(), matcher)) {
                 result.add(AdapterItem.asApp(info));
                 resultCount++;

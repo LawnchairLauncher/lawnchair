@@ -6,6 +6,7 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
+import app.lawnchair.util.PrivateSpaceUtils
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
@@ -75,10 +76,14 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         apps: MutableList<AppInfo>,
         query: String,
     ): ArrayList<BaseAllAppsAdapter.AdapterItem> {
+        // The all apps list keeps private space apps loaded across a lock, and the drawer only
+        // filters them out when composing its adapter items. Search reads the model directly, so
+        // without this a locked private space is still fully enumerable by typing a name.
+        val searchable = apps.filterNot { PrivateSpaceUtils.isHiddenWhileLocked(context, it) }
         val appResults = if (enableFuzzySearch) {
-            SearchUtils.fuzzySearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
+            SearchUtils.fuzzySearch(searchable, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
         } else {
-            SearchUtils.normalSearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
+            SearchUtils.normalSearch(searchable, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
         }
 
         val searchTargets = mutableListOf<SearchTargetCompat>()

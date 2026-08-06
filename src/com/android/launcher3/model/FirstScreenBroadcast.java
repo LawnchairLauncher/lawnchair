@@ -29,6 +29,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -162,6 +163,12 @@ public class FirstScreenBroadcast {
     }
 
     private static String getPackageName(ItemInfo info) {
+        // Only ever report the current user's items. A pinned private space app would otherwise
+        // disclose its package name - and therefore its presence - to that app's installer, which
+        // is exactly what the private space is meant to prevent. The same applies to work items.
+        if (!Process.myUserHandle().equals(info.user)) {
+            return null;
+        }
         String packageName = null;
         if (info instanceof LauncherAppWidgetInfo) {
             LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;

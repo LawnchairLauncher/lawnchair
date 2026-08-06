@@ -36,6 +36,8 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ContentWriter;
 
+import app.lawnchair.util.PrivateSpaceUtils;
+
 import java.util.Arrays;
 
 /**
@@ -129,7 +131,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         user = shortcutInfo.getUserHandle();
         itemType = Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         if (Flags.privateSpaceRestrictAccessibilityDrag()) {
-            if (UserCache.INSTANCE.get(context).getUserInfo(user).isPrivate()) {
+            if (UserCache.INSTANCE.get(context).getUserInfo(user).isPrivate()
+                    && !PrivateSpaceUtils.isPinningAllowed(context)) {
                 runtimeStatusFlags |= FLAG_NOT_PINNABLE;
             }
         }

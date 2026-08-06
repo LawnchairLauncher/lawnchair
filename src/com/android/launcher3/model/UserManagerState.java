@@ -15,13 +15,17 @@
  */
 package com.android.launcher3.model;
 
+import android.content.Context;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.SparseBooleanArray;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.PrivateProfileTracker;
 
 /**
  * Utility class to manager store and user manager state at any particular time
@@ -39,6 +43,14 @@ public class UserManagerState {
      * Initialises the state values for all users
      */
     public void init(UserCache userCache, UserManager userManager) {
+        init(userCache, userManager, null);
+    }
+
+    /**
+     * @param context when non-null, a hidden private profile is restored into {@link #allUsers}
+     *                from its recorded identity. See {@link PrivateProfileTracker}.
+     */
+    public void init(UserCache userCache, UserManager userManager, @Nullable Context context) {
         for (UserHandle user : userManager.getUserProfiles()) {
             long serialNo = userCache.getSerialNumberForUser(user);
             boolean isUserQuiet = userManager.isQuietModeEnabled(user);
@@ -53,6 +65,23 @@ public class UserManagerState {
             mQuietUsersHashCodeMap.put(user.hashCode(), isUserQuiet);
             mQuietUsersSerialNoMap.put(serialNo, isUserQuiet);
         }
+        if (context != null) {
+            addHiddenPrivateProfile(context);
+        }
+    }
+
+    /** @see PrivateProfileTracker#getHiddenProfileToInject */
+    private void addHiddenPrivateProfile(Context context) {
+        UserHandle user = PrivateProfileTracker.getHiddenProfileToInject(context, allUsers);
+        if (user == null) {
+            return;
+        }
+        long serialNo = PrivateProfileTracker.getKnownPrivateProfileSerial(context);
+        Log.d(TAG, "Private profile is hidden; keeping serialNo=" + serialNo + " resolvable");
+        allUsers.put(serialNo, user);
+        // Necessarily quiet: were it reachable, the loop above would have found it.
+        mQuietUsersHashCodeMap.put(user.hashCode(), true);
+        mQuietUsersSerialNoMap.put(serialNo, true);
     }
 
     /**

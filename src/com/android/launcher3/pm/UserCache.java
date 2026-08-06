@@ -37,6 +37,7 @@ import com.android.launcher3.icons.UserBadgeDrawable;
 import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.PrivateProfileTracker;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.util.UserIconInfo;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 /**
@@ -87,6 +89,13 @@ public class UserCache implements SafeCloseable {
     @NonNull
     private Map<UserHandle, List<String>> mUserToPreInstallAppMap;
 
+    /** Memoizes lookups for users missing from {@link #mUserToSerialMap}, e.g. a hidden profile. */
+    @NonNull
+    private final Map<UserHandle, UserIconInfo> mFallbackUserInfoMap = new ConcurrentHashMap<>();
+
+    /** Serial of the last observed private profile, refreshed with the cache. */
+    private volatile long mKnownPrivateSerial = PrivateProfileTracker.INVALID_SERIAL;
+
     private UserCache(Context context) {
         mContext = context;
         mUserToSerialMap = Collections.emptyMap();
@@ -128,6 +137,10 @@ public class UserCache implements SafeCloseable {
     private void updateCache() {
         mUserToSerialMap = ApiWrapper.INSTANCE.get(mContext).queryAllUsers();
         mUserToPreInstallAppMap = fetchPreInstallApps();
+        mFallbackUserInfoMap.clear();
+        PrivateProfileTracker.onUserCacheUpdated(mContext, this);
+        // Read once, not per lookup: that path runs on the model thread under the data model lock.
+        mKnownPrivateSerial = PrivateProfileTracker.getKnownPrivateProfileSerial(mContext);
     }
 
     @WorkerThread
@@ -164,7 +177,20 @@ public class UserCache implements SafeCloseable {
     @NonNull
     public UserIconInfo getUserInfo(UserHandle user) {
         UserIconInfo info = mUserToSerialMap.get(user);
-        return info == null ? new UserIconInfo(user, UserIconInfo.TYPE_MAIN) : info;
+        return info == null ? getFallbackUserInfo(user) : info;
+    }
+
+    /** @see PrivateProfileTracker#resolveUnknownUser */
+    @NonNull
+    private UserIconInfo getFallbackUserInfo(UserHandle user) {
+        UserIconInfo cached = mFallbackUserInfoMap.get(user);
+        if (cached != null) {
+            return cached;
+        }
+        UserIconInfo info = PrivateProfileTracker.resolveUnknownUser(
+                mContext, user, mKnownPrivateSerial);
+        mFallbackUserInfoMap.put(user, info);
+        return info;
     }
 
     /**

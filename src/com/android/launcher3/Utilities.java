@@ -115,6 +115,7 @@ import java.util.regex.Pattern;
 
 import app.lawnchair.icons.ExtendedBitmapDrawable;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.util.PrivateSpaceUtils;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -722,8 +723,13 @@ public final class Utilities {
         LauncherAppState appState = LauncherAppState.getInstance(context);
         Drawable mainIcon = null;
 
+        // Drag previews and the launch animation build their badge here instead of going through
+        // ItemInfoWithIcon#newIcon, so the preference has to be honoured again on this path or the
+        // badge would reappear mid-drag on an icon that shows none at rest.
+        boolean hideUserBadge = PrivateSpaceUtils.shouldHideBadge(context, info);
+
         Drawable badge = null;
-        if ((info instanceof ItemInfoWithIcon iiwi) && !iiwi.usingLowResIcon()) {
+        if (!hideUserBadge && (info instanceof ItemInfoWithIcon iiwi) && !iiwi.usingLowResIcon()) {
             badge = iiwi.bitmap.getBadgeDrawable(context, useTheme);
         }
 
@@ -818,11 +824,13 @@ public final class Utilities {
         }
 
         if (badge == null) {
-            badge = BitmapInfo.LOW_RES_INFO.withFlags(
-                    UserCache.INSTANCE.get(context)
-                            .getUserInfo(info.user)
-                            .applyBitmapInfoFlags(FlagOp.NO_OP))
-                    .getBadgeDrawable(context, useTheme);
+            if (!hideUserBadge) {
+                badge = BitmapInfo.LOW_RES_INFO.withFlags(
+                        UserCache.INSTANCE.get(context)
+                                .getUserInfo(info.user)
+                                .applyBitmapInfoFlags(FlagOp.NO_OP))
+                        .getBadgeDrawable(context, useTheme);
+            }
             if (badge == null) {
                 badge = new ColorDrawable(Color.TRANSPARENT);
             }

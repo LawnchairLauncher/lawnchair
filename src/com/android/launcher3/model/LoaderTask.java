@@ -45,6 +45,7 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
+import android.os.Process;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -495,6 +496,9 @@ public class LoaderTask implements Runnable {
                 return;
             }
 
+            // Place the items whose cells were deliberately left unclaimed during the pass above.
+            PrivateSpacePlacement.placeDeferredItems(mApp, mBgDataModel, c);
+
             // Remove dead items
             mItemsDeleted = c.commitDeleted();
 
@@ -536,7 +540,7 @@ public class LoaderTask implements Runnable {
     @WorkerThread
     private void queryPinnedShortcutsForUnlockedUsers(Context context,
             LongSparseArray<Boolean> unlockedUsers) {
-        mUserManagerState.init(mUserCache, mUserManager);
+        mUserManagerState.init(mUserCache, mUserManager, context);
 
         for (UserHandle user : mUserCache.getUserProfiles()) {
             long serialNo = mUserCache.getSerialNumberForUser(user);
@@ -566,6 +570,7 @@ public class LoaderTask implements Runnable {
             unlockedUsers.put(serialNo, userUnlocked);
         }
 
+        PrivateSpacePlacement.markUnreachableUsersLocked(mUserManagerState, unlockedUsers);
     }
 
     /**
@@ -712,19 +717,30 @@ public class LoaderTask implements Runnable {
         for (UserHandle user : profiles) {
             // Query for the set of apps
             final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
-            // Fail if we don't have any apps
-            // TODO: Fix this. Only fail for the current user.
-            if (apps == null || apps.isEmpty()) {
-                return allActivityList;
-            }
             boolean quietMode = mUserManagerState.isUserQuiet(user);
 
+            // Record the profile's quiet state before any early exit below. A locked private space
+            // reports no apps at all, and skipping this is what leaves the all apps container
+            // believing the space is unlocked after a cold start.
             if (Flags.enablePrivateSpace()) {
                 if (mUserCache.getUserInfo(user).isWork()) {
                     isWorkProfileQuiet = quietMode;
                 } else if (mUserCache.getUserInfo(user).isPrivate()) {
                     isPrivateProfileQuiet = quietMode;
                 }
+            }
+
+            if (apps == null || apps.isEmpty()) {
+                if (Process.myUserHandle().equals(user)) {
+                    // The current user always has apps. An empty list means the system is not ready
+                    // yet, and committing it would leave the drawer empty until the next reload.
+                    FileLog.d(TAG, "loadAllApps: no apps for the current user, aborting load");
+                    return allActivityList;
+                }
+                // Any other profile may legitimately expose nothing - a locked private space does.
+                // Skip it rather than abandoning the remaining profiles and the flags set below.
+                FileLog.d(TAG, "loadAllApps: no apps for profile " + user + ", skipping it");
+                continue;
             }
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {

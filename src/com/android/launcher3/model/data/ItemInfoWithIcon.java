@@ -30,6 +30,7 @@ import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.ApiWrapper;
 
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.util.PrivateSpaceUtils;
 
 /**
  * Represents an ItemInfo which also holds an icon.
@@ -330,6 +331,12 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public FastBitmapDrawable newIcon(Context context, @BitmapInfo.DrawableCreationFlags int creationFlags) {
         FastBitmapDrawable drawable = (creationFlags & BitmapInfo.FLAG_THEMED) != 0 ? bitmap.newThemedIcon(context) : bitmap.newIcon(context, creationFlags);
         drawable.setIsDisabled(isDisabled());
+        if (PrivateSpaceUtils.shouldHideBadge(context, this)) {
+            // Strip the badge after the fact rather than passing FLAG_SKIP_USER_BADGE: the themed
+            // branch above discards creation flags entirely, so the flag would silently do nothing
+            // whenever themed icons are on. Clearing it here covers every path.
+            drawable.setBadge(null);
+        }
         return drawable;
     }
 

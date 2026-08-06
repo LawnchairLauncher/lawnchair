@@ -48,6 +48,7 @@ import com.android.launcher3.util.ApiWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.util.PackageUserKey
+import com.android.launcher3.util.PrivateProfileTracker
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo
 import com.android.launcher3.widget.WidgetInflater
 import com.android.launcher3.widget.util.WidgetSizes
@@ -155,6 +156,12 @@ class WorkspaceItemProcessor(
         }
         var validTarget = launcherApps.isPackageEnabled(targetPkg, c.user)
 
+        // A locked or hidden private profile reports every package as absent, which is
+        // indistinguishable from an uninstall. See PrivateProfileTracker.
+        val isInaccessiblePrivateItem =
+            !validTarget &&
+                PrivateProfileTracker.isInaccessiblePrivateProfile(app.context, c.serialNumber)
+
         // If it's a deep shortcut, we'll use pinned shortcuts to restore it
         if (cn != null && validTarget && (c.itemType != Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
             // If the apk is present and the shortcut points to a specific component.
@@ -194,6 +201,16 @@ class WorkspaceItemProcessor(
                 // Points to a valid app (superset of cn != null) but the apk
                 // is not available.
                 when {
+                    isInaccessiblePrivateItem -> {
+                        FileLog.d(
+                            TAG,
+                            "Keeping private space item while its profile is unavailable:" +
+                                " id=${c.id}, targetPkg=$targetPkg"
+                        )
+                        // Keep it, disabled, until the space is reachable again.
+                        disabledState = disabledState or WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER
+                        allowMissingTarget = true
+                    }
                     c.restoreFlag != 0 -> {
                         // Package is not yet available but might be
                         // installed later.
@@ -367,7 +384,12 @@ class WorkspaceItemProcessor(
             } catch (t: Throwable) {
                 Log.e(TAG, "Error loading icon", t)
             }
-            c.checkAndAddItem(info, bgDataModel, memoryLogger)
+            if (userCache.getUserInfo(c.user).isPrivate) {
+                // See PrivateSpacePlacement.
+                c.addItemDeferringPlacement(info, bgDataModel, memoryLogger)
+            } else {
+                c.checkAndAddItem(info, bgDataModel, memoryLogger)
+            }
         } else {
             throw RuntimeException("Unexpected null WorkspaceItemInfo")
         }
@@ -413,7 +435,11 @@ class WorkspaceItemProcessor(
         }
 
         c.markRestored()
-        c.checkAndAddItem(collection, bgDataModel, memoryLogger)
+        // Deferred like private items: a collection's contents are not known until the whole cursor
+        // has been read, so whether it is one the user can see cannot be decided here. Placing it
+        // last costs nothing when its cell is free, and turns a contested cell into a relocation
+        // rather than the deletion an overlap would otherwise cause.
+        c.addItemDeferringPlacement(collection, bgDataModel, memoryLogger)
     }
 
     /**

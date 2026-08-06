@@ -11,6 +11,7 @@ import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.util.PrivateSpaceUtils
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.allapps.AllAppsStore
@@ -109,6 +110,12 @@ class LawnchairAlphabeticalAppsList<T>(
                     mAdapterItems.add(AdapterItem.asFolder(folderInfo))
                     folder.getContents().forEach { app ->
                         (appsStore.getApp(app.componentKey) as? AppInfo)?.let {
+                            // Drawer folders resolve their apps straight from the store by
+                            // component, bypassing the private space section that would otherwise
+                            // keep a locked app out of the drawer.
+                            if (PrivateSpaceUtils.isHiddenWhileLocked(context, it)) {
+                                return@let
+                            }
                             folderInfo.add(it)
                             if (prefs.folderApps.get()) filteredList.add(it)
                         }

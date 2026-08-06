@@ -40,6 +40,8 @@ import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RecentsModel;
 
+import app.lawnchair.util.PrivateSpaceUtils;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -148,6 +150,13 @@ public class TaskbarModelCallbacks implements
         boolean modified = false;
         for (ItemInfo item : items) {
             if (item.container == Favorites.CONTAINER_HOTSEAT) {
+                // The taskbar mirrors the hotseat through its own model callbacks, so it does not
+                // go through Launcher's binding and would happily show a private space app that the
+                // home screen is hiding. The dock is visible over other apps, which makes this the
+                // most exposed place such an icon could appear.
+                if (PrivateSpaceUtils.shouldSkipWorkspaceBinding(mContext, item)) {
+                    continue;
+                }
                 mHotseatItems.put(item.screenId, item);
                 modified = true;
             }
