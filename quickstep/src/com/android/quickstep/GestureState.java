@@ -38,6 +38,7 @@ import android.window.TransitionInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulContainer;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
@@ -441,7 +442,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public void setEndTarget(GestureEndTarget target, boolean isAtomic) {
         mEndTarget = target;
         mStateCallback.setState(STATE_END_TARGET_SET);
-        ActiveGestureProtoLogProxy.logSetEndTarget(mEndTarget.name());
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logSetEndTarget(mEndTarget.name());
         switch (mEndTarget) {
             case HOME:
                 ActiveGestureLog.INSTANCE.trackEvent(SET_END_TARGET_HOME);

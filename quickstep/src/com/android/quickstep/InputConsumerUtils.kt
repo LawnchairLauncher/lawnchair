@@ -18,6 +18,7 @@ package com.android.quickstep
 import android.content.Context
 import android.view.MotionEvent
 import androidx.annotation.VisibleForTesting
+import com.android.launcher3.Utilities
 import com.android.launcher3.anim.AnimatedFloat
 import com.android.launcher3.statemanager.BaseState
 import com.android.launcher3.statemanager.StatefulContainer
@@ -538,7 +539,7 @@ object InputConsumerUtils {
             // running activity as the task behind the overlay.
             val otherVisibleTask = runningTask?.visibleNonExcludedTask
             if (otherVisibleTask != null) {
-                ActiveGestureProtoLogProxy.logUpdateGestureStateRunningTask(
+                if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logUpdateGestureStateRunningTask(
                     otherVisibleTask.packageName ?: "MISSING",
                     runningTask.packageName ?: "MISSING",
                 )
@@ -838,7 +839,7 @@ object InputConsumerUtils {
         consumer: InputConsumer,
         reasonString: CompoundString,
     ) {
-        ActiveGestureProtoLogProxy.logSetInputConsumer(consumer.name, reasonString.toString())
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logSetInputConsumer(consumer.name, reasonString.toString())
         if ((consumer.type and InputConsumer.TYPE_OTHER_ACTIVITY) != 0) {
             ActiveGestureLog.INSTANCE.trackEvent(
                 ActiveGestureErrorDetector.GestureEvent.FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER

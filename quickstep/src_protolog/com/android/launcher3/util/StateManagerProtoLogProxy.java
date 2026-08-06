@@ -23,12 +23,14 @@ import android.window.DesktopModeFlags.DesktopModeFlag;
 
 import androidx.annotation.NonNull;
 
+import androidx.annotation.RequiresApi;
 import com.android.internal.protolog.ProtoLog;
 import com.android.launcher3.Flags;
 
 /**
  * Proxy class used for StateManager ProtoLog support.
  */
+@RequiresApi(31) // LC-Note: IProtoLogGroup only available to Android 11 Releases 41, or Android 12.0 for us. DO NOT call anything related to this or ProtoLog 
 public class StateManagerProtoLogProxy {
     private static final DesktopModeFlag ENABLE_STATE_MANAGER_PROTO_LOG =
             new DesktopModeFlag(Flags::enableStateManagerProtoLog, true);

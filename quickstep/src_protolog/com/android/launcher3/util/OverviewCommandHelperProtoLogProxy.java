@@ -22,11 +22,13 @@ import static com.android.quickstep.util.QuickstepProtoLogGroup.isProtoLogInitia
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.annotation.RequiresApi;
 import com.android.internal.protolog.ProtoLog;
 
 /**
  * Proxy class used for OverviewCommandHelper ProtoLog support. (e.g. for 3 button nav)
  */
+@RequiresApi(31) // Because this class uses ProtoLog which requires API level 31
 public class OverviewCommandHelperProtoLogProxy {
 
     public static void logCommandQueueFull(@NonNull Object type, @NonNull Object commandQueue) {
