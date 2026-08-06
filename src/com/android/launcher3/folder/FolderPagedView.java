@@ -47,6 +47,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -347,7 +348,14 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
                 ((BubbleTextView) icon).applyFromItemInfoWithIcon((ItemInfoWithIcon) item);
             } else {
                 icon = mViewCache.getView(R.layout.folder_application, getContext(), null);
-                ((BubbleTextView) icon).applyFromWorkspaceItem((WorkspaceItemInfo) item);
+                // LC-Note: Allow creation of item from workspace and from other places
+                if (item instanceof WorkspaceItemInfo workspaceItemInfo) {
+                    ((BubbleTextView) icon).applyFromWorkspaceItem(workspaceItemInfo);
+                } else if (item instanceof AppInfo appInfo) {
+                    ((BubbleTextView) icon).applyFromApplicationInfo(appInfo);
+                } else {
+                    ((BubbleTextView) icon).applyFromItemInfoWithIcon((ItemInfoWithIcon) item);
+                }
             }
         }
 
@@ -755,7 +763,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             if (v != null) {
                 if (pageToAnimate != p) {
                     page.removeView(v);
-                    addViewForRank(v, (WorkspaceItemInfo) v.getTag(), moveStart);
+                    addViewForRank(v, (ItemInfo) v.getTag(), moveStart);
                 } else {
                     // Do a fake animation before removing it.
                     final int newRank = moveStart;
@@ -768,7 +776,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
                             mPendingAnimations.remove(v);
                             v.setTranslationX(oldTranslateX);
                             ((CellLayout) v.getParent().getParent()).removeView(v);
-                            addViewForRank(v, (WorkspaceItemInfo) v.getTag(), newRank);
+                            addViewForRank(v, (ItemInfo) v.getTag(), newRank);
                         }
                     };
                     v.animate()

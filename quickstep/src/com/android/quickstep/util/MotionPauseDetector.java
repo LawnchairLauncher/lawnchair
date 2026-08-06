@@ -251,6 +251,7 @@ public class MotionPauseDetector {
                     .append(event)
                     .toString());
         }
+        if (!Utilities.ATLEAST_S) return;
         ActiveGestureProtoLogProxy.logMotionPauseDetectorEvent(event);
     }
 

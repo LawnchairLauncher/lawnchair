@@ -25,6 +25,7 @@ import android.util.SparseArray;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -116,7 +117,7 @@ public class MultiStateCallback {
                 continue;
             }
             if (gestureEvent.mLogEvent) {
-                ActiveGestureProtoLogProxy.logDynamicString(
+                if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logDynamicString(
                         gestureEvent.name(), gestureEvent.mTrackEvent ? gestureEvent : null);
             } else if (gestureEvent.mTrackEvent) {
                 ActiveGestureLog.INSTANCE.trackEvent(gestureEvent);
