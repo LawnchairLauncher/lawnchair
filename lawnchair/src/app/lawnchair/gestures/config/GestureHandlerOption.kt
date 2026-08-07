@@ -15,6 +15,8 @@ sealed class GestureHandlerOption(
 ) {
     fun getLabel(context: Context) = context.getString(labelRes)
 
+    open fun isSelected(config: GestureHandlerConfig) = config::class.java == configClass
+
     abstract suspend fun buildConfig(activity: Activity): GestureHandlerConfig?
 
     sealed class Simple(labelRes: Int, iconRes: Int, val obj: GestureHandlerConfig) : GestureHandlerOption(labelRes, iconRes, obj::class.java) {
@@ -37,6 +39,8 @@ sealed class GestureHandlerOption(
         R.drawable.ic_launcher_home,
         GestureHandlerConfig.OpenApp::class.java,
     ) {
+        override fun isSelected(config: GestureHandlerConfig) = config is GestureHandlerConfig.OpenApp || config is GestureHandlerConfig.OpenShortcut
+
         override suspend fun buildConfig(activity: Activity): GestureHandlerConfig? {
             val intent = PreferenceActivity.createIntent(activity, GesturesPickApp)
             val result = BlankActivity.startBlankActivityForResult(activity, intent)
