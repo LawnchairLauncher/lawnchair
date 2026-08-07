@@ -47,7 +47,7 @@ class FolderService @Inject constructor(
     }
 
     suspend fun saveFolderInfo(title: String) = withContext(Dispatchers.IO) {
-        val rank = folderDao.getFolderCount()
+        val rank = (folderDao.getMaxFolderRank() ?: -1) + 1
         folderDao.insertFolder(FolderInfoEntity(title = title, rank = rank))
     }
 
@@ -66,12 +66,17 @@ class FolderService @Inject constructor(
     private suspend fun migrateLegacyFolderRanks() = withContext(Dispatchers.IO) {
         val legacyOrder = prefs.sp.getString(LEGACY_FOLDER_ORDER_STRING, "") ?: ""
         if (legacyOrder.isNotEmpty()) {
-            val orderedIds = stringToIntList(legacyOrder)
+            val legacyIds = stringToIntList(legacyOrder).distinct()
+            val currentIds = folderDao.getAllFolderIds()
+            val validLegacyIds = legacyIds.filter { it in currentIds }
+            val missingCurrentIds = currentIds.filter { it !in validLegacyIds }
+            val orderedIds = validLegacyIds + missingCurrentIds
+
             if (orderedIds.isNotEmpty()) {
                 folderDao.updateFolderRanks(orderedIds)
-                prefs.sp.edit {
-                    putString(LEGACY_FOLDER_ORDER_STRING, "")
-                }
+            }
+            prefs.sp.edit {
+                putString(LEGACY_FOLDER_ORDER_STRING, "")
             }
         }
     }
