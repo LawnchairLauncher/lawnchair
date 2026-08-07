@@ -65,6 +65,10 @@ interface FolderDao {
 
     @Transaction
     suspend fun updateFolderRanks(orderedIds: List<Int>) {
+        val currentIds = getAllFolderIds().toSet()
+        if (orderedIds.size != currentIds.size || orderedIds.toSet() != currentIds) {
+            return
+        }
         orderedIds.forEachIndexed { index, id ->
             updateFolderRank(id, index)
         }
