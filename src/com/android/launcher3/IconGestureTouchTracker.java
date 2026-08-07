@@ -26,6 +26,7 @@ public final class IconGestureTouchTracker {
     private final Launcher mLauncher;
     private Workspace mWorkspace;
     private boolean mStartedOnIconWithGesture;
+    private int mInitialPointerId = MotionEvent.INVALID_POINTER_ID;
     private float mDownX;
     private float mDownY;
     private float mWorkspaceDownX;
@@ -39,6 +40,7 @@ public final class IconGestureTouchTracker {
     /** Records the icon, if any, where this touch began. */
     public void onTouchDown(MotionEvent ev) {
         mStartedOnIconWithGesture = false;
+        mInitialPointerId = ev.getPointerId(0);
         mWorkspace = mLauncher.getWorkspace();
         if (mWorkspace == null || mLauncher.getDragLayer() == null) {
             return;
@@ -55,19 +57,25 @@ public final class IconGestureTouchTracker {
                 coord[0], coord[1], false);
     }
 
-    /** Returns whether this single-pointer move targets an action configured on the touched icon. */
+    /** Returns whether the initial pointer moves toward an action configured on the touched icon. */
     public boolean isMovingTowardConfiguredIconGesture(MotionEvent ev) {
         if (!mStartedOnIconWithGesture || ev.getActionMasked() != MotionEvent.ACTION_MOVE
                 || ev.getPointerCount() != 1) {
             return false;
         }
+        int pointerIndex = ev.findPointerIndex(mInitialPointerId);
+        if (pointerIndex < 0) {
+            return false;
+        }
         return mWorkspace.isTouchOnIconWithSwipeGestureInDirection(
-                mWorkspaceDownX, mWorkspaceDownY, ev.getX() - mDownX, ev.getY() - mDownY);
+                mWorkspaceDownX, mWorkspaceDownY, ev.getX(pointerIndex) - mDownX,
+                ev.getY(pointerIndex) - mDownY);
     }
 
     /** Clears the touch state after the gesture finishes or is cancelled. */
     public void reset() {
         mStartedOnIconWithGesture = false;
+        mInitialPointerId = MotionEvent.INVALID_POINTER_ID;
         mWorkspace = null;
     }
 }
