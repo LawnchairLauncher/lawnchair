@@ -198,11 +198,13 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
 
+        val hotseatRows = prefs.hotseatRows
+
         val adapters = listOf(
             prefs2.hotseatMode.getAdapter(),
             prefs.hotseatColumns.getAdapter(),
             prefs.hotseatColumnsUnfolded.getAdapter(),
-            prefs.hotseatRows.getAdapter(),
+            hotseatRows.getAdapter(),
             prefs2.themedHotseatQsb.getAdapter(),
             prefs.hotseatQsbCornerRadius.getAdapter(),
             prefs.hotseatQsbAlpha.getAdapter(),
@@ -232,7 +234,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
                         .weight(1f)
                         .align(Alignment.CenterHorizontally)
                         .clip(MaterialTheme.shapes.large)
-                        .clipToBottomPercentage(0.3f),
+                        .clipToBottomPercentage(if (hotseatRows.getAdapter().state.value >= 2) .4f else .3f),
                 ) {
                     WallpaperPreview(
                         wallpaper = wallpaper,
