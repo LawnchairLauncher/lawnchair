@@ -39,6 +39,7 @@ import android.view.WindowManager;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.IconGestureTouchTracker;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MSDLPlayerWrapper;
@@ -72,6 +73,7 @@ public class StatusBarTouchController implements TouchController {
 
     /* If {@code false}, this controller should not handle the input {@link MotionEvent}.*/
     private boolean mCanIntercept;
+    private final IconGestureTouchTracker mIconGestureTouchTracker;
 
     // LC-Note: For pulling down on notification panel (default gesture config)
     private boolean mExpanded;
@@ -84,6 +86,8 @@ public class StatusBarTouchController implements TouchController {
         mTouchSlop = 2 * ViewConfiguration.get(l).getScaledTouchSlop();
         mDownEvents = new SparseArray<>();
         mIsEnabledCheck = isEnabledCheck;
+        mIconGestureTouchTracker = l instanceof Launcher launcher
+                ? new IconGestureTouchTracker(launcher) : null;
     }
 
     @Override
@@ -137,6 +141,9 @@ public class StatusBarTouchController implements TouchController {
         int idx = ev.getActionIndex();
         int pid = ev.getPointerId(idx);
         if (action == ACTION_DOWN) {
+            if (mIconGestureTouchTracker != null) {
+                mIconGestureTouchTracker.onTouchDown(ev);
+            }
             mCanIntercept = canInterceptTouch(ev);
             if (!mCanIntercept) {
                 return false;
@@ -158,6 +165,10 @@ public class StatusBarTouchController implements TouchController {
         if (action == ACTION_MOVE && mDownEvents.contains(pid)) {
             float dy = ev.getY(idx) - mDownEvents.get(pid).y;
             float dx = ev.getX(idx) - mDownEvents.get(pid).x;
+            if (mIconGestureTouchTracker != null
+                    && mIconGestureTouchTracker.isMovingTowardConfiguredIconGesture(ev)) {
+                return false;
+            }
             // Currently input dispatcher will not do touch transfer if there are more than
             // one touch pointer. Hence, even if slope passed, only set the slippery flag
             // when there is single touch event. (context: InputDispatcher.cpp line 1445)
@@ -169,6 +180,11 @@ public class StatusBarTouchController implements TouchController {
             }
             if (Math.abs(dx) > mTouchSlop) {
                 mCanIntercept = false;
+            }
+        }
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
+            if (mIconGestureTouchTracker != null) {
+                mIconGestureTouchTracker.reset();
             }
         }
         return false;
@@ -210,17 +226,6 @@ public class StatusBarTouchController implements TouchController {
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
-        // Lawnchair: Icon Swipe Gestures (For vertical down gestures)
-        if (mLauncher instanceof Launcher launcher) {
-            if (launcher.getWorkspace() != null && launcher.getDragLayer() != null) {
-                float[] coord = new float[]{ev.getX(), ev.getY()};
-                launcher.getDragLayer().mapCoordInSelfToDescendant(launcher.getWorkspace(), coord);
-                if (launcher.getWorkspace()
-                        .isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)) {
-                    return false;
-                }
-            }
-        }
         if (isTrackpadScroll(ev) || !mIsEnabledCheck.get()
                 || AbstractFloatingView.getTopOpenViewWithType(mLauncher,
                 AbstractFloatingView.TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW) != null || (
@@ -237,4 +242,5 @@ public class StatusBarTouchController implements TouchController {
         return true;
         // LC-Ignored: return SystemUiProxy.INSTANCE.get(mLauncher).isActive();
     }
+
 }
