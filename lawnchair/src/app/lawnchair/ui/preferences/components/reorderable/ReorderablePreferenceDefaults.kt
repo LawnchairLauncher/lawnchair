@@ -26,9 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.preferenceGroupColor
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import sh.calvin.reorderable.ReorderableListItemScope
 
@@ -72,11 +75,16 @@ fun ReorderableSwitchPreference(
     enabled: Boolean = true,
     description: String? = null,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
+    val wrappedOnCheckedChange: (Boolean) -> Unit = { newValue ->
+        mMSDLPlayerWrapper.playToken(if (newValue) MSDLToken.SWITCH_ON else MSDLToken.SWITCH_OFF)
+        onCheckedChange(newValue)
+    }
     PreferenceTemplate(
         modifier = modifier.clickable(
             enabled = enabled,
             onClick = {
-                onCheckedChange(!checked)
+                wrappedOnCheckedChange(!checked)
             },
             interactionSource = interactionSource,
             indication = ripple(),
@@ -94,7 +102,7 @@ fun ReorderableSwitchPreference(
                     .padding(start = 12.dp, top = 12.dp, bottom = 12.dp)
                     .height(24.dp),
                 checked = checked,
-                onCheckedChange = onCheckedChange,
+                onCheckedChange = wrappedOnCheckedChange,
                 enabled = enabled,
                 thumbContent = {
                     if (checked) {
@@ -149,18 +157,16 @@ fun ReorderableDragHandle(
     onDragStart: () -> Unit = {},
     onDragStop: () -> Unit = {},
 ) {
-    val haptic = rememberReorderHapticFeedback()
+    ObserveReorderHapticFeedback(interactionSource)
 
     ReorderableDragHandle(
         modifier = with(scope) {
             modifier.longPressDraggableHandle(
                 interactionSource = interactionSource,
                 onDragStarted = {
-                    haptic.performHapticFeedback(ReorderHapticFeedbackType.START)
                     onDragStart()
                 },
                 onDragStopped = {
-                    haptic.performHapticFeedback(ReorderHapticFeedbackType.END)
                     onDragStop()
                 },
             )
@@ -179,18 +185,16 @@ fun ReorderableDragHandle(
     onDragStart: () -> Unit = {},
     onDragStop: () -> Unit = {},
 ) {
-    val haptic = rememberReorderHapticFeedback()
+    ObserveReorderHapticFeedback(interactionSource)
 
     ReorderableDragHandle(
         modifier = with(scope) {
             modifier.longPressDraggableHandle(
                 interactionSource = interactionSource,
                 onDragStarted = {
-                    haptic.performHapticFeedback(ReorderHapticFeedbackType.START)
                     onDragStart()
                 },
                 onDragStopped = {
-                    haptic.performHapticFeedback(ReorderHapticFeedbackType.END)
                     onDragStop()
                 },
             )

@@ -80,7 +80,9 @@ import app.lawnchair.util.Constants
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.launch
 
 data class IconPackInfo(
@@ -118,6 +120,7 @@ fun IconPackPreferences(
 ) {
     val prefs = preferenceManager()
     val context = LocalContext.current
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
 
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
@@ -179,13 +182,19 @@ fun IconPackPreferences(
             ) {
                 Chip(
                     label = stringResource(id = R.string.icon_pack),
-                    onClick = { scrollToPage(0) },
+                    onClick = {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                        scrollToPage(0)
+                    },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                     page = 0,
                 )
                 Chip(
                     label = stringResource(id = R.string.themed_icon_pack),
-                    onClick = { scrollToPage(1) },
+                    onClick = {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                        scrollToPage(1)
+                    },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                     page = 1,
                 )
@@ -273,6 +282,7 @@ fun IconPackGrid(
     isThemedIconPack: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val preferenceInteractor = LocalPreferenceInteractor.current
 
     val iconPacks by preferenceInteractor.iconPacks.collectAsStateWithLifecycle()
@@ -312,6 +322,7 @@ fun IconPackGrid(
                         selected = item.packageName == adapter.state.value,
                         modifier = Modifier.width(iconPackItemWidth.dp),
                     ) {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_HIGH_EMPHASIS)
                         adapter.onChange(item.packageName)
                     }
                 }
