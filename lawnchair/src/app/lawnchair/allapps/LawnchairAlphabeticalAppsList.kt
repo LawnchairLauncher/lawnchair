@@ -7,7 +7,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.data.folder.FolderEntry
-import app.lawnchair.data.folder.model.FolderOrderUtils
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
@@ -46,10 +45,8 @@ class LawnchairAlphabeticalAppsList<T>(
     private val viewModel = FolderViewModel(
         (context as? ComponentActivity)?.application ?: context.launcher.application,
     )
-    private var folderList = mutableListOf<FolderEntry>()
+    private val folderList = mutableListOf<FolderEntry>()
     private val filteredList = mutableListOf<AppInfo>()
-
-    private val folderOrder get() = FolderOrderUtils.stringToIntList(prefs.drawerListOrder.get())
 
     init {
         context.launcher.deviceProfile.inv.addOnChangeListener(this)
@@ -72,12 +69,8 @@ class LawnchairAlphabeticalAppsList<T>(
     private fun observeFolders() {
         viewModel.folders.observeOnce(context as LifecycleOwner) { folders ->
             if (folders != null) {
-                folderList = folders
-                    .sortedBy {
-                        val index = folderOrder.indexOf(it.id)
-                        if (index == -1) Int.MAX_VALUE else index
-                    }
-                    .toMutableList()
+                folderList.clear()
+                folderList.addAll(folders)
                 updateAdapterItems()
             }
         }
@@ -126,6 +119,7 @@ class LawnchairAlphabeticalAppsList<T>(
 
                 if (resolvedApps.size > 1) {
                     val folderInfo = FolderInfo().apply {
+                        id = folderEntry.id
                         title = folderEntry.title
                         resolvedApps.forEach { add(it) }
                     }

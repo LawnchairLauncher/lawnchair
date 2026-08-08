@@ -82,4 +82,9 @@ public interface SearchUiManager {
     default boolean inZeroState() {
         return false;
     }
+
+    /**
+     * Sets whether the search bar is being focused directly (e.g. by tapping it).
+     */
+    default void setDirectFocus(boolean directFocus) {}
 }

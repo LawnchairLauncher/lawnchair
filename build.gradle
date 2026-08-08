@@ -24,7 +24,9 @@ allprojects {
         android {
             buildToolsVersion "37.0.0"
             compileSdk {
-                version = release(37)
+                version = release(37) {
+                    minorApiLevel = 1
+                }
             }
             defaultConfig {
                 minSdk = 26

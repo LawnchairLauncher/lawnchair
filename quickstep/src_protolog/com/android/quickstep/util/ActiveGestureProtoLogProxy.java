@@ -46,6 +46,7 @@ import android.view.MotionEvent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.annotation.RequiresApi;
 import com.android.internal.protolog.ProtoLog;
 import com.android.internal.protolog.common.IProtoLogGroup;
 
@@ -59,6 +60,7 @@ import com.android.internal.protolog.common.IProtoLogGroup;
  * to be modified), add it here under a new unique method and make sure the ProtoLog entry matches
  * to avoid confusion.
  */
+@RequiresApi(31) // LC-Note: IProtoLogGroup only available to Android 11 Releases 41, or Android 12.0 for us. DO NOT call anything related to this or ProtoLog 
 public class ActiveGestureProtoLogProxy {
 
     public static void logLauncherDestroyed() {

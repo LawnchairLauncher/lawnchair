@@ -9,6 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import app.lawnchair.LawnchairApp
+import app.lawnchair.preferences2.PreferenceManager2
+import com.patrykmichalik.opto.core.PreferenceImpl
+import com.patrykmichalik.opto.core.getFromPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -23,11 +27,15 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-@Discouraged("This is a blocking read, use firstCached() for non-blocking reads")
+@Discouraged("This is a blocking read, use firstCached() for non-blocking reads or equivalent where possible")
 fun <T> Flow<T>.firstBlocking() = runBlocking { first() }
 
 @Composable
 fun <T> Flow<T>.collectAsStateBlocking() = collectAsStateWithLifecycle(initialValue = firstBlocking())
+
+fun <C, S> PreferenceImpl<C, S>.firstCached(
+    prefs2: PreferenceManager2 = PreferenceManager2.getInstance(LawnchairApp.instance),
+): C = getFromPreferences(prefs2.getCachedPreferences())
 
 fun broadcastReceiverFlow(context: Context, filter: IntentFilter) = callbackFlow {
     val receiver = object : BroadcastReceiver() {

@@ -45,6 +45,7 @@ import androidx.annotation.UiThread;
 
 import com.android.app.displaylib.PerDisplayRepository;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.dagger.LauncherAppComponent;
 import com.android.launcher3.dagger.LauncherAppSingleton;
@@ -372,7 +373,7 @@ public final class OverviewComponentObserver {
             @NonNull Intent homeIntent,
             @Nullable Bundle options,
             @NonNull String reason) {
-        ActiveGestureProtoLogProxy.logStartHomeIntent(reason);
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logStartHomeIntent(reason);
         try {
             context.startActivity(homeIntent, options);
         } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {

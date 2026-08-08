@@ -42,5 +42,6 @@ data class FolderEntry(
     val id: Int,
     val title: String,
     val hide: Boolean = false,
+    val rank: Int = 0,
     val itemComponentKeys: List<String> = emptyList(),
 )

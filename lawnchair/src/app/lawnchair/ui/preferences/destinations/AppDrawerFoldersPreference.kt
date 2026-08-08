@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.lawnchair.data.folder.FolderEntry
-import app.lawnchair.data.folder.model.FolderOrderUtils
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -97,6 +96,9 @@ fun AppDrawerFoldersPreference(
         onDeleteFolder = {
             viewModel.deleteFolder(it.id)
         },
+        onOrderChange = {
+            viewModel.updateFolderOrder(it)
+        },
     )
 }
 
@@ -108,30 +110,13 @@ fun AppDrawerFoldersPreference(
     onEditFolderItems: (Int) -> Unit,
     onRenameFolder: (Int, String) -> Unit,
     onDeleteFolder: (FolderEntry) -> Unit,
+    onOrderChange: (List<Int>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val bottomSheetHandler = bottomSheetHandler
     val prefs = preferenceManager()
-    val folderOrderAdapter = prefs.drawerListOrder.getAdapter()
 
-    val folderOrderString by folderOrderAdapter.state
-
-    var sortedDisplayList = remember(folders, folderOrderString) {
-        Log.d("AppDrawerFolders", "Recalculating sortedDisplayList. Folders count: ${folders?.size}")
-        folders?.sortedWith(
-            compareBy { folderEntry ->
-                val index = FolderOrderUtils
-                    .stringToIntList(folderOrderString)
-                    .indexOf(folderEntry.id)
-                if (index == -1) {
-                    // New items go to the end
-                    Integer.MAX_VALUE
-                } else {
-                    index
-                }
-            },
-        ) ?: emptyList()
-    }
+    val sortedDisplayList = folders ?: emptyList()
 
     LoadingScreen(
         isLoading = folders == null,
@@ -183,14 +168,7 @@ fun AppDrawerFoldersPreference(
                 items = sortedDisplayList,
                 defaultList = sortedDisplayList,
                 onOrderChange = { updatedFolders ->
-                    val newOrder = updatedFolders.map { it.id }
-
-                    folderOrderAdapter.onChange(
-                        FolderOrderUtils.intListToString(
-                            newOrder,
-                        ),
-                    )
-                    sortedDisplayList = updatedFolders
+                    onOrderChange(updatedFolders.map { it.id })
                 },
             ) { folderEntry, _, _ ->
                 val interactionSource = remember { MutableInteractionSource() }
@@ -214,15 +192,6 @@ fun AppDrawerFoldersPreference(
                         }
                     },
                     onItemDelete = { folderToDelete ->
-                        val currentOrder =
-                            FolderOrderUtils.stringToIntList(folderOrderAdapter.state.value)
-                        val newOrderAfterDelete =
-                            currentOrder.filter { it != folderToDelete.id }
-                        folderOrderAdapter.onChange(
-                            FolderOrderUtils.intListToString(
-                                newOrderAfterDelete,
-                            ),
-                        )
                         onDeleteFolder(folderToDelete)
                     },
                     dragIndicator = {

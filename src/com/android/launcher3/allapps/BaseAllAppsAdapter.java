@@ -364,9 +364,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 FolderInfo folderInfo = mApps.getAdapterItems().get(position).folderInfo;
                 ViewGroup container = (ViewGroup) holder.itemView;
                 container.removeAllViews();
-                container.addView(
-                    FolderIcon.inflateFolderAndIcon(R.layout.all_apps_folder_icon, mActivityContext,
-                    container, folderInfo));
+                // LC-Note: Implement long-press support for folder type for purposes like showing popup
+                FolderIcon folderIcon = FolderIcon.inflateFolderAndIcon(
+                        R.layout.all_apps_folder_icon, mActivityContext, container, folderInfo);
+                folderIcon.setOnLongClickListener(mOnIconLongClickListener);
+                container.addView(folderIcon);
                 break;
             default:
                 if (mAdapterProvider.isViewSupported(holder.getItemViewType())) {

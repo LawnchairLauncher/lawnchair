@@ -803,6 +803,7 @@
 
     <string name="dock_icons">Dock icons</string>
     <string name="dock_rows">Dock rows</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
