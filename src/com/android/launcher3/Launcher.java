@@ -748,7 +748,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             mCellPosMapper = new TwoPanelCellPosMapper(mDeviceProfile.inv.numColumns);
         } else {
             mCellPosMapper = new CellPosMapper(mDeviceProfile.isVerticalBarLayout(),
-                    mDeviceProfile.numShownHotseatIcons);
+                    mDeviceProfile.numShownHotseatIcons, mDeviceProfile.numHotseatRows,
+                    mDeviceProfile.numHotseatPages);
         }
         mModelWriter = mModel.getWriter(true, mCellPosMapper, this);
         updateFixedLandscape();
@@ -2151,7 +2152,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     boolean isHotseatLayout(View layout) {
         // TODO: Remove this method
-        return mHotseat != null && (layout == mHotseat);
+        return mHotseat != null && (layout == mHotseat || mHotseat.isHotseatPage(layout));
     }
 
     @Override
@@ -2371,7 +2372,13 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         List<CellLayout> containers = new ArrayList<>(mWorkspace.getPanelCount() + 1);
-        containers.add(mWorkspace.getHotseat());
+        Hotseat hotseat = mWorkspace.getHotseat();
+        if (hotseat != null) {
+            CellLayout currentPage = hotseat.getCurrentPageLayout();
+            if (currentPage != null) {
+                containers.add(currentPage);
+            }
+        }
         mWorkspace.forEachVisiblePage(page -> containers.add((CellLayout) page));
         CellLayout[] containerArray = containers.toArray(new CellLayout[0]);
         LauncherBindableItemsContainer visibleContainer =
@@ -2928,8 +2935,15 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param screenId must be presenterPos and not modelPos.
      */
     public CellLayout getCellLayout(int container, int screenId) {
-        return (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)
-                ? mHotseat : mWorkspace.getScreenWithId(screenId);
+        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                || container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            if (mHotseat == null) {
+                return null;
+            }
+            CellLayout page = mHotseat.getPageAt(screenId);
+            return page != null ? page : mHotseat.getCurrentPageLayout();
+        }
+        return mWorkspace.getScreenWithId(screenId);
     }
 
     @Override

@@ -42,6 +42,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Flags;
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
@@ -133,7 +134,40 @@ public class HotseatPredictionController implements DragController.DragListener,
         mLauncher.getDragController().addDragListener(this);
 
         launcher.addOnDeviceProfileChangeListener(this);
-        mHotseat.getShortcutsAndWidgets().setOnHierarchyChangeListener(this);
+        attachPageListeners();
+        mHotseat.getPagedView().setOnDockPageChangeListener(page -> {
+            if (mPauseFlags == 0 && !mLauncher.isWorkspaceLoading()) {
+                fillGapsWithPrediction(true);
+            }
+        });
+    }
+
+    private void attachPageListeners() {
+        for (CellLayout page : mHotseat.getPageLayouts()) {
+            page.getShortcutsAndWidgets().setOnHierarchyChangeListener(this);
+        }
+    }
+
+    @Nullable
+    private CellLayout getPageForRank(int rank) {
+        return mHotseat.getPageAt(mHotseat.getPageFromOrder(rank));
+    }
+
+    @Nullable
+    private View getChildAtRank(int rank) {
+        CellLayout page = getPageForRank(rank);
+        if (page == null) {
+            return null;
+        }
+        return page.getChildAt(
+                mHotseat.getCellXFromOrder(rank),
+                mHotseat.getCellYFromOrder(rank));
+    }
+
+    /** Visible-page slot count (columns × rows). Predictions only fill the current page. */
+    private int getVisiblePageStartRank() {
+        int page = mHotseat.getPagedView().getNextPage();
+        return Math.max(0, page) * mHotSeatItemsCount;
     }
 
     @Override
@@ -211,10 +245,10 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
 
         mPauseFlags |= FLAG_FILL_IN_PROGRESS;
-        for (int rank = 0; rank < mHotSeatItemsCount; rank++) {
-            View child = mHotseat.getChildAt(
-                    mHotseat.getCellXFromOrder(rank),
-                    mHotseat.getCellYFromOrder(rank));
+        int startRank = getVisiblePageStartRank();
+        for (int localRank = 0; localRank < mHotSeatItemsCount; localRank++) {
+            int rank = startRank + localRank;
+            View child = getChildAtRank(rank);
 
             if (child != null && !isPredictedIcon(child)) {
                 continue;
@@ -222,7 +256,10 @@ public class HotseatPredictionController implements DragController.DragListener,
             if (mPredictedItems.size() <= predictionIndex) {
                 // Remove predicted apps from the past
                 if (isPredictedIcon(child)) {
-                    mHotseat.removeView(child);
+                    CellLayout page = getPageForRank(rank);
+                    if (page != null) {
+                        page.removeView(child);
+                    }
                 }
                 continue;
             }
@@ -271,9 +308,12 @@ public class HotseatPredictionController implements DragController.DragListener,
     private void removeOutlineDrawings() {
         if (mOutlineDrawings.isEmpty()) return;
         for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
-            mHotseat.removeDelegatedCellDrawing(outlineDrawing);
+            CellLayout page = mHotseat.getCurrentPageLayout();
+            if (page != null) {
+                page.removeDelegatedCellDrawing(outlineDrawing);
+                page.invalidate();
+            }
         }
-        mHotseat.invalidate();
         mOutlineDrawings.clear();
     }
 
@@ -300,9 +340,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Pins a predicted app icon into place.
      */
     public void pinPrediction(ItemInfo info) {
-        PredictedAppIcon icon = (PredictedAppIcon) mHotseat.getChildAt(
-                mHotseat.getCellXFromOrder(info.rank),
-                mHotseat.getCellYFromOrder(info.rank));
+        PredictedAppIcon icon = (PredictedAppIcon) getChildAtRank(info.rank);
         if (icon == null) {
             return;
         }
@@ -319,11 +357,13 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private List<PredictedAppIcon> getPredictedIcons() {
         List<PredictedAppIcon> icons = new ArrayList<>();
-        ViewGroup vg = mHotseat.getShortcutsAndWidgets();
-        for (int i = 0; i < vg.getChildCount(); i++) {
-            View child = vg.getChildAt(i);
-            if (isPredictedIcon(child)) {
-                icons.add((PredictedAppIcon) child);
+        for (CellLayout page : mHotseat.getPageLayouts()) {
+            ViewGroup vg = page.getShortcutsAndWidgets();
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                View child = vg.getChildAt(i);
+                if (isPredictedIcon(child)) {
+                    icons.add((PredictedAppIcon) child);
+                }
             }
         }
         return icons;
@@ -369,7 +409,16 @@ public class HotseatPredictionController implements DragController.DragListener,
      */
     private void removeIconWithoutNotify(PredictedAppIcon icon) {
         mPauseFlags |= FLAG_REMOVING_PREDICTED_ICON;
-        mHotseat.removeView(icon);
+        ViewGroup parent = (ViewGroup) icon.getParent();
+        if (parent != null) {
+            // Parent is ShortcutAndWidgetContainer; remove via CellLayout.
+            ViewGroup cellLayout = (ViewGroup) parent.getParent();
+            if (cellLayout instanceof CellLayout) {
+                cellLayout.removeView(icon);
+            } else {
+                parent.removeView(icon);
+            }
+        }
         mPauseFlags &= ~FLAG_REMOVING_PREDICTED_ICON;
     }
 
@@ -377,11 +426,14 @@ public class HotseatPredictionController implements DragController.DragListener,
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         removePredictedApps(mOutlineDrawings, dragObject);
         if (mOutlineDrawings.isEmpty()) return;
-        for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
-            mHotseat.addDelegatedCellDrawing(outlineDrawing);
+        CellLayout page = mHotseat.getCurrentPageLayout();
+        if (page != null) {
+            for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
+                page.addDelegatedCellDrawing(outlineDrawing);
+            }
+            mPauseFlags |= FLAG_DRAG_IN_PROGRESS;
+            page.invalidate();
         }
-        mPauseFlags |= FLAG_DRAG_IN_PROGRESS;
-        mHotseat.invalidate();
     }
 
     @Override
@@ -419,6 +471,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     @Override
     public void onDeviceProfileChanged(DeviceProfile profile) {
         this.mHotSeatItemsCount = profile.numShownHotseatIcons * profile.numHotseatRows;
+        attachPageListeners();
     }
 
     @Override
@@ -482,7 +535,11 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Called when user completes adding item requiring a config activity to the hotseat
      */
     public void onDeferredDrop(int cellX, int cellY) {
-        View child = mHotseat.getChildAt(cellX, cellY);
+        CellLayout page = mHotseat.getCurrentPageLayout();
+        if (page == null) {
+            return;
+        }
+        View child = page.getChildAt(cellX, cellY);
         if (child instanceof PredictedAppIcon) {
             removeIconWithoutNotify((PredictedAppIcon) child);
         }

@@ -101,6 +101,7 @@ class PreferenceManager @Inject constructor(
     val hotseatColumns = IntPref("pref_hotseatColumns", calculatedGridSpec.hotseatColumns, reloadGrid)
     val hotseatColumnsUnfolded = IntPref("pref_hotseatColumnsUnfolded", calculatedGridSpec.hotseatColumnsUnfolded, reloadGrid)
     val hotseatRows = IntPref("pref_hotseatRows", 1, reloadGrid)
+    val dockPages = IntPref("pref_dockPages", 1, reloadGrid)
     val workspaceColumns = IntPref("pref_workspaceColumns", calculatedGridSpec.workspaceColumns)
     val workspaceRows = IntPref("pref_workspaceRows", calculatedGridSpec.workspaceRows)
     val workspaceIncreaseMaxGridSize = BoolPref("pref_workspace_increase_max_grid_size", false)

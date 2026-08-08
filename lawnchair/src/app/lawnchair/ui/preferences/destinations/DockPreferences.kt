@@ -139,6 +139,7 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
     val hotseatColumnsAdapter = prefs.hotseatColumns.getAdapter()
     val hotseatColumnsUnfoldedAdapter = prefs.hotseatColumnsUnfolded.getAdapter()
     val hotseatRowsAdapter = prefs.hotseatRows.getAdapter()
+    val dockPagesAdapter = prefs.dockPages.getAdapter()
 
     PreferenceGroup(heading = stringResource(id = R.string.grid)) {
         if (isFoldable) {
@@ -176,6 +177,12 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
             valueRange = 1..2,
         )
         SliderPreference(
+            label = stringResource(id = R.string.dock_pages),
+            adapter = dockPagesAdapter,
+            step = 1,
+            valueRange = 1..5,
+        )
+        SliderPreference(
             adapter = prefs2.hotseatBottomFactor.getAdapter(),
             label = stringResource(id = R.string.hotseat_bottom_space_label),
             valueRange = 0.0F..1.7F,
@@ -199,12 +206,14 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
         val prefs2 = preferenceManager2()
 
         val hotseatRows = prefs.hotseatRows
+        val dockPages = prefs.dockPages
 
         val adapters = listOf(
             prefs2.hotseatMode.getAdapter(),
             prefs.hotseatColumns.getAdapter(),
             prefs.hotseatColumnsUnfolded.getAdapter(),
             hotseatRows.getAdapter(),
+            dockPages.getAdapter(),
             prefs2.themedHotseatQsb.getAdapter(),
             prefs.hotseatQsbCornerRadius.getAdapter(),
             prefs.hotseatQsbAlpha.getAdapter(),

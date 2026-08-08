@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2019 The Android Open Source Project
+<!--
+     Copyright (C) 2026 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,13 +16,11 @@
 
      Modifications copyright 2026 Lawnchair
 -->
-<com.android.launcher3.Hotseat
+<com.android.launcher3.CellLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/hotseat"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/HomeScreenElementTheme"
     android:importantForAccessibility="no"
-    android:clickable="false"
-    android:longClickable="false"
-    android:clipChildren="false" />
+    android:hapticFeedbackEnabled="false"
+    launcher:containerType="hotseat" />
