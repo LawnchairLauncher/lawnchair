@@ -34,7 +34,6 @@ fun ExperimentalFeaturesPreferences(
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
 
-    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     PreferenceLayout(
         label = stringResource(id = R.string.experimental_features_label),
         backArrowVisible = !LocalIsExpandedScreen.current,
