@@ -14,6 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -24,8 +27,12 @@ fun ClickableIcon(
     enabled: Boolean = true,
     tint: Color = LocalContentColor.current,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     FilledTonalIconButton(
-        onClick = onClick,
+        onClick = {
+            mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+            onClick()
+        },
         modifier = modifier,
         enabled = enabled,
         shapes = IconButtonDefaults.shapes(),

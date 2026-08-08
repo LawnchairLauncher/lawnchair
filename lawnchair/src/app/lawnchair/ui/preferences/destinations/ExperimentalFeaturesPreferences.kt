@@ -26,7 +26,6 @@ import app.lawnchair.util.FileAccessState
 import app.lawnchair.util.isGestureNavContractCompatible
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.util.MSDLPlayerWrapper
 
 @Composable
 fun ExperimentalFeaturesPreferences(
@@ -35,7 +34,6 @@ fun ExperimentalFeaturesPreferences(
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
 
-    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     PreferenceLayout(
         label = stringResource(id = R.string.experimental_features_label),
         backArrowVisible = !LocalIsExpandedScreen.current,

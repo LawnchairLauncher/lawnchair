@@ -3484,6 +3484,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         int pageIndex = starts.get(groupIndex);
         setDefaultPage(pageIndex);
         Toast.makeText(mLauncher, R.string.default_home_page_set, Toast.LENGTH_SHORT).show();
+        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS);
         return true;
     }
 
