@@ -66,6 +66,9 @@ public class ModelUtils {
      */
     @SuppressWarnings("deprecation")
     public static WorkspaceItemInfo fromLegacyShortcutIntent(Context context, Intent data) {
+        if (data == null) {
+            return null;
+        }
         Object shortcutIntent;
         Object iconResource;
         Object icon;
