@@ -26,6 +26,8 @@ import app.lawnchair.util.requireSystemService
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,6 +37,7 @@ private const val TAG = "SelectIconPreference"
 @Composable
 fun SelectIconPreference(componentKey: ComponentKey) {
     val context = LocalContext.current
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
     val label = remember(componentKey) {
         resolveAppLabel(context.requireSystemService(), componentKey)
     }
@@ -96,6 +99,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                 label = iconPack.name,
                 icon = remember(iconPack) { iconPack.icon.toBitmap() },
                 onClick = {
+                    mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                     if (iconPack.packageName.isEmpty()) {
                         navController.navigate(IconPicker())
                     } else {

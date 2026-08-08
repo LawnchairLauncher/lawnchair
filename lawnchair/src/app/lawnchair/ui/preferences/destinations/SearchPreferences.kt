@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
@@ -18,6 +19,8 @@ import app.lawnchair.ui.preferences.components.search.DockSearchPreference
 import app.lawnchair.ui.preferences.components.search.DrawerSearchPreference
 import app.lawnchair.ui.preferences.navigation.Search
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 
 @Keep // This is refed by a Kotlin serializer, we must keep it's fully qualified name.
 enum class SearchRoute {
@@ -31,6 +34,7 @@ fun SearchBarPreference(
     modifier: Modifier = Modifier,
     showLabel: Boolean = true,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val navController = LocalNavController.current
     val preference = remember {
         movableContentOf {
@@ -38,6 +42,7 @@ fun SearchBarPreference(
                 label = stringResource(R.string.search_bar_settings),
                 modifier = modifier,
             ) {
+                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_HIGH_EMPHASIS)
                 navController.navigate(route = Search(id))
             }
         }

@@ -20,20 +20,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.core.view.HapticFeedbackConstantsCompat
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.theme.preferenceGroupColor
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import sh.calvin.reorderable.ReorderableColumn
 import sh.calvin.reorderable.ReorderableListItemScope
 
@@ -51,6 +52,7 @@ fun <T> ReorderablePreferenceGroup(
         isDragging: Boolean,
     ) -> Unit,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     var localItems by remember { mutableStateOf(items) }
 
     LaunchedEffect(items) {
@@ -82,9 +84,7 @@ fun <T> ReorderablePreferenceGroup(
                     }
                 },
                 onMove = {
-                    if (Utilities.ATLEAST_U) {
-                        view.performHapticFeedback(HapticFeedbackConstantsCompat.SEGMENT_FREQUENT_TICK)
-                    }
+                    mMSDLPlayerWrapper.playToken(MSDLToken.DRAG_INDICATOR_DISCRETE)
                 },
             ) { index, item, isDragging ->
                 key(item.hashCode()) {

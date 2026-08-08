@@ -22,12 +22,14 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.CreateBackup
 import com.android.launcher3.LauncherPrefs
+import com.android.launcher3.util.MSDLPlayerWrapper
 import com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT
 import com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_COUNT
 import com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN
 import com.android.launcher3.util.OnboardingPrefs.HOTSEAT_DISCOVERY_TIP_COUNT
 import com.android.launcher3.util.OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP
+import com.google.android.msdl.data.model.MSDLToken
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -125,12 +127,14 @@ fun OnboardingPreference(
     onEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     ClickablePreference(
         label = title,
         subtitle = "Tap to reset",
         modifier = modifier,
         colors = ListItemDefaults.colors().copy(containerColor = Color.Transparent),
     ) {
+        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
         onEdit()
     }
 }
@@ -175,11 +179,13 @@ private fun IntentPreference(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
     ClickablePreference(
         label = label,
         modifier = modifier,
         colors = ListItemDefaults.colors().copy(containerColor = Color.Transparent),
     ) {
+        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
         context.startActivity(intent)
     }
 }

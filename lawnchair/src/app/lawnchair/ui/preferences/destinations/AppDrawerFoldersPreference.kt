@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -53,11 +54,14 @@ import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.ui.preferences.navigation.AppDrawerFolder
 import app.lawnchair.ui.util.bottomSheetHandler
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 
 @Composable
 fun AppDrawerFolderPreferenceItem(
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val navController = LocalNavController.current
 
     PreferenceGroup(
@@ -67,6 +71,7 @@ fun AppDrawerFolderPreferenceItem(
             label = stringResource(R.string.app_drawer_folder),
             modifier = Modifier,
             onClick = {
+                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_HIGH_EMPHASIS)
                 navController.navigate(route = AppDrawerFolder)
             },
         )
@@ -113,6 +118,7 @@ fun AppDrawerFoldersPreference(
     onOrderChange: (List<Int>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val bottomSheetHandler = bottomSheetHandler
     val prefs = preferenceManager()
 
@@ -147,6 +153,7 @@ fun AppDrawerFoldersPreference(
                         Icon(Icons.Rounded.Add, contentDescription = null)
                     },
                     onClick = {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                         bottomSheetHandler.show {
                             FolderEditSheet(
                                 folderId = 0,
@@ -175,6 +182,7 @@ fun AppDrawerFoldersPreference(
                 FolderItem(
                     folderEntry = folderEntry,
                     onItemClick = {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                         bottomSheetHandler.show {
                             FolderEditSheet(
                                 folderId = folderEntry.id,
@@ -192,6 +200,7 @@ fun AppDrawerFoldersPreference(
                         }
                     },
                     onItemDelete = { folderToDelete ->
+                        mMSDLPlayerWrapper.playToken(MSDLToken.SUCCESS)
                         onDeleteFolder(folderToDelete)
                     },
                     dragIndicator = {

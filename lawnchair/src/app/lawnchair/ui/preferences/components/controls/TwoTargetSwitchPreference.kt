@@ -134,6 +134,7 @@ fun TwoTargetSwitchPreference(
         },
         onClick = {
             if (onClick != null) {
+                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                 onClick()
             } else {
                 wrappedOnCheckedChange(!checked)

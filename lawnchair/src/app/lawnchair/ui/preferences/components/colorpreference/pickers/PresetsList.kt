@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.theme.color.ColorOption
@@ -16,6 +17,8 @@ import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEn
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -25,6 +28,7 @@ fun PresetsList(
     isPresetSelected: (ColorOption) -> Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     PreferenceGroup(
         heading = stringResource(id = R.string.dynamic),
         modifier = modifier.padding(top = 12.dp),
@@ -44,7 +48,10 @@ fun PresetsList(
                         )
                     }
                 },
-                onClick = { onPresetClick(entry.value) },
+                onClick = {
+                    mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
+                    onPresetClick(entry.value)
+                },
             )
         }
     }

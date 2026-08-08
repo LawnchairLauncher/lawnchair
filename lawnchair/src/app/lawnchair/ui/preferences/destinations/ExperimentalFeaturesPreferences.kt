@@ -26,7 +26,6 @@ import app.lawnchair.util.FileAccessState
 import app.lawnchair.util.isGestureNavContractCompatible
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.util.MSDLPlayerWrapper
 
 @Composable
 fun ExperimentalFeaturesPreferences(
