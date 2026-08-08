@@ -99,7 +99,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     private AnimatorSet mIconRemoveAnimators;
     private int mPauseFlags = 0;
 
-    private List<PredictedAppIcon.PredictedIconOutlineDrawing> mOutlineDrawings = new ArrayList<>();
+    private final List<OutlineOnPage> mOutlineDrawings = new ArrayList<>();
 
     private boolean mEnableHotseatLongPressTipForTesting = true;
 
@@ -307,12 +307,9 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private void removeOutlineDrawings() {
         if (mOutlineDrawings.isEmpty()) return;
-        for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
-            CellLayout page = mHotseat.getCurrentPageLayout();
-            if (page != null) {
-                page.removeDelegatedCellDrawing(outlineDrawing);
-                page.invalidate();
-            }
+        for (OutlineOnPage outline : mOutlineDrawings) {
+            outline.page.removeDelegatedCellDrawing(outline.drawing);
+            outline.page.invalidate();
         }
         mOutlineDrawings.clear();
     }
@@ -355,28 +352,28 @@ public class HotseatPredictionController implements DragController.DragListener,
                 .log(LAUNCHER_HOTSEAT_PREDICTION_PINNED);
     }
 
-    private List<PredictedAppIcon> getPredictedIcons() {
-        List<PredictedAppIcon> icons = new ArrayList<>();
+    private List<PredictedIconOnPage> getPredictedIcons() {
+        List<PredictedIconOnPage> icons = new ArrayList<>();
         for (CellLayout page : mHotseat.getPageLayouts()) {
             ViewGroup vg = page.getShortcutsAndWidgets();
             for (int i = 0; i < vg.getChildCount(); i++) {
                 View child = vg.getChildAt(i);
                 if (isPredictedIcon(child)) {
-                    icons.add((PredictedAppIcon) child);
+                    icons.add(new PredictedIconOnPage(page, (PredictedAppIcon) child));
                 }
             }
         }
         return icons;
     }
 
-    private void removePredictedApps(List<PredictedAppIcon.PredictedIconOutlineDrawing> outlines,
-            DropTarget.DragObject dragObject) {
+    private void removePredictedApps(DropTarget.DragObject dragObject) {
         if (mIconRemoveAnimators != null) {
             mIconRemoveAnimators.end();
         }
         mIconRemoveAnimators = new AnimatorSet();
         removeOutlineDrawings();
-        for (PredictedAppIcon icon : getPredictedIcons()) {
+        for (PredictedIconOnPage entry : getPredictedIcons()) {
+            PredictedAppIcon icon = entry.icon;
             if (!icon.isEnabled()) {
                 continue;
             }
@@ -385,8 +382,10 @@ public class HotseatPredictionController implements DragController.DragListener,
                 continue;
             }
             int rank = ((WorkspaceItemInfo) icon.getTag()).rank;
-            outlines.add(new PredictedAppIcon.PredictedIconOutlineDrawing(
-                    mHotseat.getCellXFromOrder(rank), mHotseat.getCellYFromOrder(rank), icon));
+            mOutlineDrawings.add(new OutlineOnPage(entry.page,
+                    new PredictedAppIcon.PredictedIconOutlineDrawing(
+                            mHotseat.getCellXFromOrder(rank),
+                            mHotseat.getCellYFromOrder(rank), icon)));
             icon.setEnabled(false);
             ObjectAnimator animator = ObjectAnimator.ofFloat(icon, SCALE_PROPERTY, 0);
             animator.addListener(new AnimationSuccessListener() {
@@ -424,16 +423,13 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        removePredictedApps(mOutlineDrawings, dragObject);
+        removePredictedApps(dragObject);
         if (mOutlineDrawings.isEmpty()) return;
-        CellLayout page = mHotseat.getCurrentPageLayout();
-        if (page != null) {
-            for (PredictedAppIcon.PredictedIconOutlineDrawing outlineDrawing : mOutlineDrawings) {
-                page.addDelegatedCellDrawing(outlineDrawing);
-            }
-            mPauseFlags |= FLAG_DRAG_IN_PROGRESS;
-            page.invalidate();
+        for (OutlineOnPage outline : mOutlineDrawings) {
+            outline.page.addDelegatedCellDrawing(outline.drawing);
+            outline.page.invalidate();
         }
+        mPauseFlags |= FLAG_DRAG_IN_PROGRESS;
     }
 
     @Override
@@ -500,8 +496,8 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
 
         int cardinality = 0;
-        for (PredictedAppIcon icon : getPredictedIcons()) {
-            ItemInfo info = (ItemInfo) icon.getTag();
+        for (PredictedIconOnPage entry : getPredictedIcons()) {
+            ItemInfo info = (ItemInfo) entry.icon.getTag();
             cardinality |= 1 << info.screenId;
         }
 
@@ -589,6 +585,26 @@ public class HotseatPredictionController implements DragController.DragListener,
         writer.println(prefix + "\tmPredictedItems: " + mPredictedItems.size());
         for (ItemInfo info : mPredictedItems) {
             writer.println(prefix + "\t\t" + info);
+        }
+    }
+
+    private static final class PredictedIconOnPage {
+        final CellLayout page;
+        final PredictedAppIcon icon;
+
+        PredictedIconOnPage(CellLayout page, PredictedAppIcon icon) {
+            this.page = page;
+            this.icon = icon;
+        }
+    }
+
+    private static final class OutlineOnPage {
+        final CellLayout page;
+        final PredictedAppIcon.PredictedIconOutlineDrawing drawing;
+
+        OutlineOnPage(CellLayout page, PredictedAppIcon.PredictedIconOutlineDrawing drawing) {
+            this.page = page;
+            this.drawing = drawing;
         }
     }
 }

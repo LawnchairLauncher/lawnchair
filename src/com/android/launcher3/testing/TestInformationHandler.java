@@ -432,6 +432,9 @@ public class TestInformationHandler implements ResourceBasedOverride {
                     ShortcutAndWidgetContainer hotseatIconsContainer =
                             l.getHotseat().getShortcutsAndWidgets();
                     ArrayList<String> hotseatIconNames = new ArrayList<>();
+                    if (hotseatIconsContainer == null) {
+                        return hotseatIconNames;
+                    }
 
                     for (int i = 0; i < hotseatIconsContainer.getChildCount(); i++) {
                         // Use unchecked cast to catch changes in hotseat layout

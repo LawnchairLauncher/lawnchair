@@ -613,12 +613,14 @@ public class Hotseat extends FrameLayout implements Insettable {
     }
 
     /** Delegates to the current page's shortcuts container. */
+    @Nullable
     public ShortcutAndWidgetContainer getShortcutsAndWidgets() {
         CellLayout page = getCurrentPageLayout();
         return page != null ? page.getShortcutsAndWidgets() : null;
     }
 
     /** Delegates accessibility drag helper to the current page. */
+    @Nullable
     public DragAndDropAccessibilityDelegate getDragAndDropAccessibilityDelegate() {
         CellLayout page = getCurrentPageLayout();
         return page != null ? page.getDragAndDropAccessibilityDelegate() : null;

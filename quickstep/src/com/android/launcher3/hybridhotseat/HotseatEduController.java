@@ -96,23 +96,47 @@ public class HotseatEduController {
             pageId = mLauncher.getModel().getModelDbController().getNewScreenId();
         }
         boolean isPortrait = !mLauncher.getDeviceProfile().isVerticalBarLayout();
-        int hotseatItemsNum = mLauncher.getDeviceProfile().numShownHotseatIcons;
-        CellLayout page = mHotseat.getCurrentPageLayout();
-        if (page == null) {
-            return pageId;
-        }
-        for (int i = 0; i < hotseatItemsNum; i++) {
-            int x = isPortrait ? i : 0;
-            int y = isPortrait ? 0 : hotseatItemsNum - i - 1;
-            View child = page.getChildAt(x, y);
-            if (child == null || child.getTag() == null) continue;
-            ItemInfo tag = (ItemInfo) child.getTag();
-            if (tag.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) continue;
-            mLauncher.getModelWriter().moveItemInDatabase(tag,
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP, pageId, i, toRow);
-            mNewItems.add(tag);
+        int numColumns = mLauncher.getDeviceProfile().inv.numColumns;
+        int destIndex = 0;
+        for (CellLayout page : mHotseat.getPageLayouts()) {
+            int countX = page.getCountX();
+            int countY = page.getCountY();
+            if (isPortrait) {
+                for (int y = 0; y < countY; y++) {
+                    for (int x = 0; x < countX; x++) {
+                        destIndex += migrateHotseatChild(page.getChildAt(x, y), pageId, toRow,
+                                destIndex, numColumns);
+                    }
+                }
+            } else {
+                for (int i = 0; i < countY; i++) {
+                    destIndex += migrateHotseatChild(page.getChildAt(0, countY - i - 1), pageId,
+                            toRow, destIndex, numColumns);
+                }
+            }
         }
         return pageId;
+    }
+
+    /** @return 1 if the item was migrated, otherwise 0 */
+    private int migrateHotseatChild(View child, int pageId, int toRow, int destIndex,
+            int numColumns) {
+        if (child == null || child.getTag() == null) {
+            return 0;
+        }
+        ItemInfo tag = (ItemInfo) child.getTag();
+        if (tag.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            return 0;
+        }
+        int destX = numColumns > 0 ? destIndex % numColumns : destIndex;
+        int destY = numColumns > 0 ? toRow - destIndex / numColumns : toRow;
+        if (destY < 0) {
+            destY = 0;
+        }
+        mLauncher.getModelWriter().moveItemInDatabase(tag,
+                LauncherSettings.Favorites.CONTAINER_DESKTOP, pageId, destX, destY);
+        mNewItems.add(tag);
+        return 1;
     }
 
     void moveHotseatItems() {
