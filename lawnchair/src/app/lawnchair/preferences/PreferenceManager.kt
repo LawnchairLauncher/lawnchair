@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.font.FontCache
+import app.lawnchair.icons.DrawerIconCache
 import app.lawnchair.util.getApkVersionComparison
 import app.lawnchair.util.isGestureNavContractCompatible
 import app.lawnchair.util.isOnePlusStock
@@ -52,7 +53,21 @@ class PreferenceManager @Inject constructor(
         mRecentsModel.onThemeChanged()
         Executors.MODEL_EXECUTOR.execute {
             LauncherAppState.INSTANCE.get(context).iconCache.clearMemoryCache()
+            // Appearance changes (themed icons, tint, ...) also affect the baked drawer icons.
+            // Guard on the toggle so users without the feature never instantiate DrawerIconCache.
+            if (useSeparateDrawerIcons.get()) {
+                DrawerIconCache.INSTANCE.get(context).clear()
+            }
             LauncherAppState.INSTANCE.get(context).model.reloadIfActive()
+        }
+    }
+    // Scoped reload for the drawer icon pack: the home/global icon cache is untouched (drawer
+    // icons are resolved at render time), so we only drop the drawer memo and rebind the existing
+    // views (rebindCallbacks re-renders without re-querying the whole model).
+    private val reloadDrawerIcons: () -> Unit = {
+        Executors.MODEL_EXECUTOR.execute {
+            DrawerIconCache.INSTANCE.get(context).clear()
+            LauncherAppState.INSTANCE.get(context).model.rebindCallbacks()
         }
     }
     private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }
@@ -66,6 +81,10 @@ class PreferenceManager @Inject constructor(
 
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", reloadIcons)
+    // When enabled, the app drawer uses its own icon pack (drawerIconPackPackage) instead of the
+    // global iconPackPackage that the home screen and everything else use.
+    val useSeparateDrawerIcons = BoolPref("pref_useSeparateDrawerIcons", false, reloadDrawerIcons)
+    val drawerIconPackPackage = StringPref("pref_drawerIconPackPackage", "", reloadDrawerIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", true)
     val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false)

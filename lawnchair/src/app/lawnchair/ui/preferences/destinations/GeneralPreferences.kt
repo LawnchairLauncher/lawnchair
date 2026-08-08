@@ -69,18 +69,32 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
     val currentIconPackName = iconPacks
         .find { it.packageName == preferenceManager().iconPackPackage.get() }
         ?.name
+    val useSeparateDrawerIcons = prefs.useSeparateDrawerIcons.getAdapter().state.value
+    val drawerIconPack = prefs.drawerIconPackPackage.getAdapter().state.value
+    val currentDrawerIconPackName = iconPacks
+        .find { it.packageName == drawerIconPack }
+        ?.name
+    // Only reflect a separate drawer pack once a real pack is chosen; an empty selection just
+    // mirrors the home pack, so the plain home-pack subtitle stays accurate.
+    val drawerPackSelected = useSeparateDrawerIcons && drawerIconPack.isNotEmpty()
     val themedIconsEnabled = ThemedIconsState.getForSettings(
         themedIcons = themedIconsAdapter.state.value,
         drawerThemedIcons = drawerThemedIconsAdapter.state.value,
     ) != ThemedIconsState.Off
-    val iconStyleSubtitle = if (currentIconPackName != null && themedIconsEnabled) {
-        stringResource(
-            id = R.string.x_and_y,
-            currentIconPackName,
-            stringResource(id = R.string.themed_icon_title),
-        )
-    } else {
-        currentIconPackName
+    val iconStyleSubtitle = when {
+        drawerPackSelected && currentIconPackName != null && currentDrawerIconPackName != null ->
+            stringResource(
+                id = R.string.home_and_drawer_icon_pack_subtitle,
+                currentIconPackName,
+                currentDrawerIconPackName,
+            )
+        currentIconPackName != null && themedIconsEnabled ->
+            stringResource(
+                id = R.string.x_and_y,
+                currentIconPackName,
+                stringResource(id = R.string.themed_icon_title),
+            )
+        else -> currentIconPackName
     }
     val iconShapeSubtitle = iconShapeEntries(context)
         .firstOrNull { it.value == iconShapeAdapter.state.value }

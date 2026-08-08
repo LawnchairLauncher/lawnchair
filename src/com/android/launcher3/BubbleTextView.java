@@ -85,6 +85,7 @@ import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
@@ -112,6 +113,7 @@ import java.util.Objects;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.font.FontManager;
+import app.lawnchair.icons.DrawerIconCache;
 import app.lawnchair.gestures.IconGestureListener;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -567,7 +569,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (mSkipUserBadge) {
             flags |= FLAG_SKIP_USER_BADGE;
         }
-        FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
+        // Lawnchair: in the app drawer, optionally render the icon from a separate icon pack.
+        BitmapInfo drawerBitmap = null;
+        if (isDrawerDisplay() && !isPrivateSpaceIcon
+                && PreferenceManager.getInstance(getContext()).getUseSeparateDrawerIcons().get()) {
+            drawerBitmap = DrawerIconCache.INSTANCE.get(getContext()).getBitmapInfoOrNull(info);
+        }
+        FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags, drawerBitmap);
         mDotParams.appColor = iconDrawable.getIconColor();
         mDotParams.dotColor = Themes.getAttrColor(getContext(), R.attr.notificationDotColor);
         if (isPrivateSpaceIcon) {
@@ -582,6 +590,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
         return mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER
                 || mDisplay == DISPLAY_TASKBAR;
+    }
+
+    /** Whether this icon is shown in an app-drawer surface (grid, predictions row, drawer folder). */
+    private boolean isDrawerDisplay() {
+        return mDisplay == DISPLAY_ALL_APPS
+                || mDisplay == DISPLAY_PREDICTION_ROW
+                || mDisplay == DISPLAY_DRAWER_FOLDER;
     }
 
     /**

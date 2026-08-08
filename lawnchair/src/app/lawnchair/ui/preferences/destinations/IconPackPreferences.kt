@@ -123,6 +123,8 @@ fun IconPackPreferences(
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
     val themedIconsAdapter = prefs.themedIcons.getAdapter()
     val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
+    val useSeparateDrawerIconsAdapter = prefs.useSeparateDrawerIcons.getAdapter()
+    val drawerIconPackAdapter = prefs.drawerIconPackPackage.getAdapter()
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollState = rememberScrollState()
     val drawerThemedIconsEnabled = drawerThemedIconsAdapter.state.value
@@ -164,9 +166,10 @@ fun IconPackPreferences(
             }
         }
         Column {
+            val separateDrawerIcons = useSeparateDrawerIconsAdapter.state.value
             val pagerState = rememberPagerState(
                 initialPage = 0,
-                pageCount = { 2 },
+                pageCount = { if (separateDrawerIcons) 3 else 2 },
             )
 
             val scope = rememberCoroutineScope()
@@ -178,7 +181,10 @@ fun IconPackPreferences(
                 modifier = Modifier.padding(horizontal = 16.dp),
             ) {
                 Chip(
-                    label = stringResource(id = R.string.icon_pack),
+                    // When the drawer uses a separate pack, page 0 is specifically the home pack.
+                    label = stringResource(
+                        id = if (separateDrawerIcons) R.string.home_screen_label else R.string.icon_pack,
+                    ),
                     onClick = { scrollToPage(0) },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                     page = 0,
@@ -189,6 +195,14 @@ fun IconPackPreferences(
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                     page = 1,
                 )
+                if (separateDrawerIcons) {
+                    Chip(
+                        label = stringResource(id = R.string.app_drawer_label),
+                        onClick = { scrollToPage(2) },
+                        currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
+                        page = 2,
+                    )
+                }
             }
 
             Spacer(Modifier.height(16.dp))
@@ -205,6 +219,15 @@ fun IconPackPreferences(
                                 adapter = iconPackAdapter,
                                 false,
                             )
+                            PreferenceGroup {
+                                Item {
+                                    SwitchPreference(
+                                        adapter = useSeparateDrawerIconsAdapter,
+                                        label = stringResource(id = R.string.separate_drawer_icon_pack_label),
+                                        description = stringResource(id = R.string.separate_drawer_icon_pack_description),
+                                    )
+                                }
+                            }
                         }
 
                         1 -> {
@@ -260,6 +283,14 @@ fun IconPackPreferences(
                                 }
                             }
                         }
+
+                        2 -> {
+                            IconPackGrid(
+                                adapter = drawerIconPackAdapter,
+                                isThemedIconPack = false,
+                                includeSystem = false,
+                            )
+                        }
                     }
                 }
             }
@@ -272,6 +303,7 @@ fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
     isThemedIconPack: Boolean,
     modifier: Modifier = Modifier,
+    includeSystem: Boolean = true,
 ) {
     val preferenceInteractor = LocalPreferenceInteractor.current
 
@@ -281,7 +313,9 @@ fun IconPackGrid(
     val lazyListState = rememberLazyListState()
     val padding = 12.dp
 
-    val iconPacksLocal = iconPacks
+    // The empty-package "System icons" entry means "no pack"; hide it where that isn't selectable
+    // (the app-drawer picker, where an empty selection just mirrors the home pack).
+    val iconPacksLocal = if (includeSystem) iconPacks else iconPacks.filter { it.packageName.isNotEmpty() }
 
     val selectedPack = adapter.state.value
     LaunchedEffect(selectedPack) {

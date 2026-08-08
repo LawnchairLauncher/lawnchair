@@ -92,7 +92,7 @@ class LawnchairIconProvider @Inject constructor(
 
     val systemIconState = themeManager.iconState
 
-    private fun resolveIconEntry(componentName: ComponentName, user: UserHandle): IconEntry? {
+    private fun resolveIconEntry(componentName: ComponentName, user: UserHandle, pack: IconPack?): IconEntry? {
         val componentKey = ComponentKey(componentName, user)
         // first look for user-overridden icon
         val overrideItem = overrideRepo.overridesMap[componentKey]
@@ -100,7 +100,7 @@ class LawnchairIconProvider @Inject constructor(
             return overrideItem.toIconEntry()
         }
 
-        val iconPack = iconPack ?: return null
+        val iconPack = pack ?: return null
         // then look for dynamic calendar
         val calendarEntry = iconPack.getCalendar(componentName)
         if (calendarEntry != null) {
@@ -142,6 +142,18 @@ class LawnchairIconProvider @Inject constructor(
         info: PackageItemInfo,
         appInfo: ApplicationInfo,
         iconDpi: Int,
+    ): Drawable = getIconForPack(info, appInfo, iconDpi, iconPack)
+
+    /**
+     * Resolves an icon for [appInfo] using the given [pack] (override -> dynamic calendar -> pack),
+     * falling back to the system icon. The home/global path passes the [iconPack]; the app-drawer
+     * path passes the separate drawer pack so both surfaces reuse the exact same resolution logic.
+     */
+    fun getIconForPack(
+        info: PackageItemInfo,
+        appInfo: ApplicationInfo,
+        iconDpi: Int,
+        pack: IconPack?,
     ): Drawable {
         val packageName = appInfo.packageName
         val user = UserHandle.getUserHandleForUid(appInfo.uid)
@@ -149,7 +161,7 @@ class LawnchairIconProvider @Inject constructor(
 
         var iconEntry: IconEntry? = null
         if (componentName != null) {
-            iconEntry = resolveIconEntry(componentName, user)
+            iconEntry = resolveIconEntry(componentName, user, pack)
         }
 
         var iconPackEntry = iconEntry
