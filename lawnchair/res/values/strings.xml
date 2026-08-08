@@ -259,7 +259,7 @@
     <string name="app_predictions_label">App suggestions</string>
     <string name="prediction_mode_label">Suggestions provider</string>
     <string name="prediction_mode_system">System</string>
-    <string name="prediction_mode_lawnchair">Lawnchair</string>
+    <string name="prediction_mode_lawnchair" translatable="false">Lawnchair</string>
     <string name="prediction_mode_none">Off</string>
     <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
     <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
