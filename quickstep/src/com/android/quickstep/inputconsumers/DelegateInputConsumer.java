@@ -2,6 +2,7 @@ package com.android.quickstep.inputconsumers;
 
 import android.view.MotionEvent;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.quickstep.InputConsumer;
@@ -66,7 +67,7 @@ public abstract class DelegateInputConsumer implements InputConsumer {
     }
 
     protected void setActive(MotionEvent ev) {
-        ActiveGestureProtoLogProxy.logInputConsumerBecameActive(getDelegatorName());
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logInputConsumerBecameActive(getDelegatorName());
 
         mState = STATE_ACTIVE;
         TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");

@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+Aloitusnäyttö perustuu Launcher3:seen AOSP:sta

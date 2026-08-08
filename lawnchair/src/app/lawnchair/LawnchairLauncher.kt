@@ -59,6 +59,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.shortcuts.DeepShortcutView
@@ -264,6 +265,16 @@ class LawnchairLauncher : QuickstepLauncher() {
         out.add(SearchBarStateHandler(this))
     }
 
+    override fun getAllAppsItemLongClickListener(): View.OnLongClickListener {
+        return View.OnLongClickListener { view ->
+            if (view is FolderIcon && view.mInfo.id != ItemInfo.NO_ID) {
+                LawnchairShortcut.showAppDrawerFolderPopup(this, view)
+            } else {
+                super.getAllAppsItemLongClickListener().onLongClick(view)
+            }
+        }
+    }
+
     override fun getSupportedShortcuts(container: Int): Stream<SystemShortcut.Factory<*>> = Stream.concat(
         super.getSupportedShortcuts(container),
         Stream.concat(
@@ -277,6 +288,17 @@ class LawnchairLauncher : QuickstepLauncher() {
             recreate()
         } else {
             mWallpaperThemeManager.updateTheme()
+        }
+    }
+
+    override fun onStateBack() {
+        val searchInput = mAppsView?.searchUiManager?.editText
+        val isSearching = mAppsView?.isSearching == true || searchInput?.hasFocus() == true
+        if (isSearching) {
+            mAppsView?.searchUiManager?.resetSearch()
+            allAppsController.animateAllAppsToNoScale()
+        } else {
+            super.onStateBack()
         }
     }
 
@@ -457,8 +479,9 @@ class LawnchairLauncher : QuickstepLauncher() {
 
                     dragLayer.post {
                         dragLayer.viewTreeObserver.removeOnDrawListener(this)
+                        // Drop stuck All Apps RenderEffect on icons after returning home.
+                        depthController.clearStuckBlurOnResumeIfHome()
                     }
-                    depthController
                 }
             },
         )

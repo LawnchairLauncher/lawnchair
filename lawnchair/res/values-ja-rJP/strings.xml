@@ -533,8 +533,8 @@
     <string name="home_screen_rotation_description">デバイスが回転したときホーム画面も回転することを許可する</string>
     <string name="auto_updater_label">自動的にアップデートを確認</string>
     <string name="auto_updater_description">「このアプリについて」の画面を開くときNightlyのアップデートを確認します</string>
-    <string name="live_information_label">Live information</string>
-    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
+    <string name="live_information_label">ライブ情報</string>
+    <string name="live_information_description">お知らせを表示し、デフォルトの機能フラグを設定します</string>
     <string name="wallpaper_blur">ぼやけた壁紙 (実験的な機能)</string>
     <string name="wallpaper_background_blur">ぼかしの強さ</string>
     <string name="wallpaper_background_blur_factor">因子のしきい値</string>

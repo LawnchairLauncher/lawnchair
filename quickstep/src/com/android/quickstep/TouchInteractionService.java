@@ -79,6 +79,7 @@ import com.android.launcher3.EncryptionType;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.dagger.LauncherComponentProvider;
 import com.android.launcher3.desktop.DesktopAppLaunchTransitionManager;
@@ -1019,7 +1020,7 @@ public class TouchInteractionService extends Service {
     private void onInputEvent(InputEvent ev) {
         int displayId = ev.getDisplayId();
         if (!(ev instanceof MotionEvent)) {
-            ActiveGestureProtoLogProxy.logUnknownInputEvent(displayId, ev.toString());
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logUnknownInputEvent(displayId, ev.toString());
             return;
         }
         MotionEvent event = (MotionEvent) ev;
@@ -1028,7 +1029,7 @@ public class TouchInteractionService extends Service {
                 TestProtocol.SEQUENCE_TIS, "TouchInteractionService.onInputEvent", event);
 
         if (!LockedUserState.get(this).isUserUnlocked()) {
-            ActiveGestureProtoLogProxy.logOnInputEventUserLocked(displayId);
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnInputEventUserLocked(displayId);
             return;
         }
 
@@ -1047,13 +1048,13 @@ public class TouchInteractionService extends Service {
         NavigationMode currentNavMode = deviceState.getMode();
         NavigationMode gestureStartNavMode = mGestureStartNavMode.get(displayId);
         if (gestureStartNavMode != null && gestureStartNavMode != currentNavMode) {
-            ActiveGestureProtoLogProxy.logOnInputEventNavModeSwitched(
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnInputEventNavModeSwitched(
                     displayId, gestureStartNavMode.name(), currentNavMode.name());
             event.setAction(ACTION_CANCEL);
         } else if (deviceState.isButtonNavMode()
                 && !deviceState.supportsAssistantGestureInButtonNav()
                 && !isTrackpadMotionEvent(event)) {
-            ActiveGestureProtoLogProxy.logOnInputEventThreeButtonNav(displayId);
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnInputEventThreeButtonNav(displayId);
             return;
         }
 
@@ -1066,7 +1067,7 @@ public class TouchInteractionService extends Service {
         TaskAnimationManager taskAnimationManager = mTaskAnimationManagerRepository.get(displayId);
         if (taskAnimationManager == null) {
             Log.e(TAG, "TaskAnimationManager not available for displayId " + displayId);
-            ActiveGestureProtoLogProxy.logOnTaskAnimationManagerNotAvailable(displayId);
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnTaskAnimationManagerNotAvailable(displayId);
             return;
         }
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
@@ -1074,7 +1075,7 @@ public class TouchInteractionService extends Service {
         }
         if (taskAnimationManager.shouldIgnoreMotionEvents()) {
             if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
-                ActiveGestureProtoLogProxy.logOnInputIgnoringFollowingEvents(displayId);
+                if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnInputIgnoringFollowingEvents(displayId);
             }
             return;
         }
@@ -1189,10 +1190,10 @@ public class TouchInteractionService extends Service {
         if (mUncheckedConsumer.getType() != InputConsumer.TYPE_NO_OP) {
             switch (action) {
                 case ACTION_DOWN:
-                    ActiveGestureProtoLogProxy.logOnInputEventActionDown(displayId, reasonString);
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnInputEventActionDown(displayId, reasonString);
                     // fall through
                 case ACTION_UP:
-                    ActiveGestureProtoLogProxy.logOnInputEventActionUp(
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnInputEventActionUp(
                             (int) event.getRawX(),
                             (int) event.getRawY(),
                             action,
@@ -1200,14 +1201,14 @@ public class TouchInteractionService extends Service {
                             displayId);
                     break;
                 case ACTION_MOVE:
-                    ActiveGestureProtoLogProxy.logOnInputEventActionMove(
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnInputEventActionMove(
                             MotionEvent.actionToString(action),
                             MotionEvent.classificationToString(event.getClassification()),
                             event.getPointerCount(),
                             displayId);
                     break;
                 default: {
-                    ActiveGestureProtoLogProxy.logOnInputEventGenericAction(
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnInputEventGenericAction(
                             MotionEvent.actionToString(action),
                             MotionEvent.classificationToString(event.getClassification()),
                             displayId);
@@ -1284,10 +1285,10 @@ public class TouchInteractionService extends Service {
         gestureState.setTrackpadGestureType(trackpadGestureType);
 
         // Log initial state for the gesture.
-        ActiveGestureProtoLogProxy.logRunningTaskPackage(taskInfo.getPackageName());
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logRunningTaskPackage(taskInfo.getPackageName());
         RecentsAnimationDeviceState deviceState = mDeviceStateRepository.get(displayId);
         if (deviceState != null) {
-            ActiveGestureProtoLogProxy.logSysuiStateFlags(deviceState.getSystemUiStateString());
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logSysuiStateFlags(deviceState.getSystemUiStateString());
         }
         return gestureState;
     }

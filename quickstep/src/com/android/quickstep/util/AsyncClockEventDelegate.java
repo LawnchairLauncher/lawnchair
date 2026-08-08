@@ -52,14 +52,14 @@ import javax.inject.Inject;
 
 /**
  * Holder for async time/format event registration that can back a
- * {@link ClockEventDelegate} on Android 14+.
+ * {@link ClockEventDelegate} on Android 15+.
  *
  * <p>This class intentionally does <b>not</b> extend {@link ClockEventDelegate} directly because
- * that class only exists on Android 14 ({@link Build.VERSION_CODES#UPSIDE_DOWN_CAKE}); doing so
+ * that class only exists on Android 15 ({@link Build.VERSION_CODES#VANILLA_ICE_CREAM}); doing so
  * would cause {@code NoClassDefFoundError} when ART tries to resolve the superclass on older
  * platforms (the Dagger-generated factory references this class during component build). Instead
  * the actual {@code ClockEventDelegate} subclass lives in the nested {@link Delegate} class which
- * is only loaded when {@link #asClockEventDelegate()} is called from API 34+ code paths.
+ * is only loaded when {@link #asClockEventDelegate()} is called from API 35+ code paths.
  */
 @LauncherAppSingleton
 public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable {
@@ -107,12 +107,12 @@ public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable 
     /**
      * Lazily creates a delegate that forwards clock event registration and callbacks to this singleton.
      *
-     * <p>Must be called only on Android 14 (Upside Down Cake) or newer; loading the nested {@link Delegate}
+     * <p>Must be called only on Android 15 (Vanilla Ice Cream) or newer; loading the nested {@link Delegate}
      * on older platforms will fail because its superclass is unavailable.
      *
      * @return the {@link ClockEventDelegate} instance that forwards to this singleton
      */
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     public ClockEventDelegate asClockEventDelegate() {
         if (mDelegate == null) {
             mDelegate = new Delegate(this);
@@ -218,9 +218,9 @@ public class AsyncClockEventDelegate implements OnChangeListener, SafeCloseable 
     /**
      * {@link ClockEventDelegate} subclass that forwards every method to an
      * {@link AsyncClockEventDelegate}. Lives in its own {@code .class} file so it is only loaded
-     * (and verified by ART) on Android 14+ where {@link ClockEventDelegate} actually exists.
+     * (and verified by ART) on Android 15+ where {@link ClockEventDelegate} actually exists.
      */
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private static final class Delegate extends ClockEventDelegate {
 
         private final AsyncClockEventDelegate mOwner;

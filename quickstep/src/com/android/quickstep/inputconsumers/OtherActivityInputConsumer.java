@@ -424,7 +424,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (mInteractionHandler == null) {
             // Can happen e.g. when a display is disconnected, so try to handle gracefully.
             Log.d(TAG, "AbsSwipeUpHandler not available for displayId=$focusedDisplayId");
-            ActiveGestureProtoLogProxy.logOnAbsSwipeUpHandlerNotAvailable(
+            if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logOnAbsSwipeUpHandlerNotAvailable(
                     mGestureState.getDisplayId());
             return;
         }
@@ -433,7 +433,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mMotionPauseDetector.setIsTrackpadGesture(mGestureState.isTrackpadGesture());
         mInteractionHandler.initWhenReady(
                 "OtherActivityInputConsumer.startTouchTrackingForWindowAnimation");
-        ActiveGestureProtoLogProxy.logGestureStartSwipeHandler(
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logGestureStartSwipeHandler(
                 mInteractionHandler.getClass().getSimpleName());
 
         if (DEBUG) {

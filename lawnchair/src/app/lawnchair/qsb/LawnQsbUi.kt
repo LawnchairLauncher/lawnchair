@@ -3,9 +3,11 @@ package app.lawnchair.qsb
 import android.content.Context
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -393,23 +395,27 @@ fun LawnQsbUi(
 
         Spacer(Modifier.weight(1f))
 
-        state.endIcons.forEachIndexed { index, icon ->
-            val isLastVisible = remember(state.endIcons, index) {
-                state.endIcons.drop(index + 1).none { it.visible }
-            }
-            AnimatedVisibility(
-                visible = icon.visible,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                QsbIcon(
-                    icon = icon,
-                    shape = shape,
-                    onClick = { actions.onEndIconClick(icon.id) },
-                    modifier = Modifier.addIf(isLastVisible) {
-                        offset(x = (-6).dp)
-                    },
-                )
+        val visibleIcons = state.endIcons.filter { it.visible }
+        AnimatedContent(
+            targetState = visibleIcons,
+            transitionSpec = {
+                fadeIn() togetherWith fadeOut() using SizeTransform(clip = false)
+            },
+            label = "endIcons",
+            contentAlignment = Alignment.CenterEnd,
+        ) { icons ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                icons.forEachIndexed { index, icon ->
+                    val isLast = index == icons.lastIndex
+                    QsbIcon(
+                        icon = icon,
+                        shape = shape,
+                        onClick = { actions.onEndIconClick(icon.id) },
+                        modifier = Modifier.addIf(isLast) {
+                            offset(x = (-6).dp)
+                        },
+                    )
+                }
             }
         }
     }
