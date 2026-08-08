@@ -38,6 +38,8 @@ import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.SafeCloseable
 import com.android.quickstep.RecentsModel
+import com.google.android.msdl.data.model.FeedbackLevel
+import com.google.android.msdl.domain.MSDLPlayer
 import javax.inject.Inject
 
 @LauncherAppSingleton
@@ -118,6 +120,12 @@ class PreferenceManager @Inject constructor(
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val infiniteScrolling = BoolPref("pref_infiniteScrolling", false)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
+    val vibrationFeedbackLevel: IntPref = IntPref(
+        "pref_vibrationFeedbackLevel",
+        FeedbackLevel.DEFAULT.ordinal,
+    ) {
+        MSDLPlayer.SYSTEM_FEEDBACK_LEVEL = vibrationFeedbackLevel.get().toFeedbackLevel()
+    }
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey.fromString(key)!!
@@ -198,6 +206,7 @@ class PreferenceManager @Inject constructor(
     }
 
     init {
+        MSDLPlayer.SYSTEM_FEEDBACK_LEVEL = vibrationFeedbackLevel.get().toFeedbackLevel()
         sp.registerOnSharedPreferenceChangeListener(this)
         migratePrefs(CURRENT_VERSION) { oldVersion ->
             if (oldVersion < 2) {
@@ -222,6 +231,8 @@ class PreferenceManager @Inject constructor(
         fun getInstance(context: Context) = INSTANCE.get(context)!!
     }
 }
+
+private fun Int.toFeedbackLevel() = FeedbackLevel.entries.getOrNull(this) ?: FeedbackLevel.DEFAULT
 
 @Composable
 fun preferenceManager() = PreferenceManager.getInstance(LocalContext.current)
