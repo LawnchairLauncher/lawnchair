@@ -59,6 +59,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.shortcuts.DeepShortcutView
@@ -262,6 +263,16 @@ class LawnchairLauncher : QuickstepLauncher() {
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {
         super.collectStateHandlers(out)
         out.add(SearchBarStateHandler(this))
+    }
+
+    override fun getAllAppsItemLongClickListener(): View.OnLongClickListener {
+        return View.OnLongClickListener { view ->
+            if (view is FolderIcon && view.mInfo.id != ItemInfo.NO_ID) {
+                LawnchairShortcut.showAppDrawerFolderPopup(this, view)
+            } else {
+                super.getAllAppsItemLongClickListener().onLongClick(view)
+            }
+        }
     }
 
     override fun getSupportedShortcuts(container: Int): Stream<SystemShortcut.Factory<*>> = Stream.concat(

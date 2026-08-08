@@ -128,6 +128,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.Process;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
@@ -201,6 +202,7 @@ import com.android.launcher3.logging.StartupLatencyLogger;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
+import com.android.launcher3.model.ModelUtils;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.AppInfo;
@@ -235,6 +237,7 @@ import com.android.launcher3.util.ItemInflater;
 import com.android.launcher3.util.KeyboardShortcutsDelegate;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.OnboardingPrefs;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.PluginManagerWrapper;
@@ -748,7 +751,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             mCellPosMapper = new TwoPanelCellPosMapper(mDeviceProfile.inv.numColumns);
         } else {
             mCellPosMapper = new CellPosMapper(mDeviceProfile.isVerticalBarLayout(),
-                    mDeviceProfile.numShownHotseatIcons);
+                    mDeviceProfile.numShownHotseatIcons, mDeviceProfile.numHotseatRows,
+                    mDeviceProfile.numHotseatPages);
         }
         mModelWriter = mModel.getWriter(true, mCellPosMapper, this);
         updateFixedLandscape();
@@ -1374,7 +1378,9 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     protected void completeAddShortcut(Intent data, int container, int screenId, int cellX,
             int cellY, PendingRequestArgs args) {
-        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT) {
+        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
+                || args.getPendingIntent() == null
+                || args.getPendingIntent().getComponent() == null) {
             return;
         }
 
@@ -1384,8 +1390,20 @@ public class Launcher extends StatefulActivity<LauncherState>
         WorkspaceItemInfo info = PinRequestHelper.createWorkspaceItemFromPinItemRequest(
                     this, PinRequestHelper.getPinItemRequest(data), 0);
         if (info == null) {
-            Log.e(TAG, "Unable to parse a valid shortcut result");
-            return;
+            // Legacy shortcuts are only supported for the primary profile.
+            info = Process.myUserHandle().equals(args.user)
+                    ? ModelUtils.fromLegacyShortcutIntent(this, data) : null;
+
+            if (info == null) {
+                Log.e(TAG, "Unable to parse a valid shortcut result");
+                return;
+            }
+
+            if (!new PackageManagerHelper(this).hasPermissionForActivity(
+                    info.intent, args.getPendingIntent().getComponent().getPackageName())) {
+                Log.e(TAG, "Ignoring shortcut intent failing activity permission validation");
+                return;
+            }
         }
 
         if (container < 0) {
@@ -2151,7 +2169,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     boolean isHotseatLayout(View layout) {
         // TODO: Remove this method
-        return mHotseat != null && (layout == mHotseat);
+        return mHotseat != null && (layout == mHotseat || mHotseat.isHotseatPage(layout));
     }
 
     @Override
@@ -2371,7 +2389,13 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         List<CellLayout> containers = new ArrayList<>(mWorkspace.getPanelCount() + 1);
-        containers.add(mWorkspace.getHotseat());
+        Hotseat hotseat = mWorkspace.getHotseat();
+        if (hotseat != null) {
+            CellLayout currentPage = hotseat.getCurrentPageLayout();
+            if (currentPage != null) {
+                containers.add(currentPage);
+            }
+        }
         mWorkspace.forEachVisiblePage(page -> containers.add((CellLayout) page));
         CellLayout[] containerArray = containers.toArray(new CellLayout[0]);
         LauncherBindableItemsContainer visibleContainer =
@@ -2501,11 +2525,18 @@ public class Launcher extends StatefulActivity<LauncherState>
 
             writer.println(prefix + "  Hotseat");
             mHotseat.dump(prefix, writer);
-            ViewGroup layout = mHotseat.getShortcutsAndWidgets();
-            for (int j = 0; j < layout.getChildCount(); j++) {
-                Object tag = layout.getChildAt(j).getTag();
-                if (tag != null) {
-                    writer.println(prefix + "    " + tag);
+            CellLayout[] hotseatPages = mHotseat.getPageLayouts();
+            for (int p = 0; p < hotseatPages.length; p++) {
+                ViewGroup layout = hotseatPages[p].getShortcutsAndWidgets();
+                if (layout == null) {
+                    continue;
+                }
+                writer.println(prefix + "    Dock page " + p);
+                for (int j = 0; j < layout.getChildCount(); j++) {
+                    Object tag = layout.getChildAt(j).getTag();
+                    if (tag != null) {
+                        writer.println(prefix + "      " + tag);
+                    }
                 }
             }
         }
@@ -2928,8 +2959,15 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param screenId must be presenterPos and not modelPos.
      */
     public CellLayout getCellLayout(int container, int screenId) {
-        return (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)
-                ? mHotseat : mWorkspace.getScreenWithId(screenId);
+        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                || container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            if (mHotseat == null) {
+                return null;
+            }
+            CellLayout page = mHotseat.getPageAt(screenId);
+            return page != null ? page : mHotseat.getCurrentPageLayout();
+        }
+        return mWorkspace.getScreenWithId(screenId);
     }
 
     @Override

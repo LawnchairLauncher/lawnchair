@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.getAdapter
@@ -46,12 +47,15 @@ import app.lawnchair.util.App
 import app.lawnchair.util.appComparator
 import app.lawnchair.util.appsState
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import java.util.Comparator.comparing
 
 @Composable
 fun HiddenAppsPreferences(
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val adapter = preferenceManager2().hiddenApps.getAdapter()
     val hiddenApps by adapter.state
     val pageTitle =
@@ -97,7 +101,10 @@ fun HiddenAppsPreferences(
                     ) { _, app ->
                         AppItem(
                             app = app,
-                            onClick = toggleHiddenApp,
+                            onClick = {
+                                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                                toggleHiddenApp(app)
+                            },
                         ) {
                             Checkbox(
                                 checked = hiddenApps.contains(app.key.toString()),
@@ -130,12 +137,14 @@ private fun ListSortingOptions(
     onUpdateList: (Set<String>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     OverflowMenuGrouped(modifier) {
         DropdownMenuGroup(
             shapes = MenuDefaults.groupShape(0, 2),
         ) {
             DropdownMenuItem(
                 onClick = {
+                    mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                     val inverseSelection = originalList
                         .map { it.key.toString() }
                         .filter { !filteredList.contains(it) }
@@ -162,6 +171,7 @@ private fun ListSortingOptions(
                                 .toSet()
                         },
                     )
+                    mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                     hideMenu()
                 },
                 text = {
@@ -179,6 +189,7 @@ private fun ListSortingOptions(
         ) {
             DropdownMenuItem(
                 onClick = {
+                    mMSDLPlayerWrapper.playToken(MSDLToken.SUCCESS)
                     onUpdateList(
                         emptySet(),
                     )

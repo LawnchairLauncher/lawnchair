@@ -221,6 +221,8 @@ public class DeviceProfile {
     private final HotseatProfile hotseatProfile;
     public int numShownHotseatIcons;
     public int numHotseatRows;
+    /** Number of horizontally scrollable dock pages (1 = classic single dock). */
+    public int numHotseatPages;
     public int hotseatCellHeightPx;
     private int mHotseatColumnSpan;
     private int mHotseatWidthPx; // not used in vertical bar layout
@@ -331,6 +333,7 @@ public class DeviceProfile {
         hotseatQsbWidth = 0;
         hotseatBorderSpace = 0;
         numHotseatRows = 1;
+        numHotseatPages = 1;
         mBubbleBarSpaceThresholdPx = 0;
         numShownAllAppsColumns = 0;
         mViewScaleProvider = null;
@@ -517,6 +520,7 @@ public class DeviceProfile {
 
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
         numHotseatRows = Math.max(1, Math.min(2, PreferenceManager.getInstance(context).getHotseatRows().get()));
+        numHotseatPages = Math.max(1, Math.min(5, PreferenceManager.getInstance(context).getDockPages().get()));
         mHotseatColumnSpan = inv.numColumns;
 
         numShownAllAppsColumns = displayOptionSpec.numAllAppsColumns;

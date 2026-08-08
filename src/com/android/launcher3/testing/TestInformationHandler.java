@@ -297,8 +297,12 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 int cellIndex = extra.getInt(TestProtocol.TEST_INFO_PARAM_INDEX);
                 return getLauncherUIProperty(Bundle::putParcelable, launcher -> {
                     final Hotseat hotseat = launcher.getHotseat();
+                    final CellLayout page = hotseat.getCurrentPageLayout();
+                    if (page == null) {
+                        return new Point(0, 0);
+                    }
                     final Rect cellRect = getDescendantRectRelativeToDragLayerForCell(launcher,
-                            hotseat, cellIndex, /* cellY= */ 0,
+                            page, cellIndex, /* cellY= */ 0,
                             /* spanX= */ 1, /* spanY= */ 1);
                     // TODO(b/234322284): return the real center point.
                     return new Point(cellRect.left + (cellRect.right - cellRect.left) / 3,
@@ -428,6 +432,9 @@ public class TestInformationHandler implements ResourceBasedOverride {
                     ShortcutAndWidgetContainer hotseatIconsContainer =
                             l.getHotseat().getShortcutsAndWidgets();
                     ArrayList<String> hotseatIconNames = new ArrayList<>();
+                    if (hotseatIconsContainer == null) {
+                        return hotseatIconNames;
+                    }
 
                     for (int i = 0; i < hotseatIconsContainer.getChildCount(); i++) {
                         // Use unchecked cast to catch changes in hotseat layout
