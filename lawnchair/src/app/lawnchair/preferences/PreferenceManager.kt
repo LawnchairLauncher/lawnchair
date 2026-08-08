@@ -124,7 +124,7 @@ class PreferenceManager @Inject constructor(
         "pref_vibrationFeedbackLevel",
         FeedbackLevel.DEFAULT.ordinal,
     ) {
-        MSDLPlayer.SYSTEM_FEEDBACK_LEVEL = vibrationFeedbackLevel.get().toFeedbackLevel()
+        normalizeVibrationFeedbackLevel()
     }
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
         override fun flattenKey(key: ComponentKey) = key.toString()
@@ -205,8 +205,16 @@ class PreferenceManager @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    private fun normalizeVibrationFeedbackLevel() {
+        val storedLevel = vibrationFeedbackLevel.get()
+        val normalizedLevel = storedLevel.toFeedbackLevel().ordinal
+        if (storedLevel != normalizedLevel) {
+            vibrationFeedbackLevel.set(normalizedLevel)
+        }
+        MSDLPlayer.SYSTEM_FEEDBACK_LEVEL = FeedbackLevel.entries[normalizedLevel]
+    }
+
     init {
-        MSDLPlayer.SYSTEM_FEEDBACK_LEVEL = vibrationFeedbackLevel.get().toFeedbackLevel()
         sp.registerOnSharedPreferenceChangeListener(this)
         migratePrefs(CURRENT_VERSION) { oldVersion ->
             if (oldVersion < 2) {
