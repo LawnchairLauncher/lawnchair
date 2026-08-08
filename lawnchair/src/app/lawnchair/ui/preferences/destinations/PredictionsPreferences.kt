@@ -50,7 +50,7 @@ fun PredictionsPreferences(
     modifier: Modifier = Modifier,
 ) {
     PreferenceLayout(
-        label = stringResource(id = R.string.predictions_label),
+        label = stringResource(id = R.string.suggestion_pref_screen_title),
         backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
@@ -94,13 +94,6 @@ private fun AppPredictionsFeature(
     val weightedUsageStatsAdapter = prefs2.lawnchairPredictorUseWeightedUsageStats.getAdapter()
     val predictionModeEntries = rememberPredictionModeEntries(context)
     val dismissedPredictionAppsCount = rememberDismissedPredictionAppsCount(context)
-    val weightedUsageStatsDescription = stringResource(
-        if (hasUsageStatsPermission.value) {
-            R.string.prediction_weighted_usage_stats_description
-        } else {
-            R.string.prediction_weighted_usage_stats_permission_description
-        },
-    )
     val dismissedPredictionAppsSubtitle = resources.getQuantityString(
         R.plurals.apps_count,
         dismissedPredictionAppsCount,
@@ -120,7 +113,6 @@ private fun AppPredictionsFeature(
 
             LawnchairPredictor -> LawnchairPredictionSettings(
                 weightedUsageStatsAdapter = weightedUsageStatsAdapter,
-                weightedUsageStatsDescription = weightedUsageStatsDescription,
                 hasUsageStatsPermission = hasUsageStatsPermission.value,
                 dismissedPredictionAppsSubtitle = dismissedPredictionAppsSubtitle,
             )
@@ -133,7 +125,6 @@ private fun AppPredictionsFeature(
 @Composable
 private fun LawnchairPredictionSettings(
     weightedUsageStatsAdapter: PreferenceAdapter<Boolean>,
-    weightedUsageStatsDescription: String,
     hasUsageStatsPermission: Boolean,
     dismissedPredictionAppsSubtitle: String,
 ) {
@@ -150,7 +141,7 @@ private fun LawnchairPredictionSettings(
             }
         },
         label = stringResource(R.string.prediction_weighted_usage_stats_label),
-        description = weightedUsageStatsDescription,
+        description = stringResource(R.string.prediction_weighted_usage_stats_description),
     )
     if (showPermissionDialog) {
         PermissionDialog(
@@ -166,7 +157,7 @@ private fun LawnchairPredictionSettings(
                 }
                 try {
                     context.startActivity(intent)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     try {
                         context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
                     } catch (_: Exception) {}
@@ -184,13 +175,14 @@ private fun LawnchairPredictionSettings(
 @Composable
 private fun rememberPredictionModeEntries(context: Context): List<ListPreferenceEntry<PredictionMode>> {
     return remember(context) {
-        PredictionMode.values().map { mode ->
-            ListPreferenceEntry(
-                value = mode,
-                label = { stringResource(mode.nameResourceId) },
-                enabled = mode.isAvailable(context),
-            )
-        }
+        PredictionMode.values()
+            .filter { it.isAvailable(context) }
+            .map { mode ->
+                ListPreferenceEntry(
+                    value = mode,
+                    label = { stringResource(mode.nameResourceId) },
+                )
+            }
     }
 }
 

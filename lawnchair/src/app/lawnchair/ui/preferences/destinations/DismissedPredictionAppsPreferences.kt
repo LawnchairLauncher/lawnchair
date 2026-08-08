@@ -1,7 +1,6 @@
 package app.lawnchair.ui.preferences.destinations
 
 import android.content.ComponentName
-import android.content.Context
 import android.os.UserHandle
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +35,7 @@ import app.lawnchair.util.appComparator
 import app.lawnchair.util.appsState
 import com.android.launcher3.R
 import com.android.launcher3.pm.UserCache
+import com.android.launcher3.util.ComponentKey
 import java.util.Comparator.comparing
 
 @Composable
@@ -43,13 +43,28 @@ fun DismissedPredictionAppsPreferences(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val userCache = UserCache.INSTANCE.get(context)
     val dismissedAppsStore = remember {
         LawnchairPredictionManager.getInstance(context).dismissedAppsStore
     }
+
     var dismissedApps by remember {
         mutableStateOf(dismissedAppsStore.getEntries().toSet())
     }
-    val apps by appsState(comparator = dismissedPredictionAppsComparator(context, dismissedApps))
+    val dismissedComponentKeys = remember(dismissedApps) {
+        dismissedApps.mapNotNull { key ->
+            val info = PredictionAppKey.parse(key) ?: return@mapNotNull null
+            val serial = info.userToken.toLongOrNull() ?: return@mapNotNull null
+            val user = userCache.getUserForSerialNumber(serial) ?: return@mapNotNull null
+            ComponentKey(ComponentName(info.packageName, info.className), user)
+        }.toSet()
+    }
+
+    val userSerials = remember(context) {
+        userCache.userProfiles.associateWith { userCache.getSerialNumberForUser(it).toString() }
+    }
+
+    val apps by appsState(comparator = dismissedPredictionAppsComparator(dismissedComponentKeys))
 
     PreferenceScaffold(
         label = if (dismissedApps.isEmpty()) {
@@ -72,11 +87,8 @@ fun DismissedPredictionAppsPreferences(
             if (present) {
                 PreferenceLazyColumn(it, state = rememberLazyListState()) {
                     val toggleDismissedApp = { app: App ->
-                        val key = toDismissStoreKey(
-                            context = context,
-                            componentName = app.key.componentName,
-                            user = app.key.user,
-                        )
+                        val userSerial = userSerials[app.key.user] ?: userCache.getSerialNumberForUser(app.key.user).toString()
+                        val key = PredictionAppKey.create(app.key.componentName, userSerial)
                         if (!dismissedApps.contains(key)) {
                             dismissedAppsStore.add(key)
                         } else {
@@ -88,17 +100,12 @@ fun DismissedPredictionAppsPreferences(
                         items = apps,
                         isFirstChild = true,
                     ) { _, app ->
-                        val dismissedKey = toDismissStoreKey(
-                            context = context,
-                            componentName = app.key.componentName,
-                            user = app.key.user,
-                        )
                         AppItem(
                             app = app,
                             onClick = toggleDismissedApp,
                         ) {
                             Checkbox(
-                                checked = dismissedApps.contains(dismissedKey),
+                                checked = app.key in dismissedComponentKeys,
                                 onCheckedChange = null,
                             )
                         }
@@ -144,22 +151,14 @@ private fun ResetDismissedAppsAction(
 }
 
 @Composable
-private fun dismissedPredictionAppsComparator(context: Context, dismissedApps: Set<String>) = remember(context, dismissedApps) {
-    comparing<App, Int> {
-        if (toDismissStoreKey(
-                context = context,
-                componentName = it.key.componentName,
-                user = it.key.user,
-            ) in dismissedApps
-        ) {
-            0
-        } else {
-            1
+private fun dismissedPredictionAppsComparator(dismissedComponentKeys: Set<ComponentKey>) = remember(dismissedComponentKeys) {
+    Comparator<App> { a, b ->
+        val aDismissed = a.key in dismissedComponentKeys
+        val bDismissed = b.key in dismissedComponentKeys
+        when {
+            aDismissed == bDismissed -> appComparator.compare(a, b)
+            aDismissed -> -1
+            else -> 1
         }
-    }.then(appComparator)
-}
-
-private fun toDismissStoreKey(context: Context, componentName: ComponentName, user: UserHandle): String {
-    val userSerial = UserCache.INSTANCE.get(context).getSerialNumberForUser(user)
-    return PredictionAppKey.create(componentName, userSerial.toString())
+    }
 }

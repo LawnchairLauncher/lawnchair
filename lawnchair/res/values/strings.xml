@@ -203,10 +203,6 @@
     <string name="app_info_drop_target_label">App info</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">Experimental features</string>
-    <string name="predictions_label">Predictions</string>
-    <string name="global_predictions_label">Show prediction features</string>
-    <string name="app_predictions_description">Show a list of apps that may be relevant to you.</string>
-    <string name="app_predictions_label">App predictions</string>
 
     <!-- Experimental features -->
     <string name="workspace_label">Workspace</string>
@@ -214,19 +210,6 @@
 
     <string name="internal_label">Internal</string>
     <string name="internal_description">Internal may be less stable than other experimental groups</string>
-
-    <string name="prediction_mode_label">Predictions source</string>
-    <string name="prediction_mode_system">System</string>
-    <string name="prediction_mode_lawnchair">Lawnchair</string>
-    <string name="prediction_mode_none">Off</string>
-    <string name="prediction_weighted_usage_stats_label">Improve suggestions with usage data</string>
-    <string name="prediction_weighted_usage_stats_description">Learns from your system usage habits to provide better app suggestions</string>
-    <string name="prediction_weighted_usage_stats_permission_description">Use usage stats to influence ranking suggestions. Requires usage access to enable</string>
-    <string name="dismissed_prediction_apps_label">Dismissed apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Dismissed apps (%1$d)</string>
-
-    <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To use usage data, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
 
     <string name="font_picker_label">Font customization</string>
     <string name="font_picker_description">Some text remains unchanged</string>
@@ -266,6 +249,27 @@
     <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">None</string>
+
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Suggestions</string>
+
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="prediction_mode_system">System</string>
+    <string name="prediction_mode_lawnchair">Lawnchair</string>
+    <string name="prediction_mode_none">Off</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+
+    <string name="prediction_system_settings">Manage system suggestions</string>
+
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
 
     <!--
 
@@ -941,7 +945,6 @@
     <string name="fuzzy_search_title">Fuzzy search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches</string>
 
-    <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
 
     <string name="perform_wide_search_title">Device search</string>

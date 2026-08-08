@@ -90,8 +90,7 @@ fun AppDrawerPreferences(
             )
             SearchBarPreference(SearchRoute.DRAWER_SEARCH, showLabel = false)
             NavigationActionPreference(
-                label = stringResource(R.string.predictions_label),
-                subtitle = stringResource(R.string.app_predictions_description),
+                label = stringResource(R.string.suggestion_pref_screen_title),
                 destination = Predictions,
             )
             AppDrawerHapticFeedbackPreference()
