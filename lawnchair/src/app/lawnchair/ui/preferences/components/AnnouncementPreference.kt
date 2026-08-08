@@ -56,6 +56,8 @@ import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
 import app.lawnchair.ui.util.addIf
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.launch
 
 @Composable
@@ -221,11 +223,13 @@ private fun AnnouncementPreferenceItemContent(
 ) {
     val context = LocalContext.current
     val hasLink = !url.isNullOrBlank()
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
 
     PreferenceTemplate(
         modifier = modifier.fillMaxWidth(),
         onClick = {
             if (hasLink) {
+                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
                 val webpage = url.toUri()
                 val intent = Intent(Intent.ACTION_VIEW, webpage)
                 if (intent.resolveActivity(context.packageManager) != null) {

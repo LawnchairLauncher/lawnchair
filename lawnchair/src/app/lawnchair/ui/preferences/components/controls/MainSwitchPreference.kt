@@ -22,12 +22,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 
 /**
  * A toggle to enable a list of preferences.
@@ -103,12 +106,18 @@ fun MainSwitchPreference(
 ) {
     val contentPadding = 16.dp // This must match [PreferenceGroup]'s padding
     val interactionSource = remember { MutableInteractionSource() }
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
+
+    val wrappedOnCheckedChange: (Boolean) -> Unit = { newValue ->
+        mMSDLPlayerWrapper.playToken(if (newValue) MSDLToken.SWITCH_ON else MSDLToken.SWITCH_OFF)
+        onCheckedChange(newValue)
+    }
 
     Column(
         modifier.padding(horizontal = contentPadding),
     ) {
         SegmentedListItem(
-            onClick = { onCheckedChange(!checked) },
+            onClick = { wrappedOnCheckedChange(!checked) },
             selected = checked,
             shapes = ListItemDefaults.shapes().copy(
                 shape = MaterialTheme.shapes.medium,
@@ -124,7 +133,7 @@ fun MainSwitchPreference(
                         .padding(top = contentPadding, bottom = contentPadding, start = contentPadding)
                         .height(24.dp),
                     checked = checked,
-                    onCheckedChange = onCheckedChange,
+                    onCheckedChange = wrappedOnCheckedChange,
                     enabled = enabled,
                     interactionSource = interactionSource,
                     thumbContent = {
