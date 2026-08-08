@@ -245,7 +245,8 @@ public class LoaderCursor extends CursorWrapper {
 
     public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
             WorkspaceItemInfo wai, boolean useLowResIcon) {
-        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT || restoreFlag != 0
+        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_SHORTCUT
+                || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT || restoreFlag != 0
                 || (wai.isInactiveArchive() && Flags.restoreArchivedAppIconsFromDb())
                 ? getIconBlob() : null;
         return new IconRequestInfo<>(wai, mActivityInfo, iconBlob,
@@ -582,7 +583,8 @@ public class LoaderCursor extends CursorWrapper {
             loadedItems.put(info.id, info);
             if ((info.itemType == ITEM_TYPE_APP_PAIR
                     || info.itemType == ITEM_TYPE_DEEP_SHORTCUT
-                    || info.itemType == ITEM_TYPE_APPLICATION)
+                    || info.itemType == ITEM_TYPE_APPLICATION
+                    || info.itemType == Favorites.ITEM_TYPE_SHORTCUT)
                     && info.container != CONTAINER_DESKTOP
                     && info.container != CONTAINER_HOTSEAT) {
                 findOrMakeFolder(info.container, loadedItems).add(info);
