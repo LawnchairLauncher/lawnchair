@@ -157,18 +157,16 @@ fun ReorderableDragHandle(
     onDragStart: () -> Unit = {},
     onDragStop: () -> Unit = {},
 ) {
-    val haptic = rememberReorderHapticFeedback()
+    ObserveReorderHapticFeedback(interactionSource)
 
     ReorderableDragHandle(
         modifier = with(scope) {
             modifier.longPressDraggableHandle(
                 interactionSource = interactionSource,
                 onDragStarted = {
-                    haptic.performHapticFeedback(ReorderHapticFeedbackType.START)
                     onDragStart()
                 },
                 onDragStopped = {
-                    haptic.performHapticFeedback(ReorderHapticFeedbackType.END)
                     onDragStop()
                 },
             )
@@ -187,18 +185,16 @@ fun ReorderableDragHandle(
     onDragStart: () -> Unit = {},
     onDragStop: () -> Unit = {},
 ) {
-    val haptic = rememberReorderHapticFeedback()
+    ObserveReorderHapticFeedback(interactionSource)
 
     ReorderableDragHandle(
         modifier = with(scope) {
             modifier.longPressDraggableHandle(
                 interactionSource = interactionSource,
                 onDragStarted = {
-                    haptic.performHapticFeedback(ReorderHapticFeedbackType.START)
                     onDragStart()
                 },
                 onDragStopped = {
-                    haptic.performHapticFeedback(ReorderHapticFeedbackType.END)
                     onDragStop()
                 },
             )
