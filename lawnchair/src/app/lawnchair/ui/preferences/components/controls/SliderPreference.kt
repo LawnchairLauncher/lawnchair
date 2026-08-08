@@ -33,6 +33,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,6 +55,11 @@ import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
 import com.google.android.msdl.domain.InteractionProperties
 import kotlin.math.roundToInt
+
+private enum class SliderThreshold {
+    START,
+    END,
+}
 
 @Composable
 fun SliderPreference(
@@ -125,6 +131,7 @@ private fun SliderPreference(
     enabled: Boolean = true,
 ) {
     var sliderValue by remember { mutableFloatStateOf(value) }
+    var thresholdReached by remember { mutableStateOf<SliderThreshold?>(null) }
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val touchVibrationAttributes = remember {
         if (Utilities.ATLEAST_S) {
@@ -143,6 +150,7 @@ private fun SliderPreference(
 
     DisposableEffect(value) {
         sliderValue = value
+        thresholdReached = null
         onDispose { }
     }
 
@@ -184,25 +192,40 @@ private fun SliderPreference(
                 value = sliderValue,
                 onValueChange = { newValue ->
                     sliderValue = newValue
-                    val range = valueRange.endInclusive - valueRange.start
-                    val scale = if (range == 0f) {
-                        1f
-                    } else {
-                        ((newValue - valueRange.start) / range).coerceIn(0f, 1f)
+                    val threshold = when {
+                        newValue <= valueRange.start -> SliderThreshold.START
+                        newValue >= valueRange.endInclusive -> SliderThreshold.END
+                        else -> null
                     }
-                    val properties = touchVibrationAttributes?.let {
-                        InteractionProperties.DynamicVibrationScale(
-                            scale = scale,
-                            vibrationAttributes = it,
-                        )
-                    }
-                    if (properties == null) {
-                        mMSDLPlayerWrapper.playToken(getAppropriateHaptic)
+                    if (threshold != null) {
+                        if (threshold != thresholdReached) {
+                            thresholdReached = threshold
+                            mMSDLPlayerWrapper.playToken(
+                                MSDLToken.DRAG_THRESHOLD_INDICATOR_LIMIT,
+                            )
+                        }
                     } else {
-                        // Dynamic haptic scaling based on value,
-                        // the haptic goes from none/light to heavy depending on the value.
-                        // Supported on S+ platform
-                        mMSDLPlayerWrapper.playToken(getAppropriateHaptic, properties)
+                        thresholdReached = null
+                        val range = valueRange.endInclusive - valueRange.start
+                        val scale = if (range == 0f) {
+                            1f
+                        } else {
+                            ((newValue - valueRange.start) / range).coerceIn(0f, 1f)
+                        }
+                        val properties = touchVibrationAttributes?.let {
+                            InteractionProperties.DynamicVibrationScale(
+                                scale = scale,
+                                vibrationAttributes = it,
+                            )
+                        }
+                        if (properties == null) {
+                            mMSDLPlayerWrapper.playToken(getAppropriateHaptic)
+                        } else {
+                            // Dynamic haptic scaling based on value,
+                            // the haptic goes from none/light to heavy depending on the value.
+                            // Supported on S+ platform
+                            mMSDLPlayerWrapper.playToken(getAppropriateHaptic, properties)
+                        }
                     }
                 },
                 onValueChangeFinished = { onValueChangeFinished(sliderValue) },
