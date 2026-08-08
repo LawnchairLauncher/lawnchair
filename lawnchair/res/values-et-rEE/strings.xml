@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">Laadi ikoonid alati uuesti</string>
     <string name="always_reload_icons_description">Väldi ikoonipakettidest vahemällu salvestatud ikoonide kasutamist</string>
     <string name="always_reload_icons_warning">See põhjustab ikoonide regulaarse värskendamise, mis võib mõjutada jõudlust. Lülita see välja, kui ikoonipakki ei värskendata regulaarselt.</string>
-    <string name="show_deck_layout">Doki paigutus</string>
-    <string name="show_deck_layout_description">Rakenduste sahtli peitmiseks ja uute rakenduste automaatseks lisamiseks avakuvale kuva paigutuse valik</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Luba tööalas Material 3 Expressive muudatused</string>
     <string name="folder_shape_label">Kausta kuju</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">Hägususe aste</string>
     <string name="wallpaper_background_blur_factor">Hägususteguri piirang</string>
     <string name="home_lawn_deck_label">Rakenduste tekk</string>
-    <string name="home_lawn_deck_label_beta">Rakenduste tekk (beeta)</string>
     <string name="home_lawn_deck_description">Juurdepääs rakendustele käib vaevatult tänu Deckile – sahtlivabale lahendusele, mis on loodud lihtsuse ja sujuva korrastatuse tagamiseks</string>
     <string name="auto_add_shortcuts_label">Lisa uued rakendused avakuvale</string>
     <string name="minus_one_enable">Kuva uudistevoog</string>

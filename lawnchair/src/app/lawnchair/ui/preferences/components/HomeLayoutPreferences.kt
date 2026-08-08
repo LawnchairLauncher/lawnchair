@@ -42,7 +42,6 @@ import app.lawnchair.util.BackHandler
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun HomeLayoutSettings(
@@ -52,7 +51,7 @@ fun HomeLayoutSettings(
     val prefs = preferenceManager()
     val context = LocalContext.current
 
-    val deskLayout = prefs2.deckLayout.getAdapter()
+    val deckLayout = prefs2.deckLayout.getAdapter()
     val addNewAppToHome = prefs.addIconToHome.getAdapter()
 
     val deckManager = remember { LawndeckManager(context) }
@@ -76,7 +75,7 @@ fun HomeLayoutSettings(
             },
             title = {
                 Text(
-                    text = stringResource(R.string.home_lawn_deck_label_beta),
+                    text = stringResource(R.string.home_lawn_deck_label),
                     textAlign = TextAlign.Center,
                 )
             },
@@ -110,33 +109,27 @@ fun HomeLayoutSettings(
 
     SwitchPreferenceWithPreview(
         label = stringResource(R.string.layout),
-        checked = deskLayout.state.value,
+        checked = deckLayout.state.value,
         onCheckedChange = { newValue ->
             isLoading = true
             loadingMessage = ""
-            if (newValue) {
-                coroutineScope.launch {
-                    prefs2.swipeUpGestureHandler.set(GestureHandlerConfig.NoOp)
-                    prefs2.deckLayout.set(true)
-                    addNewAppToHome.onChange(true)
-                    withContext(Dispatchers.IO) {
+            coroutineScope.launch {
+                try {
+                    if (newValue) {
+                        prefs2.swipeUpGestureHandler.set(GestureHandlerConfig.NoOp)
+                        prefs2.deckLayout.set(true)
+                        addNewAppToHome.onChange(true)
                         deckManager.enableLawndeck { message ->
-                            // Update on main thread using coroutine scope
                             coroutineScope.launch(Dispatchers.Main) {
                                 loadingMessage = message
                             }
                         }
-                    }
-                    isLoading = false
-                    loadingMessage = ""
-                }
-            } else {
-                coroutineScope.launch {
-                    prefs2.swipeUpGestureHandler.set(GestureHandlerConfig.OpenAppDrawer)
-                    prefs2.deckLayout.set(false)
-                    withContext(Dispatchers.IO) {
+                    } else {
+                        prefs2.swipeUpGestureHandler.set(GestureHandlerConfig.OpenAppDrawer)
+                        prefs2.deckLayout.set(false)
                         deckManager.disableLawndeck()
                     }
+                } finally {
                     isLoading = false
                     loadingMessage = ""
                 }
@@ -148,7 +141,7 @@ fun HomeLayoutSettings(
                 loading = isLoading,
             )
         },
-        enabledLabel = stringResource(R.string.home_lawn_deck_label_beta),
+        enabledLabel = stringResource(R.string.home_lawn_deck_label),
         enabledContent = {
             PreviewLayout(
                 topQsb = false,

@@ -781,11 +781,6 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadIcons() },
     )
 
-    val showDeckLayout = preference(
-        key = booleanPreferencesKey(name = "show_deck_layout"),
-        defaultValue = false,
-    )
-
     val enableLabelInDock = preference(
         key = booleanPreferencesKey(name = "enable_label_dock"),
         defaultValue = false,

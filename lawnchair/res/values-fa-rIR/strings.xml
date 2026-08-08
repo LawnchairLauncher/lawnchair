@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">همیشه بارگذاری دوباره آیکون‌ها</string>
     <string name="always_reload_icons_description">خودداری از استفاده از آیکون‌های ذخیره شده در آیکون پک‌ها</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
-    <string name="show_deck_layout">چیدمان عرشه</string>
-    <string name="show_deck_layout_description">نمایش گزینه طرح‌بندی برای مخفی کردن کشوی برنامه‌ها و افزودن خودکار برنامه‌های جدید به صفحه اصلی</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
     <string name="folder_shape_label">Folder shape</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">شدت تاری</string>
     <string name="wallpaper_background_blur_factor">آستانه عامل</string>
     <string name="home_lawn_deck_label">عرشه</string>
-    <string name="home_lawn_deck_label_beta">عرشه (بتا)</string>
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">افزودن برنامه‌های جدید به صفحه‌اصلی</string>
     <string name="minus_one_enable">نمایش خبر</string>

@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">İkonları həmişə yenidən yüklə</string>
     <string name="always_reload_icons_description">İkon paketlərindən keşlənmiş ikonlardan istifadə etmə</string>
     <string name="always_reload_icons_warning">Bu, ikonların müntəzəm olaraq yenilənməsinə səbəb olacaq və performansa təsir göstərə bilər. İkon paketi müntəzəm yenilənmirsə, bu seçimi söndürün.</string>
-    <string name="show_deck_layout">Deck düzəni</string>
-    <string name="show_deck_layout_description">Tətbiq siyirməsini gizlədən və yeni tətbiqləri avtomatik olaraq əsas ekrana əlavə edən düzən seçimini göstər</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">İş sahəsində Material 3 Expressive dəyişikliklərini aktiv et</string>
     <string name="folder_shape_label">Qovluq forması</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">Bulanıqlıq səviyyəsi</string>
     <string name="wallpaper_background_blur_factor">Faktor həddi</string>
     <string name="home_lawn_deck_label">Deck</string>
-    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
     <string name="home_lawn_deck_description">Sadəlik və səmərəli təşkilat üçün hazırlanmış, tətbiq siyirməsi olmayan Deck ilə tətbiqlərinizə asanlıqla daxil olun</string>
     <string name="auto_add_shortcuts_label">Yeni tətbiqləri əsas ekrana əlavə et</string>
     <string name="minus_one_enable">Lenti göstər</string>

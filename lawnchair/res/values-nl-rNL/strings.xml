@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">Iconen altijd vernieuwen</string>
     <string name="always_reload_icons_description">Gecachete iconen van icoonpakketten vermijden</string>
     <string name="always_reload_icons_warning">Dit zorgt ervoor dat iconen regelmatig worden vernieuwd, waardoor de prestaties worden beïnvloed. Schakel dit uit als het icoonpakket niet regelmatig wordt bijgewerkt.</string>
-    <string name="show_deck_layout">Opmaak van het dek</string>
-    <string name="show_deck_layout_description">De optie Opmaak weergeven om de app-lade te verbergen en nieuwe apps automatisch toe te voegen aan het startscherm</string>
     <string name="material_expressive_label">Material 3 Expressief</string>
     <string name="material_expressive_description">Material 3 Expressief inschakelen wijzigt de werkruimte</string>
     <string name="folder_shape_label">Mapvorm</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">Intensiteit van vervaging</string>
     <string name="wallpaper_background_blur_factor">Factor-drempelwaarde</string>
     <string name="home_lawn_deck_label">Dek</string>
-    <string name="home_lawn_deck_label_beta">Dek (bèta)</string>
     <string name="home_lawn_deck_description">Moeiteloos toegang tot je applicaties met Dek, de ultieme ervaring zonder app-lade, ontworpen voor eenvoud en naadloze organisatie</string>
     <string name="auto_add_shortcuts_label">Nieuwe apps toevoegen aan startscherm</string>
     <string name="minus_one_enable">Feed weergeven</string>

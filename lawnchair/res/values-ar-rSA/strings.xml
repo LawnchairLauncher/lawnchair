@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">إعادة تحميل الأيقونات دائماً</string>
     <string name="always_reload_icons_description">تجنب استخدام الأيقونات المخزنة مؤقتًا من حُزَم الأيقونات</string>
     <string name="always_reload_icons_warning">سيؤدي ذلك إلى تحديث الأيقونات بانتظام، مما يؤثر على الأداء. أوقِف تشغيل هذه المِيزة إذا لم يتم تحديث حُزْمَة الأيقونات بانتظام.</string>
-    <string name="show_deck_layout">تخطيط المجموعة</string>
-    <string name="show_deck_layout_description">إظهار خِيار التخطيط لإخفاء صفحة التطبيقات وإضافة التطبيقات الجديدة تلقائياً إلى الشاشة الرّئيسة</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">تفعيل تغييرات Material 3 Expressive في مساحة العمل</string>
     <string name="folder_shape_label">شَكْلُ المجلد</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">كثافة التأثير الضبابي</string>
     <string name="wallpaper_background_blur_factor">عتبة العامل</string>
     <string name="home_lawn_deck_label">ظهر السفينة</string>
-    <string name="home_lawn_deck_label_beta">المجموعة (نسخة تجريبية)</string>
     <string name="home_lawn_deck_description">الوصول إلى تطبيقاتك بسهولة عبر المجموعة، تجربة بلا درج مصمّمة للبساطة والتنظيم السلس</string>
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرّئيسة</string>
     <string name="minus_one_enable">إظهار الموجز</string>

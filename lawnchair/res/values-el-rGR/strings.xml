@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">Επαναφόρτωση εικονιδίων πάντοτε</string>
     <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
-    <string name="show_deck_layout">Διάταξη τράπουλας</string>
-    <string name="show_deck_layout_description">Εμφάνιση μιας επιλογής διάταξης για την απόκρυψη του συρταριού εφαρμογών και την αυτόματη προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
     <string name="material_expressive_label">Σχεδιασμός Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
     <string name="folder_shape_label">Folder shape</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">Ένταση θολώματος</string>
     <string name="wallpaper_background_blur_factor">Όριο παράγοντα</string>
     <string name="home_lawn_deck_label">Ενιαία</string>
-    <string name="home_lawn_deck_label_beta">Ενιαία (Beta)</string>
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
     <string name="minus_one_enable">Εμφάνιση ροής</string>

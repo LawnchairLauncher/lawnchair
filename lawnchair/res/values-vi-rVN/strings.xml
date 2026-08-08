@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
     <string name="always_reload_icons_warning">Việc này sẽ khiến các biểu tượng được làm mới thường xuyên, ảnh hưởng đến hiệu năng. Hãy tắt chức năng này nếu gói biểu tượng không được cập nhật thường xuyên.</string>
-    <string name="show_deck_layout">Bố cục Cổ điển</string>
-    <string name="show_deck_layout_description">Hiện một tùy chọn tắt ngăn chứa ứng dụng và tự động thêm ứng dụng mới vào màn hình chính</string>
     <string name="material_expressive_label">Material 3 Biểu cảm</string>
     <string name="material_expressive_description">Cho phép thay đổi biểu cảm trong Material 3 tại không gian làm việc</string>
     <string name="folder_shape_label">Hình của tệp</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">Cường độ mờ</string>
     <string name="wallpaper_background_blur_factor">Ngưỡng yếu tố</string>
     <string name="home_lawn_deck_label">Cổ điển</string>
-    <string name="home_lawn_deck_label_beta">Cổ điển (Thử nghiệm)</string>
     <string name="home_lawn_deck_description">Dễ dàng truy cập các ứng dụng của bạn với Deck, một giao diện không có ngăn chứa được thiết kế để đơn giản và sắp xếp liền mạch</string>
     <string name="auto_add_shortcuts_label">Thêm ứng dụng mới vào màn hình chính</string>
     <string name="minus_one_enable">Hiển thị Trang tin tức</string>

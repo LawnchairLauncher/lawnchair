@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">항상 아이콘 새로고침</string>
     <string name="always_reload_icons_description">아이콘 팩에서 캐시된 아이콘 사용 안 함</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
-    <string name="show_deck_layout">독 레이아웃</string>
-    <string name="show_deck_layout_description">앱 서랍을 가리고 홈 화면에 새 앱을 자동으로 추가하는 레이아웃 옵션을 표시합니다</string>
     <string name="material_expressive_label">Material 3 표현</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
     <string name="folder_shape_label">폴더 모양</string>
@@ -540,7 +538,6 @@
     <string name="wallpaper_background_blur">흐림 강도</string>
     <string name="wallpaper_background_blur_factor">인자 임계값</string>
     <string name="home_lawn_deck_label">덱</string>
-    <string name="home_lawn_deck_label_beta">덱 (베타)</string>
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">홈 화면에 새로운 앱 바로가기 추가</string>
     <string name="minus_one_enable">피드 활성화</string>

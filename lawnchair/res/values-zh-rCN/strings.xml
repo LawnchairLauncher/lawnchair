@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">始终重载图标</string>
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
     <string name="always_reload_icons_warning">开启后图标会定期刷新，可能影响性能。如果您的图标包更新不频繁，建议关闭此功能。</string>
-    <string name="show_deck_layout">桌面模式</string>
-    <string name="show_deck_layout_description">显示一个外观选项，开启时隐藏抽屉，并将 App 显示到桌面上</string>
     <string name="material_expressive_label">Material 3 表现力</string>
     <string name="material_expressive_description">在工作区中启用 Material 3 的视觉增强效果</string>
     <string name="folder_shape_label">文件夹形状</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">模糊强度</string>
     <string name="wallpaper_background_blur_factor">因素阈值</string>
     <string name="home_lawn_deck_label">甲板</string>
-    <string name="home_lawn_deck_label_beta">甲板 (测试版)</string>
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">添加新应用到主屏</string>
     <string name="minus_one_enable">显示订阅</string>

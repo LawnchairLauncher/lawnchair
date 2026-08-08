@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="always_reload_icons_warning">Это приведет к регулярному обновлению значков и может повлиять на производительность. Отключите, если набор значков не обновляется регулярно.</string>
-    <string name="show_deck_layout">Стиль колоды</string>
-    <string name="show_deck_layout_description">Показывать опцию для скрытия Меню приложений и автоматического добавления новых приложений на главный экран</string>
     <string name="material_expressive_label">Стиль Material 3 Expressive</string>
     <string name="material_expressive_description">Включить стиль Material 3 Expressive в рабочем пространстве</string>
     <string name="folder_shape_label">Форма папки</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">Степень размытия</string>
     <string name="wallpaper_background_blur_factor">Предел фактора размытия</string>
     <string name="home_lawn_deck_label">Колода приложений</string>
-    <string name="home_lawn_deck_label_beta">Колода приложений (бета)</string>
     <string name="home_lawn_deck_description">Мгновенный доступ к приложениям с помощью Колоды приложений --> отсутствует Меню приложений, разработана для простоты и удобной организации работы</string>
     <string name="auto_add_shortcuts_label">Добавлять новые приложения на глав. экран</string>
     <string name="minus_one_enable">Показывать ленту новостей</string>

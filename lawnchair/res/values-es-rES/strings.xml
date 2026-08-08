@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">Recargar siempre los iconos</string>
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
-    <string name="show_deck_layout">Diseño de colección</string>
-    <string name="show_deck_layout_description">Mostrar una opción de diseño para ocultar el cajón de aplicaciones y agregar automáticamente nuevas aplicaciones a la pantalla de inicio</string>
     <string name="material_expressive_label">Material 3 Expresivo</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
     <string name="folder_shape_label">Forma de carpeta</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">Intensidad del desenfoque</string>
     <string name="wallpaper_background_blur_factor">Cantidad de desenfoque</string>
     <string name="home_lawn_deck_label">Superficie</string>
-    <string name="home_lawn_deck_label_beta">Cubierta (Beta)</string>
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Añadir nuevas aplicaciones a la pantalla de inicio</string>
     <string name="minus_one_enable">Mostrar canal de contenido</string>

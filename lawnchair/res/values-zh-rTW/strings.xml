@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">一律重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
-    <string name="show_deck_layout">平面模式</string>
-    <string name="show_deck_layout_description">顯示版面選項以隱藏應用程式抽屜並自動將項目加到主畫面</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
     <string name="folder_shape_label">資料夾形狀</string>
@@ -539,7 +537,6 @@
     <string name="wallpaper_background_blur">模糊強度</string>
     <string name="wallpaper_background_blur_factor">係數閥值</string>
     <string name="home_lawn_deck_label">平面</string>
-    <string name="home_lawn_deck_label_beta">平面 (測試版)</string>
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">新增新應用程式至主畫面</string>
     <string name="minus_one_enable">顯示訂閱</string>
