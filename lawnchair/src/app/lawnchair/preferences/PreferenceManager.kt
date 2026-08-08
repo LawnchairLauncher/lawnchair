@@ -227,6 +227,7 @@ class PreferenceManager @Inject constructor(
                 }
             }
         }
+        normalizeVibrationFeedbackLevel()
     }
 
     companion object {
