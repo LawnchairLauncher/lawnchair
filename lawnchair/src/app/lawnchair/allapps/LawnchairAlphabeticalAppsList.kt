@@ -119,6 +119,7 @@ class LawnchairAlphabeticalAppsList<T>(
 
                 if (resolvedApps.size > 1) {
                     val folderInfo = FolderInfo().apply {
+                        id = folderEntry.id
                         title = folderEntry.title
                         resolvedApps.forEach { add(it) }
                     }
