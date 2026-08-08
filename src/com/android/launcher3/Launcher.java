@@ -1401,7 +1401,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
             if (!new PackageManagerHelper(this).hasPermissionForActivity(
                     info.intent, args.getPendingIntent().getComponent().getPackageName())) {
-                Log.e(TAG, "Ignoring malicious intent " + info.intent.toUri(0));
+                Log.e(TAG, "Ignoring shortcut intent failing activity permission validation");
                 return;
             }
         }
