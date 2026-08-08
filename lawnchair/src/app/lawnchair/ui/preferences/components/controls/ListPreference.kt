@@ -113,7 +113,7 @@ fun <T> ListPreference(
                                     enabled = item.enabled,
                                     title = { Text(item.label()) },
                                     onClick = {
-                                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
                                         if (item.enabled) {
                                             onValueChange(item.value)
                                             bottomSheetHandler.hide()

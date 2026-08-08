@@ -70,6 +70,7 @@ fun AppDrawerFolderPreferenceItem(
         ClickablePreference(
             label = stringResource(R.string.app_drawer_folder),
             modifier = Modifier,
+            hapticToken = null,
             onClick = {
                 mMSDLPlayerWrapper.playToken(MSDLToken.TAP_HIGH_EMPHASIS)
                 navController.navigate(route = AppDrawerFolder)

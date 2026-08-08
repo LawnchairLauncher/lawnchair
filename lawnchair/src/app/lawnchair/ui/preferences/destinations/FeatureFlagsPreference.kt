@@ -132,6 +132,7 @@ fun OnboardingPreference(
         label = title,
         subtitle = "Tap to reset",
         modifier = modifier,
+        hapticToken = null,
         colors = ListItemDefaults.colors().copy(containerColor = Color.Transparent),
     ) {
         mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
@@ -183,6 +184,7 @@ private fun IntentPreference(
     ClickablePreference(
         label = label,
         modifier = modifier,
+        hapticToken = null,
         colors = ListItemDefaults.colors().copy(containerColor = Color.Transparent),
     ) {
         mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)

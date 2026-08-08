@@ -41,6 +41,7 @@ fun SearchBarPreference(
             ClickablePreference(
                 label = stringResource(R.string.search_bar_settings),
                 modifier = modifier,
+                hapticToken = null,
             ) {
                 mMSDLPlayerWrapper.playToken(MSDLToken.TAP_HIGH_EMPHASIS)
                 navController.navigate(route = Search(id))
