@@ -7,6 +7,8 @@ import android.content.pm.ShortcutInfo
 import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -119,10 +121,11 @@ private fun AppShortcutOptions(
         }
     }
 
-    PreferenceDivider(startIndent = 40.dp)
-    DividerColumn(startIndent = 40.dp) {
+    PreferenceDivider(startIndent = NestedOptionIndent)
+    DividerColumn(startIndent = NestedOptionIndent) {
         AppItem(
             app = app,
+            widget = { Spacer(Modifier.requiredWidth(NestedOptionIndent)) },
             onClick = {
                 onSelect(
                     GestureHandlerConfig.OpenApp(
@@ -134,12 +137,15 @@ private fun AppShortcutOptions(
         )
 
         when (val publishedShortcuts = shortcuts) {
-            null -> AppItemPlaceholder()
+            null -> AppItemPlaceholder(
+                widget = { Spacer(Modifier.requiredWidth(NestedOptionIndent)) },
+            )
 
             else -> publishedShortcuts.forEach { shortcut ->
                 AppItem(
                     label = shortcut.shortLabel.toString(),
                     icon = app.icon,
+                    widget = { Spacer(Modifier.requiredWidth(NestedOptionIndent)) },
                     onClick = {
                         onSelect(
                             GestureHandlerConfig.OpenShortcut(
@@ -160,6 +166,7 @@ private fun AppShortcutOptions(
 }
 
 private const val TAG = "PickAppForGesture"
+private val NestedOptionIndent = 40.dp
 
 private fun getPublishedShortcuts(context: Context, componentKey: ComponentKey): List<ShortcutInfo> {
     val shortcuts = ShortcutRequest(context, componentKey.user)
