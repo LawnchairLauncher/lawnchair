@@ -219,6 +219,13 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_hotseat_bg_color)),
     )
 
+    val hotseatBackgroundCornerRadius = preference(
+        key = floatPreferencesKey(name = "hotseat_bg_corner_radius"),
+        defaultValue = context.resources.getDimension(R.dimen.bg_round_rect_radius) /
+            context.resources.displayMetrics.density, // This should hopefully match corner of all devices
+        onSet = { reloadHelper.recreate() },
+    )
+
     val appDrawerBackgroundColor = preference(
         key = stringPreferencesKey(name = "app_drawer_bg_color"),
         parse = ColorOption::fromString,
