@@ -61,6 +61,7 @@ fun PickAppForGesture(
     val scope = rememberCoroutineScope()
     var selectedAppKey by remember { mutableStateOf<ComponentKey?>(null) }
     var selectedShortcuts by remember { mutableStateOf<List<ShortcutInfo>?>(null) }
+    var selectedShortcutId by remember { mutableStateOf<String?>(null) }
     var shortcutLoadingJob by remember { mutableStateOf<Job?>(null) }
 
     fun onSelect(config: GestureHandlerConfig) {
@@ -68,19 +69,24 @@ fun PickAppForGesture(
 
         val configString = kotlinxJson.encodeToString(config)
         activity.setResult(Activity.RESULT_OK, Intent().putExtra("config", configString))
-        activity.finish()
     }
 
     fun selectApp(app: App) {
-        shortcutLoadingJob?.cancel()
-        if (selectedAppKey == app.key) {
-            selectedAppKey = null
-            selectedShortcuts = null
+        val appAlreadySelected = selectedAppKey == app.key
+        selectedAppKey = app.key
+        selectedShortcutId = null
+        onSelect(
+            GestureHandlerConfig.OpenApp(
+                appName = app.label,
+                target = OpenAppTarget.App(app.key),
+            ),
+        )
+        if (appAlreadySelected && selectedShortcuts != null) {
             return
         }
 
         mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
-        selectedAppKey = app.key
+        shortcutLoadingJob?.cancel()
         selectedShortcuts = null
         shortcutLoadingJob = scope.launch {
             val shortcuts = withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
@@ -92,17 +98,7 @@ fun PickAppForGesture(
                 }
             }
             if (selectedAppKey != app.key) return@launch
-
-            if (shortcuts.isEmpty()) {
-                onSelect(
-                    GestureHandlerConfig.OpenApp(
-                        appName = app.label,
-                        target = OpenAppTarget.App(app.key),
-                    ),
-                )
-            } else {
-                selectedShortcuts = shortcuts
-            }
+            selectedShortcuts = shortcuts.takeIf { it.isNotEmpty() }
         }
     }
 
@@ -123,7 +119,7 @@ fun PickAppForGesture(
                                 app = app,
                                 widget = {
                                     RadioButton(
-                                        selected = selectedAppKey == app.key,
+                                        selected = selectedAppKey == app.key && selectedShortcutId == null,
                                         onClick = null,
                                         modifier = Modifier.padding(start = ParentRadioButtonIndent),
                                     )
@@ -132,9 +128,22 @@ fun PickAppForGesture(
                             )
                             ExpandAndShrink(visible = selectedShortcuts != null && selectedAppKey == app.key) {
                                 AppShortcutOptions(
-                                    app = app,
                                     shortcuts = selectedShortcuts.orEmpty(),
-                                    onSelect = ::onSelect,
+                                    selectedShortcutId = selectedShortcutId,
+                                    onSelect = { shortcut ->
+                                        selectedShortcutId = shortcut.id
+                                        onSelect(
+                                            GestureHandlerConfig.OpenShortcut(
+                                                shortcutName = shortcut.shortLabel.toString(),
+                                                target = OpenShortcutTarget(
+                                                    app = app.key,
+                                                    user = shortcut.userHandle,
+                                                    packageName = shortcut.`package`,
+                                                    id = shortcut.id,
+                                                ),
+                                            ),
+                                        )
+                                    },
                                 )
                             }
                         }
@@ -156,40 +165,17 @@ fun PickAppForGesture(
 
 @Composable
 private fun AppShortcutOptions(
-    app: App,
     shortcuts: List<ShortcutInfo>,
-    onSelect: (GestureHandlerConfig) -> Unit,
+    selectedShortcutId: String?,
+    onSelect: (ShortcutInfo) -> Unit,
 ) {
     PreferenceDivider(startIndent = NestedOptionIndent)
     DividerColumn(startIndent = NestedOptionIndent) {
-        GestureOption(
-            label = stringResource(R.string.gesture_handler_open_app_option),
-            onClick = {
-                onSelect(
-                    GestureHandlerConfig.OpenApp(
-                        appName = app.label,
-                        target = OpenAppTarget.App(app.key),
-                    ),
-                )
-            },
-        )
-
         shortcuts.forEach { shortcut ->
             GestureOption(
                 label = shortcut.shortLabel.toString(),
-                onClick = {
-                    onSelect(
-                        GestureHandlerConfig.OpenShortcut(
-                            shortcutName = shortcut.shortLabel.toString(),
-                            target = OpenShortcutTarget(
-                                app = app.key,
-                                user = shortcut.userHandle,
-                                packageName = shortcut.`package`,
-                                id = shortcut.id,
-                            ),
-                        ),
-                    )
-                },
+                selected = shortcut.id == selectedShortcutId,
+                onClick = { onSelect(shortcut) },
             )
         }
     }
@@ -198,13 +184,14 @@ private fun AppShortcutOptions(
 @Composable
 private fun GestureOption(
     label: String,
+    selected: Boolean,
     onClick: () -> Unit,
 ) {
     PreferenceTemplate(
         title = { Text(text = label) },
         startWidget = {
             RadioButton(
-                selected = false,
+                selected = selected,
                 onClick = null,
                 modifier = Modifier.padding(start = NestedOptionRadioButtonIndent),
             )
