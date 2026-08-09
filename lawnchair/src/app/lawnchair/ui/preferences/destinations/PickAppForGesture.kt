@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
+import android.os.Bundle
+import android.os.ResultReceiver
 import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.gestures.config.GestureHandlerOption
 import app.lawnchair.gestures.handlers.OpenAppTarget
 import app.lawnchair.gestures.handlers.OpenShortcutTarget
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
@@ -55,6 +58,9 @@ fun PickAppForGesture(
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
+
+    @Suppress("DEPRECATION")
+    val resultReceiver = activity?.intent?.getParcelableExtra<ResultReceiver>(GestureHandlerOption.EXTRA_RESULT_RECEIVER)
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
     val apps by appsState()
     val state = rememberLazyListState()
@@ -68,6 +74,10 @@ fun PickAppForGesture(
         if (activity == null) return
 
         val configString = kotlinxJson.encodeToString(config)
+        resultReceiver?.send(
+            Activity.RESULT_OK,
+            Bundle().apply { putString(GestureHandlerOption.EXTRA_CONFIG, configString) },
+        )
         activity.setResult(Activity.RESULT_OK, Intent().putExtra("config", configString))
     }
 
