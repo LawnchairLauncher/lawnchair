@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">Использовать API GestureNavContract</string>
     <string name="gesturenavcontract_description">Поддержка расширенной анимации Android при использовании жестов навигации</string>
     <string name="gesturenavcontract_warning_incompatibility">Поддержка Вашего устройства - неполная. Это может привести к визуальным проблемам с анимацией.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">Отключено</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">По умолчанию</string>
+    <string name="vibration_feedback_expressive_choice">Выразительно</string>
     <string name="recents_lock_unlock">Блокировка приложений</string>
     <string name="recents_lock_unlock_description">Запретить закрытие выбранного приложения при нажатии кнопки \"Очистить всё\"</string>
     <!--Overlay-->
@@ -620,6 +625,7 @@
     <string name="open_in_store_drop_target_label">Открыть в магазине приложений</string>
     <string name="dock_icons">Иконки док-панели</string>
     <string name="dock_rows">Строки док-панели</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (сложено)</string>
     <string name="state_unfolded">%1$s (разложено)</string>
     <string name="folded_label">Сложено</string>

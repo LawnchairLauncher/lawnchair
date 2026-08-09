@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">Käytä GestureNavContract APIa</string>
     <string name="gesturenavcontract_description">Tue Androidin parannettuja animaatioita elenavigointia käytettäessä</string>
     <string name="gesturenavcontract_warning_incompatibility">Laitteesi ei ole täysin tuettu. Tämä voi aiheuttaa visuaalisia ongelmia joillekin animaatioille.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">Ei mitään</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">Oletus</string>
+    <string name="vibration_feedback_expressive_choice">Expressive</string>
     <string name="recents_lock_unlock">Sovellusten lukitus</string>
     <string name="recents_lock_unlock_description">Estä valittua sovellusta sulkeutumaan kun painetaan \"Poista kaikki\"</string>
     <!--Overlay-->
@@ -620,6 +625,7 @@
     <string name="open_in_store_drop_target_label">Avaa kaupassa</string>
     <string name="dock_icons">Telakan kuvakkeet</string>
     <string name="dock_rows">Telakan rivit</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (taitettu)</string>
     <string name="state_unfolded">%1$s (taittamaton)</string>
     <string name="folded_label">Taitettu</string>
