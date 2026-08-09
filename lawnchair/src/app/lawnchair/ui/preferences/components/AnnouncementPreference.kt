@@ -70,7 +70,9 @@ fun AnnouncementPreference() {
     val dismissedAnnouncementIds by liveInformationManager.dismissedAnnouncementIds.asState()
     val liveInformation by liveInformationManager.liveInformation.asState()
 
-    val announcements = remember { liveInformation.announcements.filter { it.id !in dismissedAnnouncementIds } }
+    val announcements = remember(liveInformation, dismissedAnnouncementIds) {
+        liveInformation.announcements.filter { it.id !in dismissedAnnouncementIds }
+    }
 
     if (enabled && showAnnouncements) {
         AnnouncementPreference(
