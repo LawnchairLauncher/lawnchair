@@ -37,6 +37,7 @@ import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
+import app.lawnchair.predictions.PredictionMode
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
@@ -381,6 +382,23 @@ class PreferenceManager2 @Inject constructor(
 
     val legacyPopupOptionsMigrated = preference(
         key = booleanPreferencesKey(name = "legacy_popup_options_migrated"),
+        defaultValue = false,
+    )
+
+    val enableGlobalPrediction = preference(
+        key = booleanPreferencesKey(name = "enable_global_prediction"),
+        defaultValue = true,
+    )
+
+    val predictionMode = preference(
+        key = stringPreferencesKey(name = "prediction_mode"),
+        defaultValue = PredictionMode.fromString(context.getString(R.string.config_default_prediction_mode)),
+        parse = { PredictionMode.fromString(it) },
+        save = { it.toString() },
+    )
+
+    val lawnchairPredictorUseWeightedUsageStats = preference(
+        key = booleanPreferencesKey(name = "lawnchair_prediction_use_weighted_usage"),
         defaultValue = false,
     )
 

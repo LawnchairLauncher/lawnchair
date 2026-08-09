@@ -50,7 +50,7 @@ public final class WidgetsPredictionUpdateTask implements ModelUpdateTask {
     private final PredictorState mPredictorState;
     private final List<AppTarget> mTargets;
 
-    WidgetsPredictionUpdateTask(PredictorState predictorState, List<AppTarget> targets) {
+    public WidgetsPredictionUpdateTask(PredictorState predictorState, List<AppTarget> targets) {
         mPredictorState = predictorState;
         mTargets = targets;
     }
