@@ -443,7 +443,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     }
 
     override fun resetSearch() {
-        searchBarController.reset()
+        searchBarController.reset(prefs2.keepKeyboardOpenOnClear.firstCached())
     }
 
     override fun setDirectFocus(directFocus: Boolean) {

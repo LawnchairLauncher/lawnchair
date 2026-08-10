@@ -151,14 +151,18 @@ public class AllAppsSearchBarController
         }
         return false;
     }
-
+    
+    public void reset() {
+        reset(false);
+    }   
+    
     /**
      * Resets the search bar state.
      */
-    public void reset() {
+    public void reset(boolean keepKeyboardOpen) {
         mCallback.clearSearchResult();
         mInput.reset();
-        if (!PreferenceCacheExtensionsKt.firstCached(pref2.getKeepKeyboardOpenOnClear())) {
+        if (!keepKeyboardOpen) {
             mInput.clearFocus();
             mInput.hideKeyboard();
         }
