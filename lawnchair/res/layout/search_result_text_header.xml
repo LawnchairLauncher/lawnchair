@@ -15,8 +15,8 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1.0"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/dynamic_grid_edge_margin"
-        android:paddingBottom="@dimen/dynamic_grid_edge_margin"
+        android:paddingTop="@dimen/search_result_text_padding"
+        android:paddingBottom="@dimen/search_result_text_padding"
         android:singleLine="true">
         <TextView
             android:id="@+id/title"
