@@ -60,6 +60,37 @@ class UsageStatsRanker(private val context: Context) {
             }
     }
 
+    fun getUsageStatsWeights(): LinkedHashMap<String, Double> {
+        val usageStatsManager =
+            context.getSystemService(UsageStatsManager::class.java) ?: return LinkedHashMap<String, Double>()
+        val now = System.currentTimeMillis()
+        val scores = LinkedHashMap<String, Double>()
+
+        try {
+            USAGE_WINDOWS_SEARCH.forEach { window ->
+                addUsageStatsToScores(
+                    scores = scores,
+                    stats = usageStatsManager.queryAndAggregateUsageStats(
+                        now - window.durationMs,
+                        now,
+                    ),
+                    now = now,
+                    window = window,
+                )
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to query usage stats", e)
+            return LinkedHashMap<String, Double>()
+        }
+
+        if (scores.isEmpty()) {
+            Log.w(TAG, "scores.isEmpty()")
+            return LinkedHashMap<String, Double>()
+        }
+
+        return scores
+    }
+
     private fun addUsageStatsToScores(
         scores: MutableMap<String, Double>,
         stats: Map<String, UsageStats>,
@@ -125,6 +156,21 @@ class UsageStatsRanker(private val context: Context) {
                 presenceWeight = 1.0,
                 foregroundMinutesWeight = 0.02,
                 recencyWeight = 0.5,
+            ),
+        )
+
+        private val USAGE_WINDOWS_SEARCH = listOf(
+            UsageStatsWindow(
+                durationMs = TimeUnit.HOURS.toMillis(12),
+                presenceWeight = 1.0,
+                foregroundMinutesWeight = 0.2,
+                recencyWeight = 0.0,
+            ),
+            UsageStatsWindow(
+                durationMs = TimeUnit.DAYS.toMillis(7),
+                presenceWeight = 4.0,
+                foregroundMinutesWeight = 0.1,
+                recencyWeight = 1.0,
             ),
         )
     }

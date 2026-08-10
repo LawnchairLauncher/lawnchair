@@ -52,18 +52,18 @@ object AppSearchProvider {
             // Normalize the weights
             var maxWeight: Double = cachedWeights.maxOf { (_, weight) -> weight }
 
-            val weightOffset = 1.0f
+            val weightOffset = 2.0f
 
             normalizedWeights = LinkedHashMap(
                 cachedWeights.mapValues { (_, weight) ->
-                    (weight / maxWeight) * 4.0f
+                    (weight / maxWeight) * 3.0f
                 },
             )
 
             return appResults.map { (appInfo, score) ->
                 val packageName = appInfo.targetComponent.packageName
 
-                val scoreExp = exp(2*(score-1.0f))
+                val scoreExp = exp(3*(score-1.0f))
 
                 var weight: Float
 
@@ -117,7 +117,6 @@ object AppSearchProvider {
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(query, stripDiacritics(it.title.toString()), matcher) }
             .filterHiddenApps(query, hiddenApps, hiddenAppsInSearch)
-            .take(maxResultsCount)
             .toList()
             .map { Pair<AppInfo, Float>(it, 1.0f) }
     }
