@@ -107,11 +107,19 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     @Override
     public void setColorResources(@Nullable SparseIntArray colors) {
-        if (colors == null) {
+        if (colors == null || colors.size() == 0) {
             resetColorResources();
-        } else {
-            super.setColorResources(colors);
+            return;
         }
+
+        // LC-Note: Yes, this exist (in framework 16), don't get fool by your language processor.
+        // https://cs.android.com/android/platform/superproject/+/android-latest-release:frameworks/base/core/java/android/widget/RemoteViews.java;l=9162;bpv=1?q=RemoteViews.ColorResources&ss=android%2Fplatform%2Fsuperproject
+        RemoteViews.ColorResources colorResources = RemoteViews.ColorResources.create(getContext(), colors);
+        if (colorResources == null) {
+            resetColorResources();
+            return;
+        }
+        super.setColorResources(colorResources);
     }
 
     @Override
