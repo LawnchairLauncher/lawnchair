@@ -2,7 +2,6 @@ package app.lawnchair.search.algorithms.engine.provider.apps
 
 import android.content.Context
 import android.util.Log
-import app.lawnchair.predictions.LawnchairPredictionEngine
 import app.lawnchair.predictions.UsageStatsRanker
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -24,8 +23,16 @@ object AppSearchProvider {
 
     private val DIACRITICS_REMOVE_PATTERN = "\\p{M}+".toRegex()
 
-    private var cachedWeights: LinkedHashMap<String, Double> = LinkedHashMap<String, Double>()
-    private var cacheValid: Boolean = false
+    private data class CacheSnapshot(
+        val weights: Map<String, Double> = emptyMap(),
+        val generation: Int = 0
+    )
+
+    @Volatile
+    private var targetGeneration: Int = 0
+
+    @Volatile
+    private var snapshot: CacheSnapshot = CacheSnapshot()
 
     fun search(context: Context, query: String, allApps: AllAppsList): List<SearchResult.App> {
         val prefs = PreferenceManager2.getInstance(context)
@@ -44,18 +51,20 @@ object AppSearchProvider {
 
         maybeUpdateCache(context)
 
+        val localWeights = snapshot.weights
+
         var normalizedWeights: LinkedHashMap<String, Double>
 
-        if (cachedWeights.isEmpty()) {
+        if (localWeights.isEmpty()) {
             return appResults.map { SearchResult.App(data = it.first) }
         } else {
             // Normalize the weights
-            var maxWeight: Double = cachedWeights.maxOf { (_, weight) -> weight }
+            var maxWeight: Double = localWeights.maxOf { (_, weight) -> weight }
 
             val weightOffset = 2.0f
 
             normalizedWeights = LinkedHashMap(
-                cachedWeights.mapValues { (_, weight) ->
+                localWeights.mapValues { (_, weight) ->
                     (weight / maxWeight) * 3.0f
                 },
             )
@@ -96,17 +105,23 @@ object AppSearchProvider {
 
     fun invalidateCache() {
         if (DEBUG) Log.d(TAG, "invalidateCache()")
-        cacheValid = false
+        targetGeneration++
     }
 
     private fun maybeUpdateCache(context: Context) {
-        if (!cacheValid) {
-            if (DEBUG) Log.d(TAG, "maybeUpdateCache(): cacheValid=false")
-            val usageStatsRanker = UsageStatsRanker(context)
-            val predictionEngine = LawnchairPredictionEngine(context, usageStatsRanker)
+        val targetGen = targetGeneration
+        if (snapshot.generation != targetGen) {
+            synchronized(this) {
+                if (snapshot.generation != targetGen) {
+                    if (DEBUG) Log.d(TAG, "maybeUpdateCache(): building for generation $targetGen")
 
-            cachedWeights = predictionEngine.getUsageStatsWeights()
-            cacheValid = true
+                    val usageStatsRanker = UsageStatsRanker(context)
+
+                    // Get weights and publish the new immutable snapshot
+                    val newWeights = usageStatsRanker.getUsageStatsWeights()
+                    snapshot = CacheSnapshot(newWeights, targetGen)
+                }
+            }
         }
     }
 
