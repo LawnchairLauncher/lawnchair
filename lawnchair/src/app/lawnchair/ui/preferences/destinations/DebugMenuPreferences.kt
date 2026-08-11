@@ -133,7 +133,7 @@ fun DebugMenuPreferences(
                         adapter = it.getAdapter(),
                         label = "%s (default: %.1f)".format(it.key.name, it.defaultValue),
                         step = 0.1f,
-                        valueRange = -1.0f..5.0f,
+                        valueRange = 0.1f..5.0f,
                         showAsFloat = true
                     )
                 }
