@@ -6,12 +6,15 @@ import android.app.prediction.AppTargetId
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherApps
+import android.os.Build
 import android.os.Process
 import android.os.UserHandle
+import androidx.annotation.RequiresApi
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.AppFilter
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
+import com.android.launcher3.Utilities
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.WidgetItem
 import com.android.launcher3.pm.UserCache
@@ -35,6 +38,7 @@ class LawnchairPredictionEngine(
      * @param count Maximum number of targets to return.
      * @param excludedKeys Store keys that should be skipped (e.g. occupied hotseat slots).
      */
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun compileAppTargets(
         ranked: List<String>,
         count: Int,
@@ -75,6 +79,7 @@ class LawnchairPredictionEngine(
      * Compiles a ranked list of store keys into widget [AppTarget] entries by matching packages to
      * available widget providers.
      */
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun compileWidgetTargets(
         ranked: List<String>,
         dataModel: BgDataModel,
@@ -234,6 +239,7 @@ class LawnchairPredictionEngine(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun createAppTarget(
         prefix: String,
         componentName: ComponentName,

@@ -264,6 +264,7 @@
     <string name="global_predictions_label">Show suggestion features</string>
     <string name="app_predictions_label">App suggestions</string>
     <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires at least Android 10 or higher</string>
     <string name="prediction_mode_system">System</string>
     <string name="prediction_mode_lawnchair" translatable="false">Lawnchair</string>
     <string name="prediction_mode_none">Off</string>

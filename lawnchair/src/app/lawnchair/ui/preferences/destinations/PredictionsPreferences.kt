@@ -44,6 +44,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.DismissedPredictionApps
 import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 @Composable
 fun PredictionsPreferences(
@@ -100,6 +101,8 @@ private fun AppPredictionsFeature(
         dismissedPredictionAppsCount,
     )
 
+    val canUseAppPrediction = Utilities.ATLEAST_Q
+
     PreferenceGroup(
         heading = stringResource(R.string.app_predictions_label),
     ) {
@@ -107,6 +110,8 @@ private fun AppPredictionsFeature(
             adapter = predictionModeAdapter,
             entries = predictionModeEntries,
             label = stringResource(R.string.prediction_mode_label),
+            description = if (canUseAppPrediction) null else stringResource(R.string.app_predictions_disable_reason_pre_q_description),
+            enabled = canUseAppPrediction
         )
         when (predictionModeAdapter.state.value) {
             SystemPredictor -> SystemSuggestionsPreference()
