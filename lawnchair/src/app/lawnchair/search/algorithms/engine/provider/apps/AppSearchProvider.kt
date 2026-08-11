@@ -22,7 +22,7 @@ object AppSearchProvider {
 
     private data class CacheSnapshot(
         val weights: Map<String, Double> = emptyMap(),
-        val generation: Int = 0
+        val generation: Int = 1
     )
 
     @Volatile
