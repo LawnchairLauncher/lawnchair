@@ -41,6 +41,7 @@ import app.lawnchair.predictions.PredictionMode
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
+import app.lawnchair.search.algorithms.engine.provider.apps.UsageAwareRankingModel
 import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceMode
@@ -859,6 +860,21 @@ class PreferenceManager2 @Inject constructor(
         } else {
             false
         },
+    )
+
+    val usageAwareRankingModelLowTextPenaltyCoeff = preference(
+        key = floatPreferencesKey(name = "user_aware_ranking_low_text_score_penalty"),
+        defaultValue = UsageAwareRankingModel.LOW_TEXT_SCORE_PENALTY_COEFF
+    )
+
+    val usageAwareRankingModelUsageBoostCoeff = preference(
+        key = floatPreferencesKey(name = "user_aware_ranking_usage_boost"),
+        defaultValue = UsageAwareRankingModel.USAGE_BOOST_COEFF
+    )
+
+    val usageAwareRankingModelFuzzCurveSteepnessCoeff = preference(
+        key = floatPreferencesKey(name = "user_aware_ranking_fuzz_curve_steepness"),
+        defaultValue = UsageAwareRankingModel.FUZZ_CURVE_STEEPNESS_COEFF
     )
 
     private inline fun <reified T> serializablePreference(

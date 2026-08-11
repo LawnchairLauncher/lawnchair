@@ -12,14 +12,11 @@ import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.search.StringMatcherUtility
 import java.text.Normalizer
 import java.util.Locale
-import kotlin.math.exp
 
 object AppSearchProvider {
 
     const val TAG: String = "AppSearchProvider"
     const val DEBUG: Boolean = false
-
-    const val TEXT_MATCHER_MAX_RESULTS = 32
 
     private val DIACRITICS_REMOVE_PATTERN = "\\p{M}+".toRegex()
 
@@ -51,49 +48,27 @@ object AppSearchProvider {
 
         maybeUpdateCache(context)
 
-        val localWeights = snapshot.weights
+        val localUsageScores = snapshot.weights
 
-        var normalizedWeights: LinkedHashMap<String, Double>
-
-        if (localWeights.isEmpty()) {
+        if (localUsageScores.isEmpty()) {
             return appResults.take(maxAppResults).map { SearchResult.App(data = it.first) }
         } else {
-            // Normalize the weights
-            var maxWeight: Double = localWeights.maxOf { (_, weight) -> weight }
-
-            val weightOffset = 2.0f
-
-            normalizedWeights = LinkedHashMap(
-                localWeights.mapValues { (_, weight) ->
-                    (weight / maxWeight) * 3.0f
+            // Normalize the usage scores
+            val maxUsageScore: Double = localUsageScores.maxOf { (_, weight) -> weight }
+            val normalizedUsageScores = LinkedHashMap(
+                localUsageScores.mapValues { (_, score) ->
+                    (score / maxUsageScore)
                 },
             )
 
-            return appResults.map { (appInfo, score) ->
+            return appResults.map { (appInfo, textScore) ->
                 val packageName = appInfo.targetComponent.packageName
 
-                val scoreExp = exp(3*(score-1.0f))
+                val usageScore = (normalizedUsageScores[packageName ?: ""] ?: 0.0).toFloat()
 
-                var weight: Float
+                val finalScore = UsageAwareRankingModel.run(textScore, usageScore)
 
-                try {
-                    weight = normalizedWeights.getValue(packageName ?: "").toFloat()
-                } catch (e: NoSuchElementException) {
-                    weight = 0.0f
-                }
-
-                val weightFinal = weight + weightOffset
-                val total = scoreExp*weightFinal
-
-                if (DEBUG) {
-                    Log.w(
-                        TAG,
-                        "result: packageName=%s score=%f scoreExp=%f weigth=%f weightFinal=%f total=%f"
-                            .format(packageName ?: "", score, scoreExp, weight, weightFinal, total),
-                    )
-                }
-
-                Pair(appInfo, total)
+                Pair(appInfo, finalScore)
             }.sortedByDescending {
                 it.second
             }.map {
@@ -122,6 +97,8 @@ object AppSearchProvider {
                     snapshot = CacheSnapshot(newWeights, targetGen)
                 }
             }
+
+            UsageAwareRankingModel.updateCoeffs(context)
         }
     }
 
@@ -152,7 +129,6 @@ object AppSearchProvider {
                     { -it.second.score },
                 ),
             )
-            .take(TEXT_MATCHER_MAX_RESULTS)
             .map {
                 if (DEBUG) {
                     Log.w(

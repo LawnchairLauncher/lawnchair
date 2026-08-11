@@ -163,14 +163,14 @@ class UsageStatsRanker(private val context: Context) {
             UsageStatsWindow(
                 durationMs = TimeUnit.HOURS.toMillis(12),
                 presenceWeight = 1.0,
-                foregroundMinutesWeight = 0.2,
+                foregroundMinutesWeight = 0.4,
                 recencyWeight = 0.0,
             ),
             UsageStatsWindow(
                 durationMs = TimeUnit.DAYS.toMillis(7),
                 presenceWeight = 4.0,
-                foregroundMinutesWeight = 0.1,
-                recencyWeight = 1.0,
+                foregroundMinutesWeight = 0.2,
+                recencyWeight = 2.0,
             ),
         )
     }

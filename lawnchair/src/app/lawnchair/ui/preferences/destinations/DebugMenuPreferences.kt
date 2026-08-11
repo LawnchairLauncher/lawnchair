@@ -19,6 +19,7 @@ import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
+import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.TextPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -47,6 +48,7 @@ fun DebugMenuPreferences(
     val flags = remember { prefs.debugFlags }
     val flags2 = remember { prefs2.debugFlags }
     val textFlags = remember { prefs2.textFlags }
+    val floatFlags = remember { prefs2.floatFlags }
     val navController = LocalNavController.current
 
     val enableDebug = prefs.enableDebugMenu.getAdapter()
@@ -126,6 +128,15 @@ fun DebugMenuPreferences(
                         label = it.key.name,
                     )
                 }
+                floatFlags.forEach {
+                    SliderPreference(
+                        adapter = it.getAdapter(),
+                        label = "%s (default: %.1f)".format(it.key.name, it.defaultValue),
+                        step = 0.1f,
+                        valueRange = -1.0f..5.0f,
+                        showAsFloat = true
+                    )
+                }
                 // Codename for Lawnchair to intentionally omit version number from the public,
                 // Crash log will continue to show them normally.
                 TextPreference(
@@ -171,3 +182,6 @@ private val PreferenceManager2.textFlags: List<Preference<String, String, Prefer
 
 private val PreferenceManager.debugFlags
     get() = listOf(ignoreFeedWhitelist, hideVersionInfo)
+
+private val PreferenceManager2.floatFlags: List<Preference<Float, Float, Preferences.Key<Float>>>
+    get() = listOf(usageAwareRankingModelLowTextPenaltyCoeff, usageAwareRankingModelUsageBoostCoeff, usageAwareRankingModelFuzzCurveSteepnessCoeff)
