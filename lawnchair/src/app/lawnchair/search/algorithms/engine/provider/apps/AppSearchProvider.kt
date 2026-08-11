@@ -56,7 +56,7 @@ object AppSearchProvider {
         var normalizedWeights: LinkedHashMap<String, Double>
 
         if (localWeights.isEmpty()) {
-            return appResults.map { SearchResult.App(data = it.first) }
+            return appResults.take(maxAppResults).map { SearchResult.App(data = it.first) }
         } else {
             // Normalize the weights
             var maxWeight: Double = localWeights.maxOf { (_, weight) -> weight }
