@@ -111,7 +111,7 @@ private fun AppPredictionsFeature(
             entries = predictionModeEntries,
             label = stringResource(R.string.prediction_mode_label),
             description = if (canUseAppPrediction) null else stringResource(R.string.app_predictions_disable_reason_pre_q_description),
-            enabled = canUseAppPrediction
+            enabled = canUseAppPrediction,
         )
         when (predictionModeAdapter.state.value) {
             SystemPredictor -> SystemSuggestionsPreference()

@@ -66,9 +66,12 @@ class LawnchairModelDelegate @Inject constructor(
         lawnchairPredictor.unregister()
         when (currentPredictionMode()) {
             SystemPredictor -> super.recreatePredictors()
+
             LawnchairPredictor -> if (Utilities.ATLEAST_Q) {
                 activateLawnchairPredictor()
-            } else clearPredictions()
+            } else {
+                clearPredictions()
+            }
 
             NoPredictor -> clearPredictions()
         }
@@ -90,7 +93,9 @@ class LawnchairModelDelegate @Inject constructor(
 
             LawnchairPredictor -> if (Utilities.ATLEAST_Q) {
                 updateLawnchairPredictions()
-            } else clearPredictions()
+            } else {
+                clearPredictions()
+            }
 
             NoPredictor -> clearPredictions()
         }
