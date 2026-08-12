@@ -72,13 +72,15 @@ object AppSearchProvider {
             }.sortedByDescending {
                 it.second
             }.map {
-                if (DEBUG) Log.w(
-                    TAG,
-                    "final picks: picked=%s weight=%f".format(
-                        it.first.targetComponent.packageName,
-                        it.second,
-                    ),
-                )
+                if (DEBUG) {
+                    Log.w(
+                        TAG,
+                        "final picks: picked=%s weight=%f".format(
+                            it.first.targetComponent.packageName,
+                            it.second,
+                        ),
+                    )
+                }
                 SearchResult.App(data = it.first)
             }.take(maxAppResults)
         }
