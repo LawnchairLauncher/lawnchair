@@ -7,6 +7,9 @@ import android.content.pm.LauncherApps
 import android.util.Log
 import com.android.launcher3.AppFilter
 import java.util.concurrent.TimeUnit
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.math.log10
 
 /**
  * Queries [UsageStatsManager] across multiple time windows with configurable
@@ -62,13 +65,14 @@ class UsageStatsRanker(private val context: Context) {
 
     fun getUsageStatsWeights(): LinkedHashMap<String, Double> {
         val usageStatsManager =
-            context.getSystemService(UsageStatsManager::class.java) ?: return LinkedHashMap<String, Double>()
+            context.getSystemService(UsageStatsManager::class.java)
+                ?: return LinkedHashMap<String, Double>()
         val now = System.currentTimeMillis()
         val scores = LinkedHashMap<String, Double>()
 
         try {
             USAGE_WINDOWS_SEARCH.forEach { window ->
-                addUsageStatsToScores(
+                addUsageStatsToScoresForSearch(
                     scores = scores,
                     stats = usageStatsManager.queryAndAggregateUsageStats(
                         now - window.durationMs,
@@ -89,6 +93,46 @@ class UsageStatsRanker(private val context: Context) {
         }
 
         return scores
+    }
+
+    private fun addUsageStatsToScoresForSearch(
+        scores: MutableMap<String, Double>,
+        stats: Map<String, UsageStats>,
+        now: Long,
+        window: UsageStatsWindow,
+    ) {
+        val maxDuration = stats.values.maxOf { stat ->
+            TimeUnit.MILLISECONDS.toMinutes(stat.totalTimeInForeground).toDouble()
+        }
+
+        stats.values.forEach { stat ->
+            val packageName = stat.packageName
+            if (packageName.isNullOrEmpty() || packageName == context.packageName) return@forEach
+
+            val foregroundMinutes =
+                TimeUnit.MILLISECONDS.toMinutes(stat.totalTimeInForeground).toDouble()
+            val durationDampened = log10(1 + (foregroundMinutes) / (maxDuration))
+
+            val decayHalfLife = window.durationMs / 2
+            val decayTimeDelta = now - stat.lastTimeUsed
+            val decayAtDelta =
+                exp(-((ln(2.0) / (decayHalfLife)) * decayTimeDelta))
+            val decayAt0 = exp(-((ln(2.0) / (decayHalfLife)) * window.durationMs))
+            val recencyDecayed = when {
+                stat.lastTimeUsed <= 0L -> 0.0
+
+                else -> {
+                    (decayAtDelta - decayAt0) / (exp(0.0) - decayAt0)
+                }
+            }
+
+            val score =
+                (durationDampened * window.foregroundMinutesWeight) + (recencyDecayed * window.recencyWeight)
+
+            if (score <= 0.0) return@forEach
+
+            scores[packageName] = (scores[packageName] ?: 0.0) + score
+        }
     }
 
     private fun addUsageStatsToScores(
@@ -127,7 +171,7 @@ class UsageStatsRanker(private val context: Context) {
         /** Weight period */
         val durationMs: Long,
         /** Weight for when the app is presence in the usage window. It is merely just is this app appeared in the window, nothing more. */
-        val presenceWeight: Double,
+        val presenceWeight: Double = 0.0,
         /** Weight for when the app is being in foreground */
         val foregroundMinutesWeight: Double,
         /** Weight for when was the app being used recently */
@@ -162,15 +206,13 @@ class UsageStatsRanker(private val context: Context) {
         private val USAGE_WINDOWS_SEARCH = listOf(
             UsageStatsWindow(
                 durationMs = TimeUnit.HOURS.toMillis(12),
-                presenceWeight = 1.0,
-                foregroundMinutesWeight = 0.4,
-                recencyWeight = 0.0,
+                foregroundMinutesWeight = 5.0,
+                recencyWeight = 0.5,
             ),
             UsageStatsWindow(
                 durationMs = TimeUnit.DAYS.toMillis(7),
-                presenceWeight = 4.0,
-                foregroundMinutesWeight = 0.2,
-                recencyWeight = 2.0,
+                foregroundMinutesWeight = 10.0,
+                recencyWeight = 0.1,
             ),
         )
     }
