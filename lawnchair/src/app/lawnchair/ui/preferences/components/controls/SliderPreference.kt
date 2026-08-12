@@ -174,7 +174,7 @@ private fun SliderPreference(
                             ) + " $showUnit"
                         } else if (showAsFloat) {
                             value.toString()
-                        } else{
+                        } else {
                             value.roundToInt().toString() + " $showUnit"
                         },
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

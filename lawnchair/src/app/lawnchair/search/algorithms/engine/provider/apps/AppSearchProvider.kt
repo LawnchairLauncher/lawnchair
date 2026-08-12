@@ -22,7 +22,7 @@ object AppSearchProvider {
 
     private data class CacheSnapshot(
         val weights: Map<String, Double> = emptyMap(),
-        val generation: Int = 1
+        val generation: Int = 1,
     )
 
     @Volatile
@@ -72,7 +72,13 @@ object AppSearchProvider {
             }.sortedByDescending {
                 it.second
             }.map {
-                if (DEBUG) Log.w(TAG, "final picks: picked=%s weight=%f".format(it.first.targetComponent.packageName, it.second))
+                if (DEBUG) Log.w(
+                    TAG,
+                    "final picks: picked=%s weight=%f".format(
+                        it.first.targetComponent.packageName,
+                        it.second,
+                    ),
+                )
                 SearchResult.App(data = it.first)
             }.take(maxAppResults)
         }
@@ -102,18 +108,34 @@ object AppSearchProvider {
         }
     }
 
-    private fun normalSearch(apps: List<AppInfo>, query: String, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<Pair<AppInfo, Float>> {
+    private fun normalSearch(
+        apps: List<AppInfo>,
+        query: String,
+        hiddenApps: Set<String>,
+        hiddenAppsInSearch: String,
+    ): List<Pair<AppInfo, Float>> {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         return apps.asSequence()
-            .filter { StringMatcherUtility.matches(query, stripDiacritics(it.title.toString()), matcher) }
+            .filter {
+                StringMatcherUtility.matches(
+                    query,
+                    stripDiacritics(it.title.toString()),
+                    matcher,
+                )
+            }
             .filterHiddenApps(query, hiddenApps, hiddenAppsInSearch)
             .toList()
             .map { Pair<AppInfo, Float>(it, 1.0f) }
     }
 
-    private fun fuzzySearch(apps: List<AppInfo>, query: String, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<Pair<AppInfo, Float>> {
+    private fun fuzzySearch(
+        apps: List<AppInfo>,
+        query: String,
+        hiddenApps: Set<String>,
+        hiddenAppsInSearch: String,
+    ): List<Pair<AppInfo, Float>> {
         val filteredApps = apps.asSequence()
             .filterHiddenApps(query, hiddenApps, hiddenAppsInSearch)
             .toList()
@@ -136,8 +158,8 @@ object AppSearchProvider {
                         "title=%s matchType=%s score=%f".format(
                             it.first.title.toString(),
                             it.second.type.toString(),
-                            it.second.score
-                        )
+                            it.second.score,
+                        ),
                     )
                 }
                 Pair<AppInfo, Float>(it.first, it.second.score)

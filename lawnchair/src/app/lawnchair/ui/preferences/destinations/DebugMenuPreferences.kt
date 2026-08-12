@@ -74,7 +74,11 @@ fun DebugMenuPreferences(
                             /* This is really unlikely, we are just highlighting the option,
                                 not directly opening like Lawnchair 14 and older unless they
                                 changed the entire preferences system */
-                            Toast.makeText(context, "Failed to open developer settings!", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                context,
+                                "Failed to open developer settings!",
+                                Toast.LENGTH_SHORT,
+                            )
                                 .show()
                             Log.e("DebugMenuPreferences", "Failed to open developer settings!", e)
                         }
@@ -134,7 +138,7 @@ fun DebugMenuPreferences(
                         label = "%s (default: %.1f)".format(it.key.name, it.defaultValue),
                         step = 0.1f,
                         valueRange = 0.1f..5.0f,
-                        showAsFloat = true
+                        showAsFloat = true,
                     )
                 }
                 // Codename for Lawnchair to intentionally omit version number from the public,
@@ -159,7 +163,8 @@ fun DebugMenuPreferences(
                 }
             }
 
-            val apmSupport = context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
+            val apmSupport =
+                context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
             PreferenceGroup(heading = "Supported features") {
                 ClickablePreference(
                     label = "Window blurs",
@@ -184,4 +189,8 @@ private val PreferenceManager.debugFlags
     get() = listOf(ignoreFeedWhitelist, hideVersionInfo)
 
 private val PreferenceManager2.floatFlags: List<Preference<Float, Float, Preferences.Key<Float>>>
-    get() = listOf(usageAwareRankingModelLowTextPenaltyCoeff, usageAwareRankingModelUsageBoostCoeff, usageAwareRankingModelFuzzCurveSteepnessCoeff)
+    get() = listOf(
+        usageAwareRankingModelLowTextPenaltyCoeff,
+        usageAwareRankingModelUsageBoostCoeff,
+        usageAwareRankingModelFuzzCurveSteepnessCoeff,
+    )
