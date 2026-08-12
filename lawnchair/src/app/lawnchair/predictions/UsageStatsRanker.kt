@@ -101,17 +101,20 @@ class UsageStatsRanker(private val context: Context) {
         now: Long,
         window: UsageStatsWindow,
     ) {
+        if (stats.isEmpty()) return
+
         val maxDuration = stats.values.maxOf { stat ->
-            TimeUnit.MILLISECONDS.toMinutes(stat.totalTimeInForeground).toDouble()
+            stat.totalTimeInForeground
         }
 
         stats.values.forEach { stat ->
             val packageName = stat.packageName
             if (packageName.isNullOrEmpty() || packageName == context.packageName) return@forEach
 
-            val foregroundMinutes =
-                TimeUnit.MILLISECONDS.toMinutes(stat.totalTimeInForeground).toDouble()
-            val durationDampened = log10(1 + (foregroundMinutes) / (maxDuration))
+            val durationDampened = when {
+                stat.totalTimeInForeground <= 0 -> 0
+                else -> log10((1 + (stat.totalTimeInForeground) / (maxDuration)).toDouble())
+            }.toDouble()
 
             val decayHalfLife = window.durationMs / 2
             val decayTimeDelta = now - stat.lastTimeUsed

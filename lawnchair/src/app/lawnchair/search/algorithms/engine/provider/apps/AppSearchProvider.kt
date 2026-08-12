@@ -64,7 +64,7 @@ object AppSearchProvider {
             return appResults.map { (appInfo, textScore) ->
                 val packageName = appInfo.targetComponent.packageName
 
-                val usageScore = (normalizedUsageScores[packageName ?: ""] ?: 0.0).toFloat()
+                val usageScore = (normalizedUsageScores[packageName] ?: 0.0).toFloat()
 
                 val finalScore = UsageAwareRankingModel.run(textScore, usageScore)
 
