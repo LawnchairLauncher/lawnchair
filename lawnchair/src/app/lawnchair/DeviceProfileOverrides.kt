@@ -175,7 +175,7 @@ class DeviceProfileOverrides @Inject constructor(
             }
 
             // Ensure database can hold enough icons for multi-row / multi-page dock
-            val requiredSlots = idp.numShownHotseatIcons * numHotseatRows * numDockPages
+            val requiredSlots = idp.numDatabaseHotseatIcons * numHotseatRows * numDockPages
             if (idp.numDatabaseHotseatIcons < requiredSlots) {
                 idp.numDatabaseHotseatIcons = requiredSlots
             }
