@@ -136,14 +136,14 @@ class DeviceProfileOverrides @Inject constructor(
             numDockPages = prefs.dockPages.get().coerceIn(1, 5),
 
             foldableShownHotseatIcons = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
-                val folded = prefs.hotseatColumns.get()
-                val unfolded = previewOverrides.foldableDatabaseHotseatIcons ?: prefs.hotseatColumnsUnfolded.get()
-                folded.coerceAtMost(unfolded)
+                prefs.hotseatColumns.get()
             } else {
                 -1
             },
             foldableDatabaseHotseatIcons = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
-                previewOverrides.foldableDatabaseHotseatIcons ?: prefs.hotseatColumnsUnfolded.get()
+                val folded = prefs.hotseatColumns.get()
+                val unfolded = previewOverrides.foldableDatabaseHotseatIcons ?: prefs.hotseatColumnsUnfolded.get()
+                folded.coerceAtLeast(unfolded)
             } else {
                 -1
             },
