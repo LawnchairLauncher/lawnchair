@@ -43,6 +43,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Flags;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
@@ -112,14 +113,20 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
             return;
         }
 
-        // LC-Note: Yes, this exist, don't get fool by your language processor.
-        // https://cs.android.com/android/platform/superproject/+/android-latest-release:frameworks/base/core/java/android/widget/RemoteViews.java;l=9162;bpv=1?q=RemoteViews.ColorResources&ss=android%2Fplatform%2Fsuperproject
-        RemoteViews.ColorResources colorResources = RemoteViews.ColorResources.create(getContext(), colors);
-        if (colorResources == null) {
-            resetColorResources();
-            return;
+        // LC-Note: Fix widget idmap theming issue
+        if (Utilities.ATLEAST_T) {
+            // LC-Note: Yes, this exist, don't get fool by your language processor.
+            // https://cs.android.com/android/platform/superproject/+/android-latest-release:frameworks/base/core/java/android/widget/RemoteViews.java;l=9162;bpv=1?q=RemoteViews.ColorResources&ss=android%2Fplatform%2Fsuperproject
+            RemoteViews.ColorResources colorResources = RemoteViews.ColorResources.create(getContext(), colors);
+            if (colorResources == null) {
+                resetColorResources();
+                return;
+            }
+            super.setColorResources(colorResources);
+        } else {
+            // LC-Note: Fall back for Android 12 impl
+            super.setColorResources(colors);
         }
-        super.setColorResources(colorResources);
     }
 
     @Override
