@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">常にアイコンを再読み込みします</string>
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにします</string>
     <string name="always_reload_icons_warning">これはアイコンを定期的に更新するのでパフォーマンスに影響を与えます。アイコンパックが定期的に更新されない場合はオフにしてください。</string>
-    <string name="show_deck_layout">ドックのレイアウト</string>
-    <string name="show_deck_layout_description">アプリドロワーを非表示にし、自動的に新しいアプリをホーム画面に追加するためのレイアウトオプションを表示します</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">ワークスペースでMaterial 3の表現に変更することを有効にする</string>
     <string name="folder_shape_label">フォルダーの形</string>
@@ -544,7 +542,6 @@
     <string name="wallpaper_background_blur">ぼかしの強さ</string>
     <string name="wallpaper_background_blur_factor">因子のしきい値</string>
     <string name="home_lawn_deck_label">ドック</string>
-    <string name="home_lawn_deck_label_beta">ドック(ベータ版)</string>
     <string name="home_lawn_deck_description">Deckを使えば、アプリに簡単にアクセスできます。Deckは、シンプルさとシームレスな整理のために設計された、ドロワーレスな操作感を提供します</string>
     <string name="auto_add_shortcuts_label">ホーム画面に新しいアプリを追加</string>
     <string name="minus_one_enable">フィードを表示</string>

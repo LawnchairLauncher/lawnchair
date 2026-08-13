@@ -71,11 +71,6 @@ fun ExperimentalFeaturesPreferences(
                 description = stringResource(id = R.string.workspace_increase_max_grid_size_description),
             )
             SwitchPreference(
-                adapter = prefs2.showDeckLayout.getAdapter(),
-                label = stringResource(R.string.show_deck_layout),
-                description = stringResource(R.string.show_deck_layout_description),
-            )
-            SwitchPreference(
                 checked = hasPermission && enableWallpaperBlur.state.value,
                 onCheckedChange = {
                     if (!hasPermission) {

@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">Lataa kuvakkeet aina uudelleen</string>
     <string name="always_reload_icons_description">Vältä välimuistissa olevien kuvakkeiden käyttöä kuvakepakkauksissa</string>
     <string name="always_reload_icons_warning">Tämä aiheuttaa kuvakkeiden päivittämisen säännöllisesti, vaikuttaen suorituskykyyn. Poista käytöstä, jos kuvakepakettia ei päivitetä säännöllisesti.</string>
-    <string name="show_deck_layout">Telakan asettelu</string>
-    <string name="show_deck_layout_description">Näytä asetus sovellusvalikon piilottamiseksi ja sovellusten automaattisen aloitusnäyttöön lisäämiseksi</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Ota käyttöön Material 3 Expressive muutokset käyttöön</string>
     <string name="folder_shape_label">Kansion muoto</string>
@@ -544,7 +542,6 @@
     <string name="wallpaper_background_blur">Sumennuksen vahvuus</string>
     <string name="wallpaper_background_blur_factor">Tekijän kynnysarvo</string>
     <string name="home_lawn_deck_label">Pakkanäkymä</string>
-    <string name="home_lawn_deck_label_beta">Pakka (Beta)</string>
     <string name="home_lawn_deck_description">Pääse sovelluksiisi vaivattomasti Deckillä, telakkamattomalla kokemuksella, joka on suunniteltu yksinkertaisuuteen ja saumattomaan organisaatioon</string>
     <string name="auto_add_shortcuts_label">Lisää uusia sovelluksia aloitusnäyttöön</string>
     <string name="minus_one_enable">Näytä syöte</string>

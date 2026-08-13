@@ -172,8 +172,6 @@
     <string name="always_reload_icons_label">Recarregar sempre os ícones</string>
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
     <string name="always_reload_icons_warning">Isso fará com que os ícones atualizem regularmente, afectando o desempenho. Desative se o pacote de ícones não for atualizado regularmente.</string>
-    <string name="show_deck_layout">Ambiente do Deck</string>
-    <string name="show_deck_layout_description">Exibir uma opção de layout para ocultar o menu de aplicações e adicionar automaticamente novos aplicativos à página inicial</string>
     <string name="material_expressive_label">Tema Google Material 3</string>
     <string name="material_expressive_description">Ativar o tema Material 3 na área de trabalho</string>
     <string name="folder_shape_label">Forma da pasta</string>
@@ -544,7 +542,6 @@
     <string name="wallpaper_background_blur">Intensidade do desfoque</string>
     <string name="wallpaper_background_blur_factor">Limite do fator</string>
     <string name="home_lawn_deck_label">Biblioteca</string>
-    <string name="home_lawn_deck_label_beta">Biblioteca (Beta)</string>
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Adicionar novas aplicações ao ecrã principal</string>
     <string name="minus_one_enable">Mostrar feed</string>
