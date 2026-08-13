@@ -146,7 +146,12 @@ private fun SliderPreference(
                                 (value * 100).roundToInt(),
                             ) + " $showUnit"
                         } else {
-                            value.roundToInt().toString() + " $showUnit"
+                            val display = if (step % 1f == 0f) {
+                                value.roundToInt().toString()
+                            } else {
+                                "%.1f".format(value)
+                            }
+                            display + " $showUnit"
                         },
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

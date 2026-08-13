@@ -56,6 +56,7 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.AbstractSlideInView;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import app.lawnchair.theme.color.tokens.ColorTokens;
 
@@ -84,6 +85,13 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     private WidgetCell mWidgetCellWithAddButton = null;
     @Nullable
     private WidgetItem mLastSelectedWidgetItem = null;
+
+    /**
+     * When set, a tap on a {@link WidgetCell} invokes this consumer and closes the sheet instead
+     * of the normal add / tap-to-add flow (used e.g. when picking a widget for a stack).
+     */
+    @Nullable
+    private Consumer<WidgetItem> mWidgetPickListener;
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -134,6 +142,13 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         setupNavBarColor();
     }
 
+    /**
+     * Select-only mode for embedding the stock widget tray UI in other flows.
+     */
+    public void setWidgetPickListener(@Nullable Consumer<WidgetItem> listener) {
+        mWidgetPickListener = listener;
+    }
+
     @Override
     public final void onClick(View v) {
         WidgetCell wc;
@@ -142,6 +157,17 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         } else if (v.getParent() instanceof WidgetCell parent) {
             wc = parent;
         } else {
+            return;
+        }
+
+        if (mWidgetPickListener != null) {
+            WidgetItem item = wc.getWidgetItem();
+            if (item != null && item.widgetInfo != null) {
+                Consumer<WidgetItem> listener = mWidgetPickListener;
+                mWidgetPickListener = null;
+                listener.accept(item);
+                close(/* animate= */ true);
+            }
             return;
         }
 
@@ -281,6 +307,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     @Override
     public boolean onLongClick(View v) {
+        if (mWidgetPickListener != null) {
+            v.cancelLongPress();
+            return true;
+        }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
         v.cancelLongPress();
         if (!ItemLongClickListener.canStartDrag(Launcher.getLauncher(mActivityContext)))

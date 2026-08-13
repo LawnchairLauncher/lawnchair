@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app.lawnchair.widget.WidgetStackContentView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_stack_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center">
+
+    <app.lawnchair.widget.InterceptingWidgetPager
+        android:id="@+id/widget_stack_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:saveEnabled="false" />
+
+    <app.lawnchair.smartspace.PageIndicator
+        android:id="@+id/widget_stack_page_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/widget_stack_indicator_margin"
+        android:importantForAccessibility="no"
+        android:visibility="visible" />
+</app.lawnchair.widget.WidgetStackContentView>

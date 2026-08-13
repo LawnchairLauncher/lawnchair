@@ -267,6 +267,25 @@ public abstract class DragController<T extends ActivityContext>
     }
 
     /**
+     * @return whether we are in the long-press / pre-drag phase (before {@link
+     *     DragOptions.PreDragCondition#shouldStartDrag} has allowed the real drag). Used to avoid
+     *     UI fixes that race with {@link #callOnDragStart()}.
+     */
+    public boolean isInPreDrag() {
+        return mIsInPreDrag;
+    }
+
+    /** Last drag-layer coordinates of the pointer for the current drag / pre-drag. */
+    public Point getLastTouch() {
+        return mLastTouch;
+    }
+
+    /** Drag-layer coordinates of the original ACTION_DOWN that started this drag. */
+    public Point getMotionDown() {
+        return mMotionDown;
+    }
+
+    /**
      * Stop dragging without dropping.
      */
     public void cancelDrag() {

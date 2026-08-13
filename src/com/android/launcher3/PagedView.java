@@ -30,6 +30,9 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -47,6 +50,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.OverScroller;
 import android.widget.ScrollView;
 
@@ -86,8 +90,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
     // The page is moved more than halfway, automatically move to the next page on touch up.
     private static final float SIGNIFICANT_MOVE_THRESHOLD = 0.4f;
+    /** Commit a home wrap after this much of a page has followed the finger. */
+    private static final float WRAP_COMMIT_THRESHOLD = 0.12f;
+    private static final int WRAP_SNAP_MIN_MS = 48;
+    private static final int WRAP_SNAP_MAX_MS = 160;
 
     private static final float MAX_SCROLL_PROGRESS = 1.0f;
+    private static final long PAGE_WRAP_ANIM_MS = 180L;
     
     private final PreferenceManager prefs = PreferenceManager.getInstance(getContext());
     private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
@@ -164,6 +173,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected EdgeEffectCompat mEdgeGlowLeft;
     protected EdgeEffectCompat mEdgeGlowRight;
 
+    private boolean mPageWrapRunning;
+    private boolean mWrapPeekActive;
+    private View mWrapOutgoingPage;
+    private View mWrapIncomingPage;
+    private ValueAnimator mWrapAnimator;
+    private int mPageWrapDest = INVALID_PAGE;
+    private float mWrapOverscroll;
+
     public PagedView(Context context) {
         this(context, null);
     }
@@ -202,6 +219,17 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected void initEdgeEffect() {
         mEdgeGlowLeft = EdgeEffectCompat.create(getContext(), this);
         mEdgeGlowRight = EdgeEffectCompat.create(getContext(), this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        if (mPageWrapRunning || mWrapPeekActive) {
+            cancelPageWrapAnimation();
+            resetWrapPages();
+            mPageWrapRunning = false;
+            mWrapPeekActive = false;
+        }
+        super.onDetachedFromWindow();
     }
 
     public void initParentViews(View parent) {
@@ -481,6 +509,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected void pageEndTransition() {
         if (mIsPageInTransition && !mIsBeingDragged && mScroller.isFinished()
+                && !mPageWrapRunning && !mWrapPeekActive
                 && (!isShown() || (mEdgeGlowLeft.isFinished() && mEdgeGlowRight.isFinished()))) {
             mIsPageInTransition = false;
             onPageEndTransition();
@@ -596,7 +625,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
             invalidate();
             return true;
-        } else if (mNextPage != INVALID_PAGE) {
+        } else if (mNextPage != INVALID_PAGE && !mPageWrapRunning && !mWrapPeekActive) {
             sendScrollAccessibilityEvent();
             int prevPage = mCurrentPage;
             mCurrentPage = validateNewPage(mNextPage);
@@ -1095,6 +1124,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             }
 
             case MotionEvent.ACTION_DOWN: {
+                if (mPageWrapRunning && mPageWrapDest != INVALID_PAGE) {
+                    finishPageWrap(mPageWrapDest);
+                }
                 final float x = ev.getX();
                 final float y = ev.getY();
                 // Remember location of down touch
@@ -1264,6 +1296,230 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mAllowOverScroll = enable;
     }
 
+    protected boolean isInfiniteScrollEnabled() {
+        if (!(this instanceof Workspace)
+                || mFreeScroll
+                || !prefs.getInfiniteScrolling().get()
+                || getPageCount() <= getPanelCount()) {
+            return false;
+        }
+        return !((Workspace<?>) this).hasExtraEmptyScreens();
+    }
+
+    private boolean canWrapToFirstPage() {
+        return isInfiniteScrollEnabled()
+                && mCurrentPage >= getPageCount() - getPanelCount();
+    }
+
+    private boolean canWrapToLastPage() {
+        return isInfiniteScrollEnabled()
+                && mCurrentPage <= 0
+                && !PreferenceExtensionsKt.firstBlocking(prefs2.getEnableFeed());
+    }
+
+    private boolean applyInfiniteScrollPeek(float unconsumedScroll) {
+        if (!isInfiniteScrollEnabled()) {
+            mWrapOverscroll = 0f;
+            clearInfiniteScrollPeek(false);
+            return false;
+        }
+        mWrapOverscroll += unconsumedScroll;
+        View current = getPageAt(mCurrentPage);
+        int size = current != null ? current.getMeasuredWidth() + mPageSpacing : getWidth();
+        if (size > 0) {
+            mWrapOverscroll = Utilities.boundToRange(mWrapOverscroll, -size, size);
+        }
+        if (mWrapOverscroll == 0f) {
+            clearInfiniteScrollPeek(false);
+            return false;
+        }
+        boolean wrapForward = (mWrapOverscroll > 0f) != mIsRtl;
+        if ((wrapForward && !canWrapToFirstPage()) || (!wrapForward && !canWrapToLastPage())) {
+            mWrapOverscroll = 0f;
+            clearInfiniteScrollPeek(false);
+            return false;
+        }
+        showInfiniteScrollPeek(wrapForward, -mWrapOverscroll);
+        return true;
+    }
+
+    private void cancelEdgeEffects() {
+        mEdgeGlowLeft.finish();
+        mEdgeGlowRight.finish();
+    }
+
+    private int wrapDestPage(boolean wrapForward) {
+        return wrapForward ? 0 : getPageCount() - getPanelCount();
+    }
+
+    private float wrapSlideDistance(View page, boolean wrapForward) {
+        float size = page != null ? page.getMeasuredWidth() + mPageSpacing : getWidth();
+        if (size <= 0f) size = getWidth();
+        return wrapForward == !mIsRtl ? size : -size;
+    }
+
+    private void applyWrapOffset(boolean wrapForward, float outgoingTx) {
+        View outgoing = getPageAt(mCurrentPage);
+        int dest = wrapDestPage(wrapForward);
+        View incoming = getPageAt(dest);
+        if (outgoing == null || incoming == null || outgoing == incoming) return;
+        float slide = wrapSlideDistance(outgoing, wrapForward);
+        outgoing.setTranslationX(outgoingTx);
+        incoming.setTranslationX(outgoing.getLeft() + outgoingTx + slide - incoming.getLeft());
+        incoming.setAlpha(1f);
+        if (incoming instanceof CellLayout cellLayout) {
+            cellLayout.getShortcutsAndWidgets().setAlpha(1f);
+            cellLayout.setScrollProgress(0f);
+        }
+        mWrapOutgoingPage = outgoing;
+        mWrapIncomingPage = incoming;
+        mPageWrapDest = dest;
+    }
+
+    private void resetWrapPages() {
+        if (mWrapOutgoingPage != null) {
+            mWrapOutgoingPage.setTranslationX(0f);
+            mWrapOutgoingPage = null;
+        }
+        if (mWrapIncomingPage != null) {
+            mWrapIncomingPage.setTranslationX(0f);
+            mWrapIncomingPage = null;
+        }
+        mPageWrapDest = INVALID_PAGE;
+        mWrapOverscroll = 0f;
+        setClipChildren(true);
+        setClipToPadding(true);
+    }
+
+    private void showInfiniteScrollPeek(boolean wrapForward, float peek) {
+        cancelEdgeEffects();
+        cancelPageWrapAnimation();
+        mWrapPeekActive = true;
+        setClipChildren(false);
+        setClipToPadding(false);
+        applyWrapOffset(wrapForward, peek);
+        invalidate();
+    }
+
+    private void startPageWrap(boolean wrapForward) {
+        startPageWrap(wrapForward, 0);
+    }
+
+    private void startPageWrap(boolean wrapForward, int velocity) {
+        if (mPageWrapRunning) return;
+        int dest = wrapDestPage(wrapForward);
+        View outgoing = getPageAt(mCurrentPage);
+        if (outgoing == null || getPageAt(dest) == null) {
+            clearInfiniteScrollPeek(false);
+            setCurrentPage(dest);
+            return;
+        }
+        cancelEdgeEffects();
+        float slide = wrapSlideDistance(outgoing, wrapForward);
+        float outgoingStart = outgoing.getTranslationX();
+        float outgoingEnd = -slide;
+        int duration = getWrapSnapDuration(outgoingEnd - outgoingStart, velocity);
+        mPageWrapRunning = true;
+        mWrapPeekActive = false;
+        applyWrapOffset(wrapForward, outgoingStart);
+        if (mPageIndicator != null) {
+            mPageIndicator.setActiveMarker(dest);
+        }
+        pageBeginTransition();
+        setClipChildren(false);
+        setClipToPadding(false);
+        cancelPageWrapAnimation();
+        if (duration <= 0 || Math.abs(outgoingEnd - outgoingStart) < 1f) {
+            applyWrapOffset(wrapForward, outgoingEnd);
+            finishPageWrap(dest);
+            return;
+        }
+        ValueAnimator anim = ValueAnimator.ofFloat(outgoingStart, outgoingEnd);
+        anim.setDuration(duration);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.addUpdateListener(animation -> {
+            applyWrapOffset(wrapForward, (float) animation.getAnimatedValue());
+            invalidate();
+        });
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                applyWrapOffset(wrapForward, outgoingEnd);
+                finishPageWrap(dest);
+            }
+        });
+        mWrapAnimator = anim;
+        anim.start();
+    }
+
+    private int getWrapSnapDuration(float remaining, int velocity) {
+        float distance = Math.abs(remaining);
+        if (distance < 1f) {
+            return 0;
+        }
+        if (Math.abs(velocity) < mMinFlingVelocity) {
+            return (int) Utilities.boundToRange(distance, WRAP_SNAP_MIN_MS, WRAP_SNAP_MAX_MS);
+        }
+        int vel = Math.max(mMinSnapVelocity, Math.abs(velocity));
+        int duration = 4 * Math.round(1000 * (distance / vel));
+        return (int) Utilities.boundToRange(duration, WRAP_SNAP_MIN_MS, WRAP_SNAP_MAX_MS);
+    }
+
+    private void finishPageWrap(int destPage) {
+        if (mWrapAnimator != null) {
+            mWrapAnimator.removeAllListeners();
+            mWrapAnimator = null;
+        }
+        mPageWrapRunning = false;
+        mWrapPeekActive = false;
+        setClipChildren(true);
+        setClipToPadding(true);
+        setCurrentPage(destPage);
+        resetWrapPages();
+        pageEndTransition();
+        invalidate();
+    }
+
+    private void clearInfiniteScrollPeek(boolean animateBack) {
+        if (mPageWrapRunning || !mWrapPeekActive) {
+            return;
+        }
+        View outgoing = mWrapOutgoingPage;
+        boolean wrapForward = mPageWrapDest == 0;
+        mWrapPeekActive = false;
+        cancelPageWrapAnimation();
+        if (animateBack && outgoing != null && outgoing.getTranslationX() != 0f) {
+            float outgoingStart = outgoing.getTranslationX();
+            ValueAnimator anim = ValueAnimator.ofFloat(outgoingStart, 0f);
+            anim.setDuration(PAGE_WRAP_ANIM_MS);
+            anim.setInterpolator(new DecelerateInterpolator());
+            anim.addUpdateListener(animation -> {
+                applyWrapOffset(wrapForward, (float) animation.getAnimatedValue());
+                invalidate();
+            });
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    resetWrapPages();
+                    invalidate();
+                }
+            });
+            mWrapAnimator = anim;
+            anim.start();
+        } else {
+            resetWrapPages();
+            invalidate();
+        }
+    }
+
+    private void cancelPageWrapAnimation() {
+        if (mWrapAnimator != null) {
+            mWrapAnimator.removeAllListeners();
+            mWrapAnimator.cancel();
+            mWrapAnimator = null;
+        }
+    }
+
     protected boolean isSignificantMove(float absoluteDelta, int pageOrientedSize) {
         return absoluteDelta > pageOrientedSize * SIGNIFICANT_MOVE_THRESHOLD;
     }
@@ -1279,6 +1535,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         switch (action & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_DOWN:
+            if (!mPageWrapRunning) {
+                mWrapOverscroll = 0f;
+            }
             updateIsBeingDraggedOnTouchDown(ev);
 
             /*
@@ -1329,7 +1588,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                                 / mOrientationHandler.getSecondaryValue(width, height);
                 mTotalMotion += Math.abs(delta);
 
-                if (mAllowOverScroll) {
+                boolean wrapPeek = mWrapPeekActive || (isInfiniteScrollEnabled() && (
+                        (oldScroll + delta > mMaxScroll
+                                && (mIsRtl ? canWrapToLastPage() : canWrapToFirstPage()))
+                                || (oldScroll + delta < mMinScroll
+                                && (mIsRtl ? canWrapToFirstPage() : canWrapToLastPage()))));
+                if (wrapPeek) {
+                    cancelEdgeEffects();
+                } else if (mAllowOverScroll) {
                     int consumed = 0;
                     if (delta < 0 && mEdgeGlowRight.getDistance() != 0f) {
                         consumed = Math.round(size *
@@ -1349,10 +1615,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                 if (delta != 0) {
                     mOrientationHandler.setPrimary(this, VIEW_SCROLL_BY, delta);
+                    int newScroll = mOrientationHandler.getPrimaryScroll(this);
+                    float unconsumed = (oldScroll + delta) - newScroll;
 
-                    if (mAllowOverScroll) {
+                    if (unconsumed != 0f && applyInfiniteScrollPeek(unconsumed)) {
+                        cancelEdgeEffects();
+                    } else if (mAllowOverScroll) {
                         final float pulledToX = oldScroll + delta;
-
                         if (pulledToX < mMinScroll) {
                             mEdgeGlowLeft.onPullDistance(-delta / size, 1.f - displacement, ev);
                             if (!mEdgeGlowRight.isFinished()) {
@@ -1427,26 +1696,42 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     // test for a large move if a fling has been registered. That is, a large
                     // move to the left and fling to the right will register as a fling to the right.
 
-                    boolean infiniteScroll = prefs.getInfiniteScrolling().get();
-                    boolean enableFeed = PreferenceExtensionsKt.firstBlocking(prefs2.getEnableFeed());
+                    boolean goingToPrev = ((isSignificantMove && !isDeltaLeft && !isFling)
+                            || (isFling && !isVelocityLeft));
+                    boolean goingToNext = ((isSignificantMove && isDeltaLeft && !isFling)
+                            || (isFling && isVelocityLeft));
+                    float wrapPeek = mWrapOutgoingPage != null
+                            ? Math.abs(mWrapOutgoingPage.getTranslationX()) : 0f;
+                    boolean wrapSignificant = wrapPeek > pageOrientedSize * WRAP_COMMIT_THRESHOLD
+                            || Math.abs(delta) > pageOrientedSize * WRAP_COMMIT_THRESHOLD;
+                    boolean wrapNext = canWrapToFirstPage() && !returnToOriginalPage
+                            && ((isFling && isVelocityLeft) || (wrapSignificant && isDeltaLeft)
+                            || (mWrapPeekActive && wrapPeek > pageOrientedSize * WRAP_COMMIT_THRESHOLD));
+                    boolean wrapPrev = canWrapToLastPage() && !returnToOriginalPage
+                            && ((isFling && !isVelocityLeft) || (wrapSignificant && !isDeltaLeft)
+                            || (mWrapPeekActive && wrapPeek > pageOrientedSize * WRAP_COMMIT_THRESHOLD
+                            && !isDeltaLeft));
 
-                    if (((isSignificantMove && !isDeltaLeft && !isFling) ||
-                            (isFling && !isVelocityLeft)) && mCurrentPage > 0) {
+                    if (goingToPrev && mCurrentPage > 0) {
                         finalPage = returnToOriginalPage
                                 ? mCurrentPage : mCurrentPage - getPanelCount();
+                        clearInfiniteScrollPeek(false);
+                        int page = finalPage;
                         runOnPageScrollsInitialized(
-                                () -> snapToPageWithVelocity(finalPage, velocity));
-                    } else if (((isSignificantMove && isDeltaLeft && !isFling) || (isFling && isVelocityLeft)) && mCurrentPage < getChildCount() - 1) {
-                        finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + getPanelCount();
-                        runOnPageScrollsInitialized(() -> snapToPageWithVelocity(finalPage, velocity));
-					} else if (mCurrentPage == getChildCount() - 1 && infiniteScroll) {
-                        finalPage = returnToOriginalPage ? mCurrentPage : 0;
-                        snapToPageWithVelocity(finalPage, velocity);
-                    } else if (mCurrentPage == 0 && infiniteScroll && !enableFeed) {
-                        finalPage = returnToOriginalPage ? mCurrentPage : getChildCount() - 1;
-                        snapToPageWithVelocity(finalPage, velocity);
-	
+                                () -> snapToPageWithVelocity(page, velocity));
+                    } else if (goingToNext && mCurrentPage < getChildCount() - getPanelCount()) {
+                        finalPage = returnToOriginalPage
+                                ? mCurrentPage : mCurrentPage + getPanelCount();
+                        clearInfiniteScrollPeek(false);
+                        int page = finalPage;
+                        runOnPageScrollsInitialized(
+                                () -> snapToPageWithVelocity(page, velocity));
+                    } else if (wrapNext) {
+                        startPageWrap(true, velocity);
+                    } else if (wrapPrev) {
+                        startPageWrap(false, velocity);
                     } else {
+                        clearInfiniteScrollPeek(true);
                         runOnPageScrollsInitialized(this::snapToDestination);
                     }
                 } else {
@@ -1474,17 +1759,26 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     }
                     invalidate();
                 }
-                mEdgeGlowLeft.onFlingVelocity(velocity);
-                mEdgeGlowRight.onFlingVelocity(velocity);
+                if (!mPageWrapRunning && !mWrapPeekActive) {
+                    mEdgeGlowLeft.onFlingVelocity(velocity);
+                    mEdgeGlowRight.onFlingVelocity(velocity);
+                } else {
+                    cancelEdgeEffects();
+                }
             }
-            mEdgeGlowLeft.onRelease(ev);
-            mEdgeGlowRight.onRelease(ev);
+            if (!mPageWrapRunning && !mWrapPeekActive) {
+                mEdgeGlowLeft.onRelease(ev);
+                mEdgeGlowRight.onRelease(ev);
+            } else {
+                cancelEdgeEffects();
+            }
             // End any intermediate reordering states
             resetTouchState();
             break;
 
         case MotionEvent.ACTION_CANCEL:
             if (mIsBeingDragged) {
+                clearInfiniteScrollPeek(true);
                 runOnPageScrollsInitialized(this::snapToDestination);
             }
             mEdgeGlowLeft.onRelease(ev);
@@ -1798,12 +2092,20 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             snapToPage(getNextPage() - getPanelCount());
             return true;
         }
+        if (canWrapToLastPage()) {
+            startPageWrap(false);
+            return true;
+        }
         return mAllowOverScroll;
     }
 
     public boolean scrollRight() {
         if (getNextPage() < getChildCount() - 1) {
             snapToPage(getNextPage() + getPanelCount());
+            return true;
+        }
+        if (canWrapToFirstPage()) {
+            startPageWrap(true);
             return true;
         }
         return mAllowOverScroll;
@@ -1973,9 +2275,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @Override
     public void draw(Canvas canvas) {
-        if (!Utilities.ATLEAST_S) drawStretchEdgeEffect(canvas);
+        if (!Utilities.ATLEAST_S && !mPageWrapRunning && !mWrapPeekActive) {
+            drawStretchEdgeEffect(canvas);
+        }
         super.draw(canvas);
-        if (Utilities.ATLEAST_S) drawEdgeEffect(canvas);
+        if (Utilities.ATLEAST_S && !mPageWrapRunning && !mWrapPeekActive) {
+            drawEdgeEffect(canvas);
+        }
         pageEndTransition();
     }
 

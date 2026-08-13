@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
@@ -39,20 +40,27 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PrivateSpaceInstallAppButtonInfo;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
+import app.lawnchair.widget.WidgetStackView;
 import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetImageView;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Class to handle long-clicks on workspace items and start drag as a result.
  */
 public class ItemLongClickListener {
+
+    private static Runnable sPendingWidgetMoveMode;
 
     public static final OnLongClickListener INSTANCE_WORKSPACE =
             ItemLongClickListener::onWorkspaceItemLongClick;
@@ -75,13 +83,75 @@ public class ItemLongClickListener {
         }
         if (!(v.getTag() instanceof ItemInfo)) return false;
 
+        // For widgets, try to show popup first if there are system shortcuts available
+        com.android.launcher3.popup.PopupContainerWithArrow<Launcher> widgetStackPopup = null;
+        if (v instanceof LauncherAppWidgetHostView) {
+            widgetStackPopup =
+                    com.android.launcher3.popup.PopupContainerWithArrow.showForWidget((LauncherAppWidgetHostView) v);
+        }
+        
+        // For widget stacks, show popup if available
+        if (v instanceof WidgetStackView) {
+            ItemInfo item = (ItemInfo) v.getTag();
+            if (item instanceof LauncherAppWidgetInfo) {
+                widgetStackPopup = com.android.launcher3.popup.PopupContainerWithArrow.showForWidgetStack(
+                        launcher, (LauncherAppWidgetInfo) item, v);
+            }
+        }
+
         launcher.setWaitingForResult(null);
+        boolean isWidget = v instanceof LauncherAppWidgetHostView || v instanceof WidgetStackView;
+        if (isWidget) {
+            // Menu first. Keep holding to enter move mode; lift after that to resize.
+            scheduleWidgetMoveMode(v, launcher, (ItemInfo) v.getTag());
+            return true;
+        }
+
         beginDrag(v, launcher, (ItemInfo) v.getTag(), new DragOptions());
         return true;
     }
 
+    private static void scheduleWidgetMoveMode(View v, Launcher launcher, ItemInfo info) {
+        cancelScheduledWidgetMoveMode(v);
+        Runnable enterMoveMode = () -> {
+            sPendingWidgetMoveMode = null;
+            if (!v.isAttachedToWindow() || !canStartDrag(launcher)) return;
+            AbstractFloatingView.closeAllOpenViews(launcher);
+            beginDrag(v, launcher, info, new DragOptions());
+        };
+        sPendingWidgetMoveMode = enterMoveMode;
+        v.postDelayed(enterMoveMode, getWidgetMoveHoldMs(v));
+    }
+
+    private static long getWidgetMoveHoldMs(View v) {
+        float seconds = PreferenceExtensionsKt.firstBlocking(
+                PreferenceManager2.getInstance(v.getContext()).getWidgetMoveHoldDuration());
+        return Math.max(0L, Math.round(seconds * 1000f));
+    }
+
+    /** Call when the finger lifts or a menu shortcut is pressed before move mode starts. */
+    public static void cancelScheduledWidgetMoveMode(View v) {
+        if (sPendingWidgetMoveMode != null) {
+            v.removeCallbacks(sPendingWidgetMoveMode);
+            sPendingWidgetMoveMode = null;
+        }
+    }
+
     public static void beginDrag(View v, Launcher launcher, ItemInfo info,
             DragOptions dragOptions) {
+        // Ensure widget views stay visible before starting drag
+        // This prevents single widgets from disappearing when popup is shown
+        // Check both view type AND tag - for single widgets, the view might be a placeholder/dummy
+        // but the tag will always be LauncherAppWidgetInfo if it's a widget
+        Object tag = v.getTag();
+        boolean isWidget = (v instanceof com.android.launcher3.widget.LauncherAppWidgetHostView)
+                || (v instanceof app.lawnchair.widget.WidgetStackView)
+                || (tag instanceof com.android.launcher3.model.data.LauncherAppWidgetInfo);
+        
+        if (isWidget && v.getVisibility() != android.view.View.VISIBLE) {
+            v.setVisibility(android.view.View.VISIBLE);
+        }
+        
         if (info.container >= 0) {
             Folder folder = Folder.getOpen(launcher);
             if (folder != null) {

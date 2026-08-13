@@ -654,6 +654,8 @@
     <string name="widget_unlimited_size_label">Remove size constraints</string>
     <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
 
+    <string name="widget_move_hold_duration_label">Hold to move</string>
+
     <!-- Dock settings -->
     <string name="show_hotseat_title">Show dock</string>
 
@@ -921,4 +923,16 @@
     <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
     <!-- Message shown when all home screen views are removed -->
     <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
+
+    <!-- Widget Stacking -->
+    <string name="create_stack">Create stack</string>
+    <string name="edit_stack">Edit stack</string>
+    <string name="add_widget_to_stack">Add widget to stack</string>
+    <string name="auto_rotate_widgets">Automatically rotate between widgets</string>
+    <string name="widget_stack_vertical_swipe">Swipe up / down (instead of left / right)</string>
+    <string name="save_stack">Save</string>
+    <string name="remove_widget">Remove widget</string>
+    <string name="widget_stack_sheet_subtitle">Stack uses a %1$d × %2$d cell area on the home screen.</string>
+    <string name="widget_stack_member_id">ID %1$d</string>
+    <string name="widget_stack_reorder_hint">Swipe between widgets. Open the last page to add one. With more than one widget, long-press and drag sideways to reorder.</string>
 </resources>

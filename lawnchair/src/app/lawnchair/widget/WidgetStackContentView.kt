@@ -1,0 +1,921 @@
+/*
+ * Copyright (C) 2025 Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package app.lawnchair.widget
+
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.os.Handler
+import android.os.Looper
+import android.util.AttributeSet
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import app.lawnchair.smartspace.PageIndicator
+import com.android.launcher3.Launcher
+import com.android.launcher3.R
+import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.util.MultiTranslateDelegate
+import com.android.launcher3.widget.LauncherAppWidgetHostView
+import com.android.launcher3.widget.LauncherWidgetHolder
+import com.android.launcher3.widget.NavigableAppWidgetHostView
+import com.android.launcher3.widget.PendingAppWidgetHostView
+import com.android.launcher3.widget.WidgetInflater
+import com.android.launcher3.widget.WidgetManagerHelper
+import com.android.launcher3.widget.util.WidgetSizes
+import kotlin.math.min
+
+/**
+ * Inner view that displays and manages a stack of widgets inside a [ViewPager2].
+ * Handles widget inflation, live-update registration, pending→real transitions,
+ * and auto-rotation.
+ */
+class WidgetStackContentView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+) : FrameLayout(context, attrs) {
+
+    companion object {
+        private const val TAG = "WidgetStackContent"
+        private const val AUTO_ROTATE_INTERVAL_MS = 20_000L
+        private const val MAX_REFRESH_ATTEMPTS = 5
+
+        /**
+         * Pages retained on each side of the current page ([ViewPager2] API). Each offscreen slot
+         * may hold a live [LauncherAppWidgetHostView], so a large limit multiplies memory and
+         * RemoteViews work. `2` keeps immediate neighbors warm for swipes/auto-rotate without
+         * retaining the whole stack (the previous `size` / `20` caps were effectively unbounded).
+         */
+        private const val OFFSCREEN_PAGE_LIMIT_EACH_SIDE = 2
+        private const val WRAP_ANIM_MS = 300L
+    }
+
+    private lateinit var viewPager: InterceptingWidgetPager
+    private lateinit var indicator: PageIndicator
+    private val adapter = WidgetStackAdapter()
+
+    /** Ordered list of widget views matching the stack's widget-id order. */
+    private val widgetViews = mutableListOf<LauncherAppWidgetHostView>()
+
+    /** Local cache for widget infos not yet in BgDataModel (e.g. freshly drag-dropped). */
+    private val knownWidgetInfos = mutableMapOf<Int, LauncherAppWidgetInfo>()
+
+    private var stackInfo: WidgetStackInfo? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var autoRotateRunnable: Runnable? = null
+    private var refreshRunnable: Runnable? = null
+
+    /** Pending posts from [onAppWidgetConfigureCompleted]; cleared before rescheduling to avoid overlap. */
+    private var configureCompletedUpgradeRunnable: Runnable? = null
+    private var isRefreshing = false
+    private var refreshAttempts = 0
+    private var stackChangeListener: WidgetStackChangeListener? = null
+    private var wrapping = false
+    private var wrapOverlay: ImageView? = null
+
+    private val launcher: Launcher? = try {
+        Launcher.getLauncher(context)
+    } catch (_: Exception) {
+        null
+    }
+    private val widgetHolder: LauncherWidgetHolder? = launcher?.appWidgetHolder
+    private val widgetInflater: WidgetInflater? = launcher?.let { WidgetInflater(it) }
+
+    // ──────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ──────────────────────────────────────────────────────────────
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+
+        viewPager = findViewById(R.id.widget_stack_pager)!!
+        indicator = findViewById(R.id.widget_stack_page_indicator)!!
+
+        viewPager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_EACH_SIDE
+
+        isLongClickable = false
+        isClickable = false
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                indicator.setPageOffset(position, positionOffset)
+            }
+
+            override fun onPageSelected(position: Int) {
+                stackInfo?.currentIndex = position
+                if (stackInfo?.autoRotate == true) {
+                    restartAutoRotate()
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == ViewPager2.SCROLL_STATE_IDLE && wrapping.not()) {
+                    ensurePageBound(viewPager.currentItem)
+                }
+            }
+        })
+
+        viewPager.adapter = adapter
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        refreshAttempts = 0
+        if (stackInfo?.autoRotate == true) startAutoRotate()
+        scheduleRefreshIfNeeded()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        stopAutoRotate()
+        cancelRefresh()
+        cancelWrapAnimation()
+        configureCompletedUpgradeRunnable = null
+        handler.removeCallbacksAndMessages(null)
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
+        applyWidgetScaling()
+    }
+
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        super.setOnLongClickListener(null)
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // Public API
+    // ──────────────────────────────────────────────────────────────
+
+    fun setStackChangeListener(listener: WidgetStackChangeListener?) {
+        stackChangeListener = listener
+    }
+
+    fun getStackInfo(): WidgetStackInfo? = stackInfo
+
+    fun pageCount(): Int = widgetViews.size
+
+    fun currentPage(): Int = if (::viewPager.isInitialized) viewPager.currentItem else 0
+
+    @JvmOverloads
+    fun setPage(index: Int, smoothScroll: Boolean, vertical: Boolean = viewPager.isVertical) {
+        if (!::viewPager.isInitialized || widgetViews.isEmpty()) return
+        val count = widgetViews.size
+        val current = viewPager.currentItem
+        val page = ((index % count) + count) % count
+        if (page == current) {
+            ensurePageBound(page)
+            return
+        }
+        // `index` is current±1 (may be -1 or count). That keeps wrap direction; modulo alone
+        // would make last→first look like a reverse ViewPager2 animation.
+        val wrappingAround = count > 1 && (index >= count || index < 0)
+        if (smoothScroll && wrappingAround) {
+            animateWrap(page, forward = index > current, vertical = vertical)
+            return
+        }
+        if (wrapping) cancelWrapAnimation()
+        viewPager.setCurrentItem(page, smoothScroll)
+        stackInfo?.currentIndex = page
+        if (!smoothScroll) ensurePageBound(page)
+    }
+
+    /**
+     * ViewPager2 always takes the short path, so last→first slides backward. Snapshot the
+     * destination (leave the live widget in its holder) and slide it in beside the current page.
+     */
+    private fun animateWrap(toPage: Int, forward: Boolean, vertical: Boolean) {
+        if (wrapping) return
+        val pager = viewPager.pager
+        val size = if (vertical) pager.height.toFloat() else pager.width.toFloat()
+        if (size <= 0f) {
+            viewPager.setCurrentItem(toPage, false)
+            stackInfo?.currentIndex = toPage
+            return
+        }
+
+        wrapping = true
+        val outgoing = if (forward) -size else size
+        val incomingStart = -outgoing
+        val snapshot = widgetViews.getOrNull(toPage)?.let { snapshotView(it) }
+        val overlay = if (snapshot != null) {
+            ImageView(context).apply {
+                setImageBitmap(snapshot)
+                scaleType = ImageView.ScaleType.FIT_XY
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                if (vertical) translationY = incomingStart else translationX = incomingStart
+            }.also {
+                wrapOverlay = it
+                viewPager.addView(it)
+            }
+        } else {
+            null
+        }
+
+        val interpolator = DecelerateInterpolator()
+        pager.animate().cancel()
+        pager.animate()
+            .setDuration(WRAP_ANIM_MS)
+            .setInterpolator(interpolator)
+            .apply {
+                if (vertical) translationY(outgoing) else translationX(outgoing)
+            }
+        val incomingAnim = overlay?.animate()
+            ?.setDuration(WRAP_ANIM_MS)
+            ?.setInterpolator(interpolator)
+            ?.apply {
+                if (vertical) translationY(0f) else translationX(0f)
+            }
+        val finish = Runnable { finishWrap(toPage) }
+        if (incomingAnim != null) {
+            incomingAnim.withEndAction(finish)
+        } else {
+            pager.animate().withEndAction(finish)
+        }
+    }
+
+    private fun finishWrap(toPage: Int) {
+        if (!::viewPager.isInitialized) {
+            wrapping = false
+            return
+        }
+        val pager = viewPager.pager
+        pager.animate().cancel()
+        pager.translationX = 0f
+        pager.translationY = 0f
+        removeWrapOverlay()
+        viewPager.setCurrentItem(toPage, false)
+        stackInfo?.currentIndex = toPage
+        indicator.setPageOffset(toPage, 0f)
+        wrapping = false
+        ensurePageBound(toPage)
+    }
+
+    private fun cancelWrapAnimation() {
+        if (!::viewPager.isInitialized) return
+        val pager = viewPager.pager
+        pager.animate().cancel()
+        pager.translationX = 0f
+        pager.translationY = 0f
+        removeWrapOverlay()
+        wrapping = false
+    }
+
+    private fun removeWrapOverlay() {
+        wrapOverlay?.let { overlay ->
+            overlay.animate().cancel()
+            overlay.setImageDrawable(null)
+            (overlay.parent as? ViewGroup)?.removeView(overlay)
+        }
+        wrapOverlay = null
+    }
+
+    private fun snapshotView(view: View): Bitmap? {
+        val width = if (view.width > 0) view.width else viewPager.width
+        val height = if (view.height > 0) view.height else viewPager.height
+        if (width <= 0 || height <= 0) return null
+        return runCatching {
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { bitmap ->
+                view.draw(Canvas(bitmap))
+            }
+        }.getOrNull()
+    }
+
+    /**
+     * ViewPager2 can keep an empty holder after a wrap/recycle and skip [RecyclerView.Adapter.onBindViewHolder]
+     * because of stable ids. Put the live widget back on the visible page if it was detached.
+     */
+    private fun ensurePageBound(page: Int) {
+        if (!::viewPager.isInitialized) return
+        val view = widgetViews.getOrNull(page) ?: return
+        val rv = viewPager.pager.getChildAt(0) as? RecyclerView ?: return
+        val holder = rv.findViewHolderForAdapterPosition(page) as? PageVH
+        if (holder != null && view.parent != holder.container) {
+            adapter.notifyItemChanged(page)
+        } else if (view.parent == null) {
+            adapter.notifyItemChanged(page)
+        }
+    }
+
+    /**
+     * Live resize only: updates each member's AppWidget size ranges for the preview spans without
+     * database writes or [setStackInfo] (which would rebuild the pager).
+     */
+    fun updateMemberWidgetSizeRangesForResize(spanX: Int, spanY: Int) {
+        val launcherInstance = launcher ?: return
+        for (view in widgetViews) {
+            if (view is PendingAppWidgetHostView) continue
+            WidgetSizes.updateWidgetSizeRanges(view, launcherInstance, spanX, spanY)
+        }
+    }
+
+    /**
+     * [NavigableAppWidgetHostView.getScaleToFit] for the visible page — matches single-widget
+     * resize-frame sizing ([com.android.launcher3.AppWidgetResizeFrame]).
+     */
+    fun getCurrentMemberScaleToFit(): Float {
+        if (!::viewPager.isInitialized || widgetViews.isEmpty()) return 1f
+        val idx = viewPager.currentItem.coerceIn(0, widgetViews.lastIndex)
+        val host = widgetViews[idx] as? NavigableAppWidgetHostView ?: return 1f
+        return host.scaleToFit
+    }
+
+    /**
+     * Call after the provider's configuration activity finishes for a widget in this stack.
+     * When the launcher skips the normal post-config path for stacked widgets,
+     * [LauncherAppWidgetInfo.FLAG_UI_NOT_READY] is never cleared and the cell stays on
+     * "tap to finish setup" unless we update the item and re-run [refreshPendingWidgets].
+     */
+    fun onAppWidgetConfigureCompleted(appWidgetId: Int) {
+        val ids = stackInfo?.widgetIds ?: return
+        if (appWidgetId !in ids) return
+
+        val widgetInfo = findWidgetInfo(appWidgetId) ?: return
+        if (widgetInfo.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+            widgetInfo.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED
+            widgetInfo.pendingItemInfo = null
+            launcher?.modelWriter?.updateItemInDatabase(widgetInfo)
+        }
+
+        // While the widget was "tap to finish setup", refreshPendingWidgets() may have hit
+        // MAX_REFRESH_ATTEMPTS and stopped scheduling — a later call would no-op forever
+        // until process restart unless we reset counters here.
+        cancelRefresh()
+
+        configureCompletedUpgradeRunnable?.let { handler.removeCallbacks(it) }
+        val upgradeRunnable = Runnable {
+            if (!isAttachedToWindow) return@Runnable
+            if (appWidgetId !in (stackInfo?.widgetIds ?: emptyList())) return@Runnable
+            refreshAttempts = 0
+            refreshPendingWidgets()
+        }
+        configureCompletedUpgradeRunnable = upgradeRunnable
+        handler.post(upgradeRunnable)
+        // Config activity can return before AppWidgetManager has pushed RemoteViews; retry once.
+        handler.postDelayed(upgradeRunnable, 350)
+    }
+
+    @JvmOverloads
+    fun setStackInfo(info: WidgetStackInfo, knownWidgets: List<LauncherAppWidgetInfo> = emptyList()) {
+        for (w in knownWidgets) knownWidgetInfos[w.appWidgetId] = w
+        cancelWrapAnimation()
+        val oldInfo = stackInfo
+        stackInfo = info
+
+        if (::viewPager.isInitialized) {
+            viewPager.isVertical = info.verticalSwipe
+            viewPager.offscreenPageLimit = min(
+                info.widgetIds.size.coerceAtLeast(1),
+                OFFSCREEN_PAGE_LIMIT_EACH_SIDE,
+            )
+        }
+
+        rebuildWidgetViews(info)
+
+        adapter.notifyDataSetChanged()
+        indicator.setNumPages(info.size())
+
+        val page = if (oldInfo != null && viewPager.currentItem < widgetViews.size) {
+            viewPager.currentItem
+        } else {
+            info.currentIndex.coerceIn(0, (widgetViews.size - 1).coerceAtLeast(0))
+        }
+        if (::viewPager.isInitialized) viewPager.setCurrentItem(page, false)
+
+        if (info.autoRotate) startAutoRotate() else stopAutoRotate()
+
+        handler.post { applyWidgetScaling() }
+        scheduleRefreshIfNeeded()
+        notifyStackChanged()
+    }
+
+    fun addWidget(widgetInfo: LauncherAppWidgetInfo) {
+        knownWidgetInfos[widgetInfo.appWidgetId] = widgetInfo
+        addWidget(widgetInfo.appWidgetId)
+    }
+
+    fun addWidget(widgetId: Int) {
+        val view = createWidgetView(widgetId) ?: return
+        widgetViews.add(view)
+        adapter.notifyDataSetChanged()
+
+        stackInfo?.let { info ->
+            val newIds = info.widgetIds + widgetId
+            val updated = info.copy(widgetIds = newIds)
+            stackInfo = updated
+            indicator.setNumPages(newIds.size)
+            saveStackToDb(updated)
+            notifyStackChanged()
+        }
+
+        if (view is PendingAppWidgetHostView) scheduleRefreshIfNeeded()
+    }
+
+    fun removeWidget(widgetId: Int) {
+        val idx = widgetViews.indexOfFirst { it.appWidgetId == widgetId }
+        if (idx == -1) return
+
+        widgetViews.removeAt(idx)
+        adapter.notifyDataSetChanged()
+
+        stackInfo?.let { info ->
+            val newIds = info.widgetIds.filter { it != widgetId }
+
+            if (newIds.size == 1) {
+                getParentStackView()?.let { parent ->
+                    stackChangeListener?.onStackShouldCollapse(parent, newIds.first())
+                }
+                return
+            }
+
+            val updated = info.copy(
+                widgetIds = newIds,
+                currentIndex = info.currentIndex.coerceIn(0, (newIds.size - 1).coerceAtLeast(0)),
+            )
+            stackInfo = updated
+            indicator.setNumPages(newIds.size)
+            saveStackToDb(updated)
+            notifyStackChanged()
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // View rebuilding
+    // ──────────────────────────────────────────────────────────────
+
+    private fun rebuildWidgetViews(info: WidgetStackInfo) {
+        val existing = widgetViews.associateBy { it.appWidgetId }
+        val ordered = mutableListOf<LauncherAppWidgetHostView>()
+
+        for (widgetId in info.widgetIds) {
+            val reused = existing[widgetId]
+            if (reused != null) {
+                ordered.add(reused)
+                continue
+            }
+            val created = createWidgetView(widgetId)
+            if (created != null) {
+                ordered.add(created)
+                continue
+            }
+            val placeholder = createPlaceholder(widgetId, info)
+            if (placeholder != null) {
+                ordered.add(placeholder)
+            }
+        }
+
+        widgetViews.clear()
+        widgetViews.addAll(ordered)
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // Widget creation (single path)
+    // ──────────────────────────────────────────────────────────────
+
+    private fun createWidgetView(widgetId: Int): LauncherAppWidgetHostView? {
+        val launcherInstance = launcher ?: return null
+        val holder = widgetHolder ?: return null
+        val inflater = widgetInflater ?: return null
+
+        val widgetInfo = findWidgetInfo(widgetId) ?: return null
+
+        var result = inflater.inflateAppWidget(widgetInfo)
+
+        if (result.type == WidgetInflater.TYPE_DELETE) {
+            result = tryRestoreWidget(widgetInfo, inflater) ?: return null
+        }
+
+        syncPositionToStack(widgetInfo, launcherInstance)
+
+        return when (result.type) {
+            WidgetInflater.TYPE_REAL -> {
+                val provider = result.widgetInfo ?: return null
+                // The holder can only create a fully-working widget view when it
+                // is listening AND we are on the main thread.  Outside of those
+                // conditions createView returns an empty placeholder that never
+                // receives RemoteViews updates.  Create a PendingAppWidgetHostView
+                // instead so that refreshPendingWidgets upgrades it later.
+                if (!holder.isListening || Looper.myLooper() != Looper.getMainLooper()) {
+                    val pendingView = PendingAppWidgetHostView(context, holder, widgetInfo, provider)
+                    configureWidgetView(pendingView, widgetInfo)
+                    return pendingView
+                }
+                val hostView = holder.createView(widgetId, provider) as? LauncherAppWidgetHostView
+                    ?: return null
+                hostView.setAppWidget(widgetId, provider)
+                configureWidgetView(hostView, widgetInfo)
+                hostView
+            }
+
+            WidgetInflater.TYPE_PENDING -> {
+                val wmHelper = WidgetManagerHelper(context)
+                val provider = result.widgetInfo
+                    ?: wmHelper.findProvider(widgetInfo.providerName, widgetInfo.user)
+                val pendingView = PendingAppWidgetHostView(context, holder, widgetInfo, provider)
+                configureWidgetView(pendingView, widgetInfo)
+                pendingView
+            }
+
+            else -> null
+        }
+    }
+
+    private fun createPlaceholder(widgetId: Int, info: WidgetStackInfo): LauncherAppWidgetHostView? {
+        val holder = widgetHolder ?: return null
+        val widgetInfo = findWidgetInfo(widgetId) ?: return null
+        val placeholder = PendingAppWidgetHostView(context, holder, widgetInfo, null)
+        configureWidgetView(placeholder, widgetInfo)
+        return placeholder
+    }
+
+    private fun configureWidgetView(view: LauncherAppWidgetHostView, widgetInfo: LauncherAppWidgetInfo) {
+        view.tag = widgetInfo
+        view.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+        )
+        view.isClickable = false
+        view.isFocusable = false
+        if (view is NavigableAppWidgetHostView) {
+            view.post { applyScalingToWidget(view) }
+        }
+    }
+
+    /** Stack cache + model; used when collapsing if [BgDataModel] has no row for a member. */
+    fun getWidgetInfoForMember(widgetId: Int): LauncherAppWidgetInfo? = findWidgetInfo(widgetId)
+
+    private fun findWidgetInfo(widgetId: Int): LauncherAppWidgetInfo? {
+        knownWidgetInfos[widgetId]?.let { return it }
+        val bgDataModel = launcher?.model?.getBgDataModel() ?: return null
+        return synchronized(bgDataModel) {
+            for (item in bgDataModel.itemsIdMap) {
+                if (item is LauncherAppWidgetInfo && item.appWidgetId == widgetId) {
+                    return@synchronized item
+                }
+            }
+            null
+        }
+    }
+
+    /**
+     * Attempts to restore a widget whose providerName / targetComponent is missing
+     * so that [WidgetInflater] no longer returns [WidgetInflater.TYPE_DELETE].
+     */
+    private fun tryRestoreWidget(
+        widgetInfo: LauncherAppWidgetInfo,
+        inflater: WidgetInflater,
+    ): WidgetInflater.InflationResult? {
+        if (widgetInfo.providerName != null && widgetInfo.targetComponent != null) return null
+
+        val wmHelper = WidgetManagerHelper(context)
+        return try {
+            val provider = wmHelper.getLauncherAppWidgetInfo(
+                widgetInfo.appWidgetId,
+                widgetInfo.providerName,
+            ) ?: return null
+            widgetInfo.providerName = provider.getComponent()
+            launcher?.modelWriter?.updateItemInDatabase(widgetInfo)
+            val retry = inflater.inflateAppWidget(widgetInfo)
+            if (retry.type == WidgetInflater.TYPE_DELETE) null else retry
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to restore widget ${widgetInfo.appWidgetId}", e)
+            null
+        }
+    }
+
+    /** Aligns a widget's persisted position to the current stack bounds. */
+    private fun syncPositionToStack(
+        widgetInfo: LauncherAppWidgetInfo,
+        launcherInstance: Launcher,
+    ) {
+        val info = stackInfo ?: return
+        val needsUpdate = widgetInfo.screenId != info.screenId ||
+            widgetInfo.cellX != info.cellX ||
+            widgetInfo.cellY != info.cellY ||
+            widgetInfo.container != info.container ||
+            widgetInfo.widgetStackId != info.stackId
+
+        if (!needsUpdate) return
+
+        widgetInfo.screenId = info.screenId
+        widgetInfo.cellX = info.cellX
+        widgetInfo.cellY = info.cellY
+        widgetInfo.container = info.container
+        widgetInfo.widgetStackId = info.stackId
+        widgetInfo.sourceContainer = info.container
+
+        launcherInstance.modelWriter?.modifyItemInDatabase(
+            widgetInfo,
+            info.container,
+            info.screenId,
+            info.cellX,
+            info.cellY,
+            widgetInfo.spanX,
+            widgetInfo.spanY,
+        )
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // Scaling
+    // ──────────────────────────────────────────────────────────────
+
+    private fun applyWidgetScaling() {
+        for (view in widgetViews) {
+            if (view is NavigableAppWidgetHostView) applyScalingToWidget(view)
+        }
+    }
+
+    private fun applyScalingToWidget(widgetView: NavigableAppWidgetHostView) {
+        val profile = launcher?.deviceProfile ?: return
+        val itemInfo = widgetView.tag as? com.android.launcher3.model.data.ItemInfo ?: return
+
+        val scale = profile.getAppWidgetScale(itemInfo)
+        widgetView.setScaleToFit(minOf(scale.x, scale.y))
+
+        val w = widgetView.width.takeIf { it > 0 } ?: widgetView.measuredWidth
+        val h = widgetView.height.takeIf { it > 0 } ?: widgetView.measuredHeight
+        if (w > 0 && h > 0) {
+            widgetView.translateDelegate.setTranslation(
+                MultiTranslateDelegate.INDEX_WIDGET_CENTERING,
+                -(w - w * scale.x) / 2f,
+                -(h - h * scale.y) / 2f,
+            )
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // Refresh pending → real
+    // ──────────────────────────────────────────────────────────────
+
+    private fun scheduleRefreshIfNeeded() {
+        if (!isAttachedToWindow) return
+        val info = stackInfo ?: return
+        val hasPending = widgetViews.any { it is PendingAppWidgetHostView }
+        val hasMissing = info.widgetIds.size > widgetViews.size
+        if (!hasPending && !hasMissing) return
+        handler.post { refreshPendingWidgets() }
+    }
+
+    private fun cancelRefresh() {
+        refreshRunnable?.let { handler.removeCallbacks(it) }
+        refreshRunnable = null
+        isRefreshing = false
+        refreshAttempts = 0
+    }
+
+    private fun refreshPendingWidgets() {
+        if (!isAttachedToWindow || isRefreshing) return
+        if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
+            cancelRefresh()
+            return
+        }
+        isRefreshing = true
+        refreshAttempts++
+
+        val launcherInstance = launcher ?: run {
+            isRefreshing = false
+            return
+        }
+        val inflater = widgetInflater ?: run {
+            isRefreshing = false
+            return
+        }
+        val holder = widgetHolder ?: run {
+            isRefreshing = false
+            return
+        }
+        val currentInfo = stackInfo ?: run {
+            isRefreshing = false
+            return
+        }
+
+        // Can't create real widget views until the host is listening on the main thread.
+        if (!holder.isListening) {
+            isRefreshing = false
+            scheduleRetry(currentInfo)
+            return
+        }
+
+        try {
+            var changed = false
+
+            // 1) Fill missing views (keep order aligned with widgetIds)
+            val existingIds = widgetViews.map { it.appWidgetId }.toMutableSet()
+            for ((pos, widgetId) in currentInfo.widgetIds.withIndex()) {
+                if (widgetId in existingIds) continue
+                val view = createWidgetView(widgetId) ?: createPlaceholder(widgetId, currentInfo)
+                    ?: continue
+                // Pad [size..pos) with the correct id for each index (not duplicates of `view`).
+                while (widgetViews.size < pos) {
+                    val fillIndex = widgetViews.size
+                    val fillId = currentInfo.widgetIds[fillIndex]
+                    val fillView = createWidgetView(fillId) ?: createPlaceholder(fillId, currentInfo)
+                        ?: break
+                    widgetViews.add(fillView)
+                    existingIds.add(fillId)
+                    changed = true
+                }
+                when {
+                    widgetViews.size < pos -> continue
+
+                    pos < widgetViews.size -> {
+                        val old = widgetViews[pos]
+                        existingIds.remove(old.appWidgetId)
+                        widgetViews[pos] = view
+                    }
+
+                    else -> widgetViews.add(view)
+                }
+                existingIds.add(widgetId)
+                changed = true
+            }
+
+            // 2) Upgrade pending views that are now ready
+            val snapshot = widgetViews.toList()
+            for ((i, view) in snapshot.withIndex()) {
+                if (view !is PendingAppWidgetHostView) continue
+                val widgetInfo = view.tag as? LauncherAppWidgetInfo ?: continue
+
+                val result = inflater.inflateAppWidget(widgetInfo)
+                if (result.isUpdate) {
+                    launcherInstance.modelWriter?.updateItemInDatabase(widgetInfo)
+                }
+
+                if (result.type == WidgetInflater.TYPE_REAL) {
+                    val wmHelper = WidgetManagerHelper(context)
+                    val provider = result.widgetInfo
+                        ?: wmHelper.findProvider(widgetInfo.providerName, widgetInfo.user)
+                        ?: continue
+                    try {
+                        val real = holder.createView(widgetInfo.appWidgetId, provider)
+                            as? LauncherAppWidgetHostView ?: continue
+                        real.setAppWidget(widgetInfo.appWidgetId, provider)
+                        configureWidgetView(real, widgetInfo)
+                        launcherInstance.itemInflater?.prepareAppWidget(real, widgetInfo)
+                        WidgetSizes.updateWidgetSizeRanges(
+                            real,
+                            launcherInstance,
+                            widgetInfo.spanX,
+                            widgetInfo.spanY,
+                        )
+                        widgetViews[i] = real
+                        changed = true
+                        if (widgetInfo.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+                            widgetInfo.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED
+                            launcherInstance.modelWriter?.updateItemInDatabase(widgetInfo)
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to create real view for ${widgetInfo.appWidgetId}", e)
+                    }
+                }
+            }
+
+            if (changed) {
+                adapter.notifyDataSetChanged()
+                refreshAttempts = 0
+            }
+
+            // 3) Schedule retry if still needed
+            val stillPending = widgetViews.any { it is PendingAppWidgetHostView }
+            val stillMissing = currentInfo.widgetIds.size > widgetViews.size
+            if (stillPending || stillMissing) {
+                scheduleRetry(currentInfo)
+            } else {
+                refreshRunnable?.let { handler.removeCallbacks(it) }
+                refreshRunnable = null
+                refreshAttempts = 0
+            }
+        } finally {
+            isRefreshing = false
+        }
+    }
+
+    private fun scheduleRetry(currentInfo: WidgetStackInfo) {
+        if (!isAttachedToWindow || refreshAttempts >= MAX_REFRESH_ATTEMPTS) return
+        val delay = (500L * refreshAttempts).coerceAtMost(2000L)
+        refreshRunnable?.let { handler.removeCallbacks(it) }
+        refreshRunnable = Runnable { if (isAttachedToWindow) refreshPendingWidgets() }
+        handler.postDelayed(refreshRunnable!!, delay)
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // Auto-rotate
+    // ──────────────────────────────────────────────────────────────
+
+    private fun startAutoRotate() {
+        stopAutoRotate()
+        scheduleNextAutoRotate()
+    }
+
+    private fun stopAutoRotate() {
+        autoRotateRunnable?.let { handler.removeCallbacks(it) }
+        autoRotateRunnable = null
+    }
+
+    private fun restartAutoRotate() {
+        stopAutoRotate()
+        scheduleNextAutoRotate()
+    }
+
+    private fun scheduleNextAutoRotate() {
+        val info = stackInfo ?: return
+        if (!info.autoRotate || info.size() <= 1) return
+        autoRotateRunnable = Runnable {
+            if (!::viewPager.isInitialized) return@Runnable
+            setPage(viewPager.currentItem + 1, true)
+            scheduleNextAutoRotate()
+        }.also { handler.postDelayed(it, AUTO_ROTATE_INTERVAL_MS) }
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // Helpers
+    // ──────────────────────────────────────────────────────────────
+
+    private fun getParentStackView(): WidgetStackView? {
+        var p = parent
+        while (p != null) {
+            if (p is WidgetStackView) return p
+            p = p.parent
+        }
+        return null
+    }
+
+    private fun notifyStackChanged() {
+        getParentStackView()?.let { stackChangeListener?.onStackChanged(it) }
+    }
+
+    private fun saveStackToDb(info: WidgetStackInfo) {
+        launcher?.modelWriter?.saveWidgetStack(info)
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // ViewPager2 adapter
+    // ──────────────────────────────────────────────────────────────
+
+    private inner class PageVH(val container: FrameLayout) : RecyclerView.ViewHolder(container)
+
+    private inner class WidgetStackAdapter : RecyclerView.Adapter<PageVH>() {
+
+        init {
+            setHasStableIds(true)
+        }
+
+        override fun getItemCount(): Int = widgetViews.size
+
+        override fun getItemId(position: Int): Long {
+            return widgetViews.getOrNull(position)?.appWidgetId?.toLong() ?: RecyclerView.NO_ID
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageVH {
+            val frame = FrameLayout(parent.context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                )
+                isClickable = false
+                isFocusable = false
+            }
+            return PageVH(frame)
+        }
+
+        override fun onBindViewHolder(holder: PageVH, position: Int) {
+            holder.container.removeAllViews()
+            val view = widgetViews.getOrNull(position) ?: return
+            (view.parent as? ViewGroup)?.removeView(view)
+            holder.container.addView(
+                view,
+                FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                ),
+            )
+            if (view is NavigableAppWidgetHostView) {
+                applyScalingToWidget(view)
+            }
+        }
+
+        override fun onViewRecycled(holder: PageVH) {
+            // Leave the host view attached. Stripping it here left the last page empty
+            // when ViewPager2 reused the holder without a bind.
+        }
+    }
+}

@@ -227,6 +227,13 @@ fun HomeScreenPreferences(
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
+            SliderPreference(
+                label = stringResource(id = R.string.widget_move_hold_duration_label),
+                adapter = prefs2.widgetMoveHoldDuration.getAdapter(),
+                step = 0.5f,
+                valueRange = 0.5f..5f,
+                showUnit = "s",
+            )
             SwitchPreference(
                 adapter = prefs2.roundedWidgets.getAdapter(),
                 label = stringResource(id = R.string.force_rounded_widgets),
