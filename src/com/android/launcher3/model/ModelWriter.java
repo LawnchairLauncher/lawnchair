@@ -22,6 +22,7 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -47,6 +48,9 @@ import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.widget.LauncherWidgetHolder;
+
+import app.lawnchair.widget.WidgetStackInfo;
+import app.lawnchair.widget.WidgetStackManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -302,6 +306,13 @@ public class ModelWriter {
     }
 
     /**
+     * Returns the ModelDbController for database operations
+     */
+    public ModelDbController getModelDbController() {
+        return mModel.getModelDbController();
+    }
+
+    /**
      * Removes all the items from the database matching {@param matcher}.
      */
     public void deleteItemsFromDatabase(@NonNull final Predicate<ItemInfo> matcher,
@@ -364,6 +375,99 @@ public class ModelWriter {
             enqueueDeleteRunnable(newModelTask(() -> holder.deleteAppWidgetId(info.appWidgetId)));
         }
         deleteItemFromDatabase(info, reason);
+    }
+
+    /**
+     * Deletes an entire widget stack: removes every widget in the stack from the
+     * database, releases their AppWidget IDs, and cleans up the stack metadata.
+     *
+     * Non-first widgets in a stack are never added to {@link BgDataModel#itemsIdMap}
+     * during binding, so we query the database directly for the full set of widget IDs.
+     */
+    public void deleteWidgetStack(final WidgetStackInfo stackInfo,
+            final LauncherWidgetHolder holder, @Nullable final String reason) {
+        // Delete widgets that ARE in BgDataModel (the first widget)
+        for (int widgetId : stackInfo.getWidgetIds()) {
+            LauncherAppWidgetInfo found = null;
+            synchronized (mBgDataModel) {
+                for (ItemInfo item : mBgDataModel.itemsIdMap) {
+                    if (item instanceof LauncherAppWidgetInfo w
+                            && w.appWidgetId == widgetId) {
+                        found = w;
+                        break;
+                    }
+                }
+            }
+            if (found != null) {
+                deleteWidgetInfo(found, holder, reason);
+            }
+        }
+
+        // Delete remaining widgets directly from the database (non-first stack members
+        // that were never inflated into BgDataModel).
+        enqueueDeleteRunnable(newModelTask(() -> {
+            final ModelDbController dbController = mModel.getModelDbController();
+            try (SQLiteTransaction t = dbController.newTransaction()) {
+                SQLiteDatabase db = t.getDb();
+                for (int widgetId : stackInfo.getWidgetIds()) {
+                    // Release the AppWidget ID
+                    if (holder != null) {
+                        try {
+                            holder.deleteAppWidgetId(widgetId);
+                        } catch (Exception e) {
+                            Log.w(TAG, "Failed to delete app widget id " + widgetId, e);
+                        }
+                    }
+                    // Delete the row from the database
+                    db.delete(TABLE_NAME,
+                            Favorites.APPWIDGET_ID + "=?",
+                            new String[]{String.valueOf(widgetId)});
+                }
+                t.commit();
+            }
+        }));
+    }
+
+    /**
+     * Saves a widget stack to the database
+     * IMPORTANT: This should be called AFTER all individual widgets have been updated
+     * to ensure consistency between database and in-memory model
+     */
+    public void saveWidgetStack(final WidgetStackInfo stackInfo) {
+        newModelTask(() -> {
+            final ModelDbController dbController = mModel.getModelDbController();
+            try (SQLiteTransaction t = dbController.newTransaction()) {
+                SQLiteDatabase db = t.getDb();
+                app.lawnchair.widget.WidgetStackManager.INSTANCE.saveStack(db, stackInfo);
+                t.commit();
+            }
+            // Update memory only after the transaction has ended successfully so we do not
+            // diverge from the DB if commit/endTransaction fails.
+            synchronized (mBgDataModel) {
+                List<Integer> widgetIdsList = stackInfo.getWidgetIds();
+                long stackIdValue = stackInfo.getStackId();
+                for (Integer widgetIdObj : widgetIdsList) {
+                    int widgetId = widgetIdObj;
+                    ItemInfo item = null;
+                    for (ItemInfo info : mBgDataModel.itemsIdMap) {
+                        if (info instanceof LauncherAppWidgetInfo) {
+                            LauncherAppWidgetInfo wInfo = (LauncherAppWidgetInfo) info;
+                            if (wInfo.appWidgetId == widgetId) {
+                                item = info;
+                                break;
+                            }
+                        }
+                    }
+                    if (item instanceof LauncherAppWidgetInfo) {
+                        LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) item;
+                        if (widgetInfo.widgetStackId == null
+                                || !widgetInfo.widgetStackId.equals(stackIdValue)) {
+                            widgetInfo.widgetStackId = stackIdValue;
+                        }
+                    }
+                }
+            }
+        }).executeOnModelThread();
     }
 
     private void notifyDelete(Collection<? extends ItemInfo> items) {

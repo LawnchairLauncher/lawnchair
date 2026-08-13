@@ -18,11 +18,15 @@ package com.android.launcher3.util
 
 import android.appwidget.AppWidgetHostView
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import app.lawnchair.widget.WidgetStackInfo
+import app.lawnchair.widget.WidgetStackManager
+import app.lawnchair.widget.WidgetStackView
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.R
@@ -50,6 +54,27 @@ class ItemInflater<T>(
 ) where T : Context, T : ActivityContext {
 
     private val widgetInflater = WidgetInflater(context)
+
+    /**
+     * One [WidgetStackManager.loadStack] per [widgetStackId] while binding a batch of items.
+     * Call [clearWidgetStackLoadCache] before and after inflating a list (e.g. workspace bind) so
+     * single-item inflates do not see stale stack JSON.
+     */
+    private val widgetStackLoadCache = mutableMapOf<Long, WidgetStackInfo?>()
+
+    /** Clears stack load cache; bracket multi-item inflation with before/after calls. */
+    fun clearWidgetStackLoadCache() {
+        widgetStackLoadCache.clear()
+    }
+
+    private fun loadStackCached(db: SQLiteDatabase, widgetStackId: Long): WidgetStackInfo? {
+        if (widgetStackLoadCache.containsKey(widgetStackId)) {
+            return widgetStackLoadCache[widgetStackId]
+        }
+        val loaded = WidgetStackManager.loadStack(db, widgetStackId)
+        widgetStackLoadCache[widgetStackId] = loaded
+        return loaded
+    }
 
     @JvmOverloads
     fun inflateItem(item: ItemInfo, writer: ModelWriter, nullableParent: ViewGroup? = null): View? {
@@ -113,6 +138,36 @@ class ItemInflater<T>(
     private fun inflateAppWidget(item: LauncherAppWidgetInfo, writer: ModelWriter): View? {
         TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId)
         try {
+            // Check if this widget is part of a stack
+            val widgetStackId = item.widgetStackId
+            if (widgetStackId != null) {
+                val db = writer.getModelDbController().db
+                val stackInfo = loadStackCached(db, widgetStackId)
+
+                if (stackInfo != null && stackInfo.widgetIds.isNotEmpty()) {
+                    val isFirstWidget = stackInfo.widgetIds.firstOrNull() == item.appWidgetId
+                    if (isFirstWidget) {
+                        val widgetStackView = WidgetStackView(context)
+                        widgetStackView.setStackInfo(stackInfo)
+                        widgetStackView.tag = item
+                        widgetStackView.isFocusable = true
+                        widgetStackView.onFocusChangeListener = focusListener
+                        return widgetStackView
+                    } else {
+                        return null
+                    }
+                }
+
+                // loadStack returned null — no other widget with this stackId
+                // exists. Only NOW is it safe to clear the orphaned reference.
+                if (stackInfo == null) {
+                    item.widgetStackId = null
+                    writer.updateItemInDatabase(item)
+                }
+                // Fall through to normal widget inflation
+            }
+
+            // Normal widget inflation (no stack or stack was invalid)
             val (type, reason, _, isUpdate, widgetInfo) = widgetInflater.inflateAppWidget(item)
             if (type == WidgetInflater.TYPE_DELETE) {
                 writer.deleteItemFromDatabase(item, reason)

@@ -27,4 +27,9 @@
     <item type="id" name="qsbIconTintSecondary" />
     <item type="id" name="qsbIconTintTertiary" />
     <item type="id" name="qsbIconTintQuaternary" />
+
+    <!-- Widget Stack IDs -->
+    <item type="id" name="widget_stack_content" />
+    <item type="id" name="widget_stack_pager" />
+    <item type="id" name="widget_stack_page_indicator" />
 </resources>

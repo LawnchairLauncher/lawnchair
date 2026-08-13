@@ -46,8 +46,60 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
     @Override
     public void onWidgetsBound() {
         BubbleTextView originalIcon = mPopupContainerWithArrow.getOriginalIcon();
+        
+        // For widget stacks and widgets, mOriginalIcon is null
+        // Skip widget bound updates for them to prevent deletion issues
+        // Widget stacks have their own shortcuts and don't need this update logic
+        // This prevents NullPointerException and widget deletion when popup is shown
+        if (originalIcon == null) {
+            // This is a widget or widget stack popup - skip widget shortcut handling
+            // The widget bound update is only for app icons that can have widgets
+            // Widget stacks don't use the WIDGETS shortcut system
+            return;
+        }
+        
+        // Validate tag is ItemInfo before proceeding (avoid ClassCastException on wrong type)
+        Object tag = originalIcon.getTag();
+        if (!(tag instanceof ItemInfo)) {
+            android.util.Log.w("LauncherPopupLiveUpdateHandler",
+                    "Original icon tag is not ItemInfo, skipping widget bound update");
+            return;
+        }
+        ItemInfo itemInfo = (ItemInfo) tag;
+        
+        // For widgets, validate widget info exists in model before accessing it
+        // This prevents deletion if widget info is stale or invalid
+        if (itemInfo instanceof com.android.launcher3.model.data.LauncherAppWidgetInfo) {
+            com.android.launcher3.model.data.LauncherAppWidgetInfo widgetInfo =
+                    (com.android.launcher3.model.data.LauncherAppWidgetInfo) itemInfo;
+            com.android.launcher3.model.BgDataModel bgDataModel = mContext.getModel().getBgDataModel();
+            boolean widgetExists = false;
+            synchronized (bgDataModel) {
+                // itemsIdMap is keyed by stable ItemInfo.id; avoid matching only appWidgetId in case
+                // the host reuses an id after delete/rebind.
+                ItemInfo fresh = bgDataModel.itemsIdMap.get(widgetInfo.id);
+                if (fresh instanceof com.android.launcher3.model.data.LauncherAppWidgetInfo) {
+                    com.android.launcher3.model.data.LauncherAppWidgetInfo wInfo =
+                            (com.android.launcher3.model.data.LauncherAppWidgetInfo) fresh;
+                    if (wInfo.appWidgetId == widgetInfo.appWidgetId) {
+                        widgetExists = true;
+                        itemInfo = wInfo;
+                        originalIcon.setTag(itemInfo);
+                    }
+                }
+            }
+            
+            // If widget doesn't exist in model, don't proceed to avoid triggering deletion
+            // This prevents the popup from trying to update with invalid widget info
+            if (!widgetExists) {
+                android.util.Log.w("LauncherPopupLiveUpdateHandler", 
+                        "Widget not found in model, skipping widget bound update to prevent deletion");
+                return;
+            }
+        }
+        
         SystemShortcut widgetInfo = SystemShortcut.WIDGETS.getShortcut(mContext,
-                (ItemInfo) originalIcon.getTag(), originalIcon);
+                itemInfo, originalIcon);
         View widgetsView = getWidgetsView(mPopupContainerWithArrow);
         if (widgetsView == null && mPopupContainerWithArrow.getWidgetContainer() != null) {
             widgetsView = getWidgetsView(mPopupContainerWithArrow.getWidgetContainer());
@@ -73,7 +125,7 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
                 // flicker as the animation restarts partway through, and this is a very rare
                 // edge case anyway.
                 mPopupContainerWithArrow.close(false);
-                PopupContainerWithArrow.showForIcon(mPopupContainerWithArrow.getOriginalIcon());
+                PopupContainerWithArrow.showForIcon(originalIcon);
             }
         } else if (widgetInfo == null && widgetsView != null) {
             // No widgets exist, but we previously added the shortcut so remove it.
@@ -83,7 +135,7 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
                 mPopupContainerWithArrow.getWidgetContainer().removeView(widgetsView);
             } else {
                 mPopupContainerWithArrow.close(false);
-                PopupContainerWithArrow.showForIcon(mPopupContainerWithArrow.getOriginalIcon());
+                PopupContainerWithArrow.showForIcon(originalIcon);
             }
         }
     }

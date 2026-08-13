@@ -146,6 +146,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     public int sourceContainer = LauncherSettings.Favorites.CONTAINER_UNKNOWN;
 
+    /**
+     * The widget stack ID that this widget belongs to, or null if not in a stack
+     */
+    @Nullable
+    public Long widgetStackId;
+
     public LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
         this.appWidgetId = appWidgetId;
         this.providerName = providerName;
@@ -196,6 +202,14 @@ public class LauncherAppWidgetInfo extends ItemInfo {
                 .put(LauncherSettings.Favorites.OPTIONS, options)
                 .put(LauncherSettings.Favorites.INTENT, bindOptions)
                 .put(LauncherSettings.Favorites.APPWIDGET_SOURCE, sourceContainer);
+        // Always persist stack columns so updates clear DB state when leaving a stack
+        // (otherwise LoaderCursor still sees the old WIDGET_STACK_ID after reload).
+        if (widgetStackId != null) {
+            writer.put(LauncherSettings.Favorites.WIDGET_STACK_ID, widgetStackId);
+        } else {
+            writer.putNull(LauncherSettings.Favorites.WIDGET_STACK_ID);
+            writer.putNull(LauncherSettings.Favorites.WIDGET_STACK_DATA);
+        }
     }
 
     @Override

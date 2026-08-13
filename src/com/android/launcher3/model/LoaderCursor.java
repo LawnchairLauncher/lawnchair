@@ -50,6 +50,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -108,6 +109,7 @@ public class LoaderCursor extends CursorWrapper {
     private final int mRankIndex;
     private final int mOptionsIndex;
     private final int mAppWidgetSourceIndex;
+    private final int mWidgetStackIdIndex;
 
     private final PackageManager mPM;
 
@@ -160,6 +162,8 @@ public class LoaderCursor extends CursorWrapper {
         mRankIndex = getColumnIndexOrThrow(Favorites.RANK);
         mOptionsIndex = getColumnIndexOrThrow(Favorites.OPTIONS);
         mAppWidgetSourceIndex = getColumnIndexOrThrow(Favorites.APPWIDGET_SOURCE);
+        // Widget stack ID is optional (new column, may not exist in older databases)
+        mWidgetStackIdIndex = getColumnIndex(Favorites.WIDGET_STACK_ID);
     }
 
     @Override
@@ -285,6 +289,16 @@ public class LoaderCursor extends CursorWrapper {
      */
     public int getAppWidgetSource() {
         return getInt(mAppWidgetSourceIndex);
+    }
+
+    /**
+     * When loading an app widget for the workspace, returns its widget stack ID, or null if not in a stack
+     */
+    @Nullable
+    public Long getWidgetStackId() {
+        if (mWidgetStackIdIndex == -1) return null;
+        if (isNull(mWidgetStackIdIndex)) return null;
+        return getLong(mWidgetStackIdIndex);
     }
 
     /**
@@ -507,7 +521,15 @@ public class LoaderCursor extends CursorWrapper {
             // cause the item loading to get skipped
             ShortcutKey.fromItemInfo(info);
         }
-        if (checkItemPlacement(info, dataModel.isFirstPagePinnedItemEnabled)) {
+        
+        // Skip placement checking for widgets in a stack - they don't occupy individual cells
+        boolean isInStack = false;
+        if (info instanceof LauncherAppWidgetInfo) {
+            LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
+            isInStack = widgetInfo.widgetStackId != null;
+        }
+        
+        if (isInStack || checkItemPlacement(info, dataModel.isFirstPagePinnedItemEnabled)) {
             dataModel.addItem(mContext, info, false, logger);
             if (mRestoreEventLogger != null) {
                 mRestoreEventLogger.logSingleFavoritesItemRestored(itemType);
