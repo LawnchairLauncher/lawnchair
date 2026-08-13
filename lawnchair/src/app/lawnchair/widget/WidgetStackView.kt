@@ -32,10 +32,8 @@ import com.android.launcher3.Reorderable
 import com.android.launcher3.dragndrop.DraggableView
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.touch.ItemLongClickListener
-import com.android.launcher3.dragndrop.DragOptions
 import com.android.launcher3.util.MultiTranslateDelegate
 import kotlin.math.abs
-import kotlin.math.hypot
 
 /**
  * Listener interface for widget stack changes
@@ -80,7 +78,6 @@ class WidgetStackView @JvmOverloads constructor(
     private var longPressDownX = 0f
     private var longPressDownY = 0f
     private var paging = false
-    private var menuGesture = false
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -152,7 +149,6 @@ class WidgetStackView @JvmOverloads constructor(
                 longPressDownX = ev.x
                 longPressDownY = ev.y
                 paging = false
-                menuGesture = false
                 // Vertical stacks must claim the stream now or All Apps / swipe-up
                 // steals MOVE. Horizontal stacks leave vertical gestures to the launcher.
                 if (vertical) {
@@ -162,20 +158,8 @@ class WidgetStackView @JvmOverloads constructor(
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (menuGesture) {
-                    val dist = hypot(
-                        (ev.x - longPressDownX).toDouble(),
-                        (ev.y - longPressDownY).toDouble(),
-                    )
-                    if (dist > touchSlop * 8) {
-                        menuGesture = false
-                        val launcher = Launcher.getLauncher(context)
-                        val info = tag as? LauncherAppWidgetInfo
-                        if (info != null && ItemLongClickListener.canStartDrag(launcher)) {
-                            ItemLongClickListener.beginDrag(this, launcher, info, DragOptions())
-                        }
-                    }
-                    return true
+                if (longPressHelper.hasPerformedLongPress()) {
+                    return false
                 }
                 if (paging) return true
                 if (pageCount <= 1) return false
@@ -192,12 +176,13 @@ class WidgetStackView @JvmOverloads constructor(
                 }
                 paging = true
                 longPressHelper.cancelLongPress()
+                ItemLongClickListener.cancelScheduledWidgetMoveMode(this)
                 disallowAncestorIntercept(true)
                 return true
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                menuGesture = false
+                ItemLongClickListener.cancelScheduledWidgetMoveMode(this)
                 if (!paging) {
                     disallowAncestorIntercept(false)
                     return false
@@ -235,11 +220,8 @@ class WidgetStackView @JvmOverloads constructor(
         return true
     }
 
-    override fun onLongClick(view: View): Boolean {
-        val handled = ItemLongClickListener.INSTANCE_WORKSPACE.onLongClick(view)
-        menuGesture = handled
-        return handled
-    }
+    override fun onLongClick(view: View): Boolean =
+        ItemLongClickListener.INSTANCE_WORKSPACE.onLongClick(view)
 
     override fun cancelLongPress() {
         super.cancelLongPress()

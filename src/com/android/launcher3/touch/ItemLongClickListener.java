@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
@@ -50,11 +51,16 @@ import app.lawnchair.widget.WidgetStackView;
 import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetImageView;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Class to handle long-clicks on workspace items and start drag as a result.
  */
 public class ItemLongClickListener {
+
+    private static Runnable sPendingWidgetMoveMode;
 
     public static final OnLongClickListener INSTANCE_WORKSPACE =
             ItemLongClickListener::onWorkspaceItemLongClick;
@@ -85,8 +91,6 @@ public class ItemLongClickListener {
         }
         
         // For widget stacks, show popup if available
-        // Use PreDragCondition to delay drag start until user moves their finger
-        // This keeps the popup open until drag actually begins
         if (v instanceof WidgetStackView) {
             ItemInfo item = (ItemInfo) v.getTag();
             if (item instanceof LauncherAppWidgetInfo) {
@@ -96,14 +100,41 @@ public class ItemLongClickListener {
         }
 
         launcher.setWaitingForResult(null);
-        if (widgetStackPopup != null) {
-            // Menu only. Creating a DragView here is what puts the widget preview
-            // under the finger on Edit stack / widget settings.
+        boolean isWidget = v instanceof LauncherAppWidgetHostView || v instanceof WidgetStackView;
+        if (isWidget) {
+            // Menu first. Keep holding to enter move mode; lift after that to resize.
+            scheduleWidgetMoveMode(v, launcher, (ItemInfo) v.getTag());
             return true;
         }
 
         beginDrag(v, launcher, (ItemInfo) v.getTag(), new DragOptions());
         return true;
+    }
+
+    private static void scheduleWidgetMoveMode(View v, Launcher launcher, ItemInfo info) {
+        cancelScheduledWidgetMoveMode(v);
+        Runnable enterMoveMode = () -> {
+            sPendingWidgetMoveMode = null;
+            if (!v.isAttachedToWindow() || !canStartDrag(launcher)) return;
+            AbstractFloatingView.closeAllOpenViews(launcher);
+            beginDrag(v, launcher, info, new DragOptions());
+        };
+        sPendingWidgetMoveMode = enterMoveMode;
+        v.postDelayed(enterMoveMode, getWidgetMoveHoldMs(v));
+    }
+
+    private static long getWidgetMoveHoldMs(View v) {
+        float seconds = PreferenceExtensionsKt.firstBlocking(
+                PreferenceManager2.getInstance(v.getContext()).getWidgetMoveHoldDuration());
+        return Math.max(0L, Math.round(seconds * 1000f));
+    }
+
+    /** Call when the finger lifts or a menu shortcut is pressed before move mode starts. */
+    public static void cancelScheduledWidgetMoveMode(View v) {
+        if (sPendingWidgetMoveMode != null) {
+            v.removeCallbacks(sPendingWidgetMoveMode);
+            sPendingWidgetMoveMode = null;
+        }
     }
 
     public static void beginDrag(View v, Launcher launcher, ItemInfo info,

@@ -608,6 +608,9 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         view.setOnClickListener(info);
         view.setOnTouchListener((v, event) -> {
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                if (mOriginalView != null) {
+                    ItemLongClickListener.cancelScheduledWidgetMoveMode(mOriginalView);
+                }
                 mActivityContext.getDragController().cancelDrag();
                 DragView.removeAllViews(mActivityContext);
             }
