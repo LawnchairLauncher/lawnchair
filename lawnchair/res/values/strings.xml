@@ -927,6 +927,7 @@
     <string name="edit_stack">Edit stack</string>
     <string name="add_widget_to_stack">Add widget to stack</string>
     <string name="auto_rotate_widgets">Automatically rotate between widgets</string>
+    <string name="widget_stack_vertical_swipe">Swipe up / down (instead of left / right)</string>
     <string name="save_stack">Save</string>
     <string name="remove_widget">Remove widget</string>
     <string name="widget_stack_sheet_subtitle">Stack uses a %1$d × %2$d cell area on the home screen.</string>

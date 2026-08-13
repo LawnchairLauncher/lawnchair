@@ -69,7 +69,8 @@ class VerticalSwipeTouchController(
             return false
         }
         return AbstractFloatingView.getTopOpenView(launcher) == null &&
-            launcher.isInState(LauncherState.NORMAL)
+            launcher.isInState(LauncherState.NORMAL) &&
+            !app.lawnchair.widget.WidgetStackView.isEventOverStack(launcher, ev)
     }
 
     override fun onDragStart(start: Boolean) {

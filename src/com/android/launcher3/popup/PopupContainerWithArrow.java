@@ -606,6 +606,13 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         }
         view.setTag(info);
         view.setOnClickListener(info);
+        view.setOnTouchListener((v, event) -> {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                mActivityContext.getDragController().cancelDrag();
+                DragView.removeAllViews(mActivityContext);
+            }
+            return false;
+        });
         return view;
     }
 

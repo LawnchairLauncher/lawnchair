@@ -26,13 +26,16 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.android.launcher3.CheckLongPressHelper
+import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Reorderable
 import com.android.launcher3.dragndrop.DraggableView
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.touch.ItemLongClickListener
+import com.android.launcher3.dragndrop.DragOptions
 import com.android.launcher3.util.MultiTranslateDelegate
 import kotlin.math.abs
+import kotlin.math.hypot
 
 /**
  * Listener interface for widget stack changes
@@ -76,6 +79,8 @@ class WidgetStackView @JvmOverloads constructor(
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private var longPressDownX = 0f
     private var longPressDownY = 0f
+    private var paging = false
+    private var menuGesture = false
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -115,10 +120,113 @@ class WidgetStackView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Nested widgets (lists, host views) call this to keep their own scrolling. Ignore it so
+     * stack paging still starts.
+     */
+    override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+        if (!disallowIntercept) {
+            super.requestDisallowInterceptTouchEvent(false)
+        }
+    }
+
+    /**
+     * Handle paging in [dispatchTouchEvent] so it cannot be skipped by child
+     * `requestDisallowInterceptTouchEvent`. Only the axis selected for this stack
+     * (horizontal or vertical) pages.
+     */
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (handleStackPaging(ev)) {
+            return true
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun usesVerticalSwipe(): Boolean = contentView.getStackInfo()?.verticalSwipe == true
+
+    private fun handleStackPaging(ev: MotionEvent): Boolean {
+        val pageCount = contentView.pageCount()
+        val vertical = usesVerticalSwipe()
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                longPressDownX = ev.x
+                longPressDownY = ev.y
+                paging = false
+                menuGesture = false
+                // Vertical stacks must claim the stream now or All Apps / swipe-up
+                // steals MOVE. Horizontal stacks leave vertical gestures to the launcher.
+                if (vertical) {
+                    disallowAncestorIntercept(true)
+                }
+                return false
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                if (menuGesture) {
+                    val dist = hypot(
+                        (ev.x - longPressDownX).toDouble(),
+                        (ev.y - longPressDownY).toDouble(),
+                    )
+                    if (dist > touchSlop * 8) {
+                        menuGesture = false
+                        val launcher = Launcher.getLauncher(context)
+                        val info = tag as? LauncherAppWidgetInfo
+                        if (info != null && ItemLongClickListener.canStartDrag(launcher)) {
+                            ItemLongClickListener.beginDrag(this, launcher, info, DragOptions())
+                        }
+                    }
+                    return true
+                }
+                if (paging) return true
+                if (pageCount <= 1) return false
+                val dx = ev.x - longPressDownX
+                val dy = ev.y - longPressDownY
+                val absDx = abs(dx)
+                val absDy = abs(dy)
+                if (absDx <= touchSlop && absDy <= touchSlop) return false
+                val alongAxis = if (vertical) absDy else absDx
+                val acrossAxis = if (vertical) absDx else absDy
+                if (alongAxis <= touchSlop || acrossAxis > alongAxis) {
+                    if (vertical) disallowAncestorIntercept(false)
+                    return false
+                }
+                paging = true
+                longPressHelper.cancelLongPress()
+                disallowAncestorIntercept(true)
+                return true
+            }
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                menuGesture = false
+                if (!paging) {
+                    disallowAncestorIntercept(false)
+                    return false
+                }
+                val delta = if (vertical) {
+                    ev.y - longPressDownY
+                } else {
+                    ev.x - longPressDownX
+                }
+                val threshold = touchSlop * 2f
+                val page = contentView.currentPage()
+                val target = when {
+                    delta < -threshold -> page + 1
+                    delta > threshold -> page - 1
+                    else -> page
+                }
+                contentView.setPage(target, true, vertical)
+                paging = false
+                disallowAncestorIntercept(false)
+                return true
+            }
+        }
+        return paging
+    }
+
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         cancelLongPressIfScrolled(ev)
         longPressHelper.onTouchEvent(ev)
-        return longPressHelper.hasPerformedLongPress()
+        return longPressHelper.hasPerformedLongPress() || paging
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
@@ -127,7 +235,11 @@ class WidgetStackView @JvmOverloads constructor(
         return true
     }
 
-    override fun onLongClick(view: View): Boolean = ItemLongClickListener.INSTANCE_WORKSPACE.onLongClick(view)
+    override fun onLongClick(view: View): Boolean {
+        val handled = ItemLongClickListener.INSTANCE_WORKSPACE.onLongClick(view)
+        menuGesture = handled
+        return handled
+    }
 
     override fun cancelLongPress() {
         super.cancelLongPress()
@@ -257,5 +369,44 @@ class WidgetStackView @JvmOverloads constructor(
     private fun updateScale() {
         scaleX = reorderBounceScale
         scaleY = reorderBounceScale
+    }
+
+    private fun disallowAncestorIntercept(disallow: Boolean) {
+        var p = parent
+        while (p != null) {
+            p.requestDisallowInterceptTouchEvent(disallow)
+            p = (p as? ViewGroup)?.parent
+        }
+    }
+
+    companion object {
+        /**
+         * True when [ev] (in DragLayer coordinates) hits a vertically paging [WidgetStackView].
+         * Used so All Apps / swipe-up controllers do not steal that stack's up/down paging.
+         * Horizontal stacks do not block those controllers.
+         */
+        @JvmStatic
+        fun isEventOverStack(launcher: Launcher, ev: MotionEvent): Boolean {
+            val dragLayer = launcher.dragLayer ?: return false
+            return hitWidgetStack(dragLayer, ev.x, ev.y)
+        }
+
+        private fun hitWidgetStack(view: View, x: Float, y: Float): Boolean {
+            if (view !is ViewGroup) return false
+            for (i in view.childCount - 1 downTo 0) {
+                val child = view.getChildAt(i)
+                if (child.visibility != VISIBLE) continue
+                if (x < child.left || x >= child.right || y < child.top || y >= child.bottom) {
+                    continue
+                }
+                if (child is WidgetStackView) {
+                    return child.usesVerticalSwipe()
+                }
+                val cx = x - child.left + child.scrollX
+                val cy = y - child.top + child.scrollY
+                if (hitWidgetStack(child, cx, cy)) return true
+            }
+            return false
+        }
     }
 }

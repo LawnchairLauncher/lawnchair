@@ -20,6 +20,7 @@ import android.view.View
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
+import com.android.launcher3.dragndrop.DragView
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.popup.SystemShortcut
@@ -45,6 +46,10 @@ class WidgetStackShortcut(
 ) {
 
     override fun onClick(view: View) {
+        // Long-press leaves a pre-drag widget preview under the finger. Drop it
+        // before opening the editor so it does not sit on top of Edit stack.
+        mTarget.dragController.cancelDrag()
+        DragView.removeAllViews(mTarget)
         AbstractFloatingView.closeAllOpenViews(mTarget)
 
         val widgetInfo = mItemInfo as? LauncherAppWidgetInfo ?: return

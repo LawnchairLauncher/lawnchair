@@ -28,7 +28,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnLongClickListener;
-import android.view.ViewConfiguration;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -96,34 +95,14 @@ public class ItemLongClickListener {
             }
         }
 
-        // Create drag options with PreDragCondition to delay onDragStart until user moves
-        // This keeps the popup open until drag actually begins (user moves finger)
-        DragOptions dragOptions = new DragOptions();
+        launcher.setWaitingForResult(null);
         if (widgetStackPopup != null) {
-            final int touchSlop = ViewConfiguration.get(v.getContext()).getScaledTouchSlop();
-            // Use PreDragCondition to delay drag start until movement exceeds touch slop
-            // (avoids starting drag on long-press jitter; keeps popup usable)
-            dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
-                @Override
-                public boolean shouldStartDrag(double distanceDragged) {
-                    return distanceDragged >= touchSlop;
-                }
-
-                @Override
-                public void onPreDragStart(DropTarget.DragObject dragObject) {
-                    // Pre-drag started, popup stays open
-                }
-
-                @Override
-                public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
-                    // Pre-drag ended, popup will close via onDragStart if dragStarted is true
-                }
-            };
+            // Menu only. Creating a DragView here is what puts the widget preview
+            // under the finger on Edit stack / widget settings.
+            return true;
         }
 
-        // Start drag with PreDragCondition - popup stays open until user moves
-        launcher.setWaitingForResult(null);
-        beginDrag(v, launcher, (ItemInfo) v.getTag(), dragOptions);
+        beginDrag(v, launcher, (ItemInfo) v.getTag(), new DragOptions());
         return true;
     }
 

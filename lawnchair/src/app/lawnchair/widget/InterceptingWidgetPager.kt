@@ -1,63 +1,78 @@
 package app.lawnchair.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
-import android.view.ViewConfiguration
-import androidx.viewpager.widget.ViewPager
+import android.widget.FrameLayout
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 
 /**
- * Custom ViewPager for widget stacks that properly handles touch interception.
- * Handles horizontal scrolling while allowing long-press to bubble up to parent for drag.
- * Based on smartspace InterceptingViewPager but simplified for widget stacks.
- *
- * Same horizontal paging behavior on workspace and hotseat: once a swipe is clearly horizontal,
- * the stack [ViewPager] claims the gesture ([requestDisallowInterceptTouchEvent]). Changing
- * workspace pages from the dock still works when swiping on other hotseat icons or empty cells,
- * not over the stack.
+ * Thin [ViewPager2] host. Touch paging is handled by [WidgetStackView] so nested widgets cannot
+ * steal the stack gesture.
  */
 class InterceptingWidgetPager @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-) : ViewPager(context, attrs) {
+) : FrameLayout(context, attrs) {
 
-    private var initialX = 0f
-    private var initialY = 0f
-    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
-
-    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        when (ev.action) {
-            MotionEvent.ACTION_DOWN -> {
-                initialX = ev.x
-                initialY = ev.y
-                // Allow parent to handle long-press by not intercepting immediately
-                parent?.requestDisallowInterceptTouchEvent(false)
-            }
-
-            MotionEvent.ACTION_MOVE -> {
-                val dx = kotlin.math.abs(ev.x - initialX)
-                val dy = kotlin.math.abs(ev.y - initialY)
-
-                // If horizontal movement is greater than vertical, intercept for scrolling
-                if (dx > touchSlop && dx > dy) {
-                    parent?.requestDisallowInterceptTouchEvent(true)
-                    return super.onInterceptTouchEvent(ev)
-                }
-                // Otherwise, let parent handle it (for drag operations)
-                return false
-            }
-        }
-        return super.onInterceptTouchEvent(ev)
+    val pager: ViewPager2 = ViewPager2(context).apply {
+        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        isSaveEnabled = false
+        offscreenPageLimit = 2
+        overScrollMode = OVER_SCROLL_NEVER
+        isUserInputEnabled = false
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(ev: MotionEvent): Boolean {
-        when (ev.action) {
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                parent?.requestDisallowInterceptTouchEvent(false)
+    var isVertical: Boolean
+        get() = pager.orientation == ViewPager2.ORIENTATION_VERTICAL
+        set(value) {
+            val next = if (value) {
+                ViewPager2.ORIENTATION_VERTICAL
+            } else {
+                ViewPager2.ORIENTATION_HORIZONTAL
+            }
+            if (pager.orientation != next) {
+                pager.orientation = next
             }
         }
-        return super.onTouchEvent(ev)
+
+    var currentItem: Int
+        get() = pager.currentItem
+        set(value) {
+            pager.setCurrentItem(value, false)
+        }
+
+    var offscreenPageLimit: Int
+        get() = pager.offscreenPageLimit
+        set(value) {
+            pager.offscreenPageLimit = value
+        }
+
+    var adapter: RecyclerView.Adapter<*>?
+        get() = pager.adapter
+        set(value) {
+            pager.adapter = value
+            pager.post { configureInnerRecycler() }
+        }
+
+    init {
+        addView(pager)
+        pager.post { configureInnerRecycler() }
+    }
+
+    fun setCurrentItem(item: Int, smoothScroll: Boolean) {
+        pager.setCurrentItem(item, smoothScroll)
+    }
+
+    fun registerOnPageChangeCallback(callback: ViewPager2.OnPageChangeCallback) {
+        pager.registerOnPageChangeCallback(callback)
+    }
+
+    private fun configureInnerRecycler() {
+        val rv = pager.getChildAt(0) as? RecyclerView ?: return
+        rv.overScrollMode = OVER_SCROLL_NEVER
+        rv.isNestedScrollingEnabled = false
+        // DefaultItemAnimator fades pages in/out on bind — looks like a dissolve on every swipe.
+        rv.itemAnimator = null
     }
 }

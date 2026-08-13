@@ -17,15 +17,19 @@
 package app.lawnchair.widget
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import app.lawnchair.smartspace.PageIndicator
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
@@ -41,7 +45,7 @@ import com.android.launcher3.widget.util.WidgetSizes
 import kotlin.math.min
 
 /**
- * Inner view that displays and manages a stack of widgets inside a [ViewPager].
+ * Inner view that displays and manages a stack of widgets inside a [ViewPager2].
  * Handles widget inflation, live-update registration, pending→real transitions,
  * and auto-rotation.
  */
@@ -56,12 +60,13 @@ class WidgetStackContentView @JvmOverloads constructor(
         private const val MAX_REFRESH_ATTEMPTS = 5
 
         /**
-         * Pages retained on each side of the current page ([ViewPager] API). Each offscreen slot
+         * Pages retained on each side of the current page ([ViewPager2] API). Each offscreen slot
          * may hold a live [LauncherAppWidgetHostView], so a large limit multiplies memory and
          * RemoteViews work. `2` keeps immediate neighbors warm for swipes/auto-rotate without
          * retaining the whole stack (the previous `size` / `20` caps were effectively unbounded).
          */
         private const val OFFSCREEN_PAGE_LIMIT_EACH_SIDE = 2
+        private const val WRAP_ANIM_MS = 300L
     }
 
     private lateinit var viewPager: InterceptingWidgetPager
@@ -84,6 +89,8 @@ class WidgetStackContentView @JvmOverloads constructor(
     private var isRefreshing = false
     private var refreshAttempts = 0
     private var stackChangeListener: WidgetStackChangeListener? = null
+    private var wrapping = false
+    private var wrapOverlay: ImageView? = null
 
     private val launcher: Launcher? = try {
         Launcher.getLauncher(context)
@@ -103,17 +110,14 @@ class WidgetStackContentView @JvmOverloads constructor(
         viewPager = findViewById(R.id.widget_stack_pager)!!
         indicator = findViewById(R.id.widget_stack_page_indicator)!!
 
-        viewPager.isSaveEnabled = false
-        viewPager.isLongClickable = false
-        viewPager.isClickable = true
         viewPager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_EACH_SIDE
 
         isLongClickable = false
         isClickable = false
 
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, offset: Float, offsetPx: Int) {
-                indicator.setPageOffset(position, offset)
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                indicator.setPageOffset(position, positionOffset)
             }
 
             override fun onPageSelected(position: Int) {
@@ -123,9 +127,11 @@ class WidgetStackContentView @JvmOverloads constructor(
                 }
             }
 
-            // ViewPager.OnPageChangeListener requires this; we only drive the indicator from
-            // onPageScrolled / onPageSelected.
-            override fun onPageScrollStateChanged(state: Int) = Unit
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == ViewPager2.SCROLL_STATE_IDLE && wrapping.not()) {
+                    ensurePageBound(viewPager.currentItem)
+                }
+            }
         })
 
         viewPager.adapter = adapter
@@ -142,6 +148,7 @@ class WidgetStackContentView @JvmOverloads constructor(
         super.onDetachedFromWindow()
         stopAutoRotate()
         cancelRefresh()
+        cancelWrapAnimation()
         configureCompletedUpgradeRunnable = null
         handler.removeCallbacksAndMessages(null)
     }
@@ -164,6 +171,150 @@ class WidgetStackContentView @JvmOverloads constructor(
     }
 
     fun getStackInfo(): WidgetStackInfo? = stackInfo
+
+    fun pageCount(): Int = widgetViews.size
+
+    fun currentPage(): Int = if (::viewPager.isInitialized) viewPager.currentItem else 0
+
+    @JvmOverloads
+    fun setPage(index: Int, smoothScroll: Boolean, vertical: Boolean = viewPager.isVertical) {
+        if (!::viewPager.isInitialized || widgetViews.isEmpty()) return
+        val count = widgetViews.size
+        val current = viewPager.currentItem
+        val page = ((index % count) + count) % count
+        if (page == current) {
+            ensurePageBound(page)
+            return
+        }
+        // `index` is current±1 (may be -1 or count). That keeps wrap direction; modulo alone
+        // would make last→first look like a reverse ViewPager2 animation.
+        val wrappingAround = count > 1 && (index >= count || index < 0)
+        if (smoothScroll && wrappingAround) {
+            animateWrap(page, forward = index > current, vertical = vertical)
+            return
+        }
+        if (wrapping) cancelWrapAnimation()
+        viewPager.setCurrentItem(page, smoothScroll)
+        stackInfo?.currentIndex = page
+        if (!smoothScroll) ensurePageBound(page)
+    }
+
+    /**
+     * ViewPager2 always takes the short path, so last→first slides backward. Snapshot the
+     * destination (leave the live widget in its holder) and slide it in beside the current page.
+     */
+    private fun animateWrap(toPage: Int, forward: Boolean, vertical: Boolean) {
+        if (wrapping) return
+        val pager = viewPager.pager
+        val size = if (vertical) pager.height.toFloat() else pager.width.toFloat()
+        if (size <= 0f) {
+            viewPager.setCurrentItem(toPage, false)
+            stackInfo?.currentIndex = toPage
+            return
+        }
+
+        wrapping = true
+        val outgoing = if (forward) -size else size
+        val incomingStart = -outgoing
+        val snapshot = widgetViews.getOrNull(toPage)?.let { snapshotView(it) }
+        val overlay = if (snapshot != null) {
+            ImageView(context).apply {
+                setImageBitmap(snapshot)
+                scaleType = ImageView.ScaleType.FIT_XY
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                if (vertical) translationY = incomingStart else translationX = incomingStart
+            }.also {
+                wrapOverlay = it
+                viewPager.addView(it)
+            }
+        } else {
+            null
+        }
+
+        val interpolator = DecelerateInterpolator()
+        pager.animate().cancel()
+        pager.animate()
+            .setDuration(WRAP_ANIM_MS)
+            .setInterpolator(interpolator)
+            .apply {
+                if (vertical) translationY(outgoing) else translationX(outgoing)
+            }
+        val incomingAnim = overlay?.animate()
+            ?.setDuration(WRAP_ANIM_MS)
+            ?.setInterpolator(interpolator)
+            ?.apply {
+                if (vertical) translationY(0f) else translationX(0f)
+            }
+        val finish = Runnable { finishWrap(toPage) }
+        if (incomingAnim != null) {
+            incomingAnim.withEndAction(finish)
+        } else {
+            pager.animate().withEndAction(finish)
+        }
+    }
+
+    private fun finishWrap(toPage: Int) {
+        if (!::viewPager.isInitialized) {
+            wrapping = false
+            return
+        }
+        val pager = viewPager.pager
+        pager.animate().cancel()
+        pager.translationX = 0f
+        pager.translationY = 0f
+        removeWrapOverlay()
+        viewPager.setCurrentItem(toPage, false)
+        stackInfo?.currentIndex = toPage
+        indicator.setPageOffset(toPage, 0f)
+        wrapping = false
+        ensurePageBound(toPage)
+    }
+
+    private fun cancelWrapAnimation() {
+        if (!::viewPager.isInitialized) return
+        val pager = viewPager.pager
+        pager.animate().cancel()
+        pager.translationX = 0f
+        pager.translationY = 0f
+        removeWrapOverlay()
+        wrapping = false
+    }
+
+    private fun removeWrapOverlay() {
+        wrapOverlay?.let { overlay ->
+            overlay.animate().cancel()
+            overlay.setImageDrawable(null)
+            (overlay.parent as? ViewGroup)?.removeView(overlay)
+        }
+        wrapOverlay = null
+    }
+
+    private fun snapshotView(view: View): Bitmap? {
+        val width = if (view.width > 0) view.width else viewPager.width
+        val height = if (view.height > 0) view.height else viewPager.height
+        if (width <= 0 || height <= 0) return null
+        return runCatching {
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { bitmap ->
+                view.draw(Canvas(bitmap))
+            }
+        }.getOrNull()
+    }
+
+    /**
+     * ViewPager2 can keep an empty holder after a wrap/recycle and skip [RecyclerView.Adapter.onBindViewHolder]
+     * because of stable ids. Put the live widget back on the visible page if it was detached.
+     */
+    private fun ensurePageBound(page: Int) {
+        if (!::viewPager.isInitialized) return
+        val view = widgetViews.getOrNull(page) ?: return
+        val rv = viewPager.pager.getChildAt(0) as? RecyclerView ?: return
+        val holder = rv.findViewHolderForAdapterPosition(page) as? PageVH
+        if (holder != null && view.parent != holder.container) {
+            adapter.notifyItemChanged(page)
+        } else if (view.parent == null) {
+            adapter.notifyItemChanged(page)
+        }
+    }
 
     /**
      * Live resize only: updates each member's AppWidget size ranges for the preview spans without
@@ -226,10 +377,12 @@ class WidgetStackContentView @JvmOverloads constructor(
     @JvmOverloads
     fun setStackInfo(info: WidgetStackInfo, knownWidgets: List<LauncherAppWidgetInfo> = emptyList()) {
         for (w in knownWidgets) knownWidgetInfos[w.appWidgetId] = w
+        cancelWrapAnimation()
         val oldInfo = stackInfo
         stackInfo = info
 
         if (::viewPager.isInitialized) {
+            viewPager.isVertical = info.verticalSwipe
             viewPager.offscreenPageLimit = min(
                 info.widgetIds.size.coerceAtLeast(1),
                 OFFSCREEN_PAGE_LIMIT_EACH_SIDE,
@@ -688,8 +841,7 @@ class WidgetStackContentView @JvmOverloads constructor(
         if (!info.autoRotate || info.size() <= 1) return
         autoRotateRunnable = Runnable {
             if (!::viewPager.isInitialized) return@Runnable
-            val next = (viewPager.currentItem + 1) % info.size()
-            viewPager.setCurrentItem(next, true)
+            setPage(viewPager.currentItem + 1, true)
             scheduleNextAutoRotate()
         }.also { handler.postDelayed(it, AUTO_ROTATE_INTERVAL_MS) }
     }
@@ -716,41 +868,54 @@ class WidgetStackContentView @JvmOverloads constructor(
     }
 
     // ──────────────────────────────────────────────────────────────
-    // PagerAdapter
+    // ViewPager2 adapter
     // ──────────────────────────────────────────────────────────────
 
-    private inner class WidgetStackAdapter : PagerAdapter() {
+    private inner class PageVH(val container: FrameLayout) : RecyclerView.ViewHolder(container)
 
-        override fun getCount(): Int = widgetViews.size
+    private inner class WidgetStackAdapter : RecyclerView.Adapter<PageVH>() {
 
-        override fun isViewFromObject(view: View, obj: Any): Boolean = view === obj
-
-        override fun getItemPosition(obj: Any): Int {
-            val idx = widgetViews.indexOf(obj)
-            return if (idx >= 0) idx else POSITION_NONE
+        init {
+            setHasStableIds(true)
         }
 
-        override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val view: View = widgetViews.getOrNull(position) ?: run {
-                View(context).apply {
-                    layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                    )
-                }
-            }
-            // Detach from previous parent if still attached (prevents IllegalStateException)
-            (view.parent as? ViewGroup)?.removeView(view)
-            container.addView(view)
+        override fun getItemCount(): Int = widgetViews.size
 
+        override fun getItemId(position: Int): Long {
+            return widgetViews.getOrNull(position)?.appWidgetId?.toLong() ?: RecyclerView.NO_ID
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageVH {
+            val frame = FrameLayout(parent.context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                )
+                isClickable = false
+                isFocusable = false
+            }
+            return PageVH(frame)
+        }
+
+        override fun onBindViewHolder(holder: PageVH, position: Int) {
+            holder.container.removeAllViews()
+            val view = widgetViews.getOrNull(position) ?: return
+            (view.parent as? ViewGroup)?.removeView(view)
+            holder.container.addView(
+                view,
+                FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                ),
+            )
             if (view is NavigableAppWidgetHostView) {
                 applyScalingToWidget(view)
             }
-            return view
         }
 
-        override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
-            (obj as? View)?.let { container.removeView(it) }
+        override fun onViewRecycled(holder: PageVH) {
+            // Leave the host view attached. Stripping it here left the last page empty
+            // when ViewPager2 reused the holder without a bind.
         }
     }
 }

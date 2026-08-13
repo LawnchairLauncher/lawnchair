@@ -2846,7 +2846,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                                 lp.getCellX(), // Update cellX
                                 lp.getCellY(), // Update cellY
                                 item.spanX, // Update spanX
-                                item.spanY // Update spanY
+                                item.spanY, // Update spanY
+                                stackInfo.getVerticalSwipe()
                             );
                             
                             // Update ALL widgets in the stack to the new position

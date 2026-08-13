@@ -25,7 +25,7 @@ import com.android.launcher3.LauncherSettings
  * Widgets in a stack share the same position on the home screen but may have
  * different native sizes; each widget is scaled to fit the stack bounds.
  */
-data class WidgetStackInfo(
+data class WidgetStackInfo @JvmOverloads constructor(
     /**
      * The ID of the stack (same as the first widget's ID in the stack)
      */
@@ -75,6 +75,12 @@ data class WidgetStackInfo(
      * The span Y (height in cells)
      */
     val spanY: Int = 2,
+
+    /**
+     * When true, swipe up/down between widgets; when false, swipe left/right.
+     * Trailing so existing Java constructors keep working via [JvmOverloads].
+     */
+    var verticalSwipe: Boolean = false,
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -88,6 +94,7 @@ data class WidgetStackInfo(
         cellY = parcel.readInt(),
         spanX = parcel.readInt(),
         spanY = parcel.readInt(),
+        verticalSwipe = parcel.readByte() != 0.toByte(),
     )
 
     /**
@@ -141,6 +148,7 @@ data class WidgetStackInfo(
         parcel.writeInt(cellY)
         parcel.writeInt(spanX)
         parcel.writeInt(spanY)
+        parcel.writeByte((if (verticalSwipe) 1 else 0).toByte())
     }
 
     override fun describeContents(): Int = 0

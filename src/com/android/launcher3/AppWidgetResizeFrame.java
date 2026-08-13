@@ -690,7 +690,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                                     cellX,
                                     cellY,
                                     spanX,
-                                    spanY);
+                                    spanY,
+                                    stackInfo.getVerticalSwipe());
 
                             final com.android.launcher3.model.BgDataModel bgDataModel =
                                     mLauncher.getModel().getBgDataModel();

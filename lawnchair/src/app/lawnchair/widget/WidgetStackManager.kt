@@ -63,6 +63,7 @@ object WidgetStackManager {
             o.add("widgetIds", ids)
             o.addProperty("currentIndex", src.currentIndex)
             o.addProperty("autoRotate", src.autoRotate)
+            o.addProperty("verticalSwipe", src.verticalSwipe)
             o.addProperty("container", src.container)
             o.addProperty("screenId", src.screenId)
             o.addProperty("cellX", src.cellX)
@@ -83,6 +84,7 @@ object WidgetStackManager {
                 widgetIds = obj.getAsJsonArray("widgetIds").map { it.asInt },
                 currentIndex = obj.get("currentIndex")?.asInt ?: 0,
                 autoRotate = obj.get("autoRotate")?.asBoolean ?: false,
+                verticalSwipe = obj.get("verticalSwipe")?.asBoolean ?: false,
                 container = obj.get("container")?.asInt
                     ?: LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 screenId = obj.get("screenId")?.asInt ?: 0,

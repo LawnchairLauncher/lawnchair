@@ -237,6 +237,28 @@ fun showWidgetStackDialog(
     }
 
     val stackId = widgetInfo.widgetStackId!!
+
+    // Open immediately from the live stack on the workspace so Edit stack is not blocked
+    // on a model-thread SQLite read.
+    var liveStack: WidgetStackInfo? = null
+    launcher.workspace?.mapOverItems(
+        object : com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator {
+            override fun evaluate(info: ItemInfo, v: android.view.View): Boolean {
+                if (v is WidgetStackView && info is LauncherAppWidgetInfo &&
+                    info.widgetStackId == stackId
+                ) {
+                    liveStack = v.getStackInfo()
+                    return true
+                }
+                return false
+            }
+        },
+    )
+    if (liveStack != null) {
+        presentWidgetStackSheet(liveStack)
+        return
+    }
+
     Executors.MODEL_EXECUTOR.execute {
         val fromDb: WidgetStackInfo? = try {
             val db = launcher.model.modelDbController.db
@@ -353,6 +375,9 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
     }
     var autoRotate by remember(currentStackInfo) {
         mutableStateOf(currentStackInfo.autoRotate)
+    }
+    var verticalSwipe by remember(currentStackInfo) {
+        mutableStateOf(currentStackInfo.verticalSwipe)
     }
 
     var localWidgetIds by remember(initialStackInfo) {
@@ -498,6 +523,27 @@ private fun ComposeBottomSheet<*>.WidgetStackDialogContent(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(R.string.auto_rotate_widgets),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        // Swipe axis: unchecked = left/right, checked = up/down
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Checkbox(
+                checked = verticalSwipe,
+                onCheckedChange = { checked: Boolean ->
+                    verticalSwipe = checked
+                    currentStackInfo = currentStackInfo.copy(verticalSwipe = checked)
+                },
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.widget_stack_vertical_swipe),
                 style = MaterialTheme.typography.bodyLarge,
             )
         }
