@@ -130,7 +130,6 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = HotseatMode.fromString(context.getString(R.string.config_default_hotseat_mode)),
         parse = { HotseatMode.fromString(it) },
         save = { it.toString() },
-        onSet = { reloadHelper.restart() },
     )
 
     val iconShape = preference(
@@ -293,10 +292,6 @@ class PreferenceManager2 @Inject constructor(
     val isHotseatEnabled = preference(
         key = booleanPreferencesKey(name = "pref_show_hotseat"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_hotseat),
-        onSet = {
-            reloadHelper.recreate()
-            reloadHelper.reloadGrid()
-        },
     )
 
     val hotseatQsbProvider = preference(
@@ -306,7 +301,6 @@ class PreferenceManager2 @Inject constructor(
         } ?: QsbSearchProvider.resolveDefault(context),
         parse = { QsbSearchProvider.fromId(it) },
         save = { it.id },
-        onSet = { reloadHelper.recreate() },
     )
 
     val hotseatQsbForceWebsite = preference(
@@ -814,7 +808,6 @@ class PreferenceManager2 @Inject constructor(
     val enableLabelInDock = preference(
         key = booleanPreferencesKey(name = "enable_label_dock"),
         defaultValue = false,
-        onSet = { reloadHelper.reloadGrid() },
     )
 
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
@@ -894,6 +887,33 @@ class PreferenceManager2 @Inject constructor(
                 L3ThemeManager.INSTANCE.get(context)
                 LauncherAppState.getInstance(context).model.reloadIfActive()
             }
+            .launchIn(scope)
+
+        hotseatMode.get()
+            .drop(1)
+            .distinctUntilChanged()
+            .onEach { reloadHelper.restart() }
+            .launchIn(scope)
+
+        isHotseatEnabled.get()
+            .drop(1)
+            .distinctUntilChanged()
+            .onEach {
+                reloadHelper.recreate()
+                reloadHelper.reloadGrid()
+            }
+            .launchIn(scope)
+
+        hotseatQsbProvider.get()
+            .drop(1)
+            .distinctUntilChanged()
+            .onEach { reloadHelper.recreate() }
+            .launchIn(scope)
+
+        enableLabelInDock.get()
+            .drop(1)
+            .distinctUntilChanged()
+            .onEach { reloadHelper.reloadGrid() }
             .launchIn(scope)
     }
 
