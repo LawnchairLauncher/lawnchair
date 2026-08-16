@@ -196,6 +196,23 @@
     <string name="overlay_label">Superposition</string>
     <string name="overlay_none">Aucune</string>
     <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">Système</string>
+    <string name="prediction_mode_none">Désactivé</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <!--
 
     Notifications
 
@@ -439,7 +456,7 @@
     <string name="privacy_policy">Règles de confidentialité</string>
     <string name="contributor_status_active">En activité</string>
     <string name="update_check_failed">Échec de la recherche des mises à jour</string>
-    <string name="major_update_label">Update to major version?</string>
+    <string name="major_update_label">Mettre à jour vers la version majeure ?</string>
     <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
     <string name="pro_disabled_by_unknown">Updates are not available</string>
     <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
@@ -614,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Marge haut</string>
     <string name="hotseat_bg_vertical_inset_bottom">Marge bas</string>
     <string name="hotseat_bg_color_label">Couleur d\'arrière-plan</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Opacité de l\'arrière-plan</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Suspendre</string>
@@ -718,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">Afficher le clavier automatiquement</string>
     <string name="fuzzy_search_title">Recherche approximative</string>
     <string name="fuzzy_search_desc">Correspondance approximative pour les recherches d\'applis</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="show_suggested_apps_at_drawer_top">Afficher des applis suggérées en haut du tiroir</string>
     <string name="perform_wide_search_title">Recherche sur l\'appareil</string>
     <string name="perform_wide_search_description">Recherchez parmi les contacts, fichiers et paramètres de votre téléphone</string>
