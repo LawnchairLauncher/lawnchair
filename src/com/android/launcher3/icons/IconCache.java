@@ -87,8 +87,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import app.lawnchair.LawnchairActivityCachingLogic;
-import app.lawnchair.gestures.ui.LawnchairShortcutActivity;
 import app.lawnchair.icons.LawnchairIconProvider;
+import app.lawnchair.icons.ShortcutIconOverrides;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -325,7 +325,7 @@ public class IconCache extends BaseIconCache {
             return;
         }
 
-        info.bitmap = LawnchairShortcutActivity.Companion.shouldSkipShortcutBadge(context, si.getShortcutInfo())
+        info.bitmap = ShortcutIconOverrides.INSTANCE.shouldSkipBadge(context, si.getShortcutInfo())
             ? bitmapInfo.withFlags(FlagOp.NO_OP)
             : bitmapInfo.withBadgeInfo(getShortcutInfoBadge(si.getShortcutInfo()));
     }
@@ -392,7 +392,7 @@ public class IconCache extends BaseIconCache {
                     lookupFlag.withSkipAddToMemCache());
             applyCacheEntry(entry, info);
 
-            if (!LawnchairShortcutActivity.Companion.shouldSkipShortcutBadge(context, si)) {
+            if (!ShortcutIconOverrides.INSTANCE.shouldSkipBadge(context, si)) {
                 info.bitmap = info.bitmap.withBadgeInfo(getShortcutInfoBadge(si));
             }
         } else {

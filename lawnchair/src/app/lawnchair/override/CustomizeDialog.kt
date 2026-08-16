@@ -132,6 +132,64 @@ fun CustomizeDialog(
     }
 }
 
+/**
+ * Customize dialog for a pinned deep shortcut, such as a web app pinned by a browser.
+ *
+ * A shortcut has no drawer entry to hide and no per-app gestures, so only the icon and the label
+ * are offered here.
+ */
+@Composable
+fun CustomizeShortcutDialog(
+    icon: Drawable,
+    defaultTitle: String,
+    componentKey: ComponentKey,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+) {
+    val prefs = preferenceManager()
+    val context = LocalContext.current
+    var title by remember {
+        mutableStateOf(prefs.customAppName[componentKey] ?: defaultTitle)
+    }
+    val launcherAppState = LauncherAppState.getInstance(context)
+
+    val route = SelectIcon(componentKey.toString())
+
+    val scope = rememberCoroutineScope()
+    val openIconPicker = {
+        val intent = PreferenceActivity.createIntent(context, route)
+        scope.launch {
+            val result = BlankActivity.startBlankActivityForResult(context as Activity, intent)
+            if (result.resultCode == Activity.RESULT_OK) {
+                onClose()
+            }
+        }
+        Unit
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            val previousTitle = prefs.customAppName[componentKey]
+            val newTitle = if (title != defaultTitle) title else null
+            if (newTitle != previousTitle) {
+                prefs.customAppName[componentKey] = newTitle
+                launcherAppState.model.onAppIconChanged(
+                    componentKey.componentName.packageName,
+                    componentKey.user,
+                )
+            }
+        }
+    }
+    CustomizeDialog(
+        icon = icon,
+        title = title,
+        onTitleChange = { title = it },
+        defaultTitle = defaultTitle,
+        launchSelectIcon = openIconPicker,
+        modifier = modifier,
+    )
+}
+
 @Composable
 fun CustomizeAppDialog(
     icon: Drawable,

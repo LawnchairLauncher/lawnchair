@@ -108,6 +108,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import app.lawnchair.icons.ExtendedBitmapDrawable;
+import app.lawnchair.icons.ShortcutIconOverrides;
 import app.lawnchair.preferences.PreferenceManager;
 
 /**
@@ -796,10 +797,14 @@ public final class Utilities {
                 return null;
             } else {
                 ShortcutInfo si = siList.get(0);
-                mainIcon = CacheableShortcutInfo.getIcon(context, si,
-                        appState.getInvariantDeviceProfile().fillResIconDpi);
+                int shortcutIconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
+                mainIcon = ShortcutIconOverrides.INSTANCE.getIcon(context, si, shortcutIconDpi);
+                if (mainIcon == null) {
+                    mainIcon = CacheableShortcutInfo.getIcon(context, si, shortcutIconDpi);
+                }
                 // Only fetch badge if the icon is on workspace
-                if (info.id != ItemInfo.NO_ID && badge == null) {
+                if (info.id != ItemInfo.NO_ID && badge == null
+                        && !ShortcutIconOverrides.INSTANCE.shouldSkipBadge(context, si)) {
                     badge = appState.getIconCache().getShortcutInfoBadge(si).newIcon(
                             context,
                             ThemeManager.INSTANCE.get(context).isIconThemeEnabled()

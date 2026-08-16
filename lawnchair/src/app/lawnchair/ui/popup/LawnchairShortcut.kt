@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
+import android.content.pm.ShortcutInfo
 import android.content.pm.SuspendDialogInfo
 import android.graphics.Rect
 import android.graphics.RectF
@@ -21,7 +22,9 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.icons.ShortcutIconOverrides
 import app.lawnchair.override.CustomizeAppDialog
+import app.lawnchair.override.CustomizeShortcutDialog
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.ui.preferences.PreferenceActivity
@@ -29,6 +32,7 @@ import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -39,6 +43,7 @@ import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
+import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
@@ -90,10 +95,18 @@ class LawnchairShortcut {
         val CUSTOMIZE =
             SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo, originalView ->
                 val prefs2 = PreferenceManager2.getInstance(activity)
-                if (prefs2.lockHomeScreen.firstCached()) {
-                    null
-                } else {
-                    getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo, originalView) }
+                when {
+                    prefs2.lockHomeScreen.firstCached() -> null
+
+                    itemInfo.itemType == ITEM_TYPE_DEEP_SHORTCUT ->
+                        if (ShortcutIconOverrides.supportsOverrides(itemInfo)) {
+                            CustomizeShortcut(activity, itemInfo, originalView)
+                        } else {
+                            null
+                        }
+
+                    else ->
+                        getAppInfo(activity, itemInfo)?.let { Customize(activity, it, itemInfo, originalView) }
                 }
             }
 
@@ -203,6 +216,43 @@ class LawnchairShortcut {
             } else {
                 Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show()
                 AbstractFloatingView.closeAllOpenViews(launcher)
+            }
+        }
+    }
+
+    /**
+     * Customize for a pinned deep shortcut, such as a web app pinned by a browser.
+     *
+     * A shortcut has no [ModelAppInfo] behind it, so the icon and the default label come from the
+     * published [ShortcutInfo] instead, and the override is keyed by [ShortcutKey].
+     */
+    class CustomizeShortcut(
+        private val launcher: LawnchairLauncher,
+        itemInfo: ItemInfo,
+        originalView: View,
+    ) : SystemShortcut<LawnchairLauncher>(R.drawable.ic_edit, R.string.action_customize, launcher, itemInfo, originalView) {
+
+        override fun onClick(v: View) {
+            val outObj = Array<Any?>(1) { null }
+            val icon = Utilities.loadFullDrawableWithoutTheme(launcher, mItemInfo, 0, 0, outObj)
+            val shortcutInfo = outObj[0] as? ShortcutInfo
+            if (icon == null || shortcutInfo == null) {
+                Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show()
+                AbstractFloatingView.closeAllOpenViews(launcher)
+                return
+            }
+
+            AbstractFloatingView.closeAllOpenViews(launcher)
+            ComposeBottomSheet.show(
+                context = launcher,
+                contentPaddings = PaddingValues(bottom = 64.dp),
+            ) {
+                CustomizeShortcutDialog(
+                    icon = icon,
+                    // Matches the title WorkspaceItemInfo derives for a deep shortcut.
+                    defaultTitle = shortcutInfo.shortLabel?.toString().orEmpty(),
+                    componentKey = ShortcutKey.fromInfo(shortcutInfo),
+                ) { close(true) }
             }
         }
     }

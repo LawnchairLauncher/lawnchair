@@ -29,6 +29,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.lawnchair.icons.ShortcutIconOverrides;
+
 import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -186,9 +188,11 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         }
         // {@link ShortcutInfo#getActivity} can change during an update. Recreate the intent
         intent = ShortcutKey.makeIntent(shortcutInfo);
-        title = shortcutInfo.getShortLabel();
+        CharSequence customTitle = ShortcutIconOverrides.INSTANCE.getLabel(context, shortcutInfo);
+        boolean hasCustomTitle = !TextUtils.isEmpty(customTitle);
+        title = hasCustomTitle ? customTitle : shortcutInfo.getShortLabel();
 
-        CharSequence label = shortcutInfo.getLongLabel();
+        CharSequence label = hasCustomTitle ? customTitle : shortcutInfo.getLongLabel();
         if (TextUtils.isEmpty(label)) {
             label = shortcutInfo.getShortLabel();
         }
