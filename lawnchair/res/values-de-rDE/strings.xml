@@ -196,6 +196,23 @@
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">Keines</string>
     <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Vorschläge</string>
+    <string name="global_predictions_label">Vorschlagsfunktionen anzeigen</string>
+    <string name="app_predictions_label">App-Vorschläge</string>
+    <string name="prediction_mode_label">Anbieter von Vorschlägen</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">System</string>
+    <string name="prediction_mode_none">Aus</string>
+    <string name="prediction_weighted_usage_stats_label">Gerätenutzungsdaten verwenden</string>
+    <string name="prediction_weighted_usage_stats_description">Verwende die Nutzungsdaten Deines Gerätes, um genauere Vorschläge zu erhalten</string>
+    <string name="dismissed_prediction_apps_label">Blockierte Apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blockierte Apps (%1$d)</string>
+    <string name="prediction_system_settings">Systemvorschläge verwalten</string>
+    <string name="missing_usage_access_label">Nutzungszugriff benötigt</string>
+    <string name="missing_usage_access_desc">Um App-Vorschläge zu verbessern, aktiviere den Nutzungszugriff für <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <!--
 
     Notifications
 
@@ -614,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Oberer Abstand</string>
     <string name="hotseat_bg_vertical_inset_bottom">Unterer Abstand</string>
     <string name="hotseat_bg_color_label">Hintergrundfarbe</string>
+    <string name="hotseat_bg_corner_radius">Hintergrund-Eckradius</string>
     <string name="hotseat_bg_alpha">Hintergrunddeckkraft</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Anhalten</string>
@@ -718,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">Tastatur automatisch anzeigen</string>
     <string name="fuzzy_search_title">Unscharfe Suche</string>
     <string name="fuzzy_search_desc">Ungefähre Übereinstimmung für Anwendungs-Suche</string>
-    <string name="suggestion_pref_screen_title">Vorschläge</string>
     <string name="show_suggested_apps_at_drawer_top">App-Vorschläge oben in der App-Übersicht anzeigen</string>
     <string name="perform_wide_search_title">Gerätesuche</string>
     <string name="perform_wide_search_description">Kontakte, Dateien und Einstellungen Deines Gerätes durchsuchen</string>

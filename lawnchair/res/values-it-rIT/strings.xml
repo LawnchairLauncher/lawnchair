@@ -46,10 +46,10 @@
     <string name="download_update">Scarica aggiornamento</string>
     <string name="install_update">Installa aggiornamento</string>
     <string name="view_changes">Visualizza modifiche</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">Sei all\'ultimo aggiornamento</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Aggiornamenti</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">Non è stato possibile caricare gli aggiornamenti</string>
     <string name="changes_dialog_no_changes">Nessuna modifica trovata</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">di %1$s • %2$s • %3$s</string>
@@ -115,20 +115,20 @@
     <string name="apps_in_folder_description">Le app assegnate alle cartelle sono escluse dagli elenchi delle app</string>
     <string name="folders_filter_duplicates">Mostra solo app uniche</string>
     <string name="my_folder_label">La mia cartella</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">Ordina gli elementi attivi</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">Per eseguire certe azioni quando fai un gesto, come ad esempio bloccare il tuo dispositivo, Lawnchair ha bisogno dell\'autorizzazione all\'accesso all\'accessibilità.\n\nLawnchair non guarda le tue azioni, ma tutti i servizi di accessibilità hanno bisogno della medesima autorizzazione per funzionare. Lawnchair ignora qualsiasi evento inviato dal sistema.\n\nPer bloccare il tuo telefono oppure aprire la schermata Recenti, Lawnchair usa il servizio di accessibilità performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s e %2$s</string>
     <string name="advanced">Avanzate</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
+    <string name="reorderable_move_up">Sposta su</string>
+    <string name="reorderable_move_down">Sposta giù </string>
     <string name="reorderable_active_items">Elementi attivi</string>
     <string name="reorderable_disabled_items">Altri elementi</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_disabled_hint">Gli elementi disattivati appariranno qui</string>
+    <string name="reorderable_add_hint_items">Gli elementi attivi appariranno qui</string>
     <!--
 
     Preference Dashboard
@@ -153,7 +153,7 @@
     <string name="gestures_label">Gesti</string>
     <string name="gestures_description">Tocchi e scorrimenti</string>
     <string name="quickstep_label">Schermata Recenti</string>
-    <string name="quickstep_description">Clear all button, corner radius</string>
+    <string name="quickstep_description">Pulsante Elimina tutto, raggio d\'angolo</string>
     <string name="backup_and_restore_label">Backup e ripristino</string>
     <string name="backup_and_restore_description">Salva la configurazione corrente, ripristina dai backup</string>
     <string name="about_label">Informazioni</string>
@@ -164,7 +164,7 @@
     <string name="workspace_label">Spazio di lavoro</string>
     <string name="smartspace_label">Smartspace</string>
     <string name="internal_label">Interno</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_description">Internal può essere meno stabile degli altri gruppi sperimentali</string>
     <string name="font_picker_label">Personalizzazione dei font</string>
     <string name="font_picker_description">Un po\' di testo rimane invariato</string>
     <string name="smartspace_calendar_label">Personalizzazione del calendario di ‘A Colpo d\'Occhio’</string>
@@ -197,6 +197,23 @@
     <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">Nessuno</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Suggerimenti</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">Sistema</string>
+    <string name="prediction_mode_none">Disattivate</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -616,6 +633,7 @@
     <string name="hotseat_bg_vertical_inset_top">Margine superiore</string>
     <string name="hotseat_bg_vertical_inset_bottom">Margine inferiore</string>
     <string name="hotseat_bg_color_label">Colore di sfondo</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Opacità dello sfondo</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Sospendi</string>
@@ -720,7 +738,6 @@
     <string name="pref_search_auto_show_keyboard">Mostra la tastiera automaticamente</string>
     <string name="fuzzy_search_title">Ricerca approssimativa</string>
     <string name="fuzzy_search_desc">Mostra corrispondenze simili alle ricerche tra le app</string>
-    <string name="suggestion_pref_screen_title">Suggerimenti</string>
     <string name="show_suggested_apps_at_drawer_top">Mostra app consigliate in cima al menu delle app</string>
     <string name="perform_wide_search_title">Ricerca sul dispositivo</string>
     <string name="perform_wide_search_description">Cerca tra i contatti, i file e le impostazioni del tuo telefono</string>
