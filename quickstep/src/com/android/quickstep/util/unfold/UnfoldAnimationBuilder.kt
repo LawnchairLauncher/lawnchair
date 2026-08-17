@@ -160,7 +160,11 @@ object UnfoldAnimationBuilder {
                     LINEAR
                 )
             }
-            registerViews(hotseat)
+            setClipChildren(hotseat, false, restoreList)
+            setClipToPadding(hotseat, false, restoreList)
+            for (page in hotseat.pageLayouts) {
+                registerViews(page)
+            }
         }
         anim.addEndListener { restoreList.forEach { it.action(it.target, it.value) } }
     }

@@ -95,14 +95,15 @@ public class QuickstepModelDelegate extends ModelDelegate {
     private static final ConstantItem<Long> LAST_SNAPSHOT_TIME_MILLIS =
             nonRestorableItem("LAST_SNAPSHOT_TIME_MILLIS", 0L, ENCRYPTED);
 
+    // LC-Note: There are Lawnchair Prediction changes here. Protected is intended.
     @VisibleForTesting
-    final PredictorState mAllPredictionAppsState = new PredictorState(
+    protected final PredictorState mAllPredictionAppsState = new PredictorState(
             CONTAINER_ALL_APPS_PREDICTION, "all_apps_predictions", DEFAULT_LOOKUP_FLAG);
     @VisibleForTesting
-    final PredictorState mHotseatPredictionState = new PredictorState(
+    protected final PredictorState mHotseatPredictionState = new PredictorState(
             CONTAINER_HOTSEAT_PREDICTION, "hotseat_predictions", DESKTOP_ICON_FLAG);
     @VisibleForTesting
-    final PredictorState mWidgetsRecommendationState = new PredictorState(
+    protected final PredictorState mWidgetsRecommendationState = new PredictorState(
             CONTAINER_WIDGETS_PREDICTION, "widgets_prediction", DESKTOP_ICON_FLAG);
 
     private final InvariantDeviceProfile mIDP;
@@ -304,7 +305,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
     }
 
     @WorkerThread
-    private void recreatePredictors() {
+    protected void recreatePredictors() {
         destroyPredictors();
         if (!Utilities.ATLEAST_Q || !mActive) {
             return;

@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">GestureNavContract API</string>
     <string name="gesturenavcontract_description">ジェスチャーナビゲーションを使用する際にandroidの強化されたアニメーションをサポートする</string>
     <string name="gesturenavcontract_warning_incompatibility">お使いのデバイスは完全にサポートされていません。いくつかのアニメーション機能に問題が起こる可能性があります。</string>
+    <string name="vibration_feedback_level_label">バイブフィードバックレベル</string>
+    <string name="vibration_feedback_no_feedback_choice">なし</string>
+    <string name="vibration_feedback_minimal_choice">最小</string>
+    <string name="vibration_feedback_default_choice">デフォルト</string>
+    <string name="vibration_feedback_expressive_choice">Expressive</string>
     <string name="recents_lock_unlock">アプリロック</string>
     <string name="recents_lock_unlock_description">「すべてクリア」をタップしたとき選択したアプリを閉じないようにします</string>
     <!--Overlay-->
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">吸い込まれるように</string>
     <string name="overlay_label">オーバーレイ</string>
     <string name="overlay_none">なし</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">サジェスト</string>
+    <string name="global_predictions_label">サジェスト機能を表示</string>
+    <string name="app_predictions_label">アプリの提案</string>
+    <string name="prediction_mode_label">提案プロパイダ</string>
+    <string name="app_predictions_disable_reason_pre_q_description">この機能は Android 10 以上が必要です</string>
+    <string name="prediction_mode_system">システム</string>
+    <string name="prediction_mode_none">オフ</string>
+    <string name="prediction_weighted_usage_stats_label">端末の使用状況データを使用</string>
+    <string name="prediction_weighted_usage_stats_description">端末の使用状況統計を使用して、提案をより正確にします</string>
+    <string name="dismissed_prediction_apps_label">ブロックしたアプリ</string>
+    <string name="dismissed_prediction_apps_label_with_count">ブロックしたアプリ (%1$d)</string>
+    <string name="prediction_system_settings">システム管理の提案</string>
+    <string name="missing_usage_access_label">使用状況へのアクセスが必要です</string>
+    <string name="missing_usage_access_desc">アプリの提案を改善するには、 <xliff:g id="name" example="Lawnchair">%1$s</xliff:g> の使用状況へのアクセスをオンにしてください</string>
     <!--
 
     Notifications
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">上の余白</string>
     <string name="hotseat_bg_vertical_inset_bottom">下の余白</string>
     <string name="hotseat_bg_color_label">背景色</string>
+    <string name="hotseat_bg_corner_radius">背景のコーナー半径</string>
     <string name="hotseat_bg_alpha">背景の透明度</string>
     <!-- Pause apps shortcut -->
     <string name="pause">一時停止</string>
@@ -620,6 +643,7 @@
     <string name="open_in_store_drop_target_label">ストアで開く</string>
     <string name="dock_icons">ドックアイコン</string>
     <string name="dock_rows">ドックの行数</string>
+    <string name="dock_pages">ドックのページ</string>
     <string name="state_folded">%1$s(折りたたまれた)</string>
     <string name="state_unfolded">%1$s(展開)</string>
     <string name="folded_label">折りたたまれた</string>
@@ -709,7 +733,6 @@
     <string name="pref_search_auto_show_keyboard">自動的にキーボードを表示する</string>
     <string name="fuzzy_search_title">あいまい検索</string>
     <string name="fuzzy_search_desc">アプリ検索でおおよその検索ができます</string>
-    <string name="suggestion_pref_screen_title">サジェスト</string>
     <string name="show_suggested_apps_at_drawer_top">ドロワーの上部に提案されたアプリを表示</string>
     <string name="perform_wide_search_title">デバイスを探す</string>
     <string name="perform_wide_search_description">連絡先、ファイル、設定を検索</string>

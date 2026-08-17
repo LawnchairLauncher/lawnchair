@@ -8,9 +8,12 @@ import app.lawnchair.search.algorithms.filterHiddenApps
 import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.search.StringMatcherUtility
+import java.text.Normalizer
 import java.util.Locale
 
 object AppSearchProvider {
+
+    private val DIACRITICS_REMOVE_PATTERN = "\\p{M}+".toRegex()
 
     fun search(context: Context, query: String, allApps: AllAppsList): List<SearchResult.App> {
         val prefs = PreferenceManager2.getInstance(context)
@@ -19,10 +22,12 @@ object AppSearchProvider {
         val maxAppResults = prefs.maxAppSearchResultCount.firstCached()
         val enableFuzzySearch = prefs.enableFuzzySearch.firstCached()
 
+        val queryNormalized = stripDiacritics(query).lowercase(Locale.getDefault())
+
         val appResults = if (enableFuzzySearch) {
-            fuzzySearch(allApps.data, query, maxAppResults, hiddenApps, hiddenAppsInSearch)
+            fuzzySearch(allApps.data, queryNormalized, maxAppResults, hiddenApps, hiddenAppsInSearch)
         } else {
-            normalSearch(allApps.data, query, maxAppResults, hiddenApps, hiddenAppsInSearch)
+            normalSearch(allApps.data, queryNormalized, maxAppResults, hiddenApps, hiddenAppsInSearch)
         }
 
         return appResults.map { SearchResult.App(data = it) }
@@ -31,24 +36,22 @@ object AppSearchProvider {
     private fun normalSearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
-        val queryTextLower = query.lowercase(Locale.getDefault())
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         return apps.asSequence()
-            .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .filterHiddenApps(queryTextLower, hiddenApps, hiddenAppsInSearch)
+            .filter { StringMatcherUtility.matches(query, stripDiacritics(it.title.toString()), matcher) }
+            .filterHiddenApps(query, hiddenApps, hiddenAppsInSearch)
             .take(maxResultsCount)
             .toList()
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
-        val queryTextLower = query.lowercase(Locale.getDefault())
         val filteredApps = apps.asSequence()
-            .filterHiddenApps(queryTextLower, hiddenApps, hiddenAppsInSearch)
+            .filterHiddenApps(query, hiddenApps, hiddenAppsInSearch)
             .toList()
 
         return filteredApps
             .mapNotNull { app ->
-                val matchResult = AppMatcher.match(app.title.toString(), queryTextLower)
+                val matchResult = AppMatcher.match(stripDiacritics(app.title.toString()), query)
                 if (matchResult.type == MatchType.NO_MATCH) null else Pair(app, matchResult)
             }
             .sortedWith(
@@ -59,5 +62,10 @@ object AppSearchProvider {
             )
             .map { it.first }
             .take(maxResultsCount)
+    }
+
+    private fun stripDiacritics(input: String): String {
+        return Normalizer.normalize(input, Normalizer.Form.NFKD)
+            .replace(DIACRITICS_REMOVE_PATTERN, "")
     }
 }

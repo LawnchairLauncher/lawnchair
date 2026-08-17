@@ -20,9 +20,12 @@ import app.lawnchair.util.App
 import app.lawnchair.util.appsState
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 
 @Composable
 fun PickAppForGesture() {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val apps by appsState()
     val state = rememberLazyListState()
 
@@ -50,7 +53,10 @@ fun PickAppForGesture() {
                     ) { _, app ->
                         AppItem(
                             app = app,
-                            onClick = { onSelectApp(app) },
+                            onClick = {
+                                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                                onSelectApp(app)
+                            },
                         )
                     }
                 }

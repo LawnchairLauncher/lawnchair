@@ -46,10 +46,10 @@
     <string name="download_update">Güncellemeyi indir</string>
     <string name="install_update">Güncellemeyi kur</string>
     <string name="view_changes">Değişiklikleri göster</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">Güncelsiniz</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Güncellemeler</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">Güncellemeler yüklenemedi</string>
     <string name="changes_dialog_no_changes">Değişiklik bulunmadı</string>
     <string name="changes_dialog_build_format">Yapı #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">%1$s • %2$s • %3$s tarafından</string>
@@ -103,7 +103,7 @@
     <string name="app_drawer_folder">Uygulama çekmecesi klasörleri</string>
     <string name="selected_apps">Seçilen uygulamalar</string>
     <string name="add_apps">Uygulamalar ekle</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Uygulama çekmecesi klasörü</string>
     <string name="add_folder">Klasör oluştur</string>
     <string name="edit_folder">Klasörü düzenle</string>
     <string name="add_label">Ekle</string>
@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">GestureNavContract API\'ini kullan</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
     <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">Hiçbiri</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">Varsayılan</string>
+    <string name="vibration_feedback_expressive_choice">Etkileyici</string>
     <string name="recents_lock_unlock">App locking</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">Kaplama</string>
     <string name="overlay_none">Hiçbiri</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Öneriler</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">Sistem</string>
+    <string name="prediction_mode_none">Kapat</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -261,7 +283,7 @@
     <string name="icon_shape_leaf">Yaprak</string>
     <string name="icon_shape_meow">Miyav</string>
     <string name="icon_shape_pebble">Çakıl taşı</string>
-    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
+    <string name="icon_shape_roundedhexagon">Yuvarlatılmış altıgen</string>
     <string name="icon_shape_stretched">Gerilmiş</string>
     <string name="icon_shape_vessel">Kap</string>
     <!-- Custom icon shapes -->
@@ -382,7 +404,7 @@
     <string name="smartspace_weather">Hava durumu</string>
     <string name="smartspace_battery_status">Pil durumu</string>
     <string name="smartspace_torch">El feneri durumu</string>
-    <string name="smartspace_now_playing">Now playing</string>
+    <string name="smartspace_now_playing">Şimdi oynatılıyor</string>
     <string name="smartspace_onboarding">Başlangıç</string>
     <!-- Torch strings -->
     <string name="torch_status_on">El feneri açık</string>
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Üst boşluk</string>
     <string name="hotseat_bg_vertical_inset_bottom">Alt boşluk</string>
     <string name="hotseat_bg_color_label">Arka plan rengi</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Arka plan opaklığı</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Duraklat</string>
@@ -620,6 +643,7 @@
     <string name="open_in_store_drop_target_label">Mağazada aç</string>
     <string name="dock_icons">Alt sıra simgeleri</string>
     <string name="dock_rows">Dock rows</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (katlanmış)</string>
     <string name="state_unfolded">%1$s (açılmış)</string>
     <string name="folded_label">katlanmış</string>
@@ -712,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">Klavyeyi otomatik göster</string>
     <string name="fuzzy_search_title">Yaklaşık arama</string>
     <string name="fuzzy_search_desc">Uygulama aramaları için yaklaşık eşleşme</string>
-    <string name="suggestion_pref_screen_title">Öneriler</string>
     <string name="show_suggested_apps_at_drawer_top">Önerilen uygulamaları çekmecenin üst kısmında göster</string>
     <string name="perform_wide_search_title">Cihaz arama</string>
     <string name="perform_wide_search_description">Telefonunuzdaki kişiler, dosyalar ve ayarlarda arama yapın</string>

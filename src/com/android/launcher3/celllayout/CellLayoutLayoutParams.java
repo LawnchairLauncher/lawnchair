@@ -128,19 +128,6 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
     public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
             int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
             @Nullable Rect inset) {
-        setup(cellWidth, cellHeight, invertHorizontally, colCount, rowCount, cellScaleX,
-                cellScaleY, borderSpace, inset, 0);
-    }
-
-    /**
-     * Lawnchair: {@link #setup(int, int, boolean, int, int, float, float, Point, Rect)}, 
-     * with the addition of [edgeInset] (after inset) in case extra inset needs to be applied on the outer grid edges
-     * 
-     * Lawnchair-TODO: Maybe the proper solution is to modify the profile of the device directly, but what value?
-     */
-    public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
-            int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
-            @Nullable Rect inset, int edgeInset) {
         if (isLockedToGrid) {
             final int myCellHSpan = cellHSpan;
             final int myCellVSpan = cellVSpan;
@@ -167,19 +154,6 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
                 y += inset.top;
                 width -= inset.left + inset.right;
                 height -= inset.top + inset.bottom;
-            }
-
-            // Lawnchair: apply extra inset only on the outer edges of the grid
-            if (edgeInset > 0) {
-                boolean atLeft = myCellX == 0;
-                boolean atRight = myCellX + myCellHSpan >= colCount;
-                if (atLeft) {
-                    x += edgeInset;
-                    width -= edgeInset;
-                }
-                if (atRight) {
-                    width -= edgeInset;
-                }
             }
         }
     }

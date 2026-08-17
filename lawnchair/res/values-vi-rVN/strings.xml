@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">Sử dụng API GestureNavContract</string>
     <string name="gesturenavcontract_description">Hỗ trợ hiệu ứng hoạt ảnh nâng cao của Android khi sử dụng điều hướng bằng cử chỉ</string>
     <string name="gesturenavcontract_warning_incompatibility">Thiết bị của bạn không hoàn toàn hỗ trợ. Điều này có thể gây ra lỗi hiển thị đối với một số hoạt ảnh.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">Không có</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">Mặc định</string>
+    <string name="vibration_feedback_expressive_choice">Diễn cảm</string>
     <string name="recents_lock_unlock">Khóa ứng dụng</string>
     <string name="recents_lock_unlock_description">Ngăn ứng dụng đã chọn đóng lại khi bạn nhấn \"Xóa tất cả\"</string>
     <!--Overlay-->
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">Thu vào</string>
     <string name="overlay_label">Lớp phủ</string>
     <string name="overlay_none">Không có</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Gợi ý</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">Hệ thống</string>
+    <string name="prediction_mode_none">Tắt</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Lề trên</string>
     <string name="hotseat_bg_vertical_inset_bottom">Lề dưới</string>
     <string name="hotseat_bg_color_label">Màu nền</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Background opacity</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Tạm Dừng</string>
@@ -620,6 +643,7 @@
     <string name="open_in_store_drop_target_label">Mở trong cửa hàng</string>
     <string name="dock_icons">Ứng dụng ở khay</string>
     <string name="dock_rows">Hàng thanh</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (gấp lại)</string>
     <string name="state_unfolded">%1$s (đã mở ra)</string>
     <string name="folded_label">Gấp lại</string>
@@ -711,7 +735,6 @@
     <string name="pref_search_auto_show_keyboard">Tự động hiển thị bàn phím</string>
     <string name="fuzzy_search_title">Tìm kiếm mờ</string>
     <string name="fuzzy_search_desc">Phù hợp gần đúng cho tìm kiếm ứng dụng</string>
-    <string name="suggestion_pref_screen_title">Gợi ý</string>
     <string name="show_suggested_apps_at_drawer_top">Hiển thị các ứng dụng được đề xuất ở đầu ngăn chứa</string>
     <string name="perform_wide_search_title">Tìm kiếm thiết bị</string>
     <string name="perform_wide_search_description">Tìm kiếm danh bạ, tệp và cài đặt trên điện thoại của bạn</string>

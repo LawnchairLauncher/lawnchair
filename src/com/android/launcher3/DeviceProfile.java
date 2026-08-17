@@ -221,6 +221,8 @@ public class DeviceProfile {
     private final HotseatProfile hotseatProfile;
     public int numShownHotseatIcons;
     public int numHotseatRows;
+    /** Number of horizontally scrollable dock pages (1 = classic single dock). */
+    public int numHotseatPages;
     public int hotseatCellHeightPx;
     private int mHotseatColumnSpan;
     private int mHotseatWidthPx; // not used in vertical bar layout
@@ -258,10 +260,6 @@ public class DeviceProfile {
     // Additional padding added to the widget inside its cellSpace. It is applied outside
     // the widgetView, such that the actual view size is same as the widget size.
     public final Rect widgetPadding = new Rect();
-    // Lawnchair: extra horizontal inset applied only to widgets touching the left/right
-    // edge of the grid, so that widget edges align closer to icon centers without
-    // inflating the gap between adjacent widgets.
-    public int widgetEdgeInsetPx;
 
     // Notification dots
     public final DotRenderer mDotRendererWorkSpace;
@@ -335,6 +333,7 @@ public class DeviceProfile {
         hotseatQsbWidth = 0;
         hotseatBorderSpace = 0;
         numHotseatRows = 1;
+        numHotseatPages = 1;
         mBubbleBarSpaceThresholdPx = 0;
         numShownAllAppsColumns = 0;
         mViewScaleProvider = null;
@@ -521,11 +520,12 @@ public class DeviceProfile {
 
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
         numHotseatRows = Math.max(1, Math.min(2, PreferenceManager.getInstance(context).getHotseatRows().get()));
+        numHotseatPages = Math.max(1, Math.min(5, PreferenceManager.getInstance(context).getDockPages().get()));
         mHotseatColumnSpan = inv.numColumns;
 
         numShownAllAppsColumns = displayOptionSpec.numAllAppsColumns;
 
-        int hotseatBarBottomSpace = !isQsbEnable ? 0 : pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
+        int hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
         int minQsbMargin = res.getDimensionPixelSize(R.dimen.min_qsb_margin);
 
         if (mIsResponsiveGrid) {
@@ -552,6 +552,7 @@ public class DeviceProfile {
         }
 
         if (!isQsbEnable) {
+            hotseatBarBottomSpace = 0;
             hotseatQsbSpace = 0;
         }
 
@@ -1403,11 +1404,9 @@ public class DeviceProfile {
         } else {
             widgetPadding.setEmpty();
         }
-        // Lawnchair: extra inset for edge widgets to align closer to icon centre.
-        widgetEdgeInsetPx = widgetPadding.left;
         // Lawnchair: scale widget padding by user factor (0 = remove, 1 = default).
-        widgetPadding.left = widgetPadding.right =
-                Math.round(widgetPadding.left * widgetPaddingFactor);
+        widgetPadding.left = Math.round(widgetPadding.left * widgetPaddingFactor);
+        widgetPadding.right = Math.round(widgetPadding.right * widgetPaddingFactor);
         widgetPadding.top = Math.round(widgetPadding.top * widgetPaddingFactor);
         widgetPadding.bottom = Math.round(widgetPadding.bottom * widgetPaddingFactor);
     }

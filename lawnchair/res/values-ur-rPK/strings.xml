@@ -46,15 +46,15 @@
     <string name="download_update">اپ ڈیٹ ڈاؤن لوڈ کریں۔</string>
     <string name="install_update">اپ ڈیٹ انسٹال کریں۔</string>
     <string name="view_changes">تبدیلیاں دیکھیں</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">آپ اپ ٹو ڈیٹ ہیں</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">اپ ڈیٹس</string>
+    <string name="changes_dialog_error">اپ ڈیٹس لوڈ نہیں ہو سکیں</string>
+    <string name="changes_dialog_no_changes">کوئی تبدیلیاں نہیں ملیں</string>
+    <string name="changes_dialog_build_format">بلڈ #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">بذریعہ %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">ابھی ابھی</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -87,7 +87,7 @@
     <string name="grid">گرڈ</string>
     <string name="layout">لے آؤٹ</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">وال پیپر دکھائیں</string>
     <string name="wallpaper">وال پیپر</string>
     <string name="style">انداز</string>
     <string name="background_opacity">پس منظر کی دھندلاپن</string>
@@ -98,12 +98,12 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">کیا دکھانا ہے۔</string>
     <string name="wallpapers">وال پیپرز</string>
-    <string name="caddy_beta">Caddy (beta)</string>
+    <string name="caddy_beta">Caddy (بیٹا)</string>
     <string name="caddy">کیڈی</string>
     <string name="app_drawer_folder">ایپ ڈراور فولڈرز</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
+    <string name="selected_apps">منتخب کردہ ایپس</string>
+    <string name="add_apps">ایپس شامل کریں</string>
+    <string name="app_drawer_folder_settings">ایپ ڈراور فولڈر</string>
     <string name="add_folder">فولڈر بنائیں</string>
     <string name="edit_folder">فولڈر میں ترمیم کریں۔</string>
     <string name="add_label">شامل کریں۔</string>
@@ -115,20 +115,20 @@
     <string name="apps_in_folder_description">فولڈرز کو تفویض کردہ ایپس کو ایپ کی فہرستوں سے خارج کر دیا گیا ہے۔</string>
     <string name="folders_filter_duplicates">صرف منفرد ایپس دکھائیں۔</string>
     <string name="my_folder_label">میرا فولڈر</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">ایکٹو آئٹمز سارٹ کریں</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">جب آپ کوئی جیسچر استعمال کریں، جیسے کہ فون کو لاک کرنا، تو مخصوص ایکشنز پرفارم کرنے کے لیے Lawnchair کو ایکسیسبیلٹی ایکسیس درکار ہوتی ہے۔\n\nLawnchair آپ کے ایکشنز پر نظر نہیں رکھتا، حالانکہ تمام ایکسیسبیلٹی سروسز کو اس پرمیشن کی ضرورت ہوتی ہے۔ Lawnchair سسٹم کی طرف سے بھیجے گئے کسی بھی ایونٹ کو ڈسکارڈ کر دیتا ہے۔\n\nاپنے فون کو لاک کرنے یا ریسنٹس اسکرین کھولنے کے لیے، Lawnchair performGlobalAction ایکسیسبیلٹی سروس کا استعمال کرتا ہے۔</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">اعلی درجے کی</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_move_up">اوپر کریں</string>
+    <string name="reorderable_move_down">نیچے کریں</string>
+    <string name="reorderable_active_items">ایکٹو آئٹمز</string>
+    <string name="reorderable_disabled_items">دیگر آئٹمز</string>
+    <string name="reorderable_disabled_hint">ڈس ایبلڈ آئٹمز یہاں نظر آئیں گے</string>
+    <string name="reorderable_add_hint_items">ایکٹو آئٹمز یہاں نظر آئیں گے</string>
     <!--
 
     Preference Dashboard
@@ -139,7 +139,7 @@
     <string name="general_description">رنگ، آئیکن پیک، نوٹیفکیشن ڈاٹس</string>
     <string name="home_screen_label">ہوم اسکرین</string>
     <string name="home_screen_description">فیڈ، گرڈ، شبیہیں</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">ہوم اسکرین ایکشنز</string>
     <string name="dock_label">گودی</string>
     <string name="dock_description">سرچ بار، آئیکن کاؤنٹ</string>
     <string name="app_drawer_label">ایپ دراز</string>
@@ -150,39 +150,44 @@
     <string name="folders_description">قطار اور کالم کی گنتی</string>
     <string name="gestures_label">اشارے</string>
     <string name="gestures_description">ٹیپ اور سوائپس</string>
-    <string name="quickstep_label">Recents screen</string>
-    <string name="quickstep_description">Clear all button, corner radius</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="quickstep_label">ریسنٹس اسکرین</string>
+    <string name="quickstep_description">کلیئر آل بٹن، کارنر ریڈیس</string>
+    <string name="backup_and_restore_label">بیک اپ اور ریسٹور</string>
+    <string name="backup_and_restore_description">موجودہ سیٹ اپ سیو کریں، بیک اپس ریسٹور کریں</string>
     <string name="about_label">کے بارے میں</string>
     <string name="app_info_drop_target_label">ایپ کی معلومات</string>
     <string name="debug_restart_launcher">لان چیئر کو دوبارہ شروع کریں۔</string>
     <string name="experimental_features_label">تجرباتی خصوصیات</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
+    <string name="workspace_label">ورک اسپیس</string>
     <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_label">انٹرنل</string>
+    <string name="internal_description">انٹرنل دیگر تجرباتی گروپس کے مقابلے میں کم اسٹیبل ہو سکتا ہے۔</string>
     <string name="font_picker_label">فونٹ حسب ضرورت</string>
     <string name="font_picker_description">کچھ متن غیر تبدیل شدہ رہتا ہے۔</string>
     <string name="smartspace_calendar_label">ایک نظر میں کیلنڈر حسب ضرورت</string>
     <string name="smartspace_calendar_description">غیر گریگورین کیلنڈر سسٹم میں تاریخ دکھانے کی اجازت دیں۔</string>
     <string name="workspace_increase_max_grid_size_label">زیادہ سے زیادہ گرڈ سائز کی حد میں اضافہ کریں۔</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
+    <string name="workspace_increase_max_grid_size_description">ہوم اسکرین گرڈ سائز کی زیادہ سے زیادہ حد 10 &#xd7; 10 سے بڑھا کر 20 &#xd7; 20 کریں۔</string>
     <string name="always_reload_icons_label">ہمیشہ شبیہیں دوبارہ لوڈ کریں۔</string>
     <string name="always_reload_icons_description">آئیکن پیک سے کیشڈ آئیکنز استعمال کرنے سے گریز کریں۔</string>
-    <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="always_reload_icons_warning">اس سے آئیکنز باقاعدگی سے ریفریش ہوں گے، جس سے پرفارمنس متاثر ہوگی۔ اگر آئیکن پیک باقاعدگی سے اپ ڈیٹ نہیں ہوتا تو اسے آف کر دیں۔</string>
+    <string name="show_deck_layout">ڈیک لے آؤٹ</string>
+    <string name="show_deck_layout_description">ایپ ڈراور کو چھپانے اور نئی ایپس کو خودکار طور پر ہوم اسکرین پر ایڈ کرنے کے لیے لے آؤٹ کا آپشن دکھائیں۔</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
-    <string name="folder_label">Folder</string>
+    <string name="material_expressive_description">ورک اسپیس میں Material 3 Expressive کی تبدیلیاں انیبل کریں۔</string>
+    <string name="folder_shape_label">فولڈر شیپ</string>
+    <string name="folder_label">فولڈر</string>
     <string name="app_icon_shape_label">ایپ</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
-    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="recents_lock_unlock">App locking</string>
+    <string name="gesturenavcontract_label">GestureNavContract API استعمال کریں</string>
+    <string name="gesturenavcontract_description">جیسچر نیویگیشن استعمال کرتے وقت Android کی اینہانسڈ اینیمیشنز کو سپورٹ کریں۔</string>
+    <string name="gesturenavcontract_warning_incompatibility">آپ کی ڈیوائس مکمل طور پر سپورٹڈ نہیں ہے۔ اس کی وجہ سے کچھ اینیمیشنز میں ویژول ایشو آ سکتا ہے۔</string>
+    <string name="vibration_feedback_level_label">وائبریشن فیڈ بیک لیول</string>
+    <string name="vibration_feedback_no_feedback_choice">کوئی نہیں۔</string>
+    <string name="vibration_feedback_minimal_choice">معمولی</string>
+    <string name="vibration_feedback_default_choice">طے شدہ</string>
+    <string name="vibration_feedback_expressive_choice">اظہار کرنے والا</string>
+    <string name="recents_lock_unlock">ایپ لاکنگ</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
     <string name="app_closing_animation">ایپ بند ہونے والی اینیمیشن</string>
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">اوورلے</string>
     <string name="overlay_none">کوئی نہیں۔</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">تجاویز</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">سسٹم</string>
+    <string name="prediction_mode_none">آف</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">اوپر مارجن</string>
     <string name="hotseat_bg_vertical_inset_bottom">نیچے مارجن</string>
     <string name="hotseat_bg_color_label">پس منظر کا رنگ</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">پس منظر کی دھندلاپن</string>
     <!-- Pause apps shortcut -->
     <string name="pause">توقف</string>
@@ -620,6 +643,7 @@
     <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">ڈاک آئیکنز</string>
     <string name="dock_rows">Dock rows</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
@@ -712,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">خودکار طور پر کی بورڈ دکھائیں۔</string>
     <string name="fuzzy_search_title">مبہم تلاش</string>
     <string name="fuzzy_search_desc">ایپ کی تلاش کے لیے تخمینی مماثلت</string>
-    <string name="suggestion_pref_screen_title">تجاویز</string>
     <string name="show_suggested_apps_at_drawer_top">دراز کے اوپری حصے میں تجویز کردہ ایپس دکھائیں۔</string>
     <string name="perform_wide_search_title">ڈیوائس کی تلاش</string>
     <string name="perform_wide_search_description">اپنے فون کے رابطے، فائلیں اور سیٹنگز تلاش کریں۔</string>
