@@ -214,6 +214,10 @@ fun CustomizeShortcutDialog(
     )
 }
 
+/**
+ * Customize dialog for an app: everything [CustomizeOverrideDialog] offers, plus hiding the app
+ * from the drawer.
+ */
 @Composable
 fun CustomizeAppDialog(
     icon: Drawable,

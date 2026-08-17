@@ -85,6 +85,7 @@ import com.android.launcher3.icons.CacheableShortcutCachingLogic;
 import com.android.launcher3.icons.CacheableShortcutInfo;
 import com.android.launcher3.icons.IconThemeController;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.UserBadgeDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
@@ -802,9 +803,15 @@ public final class Utilities {
                 if (mainIcon == null) {
                     mainIcon = CacheableShortcutInfo.getIcon(context, si, shortcutIconDpi);
                 }
+                boolean skipBadge = ShortcutIconOverrides.INSTANCE.shouldSkipBadge(context, si);
+                // LC-Note: the badge preloaded from the cached bitmap above may predate the
+                // override. Drop a stale publisher badge, but keep a plain user-profile badge —
+                // that is exactly what the refreshed cache produces for an overridden shortcut.
+                if (skipBadge && badge != null && !(badge instanceof UserBadgeDrawable)) {
+                    badge = null;
+                }
                 // Only fetch badge if the icon is on workspace
-                if (info.id != ItemInfo.NO_ID && badge == null
-                        && !ShortcutIconOverrides.INSTANCE.shouldSkipBadge(context, si)) {
+                if (info.id != ItemInfo.NO_ID && badge == null && !skipBadge) {
                     badge = appState.getIconCache().getShortcutInfoBadge(si).newIcon(
                             context,
                             ThemeManager.INSTANCE.get(context).isIconThemeEnabled()

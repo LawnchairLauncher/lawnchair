@@ -66,6 +66,11 @@ class IconOverrideRepository @Inject constructor(
         }
     }
 
+    /**
+     * Loads the overrides from the database on the calling thread and caches the result, unless a
+     * newer map was published while the query was in flight. See [overridesMap] for why the first
+     * read cannot wait for the observer.
+     */
     private fun loadOverridesBlocking(): Map<ComponentKey, IconPickerItem> {
         val loaded = try {
             runBlocking { dao.getAll() }.toOverridesMap()
@@ -97,6 +102,7 @@ class IconOverrideRepository @Inject constructor(
         _overridesMap?.let { _overridesMap = transform(it) }
     }
 
+    /** Rows keyed the way [overridesMap] serves them. */
     private fun List<IconOverride>.toOverridesMap() = associateBy(
         keySelector = { it.target },
         valueTransform = { it.iconPickerItem },
