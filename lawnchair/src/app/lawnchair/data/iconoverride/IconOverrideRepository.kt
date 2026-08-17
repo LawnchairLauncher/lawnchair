@@ -38,21 +38,34 @@ class IconOverrideRepository @Inject constructor(
     /**
      * The overrides currently in effect.
      *
-     * Loaded on first read rather than waiting for [IconOverrideDao.observeAll]. That flow only
-     * delivers once the main thread gets a turn, while the icon pipeline reads this from the model
+     * Loaded when this repository is built, and by the first read if that has not landed yet,
+     * rather than waiting for [IconOverrideDao.observeAll]. That flow only delivers once the main
+     * thread gets a turn, while the icon pipeline reads this from the model
      * worker during the very first load after a cold start — so waiting for it hands out an empty
      * map, which both loads un-overridden icons and computes an override-free freshness id.
      * [com.android.launcher3.icons.cache.IconCacheUpdateHandler] then writes that pair into the
      * icon cache as though it were current, so the lost override survives every later start.
      *
-     * The first read runs a database query and blocks. It usually falls to the model worker during
-     * the loader, but a UI path can get there first — Customize loads a preview icon straight from
-     * its click handler — so this is not safe to annotate as worker-thread only.
+     * A read that arrives before the preload in [init] has finished runs the query itself and
+     * blocks. That normally falls to the model worker during the loader, but a UI path can get
+     * there first — Customize loads a preview icon straight from its click handler — so this is
+     * not safe to annotate as worker-thread only.
      */
     val overridesMap: Map<ComponentKey, IconPickerItem>
         get() = _overridesMap ?: loadOverridesBlocking()
 
     init {
+        // Fill the map as soon as the singleton exists, off whatever thread built it, so that the
+        // readers above normally find it loaded instead of running the query themselves. The
+        // blocking path stays as the fallback: a reader that arrives first still needs the real
+        // map rather than an empty one, for the reason [overridesMap] documents.
+        scope.launch(Dispatchers.IO) {
+            try {
+                cacheIfUnloaded(dao.getAll().toOverridesMap())
+            } catch (t: Throwable) {
+                Log.e(TAG, "Unable to preload icon overrides", t)
+            }
+        }
         scope.launch {
             dao.observeAll()
                 .flowOn(Dispatchers.Main)
@@ -80,10 +93,18 @@ class IconOverrideRepository @Inject constructor(
             Log.e(TAG, "Unable to load icon overrides", t)
             return emptyMap()
         }
-        // The query ran outside the lock, so anything published while it was in flight is newer
-        // than this snapshot and wins.
-        return synchronized(this) { _overridesMap ?: loaded.also { _overridesMap = it } }
+        return cacheIfUnloaded(loaded)
     }
+
+    /**
+     * Caches [loaded] unless the map is already filled, and returns whichever map is in effect.
+     * Queries run outside the lock, so anything published while one was in flight is newer than
+     * its result and wins.
+     */
+    @Synchronized
+    private fun cacheIfUnloaded(
+        loaded: Map<ComponentKey, IconPickerItem>,
+    ): Map<ComponentKey, IconPickerItem> = _overridesMap ?: loaded.also { _overridesMap = it }
 
     /** Replaces the map wholesale. Safe before the first read, since it is a complete state. */
     @Synchronized
@@ -92,8 +113,8 @@ class IconOverrideRepository @Inject constructor(
     }
 
     /**
-     * Applies [transform] to an already-loaded map. A map that has not been read yet is left alone:
-     * the row is already committed, so the first read picks it up.
+     * Applies [transform] to an already-loaded map. A map that has not loaded yet is left alone:
+     * the row is already committed, so a load in flight or the observer picks it up.
      */
     @Synchronized
     private fun patch(
