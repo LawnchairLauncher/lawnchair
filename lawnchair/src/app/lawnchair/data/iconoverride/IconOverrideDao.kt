@@ -20,6 +20,9 @@ interface IconOverrideDao {
     @Query("SELECT * FROM iconoverride")
     fun observeAll(): Flow<List<IconOverride>>
 
+    @Query("SELECT * FROM iconoverride")
+    suspend fun getAll(): List<IconOverride>
+
     @Query("SELECT * FROM iconoverride WHERE target = :target")
     fun observeTarget(target: ComponentKey): Flow<IconOverride?>
 
