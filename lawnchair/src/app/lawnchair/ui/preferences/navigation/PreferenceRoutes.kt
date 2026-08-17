@@ -195,6 +195,10 @@ data object AboutLicenses : PreferenceRoute, PreferenceDeepLink {
 data class SelectIcon(
     // assuming componentKey is a ComponentKey.toString()
     val componentKey: String,
+    // Set when the caller already knows the target's name. A deep shortcut's key is
+    // ComponentName(publisherPackage, shortcutId), which no activity lookup resolves a label from,
+    // so the screen would otherwise be titled after the publishing app.
+    val label: String? = null,
 ) : PreferenceRoute
 
 // default to empty

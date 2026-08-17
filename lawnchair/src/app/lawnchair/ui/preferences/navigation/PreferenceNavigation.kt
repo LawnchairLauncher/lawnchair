@@ -210,7 +210,7 @@ fun PreferenceNavigation(
             val args: SelectIcon = backStackEntry.toRoute()
             val componentKey = args.componentKey
             val key = ComponentKey.fromString(componentKey)!!
-            SelectIconPreference(key)
+            SelectIconPreference(key, args.label)
         }
         composable<IconPicker> { backStackEntry ->
             val args: IconPicker = backStackEntry.toRoute()

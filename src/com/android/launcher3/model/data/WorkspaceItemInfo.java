@@ -29,8 +29,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import app.lawnchair.icons.ShortcutIconOverrides;
-
 import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -43,6 +41,8 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper;
 
 import java.util.Arrays;
+
+import app.lawnchair.icons.ShortcutIconOverrides;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -188,6 +188,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         }
         // {@link ShortcutInfo#getActivity} can change during an update. Recreate the intent
         intent = ShortcutKey.makeIntent(shortcutInfo);
+        // LC-Note: this is the only place a pinned deep shortcut's title is set, so the custom
+        // label is applied here rather than in the caching logic the app path uses.
         CharSequence customTitle = ShortcutIconOverrides.INSTANCE.getLabel(context, shortcutInfo);
         boolean hasCustomTitle = !TextUtils.isEmpty(customTitle);
         title = hasCustomTitle ? customTitle : shortcutInfo.getShortLabel();

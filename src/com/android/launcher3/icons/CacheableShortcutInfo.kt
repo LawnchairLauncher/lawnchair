@@ -106,7 +106,7 @@ object CacheableShortcutCachingLogic : CachingLogic<CacheableShortcutInfo> {
     override fun loadIcon(context: Context, cache: BaseIconCache, info: CacheableShortcutInfo) =
         LauncherIcons.obtain(context).use { li ->
             val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
-            // A user-chosen icon wins over the one the publisher supplies.
+            // LC-Note: a user-chosen icon wins over the one the publisher supplies.
             val overrideIcon = ShortcutIconOverrides.getIcon(context, info.shortcutInfo, iconDpi)
             (overrideIcon ?: CacheableShortcutInfo.getIcon(context, info.shortcutInfo, iconDpi))
                 ?.let { d ->
@@ -117,6 +117,8 @@ object CacheableShortcutCachingLogic : CachingLogic<CacheableShortcutInfo> {
                             .setSourceHint(
                                 getSourceHint(info, cache)
                                     .copy(
+                                        // LC-Note: the hint describes the drawable actually being
+                                        // rasterized, and an icon-pack drawable is never a file.
                                         isFileDrawable =
                                             overrideIcon == null &&
                                                 ApiWrapper.INSTANCE[context].isFileDrawable(

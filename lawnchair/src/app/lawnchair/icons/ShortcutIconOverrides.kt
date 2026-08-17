@@ -39,7 +39,11 @@ object ShortcutIconOverrides {
 
     private const val TAG = "ShortcutIconOverrides"
 
-    fun keyFor(shortcutInfo: ShortcutInfo): ComponentKey = ShortcutKey.fromInfo(shortcutInfo)
+    /**
+     * The storage key for [shortcutInfo]. Only meaningful for a shortcut [supportsOverrides] has
+     * accepted, which is the only way an override gets written in the first place.
+     */
+    private fun keyFor(shortcutInfo: ShortcutInfo): ComponentKey = ShortcutKey.fromInfo(shortcutInfo)
 
     /**
      * Whether [itemInfo] can carry an override at all.
@@ -67,16 +71,22 @@ object ShortcutIconOverrides {
             .getDrawable(item.toIconEntry(), iconDpi, shortcutInfo.userHandle)
     }
 
-    fun hasIconOverride(context: Context, shortcutInfo: ShortcutInfo): Boolean {
+    /** Whether an icon has been chosen for [shortcutInfo], regardless of whether it still resolves. */
+    private fun hasIconOverride(context: Context, shortcutInfo: ShortcutInfo): Boolean {
         return IconOverrideRepository.INSTANCE.get(context)
             .overridesMap
             .containsKey(keyFor(shortcutInfo))
     }
 
     /**
-     * A chosen icon replaces the publisher's icon outright, so the publisher badge that would sit
-     * on top of it goes too — otherwise a web app picked out of an icon pack still wears the
-     * browser's mark. Lawnchair 2's Customize behaved the same way.
+     * Whether the publisher badge should be left off: either this is one of Lawnchair's own gesture
+     * shortcuts, which has no meaningful publisher, or the user has chosen a replacement icon.
+     *
+     * A chosen icon replaces the publisher's outright, so the badge that identified the publisher
+     * goes with it — otherwise a web app picked out of an icon pack still wears the browser's mark.
+     * Lawnchair 2's Customize behaved the same way. This asks only whether an icon was chosen, not
+     * whether it still resolves, so a shortcut whose icon pack has since been uninstalled keeps its
+     * badge off while falling back to the publisher's icon.
      */
     fun shouldSkipBadge(context: Context, shortcutInfo: ShortcutInfo): Boolean {
         return LawnchairShortcutActivity.shouldSkipShortcutBadge(context, shortcutInfo) ||

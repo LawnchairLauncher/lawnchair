@@ -42,6 +42,7 @@ import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.util.ApplicationInfoWrapper
@@ -234,12 +235,28 @@ class LawnchairShortcut {
 
         override fun onClick(v: View) {
             val outObj = Array<Any?>(1) { null }
-            val icon = Utilities.loadFullDrawableWithoutTheme(launcher, mItemInfo, 0, 0, outObj)
+            var icon = Utilities.loadFullDrawableWithoutTheme(launcher, mItemInfo, 0, 0, outObj)
             val shortcutInfo = outObj[0] as? ShortcutInfo
             if (icon == null || shortcutInfo == null) {
-                Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show()
+                // The publisher is still installed; the shortcut itself went away or was disabled.
+                Toast.makeText(launcher, R.string.shortcut_not_available, Toast.LENGTH_SHORT).show()
                 AbstractFloatingView.closeAllOpenViews(launcher)
                 return
+            }
+            // Shortcut icons are themed on the workspace, so theme the preview to match.
+            if (mItemInfo.screenId != NO_ID && Utilities.ATLEAST_T) {
+                val adaptiveIcon = icon as? AdaptiveIconDrawable
+                    ?: LauncherIcons.obtain(launcher).use { it.wrapToAdaptiveIcon(icon) }
+                if (adaptiveIcon != null) {
+                    val themeController = ThemeManager.INSTANCE.get(launcher).themeController
+                    themeController?.createThemedAdaptiveIcon(
+                        launcher,
+                        adaptiveIcon,
+                        (mItemInfo as? ItemInfoWithIcon)?.bitmap,
+                    )?.let {
+                        icon = it
+                    }
+                }
             }
 
             AbstractFloatingView.closeAllOpenViews(launcher)
