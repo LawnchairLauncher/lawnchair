@@ -176,7 +176,7 @@ class LawnchairIconProvider @Inject constructor(
                     // the icon supports dynamic clock, use dynamic themed clock
                     themedIcon =
                         ClockDrawableWrapper.forPackage(mContext, mClock.packageName, iconDpi)
-                            .getMonochrome()
+                            ?.getMonochrome()
                 }
 
                 packageName == mClock.packageName -> {
