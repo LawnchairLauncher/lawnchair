@@ -282,14 +282,19 @@ public final class WellbeingModel implements SafeCloseable {
         final LauncherApps mLauncherApps = mContext.getSystemService(LauncherApps.class);
         List<LauncherActivityInfo> apps;
         
-        try {
-            apps = mLauncherApps.getActivityList(null, Process.myUserHandle());
-        } catch (SecurityException e) {
-            // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
-            // Ref: https://issuetracker.google.com/issues/547643926
-            Log.e("LC-LoaderTask", "Failed to get activity list for user " + Process.myUserHandle(), e);
+        // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
+        // Ref: https://issuetracker.google.com/issues/547643926
+        if (TextUtils.isEmpty(packageName)) {
+            try {
+                apps = mLauncherApps.getActivityList(null, Process.myUserHandle());
+            } catch (SecurityException e) {
+                Log.e("LC-LoaderTask", "Failed to get activity list for user " + Process.myUserHandle(), e);
+                apps = Collections.emptyList();
+            }
+        } else {
             apps = Collections.emptyList();
         }
+        
         if (DEBUG || mIsInTest) {
             Log.i(TAG,
                     "updateActionsWithRetry(); retryCount: " + retryCount + ", package: "
