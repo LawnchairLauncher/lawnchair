@@ -20,6 +20,8 @@ import android.animation.AnimatorSet
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -178,18 +180,52 @@ class LawnchairLauncher : QuickstepLauncher() {
         override fun onStateTransitionComplete(finalState: LauncherState) {}
     }
 
+    // How much wider than the screen the background image is scaled, reserving room to pan -
+    // matches the subtle parallax range typical of a home screen wallpaper (not a literal
+    // separate crop per drawer page).
+    private val backgroundParallaxWidthFactor = 1.2f
+
+    /**
+     * Positions the (screen-sized) background ImageView's MATRIX-scaled bitmap so it covers the
+     * view while reserving [backgroundParallaxWidthFactor] extra width to pan across, then shifts
+     * it horizontally by [progress] (0..1). Centered vertically like a normal centerCrop.
+     */
+    private fun updateDrawerBackgroundMatrix(bitmap: Bitmap, progress: Float) {
+        val viewWidth = resources.displayMetrics.widthPixels.toFloat()
+        val viewHeight = resources.displayMetrics.heightPixels.toFloat()
+        val scale = maxOf(viewHeight / bitmap.height, (viewWidth * backgroundParallaxWidthFactor) / bitmap.width)
+        val scaledWidth = bitmap.width * scale
+        val scaledHeight = bitmap.height * scale
+        val matrix = Matrix().apply {
+            setScale(scale, scale)
+            postTranslate(-progress * (scaledWidth - viewWidth), -(scaledHeight - viewHeight) / 2f)
+        }
+        appDrawerWallpaperBackgroundView.imageMatrix = matrix
+    }
+
     // Shows the user's chosen background image behind the drawer's scrim. The workspace sits
     // directly behind scrim_view in the layout, so a translucent scrim alone would reveal the
     // home screen through the drawer rather than a clean image - this layer occludes the
     // workspace while showing the picked image instead. Reading the live wallpaper directly via
     // WallpaperManager was tried first but proved unreliable (silently returns null on this
     // device/Android version with no exception to catch), hence storing our own copy.
+    //
+    // In paged drawer mode, the image pans horizontally as the user swipes between pages,
+    // mirroring how the home screen parallaxes the system wallpaper across workspace pages.
     private val drawerBackgroundImageStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
             if (toState is AllAppsState) {
                 val fileName = preferenceManager2.appDrawerBackgroundImage.firstCached()
                 if (fileName.isEmpty()) return
-                val bitmap = DrawerBackgroundImageStore.loadBitmap(this@LawnchairLauncher, fileName)
+                val bitmap = DrawerBackgroundImageStore.loadBitmap(this@LawnchairLauncher, fileName) ?: return
+                val pagedGridView = mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)
+                if (pagedGridView != null) {
+                    appDrawerWallpaperBackgroundView.scaleType = ImageView.ScaleType.MATRIX
+                    updateDrawerBackgroundMatrix(bitmap, pagedGridView.currentScrollProgress())
+                    pagedGridView.onScrollProgressChanged = { progress -> updateDrawerBackgroundMatrix(bitmap, progress) }
+                } else {
+                    appDrawerWallpaperBackgroundView.scaleType = ImageView.ScaleType.CENTER_CROP
+                }
                 appDrawerWallpaperBackgroundView.setImageBitmap(bitmap)
                 appDrawerWallpaperBackgroundView.visibility = View.VISIBLE
             }
@@ -197,6 +233,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         override fun onStateTransitionComplete(finalState: LauncherState) {
             if (finalState !is AllAppsState) {
                 appDrawerWallpaperBackgroundView.visibility = View.GONE
+                mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.onScrollProgressChanged = null
             }
         }
     }

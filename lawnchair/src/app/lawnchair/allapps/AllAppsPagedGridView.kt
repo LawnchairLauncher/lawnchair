@@ -31,7 +31,25 @@ class AllAppsPagedGridView @JvmOverloads constructor(
     private val activityContext = ActivityContext.lookupContext<Launcher>(context)
     private val prefs2 = PreferenceManager2.getInstance(context)
 
+    /** Fires on every scroll change (drag or fling) with a 0..1 progress across all pages. */
+    var onScrollProgressChanged: ((Float) -> Unit)? = null
+
     override fun isInfiniteScrollEnabled(): Boolean = prefs2.drawerInfiniteSwipe.firstCached()
+
+    override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
+        super.onScrollChanged(l, t, oldl, oldt)
+        onScrollProgressChanged?.invoke(currentScrollProgress())
+    }
+
+    /** Mirrors Workspace/WallpaperOffsetInterpolator's scroll-fraction-across-N-pages math. */
+    fun currentScrollProgress(): Float {
+        if (childCount <= 1) return 0f
+        val startScroll = getScrollForPage(0)
+        val endScroll = getScrollForPage(childCount - 1)
+        val range = endScroll - startScroll
+        if (range == 0) return 0f
+        return ((scrollX - startScroll).toFloat() / range).coerceIn(0f, 1f)
+    }
 
     /**
      * Rebuilds all pages from scratch. [items] should already be in the
