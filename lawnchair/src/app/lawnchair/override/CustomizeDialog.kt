@@ -33,7 +33,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.BlankActivity
+import app.lawnchair.data.iconoverride.ShortcutBadgeOverrideRepository
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.launcher
 import app.lawnchair.preferences.getAdapter
@@ -235,9 +237,10 @@ private fun EditableIconPreview(
 
 /**
  * Icon-only customize dialog for a single pinned shortcut (e.g. a Gmail label). Unlike
- * [CustomizeAppDialog], there is no title field or hide/gestures section — shortcuts already
- * carry their own label from the publishing app, and hiding/gestures apply to app components,
- * not individual pinned shortcuts.
+ * [CustomizeAppDialog], there is no title field or gestures section — shortcuts already
+ * carry their own label from the publishing app, and gestures apply to app components, not
+ * individual pinned shortcuts. The badge toggle below hides the work/clone profile badge that
+ * Android overlays on icons belonging to a secondary user profile.
  */
 @Composable
 fun CustomizeShortcutDialog(
@@ -261,6 +264,9 @@ fun CustomizeShortcutDialog(
         Unit
     }
 
+    val badgeRepo = ShortcutBadgeOverrideRepository.INSTANCE.get(context)
+    val hideBadge by badgeRepo.observeHidden(shortcutKey).collectAsStateWithLifecycle(initialValue = false)
+
     Column(
         modifier = modifier
             .navigationBarsOrDisplayCutoutPadding()
@@ -278,5 +284,16 @@ fun CustomizeShortcutDialog(
                 .align(Alignment.CenterHorizontally)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
         )
+        PreferenceGroup {
+            SwitchPreference(
+                checked = hideBadge,
+                label = stringResource(id = R.string.hide_shortcut_badge),
+                onCheckedChange = { newValue ->
+                    scope.launch {
+                        badgeRepo.setHidden(shortcutKey, newValue)
+                    }
+                },
+            )
+        }
     }
 }

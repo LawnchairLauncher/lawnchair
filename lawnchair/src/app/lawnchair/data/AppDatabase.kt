@@ -12,6 +12,8 @@ import app.lawnchair.data.folder.FolderItemEntity
 import app.lawnchair.data.folder.service.FolderDao
 import app.lawnchair.data.iconoverride.IconOverride
 import app.lawnchair.data.iconoverride.IconOverrideDao
+import app.lawnchair.data.iconoverride.ShortcutBadgeOverride
+import app.lawnchair.data.iconoverride.ShortcutBadgeOverrideDao
 import app.lawnchair.data.iconoverride.ShortcutIconOverride
 import app.lawnchair.data.iconoverride.ShortcutIconOverrideDao
 import app.lawnchair.data.wallpaper.Wallpaper
@@ -23,23 +25,26 @@ import kotlinx.coroutines.runBlocking
     entities = [
         IconOverride::class,
         ShortcutIconOverride::class,
+        ShortcutBadgeOverride::class,
         Wallpaper::class,
         FolderInfoEntity::class,
         FolderItemEntity::class,
     ],
-    version = 4,
+    version = 5,
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun iconOverrideDao(): IconOverrideDao
     abstract fun shortcutIconOverrideDao(): ShortcutIconOverrideDao
+    abstract fun shortcutBadgeOverrideDao(): ShortcutBadgeOverrideDao
     abstract fun wallpaperDao(): WallpaperDao
     abstract fun folderDao(): FolderDao
 
     suspend fun checkpoint() {
         iconOverrideDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
         shortcutIconOverrideDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
+        shortcutBadgeOverrideDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
         wallpaperDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
         folderDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
     }
@@ -119,12 +124,26 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    """
+            CREATE TABLE IF NOT EXISTS `shortcutbadgeoverride` (
+                `target` TEXT NOT NULL,
+                PRIMARY KEY(`target`)
+            )
+                    """.trimIndent(),
+                )
+            }
+        }
+
         val INSTANCE = MainThreadInitializedObject { context ->
             Room.databaseBuilder(
                 context,
                 AppDatabase::class.java,
                 "preferences",
-            ).addMigrations(MIGRATION_1_3).addMigrations(MIGRATION_2_3).addMigrations(MIGRATION_3_4).build()
+            ).addMigrations(MIGRATION_1_3).addMigrations(MIGRATION_2_3).addMigrations(MIGRATION_3_4)
+                .addMigrations(MIGRATION_4_5).build()
         }
     }
 }

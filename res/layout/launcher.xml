@@ -63,6 +63,14 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
+        <ImageView
+            android:id="@+id/app_drawer_wallpaper_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:importantForAccessibility="no" />
+
         <app.lawnchair.views.LawnchairScrimView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

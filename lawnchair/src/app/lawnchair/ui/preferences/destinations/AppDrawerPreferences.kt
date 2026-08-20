@@ -16,6 +16,8 @@
 
 package app.lawnchair.ui.preferences.destinations
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +50,7 @@ import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppDrawerHapticFeedbackPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
+import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
@@ -58,8 +62,12 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.AppDrawerHiddenApps
 import app.lawnchair.ui.preferences.navigation.Predictions
+import app.lawnchair.util.DrawerBackgroundImageStore
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object AppDrawerRoutes {
     const val HIDDEN_APPS = "hiddenApps"
@@ -103,6 +111,7 @@ fun AppDrawerPreferences(
         }
         PreferenceGroup(heading = stringResource(R.string.style)) {
             ColorPreference(preference = prefs2.appDrawerBackgroundColor)
+            AppDrawerBackgroundImagePreference()
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),
                 adapter = prefs.drawerOpacity.getAdapter(),
@@ -322,4 +331,46 @@ private fun DrawerLayoutPreference(drawerListAdapter: PreferenceAdapter<Boolean>
             }
         },
     )
+}
+
+@Composable
+private fun AppDrawerBackgroundImagePreference() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val adapter = preferenceManager2().appDrawerBackgroundImage.getAdapter()
+    val fileName = adapter.state.value
+    val hasImage = fileName.isNotEmpty()
+
+    val pickImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val newFileName = withContext(Dispatchers.IO) {
+                DrawerBackgroundImageStore.saveImage(context, uri)
+            } ?: return@launch
+            val previousFileName = fileName
+            adapter.onChange(newFileName)
+            if (previousFileName.isNotEmpty()) {
+                withContext(Dispatchers.IO) { DrawerBackgroundImageStore.deleteImage(context, previousFileName) }
+            }
+        }
+    }
+
+    ClickablePreference(
+        label = stringResource(id = R.string.app_drawer_background_image),
+        subtitle = stringResource(
+            id = if (hasImage) R.string.app_drawer_background_image_set else R.string.app_drawer_background_image_none,
+        ),
+        onClick = { pickImageLauncher.launch("image/*") },
+    )
+    ExpandAndShrink(visible = hasImage) {
+        ClickablePreference(
+            label = stringResource(id = R.string.app_drawer_background_image_remove),
+            onClick = {
+                scope.launch {
+                    adapter.onChange("")
+                    withContext(Dispatchers.IO) { DrawerBackgroundImageStore.deleteImage(context, fileName) }
+                }
+            },
+        )
+    }
 }

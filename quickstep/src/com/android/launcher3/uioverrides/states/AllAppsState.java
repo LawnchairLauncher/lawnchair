@@ -210,8 +210,15 @@ public class AllAppsState extends LauncherState {
     public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
         int backgroundColor;
         if (!launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
-            // Always use an opaque scrim if there's no sheet.
-            backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
+            if (LawnchairUtilsKt.hasAppDrawerBackgroundImage(launcher)) {
+                // Let the color/opacity prefs make the scrim translucent, so the background
+                // image layer behind it (see LawnchairLauncher) can show through.
+                backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher,
+                    ColorTokens.AllAppsScrimColor.resolveColor(launcher));
+            } else {
+                // Always use an opaque scrim if there's no sheet.
+                backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
+            }
         } else if (!Flags.allAppsBlur()) {
             // If there's a sheet but no blur, use the old scrim color.
             backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, 

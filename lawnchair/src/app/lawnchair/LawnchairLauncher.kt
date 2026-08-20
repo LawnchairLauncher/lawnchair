@@ -27,6 +27,7 @@ import android.util.Pair
 import android.view.Display
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import android.window.SplashScreen
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -50,6 +51,7 @@ import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.ui.popup.LauncherOptionsPopup
 import app.lawnchair.ui.popup.LawnchairShortcut
+import app.lawnchair.util.DrawerBackgroundImageStore
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.LawnchairFloatingSurfaceView
@@ -107,6 +109,9 @@ class LawnchairLauncher : QuickstepLauncher() {
         WindowInsetsControllerCompat(window, rootView)
     }
     private val themeProvider by unsafeLazy { ThemeProvider.INSTANCE.get(this) }
+    private val appDrawerWallpaperBackgroundView by unsafeLazy {
+        findViewById<ImageView>(R.id.app_drawer_wallpaper_background)
+    }
     private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
             if (toState is OverviewState) {
@@ -159,11 +164,41 @@ class LawnchairLauncher : QuickstepLauncher() {
     // time the drawer opens, same as the normal drawer resets to top.
     private val pagedDrawerResetStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
-            if (toState is AllAppsState && !preferenceManager2.rememberPosition.firstCached()) {
-                mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.setCurrentPage(0)
+            if (toState is AllAppsState) {
+                // Self-heals a cold-start race: the paged grid's first refresh can run before
+                // the model finishes loading apps (most noticeable right after a fresh
+                // install), leaving it empty until something else happens to refresh it. This
+                // is a cheap no-op otherwise (also no-ops when paged mode isn't active).
+                appsView.refreshPagedGridView()
+                if (!preferenceManager2.rememberPosition.firstCached()) {
+                    mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.setCurrentPage(0)
+                }
             }
         }
         override fun onStateTransitionComplete(finalState: LauncherState) {}
+    }
+
+    // Shows the user's chosen background image behind the drawer's scrim. The workspace sits
+    // directly behind scrim_view in the layout, so a translucent scrim alone would reveal the
+    // home screen through the drawer rather than a clean image - this layer occludes the
+    // workspace while showing the picked image instead. Reading the live wallpaper directly via
+    // WallpaperManager was tried first but proved unreliable (silently returns null on this
+    // device/Android version with no exception to catch), hence storing our own copy.
+    private val drawerBackgroundImageStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionStart(toState: LauncherState) {
+            if (toState is AllAppsState) {
+                val fileName = preferenceManager2.appDrawerBackgroundImage.firstCached()
+                if (fileName.isEmpty()) return
+                val bitmap = DrawerBackgroundImageStore.loadBitmap(this@LawnchairLauncher, fileName)
+                appDrawerWallpaperBackgroundView.setImageBitmap(bitmap)
+                appDrawerWallpaperBackgroundView.visibility = View.VISIBLE
+            }
+        }
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState !is AllAppsState) {
+                appDrawerWallpaperBackgroundView.visibility = View.GONE
+            }
+        }
     }
 
     private lateinit var colorScheme: ColorScheme
@@ -185,6 +220,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         }.launchIn(scope = lifecycleScope)
         launcher.stateManager.addStateListener(clearSearchStateListener)
         launcher.stateManager.addStateListener(pagedDrawerResetStateListener)
+        launcher.stateManager.addStateListener(drawerBackgroundImageStateListener)
 
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {

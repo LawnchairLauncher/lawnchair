@@ -14,4 +14,5 @@ data class IconEntry(
 enum class IconType {
     Normal,
     Calendar,
+    Custom,
 }

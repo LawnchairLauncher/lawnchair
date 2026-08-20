@@ -101,11 +101,19 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
-        return new ScrimColors(
-                /* backgroundColor */ launcher.getDeviceProfile().getDeviceProperties().isTablet()
-                ? LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, 
-                        ColorTokens.WidgetsPickerScrim.resolveColor(launcher))
-                : ColorTokens.AllAppsScrimColor.resolveColor(launcher),
-                /* foregroundColor */ Color.TRANSPARENT);
+        boolean isTablet = launcher.getDeviceProfile().getDeviceProperties().isTablet();
+        int backgroundColor;
+        if (isTablet) {
+            backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher,
+                    ColorTokens.WidgetsPickerScrim.resolveColor(launcher));
+        } else if (LawnchairUtilsKt.hasAppDrawerBackgroundImage(launcher)) {
+            // Let the color/opacity prefs make the scrim translucent, so the background image
+            // layer behind it (see LawnchairLauncher) can show through.
+            backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher,
+                    ColorTokens.AllAppsScrimColor.resolveColor(launcher));
+        } else {
+            backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
+        }
+        return new ScrimColors(backgroundColor, /* foregroundColor */ Color.TRANSPARENT);
     }
 }

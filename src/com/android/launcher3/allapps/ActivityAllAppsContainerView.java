@@ -798,8 +798,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * Pushes the current, alphabetically-sorted app list into the paged grid
      * view, chunked into fixed columns x rows pages. No-ops if the paged
      * drawer isn't the currently inflated container (e.g. mid-transition).
+     *
+     * Public so callers outside this class (e.g. the state listener that resets the paged
+     * drawer to page 0 on open) can also use it as a self-healing refresh: the very first
+     * onAppsUpdated() callback can fire before the model has finished loading apps on a cold
+     * start right after an install, leaving the paged grid empty until some other event
+     * (a later onAppsUpdated(), or a forced rebindAdapters()) happens to refresh it.
      */
-    private void refreshPagedGridView() {
+    public void refreshPagedGridView() {
         View container = getAppsRecyclerViewContainer();
         AllAppsPagedGridView pagedGridView = container.findViewById(R.id.apps_paged_grid_view);
         if (pagedGridView == null) {

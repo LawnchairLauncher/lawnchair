@@ -108,6 +108,10 @@
     <string name="wallpaper">Wallpaper</string>
     <string name="style">Style</string>
     <string name="background_opacity">Background opacity</string>
+    <string name="app_drawer_background_image">Background image</string>
+    <string name="app_drawer_background_image_none">None. Tap to choose a photo instead of a solid color.</string>
+    <string name="app_drawer_background_image_set">Custom photo. Lower the background opacity below to let it show through.</string>
+    <string name="app_drawer_background_image_remove">Remove background image</string>
 
     <!-- Toast text and tips -->
     <string name="copied_toast">Copied to clipboard</string>
@@ -341,6 +345,8 @@
     <string name="icon_pack_external_picker">Open external picker</string>
     <string name="pick_icon_from_label">Pick icon from</string>
     <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="icon_picker_choose_photo">Choose photo</string>
+    <string name="hide_shortcut_badge">Hide badge</string>
 
     <!-- Icon shapes  -->
     <string name="icon_shape_system">System</string>

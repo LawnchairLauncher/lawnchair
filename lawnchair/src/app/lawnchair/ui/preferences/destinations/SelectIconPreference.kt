@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.LauncherApps
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -13,7 +15,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.data.iconoverride.IconOverrideRepository
+import app.lawnchair.icons.picker.CustomIconStore
 import app.lawnchair.icons.picker.IconPickerItem
+import app.lawnchair.icons.picker.IconType
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.AppItem
@@ -48,18 +52,33 @@ fun SelectIconPreference(componentKey: ComponentKey) {
     val model = launcherAppState.model
 
     val repo = IconOverrideRepository.INSTANCE.get(context)
+
+    suspend fun applyItem(item: IconPickerItem) {
+        repo.setOverride(componentKey, item)
+        // Refresh package icons while the model is still loaded; forceReload alone can
+        // skip PackageUpdatedTask and leave icon-cache entries that look "fresh".
+        // onAppIconChanged is @WorkerThread (blocking ShortcutManager query).
+        withContext(Dispatchers.IO) {
+            model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
+        }
+        (context as Activity).let {
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
+        }
+    }
+
     OnResult<IconPickerItem> { item ->
+        scope.launch { applyItem(item) }
+    }
+
+    // GetContent (rather than PickVisualMedia) opens the system's full "open from" chooser —
+    // Files, Downloads, Drive, other file managers — not just the sandboxed Photos picker.
+    val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
-            repo.setOverride(componentKey, item)
-            // Refresh package icons while the model is still loaded; forceReload alone can
-            // skip PackageUpdatedTask and leave icon-cache entries that look "fresh".
-            // onAppIconChanged is @WorkerThread (blocking ShortcutManager query).
-            withContext(Dispatchers.IO) {
-                model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
-            }
-            (context as Activity).let {
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
+            val fileName = withContext(Dispatchers.IO) { CustomIconStore.saveIcon(context, uri) }
+            if (fileName != null) {
+                applyItem(IconPickerItem(packPackageName = "", drawableName = fileName, label = "", type = IconType.Custom))
             }
         }
     }
@@ -90,9 +109,17 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                 )
             }
         }
+        preferenceGroupItems(1, isFirstChild = !hasOverride) {
+            ClickablePreference(
+                label = stringResource(id = R.string.icon_picker_choose_photo),
+                onClick = {
+                    photoPickerLauncher.launch("image/*")
+                },
+            )
+        }
         preferenceGroupItems(
             items = iconPacks,
-            isFirstChild = !hasOverride,
+            isFirstChild = false,
             heading = { stringResource(id = R.string.pick_icon_from_label) },
         ) { _, iconPack ->
             AppItem(

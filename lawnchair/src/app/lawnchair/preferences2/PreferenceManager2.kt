@@ -236,6 +236,17 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_app_drawer_bg_color)),
     )
 
+    /**
+     * Filename (see [app.lawnchair.util.DrawerBackgroundImageStore]) of a user-picked photo shown
+     * behind the app drawer instead of an opaque scrim. Empty when unset. The background
+     * color/opacity above still apply on top, as a dimming tint, so opacity needs to be lowered
+     * for the image to actually show through.
+     */
+    val appDrawerBackgroundImage = preference(
+        key = stringPreferencesKey(name = "app_drawer_background_image"),
+        defaultValue = "",
+    )
+
     val appDrawerSearchBarBackground = preference(
         key = booleanPreferencesKey(name = "all_apps_search_bar_background"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_search_bar_background),

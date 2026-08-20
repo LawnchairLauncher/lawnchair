@@ -1,6 +1,8 @@
 package app.lawnchair.ui.preferences.destinations
 
 import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -10,7 +12,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.data.iconoverride.ShortcutIconOverrideRepository
+import app.lawnchair.icons.picker.CustomIconStore
 import app.lawnchair.icons.picker.IconPickerItem
+import app.lawnchair.icons.picker.IconType
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.AppItem
@@ -44,15 +48,30 @@ fun SelectShortcutIconPreference(shortcutKey: ComponentKey, label: String) {
     val model = launcherAppState.model
 
     val repo = ShortcutIconOverrideRepository.INSTANCE.get(context)
+
+    suspend fun applyItem(item: IconPickerItem) {
+        repo.setOverride(shortcutKey, item)
+        withContext(Dispatchers.IO) {
+            model.onAppIconChanged(shortcutKey.componentName.packageName, shortcutKey.user)
+        }
+        (context as Activity).let {
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
+        }
+    }
+
     OnResult<IconPickerItem> { item ->
+        scope.launch { applyItem(item) }
+    }
+
+    // GetContent (rather than PickVisualMedia) opens the system's full "open from" chooser —
+    // Files, Downloads, Drive, other file managers — not just the sandboxed Photos picker.
+    val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
-            repo.setOverride(shortcutKey, item)
-            withContext(Dispatchers.IO) {
-                model.onAppIconChanged(shortcutKey.componentName.packageName, shortcutKey.user)
-            }
-            (context as Activity).let {
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
+            val fileName = withContext(Dispatchers.IO) { CustomIconStore.saveIcon(context, uri) }
+            if (fileName != null) {
+                applyItem(IconPickerItem(packPackageName = "", drawableName = fileName, label = "", type = IconType.Custom))
             }
         }
     }
@@ -83,9 +102,17 @@ fun SelectShortcutIconPreference(shortcutKey: ComponentKey, label: String) {
                 )
             }
         }
+        preferenceGroupItems(1, isFirstChild = !hasOverride) {
+            ClickablePreference(
+                label = stringResource(id = R.string.icon_picker_choose_photo),
+                onClick = {
+                    photoPickerLauncher.launch("image/*")
+                },
+            )
+        }
         preferenceGroupItems(
             items = iconPacks,
-            isFirstChild = !hasOverride,
+            isFirstChild = false,
             heading = { stringResource(id = R.string.pick_icon_from_label) },
         ) { _, iconPack ->
             AppItem(

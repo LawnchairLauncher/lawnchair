@@ -236,6 +236,15 @@ fun getAllAppsBackgroundColor(context: Context, defaultColor: Int): Int {
     return ColorUtils.setAlphaComponent(getAllAppsBaseColor(context, defaultColor), (userOpacity * 255).roundToInt())
 }
 
+/**
+ * Whether the user has picked a custom background image for the app drawer. Phones normally
+ * force an opaque drawer scrim (see AllAppsState.getWorkspaceScrimColor) regardless of the
+ * color/opacity prefs above; this is what switches phones over to honoring those prefs instead,
+ * so the background image layer behind it (see LawnchairLauncher) can show through.
+ */
+fun hasAppDrawerBackgroundImage(context: Context): Boolean =
+    PreferenceManager2.getInstance(context).appDrawerBackgroundImage.firstCached().isNotEmpty()
+
 fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {
     try {
         val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)

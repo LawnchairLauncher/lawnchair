@@ -3,7 +3,9 @@ package app.lawnchair.data.iconoverride
 import android.content.Context
 import android.os.UserHandle
 import app.lawnchair.data.AppDatabase
+import app.lawnchair.icons.picker.CustomIconStore
 import app.lawnchair.icons.picker.IconPickerItem
+import app.lawnchair.icons.picker.IconType
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
@@ -52,17 +54,28 @@ class IconOverrideRepository @Inject constructor(
     }
 
     suspend fun setOverride(target: ComponentKey, item: IconPickerItem) {
+        val previous = _overridesMap[target]
         dao.insert(IconOverride(target, item))
         // Keep the in-memory map in sync before any icon reload. The Room Flow update is
         // async and can race with onAppIconChanged / forceReload, leaving stale icons cached.
         _overridesMap = _overridesMap + (target to item)
         updatePackageQueue.offer(target)
+        deleteCustomIconFileIfOrphaned(previous, item)
     }
 
     suspend fun deleteOverride(target: ComponentKey) {
+        val previous = _overridesMap[target]
         dao.delete(target)
         _overridesMap = _overridesMap - target
         updatePackageQueue.offer(target)
+        deleteCustomIconFileIfOrphaned(previous, null)
+    }
+
+    /** Deletes [previous]'s backing file once it's no longer referenced by [replacement]. */
+    private fun deleteCustomIconFileIfOrphaned(previous: IconPickerItem?, replacement: IconPickerItem?) {
+        if (previous?.type == IconType.Custom && previous.drawableName != replacement?.drawableName) {
+            CustomIconStore.deleteIcon(context, previous.drawableName)
+        }
     }
 
     fun observeTarget(target: ComponentKey) = dao.observeTarget(target)
