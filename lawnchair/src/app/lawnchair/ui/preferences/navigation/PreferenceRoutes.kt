@@ -202,6 +202,13 @@ data class SelectIcon(
     val componentKey: String,
 ) : PreferenceRoute
 
+@Serializable
+data class SelectShortcutIcon(
+    // assuming shortcutKey is a ComponentKey.toString() (specifically a ShortcutKey)
+    val shortcutKey: String,
+    val label: String,
+) : PreferenceRoute
+
 // default to empty
 @Serializable
 data class IconPicker(val packageName: String = "") : PreferenceRoute

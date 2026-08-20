@@ -63,6 +63,7 @@ import app.lawnchair.LawnchairActivityCachingLogic;
 import app.lawnchair.NotificationManager;
 import app.lawnchair.data.folder.service.FolderService;
 import app.lawnchair.data.iconoverride.IconOverrideRepository;
+import app.lawnchair.data.iconoverride.ShortcutIconOverrideRepository;
 import app.lawnchair.data.wallpaper.service.WallpaperService;
 import app.lawnchair.font.FontCache;
 import app.lawnchair.font.FontManager;
@@ -147,6 +148,7 @@ public interface LauncherBaseAppComponent {
     GoogleFontsListing getGoogleFontsListing();
     WallpaperService getWallpaperService();
     IconOverrideRepository getIconOverrideRepository();
+    ShortcutIconOverrideRepository getShortcutIconOverrideRepository();
 
     LawnchairActivityCachingLogic getLawnchairActivityCachingLogic();
     FolderService getFolderService();

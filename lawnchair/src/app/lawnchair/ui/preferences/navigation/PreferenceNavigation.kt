@@ -54,6 +54,7 @@ import app.lawnchair.ui.preferences.destinations.SearchPreferences
 import app.lawnchair.ui.preferences.destinations.SearchProviderPreferences
 import app.lawnchair.ui.preferences.destinations.SelectAppsForDrawerFolder
 import app.lawnchair.ui.preferences.destinations.SelectIconPreference
+import app.lawnchair.ui.preferences.destinations.SelectShortcutIconPreference
 import app.lawnchair.ui.preferences.destinations.ShapePreference
 import app.lawnchair.ui.preferences.destinations.SmartspacePreferences
 import com.android.launcher3.util.ComponentKey
@@ -216,6 +217,11 @@ fun PreferenceNavigation(
             val componentKey = args.componentKey
             val key = ComponentKey.fromString(componentKey)!!
             SelectIconPreference(key)
+        }
+        composable<SelectShortcutIcon> { backStackEntry ->
+            val args: SelectShortcutIcon = backStackEntry.toRoute()
+            val key = ComponentKey.fromString(args.shortcutKey)!!
+            SelectShortcutIconPreference(key, args.label)
         }
         composable<IconPicker> { backStackEntry ->
             val args: IconPicker = backStackEntry.toRoute()

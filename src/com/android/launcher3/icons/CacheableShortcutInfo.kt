@@ -24,6 +24,9 @@ import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Drawable
 import android.os.UserHandle
 import android.util.Log
+import app.lawnchair.LawnchairApp
+import app.lawnchair.data.iconoverride.ShortcutIconOverrideRepository
+import app.lawnchair.icons.iconpack.IconPackProvider
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.icons.BaseIconFactory.IconOptions
 import com.android.launcher3.icons.cache.BaseIconCache
@@ -102,12 +105,26 @@ object CacheableShortcutCachingLogic : CachingLogic<CacheableShortcutInfo> {
 
     override fun getApplicationInfo(info: CacheableShortcutInfo) = info.appInfo.getInfo()
 
+    /** Looks up a user-picked icon override for this specific shortcut, if any. */
+    private fun getOverrideDrawable(context: Context, info: CacheableShortcutInfo): Drawable? {
+        val shortcutKey = ShortcutKey.fromInfo(info.shortcutInfo)
+        val overrideItem =
+            ShortcutIconOverrideRepository.INSTANCE.get(context).overridesMap[shortcutKey] ?: return null
+        return IconPackProvider.INSTANCE.get(context).getDrawable(
+            overrideItem.toIconEntry(),
+            LauncherAppState.getIDP(context).fillResIconDpi,
+            info.shortcutInfo.userHandle,
+        )
+    }
+
     override fun loadIcon(context: Context, cache: BaseIconCache, info: CacheableShortcutInfo) =
         LauncherIcons.obtain(context).use { li ->
-            CacheableShortcutInfo.getIcon(
+            (
+                getOverrideDrawable(context, info) ?: CacheableShortcutInfo.getIcon(
                     context,
                     info.shortcutInfo,
                     LauncherAppState.getIDP(context).fillResIconDpi,
+                )
                 )
                 ?.let { d ->
                     li.createBadgedIconBitmap(
@@ -130,11 +147,16 @@ object CacheableShortcutCachingLogic : CachingLogic<CacheableShortcutInfo> {
     override fun getFreshnessIdentifier(
         item: CacheableShortcutInfo,
         provider: IconProvider,
-    ): String? =
+    ): String? {
+        val shortcutKey = ShortcutKey.fromInfo(item.shortcutInfo)
+        val overrideState = ShortcutIconOverrideRepository.INSTANCE.get(LawnchairApp.instance)
+            .getShortcutOverrideState(shortcutKey)
         // Manifest shortcuts get updated on every reboot. Don't include their change timestamp as
         // it gets covered by the app's version
-        (if (item.shortcutInfo.isDeclaredInManifest) ""
+        return (if (item.shortcutInfo.isDeclaredInManifest) ""
         else item.shortcutInfo.lastChangedTimestamp.toString()) +
             "-" +
-            provider.getStateForApp(getApplicationInfo(item))
+            provider.getStateForApp(getApplicationInfo(item)) +
+            "-ov=$overrideState"
+    }
 }
