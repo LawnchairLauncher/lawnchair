@@ -184,17 +184,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- Driving mode: pick which paired Bluetooth device triggers it. -->
-        <activity
-            android:name="app.lawnchair.drivingmode.DrivingModeSettingsActivity"
-            android:label="Driving Mode Settings"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <service
             android:name="app.lawnchair.bugreport.UploaderService"
             android:enabled="true"

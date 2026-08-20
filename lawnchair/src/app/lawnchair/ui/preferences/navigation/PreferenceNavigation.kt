@@ -32,6 +32,7 @@ import app.lawnchair.ui.preferences.destinations.CustomIconShapePreference
 import app.lawnchair.ui.preferences.destinations.DebugMenuPreferences
 import app.lawnchair.ui.preferences.destinations.DismissedPredictionAppsPreferences
 import app.lawnchair.ui.preferences.destinations.DockPreferences
+import app.lawnchair.ui.preferences.destinations.DrivingModeSettingsScreen
 import app.lawnchair.ui.preferences.destinations.DummyPreference
 import app.lawnchair.ui.preferences.destinations.ExperimentalFeaturesPreferences
 import app.lawnchair.ui.preferences.destinations.FeatureFlagsPreference
@@ -195,6 +196,10 @@ fun PreferenceNavigation(
         composable<BackupAndRestore>(
             deepLinks = getDeepLink(BackupAndRestore),
         ) { BackupAndRestorePreference() }
+
+        composable<DrivingMode>(
+            deepLinks = getDeepLink(DrivingMode),
+        ) { DrivingModeSettingsScreen() }
 
         composable<About>(
             deepLinks = getDeepLink(About),

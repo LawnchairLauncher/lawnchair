@@ -30,11 +30,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.lawnchair.allapps.DrawerStyle
+import app.lawnchair.allapps.OneDrawer
+import app.lawnchair.allapps.PagedDrawer
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -43,6 +47,8 @@ import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppDrawerHapticFeedbackPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreferenceWithPreview
@@ -115,6 +121,33 @@ fun AppDrawerPreferences(
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
+            val drawerStyleAdapter = prefs2.drawerStyle.getAdapter()
+            val drawerStyleEntries = remember {
+                DrawerStyle.values().map { style ->
+                    ListPreferenceEntry(value = style) { stringResource(id = style.nameResourceId) }
+                }
+            }
+            ListPreference(
+                adapter = drawerStyleAdapter,
+                entries = drawerStyleEntries,
+                label = stringResource(id = R.string.drawer_style_label),
+            )
+            ExpandAndShrink(visible = drawerStyleAdapter.state.value == PagedDrawer) {
+                Column {
+                    SliderPreference(
+                        label = stringResource(id = R.string.drawer_rows_per_page_label),
+                        adapter = prefs2.drawerRowsPerPage.getAdapter(),
+                        step = 1,
+                        valueRange = 4..10,
+                    )
+                    SwitchPreference(
+                        label = stringResource(id = R.string.drawer_infinite_swipe_label),
+                        description = stringResource(id = R.string.drawer_infinite_swipe_description),
+                        adapter = prefs2.drawerInfiniteSwipe.getAdapter(),
+                    )
+                }
+            }
+
             val drawerColumnsAdapter = prefs2.drawerColumns.getAdapter()
             val drawerColumnsUnfoldedAdapter = prefs2.drawerColumnsUnfolded.getAdapter()
             if (isFoldable) {

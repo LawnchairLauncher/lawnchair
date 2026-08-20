@@ -33,6 +33,8 @@ import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
 import app.lawnchair.gestures.type.GestureType
+import app.lawnchair.allapps.DrawerStyle
+import app.lawnchair.allapps.OneDrawer
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
@@ -702,6 +704,25 @@ class PreferenceManager2 @Inject constructor(
         key = intPreferencesKey(name = "drawer_columns_unfolded"),
         defaultSelector = { numAllAppsColumns + 2 },
         onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val drawerStyle = preference(
+        key = stringPreferencesKey("drawer_style"),
+        defaultValue = OneDrawer,
+        parse = { DrawerStyle.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val drawerRowsPerPage = preference(
+        key = intPreferencesKey(name = "drawer_rows_per_page"),
+        defaultValue = 5,
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val drawerInfiniteSwipe = preference(
+        key = booleanPreferencesKey(name = "drawer_infinite_swipe"),
+        defaultValue = false,
     )
 
     val folderColumns = idpPreference(

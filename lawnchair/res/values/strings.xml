@@ -198,6 +198,16 @@
     <string name="backup_and_restore_label">Backup and restore</string>
     <string name="backup_and_restore_description">Save current setup, restore backups</string>
 
+    <string name="driving_mode_label">Driving mode</string>
+    <string name="driving_mode_description">Show a simplified UI when connected to a car stereo</string>
+    <string name="driving_mode_bluetooth_device_label">Trigger device</string>
+    <string name="driving_mode_bluetooth_device_description">Pick the paired Bluetooth device that triggers driving mode</string>
+    <string name="driving_mode_no_target_device">Not set</string>
+    <string name="driving_mode_bluetooth_disabled">Turn Bluetooth on to pick a device</string>
+    <string name="driving_mode_no_paired_devices">No paired devices found. Pair with your car stereo first.</string>
+    <string name="driving_mode_show_test">Show driving mode</string>
+    <string name="driving_mode_show_test_description">Preview the driving UI without a real Bluetooth connection</string>
+
     <string name="about_label">About</string>
 
     <string name="app_info_drop_target_label">App info</string>
@@ -873,6 +883,12 @@
     <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
 
     <string name="app_drawer_columns">App drawer columns</string>
+    <string name="drawer_style_label">Drawer style</string>
+    <string name="drawer_style_one_drawer">One drawer</string>
+    <string name="drawer_style_paged_drawer">Paged drawer</string>
+    <string name="drawer_rows_per_page_label">App drawer rows</string>
+    <string name="drawer_infinite_swipe_label">Infinite swiping</string>
+    <string name="drawer_infinite_swipe_description">Swiping past the last page goes to the first, and vice versa</string>
     <string name="row_height_label">Row height</string>
     <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">Horizontal padding</string>

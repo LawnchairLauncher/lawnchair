@@ -34,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
+import app.lawnchair.allapps.AllAppsPagedGridView
 import app.lawnchair.data.wallpaper.service.WallpaperService
 import app.lawnchair.drivingmode.DrivingModeController
 import app.lawnchair.gestures.GestureController
@@ -153,6 +154,18 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
     }
 
+    // Mirrors rememberPositionStateListener but for the paged drawer: when
+    // "Remember scroll position" is off, jump back to the first page every
+    // time the drawer opens, same as the normal drawer resets to top.
+    private val pagedDrawerResetStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionStart(toState: LauncherState) {
+            if (toState is AllAppsState && !preferenceManager2.rememberPosition.firstCached()) {
+                mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.setCurrentPage(0)
+            }
+        }
+        override fun onStateTransitionComplete(finalState: LauncherState) {}
+    }
+
     private lateinit var colorScheme: ColorScheme
     private var hasBackGesture = false
 
@@ -171,6 +184,7 @@ class LawnchairLauncher : QuickstepLauncher() {
             defaultOverlay.setEnableFeed(enable)
         }.launchIn(scope = lifecycleScope)
         launcher.stateManager.addStateListener(clearSearchStateListener)
+        launcher.stateManager.addStateListener(pagedDrawerResetStateListener)
 
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {

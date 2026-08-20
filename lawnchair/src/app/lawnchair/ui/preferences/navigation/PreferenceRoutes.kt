@@ -83,6 +83,11 @@ data object BackupAndRestore : PreferenceRootRoute, PreferenceDeepLink {
 }
 
 @Serializable
+data object DrivingMode : PreferenceRootRoute, PreferenceDeepLink {
+    override val deepLink = "$URI/driving-mode"
+}
+
+@Serializable
 data object Gestures : PreferenceRootRoute, PreferenceDeepLink {
     override val deepLink = "$URI/gestures"
 }
