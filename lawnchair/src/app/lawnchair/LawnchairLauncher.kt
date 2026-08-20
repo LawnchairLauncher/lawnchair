@@ -35,6 +35,7 @@ import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.data.wallpaper.service.WallpaperService
+import app.lawnchair.drivingmode.DrivingModeController
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -156,10 +157,13 @@ class LawnchairLauncher : QuickstepLauncher() {
     private var hasBackGesture = false
 
     val gestureController by unsafeLazy { GestureController(this) }
+    private val drivingModeController by unsafeLazy { DrivingModeController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
+
+        drivingModeController.start()
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -307,6 +311,11 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
     override fun createTouchControllers(): Array<TouchController> {
+        // Suppress all of Launcher3's own swipe gestures (open all apps,
+        // recents, etc.) while the driving-mode overlay is showing — a view
+        // added on top of dragLayer doesn't stop these on its own, since
+        // they're TouchControllers checked before normal child dispatch.
+        if (drivingModeController.isShowing) return emptyArray()
         val verticalSwipeController = VerticalSwipeTouchController(this, gestureController)
         return arrayOf<TouchController>(verticalSwipeController) + super.createTouchControllers()
     }
@@ -499,6 +508,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     override fun onDestroy() {
         super.onDestroy()
+        drivingModeController.stop()
         // Only actually closes if required, safe to call if not enabled
         SmartspacerClient.close()
     }

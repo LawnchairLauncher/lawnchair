@@ -39,6 +39,9 @@
     <uses-permission android:name="android.permission.STATUS_BAR_SERVICE" tools:ignore="ProtectedPermissions"/>
     <uses-permission android:name="android.permission.SUSPEND_APPS" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <!-- For detecting connect/disconnect of the driving-mode Bluetooth device -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <!-- Support non-cellular enabled devices -->
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
@@ -180,6 +183,17 @@
                 <action android:name="${applicationId}.bugreport.UPLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
+
+        <!-- Driving mode: pick which paired Bluetooth device triggers it. -->
+        <activity
+            android:name="app.lawnchair.drivingmode.DrivingModeSettingsActivity"
+            android:label="Driving Mode Settings"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name="app.lawnchair.bugreport.UploaderService"
