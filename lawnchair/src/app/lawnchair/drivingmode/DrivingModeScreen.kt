@@ -29,7 +29,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -39,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -73,6 +76,7 @@ private const val TAG = "DrivingModeScreen"
 @Composable
 fun DrivingModeScreen(
     launcher: Launcher,
+    goToFirstPageSignal: State<Int>,
     onExit: () -> Unit,
 ) {
     LawnchairTheme {
@@ -89,15 +93,19 @@ fun DrivingModeScreen(
         val assignments by repository.assignments.collectAsStateWithLifecycle()
         val scope = rememberCoroutineScope()
 
-        // Rotating re-triggers QuickstepLauncher's state-transition machinery (onConfigurationChanged
-        // -> onStateOrResumeChanging), which re-applies the current LauncherState's own
-        // hotseat/workspace visibility defaults - undoing the manual hide from DrivingModeOverlay.show().
-        // Re-assert on every configuration change (including orientation) while this screen is up.
+        // Rotating re-triggers Launcher.onHandleConfigurationChanged(), which re-applies the
+        // current LauncherState's own hotseat/workspace visibility defaults - undoing the manual
+        // hide from DrivingModeOverlay.show() - and calls dragLayer.recreateControllers(), which
+        // re-adds Launcher3's own swipe TouchControllers (open all apps, etc.) on top of our
+        // overlay. Those then fight the pager's own drag handling for every touch, breaking both
+        // page snapping and tile clicks until the app is killed and relaunched. Re-assert on every
+        // configuration change (including orientation) while this screen is up.
         val configuration = LocalConfiguration.current
         LaunchedEffect(configuration) {
             launcher.workspace.visibility = View.INVISIBLE
             launcher.hotseat.visibility = View.INVISIBLE
             launcher.hotseat.alpha = 0f
+            launcher.dragLayer.recreateControllers()
         }
 
         LaunchedEffect(rows, columns) {
@@ -129,6 +137,17 @@ fun DrivingModeScreen(
             baseColor.copy(alpha = backgroundOpacity)
         }
 
+        // The system nav bar is drawn by SystemUI on top of our content, not by Compose - tinting
+        // only the in-app scrim leaves the gesture-nav strip showing the raw, untinted wallpaper.
+        // Push the same color to the window directly, and restore whatever was there before.
+        DisposableEffect(Unit) {
+            val original = launcher.window?.navigationBarColor
+            onDispose { if (original != null) launcher.window?.navigationBarColor = original }
+        }
+        LaunchedEffect(scrimColor) {
+            launcher.window?.navigationBarColor = scrimColor.toArgb()
+        }
+
         Box(modifier = Modifier.fillMaxSize()) {
             backgroundBitmap?.let { bitmap ->
                 Image(
@@ -152,6 +171,14 @@ fun DrivingModeScreen(
             val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
             val pagerState = rememberPagerState(pageCount = { pages })
+            val goToFirstPage by goToFirstPageSignal
+            LaunchedEffect(goToFirstPage) {
+                // Signal starts at 0 and is only ever bumped by an explicit Home-button request -
+                // skip the initial emission so this doesn't animate on first composition.
+                if (goToFirstPage > 0) {
+                    pagerState.animateScrollToPage(0)
+                }
+            }
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier

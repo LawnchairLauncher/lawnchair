@@ -20,6 +20,7 @@ import android.animation.AnimatorSet
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.RectF
@@ -352,7 +353,28 @@ class LawnchairLauncher : QuickstepLauncher() {
             }
         }
 
+        // The Home button/gesture re-delivers here as ACTION_MAIN since it's the same activity -
+        // while driving mode is up, reset its grid instead of letting Launcher3's own handling
+        // below open search (or move the hidden workspace to its default page).
+        if (drivingModeController.isShowing && intent?.action == Intent.ACTION_MAIN) {
+            drivingModeController.requestGoHome()
+            return
+        }
+
         super.onNewIntent(intent)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        // Rotation reliably leaves the driving-mode overlay's touch dispatch broken (dead taps,
+        // no page snapping) afterward - nothing tried in-process (Compose state resets, replaying
+        // dragLayer.recreateControllers(), forcing a real pager scroll) has fixed it, only killing
+        // and relaunching the whole app has. Handing it a genuinely new ComposeView, the one thing
+        // relaunching does that nothing else here can, is the reliable fix.
+        if (drivingModeController.isShowing) {
+            drivingModeController.recreateOverlayForConfigChange()
+        }
     }
 
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {

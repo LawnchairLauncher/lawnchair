@@ -21,6 +21,13 @@ class DrivingModeController(private val launcher: Launcher) {
     // Launcher3's own swipe gestures (open all apps, etc.) while showing.
     val isShowing: Boolean get() = overlay.isShowing
 
+    // Called from LawnchairLauncher.onNewIntent when the Home button/gesture fires while driving
+    // mode is up, in place of Launcher3's normal "open search" handling for that event.
+    fun requestGoHome() = overlay.requestGoHome()
+
+    // Called from LawnchairLauncher.onConfigurationChanged (rotation) while driving mode is up.
+    fun recreateOverlayForConfigChange() = overlay.recreateForConfigChange()
+
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
