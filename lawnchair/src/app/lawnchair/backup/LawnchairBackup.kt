@@ -59,6 +59,7 @@ class LawnchairBackup(
 
     suspend fun restore(selectedContents: Int) {
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
+        val prefixHandlers = mutableListOf<Pair<String, suspend (String, InputStream) -> Unit>>()
         val contents = selectedContents and info.contents
         if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
             handlers.putAll(
@@ -70,6 +71,19 @@ class LawnchairBackup(
                     }
                 },
             )
+            // Background images (DrawerBackgroundImageStore) and custom icon photos
+            // (CustomIconStore) - one file per entry, name-only known at zip time (UUID-based),
+            // so these can't go in getFiles()'s fixed name->File map like everything else.
+            // Handled by prefix instead.
+            BACKED_UP_DIRECTORIES.forEach { dirName ->
+                prefixHandlers.add(
+                    "$dirName/" to { name, stream ->
+                        val file = File(context.filesDir, "$dirName/$name")
+                        file.parentFile?.mkdirs()
+                        stream.copyTo(file.outputStream())
+                    },
+                )
+            }
         }
         if (contents.hasFlag(INCLUDE_WALLPAPER)) {
             handlers[WALLPAPER_FILE_NAME] = {
@@ -79,13 +93,16 @@ class LawnchairBackup(
         }
         context.getDatabasePath(LAUNCHER_DB_FILE_NAME).parentFile?.deleteRecursively()
         DeviceGridState(info.gridState).writeToPrefs(context, true)
-        readZip(handlers)
+        readZip(handlers, prefixHandlers)
 
         var dbController = ModelDbController(context)
         RestoreDbTask.performRestore(context, dbController)
     }
 
-    private suspend fun readZip(handlers: Map<String, suspend (InputStream) -> Unit>) {
+    private suspend fun readZip(
+        handlers: Map<String, suspend (InputStream) -> Unit>,
+        prefixHandlers: List<Pair<String, suspend (String, InputStream) -> Unit>> = emptyList(),
+    ) {
         withContext(Dispatchers.IO) {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")!!
             pfd.use {
@@ -95,7 +112,14 @@ class LawnchairBackup(
                         while (true) {
                             entry = zipIs.nextEntry
                             if (entry == null) break
-                            handlers[entry.name]?.invoke(zipIs)
+                            val name = entry.name
+                            val exactHandler = handlers[name]
+                            if (exactHandler != null) {
+                                exactHandler(zipIs)
+                                continue
+                            }
+                            val prefixMatch = prefixHandlers.firstOrNull { (prefix, _) -> name.startsWith(prefix) }
+                            prefixMatch?.let { (prefix, handler) -> handler(name.removePrefix(prefix), zipIs) }
                         }
                     }
                 }
@@ -108,6 +132,13 @@ class LawnchairBackup(
         private const val PREFS_FILE_NAME = "${LauncherFiles.SHARED_PREFERENCES_KEY}.xml"
         private const val PREFS_DB_FILE_NAME = "preferences"
         private const val PREFS_DATASTORE_FILE_NAME = "preferences.preferences_pb"
+
+        // Match DrawerBackgroundImageStore.DIR_NAME and CustomIconStore.DIR_NAME - kept as
+        // separate literals since those constants are private, but a change to either without
+        // its counterpart here would break restores anyway.
+        private const val DRAWER_BACKGROUNDS_DIR_NAME = "drawer_backgrounds"
+        private const val CUSTOM_ICONS_DIR_NAME = "custom_icons"
+        private val BACKED_UP_DIRECTORIES = listOf(DRAWER_BACKGROUNDS_DIR_NAME, CUSTOM_ICONS_DIR_NAME)
 
         const val INFO_FILE_NAME = "info.pb"
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
@@ -182,6 +213,13 @@ class LawnchairBackup(
                             if (!it.value.exists()) return@forEach
                             out.putNextEntry(ZipEntry(it.key))
                             it.value.inputStream().copyTo(out)
+                        }
+
+                        BACKED_UP_DIRECTORIES.forEach { dirName ->
+                            File(context.filesDir, dirName).listFiles()?.forEach { file ->
+                                out.putNextEntry(ZipEntry("$dirName/${file.name}"))
+                                file.inputStream().copyTo(out)
+                            }
                         }
                     }
                 }
