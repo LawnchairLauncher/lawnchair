@@ -26,6 +26,8 @@ object DrivingModeActionExecutor {
                 launchSafely(context, Intent(Intent.ACTION_DIAL))
             DrivingModeSpecialAction.CONTACTS ->
                 launchSafely(context, Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI))
+            // Not launchable - the tile just displays the current speed.
+            DrivingModeSpecialAction.SPEEDOMETER -> {}
         }
     }
 

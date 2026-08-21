@@ -282,6 +282,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = 2,
     )
 
+    val drivingModeSpeedUnitMph = preference(
+        key = booleanPreferencesKey(name = "driving_mode_speed_unit_mph"),
+        defaultValue = false,
+    )
+
     val appDrawerSearchBarBackground = preference(
         key = booleanPreferencesKey(name = "all_apps_search_bar_background"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_search_bar_background),

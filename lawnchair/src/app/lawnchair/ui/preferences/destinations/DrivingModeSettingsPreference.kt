@@ -30,6 +30,7 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
+import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -57,6 +58,23 @@ fun DrivingModeSettingsScreen(
     ) { granted -> permissionGranted = granted }
     if (!permissionGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         LaunchedEffect(Unit) { requestPermission.launch(Manifest.permission.BLUETOOTH_CONNECT) }
+    }
+
+    // Requested here (once, up front) rather than from the driving-mode overlay itself, since
+    // that overlay is hosted in Launcher - a plain Activity, not a ComponentActivity - so it has
+    // no ActivityResultRegistry to request permissions through. The speedometer tile just checks
+    // this permission and shows nothing if it's still missing by the time it's actually visible.
+    var locationPermissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED,
+        )
+    }
+    val requestLocationPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted -> locationPermissionGranted = granted }
+    if (!locationPermissionGranted) {
+        LaunchedEffect(Unit) { requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION) }
     }
 
     var targetAddress by remember { mutableStateOf(DrivingModePrefs.getTargetDeviceAddress(context)) }
@@ -132,6 +150,14 @@ fun DrivingModeSettingsScreen(
                 step = 0.1f,
                 valueRange = 0F..1F,
                 showAsPercentage = true,
+            )
+        }
+
+        PreferenceGroup {
+            SwitchPreference(
+                adapter = prefs2.drivingModeSpeedUnitMph.getAdapter(),
+                label = stringResource(R.string.driving_mode_speed_unit_mph_label),
+                description = stringResource(R.string.driving_mode_speed_unit_mph_description),
             )
         }
     }

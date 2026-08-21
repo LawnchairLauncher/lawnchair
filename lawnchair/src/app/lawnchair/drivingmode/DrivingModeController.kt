@@ -28,6 +28,10 @@ class DrivingModeController(private val launcher: Launcher) {
     // Called from LawnchairLauncher.onConfigurationChanged (rotation) while driving mode is up.
     fun recreateOverlayForConfigChange() = overlay.recreateForConfigChange()
 
+    // Called from DrivingModeTileService to toggle driving mode from the quick settings tile.
+    fun show() = overlay.show()
+    fun hide() = overlay.hide()
+
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
@@ -69,11 +73,12 @@ class DrivingModeController(private val launcher: Launcher) {
     companion object {
         private const val TAG = "DrivingModeController"
 
-        // Lets DrivingModeSettingsActivity's manual test buttons trigger the
-        // real launcher's overlay without needing an actual Bluetooth event —
+        // Lets DrivingModeSettingsActivity's manual test buttons, and DrivingModeTileService,
+        // trigger the real launcher's overlay without needing an actual Bluetooth event —
         // ACL_CONNECTED/DISCONNECTED are protected broadcasts we can't fake
         // from adb or another app anyway.
-        private var current: DrivingModeController? = null
+        var current: DrivingModeController? = null
+            private set
 
         fun simulateConnect() {
             current?.overlay?.show()

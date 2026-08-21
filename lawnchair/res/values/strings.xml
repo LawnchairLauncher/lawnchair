@@ -228,6 +228,11 @@
     <string name="driving_mode_action_music">Music</string>
     <string name="driving_mode_action_phone">Phone</string>
     <string name="driving_mode_action_contacts">Contacts</string>
+    <string name="driving_mode_action_speedometer">Speedometer</string>
+    <string name="driving_mode_speed_unit_mph">mph</string>
+    <string name="driving_mode_speed_unit_kmh">km/h</string>
+    <string name="driving_mode_speed_unit_mph_label">Show speed in mph</string>
+    <string name="driving_mode_speed_unit_mph_description">Off shows km/h instead</string>
 
     <string name="about_label">About</string>
 

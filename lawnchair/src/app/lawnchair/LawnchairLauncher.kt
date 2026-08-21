@@ -250,6 +250,9 @@ class LawnchairLauncher : QuickstepLauncher() {
         super.onCreate(savedInstanceState)
 
         drivingModeController.start()
+        if (intent?.getBooleanExtra(EXTRA_START_DRIVING_MODE, false) == true) {
+            drivingModeController.show()
+        }
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -359,6 +362,10 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (drivingModeController.isShowing && intent?.action == Intent.ACTION_MAIN) {
             drivingModeController.requestGoHome()
             return
+        }
+
+        if (intent?.getBooleanExtra(EXTRA_START_DRIVING_MODE, false) == true) {
+            drivingModeController.show()
         }
 
         super.onNewIntent(intent)
@@ -683,6 +690,10 @@ class LawnchairLauncher : QuickstepLauncher() {
         var sRestartFlags = 0
 
         val instance get() = LawnchairApp.launcher
+
+        // Set on the intent DrivingModeTileService uses to launch this activity when no instance
+        // (and so no live DrivingModeController) exists yet to show the overlay directly.
+        const val EXTRA_START_DRIVING_MODE = "app.lawnchair.START_DRIVING_MODE"
     }
 }
 

@@ -1,10 +1,15 @@
 package app.lawnchair.drivingmode
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.location.LocationListener
+import android.location.LocationManager
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.compose.foundation.Image
@@ -33,6 +38,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -45,7 +51,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.data.drivingmode.DrivingModeButtonAssignment
 import app.lawnchair.data.drivingmode.DrivingModeButtonRepository
@@ -57,12 +65,14 @@ import app.lawnchair.util.App
 import app.lawnchair.util.DrawerBackgroundImageStore
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.Launcher
+import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.roundToInt
 
 private const val TAG = "DrivingModeScreen"
 
@@ -188,6 +198,7 @@ fun DrivingModeScreen(
             ) { page ->
                 DrivingModePage(
                     page = page,
+                    isCurrentPage = page == pagerState.currentPage,
                     rows = rows,
                     columns = columns,
                     isLandscape = isLandscape,
@@ -207,6 +218,7 @@ fun DrivingModeScreen(
 @Composable
 private fun DrivingModePage(
     page: Int,
+    isCurrentPage: Boolean,
     rows: Int,
     columns: Int,
     isLandscape: Boolean,
@@ -235,6 +247,7 @@ private fun DrivingModePage(
                     Box(modifier = Modifier.weight(1f).fillMaxSize()) {
                         DrivingModeTile(
                             assignment = assignment,
+                            isVisible = isCurrentPage,
                             context = context,
                             onClick = {
                                 if (assignment != null) {
@@ -266,6 +279,7 @@ private val TileIconSize = 48.dp
 @Composable
 private fun DrivingModeTile(
     assignment: DrivingModeButtonAssignment?,
+    isVisible: Boolean,
     context: Context,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
@@ -292,10 +306,11 @@ private fun DrivingModeTile(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         when {
+            special == DrivingModeSpecialAction.SPEEDOMETER -> {
+                SpeedometerTileContent(context = context, isVisible = isVisible)
+            }
             special != null -> {
-                Icon(
-                    imageVector = special.icon,
-                    contentDescription = null,
+                special.icon.Render(
                     tint = SpecialTileColor,
                     modifier = Modifier.size(TileIconSize),
                 )
@@ -330,6 +345,75 @@ private fun DrivingModeTile(
             }
         }
     }
+}
+
+@Composable
+private fun SpeedometerTileContent(context: Context, isVisible: Boolean) {
+    val useMph by preferenceManager2().drivingModeSpeedUnitMph.asState()
+    val speedMetersPerSecond by rememberSpeedMetersPerSecond(context, isVisible)
+    val displaySpeed = speedMetersPerSecond?.let { mps ->
+        val converted = if (useMph) mps * 2.23694f else mps * 3.6f
+        converted.roundToInt().coerceAtLeast(0)
+    }
+    Text(
+        text = displaySpeed?.toString() ?: "–",
+        color = SpecialTileColor,
+        style = MaterialTheme.typography.displaySmall,
+        maxLines = 1,
+    )
+    Text(
+        text = stringResource(
+            if (useMph) R.string.driving_mode_speed_unit_mph else R.string.driving_mode_speed_unit_kmh,
+        ),
+        color = SpecialTileColor,
+        style = MaterialTheme.typography.labelLarge,
+        maxLines = 1,
+    )
+}
+
+/**
+ * Only listens for GPS updates while [isVisible] - i.e. while this tile's page is the pager's
+ * current page, not just while driving mode is up - since a paged grid can have several
+ * speedometer tiles assigned but only one actually on screen at a time.
+ */
+@Composable
+private fun rememberSpeedMetersPerSecond(context: Context, isVisible: Boolean): State<Float?> {
+    val speed = remember { mutableStateOf<Float?>(null) }
+    DisposableEffect(isVisible) {
+        if (!isVisible) {
+            return@DisposableEffect onDispose {}
+        }
+        val hasPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
+        if (!hasPermission) {
+            speed.value = null
+            return@DisposableEffect onDispose {}
+        }
+        val locationManager = context.getSystemService(LocationManager::class.java)
+        // An explicit object, not a SAM lambda: on API levels before 33, this interface's
+        // onStatusChanged/onProviderEnabled/onProviderDisabled aren't default methods, so a
+        // lambda covering only onLocationChanged wouldn't actually satisfy it on-device pre-33
+        // even if it compiles fine against a newer compileSdk stub.
+        val listener = object : LocationListener {
+            override fun onLocationChanged(location: android.location.Location) {
+                if (location.hasSpeed()) speed.value = location.speed
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: android.os.Bundle?) {}
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
+        }
+        try {
+            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, listener, Looper.getMainLooper())
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Failed to request location updates for speedometer", e)
+        }
+        onDispose {
+            locationManager?.removeUpdates(listener)
+            speed.value = null
+        }
+    }
+    return speed
 }
 
 private fun toGrayscale(source: Bitmap): Bitmap {

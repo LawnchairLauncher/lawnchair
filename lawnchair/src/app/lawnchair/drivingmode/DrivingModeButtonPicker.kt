@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.AppItem
@@ -59,7 +57,7 @@ fun DrivingModeButtonPickerContent(
                 item(key = "remove") {
                     PreferenceTemplate(
                         title = { Text(stringResource(id = R.string.driving_mode_remove_button)) },
-                        startWidget = { DrivingModeActionIcon(Icons.Rounded.Close) },
+                        startWidget = { DrivingModeActionIcon(DrivingModeIconSource.Vector(Icons.Rounded.Close)) },
                         onClick = onRemove,
                     )
                 }
@@ -85,7 +83,7 @@ fun DrivingModeButtonPickerContent(
 }
 
 @Composable
-private fun DrivingModeActionIcon(icon: ImageVector) {
+private fun DrivingModeActionIcon(icon: DrivingModeIconSource) {
     Box(
         modifier = Modifier
             .size(30.dp)
@@ -93,9 +91,7 @@ private fun DrivingModeActionIcon(icon: ImageVector) {
             .background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
+        icon.Render(
             tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.size(18.dp),
         )

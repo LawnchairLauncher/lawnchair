@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Outer rim -->
+    <path
+        android:fillColor="#ffffff"
+        android:fillType="evenOdd"
+        android:pathData="M12,2 A10,10 0 1,1 11.99,2 Z M12,4.5 A7.5,7.5 0 1,0 12.01,4.5 Z" />
+    <!-- Bottom spoke -->
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M11,12 h2 v6 h-2 z" />
+    <!-- Center hub -->
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M8.5,10.5 h7 a1.5,1.5 0 0,1 1.5,1.5 v1 a1.5,1.5 0 0,1 -1.5,1.5 h-7 a1.5,1.5 0 0,1 -1.5,-1.5 v-1 a1.5,1.5 0 0,1 1.5,-1.5 z" />
+</vector>

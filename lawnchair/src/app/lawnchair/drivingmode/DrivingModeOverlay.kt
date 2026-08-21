@@ -1,7 +1,9 @@
 package app.lawnchair.drivingmode
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
+import android.service.quicksettings.TileService
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -126,6 +128,7 @@ class DrivingModeOverlay(private val launcher: Launcher) {
                 window.isStatusBarContrastEnforced = false
             }
         }
+        requestTileRefresh()
     }
 
     private fun attachComposeView() {
@@ -164,6 +167,17 @@ class DrivingModeOverlay(private val launcher: Launcher) {
                 window.isStatusBarContrastEnforced = hadStatusBarContrastEnforced
             }
         }
+        requestTileRefresh()
+    }
+
+    // show()/hide() are the single choke point for every trigger (Bluetooth connect/disconnect,
+    // the settings test button, and the quick settings tile itself) - nudging the tile to refresh
+    // here, rather than only from the tile's own onClick, keeps it in sync with all of them.
+    private fun requestTileRefresh() {
+        TileService.requestListeningState(
+            launcher,
+            ComponentName(launcher, DrivingModeTileService::class.java),
+        )
     }
 
     companion object {
