@@ -247,6 +247,41 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = "",
     )
 
+    // Driving mode background - same options/mechanism as the app drawer above, but driving
+    // mode's screen is freshly composed every time it's shown (no long-lived cached View), so
+    // none of these need onSet = recreate.
+    val drivingModeBackgroundColor = preference(
+        key = stringPreferencesKey(name = "driving_mode_bg_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        defaultValue = ColorOption.fromString("default"),
+    )
+
+    val drivingModeBackgroundImage = preference(
+        key = stringPreferencesKey(name = "driving_mode_background_image"),
+        defaultValue = "",
+    )
+
+    val drivingModeBackgroundOpacity = preference(
+        key = floatPreferencesKey(name = "driving_mode_background_opacity"),
+        defaultValue = 0.5f,
+    )
+
+    val drivingModeRows = preference(
+        key = intPreferencesKey(name = "driving_mode_rows"),
+        defaultValue = 3,
+    )
+
+    val drivingModeColumns = preference(
+        key = intPreferencesKey(name = "driving_mode_columns"),
+        defaultValue = 2,
+    )
+
+    val drivingModePages = preference(
+        key = intPreferencesKey(name = "driving_mode_pages"),
+        defaultValue = 2,
+    )
+
     val appDrawerSearchBarBackground = preference(
         key = booleanPreferencesKey(name = "all_apps_search_bar_background"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_search_bar_background),

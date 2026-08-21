@@ -61,6 +61,7 @@ import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.HeadlessWidgetsManager;
 import app.lawnchair.LawnchairActivityCachingLogic;
 import app.lawnchair.NotificationManager;
+import app.lawnchair.data.drivingmode.DrivingModeButtonRepository;
 import app.lawnchair.data.folder.service.FolderService;
 import app.lawnchair.data.iconoverride.IconOverrideRepository;
 import app.lawnchair.data.iconoverride.ShortcutBadgeOverrideRepository;
@@ -151,6 +152,7 @@ public interface LauncherBaseAppComponent {
     IconOverrideRepository getIconOverrideRepository();
     ShortcutIconOverrideRepository getShortcutIconOverrideRepository();
     ShortcutBadgeOverrideRepository getShortcutBadgeOverrideRepository();
+    DrivingModeButtonRepository getDrivingModeButtonRepository();
 
     LawnchairActivityCachingLogic getLawnchairActivityCachingLogic();
     FolderService getFolderService();

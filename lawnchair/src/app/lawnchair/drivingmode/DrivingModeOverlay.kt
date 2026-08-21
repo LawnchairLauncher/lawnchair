@@ -1,10 +1,7 @@
 package app.lawnchair.drivingmode
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -13,6 +10,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
+import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.views.BaseDragLayer
 
 /**
@@ -32,25 +30,35 @@ class DrivingModeOverlay(private val launcher: Launcher) {
     fun show() {
         if (isShowing) return
 
+        // The overlay is added to this Activity's own dragLayer, so it's invisible unless this
+        // Activity is actually in the foreground - e.g. triggered from the Settings screen (a
+        // separate Activity), or by a real Bluetooth connect while some other app is open.
+        // Bring the launcher forward first; REORDER_TO_FRONT reuses the existing instance rather
+        // than recreating it, so none of the state set up below is lost.
+        launcher.startActivity(
+            Intent(launcher, launcher.javaClass).setFlags(
+                Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK,
+            ),
+        )
+
         // Force a clean slate — if AllApps (or a folder/popup) was open when
         // driving mode was triggered, it would otherwise stay open and keep
         // responding to touches underneath our overlay.
         AbstractFloatingView.closeAllOpenViews(launcher, false)
         launcher.stateManager.goToState(LauncherState.NORMAL, false)
 
+        // Phones normally lock the launcher to portrait (unless the user enabled "Allow home
+        // screen rotation") - override that while driving mode is up so the grid follows the
+        // device's actual orientation, same as any other rotating app. The activity already
+        // declares orientation|screenSize in configChanges, so this doesn't recreate it.
+        launcher.rotationHelper.setCurrentStateRequest(RotationHelper.REQUEST_ROTATE)
+
         val view = ComposeView(launcher).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
             setContent {
                 DrivingModeScreen(
-                    onMapsClick = { launchByPackage("com.google.android.apps.maps") {
-                        launcher.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=")))
-                    } },
-                    onPhoneClick = { launcher.startActivity(Intent(Intent.ACTION_DIAL)) },
-                    onMusicClick = { launchByPackage("com.spotify.music") {
-                        launcher.startActivity(Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER))
-                    } },
-                    onSettingsClick = { launcher.startActivity(Intent(Settings.ACTION_SETTINGS)) },
-                    onExitClick = { hide() },
+                    launcher = launcher,
+                    onExit = { hide() },
                 )
             }
         }
@@ -106,6 +114,7 @@ class DrivingModeOverlay(private val launcher: Launcher) {
         launcher.hotseat.visibility = View.VISIBLE
         launcher.hotseat.alpha = 1f
         launcher.dragLayer.recreateControllers()
+        launcher.rotationHelper.setCurrentStateRequest(RotationHelper.REQUEST_NONE)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             launcher.window?.let { window ->
@@ -117,14 +126,5 @@ class DrivingModeOverlay(private val launcher: Launcher) {
 
     companion object {
         private const val TAG = "DrivingModeOverlay"
-    }
-
-    private fun launchByPackage(packageName: String, fallback: () -> Unit) {
-        val intent = launcher.packageManager.getLaunchIntentForPackage(packageName)
-        if (intent != null) {
-            launcher.startActivity(intent)
-        } else {
-            fallback()
-        }
     }
 }

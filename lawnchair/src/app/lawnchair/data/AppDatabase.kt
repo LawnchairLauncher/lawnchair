@@ -7,6 +7,8 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
+import app.lawnchair.data.drivingmode.DrivingModeButtonAssignment
+import app.lawnchair.data.drivingmode.DrivingModeButtonDao
 import app.lawnchair.data.folder.FolderInfoEntity
 import app.lawnchair.data.folder.FolderItemEntity
 import app.lawnchair.data.folder.service.FolderDao
@@ -29,8 +31,9 @@ import kotlinx.coroutines.runBlocking
         Wallpaper::class,
         FolderInfoEntity::class,
         FolderItemEntity::class,
+        DrivingModeButtonAssignment::class,
     ],
-    version = 5,
+    version = 6,
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -40,6 +43,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun shortcutBadgeOverrideDao(): ShortcutBadgeOverrideDao
     abstract fun wallpaperDao(): WallpaperDao
     abstract fun folderDao(): FolderDao
+    abstract fun drivingModeButtonDao(): DrivingModeButtonDao
 
     suspend fun checkpoint() {
         iconOverrideDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
@@ -47,6 +51,7 @@ abstract class AppDatabase : RoomDatabase() {
         shortcutBadgeOverrideDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
         wallpaperDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
         folderDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
+        drivingModeButtonDao().checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
     }
 
     fun checkpointSync() {
@@ -137,13 +142,30 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    """
+            CREATE TABLE IF NOT EXISTS `drivingmodebutton` (
+                `page` INTEGER NOT NULL,
+                `row` INTEGER NOT NULL,
+                `col` INTEGER NOT NULL,
+                `targetType` TEXT NOT NULL,
+                `targetValue` TEXT NOT NULL,
+                PRIMARY KEY(`page`, `row`, `col`)
+            )
+                    """.trimIndent(),
+                )
+            }
+        }
+
         val INSTANCE = MainThreadInitializedObject { context ->
             Room.databaseBuilder(
                 context,
                 AppDatabase::class.java,
                 "preferences",
             ).addMigrations(MIGRATION_1_3).addMigrations(MIGRATION_2_3).addMigrations(MIGRATION_3_4)
-                .addMigrations(MIGRATION_4_5).build()
+                .addMigrations(MIGRATION_4_5).addMigrations(MIGRATION_5_6).build()
         }
     }
 }

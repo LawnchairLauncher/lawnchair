@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,13 +22,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import app.lawnchair.drivingmode.DrivingModeController
 import app.lawnchair.drivingmode.DrivingModePrefs
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.controls.SliderPreference
+import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.util.DrawerBackgroundImageStore
 import com.android.launcher3.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun DrivingModeSettingsScreen(
@@ -90,6 +100,82 @@ fun DrivingModeSettingsScreen(
                 onClick = { DrivingModeController.simulateConnect() },
             )
         }
+
+        val prefs2 = preferenceManager2()
+        PreferenceGroup(heading = stringResource(R.string.driving_mode_layout_label)) {
+            SliderPreference(
+                label = stringResource(R.string.driving_mode_rows_label),
+                adapter = prefs2.drivingModeRows.getAdapter(),
+                step = 1,
+                valueRange = 2..4,
+            )
+            SliderPreference(
+                label = stringResource(R.string.driving_mode_columns_label),
+                adapter = prefs2.drivingModeColumns.getAdapter(),
+                step = 1,
+                valueRange = 1..3,
+            )
+            SliderPreference(
+                label = stringResource(R.string.driving_mode_pages_label),
+                adapter = prefs2.drivingModePages.getAdapter(),
+                step = 1,
+                valueRange = 1..5,
+            )
+        }
+
+        PreferenceGroup(heading = stringResource(R.string.driving_mode_style_label)) {
+            ColorPreference(preference = prefs2.drivingModeBackgroundColor)
+            DrivingModeBackgroundImagePreference()
+            SliderPreference(
+                label = stringResource(id = R.string.background_opacity),
+                adapter = prefs2.drivingModeBackgroundOpacity.getAdapter(),
+                step = 0.1f,
+                valueRange = 0F..1F,
+                showAsPercentage = true,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DrivingModeBackgroundImagePreference() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val adapter = preferenceManager2().drivingModeBackgroundImage.getAdapter()
+    val fileName = adapter.state.value
+    val hasImage = fileName.isNotEmpty()
+
+    val pickImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val newFileName = withContext(Dispatchers.IO) {
+                DrawerBackgroundImageStore.saveImage(context, uri)
+            } ?: return@launch
+            val previousFileName = fileName
+            adapter.onChange(newFileName)
+            if (previousFileName.isNotEmpty()) {
+                withContext(Dispatchers.IO) { DrawerBackgroundImageStore.deleteImage(context, previousFileName) }
+            }
+        }
+    }
+
+    ClickablePreference(
+        label = stringResource(id = R.string.app_drawer_background_image),
+        subtitle = stringResource(
+            id = if (hasImage) R.string.app_drawer_background_image_set else R.string.app_drawer_background_image_none,
+        ),
+        onClick = { pickImageLauncher.launch("image/*") },
+    )
+    ExpandAndShrink(visible = hasImage) {
+        ClickablePreference(
+            label = stringResource(id = R.string.app_drawer_background_image_remove),
+            onClick = {
+                scope.launch {
+                    adapter.onChange("")
+                    withContext(Dispatchers.IO) { DrawerBackgroundImageStore.deleteImage(context, fileName) }
+                }
+            },
+        )
     }
 }
 
