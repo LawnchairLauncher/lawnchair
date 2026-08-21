@@ -235,9 +235,17 @@ fun HomeScreenPreferences(
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
+            val useSystemRadiusAdapter = prefs2.roundedWidgets.getAdapter()
             SwitchPreference(
-                adapter = prefs2.roundedWidgets.getAdapter(),
+                adapter = useSystemRadiusAdapter,
                 label = stringResource(id = R.string.force_rounded_widgets),
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.custom_rounded_widgets_radius),
+                adapter = prefs2.customRoundedWidgetsRadius.getAdapter(),
+                valueRange = 1..25,
+                step = 1,
+                enabled = !useSystemRadiusAdapter.state.value,
             )
             SwitchPreference(
                 adapter = prefs2.allowWidgetOverlap.getAdapter(),

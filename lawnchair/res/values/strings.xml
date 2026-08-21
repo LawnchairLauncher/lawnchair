@@ -801,7 +801,8 @@
     <string name="color_light">Light</string>
     <string name="color_dark">Dark</string>
 
-    <string name="force_rounded_widgets">Rounded corners</string>
+    <string name="force_rounded_widgets">Use system radius</string>
+    <string name="custom_rounded_widgets_radius">Custom radius</string>
     <string name="allow_widget_overlap">Allow overlap</string>
 
     <string name="force_widget_resize_label">Enforce widget resizing</string>
