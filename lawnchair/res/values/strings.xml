@@ -367,6 +367,7 @@
     <string name="icon_pack_external_picker">Open external picker</string>
     <string name="pick_icon_from_label">Pick icon from</string>
     <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="icon_picker_photo_save_failed">Couldn\'t use that photo</string>
     <string name="icon_picker_choose_photo">Choose photo</string>
     <string name="hide_shortcut_badge">Hide badge</string>
 

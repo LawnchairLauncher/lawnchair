@@ -1255,6 +1255,13 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
         updateBackgroundVisibility(dp);
 
+        if (isPagedDrawerActive()) {
+            // The paged grid computes its own page-chunking (rows x current column count) once
+            // in refreshPagedGridView() rather than per-item like the adapters above, so a
+            // device profile change (e.g. rotation) needs to explicitly trigger that rebuild too.
+            refreshPagedGridView();
+        }
+
         boolean needsInvalidate = false;
         int navBarScrimColor = Themes.getNavBarScrimColor(mActivityContext);
         if (mNavBarScrimPaint.getColor() != navBarScrimColor) {

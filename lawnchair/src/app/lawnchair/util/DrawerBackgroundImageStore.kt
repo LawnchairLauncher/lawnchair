@@ -18,7 +18,7 @@ import java.util.UUID
  */
 object DrawerBackgroundImageStore {
     private const val TAG = "DrawerBackgroundImageStore"
-    private const val DIR_NAME = "drawer_backgrounds"
+    const val DIR_NAME = "drawer_backgrounds"
     private const val MAX_DIMENSION = 1440
 
     private fun storageDir(context: Context): File =

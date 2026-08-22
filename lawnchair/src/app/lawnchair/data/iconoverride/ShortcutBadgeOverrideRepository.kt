@@ -14,7 +14,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -37,13 +37,18 @@ class ShortcutBadgeOverrideRepository @Inject constructor(
     init {
         scope.launch {
             dao.observeAll()
-                .flowOn(Dispatchers.Main)
                 .collect { overrides ->
-                    _hiddenBadges = overrides.map { it.target }.toSet()
-                    while (updateQueue.isNotEmpty()) {
-                        val target = updateQueue.poll() ?: continue
-                        refreshShortcutIcon(target)
-                    }
+                    val newHidden = overrides.map { it.target }.toSet()
+                    val oldHidden = _hiddenBadges
+                    _hiddenBadges = newHidden
+                    // updateQueue only ever gets entries this process itself wrote via
+                    // setHidden - on a fresh start, badges hidden in a previous session arrive
+                    // here first, with nothing queued for them, and the icon cache can query
+                    // (and cache the badged icon) before this first emission lands at all.
+                    // Diffing against the previous snapshot catches both that startup race and
+                    // this emission's own writes.
+                    ((oldHidden - newHidden) + (newHidden - oldHidden)).forEach { updateQueue.offer(it) }
+                    drainUpdateQueue()
                 }
         }
     }
@@ -58,6 +63,18 @@ class ShortcutBadgeOverrideRepository @Inject constructor(
         // and can race with the refresh below, leaving the badge unchanged for this toggle.
         _hiddenBadges = if (hidden) _hiddenBadges + target else _hiddenBadges - target
         updateQueue.offer(target)
+        // Don't wait for the Flow above to notice this write - it can race with the offer just
+        // above and only pick the target up on some later, unrelated emission.
+        drainUpdateQueue()
+    }
+
+    private fun drainUpdateQueue() {
+        while (updateQueue.isNotEmpty()) {
+            val target = updateQueue.poll() ?: continue
+            // onAppIconChanged is @WorkerThread (blocking ShortcutManager query) - this whole
+            // repository otherwise runs on MainScope, so this needs its own IO dispatch.
+            scope.launch(Dispatchers.IO) { refreshShortcutIcon(target) }
+        }
     }
 
     fun isHidden(target: ComponentKey) = _hiddenBadges.contains(target)
@@ -76,7 +93,7 @@ class ShortcutBadgeOverrideRepository @Inject constructor(
     }
 
     override fun close() {
-        TODO("Not yet implemented")
+        scope.cancel()
     }
 
     companion object {

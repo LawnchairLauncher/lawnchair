@@ -6,8 +6,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.LawnchairProto.BackupInfo
+import app.lawnchair.icons.picker.CustomIconStore
+import app.lawnchair.util.DrawerBackgroundImageStore
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.scaleDownTo
 import app.lawnchair.util.scaleDownToDisplaySize
@@ -67,7 +70,7 @@ class LawnchairBackup(
                     {
                         val file = entry.value
                         file.parentFile?.mkdirs()
-                        it.copyTo(file.outputStream())
+                        file.outputStream().use { out -> it.copyTo(out) }
                     }
                 },
             )
@@ -78,9 +81,17 @@ class LawnchairBackup(
             BACKED_UP_DIRECTORIES.forEach { dirName ->
                 prefixHandlers.add(
                     "$dirName/" to { name, stream ->
-                        val file = File(context.filesDir, "$dirName/$name")
-                        file.parentFile?.mkdirs()
-                        stream.copyTo(file.outputStream())
+                        val baseDir = File(context.filesDir, dirName).apply { mkdirs() }
+                        val baseCanonical = baseDir.canonicalFile
+                        val file = File(baseDir, name)
+                        // name comes from a zip entry in a user-supplied backup file - reject
+                        // anything (e.g. "../../databases/launcher.db") that would resolve
+                        // outside baseDir instead of trusting it as a plain filename.
+                        if (file.canonicalFile.parentFile != baseCanonical) {
+                            Log.w(TAG, "Rejected backup entry outside $dirName: $name")
+                        } else {
+                            file.outputStream().use { out -> stream.copyTo(out) }
+                        }
                     },
                 )
             }
@@ -128,17 +139,13 @@ class LawnchairBackup(
     }
 
     companion object {
+        private const val TAG = "LawnchairBackup"
         private const val BACKUP_VERSION = 1
         private const val PREFS_FILE_NAME = "${LauncherFiles.SHARED_PREFERENCES_KEY}.xml"
         private const val PREFS_DB_FILE_NAME = "preferences"
         private const val PREFS_DATASTORE_FILE_NAME = "preferences.preferences_pb"
 
-        // Match DrawerBackgroundImageStore.DIR_NAME and CustomIconStore.DIR_NAME - kept as
-        // separate literals since those constants are private, but a change to either without
-        // its counterpart here would break restores anyway.
-        private const val DRAWER_BACKGROUNDS_DIR_NAME = "drawer_backgrounds"
-        private const val CUSTOM_ICONS_DIR_NAME = "custom_icons"
-        private val BACKED_UP_DIRECTORIES = listOf(DRAWER_BACKGROUNDS_DIR_NAME, CUSTOM_ICONS_DIR_NAME)
+        private val BACKED_UP_DIRECTORIES = listOf(DrawerBackgroundImageStore.DIR_NAME, CustomIconStore.DIR_NAME)
 
         const val INFO_FILE_NAME = "info.pb"
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
@@ -216,10 +223,12 @@ class LawnchairBackup(
                         }
 
                         BACKED_UP_DIRECTORIES.forEach { dirName ->
-                            File(context.filesDir, dirName).listFiles()?.forEach { file ->
-                                out.putNextEntry(ZipEntry("$dirName/${file.name}"))
-                                file.inputStream().copyTo(out)
-                            }
+                            File(context.filesDir, dirName).listFiles()
+                                ?.filter { it.isFile }
+                                ?.forEach { file ->
+                                    out.putNextEntry(ZipEntry("$dirName/${file.name}"))
+                                    file.inputStream().use { it.copyTo(out) }
+                                }
                         }
                     }
                 }

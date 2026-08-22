@@ -19,7 +19,7 @@ import java.util.UUID
  */
 object CustomIconStore {
     private const val TAG = "CustomIconStore"
-    private const val DIR_NAME = "custom_icons"
+    const val DIR_NAME = "custom_icons"
     private const val MAX_DIMENSION = 512
 
     private fun storageDir(context: Context): File =
@@ -58,8 +58,12 @@ object CustomIconStore {
         resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
         if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
 
+        // Sample against the *longer* edge - an extremely elongated image (e.g. 100x100000) would
+        // otherwise keep sampleSize at 1 forever, since its short edge alone never reaches
+        // MAX_DIMENSION, and decode the entire uncropped bitmap into memory before the square
+        // crop below ever gets a chance to shrink it - a picked file can trigger an OOM crash.
         var sampleSize = 1
-        while (minOf(bounds.outWidth, bounds.outHeight) / (sampleSize * 2) >= MAX_DIMENSION) {
+        while (maxOf(bounds.outWidth, bounds.outHeight) / (sampleSize * 2) >= MAX_DIMENSION) {
             sampleSize *= 2
         }
 

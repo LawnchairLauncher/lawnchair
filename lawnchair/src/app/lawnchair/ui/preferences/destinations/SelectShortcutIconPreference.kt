@@ -1,6 +1,7 @@
 package app.lawnchair.ui.preferences.destinations
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -72,6 +73,8 @@ fun SelectShortcutIconPreference(shortcutKey: ComponentKey, label: String) {
             val fileName = withContext(Dispatchers.IO) { CustomIconStore.saveIcon(context, uri) }
             if (fileName != null) {
                 applyItem(IconPickerItem(packPackageName = "", drawableName = fileName, label = "", type = IconType.Custom))
+            } else {
+                Toast.makeText(context, R.string.icon_picker_photo_save_failed, Toast.LENGTH_SHORT).show()
             }
         }
     }

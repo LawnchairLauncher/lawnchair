@@ -54,11 +54,7 @@ class DrivingModeOverlay(private val launcher: Launcher) {
         composeView = null
         attachComposeView()
         launcher.dragLayer.recreateControllers()
-        launcher.startActivity(
-            Intent(launcher, launcher.javaClass).setFlags(
-                Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK,
-            ),
-        )
+        bringLauncherToFront()
     }
 
     fun show() {
@@ -69,11 +65,7 @@ class DrivingModeOverlay(private val launcher: Launcher) {
         // separate Activity), or by a real Bluetooth connect while some other app is open.
         // Bring the launcher forward first; REORDER_TO_FRONT reuses the existing instance rather
         // than recreating it, so none of the state set up below is lost.
-        launcher.startActivity(
-            Intent(launcher, launcher.javaClass).setFlags(
-                Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK,
-            ),
-        )
+        bringLauncherToFront()
 
         // Force a clean slate — if AllApps (or a folder/popup) was open when
         // driving mode was triggered, it would otherwise stay open and keep
@@ -99,7 +91,7 @@ class DrivingModeOverlay(private val launcher: Launcher) {
         launcher.workspace.visibility = View.INVISIBLE
         launcher.hotseat.visibility = View.INVISIBLE
         launcher.hotseat.alpha = 0f
-        Log.i(TAG, "show(): hotseat.visibility=${launcher.hotseat.visibility} alpha=${launcher.hotseat.alpha}")
+        Log.d(TAG, "show(): hotseat.visibility=${launcher.hotseat.visibility} alpha=${launcher.hotseat.alpha}")
 
         // Re-assert after this layout pass in case the state transition's
         // own animation/property-setters apply after we do, on this frame.
@@ -107,7 +99,7 @@ class DrivingModeOverlay(private val launcher: Launcher) {
             launcher.workspace.visibility = View.INVISIBLE
             launcher.hotseat.visibility = View.INVISIBLE
             launcher.hotseat.alpha = 0f
-            Log.i(TAG, "show()/post: hotseat.visibility=${launcher.hotseat.visibility} alpha=${launcher.hotseat.alpha}")
+            Log.d(TAG, "show()/post: hotseat.visibility=${launcher.hotseat.visibility} alpha=${launcher.hotseat.alpha}")
         }
 
         // Adding a view on top doesn't stop Launcher3's own swipe gestures
@@ -129,6 +121,14 @@ class DrivingModeOverlay(private val launcher: Launcher) {
             }
         }
         requestTileRefresh()
+    }
+
+    private fun bringLauncherToFront() {
+        launcher.startActivity(
+            Intent(launcher, launcher.javaClass).setFlags(
+                Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK,
+            ),
+        )
     }
 
     private fun attachComposeView() {

@@ -17,7 +17,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -46,16 +46,23 @@ class ShortcutIconOverrideRepository @Inject constructor(
     init {
         scope.launch {
             dao.observeAll()
-                .flowOn(Dispatchers.Main)
                 .collect { overrides ->
-                    _overridesMap = overrides.associateBy(
+                    val newMap = overrides.associateBy(
                         keySelector = { it.target },
                         valueTransform = { it.iconPickerItem },
                     )
-                    while (updateQueue.isNotEmpty()) {
-                        val target = updateQueue.poll() ?: continue
-                        refreshShortcutIcon(target)
+                    val oldMap = _overridesMap
+                    _overridesMap = newMap
+                    // updateQueue only ever gets entries this process itself wrote via
+                    // setOverride/deleteOverride - on a fresh start, overrides persisted from a
+                    // previous session arrive here first, with nothing queued for them, and the
+                    // icon cache can query (and cache the non-overridden icon) before this first
+                    // emission lands at all. Diffing against the previous snapshot catches both
+                    // that startup race and this emission's own writes.
+                    (oldMap.keys + newMap.keys).forEach { key ->
+                        if (oldMap[key] != newMap[key]) updateQueue.offer(key)
                     }
+                    drainUpdateQueue()
                 }
         }
     }
@@ -67,6 +74,9 @@ class ShortcutIconOverrideRepository @Inject constructor(
         // async and can race with the refresh below, leaving a stale icon cached.
         _overridesMap = _overridesMap + (target to item)
         updateQueue.offer(target)
+        // Don't wait for the Flow above to notice this write - it can race with the offer just
+        // above and only pick the target up on some later, unrelated emission.
+        drainUpdateQueue()
         deleteCustomIconFileIfOrphaned(previous, item)
     }
 
@@ -75,7 +85,17 @@ class ShortcutIconOverrideRepository @Inject constructor(
         dao.delete(target)
         _overridesMap = _overridesMap - target
         updateQueue.offer(target)
+        drainUpdateQueue()
         deleteCustomIconFileIfOrphaned(previous, null)
+    }
+
+    private fun drainUpdateQueue() {
+        while (updateQueue.isNotEmpty()) {
+            val target = updateQueue.poll() ?: continue
+            // onAppIconChanged is @WorkerThread (blocking ShortcutManager query) - this whole
+            // repository otherwise runs on MainScope, so this needs its own IO dispatch.
+            scope.launch(Dispatchers.IO) { refreshShortcutIcon(target) }
+        }
     }
 
     /** Deletes [previous]'s backing file once it's no longer referenced by [replacement]. */
@@ -111,7 +131,7 @@ class ShortcutIconOverrideRepository @Inject constructor(
     }
 
     override fun close() {
-        TODO("Not yet implemented")
+        scope.cancel()
     }
 
     companion object {

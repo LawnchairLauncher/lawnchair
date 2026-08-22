@@ -205,10 +205,13 @@ private fun DrivingModeBackgroundImagePreference() {
     }
 }
 
+// Returns null when Bluetooth itself is unavailable/off (distinct from a non-null empty list,
+// which means Bluetooth is on but genuinely has nothing paired) - the caller shows a different
+// message ("Bluetooth disabled" vs. "No paired devices") for each.
 @Suppress("MissingPermission") // permission checked by caller / not needed pre-S
-private fun getPairedDevices(context: Context): List<BluetoothDevice> {
+private fun getPairedDevices(context: Context): List<BluetoothDevice>? {
     val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     val adapter: BluetoothAdapter? = bluetoothManager.adapter
-    if (adapter == null || !adapter.isEnabled) return emptyList()
+    if (adapter == null || !adapter.isEnabled) return null
     return adapter.bondedDevices.toList()
 }

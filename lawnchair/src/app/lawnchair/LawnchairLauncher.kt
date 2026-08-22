@@ -97,10 +97,12 @@ import com.kieronquinn.app.smartspacer.sdk.client.SmartspacerClient
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
 import java.util.stream.Stream
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LawnchairLauncher : QuickstepLauncher() {
     private val defaultOverlay by unsafeLazy { OverlayCallbackImpl(this) }
@@ -172,7 +174,7 @@ class LawnchairLauncher : QuickstepLauncher() {
                 // the model finishes loading apps (most noticeable right after a fresh
                 // install), leaving it empty until something else happens to refresh it. This
                 // is a cheap no-op otherwise (also no-ops when paged mode isn't active).
-                appsView.refreshPagedGridView()
+                mAppsView?.refreshPagedGridView()
                 if (!preferenceManager2.rememberPosition.firstCached()) {
                     mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.setCurrentPage(0)
                 }
@@ -192,8 +194,12 @@ class LawnchairLauncher : QuickstepLauncher() {
      * it horizontally by [progress] (0..1). Centered vertically like a normal centerCrop.
      */
     private fun updateDrawerBackgroundMatrix(bitmap: Bitmap, progress: Float) {
-        val viewWidth = resources.displayMetrics.widthPixels.toFloat()
-        val viewHeight = resources.displayMetrics.heightPixels.toFloat()
+        // The view's own measured size, not the display's - they differ in split-screen/
+        // multi-window, where using the full display size would over-scale and mis-pan the
+        // image relative to the actually-visible (smaller) view.
+        val view = appDrawerWallpaperBackgroundView
+        val viewWidth = (if (view.width > 0) view.width else resources.displayMetrics.widthPixels).toFloat()
+        val viewHeight = (if (view.height > 0) view.height else resources.displayMetrics.heightPixels).toFloat()
         val scale = maxOf(viewHeight / bitmap.height, (viewWidth * backgroundParallaxWidthFactor) / bitmap.width)
         val scaledWidth = bitmap.width * scale
         val scaledHeight = bitmap.height * scale
@@ -213,30 +219,64 @@ class LawnchairLauncher : QuickstepLauncher() {
     //
     // In paged drawer mode, the image pans horizontally as the user swipes between pages,
     // mirroring how the home screen parallaxes the system wallpaper across workspace pages.
+    // Filename this bitmap was decoded from, so a later call can tell whether the preference
+    // still points at the same file (reuse the decode) or a different/cleared one (reload).
+    private var cachedBackgroundImage: kotlin.Pair<String, Bitmap>? = null
+
     private val drawerBackgroundImageStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
-            if (toState is AllAppsState) {
-                val fileName = preferenceManager2.appDrawerBackgroundImage.firstCached()
-                if (fileName.isEmpty()) return
-                val bitmap = DrawerBackgroundImageStore.loadBitmap(this@LawnchairLauncher, fileName) ?: return
-                val pagedGridView = mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)
-                if (pagedGridView != null) {
-                    appDrawerWallpaperBackgroundView.scaleType = ImageView.ScaleType.MATRIX
-                    updateDrawerBackgroundMatrix(bitmap, pagedGridView.currentScrollProgress())
-                    pagedGridView.onScrollProgressChanged = { progress -> updateDrawerBackgroundMatrix(bitmap, progress) }
-                } else {
-                    appDrawerWallpaperBackgroundView.scaleType = ImageView.ScaleType.CENTER_CROP
+            if (toState !is AllAppsState) return
+            val fileName = preferenceManager2.appDrawerBackgroundImage.firstCached()
+            if (fileName.isEmpty()) {
+                // The user removed their background image since it was last shown - without
+                // this, a previously-shown bitmap would stay visible/stale indefinitely.
+                hideDrawerBackground()
+                return
+            }
+            val cached = cachedBackgroundImage
+            if (cached != null && cached.first == fileName) {
+                showDrawerBackground(cached.second)
+                return
+            }
+            // BitmapFactory.decodeFile is a synchronous disk read + decode - too slow to run on
+            // the main thread on every AllApps transition, and unnecessary to repeat at all once
+            // cached above for as long as the preference keeps pointing at the same file.
+            lifecycleScope.launch {
+                val bitmap = withContext(Dispatchers.IO) {
+                    DrawerBackgroundImageStore.loadBitmap(this@LawnchairLauncher, fileName)
                 }
-                appDrawerWallpaperBackgroundView.setImageBitmap(bitmap)
-                appDrawerWallpaperBackgroundView.visibility = View.VISIBLE
+                if (bitmap == null) {
+                    hideDrawerBackground()
+                    return@launch
+                }
+                cachedBackgroundImage = fileName to bitmap
+                showDrawerBackground(bitmap)
             }
         }
         override fun onStateTransitionComplete(finalState: LauncherState) {
             if (finalState !is AllAppsState) {
-                appDrawerWallpaperBackgroundView.visibility = View.GONE
-                mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.onScrollProgressChanged = null
+                hideDrawerBackground()
             }
         }
+    }
+
+    private fun hideDrawerBackground() {
+        appDrawerWallpaperBackgroundView.visibility = View.GONE
+        appDrawerWallpaperBackgroundView.setImageBitmap(null)
+        mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.onScrollProgressChanged = null
+    }
+
+    private fun showDrawerBackground(bitmap: Bitmap) {
+        val pagedGridView = mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)
+        if (pagedGridView != null) {
+            appDrawerWallpaperBackgroundView.scaleType = ImageView.ScaleType.MATRIX
+            updateDrawerBackgroundMatrix(bitmap, pagedGridView.currentScrollProgress())
+            pagedGridView.onScrollProgressChanged = { progress -> updateDrawerBackgroundMatrix(bitmap, progress) }
+        } else {
+            appDrawerWallpaperBackgroundView.scaleType = ImageView.ScaleType.CENTER_CROP
+        }
+        appDrawerWallpaperBackgroundView.setImageBitmap(bitmap)
+        appDrawerWallpaperBackgroundView.visibility = View.VISIBLE
     }
 
     private lateinit var colorScheme: ColorScheme

@@ -18,7 +18,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -39,16 +39,23 @@ class IconOverrideRepository @Inject constructor(
     init {
         scope.launch {
             dao.observeAll()
-                .flowOn(Dispatchers.Main)
                 .collect { overrides ->
-                    _overridesMap = overrides.associateBy(
+                    val newMap = overrides.associateBy(
                         keySelector = { it.target },
                         valueTransform = { it.iconPickerItem },
                     )
-                    while (updatePackageQueue.isNotEmpty()) {
-                        val target = updatePackageQueue.poll() ?: continue
-                        updatePackageIcons(target)
+                    val oldMap = _overridesMap
+                    _overridesMap = newMap
+                    // updatePackageQueue only ever gets entries this process itself wrote via
+                    // setOverride/deleteOverride - on a fresh start, overrides persisted from a
+                    // previous session arrive here first, with nothing queued for them, and the
+                    // icon cache can query (and cache the non-overridden icon) before this first
+                    // emission lands at all. Diffing against the previous snapshot catches both
+                    // that startup race and this emission's own writes.
+                    (oldMap.keys + newMap.keys).forEach { key ->
+                        if (oldMap[key] != newMap[key]) updatePackageQueue.offer(key)
                     }
+                    drainUpdatePackageQueue()
                 }
         }
     }
@@ -60,6 +67,9 @@ class IconOverrideRepository @Inject constructor(
         // async and can race with onAppIconChanged / forceReload, leaving stale icons cached.
         _overridesMap = _overridesMap + (target to item)
         updatePackageQueue.offer(target)
+        // Don't wait for the Flow above to notice this write - it can race with the offer just
+        // above and only pick the target up on some later, unrelated emission.
+        drainUpdatePackageQueue()
         deleteCustomIconFileIfOrphaned(previous, item)
     }
 
@@ -68,7 +78,17 @@ class IconOverrideRepository @Inject constructor(
         dao.delete(target)
         _overridesMap = _overridesMap - target
         updatePackageQueue.offer(target)
+        drainUpdatePackageQueue()
         deleteCustomIconFileIfOrphaned(previous, null)
+    }
+
+    private fun drainUpdatePackageQueue() {
+        while (updatePackageQueue.isNotEmpty()) {
+            val target = updatePackageQueue.poll() ?: continue
+            // onPackageIconsUpdated is a blocking model/worker-thread call - this whole
+            // repository otherwise runs on MainScope, so this needs its own IO dispatch.
+            scope.launch(Dispatchers.IO) { updatePackageIcons(target) }
+        }
     }
 
     /** Deletes [previous]'s backing file once it's no longer referenced by [replacement]. */
@@ -110,7 +130,7 @@ class IconOverrideRepository @Inject constructor(
     }
 
     override fun close() {
-        TODO("Not yet implemented")
+        scope.cancel()
     }
 
     companion object {

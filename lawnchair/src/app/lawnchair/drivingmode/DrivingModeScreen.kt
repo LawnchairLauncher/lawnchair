@@ -338,7 +338,7 @@ private fun DrivingModeTile(
             assignment == null -> {
                 Icon(
                     imageVector = Icons.Rounded.Apps,
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.driving_mode_empty_slot),
                     tint = Color.White.copy(alpha = 0.4f),
                     modifier = Modifier.size(TileIconSize * 0.85f),
                 )

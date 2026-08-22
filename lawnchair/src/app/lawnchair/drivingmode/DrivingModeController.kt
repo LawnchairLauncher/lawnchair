@@ -1,11 +1,15 @@
 package app.lawnchair.drivingmode
 
+import android.Manifest
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.android.launcher3.Launcher
 
 /**
@@ -34,6 +38,16 @@ class DrivingModeController(private val launcher: Launcher) {
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            // This fires for ANY Bluetooth device connecting/disconnecting, not just the one the
+            // user picked - e.g. headphones or a watch, possibly before they've ever opened
+            // driving mode settings (where BLUETOOTH_CONNECT is actually requested). Reading
+            // device.address without the permission throws SecurityException on API 31+.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
             val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
             val deviceAddress = device?.address ?: return
 

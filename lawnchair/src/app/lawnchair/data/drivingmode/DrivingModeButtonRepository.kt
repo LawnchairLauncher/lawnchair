@@ -9,11 +9,10 @@ import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -34,7 +33,6 @@ class DrivingModeButtonRepository @Inject constructor(
     init {
         scope.launch {
             dao.observeAll()
-                .flowOn(Dispatchers.Main)
                 .collect { list ->
                     _assignments.value = list.associateBy { DrivingModeSlot(it.page, it.row, it.col) }
                 }
@@ -59,7 +57,7 @@ class DrivingModeButtonRepository @Inject constructor(
     }
 
     override fun close() {
-        TODO("Not yet implemented")
+        scope.cancel()
     }
 
     companion object {

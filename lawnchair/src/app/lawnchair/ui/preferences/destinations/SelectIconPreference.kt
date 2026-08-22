@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.LauncherApps
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -79,6 +80,8 @@ fun SelectIconPreference(componentKey: ComponentKey) {
             val fileName = withContext(Dispatchers.IO) { CustomIconStore.saveIcon(context, uri) }
             if (fileName != null) {
                 applyItem(IconPickerItem(packPackageName = "", drawableName = fileName, label = "", type = IconType.Custom))
+            } else {
+                Toast.makeText(context, R.string.icon_picker_photo_save_failed, Toast.LENGTH_SHORT).show()
             }
         }
     }
