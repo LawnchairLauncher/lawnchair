@@ -98,6 +98,7 @@ import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
 import java.util.stream.Stream
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -223,6 +224,11 @@ class LawnchairLauncher : QuickstepLauncher() {
     // still points at the same file (reuse the decode) or a different/cleared one (reload).
     private var cachedBackgroundImage: kotlin.Pair<String, Bitmap>? = null
 
+    // Tracks the in-flight decode below so it can be cancelled if the user leaves All Apps (or
+    // the background image preference changes) before it finishes - otherwise a slow decode can
+    // land after the fact and show a stale/wrong image.
+    private var backgroundLoadJob: Job? = null
+
     private val drawerBackgroundImageStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
             if (toState !is AllAppsState) return
@@ -230,20 +236,30 @@ class LawnchairLauncher : QuickstepLauncher() {
             if (fileName.isEmpty()) {
                 // The user removed their background image since it was last shown - without
                 // this, a previously-shown bitmap would stay visible/stale indefinitely.
+                backgroundLoadJob?.cancel()
                 hideDrawerBackground()
                 return
             }
             val cached = cachedBackgroundImage
             if (cached != null && cached.first == fileName) {
+                backgroundLoadJob?.cancel()
                 showDrawerBackground(cached.second)
                 return
             }
             // BitmapFactory.decodeFile is a synchronous disk read + decode - too slow to run on
             // the main thread on every AllApps transition, and unnecessary to repeat at all once
             // cached above for as long as the preference keeps pointing at the same file.
-            lifecycleScope.launch {
+            backgroundLoadJob?.cancel()
+            backgroundLoadJob = lifecycleScope.launch {
                 val bitmap = withContext(Dispatchers.IO) {
                     DrawerBackgroundImageStore.loadBitmap(this@LawnchairLauncher, fileName)
+                }
+                // The state may have moved on, or the preference may point elsewhere, while this
+                // decode was in flight - applying it now would show the wrong image.
+                if (launcher.stateManager.state !is AllAppsState ||
+                    preferenceManager2.appDrawerBackgroundImage.firstCached() != fileName
+                ) {
+                    return@launch
                 }
                 if (bitmap == null) {
                     hideDrawerBackground()
@@ -255,6 +271,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
         override fun onStateTransitionComplete(finalState: LauncherState) {
             if (finalState !is AllAppsState) {
+                backgroundLoadJob?.cancel()
                 hideDrawerBackground()
             }
         }
