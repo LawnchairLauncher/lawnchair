@@ -342,6 +342,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_themed_hotseat_qsb),
     )
 
+    val hideLawnchairActivities = preference(
+        key = booleanPreferencesKey(name = "hide_lawnchair_activities"),
+        defaultValue = false,
+    )
+
     val isHotseatEnabled = preference(
         key = booleanPreferencesKey(name = "pref_show_hotseat"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_hotseat),

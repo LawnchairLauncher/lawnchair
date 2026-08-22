@@ -55,6 +55,7 @@ import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.ui.popup.LauncherOptionsPopup
 import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.DrawerBackgroundImageStore
+import app.lawnchair.util.applyRecentsExclusion
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.LawnchairFloatingSurfaceView
@@ -181,7 +182,13 @@ class LawnchairLauncher : QuickstepLauncher() {
                 }
             }
         }
-        override fun onStateTransitionComplete(finalState: LauncherState) {}
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState !is AllAppsState) {
+                // Closing the app drawer is exactly the point where a "Clear all" in Recents can
+                // leave this task's exclude-from-recents state reset - reapply defensively.
+                applyRecentsExclusion(this@LawnchairLauncher, preferenceManager2.hideLawnchairActivities.firstCached())
+            }
+        }
     }
 
     // How much wider than the screen the background image is scaled, reserving room to pan -
@@ -310,6 +317,14 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (intent?.getBooleanExtra(EXTRA_START_DRIVING_MODE, false) == true) {
             drivingModeController.show()
         }
+
+        // A freshly created task doesn't inherit exclude-from-recents state from a previous
+        // session - subscribe (rather than reading the cache once) since the in-memory
+        // preference cache isn't guaranteed to be populated from disk yet this early in a cold
+        // start, and firstCached() would silently fall back to the compile-time default.
+        preferenceManager2.hideLawnchairActivities.get().distinctUntilChanged().onEach { exclude ->
+            applyRecentsExclusion(this, exclude)
+        }.launchIn(scope = lifecycleScope)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -661,6 +676,11 @@ class LawnchairLauncher : QuickstepLauncher() {
         super.onResume()
         restartIfPending()
         refreshPredictionContainersFromModel()
+
+        // Re-apply on every resume, not just at onCreate - "Clear all" in Recents can leave this
+        // task's exclude-from-recents state reset, and this task's own onCreate doesn't run again
+        // when merely returning from the app drawer or another app.
+        applyRecentsExclusion(this, preferenceManager2.hideLawnchairActivities.firstCached())
 
         dragLayer.viewTreeObserver.addOnDrawListener(
             object : ViewTreeObserver.OnDrawListener {

@@ -25,12 +25,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.provider.OnboardingProvider
 import app.lawnchair.ui.preferences.navigation.PreferenceRoute
 import app.lawnchair.ui.theme.EdgeToEdge
 import app.lawnchair.ui.theme.LawnchairTheme
+import app.lawnchair.util.applyRecentsExclusion
 import com.android.launcher3.LauncherPrefs
 import com.google.accompanist.adaptive.calculateDisplayFeatures
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.json.Json
 
 class PreferenceActivity : ComponentActivity() {
@@ -38,6 +44,13 @@ class PreferenceActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Subscribe rather than reading the cache once - the in-memory preference cache isn't
+        // guaranteed to be populated from disk yet this early in a cold start.
+        PreferenceManager2.getInstance(this).hideLawnchairActivities.get()
+            .distinctUntilChanged()
+            .onEach { exclude -> applyRecentsExclusion(this, exclude) }
+            .launchIn(scope = lifecycleScope)
 
         val initialRoute: PreferenceRoute? = intent.getStringExtra(EXTRA_DESTINATION_ROUTE)?.let { routeString ->
             try {

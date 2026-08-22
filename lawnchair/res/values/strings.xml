@@ -735,6 +735,10 @@
     <string name="home_screen_rotation_label">Home screen rotation</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
 
+    <string name="recents_label">Recents</string>
+    <string name="hide_lawnchair_activities_label">Hide Lawnchair activities</string>
+    <string name="hide_lawnchair_activities_description">Prevent Lawnchair itself from appearing as an entry in Recents</string>
+
     <string name="auto_updater_label">Automatically check for updates</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
 

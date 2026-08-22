@@ -17,6 +17,7 @@
 package app.lawnchair.util
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_CANCEL_CURRENT
@@ -119,6 +120,17 @@ fun restartLauncher(context: Context, intent: Intent?) {
 
 fun killLauncher() {
     exitProcess(0)
+}
+
+// Sets FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS on this app's own tasks at the ActivityManager level -
+// filtered out of the recent-tasks list before any Recents/Overview UI (including an OEM's own,
+// which may not be Lawnchair's own quickstep code) ever sees it. A launcher's own tasks
+// (including its main Home task) are otherwise normally hidden from Recents by their
+// ACTIVITY_TYPE_HOME classification, but that classification can get lost in edge cases (e.g.
+// after "Clear all"), letting a stray entry resurface - this is a stronger, unconditional guard.
+fun applyRecentsExclusion(context: Context, exclude: Boolean) {
+    val activityManager = context.getSystemService(ActivityManager::class.java) ?: return
+    activityManager.appTasks.forEach { it.setExcludeFromRecents(exclude) }
 }
 
 fun getPrefsIfUnlocked(context: Context): PreferenceManager? {
