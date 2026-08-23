@@ -7,14 +7,14 @@ androidx-room = "2.8.4"
 androidx-lifecycle = "2.11.0"
 accompanist = "0.37.3"
 opto = "1.0.18"
-protobuf = "4.35.1"
+protobuf = "4.36.0"
 retrofit = "3.0.0"
 dagger = "2.60.1"
 libsu = "6.0.0"
 refine = "4.4.0"
 exifinterface = "1.4.2"
 
-guava = "33.6.0-jre"
+guava = "33.7.1-jre"
 junitVersion = "4.13.2"
 mockito = "5.23.0"
 mockitoKotlin = "6.3.0"
@@ -26,7 +26,7 @@ testRunner = "1.7.0"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp" }
-androidx-baselineprofile = "androidx.baselineprofile:1.5.0-beta01"
+androidx-baselineprofile = "androidx.baselineprofile:1.5.0-rc01"
 
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
@@ -35,7 +35,7 @@ google-ksp = "com.google.devtools.ksp:2.3.11"
 google-protobuf = "com.google.protobuf:0.10.0"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.9.0"
+diffplug-spotless = "com.diffplug.spotless:8.10.0"
 
 [libraries]
 # AndroidX
@@ -66,11 +66,11 @@ androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.0"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
-compose-bom = "androidx.compose:compose-bom:2026.06.01"
+compose-bom = "androidx.compose:compose-bom:2026.08.00"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha25"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-alpha26"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
@@ -102,7 +102,7 @@ opto-domain = { group = "com.patrykmichalik.opto", name = "domain", version.ref 
 # Retrofit & OkHttp
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-kotlinx = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
-okhttp = "com.squareup.okhttp3:okhttp:5.4.0"
+okhttp = "com.squareup.okhttp3:okhttp:5.5.0"
 
 # Room
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
@@ -152,8 +152,8 @@ google-truth = { group = "com.google.truth", name = "truth", version.ref = "trut
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 mockito-robolectric = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
-mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.11"
-mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.11"
+mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.12"
+mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.12"
 
 [bundles]
 accompanist = ["accompanist-adaptive", "accompanist-drawablepainter", "accompanist-permissions"]

@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">Usar a API da Navegação por Gestos</string>
     <string name="gesturenavcontract_description">Suporta as animações melhoradas do Android quando se usa a navegação por gestos</string>
     <string name="gesturenavcontract_warning_incompatibility">O seu dispositivo não possui todo o suporte. Isso pode causar problemas visuais em algumas animações.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">Nenhuma</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">Padrão</string>
+    <string name="vibration_feedback_expressive_choice">Expressivo</string>
     <string name="recents_lock_unlock">Bloqueio de aplicativos</string>
     <string name="recents_lock_unlock_description">Previne o aplicativo selecionado de fechar quando você tocar em \"Limpar tudo\"</string>
     <!--Overlay-->
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">Sugar</string>
     <string name="overlay_label">Sugar</string>
     <string name="overlay_none">Nenhuma</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Sugestões</string>
+    <string name="global_predictions_label">Exibir recursos de recomendação</string>
+    <string name="app_predictions_label">Sugestões de Aplicativos</string>
+    <string name="prediction_mode_label">Provedor de sugestões</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Esse recurso requer o Android 10 ou superior</string>
+    <string name="prediction_mode_system">Padrão (sistema)</string>
+    <string name="prediction_mode_none">Desligado</string>
+    <string name="prediction_weighted_usage_stats_label">Utilizar dados de uso do dispositivo</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Aplicativos bloqueados</string>
+    <string name="dismissed_prediction_apps_label_with_count">Aplicativos bloqueados (%1$d)</string>
+    <string name="prediction_system_settings">Gerenciar sugestões do sistema</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -610,6 +632,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="hotseat_bg_vertical_inset_top">Margem superior</string>
     <string name="hotseat_bg_vertical_inset_bottom">Margem inferior</string>
     <string name="hotseat_bg_color_label">Cor de fundo</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Opacidade do fundo</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pausar</string>
@@ -621,6 +644,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="open_in_store_drop_target_label">Abrir na loja</string>
     <string name="dock_icons">Ícones da dock</string>
     <string name="dock_rows">Linhas da Dock</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (dentro da pasta)</string>
     <string name="state_unfolded">%1$s (Fora da pasta)</string>
     <string name="folded_label">Dentro da pasta</string>
@@ -711,7 +735,6 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="pref_search_auto_show_keyboard">Mostrar o teclado automaticamente</string>
     <string name="fuzzy_search_title">Pesquisa aproximada</string>
     <string name="fuzzy_search_desc">Correspondência aproximada para pesquisas de apps</string>
-    <string name="suggestion_pref_screen_title">Sugestões</string>
     <string name="show_suggested_apps_at_drawer_top">Mostrar aplicativos sugeridos na parte superior da gaveta de aplicativos</string>
     <string name="perform_wide_search_title">Pesquisa no dispositivo</string>
     <string name="perform_wide_search_description">Procurar nos contatos, arquivos e configurações do seu telefone</string>

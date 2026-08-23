@@ -24,6 +24,7 @@ import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import com.android.launcher3.Utilities
 
 /** Utility class for triggering various lifecycle events based on activity callbacks */
 class LifecycleHelper(
@@ -31,6 +32,45 @@ class LifecycleHelper(
     private val savedStateRegistryController: SavedStateRegistryController,
     private val lifecycleRegistry: LifecycleRegistry,
 ) : ActivityLifecycleCallbacksAdapter {
+
+    // LC-Note: Fix lifecycle crash on Android O + O_MR1, and Q
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        if (Utilities.ATLEAST_Q) return
+        savedStateRegistryController.performRestore(savedInstanceState)
+        activity.window.decorView.setViewTreeLifecycleOwner(owner)
+        activity.window.decorView.setViewTreeSavedStateRegistryOwner(owner)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    }
+
+    // LC-Note: Fix lifecycle crash on Android O + O_MR1, and Q
+    override fun onActivityStarted(activity: Activity) {
+        if (Utilities.ATLEAST_Q) return
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+    }
+
+    // LC-Note: Fix lifecycle crash on Android O + O_MR1, and Q
+    override fun onActivityResumed(activity: Activity) {
+        if (Utilities.ATLEAST_Q) return
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    }
+
+    // LC-Note: Fix lifecycle crash on Android O + O_MR1, and Q
+    override fun onActivityPaused(activity: Activity) {
+        if (Utilities.ATLEAST_Q) return
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    }
+
+    // LC-Note: Fix lifecycle crash on Android O + O_MR1, and Q
+    override fun onActivityStopped(activity: Activity) {
+        if (Utilities.ATLEAST_Q) return
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+    }
+
+    // LC-Note: Fix lifecycle crash on Android O + O_MR1, and Q
+    override fun onActivityDestroyed(activity: Activity) {
+        if (Utilities.ATLEAST_Q) return
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    }
 
     override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) {
         savedStateRegistryController.performRestore(savedInstanceState)

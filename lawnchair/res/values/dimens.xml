@@ -59,6 +59,7 @@
     <dimen name="search_result_margin">8dp</dimen>
     <dimen name="search_result_padding">16dp</dimen>
     <dimen name="search_result_padding_medium">12dp</dimen>
+    <dimen name="search_result_text_padding">12dp</dimen>
     <dimen name="search_result_radius">4dp</dimen>
     <dimen name="search_result_row_height">92dp</dimen>
     <dimen name="search_result_row_medium_height">76dp</dimen>

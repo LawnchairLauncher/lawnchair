@@ -81,6 +81,7 @@ import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -307,7 +308,10 @@ public class LauncherPreviewRenderer extends BaseContext
 
     private List<CellLayout> getAllLayouts() {
         List<CellLayout> screens = new ArrayList<>(mWorkspaceScreens.values());
-        screens.add(getHotseat());
+        Hotseat hotseat = getHotseat();
+        if (hotseat != null) {
+            Collections.addAll(screens, hotseat.getPageLayouts());
+        }
         return screens;
     }
 
@@ -379,7 +383,8 @@ public class LauncherPreviewRenderer extends BaseContext
 
             int cellX = mHotseat.getCellXFromOrder(rank);
             int cellY = mHotseat.getCellYFromOrder(rank);
-            if (mHotseat.isOccupied(cellX, cellY)) continue;
+            CellLayout page = mHotseat.getPageAt(mHotseat.getPageFromOrder(rank));
+            if (page == null || page.isOccupied(cellX, cellY)) continue;
 
             WorkspaceItemInfo itemInfo =
                     new WorkspaceItemInfo((WorkspaceItemInfo) predictions.get(predictionIndex));

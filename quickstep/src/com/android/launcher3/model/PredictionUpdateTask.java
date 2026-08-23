@@ -56,7 +56,7 @@ public class PredictionUpdateTask implements ModelUpdateTask {
     private final List<AppTarget> mTargets;
     private final PredictorState mPredictorState;
 
-    PredictionUpdateTask(PredictorState predictorState, List<AppTarget> targets) {
+    public PredictionUpdateTask(PredictorState predictorState, List<AppTarget> targets) {
         mPredictorState = predictorState;
         mTargets = targets;
     }

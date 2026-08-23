@@ -141,7 +141,12 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
 
     @Override
     public void onTaskMovedToFront(RunningTaskInfo taskInfo) {
-        handleTaskMovedToFront(taskInfo);
+        if (LawnchairQuickstepCompat.ATLEAST_Q) {
+            // LC-Note: RunningTaskInfo did not extend TaskInfo before Android Q. 
+            // The Object cast prevents bytecode verifier from treating this as an unconditional 
+            // upcast (VerifyError)
+            handleTaskMovedToFront((TaskInfo) (Object) taskInfo);
+        }
     }
 
     void handleTaskMovedToFront(TaskInfo taskInfo) {

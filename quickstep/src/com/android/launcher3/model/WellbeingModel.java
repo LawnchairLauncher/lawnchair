@@ -26,6 +26,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.database.ContentObserver;
 import android.net.Uri;
@@ -59,7 +60,9 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.dagger.QuickstepBaseAppComponent;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -276,14 +279,29 @@ public final class WellbeingModel implements SafeCloseable {
 
     @WorkerThread
     private void updateActionsWithRetry(int retryCount, @Nullable String packageName) {
+        final LauncherApps mLauncherApps = mContext.getSystemService(LauncherApps.class);
+        List<LauncherActivityInfo> apps;
+        
+        // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
+        // Ref: https://issuetracker.google.com/issues/547643926
+        if (TextUtils.isEmpty(packageName)) {
+            try {
+                apps = mLauncherApps.getActivityList(null, Process.myUserHandle());
+            } catch (SecurityException e) {
+                Log.e("LC-LoaderTask", "Failed to get activity list for user " + Process.myUserHandle(), e);
+                apps = Collections.emptyList();
+            }
+        } else {
+            apps = Collections.emptyList();
+        }
+        
         if (DEBUG || mIsInTest) {
             Log.i(TAG,
                     "updateActionsWithRetry(); retryCount: " + retryCount + ", package: "
                             + packageName);
         }
         String[] packageNames = TextUtils.isEmpty(packageName)
-                ? mContext.getSystemService(LauncherApps.class)
-                .getActivityList(null, Process.myUserHandle()).stream()
+                ? apps.stream()
                 .map(li -> li.getApplicationInfo().packageName).distinct()
                 .toArray(String[]::new)
                 : new String[]{packageName};
