@@ -39,7 +39,9 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.IntSet;
 
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Predicate;
 
 /**
@@ -130,8 +132,11 @@ public class ModelUtils {
                 iconInfo = MODEL_EXECUTOR.submit(() -> baseIconInfo.withBadgeInfo(
                         iconCache.getShortcutInfoBadge(launchPackage, Process.myUserHandle())))
                         .get();
-            } catch (InterruptedException | ExecutionException e) {
-                Log.e(TAG, "Interrupted while loading legacy shortcut badge", e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.e("LC-ModelUtils", "Interrupted while loading legacy shortcut badge", e);
+            } catch (ExecutionException e) {
+                Log.e("LC-ModelUtils", "Failed to load legacy shortcut badge", e);
             }
         }
 

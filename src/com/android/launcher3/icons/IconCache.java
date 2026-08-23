@@ -383,6 +383,9 @@ public class IconCache extends BaseIconCache {
     public synchronized void getTitleAndIcon(
             @NonNull ItemInfoWithIcon info,
             @NonNull CacheLookupFlag lookupFlag) {
+        if (info.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+            return;
+        }
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
         if (info.getTargetComponent() == null) {
