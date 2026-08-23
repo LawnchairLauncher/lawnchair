@@ -49,6 +49,7 @@ import androidx.core.util.Pair;
 
 import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.dagger.LauncherAppSingleton;
@@ -337,6 +338,15 @@ public class IconCache extends BaseIconCache {
         return getShortcutInfoBadgeItem(shortcutInfo).bitmap;
     }
 
+    /**
+     * LC-Note: Returns the package icon to use as the badge for a shortcut.
+     */
+    public BitmapInfo getShortcutInfoBadge(String packageName, UserHandle user) {
+        PackageItemInfo pkgInfo = new PackageItemInfo(packageName, user);
+        getTitleAndIconForApp(pkgInfo, DEFAULT_LOOKUP_FLAG);
+        return pkgInfo.bitmap;
+    }
+
     @VisibleForTesting
     protected ItemInfoWithIcon getShortcutInfoBadgeItem(ShortcutInfo shortcutInfo) {
         // Check for badge override first.
@@ -460,6 +470,12 @@ public class IconCache extends BaseIconCache {
         Map<Pair<UserHandle, CacheLookupFlag>, List<IconRequestInfo<T>>> iconLoadSubsectionsMap =
                 iconRequestInfos.stream()
                         .filter(iconRequest -> {
+                            // LC-Note:
+                            // Legacy shortcuts have custom icons and must not be replaced by
+                            // the icon of the launch target.
+                            if (iconRequest.itemInfo.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+                                return false;
+                            }
                             if (iconRequest.itemInfo.getTargetComponent() == null) {
                                 Log.i(TAG,
                                         "Skipping Item info with null component name: "
