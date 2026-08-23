@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+شاشة رَئيسيّة مبنية على الإصدار الثالث من مشغل أندرويد

@@ -347,9 +347,25 @@ public class DisplayController implements DesktopVisibilityListener {
                 != info.showLockedTaskbarOnHome()
                 || mWMProxy.showDesktopTaskbarForFreeformDisplay(windowContext)
                 != info.showDesktopTaskbarForFreeformDisplay()
-                || config.isNightModeActive() != info.mIsNightModeActive) {
+                || isNightModeActiveCompat(config) != info.mIsNightModeActive) {
             notifyConfigChange(displayId);
         }
+    }
+
+    /** 
+     * LC-Note: Returns whether the configuration is in night mode
+     * <p> 
+     * Compat <code>API 30</code> and higher: <code>config.isNightModeActive()</code>
+     * <p> 
+     * Compat <code>API 29</code> and lower: <code>(config.uiMode & UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES</code>
+     * 
+     * @return true if night mode is active and false otherwise
+     */
+    private static boolean isNightModeActiveCompat(Configuration config) {
+        if (Utilities.ATLEAST_R) {
+            return config.isNightModeActive();
+        }
+        return (config.uiMode & UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES;
     }
 
     public void setPriorityListener(DisplayInfoChangeListener listener) {
@@ -579,11 +595,7 @@ public class DisplayController implements DesktopVisibilityListener {
             mStableDensityScaleFactor = (float) defaultDensityDpi / DisplayMetrics.DENSITY_DEFAULT;
             mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
             navigationMode = wmProxy.getNavigationMode(displayInfoContext);
-            if (Utilities.ATLEAST_R) {
-                mIsNightModeActive = config.isNightModeActive();
-            } else {
-                mIsNightModeActive = (config.uiMode & UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES;
-            }
+            mIsNightModeActive = isNightModeActiveCompat(config);
 
             // LC: Hacky stuff but it work!
             mIsFoldable = Utilities.ATLEAST_R && displayInfoContext.getPackageManager()

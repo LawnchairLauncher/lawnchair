@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">Использовать API GestureNavContract</string>
     <string name="gesturenavcontract_description">Поддержка расширенной анимации Android при использовании жестов навигации</string>
     <string name="gesturenavcontract_warning_incompatibility">Поддержка Вашего устройства - неполная. Это может привести к визуальным проблемам с анимацией.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">Отключено</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">По умолчанию</string>
+    <string name="vibration_feedback_expressive_choice">Выразительно</string>
     <string name="recents_lock_unlock">Блокировка приложений</string>
     <string name="recents_lock_unlock_description">Запретить закрытие выбранного приложения при нажатии кнопки \"Очистить всё\"</string>
     <!--Overlay-->
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">Втягивание</string>
     <string name="overlay_label">Наложение</string>
     <string name="overlay_none">Отключено</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Рекомендации</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">На основе системы</string>
+    <string name="prediction_mode_none">Выкл</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -533,8 +555,8 @@
     <string name="home_screen_rotation_description">Разрешить поворот главного экрана при повороте устройства</string>
     <string name="auto_updater_label">Автоматически проверять обновления</string>
     <string name="auto_updater_description">Проверять обновление \"ночных\" сборок приложения при открытии экрана \"О программе\"</string>
-    <string name="live_information_label">Live information</string>
-    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
+    <string name="live_information_label">Информация в реальном времени</string>
+    <string name="live_information_description">Отображает сообщение и задает флаги функции по умолчанию</string>
     <string name="wallpaper_blur">Размытие обоев (эксперимент.)</string>
     <string name="wallpaper_background_blur">Степень размытия</string>
     <string name="wallpaper_background_blur_factor">Предел фактора размытия</string>
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Верхний отступ</string>
     <string name="hotseat_bg_vertical_inset_bottom">Нижний отступ</string>
     <string name="hotseat_bg_color_label">Цвет фона</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Прозрачность фона</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Приостановить</string>
@@ -620,6 +643,7 @@
     <string name="open_in_store_drop_target_label">Открыть в магазине приложений</string>
     <string name="dock_icons">Иконки док-панели</string>
     <string name="dock_rows">Строки док-панели</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (сложено)</string>
     <string name="state_unfolded">%1$s (разложено)</string>
     <string name="folded_label">Сложено</string>
@@ -712,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">Автоматически показывать клавиатуру</string>
     <string name="fuzzy_search_title">Поиск по совпадению</string>
     <string name="fuzzy_search_desc">Поиск приложений по схожему запросу</string>
-    <string name="suggestion_pref_screen_title">Рекомендации</string>
     <string name="show_suggested_apps_at_drawer_top">Показывать рекомендации в верх. части Меню приложений</string>
     <string name="perform_wide_search_title">Поиск по устройству</string>
     <string name="perform_wide_search_description">Поиск контактов, файлов и настроек вашего телефона</string>

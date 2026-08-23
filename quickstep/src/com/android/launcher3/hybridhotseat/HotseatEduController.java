@@ -17,6 +17,7 @@ package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_ONLY_TIP;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.util.Log;
@@ -39,6 +40,9 @@ import com.android.launcher3.views.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import app.lawnchair.ui.preferences.PreferenceActivity;
+import app.lawnchair.ui.preferences.navigation.Predictions;
 
 /**
  * Controller class for managing user onboaridng flow for hybrid hotseat
@@ -70,7 +74,7 @@ public class HotseatEduController {
         migrateHotseatWhole();
         Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_enabled,
                 R.string.hotseat_prediction_settings, null,
-                () -> mLauncher.startActivity(getSettingsIntent()));
+                () -> mLauncher.startActivity(getLawnchairSettingsIntent(mLauncher)));
     }
 
     /**
@@ -96,23 +100,53 @@ public class HotseatEduController {
             pageId = mLauncher.getModel().getModelDbController().getNewScreenId();
         }
         boolean isPortrait = !mLauncher.getDeviceProfile().isVerticalBarLayout();
-        int hotseatItemsNum = mLauncher.getDeviceProfile().numShownHotseatIcons;
-        for (int i = 0; i < hotseatItemsNum; i++) {
-            int x = isPortrait ? i : 0;
-            int y = isPortrait ? 0 : hotseatItemsNum - i - 1;
-            View child = mHotseat.getChildAt(x, y);
-            if (child == null || child.getTag() == null) continue;
-            ItemInfo tag = (ItemInfo) child.getTag();
-            if (tag.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) continue;
-            mLauncher.getModelWriter().moveItemInDatabase(tag,
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP, pageId, i, toRow);
-            mNewItems.add(tag);
+        int numColumns = mLauncher.getDeviceProfile().inv.numColumns;
+        int destIndex = 0;
+        for (CellLayout page : mHotseat.getPageLayouts()) {
+            int countX = page.getCountX();
+            int countY = page.getCountY();
+            if (isPortrait) {
+                for (int y = 0; y < countY; y++) {
+                    for (int x = 0; x < countX; x++) {
+                        destIndex += migrateHotseatChild(page.getChildAt(x, y), pageId, toRow,
+                                destIndex, numColumns);
+                    }
+                }
+            } else {
+                for (int i = 0; i < countY; i++) {
+                    destIndex += migrateHotseatChild(page.getChildAt(0, countY - i - 1), pageId,
+                            toRow, destIndex, numColumns);
+                }
+            }
         }
         return pageId;
     }
 
+    /** @return 1 if the item was migrated, otherwise 0 */
+    private int migrateHotseatChild(View child, int pageId, int toRow, int destIndex,
+            int numColumns) {
+        if (child == null || child.getTag() == null) {
+            return 0;
+        }
+        ItemInfo tag = (ItemInfo) child.getTag();
+        if (tag.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            return 0;
+        }
+        int destX = numColumns > 0 ? destIndex % numColumns : destIndex;
+        int destY = numColumns > 0 ? toRow - destIndex / numColumns : toRow;
+        if (destY < 0) {
+            destY = 0;
+        }
+        mLauncher.getModelWriter().moveItemInDatabase(tag,
+                LauncherSettings.Favorites.CONTAINER_DESKTOP, pageId, destX, destY);
+        mNewItems.add(tag);
+        return 1;
+    }
+
     void moveHotseatItems() {
-        mHotseat.removeAllViewsInLayout();
+        for (CellLayout page : mHotseat.getPageLayouts()) {
+            page.removeAllViewsInLayout();
+        }
         if (!mNewItems.isEmpty()) {
             mLauncher.bindItemsAdded(mNewItems);
         }
@@ -123,11 +157,13 @@ public class HotseatEduController {
     }
 
     void showDimissTip() {
-        if (mHotseat.getShortcutsAndWidgets().getChildCount()
-                < mLauncher.getDeviceProfile().numShownHotseatIcons) {
+        CellLayout page = mHotseat.getCurrentPageLayout();
+        int childCount = page != null ? page.getShortcutsAndWidgets().getChildCount() : 0;
+        if (childCount < mLauncher.getDeviceProfile().numShownHotseatIcons) {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(getSettingsIntent()));
+                    // LC-Note: Start Lawnchair prediction settings instead of AOSP
+                    () -> mLauncher.startActivity(getLawnchairSettingsIntent(mLauncher)));
         } else {
             showHotseatArrowTip(true, mLauncher.getString(R.string.hotseat_tip_no_empty_slots));
         }
@@ -138,11 +174,12 @@ public class HotseatEduController {
     }
 
     void showEdu() {
-        int childCount = mHotseat.getShortcutsAndWidgets().getChildCount();
+        CellLayout page = mHotseat.getCurrentPageLayout();
+        int childCount = page != null ? page.getShortcutsAndWidgets().getChildCount() : 0;
         CellLayout cellLayout = mLauncher.getWorkspace().getScreenWithId(Workspace.FIRST_SCREEN_ID);
         // hotseat is already empty and does not require migration. show edu tip
         boolean requiresMigration = IntStream.range(0, childCount).anyMatch(i -> {
-            View v = mHotseat.getShortcutsAndWidgets().getChildAt(i);
+            View v = page.getShortcutsAndWidgets().getChildAt(i);
             return v != null && v.getTag() != null && ((ItemInfo) v.getTag()).container
                     != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
         });
@@ -168,14 +205,19 @@ public class HotseatEduController {
      * @return whether suitable child was found and tip was shown
      */
     private boolean showHotseatArrowTip(boolean usePinned, String message) {
-        int childCount = mHotseat.getShortcutsAndWidgets().getChildCount();
+        CellLayout page = mHotseat.getCurrentPageLayout();
+        if (page == null) {
+            Log.e(TAG, "Unable to find suitable view for ArrowTip");
+            return false;
+        }
+        int childCount = page.getShortcutsAndWidgets().getChildCount();
         boolean isPortrait = !mLauncher.getDeviceProfile().isVerticalBarLayout();
 
         BubbleTextView tipTargetView = null;
         for (int i = childCount - 1; i > -1; i--) {
             int x = isPortrait ? i : 0;
             int y = isPortrait ? 0 : i;
-            View v = mHotseat.getShortcutsAndWidgets().getChildAt(x, y);
+            View v = page.getShortcutsAndWidgets().getChildAt(x, y);
             if (v instanceof BubbleTextView && v.getTag() instanceof WorkspaceItemInfo) {
                 ItemInfo info = (ItemInfo) v.getTag();
                 boolean isPinned = info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
@@ -204,6 +246,12 @@ public class HotseatEduController {
         mActiveDialog = HotseatEduDialog.getDialog(mLauncher);
         mActiveDialog.setHotseatEduController(this);
         mActiveDialog.show(mPredictedApps);
+    }
+
+    // LC-Note: Start Lawnchair prediction settings instead of AOSP
+    public static Intent getLawnchairSettingsIntent(Context context) {
+        return PreferenceActivity.createIntent(context, Predictions.INSTANCE)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     static Intent getSettingsIntent() {

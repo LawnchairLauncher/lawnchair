@@ -577,7 +577,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     public boolean shouldUseTheme() {
-        if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_DRAWER_FOLDER) {
+        if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_DRAWER_FOLDER
+                || mDisplay == DISPLAY_PREDICTION_ROW) {
             return PreferenceManager.getInstance(getContext()).getDrawerThemedIcons().get();
         }
         return mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER
@@ -1378,7 +1379,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             mDotInfo = mActivity.getDotInfoForItem(itemInfo);
             boolean isDotted = mDotInfo != null;
             float newDotScale = isDotted ? 1f : 0;
-            if (mDisplay == DISPLAY_ALL_APPS) {
+            if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW) {
                 mDotRenderer = mActivity.getDeviceProfile().mDotRendererAllApps;
             } else {
                 mDotRenderer = mActivity.getDeviceProfile().mDotRendererWorkSpace;

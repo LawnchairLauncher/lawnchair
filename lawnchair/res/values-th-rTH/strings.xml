@@ -46,7 +46,7 @@
     <string name="download_update">ดาวน์โหลดอัปเดต</string>
     <string name="install_update">ติดตั้งอัปเดต</string>
     <string name="view_changes">ดูการเปลี่ยนแปลง</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">คุณใช้เวอร์ชันล่าสุดแล้ว</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">อัปเดต</string>
     <string name="changes_dialog_error">Couldn\'t load updates</string>
@@ -182,14 +182,36 @@
     <string name="gesturenavcontract_label">ใช้ API ของ GestureNavContract</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
     <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">ไม่มี</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">ค่าเริ่มต้น</string>
+    <string name="vibration_feedback_expressive_choice">แสดงออก</string>
     <string name="recents_lock_unlock">App locking</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
     <string name="app_closing_animation">แอนิเมชันการปิดแอป</string>
-    <string name="overlay_fade_in">Fade in</string>
-    <string name="overlay_suck_in">Suck in</string>
+    <string name="overlay_fade_in">เฟดอิน</string>
+    <string name="overlay_suck_in">ดูดเข้า</string>
     <string name="overlay_label">หน้าจอซ้อนทับ</string>
     <string name="overlay_none">ไม่มี</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">คำแนะนำ</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">ระบบ</string>
+    <string name="prediction_mode_none">ปิด</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -382,7 +404,7 @@
     <string name="smartspace_weather">สภาพอากาศ</string>
     <string name="smartspace_battery_status">สถานะแบตเตอรี่</string>
     <string name="smartspace_torch">สถานะไฟฉาย</string>
-    <string name="smartspace_now_playing">Now playing</string>
+    <string name="smartspace_now_playing">กำลังเล่น</string>
     <string name="smartspace_onboarding">สอนใช้งาน</string>
     <!-- Torch strings -->
     <string name="torch_status_on">ไฟฉายเปิดอยู่</string>
@@ -393,7 +415,7 @@
     <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
     <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
     <string name="onboarding_welcome">ยินดีต้อนรับเข้าสู่ Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
+    <string name="onboarding_swipe_up">ปัดขึ้นเพื่อเปิดรายการแอป</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">จำนวนผลลัพธ์สูงสุดของทาร์เก็ต</string>
     <string name="open_smartspacer_settings">เปิดการตั้งค่าของ Smartspacer</string>
@@ -460,7 +482,7 @@
     <string name="nova_grid_label">กริด</string>
     <string name="nova_grid_value">%1$d x %2$d</string>
     <string name="nova_dock_label">แถบรายการโปรด</string>
-    <string name="nova_app_label">Apps</string>
+    <string name="nova_app_label">แอป</string>
     <string name="nova_widget_label">Widgets</string>
     <string name="nova_folder_label">โฟลเดอร์</string>
     <string name="nova_shortcut_label">Shortcuts</string>
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">เว้นขอบบน</string>
     <string name="hotseat_bg_vertical_inset_bottom">เว้นขอบล่าง</string>
     <string name="hotseat_bg_color_label">สีพื้นหลัง</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">ความทึบของพื้นหลัง</string>
     <!-- Pause apps shortcut -->
     <string name="pause">พัก</string>
@@ -620,6 +643,7 @@
     <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">จำนวนไอคอนในรายการโปรด</string>
     <string name="dock_rows">Dock rows</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
@@ -711,7 +735,6 @@
     <string name="pref_search_auto_show_keyboard">แสดงคีย์บอร์ดอัตโนมัติ</string>
     <string name="fuzzy_search_title">การค้นหาแบบคาดเดา</string>
     <string name="fuzzy_search_desc">การจับคูแบบประมาณสำหรับค้นหาแอป</string>
-    <string name="suggestion_pref_screen_title">คำแนะนำ</string>
     <string name="show_suggested_apps_at_drawer_top">แสดงแอปที่แนะนำด้านบนสุดของรายการแอป</string>
     <string name="perform_wide_search_title">ค้นหาในอุปกรณ์</string>
     <string name="perform_wide_search_description">ค้นหารายชื่อ, ไฟล์, และตั้งค่า</string>

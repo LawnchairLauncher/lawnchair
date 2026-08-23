@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
     <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">None</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">Standard</string>
+    <string name="vibration_feedback_expressive_choice">Expressive</string>
     <string name="recents_lock_unlock">App locking</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">None</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Forslag</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">System</string>
+    <string name="prediction_mode_none">Fra</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Top margin</string>
     <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
     <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Baggrundsgennemsigtighed</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pause</string>
@@ -620,6 +643,7 @@
     <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Dock icons</string>
     <string name="dock_rows">Dock rows</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
@@ -712,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
     <string name="fuzzy_search_title">Fuzzy search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches</string>
-    <string name="suggestion_pref_screen_title">Forslag</string>
     <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
     <string name="perform_wide_search_title">Device search</string>
     <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>

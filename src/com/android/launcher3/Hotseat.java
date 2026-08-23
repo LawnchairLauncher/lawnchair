@@ -27,13 +27,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,35 +44,33 @@ import android.widget.FrameLayout;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.ShortcutAndWidgetContainer.TranslationProvider;
+import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
-import com.android.launcher3.taskbar.BlurredBitmapDrawable;
-
+import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.views.ActivityContext;
-import android.graphics.drawable.Drawable;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import com.hoko.blur.HokoBlur;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.hotseat.DisabledHotseat;
 import app.lawnchair.hotseat.HotseatMode;
+import app.lawnchair.hotseat.HotseatPagedView;
 import app.lawnchair.hotseat.LawnchairHotseat;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
- * View class that represents the bottom row of the home screen.
+ * View class that represents the bottom dock of the home screen.
+ * Hosts a {@link app.lawnchair.hotseat.HotseatPagedView} of icon grids plus an optional QSB.
  */
-public class Hotseat extends CellLayout implements Insettable {
+public class Hotseat extends FrameLayout implements Insettable {
 
     public static final int ALPHA_CHANNEL_TASKBAR_ALIGNMENT = 0;
     public static final int ALPHA_CHANNEL_PREVIEW_RENDERER = 1;
@@ -98,11 +95,13 @@ public class Hotseat extends CellLayout implements Insettable {
     // Ratio of empty space, qsb should take up to appear visually centered.
     public static final float QSB_CENTER_FACTOR = .325f;
     private static final int BUBBLE_BAR_ADJUSTMENT_ANIMATION_DURATION_MS = 250;
+    private static final int DOCK_PAGE_INDICATOR_HEIGHT_DP = 8;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
     private Workspace<?> mWorkspace;
     private boolean mSendTouchToWorkspace;
+    private boolean mSendTouchToPager;
     private final MultiValueAlpha mIconsAlphaChannels;
     private final MultiValueAlpha mQsbAlphaChannels;
 
@@ -111,6 +110,12 @@ public class Hotseat extends CellLayout implements Insettable {
     private final MultiPropertyFactory mIconsTranslationXFactory;
 
     private final View mQsb;
+    private final FrameLayout mIconsContainer;
+    private final HotseatPagedView mPagedView;
+    private final PageIndicatorDots mPageIndicator;
+    private final int mPageIndicatorHeight;
+
+    private final ActivityContext mActivity;
 
     PreferenceManager2 preferenceManager2;
     PreferenceManager preferenceManager;
@@ -125,6 +130,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mActivity = ActivityContext.lookupContext(context);
 
         preferenceManager2 = PreferenceManager2.getInstance(context);
         preferenceManager = PreferenceManager.getInstance(context);
@@ -143,6 +149,29 @@ public class Hotseat extends CellLayout implements Insettable {
         }
         int layoutId = hotseatMode.getLayoutResourceId();
 
+        mIconsContainer = new FrameLayout(context);
+        mIconsContainer.setLayoutParams(new LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mIconsContainer.setClipChildren(false);
+        mIconsContainer.setClipToPadding(false);
+        addView(mIconsContainer);
+
+        mPagedView = new HotseatPagedView(context);
+        mPagedView.setLayoutParams(new LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mIconsContainer.addView(mPagedView);
+
+        mPageIndicatorHeight = Math.round(
+                DOCK_PAGE_INDICATOR_HEIGHT_DP * getResources().getDisplayMetrics().density);
+        mPageIndicator = new PageIndicatorDots(context);
+        LayoutParams indicatorLp = new LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, mPageIndicatorHeight);
+        indicatorLp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        mPageIndicator.setLayoutParams(indicatorLp);
+        mPageIndicator.setVisibility(GONE);
+        mIconsContainer.addView(mPageIndicator);
+        mPagedView.setPageIndicator(mPageIndicator);
+
         if (Flags.enableQsbOnHotseat()) {
             mQsb = LayoutInflater.from(context).inflate(R.layout.qsb_container_hotseat, this,
                     false);
@@ -152,19 +181,24 @@ public class Hotseat extends CellLayout implements Insettable {
         }
 
         addView(mQsb);
-        mIconsAlphaChannels = new MultiValueAlpha(getShortcutsAndWidgets(),
-                ALPHA_CHANNEL_CHANNELS_COUNT);
+
+        // Create an initial page so alpha/translation channels have a target during construction.
+        mPagedView.resetPages(false, null, mActivity.getDeviceProfile());
+
+        mIconsAlphaChannels = new MultiValueAlpha(mIconsContainer, ALPHA_CHANNEL_CHANNELS_COUNT);
         mIconsAlphaChannels.setUpdateVisibility(true);
         if (mQsb instanceof Reorderable qsbReorderable) {
             mQsbTranslationX = qsbReorderable.getTranslateDelegate()
                     .getTranslationX(MultiTranslateDelegate.INDEX_NAV_BAR_ANIM);
         }
-        mIconsTranslationXFactory = new MultiPropertyFactory<>(getShortcutsAndWidgets(),
+        mIconsTranslationXFactory = new MultiPropertyFactory<>(mIconsContainer,
                 VIEW_TRANSLATE_X, ICONS_TRANSLATION_X_CHANNELS_COUNT, Float::sum);
         mQsbAlphaChannels = new MultiValueAlpha(mQsb, ALPHA_CHANNEL_CHANNELS_COUNT);
         mQsbAlphaChannels.setUpdateVisibility(true);
 
         setUpBackground();
+        setClipChildren(false);
+        setClipToPadding(false);
     }
 
     private void setUpBackground() {
@@ -179,9 +213,17 @@ public class Hotseat extends CellLayout implements Insettable {
         int insetHorizontalRight = preferenceManager.getHotseatBGHorizontalInsetRight().get();
         int insetVerticalTop = preferenceManager.getHotseatBGVerticalInsetTop().get();
         int insetVerticalBottom = preferenceManager.getHotseatBGVerticalInsetBottom().get();
-        InsetDrawable bg = new InsetDrawable(DrawableTokens.BgCellLayout.resolve(getContext()),
-            insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
-        bg.setTint(finalColor);
+        float cornerRadiusDp = PreferenceCacheExtensionsKt.firstCached(
+                preferenceManager2.getHotseatBackgroundCornerRadius());
+        float cornerRadius = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                cornerRadiusDp,
+                getResources().getDisplayMetrics());
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(finalColor);
+        background.setCornerRadius(cornerRadius);
+        InsetDrawable bg = new InsetDrawable(background,
+                insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
         setBackground(bg);
     }
 
@@ -196,6 +238,40 @@ public class Hotseat extends CellLayout implements Insettable {
         return mQsbTranslationX;
     }
 
+    public HotseatPagedView getPagedView() {
+        return mPagedView;
+    }
+
+    /** Returns the CellLayout for the given dock page. */
+    @Nullable
+    public CellLayout getPageAt(int page) {
+        return mPagedView.getPageAt(page);
+    }
+
+    /** Returns the currently visible dock page layout. */
+    @Nullable
+    public CellLayout getCurrentPageLayout() {
+        return mPagedView.getCurrentCellLayout();
+    }
+
+    /** Returns all dock page layouts. */
+    public CellLayout[] getPageLayouts() {
+        int count = mPagedView.getPageCount();
+        CellLayout[] pages = new CellLayout[count];
+        for (int i = 0; i < count; i++) {
+            pages[i] = mPagedView.getPageAt(i);
+        }
+        return pages;
+    }
+
+    /** Whether {@code layout} is one of this hotseat's page CellLayouts. */
+    public boolean isHotseatPage(View layout) {
+        if (!(layout instanceof CellLayout)) {
+            return false;
+        }
+        return layout.getParent() == mPagedView;
+    }
+
     /**
      * Returns orientation specific cell X given invariant order in the hotseat
      */
@@ -205,7 +281,8 @@ public class Hotseat extends CellLayout implements Insettable {
         }
         DeviceProfile dp = mActivity.getDeviceProfile();
         int numColumns = dp.numShownHotseatIcons;
-        return rank % numColumns;
+        int localRank = getLocalRank(rank, dp);
+        return localRank % numColumns;
     }
 
     /**
@@ -213,11 +290,29 @@ public class Hotseat extends CellLayout implements Insettable {
      */
     public int getCellYFromOrder(int rank) {
         if (mHasVerticalHotseat) {
-            return getCountY() - (rank + 1);
+            CellLayout page = getCurrentPageLayout();
+            int countY = page != null ? page.getCountY() : mActivity.getDeviceProfile().numShownHotseatIcons;
+            return countY - (rank + 1);
         }
         DeviceProfile dp = mActivity.getDeviceProfile();
         int numColumns = dp.numShownHotseatIcons;
-        return rank / numColumns;
+        int localRank = getLocalRank(rank, dp);
+        return localRank / numColumns;
+    }
+
+    /** Returns the dock page index for a global hotseat rank. */
+    public int getPageFromOrder(int rank) {
+        if (mHasVerticalHotseat) {
+            return 0;
+        }
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int slotsPerPage = Math.max(1, dp.numShownHotseatIcons * dp.numHotseatRows);
+        return rank / slotsPerPage;
+    }
+
+    private static int getLocalRank(int rank, DeviceProfile dp) {
+        int slotsPerPage = Math.max(1, dp.numShownHotseatIcons * dp.numHotseatRows);
+        return rank % slotsPerPage;
     }
 
     boolean isHasVerticalHotseat() {
@@ -228,45 +323,34 @@ public class Hotseat extends CellLayout implements Insettable {
         ActivityContext activityContext = ActivityContext.lookupContext(getContext());
         boolean bubbleBarEnabled = activityContext.isBubbleBarEnabled();
         boolean hasBubbles = activityContext.hasBubbles();
-        removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         DeviceProfile dp = mActivity.getDeviceProfile();
 
+        mPagedView.resetPages(hasVerticalHotseat, mWorkspace, dp);
+
         if (bubbleBarEnabled) {
-            if (dp.shouldAdjustHotseatForBubbleBar(getContext(), hasBubbles)) {
-                getShortcutsAndWidgets().setTranslationProvider(
-                        cellX -> dp.getHotseatAdjustedTranslation(getContext(), cellX));
-                if (mQsb instanceof HorizontalInsettableView) {
-                    HorizontalInsettableView insettableQsb = (HorizontalInsettableView) mQsb;
-                    final float insetFraction = (float) dp.iconSizePx / dp.hotseatQsbWidth;
-                    // post this to the looper so that QSB has a chance to redraw itself, e.g.
-                    // after device rotation
-                    mQsb.post(() -> insettableQsb.setHorizontalInsets(insetFraction));
-                }
-            } else {
-                getShortcutsAndWidgets().setTranslationProvider(null);
-                if (mQsb instanceof HorizontalInsettableView) {
-                    ((HorizontalInsettableView) mQsb).setHorizontalInsets(0);
+            for (CellLayout page : getPageLayouts()) {
+                if (dp.shouldAdjustHotseatForBubbleBar(getContext(), hasBubbles)) {
+                    page.getShortcutsAndWidgets().setTranslationProvider(
+                            cellX -> dp.getHotseatAdjustedTranslation(getContext(), cellX));
+                } else {
+                    page.getShortcutsAndWidgets().setTranslationProvider(null);
                 }
             }
-        }
-
-        resetCellSize(dp);
-        if (hasVerticalHotseat) {
-            setGridSize(1, dp.numShownHotseatIcons);
-        } else {
-            setGridSize(dp.numShownHotseatIcons, dp.numHotseatRows);
+            if (mQsb instanceof HorizontalInsettableView) {
+                HorizontalInsettableView insettableQsb = (HorizontalInsettableView) mQsb;
+                if (dp.shouldAdjustHotseatForBubbleBar(getContext(), hasBubbles)) {
+                    final float insetFraction = (float) dp.iconSizePx / dp.hotseatQsbWidth;
+                    mQsb.post(() -> insettableQsb.setHorizontalInsets(insetFraction));
+                } else {
+                    insettableQsb.setHorizontalInsets(0);
+                }
+            }
         }
     }
 
     /**
      * Adjust the hotseat icons for the bubble bar.
-     *
-     * <p>When the bubble bar becomes visible, if needed, this method animates the hotseat icons
-     * to reduce the spacing between them and make room for the bubble bar. The QSB width is
-     * animated as well to align with the hotseat icons.
-     *
-     * <p>When the bubble bar goes away, any adjustments that were previously made are reversed.
      */
     public void adjustForBubbleBar(boolean isBubbleBarVisible) {
         DeviceProfile dp = mActivity.getDeviceProfile();
@@ -274,30 +358,30 @@ public class Hotseat extends CellLayout implements Insettable {
                 && dp.shouldAdjustHotseatOrQsbForBubbleBar(getContext());
         boolean shouldAdjustHotseat = shouldAdjust
                 && dp.shouldAlignBubbleBarWithHotseat();
-        ShortcutAndWidgetContainer icons = getShortcutsAndWidgets();
-        // update the translation provider for future layout passes of hotseat icons.
-        if (shouldAdjustHotseat) {
-            icons.setTranslationProvider(
-                    cellX -> dp.getHotseatAdjustedTranslation(getContext(), cellX));
-        } else {
-            icons.setTranslationProvider(null);
-        }
         AnimatorSet animatorSet = new AnimatorSet();
-        for (int i = 0; i < icons.getChildCount(); i++) {
-            View child = icons.getChildAt(i);
-            if (child.getLayoutParams() instanceof CellLayoutLayoutParams lp) {
-                float tx = shouldAdjustHotseat
-                        ? dp.getHotseatAdjustedTranslation(getContext(), lp.getCellX()) : 0;
-                if (child instanceof Reorderable) {
-                    MultiTranslateDelegate mtd = ((Reorderable) child).getTranslateDelegate();
-                    animatorSet.play(
-                            mtd.getTranslationX(INDEX_BUBBLE_ADJUSTMENT_ANIM).animateToValue(tx));
-                } else {
-                    animatorSet.play(ObjectAnimator.ofFloat(child, VIEW_TRANSLATE_X, tx));
+        for (CellLayout page : getPageLayouts()) {
+            ShortcutAndWidgetContainer icons = page.getShortcutsAndWidgets();
+            if (shouldAdjustHotseat) {
+                icons.setTranslationProvider(
+                        cellX -> dp.getHotseatAdjustedTranslation(getContext(), cellX));
+            } else {
+                icons.setTranslationProvider(null);
+            }
+            for (int i = 0; i < icons.getChildCount(); i++) {
+                View child = icons.getChildAt(i);
+                if (child.getLayoutParams() instanceof CellLayoutLayoutParams lp) {
+                    float tx = shouldAdjustHotseat
+                            ? dp.getHotseatAdjustedTranslation(getContext(), lp.getCellX()) : 0;
+                    if (child instanceof Reorderable) {
+                        MultiTranslateDelegate mtd = ((Reorderable) child).getTranslateDelegate();
+                        animatorSet.play(
+                                mtd.getTranslationX(INDEX_BUBBLE_ADJUSTMENT_ANIM).animateToValue(tx));
+                    } else {
+                        animatorSet.play(ObjectAnimator.ofFloat(child, VIEW_TRANSLATE_X, tx));
+                    }
                 }
             }
         }
-        //TODO(b/381109832) refactor & simplify adjustment logic
         boolean shouldAdjustQsb =
                 shouldAdjustHotseat || (shouldAdjust && dp.shouldAlignBubbleBarWithQSB());
         if (mQsb instanceof HorizontalInsettableView horizontalInsettableQsb) {
@@ -316,19 +400,13 @@ public class Hotseat extends CellLayout implements Insettable {
     }
 
     @Override
-    protected int getTranslationXForCell(int cellX, int cellY) {
-        TranslationProvider translationProvider = getShortcutsAndWidgets().getTranslationProvider();
-        if (translationProvider == null) return 0;
-        return (int) translationProvider.getTranslationX(cellX);
-    }
-
-    @Override
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = mActivity.getDeviceProfile();
 
         if (grid.isVerticalBarLayout()) {
             mQsb.setVisibility(View.GONE);
+            mPageIndicator.setVisibility(GONE);
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
             if (grid.isSeascape()) {
                 lp.gravity = Gravity.LEFT;
@@ -352,16 +430,48 @@ public class Hotseat extends CellLayout implements Insettable {
 
     public void setWorkspace(Workspace<?> w) {
         mWorkspace = w;
-        setCellLayoutContainer(w);
+        for (CellLayout page : getPageLayouts()) {
+            page.setCellLayoutContainer(w);
+        }
+    }
+
+    private boolean isTouchOnQsb(MotionEvent ev) {
+        if (mQsb == null || mQsb.getVisibility() != VISIBLE) {
+            return false;
+        }
+        float x = ev.getX();
+        float y = ev.getY();
+        return x >= mQsb.getLeft() && x < mQsb.getRight()
+                && y >= mQsb.getTop() && y < mQsb.getBottom();
+    }
+
+    private MotionEvent obtainPagerEvent(MotionEvent ev) {
+        MotionEvent pagerEv = MotionEvent.obtain(ev);
+        pagerEv.offsetLocation(-mIconsContainer.getLeft() - mPagedView.getLeft(),
+                -mIconsContainer.getTop() - mPagedView.getTop());
+        return pagerEv;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // We allow horizontal workspace scrolling from within the Hotseat. We do this by delegating
-        // touch intercept the Workspace, and if it intercepts, delegating touch to the Workspace
-        // for the remainder of the this input stream.
         int yThreshold = getMeasuredHeight() - getPaddingBottom();
-        if (mWorkspace != null && ev.getY() <= yThreshold) {
+        if (ev.getY() > yThreshold || isTouchOnQsb(ev)) {
+            return false;
+        }
+
+        // Multi-page dock: own the icon-band stream and dispatch it to the pager so empty
+        // pages can still scroll (same pattern as single-page workspace forwarding).
+        if (mPagedView.isPagingEnabled()) {
+            final int action = ev.getAction() & MotionEvent.ACTION_MASK;
+            if (action == MotionEvent.ACTION_DOWN) {
+                mSendTouchToPager = true;
+                mSendTouchToWorkspace = false;
+            }
+            return mSendTouchToPager;
+        }
+
+        // Single-page dock: forward horizontal swipes to workspace.
+        if (mWorkspace != null) {
             mSendTouchToWorkspace = mWorkspace.onInterceptTouchEvent(ev);
             return mSendTouchToWorkspace;
         }
@@ -370,7 +480,16 @@ public class Hotseat extends CellLayout implements Insettable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // See comment in #onInterceptTouchEvent
+        if (mSendTouchToPager) {
+            MotionEvent pagerEv = obtainPagerEvent(event);
+            boolean handled = mPagedView.dispatchTouchEvent(pagerEv);
+            pagerEv.recycle();
+            final int action = event.getAction() & MotionEvent.ACTION_MASK;
+            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                mSendTouchToPager = false;
+            }
+            return handled;
+        }
         if (mSendTouchToWorkspace) {
             final int action = event.getAction();
             switch (action & MotionEvent.ACTION_MASK) {
@@ -380,45 +499,93 @@ public class Hotseat extends CellLayout implements Insettable {
             }
             return mWorkspace.onTouchEvent(event);
         }
-        // Always let touch follow through to Workspace.
         return false;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(widthSize, heightSize);
+
+        int paddingLeft = getPaddingLeft();
+        int paddingRight = getPaddingRight();
+        int paddingTop = getPaddingTop();
+        int paddingBottom = getPaddingBottom();
 
         DeviceProfile dp = mActivity.getDeviceProfile();
+        boolean showIndicator = mPagedView.isPagingEnabled() && !dp.isVerticalBarLayout();
+        int indicatorSpace = showIndicator ? mPageIndicatorHeight : 0;
 
-        // LC: Fix weird sizing with hotseatQsbWidth being 0 on phone
+        int pagerWidth = widthSize - paddingLeft - paddingRight;
+        int pagerHeight = heightSize - paddingTop - paddingBottom;
+        mIconsContainer.measure(
+                makeMeasureSpec(Math.max(0, pagerWidth), MeasureSpec.EXACTLY),
+                makeMeasureSpec(Math.max(0, pagerHeight), MeasureSpec.EXACTLY));
+
+        int pageHeight = Math.max(0, pagerHeight - indicatorSpace);
+        mPagedView.measure(
+                makeMeasureSpec(Math.max(0, pagerWidth), MeasureSpec.EXACTLY),
+                makeMeasureSpec(pageHeight, MeasureSpec.EXACTLY));
+
+        if (showIndicator) {
+            mPageIndicator.measure(
+                    makeMeasureSpec(Math.max(0, pagerWidth), MeasureSpec.EXACTLY),
+                    makeMeasureSpec(mPageIndicatorHeight, MeasureSpec.EXACTLY));
+        }
+
         int width;
         if (dp.isQsbInline) {
             width = dp.hotseatQsbWidth;
         } else {
-            width = getShortcutsAndWidgets().getMeasuredWidth();
+            width = mPagedView.getMeasuredWidth();
         }
-        
-        mQsb.measure(makeMeasureSpec(width, MeasureSpec.EXACTLY),
+
+        mQsb.measure(makeMeasureSpec(Math.max(0, width), MeasureSpec.EXACTLY),
                 makeMeasureSpec(dp.getHotseatProfile().getQsbHeight(), MeasureSpec.EXACTLY));
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
+        int width = r - l;
+        int height = b - t;
+        int paddingLeft = getPaddingLeft();
+        int paddingRight = getPaddingRight();
+        int paddingTop = getPaddingTop();
+        int paddingBottom = getPaddingBottom();
+
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        mIconsContainer.layout(paddingLeft, paddingTop, width - paddingRight,
+                height - paddingBottom);
+
+        int containerWidth = mIconsContainer.getWidth();
+        int containerHeight = mIconsContainer.getHeight();
+        boolean showIndicator = mPagedView.isPagingEnabled() && !dp.isVerticalBarLayout();
+        int indicatorSpace = showIndicator ? mPageIndicatorHeight : 0;
+
+        mPagedView.layout(0, 0, containerWidth, Math.max(0, containerHeight - indicatorSpace));
+
+        if (showIndicator) {
+            int indicatorTop = containerHeight - mPageIndicatorHeight;
+            mPageIndicator.layout(0, indicatorTop, containerWidth,
+                    indicatorTop + mPageIndicatorHeight);
+            mPageIndicator.setVisibility(VISIBLE);
+        } else {
+            mPageIndicator.setVisibility(GONE);
+        }
 
         int qsbMeasuredWidth = mQsb.getMeasuredWidth();
         int left;
-        DeviceProfile dp = mActivity.getDeviceProfile();
         if (dp.isQsbInline) {
             int qsbSpace = dp.hotseatBorderSpace;
             left = Utilities.isRtl(getResources()) ? r - getPaddingRight() + qsbSpace
                     : l + getPaddingLeft() - qsbMeasuredWidth - qsbSpace;
         } else {
-            left = (r - l - qsbMeasuredWidth) / 2;
+            left = (width - qsbMeasuredWidth) / 2;
         }
         int right = left + qsbMeasuredWidth;
 
-        int bottom = b - t - dp.getQsbOffsetY();
+        int bottom = height - dp.getQsbOffsetY();
         int top = bottom - dp.getHotseatProfile().getQsbHeight();
         mQsb.layout(left, top, right, bottom);
     }
@@ -454,9 +621,25 @@ public class Hotseat extends CellLayout implements Insettable {
         return mQsb;
     }
 
+    /** Delegates to the current page's shortcuts container. */
+    @Nullable
+    public ShortcutAndWidgetContainer getShortcutsAndWidgets() {
+        CellLayout page = getCurrentPageLayout();
+        return page != null ? page.getShortcutsAndWidgets() : null;
+    }
+
+    /** Delegates accessibility drag helper to the current page. */
+    @Nullable
+    public DragAndDropAccessibilityDelegate getDragAndDropAccessibilityDelegate() {
+        CellLayout page = getCurrentPageLayout();
+        return page != null ? page.getDragAndDropAccessibilityDelegate() : null;
+    }
+
     /** Dumps the Hotseat internal state */
     public void dump(String prefix, PrintWriter writer) {
         writer.println(prefix + "Hotseat:");
+        writer.println(prefix + "\tpages: " + mPagedView.getPageCount()
+                + " pagingEnabled=" + mPagedView.isPagingEnabled());
         mIconsAlphaChannels.dump(
                 prefix + "\t",
                 writer,

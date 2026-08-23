@@ -38,6 +38,8 @@ import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.SafeCloseable
 import com.android.quickstep.RecentsModel
+import com.google.android.msdl.data.model.FeedbackLevel
+import com.google.android.msdl.domain.MSDLPlayer
 import javax.inject.Inject
 
 @LauncherAppSingleton
@@ -101,6 +103,7 @@ class PreferenceManager @Inject constructor(
     val hotseatColumns = IntPref("pref_hotseatColumns", calculatedGridSpec.hotseatColumns, reloadGrid)
     val hotseatColumnsUnfolded = IntPref("pref_hotseatColumnsUnfolded", calculatedGridSpec.hotseatColumnsUnfolded, reloadGrid)
     val hotseatRows = IntPref("pref_hotseatRows", 1, reloadGrid)
+    val dockPages = IntPref("pref_dockPages", 1, reloadGrid)
     val workspaceColumns = IntPref("pref_workspaceColumns", calculatedGridSpec.workspaceColumns)
     val workspaceRows = IntPref("pref_workspaceRows", calculatedGridSpec.workspaceRows)
     val workspaceIncreaseMaxGridSize = BoolPref("pref_workspace_increase_max_grid_size", false)
@@ -117,6 +120,12 @@ class PreferenceManager @Inject constructor(
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val infiniteScrolling = BoolPref("pref_infiniteScrolling", false)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
+    val vibrationFeedbackLevel: IntPref = IntPref(
+        "pref_vibrationFeedbackLevel",
+        FeedbackLevel.DEFAULT.ordinal,
+    ) {
+        normalizeVibrationFeedbackLevel()
+    }
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey.fromString(key)!!
@@ -169,7 +178,6 @@ class PreferenceManager @Inject constructor(
     val wallpaperBlur = IntPref("pref_wallpaperBlur", 25, recreate)
     val wallpaperBlurFactorThreshold = FloatPref("pref_wallpaperBlurFactor", 3.0F, recreate)
 
-    val drawerListOrder = StringPref("pref_drawerListOrder", "", reloadGrid)
     val drawerList = BoolPref("pref_drawerList", true, recreate)
     val folderApps = BoolPref("pref_hideFolderApps", true, reloadGrid)
 
@@ -197,6 +205,15 @@ class PreferenceManager @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    private fun normalizeVibrationFeedbackLevel() {
+        val storedLevel = vibrationFeedbackLevel.get()
+        val normalizedLevel = storedLevel.toFeedbackLevel().ordinal
+        if (storedLevel != normalizedLevel) {
+            vibrationFeedbackLevel.set(normalizedLevel)
+        }
+        MSDLPlayer.SYSTEM_FEEDBACK_LEVEL = FeedbackLevel.entries[normalizedLevel]
+    }
+
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
         migratePrefs(CURRENT_VERSION) { oldVersion ->
@@ -210,6 +227,7 @@ class PreferenceManager @Inject constructor(
                 }
             }
         }
+        normalizeVibrationFeedbackLevel()
     }
 
     companion object {
@@ -222,6 +240,8 @@ class PreferenceManager @Inject constructor(
         fun getInstance(context: Context) = INSTANCE.get(context)!!
     }
 }
+
+private fun Int.toFeedbackLevel() = FeedbackLevel.entries.getOrNull(this) ?: FeedbackLevel.DEFAULT
 
 @Composable
 fun preferenceManager() = PreferenceManager.getInstance(LocalContext.current)

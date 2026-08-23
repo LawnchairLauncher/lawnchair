@@ -46,10 +46,10 @@
     <string name="download_update">Ladda ner uppdatering</string>
     <string name="install_update">Installera uppdatering</string>
     <string name="view_changes">Visa ändringar</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">Du är uppdaterad</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Uppdateringar</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">Kunde inte hämta uppdateringar</string>
     <string name="changes_dialog_no_changes">Inga ändringar hittades</string>
     <string name="changes_dialog_build_format">Bygge #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">av %1$s • %2$s • %3$s</string>
@@ -101,8 +101,8 @@
     <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Skrin</string>
     <string name="app_drawer_folder">Mappar i applådan</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="selected_apps">Valda appar</string>
+    <string name="add_apps">Lägg till appar</string>
     <string name="app_drawer_folder_settings">Mapp i applådan</string>
     <string name="add_folder">Skapa mapp</string>
     <string name="edit_folder">Redigera mapp</string>
@@ -115,20 +115,20 @@
     <string name="apps_in_folder_description">Appar som har tilldelats mappar exkluderas från applistor</string>
     <string name="folders_filter_duplicates">Visa endast unika appar</string>
     <string name="my_folder_label">Min mapp</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">Sortera aktiva föremål</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">För att utföra vissa åtgärder när du använder en gest, som att låsa din telefon, kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte dina handlingar, men alla tillgänglighetstjänster kräver denna behörighet. Lawnchair ignorerar alla händelser som skickas av systemet.\n\nFör att låsa din telefon eller öppna skärmen Senaste använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Avancerat</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_move_up">Flytta upp</string>
+    <string name="reorderable_move_down">Flytta ner</string>
+    <string name="reorderable_active_items">Aktiva föremål</string>
+    <string name="reorderable_disabled_items">Andra föremål</string>
+    <string name="reorderable_disabled_hint">Inaktiverade föremål kommer att dyka upp här</string>
+    <string name="reorderable_add_hint_items">Aktiva föremål kommer att dyka upp här</string>
     <!--
 
     Preference Dashboard
@@ -139,7 +139,7 @@
     <string name="general_description">Färger, ikonpaket, aviseringsprickar</string>
     <string name="home_screen_label">Startskärm</string>
     <string name="home_screen_description">Flöde, rutnät, ikoner</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">Åtgärder på hemskärmen</string>
     <string name="dock_label">Favoritfält</string>
     <string name="dock_description">Sökfält, ikonantal</string>
     <string name="app_drawer_label">Applåda</string>
@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">Use GestureNavContract API</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
     <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
+    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_no_feedback_choice">Ingen</string>
+    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_default_choice">Standard</string>
+    <string name="vibration_feedback_expressive_choice">Uttrycksfull</string>
     <string name="recents_lock_unlock">App locking</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">Suck in</string>
     <string name="overlay_label">Överlägg</string>
     <string name="overlay_none">Ingen</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Förslag</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">System</string>
+    <string name="prediction_mode_none">Av</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Överkant</string>
     <string name="hotseat_bg_vertical_inset_bottom">Nederkant</string>
     <string name="hotseat_bg_color_label">Bakgrundsfärg</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Bakgrundens opacitet</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pausa</string>
@@ -620,6 +643,7 @@
     <string name="open_in_store_drop_target_label">Open in store</string>
     <string name="dock_icons">Favoritfältsikoner</string>
     <string name="dock_rows">Dock rows</string>
+    <string name="dock_pages">Dock pages</string>
     <string name="state_folded">%1$s (folded)</string>
     <string name="state_unfolded">%1$s (unfolded)</string>
     <string name="folded_label">Folded</string>
@@ -712,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">Visa tangentbord automatiskt</string>
     <string name="fuzzy_search_title">Oskarp sökning</string>
     <string name="fuzzy_search_desc">Ungefärlig matchning för appsökningar</string>
-    <string name="suggestion_pref_screen_title">Förslag</string>
     <string name="show_suggested_apps_at_drawer_top">Visa föreslagna appar högst upp i applådan</string>
     <string name="perform_wide_search_title">Enhetssökning</string>
     <string name="perform_wide_search_description">Sök bland din telefons kontakter, filer och inställningar</string>

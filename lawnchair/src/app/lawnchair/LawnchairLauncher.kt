@@ -56,10 +56,15 @@ import com.android.launcher3.BaseActivity
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.GestureNavContract
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS_PREDICTION
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.model.data.PredictedContainerInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.shortcuts.DeepShortcutView
 import com.android.launcher3.statemanager.StateManager
@@ -264,6 +269,16 @@ class LawnchairLauncher : QuickstepLauncher() {
         out.add(SearchBarStateHandler(this))
     }
 
+    override fun getAllAppsItemLongClickListener(): View.OnLongClickListener {
+        return View.OnLongClickListener { view ->
+            if (view is FolderIcon && view.mInfo.id != ItemInfo.NO_ID) {
+                LawnchairShortcut.showAppDrawerFolderPopup(this, view)
+            } else {
+                super.getAllAppsItemLongClickListener().onLongClick(view)
+            }
+        }
+    }
+
     override fun getSupportedShortcuts(container: Int): Stream<SystemShortcut.Factory<*>> = Stream.concat(
         super.getSupportedShortcuts(container),
         Stream.concat(
@@ -277,6 +292,17 @@ class LawnchairLauncher : QuickstepLauncher() {
             recreate()
         } else {
             mWallpaperThemeManager.updateTheme()
+        }
+    }
+
+    override fun onStateBack() {
+        val searchInput = mAppsView?.searchUiManager?.editText
+        val isSearching = mAppsView?.isSearching == true || searchInput?.hasFocus() == true
+        if (isSearching) {
+            mAppsView?.searchUiManager?.resetSearch()
+            allAppsController.animateAllAppsToNoScale()
+        } else {
+            super.onStateBack()
         }
     }
 
@@ -444,6 +470,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     override fun onResume() {
         super.onResume()
         restartIfPending()
+        refreshPredictionContainersFromModel()
 
         dragLayer.viewTreeObserver.addOnDrawListener(
             object : ViewTreeObserver.OnDrawListener {
@@ -457,11 +484,17 @@ class LawnchairLauncher : QuickstepLauncher() {
 
                     dragLayer.post {
                         dragLayer.viewTreeObserver.removeOnDrawListener(this)
+                        // Drop stuck All Apps RenderEffect on icons after returning home.
+                        depthController.clearStuckBlurOnResumeIfHome()
                     }
-                    depthController
                 }
             },
         )
+    }
+
+    override fun onStateSetEnd(state: LauncherState) {
+        super.onStateSetEnd(state)
+        refreshPredictionContainersFromModel()
     }
 
     override fun onDestroy() {
@@ -485,6 +518,25 @@ class LawnchairLauncher : QuickstepLauncher() {
             sRestartFlags and FLAG_RECREATE != 0 -> {
                 sRestartFlags = 0
                 recreate()
+            }
+        }
+    }
+
+    private fun refreshPredictionContainersFromModel() {
+        LauncherAppState.getInstance(this).model.loadAsync { dataModel ->
+            if (dataModel == null || isDestroyed) return@loadAsync
+
+            val predictedContainers = synchronized(dataModel) {
+                listOf(
+                    dataModel.itemsIdMap[CONTAINER_ALL_APPS_PREDICTION] as? PredictedContainerInfo,
+                    dataModel.itemsIdMap[CONTAINER_HOTSEAT_PREDICTION] as? PredictedContainerInfo,
+                    dataModel.itemsIdMap[CONTAINER_WIDGETS_PREDICTION] as? PredictedContainerInfo,
+                ).filterNotNull()
+            }
+
+            Executors.MAIN_EXECUTOR.execute {
+                if (isDestroyed) return@execute
+                predictedContainers.forEach(::bindPredictedContainerInfo)
             }
         }
     }

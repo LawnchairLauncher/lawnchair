@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
@@ -140,7 +141,7 @@ private fun AppItemLayout(
         title = title,
         modifier = modifier,
         startWidget = {
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 widget?.let {
                     it()
                     Spacer(modifier = Modifier.requiredWidth(16.dp))

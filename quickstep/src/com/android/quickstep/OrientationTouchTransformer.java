@@ -32,6 +32,7 @@ import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController.Info;
@@ -270,7 +271,7 @@ class OrientationTouchTransformer {
             }
         }
         updateOneHandedRegions(orientationRectF);
-        ActiveGestureProtoLogProxy.logCreateTouchRegionForDisplay(rotation, size, orientationRectF,
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logCreateTouchRegionForDisplay(rotation, size, orientationRectF,
                 mOneHandedModeRegion, mNavBarGesturalHeight, mNavBarLargerGesturalHeight,
                 reason);
 

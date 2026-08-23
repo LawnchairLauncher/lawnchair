@@ -150,8 +150,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             DeviceProfile profile = mActivity.getDeviceProfile();
             final PointF appWidgetScale = profile.getAppWidgetScale((ItemInfo) child.getTag());
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, profile.widgetPadding,
-                    profile.widgetEdgeInsetPx);
+                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, profile.widgetPadding);
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                     mBorderSpace);
@@ -176,15 +175,13 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         if (child instanceof NavigableAppWidgetHostView) {
             final PointF appWidgetScale = dp.getAppWidgetScale((ItemInfo) child.getTag());
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, dp.widgetPadding,
-                    dp.widgetEdgeInsetPx);
+                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, dp.widgetPadding);
         } else if (isChildQsb(child)) {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    1.0f, 1.0f, mBorderSpace, null, dp.widgetEdgeInsetPx);
+                    mBorderSpace);
             // No need to add padding for Qsb, which is either Smartspace (actual or
             // preview), or
             // QsbContainerView.
-            // LC-Note: but still apply edge inset so its outer edges align with icon centre
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                     mBorderSpace);
