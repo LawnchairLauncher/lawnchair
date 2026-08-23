@@ -34,6 +34,8 @@ import app.lawnchair.ui.preferences.components.layout.BottomSpacer
 import app.lawnchair.ui.preferences.components.layout.Chip
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.launch
 
@@ -49,6 +51,7 @@ fun ColorSelection(
     val adapter = preference.getAdapter()
     val appliedColor = adapter.state.value
     val context = LocalContext.current
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
     val navController = LocalNavController.current
     val selectedColor = remember { mutableIntStateOf(appliedColor.forCustomPicker(context)) }
     val selectedColorApplied = remember {
@@ -111,13 +114,19 @@ fun ColorSelection(
             ) {
                 Chip(
                     label = stringResource(id = R.string.presets),
-                    onClick = { scrollToPage(0) },
+                    onClick = {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
+                        scrollToPage(0)
+                    },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                     page = 0,
                 )
                 Chip(
                     label = stringResource(id = R.string.custom),
-                    onClick = { scrollToPage(1) },
+                    onClick = {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
+                        scrollToPage(1)
+                    },
                     currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                     page = 1,
                 )

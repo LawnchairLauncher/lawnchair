@@ -69,6 +69,8 @@ import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.launch
 
 /**
@@ -84,6 +86,7 @@ fun CustomColorPicker(
     modifier: Modifier = Modifier,
     onSelect: (Int) -> Unit,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val focusManager = LocalFocusManager.current
 
     val selectedColorCompose = Color(selectedColor)
@@ -155,13 +158,19 @@ fun CustomColorPicker(
                 ) {
                     Chip(
                         label = stringResource(id = R.string.hsb),
-                        onClick = { scrollToPage(0) },
+                        onClick = {
+                            mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
+                            scrollToPage(0)
+                        },
                         currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                         page = 0,
                     )
                     Chip(
                         label = stringResource(id = R.string.rgb),
-                        onClick = { scrollToPage(1) },
+                        onClick = {
+                            mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
+                            scrollToPage(1)
+                        },
                         currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                         page = 1,
                     )
@@ -220,6 +229,7 @@ private fun HexColorPicker(
     onTextFieldValueChange: (TextFieldValue) -> Unit,
 ) {
     val context = LocalContext.current
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
     val focusManager = LocalFocusManager.current
     val clipboardManager: ClipboardManager = context.requireSystemService()
 
@@ -267,6 +277,7 @@ private fun HexColorPicker(
         ClickableIcon(
             imageVector = Icons.Rounded.ContentCopy,
             onClick = {
+                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
                 val clip =
                     ClipData.newPlainText(context.getString(R.string.hex), textFieldValue.text)
                 clipboardManager.setPrimaryClip(clip)
@@ -281,6 +292,7 @@ private fun HexColorPicker(
         ClickableIcon(
             imageVector = Icons.Rounded.ContentPaste,
             onClick = {
+                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
                 clipboardManager.primaryClip?.getItemAt(0)?.text?.let {
                     onTextFieldValueChange(textFieldValue.copy(text = it.toString()))
                     focusManager.clearFocus()

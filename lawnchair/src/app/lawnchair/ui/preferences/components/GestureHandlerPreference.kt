@@ -40,6 +40,8 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.LocalBottomSheetHandler
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
@@ -53,6 +55,7 @@ fun GestureHandlerPreference(
     val scope = rememberCoroutineScope()
     val bottomSheetHandler = LocalBottomSheetHandler.current
     val prefs2 = preferenceManager2()
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
 
     val currentConfig = adapter.state.value
 
@@ -71,6 +74,7 @@ fun GestureHandlerPreference(
         modifier = modifier,
         description = { Text(text = currentConfig.getLabel(context)) },
         onClick = {
+            mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
             bottomSheetHandler.show {
                 ModalBottomSheetContent(
                     title = { Text(label) },
@@ -93,6 +97,7 @@ fun GestureHandlerPreference(
                                 title = { Text(option.getLabel(context)) },
                                 onClick = {
                                     bottomSheetHandler.hide()
+                                    mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
                                     onSelect(option)
                                 },
                                 startWidget = {
@@ -122,6 +127,7 @@ fun AppGesturePreference(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val prefs = preferenceManager2()
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
 
     val currentConfig by produceState<GestureHandlerConfig>(initialValue = GestureHandlerConfig.NoOp) {
         prefs.getGestureForApp(cmp, gestureType).collect { value = it }
@@ -148,6 +154,7 @@ fun AppGesturePreference(
         description = { Text(text = currentConfig.getLabel(context)) },
         modifier = modifier.fillMaxWidth(),
         onClick = {
+            mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
             val intent = Intent(context, LawnchairShortcutActivity::class.java).apply {
                 putExtra(LawnchairShortcutActivity.EXTRA_RESULT_RECEIVER, resultReceiver)
             }

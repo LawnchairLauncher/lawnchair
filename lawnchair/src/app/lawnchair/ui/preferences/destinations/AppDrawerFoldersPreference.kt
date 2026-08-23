@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -37,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.lawnchair.data.folder.FolderEntry
-import app.lawnchair.data.folder.model.FolderOrderUtils
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -55,11 +55,14 @@ import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.ui.preferences.navigation.AppDrawerFolder
 import app.lawnchair.ui.util.bottomSheetHandler
 import com.android.launcher3.R
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 
 @Composable
 fun AppDrawerFolderPreferenceItem(
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val navController = LocalNavController.current
 
     PreferenceGroup(
@@ -68,7 +71,9 @@ fun AppDrawerFolderPreferenceItem(
         ClickablePreference(
             label = stringResource(R.string.app_drawer_folder),
             modifier = Modifier,
+            hapticToken = null,
             onClick = {
+                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_HIGH_EMPHASIS)
                 navController.navigate(route = AppDrawerFolder)
             },
         )
@@ -98,6 +103,9 @@ fun AppDrawerFoldersPreference(
         onDeleteFolder = {
             viewModel.deleteFolder(it.id)
         },
+        onOrderChange = {
+            viewModel.updateFolderOrder(it)
+        },
     )
 }
 
@@ -109,30 +117,14 @@ fun AppDrawerFoldersPreference(
     onEditFolderItems: (Int) -> Unit,
     onRenameFolder: (Int, String) -> Unit,
     onDeleteFolder: (FolderEntry) -> Unit,
+    onOrderChange: (List<Int>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val bottomSheetHandler = bottomSheetHandler
     val prefs = preferenceManager()
-    val folderOrderAdapter = prefs.drawerListOrder.getAdapter()
 
-    val folderOrderString by folderOrderAdapter.state
-
-    var sortedDisplayList = remember(folders, folderOrderString) {
-        Log.d("AppDrawerFolders", "Recalculating sortedDisplayList. Folders count: ${folders?.size}")
-        folders?.sortedWith(
-            compareBy { folderEntry ->
-                val index = FolderOrderUtils
-                    .stringToIntList(folderOrderString)
-                    .indexOf(folderEntry.id)
-                if (index == -1) {
-                    // New items go to the end
-                    Integer.MAX_VALUE
-                } else {
-                    index
-                }
-            },
-        ) ?: emptyList()
-    }
+    val sortedDisplayList = folders ?: emptyList()
 
     LoadingScreen(
         isLoading = folders == null,
@@ -163,6 +155,7 @@ fun AppDrawerFoldersPreference(
                         Icon(Icons.Rounded.Add, contentDescription = null)
                     },
                     onClick = {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                         bottomSheetHandler.show {
                             FolderEditSheet(
                                 folderId = 0,
@@ -184,20 +177,14 @@ fun AppDrawerFoldersPreference(
                 items = sortedDisplayList,
                 defaultList = sortedDisplayList,
                 onOrderChange = { updatedFolders ->
-                    val newOrder = updatedFolders.map { it.id }
-
-                    folderOrderAdapter.onChange(
-                        FolderOrderUtils.intListToString(
-                            newOrder,
-                        ),
-                    )
-                    sortedDisplayList = updatedFolders
+                    onOrderChange(updatedFolders.map { it.id })
                 },
             ) { folderEntry, _, _ ->
                 val interactionSource = remember { MutableInteractionSource() }
                 FolderItem(
                     folderEntry = folderEntry,
                     onItemClick = {
+                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                         bottomSheetHandler.show {
                             FolderEditSheet(
                                 folderId = folderEntry.id,
@@ -215,15 +202,7 @@ fun AppDrawerFoldersPreference(
                         }
                     },
                     onItemDelete = { folderToDelete ->
-                        val currentOrder =
-                            FolderOrderUtils.stringToIntList(folderOrderAdapter.state.value)
-                        val newOrderAfterDelete =
-                            currentOrder.filter { it != folderToDelete.id }
-                        folderOrderAdapter.onChange(
-                            FolderOrderUtils.intListToString(
-                                newOrderAfterDelete,
-                            ),
-                        )
+                        mMSDLPlayerWrapper.playToken(MSDLToken.SUCCESS)
                         onDeleteFolder(folderToDelete)
                     },
                     dragIndicator = {

@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.ModalBottomSheetContent
@@ -37,6 +38,8 @@ import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -49,15 +52,18 @@ fun ClickablePreference(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
     ),
+    hapticToken: MSDLToken? = MSDLToken.TAP_LOW_EMPHASIS,
     onClick: () -> Unit,
 ) {
     val bottomSheetHandler = bottomSheetHandler
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     PreferenceTemplate(
         title = { Text(text = label) },
         modifier = modifier,
         description = subtitle?.let { { Text(text = it) } },
         onClick = {
             if (confirmationText != null) {
+                mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                 bottomSheetHandler.show {
                     PreferenceClickConfirmation(
                         title = label,
@@ -67,6 +73,7 @@ fun ClickablePreference(
                     )
                 }
             } else {
+                hapticToken?.let { mMSDLPlayerWrapper.playToken(it) }
                 onClick()
             }
         },

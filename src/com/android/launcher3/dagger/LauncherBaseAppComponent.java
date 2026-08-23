@@ -70,6 +70,7 @@ import app.lawnchair.font.googlefonts.GoogleFontsListing;
 import app.lawnchair.icons.iconpack.IconPackProvider;
 import app.lawnchair.icons.shape.IconShapeManager;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.predictions.LawnchairPredictionManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.provider.SmartspaceProvider;
 import app.lawnchair.theme.ThemeProvider;
@@ -136,6 +137,7 @@ public interface LauncherBaseAppComponent {
     NotificationManager getNotificationManager();
     ColorPreferenceModelList getColorPreferenceModelList();
     LiveInformationManager getLiveInformationManager();
+    LawnchairPredictionManager getLawnchairPredictionManager();
     PreferenceManager2 getPreferenceManager2();
     PreferenceManager getPreferenceManager();
     FontCache getFontCache();

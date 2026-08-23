@@ -1,11 +1,14 @@
 package app.lawnchair.ui.preferences.components.search
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.TipsAndUpdates
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -50,6 +53,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.DockSearchProvider
 import app.lawnchair.ui.theme.isSelectedThemeDark
+import app.lawnchair.ui.theme.preferenceGroupColor
 import com.android.launcher3.R
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -190,8 +194,10 @@ private fun DockSearchBarPreview(
     ) {
         Box(
             modifier = modifier
-                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
+                .background(color = preferenceGroupColor(), shape = MaterialTheme.shapes.large)
+                .padding(horizontal = 16.dp)
+                .width(IntrinsicSize.Max)
                 .height(dimensionResource(id = R.dimen.qsb_widget_height) + 24.dp),
             contentAlignment = Alignment.Center,
         ) {

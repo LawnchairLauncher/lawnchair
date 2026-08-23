@@ -12,10 +12,11 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
+
+     Modifications copyright 2026 Lawnchair
 -->
 <com.android.launcher3.Hotseat
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/hotseat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,4 +24,4 @@
     android:importantForAccessibility="no"
     android:clickable="false"
     android:longClickable="false"
-    launcher:containerType="hotseat" />
+    android:clipChildren="false" />

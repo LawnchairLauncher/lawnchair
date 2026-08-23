@@ -93,6 +93,9 @@
     <!-- which time format to use by default on smartspace -->
     <string name="config_default_smartspace_time_format" translatable="false">system</string>
 
+    <!-- which prediction mode to use by default -->
+    <string name="config_default_prediction_mode" translatable="false">lawnchair</string>
+
     <!-- which hotseat mode to use by default -->
     <string name="config_default_hotseat_mode" translatable="false">lawnchair</string>
 
