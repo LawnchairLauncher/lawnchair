@@ -132,11 +132,8 @@ public class ModelUtils {
                 iconInfo = MODEL_EXECUTOR.submit(() -> baseIconInfo.withBadgeInfo(
                         iconCache.getShortcutInfoBadge(launchPackage, Process.myUserHandle())))
                         .get();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                Log.e("LC-ModelUtils", "Interrupted while loading legacy shortcut badge", e);
-            } catch (ExecutionException e) {
-                Log.e("LC-ModelUtils", "Failed to load legacy shortcut badge", e);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException("Failed to load legacy shortcut badge", e);
             }
         }
 
