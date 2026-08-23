@@ -199,10 +199,10 @@
     App suggestions
     -->
     <string name="suggestion_pref_screen_title">Sugestões de aplicações</string>
-    <string name="global_predictions_label">Mostrar sugestões de funcionalidades</string>
+    <string name="global_predictions_label">Mostrar sugestões</string>
     <string name="app_predictions_label">Sugestões</string>
     <string name="prediction_mode_label">Fornecedor de Sugestões</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Esta funcionalidade requer Android 10 ou superior</string>
     <string name="prediction_mode_system">Sistema</string>
     <string name="prediction_mode_none">Desligado</string>
     <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
@@ -715,7 +715,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Procurar no dispositivo</string>
+    <string name="all_apps_device_search_hint">Procurar aplicações, web e mais</string>
     <string name="all_apps_search_bar_hint">Procurar aplicações</string>
     <string name="all_apps_no_search_results">Nenhuma aplicação encontrada correspondente a \"<xliff:g example="Android" id="query">%1$s</xliff:g>    </string>
     <string name="all_apps_search_result_suggestions">Da web</string>
