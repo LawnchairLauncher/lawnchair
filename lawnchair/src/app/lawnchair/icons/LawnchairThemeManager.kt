@@ -13,6 +13,7 @@ import com.android.launcher3.concurrent.annotations.Ui
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.graphics.ThemeManager
+import com.android.launcher3.icons.mono.MonoIconThemeController
 import com.android.launcher3.util.DaggerSingletonTracker
 import com.android.launcher3.util.LooperExecutor
 import javax.inject.Inject
@@ -118,15 +119,26 @@ constructor(
                 PathShapeDelegate(currentFolderShape)
             }
 
+        val themeController = iconControllerFactory.createThemeController()?.let {
+            if (prefs1.forceIconMonochrome.get()) {
+                FORCED_MONO_THEME_CONTROLLER
+            } else {
+                MONO_THEME_CONTROLLER
+            }
+        }
+
         return IconState(
             iconMask = combinedKey,
             folderRadius = 1f,
             shapeRadius = 1f,
-            themeController = iconControllerFactory.createThemeController(),
+            themeController = themeController,
             iconShape = appShape,
             folderShape = folderShape,
         )
     }
 }
 
+// Reuse controllers to allow the equality check in verifyIconState.
+private val MONO_THEME_CONTROLLER = MonoIconThemeController()
+private val FORCED_MONO_THEME_CONTROLLER = MonoIconThemeController(shouldForceThemeIcon = true)
 private const val TAG = "LawnchairThemeManager"
