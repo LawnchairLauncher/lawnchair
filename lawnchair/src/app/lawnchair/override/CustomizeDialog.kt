@@ -149,6 +149,7 @@ fun CustomizeAppDialog(
     icon: Drawable,
     defaultTitle: String,
     componentKey: ComponentKey,
+    onClose: () -> Unit,
 ) {
     val prefs = preferenceManager()
     val preferenceManager2 = preferenceManager2()
@@ -169,7 +170,7 @@ fun CustomizeAppDialog(
     val openIconPicker = {
         val intent = PreferenceActivity.createIntent(context, route)
         scope.launch {
-            val result = BlankActivity.startBlankActivityForResult(context as Activity, intent)
+            val result = BlankActivity.startBlankActivityForResult(context.launcher, intent)
             if (result.resultCode == Activity.RESULT_OK) {
                 onClose()
             }
