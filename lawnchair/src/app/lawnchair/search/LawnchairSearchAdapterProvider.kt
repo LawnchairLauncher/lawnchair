@@ -38,6 +38,10 @@ class LawnchairSearchAdapterProvider(
         append(SEARCH_RESULT_EMPTY_STATE, R.layout.search_result_empty_state)
         append(SEARCH_RESULT_SEARCH_SETTINGS, R.layout.search_result_search_settings)
     }
+
+    /** Query the user pressed enter on before there was anything to launch, if any. */
+    private var pendingQuickLaunchQuery: String? = null
+
     private var quickLaunchItem: SearchResultView? = null
         set(value) {
             field = value
@@ -47,6 +51,9 @@ class LawnchairSearchAdapterProvider(
                 field != null,
             )
             appsView.mSearchRecyclerView.invalidate()
+            if (value != null) {
+                runPendingQuickLaunch()
+            }
         }
 
     override fun isViewSupported(viewType: Int): Boolean = layoutIdMap.contains(viewType)
@@ -92,7 +99,38 @@ class LawnchairSearchAdapterProvider(
 
     override fun getItemsPerRow(viewType: Int, appsPerRow: Int) = if (viewType != SEARCH_RESULT_ICON) 1 else super.getItemsPerRow(viewType, appsPerRow)
 
-    override fun launchHighlightedItem(): Boolean = quickLaunchItem?.launch() ?: false
+    override fun launchHighlightedItem(): Boolean {
+        val item = quickLaunchItem
+        if (item != null) {
+            pendingQuickLaunchQuery = null
+            return item.launch()
+        }
+        val query = currentQuery()
+        if (query.isNullOrBlank()) return false
+        pendingQuickLaunchQuery = query
+        // Consume the press. Unhandled, it would advance focus off the single line search field,
+        // closing the keyboard and leaving the user unable to press enter again.
+        return true
+    }
+
+    private fun currentQuery() = appsView.searchUiManager.editText?.text?.toString()
+
+    /** Opens the first result if the user pressed enter before there was one. */
+    private fun runPendingQuickLaunch() {
+        if (pendingQuickLaunchQuery == null) return
+        // Launching mid bind would tear down all apps while the recycler view is still laying out.
+        appsView.mSearchRecyclerView.post {
+            val query = pendingQuickLaunchQuery ?: return@post
+            if (query != currentQuery()) {
+                pendingQuickLaunchQuery = null
+                return@post
+            }
+            // A newer batch of results may have cleared the item again; wait for the next bind.
+            val item = quickLaunchItem ?: return@post
+            pendingQuickLaunchQuery = null
+            item.launch()
+        }
+    }
 
     override fun getHighlightedItem() = quickLaunchItem as View?
 
