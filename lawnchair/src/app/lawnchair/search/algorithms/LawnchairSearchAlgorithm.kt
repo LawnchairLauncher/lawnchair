@@ -74,13 +74,15 @@ sealed class LawnchairSearchAlgorithm(
         roundBottom = true,
     )
 
+    /** Drops the targets that never get bound to a view. */
+    private fun List<SearchTargetCompat>.filterRenderable(): List<SearchTargetCompat> = asSequence()
+        .filter { it.packageName != BuildConfig.APPLICATION_ID }
+        .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
+        .removeDuplicateDividers()
+        .toList()
+
     protected fun transformSearchResults(results: List<SearchTargetCompat>): List<SearchAdapterItem> {
-        val filtered = results
-            .asSequence()
-            .filter { it.packageName != BuildConfig.APPLICATION_ID }
-            .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
-            .removeDuplicateDividers()
-            .toList()
+        val filtered = results.filterRenderable()
 
         val appAndShortcutIndices = findAppAndShorcutIndices(filtered)
         val smallIconIndices = findIndices(filtered, SMALL_ICON_HORIZONTAL_TEXT)
@@ -125,17 +127,12 @@ sealed class LawnchairSearchAlgorithm(
     }
 
     protected fun setFirstItemQuickLaunch(searchTargets: List<SearchTargetCompat>) {
-        val hasQuickLaunch = searchTargets.any { it.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
-        if (!hasQuickLaunch) {
-            // check if we have a header or spacer item. if so, we skip as there isn't any relevant
-            // action to be applied
-            val target = searchTargets.getOrNull(
-                searchTargets.indexOfFirst { it.layoutType != TEXT_HEADER },
-            )
-            target?.extras?.apply {
-                putBoolean(EXTRA_QUICK_LAUNCH, true)
-            }
-        }
+        // Only renderable targets are bound to a view, so marking one that is dropped later would
+        // leave the results with nothing for enter to launch. Headers have no action to apply.
+        val renderable = searchTargets.filterRenderable()
+        if (renderable.any { it.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }) return
+        renderable.firstOrNull { it.layoutType != TEXT_HEADER }
+            ?.extras?.putBoolean(EXTRA_QUICK_LAUNCH, true)
     }
 
     private fun findIndices(filtered: List<SearchTargetCompat>, layoutType: String): List<Int> {
