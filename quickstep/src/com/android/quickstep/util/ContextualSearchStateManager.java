@@ -104,7 +104,8 @@ public class ContextualSearchStateManager  {
         mSystemUiProxy = systemUiProxy;
         mTopTaskTracker = topTaskTracker;
 
-        if (areAllContextualSearchFlagsDisabled()
+        if (!Utilities.ATLEAST_V // LC-Note: QuickSwitch compatibility!
+                || areAllContextualSearchFlagsDisabled()
                 || !context.getPackageManager().hasSystemFeature(FEATURE_CONTEXTUAL_SEARCH)) {
             // If we had previously registered a SystemAction which is no longer valid, we need to
             // unregister it here.
