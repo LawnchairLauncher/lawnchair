@@ -337,7 +337,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
         final ActivityOptions options = ActivityOptions.makeBasic();
         options.setPendingIntentBackgroundActivityStartMode(
-                ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS);
+                Utilities.ATLEAST_BAKLAVA // LC-Note: QuickSwitch compatibility!
+                        ? ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS
+                        : ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
         options.setTransientLaunch();
         options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
         options.setLaunchDisplayId(mDisplayId);
