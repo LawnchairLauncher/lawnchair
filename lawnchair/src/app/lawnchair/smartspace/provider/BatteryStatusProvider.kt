@@ -114,7 +114,7 @@ class BatteryStatusProvider(context: Context) :
 
             val powerWatts = normalizedAmps * voltageVolts
 
-            Log.d("BatteryStatusProvider", "Power: ${"%.2f".format(powerWatts)}W, Voltage:${voltageVolts}V, Raw Amp: ${currentAmps}, Normalized Amp: ${normalizedAmps}A")
+            Log.d("BatteryStatusProvider", "Power: ${"%.2f".format(powerWatts)}W, Voltage:${voltageVolts}V, Raw Amp: $currentAmps, Normalized Amp: ${normalizedAmps}A")
 
             return powerWatts
         }.getOrDefault(0f)
