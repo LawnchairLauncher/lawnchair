@@ -137,6 +137,11 @@ class LawnchairSearchAdapterProvider(
     override fun clearHighlightedItem() {
         super.clearHighlightedItem()
         quickLaunchItem = null
+        // Results are coming in for a different query, so a press queued for the old one is stale.
+        // Without this it could be revived by typing the old query back in.
+        if (pendingQuickLaunchQuery != currentQuery()) {
+            pendingQuickLaunchQuery = null
+        }
     }
 
     override fun getDecorator() = decorator
