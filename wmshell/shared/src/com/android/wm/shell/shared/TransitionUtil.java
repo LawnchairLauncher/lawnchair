@@ -52,6 +52,8 @@ import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.window.TransitionInfo;
 
+import org.chickenhook.restrictionbypass.RestrictionBypass;
+
 import java.util.function.Predicate;
 
 /** Various utility functions for transitions. */
@@ -434,9 +436,8 @@ public class TransitionUtil {
             return change.isAllowEnterPip();
         }
         try {
-            return (Boolean) TransitionInfo.Change.class
-                    .getMethod("getAllowEnterPip")
-                    .invoke(change);
+            return (Boolean) RestrictionBypass.getMethod(
+                    TransitionInfo.Change.class, "getAllowEnterPip").invoke(change);
         } catch (ReflectiveOperationException e) {
             throw new IllegalStateException("Unable to read allowEnterPip from transition change", e);
         }
