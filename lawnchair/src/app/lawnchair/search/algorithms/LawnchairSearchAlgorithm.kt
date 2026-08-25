@@ -128,11 +128,13 @@ sealed class LawnchairSearchAlgorithm(
 
     protected fun setFirstItemQuickLaunch(searchTargets: List<SearchTargetCompat>) {
         // Only renderable targets are bound to a view, so marking one that is dropped later would
-        // leave the results with nothing for enter to launch. Headers have no action to apply.
-        val renderable = searchTargets.filterRenderable()
-        if (renderable.any { it.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }) return
-        renderable.firstOrNull { it.layoutType != TEXT_HEADER }
-            ?.extras?.putBoolean(EXTRA_QUICK_LAUNCH, true)
+        // leave the results with nothing for enter to launch. Headers and dividers have no action
+        // to apply: a divider survives filtering whenever a header precedes it.
+        val candidates = searchTargets.filterRenderable().filter {
+            it.layoutType != TEXT_HEADER && it.layoutType != EMPTY_DIVIDER
+        }
+        if (candidates.any { it.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }) return
+        candidates.firstOrNull()?.extras?.putBoolean(EXTRA_QUICK_LAUNCH, true)
     }
 
     private fun findIndices(filtered: List<SearchTargetCompat>, layoutType: String): List<Int> {
