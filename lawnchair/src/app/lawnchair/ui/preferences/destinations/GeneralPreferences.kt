@@ -227,6 +227,14 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
                 )
             }
         }
+
+        PreferenceGroup(heading = stringResource(id = R.string.recents_label)) {
+            SwitchPreference(
+                adapter = prefs2.hideLawnchairActivities.getAdapter(),
+                label = stringResource(id = R.string.hide_lawnchair_activities_label),
+                description = stringResource(id = R.string.hide_lawnchair_activities_description),
+            )
+        }
     }
 }
 

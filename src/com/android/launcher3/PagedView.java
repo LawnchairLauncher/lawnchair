@@ -92,6 +92,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private final PreferenceManager prefs = PreferenceManager.getInstance(getContext());
     private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
 
+    /**
+     * Whether swiping past the last page wraps to the first page (and vice versa). Defaults to
+     * the workspace's own infinite-scrolling preference; subclasses with their own independent
+     * paging (e.g. a paged app drawer) can override this to consult a different preference,
+     * while reusing this same wraparound mechanism.
+     */
+    protected boolean isInfiniteScrollEnabled() {
+        return prefs.getInfiniteScrolling().get();
+    }
+
     private boolean mFreeScroll = false;
 
     private int mFlingThresholdVelocity;
@@ -1422,7 +1432,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     // test for a large move if a fling has been registered. That is, a large
                     // move to the left and fling to the right will register as a fling to the right.
 
-                    boolean infiniteScroll = prefs.getInfiniteScrolling().get();
+                    boolean infiniteScroll = isInfiniteScrollEnabled();
                     boolean enableFeed = PreferenceCacheExtensionsKt.firstCached(prefs2.getEnableFeed());
 
                     if (((isSignificantMove && !isDeltaLeft && !isFling) ||

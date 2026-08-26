@@ -33,6 +33,8 @@ import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
 import app.lawnchair.gestures.type.GestureType
+import app.lawnchair.allapps.DrawerStyle
+import app.lawnchair.allapps.OneDrawer
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
@@ -234,6 +236,57 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_app_drawer_bg_color)),
     )
 
+    /**
+     * Filename (see [app.lawnchair.util.DrawerBackgroundImageStore]) of a user-picked photo shown
+     * behind the app drawer instead of an opaque scrim. Empty when unset. The background
+     * color/opacity above still apply on top, as a dimming tint, so opacity needs to be lowered
+     * for the image to actually show through.
+     */
+    val appDrawerBackgroundImage = preference(
+        key = stringPreferencesKey(name = "app_drawer_background_image"),
+        defaultValue = "",
+    )
+
+    // Driving mode background - same options/mechanism as the app drawer above, but driving
+    // mode's screen is freshly composed every time it's shown (no long-lived cached View), so
+    // none of these need onSet = recreate.
+    val drivingModeBackgroundColor = preference(
+        key = stringPreferencesKey(name = "driving_mode_bg_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        defaultValue = ColorOption.fromString("default"),
+    )
+
+    val drivingModeBackgroundImage = preference(
+        key = stringPreferencesKey(name = "driving_mode_background_image"),
+        defaultValue = "",
+    )
+
+    val drivingModeBackgroundOpacity = preference(
+        key = floatPreferencesKey(name = "driving_mode_background_opacity"),
+        defaultValue = 0.5f,
+    )
+
+    val drivingModeRows = preference(
+        key = intPreferencesKey(name = "driving_mode_rows"),
+        defaultValue = 3,
+    )
+
+    val drivingModeColumns = preference(
+        key = intPreferencesKey(name = "driving_mode_columns"),
+        defaultValue = 2,
+    )
+
+    val drivingModePages = preference(
+        key = intPreferencesKey(name = "driving_mode_pages"),
+        defaultValue = 2,
+    )
+
+    val drivingModeSpeedUnitMph = preference(
+        key = booleanPreferencesKey(name = "driving_mode_speed_unit_mph"),
+        defaultValue = false,
+    )
+
     val appDrawerSearchBarBackground = preference(
         key = booleanPreferencesKey(name = "all_apps_search_bar_background"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_search_bar_background),
@@ -289,6 +342,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_themed_hotseat_qsb),
     )
 
+    val hideLawnchairActivities = preference(
+        key = booleanPreferencesKey(name = "hide_lawnchair_activities"),
+        defaultValue = false,
+    )
+
     val isHotseatEnabled = preference(
         key = booleanPreferencesKey(name = "pref_show_hotseat"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_hotseat),
@@ -324,6 +382,12 @@ class PreferenceManager2 @Inject constructor(
     val roundedWidgets = preference(
         key = booleanPreferencesKey(name = "rounded_widgets"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_rounded_widgets),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val customRoundedWidgetsRadius = preference(
+        key = intPreferencesKey(name = "custom_rounded_widgets_radius"),
+        defaultValue = 16,
         onSet = { reloadHelper.reloadGrid() },
     )
 
@@ -702,6 +766,25 @@ class PreferenceManager2 @Inject constructor(
         key = intPreferencesKey(name = "drawer_columns_unfolded"),
         defaultSelector = { numAllAppsColumns + 2 },
         onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val drawerStyle = preference(
+        key = stringPreferencesKey("drawer_style"),
+        defaultValue = OneDrawer,
+        parse = { DrawerStyle.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val drawerRowsPerPage = preference(
+        key = intPreferencesKey(name = "drawer_rows_per_page"),
+        defaultValue = 5,
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val drawerInfiniteSwipe = preference(
+        key = booleanPreferencesKey(name = "drawer_infinite_swipe"),
+        defaultValue = false,
     )
 
     val folderColumns = idpPreference(

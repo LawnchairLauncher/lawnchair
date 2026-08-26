@@ -79,6 +79,7 @@ import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
@@ -96,6 +97,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.search.StringMatcherUtility;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MultiTranslateDelegate;
@@ -110,6 +112,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
+import app.lawnchair.data.iconoverride.ShortcutBadgeOverrideRepository;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.gestures.IconGestureListener;
@@ -561,7 +564,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         int flags = isPrivateSpaceIcon
                 ? info.bitmap.creationFlags : shouldUseTheme() ? FLAG_THEMED : 0;
         // Remove badge on icons smaller than 48dp.
-        if (mHideBadge || mDisplay == DISPLAY_SEARCH_RESULT_SMALL) {
+        if (mHideBadge || mDisplay == DISPLAY_SEARCH_RESULT_SMALL || isShortcutBadgeHidden(info)) {
             flags |= FLAG_NO_BADGE;
         }
         if (mSkipUserBadge) {
@@ -574,6 +577,21 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             iconDrawable.setAnimationEnabled(false);
         }
         setIcon(iconDrawable);
+    }
+
+    /**
+     * Lawnchair: whether the user has opted to hide this pinned shortcut's work/clone profile
+     * badge via the shortcut's customize dialog. Checked here (icon bind time) rather than baked
+     * into the cached {@link com.android.launcher3.icons.BitmapInfo}, since creationFlags there
+     * isn't read back on render -- badge suppression is always computed fresh per-view, from
+     * mHideBadge/mSkipUserBadge above, so this needs to feed into that same computation.
+     */
+    private boolean isShortcutBadgeHidden(ItemInfoWithIcon info) {
+        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            return false;
+        }
+        ShortcutKey key = ShortcutKey.fromItemInfo(info);
+        return ShortcutBadgeOverrideRepository.INSTANCE.get(getContext()).isHidden(key);
     }
 
     public boolean shouldUseTheme() {

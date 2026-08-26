@@ -6,8 +6,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.LawnchairProto.BackupInfo
+import app.lawnchair.icons.picker.CustomIconStore
+import app.lawnchair.util.DrawerBackgroundImageStore
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.scaleDownTo
 import app.lawnchair.util.scaleDownToDisplaySize
@@ -59,6 +62,7 @@ class LawnchairBackup(
 
     suspend fun restore(selectedContents: Int) {
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
+        val prefixHandlers = mutableListOf<Pair<String, suspend (String, InputStream) -> Unit>>()
         val contents = selectedContents and info.contents
         if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
             handlers.putAll(
@@ -66,10 +70,31 @@ class LawnchairBackup(
                     {
                         val file = entry.value
                         file.parentFile?.mkdirs()
-                        it.copyTo(file.outputStream())
+                        file.outputStream().use { out -> it.copyTo(out) }
                     }
                 },
             )
+            // Background images (DrawerBackgroundImageStore) and custom icon photos
+            // (CustomIconStore) - one file per entry, name-only known at zip time (UUID-based),
+            // so these can't go in getFiles()'s fixed name->File map like everything else.
+            // Handled by prefix instead.
+            BACKED_UP_DIRECTORIES.forEach { dirName ->
+                prefixHandlers.add(
+                    "$dirName/" to { name, stream ->
+                        val baseDir = File(context.filesDir, dirName).apply { mkdirs() }
+                        val baseCanonical = baseDir.canonicalFile
+                        val file = File(baseDir, name)
+                        // name comes from a zip entry in a user-supplied backup file - reject
+                        // anything (e.g. "../../databases/launcher.db") that would resolve
+                        // outside baseDir instead of trusting it as a plain filename.
+                        if (file.canonicalFile.parentFile != baseCanonical) {
+                            Log.w(TAG, "Rejected backup entry outside $dirName: $name")
+                        } else {
+                            file.outputStream().use { out -> stream.copyTo(out) }
+                        }
+                    },
+                )
+            }
         }
         if (contents.hasFlag(INCLUDE_WALLPAPER)) {
             handlers[WALLPAPER_FILE_NAME] = {
@@ -79,13 +104,16 @@ class LawnchairBackup(
         }
         context.getDatabasePath(LAUNCHER_DB_FILE_NAME).parentFile?.deleteRecursively()
         DeviceGridState(info.gridState).writeToPrefs(context, true)
-        readZip(handlers)
+        readZip(handlers, prefixHandlers)
 
         var dbController = ModelDbController(context)
         RestoreDbTask.performRestore(context, dbController)
     }
 
-    private suspend fun readZip(handlers: Map<String, suspend (InputStream) -> Unit>) {
+    private suspend fun readZip(
+        handlers: Map<String, suspend (InputStream) -> Unit>,
+        prefixHandlers: List<Pair<String, suspend (String, InputStream) -> Unit>> = emptyList(),
+    ) {
         withContext(Dispatchers.IO) {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")!!
             pfd.use {
@@ -95,7 +123,14 @@ class LawnchairBackup(
                         while (true) {
                             entry = zipIs.nextEntry
                             if (entry == null) break
-                            handlers[entry.name]?.invoke(zipIs)
+                            val name = entry.name
+                            val exactHandler = handlers[name]
+                            if (exactHandler != null) {
+                                exactHandler(zipIs)
+                                continue
+                            }
+                            val prefixMatch = prefixHandlers.firstOrNull { (prefix, _) -> name.startsWith(prefix) }
+                            prefixMatch?.let { (prefix, handler) -> handler(name.removePrefix(prefix), zipIs) }
                         }
                     }
                 }
@@ -104,10 +139,13 @@ class LawnchairBackup(
     }
 
     companion object {
+        private const val TAG = "LawnchairBackup"
         private const val BACKUP_VERSION = 1
         private const val PREFS_FILE_NAME = "${LauncherFiles.SHARED_PREFERENCES_KEY}.xml"
         private const val PREFS_DB_FILE_NAME = "preferences"
         private const val PREFS_DATASTORE_FILE_NAME = "preferences.preferences_pb"
+
+        private val BACKED_UP_DIRECTORIES = listOf(DrawerBackgroundImageStore.DIR_NAME, CustomIconStore.DIR_NAME)
 
         const val INFO_FILE_NAME = "info.pb"
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
@@ -182,6 +220,15 @@ class LawnchairBackup(
                             if (!it.value.exists()) return@forEach
                             out.putNextEntry(ZipEntry(it.key))
                             it.value.inputStream().copyTo(out)
+                        }
+
+                        BACKED_UP_DIRECTORIES.forEach { dirName ->
+                            File(context.filesDir, dirName).listFiles()
+                                ?.filter { it.isFile }
+                                ?.forEach { file ->
+                                    out.putNextEntry(ZipEntry("$dirName/${file.name}"))
+                                    file.inputStream().use { it.copyTo(out) }
+                                }
                         }
                     }
                 }

@@ -115,7 +115,9 @@ import java.util.stream.Stream;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static com.topjohnwu.superuser.internal.Utils.context;
+import app.lawnchair.allapps.AllAppsPagedGridView;
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
+import app.lawnchair.allapps.PagedDrawer;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -294,7 +296,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      *   onFinishInflate -> onPostCreate
      */
     protected void initContent() {
-        showFastScroller = PreferenceCacheExtensionsKt.firstCached(pref2.getShowScrollbar());
+        showFastScroller = PreferenceCacheExtensionsKt.firstCached(pref2.getShowScrollbar()) && !isPagedDrawerActive();
 
         mMainAdapterProvider = mSearchUiDelegate.createMainAdapterProvider();
 
@@ -728,6 +730,15 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             if (mHeader.isSetUp()) {
                 onActivePageChanged(mViewPager.getNextPage());
             }
+        } else if (isPagedDrawerActive()) {
+            View pagedContainer = findViewById(R.id.apps_list_view);
+            // Never shown; exists purely so FloatingHeaderView has a real,
+            // bound RecyclerView to attach its scroll listener to.
+            mainRecyclerView = pagedContainer.findViewById(R.id.apps_list_view_hidden_rv);
+            workRecyclerView = null;
+            mAH.get(AdapterHolder.MAIN).setup(mainRecyclerView, mPersonalMatcher);
+            mAH.get(AdapterHolder.WORK).mRecyclerView = null;
+            refreshPagedGridView();
         } else {
             mainRecyclerView = findViewById(R.id.apps_list_view);
             workRecyclerView = null;
@@ -775,6 +786,44 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mainRecyclerView.updatePoolSize(hasWorkProfile);
     }
 
+    /**
+     * Whether the "Paged drawer" style is active. Only applies to the personal
+     * apps list (not shown at all when a work-profile tab layout is in use).
+     */
+    private boolean isPagedDrawerActive() {
+        return PreferenceCacheExtensionsKt.firstCached(pref2.getDrawerStyle()) instanceof PagedDrawer;
+    }
+
+    /**
+     * Pushes the current, alphabetically-sorted app list into the paged grid
+     * view, chunked into fixed columns x rows pages. No-ops if the paged
+     * drawer isn't the currently inflated container (e.g. mid-transition).
+     *
+     * Public so callers outside this class (e.g. the state listener that resets the paged
+     * drawer to page 0 on open) can also use it as a self-healing refresh: the very first
+     * onAppsUpdated() callback can fire before the model has finished loading apps on a cold
+     * start right after an install, leaving the paged grid empty until some other event
+     * (a later onAppsUpdated(), or a forced rebindAdapters()) happens to refresh it.
+     */
+    public void refreshPagedGridView() {
+        View container = getAppsRecyclerViewContainer();
+        AllAppsPagedGridView pagedGridView = container.findViewById(R.id.apps_paged_grid_view);
+        if (pagedGridView == null) {
+            return;
+        }
+        List<BaseAllAppsAdapter.AdapterItem> iconItems = new ArrayList<>();
+        for (BaseAllAppsAdapter.AdapterItem item
+                : mAH.get(AdapterHolder.MAIN).mAppsList.getAdapterItems()) {
+            if (BaseAllAppsAdapter.isIconViewType(item.viewType)) {
+                iconItems.add(item);
+            }
+        }
+        int columns = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
+        int rows = PreferenceCacheExtensionsKt.firstCached(pref2.getDrawerRowsPerPage());
+        pagedGridView.setApps(iconItems, columns, rows);
+        applyAdapterSideAndBottomPaddings(mActivityContext.getDeviceProfile());
+    }
+
     private void replaceAppsRVContainer(boolean showTabs) {
         Log.d(TAG, "replaceAppsRVContainer: showTabs: " + showTabs);
         for (int i = AdapterHolder.MAIN; i <= AdapterHolder.WORK; i++) {
@@ -787,7 +836,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         View oldView = getAppsRecyclerViewContainer();
         int index = indexOfChild(oldView);
         removeView(oldView);
-        int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
+        int layout = showTabs
+                ? R.layout.all_apps_tabs
+                : (isPagedDrawerActive() ? R.layout.all_apps_paged_grid_layout : R.layout.all_apps_rv_layout);
         final View rvContainer = getLayoutInflater().inflate(layout, this, false);
         addView(rvContainer, index);
         if (showTabs) {
@@ -1204,6 +1255,13 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
         updateBackgroundVisibility(dp);
 
+        if (isPagedDrawerActive()) {
+            // The paged grid computes its own page-chunking (rows x current column count) once
+            // in refreshPagedGridView() rather than per-item like the adapters above, so a
+            // device profile change (e.g. rotation) needs to explicitly trigger that rebuild too.
+            refreshPagedGridView();
+        }
+
         boolean needsInvalidate = false;
         int navBarScrimColor = Themes.getNavBarScrimColor(mActivityContext);
         if (mNavBarScrimPaint.getColor() != navBarScrimColor) {
@@ -1237,6 +1295,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 .anyMatch(mPrivateProfileManager.getItemInfoMatcher());
         if (!isSearching()) {
             rebindAdapters();
+            if (isPagedDrawerActive()) {
+                // rebindAdapters() short-circuits when tab visibility hasn't
+                // changed, so the paged grid needs an explicit refresh here
+                // to pick up every app list change (install/uninstall, etc).
+                refreshPagedGridView();
+            }
         }
         if (mHasWorkApps) {
             mWorkManager.reset();
@@ -1454,6 +1518,16 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             adapterHolder.mPadding.right = grid.allAppsPadding.right;
             adapterHolder.applyPadding();
         });
+        // The paged grid isn't an AdapterHolder's mRecyclerView, so it never
+        // gets the bottom-inset padding applied above — give it the same
+        // value directly so pages don't sit under the nav bar.
+        if (isPagedDrawerActive()) {
+            View container = getAppsRecyclerViewContainer();
+            AllAppsPagedGridView pagedGridView = container.findViewById(R.id.apps_paged_grid_view);
+            if (pagedGridView != null) {
+                pagedGridView.setPadding(0, 0, 0, bottomPadding);
+            }
+        }
     }
 
     private void setDeviceManagementResources() {

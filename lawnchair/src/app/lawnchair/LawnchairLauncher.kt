@@ -20,6 +20,9 @@ import android.animation.AnimatorSet
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -27,6 +30,7 @@ import android.util.Pair
 import android.view.Display
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import android.window.SplashScreen
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -34,7 +38,9 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
+import app.lawnchair.allapps.AllAppsPagedGridView
 import app.lawnchair.data.wallpaper.service.WallpaperService
+import app.lawnchair.drivingmode.DrivingModeController
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -48,6 +54,8 @@ import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.ui.popup.LauncherOptionsPopup
 import app.lawnchair.ui.popup.LawnchairShortcut
+import app.lawnchair.util.DrawerBackgroundImageStore
+import app.lawnchair.util.applyRecentsExclusion
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.LawnchairFloatingSurfaceView
@@ -90,10 +98,13 @@ import com.kieronquinn.app.smartspacer.sdk.client.SmartspacerClient
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
 import java.util.stream.Stream
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LawnchairLauncher : QuickstepLauncher() {
     private val defaultOverlay by unsafeLazy { OverlayCallbackImpl(this) }
@@ -105,6 +116,9 @@ class LawnchairLauncher : QuickstepLauncher() {
         WindowInsetsControllerCompat(window, rootView)
     }
     private val themeProvider by unsafeLazy { ThemeProvider.INSTANCE.get(this) }
+    private val appDrawerWallpaperBackgroundView by unsafeLazy {
+        findViewById<ImageView>(R.id.app_drawer_wallpaper_background)
+    }
     private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
             if (toState is OverviewState) {
@@ -152,14 +166,165 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
     }
 
+    // Mirrors rememberPositionStateListener but for the paged drawer: when
+    // "Remember scroll position" is off, jump back to the first page every
+    // time the drawer opens, same as the normal drawer resets to top.
+    private val pagedDrawerResetStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionStart(toState: LauncherState) {
+            if (toState is AllAppsState) {
+                // Self-heals a cold-start race: the paged grid's first refresh can run before
+                // the model finishes loading apps (most noticeable right after a fresh
+                // install), leaving it empty until something else happens to refresh it. This
+                // is a cheap no-op otherwise (also no-ops when paged mode isn't active).
+                mAppsView?.refreshPagedGridView()
+                if (!preferenceManager2.rememberPosition.firstCached()) {
+                    mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.setCurrentPage(0)
+                }
+            }
+        }
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState !is AllAppsState) {
+                // Closing the app drawer is exactly the point where a "Clear all" in Recents can
+                // leave this task's exclude-from-recents state reset - reapply defensively.
+                applyRecentsExclusion(this@LawnchairLauncher, preferenceManager2.hideLawnchairActivities.firstCached())
+            }
+        }
+    }
+
+    // How much wider than the screen the background image is scaled, reserving room to pan -
+    // matches the subtle parallax range typical of a home screen wallpaper (not a literal
+    // separate crop per drawer page).
+    private val backgroundParallaxWidthFactor = 1.2f
+
+    /**
+     * Positions the (screen-sized) background ImageView's MATRIX-scaled bitmap so it covers the
+     * view while reserving [backgroundParallaxWidthFactor] extra width to pan across, then shifts
+     * it horizontally by [progress] (0..1). Centered vertically like a normal centerCrop.
+     */
+    private fun updateDrawerBackgroundMatrix(bitmap: Bitmap, progress: Float) {
+        // The view's own measured size, not the display's - they differ in split-screen/
+        // multi-window, where using the full display size would over-scale and mis-pan the
+        // image relative to the actually-visible (smaller) view.
+        val view = appDrawerWallpaperBackgroundView
+        val viewWidth = (if (view.width > 0) view.width else resources.displayMetrics.widthPixels).toFloat()
+        val viewHeight = (if (view.height > 0) view.height else resources.displayMetrics.heightPixels).toFloat()
+        val scale = maxOf(viewHeight / bitmap.height, (viewWidth * backgroundParallaxWidthFactor) / bitmap.width)
+        val scaledWidth = bitmap.width * scale
+        val scaledHeight = bitmap.height * scale
+        val matrix = Matrix().apply {
+            setScale(scale, scale)
+            postTranslate(-progress * (scaledWidth - viewWidth), -(scaledHeight - viewHeight) / 2f)
+        }
+        appDrawerWallpaperBackgroundView.imageMatrix = matrix
+    }
+
+    // Shows the user's chosen background image behind the drawer's scrim. The workspace sits
+    // directly behind scrim_view in the layout, so a translucent scrim alone would reveal the
+    // home screen through the drawer rather than a clean image - this layer occludes the
+    // workspace while showing the picked image instead. Reading the live wallpaper directly via
+    // WallpaperManager was tried first but proved unreliable (silently returns null on this
+    // device/Android version with no exception to catch), hence storing our own copy.
+    //
+    // In paged drawer mode, the image pans horizontally as the user swipes between pages,
+    // mirroring how the home screen parallaxes the system wallpaper across workspace pages.
+    // Filename this bitmap was decoded from, so a later call can tell whether the preference
+    // still points at the same file (reuse the decode) or a different/cleared one (reload).
+    private var cachedBackgroundImage: kotlin.Pair<String, Bitmap>? = null
+
+    // Tracks the in-flight decode below so it can be cancelled if the user leaves All Apps (or
+    // the background image preference changes) before it finishes - otherwise a slow decode can
+    // land after the fact and show a stale/wrong image.
+    private var backgroundLoadJob: Job? = null
+
+    private val drawerBackgroundImageStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionStart(toState: LauncherState) {
+            if (toState !is AllAppsState) return
+            val fileName = preferenceManager2.appDrawerBackgroundImage.firstCached()
+            if (fileName.isEmpty()) {
+                // The user removed their background image since it was last shown - without
+                // this, a previously-shown bitmap would stay visible/stale indefinitely.
+                backgroundLoadJob?.cancel()
+                hideDrawerBackground()
+                return
+            }
+            val cached = cachedBackgroundImage
+            if (cached != null && cached.first == fileName) {
+                backgroundLoadJob?.cancel()
+                showDrawerBackground(cached.second)
+                return
+            }
+            // BitmapFactory.decodeFile is a synchronous disk read + decode - too slow to run on
+            // the main thread on every AllApps transition, and unnecessary to repeat at all once
+            // cached above for as long as the preference keeps pointing at the same file.
+            backgroundLoadJob?.cancel()
+            backgroundLoadJob = lifecycleScope.launch {
+                val bitmap = withContext(Dispatchers.IO) {
+                    DrawerBackgroundImageStore.loadBitmap(this@LawnchairLauncher, fileName)
+                }
+                // The state may have moved on, or the preference may point elsewhere, while this
+                // decode was in flight - applying it now would show the wrong image.
+                if (launcher.stateManager.state !is AllAppsState ||
+                    preferenceManager2.appDrawerBackgroundImage.firstCached() != fileName
+                ) {
+                    return@launch
+                }
+                if (bitmap == null) {
+                    hideDrawerBackground()
+                    return@launch
+                }
+                cachedBackgroundImage = fileName to bitmap
+                showDrawerBackground(bitmap)
+            }
+        }
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState !is AllAppsState) {
+                backgroundLoadJob?.cancel()
+                hideDrawerBackground()
+            }
+        }
+    }
+
+    private fun hideDrawerBackground() {
+        appDrawerWallpaperBackgroundView.visibility = View.GONE
+        appDrawerWallpaperBackgroundView.setImageBitmap(null)
+        mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)?.onScrollProgressChanged = null
+    }
+
+    private fun showDrawerBackground(bitmap: Bitmap) {
+        val pagedGridView = mAppsView?.findViewById<AllAppsPagedGridView>(R.id.apps_paged_grid_view)
+        if (pagedGridView != null) {
+            appDrawerWallpaperBackgroundView.scaleType = ImageView.ScaleType.MATRIX
+            updateDrawerBackgroundMatrix(bitmap, pagedGridView.currentScrollProgress())
+            pagedGridView.onScrollProgressChanged = { progress -> updateDrawerBackgroundMatrix(bitmap, progress) }
+        } else {
+            appDrawerWallpaperBackgroundView.scaleType = ImageView.ScaleType.CENTER_CROP
+        }
+        appDrawerWallpaperBackgroundView.setImageBitmap(bitmap)
+        appDrawerWallpaperBackgroundView.visibility = View.VISIBLE
+    }
+
     private lateinit var colorScheme: ColorScheme
     private var hasBackGesture = false
 
     val gestureController by unsafeLazy { GestureController(this) }
+    private val drivingModeController by unsafeLazy { DrivingModeController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
+
+        drivingModeController.start()
+        if (intent?.getBooleanExtra(EXTRA_START_DRIVING_MODE, false) == true) {
+            drivingModeController.show()
+        }
+
+        // A freshly created task doesn't inherit exclude-from-recents state from a previous
+        // session - subscribe (rather than reading the cache once) since the in-memory
+        // preference cache isn't guaranteed to be populated from disk yet this early in a cold
+        // start, and firstCached() would silently fall back to the compile-time default.
+        preferenceManager2.hideLawnchairActivities.get().distinctUntilChanged().onEach { exclude ->
+            applyRecentsExclusion(this, exclude)
+        }.launchIn(scope = lifecycleScope)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -167,6 +332,8 @@ class LawnchairLauncher : QuickstepLauncher() {
             defaultOverlay.setEnableFeed(enable)
         }.launchIn(scope = lifecycleScope)
         launcher.stateManager.addStateListener(clearSearchStateListener)
+        launcher.stateManager.addStateListener(pagedDrawerResetStateListener)
+        launcher.stateManager.addStateListener(drawerBackgroundImageStateListener)
 
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {
@@ -222,7 +389,10 @@ class LawnchairLauncher : QuickstepLauncher() {
             QuickStepContract.sCustomCornerRadius = it.toFloat()
         }
         preferenceManager2.roundedWidgets.onEach(launchIn = lifecycleScope) {
-            RoundedCornerEnforcement.sRoundedCornerEnabled = it
+            RoundedCornerEnforcement.sUseSystemRadius = it
+        }
+        preferenceManager2.customRoundedWidgetsRadius.onEach(launchIn = lifecycleScope) {
+            RoundedCornerEnforcement.sCustomRadiusDp = it.toFloat()
         }
         val isWorkspaceDarkText = Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
         preferenceManager2.darkStatusBar.onEach(launchIn = lifecycleScope) { darkStatusBar ->
@@ -261,7 +431,32 @@ class LawnchairLauncher : QuickstepLauncher() {
             }
         }
 
+        // The Home button/gesture re-delivers here as ACTION_MAIN since it's the same activity -
+        // while driving mode is up, reset its grid instead of letting Launcher3's own handling
+        // below open search (or move the hidden workspace to its default page).
+        if (drivingModeController.isShowing && intent?.action == Intent.ACTION_MAIN) {
+            drivingModeController.requestGoHome()
+            return
+        }
+
+        if (intent?.getBooleanExtra(EXTRA_START_DRIVING_MODE, false) == true) {
+            drivingModeController.show()
+        }
+
         super.onNewIntent(intent)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        // Rotation reliably leaves the driving-mode overlay's touch dispatch broken (dead taps,
+        // no page snapping) afterward - nothing tried in-process (Compose state resets, replaying
+        // dragLayer.recreateControllers(), forcing a real pager scroll) has fixed it, only killing
+        // and relaunching the whole app has. Handing it a genuinely new ComposeView, the one thing
+        // relaunching does that nothing else here can, is the reliable fix.
+        if (drivingModeController.isShowing) {
+            drivingModeController.recreateOverlayForConfigChange()
+        }
     }
 
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {
@@ -282,7 +477,12 @@ class LawnchairLauncher : QuickstepLauncher() {
     override fun getSupportedShortcuts(container: Int): Stream<SystemShortcut.Factory<*>> = Stream.concat(
         super.getSupportedShortcuts(container),
         Stream.concat(
-            Stream.of(LawnchairShortcut.UNINSTALL, LawnchairShortcut.CUSTOMIZE, LawnchairShortcut.OPEN_IN_STORE),
+            Stream.of(
+                LawnchairShortcut.UNINSTALL,
+                LawnchairShortcut.CUSTOMIZE,
+                LawnchairShortcut.CUSTOMIZE_SHORTCUT,
+                LawnchairShortcut.OPEN_IN_STORE,
+            ),
             if (LawnchairApp.isRecentsEnabled) Stream.of(LawnchairShortcut.PAUSE_APPS) else Stream.empty(),
         ),
     )
@@ -307,6 +507,11 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
     override fun createTouchControllers(): Array<TouchController> {
+        // Suppress all of Launcher3's own swipe gestures (open all apps,
+        // recents, etc.) while the driving-mode overlay is showing — a view
+        // added on top of dragLayer doesn't stop these on its own, since
+        // they're TouchControllers checked before normal child dispatch.
+        if (drivingModeController.isShowing) return emptyArray()
         val verticalSwipeController = VerticalSwipeTouchController(this, gestureController)
         return arrayOf<TouchController>(verticalSwipeController) + super.createTouchControllers()
     }
@@ -472,6 +677,11 @@ class LawnchairLauncher : QuickstepLauncher() {
         restartIfPending()
         refreshPredictionContainersFromModel()
 
+        // Re-apply on every resume, not just at onCreate - "Clear all" in Recents can leave this
+        // task's exclude-from-recents state reset, and this task's own onCreate doesn't run again
+        // when merely returning from the app drawer or another app.
+        applyRecentsExclusion(this, preferenceManager2.hideLawnchairActivities.firstCached())
+
         dragLayer.viewTreeObserver.addOnDrawListener(
             object : ViewTreeObserver.OnDrawListener {
                 private var handled = false
@@ -499,6 +709,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     override fun onDestroy() {
         super.onDestroy()
+        drivingModeController.stop()
         // Only actually closes if required, safe to call if not enabled
         SmartspacerClient.close()
     }
@@ -559,6 +770,10 @@ class LawnchairLauncher : QuickstepLauncher() {
         var sRestartFlags = 0
 
         val instance get() = LawnchairApp.launcher
+
+        // Set on the intent DrivingModeTileService uses to launch this activity when no instance
+        // (and so no live DrivingModeController) exists yet to show the overlay directly.
+        const val EXTRA_START_DRIVING_MODE = "app.lawnchair.START_DRIVING_MODE"
     }
 }
 

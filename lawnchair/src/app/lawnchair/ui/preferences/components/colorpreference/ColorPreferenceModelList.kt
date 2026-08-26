@@ -47,6 +47,13 @@ class ColorPreferenceModelList @Inject constructor(
         )
         registerModel(
             ColorPreferenceModel(
+                prefObject = prefs.drivingModeBackgroundColor,
+                labelRes = R.string.driving_mode_bg_color_label,
+                dynamicEntries = dynamicColorsWithDefault,
+            ),
+        )
+        registerModel(
+            ColorPreferenceModel(
                 prefObject = prefs.workProfileTabBackgroundColor,
                 labelRes = R.string.work_profile_tab_background_label,
                 dynamicEntries = dynamicColors,

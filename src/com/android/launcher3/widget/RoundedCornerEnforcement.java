@@ -39,7 +39,12 @@ import java.util.List;
  * Utilities to compute the enforced the use of rounded corners on App Widgets.
  */
 public class RoundedCornerEnforcement {
-    public static boolean sRoundedCornerEnabled;
+    // Lawnchair: whether to use the OS/OEM-defined system radius resource
+    // (android.R.dimen.system_app_widget_background_radius), or the user's own sCustomRadiusDp
+    // below. The system radius can clip old, un-updated widgets (which have no way to opt out of
+    // this enforced clipping) far more aggressively on some devices/Android versions than others.
+    public static boolean sUseSystemRadius = true;
+    public static float sCustomRadiusDp = 16f;
 
     // This class is only a namespace and not meant to be instantiated.
     private RoundedCornerEnforcement() {
@@ -101,6 +106,9 @@ public class RoundedCornerEnforcement {
      */
     public static float computeEnforcedRadius(@NonNull Context context) {
         Resources res = context.getResources();
+        if (!sUseSystemRadius) {
+            return sCustomRadiusDp * res.getDisplayMetrics().density;
+        }
         if (!Utilities.ATLEAST_S) {
             return res.getDimension(R.dimen.enforced_rounded_corner_max_radius);
         }

@@ -81,17 +81,24 @@ class FontManager @Inject constructor(
                 }
             }
 
+            // A customFontType (e.g. app drawer icon labels, same id as the
+            // workspace's) means the user's own font preference applies here
+            // — that should win over the Google Sans Flex variable font some
+            // styles (like BaseIcon.AllApps) hardcode via android:fontFamily,
+            // otherwise the user's font choice is silently ignored in the
+            // drawer even though the exact same customFontType/preference is
+            // wired up there as on the workspace.
+            if (fontType != -1) {
+                setCustomFont(textView, fontType, fontWeight)
+                return
+            }
+
             val gsfAxes = GoogleSansFlexVariableFont.axesFor(fontFamily)
             if (gsfAxes != null) {
                 val font = variableFonts.getOrPut(fontFamily!!) {
                     fontCache.googleSansFlexVariable(gsfAxes)
                 }
                 applyFont(textView, font)
-                return
-            }
-
-            if (fontType != -1) {
-                setCustomFont(textView, fontType, fontWeight)
             }
         } catch (_: Exception) {
         }

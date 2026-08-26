@@ -48,7 +48,10 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
     protected final LayoutInflater mInflater;
 
     private final Rect mEnforcedRectangle = new Rect();
-    private final float mEnforcedCornerRadius;
+    // Lawnchair: not final - recomputed on every enforceRoundedCorners() call (from onLayout)
+    // rather than cached once here, since the user can change the system-radius/custom-radius
+    // preferences at runtime and existing widget host views are not recreated when they do.
+    private float mEnforcedCornerRadius;
     private final ViewOutlineProvider mCornerRadiusEnforcementOutline = new ViewOutlineProvider() {
         @Override
         public void getOutline(View view, Outline outline) {
@@ -120,6 +123,7 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
 
     @UiThread
     private void enforceRoundedCorners() {
+        mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
         if (mEnforcedCornerRadius <= 0) {
             resetRoundedCorners();
             return;

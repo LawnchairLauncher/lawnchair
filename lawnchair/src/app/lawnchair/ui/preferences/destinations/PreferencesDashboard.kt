@@ -77,6 +77,7 @@ import app.lawnchair.ui.preferences.navigation.AppDrawer
 import app.lawnchair.ui.preferences.navigation.BackupAndRestore
 import app.lawnchair.ui.preferences.navigation.DebugMenu
 import app.lawnchair.ui.preferences.navigation.Dock
+import app.lawnchair.ui.preferences.navigation.DrivingMode
 import app.lawnchair.ui.preferences.navigation.ExperimentalFeatures
 import app.lawnchair.ui.preferences.navigation.Folders
 import app.lawnchair.ui.preferences.navigation.General
@@ -219,6 +220,14 @@ fun PreferencesDashboard(
                 iconResource = R.drawable.backup_restore,
                 onNavigate = { onNavigate(BackupAndRestore) },
                 isSelected = currentRoute is BackupAndRestore,
+            )
+
+            PreferenceCategory(
+                label = stringResource(R.string.driving_mode_label),
+                description = stringResource(R.string.driving_mode_description),
+                iconResource = R.drawable.ic_driving_mode,
+                onNavigate = { onNavigate(DrivingMode) },
+                isSelected = currentRoute is DrivingMode,
             )
 
             PreferenceCategory(

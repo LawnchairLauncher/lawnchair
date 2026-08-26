@@ -83,6 +83,11 @@ data object BackupAndRestore : PreferenceRootRoute, PreferenceDeepLink {
 }
 
 @Serializable
+data object DrivingMode : PreferenceRootRoute, PreferenceDeepLink {
+    override val deepLink = "$URI/driving-mode"
+}
+
+@Serializable
 data object Gestures : PreferenceRootRoute, PreferenceDeepLink {
     override val deepLink = "$URI/gestures"
 }
@@ -195,6 +200,13 @@ data object AboutLicenses : PreferenceRoute, PreferenceDeepLink {
 data class SelectIcon(
     // assuming componentKey is a ComponentKey.toString()
     val componentKey: String,
+) : PreferenceRoute
+
+@Serializable
+data class SelectShortcutIcon(
+    // assuming shortcutKey is a ComponentKey.toString() (specifically a ShortcutKey)
+    val shortcutKey: String,
+    val label: String,
 ) : PreferenceRoute
 
 // default to empty

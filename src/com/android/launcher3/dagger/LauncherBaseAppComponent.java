@@ -61,8 +61,11 @@ import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.HeadlessWidgetsManager;
 import app.lawnchair.LawnchairActivityCachingLogic;
 import app.lawnchair.NotificationManager;
+import app.lawnchair.data.drivingmode.DrivingModeButtonRepository;
 import app.lawnchair.data.folder.service.FolderService;
 import app.lawnchair.data.iconoverride.IconOverrideRepository;
+import app.lawnchair.data.iconoverride.ShortcutBadgeOverrideRepository;
+import app.lawnchair.data.iconoverride.ShortcutIconOverrideRepository;
 import app.lawnchair.data.wallpaper.service.WallpaperService;
 import app.lawnchair.font.FontCache;
 import app.lawnchair.font.FontManager;
@@ -147,6 +150,9 @@ public interface LauncherBaseAppComponent {
     GoogleFontsListing getGoogleFontsListing();
     WallpaperService getWallpaperService();
     IconOverrideRepository getIconOverrideRepository();
+    ShortcutIconOverrideRepository getShortcutIconOverrideRepository();
+    ShortcutBadgeOverrideRepository getShortcutBadgeOverrideRepository();
+    DrivingModeButtonRepository getDrivingModeButtonRepository();
 
     LawnchairActivityCachingLogic getLawnchairActivityCachingLogic();
     FolderService getFolderService();

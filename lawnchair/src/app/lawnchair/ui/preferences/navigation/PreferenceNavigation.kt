@@ -32,6 +32,7 @@ import app.lawnchair.ui.preferences.destinations.CustomIconShapePreference
 import app.lawnchair.ui.preferences.destinations.DebugMenuPreferences
 import app.lawnchair.ui.preferences.destinations.DismissedPredictionAppsPreferences
 import app.lawnchair.ui.preferences.destinations.DockPreferences
+import app.lawnchair.ui.preferences.destinations.DrivingModeSettingsScreen
 import app.lawnchair.ui.preferences.destinations.DummyPreference
 import app.lawnchair.ui.preferences.destinations.ExperimentalFeaturesPreferences
 import app.lawnchair.ui.preferences.destinations.FeatureFlagsPreference
@@ -53,6 +54,7 @@ import app.lawnchair.ui.preferences.destinations.SearchPreferences
 import app.lawnchair.ui.preferences.destinations.SearchProviderPreferences
 import app.lawnchair.ui.preferences.destinations.SelectAppsForDrawerFolder
 import app.lawnchair.ui.preferences.destinations.SelectIconPreference
+import app.lawnchair.ui.preferences.destinations.SelectShortcutIconPreference
 import app.lawnchair.ui.preferences.destinations.ShapePreference
 import app.lawnchair.ui.preferences.destinations.SmartspacePreferences
 import com.android.launcher3.util.ComponentKey
@@ -196,6 +198,10 @@ fun PreferenceNavigation(
             deepLinks = getDeepLink(BackupAndRestore),
         ) { BackupAndRestorePreference() }
 
+        composable<DrivingMode>(
+            deepLinks = getDeepLink(DrivingMode),
+        ) { DrivingModeSettingsScreen() }
+
         composable<About>(
             deepLinks = getDeepLink(About),
         ) { About() }
@@ -211,6 +217,11 @@ fun PreferenceNavigation(
             val componentKey = args.componentKey
             val key = ComponentKey.fromString(componentKey)!!
             SelectIconPreference(key)
+        }
+        composable<SelectShortcutIcon> { backStackEntry ->
+            val args: SelectShortcutIcon = backStackEntry.toRoute()
+            val key = ComponentKey.fromString(args.shortcutKey)!!
+            SelectShortcutIconPreference(key, args.label)
         }
         composable<IconPicker> { backStackEntry ->
             val args: IconPicker = backStackEntry.toRoute()

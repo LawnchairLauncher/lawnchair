@@ -74,6 +74,19 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
+        <!-- Shown behind scrim_view only while the app drawer is open, if the user has
+             enabled "Use wallpaper as background" for the app drawer. Needed because the
+             workspace (icons/widgets) sits directly behind scrim_view in this stack - a
+             translucent scrim alone would reveal the home screen through the drawer instead of
+             a clean wallpaper, since the window's native wallpaper is further back still. -->
+        <ImageView
+            android:id="@+id/app_drawer_wallpaper_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:importantForAccessibility="no" />
+
         <app.lawnchair.views.LawnchairScrimView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

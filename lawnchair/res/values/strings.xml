@@ -108,6 +108,10 @@
     <string name="wallpaper">Wallpaper</string>
     <string name="style">Style</string>
     <string name="background_opacity">Background opacity</string>
+    <string name="app_drawer_background_image">Background image</string>
+    <string name="app_drawer_background_image_none">None. Tap to choose a photo instead of a solid color.</string>
+    <string name="app_drawer_background_image_set">Custom photo. Lower the background opacity below to let it show through.</string>
+    <string name="app_drawer_background_image_remove">Remove background image</string>
 
     <!-- Toast text and tips -->
     <string name="copied_toast">Copied to clipboard</string>
@@ -197,6 +201,38 @@
 
     <string name="backup_and_restore_label">Backup and restore</string>
     <string name="backup_and_restore_description">Save current setup, restore backups</string>
+
+    <string name="driving_mode_label">Driving mode</string>
+    <string name="driving_mode_description">Show a simplified UI when connected to a car stereo</string>
+    <string name="driving_mode_bluetooth_device_label">Trigger device</string>
+    <string name="driving_mode_bluetooth_device_description">Pick the paired Bluetooth device that triggers driving mode</string>
+    <string name="driving_mode_no_target_device">Not set</string>
+    <string name="driving_mode_bluetooth_disabled">Turn Bluetooth on to pick a device</string>
+    <string name="driving_mode_no_paired_devices">No paired devices found. Pair with your car stereo first.</string>
+    <string name="driving_mode_show_test">Show driving mode</string>
+    <string name="driving_mode_show_test_description">Preview the driving UI without a real Bluetooth connection</string>
+    <string name="driving_mode_bg_color_label">Background color</string>
+    <string name="driving_mode_layout_label">Layout</string>
+    <string name="driving_mode_rows_label">Rows</string>
+    <string name="driving_mode_columns_label">Columns</string>
+    <string name="driving_mode_pages_label">Pages</string>
+    <string name="driving_mode_style_label">Style</string>
+    <string name="driving_mode_pick_app_title">Choose app</string>
+    <string name="driving_mode_special_apps_heading">Quick actions</string>
+    <string name="driving_mode_all_apps_heading">All apps</string>
+    <string name="driving_mode_remove_button">Remove</string>
+    <string name="driving_mode_empty_slot">Not set</string>
+    <string name="driving_mode_action_exit">Exit driving mode</string>
+    <string name="driving_mode_action_settings">Driving mode settings</string>
+    <string name="driving_mode_action_navigation">Navigation</string>
+    <string name="driving_mode_action_music">Music</string>
+    <string name="driving_mode_action_phone">Phone</string>
+    <string name="driving_mode_action_contacts">Contacts</string>
+    <string name="driving_mode_action_speedometer">Speedometer</string>
+    <string name="driving_mode_speed_unit_mph">mph</string>
+    <string name="driving_mode_speed_unit_kmh">km/h</string>
+    <string name="driving_mode_speed_unit_mph_label">Show speed in mph</string>
+    <string name="driving_mode_speed_unit_mph_description">Off shows km/h instead</string>
 
     <string name="about_label">About</string>
 
@@ -331,6 +367,9 @@
     <string name="icon_pack_external_picker">Open external picker</string>
     <string name="pick_icon_from_label">Pick icon from</string>
     <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="icon_picker_photo_save_failed">Couldn\'t use that photo</string>
+    <string name="icon_picker_choose_photo">Choose photo</string>
+    <string name="hide_shortcut_badge">Hide badge</string>
 
     <!-- Icon shapes  -->
     <string name="icon_shape_system">System</string>
@@ -696,6 +735,10 @@
     <string name="home_screen_rotation_label">Home screen rotation</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
 
+    <string name="recents_label">Recents</string>
+    <string name="hide_lawnchair_activities_label">Hide Lawnchair activities</string>
+    <string name="hide_lawnchair_activities_description">Prevent Lawnchair itself from appearing as an entry in Recents</string>
+
     <string name="auto_updater_label">Automatically check for updates</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
 
@@ -763,7 +806,8 @@
     <string name="color_light">Light</string>
     <string name="color_dark">Dark</string>
 
-    <string name="force_rounded_widgets">Rounded corners</string>
+    <string name="force_rounded_widgets">Use system radius</string>
+    <string name="custom_rounded_widgets_radius">Custom radius</string>
     <string name="allow_widget_overlap">Allow overlap</string>
 
     <string name="force_widget_resize_label">Enforce widget resizing</string>
@@ -873,6 +917,12 @@
     <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
 
     <string name="app_drawer_columns">App drawer columns</string>
+    <string name="drawer_style_label">Drawer style</string>
+    <string name="drawer_style_one_drawer">One drawer</string>
+    <string name="drawer_style_paged_drawer">Paged drawer</string>
+    <string name="drawer_rows_per_page_label">App drawer rows</string>
+    <string name="drawer_infinite_swipe_label">Infinite swiping</string>
+    <string name="drawer_infinite_swipe_description">Swiping past the last page goes to the first, and vice versa</string>
     <string name="row_height_label">Row height</string>
     <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
     <string name="app_drawer_indent_label">Horizontal padding</string>

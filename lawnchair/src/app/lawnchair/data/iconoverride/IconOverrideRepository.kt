@@ -3,7 +3,9 @@ package app.lawnchair.data.iconoverride
 import android.content.Context
 import android.os.UserHandle
 import app.lawnchair.data.AppDatabase
+import app.lawnchair.icons.picker.CustomIconStore
 import app.lawnchair.icons.picker.IconPickerItem
+import app.lawnchair.icons.picker.IconType
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
@@ -16,7 +18,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
@@ -37,32 +39,63 @@ class IconOverrideRepository @Inject constructor(
     init {
         scope.launch {
             dao.observeAll()
-                .flowOn(Dispatchers.Main)
                 .collect { overrides ->
-                    _overridesMap = overrides.associateBy(
+                    val newMap = overrides.associateBy(
                         keySelector = { it.target },
                         valueTransform = { it.iconPickerItem },
                     )
-                    while (updatePackageQueue.isNotEmpty()) {
-                        val target = updatePackageQueue.poll() ?: continue
-                        updatePackageIcons(target)
+                    val oldMap = _overridesMap
+                    _overridesMap = newMap
+                    // updatePackageQueue only ever gets entries this process itself wrote via
+                    // setOverride/deleteOverride - on a fresh start, overrides persisted from a
+                    // previous session arrive here first, with nothing queued for them, and the
+                    // icon cache can query (and cache the non-overridden icon) before this first
+                    // emission lands at all. Diffing against the previous snapshot catches both
+                    // that startup race and this emission's own writes.
+                    (oldMap.keys + newMap.keys).forEach { key ->
+                        if (oldMap[key] != newMap[key]) updatePackageQueue.offer(key)
                     }
+                    drainUpdatePackageQueue()
                 }
         }
     }
 
     suspend fun setOverride(target: ComponentKey, item: IconPickerItem) {
+        val previous = _overridesMap[target]
         dao.insert(IconOverride(target, item))
         // Keep the in-memory map in sync before any icon reload. The Room Flow update is
         // async and can race with onAppIconChanged / forceReload, leaving stale icons cached.
         _overridesMap = _overridesMap + (target to item)
         updatePackageQueue.offer(target)
+        // Don't wait for the Flow above to notice this write - it can race with the offer just
+        // above and only pick the target up on some later, unrelated emission.
+        drainUpdatePackageQueue()
+        deleteCustomIconFileIfOrphaned(previous, item)
     }
 
     suspend fun deleteOverride(target: ComponentKey) {
+        val previous = _overridesMap[target]
         dao.delete(target)
         _overridesMap = _overridesMap - target
         updatePackageQueue.offer(target)
+        drainUpdatePackageQueue()
+        deleteCustomIconFileIfOrphaned(previous, null)
+    }
+
+    private fun drainUpdatePackageQueue() {
+        while (updatePackageQueue.isNotEmpty()) {
+            val target = updatePackageQueue.poll() ?: continue
+            // onPackageIconsUpdated is a blocking model/worker-thread call - this whole
+            // repository otherwise runs on MainScope, so this needs its own IO dispatch.
+            scope.launch(Dispatchers.IO) { updatePackageIcons(target) }
+        }
+    }
+
+    /** Deletes [previous]'s backing file once it's no longer referenced by [replacement]. */
+    private fun deleteCustomIconFileIfOrphaned(previous: IconPickerItem?, replacement: IconPickerItem?) {
+        if (previous?.type == IconType.Custom && previous.drawableName != replacement?.drawableName) {
+            CustomIconStore.deleteIcon(context, previous.drawableName)
+        }
     }
 
     fun observeTarget(target: ComponentKey) = dao.observeTarget(target)
@@ -97,7 +130,7 @@ class IconOverrideRepository @Inject constructor(
     }
 
     override fun close() {
-        TODO("Not yet implemented")
+        scope.cancel()
     }
 
     companion object {

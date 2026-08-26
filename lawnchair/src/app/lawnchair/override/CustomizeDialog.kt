@@ -33,7 +33,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.BlankActivity
+import app.lawnchair.data.iconoverride.ShortcutBadgeOverrideRepository
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.launcher
 import app.lawnchair.preferences.getAdapter
@@ -46,6 +48,7 @@ import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.navigation.SelectIcon
+import app.lawnchair.ui.preferences.navigation.SelectShortcutIcon
 import app.lawnchair.ui.util.addIfNotNull
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
@@ -70,41 +73,11 @@ fun CustomizeDialog(
             .navigationBarsOrDisplayCutoutPadding()
             .fillMaxWidth(),
     ) {
-        val iconPainter = rememberDrawablePainter(drawable = icon)
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 24.dp)
-                .clip(MaterialTheme.shapes.small)
-                .addIfNotNull(launchSelectIcon) {
-                    clickable(onClick = it)
-                }
-                .padding(all = 8.dp),
-        ) {
-            Image(
-                painter = iconPainter,
-                contentDescription = null,
-                modifier = Modifier.size(54.dp),
-            )
-            if (launchSelectIcon != null) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Edit,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(12.dp),
-                    )
-                }
-            }
-        }
+        EditableIconPreview(
+            icon = icon,
+            onEditClick = launchSelectIcon,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        )
         OutlinedTextField(
             value = title,
             onValueChange = onTitleChange,
@@ -216,6 +189,111 @@ fun CustomizeAppDialog(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun EditableIconPreview(
+    icon: Drawable,
+    onEditClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+) {
+    val iconPainter = rememberDrawablePainter(drawable = icon)
+    Box(
+        modifier = modifier
+            .padding(vertical = 24.dp)
+            .clip(MaterialTheme.shapes.small)
+            .addIfNotNull(onEditClick) {
+                clickable(onClick = it)
+            }
+            .padding(all = 8.dp),
+    ) {
+        Image(
+            painter = iconPainter,
+            contentDescription = null,
+            modifier = Modifier.size(54.dp),
+        )
+        if (onEditClick != null) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Edit,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(12.dp),
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Icon-only customize dialog for a single pinned shortcut (e.g. a Gmail label). Unlike
+ * [CustomizeAppDialog], there is no title field or gestures section — shortcuts already
+ * carry their own label from the publishing app, and gestures apply to app components, not
+ * individual pinned shortcuts. The badge toggle below hides the work/clone profile badge that
+ * Android overlays on icons belonging to a secondary user profile.
+ */
+@Composable
+fun CustomizeShortcutDialog(
+    icon: Drawable,
+    label: String,
+    shortcutKey: ComponentKey,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+) {
+    val context = LocalContext.current
+    val route = SelectShortcutIcon(shortcutKey.toString(), label)
+    val scope = rememberCoroutineScope()
+    val openIconPicker = {
+        val intent = PreferenceActivity.createIntent(context, route)
+        scope.launch {
+            val result = BlankActivity.startBlankActivityForResult(context as Activity, intent)
+            if (result.resultCode == Activity.RESULT_OK) {
+                onClose()
+            }
+        }
+        Unit
+    }
+
+    val badgeRepo = ShortcutBadgeOverrideRepository.INSTANCE.get(context)
+    val hideBadge by badgeRepo.observeHidden(shortcutKey).collectAsStateWithLifecycle(initialValue = false)
+
+    Column(
+        modifier = modifier
+            .navigationBarsOrDisplayCutoutPadding()
+            .fillMaxWidth(),
+    ) {
+        EditableIconPreview(
+            icon = icon,
+            onEditClick = openIconPicker,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        PreferenceGroup {
+            SwitchPreference(
+                checked = hideBadge,
+                label = stringResource(id = R.string.hide_shortcut_badge),
+                onCheckedChange = { newValue ->
+                    scope.launch {
+                        badgeRepo.setHidden(shortcutKey, newValue)
+                    }
+                },
+            )
         }
     }
 }
