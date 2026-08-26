@@ -1507,6 +1507,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public void showPageIndicatorAtCurrentScroll() {
         if (mPageIndicator != null) {
+            // LC-Note: Use wrap-aware scroll for continuous infinite-scroll indicator animation.
             mPageIndicator.setScroll(getScrollForPageIndicator(), computeMaxScroll());
             var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.isHotseatEnabled());
             mPageIndicator.setVisibility(isHotseatEnabled ? VISIBLE : INVISIBLE);

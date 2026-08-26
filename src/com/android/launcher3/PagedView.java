@@ -135,6 +135,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Nullable protected int[] mPageScrolls = null;
     private boolean mIsBeingDragged;
 
+    // LC-Note: Track temporary page translation and bounds for animated infinite scrolling.
     private int mWrapToPage = INVALID_PAGE;
     private int mSavedMinScroll;
     private int mSavedMaxScroll;
@@ -288,6 +289,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     private void abortScrollerAnimation(boolean resetNextPage) {
         mScroller.abortAnimation();
+        // LC-Note: Restore temporary infinite-scroll state when AOSP aborts an animation.
         if (isWrapScrolling()) {
             finalizeWrapScroll();
         }
@@ -306,6 +308,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      */
     public void forceFinishScroller() {
         mScroller.forceFinished(true);
+        // LC-Note: Restore temporary infinite-scroll state when AOSP finishes an animation.
         if (isWrapScrolling()) {
             finalizeWrapScroll();
         }
@@ -589,6 +592,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 mOrientationHandler.setPrimary(this, VIEW_SCROLL_TO, mScroller.getCurrX());
             }
 
+            // LC-Note: Wrap animations extend the scroll bounds and must not trigger edge effects.
             if (mAllowOverScroll && !isWrapScrolling()) {
                 if (newPos < mMinScroll && oldPos >= mMinScroll) {
                     mEdgeGlowLeft.onAbsorb((int) mScroller.getCurrVelocity());
@@ -1209,6 +1213,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected float getScrollProgress(int screenCenter, View v, int page) {
         final int halfScreenSize = getMeasuredWidth() / 2;
+        // LC-Note: Account for wrap translation in page effects and layout offsets.
         int delta = screenCenter - (getVisualScrollForPage(page) + halfScreenSize);
         int panelCount = getPanelCount();
         int pageCount = getChildCount();
@@ -1240,7 +1245,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Returns the visual scroll position for a page, accounting for wrap-scroll translation.
+     * LC-Note: Returns the visual scroll position for a page, accounting for wrap-scroll
+     * translation.
      * Only used by getScrollProgress so that alpha/scroll-progress calculations see the
      * correct on-screen location of the wrap target.
      */
@@ -1268,7 +1274,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             int scrollOffset = mIsRtl ? getPaddingRight() : getPaddingLeft();
             int baselineX = mPageScrolls[index] + scrollOffset;
             float childX = child.getX();
-            // Wrap-scroll's translationX isn't a layout transition; don't let it skew parallax offset.
+            // LC-Note: Wrap translation isn't a layout transition; exclude it from the offset.
             if (isWrapScrolling() && index == mWrapToPage) {
                 childX -= child.getTranslationX();
             }
@@ -1303,6 +1309,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        // LC-Note: Animate infinite-scroll wrapping across drag, release, and cancellation.
         // Skip touch handling if there are no pages to swipe
         if (getChildCount() <= 0) return false;
 
@@ -1782,8 +1789,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Initiates a wrap-scroll animation that moves one page distance in the correct swipe
-     * direction when wrapping between first↔last page.
+     * LC-Note: Initiates a wrap-scroll animation that moves one page distance in the correct
+     * swipe direction when wrapping between first↔last page.
      */
     private void snapToPageWrapped(int targetPage, int velocity) {
         if (!mScroller.isFinished()) {
@@ -1803,7 +1810,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
 
         int currentScroll = mOrientationHandler.getPrimaryScroll(this);
-        // In LTR: wrapping to page 0 means target is to the right (beyond maxScroll).
+        // LC-Note: In LTR, page 0 wraps to the right beyond maxScroll.
         // In RTL: directions are reversed.
         int virtualTarget = ((targetPage == 0) != mIsRtl)
                 ? mSavedMaxScroll + onePageDistance
@@ -1819,7 +1826,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Resets wrap-scroll state: clears translation, restores scroll bounds, and jumps
+     * LC-Note: Resets wrap-scroll state: clears translation, restores scroll bounds, and jumps
      * scroll position to the target page's real location.
      */
     private void finalizeWrapScroll() {
@@ -1842,7 +1849,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Cancels wrap-scroll state without jumping scroll position.
+     * LC-Note: Cancels wrap-scroll state without jumping scroll position.
      * Used when the user drags back or the gesture is cancelled, so the subsequent
      * snapToPage animates from the current drag position instead of jumping first.
      */
@@ -1863,7 +1870,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Returns the scroll value to use for the page indicator during wrap scrolling.
+     * LC-Note: Returns the scroll value to use for the page indicator during wrap scrolling.
      * Maps out-of-bounds scroll values back into the normal range so dots animate correctly.
      */
     protected int getScrollForPageIndicator() {
@@ -1886,7 +1893,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Returns the scroll value to use for wallpaper parallax during wrap scrolling.
+     * LC-Note: Returns the scroll value to use for wallpaper parallax during wrap scrolling.
      * While the page wraps one page distance via translationX, the wallpaper sweeps the full
      * scroll range in the opposite direction so it slides continuously from one edge to the
      * other (matching the pre-wrap-animation behavior and other launchers like Nova).
@@ -1912,7 +1919,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return scroll;
     }
 
-    // Returns 0 on two-panel (foldable) workspaces, disabling wrap scroll.
+    // LC-Note: Returns 0 on two-panel (foldable) workspaces, disabling wrap scroll.
     private int getOnePageDistance() {
         if (!isPageScrollsInitialized() || mPageScrolls.length < 2) {
             return 0;
@@ -1920,6 +1927,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return Math.abs(mPageScrolls[1] - mPageScrolls[0]);
     }
 
+    // LC-Note: Share AOSP snap timing with the animated infinite-scroll helpers below.
     protected boolean snapToPageWithVelocity(int whichPage, int velocity) {
         whichPage = validateNewPage(whichPage);
 
@@ -1939,7 +1947,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * Begins a wrap-drag by translating the target page's View next to the current page
+     * LC-Note: Begins a wrap-drag by translating the target page's View next to the current page
      * and extending scroll bounds so scrollTo doesn't clamp.
      */
     private void startWrapDrag(int targetPage) {
@@ -1960,8 +1968,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mSavedMaxScroll = mMaxScroll;
         mWrapToPage = targetPage;
 
-        // In LTR: page 0 is leftmost. Wrapping to page 0 from last page means we place
-        // page 0 to the right of the last page (positive translation).
+        // LC-Note: In LTR, page 0 is leftmost. Wrapping from the last page places it
+        // to the right of the last page (positive translation).
         // In RTL: page 0 is rightmost, so wrapping to page 0 means placing it to the left.
         if ((targetPage == 0) != mIsRtl) {
             targetView.setTranslationX(totalWidth);

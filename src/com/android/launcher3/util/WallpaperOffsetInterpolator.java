@@ -167,6 +167,7 @@ public class WallpaperOffsetInterpolator {
 
     public void syncWithScroll() {
         int numScreens = getNumScrollableScreensExcludingEmpty();
+        // LC-Note: Use wrap-aware scroll to preserve wallpaper parallax during infinite scrolling.
         wallpaperOffsetForScroll(mWorkspace.getScrollForWallpaper(), numScreens, sTempInt);
         Message msg = Message.obtain(mHandler, MSG_UPDATE_OFFSET, sTempInt[0], sTempInt[1],
                 mWindowToken);
