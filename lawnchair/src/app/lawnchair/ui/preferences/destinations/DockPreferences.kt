@@ -87,6 +87,12 @@ fun DockPreferences(modifier: Modifier = Modifier) {
                     label = stringResource(id = R.string.show_labels),
                 )
             }
+            PreferenceGroup(heading = stringResource(id = R.string.folders_label)) {
+                SwitchPreference(
+                    adapter = prefs2.enableFolderLabelInDock.getAdapter(),
+                    label = stringResource(id = R.string.show_labels),
+                )
+            }
         }
     }
 }

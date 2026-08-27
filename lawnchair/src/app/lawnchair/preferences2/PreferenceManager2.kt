@@ -810,6 +810,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = false,
     )
 
+    val enableFolderLabelInDock = preference(
+        key = booleanPreferencesKey(name = "enable_folder_label_dock"),
+        defaultValue = false,
+    )
+
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("double_tap_gesture_handler"),
         defaultValue = GestureHandlerConfig.Sleep,
@@ -911,6 +916,12 @@ class PreferenceManager2 @Inject constructor(
             .launchIn(scope)
 
         enableLabelInDock.get()
+            .drop(1)
+            .distinctUntilChanged()
+            .onEach { reloadHelper.reloadGrid() }
+            .launchIn(scope)
+
+        enableFolderLabelInDock.get()
             .drop(1)
             .distinctUntilChanged()
             .onEach { reloadHelper.reloadGrid() }

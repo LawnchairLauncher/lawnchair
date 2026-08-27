@@ -123,7 +123,7 @@ public interface WorkspaceLayoutManager {
                 PreferenceManager2 prefs = PreferenceManager2.getInstance(child.getContext());
                 ((FolderIcon) child).setTextVisible(
                         PreferenceCacheExtensionsKt.firstCached(
-                                prefs.getEnableLabelInDock()));
+                                prefs.getEnableFolderLabelInDock()));
             }
         } else {
             // Show folder title if not in the hotseat

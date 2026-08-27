@@ -897,7 +897,8 @@ public class DeviceProfile {
     /** Updates hotseatCellHeightPx and hotseatBarSizePx */
     private void updateHotseatSizes(int hotseatIconSizePx) {
         int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
-        boolean isLabelInDock = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableLabelInDock());
+        boolean isLabelInDock = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableLabelInDock())
+                || PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableFolderLabelInDock());
         HotseatMode hotseatMode = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatMode());
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
         // Ensure there is enough space for folder icons, which have a slightly larger radius.
