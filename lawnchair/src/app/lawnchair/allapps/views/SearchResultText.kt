@@ -45,14 +45,15 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
             SPACE_MINI -> resources.getDimensionPixelSize(R.dimen.space_layout_mini_height)
             else -> resources.getDimensionPixelSize(R.dimen.search_result_text_height)
         }
+        val params = this.layoutParams
+        params.width = LayoutParams.MATCH_PARENT
         if (titleText == SPACE || titleText == SPACE_MINI) {
-            val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, res)
-            this.layoutParams = layoutParams
+            params.height = res
             minimumHeight = 0
         } else {
-            val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-            this.layoutParams = layoutParams
+            params.height = LayoutParams.WRAP_CONTENT
             minimumHeight = res
         }
+        this.layoutParams = params
     }
 }

@@ -20,6 +20,7 @@ import android.app.ActivityManager.RunningTaskInfo
 import android.app.ActivityOptions
 import android.app.ActivityTaskManager
 import android.app.ActivityTaskManager.INVALID_TASK_ID
+import android.app.ActivityThread
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -1290,8 +1291,6 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
     ): Boolean {
         executeWithErrorLog({ "Error starting recents via shell" }) {
             recentTasks?.startRecentsTransition(
-                // Android 16 Shell expects a bare recents PendingIntent here and handles
-                // display selection from the transition options.
                 getRecentsPendingIntent(),
                 intent,
                 options.toBundle().apply {
@@ -1299,14 +1298,10 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
                         putBoolean("is_synthetic_recents_transition", true)
                     }
                 },
-                // Some Android 16 SystemUI builds expose the pre-WCT IRecentTasks ABI.
-                // Keep the public parameter for local callers, but do not marshal it here.
-                context.iApplicationThread,
+                ActivityThread.currentActivityThread().applicationThread,
                 RecentsAnimationListenerStub(listener),
             )
                 ?: run {
-                    // LC-Ignored
-                    //ActiveGestureProtoLogProxy.logRecentTasksMissing()
                     return false
                 }
             return true

@@ -76,11 +76,10 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
                 R.dimen.search_result_files_row_height,
             )
         }
-        val layoutParams = LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            heightRes,
-        )
-        this.layoutParams = layoutParams
+        val params = this.layoutParams
+        params.width = LayoutParams.MATCH_PARENT
+        params.height = heightRes
+        this.layoutParams = params
     }
 
     override val isQuickLaunch: Boolean

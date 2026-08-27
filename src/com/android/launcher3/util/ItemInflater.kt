@@ -62,6 +62,8 @@ class ItemInflater<T>(
         val parent = nullableParent ?: defaultParent
         when (item.itemType) {
             Favorites.ITEM_TYPE_APPLICATION,
+            // LC-Note: Legacy ACTION_CREATE_SHORTCUT items use the standard shortcut view.
+            Favorites.ITEM_TYPE_SHORTCUT,
             Favorites.ITEM_TYPE_DEEP_SHORTCUT,
             Favorites.ITEM_TYPE_SEARCH_ACTION -> {
                 var info =

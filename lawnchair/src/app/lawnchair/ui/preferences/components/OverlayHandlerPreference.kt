@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
@@ -21,6 +22,8 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.LocalBottomSheetHandler
 import app.lawnchair.views.overlay.FullScreenOverlayMode
+import com.android.launcher3.util.MSDLPlayerWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.launch
 
 val overlayOptions = listOf(
@@ -38,6 +41,7 @@ fun OverlayHandlerPreference(
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetHandler = LocalBottomSheetHandler.current
+    val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
 
     val currentConfig = adapter.state.value
 
@@ -52,6 +56,7 @@ fun OverlayHandlerPreference(
         modifier = modifier,
         description = { Text(text = stringResource(currentConfig.labelRes)) },
         onClick = {
+            mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
             bottomSheetHandler.show {
                 ModalBottomSheetContent(
                     title = { Text(label) },
@@ -70,6 +75,7 @@ fun OverlayHandlerPreference(
                             PreferenceTemplate(
                                 title = { Text(text = stringResource(option.labelRes)) },
                                 onClick = {
+                                    mMSDLPlayerWrapper.playToken(MSDLToken.TAP_LOW_EMPHASIS)
                                     bottomSheetHandler.hide()
                                     onSelect(option)
                                 },

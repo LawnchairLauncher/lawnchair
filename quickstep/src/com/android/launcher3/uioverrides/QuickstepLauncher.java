@@ -251,6 +251,8 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
     protected static final String RING_APPEAR_ANIMATION_PREFIX = "RingAppearAnimation\t";
 
     private PredictedContainerInfo mAllAppsPredictions;
+    // LC-Note: Lawnchair Prediction
+    private PredictedContainerInfo mHotseatPredictions;
     private HotseatPredictionController mHotseatPredictionController;
     private DepthController mDepthController;
     private QuickstepTransitionManager mAppTransitionManager;
@@ -437,17 +439,42 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
 
     @Override
     public RunnableList startActivitySafely(View v, Intent intent, ItemInfo item) {
-        PredictionRowView<?> predictionRowView =
-                getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class);
+        // LC-Note: There are Lawnchair Prediction changes here.
+        
+        PredictionRowView<?> predictionRowView = getPredictionRowView();
         // Pause the prediction row updates until the transition (if it exists) ends.
-        predictionRowView.setPredictionUiUpdatePaused(true);
+        if (predictionRowView != null) {
+            predictionRowView.setPredictionUiUpdatePaused(true);
+        }
         RunnableList result = super.startActivitySafely(v, intent, item);
         if (result == null) {
-            predictionRowView.setPredictionUiUpdatePaused(false);
+            reapplyPredictionUi();
         } else {
-            result.add(() -> predictionRowView.setPredictionUiUpdatePaused(false));
+            result.add(this::reapplyPredictionUi);
         }
         return result;
+    }
+
+    // LC-Note: Lawnchair Prediction
+    @Nullable
+    private PredictionRowView<?> getPredictionRowView() {
+        return getAppsView() == null
+                ? null
+                : getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class);
+    }
+
+    // LC-Note: Lawnchair Prediction
+    private void reapplyPredictionUi() {
+        PredictionRowView<?> predictionRowView = getPredictionRowView();
+        if (predictionRowView != null) {
+            predictionRowView.setPredictionUiUpdatePaused(false);
+            if (mAllAppsPredictions != null) {
+                predictionRowView.setPredictedApps(mAllAppsPredictions.getContents());
+            }
+        }
+        if (mHotseatPredictionController != null && mHotseatPredictions != null) {
+            mHotseatPredictionController.setPredictedItems(mHotseatPredictions);
+        }
     }
 
     @Override
@@ -584,15 +611,21 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
 
     @Override
     public void bindPredictedContainerInfo(PredictedContainerInfo info) {
+        // LC-Note: There are Lawnchair Prediction changes here.
         super.bindPredictedContainerInfo(info);
         switch (info.id) {
             case Favorites.CONTAINER_ALL_APPS_PREDICTION:
                 mAllAppsPredictions = info;
-                getAppsView().getFloatingHeaderView().findFixedRowByType(
-                        PredictionRowView.class).setPredictedApps(info.getContents());
+                PredictionRowView<?> predictionRowView = getPredictionRowView();
+                if (predictionRowView != null) {
+                    predictionRowView.setPredictedApps(info.getContents());
+                }
                 break;
             case Favorites.CONTAINER_HOTSEAT_PREDICTION:
-                mHotseatPredictionController.setPredictedItems(info);
+                mHotseatPredictions = info;
+                if (mHotseatPredictionController != null) {
+                    mHotseatPredictionController.setPredictedItems(info);
+                }
                 break;
             case Favorites.CONTAINER_WIDGETS_PREDICTION:
                 getWidgetPickerDataProvider().setWidgetRecommendations(info.getContents());
@@ -677,7 +710,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                     TaskView taskToLaunch = currentPageTask;
                     if (currentPageTask == null) {
                         taskToLaunch = fallbackTask;
-                        ActiveGestureProtoLogProxy.logQuickSwitchFromHomeFallback(
+                        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logQuickSwitchFromHomeFallback(
                                 rv.getCurrentPage());
                     }
                     taskToLaunch.launchWithoutAnimation(success -> {
@@ -689,7 +722,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                         return Unit.INSTANCE;
                     });
                 } else {
-                    ActiveGestureProtoLogProxy.logQuickSwitchFromHomeFailed(rv.getCurrentPage());
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logQuickSwitchFromHomeFailed(rv.getCurrentPage());
                     getStateManager().goToState(NORMAL);
                 }
                 break;
@@ -883,6 +916,8 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
     protected void onResume() {
         super.onResume();
 
+        reapplyPredictionUi();
+
         if (mLauncherUnfoldAnimationController != null) {
             mLauncherUnfoldAnimationController.onResume();
         }
@@ -942,6 +977,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
     @Override
     protected void logOnNewIntent(boolean alreadyOnHome, boolean shouldMoveToDefaultScreen,
             String action, boolean internalStateHandled) {
+        if (!Utilities.ATLEAST_S) return;
         OverviewCommandHelperProtoLogProxy.logOnNewIntent(alreadyOnHome, shouldMoveToDefaultScreen,
                 action, internalStateHandled);
     }

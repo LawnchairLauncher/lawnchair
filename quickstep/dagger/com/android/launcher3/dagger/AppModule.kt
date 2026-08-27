@@ -16,8 +16,8 @@
 
 package com.android.launcher3.dagger
 
+import app.lawnchair.predictions.LawnchairModelDelegate
 import com.android.launcher3.model.ModelDelegate
-import com.android.launcher3.model.QuickstepModelDelegate
 import dagger.Binds
 import dagger.Module
 
@@ -28,5 +28,5 @@ import dagger.Module
 @Module
 abstract class AppModule {
 
-    @Binds abstract fun bindModelDelegate(impl: QuickstepModelDelegate): ModelDelegate
+    @Binds abstract fun bindModelDelegate(impl: LawnchairModelDelegate): ModelDelegate
 }

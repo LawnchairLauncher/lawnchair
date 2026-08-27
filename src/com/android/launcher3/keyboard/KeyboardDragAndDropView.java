@@ -183,10 +183,16 @@ public class KeyboardDragAndDropView extends AbstractFloatingView
             mDelegates.add(((CellLayout) pv.getChildAt(i)).getDragAndDropAccessibilityDelegate());
         }
         if (openFolder == null) {
-            mDelegates.add(pv.getNextPage() + 1,
-                    mLauncher.getHotseat().getDragAndDropAccessibilityDelegate());
+            DragAndDropAccessibilityDelegate hotseatDelegate =
+                    mLauncher.getHotseat().getDragAndDropAccessibilityDelegate();
+            if (hotseatDelegate != null) {
+                mDelegates.add(pv.getNextPage() + 1, hotseatDelegate);
+            }
         }
         mDelegates.forEach(delegate -> {
+            if (delegate == null) {
+                return;
+            }
             mIntList.clear();
             delegate.getVisibleVirtualViews(mIntList);
             mIntList.forEach(id -> mNodes.add(new VirtualNodeInfo(delegate, id)));

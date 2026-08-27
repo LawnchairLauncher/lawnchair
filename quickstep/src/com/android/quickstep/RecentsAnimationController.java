@@ -31,6 +31,7 @@ import androidx.annotation.UiThread;
 
 import com.android.internal.jank.Cuj;
 import com.android.internal.os.IResultReceiver;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.util.ActiveGestureProtoLogProxy;
@@ -145,7 +146,7 @@ public class RecentsAnimationController {
             // trigger the callback to be called immediately
             return;
         }
-        ActiveGestureProtoLogProxy.logFinishRecentsAnimation(toRecents);
+        if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logFinishRecentsAnimation(toRecents);
         // Finish not yet requested
         mFinishRequested = true;
         mFinishTargetIsLauncher = toRecents;
@@ -154,7 +155,7 @@ public class RecentsAnimationController {
             mController.finish(toRecents, sendUserLeaveHint, new IResultReceiver.Stub() {
                 @Override
                 public void send(int i, Bundle bundle) throws RemoteException {
-                    ActiveGestureProtoLogProxy.logFinishRecentsAnimationCallback();
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logFinishRecentsAnimationCallback();
                     MAIN_EXECUTOR.execute(() -> {
                         mPendingFinishCallbacks.executeAllAndDestroy();
                     });

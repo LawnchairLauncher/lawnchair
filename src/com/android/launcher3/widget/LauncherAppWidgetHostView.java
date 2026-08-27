@@ -43,6 +43,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Flags;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
@@ -107,9 +108,25 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     @Override
     public void setColorResources(@Nullable SparseIntArray colors) {
-        if (colors == null) {
+        if (colors == null || colors.size() == 0) {
             resetColorResources();
+            return;
+        }
+
+        // LC-Note: Fix widget idmap theming issue
+        if (Utilities.ATLEAST_U) {
+            // LC-Note: Yes, this exists, don't get fool by your language processor.
+            // Since Android 13 Initial
+            RemoteViews.ColorResources colorResources = RemoteViews.ColorResources.create(getContext(), colors);
+            if (colorResources == null) {
+                resetColorResources();
+                return;
+            }
+            // LC-Note: Yes, this super also exists.
+            // Since Android 14 Initial
+            super.setColorResources(colorResources);
         } else {
+            // LC-Note: Fall back for Android 12 impl
             super.setColorResources(colors);
         }
     }

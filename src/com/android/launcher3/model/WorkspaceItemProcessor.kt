@@ -114,6 +114,7 @@ class WorkspaceItemProcessor(
             when (c.itemType) {
                 Favorites.ITEM_TYPE_APPLICATION,
                 Favorites.ITEM_TYPE_DEEP_SHORTCUT -> processAppOrDeepShortcut()
+                Favorites.ITEM_TYPE_SHORTCUT -> processLegacyShortcut()
                 Favorites.ITEM_TYPE_FOLDER,
                 Favorites.ITEM_TYPE_APP_PAIR -> processFolderOrAppPair()
                 Favorites.ITEM_TYPE_APPWIDGET,
@@ -122,6 +123,64 @@ class WorkspaceItemProcessor(
         } catch (e: Exception) {
             Log.e(TAG, "Desktop items loading interrupted", e)
         }
+    }
+
+    /** LC-Note: We still use this to support legacy shortcut for non-root. */
+    private fun processLegacyShortcut() {
+        val intent =
+            c.parseIntent()
+                ?: run {
+                    c.markDeleted(
+                        "Null intent from db for legacy shortcut id=${c.id}",
+                        RestoreError.APP_NO_DB_INTENT,
+                    )
+                    return
+                }
+        var disabledState =
+            if (userManagerState.isUserQuiet(c.serialNumber))
+                WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER
+            else 0
+        val appInfoWrapper = ApplicationInfoWrapper(context, intent)
+        if (appInfoWrapper.isSuspended()) {
+            disabledState = disabledState or ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED
+        }
+
+        val info = c.loadSimpleWorkspaceItem()
+
+        // LC-Note: Show badge for legacy shortcut when possible
+        val launchPackage = intent.component?.packageName ?: intent.`package`
+        if (!launchPackage.isNullOrEmpty()) {
+            info.bitmap = info.bitmap.withBadgeInfo(
+                iconCache.getShortcutInfoBadge(launchPackage, c.user)
+            )
+        }
+
+        info.options = c.options
+        if (
+            intent.action != null &&
+                intent.categories != null &&
+                intent.action == Intent.ACTION_MAIN &&
+                intent.categories.contains(Intent.CATEGORY_LAUNCHER)
+        ) {
+            intent.addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+            )
+        }
+
+        c.markRestored()
+        val useLowResIcon = !c.isOnWorkspaceOrHotseat
+        iconRequestInfos.add(c.createIconRequestInfo(info, useLowResIcon))
+        c.applyCommonProperties(info)
+        info.intent = intent
+        info.rank = c.rank
+        info.spanX = 1
+        info.spanY = 1
+        info.runtimeStatusFlags = info.runtimeStatusFlags or disabledState
+        if (isSafeMode && !appInfoWrapper.isSystem()) {
+            info.runtimeStatusFlags =
+                info.runtimeStatusFlags or ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE
+        }
+        c.checkAndAddItem(info, loadedItems, memoryLogger)
     }
 
     /**

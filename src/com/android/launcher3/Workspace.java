@@ -145,6 +145,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.hotseat.HotseatPagedView;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
@@ -765,7 +766,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             int dragSourceChildCount = mDragSourceInternal.getChildCount();
 
             // If the icon was dragged from Hotseat, there is no page pair
-            if (isTwoPanelEnabled() && !(mDragSourceInternal.getParent() instanceof Hotseat)) {
+            if (isTwoPanelEnabled() && !mLauncher.isHotseatLayout(
+                    (View) mDragSourceInternal.getParent())) {
                 int pagePairScreenId = getScreenPair(getCellPosMapper().mapModelToPresenter(
                         dragObject.dragInfo).screenId);
                 CellLayout pagePair = mWorkspaceScreens.get(pagePairScreenId);
@@ -1016,6 +1018,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         int index = mWorkspaceScreens.indexOfValue(layout);
         if (index != -1) {
             return mWorkspaceScreens.keyAt(index);
+        }
+        Hotseat hotseat = mLauncher.getHotseat();
+        if (hotseat != null && hotseat.isHotseatPage(layout)) {
+            return layout.getHotseatPageIndex();
         }
         return -1;
     }
@@ -1501,7 +1507,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public void showPageIndicatorAtCurrentScroll() {
         if (mPageIndicator != null) {
-            mPageIndicator.setScroll(getScrollX(), computeMaxScroll());
+            // LC-Note: Use wrap-aware scroll for continuous infinite-scroll indicator animation.
+            mPageIndicator.setScroll(getScrollForPageIndicator(), computeMaxScroll());
             var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.isHotseatEnabled());
             mPageIndicator.setVisibility(isHotseatEnabled ? VISIBLE : INVISIBLE);
         }
@@ -1859,7 +1866,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                         protected void enableAccessibleDrag(boolean enable,
                                 @Nullable DragObject dragObject) {
                             super.enableAccessibleDrag(enable, dragObject);
-                            setEnableForLayout(mLauncher.getHotseat(), enable);
+                            Hotseat hotseat = mLauncher.getHotseat();
+                            if (hotseat != null) {
+                                for (CellLayout page : hotseat.getPageLayouts()) {
+                                    setEnableForLayout(page, enable);
+                                }
+                            }
                             if (enable && dragObject != null
                                     && dragObject.dragInfo instanceof LauncherAppWidgetInfo) {
                                 mLauncher.getHotseat().setImportantForAccessibility(
@@ -2787,7 +2799,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private boolean setDropLayoutForDragObject(DragObject d, float centerX, float centerY) {
         CellLayout layout = null;
         if (shouldUseHotseatAsDropLayout(d)) {
-            layout = mLauncher.getHotseat();
+            layout = resolveHotseatDropLayout(d);
         } else if (!isDragObjectOverSmartSpace(d)) {
             // If the object is over qsb/smartspace, we don't want to highlight anything.
 
@@ -2813,14 +2825,35 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return false;
     }
 
+    @Nullable
+    private CellLayout resolveHotseatDropLayout(DragObject dragObject) {
+        Hotseat hotseat = mLauncher.getHotseat();
+        if (hotseat == null) {
+            return null;
+        }
+        // Prefer the visible dock page so drops land where the user is looking.
+        CellLayout current = hotseat.getCurrentPageLayout();
+        HotseatPagedView pager = hotseat.getPagedView();
+        if (pager != null && pager.isPageInTransition()) {
+            float[] xy = new float[] { dragObject.x, dragObject.y };
+            mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, xy, true);
+            mLauncher.getDragLayer().mapCoordInSelfToDescendant(pager, xy);
+            CellLayout underFinger = pager.findPageAtLocalX(xy[0]);
+            if (underFinger != null) {
+                return underFinger;
+            }
+        }
+        return current;
+    }
+
     private boolean shouldUseHotseatAsDropLayout(DragObject dragObject) {
         if (mLauncher.getHotseat() == null
                 || mLauncher.getHotseat().getShortcutsAndWidgets() == null
                 || isDragWidget(dragObject)) {
             return false;
         }
-        View hotseatShortcuts = mLauncher.getHotseat().getShortcutsAndWidgets();
-        getViewBoundsRelativeToWorkspace(hotseatShortcuts, mTempRect);
+        View hotseatIcons = mLauncher.getHotseat().getPagedView();
+        getViewBoundsRelativeToWorkspace(hotseatIcons, mTempRect);
         return mTempRect.contains(dragObject.x, dragObject.y);
     }
 
@@ -3452,6 +3485,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         int pageIndex = starts.get(groupIndex);
         setDefaultPage(pageIndex);
         Toast.makeText(mLauncher, R.string.default_home_page_set, Toast.LENGTH_SHORT).show();
+        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS);
         return true;
     }
 
@@ -3710,16 +3744,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     private CellLayout[] getWorkspaceAndHotseatCellLayouts() {
         int screenCount = getChildCount();
-        final CellLayout[] layouts;
-        if (mLauncher.getHotseat() != null) {
-            layouts = new CellLayout[screenCount + 1];
-            layouts[screenCount] = mLauncher.getHotseat();
-        } else {
-            layouts = new CellLayout[screenCount];
-        }
+        CellLayout[] hotseatPages = mLauncher.getHotseat() != null
+                ? mLauncher.getHotseat().getPageLayouts()
+                : new CellLayout[0];
+        final CellLayout[] layouts = new CellLayout[screenCount + hotseatPages.length];
         for (int screen = 0; screen < screenCount; screen++) {
             layouts[screen] = (CellLayout) getChildAt(screen);
         }
+        System.arraycopy(hotseatPages, 0, layouts, screenCount, hotseatPages.length);
         return layouts;
     }
 

@@ -182,6 +182,11 @@
     <string name="gesturenavcontract_label">GestureNavContract-API gebruiken</string>
     <string name="gesturenavcontract_description">Ondersteunt Android\'s verbeterde animaties bij het gebruik van gebaren</string>
     <string name="gesturenavcontract_warning_incompatibility">Je apparaat wordt niet volledig ondersteund. Dit kan tot visuele problemen leiden voor sommige animaties</string>
+    <string name="vibration_feedback_level_label">Trillingsfeedback</string>
+    <string name="vibration_feedback_no_feedback_choice">Geen</string>
+    <string name="vibration_feedback_minimal_choice">Minimaal</string>
+    <string name="vibration_feedback_default_choice">Standaard</string>
+    <string name="vibration_feedback_expressive_choice">Expressief</string>
     <string name="recents_lock_unlock">App vergrendelen</string>
     <string name="recents_lock_unlock_description">Voorkom sluiten van geselecteerde app bij \"Alles wissen\"</string>
     <!--Overlay-->
@@ -190,6 +195,23 @@
     <string name="overlay_suck_in">Inzuigen</string>
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">Geen</string>
+    <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Suggesties</string>
+    <string name="global_predictions_label">Suggestiefuncties weergeven</string>
+    <string name="app_predictions_label">App-suggesties</string>
+    <string name="prediction_mode_label">Suggestie-aanbieder</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">Systeem</string>
+    <string name="prediction_mode_none">Uitgeschakeld</string>
+    <string name="prediction_weighted_usage_stats_label">Gebruiksgegevens van apparaat gebruiken</string>
+    <string name="prediction_weighted_usage_stats_description">Gebruik de gebruiksstatistieken van je apparaat om suggesties nauwkeuriger te maken</string>
+    <string name="dismissed_prediction_apps_label">Geblokkeerde apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Geblokkeerde apps (%1$d)</string>
+    <string name="prediction_system_settings">Systeemsuggesties beheren</string>
+    <string name="missing_usage_access_label">Gebruikstoegang vereist</string>
+    <string name="missing_usage_access_desc">Om app-suggesties te verbeteren, schakel gebruikstoegang in voor <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -609,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Afstand boven</string>
     <string name="hotseat_bg_vertical_inset_bottom">Afstand onder</string>
     <string name="hotseat_bg_color_label">Achtergrondkleur</string>
+    <string name="hotseat_bg_corner_radius">Hoekradius achtergrond</string>
     <string name="hotseat_bg_alpha">Achtergronddekking</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pauzeren</string>
@@ -617,9 +640,10 @@
     <string name="paused_apps_dialog_title">App gepauzeerd</string>
     <string name="paused_apps_dialog_message">%1$s is direct gepauzeerd vanuit de Launcher</string>
     <string name="paused_apps_drop_target_label">App pauzeren</string>
-    <string name="open_in_store_drop_target_label">Open in de winkel</string>
+    <string name="open_in_store_drop_target_label">Openen in winkel</string>
     <string name="dock_icons">Dok-iconen</string>
     <string name="dock_rows">Dokrijen</string>
+    <string name="dock_pages">Dokpagina\'s</string>
     <string name="state_folded">%1$s (gevouwen)</string>
     <string name="state_unfolded">%1$s (uitgevouwen)</string>
     <string name="folded_label">Gevouwen</string>
@@ -700,7 +724,7 @@
     <string name="all_apps_search_result_settings_entry_from_device">Instellingen van apparaat</string>
     <string name="all_apps_search_market_message">Meer apps zoeken</string>
     <string name="all_apps_search_on_web_message">Zoeken op <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>    </string>
-    <string name="error_no_market_or_browser_installed">Geen appwikel of browser geïnstalleerd</string>
+    <string name="error_no_market_or_browser_installed">Geen appwinkel of browser geïnstalleerd</string>
     <string name="all_apps_search_on_web_general">Zoeken op het web</string>
     <string name="clear_history">Zoekgeschiedenis wissen</string>
     <string name="search_input_action_clear_results">Zoekveld wissen</string>
@@ -710,7 +734,6 @@
     <string name="pref_search_auto_show_keyboard">Toetsenbord automatisch weergeven</string>
     <string name="fuzzy_search_title">Vage zoekopdracht</string>
     <string name="fuzzy_search_desc">Geschatte overeenkomst voor app zoeken</string>
-    <string name="suggestion_pref_screen_title">Suggesties</string>
     <string name="show_suggested_apps_at_drawer_top">Voorgestelde apps bovenaan de app-lade weergeven</string>
     <string name="perform_wide_search_title">Zoeken op apparaat</string>
     <string name="perform_wide_search_description">Zoeken in de contacten, bestanden en instellingen van je telefoon</string>
