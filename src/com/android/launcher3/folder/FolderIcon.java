@@ -631,13 +631,19 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         if (!mBackgroundIsVisible) return;
 
+        // Lawnchair: keep the preview layout rule initialized even while cover mode is skipping
+        // the normal preview drawing below -- FolderAnimationSpringBuilderManager/
+        // FolderAnimationManager read it directly (via getLayoutRule()) when animating the
+        // folder open, without initializing it themselves, so a folder that's never drawn its
+        // normal preview even once (i.e. cover mode was already on when this icon was created)
+        // would otherwise open with a NaN scale and crash.
+        mPreviewItemManager.recomputePreviewDrawingParams();
+
         if (mCoverDrawable != null) {
             drawCoverIcon(canvas);
             drawDot(canvas);
             return;
         }
-
-        mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackground(canvas);
