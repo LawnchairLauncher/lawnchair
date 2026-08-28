@@ -42,6 +42,5 @@ object FolderCoverMode {
         return true
     }
 
-    fun createGestureListener(folderIcon: FolderIcon): View.OnTouchListener =
-        FolderCoverModeGestureListener(folderIcon)
+    fun createGestureListener(folderIcon: FolderIcon): View.OnTouchListener = FolderCoverModeGestureListener(folderIcon)
 }
