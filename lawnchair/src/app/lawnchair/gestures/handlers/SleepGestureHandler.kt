@@ -24,14 +24,18 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.compose.material3.ExperimentalMaterial3Api
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.ui.util.rememberCloseSheet
+import app.lawnchair.ui.util.rememberSheetState
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class SleepGestureHandler(context: Context) : GestureHandler(context) {
 
@@ -89,6 +93,7 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
 class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod(context) {
     override suspend fun isSupported() = true
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override suspend fun sleep(launcher: LawnchairLauncher) {
         val devicePolicyManager: DevicePolicyManager = context.requireSystemService()
         if (!devicePolicyManager.isAdminActive(ComponentName(context, SleepDeviceAdmin::class.java))) {
@@ -102,11 +107,14 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
                     launcher.getString(R.string.dt2s_admin_hint),
                 )
             ComposeBottomSheet.show(launcher) {
+                val sheetState = rememberSheetState()
+                val closeSheet = rememberCloseSheet(sheetState)
                 ServiceWarningDialog(
                     title = R.string.dt2s_admin_hint_title,
                     action = R.string.dt2s_admin_hint,
                     settingsIntent = intent,
-                ) { close(true) }
+                    handleClose = closeSheet,
+                )
             }
             return
         }
