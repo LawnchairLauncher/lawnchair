@@ -603,6 +603,16 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         return FolderLongPress.INSTANCE.startLongPressAction(this);
     }
 
+    /**
+     * Lawnchair: Whether this folder icon has a swipe-up gesture configured, i.e. cover mode is
+     * on with a valid cover app. Consulted by {@link Workspace#isTouchOnIconWithSwipeGesture} so
+     * the workspace's own vertical swipe handling (opening all apps, configured icon gestures)
+     * backs off and lets the swipe reach this icon's own gesture listener instead.
+     */
+    public boolean hasConfiguredVerticalIconSwipeGesture() {
+        return mCoverDrawable != null;
+    }
+
     public boolean getIconVisible() {
         return mBackgroundIsVisible;
     }
