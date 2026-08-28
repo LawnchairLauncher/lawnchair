@@ -23,6 +23,7 @@ import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVER
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderGridOrganizer.createFolderGridOrganizer;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
+import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_PRIMARY;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_SUGGESTIONS;
@@ -31,6 +32,7 @@ import static com.android.launcher3.model.data.FolderInfo.willAcceptItemType;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -72,6 +74,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.DotRenderer;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
@@ -91,6 +94,8 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import app.lawnchair.folder.FolderCoverMode;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -140,6 +145,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     private Rect mTouchArea = new Rect();
 
     private float mScaleForReorderBounce = 1f;
+
+    // Lawnchair: Cover mode -- draws the folder's first app in place of the grid preview.
+    private WorkspaceItemInfo mCoverItem;
+    private FastBitmapDrawable mCoverDrawable;
+    private View.OnTouchListener mCoverGestureListener;
 
     private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "dotScale") {
@@ -231,6 +241,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         icon.mPreviewVerifier = createFolderGridOrganizer(activity.getDeviceProfile());
         icon.mPreviewVerifier.setFolderInfo(folderInfo);
         icon.updatePreviewItems(false);
+        icon.updateCoverMode();
 
         return icon;
     }
@@ -598,6 +609,12 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         if (!mBackgroundIsVisible) return;
 
+        if (mCoverDrawable != null) {
+            drawCoverIcon(canvas);
+            drawDot(canvas);
+            return;
+        }
+
         mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
@@ -625,8 +642,12 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             iconBounds.top = getPaddingTop();
             iconBounds.bottom = iconBounds.top + iconSize;
 
-            float iconScale = (float) mBackground.previewSize / iconSize;
-            Utilities.scaleRectAboutCenter(iconBounds, iconScale);
+            // Lawnchair: in cover mode the icon is already drawn at natural size (see
+            // drawCoverIcon), so the badge shouldn't be scaled up to match the folder plate.
+            if (mCoverDrawable == null) {
+                float iconScale = (float) mBackground.previewSize / iconSize;
+                Utilities.scaleRectAboutCenter(iconBounds, iconScale);
+            }
 
             // If we are animating to the accepting state, animate the dot out.
             mDotParams.scale = Math.max(0, mDotScale - mBackground.getAcceptScaleProgress());
@@ -671,7 +692,8 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     @Override
     protected boolean verifyDrawable(@NonNull Drawable who) {
-        return mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
+        return mPreviewItemManager.verifyDrawable(who) || who == mCoverDrawable
+                || super.verifyDrawable(who);
     }
 
     private void updatePreviewItems(boolean animate) {
@@ -692,8 +714,59 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         updateDotInfo();
         setContentDescription(getAccessiblityTitle(mInfo.title));
         updatePreviewItems(animate);
+        updateCoverMode();
         invalidate();
         requestLayout();
+    }
+
+    /**
+     * Lawnchair: Toggles cover mode for this folder and refreshes the icon accordingly.
+     */
+    public void toggleCoverMode() {
+        boolean enabled = !mInfo.hasOption(FolderInfo.FLAG_COVER_MODE);
+        mInfo.setOption(FolderInfo.FLAG_COVER_MODE, enabled, mActivity.getModelWriter());
+        updateCoverMode();
+    }
+
+    /**
+     * Lawnchair: Refreshes cover-mode state -- the drawable shown in place of the folder preview,
+     * and the touch listener that opens the folder on a swipe up. Safe to call whenever the
+     * folder's cover-mode flag or contents may have changed.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    public void updateCoverMode() {
+        WorkspaceItemInfo coverItem = FolderCoverMode.INSTANCE.getCoverItem(this);
+        if (coverItem != mCoverItem) {
+            if (mCoverDrawable != null) {
+                mCoverDrawable.setCallback(null);
+            }
+            mCoverItem = coverItem;
+            mCoverDrawable = coverItem != null
+                    ? coverItem.newIcon(getContext(), FLAG_THEMED) : null;
+            if (mCoverDrawable != null) {
+                mCoverDrawable.setCallback(this);
+            }
+        }
+        if (mCoverDrawable != null) {
+            if (mCoverGestureListener == null) {
+                mCoverGestureListener = FolderCoverMode.INSTANCE.createGestureListener(this);
+            }
+            setOnTouchListener(mCoverGestureListener);
+        } else {
+            setOnTouchListener(null);
+        }
+        invalidate();
+    }
+
+    /**
+     * Lawnchair: Draws the cover app's icon in place of the folder's grid preview.
+     */
+    private void drawCoverIcon(Canvas canvas) {
+        int iconSize = mActivity.getDeviceProfile().iconSizePx;
+        int left = (getWidth() - iconSize) / 2;
+        int top = getPaddingTop();
+        mCoverDrawable.setBounds(left, top, left + iconSize, top + iconSize);
+        mCoverDrawable.draw(canvas);
     }
 
     public void onTitleChanged(CharSequence title) {

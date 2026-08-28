@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.folder.FolderCoverMode
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -28,6 +29,8 @@ import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK
 import com.android.launcher3.R
@@ -37,6 +40,7 @@ import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
+import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.ApplicationInfoWrapper
@@ -144,6 +148,18 @@ class LawnchairShortcut {
                 OpenInStore(activity, itemInfo, originalView, packageName, installer)
             }
 
+        val COVER_MODE =
+            SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, originalView: View ->
+                if (itemInfo !is FolderInfo ||
+                    (itemInfo.container != CONTAINER_DESKTOP && itemInfo.container != CONTAINER_HOTSEAT) ||
+                    originalView !is FolderIcon
+                ) {
+                    null
+                } else {
+                    CoverMode(activity, itemInfo, originalView)
+                }
+            }
+
         val PAUSE_APPS = SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
             val targetCmp = itemInfo.targetComponent
             val packageName = targetCmp?.packageName ?: return@Factory null
@@ -204,6 +220,23 @@ class LawnchairShortcut {
                 Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show()
                 AbstractFloatingView.closeAllOpenViews(launcher)
             }
+        }
+    }
+
+    class CoverMode(
+        target: ActivityContext,
+        itemInfo: FolderInfo,
+        private val folderIcon: FolderIcon,
+    ) : SystemShortcut<ActivityContext>(
+        R.drawable.ic_apps,
+        if (FolderCoverMode.isEnabled(itemInfo)) R.string.disable_cover_mode else R.string.enable_cover_mode,
+        target,
+        itemInfo,
+        folderIcon,
+    ) {
+        override fun onClick(view: View) {
+            dismissTaskMenuView()
+            folderIcon.toggleCoverMode()
         }
     }
 

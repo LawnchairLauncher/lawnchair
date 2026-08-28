@@ -129,6 +129,8 @@
     <string name="app_drawer_folder_settings">App drawer folder</string>
     <string name="add_folder">Create folder</string>
     <string name="edit_folder">Edit folder</string>
+    <string name="enable_cover_mode">Enable cover mode</string>
+    <string name="disable_cover_mode">Disable cover mode</string>
     <string name="add_label">Add</string>
     <string name="edit_label">Edit</string>
     <string name="apply_label">Apply</string>
