@@ -1265,8 +1265,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return null;
     }
 
-    // Lawnchair: Icon swipe gesture feature
-    private View findIconInCellLayout(CellLayout cellLayout, float x, float y) {
+    // Lawnchair: Icon swipe gesture feature -- package-visible so Hotseat can reuse this same
+    // per-page hit test for its own dock CellLayout pages (see Hotseat#isTouchOnIconWithSwipeGesture).
+    static View findIconInCellLayout(CellLayout cellLayout, float x, float y) {
         ShortcutAndWidgetContainer container = cellLayout.getShortcutsAndWidgets();
         float containerX = x - container.getLeft();
         float containerY = y - container.getTop();
