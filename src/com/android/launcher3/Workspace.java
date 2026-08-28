@@ -1958,6 +1958,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (btv.isDisplaySearchResult()) {
                 dragOptions.preDragEndScale = (float) mAllAppsIconSize / btv.getIconSize();
             }
+        } else if (child instanceof FolderIcon) {
+            // Lawnchair: folders aren't BubbleTextViews, so they need their own long-press
+            // popup + pre-drag condition to behave like an app icon's long-press (see
+            // FolderIcon#startLongPressAction).
+            if (!dragOptions.isAccessibleDrag) {
+                dragOptions.preDragCondition = ((FolderIcon) child).startLongPressAction();
+            }
         }
 
         boolean lockHomeScreen = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getLockHomeScreen());
