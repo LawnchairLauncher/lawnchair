@@ -71,6 +71,7 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.DotRenderer;
@@ -96,6 +97,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import app.lawnchair.folder.FolderCoverMode;
+import app.lawnchair.folder.FolderLongPress;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -589,6 +591,16 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     public void setIconVisible(boolean visible) {
         mBackgroundIsVisible = visible;
         invalidate();
+    }
+
+    /**
+     * Lawnchair: Starts a long-press action for this folder icon, mirroring
+     * {@link BubbleTextView#startLongPressAction()}: shows the folder's options popup and returns
+     * a pre-drag condition, so a plain long-press shows the popup (matching an app icon's
+     * long-press) while dragging past the threshold still starts a normal reorder.
+     */
+    public DragOptions.PreDragCondition startLongPressAction() {
+        return FolderLongPress.INSTANCE.startLongPressAction(this);
     }
 
     public boolean getIconVisible() {
