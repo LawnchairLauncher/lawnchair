@@ -21,7 +21,6 @@ import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WarningPreference(
     text: String,
@@ -42,7 +41,6 @@ fun WarningPreference(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WarningPreference(
     text: String,
