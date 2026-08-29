@@ -18,7 +18,6 @@ package app.lawnchair.ui.preferences.components.layout
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ListItemShapes
@@ -36,7 +35,6 @@ import androidx.compose.ui.Modifier
 /***
  * A template used to create most preference-related components in the Preference UI.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferenceTemplate(
     title: @Composable () -> Unit,

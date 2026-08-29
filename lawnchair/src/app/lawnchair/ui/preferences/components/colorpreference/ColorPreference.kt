@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences.components.colorpreference
 
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -58,7 +57,6 @@ fun ColorPreference(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ColorPreference(
     label: String,
