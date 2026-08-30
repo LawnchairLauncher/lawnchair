@@ -202,7 +202,7 @@
     <string name="global_predictions_label">Suggestiefuncties weergeven</string>
     <string name="app_predictions_label">App-suggesties</string>
     <string name="prediction_mode_label">Suggestie-aanbieder</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Deze functie vereist Android 10 of hoger</string>
     <string name="prediction_mode_system">Systeem</string>
     <string name="prediction_mode_none">Uitgeschakeld</string>
     <string name="prediction_weighted_usage_stats_label">Gebruiksgegevens van apparaat gebruiken</string>
