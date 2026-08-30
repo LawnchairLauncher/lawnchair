@@ -35,6 +35,7 @@ import app.lawnchair.qsb.LawnQsbUi
 import app.lawnchair.qsb.QsbActions
 import app.lawnchair.qsb.buildQsbStyle
 import app.lawnchair.qsb.getHotseatBackgroundColor
+import app.lawnchair.qsb.providers.GlobalSearchApp
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
@@ -61,6 +62,7 @@ import com.android.launcher3.R
 fun DockSearchPreference(
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
 
@@ -72,6 +74,18 @@ fun DockSearchPreference(
     val qsbHotseatStrokeWidth = prefs.hotseatQsbStrokeWidth.getAdapter()
     val strokeColorStyleAdapter = prefs2.strokeColorStyle.getAdapter()
     val hotseatQsbProviderAdapter by prefs2.hotseatQsbProvider.getAdapter()
+    val globalSearchPackage by prefs2.hotseatQsbGlobalSearchPackage.getAdapter()
+    val searchProviderDescription = if (hotseatQsbProviderAdapter == GlobalSearchApp) {
+        remember(context, globalSearchPackage) {
+            GlobalSearchApp.getApplicationLabel(context, globalSearchPackage)
+        } ?: stringResource(R.string.search_provider_other_app)
+    } else {
+        stringResource(
+            id = QsbSearchProvider.values()
+                .first { it == hotseatQsbProviderAdapter }
+                .name,
+        )
+    }
 
     Crossfade(isHotseatEnabled.state.value, label = "transition", modifier = modifier) { hotseatEnabled ->
         val isLawnchairHotseat = hotseatModeAdapter.state.value == LawnchairHotseat
@@ -102,11 +116,7 @@ fun DockSearchPreference(
                             NavigationActionPreference(
                                 label = stringResource(R.string.search_provider),
                                 destination = DockSearchProvider,
-                                subtitle = stringResource(
-                                    id = QsbSearchProvider.values()
-                                        .first { it == hotseatQsbProviderAdapter }
-                                        .name,
-                                ),
+                                subtitle = searchProviderDescription,
                             )
                         }
                         PreferenceGroup(
