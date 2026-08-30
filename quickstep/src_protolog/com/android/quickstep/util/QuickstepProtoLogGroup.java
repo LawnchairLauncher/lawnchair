@@ -51,6 +51,7 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
         return Variables.sIsInitialized;
     }
 
+    @RequiresApi(36)
     public static void initProtoLog() {
         if (Variables.sIsInitialized) {
             Log.e(Constants.TAG,
