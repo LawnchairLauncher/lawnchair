@@ -205,7 +205,7 @@
     <string name="app_predictions_disable_reason_pre_q_description">Esta funcionalidade requer Android 10 ou superior</string>
     <string name="prediction_mode_system">Sistema</string>
     <string name="prediction_mode_none">Desligado</string>
-    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_label">Utilizar as previsões do sistema</string>
     <string name="prediction_weighted_usage_stats_description">Utilize as previsões do sistema para tornar as Sugestões mais fiáveis</string>
     <string name="dismissed_prediction_apps_label">Aplicações bloqueadas</string>
     <string name="dismissed_prediction_apps_label_with_count">Aplicações bloqueadas (%1$d)</string>
@@ -715,7 +715,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Procurar aplicações, web e mais</string>
+    <string name="all_apps_device_search_hint">Procurar aplicações, na web e muito mais</string>
     <string name="all_apps_search_bar_hint">Procurar aplicações</string>
     <string name="all_apps_no_search_results">Nenhuma aplicação encontrada correspondente a \"<xliff:g example="Android" id="query">%1$s</xliff:g>    </string>
     <string name="all_apps_search_result_suggestions">Da web</string>

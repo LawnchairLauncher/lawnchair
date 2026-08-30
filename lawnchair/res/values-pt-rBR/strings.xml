@@ -162,7 +162,7 @@
     <string name="workspace_label">Espaço de trabalho</string>
     <string name="smartspace_label">Espaço inteligente</string>
     <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_description">Interno pode ser menos estável que outros grupos experimentais</string>
     <string name="font_picker_label">Customização de fonte</string>
     <string name="font_picker_description">Algum texto continua inalterado</string>
     <string name="smartspace_calendar_label">Personalização do calendário do Resumo</string>
@@ -644,7 +644,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="open_in_store_drop_target_label">Abrir na loja</string>
     <string name="dock_icons">Ícones da dock</string>
     <string name="dock_rows">Linhas da Dock</string>
-    <string name="dock_pages">Dock pages</string>
+    <string name="dock_pages">Páginas do Dock</string>
     <string name="state_folded">%1$s (dentro da pasta)</string>
     <string name="state_unfolded">%1$s (Fora da pasta)</string>
     <string name="folded_label">Dentro da pasta</string>
@@ -679,8 +679,8 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="app_drawer_indent_label">Preenchimento horizontal</string>
     <string name="app_drawer_bg_color_label">Cor de fundo</string>
     <string name="work_profile_tab_background_label">Tab background color</string>
-    <string name="pref_all_apps_search_bar_background">Show background behind search bar</string>
-    <string name="work_profile_tab_container_background_label">Show background behind tabs</string>
+    <string name="pref_all_apps_search_bar_background">Mostrar plano de fundo atrás da barra de busca</string>
+    <string name="work_profile_tab_container_background_label">Mostrar plano de fundo atrás das abas</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Esconder da gaveta de aplicativos</string>
     <string name="hidden_apps_label_with_count">Aplicativos ocultos (%1$d)</string>
@@ -695,7 +695,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="max_folder_columns">Máximo de colunas nas pastas</string>
     <string name="max_folder_rows">Máximo de linhas nas pastas</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Estas opções serão ignoradas porque Lawnchair não está configurado como o provedor da tela de aplicativos recentes</string>
     <string name="quickstep_incompatible">Integração de sistema incompatível</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
     <string name="translucent_background">Fundo translúcido</string>
