@@ -23,7 +23,6 @@ import android.os.UserManager;
 import android.util.Log;
 import android.view.ThreadedRenderer;
 
-import app.lawnchair.LawnchairApp;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
 import com.android.quickstep.util.QuickstepProtoLogGroup;
@@ -67,10 +66,6 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
                                 ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
         } catch (Exception e) {
                 Log.e(TAG, "init: " + e);
-        }
-
-        if (Utilities.ATLEAST_BAKLAVA && LawnchairApp.isRecentsEnabled()) {
-            QuickstepProtoLogGroup.initProtoLog();
         }
     }
 }
