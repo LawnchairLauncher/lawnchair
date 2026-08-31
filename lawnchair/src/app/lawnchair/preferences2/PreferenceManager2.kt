@@ -29,6 +29,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.Converters
+import app.lawnchair.data.folder.service.FolderService
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
@@ -69,6 +70,7 @@ import com.android.launcher3.graphics.ThemeManager as L3ThemeManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.DynamicResource
+import com.android.launcher3.util.Executors
 import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.PreferenceManager
 import com.patrykmichalik.opto.core.firstBlocking
@@ -319,6 +321,15 @@ class PreferenceManager2 @Inject constructor(
     val hiddenApps = preference(
         key = stringSetPreferencesKey(name = "hidden_apps"),
         defaultValue = setOf(),
+        onSet = { hidden ->
+            // Keep drawer folders in sync: hidden apps must leave folder membership
+            // so counts and picker state stay accurate.
+            Executors.MODEL_EXECUTOR.execute {
+                runBlocking {
+                    FolderService.INSTANCE.get(context).removeItemsByComponentKeys(hidden)
+                }
+            }
+        },
     )
 
     val roundedWidgets = preference(
