@@ -114,14 +114,16 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         }
 
         // LC-Note: Fix widget idmap theming issue
-        if (Utilities.ATLEAST_T) {
-            // LC-Note: Yes, this exist, don't get fool by your language processor.
-            // https://cs.android.com/android/platform/superproject/+/android-latest-release:frameworks/base/core/java/android/widget/RemoteViews.java;l=9162;bpv=1?q=RemoteViews.ColorResources&ss=android%2Fplatform%2Fsuperproject
+        if (Utilities.ATLEAST_U) {
+            // LC-Note: Yes, this exists, don't get fool by your language processor.
+            // Since Android 13 Initial
             RemoteViews.ColorResources colorResources = RemoteViews.ColorResources.create(getContext(), colors);
             if (colorResources == null) {
                 resetColorResources();
                 return;
             }
+            // LC-Note: Yes, this super also exists.
+            // Since Android 14 Initial
             super.setColorResources(colorResources);
         } else {
             // LC-Note: Fall back for Android 12 impl

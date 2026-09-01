@@ -106,6 +106,7 @@ import dagger.assisted.AssistedInject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -615,7 +616,15 @@ public class LoaderTask implements Runnable {
         boolean isPrivateProfileQuiet = false;
         for (UserHandle user : profiles) {
             // Query for the set of apps
-            final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
+            List<LauncherActivityInfo> apps;
+            try {
+                apps = mLauncherApps.getActivityList(null, user);
+            } catch (SecurityException e) {
+                // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
+                // Ref: https://issuetracker.google.com/issues/547643926
+                Log.e("LC-LoaderTask", "Failed to get activity list for user " + user, e);
+                apps = Collections.emptyList();
+            }
             // Fail if we don't have any apps
             if (apps == null || apps.isEmpty()) {
                 if (myUserHandle().equals(user)) {
