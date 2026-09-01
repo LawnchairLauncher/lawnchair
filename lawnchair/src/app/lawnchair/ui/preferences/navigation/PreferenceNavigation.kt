@@ -83,6 +83,8 @@ fun PreferenceNavigation(
         exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
         popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
         popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
+        predictivePopEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
+        predictivePopExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
     ) {
         composable<Root> {
             val isExpandedScreen = LocalIsExpandedScreen.current
