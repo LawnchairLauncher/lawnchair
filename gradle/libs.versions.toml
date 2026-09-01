@@ -1,7 +1,7 @@
 [versions]
 jdkRelease = "21"
 
-agp = "9.3.2"
+agp = "9.4.0"
 kotlin = "2.4.10"
 androidx-room = "2.8.4"
 androidx-lifecycle = "2.11.0"
