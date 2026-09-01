@@ -525,7 +525,7 @@ public class DeviceProfile {
 
         numShownAllAppsColumns = displayOptionSpec.numAllAppsColumns;
 
-        int hotseatBarBottomSpace = !isQsbEnable ? 0 : pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
+        int hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
         int minQsbMargin = res.getDimensionPixelSize(R.dimen.min_qsb_margin);
 
         if (mIsResponsiveGrid) {
@@ -552,6 +552,7 @@ public class DeviceProfile {
         }
 
         if (!isQsbEnable) {
+            hotseatBarBottomSpace = 0;
             hotseatQsbSpace = 0;
         }
 

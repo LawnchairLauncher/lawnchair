@@ -2,6 +2,8 @@ package app.lawnchair.predictions
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherModel
@@ -92,11 +94,13 @@ class LawnchairAppPredictor(private val context: Context) : StatsLogCompatManage
     }
 
     @WorkerThread
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun consume(event: EventEnum?, atomInfo: ItemInfo?) {
         MODEL_EXECUTOR.execute { handleEvent(event, atomInfo) }
     }
 
     @WorkerThread
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun handleEvent(event: EventEnum?, atomInfo: ItemInfo?) {
         val resolvedEvent = eventResolver.resolve(atomInfo)
 
@@ -122,6 +126,7 @@ class LawnchairAppPredictor(private val context: Context) : StatsLogCompatManage
     }
 
     @WorkerThread
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun updates(
         model: LauncherModel,
         dataModel: BgDataModel,

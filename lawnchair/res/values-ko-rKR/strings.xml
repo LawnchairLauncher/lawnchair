@@ -196,6 +196,23 @@
     <string name="overlay_label">오버레이</string>
     <string name="overlay_none">없음</string>
     <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">제안</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">시스템</string>
+    <string name="prediction_mode_none">사용 안함</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <!--
 
     Notifications
 
@@ -615,6 +632,7 @@
     <string name="hotseat_bg_vertical_inset_top">위쪽 마진</string>
     <string name="hotseat_bg_vertical_inset_bottom">아래쪽 마진</string>
     <string name="hotseat_bg_color_label">배경색</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">배경 투명도</string>
     <!-- Pause apps shortcut -->
     <string name="pause">일시정지</string>
@@ -718,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>
     <string name="fuzzy_search_title">유사 검색어 검색</string>
     <string name="fuzzy_search_desc">앱을 검색할 때 검색어와 유사한 앱을 찾아줍니다</string>
-    <string name="suggestion_pref_screen_title">제안</string>
     <string name="show_suggested_apps_at_drawer_top">앱 서랍 상단에 추천 앱 표시</string>
     <string name="perform_wide_search_title">장치 검색</string>
     <string name="perform_wide_search_description">휴대전화의 연락처, 파일, 설정 검색</string>

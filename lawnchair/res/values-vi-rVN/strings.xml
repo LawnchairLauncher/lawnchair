@@ -196,6 +196,23 @@
     <string name="overlay_label">Lớp phủ</string>
     <string name="overlay_none">Không có</string>
     <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Gợi ý</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">Hệ thống</string>
+    <string name="prediction_mode_none">Tắt</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <!--
 
     Notifications
 
@@ -614,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Lề trên</string>
     <string name="hotseat_bg_vertical_inset_bottom">Lề dưới</string>
     <string name="hotseat_bg_color_label">Màu nền</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Background opacity</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Tạm Dừng</string>
@@ -717,7 +735,6 @@
     <string name="pref_search_auto_show_keyboard">Tự động hiển thị bàn phím</string>
     <string name="fuzzy_search_title">Tìm kiếm mờ</string>
     <string name="fuzzy_search_desc">Phù hợp gần đúng cho tìm kiếm ứng dụng</string>
-    <string name="suggestion_pref_screen_title">Gợi ý</string>
     <string name="show_suggested_apps_at_drawer_top">Hiển thị các ứng dụng được đề xuất ở đầu ngăn chứa</string>
     <string name="perform_wide_search_title">Tìm kiếm thiết bị</string>
     <string name="perform_wide_search_description">Tìm kiếm danh bạ, tệp và cài đặt trên điện thoại của bạn</string>

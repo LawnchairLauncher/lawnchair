@@ -196,6 +196,23 @@
     <string name="overlay_label">Superposición</string>
     <string name="overlay_none">Ninguna</string>
     <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Sugerencias</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">Forma del Icono del Sistema</string>
+    <string name="prediction_mode_none">Desactivados</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <!--
 
     Notifications
 
@@ -614,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Margen superior</string>
     <string name="hotseat_bg_vertical_inset_bottom">Margen inferior</string>
     <string name="hotseat_bg_color_label">Color de fondo</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Opacidad del fondo</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pausar</string>
@@ -718,7 +736,6 @@
     <string name="pref_search_auto_show_keyboard">Ver el teclado cuando se necesite</string>
     <string name="fuzzy_search_title">Búsqueda aproximada</string>
     <string name="fuzzy_search_desc">Muestra nombres parecidos e ignora errores de escritura al buscar aplicaciones</string>
-    <string name="suggestion_pref_screen_title">Sugerencias</string>
     <string name="show_suggested_apps_at_drawer_top">Mostrar las aplicaciones sugeridas siempre al principio del cajón de aplicaciones</string>
     <string name="perform_wide_search_title">Buscar en el dispositivo</string>
     <string name="perform_wide_search_description">Busca entre tus contactos, tus archivos y en ajustes</string>

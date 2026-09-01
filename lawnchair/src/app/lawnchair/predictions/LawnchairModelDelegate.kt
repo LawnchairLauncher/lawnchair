@@ -1,10 +1,13 @@
 package app.lawnchair.predictions
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.Utilities
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.model.PredictedItemFactory
 import com.android.launcher3.model.QuickstepModelDelegate
@@ -63,7 +66,13 @@ class LawnchairModelDelegate @Inject constructor(
         lawnchairPredictor.unregister()
         when (currentPredictionMode()) {
             SystemPredictor -> super.recreatePredictors()
-            LawnchairPredictor -> activateLawnchairPredictor()
+
+            LawnchairPredictor -> if (Utilities.ATLEAST_Q) {
+                activateLawnchairPredictor()
+            } else {
+                clearPredictions()
+            }
+
             NoPredictor -> clearPredictions()
         }
     }
@@ -82,14 +91,19 @@ class LawnchairModelDelegate @Inject constructor(
                 mWidgetsRecommendationState.requestPredictionUpdate()
             }
 
-            LawnchairPredictor -> updateLawnchairPredictions()
+            LawnchairPredictor -> if (Utilities.ATLEAST_Q) {
+                updateLawnchairPredictions()
+            } else {
+                clearPredictions()
+            }
 
             NoPredictor -> clearPredictions()
         }
     }
 
     private fun currentPredictionMode(): PredictionMode {
-        if (!prefs2.enableGlobalPrediction.firstCached()) {
+        // All predictor targets can't be run on device older than Q
+        if (!Utilities.ATLEAST_Q || !prefs2.enableGlobalPrediction.firstCached()) {
             return NoPredictor
         }
         return prefs2.predictionMode.firstCached()
@@ -101,6 +115,7 @@ class LawnchairModelDelegate @Inject constructor(
         mWidgetsRecommendationState.destroyPredictor()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun activateLawnchairPredictor() {
         destroyPredictors()
         if (!mActive) return
@@ -116,6 +131,7 @@ class LawnchairModelDelegate @Inject constructor(
         updateLawnchairPredictions()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun updateLawnchairPredictions() {
         lawnchairPredictor.updates(
             model = mModel,

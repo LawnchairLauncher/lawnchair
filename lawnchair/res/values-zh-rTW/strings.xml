@@ -196,6 +196,23 @@
     <string name="overlay_label">覆蓋</string>
     <string name="overlay_none">無</string>
     <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">建議</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">系統</string>
+    <string name="prediction_mode_none">關閉</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <!--
 
     Notifications
 
@@ -614,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">頂部邊距</string>
     <string name="hotseat_bg_vertical_inset_bottom">底部邊距</string>
     <string name="hotseat_bg_color_label">背景顏色</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">背景不透明度</string>
     <!-- Pause apps shortcut -->
     <string name="pause">暫停</string>
@@ -717,7 +735,6 @@
     <string name="pref_search_auto_show_keyboard">自動顯示鍵盤</string>
     <string name="fuzzy_search_title">模糊搜尋</string>
     <string name="fuzzy_search_desc">以近似比對搜尋應用程式</string>
-    <string name="suggestion_pref_screen_title">建議</string>
     <string name="show_suggested_apps_at_drawer_top">抽屜頂端顯示應用程式建議</string>
     <string name="perform_wide_search_title">裝置搜尋</string>
     <string name="perform_wide_search_description">搜尋您裝置中的聯絡人、檔案和設定</string>

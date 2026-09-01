@@ -16,13 +16,11 @@
 
 package app.lawnchair.ui.preferences.components.controls
 
-import android.os.VibrationAttributes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +51,6 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
-import com.google.android.msdl.domain.InteractionProperties
 import kotlin.math.roundToInt
 
 private enum class SliderThreshold {
@@ -117,7 +114,6 @@ fun SliderPreference(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SliderPreference(
     label: String,
@@ -133,15 +129,6 @@ private fun SliderPreference(
     var sliderValue by remember { mutableFloatStateOf(value) }
     var thresholdReached by remember { mutableStateOf<SliderThreshold?>(null) }
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
-    val touchVibrationAttributes = remember {
-        if (Utilities.ATLEAST_S) {
-            VibrationAttributes.Builder()
-                .setUsage(VibrationAttributes.USAGE_TOUCH)
-                .build()
-        } else {
-            null
-        }
-    }
     val getAppropriateHaptic = if (step == 0f) {
         MSDLToken.DRAG_INDICATOR_CONTINUOUS
     } else {
@@ -212,19 +199,14 @@ private fun SliderPreference(
                         } else {
                             ((newValue - valueRange.start) / range).coerceIn(0f, 1f)
                         }
-                        val properties = touchVibrationAttributes?.let {
-                            InteractionProperties.DynamicVibrationScale(
-                                scale = scale,
-                                vibrationAttributes = it,
+                        if (Utilities.ATLEAST_S) {
+                            playScaledSliderHaptic(
+                                mMSDLPlayerWrapper,
+                                getAppropriateHaptic,
+                                scale,
                             )
-                        }
-                        if (properties == null) {
-                            mMSDLPlayerWrapper.playToken(getAppropriateHaptic)
                         } else {
-                            // Dynamic haptic scaling based on value,
-                            // the haptic goes from none/light to heavy depending on the value.
-                            // Supported on S+ platform
-                            mMSDLPlayerWrapper.playToken(getAppropriateHaptic, properties)
+                            mMSDLPlayerWrapper.playToken(getAppropriateHaptic)
                         }
                     }
                 },

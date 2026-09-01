@@ -33,6 +33,7 @@ import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
@@ -62,13 +63,25 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
         mBtn = findViewById(R.id.enable_work_apps);
         mBtn.setOnClickListener(this);
 
+        setWorkProfilePausedResources();
         updateStringFromCache();
     }
 
     public void updateStringFromCache() {
         StringCache cache = mActivityContext.getStringCache();
         if (cache != null) {
-            setWorkProfilePausedResources();
+            if (cache.workProfilePausedTitle != null) {
+                TextView title = findViewById(R.id.work_apps_paused_title);
+                title.setText(cache.workProfilePausedTitle);
+            }
+            if (cache.workProfilePausedDescription != null) {
+                TextView body = findViewById(R.id.work_apps_paused_content);
+                body.setText(cache.workProfilePausedDescription);
+            }
+            if (cache.workProfileEnableButton != null) {
+                Button button = findViewById(R.id.enable_work_apps);
+                button.setText(cache.workProfileEnableButton);
+            }
         }
     }
 
@@ -81,11 +94,13 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
         TextView body = findViewById(R.id.work_apps_paused_content);
         body.setText(R.string.work_apps_paused_body);
         body.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
-        FontManager.INSTANCE.get(getContext()).setCustomFont(title, R.id.font_body_medium);
+        FontManager.INSTANCE.get(getContext()).setCustomFont(body, R.id.font_body_medium);
 
         Button button = findViewById(R.id.enable_work_apps);
         button.setText(R.string.work_apps_enable_btn_text);
-        FontManager.INSTANCE.get(getContext()).setCustomFont(title, R.id.font_button);
+        button.setBackground(DrawableTokens.WorkAppsPausedActionButton.resolve(getContext()));
+        button.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
+        FontManager.INSTANCE.get(getContext()).setCustomFont(button, R.id.font_button);
         button.setOnClickListener(this);
     }
 

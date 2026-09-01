@@ -196,6 +196,23 @@
     <string name="overlay_label">Прекривајући елемент</string>
     <string name="overlay_none">Ништа</string>
     <!--
+    App suggestions
+    -->
+    <string name="suggestion_pref_screen_title">Предлози</string>
+    <string name="global_predictions_label">Show suggestion features</string>
+    <string name="app_predictions_label">App suggestions</string>
+    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="prediction_mode_system">Системски</string>
+    <string name="prediction_mode_none">Искључено</string>
+    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="dismissed_prediction_apps_label">Blocked apps</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <!--
 
     Notifications
 
@@ -614,6 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Горња маргина</string>
     <string name="hotseat_bg_vertical_inset_bottom">Доња маргина</string>
     <string name="hotseat_bg_color_label">Позадинска боја</string>
+    <string name="hotseat_bg_corner_radius">Background corner radius</string>
     <string name="hotseat_bg_alpha">Непрозирност позадине</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Паузирај</string>
@@ -719,7 +737,6 @@
     <string name="pref_search_auto_show_keyboard">Аутоматски приказуј тастатуру</string>
     <string name="fuzzy_search_title">Приближна претрага</string>
     <string name="fuzzy_search_desc">Приближни резултати претраге на основу упита</string>
-    <string name="suggestion_pref_screen_title">Предлози</string>
     <string name="show_suggested_apps_at_drawer_top">Приказуј предложене апликације на врху листе апликација</string>
     <string name="perform_wide_search_title">Претрага уређаја</string>
     <string name="perform_wide_search_description">Претражите контакте, фајлове и подешавања</string>
