@@ -68,6 +68,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -507,14 +508,17 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         );
     }
 
-    /** Keep the notification dot up to date with the sum of all the content's dots. */
+    /**
+     * Keep the notification dot up to date with the sum of all the content's dots -- or, in
+     * cover mode, with just the cover item's own dot (see {@link #hasDot()}).
+     */
     public void updateDotInfo() {
-        boolean hadDot = mDotInfo.hasDot();
+        boolean hadDot = hasDot();
         mDotInfo.reset();
         for (ItemInfo si : mInfo.getContents()) {
             mDotInfo.addDotInfo(mActivity.getDotInfoForItem(si));
         }
-        boolean isDotted = mDotInfo.hasDot();
+        boolean isDotted = hasDot();
         float newDotScale = isDotted ? 1f : 0f;
         // Animate when a dot is first added or when it is removed.
         if ((hadDot ^ isDotted) && isShown()) {
@@ -562,7 +566,16 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         mDotScaleAnim.start();
     }
 
+    /**
+     * Lawnchair: In cover mode, reflects only the cover item's own notification dot (its
+     * uncovered app icon would otherwise show one, and a folder-aggregate dot on a
+     * single-app-looking icon would be confusing since that app itself may have no
+     * notifications). Otherwise, the folder's aggregate dot, as before.
+     */
     public boolean hasDot() {
+        if (mCoverDrawable != null && mCoverItem != null) {
+            return mActivity.getDotInfoForItem(mCoverItem) != null;
+        }
         return mDotInfo != null && mDotInfo.hasDot();
     }
 
@@ -661,7 +674,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     }
 
     public void drawDot(Canvas canvas) {
-        if (!mForceHideDot && ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0)) {
+        if (!mForceHideDot && (hasDot() || mDotScale > 0)) {
             Rect iconBounds = mDotParams.iconBounds;
             // FolderIcon draws the icon to be top-aligned (with padding) & horizontally-centered
             int iconSize = mActivity.getDeviceProfile().iconSizePx;
@@ -680,7 +693,15 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             // If we are animating to the accepting state, animate the dot out.
             mDotParams.scale = Math.max(0, mDotScale - mBackground.getAcceptScaleProgress());
             mDotParams.dotColor = mBackground.getDotColor();
-            mDotRenderer.draw(canvas, mDotParams);
+            // Lawnchair: in cover mode, badge with the cover app's own notification count --
+            // same as a normal app icon would -- instead of the folder's aggregate plain dot.
+            if (mCoverDrawable != null && mCoverItem != null) {
+                DotInfo coverDotInfo = mActivity.getDotInfoForItem(mCoverItem);
+                mDotRenderer.draw(canvas, mDotParams,
+                        coverDotInfo == null ? 0 : coverDotInfo.getNotificationCount());
+            } else {
+                mDotRenderer.draw(canvas, mDotParams);
+            }
         }
     }
 
@@ -783,6 +804,9 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         } else {
             setOnTouchListener(null);
         }
+        // Lawnchair: the dot shown in cover mode tracks the cover item, not the folder's
+        // aggregate, so it needs recomputing whenever cover mode or the cover item changes.
+        updateDotInfo();
         invalidate();
     }
 
