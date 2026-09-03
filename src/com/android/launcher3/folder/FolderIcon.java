@@ -88,6 +88,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.MultiTranslateDelegate;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.FloatingIconViewCompanion;
@@ -692,14 +693,18 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
             // If we are animating to the accepting state, animate the dot out.
             mDotParams.scale = Math.max(0, mDotScale - mBackground.getAcceptScaleProgress());
-            mDotParams.dotColor = mBackground.getDotColor();
             // Lawnchair: in cover mode, badge with the cover app's own notification count --
             // same as a normal app icon would -- instead of the folder's aggregate plain dot.
             if (mCoverDrawable != null && mCoverItem != null) {
+                // The cover icon looks like a normal app icon, so its dot uses the same color
+                // source a normal app icon's dot does (see BubbleTextView#setNonPendingIcon),
+                // not the folder plate's dot color, which doesn't track the same preference.
+                mDotParams.dotColor = Themes.getAttrColor(getContext(), R.attr.notificationDotColor);
                 DotInfo coverDotInfo = mActivity.getDotInfoForItem(mCoverItem);
                 mDotRenderer.draw(canvas, mDotParams,
                         coverDotInfo == null ? 0 : coverDotInfo.getNotificationCount());
             } else {
+                mDotParams.dotColor = mBackground.getDotColor();
                 mDotRenderer.draw(canvas, mDotParams);
             }
         }
