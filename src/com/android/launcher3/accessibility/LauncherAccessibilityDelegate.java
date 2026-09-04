@@ -2,6 +2,7 @@ package com.android.launcher3.accessibility;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS;
+import static android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK;
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
 
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -39,6 +40,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.KeyboardDragAndDropView;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.AppPairInfo;
@@ -229,6 +231,17 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             if (host instanceof AppWidgetResizeFrame) {
                 AbstractFloatingView.closeOpenViews(mContext, /* animate= */ false,
                         AbstractFloatingView.TYPE_WIDGET_RESIZE_FRAME);
+            }
+        } else if (action == ACTION_CLICK && item instanceof FolderInfo
+                && host instanceof FolderIcon folderIcon) {
+            // Lawnchair: accessibility activation must always open the folder. A normal tap
+            // goes through ItemClickHandler#onClickFolderIcon, where cover mode intercepts it to
+            // launch the cover app directly -- bypass that here so a cover-mode folder's
+            // contents stay reachable via TalkBack.
+            Folder folder = folderIcon.getFolder();
+            if (folder != null && !folder.isOpen() && !folder.isDestroyed()) {
+                folder.animateOpen();
+                return true;
             }
         } else {
             for (ButtonDropTarget dropTarget : mContext.getDropTargetBar().getDropTargets()) {

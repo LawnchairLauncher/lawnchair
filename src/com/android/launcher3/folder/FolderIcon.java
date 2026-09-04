@@ -19,6 +19,7 @@
 package com.android.launcher3.folder;
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
+import static com.android.launcher3.LauncherSettings.Favorites.DESKTOP_ICON_FLAG;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderGridOrganizer.createFolderGridOrganizer;
@@ -60,6 +61,7 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
@@ -800,6 +802,25 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             if (mCoverDrawable != null) {
                 mCoverDrawable.setCallback(this);
             }
+        }
+        if (mCoverItem != null
+                && mCoverItem.getMatchingLookupFlag().isVisuallyLessThan(DESKTOP_ICON_FLAG)) {
+            // Lawnchair: IconCache can refresh an item's bitmap in place, keeping the same
+            // WorkspaceItemInfo reference (e.g. once the app's real icon replaces a placeholder,
+            // or a higher-res version becomes available) -- the reference check above alone
+            // won't catch that, so rebuild the drawable from whatever the cache now has, the same
+            // way PreviewItemManager#setDrawable does for the folder's own preview icons.
+            LauncherAppState.getInstance(getContext()).getIconCache().updateIconInBackground(
+                    newInfo -> {
+                        if (mCoverItem == newInfo) {
+                            if (mCoverDrawable != null) {
+                                mCoverDrawable.setCallback(null);
+                            }
+                            mCoverDrawable = newInfo.newIcon(getContext(), FLAG_THEMED);
+                            mCoverDrawable.setCallback(this);
+                            invalidate();
+                        }
+                    }, mCoverItem, DESKTOP_ICON_FLAG);
         }
         if (mCoverDrawable != null) {
             if (mCoverGestureListener == null) {
