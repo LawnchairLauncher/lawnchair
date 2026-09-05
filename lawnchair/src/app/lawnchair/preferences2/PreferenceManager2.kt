@@ -805,6 +805,12 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = false,
     )
 
+    val allowDeckSorting = preference(
+        key = booleanPreferencesKey(name = "allow_deck_sorting"),
+        defaultValue = false,
+        onSet = { reloadHelper.reloadIcons() },
+    )
+
     val enableLabelInDock = preference(
         key = booleanPreferencesKey(name = "enable_label_dock"),
         defaultValue = false,
