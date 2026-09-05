@@ -35,11 +35,12 @@ import kotlinx.coroutines.withContext
 private const val TAG = "SelectIconPreference"
 
 @Composable
-fun SelectIconPreference(componentKey: ComponentKey) {
+fun SelectIconPreference(componentKey: ComponentKey, displayLabel: String? = null) {
     val context = LocalContext.current
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
-    val label = remember(componentKey) {
-        resolveAppLabel(context.requireSystemService(), componentKey)
+    val label = remember(componentKey, displayLabel) {
+        displayLabel?.takeIf { it.isNotEmpty() }
+            ?: resolveAppLabel(context.requireSystemService(), componentKey)
     }
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
