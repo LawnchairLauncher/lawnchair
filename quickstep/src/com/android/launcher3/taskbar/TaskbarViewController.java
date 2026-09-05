@@ -141,6 +141,14 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private static final int TRANSITION_FADE_IN_DURATION = 167;
     private static final int TRANSITION_FADE_OUT_DURATION = 83;
 
+    private static float safeScale(float numerator, float denominator) {
+        if (denominator <= 0 || Float.isNaN(denominator) || Float.isInfinite(denominator)) {
+            return 1f;
+        }
+        float scale = numerator / denominator;
+        return scale > 0 && !Float.isNaN(scale) && !Float.isInfinite(scale) ? scale : 1f;
+    }
+
     private final TaskbarActivityContext mActivity;
     private @Nullable TaskbarDragLayerController mDragLayerController;
     private final TaskbarView mTaskbarView;
@@ -989,8 +997,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
         boolean isTransientTaskbar = mActivity.isTransientTaskbar();
 
-        float scaleUp = ((float) launcherDp.iconSizePx)
-                / taskbarDp.getTaskbarProfile().getIconSize();
+        float scaleUp = safeScale(launcherDp.iconSizePx,
+                taskbarDp.getTaskbarProfile().getIconSize());
         int borderSpacing = launcherDp.hotseatBorderSpace;
         int hotseatCellSize = DeviceProfile.calculateCellWidth(
                 launcherDp.getDeviceProperties().getAvailableWidthPx()
@@ -1107,8 +1115,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 float halfQsbIconWidthDiff =
                         (launcherDp.hotseatQsbWidth - taskbarDp.getTaskbarProfile().getIconSize())
                                 / 2f;
-                float scale = ((float) taskbarDp.getTaskbarProfile().getIconSize())
-                        / launcherDp.getHotseatProfile().getQsbVisualHeight();
+                float scale = safeScale(taskbarDp.getTaskbarProfile().getIconSize(),
+                        launcherDp.getHotseatProfile().getQsbVisualHeight());
                 setter.addFloat(child, SCALE_PROPERTY, scale, 1f, interpolator);
 
                 float fromX = isRtl ? -halfQsbIconWidthDiff : halfQsbIconWidthDiff;
@@ -1353,11 +1361,18 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         FloatProperty<View> translateXPinning = new FloatProperty<>("translateXPinning") {
             @Override
             public void setValue(View view, float value) {
-                getTranslationXForPinning(view).setValue(value);
+                // Not every taskbar child participates in reorder animations. Skip the
+                // pinning-translation for non-Reorderable views instead of crashing.
+                if (view instanceof Reorderable) {
+                    getTranslationXForPinning(view).setValue(value);
+                }
             }
 
             @Override
             public Float get(View view) {
+                if (!(view instanceof Reorderable)) {
+                    return 0f;
+                }
                 return getTranslationXForPinning(view).getValue();
             }
 

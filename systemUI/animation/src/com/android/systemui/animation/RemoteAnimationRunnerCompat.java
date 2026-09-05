@@ -28,6 +28,7 @@ import static android.window.TransitionInfo.FLAG_IS_WALLPAPER;
 
 import static com.android.internal.util.Preconditions.checkArgument;
 import static com.android.wm.shell.shared.TransitionUtil.FLAG_IS_DESKTOP_WALLPAPER_ACTIVITY;
+import static com.android.wm.shell.shared.TransitionUtil.getChanges;
 import static com.android.wm.shell.shared.TransitionUtil.isClosingMode;
 import static com.android.wm.shell.shared.TransitionUtil.isClosingType;
 import static com.android.wm.shell.shared.TransitionUtil.isOpeningMode;
@@ -48,6 +49,8 @@ import android.window.RemoteTransitionStub;
 import android.window.TransitionInfo;
 
 import com.android.wm.shell.shared.CounterRotator;
+
+import java.util.List;
 
 public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner.Stub {
     private static final String TAG = "RemoteAnimRunnerCompat";
@@ -95,6 +98,7 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 final RemoteAnimationTarget[] nonApps =
                         RemoteAnimationTargetCompat.wrapNonApps(
                                 info, false /* wallpapers */, t, leashMap);
+                final List<TransitionInfo.Change> changes = getChanges(info);
 
                 // TODO(b/177438007): Move this set-up logic into launcher's animation impl.
                 boolean isReturnToHome = false;
@@ -104,8 +108,8 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 int rotateDelta = 0;
                 float displayW = 0;
                 float displayH = 0;
-                for (int i = info.getChanges().size() - 1; i >= 0; --i) {
-                    final TransitionInfo.Change change = info.getChanges().get(i);
+                for (int i = changes.size() - 1; i >= 0; --i) {
+                    final TransitionInfo.Change change = changes.get(i);
                     // skip changes that we didn't wrap
                     if (!leashMap.containsKey(change.getLeash())) continue;
                     if (change.getTaskInfo() != null
@@ -113,7 +117,7 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                         isReturnToHome = change.getMode() == TRANSIT_OPEN
                                 || change.getMode() == TRANSIT_TO_FRONT;
                         launcherTask = change;
-                        launcherLayer = info.getChanges().size() - i;
+                        launcherLayer = changes.size() - i;
                     } else if ((change.getFlags() & FLAG_IS_WALLPAPER) != 0) {
                         wallpaper = change;
                     }
@@ -144,19 +148,19 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
 
                 if (isReturnToHome) {
                     if (counterLauncher.getSurface() != null) {
-                        t.setLayer(counterLauncher.getSurface(), info.getChanges().size() * 3);
+                        t.setLayer(counterLauncher.getSurface(), changes.size() * 3);
                     }
                     // Need to "boost" the closing things since that's what launcher expects.
-                    for (int i = info.getChanges().size() - 1; i >= 0; --i) {
-                        final TransitionInfo.Change change = info.getChanges().get(i);
+                    for (int i = changes.size() - 1; i >= 0; --i) {
+                        final TransitionInfo.Change change = changes.get(i);
                         final SurfaceControl leash = leashMap.get(change.getLeash());
                         // skip changes that we didn't wrap
                         if (leash == null) continue;
-                        final int mode = info.getChanges().get(i).getMode();
+                        final int mode = changes.get(i).getMode();
                         // Only deal with independent layers
                         if (!TransitionInfo.isIndependent(change, info)) continue;
                         if (mode == TRANSIT_CLOSE || mode == TRANSIT_TO_BACK) {
-                            t.setLayer(leash, info.getChanges().size() * 3 - i);
+                            t.setLayer(leash, changes.size() * 3 - i);
                             counterLauncher.addChild(t, leash);
                         }
                     }
@@ -200,12 +204,9 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     // Don't release here since launcher might still be using them. Instead
                     // let launcher release them (eg. via RemoteAnimationTargets)
                     leashMap.clear();
-                    try {
-                        finishCallback.onTransitionFinished(null /* wct */, finishTransaction);
-                        finishTransaction.close();
-                    } catch (RemoteException e) {
-                        Log.e(TAG, "Failed to call app controlled animation finished callback", e);
-                    }
+                    RemoteTransitionFinishCompat.finish(
+                            finishCallback, null /* wct */, finishTransaction);
+                    finishTransaction.close();
                 };
                 synchronized (mFinishRunnables) {
                     mFinishRunnables.put(token, animationFinishedCallback);
@@ -277,8 +278,9 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 && !ENABLE_DESKTOP_WINDOWING_EXIT_BY_MINIMIZE_TRANSITION_BUGFIX.isTrue()) {
             return;
         }
-        for (int i = info.getChanges().size() - 1; i >= 0; --i) {
-            final TransitionInfo.Change change = info.getChanges().get(i);
+        final List<TransitionInfo.Change> changes = getChanges(info);
+        for (int i = changes.size() - 1; i >= 0; --i) {
+            final TransitionInfo.Change change = changes.get(i);
             // skip changes that we didn't wrap
             if (!leashMap.containsKey(change.getLeash())) continue;
             // Only make the update if we are closing Desktop tasks.

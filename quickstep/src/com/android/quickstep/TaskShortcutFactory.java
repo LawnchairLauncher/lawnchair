@@ -18,6 +18,7 @@ package com.android.quickstep;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 import static com.android.launcher3.util.OverviewReleaseFlags.enableGridOnlyOverview;
 import static com.android.launcher3.Flags.enableRefactorTaskThumbnail;
@@ -26,11 +27,13 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 
 import android.app.ActivityOptions;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Process;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.util.Log;
@@ -215,6 +218,11 @@ public interface TaskShortcutFactory {
             final Task.TaskKey taskKey = mTaskContainer.getTask().key;
             final int taskId = taskKey.id;
             options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            if (startBaseIntentInFreeform(taskKey, options)) {
+                mTarget.getStatsLogManager().logger().withItemInfo(mTaskContainer.getItemInfo())
+                            .log(mLauncherEvent);
+                return;
+            }
             if (ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
                     options)) {
                 final Runnable animStartedListener = () -> {
@@ -259,6 +267,21 @@ public interface TaskShortcutFactory {
                         taskKey.displayId);
                 mTarget.getStatsLogManager().logger().withItemInfo(mTaskContainer.getItemInfo())
                             .log(mLauncherEvent);
+            }
+        }
+
+        private boolean startBaseIntentInFreeform(Task.TaskKey taskKey, ActivityOptions options) {
+            if (taskKey.userId != Process.myUserHandle().getIdentifier()) {
+                return false;
+            }
+            try {
+                Intent intent = new Intent(taskKey.baseIntent);
+                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                mTarget.asContext().startActivity(intent, options.toBundle());
+                return true;
+            } catch (RuntimeException e) {
+                Log.w(TAG, "Failed to start base intent in freeform; falling back to recents", e);
+                return false;
             }
         }
 

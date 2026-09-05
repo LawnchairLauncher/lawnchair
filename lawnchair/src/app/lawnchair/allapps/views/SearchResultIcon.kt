@@ -2,6 +2,7 @@ package app.lawnchair.allapps.views
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.os.UserHandle
@@ -10,13 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import app.lawnchair.launcher
+import app.lawnchair.launcherNullable
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
+import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.icons.BaseIconFactory
 import com.android.launcher3.icons.BitmapInfo
 import com.android.launcher3.icons.IconProvider
@@ -30,6 +32,7 @@ import com.android.launcher3.touch.ItemClickHandler
 import com.android.launcher3.touch.ItemLongClickListener
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
+import com.android.launcher3.views.ActivityContext
 import com.android.systemui.util.dpToPx
 
 class SearchResultIcon(context: Context, attrs: AttributeSet?) :
@@ -38,7 +41,8 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     View.OnClickListener,
     View.OnLongClickListener {
 
-    private val launcher = context.launcher
+    private val activityContext = findActivityContext(context)
+    private val launcher = context.launcherNullable
     private var boundId = ""
     private var flags = 0
     private var allowLongClick = false
@@ -51,12 +55,12 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     override fun onFinishInflate() {
         super.onFinishInflate()
         setLongPressTimeoutFactor(1f)
-        onFocusChangeListener = launcher.focusHandler
+        onFocusChangeListener = launcher?.focusHandler
         setOnClickListener(this)
         setOnLongClickListener(this)
         layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            launcher.deviceProfile.allAppsProfile.cellHeightPx,
+            activityContext.getDeviceProfile().allAppsProfile.cellHeightPx,
         )
         defaultPaddingLeft = paddingLeft
         defaultPaddingRight = paddingRight
@@ -194,7 +198,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     }
 
     private fun bindIconComponentKey(iconComponentKey: ComponentKey) {
-        val appInfo = launcher.appsView.appsStore.getApp(iconComponentKey)
+        val appInfo = findApp(iconComponentKey)
         if (appInfo == null) {
             isVisible = false
             return
@@ -203,7 +207,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     }
 
     private fun bindFromApp(componentName: ComponentName, user: UserHandle) {
-        val appInfo = launcher.appsView.appsStore.getApp(ComponentKey(componentName, user))
+        val appInfo = findApp(ComponentKey(componentName, user))
         if (appInfo == null) {
             isVisible = false
             return
@@ -213,6 +217,10 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     }
 
     private fun bindFromShortcutInfo(targetId: String, shortcutInfo: ShortcutInfo) {
+        val launcher = launcher ?: run {
+            isVisible = false
+            return
+        }
         val si = WorkspaceItemInfo(shortcutInfo, launcher)
         si.container = LauncherSettings.Favorites.CONTAINER_ALL_APPS
         applyFromWorkspaceItem(si)
@@ -226,6 +234,18 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
                 }
             }
         }
+    }
+
+    private fun findApp(componentKey: ComponentKey) = launcher?.appsView?.appsStore?.getApp(componentKey)
+        ?: findContainingAppsView()?.appsStore?.getApp(componentKey)
+
+    private fun findContainingAppsView(): ActivityAllAppsContainerView<*>? {
+        var view: View? = this
+        while (view != null) {
+            if (view is ActivityAllAppsContainerView<*>) return view
+            view = view.parent as? View
+        }
+        return null
     }
 
     private fun notifyApplied(info: ItemInfoWithIcon) {
@@ -290,4 +310,12 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     }
 
     fun hasFlag(flag: Int) = hasFlag(flags, flag)
+}
+
+private tailrec fun findActivityContext(context: Context): ActivityContext {
+    return when (context) {
+        is ActivityContext -> context
+        is ContextWrapper -> findActivityContext(context.baseContext)
+        else -> throw IllegalArgumentException("Cannot find ActivityContext in parent tree")
+    }
 }

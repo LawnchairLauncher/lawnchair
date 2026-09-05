@@ -919,6 +919,9 @@
 
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <string name="enable_taskbar_recents">Show recent apps in taskbar</string>
+    <string name="enable_taskbar_recents_description">Show your most recently used apps in the taskbar, next to your pinned apps.</string>
+    <string name="taskbar_recents_max_count">Recent apps shown</string>
 
     <!--
 

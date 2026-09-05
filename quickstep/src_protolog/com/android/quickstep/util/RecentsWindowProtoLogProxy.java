@@ -23,9 +23,6 @@ import android.window.DesktopExperienceFlags;
 
 import androidx.annotation.NonNull;
 
-import androidx.annotation.RequiresApi;
-import com.android.internal.protolog.ProtoLog;
-import com.android.internal.protolog.common.IProtoLogGroup;
 import com.android.launcher3.Flags;
 
 /**
@@ -37,7 +34,6 @@ import com.android.launcher3.Flags;
  * When a new Recents Window log needs to be added to the codebase, add it here under a new unique
  * method. Or, if an existing entry needs to be modified, simply update it here.
  */
-@RequiresApi(31) // LC-Note: IProtoLogGroup only available to Android 11 Releases 41, or Android 12.0 for us. DO NOT call anything related to this or ProtoLog 
 public class RecentsWindowProtoLogProxy {
     private static final DesktopExperienceFlags.DesktopExperienceFlag
             ENABLE_RECENTS_WINDOW_PROTO_LOG =
@@ -48,22 +44,22 @@ public class RecentsWindowProtoLogProxy {
 
     public static void logOnStateSetStart(@NonNull String stateName) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW, "onStateSetStart: %s", stateName);
+        ProtoLogCompat.d(RECENTS_WINDOW, "onStateSetStart: %s", stateName);
     }
 
     public static void logOnStateSetEnd(@NonNull String stateName) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW, "onStateSetEnd: %s", stateName);
+        ProtoLogCompat.d(RECENTS_WINDOW, "onStateSetEnd: %s", stateName);
     }
 
     public static void logOnRepeatStateSetAborted(@NonNull String stateName) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW, "onRepeatStateSetAborted: %s", stateName);
+        ProtoLogCompat.d(RECENTS_WINDOW, "onRepeatStateSetAborted: %s", stateName);
     }
 
     public static void logStartRecentsWindow(boolean isShown, boolean windowViewIsNull) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW,
+        ProtoLogCompat.d(RECENTS_WINDOW,
                 "Starting recents window: isShow= %b, windowViewIsNull=%b",
                 isShown,
                 windowViewIsNull);
@@ -71,6 +67,6 @@ public class RecentsWindowProtoLogProxy {
 
     public static void logCleanup(boolean isShown) {
         if (!ENABLE_RECENTS_WINDOW_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(RECENTS_WINDOW, "Cleaning up recents window: isShow= %b", isShown);
+        ProtoLogCompat.d(RECENTS_WINDOW, "Cleaning up recents window: isShow= %b", isShown);
     }
 }

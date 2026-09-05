@@ -14,6 +14,7 @@ import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.QuickActionsPreferences
 import app.lawnchair.ui.preferences.components.RecentsQuickAction
@@ -118,6 +119,7 @@ fun QuickstepPreferences(
         }
 
         if (Utilities.ATLEAST_S_V2) {
+            val enableTaskbarRecents = prefs2.enableTaskbarRecents.asState().value
             PreferenceGroup(
                 heading = stringResource(id = R.string.taskbar_label),
             ) {
@@ -125,6 +127,19 @@ fun QuickstepPreferences(
                     adapter = prefs2.enableTaskbarOnPhone.getAdapter(),
                     label = stringResource(id = R.string.enable_taskbar_experimental),
                 )
+                SwitchPreference(
+                    adapter = prefs2.enableTaskbarRecents.getAdapter(),
+                    label = stringResource(id = R.string.enable_taskbar_recents),
+                    description = stringResource(id = R.string.enable_taskbar_recents_description),
+                )
+                ExpandAndShrink(visible = enableTaskbarRecents) {
+                    SliderPreference(
+                        adapter = prefs2.taskbarRecentsMaxCount.getAdapter(),
+                        label = stringResource(id = R.string.taskbar_recents_max_count),
+                        step = 0,
+                        valueRange = 1..6,
+                    )
+                }
             }
         }
     }

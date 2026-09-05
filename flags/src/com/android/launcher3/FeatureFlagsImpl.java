@@ -321,7 +321,9 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
 
     public boolean enableRecentsInTaskbar() {
-        return false;
+        // The taskbar can safely show recent apps once non-Reorderable taskbar children are
+        // ignored by the pinning-translation layout transition in TaskbarViewController.
+        return true;
     }
 
     @Override

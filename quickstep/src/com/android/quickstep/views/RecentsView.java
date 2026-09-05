@@ -971,9 +971,8 @@ public abstract class RecentsView<
         int groupedViewPoolInitialSize = enableRefactorTaskThumbnail() ? 2 : 10;
         mGroupedTaskViewPool = new ViewPool<>(context, this,
                 R.layout.task_grouped, 20 /* max size */, groupedViewPoolInitialSize);
-        int desktopViewPoolInitialSize = DesktopModeStatus.canEnterDesktopMode(mContext) ? 1 : 0;
         mDesktopTaskViewPool = new ViewPool<>(context, this, R.layout.task_desktop,
-                5 /* max size */, desktopViewPoolInitialSize);
+                5 /* max size */, 0 /* initial size */);
 
         setOrientationHandler(mOrientationState.getOrientationHandler());
         mIsRtl = getPagedOrientationHandler().getRecentsRtlSetting(getResources());

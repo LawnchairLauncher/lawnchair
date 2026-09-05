@@ -201,7 +201,7 @@ class DesktopTaskView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     override fun inflateViewStubs() {
-        findViewById<ViewStub>(R.id.icon)
+        (findViewById<View>(R.id.icon) as? ViewStub)
             ?.apply {
                 layoutResource =
                     if (enableOverviewIconMenu()) R.layout.icon_app_chip_view

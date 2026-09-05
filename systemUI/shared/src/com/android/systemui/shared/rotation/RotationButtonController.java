@@ -314,7 +314,11 @@ public class RotationButtonController {
             return;
         }
         if (isFoldable() && isDeviceStateAutoRotateSettingRefactorEnabled()) {
-            RotationPolicy.setRotationAtAngleIfAllowed(rotationSuggestion, caller);
+            try {
+                RotationPolicy.setRotationAtAngleIfAllowed(rotationSuggestion, caller);
+            } catch (NoSuchMethodError e) {
+                Log.w(TAG, "RotationPolicy#setRotationAtAngleIfAllowed unavailable", e);
+            }
             return;
         }
 

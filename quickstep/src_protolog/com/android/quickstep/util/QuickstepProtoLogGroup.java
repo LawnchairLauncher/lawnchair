@@ -20,16 +20,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import androidx.annotation.RequiresApi;
-import com.android.internal.protolog.ProtoLog;
-import com.android.internal.protolog.common.IProtoLogGroup;
-
 import com.android.launcher3.Utilities;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Enums used to interface with the ProtoLog API. */
-@RequiresApi(31) // LC-Note: IProtoLogGroup only available to Android 11 Releases 41, or Android 12.0 for us. DO NOT call anything related to this or ProtoLog 
-public enum QuickstepProtoLogGroup implements IProtoLogGroup {
+public enum QuickstepProtoLogGroup {
 
     ACTIVE_GESTURE_LOG(true, true, Constants.DEBUG_ACTIVE_GESTURE, "ActiveGestureLog"),
     RECENTS_WINDOW(true, true, Constants.DEBUG_RECENTS_WINDOW, "RecentsWindow"),
@@ -41,17 +37,27 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
     private volatile boolean mLogToProto;
     private volatile boolean mLogToLogcat;
     private final @NonNull String mTag;
+    private static final AtomicBoolean sHasLoggedPreInitWarning = new AtomicBoolean();
 
     public static boolean isProtoLogInitialized() {
+        // LC-Note: This is workaround for skipping Android 11 Release 41. 
+        //          Not the best solutions but this is not significant enough to Lawnchair.
+        if (!Utilities.ATLEAST_S) return false;
+
+
         if (!Variables.sIsInitialized) {
-            Log.w(Constants.TAG,
-                    "Attempting to log to ProtoLog before initializing it.",
-                    new IllegalStateException());
+            if (sHasLoggedPreInitWarning.compareAndSet(false, true)) {
+                Log.w(Constants.TAG, "Attempting to log to ProtoLog before initializing it.");
+            }
         }
         return Variables.sIsInitialized;
     }
 
     public static void initProtoLog() {
+        // LC-Note: This is workaround for skipping Android 11 Release 41. 
+        //          Not the best solutions but this is not significant enough to Lawnchair.
+        if (!Utilities.ATLEAST_S) return;
+        
         if (Variables.sIsInitialized) {
             Log.e(Constants.TAG,
                     "Attempting to re-initialize ProtoLog.", new IllegalStateException());
@@ -59,7 +65,7 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
         }
         Log.i(Constants.TAG, "Initializing ProtoLog.");
         Variables.sIsInitialized = true;
-        ProtoLog.init(QuickstepProtoLogGroup.values());
+        ProtoLogCompat.init(QuickstepProtoLogGroup.values());
     }
 
     /**
@@ -78,42 +84,34 @@ public enum QuickstepProtoLogGroup implements IProtoLogGroup {
         this.mTag = tag;
     }
 
-    @Override
     public boolean isEnabled() {
         return mEnabled;
     }
 
-    @Override
     public boolean isLogToProto() {
         return mLogToProto;
     }
 
-    @Override
     public boolean isLogToLogcat() {
         return mLogToLogcat;
     }
 
-    @Override
     public boolean isLogToAny() {
         return mLogToLogcat || mLogToProto;
     }
 
-    @Override
     public int getId() {
         return Constants.LOG_START_ID + this.ordinal();
     }
 
-    @Override
     public @NonNull String getTag() {
         return mTag;
     }
 
-    @Override
     public void setLogToProto(boolean logToProto) {
         this.mLogToProto = logToProto;
     }
 
-    @Override
     public void setLogToLogcat(boolean logToLogcat) {
         this.mLogToLogcat = logToLogcat;
     }
