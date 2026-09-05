@@ -1,10 +1,14 @@
 package app.lawnchair.ui.preferences.destinations
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LocalContentColor
@@ -15,13 +19,18 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.qsb.providers.GlobalSearchApp
+import app.lawnchair.qsb.providers.GlobalSearchAppInfo
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.qsb.providers.QsbSearchProviderType
 import app.lawnchair.ui.ModalBottomSheetContent
@@ -34,6 +43,8 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.LocalBottomSheetHandler
 import com.android.launcher3.R
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchProviderPreferences(
@@ -41,8 +52,19 @@ fun SearchProviderPreferences(
 ) {
     val context = LocalContext.current
     val bottomSheetHandler = LocalBottomSheetHandler.current
-    val adapter = preferenceManager2().hotseatQsbProvider.getAdapter()
-    val forceWebsiteAdapter = preferenceManager2().hotseatQsbForceWebsite.getAdapter()
+    val scope = rememberCoroutineScope()
+    val preferences = preferenceManager2()
+    val adapter = preferences.hotseatQsbProvider.getAdapter()
+    val globalSearchPackageAdapter = preferences.hotseatQsbGlobalSearchPackage.getAdapter()
+    val forceWebsiteAdapter = preferences.hotseatQsbForceWebsite.getAdapter()
+    val knownProviderPackages = remember {
+        QsbSearchProvider.values()
+            .asSequence()
+            .filterNot { it == GlobalSearchApp }
+            .map { it.packageName }
+            .filter(String::isNotBlank)
+            .toSet()
+    }
 
     PreferenceLayout(
         label = stringResource(R.string.search_provider),
@@ -52,18 +74,51 @@ fun SearchProviderPreferences(
             itemSpacing = 0.dp,
         ) {
             QsbSearchProvider.values().forEach { qsbSearchProvider ->
+                val isGlobalSearchApp = qsbSearchProvider == GlobalSearchApp
                 val appInstalled = qsbSearchProvider.isDownloaded(context)
                 val selected = adapter.state.value == qsbSearchProvider
                 val hasAppAndWebsite = qsbSearchProvider.type == QsbSearchProviderType.APP_AND_WEBSITE
                 val showDownloadButton = qsbSearchProvider.type == QsbSearchProviderType.APP && !appInstalled
                 Column {
                     val title = stringResource(id = qsbSearchProvider.name)
+                    val globalSearchPackage = globalSearchPackageAdapter.state.value
+                    val globalSearchAppDescription = if (isGlobalSearchApp) {
+                        remember(context, globalSearchPackage) {
+                            GlobalSearchApp.getApplicationLabel(context, globalSearchPackage)
+                        } ?: globalSearchPackage.takeIf(String::isNotBlank)
+                            ?: stringResource(R.string.search_provider_choose_app)
+                    } else {
+                        null
+                    }
                     ListItem(
                         title = title,
                         showDownloadButton = showDownloadButton,
                         enabled = qsbSearchProvider.type != QsbSearchProviderType.APP || appInstalled,
                         selected = selected,
-                        onClick = { adapter.onChange(newValue = qsbSearchProvider) },
+                        onClick = if (isGlobalSearchApp) {
+                            {
+                                val apps = GlobalSearchApp.queryInstalledApps(
+                                    context = context,
+                                    excludedPackages = knownProviderPackages,
+                                )
+                                bottomSheetHandler.show {
+                                    GlobalSearchAppPicker(
+                                        apps = apps,
+                                        selectedPackage = globalSearchPackageAdapter.state.value,
+                                        onSelect = { packageName ->
+                                            bottomSheetHandler.hide()
+                                            scope.launch {
+                                                preferences.hotseatQsbGlobalSearchPackage.set(packageName)
+                                                preferences.hotseatQsbProvider.set(GlobalSearchApp)
+                                            }
+                                        },
+                                        onDismiss = { bottomSheetHandler.hide() },
+                                    )
+                                }
+                            }
+                        } else {
+                            { adapter.onChange(newValue = qsbSearchProvider) }
+                        },
                         onDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
                         onSponsorDisclaimerClick = {
                             bottomSheetHandler.show {
@@ -72,7 +127,9 @@ fun SearchProviderPreferences(
                                 }
                             }
                         }.takeIf { qsbSearchProvider.sponsored },
-                        description = if (showDownloadButton) {
+                        description = if (globalSearchAppDescription != null) {
+                            globalSearchAppDescription
+                        } else if (showDownloadButton) {
                             stringResource(id = R.string.qsb_search_provider_app_required)
                         } else {
                             null
@@ -95,6 +152,69 @@ fun SearchProviderPreferences(
     }
 }
 
+@Composable
+private fun GlobalSearchAppPicker(
+    apps: List<GlobalSearchAppInfo>,
+    selectedPackage: String,
+    onSelect: (String) -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ModalBottomSheetContent(
+        title = { Text(stringResource(R.string.search_provider_select_app)) },
+        buttons = {
+            OutlinedButton(
+                onClick = onDismiss,
+                shapes = ButtonDefaults.shapes(),
+            ) {
+                Text(stringResource(android.R.string.cancel))
+            }
+        },
+        modifier = modifier,
+    ) {
+        if (apps.isEmpty()) {
+            Text(
+                text = stringResource(R.string.search_provider_no_compatible_apps),
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        } else {
+            LazyColumn {
+                itemsIndexed(
+                    items = apps,
+                    key = { _, app -> app.packageName },
+                ) { index, app ->
+                    if (index > 0) {
+                        PreferenceDivider(startIndent = 56.dp)
+                    }
+                    PreferenceTemplate(
+                        title = { Text(app.label) },
+                        description = { Text(app.packageName) },
+                        startWidget = {
+                            Image(
+                                painter = rememberDrawablePainter(app.icon),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .size(32.dp),
+                            )
+                        },
+                        endWidget = {
+                            RadioButton(
+                                selected = selectedPackage == app.packageName,
+                                onClick = null,
+                                modifier = Modifier.padding(end = 16.dp),
+                            )
+                        },
+                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                        onClick = { onSelect(app.packageName) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ListItem(
     title: String,
