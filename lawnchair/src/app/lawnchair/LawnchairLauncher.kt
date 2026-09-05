@@ -46,6 +46,7 @@ import app.lawnchair.preferences2.firstCached
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.theme.ThemeProvider
+import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.ui.popup.LauncherOptionsPopup
 import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.getThemedIconPacksInstalled
@@ -225,8 +226,13 @@ class LawnchairLauncher : QuickstepLauncher() {
             RoundedCornerEnforcement.sRoundedCornerEnabled = it
         }
         val isWorkspaceDarkText = Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
-        preferenceManager2.darkStatusBar.onEach(launchIn = lifecycleScope) { darkStatusBar ->
-            systemUiController?.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
+        preferenceManager2.statusBarIconMode.onEach(launchIn = lifecycleScope) { mode ->
+            val useDarkIcons = when (mode) {
+                ColorMode.LIGHT -> false
+                ColorMode.DARK -> true
+                ColorMode.AUTO -> isWorkspaceDarkText
+            }
+            systemUiController?.updateUiState(UI_STATE_BASE_WINDOW, useDarkIcons)
         }
         preferenceManager2.backPressGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
             hasBackGesture = handler !is GestureHandlerConfig.NoOp

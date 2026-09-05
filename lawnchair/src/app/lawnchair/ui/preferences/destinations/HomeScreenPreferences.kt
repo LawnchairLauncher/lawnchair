@@ -187,9 +187,11 @@ fun HomeScreenPreferences(
                 label = stringResource(id = R.string.show_status_bar),
             )
             ExpandAndShrink(visible = showStatusBarAdapter.state.value) {
-                SwitchPreference(
-                    adapter = prefs2.darkStatusBar.getAdapter(),
-                    label = stringResource(id = R.string.dark_status_bar_label),
+                ListPreference(
+                    adapter = prefs2.statusBarIconMode.getAdapter(),
+                    entries = ColorMode.entries(),
+                    label = stringResource(id = R.string.status_bar_icon_mode_label),
+                    description = stringResource(id = R.string.status_bar_icon_mode_description),
                 )
             }
             ExpandAndShrink(visible = showStatusBarAdapter.state.value && LawnchairApp.isRecentsEnabled) {
