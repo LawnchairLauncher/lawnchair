@@ -272,7 +272,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
-    private boolean mDisallowPagedViewInterceptForIconSwipe = false;
+    private boolean mStartedOnIconWithHorizontalGesture;
+    private boolean mHandlingPagedViewIconSwipe;
+    private float mIconSwipeDownX;
+    private float mIconSwipeDownY;
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -1205,21 +1208,29 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                mDisallowPagedViewInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(
+                mStartedOnIconWithHorizontalGesture = isTouchOnIconWithSwipeGesture(
                         ev.getX(), ev.getY(), false);
-                if (mDisallowPagedViewInterceptForIconSwipe) {
-                    resetTouchState();
-                    return true;
+                if (mStartedOnIconWithHorizontalGesture) {
+                    mHandlingPagedViewIconSwipe = false;
+                    mIconSwipeDownX = ev.getX();
+                    mIconSwipeDownY = ev.getY();
                 }
                 return false;
 
             case MotionEvent.ACTION_MOVE:
-                return mDisallowPagedViewInterceptForIconSwipe;
+                if (!mStartedOnIconWithHorizontalGesture) {
+                    return false;
+                }
+                if (!mHandlingPagedViewIconSwipe) {
+                    mHandlingPagedViewIconSwipe = isMovingTowardConfiguredHorizontalIconGesture(ev);
+                }
+                return mHandlingPagedViewIconSwipe;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                boolean shouldSkip = mDisallowPagedViewInterceptForIconSwipe;
-                mDisallowPagedViewInterceptForIconSwipe = false;
+                boolean shouldSkip = mHandlingPagedViewIconSwipe;
+                mStartedOnIconWithHorizontalGesture = false;
+                mHandlingPagedViewIconSwipe = false;
                 if (shouldSkip) {
                     resetTouchState();
                 }
@@ -1228,6 +1239,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             default:
                 return false;
         }
+    }
+
+    private boolean isMovingTowardConfiguredHorizontalIconGesture(MotionEvent ev) {
+        float diffX = ev.getX() - mIconSwipeDownX;
+        float diffY = ev.getY() - mIconSwipeDownY;
+        if (Math.abs(diffX) <= Math.abs(diffY)) {
+            return false;
+        }
+        return isTouchOnIconWithSwipeGestureInDirection(
+                mIconSwipeDownX, mIconSwipeDownY, diffX, diffY);
     }
 
     // Lawnchair: Icon swipe gesture feature
@@ -1242,6 +1263,19 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
         return hasConfiguredIconSwipeGesture;
+    }
+
+    /**
+     * Returns whether the touched icon has a gesture configured for the direction described by
+     * {@code diffX} and {@code diffY}. The dominant axis matches icon gesture direction locking.
+     */
+    public boolean isTouchOnIconWithSwipeGestureInDirection(
+            float x, float y, float diffX, float diffY) {
+        BubbleTextView touchedIcon = findIconAtPosition(x, y);
+        if (touchedIcon == null) {
+            return false;
+        }
+        return touchedIcon.hasConfiguredIconSwipeGestureForDirection(diffX, diffY);
     }
 
     // Lawnchair: Icon swipe gesture feature

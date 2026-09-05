@@ -27,6 +27,7 @@ import com.android.app.animation.Interpolators;
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
+import com.android.launcher3.IconGestureTouchTracker;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -50,23 +51,16 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private static final String TAG = "PortraitStatesTouchCtrl";
 
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
+    private final IconGestureTouchTracker mIconGestureTouchTracker;
 
     public PortraitStatesTouchController(Launcher l) {
         super(l, SingleAxisSwipeDetector.VERTICAL);
         mOverviewPortraitStateTouchHelper = new PortraitOverviewStateTouchHelper(l);
+        mIconGestureTouchTracker = new IconGestureTouchTracker(l);
     }
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
-        // Lawnchair: Icon Swipe Gestures (For vertical up gestures)
-        if (mLauncher.getWorkspace() != null && mLauncher.getDragLayer() != null) {
-            float[] coord = new float[]{ev.getX(), ev.getY()};
-            mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(), coord);
-                if (mLauncher.getWorkspace()
-                        .isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)) {
-                    return false;
-                }
-        }
         // If we are swiping to all apps instead of overview, allow it from anywhere.
         boolean interceptAnywhere = mLauncher.isInState(NORMAL);
         if (mCurrentAnimation != null) {
@@ -208,6 +202,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mIconGestureTouchTracker.onTouchDown(ev);
                 InteractionJankMonitorWrapper.begin(
                         mLauncher.getRootView(), Cuj.CUJ_LAUNCHER_OPEN_ALL_APPS, /*tag=*/ "swipe");
                 InteractionJankMonitorWrapper.begin(
@@ -220,7 +215,13 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_SWIPE);
                 break;
         }
-        return super.onControllerInterceptTouchEvent(ev);
+        boolean intercept = !mIconGestureTouchTracker.isMovingTowardConfiguredIconGesture(ev)
+                && super.onControllerInterceptTouchEvent(ev);
+        if (ev.getActionMasked() == MotionEvent.ACTION_UP
+                || ev.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+            mIconGestureTouchTracker.reset();
+        }
+        return intercept;
 
     }
 
