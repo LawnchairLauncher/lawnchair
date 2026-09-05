@@ -20,7 +20,6 @@ package com.android.launcher3.folder;
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderGridOrganizer.createFolderGridOrganizer;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELED;
@@ -89,6 +88,7 @@ import com.android.launcher3.views.FloatingIconViewCompanion;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -228,7 +228,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         icon.setAccessibilityDelegate(activity.getAccessibilityDelegate());
 
-        icon.mPreviewVerifier = createFolderGridOrganizer(activity.getDeviceProfile());
+        Context host = activity instanceof Context c
+                ? c
+                : activity.getDragLayer().getContext();
+        icon.mPreviewVerifier = createFolderGridOrganizer(host, activity.getDeviceProfile());
         icon.mPreviewVerifier.setFolderInfo(folderInfo);
         icon.updatePreviewItems(false);
 
@@ -350,9 +353,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 workspace.resetTransitionTransform();
             }
 
-            int numItemsInPreview = Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index + 1);
+            int activePreviewCount = mPreviewLayoutRule.getActivePreviewItemCount();
+            int numItemsInPreview = Math.min(activePreviewCount, index + 1);
             boolean itemAdded = false;
-            if (itemReturnedOnFailedDrop || index >= MAX_NUM_ITEMS_IN_PREVIEW) {
+            if (itemReturnedOnFailedDrop || index >= activePreviewCount) {
                 List<ItemInfo> oldPreviewItems = new ArrayList<>(mCurrentPreviewItems);
                 getFolder().addFolderContent(item, index, false);
                 mCurrentPreviewItems.clear();
@@ -388,7 +392,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                         center[1] - animateView.getMeasuredHeight() / 2);
 
-                float finalAlpha = index < MAX_NUM_ITEMS_IN_PREVIEW ? 1f : 0f;
+                float finalAlpha = index < activePreviewCount ? 1f : 0f;
 
                 float finalScale = scale * scaleRelativeToDragLayer;
 
@@ -555,7 +559,8 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
         mTmpParams = mPreviewItemManager.computePreviewItemDrawingParams(
-                Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index), curNumItems, mTmpParams);
+                Math.min(mPreviewLayoutRule.getActivePreviewItemCount(), index), curNumItems,
+                mTmpParams);
 
         mTmpParams.transX += mBackground.basePreviewOffsetX;
         mTmpParams.transY += mBackground.basePreviewOffsetY;
@@ -666,7 +671,23 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
      * Returns the list of items which should be visible in the preview
      */
     public List<ItemInfo> getPreviewItemsOnPage(int page) {
-        return mPreviewVerifier.setFolderInfo(mInfo).previewItemsForPage(page, mInfo.getContents());
+        // getContents() is unsorted; preview must follow the same order as the opened folder.
+        ArrayList<ItemInfo> sorted = new ArrayList<>(mInfo.getContents());
+        Collections.sort(sorted, Folder.ITEM_POS_COMPARATOR);
+        return mPreviewVerifier.setFolderInfo(mInfo).previewItemsForPage(page, sorted);
+    }
+
+    /**
+     * Applies the current folder-preview grid preference and redraws this icon.
+     */
+    public void refreshPreviewGrid() {
+        Context host = getContext();
+        mPreviewVerifier = createFolderGridOrganizer(host, mActivity.getDeviceProfile());
+        mPreviewVerifier.setFolderInfo(mInfo);
+        mPreviewItemManager.reapplyPreviewGrid();
+        updatePreviewItems(false);
+        setContentDescription(getAccessiblityTitle(mInfo.title));
+        invalidate();
     }
 
     @Override
@@ -789,11 +810,15 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             title = getContext().getString(R.string.unnamed_folder);
         }
         int size = mInfo.getContents().size();
-        if (size < MAX_NUM_ITEMS_IN_PREVIEW) {
+        // Prefer the preference over mPreviewLayoutRule: title can be set during inflation
+        // before the layout rule is initialized.
+        int activePreviewCount =
+                app.lawnchair.folder.FolderPreviewConfig.getActiveItemCount(getContext());
+        if (size < activePreviewCount) {
             return getContext().getString(R.string.folder_name_format_exact, title, size);
         } else {
             return getContext().getString(R.string.folder_name_format_overflow, title,
-                    MAX_NUM_ITEMS_IN_PREVIEW);
+                    activePreviewCount);
         }
     }
 
