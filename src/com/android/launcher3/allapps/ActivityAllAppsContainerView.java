@@ -653,7 +653,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             return;
         }
         if (currentActivePage != SEARCH) {
-            mActivityContext.hideKeyboard();
+            if (!PreferenceCacheExtensionsKt.firstCached(pref2.getKeepKeyboardOpenOnClear())) {
+                mActivityContext.hideKeyboard();
+            }
         }
         if (mAH.get(currentActivePage).mRecyclerView != null) {
             mAH.get(currentActivePage).mRecyclerView.bindFastScrollbar(mFastScroller,
