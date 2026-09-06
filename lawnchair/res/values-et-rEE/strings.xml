@@ -182,9 +182,9 @@
     <string name="gesturenavcontract_label">Kasuta GestureNavContract API-t</string>
     <string name="gesturenavcontract_description">Toeta viibete kasutamisel Androidi täiustatud animatsioone</string>
     <string name="gesturenavcontract_warning_incompatibility">Sinu seade pole täielikult toetatud. See võib põhjustada mõne animatsiooni visuaalseid tõrkeid.</string>
-    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_level_label">Vibratsiooni tagasiside tase</string>
     <string name="vibration_feedback_no_feedback_choice">Pole</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_minimal_choice">Minimaalne</string>
     <string name="vibration_feedback_default_choice">Vaikimisi</string>
     <string name="vibration_feedback_expressive_choice">Ekspressiivne</string>
     <string name="recents_lock_unlock">Rakenduste lukustamine</string>
@@ -199,16 +199,16 @@
     App suggestions
     -->
     <string name="suggestion_pref_screen_title">Soovitused</string>
-    <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="global_predictions_label">Näita soovituste funktsioone</string>
+    <string name="app_predictions_label">Rakenduste soovitused</string>
+    <string name="prediction_mode_label">Soovituste pakkuja</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Selle funktsiooni jaoks on vaja Android 10 või uuemat</string>
     <string name="prediction_mode_system">Süsteem</string>
     <string name="prediction_mode_none">Väljas</string>
     <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
     <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
-    <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="dismissed_prediction_apps_label">Blokeeritud rakendused</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blokeeritud rakendused (%1$d)</string>
     <string name="prediction_system_settings">Manage system suggestions</string>
     <string name="missing_usage_access_label">Usage access needed</string>
     <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
