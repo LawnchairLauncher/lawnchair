@@ -125,6 +125,14 @@ allprojects {
     }
 }
 
+// Library modules are published to GitHub Packages so other projects can depend on
+// them; see gradle/publishing.gradle for the published set and docs/publishing.md.
+subprojects {
+    plugins.withId('com.android.library') {
+        apply from: rootProject.file('gradle/publishing.gradle')
+    }
+}
+
 final def buildCommit = providers.exec {
     commandLine('git', 'rev-parse', '--short=7', 'HEAD')
 }.standardOutput.asText.get().trim()

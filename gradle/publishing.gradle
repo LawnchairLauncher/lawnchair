@@ -1,0 +1,129 @@
+/*
+ * Publishes Lawnchair's library modules as Maven artifacts so other projects can
+ * consume them without vendoring this repository.
+ *
+ * Applied by the root build script to every `com.android.library` project. Modules
+ * that are not listed in `artifactIds` below are skipped, which keeps internal-only
+ * or test-only libraries out of the published set.
+ *
+ * See docs/publishing.md for how to publish and how to consume the artifacts.
+ */
+
+// Project path -> Maven artifactId. The systemUI/* modules get a `systemui-` prefix
+// because names such as `log`, `common` and `utils` are far too generic to publish
+// as-is.
+def artifactIds = [
+        ':iconloaderlib'            : 'iconloaderlib',
+        ':searchuilib'              : 'searchuilib',
+        ':animationlib'             : 'animationlib',
+        ':msdllib'                  : 'msdllib',
+        ':contextualeducationlib'   : 'contextualeducationlib',
+        ':viewcapturelib'           : 'viewcapturelib',
+        ':displaylib'               : 'displaylib',
+        ':mechanics'                : 'mechanics',
+
+        ':shared'                   : 'systemui-shared',
+        ':plugin'                   : 'systemui-plugin',
+        ':plugincore'               : 'systemui-plugin-core',
+        ':common'                   : 'systemui-common',
+        ':log'                      : 'systemui-log',
+        ':animation'                : 'systemui-animation',
+        ':unfold'                   : 'systemui-unfold',
+        ':utils'                    : 'systemui-utils',
+
+        ':compatLib'                : 'compatlib',
+        ':compatLib:compatLibVQ'    : 'compatlib-vq',
+        ':compatLib:compatLibVR'    : 'compatlib-vr',
+        ':compatLib:compatLibVS'    : 'compatlib-vs',
+        ':compatLib:compatLibVT'    : 'compatlib-vt',
+        ':compatLib:compatLibVU'    : 'compatlib-vu',
+        ':compatLib:compatLibVV'    : 'compatlib-vv',
+        ':compatLib:compatLibVBaklava': 'compatlib-vbaklava',
+
+        ':hidden-api'               : 'hidden-api',
+        ':androidx-lib'             : 'androidx-lib',
+        ':flags'                    : 'flags',
+        ':wmshell'                  : 'wmshell',
+        ':dagger'                   : 'dagger',
+        ':concurrent'               : 'concurrent',
+        ':modules:widgetpicker'     : 'widgetpicker',
+]
+
+def artifactId = artifactIds[project.path]
+if (artifactId == null) {
+    return
+}
+
+apply plugin: 'maven-publish'
+
+def publishGroup = providers.gradleProperty('lawnchair.publish.group').get()
+// CI overrides the version per run; locally it falls back to gradle.properties.
+def publishVersion = providers.environmentVariable('PUBLISH_VERSION')
+        .orElse(providers.gradleProperty('lawnchair.publish.version'))
+        .get()
+def publishRepoSlug = providers.gradleProperty('lawnchair.publish.repository').get()
+
+def gprUser = providers.gradleProperty('gpr.user')
+        .orElse(providers.environmentVariable('GITHUB_ACTOR'))
+        .getOrElse('')
+def gprToken = providers.gradleProperty('gpr.key')
+        .orElse(providers.environmentVariable('GITHUB_TOKEN'))
+        .getOrElse('')
+
+android {
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
+}
+
+afterEvaluate {
+    // Modules such as :compatLib and :wmshell point `aidl.srcDirs` at the same directory
+    // as their Java sources, so the generated AIDL stubs land on top of the checked-in
+    // files when the sources jar is assembled. Keeping the first copy (the checked-in
+    // one) is the right result for a sources artifact.
+    tasks.named('sourceReleaseJar', Jar) {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = publishGroup
+                setArtifactId(artifactId)
+                version = publishVersion
+
+                pom {
+                    name = "Lawnchair ${artifactId}"
+                    description = "Lawnchair library module ${project.path}"
+                    url = "https://github.com/${publishRepoSlug}"
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    scm {
+                        url = "https://github.com/${publishRepoSlug}"
+                        connection = "scm:git:https://github.com/${publishRepoSlug}.git"
+                        developerConnection = "scm:git:ssh://git@github.com/${publishRepoSlug}.git"
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = 'GitHubPackages'
+                url = "https://maven.pkg.github.com/${publishRepoSlug}"
+                credentials {
+                    username = gprUser
+                    password = gprToken
+                }
+            }
+        }
+    }
+}

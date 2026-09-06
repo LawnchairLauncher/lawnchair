@@ -1,0 +1,54 @@
+name: Publish packages
+
+on:
+  push:
+    tags:
+      - 'lib-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Maven version to publish (e.g. 16.0.0-alpha01). Defaults to 16.0.0-dev.<run number>.'
+        required: false
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+
+      # Tags are named lib-v<version>; anything else falls back to a dev version
+      # keyed by the run number so re-runs never collide in GitHub Packages.
+      - name: Resolve version
+        id: version
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            version="${{ inputs.version }}"
+          elif [[ "${{ github.ref }}" == refs/tags/lib-v* ]]; then
+            version="${GITHUB_REF#refs/tags/lib-v}"
+          else
+            version="16.0.0-dev.${{ github.run_number }}"
+          fi
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+          echo "Publishing version $version"
+
+      - name: Publish to GitHub Packages
+        run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
+        env:
+          PUBLISH_VERSION: ${{ steps.version.outputs.value }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "Published \`${{ steps.version.outputs.value }}\` to https://github.com/${{ github.repository }}/packages" >> "$GITHUB_STEP_SUMMARY"
