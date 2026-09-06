@@ -106,6 +106,10 @@ private fun AppPredictionsFeature(
     PreferenceGroup(
         heading = stringResource(R.string.app_predictions_label),
     ) {
+        SwitchPreference(
+            adapter = prefs2.showSuggestedAppsInDrawer.getAdapter(),
+            label = stringResource(R.string.show_suggested_apps_at_drawer_top),
+        )
         ListPreference(
             adapter = predictionModeAdapter,
             entries = predictionModeEntries,

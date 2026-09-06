@@ -172,6 +172,7 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
         } else {
             SliderPreference(
                 label = stringResource(id = R.string.dock_icons),
+                description = stringResource(id = R.string.dock_icons_shared_description),
                 adapter = hotseatColumnsAdapter,
                 step = 1,
                 valueRange = 3..10,

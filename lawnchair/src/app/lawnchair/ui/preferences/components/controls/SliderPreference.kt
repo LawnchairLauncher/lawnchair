@@ -64,6 +64,7 @@ fun SliderPreference(
     adapter: PreferenceAdapter<Int>,
     valueRange: ClosedRange<Int>,
     step: Int,
+    description: String? = null,
     showAsPercentage: Boolean = false,
     showUnit: String = "",
     enabled: Boolean = true,
@@ -80,6 +81,7 @@ fun SliderPreference(
         adapter = transformedAdapter,
         valueRange = start..endInclusive,
         step = step.toFloat(),
+        description = description,
         showAsPercentage = showAsPercentage,
         showUnit = showUnit,
         enabled = enabled,
@@ -93,6 +95,7 @@ fun SliderPreference(
     valueRange: ClosedFloatingPointRange<Float>,
     step: Float,
     modifier: Modifier = Modifier,
+    description: String? = null,
     showAsPercentage: Boolean = false,
     showUnit: String = "",
     enabled: Boolean = true,
@@ -108,6 +111,7 @@ fun SliderPreference(
         valueRange = valueRange,
         step = step,
         modifier = modifier,
+        description = description,
         showAsPercentage = showAsPercentage,
         showUnit = showUnit,
         enabled = enabled,
@@ -122,6 +126,7 @@ private fun SliderPreference(
     valueRange: ClosedFloatingPointRange<Float>,
     step: Float,
     modifier: Modifier = Modifier,
+    description: String? = null,
     showAsPercentage: Boolean = false,
     showUnit: String = "",
     enabled: Boolean = true,
@@ -175,6 +180,13 @@ private fun SliderPreference(
         },
         modifier = modifier,
         description = {
+            if (description != null) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Slider(
                 value = sliderValue,
                 onValueChange = { newValue ->

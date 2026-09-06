@@ -393,6 +393,9 @@
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
 
     <string name="icon_pack_scope_title">Apply icon pack to</string>
+    <string name="get_lawnicons">Get Lawnicons</string>
+    <string name="icon_style_drawer_subtitle">Whether the icon pack and themed icons reach the app drawer</string>
+    <string name="dock_icons_shared_description">Shared with the home screen grid</string>
     <string name="icon_pack_scope_home_label">Home screen</string>
     <string name="icon_pack_scope_home_and_drawer_label">Home screen and app drawer</string>
 

@@ -16,8 +16,12 @@
 
 package app.lawnchair.ui.preferences.destinations
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -57,6 +61,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
@@ -66,6 +71,7 @@ import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.DummyLauncherLayout
 import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.WithWallpaper
+import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -149,23 +155,30 @@ fun IconPackPreferences(
     val drawerIconPackAdapter = prefs.drawerIconPack.getAdapter()
     val forceMonochromeAdapter = prefs.forceIconMonochrome.getAdapter()
 
+    // The preview keeps its share of the screen while the settings below it scroll.
+    val previewHeight = (LocalConfiguration.current.screenHeightDp * 0.42f).dp
+
+    val packageManager = context.packageManager
+    val themedIconsAvailable = packageManager
+        .getThemedIconPacksInstalled(context)
+        .any { packageManager.isPackageInstalled(it) } ||
+        packageManager.isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
+
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style_label),
         modifier = modifier,
         isExpandedScreen = true,
-        scrollState = if (isPortrait) null else scrollState,
+        scrollState = scrollState,
     ) {
         if (isPortrait) {
             Column(
-                modifier = Modifier
-                    .weight(weight = 1f)
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WithWallpaper { wallpaper ->
                     DummyLauncherBox(
                         modifier = Modifier
-                            .fillMaxHeight()
+                            .height(previewHeight)
                             .padding(top = 8.dp)
                             .clip(MaterialTheme.shapes.large),
                     ) {
@@ -224,95 +237,103 @@ fun IconPackPreferences(
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier.animateContentSize(),
             ) { page ->
-                Column {
-                    when (page) {
-                        0 -> {
-                            IconPackGrid(
-                                adapter = iconPackAdapter,
-                                false,
-                            )
-                            PreferenceGroup {
-                                ListPreference(
-                                    label = stringResource(id = R.string.icon_pack_scope_title),
-                                    entries = IconPackScope.entries.map {
-                                        ListPreferenceEntry(
-                                            value = it,
-                                            label = { stringResource(id = it.labelResourceId) },
-                                        )
-                                    },
-                                    value = IconPackScope.getForSettings(
-                                        drawerIconPack = drawerIconPackAdapter.state.value,
-                                    ),
-                                    onValueChange = {
-                                        drawerIconPackAdapter.onChange(newValue = it.drawerIconPack)
-                                    },
-                                )
-                                SwitchPreference(
-                                    adapter = tintIconpack,
-                                    label = stringResource(id = R.string.themed_icon_pack_tint),
-                                )
-                            }
-                        }
+                when (page) {
+                    0 -> IconPackGrid(adapter = iconPackAdapter, isThemedIconPack = false)
 
-                        1 -> {
-                            val packageManager = context.packageManager
-
-                            val themedIconsAvailable = packageManager
-                                .getThemedIconPacksInstalled(LocalContext.current)
-                                .any { packageManager.isPackageInstalled(it) } ||
-                                packageManager
-                                    .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
-
-                            if (themedIconsAvailable && themedIconsAdapter.state.value) {
-                                IconPackGrid(
-                                    adapter = themedIconPackAdapter,
-                                    true,
-                                )
-                            }
-                            PreferenceGroup {
-                                ListPreference(
-                                    enabled = themedIconsAvailable,
-                                    label = stringResource(id = R.string.themed_icon_title),
-                                    entries = ThemedIconsState.entries.map {
-                                        ListPreferenceEntry(
-                                            value = it,
-                                            label = { stringResource(id = it.labelResourceId) },
-                                        )
-                                    },
-                                    value = ThemedIconsState.getForSettings(
-                                        themedIcons = themedIconsAdapter.state.value,
-                                        drawerThemedIcons = drawerThemedIconsEnabled,
-                                    ),
-                                    onValueChange = {
-                                        themedIconsAdapter.onChange(newValue = it.themedIcons)
-                                        drawerThemedIconsAdapter.onChange(newValue = it.drawerThemedIcons)
-
-                                        iconPackAdapter.onChange(newValue = iconPackAdapter.state.value)
-                                        themedIconPackAdapter.onChange(newValue = themedIconPackAdapter.state.value)
-                                    },
-                                    description = if (themedIconsAvailable.not()) {
-                                        stringResource(id = R.string.lawnicons_not_installed_description)
-                                    } else {
-                                        null
-                                    },
-                                )
-                                ExpandAndShrink(
-                                    visible = themedIconsAdapter.state.value,
-                                ) {
-                                    SwitchPreference(
-                                        label = stringResource(id = R.string.force_monochrome_label),
-                                        description = stringResource(id = R.string.force_monochrome_description),
-                                        adapter = forceMonochromeAdapter,
-                                    )
-                                }
-                            }
-                        }
+                    1 -> if (themedIconsAvailable && themedIconsAdapter.state.value) {
+                        IconPackGrid(adapter = themedIconPackAdapter, isThemedIconPack = true)
                     }
                 }
             }
         }
+
+        // The tabs above pick a pack. Every setting stays below them, visible from either tab,
+        // so nothing is hidden behind a tab the reader never opens.
+        PreferenceGroup(heading = stringResource(id = R.string.icon_pack)) {
+            ListPreference(
+                label = stringResource(id = R.string.icon_pack_scope_title),
+                entries = IconPackScope.entries.map {
+                    ListPreferenceEntry(
+                        value = it,
+                        label = { stringResource(id = it.labelResourceId) },
+                    )
+                },
+                value = IconPackScope.getForSettings(
+                    drawerIconPack = drawerIconPackAdapter.state.value,
+                ),
+                onValueChange = {
+                    drawerIconPackAdapter.onChange(newValue = it.drawerIconPack)
+                },
+            )
+            SwitchPreference(
+                adapter = tintIconpack,
+                label = stringResource(id = R.string.themed_icon_pack_tint),
+            )
+        }
+
+        PreferenceGroup(heading = stringResource(id = R.string.themed_icon_pack)) {
+            ListPreference(
+                enabled = themedIconsAvailable,
+                label = stringResource(id = R.string.themed_icon_title),
+                entries = ThemedIconsState.entries.map {
+                    ListPreferenceEntry(
+                        value = it,
+                        label = { stringResource(id = it.labelResourceId) },
+                    )
+                },
+                value = ThemedIconsState.getForSettings(
+                    themedIcons = themedIconsAdapter.state.value,
+                    drawerThemedIcons = drawerThemedIconsEnabled,
+                ),
+                onValueChange = {
+                    themedIconsAdapter.onChange(newValue = it.themedIcons)
+                    drawerThemedIconsAdapter.onChange(newValue = it.drawerThemedIcons)
+
+                    iconPackAdapter.onChange(newValue = iconPackAdapter.state.value)
+                    themedIconPackAdapter.onChange(newValue = themedIconPackAdapter.state.value)
+                },
+                description = if (themedIconsAvailable) null else stringResource(id = R.string.lawnicons_not_installed_description),
+            )
+            // Saying what is missing is not much use without a way to get it.
+            if (!themedIconsAvailable) {
+                ClickablePreference(
+                    label = stringResource(id = R.string.get_lawnicons),
+                    onClick = { context.startLawnicons() },
+                )
+            }
+            ExpandAndShrink(visible = themedIconsAdapter.state.value) {
+                SwitchPreference(
+                    label = stringResource(id = R.string.force_monochrome_label),
+                    description = stringResource(id = R.string.force_monochrome_description),
+                    adapter = forceMonochromeAdapter,
+                )
+            }
+        }
     }
 }
+
+/**
+ * Opens Lawnicons in the store, falling back to its releases page when no store handles the link.
+ */
+private fun Context.startLawnicons() {
+    val market = Intent(
+        Intent.ACTION_VIEW,
+        "market://details?id=${Constants.LAWNICONS_PACKAGE_NAME}".toUri(),
+    )
+    val fallback = Intent(Intent.ACTION_VIEW, LAWNICONS_RELEASES_URL.toUri())
+    try {
+        startActivity(market)
+    } catch (_: ActivityNotFoundException) {
+        try {
+            startActivity(fallback)
+        } catch (_: ActivityNotFoundException) {
+            Log.w("IconPackPreferences", "No activity to open Lawnicons")
+        }
+    }
+}
+
+private const val LAWNICONS_RELEASES_URL =
+    "https://github.com/LawnchairLauncher/lawnicons/releases/latest"
 
 @Composable
 fun IconPackGrid(

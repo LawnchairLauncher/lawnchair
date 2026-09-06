@@ -51,6 +51,7 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.AppDrawerHiddenApps
+import app.lawnchair.ui.preferences.navigation.GeneralIconPack
 import app.lawnchair.ui.preferences.navigation.Predictions
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
@@ -169,6 +170,11 @@ fun AppDrawerPreferences(
         }
         val showDrawerLabels = prefs2.showIconLabelsInDrawer.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
+            NavigationActionPreference(
+                label = stringResource(id = R.string.icon_style_label),
+                destination = GeneralIconPack,
+                subtitle = stringResource(id = R.string.icon_style_drawer_subtitle),
+            )
             SliderPreference(
                 label = stringResource(id = R.string.icon_sizes),
                 adapter = prefs2.drawerIconSizeFactor.getAdapter(),
