@@ -422,6 +422,9 @@ public class Hotseat extends FrameLayout implements Insettable {
             lp.height = grid.hotseatBarSizePx;
         }
 
+        // LC-Note: 0 dock rows keeps the search bar and drops the icons.
+        mIconsContainer.setVisibility(grid.numHotseatRows == 0 ? View.GONE : View.VISIBLE);
+
         Rect padding = grid.getHotseatLayoutPadding(getContext());
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
         setLayoutParams(lp);

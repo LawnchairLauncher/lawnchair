@@ -208,17 +208,18 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
-        int backgroundColor;
+        int baseColor;
         if (!launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
-            // Always use an opaque scrim if there's no sheet.
-            backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
+            baseColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
         } else if (!Flags.allAppsBlur()) {
             // If there's a sheet but no blur, use the old scrim color.
-            backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, 
-                ColorTokens.WidgetsPickerScrim.resolveColor(launcher));
+            baseColor = ColorTokens.WidgetsPickerScrim.resolveColor(launcher);
         } else {
-            backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
+            baseColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
         }
+        // LC-Note: The background opacity setting reaches every case. AOSP keeps the scrim opaque
+        // where there is no sheet, which left the setting doing nothing on a phone in portrait.
+        int backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, baseColor);
         return new ScrimColors(backgroundColor, /* foregroundColor */ Color.TRANSPARENT);
     }
 }

@@ -519,7 +519,8 @@ public class DeviceProfile {
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
 
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
-        numHotseatRows = Math.max(1, Math.min(2, PreferenceManager.getInstance(context).getHotseatRows().get()));
+        // LC-Note: 0 keeps the search bar and leaves the icon rows out.
+        numHotseatRows = Math.max(0, Math.min(2, PreferenceManager.getInstance(context).getHotseatRows().get()));
         numHotseatPages = Math.max(1, Math.min(5, PreferenceManager.getInstance(context).getDockPages().get()));
         mHotseatColumnSpan = inv.numColumns;
 
@@ -912,7 +913,10 @@ public class DeviceProfile {
             .firstCached(preferenceManager2.getHotseatBottomFactor());
 
         // Extra height needed for additional dock rows
-        int extraRowsHeight = (numHotseatRows - 1) * hotseatCellHeightPx;
+        int extraRowsHeight = Math.max(0, numHotseatRows - 1) * hotseatCellHeightPx;
+        // With no icon rows the bar is just the search bar.
+        int iconRowsHeight = numHotseatRows == 0 ? 0 : hotseatIconSizePx;
+        int iconRowsSpace = numHotseatRows == 0 ? 0 : hotseatQsbSpace;
 
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + getHotseatProfile().getBarEdgePaddingPx()
@@ -923,17 +927,17 @@ public class DeviceProfile {
                     + hotseatBarBottomSpacePx
                     + extraRowsHeight;
         } else if (isQsbOnTop()) { // LC-Note: isQsbOnTop, this usually is a foldable device, not a tablet
-            hotseatBarSizePx = hotseatIconSizePx
-                    + hotseatQsbSpace
+            hotseatBarSizePx = iconRowsHeight
+                    + iconRowsSpace
                     + getHotseatProfile().getQsbVisualHeight()
                     + hotseatBarBottomSpacePx
                     + extraRowsHeight;
         } else {
-            hotseatBarSizePx = hotseatIconSizePx
-                    + hotseatQsbSpace
+            hotseatBarSizePx = iconRowsHeight
+                    + iconRowsSpace
                     + getHotseatProfile().getQsbVisualHeight()
                     + hotseatBarBottomSpacePx
-                    + space
+                    + (numHotseatRows == 0 ? 0 : space)
                     + extraRowsHeight;
         }
         var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.isHotseatEnabled());

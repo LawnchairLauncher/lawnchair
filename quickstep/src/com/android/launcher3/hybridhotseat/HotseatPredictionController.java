@@ -328,7 +328,11 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Sets or updates the predicted items
      */
     public void setPredictedItems(PredictedContainerInfo items) {
-        mPredictedItems = items.getContents();
+        // The dock and the drawer each decide whether they show suggestions.
+        PreferenceManager2 prefs = PreferenceManager2.getInstance(mLauncher);
+        mPredictedItems = PreferenceCacheExtensionsKt.firstCached(prefs.getShowSuggestedAppsInDock())
+                ? items.getContents()
+                : Collections.emptyList();
         if (mPredictedItems.isEmpty()) {
             HotseatRestoreHelper.restoreBackup(mLauncher);
         }

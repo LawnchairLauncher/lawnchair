@@ -456,6 +456,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.recreate() },
     )
 
+    val showSuggestedAppsInDock = preference(
+        key = booleanPreferencesKey(name = "show_suggested_apps_in_dock"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_suggested_apps_in_dock),
+        onSet = { reloadHelper.recreate() },
+    )
+
     val enableFontSelection = preference(
         key = booleanPreferencesKey(name = "enable_font_selection"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_font_selection),

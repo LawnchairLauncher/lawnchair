@@ -182,7 +182,7 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
             label = stringResource(id = R.string.dock_rows),
             adapter = hotseatRowsAdapter,
             step = 1,
-            valueRange = 1..2,
+            valueRange = 0..2,
         )
         SliderPreference(
             label = stringResource(id = R.string.dock_pages),
