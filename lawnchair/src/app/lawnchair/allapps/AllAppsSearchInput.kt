@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -38,6 +39,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.firstCached
@@ -56,6 +58,7 @@ import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.ProvideLifecycleState
+import com.android.launcher3.ExtendedEditText
 import com.android.launcher3.Insettable
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.LauncherState
@@ -186,19 +189,25 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     ColorTokens.SearchboxHighlight.resolveColor(context)
                 }
 
+                val idleAlpha by prefs.drawerQsbAlpha.observeAsState()
+                val cornerRadius by prefs.drawerQsbCornerRadius.observeAsState()
+                val strokeWidth by prefs.drawerQsbStrokeWidth.observeAsState()
+
+                // The bar fades out of the way while the query is being typed.
                 val backgroundAlpha by animateIntAsState(
-                    if (isFocused || !queryEmpty) 0 else 100,
+                    if (isFocused || !queryEmpty) 0 else idleAlpha,
                 )
 
-                // Ignore other theme attributes to preserve existing behavior
                 val style = buildQsbStyle(
                     context = context,
                     themed = themedQsb,
                     backgroundColor = backgroundColor,
                     backgroundAlpha = backgroundAlpha,
-                    cornerRadius = 1f,
-                    strokeColor = null,
-                    strokeWidth = 0f,
+                    cornerRadius = cornerRadius,
+                    // Use light color as strokeColor is a static color that doesn't use darkColor
+                    strokeColor = prefs2.strokeColorStyle.asState().value
+                        .colorPreferenceEntry.lightColor.invoke(context),
+                    strokeWidth = strokeWidth,
                 )
 
                 val actions = QsbActions(
@@ -207,7 +216,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                             searchAlgorithm?.doZeroStateSearch(this@AllAppsSearchInput)
                         }
                         input.requestFocus()
-                        input.showKeyboard()
+                        input.showKeyboardWhenReady()
                     },
                     onStartIconClick = if (shouldShowIcons) {
                         {
@@ -283,6 +292,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 if (input.text.toString().isEmpty() && isDirectFocus) {
                     searchAlgorithm?.doZeroStateSearch(this)
                     setDirectFocus(false)
+                    // Filling the zero state rebuilds the list under the field, and the keyboard
+                    // the framework asked for when the field took focus is dropped along the way.
+                    // That is why the first tap on the search bar used to leave it closed.
+                    input.showKeyboardWhenReady()
                 }
 
                 setBackgroundVisibility(false, 0f)
@@ -554,3 +567,26 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         requestLayout()
     }
 }
+
+/**
+ * Asks for the keyboard, and keeps asking for a short while until it is actually up.
+ *
+ * [ExtendedEditText.showKeyboard] reports whether the request was accepted, not whether the
+ * keyboard appeared: right after the drawer opens the request is taken and then dropped, which is
+ * why the first tap on the search bar used to leave the keyboard closed. So ask through the window
+ * insets controller and check the insets themselves before giving up.
+ */
+private fun ExtendedEditText.showKeyboardWhenReady(attemptsLeft: Int = KEYBOARD_ATTEMPTS) {
+    requestFocus()
+    val controller = ViewCompat.getWindowInsetsController(this)
+    if (controller != null) controller.show(WindowInsetsCompat.Type.ime()) else showKeyboard()
+    if (attemptsLeft <= 1) return
+    postDelayed({
+        if (!isKeyboardVisible()) showKeyboardWhenReady(attemptsLeft - 1)
+    }, KEYBOARD_RETRY_MS)
+}
+
+private fun View.isKeyboardVisible() = ViewCompat.getRootWindowInsets(this)?.isVisible(WindowInsetsCompat.Type.ime()) == true
+
+private const val KEYBOARD_ATTEMPTS = 6
+private const val KEYBOARD_RETRY_MS = 80L

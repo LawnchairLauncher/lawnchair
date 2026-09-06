@@ -1,11 +1,20 @@
 package app.lawnchair.ui.preferences.components.search
 
 import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
@@ -13,17 +22,30 @@ import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.qsb.LawnQsbLayout
+import app.lawnchair.qsb.LawnQsbUi
+import app.lawnchair.qsb.QsbActions
+import app.lawnchair.qsb.buildQsbStyle
+import app.lawnchair.qsb.providers.Google
+import app.lawnchair.qsb.providers.PixelSearch
+import app.lawnchair.qsb.providers.QsbSearchProvider
+import app.lawnchair.qsb.rememberAllAppsQsbState
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.search.algorithms.engine.provider.web.CustomWebSearchProvider
+import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearchPreference
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
+import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.TwoTargetSwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.navigation.SearchProviderPreference
+import app.lawnchair.ui.theme.preferenceGroupColor
 import app.lawnchair.util.FileAccessManager
 import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -41,11 +63,25 @@ fun DrawerSearchPreference(
     val showDrawerSearchBar = !prefs2.hideAppDrawerSearchBar.getAdapter()
     val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
 
+    val drawerQsbCornerRadius = prefs.drawerQsbCornerRadius.getAdapter()
+    val drawerQsbAlpha = prefs.drawerQsbAlpha.getAdapter()
+    val drawerQsbStrokeWidth = prefs.drawerQsbStrokeWidth.getAdapter()
+    val strokeColorStyle = prefs2.strokeColorStyle.getAdapter()
+
     MainSwitchPreference(
         adapter = showDrawerSearchBar,
         label = stringResource(id = R.string.show_app_search_bar),
         modifier = modifier,
     ) {
+        DrawerSearchBarPreview(
+            provider = prefs2.hotseatQsbProvider.getAdapter().state.value,
+            themed = prefs2.themedHotseatQsb.getAdapter().state.value,
+            showIcons = prefs2.matchHotseatQsbStyle.getAdapter().state.value,
+            cornerRadiusFactor = drawerQsbCornerRadius.state.value,
+            backgroundAlpha = drawerQsbAlpha.state.value,
+            strokeWidth = drawerQsbStrokeWidth.state.value,
+            strokeColor = strokeColorStyle.state.value,
+        )
         PreferenceGroup(heading = stringResource(R.string.general_label)) {
             if (hiddenApps.isNotEmpty()) {
                 HiddenAppsInSearchPreference()
@@ -62,6 +98,33 @@ fun DrawerSearchPreference(
                 description = stringResource(R.string.allapps_match_qsb_style_description),
                 adapter = prefs2.matchHotseatQsbStyle.getAdapter(),
             )
+        }
+
+        PreferenceGroup(heading = stringResource(R.string.style)) {
+            SliderPreference(
+                label = stringResource(id = R.string.corner_radius_label),
+                adapter = drawerQsbCornerRadius,
+                step = 0.05F,
+                valueRange = 0F..1F,
+                showAsPercentage = true,
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.background_opacity),
+                adapter = drawerQsbAlpha,
+                step = 5,
+                valueRange = 0..100,
+                showUnit = "%",
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.qsb_hotseat_stroke_width),
+                adapter = drawerQsbStrokeWidth,
+                step = 1f,
+                valueRange = 0f..10f,
+                showUnit = "vw",
+            )
+            if (drawerQsbStrokeWidth.state.value > 0f) {
+                ColorPreference(preference = prefs2.strokeColorStyle)
+            }
         }
 
         val searchAlgorithm = preferenceManager2().searchAlgorithm.getAdapter().state.value
@@ -213,4 +276,58 @@ private fun LocalSearchSettings(
         adapter = prefs.searchResultCalculator.getAdapter(),
         label = stringResource(R.string.all_apps_search_result_calculator),
     )
+}
+
+/** Shows the drawer search bar as the settings above it describe it. */
+@Composable
+private fun DrawerSearchBarPreview(
+    provider: QsbSearchProvider,
+    themed: Boolean,
+    showIcons: Boolean,
+    cornerRadiusFactor: Float,
+    backgroundAlpha: Int,
+    strokeWidth: Float,
+    strokeColor: ColorOption,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val supportsLens = provider == Google || provider == PixelSearch
+    val voiceIntent = remember(provider, context) { LawnQsbLayout.getVoiceIntent(provider, context) }
+    val lensIntent = remember(supportsLens, context) {
+        if (supportsLens) LawnQsbLayout.getLensIntent(context) else null
+    }
+
+    PreferenceGroup(heading = stringResource(id = R.string.preview_label)) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(color = preferenceGroupColor(), shape = MaterialTheme.shapes.large)
+                .padding(horizontal = 16.dp)
+                .height(dimensionResource(id = R.dimen.qsb_widget_height) + 24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            LawnQsbUi(
+                state = rememberAllAppsQsbState(
+                    searchProvider = provider,
+                    themed = themed,
+                    shouldShowIcons = showIcons,
+                    queryEmpty = true,
+                    showMic = voiceIntent != null,
+                    showLens = lensIntent != null,
+                ),
+                style = buildQsbStyle(
+                    context = context,
+                    themed = themed,
+                    backgroundColor = ColorTokens.SearchboxHighlight.resolveColor(context),
+                    backgroundAlpha = backgroundAlpha,
+                    cornerRadius = cornerRadiusFactor,
+                    // Use light color as strokeColor is a static color that doesn't use darkColor
+                    strokeColor = strokeColor.colorPreferenceEntry.lightColor.invoke(context),
+                    strokeWidth = strokeWidth,
+                ),
+                actions = QsbActions(onQsbClick = {}, onEndIconClick = {}),
+                modifier = Modifier.height(48.dp),
+            )
+        }
+    }
 }

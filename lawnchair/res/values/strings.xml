@@ -962,6 +962,7 @@
     <string name="fuzzy_search_desc">Approximate matching for app searches</string>
 
     <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
+    <string name="show_suggested_apps_in_dock">Show suggested apps in the dock</string>
 
     <string name="perform_wide_search_title">Device search</string>
     <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
