@@ -76,6 +76,7 @@ import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
+import app.lawnchair.icons.DrawerIconCache;
 import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.LabelState;
@@ -474,7 +475,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         ItemInfo item;
         if (d.dragInfo instanceof WorkspaceItemFactory) {
             // Came from all apps -- make a copy
-            item = ((WorkspaceItemFactory) d.dragInfo).makeWorkspaceItem(getContext());
+            WorkspaceItemInfo fromAllApps =
+                    ((WorkspaceItemFactory) d.dragInfo).makeWorkspaceItem(getContext());
+            // The drawer may be showing the plain icons while the home screen uses the icon pack.
+            DrawerIconCache.fillHomeScreenIcon(getContext(), fromAllApps);
+            item = fromAllApps;
         } else if (d.dragSource instanceof BaseItemDragListener){
             // Came from a different window -- make a copy
             if (d.dragInfo instanceof AppPairInfo) {

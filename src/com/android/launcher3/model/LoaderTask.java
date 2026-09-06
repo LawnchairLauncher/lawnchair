@@ -328,6 +328,20 @@ public class LoaderTask implements Runnable {
                 mModel::onPackageIconsUpdated);
         logASplit("update AllApps icon cache finished");
 
+        // The drawer's plain icons live in their own cache, which needs the same pass to notice
+        // apps that changed their icon and to drop the ones that are gone.
+        IconCache drawerIconCache = drawerIconCache();
+        if (drawerIconCache != mIconCache) {
+            verifyNotStopped();
+            IconCacheUpdateHandler drawerUpdateHandler = drawerIconCache.getUpdateHandler();
+            setIgnorePackages(drawerUpdateHandler);
+            drawerUpdateHandler.updateIcons(allActivityList,
+                    LauncherActivityCachingLogic.INSTANCE,
+                    mModel::onPackageIconsUpdated);
+            drawerUpdateHandler.finish();
+            logASplit("update drawer icon cache finished");
+        }
+
         verifyNotStopped();
         logASplit("saving all shortcuts in icon cache");
         updateHandler.updateIcons(allShortcuts, CacheableShortcutCachingLogic.INSTANCE,

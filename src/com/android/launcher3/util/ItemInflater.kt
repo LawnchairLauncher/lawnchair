@@ -23,6 +23,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import app.lawnchair.icons.DrawerIconCache
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
@@ -30,6 +31,7 @@ import com.android.launcher3.R
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.model.ModelWriter
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.AppPairInfo
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
@@ -76,7 +78,20 @@ class ItemInflater<T>(
                     // Came from all apps prediction row -- make a copy
                     info = WorkspaceItemInfo(info)
                 }
-                return createShortcut(info, parent, container)
+                // An item dragged out of the drawer carries the icon the drawer drew. The icon
+                // pack always applies on the home screen, so swap in the regular cache's icon
+                // before the view is built, leaving nothing to see change afterwards.
+                val iconFilled =
+                    if (item is AppInfo && container != Favorites.CONTAINER_ALL_APPS_PREDICTION) {
+                        DrawerIconCache.fillHomeScreenIcon(context, info)
+                    } else {
+                        true
+                    }
+                val view = createShortcut(info, parent, container)
+                if (!iconFilled && view is BubbleTextView) {
+                    DrawerIconCache.refreshHomeScreenIcon(context, view, info)
+                }
+                return view
             }
             Favorites.ITEM_TYPE_FOLDER ->
                 return FolderIcon.inflateFolderAndIcon(

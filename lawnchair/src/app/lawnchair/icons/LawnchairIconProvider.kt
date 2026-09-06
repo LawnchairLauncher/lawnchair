@@ -240,6 +240,15 @@ class LawnchairIconProvider @Inject constructor(
         } else {
             ""
         }
+        // Only the settings this provider actually reads belong in the key. Listing the icon pack
+        // for the plain provider would throw its cache away every time the pack changes.
+        if (!applyCustomIcons) {
+            return "$base|lc:" +
+                "tip=${themedIconSourcePref.get()}," +
+                "ti=${prefs.themedIcons.get()}," +
+                "dti=${prefs.drawerThemedIcons.get()}," +
+                "fm=${prefs.forceIconMonochrome.get()}"
+        }
         return "$base|lc:" +
             "ip=${iconPackPref.get()}," +
             "tip=${themedIconSourcePref.get()}," +

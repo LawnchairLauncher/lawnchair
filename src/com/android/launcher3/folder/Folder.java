@@ -110,6 +110,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.data.FolderInfo;
+import app.lawnchair.icons.DrawerIconCache;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -1616,7 +1617,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 si = pasiSi;
             } else if (d.dragInfo instanceof WorkspaceItemFactory) {
                 // Came from all apps -- make a copy.
-                si = ((WorkspaceItemFactory) d.dragInfo).makeWorkspaceItem(launcher);
+                WorkspaceItemInfo fromAllApps =
+                        ((WorkspaceItemFactory) d.dragInfo).makeWorkspaceItem(launcher);
+                // The drawer may be showing the plain icons while the home screen uses the pack.
+                DrawerIconCache.fillHomeScreenIcon(launcher, fromAllApps);
+                si = fromAllApps;
             } else {
                 // WorkspaceItemInfo or AppPairInfo
                 si = d.dragInfo;
