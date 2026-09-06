@@ -214,6 +214,12 @@ fun IconPackPreferences(
                                 adapter = iconPackAdapter,
                                 false,
                             )
+                            PreferenceGroup {
+                                SwitchPreference(
+                                    adapter = tintIconpack,
+                                    label = stringResource(id = R.string.themed_icon_pack_tint),
+                                )
+                            }
                         }
 
                         1 -> {
@@ -291,7 +297,11 @@ fun IconPackGrid(
     val lazyListState = rememberLazyListState()
     val padding = 12.dp
 
-    val iconPacksLocal = iconPacks
+    val iconPacksLocal = if (isThemedIconPack) {
+        themedIconPacks.filter { it.packageName != "" }
+    } else {
+        iconPacks
+    }
 
     val selectedPack = adapter.state.value
     LaunchedEffect(selectedPack) {
