@@ -114,6 +114,22 @@ enum class ThemedIconsState(
     }
 }
 
+enum class IconPackScope(
+    @StringRes val labelResourceId: Int,
+    val drawerIconPack: Boolean,
+) {
+    Home(labelResourceId = R.string.icon_pack_scope_home_label, drawerIconPack = false),
+    HomeAndDrawer(
+        labelResourceId = R.string.icon_pack_scope_home_and_drawer_label,
+        drawerIconPack = true,
+    ),
+    ;
+
+    companion object {
+        fun getForSettings(drawerIconPack: Boolean) = entries.find { it.drawerIconPack == drawerIconPack } ?: HomeAndDrawer
+    }
+}
+
 @Composable
 fun IconPackPreferences(
     modifier: Modifier = Modifier,
@@ -130,6 +146,7 @@ fun IconPackPreferences(
     val scrollState = rememberScrollState()
     val drawerThemedIconsEnabled = drawerThemedIconsAdapter.state.value
     val tintIconpack = prefs.tintIconPackBackgrounds.getAdapter()
+    val drawerIconPackAdapter = prefs.drawerIconPack.getAdapter()
     val forceMonochromeAdapter = prefs.forceIconMonochrome.getAdapter()
 
     PreferenceLayout(
@@ -215,6 +232,21 @@ fun IconPackPreferences(
                                 false,
                             )
                             PreferenceGroup {
+                                ListPreference(
+                                    label = stringResource(id = R.string.icon_pack_scope_title),
+                                    entries = IconPackScope.entries.map {
+                                        ListPreferenceEntry(
+                                            value = it,
+                                            label = { stringResource(id = it.labelResourceId) },
+                                        )
+                                    },
+                                    value = IconPackScope.getForSettings(
+                                        drawerIconPack = drawerIconPackAdapter.state.value,
+                                    ),
+                                    onValueChange = {
+                                        drawerIconPackAdapter.onChange(newValue = it.drawerIconPack)
+                                    },
+                                )
                                 SwitchPreference(
                                     adapter = tintIconpack,
                                     label = stringResource(id = R.string.themed_icon_pack_tint),

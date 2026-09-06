@@ -55,6 +55,24 @@ class LawnchairIconProvider @Inject constructor(
     context,
     themeManager,
 ) {
+
+    /**
+     * When `false`, the icon pack and per-app icon overrides are ignored and the system icon is
+     * returned instead. Themed icons are unaffected -- they still come from [getThemeDataForPackage].
+     *
+     * The app drawer uses an instance created this way so that the icon pack can be limited to the
+     * home screen. See [app.lawnchair.icons.DrawerIconCache].
+     */
+    private var applyCustomIcons = true
+
+    constructor(
+        context: Context,
+        themeManager: ThemeManager,
+        applyCustomIcons: Boolean,
+    ) : this(context, themeManager) {
+        this.applyCustomIcons = applyCustomIcons
+    }
+
     private val prefs = PreferenceManager.getInstance(context)
     private val themedIconsEnabled get() = prefs.themedIcons.get()
 
@@ -93,6 +111,7 @@ class LawnchairIconProvider @Inject constructor(
     val systemIconState = themeManager.iconState
 
     private fun resolveIconEntry(componentName: ComponentName, user: UserHandle): IconEntry? {
+        if (!applyCustomIcons) return null
         val componentKey = ComponentKey(componentName, user)
         // first look for user-overridden icon
         val overrideItem = overrideRepo.overridesMap[componentKey]

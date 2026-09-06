@@ -87,6 +87,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.icons.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.cache.CacheLookupFlag;
@@ -113,6 +114,7 @@ import java.util.Objects;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.gestures.IconGestureListener;
+import app.lawnchair.icons.DrawerIconCache;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -576,9 +578,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         setIcon(iconDrawable);
     }
 
+    /** Whether this icon is shown in the app drawer rather than on the home screen. */
+    private boolean isDrawerDisplay() {
+        return mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_DRAWER_FOLDER
+                || mDisplay == DISPLAY_PREDICTION_ROW;
+    }
+
     public boolean shouldUseTheme() {
-        if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_DRAWER_FOLDER
-                || mDisplay == DISPLAY_PREDICTION_ROW) {
+        if (isDrawerDisplay()) {
             return PreferenceManager.getInstance(getContext()).getDrawerThemedIcons().get();
         }
         return mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER
@@ -1545,7 +1552,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             if (mIconLoadRequest != null) {
                 mIconLoadRequest.cancel();
             }
-            mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
+            IconCache iconCache = LauncherAppState.getInstance(getContext()).getIconCache();
+            if (isDrawerDisplay()) {
+                iconCache = DrawerIconCache.INSTANCE.get(getContext()).cacheForDrawer(iconCache);
+            }
+            mIconLoadRequest = iconCache
                     .updateIconInBackground(BubbleTextView.this, info, expectedFlag);
         }
     }

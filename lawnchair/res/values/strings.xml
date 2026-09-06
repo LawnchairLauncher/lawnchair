@@ -392,6 +392,10 @@
     <string name="force_monochrome_label">Force monochrome</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
 
+    <string name="icon_pack_scope_title">Apply icon pack to</string>
+    <string name="icon_pack_scope_home_label">Home screen</string>
+    <string name="icon_pack_scope_home_and_drawer_label">Home screen and app drawer</string>
+
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">Off</string>
     <string name="themed_icons_home_label">Home screen</string>

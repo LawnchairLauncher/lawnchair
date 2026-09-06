@@ -32,6 +32,7 @@ import com.android.launcher3.LauncherModel
 import com.android.launcher3.LauncherModel.ModelUpdateTask
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.dagger.ApplicationContext
+import app.lawnchair.icons.DrawerIconCache
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.icons.cache.CacheLookupFlag
 import com.android.launcher3.model.data.AppInfo
@@ -63,6 +64,17 @@ constructor(
 ) : ItemFactory<ItemInfo> {
 
     private val quietModeCache = mutableMapOf<UserHandle, Boolean>()
+
+    /**
+     * Predictions shown in the app drawer follow the drawer's icons, which are the plain system
+     * ones while the icon pack is limited to the home screen.
+     */
+    private val itemIconCache
+        get() = if (predictorState.containerId == Favorites.CONTAINER_ALL_APPS_PREDICTION) {
+            DrawerIconCache.INSTANCE.get(context).cacheForDrawer(iconCache)
+        } else {
+            iconCache
+        }
     // Number of items persisted can be different than what is needed if the grid changed between
     // the two operations
     private var readCount = 0
@@ -90,7 +102,7 @@ constructor(
                         },
                     )
                 info.container = predictorState.containerId
-                iconCache.getTitleAndIcon(info, lai, predictorState.lookupFlag)
+                itemIconCache.getTitleAndIcon(info, lai, predictorState.lookupFlag)
                 readCount++
                 return info.makeWorkspaceItem(context)
             }

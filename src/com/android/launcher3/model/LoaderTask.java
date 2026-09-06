@@ -58,6 +58,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
+import app.lawnchair.icons.DrawerIconCache;
+
 import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherModel;
@@ -605,6 +607,14 @@ public class LoaderTask implements Runnable {
         }
     }
 
+    /**
+     * The cache the app drawer reads icons from. It is {@link #mIconCache} unless the icon pack has
+     * been limited to the home screen, in which case the drawer gets the plain system icons.
+     */
+    private IconCache drawerIconCache() {
+        return DrawerIconCache.INSTANCE.get(mContext).cacheForDrawer(mIconCache);
+    }
+
     private List<LauncherActivityInfo> loadAllApps() {
         final List<UserHandle> profiles = mUserCache.getUserProfiles();
         List<LauncherActivityInfo> allActivityList = new ArrayList<>();
@@ -699,7 +709,7 @@ public class LoaderTask implements Runnable {
         Trace.beginSection("LoadAllAppsIconsInBulk");
 
         try {
-            mIconCache.getTitlesAndIconsInBulk(allAppsItemRequestInfos);
+            drawerIconCache().getTitlesAndIconsInBulk(allAppsItemRequestInfos);
             if (Flags.restoreArchivedAppIconsFromDb()) {
                 for (IconRequestInfo<AppInfo> iconRequestInfo : allAppsItemRequestInfos) {
                     AppInfo appInfo = iconRequestInfo.itemInfo;
@@ -762,7 +772,7 @@ public class LoaderTask implements Runnable {
                 );
                 if (!iconRequestInfo.loadIconFromDbBlob(mContext)) {
                     Log.d(TAG, "AppInfo Icon failed to load from blob, using cache.");
-                    mIconCache.getTitleAndIcon(
+                    drawerIconCache().getTitleAndIcon(
                             appInfo,
                             iconRequestInfo.launcherActivityInfo,
                             DEFAULT_LOOKUP_FLAG

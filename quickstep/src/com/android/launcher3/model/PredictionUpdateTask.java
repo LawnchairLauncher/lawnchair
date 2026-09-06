@@ -17,6 +17,7 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.EncryptionType.ENCRYPTED;
 import static com.android.launcher3.LauncherPrefs.nonRestorableItem;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
@@ -33,6 +34,8 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.ConstantItem;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherPrefs;
+import app.lawnchair.icons.DrawerIconCache;
+
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -66,6 +69,12 @@ public class PredictionUpdateTask implements ModelUpdateTask {
             @NonNull AllAppsList apps) {
         IconCache iconCache = taskController.getIconCache();
         Context context = taskController.getContext();
+        // Predictions shown in the app drawer follow the drawer's icons, which are the plain
+        // system ones while the icon pack is limited to the home screen.
+        if (mPredictorState.containerId == CONTAINER_ALL_APPS_PREDICTION) {
+            iconCache = DrawerIconCache.INSTANCE.get(context).cacheForDrawer(iconCache);
+        }
+        final IconCache predictionIconCache = iconCache;
 
         // TODO: remove this
         LauncherPrefs.get(context).put(LAST_PREDICTION_ENABLED, !mTargets.isEmpty());
@@ -96,8 +105,11 @@ public class PredictionUpdateTask implements ModelUpdateTask {
                 itemInfo = apps.data.stream()
                         .filter(info -> user.equals(info.user) && cn.equals(info.componentName))
                         .map(ai -> {
-                            iconCache.getTitleAndIcon(ai, mPredictorState.lookupFlag);
-                            return ai.makeWorkspaceItem(context);
+                            // Copy first: the AppInfo belongs to the all apps list, and filling
+                            // its icon here would replace the icon the drawer is showing.
+                            AppInfo copy = new AppInfo(ai);
+                            predictionIconCache.getTitleAndIcon(copy, mPredictorState.lookupFlag);
+                            return copy.makeWorkspaceItem(context);
                         })
                         .findAny()
                         .orElseGet(() -> {
@@ -107,7 +119,7 @@ public class PredictionUpdateTask implements ModelUpdateTask {
                                 return null;
                             }
                             AppInfo ai = new AppInfo(context, lai, user);
-                            iconCache.getTitleAndIcon(ai, lai, mPredictorState.lookupFlag);
+                            predictionIconCache.getTitleAndIcon(ai, lai, mPredictorState.lookupFlag);
                             return ai.makeWorkspaceItem(context);
                         });
 

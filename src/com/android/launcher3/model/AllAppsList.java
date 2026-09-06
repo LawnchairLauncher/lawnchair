@@ -35,6 +35,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.lawnchair.icons.DrawerIconCache;
+
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.Flags;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
@@ -100,14 +102,28 @@ public class AllAppsList {
      */
     private int mFlags;
 
+    @NonNull
+    private final DrawerIconCache mDrawerIconCache;
+
+    /**
+     * The cache the drawer reads icons from. It is the regular one unless the icon pack has been
+     * limited to the home screen, in which case the drawer gets the plain system icons.
+     */
+    @NonNull
+    private IconCache drawerIconCache() {
+        return mDrawerIconCache.cacheForDrawer(mIconCache);
+    }
+
     /**
      * Boring constructor.
      */
     @Inject
     public AllAppsList(@NonNull IconCache iconCache,
+            @NonNull DrawerIconCache drawerIconCache,
             @NonNull AppFilter appFilter,
             @NonNull Provider<AppsListRepository> repositoryProvider) {
         mIconCache = iconCache;
+        mDrawerIconCache = drawerIconCache;
         mAppFilter = appFilter;
         mRepo = repositoryProvider;
         mIndex = new AlphabeticIndexCompat(LocaleList.getDefault());
@@ -168,7 +184,7 @@ public class AllAppsList {
             return;
         }
         if (loadIcon) {
-            mIconCache.getTitleAndIcon(info, activityInfo, DEFAULT_LOOKUP_FLAG);
+            drawerIconCache().getTitleAndIcon(info, activityInfo, DEFAULT_LOOKUP_FLAG);
             info.sectionName = mIndex.computeSectionName(info.title == null ? "" : info.title);
         } else {
             try {
@@ -199,7 +215,7 @@ public class AllAppsList {
         AppInfo promiseAppInfo = new AppInfo(installInfo);
 
         if (loadIcon) {
-            mIconCache.getTitleAndIcon(promiseAppInfo, promiseAppInfo.getMatchingLookupFlag());
+            drawerIconCache().getTitleAndIcon(promiseAppInfo, promiseAppInfo.getMatchingLookupFlag());
             promiseAppInfo.sectionName = mIndex.computeSectionName(
                     promiseAppInfo.title == null ? "" : promiseAppInfo.title);
         } else {
@@ -371,7 +387,7 @@ public class AllAppsList {
                 } else {
                     Intent launchIntent = AppInfo.makeLaunchIntent(info);
 
-                    mIconCache.getTitleAndIcon(applicationInfo, info, DEFAULT_LOOKUP_FLAG);
+                    drawerIconCache().getTitleAndIcon(applicationInfo, info, DEFAULT_LOOKUP_FLAG);
                     applicationInfo.sectionName = mIndex.computeSectionName(
                             applicationInfo.title == null ? "" : applicationInfo.title);
                     applicationInfo.intent = launchIntent;

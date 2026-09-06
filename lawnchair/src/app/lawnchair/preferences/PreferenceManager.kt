@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.font.FontCache
+import app.lawnchair.icons.DrawerIconCache
 import app.lawnchair.util.getApkVersionComparison
 import app.lawnchair.util.isGestureNavContractCompatible
 import app.lawnchair.util.isOnePlusStock
@@ -54,6 +55,7 @@ class PreferenceManager @Inject constructor(
         mRecentsModel.onThemeChanged()
         Executors.MODEL_EXECUTOR.execute {
             LauncherAppState.INSTANCE.get(context).iconCache.clearMemoryCache()
+            DrawerIconCache.INSTANCE.get(context).clearMemoryCache()
             LauncherAppState.INSTANCE.get(context).model.reloadIfActive()
         }
     }
@@ -161,6 +163,7 @@ class PreferenceManager @Inject constructor(
 
     val themedIcons = BoolPref("themed_icons", false, reloadIcons)
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, reloadIcons)
+    val drawerIconPack = BoolPref("drawer_icon_pack", true, reloadIcons)
     val tintIconPackBackgrounds = BoolPref("tint_icon_pack_backgrounds", false, reloadIcons)
 
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
