@@ -157,7 +157,11 @@ jobs:
       - name: Export APK_NAME for later use
         run: echo "APK_NAME=Lawnchair.Debug.${{ github.ref_name }}.Nightly-CI_${{ github.run_number }}-$(echo ${{ github.sha }} | cut -c1-7).apk" >> $GITHUB_ENV
       - name: Rename .apk file
-        run: mv "./lawnWithQuickstepNightly/release/"*.apk "./$APK_NAME"
+        run: |
+          APK_FILE=$(find . -name "*.apk" | head -n 1)
+          if [ -n "$APK_FILE" ]; then
+            mv "$APK_FILE" "./$APK_NAME"
+          fi
       - name: Delete release if exist then create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
