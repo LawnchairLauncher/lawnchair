@@ -145,7 +145,7 @@ jobs:
   nightly-release:
     runs-on: ubuntu-latest
     needs: final-status
-    if: needs.final-status.outputs.publish_nightly == 'true' && github.event_name == 'push'
+    if: needs.final-status.outputs.publish_nightly == 'true' && github.event_name == 'push' && endsWith(github.ref, '-dev')
     permissions:
       contents: write
     steps:
