@@ -72,6 +72,14 @@ class PreferenceManager @Inject constructor(
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", true)
     val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false)
     val shadowBGIcons = BoolPref("pref_shadowBGIcons", true)
+
+    val enableStackedClock = BoolPref("pref_enableStackedClock", true)
+    val enableWeatherWidget = BoolPref("pref_enableWeatherWidget", true)
+    val enableQuoteWidget = BoolPref("pref_enableQuoteWidget", true)
+    val enableExpressiveQsb = BoolPref("pref_enableExpressiveQsb", true)
+    val enableNowBrief = BoolPref("pref_enableNowBrief", true)
+    val enableExpressiveFolders = BoolPref("pref_enableExpressiveFolders", true)
+    val enableDualToneIcons = BoolPref("pref_enableDualToneIcons", true)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
 
     private val isPhone: Boolean get() = deviceType == InvariantDeviceProfile.TYPE_PHONE

@@ -80,6 +80,7 @@ import app.lawnchair.ui.preferences.navigation.ExperimentalFeatures
 import app.lawnchair.ui.preferences.navigation.Folders
 import app.lawnchair.ui.preferences.navigation.General
 import app.lawnchair.ui.preferences.navigation.Gestures
+import app.lawnchair.ui.preferences.navigation.ExpressiveCustomizationRoute
 import app.lawnchair.ui.preferences.navigation.HomeScreen
 import app.lawnchair.ui.preferences.navigation.PreferenceRootRoute
 import app.lawnchair.ui.preferences.navigation.Quickstep
@@ -131,6 +132,14 @@ fun PreferencesDashboard(
 
         val deckLayout = prefs2.deckLayout.getAdapter()
         PreferenceGroup {
+            PreferenceCategory(
+                label = "Expressive Design & Widgets",
+                description = "Custom widgets, Now Brief, folders and dual-tone icons",
+                iconResource = R.drawable.ic_general,
+                onNavigate = { onNavigate(ExpressiveCustomizationRoute) },
+                isSelected = currentRoute is ExpressiveCustomizationRoute,
+            )
+
             PreferenceCategory(
                 label = stringResource(R.string.general_label),
                 description = stringResource(R.string.general_description),
