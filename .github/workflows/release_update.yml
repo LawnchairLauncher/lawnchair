@@ -23,7 +23,6 @@ on:
 jobs:
   build-release-apk:
     runs-on: ubuntu-latest
-    if: endsWith(github.ref, '-alpha') || endsWith(github.ref, '-beta') || endsWith(github.ref, '-rc') || endsWith(github.ref, '-stable')
     permissions:
       id-token: write
       attestations: write
@@ -38,7 +37,6 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Write sign info
         id: sign-release-apk
-        if: github.repository_owner == 'LawnchairLauncher'
         run: |
           if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
             echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties

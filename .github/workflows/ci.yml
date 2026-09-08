@@ -47,7 +47,6 @@ jobs:
         with:
           cache-encryption-key: Da25KUVSE5jbGds2zXmfXw==
       - name: Write sign info
-        if: github.repository_owner == 'LawnchairLauncher'
         run: |
           if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
             echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
@@ -79,7 +78,7 @@ jobs:
 
   send-notifications:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'LawnchairLauncher'
+    if: false
     needs: build-debug-apk
     steps:
       - uses: actions/checkout@v7
@@ -146,7 +145,7 @@ jobs:
   nightly-release:
     runs-on: ubuntu-latest
     needs: final-status
-    if: needs.final-status.outputs.publish_nightly == 'true' && github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && endsWith(github.ref, '-dev')
+    if: needs.final-status.outputs.publish_nightly == 'true' && github.event_name == 'push'
     permissions:
       contents: write
     steps:
