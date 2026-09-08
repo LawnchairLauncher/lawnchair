@@ -10,10 +10,10 @@ import android.graphics.RectF
 
 data class IconCustomizationConfig(
     val iconSizeMultiplier: Float = 1.0f,
-    val iconCornerRadiusRatio: Float = 0.35f, // Squircle / rounded ratio
+    val iconCornerRadiusRatio: Float = 0.35f,
     val darkThemeBgColor: Int = 0xFF1B2E21.toInt(),
     val lightThemeGlyphColor: Int = 0xFF86EFAC.toInt(),
-    val enableHighContrastDualTone: Boolean = true
+    val enableHighContrastDualTone: Boolean = true,
 )
 
 class ExpressiveIconCustomizer(private val context: Context) {

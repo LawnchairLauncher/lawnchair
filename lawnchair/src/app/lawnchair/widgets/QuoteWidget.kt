@@ -10,7 +10,7 @@ import androidx.cardview.widget.CardView
 class QuoteWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = 0,
 ) : CardView(context, attrs, defStyleAttr) {
 
     private val quoteText: TextView

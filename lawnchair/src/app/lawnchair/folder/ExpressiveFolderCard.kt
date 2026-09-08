@@ -10,7 +10,7 @@ import android.widget.FrameLayout
 class ExpressiveFolderCard @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     var cornerRadius: Float = 48f
@@ -19,7 +19,7 @@ class ExpressiveFolderCard @JvmOverloads constructor(
             invalidate()
         }
 
-    var cardBackgroundColor: Int = 0x80D1FAE5.toInt() // Semi-transparent mint/light green card background
+    var cardBackgroundColor: Int = 0x80D1FAE5.toInt()
         set(value) {
             field = value
             invalidate()
