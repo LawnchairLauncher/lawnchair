@@ -23,7 +23,7 @@ This branch houses the codebase of Lawnchair 16, which is currently in developme
 
 - Material 3 Expressive theming that follows your wallpaper and system colors.
 - At a Glance widget support, with integration for [Smartspacer](https://github.com/KieronQuinn/Smartspacer).
-- QuickSwitch support for Android Recents integration on Android 10-15 (root required).
+- QuickSwitch support for Android Recents integration on Android 15-16 (root required).
 - Global search for apps, contacts, and web results from the home screen.
 - Customization options for icon packs, fonts, and color settings.
 
