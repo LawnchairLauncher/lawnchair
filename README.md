@@ -12,7 +12,7 @@
 <picture>
     <!-- Avoid image being clickable with slight workaround -->
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/device-frame-dark.webp" width="250px">
-    <img alt="A device running Lawnchair Launcher with green flower wallpaper" src="docs/assets/device-frame-light.webp" width="250px">
+    <img alt="Smartphone home screen shown in day and night themes, featuring Android Material You dynamic color styling across the wallpaper, clock widget, and app icons." src="docs/assets/device-frame-light.webp" width="250px">
 </picture>
 
 Lawnchair is a free, open-source home app for Android. Taking Launcher3—Android’s default home app—as a starting point, it ports Pixel Launcher features and introduces rich customization options.
