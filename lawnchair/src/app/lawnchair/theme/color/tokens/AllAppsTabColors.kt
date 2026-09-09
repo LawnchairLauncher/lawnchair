@@ -16,10 +16,12 @@ object AllAppsTabColors {
         uiColorMode: UiColorMode,
     ): Int {
         val prefs2 = PreferenceManager2.getInstance(context)
-        val customColor = prefs2.workProfileTabBackgroundColor.firstCached()
-            .colorPreferenceEntry.lightColor.invoke(context)
+        val entry = prefs2.workProfileTabBackgroundColor.firstCached().colorPreferenceEntry
+        // lightColor is the sentinel for "no custom colour" (0); darkColor is always non-zero
+        // because it falls back to lightenColor(), so the default check must use lightColor.
+        val customColor = entry.lightColor.invoke(context)
         return if (customColor != 0) {
-            customColor
+            if (uiColorMode.isDarkTheme) entry.darkColor.invoke(context) else customColor
         } else {
             ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode)
         }
