@@ -411,8 +411,13 @@ public class PreviewItemManager {
             p.drawable = AppPairIconGraphic.composeDrawable(api, appPairParams);
             p.drawable.setBounds(0, 0, iconSize, iconSize);
         } else if (item instanceof ItemInfoWithIcon withIcon){
-            var isThemed = PreferenceManager.getInstance(mContext).getDrawerThemedIcons().get() ? FLAG_THEMED : 0;
-            p.drawable = withIcon.newIcon(mContext, isThemed);
+            // LC-Note: a folder on the workspace must follow the workspace themed-icon
+            // preference; only folders inside the app drawer follow the drawer preference.
+            PreferenceManager prefs = PreferenceManager.getInstance(mContext);
+            boolean themed = mIcon.isInAppDrawer()
+                    ? prefs.getDrawerThemedIcons().get()
+                    : prefs.getThemedIcons().get();
+            p.drawable = withIcon.newIcon(mContext, themed ? FLAG_THEMED : 0);
             p.drawable.setBounds(0, 0, iconSize, iconSize);
         }
 
