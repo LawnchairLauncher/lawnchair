@@ -15,23 +15,16 @@ import kotlinx.serialization.Serializable
 
 class OpenAppGestureHandler(
     context: Context,
-    private val target: OpenAppTarget,
+    private val key: ComponentKey,
 ) : GestureHandler(context) {
 
     override suspend fun onTrigger(launcher: LawnchairLauncher) {
-        when (target) {
-            is OpenAppTarget.App -> {
-                val key = target.key
-                launcher.getSystemService<LauncherApps>()?.startMainActivity(
-                    key.componentName,
-                    key.user,
-                    null,
-                    null,
-                )
-            }
-
-            is OpenAppTarget.Shortcut -> Unit
-        }
+        launcher.getSystemService<LauncherApps>()?.startMainActivity(
+            key.componentName,
+            key.user,
+            null,
+            null,
+        )
     }
 }
 
@@ -43,6 +36,7 @@ sealed class OpenAppTarget {
         @Serializable(ComponentKeySerializer::class) val key: ComponentKey,
     ) : OpenAppTarget()
 
+    /** Legacy shortcut target retained so existing gesture configurations remain launchable. */
     @Serializable
     @SerialName("shortcut")
     data class Shortcut(
