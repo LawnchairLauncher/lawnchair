@@ -18,7 +18,6 @@ package com.android.launcher3.folder
 
 import android.view.View
 import com.android.launcher3.celllayout.CellLayoutLayoutParams
-import com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW
 import com.android.launcher3.folder.FolderAnimationSpringBuilderManager.Companion.getBubbleTextView
 import com.android.launcher3.folder.FolderAnimationSpringBuilderManager.Companion.getPreviewIconsOnPage
 
@@ -73,8 +72,12 @@ data class IconAnimationData(
                 iconLayoutParams.isLockedToGrid = true
                 shortcutsAndWidgets?.setupLp(currentIcon)
 
-                // Match scale of icons in the preview of the items on the first page.
-                val previewIconScale = layoutRule.scaleForItem(numItemsOnPage, page)
+                // Match scale/positions to the closed-folder preview (reading order), not the
+                // opened folder's cell grid — otherwise close anim "reassembles" into the wrong
+                // slots when folder columns differ from the preview grid (e.g. 4 cols vs 3×3).
+                val previewCount =
+                    minOf(itemsInPreview.size, layoutRule.activePreviewItemCount).coerceAtLeast(1)
+                val previewIconScale = layoutRule.scaleForItem(previewCount, 0)
                 val previewIconSize = layoutRule.iconSize * previewIconScale
                 val baseIconSize = getBubbleTextView(currentIcon).iconSize.toFloat()
                 val iconScale = previewIconSize / baseIconSize
@@ -88,16 +91,17 @@ data class IconAnimationData(
                 currentIcon.scaleX = startScale
                 currentIcon.scaleY = startScale
 
-                val pageLayoutCount =
-                    if (numItemsOnPage < MAX_NUM_ITEMS_IN_PREVIEW && page > 0) {
-                        // If not on first page, we don't want preview items to position in a
-                        // circle.
-                        MAX_NUM_ITEMS_IN_PREVIEW
-                    } else {
-                        numItemsOnPage
-                    }
-                // Match positions of the icons in the folder with their positions in the preview
-                layoutRule.computeSpringAnimationItemParams(i, pageLayoutCount, page, mTmpParams)
+                val previewIndex = itemsInPreview.indexOf(currentIcon)
+                if (previewIndex >= 0) {
+                    layoutRule.computePreviewItemDrawingParams(previewIndex, previewCount, mTmpParams)
+                } else {
+                    // Non-preview icons collapse toward the preview center.
+                    layoutRule.computePreviewItemDrawingParams(
+                        layoutRule.activePreviewItemCount,
+                        previewCount,
+                        mTmpParams,
+                    )
+                }
 
                 // The PreviewLayoutRule assumes that the icon size takes up the entire width so we
                 // offset by the actual size.
