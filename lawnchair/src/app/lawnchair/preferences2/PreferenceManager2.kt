@@ -120,9 +120,15 @@ class PreferenceManager2 @Inject constructor(
 
     private val reloadHelper = ReloadHelper(context)
 
-    val darkStatusBar = preference(
-        key = booleanPreferencesKey(name = "dark_status_bar"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_dark_status_bar),
+    val statusBarIconMode = preference(
+        key = stringPreferencesKey(name = "status_bar_icon_mode"),
+        defaultValue = if (context.resources.getBoolean(R.bool.config_default_dark_status_bar)) {
+            ColorMode.DARK
+        } else {
+            ColorMode.AUTO
+        },
+        parse = { ColorMode.fromString(it) ?: ColorMode.AUTO },
+        save = { it.toString() },
     )
 
     val hotseatMode = preference(
@@ -974,7 +980,12 @@ class PreferenceManager2 @Inject constructor(
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
-            produceMigrations = { listOf(SharedPreferencesMigration(context = it).produceMigration()) },
+            produceMigrations = {
+                listOf(
+                    SharedPreferencesMigration(context = it).produceMigration(),
+                    StatusBarIconModeMigration(),
+                )
+            },
         )
 
         @JvmField
