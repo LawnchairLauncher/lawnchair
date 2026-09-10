@@ -931,7 +931,8 @@
     <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"
     </string>
 
-    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_action_suggestions">Suggested</string>
+    <string name="all_apps_search_result_web_suggestions">From the web</string>
     <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
     <string name="all_apps_search_result_files">Files from device</string>
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
@@ -995,6 +996,15 @@
     <string name="search_pref_result_web_title">Web suggestions</string>
     <string name="search_pref_result_history_title">Search history</string>
     <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="search_pref_result_textclassifier_title">Microresults</string>
+    <string name="search_pref_result_textclassifier_description">Suggest actions from your search query on-device</string>
+    <string name="search_pref_result_textclassifier_email">Email</string>
+    <string name="search_pref_result_textclassifier_phone">Phone</string>
+    <string name="search_pref_result_textclassifier_address">Address</string>
+    <string name="search_pref_result_textclassifier_url">URL</string>
+    <string name="search_pref_result_textclassifier_date">Date and time</string>
+    <string name="search_pref_result_textclassifier_flight">Flight number</string>
+    <string name="search_pref_result_textclassifier_others">Others</string>
 
     <string name="search_empty_state_title">Start searching</string>
     <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>

@@ -51,6 +51,7 @@ enum class SearchProviderId(val id: String) {
     HISTORY("history"),
     SETTINGS("settings"),
     WEB("web"),
+    TEXT_CLASSIFIER("textclassifier"),
 }
 
 fun getProviderName(provider: SearchProviderId): Int {
@@ -62,6 +63,7 @@ fun getProviderName(provider: SearchProviderId): Int {
         SearchProviderId.HISTORY -> R.string.search_pref_result_history_title
         SearchProviderId.SETTINGS -> R.string.search_pref_result_settings_title
         SearchProviderId.WEB -> R.string.search_pref_result_web_title
+        SearchProviderId.TEXT_CLASSIFIER -> R.string.search_pref_result_textclassifier_title
     }
 }
 
@@ -77,6 +79,7 @@ fun SearchProviderPreferenceScreen(
         when (provider) {
             SearchProviderId.CONTACTS -> ContactsSearchProvider()
             SearchProviderId.FILES -> FileSearchProvider()
+            SearchProviderId.TEXT_CLASSIFIER -> TextClassifierSearchProviderSettings()
             else -> GenericSearchProviderPreference(provider)
         }
     }
@@ -133,6 +136,51 @@ fun ContactsSearchProvider(
             },
             onGoToSettings = { context.openAppPermissionSettings() },
         )
+    }
+}
+
+@Composable
+fun TextClassifierSearchProviderSettings(
+    modifier: Modifier = Modifier,
+) {
+    val prefs = preferenceManager()
+
+    MainSwitchPreference(
+        adapter = prefs.searchResultTextClassifier.getAdapter(),
+        label = stringResource(R.string.search_pref_result_textclassifier_title),
+        description = stringResource(R.string.search_pref_result_textclassifier_description),
+        modifier = modifier,
+    ) {
+        PreferenceGroup {
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierEmail.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_email),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierPhone.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_phone),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierAddress.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_address),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierUrl.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_url),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierDate.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_date),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierFlight.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_flight),
+            )
+            SwitchPreference(
+                adapter = prefs.searchResultTextClassifierOthers.getAdapter(),
+                label = stringResource(id = R.string.search_pref_result_textclassifier_others),
+            )
+        }
     }
 }
 
