@@ -70,6 +70,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import app.lawnchair.deck.LawndeckManager;
+import app.lawnchair.data.folder.service.FolderService;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
@@ -189,6 +190,8 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                         pm.getThemedIcons().set(false);
                     }
                 }
+                // LC-Note: Drop uninstalled apps from custom drawer folders so membership counts stay accurate.
+                FolderService.removePackagesBlocking(context, packages);
                 // Fall through
             }
             case OP_UNAVAILABLE:
