@@ -24,6 +24,7 @@ import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Drawable
 import android.os.UserHandle
 import android.util.Log
+import app.lawnchair.icons.ShortcutIconOverrides
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.icons.BaseIconFactory.IconOptions
 import com.android.launcher3.icons.cache.BaseIconCache
@@ -104,11 +105,10 @@ object CacheableShortcutCachingLogic : CachingLogic<CacheableShortcutInfo> {
 
     override fun loadIcon(context: Context, cache: BaseIconCache, info: CacheableShortcutInfo) =
         LauncherIcons.obtain(context).use { li ->
-            CacheableShortcutInfo.getIcon(
-                    context,
-                    info.shortcutInfo,
-                    LauncherAppState.getIDP(context).fillResIconDpi,
-                )
+            val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
+            // LC-Note: a user-chosen icon wins over the one the publisher supplies.
+            val overrideIcon = ShortcutIconOverrides.getIcon(context, info.shortcutInfo, iconDpi)
+            (overrideIcon ?: CacheableShortcutInfo.getIcon(context, info.shortcutInfo, iconDpi))
                 ?.let { d ->
                     li.createBadgedIconBitmap(
                         d,
@@ -117,10 +117,13 @@ object CacheableShortcutCachingLogic : CachingLogic<CacheableShortcutInfo> {
                             .setSourceHint(
                                 getSourceHint(info, cache)
                                     .copy(
+                                        // LC-Note: the hint describes the drawable actually being
+                                        // rasterized, and an icon-pack drawable is never a file.
                                         isFileDrawable =
-                                            ApiWrapper.INSTANCE[context].isFileDrawable(
-                                                info.shortcutInfo
-                                            )
+                                            overrideIcon == null &&
+                                                ApiWrapper.INSTANCE[context].isFileDrawable(
+                                                    info.shortcutInfo
+                                                )
                                     )
                             ),
                     )

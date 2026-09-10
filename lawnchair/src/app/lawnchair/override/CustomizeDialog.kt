@@ -2,7 +2,6 @@ package app.lawnchair.override
 
 import android.app.Activity
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -132,28 +131,29 @@ fun CustomizeDialog(
     }
 }
 
+/**
+ * Shared body of the customize dialogs: the icon preview, the label field, and the write-back of a
+ * changed label when the sheet is dismissed. [content] holds the options specific to what is being
+ * customized.
+ */
 @Composable
-fun CustomizeAppDialog(
+private fun CustomizeOverrideDialog(
     icon: Drawable,
     defaultTitle: String,
     componentKey: ComponentKey,
-    modifier: Modifier = Modifier,
     onClose: () -> Unit,
+    modifier: Modifier = Modifier,
+    pickerLabel: String? = null,
+    content: (@Composable () -> Unit)? = null,
 ) {
     val prefs = preferenceManager()
-    val preferenceManager2 = preferenceManager2()
-    val showComponentNames by preferenceManager2.showComponentNames.asState()
-    val hiddenApps by preferenceManager2.hiddenApps.asState()
-    val adapter = preferenceManager2.hiddenApps.getAdapter()
     val context = LocalContext.current
     var title by remember {
         mutableStateOf(prefs.customAppName[componentKey] ?: defaultTitle)
     }
     val launcherAppState = LauncherAppState.getInstance(context)
 
-    val route = SelectIcon(componentKey.toString())
-
-    Log.d("CustomizeDialog", route.toString())
+    val route = SelectIcon(componentKey.toString(), pickerLabel)
 
     val scope = rememberCoroutineScope()
     val openIconPicker = {
@@ -185,6 +185,59 @@ fun CustomizeAppDialog(
         defaultTitle = defaultTitle,
         launchSelectIcon = openIconPicker,
         modifier = modifier,
+        content = content,
+    )
+}
+
+/**
+ * Customize dialog for a pinned deep shortcut, such as a web app pinned by a browser.
+ *
+ * A shortcut has no drawer entry to hide and no per-app gestures, so only the icon and the label
+ * are offered here.
+ */
+@Composable
+fun CustomizeShortcutDialog(
+    icon: Drawable,
+    defaultTitle: String,
+    componentKey: ComponentKey,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+) {
+    CustomizeOverrideDialog(
+        icon = icon,
+        defaultTitle = defaultTitle,
+        componentKey = componentKey,
+        modifier = modifier,
+        onClose = onClose,
+        // The picker cannot name a shortcut from its key alone, so hand it the shortcut's own name.
+        pickerLabel = defaultTitle,
+    )
+}
+
+/**
+ * Customize dialog for an app: everything [CustomizeOverrideDialog] offers, plus hiding the app
+ * from the drawer.
+ */
+@Composable
+fun CustomizeAppDialog(
+    icon: Drawable,
+    defaultTitle: String,
+    componentKey: ComponentKey,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+) {
+    val preferenceManager2 = preferenceManager2()
+    val showComponentNames by preferenceManager2.showComponentNames.asState()
+    val hiddenApps by preferenceManager2.hiddenApps.asState()
+    val adapter = preferenceManager2.hiddenApps.getAdapter()
+    val context = LocalContext.current
+
+    CustomizeOverrideDialog(
+        icon = icon,
+        defaultTitle = defaultTitle,
+        componentKey = componentKey,
+        modifier = modifier,
+        onClose = onClose,
     ) {
         PreferenceGroup(
             description = componentKey.componentName.flattenToString(),
