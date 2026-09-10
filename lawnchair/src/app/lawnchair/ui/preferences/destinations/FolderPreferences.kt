@@ -75,6 +75,11 @@ fun FolderPreferences(
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
+            SwitchPreference(
+                adapter = prefs2.folderPreviewGridForThreeItems.getAdapter(),
+                label = stringResource(id = R.string.folder_preview_grid_for_three_label),
+                description = stringResource(id = R.string.folder_preview_grid_for_three_description),
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(

@@ -28,12 +28,24 @@ public class ClippedFolderIconLayoutRule {
     private boolean mIsRtl;
     private float mBaselineIconScale;
     private int mNumFolderColumns;
+    // LC-Note: Optional 2x2 grid for 3-item previews; default keeps Launcher3 triangle.
+    private boolean mUseGridForThreeItems;
 
     /**
      * initialize the layout rule
      */
     public void init(int availableSpace, float intrinsicIconSize, boolean rtl,
             int numFolderColumns) {
+        init(availableSpace, intrinsicIconSize, rtl, numFolderColumns, false);
+    }
+
+    /**
+     * initialize the layout rule
+     *
+     * @param useGridForThreeItems LC-Note: when true, 3-item previews use the 2x2 grid
+     */
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl,
+            int numFolderColumns, boolean useGridForThreeItems) {
         mAvailableSpace = availableSpace;
         mRadius = (
                 Flags.enableLauncherIconShapes()
@@ -43,6 +55,12 @@ public class ClippedFolderIconLayoutRule {
         mIsRtl = rtl;
         mBaselineIconScale = availableSpace / intrinsicIconSize;
         mNumFolderColumns = numFolderColumns;
+        mUseGridForThreeItems = useGridForThreeItems;
+    }
+
+    /** LC-Note: Whether 3-item previews currently use the 2x2 grid. */
+    public boolean useGridForThreeItems() {
+        return mUseGridForThreeItems;
     }
 
     /**
@@ -141,6 +159,14 @@ public class ClippedFolderIconLayoutRule {
         // The case of two items is homomorphic to the case of one.
         curNumItems = Math.max(curNumItems, 2);
 
+        // LC-Note: Optional 2x2 grid for 3-item previews (default: circular triangle):
+        // 0 1
+        // 2
+        if (curNumItems == 3 && mUseGridForThreeItems) {
+            getGridPosition(index / 2, index % 2, result);
+            return;
+        }
+
         // We model the preview as a circle of items starting in the appropriate piece of the
         // upper left quadrant (to achieve horizontal and vertical symmetry).
         double theta0 = mIsRtl ? 0 : Math.PI;
@@ -199,7 +225,8 @@ public class ClippedFolderIconLayoutRule {
         float scale;
         if (page > 0) {
             scale = MIN_SCALE;
-        } else if (numItems <= 3) {
+        } else if (numItems <= 2) {
+            // LC-Note: Match 3-item preview icon scale to 4-item folders (was MAX_SCALE for <= 3).
             scale = MAX_SCALE;
         } else {
             scale = MIN_SCALE;
