@@ -472,6 +472,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
     )
 
+    val keepKeyboardOpenOnClear = preference(
+        key = booleanPreferencesKey(name = "keep_keyboard_open_on_clear"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_keep_keyboard_open_on_clear),
+    )
+
     val workspaceTextColor = preference(
         key = stringPreferencesKey(name = "workspace_text_color"),
         defaultValue = ColorMode.AUTO,
