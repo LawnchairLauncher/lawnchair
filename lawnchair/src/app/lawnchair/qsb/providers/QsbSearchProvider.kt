@@ -124,6 +124,7 @@ sealed class QsbSearchProvider(
             GoogleGo,
             Youtube,
             PixelSearch,
+            GlobalSearchApp,
             Sesame,
             Wikipedia,
             GitHub,
@@ -171,7 +172,7 @@ sealed class QsbSearchProvider(
 
             // Return the best default option if the config.xml value is invalid
             return values()
-                .filterNot { it == AppSearch }
+                .filterNot { it == AppSearch || it == GlobalSearchApp }
                 .firstOrNull { LawnQsbLayout.resolveIntent(context, it.createSearchIntent()) }
                 ?: AppSearch
         }
