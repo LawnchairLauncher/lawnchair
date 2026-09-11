@@ -67,6 +67,12 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                     return false;
                 }
         }
+        // Lawnchair: same as above, but for icons docked in the hotseat (e.g. a cover-mode
+        // folder), which isn't a Workspace descendant.
+        if (mLauncher.getHotseat() != null
+                && mLauncher.getHotseat().isTouchOnIconWithSwipeGesture(ev.getX(), ev.getY(), true)) {
+            return false;
+        }
         // If we are swiping to all apps instead of overview, allow it from anywhere.
         boolean interceptAnywhere = mLauncher.isInState(NORMAL);
         if (mCurrentAnimation != null) {
