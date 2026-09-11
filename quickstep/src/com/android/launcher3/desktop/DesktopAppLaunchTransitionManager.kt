@@ -25,6 +25,7 @@ import android.window.RemoteTransition
 import android.window.TransitionFilter
 import android.window.TransitionFilter.CONTAINER_ORDER_TOP
 import com.android.internal.jank.Cuj
+import com.android.launcher3.Utilities
 import com.android.launcher3.desktop.DesktopAppLaunchTransition.AppLaunchType
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.quickstep.SystemUiProxy
@@ -74,7 +75,8 @@ class DesktopAppLaunchTransitionManager(
     }
 
     private fun shouldRegisterTransitions(): Boolean =
-        DesktopModeStatus.canEnterDesktopMode(context) &&
+        Utilities.ATLEAST_BAKLAVA && // LC-Note: This is only available for Baklava
+            DesktopModeStatus.canEnterDesktopMode(context) &&
             DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX.isTrue
 
     companion object {

@@ -99,12 +99,23 @@ public class ContextualSearchStateManager  {
         mContextualSearchPackageReceiver =
                 new SimpleBroadcastReceiver(context, UI_HELPER_EXECUTOR,
                         (unused) -> requestUpdateProperties());
-        mContextualSearchPackage = mContext.getResources().getString(
-                com.android.internal.R.string.config_defaultContextualSearchPackageName);
+        
+        // LC-Note: QuickSwitch compatibility!
+        String resolvedCSPkgName;
+        try {
+            resolvedCSPkgName = mContext.getResources().getString(
+                    com.android.internal.R.string.config_defaultContextualSearchPackageName);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to get config_defaultContextualSearchPackageName", e);
+            resolvedCSPkgName = "";
+        }
+        mContextualSearchPackage = resolvedCSPkgName;
+        
         mSystemUiProxy = systemUiProxy;
         mTopTaskTracker = topTaskTracker;
 
-        if (areAllContextualSearchFlagsDisabled()
+        if (!Utilities.ATLEAST_V // LC-Note: QuickSwitch compatibility!
+                || areAllContextualSearchFlagsDisabled()
                 || !context.getPackageManager().hasSystemFeature(FEATURE_CONTEXTUAL_SEARCH)) {
             // If we had previously registered a SystemAction which is no longer valid, we need to
             // unregister it here.

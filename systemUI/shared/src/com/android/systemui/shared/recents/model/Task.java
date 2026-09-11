@@ -39,6 +39,8 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.util.ArrayUtils;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 import java.io.PrintWriter;
 import java.util.Objects;
 
@@ -111,8 +113,10 @@ public class Task {
             this.displayId = t.displayId;
             this.baseActivity = t.baseActivity;
             this.numActivities = t.numActivities;
-            this.isTopActivityNoDisplay = t.isTopActivityNoDisplay;
-            this.isActivityStackTransparent = t.isActivityStackTransparent;
+            if (LawnchairQuickstepCompat.ATLEAST_BAKLAVA) { // LC-Note: QuickSwitch compatibility!
+                this.isTopActivityNoDisplay = t.isTopActivityNoDisplay;
+                this.isActivityStackTransparent = t.isActivityStackTransparent;
+            }
             updateHashCode();
         }
 
