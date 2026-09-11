@@ -400,7 +400,8 @@ public class DeviceProfile {
         mIsScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
         // Determine device posture.
         mInfo = info;
-        boolean isTaskBarEnabled = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableTaskbarOnPhone());
+        boolean isTaskBarEnabled = mDeviceProperties.isTablet()
+                || PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableTaskbarOnPhone());
         boolean taskbarOrBubbleBarOnPhones = enableTinyTaskbar()
                 || (enableBubbleBar() && enableBubbleBarOnPhones());
         isTaskbarPresent = isTaskBarEnabled && (mDeviceProperties.isTablet() || (taskbarOrBubbleBarOnPhones && isGestureMode))

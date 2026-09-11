@@ -280,7 +280,11 @@ public final class TaskbarOverlayController {
 //               Log.d(TAG, "setBackgroundBlurRadius: setting early wakeup with token "
 //                                                    + mEarlyWakeupInfo);
                 Trace.instantForTrack(TRACE_TAG_APP, TAG, "notifyRendererForGpuLoadUp");
-                dragLayerViewRoot.notifyRendererForGpuLoadUp("setBackgroundBlurRadius");
+                try {
+                    dragLayerViewRoot.notifyRendererForGpuLoadUp("setBackgroundBlurRadius");
+                } catch (NoSuchMethodError e) {
+                    Log.d(TAG, "notifyRendererForGpuLoadUp unavailable", e);
+                }
                 try {
 //                    transaction.setEarlyWakeupStart(mEarlyWakeupInfo);
                 } catch (NoSuchMethodError e) {

@@ -72,6 +72,8 @@ import android.window.DesktopExperienceFlags;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.lifecycle.ViewTreeLifecycleOwner;
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner;
 
 import com.android.app.displaylib.DisplayDecorationListener;
 import com.android.app.displaylib.DisplaysWithDecorationsRepositoryCompat;
@@ -1253,6 +1255,8 @@ public class TaskbarManagerImpl implements DisplayDecorationListener {
             FrameLayout rootLayout = getTaskbarRootLayoutForDisplay(displayId);
             WindowManager windowManager = getWindowManager(displayId);
             if (rootLayout != null && windowManager != null) {
+                ViewTreeLifecycleOwner.set(rootLayout, taskbar);
+                ViewTreeSavedStateRegistryOwner.set(rootLayout, taskbar);
                 windowManager.addView(rootLayout, taskbar.getWindowLayoutParams());
                 mAddedRootLayouts.put(displayId, true);
             } else {

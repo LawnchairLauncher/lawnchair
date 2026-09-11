@@ -47,6 +47,15 @@
                 android:clipToPadding="false" />
 
         </com.android.launcher3.widget.picker.WidgetPagedView>
+
+        <com.android.launcher3.widget.picker.WidgetsRecyclerView
+            android:id="@+id/search_widgets_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
+            android:clipToPadding="false"
+            android:visibility="gone" />
+
         <!-- SearchAndRecommendationsView contains the tab layout as well -->
         <com.android.launcher3.views.StickyHeaderLayout
             android:id="@+id/search_and_recommendations_container"

@@ -51,6 +51,8 @@ import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.window.TransitionInfo;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 
 /** Various utility functions for transitions. */
@@ -95,10 +97,24 @@ public class TransitionUtil {
         return mode == TRANSIT_CLOSE || mode == TRANSIT_TO_BACK;
     }
 
+    @SuppressWarnings("unchecked")
+    public static List<TransitionInfo.Change> getChanges(@NonNull TransitionInfo info) {
+        try {
+            final Object changes = TransitionInfo.class.getMethod("getChanges").invoke(info);
+            if (changes instanceof List<?>) {
+                return (List<TransitionInfo.Change>) changes;
+            }
+        } catch (ReflectiveOperationException | RuntimeException ignored) {
+            // Framework builds differ on hidden API descriptors. Keep transitions alive.
+        }
+        return Collections.emptyList();
+    }
+
     /** Returns {@code true} if the transition has a display change. */
     public static boolean hasDisplayChange(@NonNull TransitionInfo info) {
-        for (int i = info.getChanges().size() - 1; i >= 0; --i) {
-            final TransitionInfo.Change change = info.getChanges().get(i);
+        final List<TransitionInfo.Change> changes = getChanges(info);
+        for (int i = changes.size() - 1; i >= 0; --i) {
+            final TransitionInfo.Change change = changes.get(i);
             if (change.getMode() == TRANSIT_CHANGE && change.hasFlags(FLAG_IS_DISPLAY)) {
                 return true;
             }
@@ -149,8 +165,9 @@ public class TransitionUtil {
      * Check if all changes in this transition are only ordering changes. If so, we won't animate.
      */
     public static boolean isAllOrderOnly(TransitionInfo info) {
-        for (int i = info.getChanges().size() - 1; i >= 0; --i) {
-            if (!isOrderOnly(info.getChanges().get(i))) return false;
+        final List<TransitionInfo.Change> changes = getChanges(info);
+        for (int i = changes.size() - 1; i >= 0; --i) {
+            if (!isOrderOnly(changes.get(i))) return false;
         }
         return true;
     }
@@ -165,9 +182,10 @@ public class TransitionUtil {
             return false;
         }
         boolean hasNoAnimation = false;
-        final int changeSize = info.getChanges().size();
+        final List<TransitionInfo.Change> changes = getChanges(info);
+        final int changeSize = changes.size();
         for (int i = changeSize - 1; i >= 0; --i) {
-            final TransitionInfo.Change change = info.getChanges().get(i);
+            final TransitionInfo.Change change = changes.get(i);
             if (isClosingType(change.getMode())) {
                 // ignore closing apps since they are a side-effect of the transition and don't
                 // animate.
@@ -229,7 +247,8 @@ public class TransitionUtil {
             @NonNull TransitionInfo info, @NonNull SurfaceControl.Transaction t) {
         final boolean isOpening = TransitionUtil.isOpeningType(info.getType());
         // Put animating stuff above this line and put static stuff below it.
-        int zSplitLine = info.getChanges().size();
+        final int changeCount = getChanges(info).size();
+        int zSplitLine = changeCount;
         // changes should be ordered top-to-bottom in z
         final int mode = change.getMode();
 
@@ -263,13 +282,13 @@ public class TransitionUtil {
         if ((change.getFlags() & FLAG_IS_WALLPAPER) != 0) {
             // Wallpaper is always at the bottom, opening wallpaper on top of closing one.
             if (mode == WindowManager.TRANSIT_OPEN || mode == WindowManager.TRANSIT_TO_FRONT) {
-                t.setLayer(leash, -zSplitLine + info.getChanges().size() - layer);
+                t.setLayer(leash, -zSplitLine + changeCount - layer);
             } else {
                 t.setLayer(leash, -zSplitLine - layer);
             }
         } else if (TransitionUtil.isOpeningType(mode)) {
             if (isOpening) {
-                t.setLayer(leash, zSplitLine + info.getChanges().size() - layer);
+                t.setLayer(leash, zSplitLine + changeCount - layer);
                 if ((change.getFlags() & FLAG_STARTING_WINDOW_TRANSFER_RECIPIENT) == 0) {
                     // if transferred, it should be left visible.
                     t.setAlpha(leash, 0.f);
@@ -284,10 +303,10 @@ public class TransitionUtil {
                 t.setLayer(leash, zSplitLine - layer);
             } else {
                 // put on top
-                t.setLayer(leash, zSplitLine + info.getChanges().size() - layer);
+                t.setLayer(leash, zSplitLine + changeCount - layer);
             }
         } else { // CHANGE
-            t.setLayer(leash, zSplitLine + info.getChanges().size() - layer);
+            t.setLayer(leash, zSplitLine + changeCount - layer);
         }
     }
 
@@ -309,7 +328,7 @@ public class TransitionUtil {
                 .setParent(info.getRoot(rootIdx).getLeash())
                 .build();
         // Copied Transitions setup code (which expects bottom-to-top order, so we swap here)
-        setupLeash(leashSurface, change, info.getChanges().size() - order, info, t);
+        setupLeash(leashSurface, change, getChanges(info).size() - order, info, t);
         t.reparent(change.getLeash(), leashSurface);
         if (!isDimLayer(change)) {
             // Most leashes going onto the transition root should have their alpha set here to make

@@ -58,6 +58,10 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
 
         super.init(context);
 
+        if (Utilities.ATLEAST_R) {
+            QuickstepProtoLogGroup.initProtoLog();
+        }
+
         // Elevate GPU priority for Quickstep and Remote animations.
         // LC: https://github.com/LawnchairLauncher/lawnchair/pull/4331
         try {

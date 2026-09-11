@@ -35,6 +35,7 @@ import java.util.Objects;
  */
 public class SplitBounds implements Parcelable {
     public static final String KEY_EXTRA_SPLIT_BOUNDS = "key_SplitBounds";
+    private static final int PARCEL_FORMAT_SENTINEL = INVALID_TASK_ID;
 
     public final Rect leftTopBounds;
     public final Rect rightBottomBounds;
@@ -167,21 +168,41 @@ public class SplitBounds implements Parcelable {
         topTaskPercent = parcel.readFloat();
         leftTaskPercent = parcel.readFloat();
         appsStackedVertically = parcel.readBoolean();
-        initiatedFromSeascape = parcel.readBoolean();
-        dividerWidthPercent = parcel.readFloat();
-        dividerHeightPercent = parcel.readFloat();
-        snapPosition = parcel.readInt();
-        leftTopTaskId = parcel.readInt();
-        rightBottomTaskId = parcel.readInt();
-        int size = parcel.readInt();
-        leftTopTaskIds = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            leftTopTaskIds.add(parcel.readInt());
-        }
-        size = parcel.readInt();
-        rightBottomTaskIds = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            rightBottomTaskIds.add(parcel.readInt());
+
+        /*
+         * Older Android 16 Shell builds write:
+         *   leftTopTaskId, rightBottomTaskId, dividerWidth, dividerHeight, snapPosition
+         * Newer Launcher3 expects:
+         *   format sentinel, initiatedFromSeascape, dividerWidth, dividerHeight, snapPosition,
+         *   leftTopTaskId, rightBottomTaskId, leftTopTaskIds, rightBottomTaskIds
+         */
+        final int parcelFormatOrLeftTopTaskId = parcel.readInt();
+        if (parcelFormatOrLeftTopTaskId == PARCEL_FORMAT_SENTINEL) {
+            initiatedFromSeascape = parcel.readBoolean();
+            dividerWidthPercent = parcel.readFloat();
+            dividerHeightPercent = parcel.readFloat();
+            snapPosition = parcel.readInt();
+            leftTopTaskId = parcel.readInt();
+            rightBottomTaskId = parcel.readInt();
+            int size = parcel.readInt();
+            leftTopTaskIds = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                leftTopTaskIds.add(parcel.readInt());
+            }
+            size = parcel.readInt();
+            rightBottomTaskIds = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                rightBottomTaskIds.add(parcel.readInt());
+            }
+        } else {
+            initiatedFromSeascape = false;
+            leftTopTaskId = parcelFormatOrLeftTopTaskId;
+            rightBottomTaskId = parcel.readInt();
+            dividerWidthPercent = parcel.readFloat();
+            dividerHeightPercent = parcel.readFloat();
+            snapPosition = parcel.readInt();
+            leftTopTaskIds = Collections.singletonList(leftTopTaskId);
+            rightBottomTaskIds = Collections.singletonList(rightBottomTaskId);
         }
     }
 
@@ -193,6 +214,7 @@ public class SplitBounds implements Parcelable {
         parcel.writeFloat(topTaskPercent);
         parcel.writeFloat(leftTaskPercent);
         parcel.writeBoolean(appsStackedVertically);
+        parcel.writeInt(PARCEL_FORMAT_SENTINEL);
         parcel.writeBoolean(initiatedFromSeascape);
         parcel.writeFloat(dividerWidthPercent);
         parcel.writeFloat(dividerHeightPercent);

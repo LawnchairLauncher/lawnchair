@@ -306,6 +306,7 @@ public class TaskbarLauncherStateController {
         updateStateForSysuiFlags(sysuiStateFlags, /*applyState*/ false);
 
         applyState(0);
+        syncInitialPinnedInAppIconAlpha();
 
         mCanSyncViews = !mControllers.taskbarActivityContext.isPhoneMode();
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
@@ -330,6 +331,14 @@ public class TaskbarLauncherStateController {
 
         mCanSyncViews = !mControllers.taskbarActivityContext.isPhoneMode();
         mLauncher.removeOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
+    }
+
+    private void syncInitialPinnedInAppIconAlpha() {
+        if (mControllers.taskbarStashController.shouldForcePinnedInAppTaskbarVisible()) {
+            // Initializing directly into an app can leave the home-alpha channel at the hidden
+            // hotseat value until a later touch/state update. Show pinned taskbar icons now.
+            updateIconAlphaForHome(1f, ALPHA_CHANNEL_TASKBAR_ALIGNMENT);
+        }
     }
 
     /**
@@ -685,6 +694,15 @@ public class TaskbarLauncherStateController {
             animatorSet.play(taskbarBackgroundAlpha);
         }
 
+        if (showTaskbar
+                && mTaskbarAlphaForHome.getValue() != 1f
+                && mControllers.taskbarStashController.shouldForcePinnedInAppTaskbarVisible()) {
+            // If the taskbar background is already settled, the pinned-taskbar animation block
+            // above can be skipped while FLAG_IN_APP is correct. Keep the icon alpha from staying
+            // at the home-aligned value, which leaves the taskbar present but invisible.
+            updateIconAlphaForHome(1f, ALPHA_CHANNEL_TASKBAR_ALIGNMENT);
+        }
+
         float cornerRoundness = isInLauncher ? 0 : 1;
 
         if (mControllers.taskbarDesktopModeController.isInDesktopModeAndNotInOverview(
@@ -976,16 +994,24 @@ public class TaskbarLauncherStateController {
 
     private void onIconAlignmentRatioChanged() {
         float currentValue = mTaskbarAlphaForHome.getValue();
-        boolean taskbarWillBeVisible = mIconAlignment.value < 1;
+        boolean taskbarWillBeVisible = mIconAlignment.value < 1
+                && !mControllers.taskbarStashController.isStashedInLauncherSettings();
         boolean firstFrameVisChanged = (taskbarWillBeVisible && Float.compare(currentValue, 1) != 0)
                 || (!taskbarWillBeVisible && Float.compare(currentValue, 0) != 0);
 
         mControllers.taskbarViewController.setLauncherIconAlignment(
                 mIconAlignment.value, mLauncher.getDeviceProfile());
         mControllers.navbarButtonsViewController.updateTaskbarAlignment(mIconAlignment.value);
-        // Switch taskbar and hotseat in last frame and if taskbar is not hidden for bubbles
+        // Switch taskbar and hotseat in last frame and if taskbar is not hidden for bubbles.
+        //
+        // A pinned taskbar can enter an app while still icon-aligned with the home hotseat. In
+        // that state, the alignment ratio alone would set the taskbar home-alpha channel to 0 and
+        // leave the in-app taskbar present but transparent.
+        boolean forcePinnedInAppTaskbarVisible =
+                mControllers.taskbarStashController.shouldForcePinnedInAppTaskbarVisible();
         boolean isHiddenForBubbles = mControllers.taskbarStashController.isHiddenForBubbles();
-        updateIconAlphaForHome(taskbarWillBeVisible ? 1 : 0, ALPHA_CHANNEL_TASKBAR_ALIGNMENT,
+        float taskbarAlpha = forcePinnedInAppTaskbarVisible || taskbarWillBeVisible ? 1 : 0;
+        updateIconAlphaForHome(taskbarAlpha, ALPHA_CHANNEL_TASKBAR_ALIGNMENT,
                 /* updateTaskbarAlpha = */ !isHiddenForBubbles);
 
         // Sync the first frame where we swap taskbar and hotseat.

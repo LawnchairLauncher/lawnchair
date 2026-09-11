@@ -199,13 +199,34 @@ public class GroupedTaskInfo implements Parcelable {
     protected GroupedTaskInfo(@NonNull Parcel parcel) {
         mDeskId = parcel.readInt();
         mDeskDisplayId = parcel.readInt();
-        mTasks = new ArrayList();
+        mTasks = new ArrayList<>();
         final int numTasks = parcel.readInt();
         for (int i = 0; i < numTasks; i++) {
             mTasks.add(new TaskInfo(parcel));
         }
-        mGroupedTasks = parcel.createTypedArrayList(GroupedTaskInfo.CREATOR);
-        mSplitBounds = parcel.readTypedObject(SplitBounds.CREATOR);
+
+        /*
+         * Android 16 ROMs in the field are not all on the same WMShell parcel layout.
+         * Newer Shell writes mGroupedTasks before mSplitBounds. Older Shell writes
+         * mSplitBounds immediately after mTasks. Read both layouts so a legacy split
+         * record does not get interpreted as a huge typed-list size and crash Recents.
+         */
+        final int groupedTasksOrSplitBoundsMarker = parcel.readInt();
+        if (groupedTasksOrSplitBoundsMarker == -1) {
+            mGroupedTasks = null;
+            mSplitBounds = parcel.readTypedObject(SplitBounds.CREATOR);
+        } else if (numTasks == 0 && groupedTasksOrSplitBoundsMarker > 0) {
+            mGroupedTasks = new ArrayList<>(groupedTasksOrSplitBoundsMarker);
+            for (int i = 0; i < groupedTasksOrSplitBoundsMarker; i++) {
+                mGroupedTasks.add(parcel.readTypedObject(GroupedTaskInfo.CREATOR));
+            }
+            mSplitBounds = parcel.readTypedObject(SplitBounds.CREATOR);
+        } else {
+            mGroupedTasks = null;
+            mSplitBounds = groupedTasksOrSplitBoundsMarker == 0
+                    ? null
+                    : SplitBounds.CREATOR.createFromParcel(parcel);
+        }
         mType = parcel.readInt();
         mMinimizedTaskIds = parcel.createIntArray();
     }

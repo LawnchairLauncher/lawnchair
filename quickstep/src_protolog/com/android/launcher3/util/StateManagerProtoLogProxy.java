@@ -23,21 +23,19 @@ import android.window.DesktopModeFlags.DesktopModeFlag;
 
 import androidx.annotation.NonNull;
 
-import androidx.annotation.RequiresApi;
-import com.android.internal.protolog.ProtoLog;
 import com.android.launcher3.Flags;
+import com.android.quickstep.util.ProtoLogCompat;
 
 /**
  * Proxy class used for StateManager ProtoLog support.
  */
-@RequiresApi(31) // LC-Note: IProtoLogGroup only available to Android 11 Releases 41, or Android 12.0 for us. DO NOT call anything related to this or ProtoLog 
 public class StateManagerProtoLogProxy {
     private static final DesktopModeFlag ENABLE_STATE_MANAGER_PROTO_LOG =
             new DesktopModeFlag(Flags::enableStateManagerProtoLog, true);
     public static void logGoToState(
             @NonNull Object fromState, @NonNull Object toState, @NonNull String trace) {
         if (!ENABLE_STATE_MANAGER_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(LAUNCHER_STATE_MANAGER,
+        ProtoLogCompat.d(LAUNCHER_STATE_MANAGER,
                 "StateManager.goToState: fromState: %s, toState: %s, partial trace:\n%s",
                 fromState,
                 toState,
@@ -47,7 +45,7 @@ public class StateManagerProtoLogProxy {
     public static void logCreateAtomicAnimation(
             @NonNull Object fromState, @NonNull Object toState, @NonNull String trace) {
         if (!ENABLE_STATE_MANAGER_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(LAUNCHER_STATE_MANAGER, "StateManager.createAtomicAnimation: "
+        ProtoLogCompat.d(LAUNCHER_STATE_MANAGER, "StateManager.createAtomicAnimation: "
                         + "fromState: %s, toState: %s, partial trace:\n%s",
                 fromState,
                 toState,
@@ -56,23 +54,25 @@ public class StateManagerProtoLogProxy {
 
     public static void logOnStateTransitionStart(@NonNull Object state) {
         if (!ENABLE_STATE_MANAGER_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(LAUNCHER_STATE_MANAGER, "StateManager.onStateTransitionStart: state: %s", state);
+        ProtoLogCompat.d(LAUNCHER_STATE_MANAGER,
+                "StateManager.onStateTransitionStart: state: %s", state);
     }
 
     public static void logOnStateTransitionEnd(@NonNull Object state) {
         if (!ENABLE_STATE_MANAGER_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(LAUNCHER_STATE_MANAGER, "StateManager.onStateTransitionEnd: state: %s", state);
+        ProtoLogCompat.d(LAUNCHER_STATE_MANAGER,
+                "StateManager.onStateTransitionEnd: state: %s", state);
     }
 
     public static void logOnRepeatStateSetAborted(@NonNull Object state) {
         if (!ENABLE_STATE_MANAGER_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(LAUNCHER_STATE_MANAGER,
+        ProtoLogCompat.d(LAUNCHER_STATE_MANAGER,
                 "StateManager.onRepeatStateSetAborted: state: %s", state);
     }
 
     public static void logCancelAnimation(boolean animationOngoing, @NonNull String trace) {
         if (!ENABLE_STATE_MANAGER_PROTO_LOG.isTrue() || !isProtoLogInitialized()) return;
-        ProtoLog.d(LAUNCHER_STATE_MANAGER,
+        ProtoLogCompat.d(LAUNCHER_STATE_MANAGER,
                 "StateManager.cancelAnimation: animation ongoing: %b, partial trace:\n%s",
                 animationOngoing,
                 trace);

@@ -25,6 +25,7 @@ import android.window.TransitionInfo.Change;
 import com.android.wm.shell.shared.TransitionUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -73,12 +74,14 @@ public class RemoteAnimationTargetCompat {
             SurfaceControl.Transaction t, ArrayMap<SurfaceControl, SurfaceControl> leashMap,
             Predicate<Change> filter) {
         final ArrayList<RemoteAnimationTarget> out = new ArrayList<>();
-        for (int i = 0; i < info.getChanges().size(); i++) {
-            TransitionInfo.Change change = info.getChanges().get(i);
+        final List<TransitionInfo.Change> changes = TransitionUtil.getChanges(info);
+        final int changeCount = changes.size();
+        for (int i = 0; i < changeCount; i++) {
+            TransitionInfo.Change change = changes.get(i);
             if (TransitionUtil.isOrderOnly(change)) continue;
             if (filter.test(change)) {
                 out.add(TransitionUtil.newTarget(
-                        change, info.getChanges().size() - i, info, t, leashMap));
+                        change, changeCount - i, info, t, leashMap));
             }
         }
         return out.toArray(new RemoteAnimationTarget[out.size()]);

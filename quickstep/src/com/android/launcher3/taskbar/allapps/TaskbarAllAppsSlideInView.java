@@ -123,7 +123,11 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
                 Log.w(TAG, "overlayVRI is null, cannot notifyRendererOfExpensiveFrame()");
             } else {
                 Trace.instantForTrack(TRACE_TAG_APP, TAG, "notifyRendererForGpuLoadUp");
-                overlayVri.notifyRendererForGpuLoadUp("opening taskbar all apps");
+                try {
+                    overlayVri.notifyRendererForGpuLoadUp("opening taskbar all apps");
+                } catch (NoSuchMethodError e) {
+                    Log.d(TAG, "notifyRendererForGpuLoadUp unavailable", e);
+                }
                 overlayVri.notifyRendererOfExpensiveFrame();
             }
         }

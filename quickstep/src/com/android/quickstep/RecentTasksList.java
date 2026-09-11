@@ -420,18 +420,30 @@ public class RecentTasksList {
 
         boolean isFirstVisibleTaskFound = false;
         for (GroupedTaskInfo rawTask : rawTasks) {
-            if (rawTask.isBaseType(TYPE_DESK)) {
+            if (rawTask == null) {
+                continue;
+            }
+            final GroupedTaskInfo baseTask;
+            try {
+                baseTask = rawTask.getBaseGroupedTask();
+            } catch (RuntimeException e) {
+                continue;
+            }
+            if (baseTask == null) {
+                continue;
+            }
+
+            if (baseTask.isBaseType(TYPE_DESK)) {
                 // TYPE_DESK tasks is only created when desktop mode can be entered,
                 // leftover TYPE_DESK tasks created when flag was on should be ignored.
                 if (DesktopModeStatus.canEnterDesktopMode(mContext)) {
-                    List<DesktopTask> desktopTasks = createDesktopTasks(
-                            rawTask.getBaseGroupedTask());
+                    List<DesktopTask> desktopTasks = createDesktopTasks(baseTask);
                     allTasks.addAll(desktopTasks);
 
                     // If any task in desktop group task is visible, set isFirstVisibleTaskFound to
                     // true. This way if there is a transparent task in the list later on, it does
                     // not get its own tile in Overview.
-                    if (rawTask.getBaseGroupedTask().getTaskInfoList().stream().anyMatch(
+                    if (baseTask.getTaskInfoList().stream().anyMatch(
                             taskInfo -> taskInfo.isVisible)) {
                         isFirstVisibleTaskFound = true;
                     }
@@ -441,24 +453,33 @@ public class RecentTasksList {
 
             // [getTaskInfo1] will not be null for types below beside [TYPE_DESK].
             if (Flags.enableShellTopTaskTracking()) {
-                final TaskInfo taskInfo1 = rawTask.getBaseGroupedTask().getTaskInfo1();
+                final TaskInfo taskInfo1 = baseTask.getTaskInfo1();
+                if (taskInfo1 == null) {
+                    continue;
+                }
                 final Task.TaskKey task1Key = new Task.TaskKey(taskInfo1);
                 final Task task1 = Task.from(task1Key, taskInfo1,
                         tmpLockedUsers.get(task1Key.userId) /* isLocked */);
 
-                if (rawTask.isBaseType(TYPE_SPLIT)) {
-                    final TaskInfo taskInfo2 = rawTask.getBaseGroupedTask().getTaskInfo2();
+                if (baseTask.isBaseType(TYPE_SPLIT)) {
+                    final TaskInfo taskInfo2 = baseTask.getTaskInfo2();
+                    if (taskInfo2 == null) {
+                        continue;
+                    }
                     final Task.TaskKey task2Key = new Task.TaskKey(taskInfo2);
                     final Task task2 = Task.from(task2Key, taskInfo2,
                             tmpLockedUsers.get(task2Key.userId) /* isLocked */);
                     allTasks.add(new SplitTask(task1, task2,
-                            rawTask.getBaseGroupedTask().getSplitBounds()));
+                            baseTask.getSplitBounds()));
                 } else {
                     allTasks.add(new SingleTask(task1));
                 }
             } else {
-                TaskInfo taskInfo1 = rawTask.getTaskInfo1();
-                TaskInfo taskInfo2 = rawTask.getTaskInfo2();
+                TaskInfo taskInfo1 = baseTask.getTaskInfo1();
+                if (taskInfo1 == null) {
+                    continue;
+                }
+                TaskInfo taskInfo2 = baseTask.getTaskInfo2();
                 Task.TaskKey task1Key = new Task.TaskKey(taskInfo1);
                 Task task1 = loadKeysOnly
                         ? new Task(task1Key)
@@ -488,8 +509,8 @@ public class RecentTasksList {
                     isFirstVisibleTaskFound = true;
                 }
                 if (task2 != null) {
-                    Objects.requireNonNull(rawTask.getSplitBounds());
-                    allTasks.add(new SplitTask(task1, task2, rawTask.getSplitBounds()));
+                    Objects.requireNonNull(baseTask.getSplitBounds());
+                    allTasks.add(new SplitTask(task1, task2, baseTask.getSplitBounds()));
                 } else {
                     allTasks.add(new SingleTask(task1));
                 }

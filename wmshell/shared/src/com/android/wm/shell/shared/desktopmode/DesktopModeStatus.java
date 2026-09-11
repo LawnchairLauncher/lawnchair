@@ -146,24 +146,13 @@ public class DesktopModeStatus {
      * Return {@code true} if desktop mode is enabled and can be entered on the current device.
      */
     public static boolean canEnterDesktopMode(@NonNull Context context) {
-        boolean ENABLED_PROJECTED_DISPLAY_DESKTOP_MODE;
-        if (false) {
-            // LC-Ignored: Intentional, all Android desktop flags are disabled
-            ENABLED_PROJECTED_DISPLAY_DESKTOP_MODE = DesktopExperienceFlags.ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE.isTrue();
-        } else {
-            ENABLED_PROJECTED_DISPLAY_DESKTOP_MODE = false;
-        }
+        boolean ENABLED_PROJECTED_DISPLAY_DESKTOP_MODE =
+                isProjectedDisplayDesktopModeFlagEnabled();
         boolean isEligibleForDesktopMode = isDeviceEligibleForDesktopMode(context) && (
             ENABLED_PROJECTED_DISPLAY_DESKTOP_MODE
                         || canInternalDisplayHostDesktops(context));
         
-        boolean ENABLE_DESKTOP_WINDOWING_MODE;
-        if (false) {
-            // LC-Ignored: Intentional, all Android desktop flags are disabled
-            ENABLE_DESKTOP_WINDOWING_MODE = DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_MODE.isTrue();
-        } else {
-            ENABLE_DESKTOP_WINDOWING_MODE = false;
-        }
+        boolean ENABLE_DESKTOP_WINDOWING_MODE = isDesktopWindowingModeFlagEnabled();
         boolean desktopModeEnabled =
                 isEligibleForDesktopMode && ENABLE_DESKTOP_WINDOWING_MODE;
         return desktopModeEnabled || isDesktopModeEnabledByDevOption(context);
@@ -173,13 +162,7 @@ public class DesktopModeStatus {
      * Check if Desktop mode should be enabled because the dev option is shown and enabled.
      */
     private static boolean isDesktopModeEnabledByDevOption(@NonNull Context context) {
-        boolean isDesktopModeForcedEnabled;
-        if (false) {
-            // LC-Ignored: Intentional, all Android desktop flags are disabled
-            isDesktopModeForcedEnabled = DesktopModeFlags.isDesktopModeForcedEnabled();
-        } else {
-            isDesktopModeForcedEnabled = false;
-        }
+        boolean isDesktopModeForcedEnabled = isDesktopModeForcedEnabledFlag();
         return isDesktopModeForcedEnabled
                 && canShowDesktopModeDevOption(context);
     }
@@ -199,13 +182,8 @@ public class DesktopModeStatus {
             return canInternalDisplayHostDesktops(context);
         }
         
-        boolean ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT;
-        if (false) {
-            // LC-Ignored: Intentional, all Android desktop flags are disabled
-            ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT = DesktopExperienceFlags.ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT.isTrue();
-        } else {
-            ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT = false;
-        }
+        boolean ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT =
+                isDisplayContentModeManagementFlagEnabled();
 
         // TODO (b/395014779): Change this to use WM API
         if (!ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT) {
@@ -220,18 +198,10 @@ public class DesktopModeStatus {
      */
     public static boolean isMultipleDesktopFrontendEnabledOnDisplay(@NonNull Context context,
             Display display) {
-        
-        boolean ENABLE_MULTIPLE_DESKTOPS_FRONTEND;
-        boolean ENABLE_MULTIPLE_DESKTOPS_BACKEND;
-
-        if (false) {
-            // LC-Ignored: Intentional, all Android desktop flags are disabled
-            ENABLE_MULTIPLE_DESKTOPS_FRONTEND = DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_FRONTEND.isTrue();
-            ENABLE_MULTIPLE_DESKTOPS_BACKEND = DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue();
-        } else {
-            ENABLE_MULTIPLE_DESKTOPS_FRONTEND = false;
-            ENABLE_MULTIPLE_DESKTOPS_BACKEND = false;
-        }
+        boolean ENABLE_MULTIPLE_DESKTOPS_FRONTEND =
+                isMultipleDesktopsFrontendFlagEnabled();
+        boolean ENABLE_MULTIPLE_DESKTOPS_BACKEND =
+                isMultipleDesktopsBackendFlagEnabled();
         
         return ENABLE_MULTIPLE_DESKTOPS_FRONTEND
                 && ENABLE_MULTIPLE_DESKTOPS_BACKEND
@@ -243,17 +213,10 @@ public class DesktopModeStatus {
      * frontend implementations).
      */
     public static boolean enableMultipleDesktops(@NonNull Context context) {
-        boolean ENABLE_MULTIPLE_DESKTOPS_FRONTEND;
-        boolean ENABLE_MULTIPLE_DESKTOPS_BACKEND;
-
-        if (false) {
-            // LC-Ignored: Intentional, all Android desktop flags are disabled
-            ENABLE_MULTIPLE_DESKTOPS_FRONTEND = DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_FRONTEND.isTrue();
-            ENABLE_MULTIPLE_DESKTOPS_BACKEND = DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue();
-        } else {
-            ENABLE_MULTIPLE_DESKTOPS_FRONTEND = false;
-            ENABLE_MULTIPLE_DESKTOPS_BACKEND = false;
-        }
+        boolean ENABLE_MULTIPLE_DESKTOPS_FRONTEND =
+                isMultipleDesktopsFrontendFlagEnabled();
+        boolean ENABLE_MULTIPLE_DESKTOPS_BACKEND =
+                isMultipleDesktopsBackendFlagEnabled();
         
         return ENABLE_MULTIPLE_DESKTOPS_BACKEND
                 && ENABLE_MULTIPLE_DESKTOPS_FRONTEND
@@ -284,13 +247,8 @@ public class DesktopModeStatus {
         if (!enforceDeviceRestrictions()) {
             return true;
         }
-        final boolean enableDesktopModeThroughDevOption;
-        if (false) {
-            // LC-Ignored: Intentional, all Android desktop flags are disabled
-            enableDesktopModeThroughDevOption = Flags.enableDesktopModeThroughDevOption();
-        } else {
-            enableDesktopModeThroughDevOption = false;
-        }
+        final boolean enableDesktopModeThroughDevOption =
+                isDesktopModeThroughDevOptionFlagEnabled();
         final boolean desktopModeSupportedByDevOptions =
             enableDesktopModeThroughDevOption
                     && isDesktopModeDevOptionSupported(context);
@@ -346,14 +304,87 @@ public class DesktopModeStatus {
      * of the display's root [TaskDisplayArea] is set to WINDOWING_MODE_FREEFORM.
      */
     public static boolean enterDesktopByDefaultOnFreeformDisplay(@NonNull Context context) {
-        if (DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_BASED_DEFAULT_TO_DESKTOP_BUGFIX.isTrue()) {
+        if (isDesktopFirstDefaultToDesktopBugfixEnabled()) {
             return true;
         }
-        if (!DesktopExperienceFlags.ENTER_DESKTOP_BY_DEFAULT_ON_FREEFORM_DISPLAYS.isTrue()) {
+        if (!isEnterDesktopByDefaultOnFreeformDisplaysEnabled()) {
             return false;
         }
         return SystemProperties.getBoolean(ENTER_DESKTOP_BY_DEFAULT_ON_FREEFORM_DISPLAY_SYS_PROP,
                 context.getResources().getBoolean(
                         R.bool.config_enterDesktopByDefaultOnFreeformDisplay));
+    }
+
+    private static boolean isProjectedDisplayDesktopModeFlagEnabled() {
+        try {
+            return DesktopExperienceFlags.ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE.isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isDesktopWindowingModeFlagEnabled() {
+        try {
+            return DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_MODE.isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isDesktopModeForcedEnabledFlag() {
+        try {
+            return DesktopModeFlags.isDesktopModeForcedEnabled();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isDisplayContentModeManagementFlagEnabled() {
+        try {
+            return DesktopExperienceFlags.ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT.isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isMultipleDesktopsFrontendFlagEnabled() {
+        try {
+            return DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_FRONTEND.isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isMultipleDesktopsBackendFlagEnabled() {
+        try {
+            return DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isDesktopFirstDefaultToDesktopBugfixEnabled() {
+        try {
+            return DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_BASED_DEFAULT_TO_DESKTOP_BUGFIX
+                    .isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isEnterDesktopByDefaultOnFreeformDisplaysEnabled() {
+        try {
+            return DesktopExperienceFlags.ENTER_DESKTOP_BY_DEFAULT_ON_FREEFORM_DISPLAYS.isTrue();
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isDesktopModeThroughDevOptionFlagEnabled() {
+        try {
+            return Flags.enableDesktopModeThroughDevOption();
+        } catch (Throwable ignored) {
+            return false;
+        }
     }
 }

@@ -148,8 +148,10 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
         ItemInfo itemInfo = null;
         if (icon.getTag() instanceof ItemInfo item && ShortcutUtil.supportsShortcuts(item)) {
             itemInfo = item;
-        } else if (PinToTaskbarShortcut.Companion.isPinningAppWithContextMenuEnabled(mContext)
-                && icon.getTag() instanceof SingleTask task) {
+        } else if (icon.getTag() instanceof SingleTask task) {
+            // Recent-task icons should still expose their standard popup actions even when
+            // desktop-mode app pinning is unavailable. The pin shortcut itself remains gated
+            // below when the popup items are created.
             Task.TaskKey key = task.getTask().getKey();
             AppInfo appInfo = getApp(
                     new ComponentKey(key.getComponent(), UserHandle.of(key.userId)));
@@ -459,4 +461,3 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
         }
     }
 }
-

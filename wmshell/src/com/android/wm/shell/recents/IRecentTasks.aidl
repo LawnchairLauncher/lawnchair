@@ -21,7 +21,6 @@ import android.app.IApplicationThread;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
-import android.window.WindowContainerTransaction;
 
 import com.android.wm.shell.recents.IRecentsAnimationRunner;
 import com.android.wm.shell.recents.IRecentTasksListener;
@@ -35,27 +34,26 @@ interface IRecentTasks {
     /**
      * Registers a recent tasks listener.
      */
-    oneway void registerRecentTasksListener(in IRecentTasksListener listener) = 1;
+    oneway void registerRecentTasksListener(in IRecentTasksListener listener) = 2;
 
     /**
      * Unregisters a recent tasks listener.
      */
-    oneway void unregisterRecentTasksListener(in IRecentTasksListener listener) = 2;
+    oneway void unregisterRecentTasksListener(in IRecentTasksListener listener) = 3;
 
     /**
      * Gets the set of recent tasks.
      */
-    GroupedTaskInfo[] getRecentTasks(int maxNum, int flags, int userId) = 3;
+    GroupedTaskInfo[] getRecentTasks(int maxNum, int flags, int userId) = 4;
 
     /**
      * Gets the set of running tasks.
      */
-    RunningTaskInfo[] getRunningTasks(int maxNum) = 4;
+    RunningTaskInfo[] getRunningTasks(int maxNum) = 5;
 
     /**
      * Starts a recents transition.
      */
     oneway void startRecentsTransition(in PendingIntent intent, in Intent fillIn, in Bundle options,
-                    in @nullable WindowContainerTransaction wct, IApplicationThread appThread,
-                    IRecentsAnimationRunner listener) = 5;
+                    IApplicationThread appThread, IRecentsAnimationRunner listener) = 6;
 }
