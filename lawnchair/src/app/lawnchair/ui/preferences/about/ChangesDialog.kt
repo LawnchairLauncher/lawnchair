@@ -52,68 +52,76 @@ fun ChangesDialog(
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
-            Text(
-                text = stringResource(R.string.changes_dialog_title),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            Text(
-                text = stringResource(
-                    R.string.changes_dialog_build_format,
-                    currentBuild,
-                    latestBuild,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            )
-        }
-        LazyColumn(
+        Column(
             modifier = Modifier
-                .heightIn(max = 600.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .heightIn(max = 600.dp),
         ) {
-            if (commits != null) {
-                itemsIndexed(commits) { index, commit ->
-                    PreferenceGroupItem(
-                        cutTop = index != 0,
-                        cutBottom = index != commits.lastIndex,
-                    ) {
-                        CommitItem(commit = commit)
+            Column(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.changes_dialog_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                Text(
+                    text = stringResource(
+                        R.string.changes_dialog_build_format,
+                        currentBuild,
+                        latestBuild,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                )
+            }
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .fillMaxWidth(),
+            ) {
+                if (commits != null) {
+                    itemsIndexed(commits) { index, commit ->
+                        PreferenceGroupItem(
+                            cutTop = index != 0,
+                            cutBottom = index != commits.lastIndex,
+                        ) {
+                            CommitItem(commit = commit)
+                        }
+                        Spacer(Modifier.height(3.dp))
                     }
-                    Spacer(Modifier.height(3.dp))
-                }
-            } else {
-                item {
-                    Text(
-                        text = stringResource(R.string.changes_dialog_error),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+                } else {
+                    item {
+                        Text(
+                            text = stringResource(R.string.changes_dialog_error),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                 }
             }
-        }
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .fillMaxWidth(),
-        ) {
-            OutlinedButton(
-                onClick = onDismiss,
-                shapes = ButtonDefaults.shapes(),
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
             ) {
-                Text(text = stringResource(android.R.string.cancel))
-            }
-            Spacer(Modifier.width(8.dp))
-            Button(
-                onClick = {
-                    onDownload()
-                    onDismiss()
-                },
-                shapes = ButtonDefaults.shapes(),
-            ) {
-                Text(text = stringResource(R.string.download_update))
+                OutlinedButton(
+                    onClick = onDismiss,
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
+                Spacer(Modifier.width(8.dp))
+                Button(
+                    onClick = {
+                        onDownload()
+                        onDismiss()
+                    },
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(R.string.download_update))
+                }
             }
         }
     }
