@@ -837,6 +837,7 @@
     <string name="search_provider_sesame" translatable="false">Sesame</string>
     <string name="search_provider_brave" translatable="false">Brave</string>
     <string name="search_provider_github" translatable="false">GitHub</string>
+    <string name="search_provider_youcom" translatable="false">You.com</string>
     <string name="search_provider_youtube" translatable="false">YouTube</string>
     <string name="search_provider_pixel_search" translatable="false">Pixel Search</string>
     <string name="search_provider_yandex" translatable="false">Yandex</string>

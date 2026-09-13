@@ -421,6 +421,31 @@ object KagiWebSearchProvider : WebSearchProvider {
     override fun toString(): String = id
 }
 
+
+/**
+ * Provides web search via You.com (https://you.com).
+ * Suggestions are not available without their commercial API; search URL still works for drawer web search.
+ */
+object YouComWebSearchProvider : WebSearchProvider {
+    override val label = R.string.search_provider_youcom
+
+    override val iconRes = R.drawable.ic_qsb_search
+
+    override val id: String = "youcom"
+
+    override fun getSuggestions(query: String): Flow<List<String>> = flow {
+        // You.com does not expose a free public OpenSearch suggest endpoint.
+        emit(emptyList())
+    }.flowOn(Dispatchers.IO)
+
+    override fun getSearchUrl(query: String): String {
+        val encodedQuery = Uri.encode(query)
+        return "https://you.com/search?q=$encodedQuery"
+    }
+
+    override fun toString(): String = id
+}
+
 private class StringConverterFactory : Converter.Factory() {
     override fun responseBodyConverter(
         type: Type,
