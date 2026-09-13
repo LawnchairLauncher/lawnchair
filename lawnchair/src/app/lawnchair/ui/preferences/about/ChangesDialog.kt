@@ -58,9 +58,7 @@ fun ChangesDialog(
                 .heightIn(max = 600.dp),
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
             ) {
                 Text(
                     text = stringResource(R.string.changes_dialog_title),
@@ -76,53 +74,53 @@ fun ChangesDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
                 )
-                LazyColumn(
-                    modifier = Modifier
-                        .weight(1f, fill = false)
-                        .fillMaxWidth(),
-                ) {
-                    if (commits != null) {
-                        itemsIndexed(commits) { index, commit ->
-                            PreferenceGroupItem(
-                                cutTop = index != 0,
-                                cutBottom = index != commits.lastIndex,
-                            ) {
-                                CommitItem(commit = commit)
-                            }
-                            Spacer(Modifier.height(3.dp))
+            }
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .fillMaxWidth(),
+            ) {
+                if (commits != null) {
+                    itemsIndexed(commits) { index, commit ->
+                        PreferenceGroupItem(
+                            cutTop = index != 0,
+                            cutBottom = index != commits.lastIndex,
+                        ) {
+                            CommitItem(commit = commit)
                         }
-                    } else {
-                        item {
-                            Text(
-                                text = stringResource(R.string.changes_dialog_error),
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
+                        Spacer(Modifier.height(3.dp))
+                    }
+                } else {
+                    item {
+                        Text(
+                            text = stringResource(R.string.changes_dialog_error),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
                 }
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .padding(vertical = 12.dp)
-                        .fillMaxWidth(),
+            }
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
+            ) {
+                OutlinedButton(
+                    onClick = onDismiss,
+                    shapes = ButtonDefaults.shapes(),
                 ) {
-                    OutlinedButton(
-                        onClick = onDismiss,
-                        shapes = ButtonDefaults.shapes(),
-                    ) {
-                        Text(text = stringResource(android.R.string.cancel))
-                    }
-                    Spacer(Modifier.width(8.dp))
-                    Button(
-                        onClick = {
-                            onDownload()
-                            onDismiss()
-                        },
-                        shapes = ButtonDefaults.shapes(),
-                    ) {
-                        Text(text = stringResource(R.string.download_update))
-                    }
+                    Text(text = stringResource(android.R.string.cancel))
+                }
+                Spacer(Modifier.width(8.dp))
+                Button(
+                    onClick = {
+                        onDownload()
+                        onDismiss()
+                    },
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(R.string.download_update))
                 }
             }
         }
