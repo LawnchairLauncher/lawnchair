@@ -117,14 +117,14 @@
     <string name="my_folder_label">Mi carpeta</string>
     <string name="sort_active_items_action">Ordenar elementos activos</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">Para realizar ciertas acciones cuando usas un gesto, como bloquear el teléfono, Lawnchair requiere los servicios de accesibilidad.\n\nLawnchair no mira tus acciones, aunque todos los servicios de accesibilidad requieran este privilegio. Lawnchair descarta cada evento enviado por el sistema.\n\nPara bloquear el teléfono o abrir la pestaña de recientes, Lawnchair usa el performGlobalAction servicio de accesibilidad.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Avanzado</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
+    <string name="reorderable_move_up">Subir</string>
+    <string name="reorderable_move_down">Bajar</string>
     <string name="reorderable_active_items">Elementos activos</string>
     <string name="reorderable_disabled_items">Otros artículos</string>
     <string name="reorderable_disabled_hint">Los elementos deshabilitados aparecerán aquí</string>
@@ -151,7 +151,7 @@
     <string name="gestures_label">Gestos</string>
     <string name="gestures_description">Toques y gestos</string>
     <string name="quickstep_label">Aplicaciones recientes</string>
-    <string name="quickstep_description">Clear all button, corner radius</string>
+    <string name="quickstep_description">Despejar todos los botones, radio de ka esquina</string>
     <string name="backup_and_restore_label">Copia de seguridad y restauración</string>
     <string name="backup_and_restore_description">Guardar configuración actual, restaurar copias de seguridad</string>
     <string name="about_label">Acerca de</string>
@@ -162,7 +162,7 @@
     <string name="workspace_label">Espacio de trabajo</string>
     <string name="smartspace_label">Espacio inteligente</string>
     <string name="internal_label">Interno</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_description">La versión interna puede ser menos estable que otros grupos experimentales</string>
     <string name="font_picker_label">Tipografía personalizada</string>
     <string name="font_picker_description">Algunos textos permanecen sin cambios</string>
     <string name="smartspace_calendar_label">Personalizar calendario en «un vistazo»</string>
@@ -239,7 +239,7 @@
     <string name="twoline_label">Usar varias líneas</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Fondos de iconos transparentes</string>
-    <string name="transparent_background_icons_description">Para iconos temáticos e iconos autoadaptativos</string>
+    <string name="transparent_background_icons_description">Para iconos temáticos e iconos auto-adaptativos</string>
     <string name="auto_adaptive_icons_label">Iconos adaptables</string>
     <string name="auto_adaptive_icons_description">Para todos los iconos que no se adapten</string>
     <string name="shadow_bg_icons_label">Mostrar sombra tras los iconos</string>
