@@ -1688,7 +1688,7 @@ public abstract class AbsSwipeUpHandler<
                     && runningTaskTarget.leash != null
                     && runningTaskTarget.leash.isValid();
             final boolean swipeUpInDesktopWindowing =
-                    DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP.isTrue()
+                    isDesktopWindowingPipEnabled()
                             && runningTaskTarget != null
                             && runningTaskTarget.taskInfo.getWindowingMode()
                             == WINDOWING_MODE_FREEFORM;
@@ -1881,6 +1881,15 @@ public abstract class AbsSwipeUpHandler<
             }
         } catch (NoSuchFieldError ignored) {
             return orientationState.getDisplayRotation();
+        }
+    }
+
+    private static boolean isDesktopWindowingPipEnabled() {
+        // Android 16 ROMs in the field do not all expose this DesktopExperienceFlags enum value.
+        try {
+            return DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP.isTrue();
+        } catch (NoSuchFieldError ignored) {
+            return false;
         }
     }
 

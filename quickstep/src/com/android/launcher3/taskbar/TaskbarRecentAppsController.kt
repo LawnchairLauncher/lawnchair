@@ -20,6 +20,8 @@ import android.util.Log
 import android.window.DesktopExperienceFlags
 import android.window.DesktopModeFlags
 import androidx.annotation.VisibleForTesting
+import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.BubbleTextView.RunningAppState
 import com.android.launcher3.Flags
 import com.android.launcher3.Flags.enableRecentsInTaskbar
@@ -71,8 +73,12 @@ class TaskbarRecentAppsController(
             false
         }
 
-    // TODO(b/343532825): Add a setting to disable Recents even when the flag is on.
-    var canShowRecentApps = enableRecentsInTaskbar()
+    // TODO(b/343532825): expose a user setting to disable Recents even when the feature flag is
+    // enabled. Both this and the max-count are read once at construction; taskbar recreation
+    // applies preference changes, matching other taskbar-affecting preferences in this codebase.
+    var canShowRecentApps =
+        enableRecentsInTaskbar() &&
+            PreferenceManager2.getInstance(context).enableTaskbarRecents.firstCached()
         @VisibleForTesting
         set(isEnabledFromTest) {
             field = isEnabledFromTest
@@ -80,6 +86,10 @@ class TaskbarRecentAppsController(
                 recentsModel.unregisterRecentTasksChangedListener(recentTasksChangedListener)
             }
         }
+
+    private val maxRecentTasks =
+        PreferenceManager2.getInstance(context).taskbarRecentsMaxCount.firstCached()
+            .coerceIn(1, 6)
 
     // Initialized in init.
     private lateinit var controllers: TaskbarControllers
@@ -95,7 +105,10 @@ class TaskbarRecentAppsController(
         private set
 
     val shownTaskIds: List<Int>
-        get() = shownTasks.flatMap { shownTask -> shownTask.tasks }.map { it.key.id }
+        get() = taskIdsOf(shownTasks)
+
+    private fun taskIdsOf(tasks: List<GroupTask>): List<Int> =
+        tasks.flatMap { it.tasks }.map { it.key.id }
 
     /**
      * The task-state of an app, i.e. whether the app has a task and what state that task is in.
@@ -312,7 +325,7 @@ class TaskbarRecentAppsController(
      * @return Whether [shownTasks] changed.
      */
     private fun onRecentsOrHotseatChanged(): Boolean {
-        val oldShownTasks = shownTasks
+        val oldTaskIds = taskIdsOf(shownTasks)
         orderedRunningTaskIds = updateOrderedRunningTaskIds()
         shownTasks =
             if (controllers.taskbarDesktopModeController.shouldShowDesktopTasksInTaskbar()) {
@@ -320,7 +333,10 @@ class TaskbarRecentAppsController(
             } else {
                 computeShownRecentTasks()
             }
-        val shownTasksChanged = oldShownTasks != shownTasks
+        // Task/GroupTask/SingleTask use object identity. RecentsModel may provide fresh wrapper
+        // objects for unchanged tasks, so compare stable task IDs to avoid unnecessary taskbar
+        // rebuilds while the recent-task set is unchanged.
+        val shownTasksChanged = oldTaskIds != taskIdsOf(shownTasks)
         if (!shownTasksChanged) {
             return shownTasksChanged
         }
@@ -432,9 +448,13 @@ class TaskbarRecentAppsController(
         // Remove the current task.
         val allRecentTasks = allRecentTasks.subList(0, allRecentTasks.size - 1)
         var shownTasks = dedupeHotseatTasks(allRecentTasks, shownHotseatItems)
-        if (shownTasks.size > MAX_RECENT_TASKS) {
-            // Remove any tasks older than MAX_RECENT_TASKS.
-            shownTasks = shownTasks.subList(shownTasks.size - MAX_RECENT_TASKS, shownTasks.size)
+        // dedupeHotseatTasks only strips recents that duplicate pinned apps. Collapse duplicate
+        // task entries within the recents list itself so the taskbar shows the most recent
+        // distinct apps instead of multiple tasks for the same package.
+        shownTasks = dedupeByPackage(shownTasks)
+        if (shownTasks.size > maxRecentTasks) {
+            // Remove any tasks older than maxRecentTasks.
+            shownTasks = shownTasks.subList(shownTasks.size - maxRecentTasks, shownTasks.size)
         }
         return shownTasks
     }
@@ -467,6 +487,18 @@ class TaskbarRecentAppsController(
                 }
             }
         }
+    }
+
+    /**
+     * Collapses same-package [SingleTask] entries down to their single most recent occurrence,
+     * preserving list order. Non-[SingleTask] entries (app pairs, desktop groups) pass through
+     * untouched.
+     */
+    private fun dedupeByPackage(groupTasks: List<GroupTask>): List<GroupTask> {
+        val seenPackages = mutableSetOf<String>()
+        return groupTasks.asReversed()
+            .filter { task -> task !is SingleTask || seenPackages.add(task.packageNames.first()) }
+            .asReversed()
     }
 
     /**
@@ -509,7 +541,5 @@ class TaskbarRecentAppsController(
 
     private companion object {
         private val TAG = "TaskbarRecentAppsController"
-
-        const val MAX_RECENT_TASKS = 2
     }
 }

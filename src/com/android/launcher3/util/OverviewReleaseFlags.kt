@@ -19,8 +19,11 @@ package com.android.launcher3.util
 import com.android.launcher3.Flags
 
 object OverviewReleaseFlags {
+    private const val FORCE_CLASSIC_OVERVIEW_FOR_QUICKSWITCH = true
+
     private fun enableOverviewNewLayout() =
-        Flags.enableRefactorTaskThumbnail() &&
+        !FORCE_CLASSIC_OVERVIEW_FOR_QUICKSWITCH &&
+            Flags.enableRefactorTaskThumbnail() &&
             Flags.enableOverviewIconMenu() &&
             Flags.enableGridOnlyOverview()
 

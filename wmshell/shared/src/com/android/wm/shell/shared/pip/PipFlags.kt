@@ -18,7 +18,7 @@ package com.android.wm.shell.shared.pip
 
 import android.app.AppGlobals
 import android.content.pm.PackageManager
-import android.window.DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP
+import android.window.DesktopExperienceFlags
 import com.android.wm.shell.Flags
 
 class PipFlags {
@@ -31,12 +31,22 @@ class PipFlags {
         val isPip2ExperimentEnabled: Boolean by lazy {
             val isTv = AppGlobals.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_LEANBACK, 0)
-            (Flags.enablePip2() || ENABLE_DESKTOP_WINDOWING_PIP.isTrue) && !isTv
+            (Flags.enablePip2() || isDesktopWindowingPipEnabled) && !isTv
         }
 
         @JvmStatic
         val isPipUmoExperienceEnabled: Boolean by lazy {
             Flags.enablePipUmoExperience()
+        }
+
+        @JvmStatic
+        val isDesktopWindowingPipEnabled: Boolean by lazy {
+            runCatching {
+                val flag = DesktopExperienceFlags::class.java
+                    .getField("ENABLE_DESKTOP_WINDOWING_PIP")
+                    .get(null)
+                flag.javaClass.getMethod("isTrue").invoke(flag) as Boolean
+            }.getOrDefault(false)
         }
     }
 }

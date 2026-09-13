@@ -30,4 +30,29 @@ Location of the generated JARs:
 | WindowManager-Shell | ./soong/.intermediates/frameworks/base/libs/WindowManager/Shell/WindowManager-Shell/android_common/javac/WindowManager-Shell.jar |
 | SystemUI-Core       | ./soong/.intermediates/frameworks/base/packages/SystemUI/SystemUI-core/android_common/javac/SystemUI-core.jar                    |
 
+## Android 16 WindowManager Shell ABI adaptation
+
+`WindowManager-Shell-16.jar` is based on the `android-16.0.0_r3` artifact
+listed above. The checked-in JAR adapts `IRecentTasks` to the pre-WCT Binder
+ABI exposed by the Bliss/e/OS Android 16 SystemUI build used for integration
+testing. The reviewable interface change lives in
+`wmshell/src/com/android/wm/shell/recents/IRecentTasks.aidl`.
+
+The adaptation preserves all 1,388 archive entries and replaces only these
+AIDL-generated classes:
+
+- `IRecentTasks.class`
+- `IRecentTasks$Default.class`
+- `IRecentTasks$Stub.class`
+- `IRecentTasks$Stub$Proxy.class`
+
+Baseline SHA-256:
+`e5f26c556ca0670f32339237a6dd30268054cad0fa823d233e36bdb1e29c1753`.
+Adapted SHA-256:
+`9a8261a98a6231d1546bd70e36d457d73d82c0063ebc780820c5a0a6b4ab9b04`.
+
+To reproduce the prebuilt from source, apply the tracked `IRecentTasks.aidl`
+change to the `android-16.0.0_r3` tree and rebuild `WindowManager-Shell` with
+the command and target configuration listed above.
+
 Any other JARs not listed here are kept for historical or reference purposes.

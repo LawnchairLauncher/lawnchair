@@ -884,10 +884,11 @@ constructor(
             // About layering: we divide up the "layer space" into 2 regions (each the size of the
             // change count). This lets us categorize things into above and below while
             // maintaining their relative ordering.
-            val belowLayers = info.changes.size
-            val aboveLayers = info.changes.size * 2
-            for (i in info.changes.indices) {
-                val change = info.changes[i]
+            val changes = TransitionUtil.getChanges(info)
+            val belowLayers = changes.size
+            val aboveLayers = changes.size * 2
+            for (i in changes.indices) {
+                val change = changes[i]
                 if (change == null || change.taskInfo == null) {
                     continue
                 }
@@ -948,7 +949,11 @@ constructor(
                     override fun onAnimationFinished() {
                         leashMap.clear()
                         val finishTransaction = SurfaceControl.Transaction()
-                        finishCallback?.onTransitionFinished(null, finishTransaction)
+                        RemoteTransitionFinishCompat.finish(
+                            finishCallback,
+                            null,
+                            finishTransaction,
+                        )
                         finishTransaction.close()
                     }
                 }

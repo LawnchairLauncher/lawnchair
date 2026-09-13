@@ -22,18 +22,16 @@ import static com.android.quickstep.util.QuickstepProtoLogGroup.isProtoLogInitia
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import androidx.annotation.RequiresApi;
-import com.android.internal.protolog.ProtoLog;
+import com.android.quickstep.util.ProtoLogCompat;
 
 /**
  * Proxy class used for OverviewCommandHelper ProtoLog support. (e.g. for 3 button nav)
  */
-@RequiresApi(31) // Because this class uses ProtoLog which requires API level 31
 public class OverviewCommandHelperProtoLogProxy {
 
     public static void logCommandQueueFull(@NonNull Object type, @NonNull Object commandQueue) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "command not added: %s - queue is full (%s).",
                 type,
                 commandQueue);
@@ -41,12 +39,12 @@ public class OverviewCommandHelperProtoLogProxy {
 
     public static void logCommandAdded(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "command added: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "command added: %s", command);
     }
 
     public static void logCommandExecuted(@NonNull Object command, int queueSize) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "execute: %s - queue size: %d",
                 command,
                 queueSize);
@@ -54,7 +52,7 @@ public class OverviewCommandHelperProtoLogProxy {
 
     public static void logCommandNotExecuted(@NonNull Object command, int queueSize) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "command not executed: %s - queue size: %d",
                 command,
                 queueSize);
@@ -62,23 +60,23 @@ public class OverviewCommandHelperProtoLogProxy {
 
     public static void logClearPendingCommands(@NonNull Object commandQueue) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "clearing pending commands: %s", commandQueue);
     }
 
     public static void logNoPendingCommands() {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "no pending commands to be executed.");
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "no pending commands to be executed.");
     }
 
     public static void logExecutingCommand(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "executing command: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "executing command: %s", command);
     }
 
     public static void logExecutingCommand(@NonNull Object command, @Nullable Object recentsView) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "executing command: %s - visibleRecentsView: %s",
                 command,
                 recentsView);
@@ -86,75 +84,75 @@ public class OverviewCommandHelperProtoLogProxy {
 
     public static void logExecutedCommandWithResult(@NonNull Object command, boolean isCompleted) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "command executed: %s with result: %b",
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "command executed: %s with result: %b",
                 command,
                 isCompleted);
     }
 
     public static void logWaitingForCommandCallback(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "waiting for command callback: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "waiting for command callback: %s", command);
     }
 
     public static void logLaunchingTaskCallback(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "launching task callback: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "launching task callback: %s", command);
     }
 
     public static void logLaunchingTaskWaitingForCallback(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "launching task - waiting for callback: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "launching task - waiting for callback: %s", command);
     }
 
     public static void logSwitchingToOverviewStateStart(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "switching to Overview state - onAnimationStart: %s",
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "switching to Overview state - onAnimationStart: %s",
                 command);
     }
 
     public static void logSwitchingToOverviewStateEnd(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "switching to Overview state - onAnimationEnd: %s",
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "switching to Overview state - onAnimationEnd: %s",
                 command);
     }
 
     public static void logSwitchingToOverviewStateWaiting(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "switching to Overview state - waiting: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "switching to Overview state - waiting: %s", command);
     }
 
     public static void logRecentsAnimStarted(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "recents animation started: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "recents animation started: %s", command);
     }
 
     public static void logOnInitBackgroundStateUI(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "recents animation started - onInitBackgroundStateUI: %s", command);
     }
 
     public static void logRecentsAnimCanceled(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "recents animation canceled: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "recents animation canceled: %s", command);
     }
 
     public static void logSwitchingViaRecentsAnim(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "switching via recents animation - onGestureStarted: %s", command);
     }
 
     public static void logSwitchingViaRecentsAnimComplete(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "switching via recents animation - onTransitionComplete: %s", command);
     }
 
     public static void logCommandFinishedButNotScheduled(@Nullable Object nextCommandInQueue,
             @NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "next task not scheduled. First pending command type is %s - command type is: %s",
                 nextCommandInQueue,
                 command);
@@ -162,18 +160,18 @@ public class OverviewCommandHelperProtoLogProxy {
 
     public static void logCommandFinishedSuccessfully(@NonNull Object command) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER, "command executed successfully: %s", command);
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER, "command executed successfully: %s", command);
     }
 
     public static void logCommandCanceled(@NonNull Object command, @Nullable Throwable throwable) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.e(OVERVIEW_COMMAND_HELPER, "command canceled: %s - %s", command, throwable);
+        ProtoLogCompat.e(OVERVIEW_COMMAND_HELPER, "command canceled: %s - %s", command, throwable);
     }
 
     public static void logOnNewIntent(boolean alreadyOnHome, boolean shouldMoveToDefaultScreen,
             String intentAction, boolean internalStateHandled) {
         if (!isProtoLogInitialized()) return;
-        ProtoLog.d(OVERVIEW_COMMAND_HELPER,
+        ProtoLogCompat.d(OVERVIEW_COMMAND_HELPER,
                 "Launcher.onNewIntent: alreadyOnHome: %b, shouldMoveToDefaultScreen: %b, "
                         + "intentAction: %s, internalStateHandled: %b",
                 alreadyOnHome,

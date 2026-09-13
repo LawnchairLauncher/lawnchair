@@ -105,8 +105,14 @@ class PinToTaskbarShortcut<T>(
     }
 
     companion object {
-        fun isPinningAppWithContextMenuEnabled(context: TaskbarActivityContext): Boolean =
-            DesktopExperienceFlags.ENABLE_PINNING_APP_WITH_CONTEXT_MENU.isTrue &&
-                context.isTaskbarShowingDesktopTasks
+        fun isPinningAppWithContextMenuEnabled(context: TaskbarActivityContext): Boolean {
+            val flagEnabled =
+                try {
+                    DesktopExperienceFlags.ENABLE_PINNING_APP_WITH_CONTEXT_MENU.isTrue
+                } catch (_: NoSuchFieldError) {
+                    false
+                }
+            return flagEnabled && context.isTaskbarShowingDesktopTasks
+        }
     }
 }

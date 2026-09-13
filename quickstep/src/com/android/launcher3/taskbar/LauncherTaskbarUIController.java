@@ -281,7 +281,16 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         if (fromInitOrDestroy) {
             duration = 0;
         }
-        return mTaskbarLauncherStateController.applyState(duration, startAnimation);
+        Animator animator = mTaskbarLauncherStateController.applyState(duration, startAnimation);
+        if (!isVisible
+                && mControllers.taskbarStashController.shouldForcePinnedInAppTaskbarVisible()) {
+            // The Launcher-specific visibility path can enter app mode without running the
+            // pinned-taskbar alignment animation. Keep taskbar icons visible in apps.
+            mControllers.taskbarViewController.getTaskbarIconAlpha()
+                    .get(TaskbarViewController.ALPHA_INDEX_HOME)
+                    .setValue(1f);
+        }
+        return animator;
     }
 
     @Override
@@ -517,7 +526,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     protected void toggleAllApps(boolean focusSearch) {
         boolean canToggleHomeAllApps = mLauncher.isResumed()
                 && !mTaskbarLauncherStateController.isInOverviewUi()
-                && !mLauncher.areDesktopTasksVisible();
+                && !mLauncher.areDesktopTasksVisible()
+                && !mControllers.taskbarStashController.isInApp();
         if (canToggleHomeAllApps) {
             mLauncher.toggleAllApps(focusSearch);
             return;

@@ -1707,7 +1707,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 mControllers.taskbarRecentAppsController.getRunningAppState(taskId);
         Log.d(TAG, "Task id=" + taskId + ", Running app state=" + runningAppState);
         return runningAppState == RunningAppState.MINIMIZED
-                && DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_ALTTAB_TRANSITIONS_BUGFIX.isTrue();
+                && isFlagTrueSafe(() ->
+                        DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_ALTTAB_TRANSITIONS_BUGFIX
+                                .isTrue());
     }
 
     private RemoteTransition createDesktopAppLaunchRemoteTransition(
@@ -1741,7 +1743,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     private void launchFromInAppTaskbar(@Nullable RecentsView recents,
             @Nullable View launchingIconView, List<? extends ItemInfo> itemInfos) {
         boolean launchedFromExternalDisplay =
-                DesktopExperienceFlags.ENABLE_TASKBAR_CONNECTED_DISPLAYS.isTrue()
+                isFlagTrueSafe(() ->
+                        DesktopExperienceFlags.ENABLE_TASKBAR_CONNECTED_DISPLAYS.isTrue())
                         && !isPrimaryDisplay();
         if (recents == null && !launchedFromExternalDisplay) {
             return;
@@ -1859,18 +1862,31 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     private boolean shouldLaunchInDesktop(int displayId, ItemInfo info) {
-        if (!DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX.isTrue()) {
+        // Some platform builds omit desktop flag fields that are present in the stubs this code
+        // compiles against. Treat missing flags as disabled instead of crashing on first access.
+        if (!isFlagTrueSafe(() -> DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX
+                .isTrue())) {
             return false;
         }
-        if (DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_FULLSCREEN_REFOCUS_BUGFIX.isTrue()
+        if (isFlagTrueSafe(() -> DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_FULLSCREEN_REFOCUS_BUGFIX
+                        .isTrue())
                 && DisplayController.isInDesktopFirstMode(this)
                 && mControllers.taskbarRecentAppsController.hasSingleTask(info)) {
             // Keep the fullscreen mode in desktop-first mode.
             return false;
         }
         // Always launch in freeform if in external display.
-        return (DesktopExperienceFlags.ENABLE_FREEFORM_DISPLAY_LAUNCH_PARAMS.isTrue()
+        return (isFlagTrueSafe(() -> DesktopExperienceFlags.ENABLE_FREEFORM_DISPLAY_LAUNCH_PARAMS
+                        .isTrue())
                 && isExternalDisplay(displayId)) || isTaskbarShowingDesktopTasks();
+    }
+
+    private static boolean isFlagTrueSafe(java.util.function.BooleanSupplier flagRead) {
+        try {
+            return flagRead.getAsBoolean();
+        } catch (NoSuchFieldError e) {
+            return false;
+        }
     }
 
     private void launchDesktopApp(Intent intent, ItemInfo info, int displayId) {
@@ -1891,7 +1907,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
         // There is no task associated with this launch - launch a new task through an intent
         ActivityOptionsWrapper opts = getActivityLaunchDesktopOptions();
-        if (DesktopModeFlags.ENABLE_START_LAUNCH_TRANSITION_FROM_TASKBAR_BUGFIX.isTrue()) {
+        if (isFlagTrueSafe(() ->
+                DesktopModeFlags.ENABLE_START_LAUNCH_TRANSITION_FROM_TASKBAR_BUGFIX.isTrue())) {
             mSysUiProxy.startLaunchIntentTransition(intent, opts.options.toBundle(), displayId);
         } else {
             startActivity(intent, opts.options.toBundle());

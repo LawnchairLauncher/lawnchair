@@ -20,7 +20,10 @@ import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
 
+import app.lawnchair.search.LawnchairSearchUiDelegate;
+
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.allapps.search.AllAppsSearchUiDelegate;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 
 import java.util.Optional;
@@ -37,6 +40,11 @@ public class TaskbarAllAppsContainerView extends
 
     public TaskbarAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected AllAppsSearchUiDelegate createSearchUiDelegate() {
+        return new LawnchairSearchUiDelegate(this);
     }
 
     void setOnInvalidateHeaderListener(OnInvalidateHeaderListener onInvalidateHeaderListener) {

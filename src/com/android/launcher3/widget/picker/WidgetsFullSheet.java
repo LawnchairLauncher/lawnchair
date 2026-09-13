@@ -37,6 +37,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -90,6 +91,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -105,6 +107,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener,
         WidgetsListAdapter.ExpandButtonClickListener {
 
+    private static final String TAG = "WidgetsFullSheet";
     private static final long FADE_IN_DURATION = 150;
 
     // The widget recommendation table can easily take over the entire screen on devices with small
@@ -1161,7 +1164,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         void setup(WidgetsRecyclerView recyclerView) {
-            mWidgetsRecyclerView = recyclerView;
+            mWidgetsRecyclerView = Objects.requireNonNull(recyclerView,
+                    "Missing widgets recycler view for adapter type " + mAdapterType);
             mWidgetsRecyclerView.setOutlineProvider(mViewOutlineProvider);
             mWidgetsRecyclerView.setClipToOutline(true);
             mWidgetsRecyclerView.setClipChildren(false);
