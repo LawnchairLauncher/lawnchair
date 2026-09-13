@@ -90,7 +90,8 @@ public final class FeatureFlags {
             DISABLED, "Sends a notification whenever launcher encounters an uncaught exception.");
 
     public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
-            enableTaskbarNavbarUnification() && (!isPhone() || enableTaskbarOnPhones());
+            Utilities.ATLEAST_V && enableTaskbarNavbarUnification()
+                    && (!isPhone() || enableTaskbarOnPhones()); // LC-Note: QuickSwitch, Note, when this is enabled, it can crash with type 2019 on Android 14 and under
 
     private static boolean isPhone() {
         final boolean isPhone;

@@ -1258,7 +1258,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         homeCheck.mRequirements[1].mModes = new int[]{TRANSIT_CLOSE, TRANSIT_TO_BACK};
 
         homeCheck.mRequirements[2].mNot = true;
-        homeCheck.mRequirements[2].mCustomAnimation = true;
+        if (Utilities.ATLEAST_BAKLAVA) { // LC-Note: QuickSwitch compatibility!
+            homeCheck.mRequirements[2].mCustomAnimation = true;
+        }
         homeCheck.mRequirements[2].mMustBeTask = true;
         homeCheck.mRequirements[2].mMustBeIndependent = true;
 
