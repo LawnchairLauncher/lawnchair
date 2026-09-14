@@ -421,6 +421,21 @@ object KagiWebSearchProvider : WebSearchProvider {
     override fun toString(): String = id
 }
 
+
+object MojeekWebSearchProvider : WebSearchProvider {
+    override val label = R.string.search_provider_mojeek
+    override val iconRes = R.drawable.ic_qsb_search
+    override val id: String = "mojeek"
+    override fun getSuggestions(query: String): Flow<List<String>> = flow {
+        emit(emptyList())
+    }.flowOn(Dispatchers.IO)
+    override fun getSearchUrl(query: String): String {
+        val encodedQuery = Uri.encode(query)
+        return "https://www.mojeek.com/search?q=$encodedQuery"
+    }
+    override fun toString(): String = id
+}
+
 private class StringConverterFactory : Converter.Factory() {
     override fun responseBodyConverter(
         type: Type,
