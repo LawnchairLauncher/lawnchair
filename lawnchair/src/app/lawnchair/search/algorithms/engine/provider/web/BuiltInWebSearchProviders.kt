@@ -427,12 +427,14 @@ object MojeekWebSearchProvider : WebSearchProvider {
     override val iconRes = R.drawable.ic_qsb_search
     override val id: String = "mojeek"
     override fun getSuggestions(query: String): Flow<List<String>> = flow {
-        emit(emptyList())
+        emit(emptyList<String>())
     }.flowOn(Dispatchers.IO)
+
     override fun getSearchUrl(query: String): String {
         val encodedQuery = Uri.encode(query)
         return "https://www.mojeek.com/search?q=$encodedQuery"
     }
+
     override fun toString(): String = id
 }
 
