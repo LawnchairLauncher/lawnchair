@@ -8,6 +8,6 @@ data object Presearch : QsbSearchProvider(
     name = R.string.search_provider_presearch,
     icon = R.drawable.ic_qsb_search,
     packageName = "",
-    website = "https://presearch.com/search?q=",
+    website = "https://presearch.com/search",
     type = QsbSearchProviderType.WEBSITE,
 )
