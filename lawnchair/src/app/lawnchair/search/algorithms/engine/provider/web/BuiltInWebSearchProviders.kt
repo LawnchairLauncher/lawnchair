@@ -421,7 +421,6 @@ object KagiWebSearchProvider : WebSearchProvider {
     override fun toString(): String = id
 }
 
-
 object PresearchWebSearchProvider : WebSearchProvider {
     override val label = R.string.search_provider_presearch
     override val iconRes = R.drawable.ic_qsb_search
